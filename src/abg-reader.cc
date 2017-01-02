@@ -403,8 +403,7 @@ public:
     if (d)
       return (ir::get_translation_unit(d) == get_translation_unit());
     else if (function_type_sptr fn_type = is_function_type(type))
-      return lookup_function_type_in_translation_unit(fn_type,
-						      *get_translation_unit());
+      return lookup_function_type(fn_type, *get_translation_unit());
     else
       return false;
   }

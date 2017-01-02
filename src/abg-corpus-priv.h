@@ -702,19 +702,18 @@ struct corpus::priv
   elf_symbols					sorted_undefined_fun_symbols;
   elf_symbols					unrefed_fun_symbols;
   elf_symbols					unrefed_var_symbols;
-  // A scope (namespace of class) is shared among all translation
-  // units of a given corpus.
-  //mutable istring_scopes_sptr_map_type		scopes_;
-  mutable istring_type_base_wptr_map_type	basic_types_;
-  mutable istring_type_base_wptr_map_type	class_types_;
-  mutable istring_type_base_wptr_map_type	union_types_;
-  mutable istring_type_base_wptr_map_type	enum_types_;
-  mutable istring_type_base_wptr_map_type	typedef_types_;
-  mutable istring_type_base_wptr_map_type	qualified_types_;
-  mutable istring_type_base_wptr_map_type	pointer_types_;
-  mutable istring_type_base_wptr_map_type	reference_types_;
-  mutable istring_type_base_wptr_map_type	array_types_;
-  mutable istring_type_base_wptr_map_type	function_types_;
+  // The type maps contained in this data member are populated if the
+  // corpus follows the One Definition Rule and thus if there is only
+  // one copy of a type with a given name, per corpus. Otherwise, if
+  // there can be several *different* types with the same name, then
+  // the type maps are all empty.  The types are then maintained in
+  // type maps that are in each translation units.
+  //
+  // In other words, to lookup a given type, if the corpus allows the
+  // One Definition Rule, then lookup can be done by looking into this
+  // data member.  Otherwise, the lookup must be made by looking into
+  // the type maps of each translation unit.
+  type_maps					types_;
 
 private:
   priv();
@@ -730,133 +729,11 @@ public:
   void
   build_unreferenced_symbols_tables();
 
-  // istring_scope_sptr_map_type&
-  // get_scopes()
-  // {return scopes_;}
+  type_maps&
+  get_types();
 
-  // istring_scope_sptr_map_type&
-  // get_scopes() const
-  // {return const_cast<priv*>(this)->get_scopes();}
-
-  /// Getter for the map that associates the name of a basic type to
-  /// the @ref type_decl_sptr that represents that type.
-  istring_type_base_wptr_map_type&
-  get_basic_types()
-  {return basic_types_;}
-
-  /// Getter for the map that associates the name of a basic type to
-  /// the @ref type_decl_sptr that represents that type
-  const istring_type_base_wptr_map_type&
-  get_basic_types() const
-  {return const_cast<priv*>(this)->get_basic_types();}
-
-  /// Getter for the map that associates the name of a class type to
-  /// the @ref class_decl_sptr that represents that type.
-  istring_type_base_wptr_map_type&
-  get_class_types()
-  {return class_types_;}
-
-  /// Getter for the map that associates the name of a class type to
-  /// the @ref class_decl_sptr that represents that type.
-  const istring_type_base_wptr_map_type&
-  get_class_types() const
-  {return const_cast<priv*>(this)->get_class_types();}
-
-  /// Getter for the map that associates the name of a union type to
-  /// the @ref union_decl_sptr that represents that type.
-  istring_type_base_wptr_map_type&
-  get_union_types()
-  {return union_types_;}
-
-  /// Getter for the map that associates the name of a union type to
-  /// the @ref union_decl_sptr that represents that type.
-  const istring_type_base_wptr_map_type&
-  get_union_types() const
-  {return const_cast<priv*>(this)->get_union_types();}
-
-  /// Getter for the map that associates the name of an enum type to
-  /// the @ref enum_type_decl_sptr that represents that type.
-  istring_type_base_wptr_map_type&
-  get_enum_types()
-  {return enum_types_;}
-
-  /// Getter for the map that associates the name of an enum type to
-  /// the @ref enum_type_decl_sptr that represents that type.
-  const istring_type_base_wptr_map_type&
-  get_enum_types() const
-  {return const_cast<priv*>(this)->get_enum_types();}
-
-  /// Getter for the map that associates the name of a typedef to the
-  /// @ref typedef_decl_sptr that represents tha type.
-  istring_type_base_wptr_map_type&
-  get_typedef_types()
-  {return typedef_types_;}
-
-  /// Getter for the map that associates the name of a typedef to the
-  /// @ref typedef_decl_sptr that represents that type.
-  const istring_type_base_wptr_map_type&
-  get_typedef_types() const
-  {return const_cast<priv*>(this)->get_typedef_types();}
-
-  /// Getter for the map that associates the name of a qualified type
-  /// to the @ref qualified_type_def_sptr.
-  istring_type_base_wptr_map_type&
-  get_qualified_types()
-  {return qualified_types_;}
-
-  /// Getter for the map that associates the name of a qualified type
-  /// to the @ref qualified_type_def_sptr.
-  const istring_type_base_wptr_map_type&
-  get_qualified_types() const
-  {return const_cast<priv*>(this)->get_qualified_types();}
-
-  /// Getter for the map that associates the name of a pointer type to
-  /// the @ref pointer_type_def_sptr that represents that type.
-  istring_type_base_wptr_map_type&
-  get_pointer_types()
-  {return pointer_types_;}
-
-  /// Getter for the map that associates the name of a pointer type to
-  /// the @ref pointer_type_def_sptr that represents that type.
-  const istring_type_base_wptr_map_type&
-  get_pointer_types() const
-  {return const_cast<priv*>(this)->get_pointer_types();}
-
-  /// Getter for the map that associates the name of a pointer type to
-  /// the @ref reference_type_def_sptr that represents that type.
-  istring_type_base_wptr_map_type&
-  get_reference_types()
-  {return reference_types_;}
-
-  /// Getter for the map that associates the name of a pointer type to
-  /// the @ref reference_type_def_sptr that represents that type.
-  const istring_type_base_wptr_map_type&
-  get_reference_types() const
-  {return const_cast<priv*>(this)->get_reference_types();}
-
-  /// Getter for the map that associates the name of an array type to
-  /// the @ref array_type_def_sptr that represents that type.
-  istring_type_base_wptr_map_type&
-  get_array_types()
-  {return array_types_;}
-
-  /// Getter for the map that associates the name of an array type to
-  /// the @ref array_type_def_sptr that represents that type.
-  const istring_type_base_wptr_map_type&
-  get_array_types() const
-  {return const_cast<priv*>(this)->get_array_types();}
-
-  /// Getter for the map that associates the name of a function type
-  /// to the @ref function_type_sptr that represents that type.
-  istring_type_base_wptr_map_type&
-  get_function_types()
-  {return function_types_;}
-
-  /// Getter for the map that associates the name of a function type
-  /// to the @ref function_type_sptr that represents that type.
-  const istring_type_base_wptr_map_type&
-  get_function_types() const
-  {return const_cast<priv*>(this)->get_function_types();}
+   const type_maps&
+  get_types() const;
 }; // end struct corpus::priv
 
 void
@@ -901,66 +778,6 @@ maybe_update_types_lookup_map(const decl_base_sptr& decl);
 
 void
 maybe_update_types_lookup_map(const type_base_sptr& type);
-
-type_decl_sptr
-lookup_basic_type(const type_decl&, corpus&);
-
-type_decl_sptr
-lookup_basic_type(const string&, corpus&);
-
-class_decl_sptr
-lookup_class_type(const class_decl&, corpus&);
-
-class_decl_sptr
-lookup_class_type(const string&, corpus&);
-
-enum_type_decl_sptr
-lookup_enum_type(const enum_type_decl&, corpus&);
-
-enum_type_decl_sptr
-lookup_enum_type(const string&, corpus&);
-
-typedef_decl_sptr
-lookup_typedef_type(const typedef_decl&, corpus&);
-
-typedef_decl_sptr
-lookup_typedef_type(const string&, corpus&);
-
-type_base_sptr
-lookup_class_or_typedef_type(const string&, corpus&);
-
-type_base_sptr
-lookup_class_typedef_or_enum_type(const string&, corpus&);
-
-qualified_type_def_sptr
-lookup_qualified_type(const qualified_type_def&, corpus&);
-
-qualified_type_def_sptr
-lookup_qualified_type(const string&, corpus&);
-
-pointer_type_def_sptr
-lookup_pointer_type(const pointer_type_def&, corpus&);
-
-pointer_type_def_sptr
-lookup_pointer_type(const string&, corpus&);
-
-reference_type_def_sptr
-lookup_reference_type(const reference_type_def&, corpus&);
-
-reference_type_def_sptr
-lookup_reference_type(const string&, corpus&);
-
-array_type_def_sptr
-lookup_array_type(const array_type_def&, corpus&);
-
-array_type_def_sptr
-lookup_array_type(const string&, corpus&);
-
-function_type_sptr
-lookup_function_type(const function_type&, corpus&);
-
-function_type_sptr
-lookup_function_type(const string&, corpus&);
 
 }// end namespace ir
 

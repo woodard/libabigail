@@ -100,6 +100,12 @@ public:
   void
   drop_translation_units();
 
+  type_maps&
+  get_types();
+
+  const type_maps&
+  get_types() const;
+
   origin
   get_origin() const;
 

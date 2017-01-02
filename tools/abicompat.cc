@@ -500,7 +500,13 @@ perform_compat_check_in_weak_mode(options& opts,
       {
 	lib_fn_type = (*i)->get_type();
 	assert(lib_fn_type);
-	app_fn_type = lookup_function_type_in_corpus(lib_fn_type, *app_corpus);
+
+	// app_fn_type contains the the "version" of lib_fn_type that
+	// is expected by app_corpus.
+	app_fn_type = lookup_or_synthesize_fn_type(lib_fn_type, *app_corpus);
+
+	// Now lets compare the type expected by app_corpus against
+	// the type actually provided by lib_fn_type.
 	function_type_diff_sptr fn_type_diff;
 	if (app_fn_type)
 	  fn_type_diff = compute_diff(app_fn_type, lib_fn_type, ctxt);
@@ -546,7 +552,7 @@ perform_compat_check_in_weak_mode(options& opts,
       {
 	lib_var_type = (*i)->get_type();
 	assert(lib_var_type);
-	app_var_type = lookup_type_in_corpus(lib_var_type, *app_corpus);
+	app_var_type = lookup_type(lib_var_type, *app_corpus);
 	diff_sptr type_diff;
 	if (app_var_type)
 	  type_diff = compute_diff(app_var_type, lib_var_type, ctxt);

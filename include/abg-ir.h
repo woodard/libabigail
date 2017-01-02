@@ -328,6 +328,83 @@ typedef unordered_map<interned_string,
 		      hash_interned_string>
 istring_type_or_decl_base_sptr_map_type;
 
+/// This is a type that aggregates maps of all the kinds of types that
+/// are supported by libabigail.
+///
+/// For instance, the type_maps contains a map of string to basic
+/// type, a map of string to class type, a map of string to union
+/// types, etc.
+class type_maps
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
+
+public:
+
+  type_maps();
+
+  const istring_type_base_wptr_map_type&
+  basic_types() const;
+
+  istring_type_base_wptr_map_type&
+  basic_types();
+
+  const istring_type_base_wptr_map_type&
+  class_types() const;
+
+  istring_type_base_wptr_map_type&
+  class_types();
+
+  istring_type_base_wptr_map_type&
+  union_types();
+
+  const istring_type_base_wptr_map_type&
+  union_types() const;
+
+  istring_type_base_wptr_map_type&
+  enum_types();
+
+  const istring_type_base_wptr_map_type&
+  enum_types() const;
+
+  istring_type_base_wptr_map_type&
+  typedef_types();
+
+  const istring_type_base_wptr_map_type&
+  typedef_types() const;
+
+  istring_type_base_wptr_map_type&
+  qualified_types();
+
+  const istring_type_base_wptr_map_type&
+  qualified_types() const;
+
+  istring_type_base_wptr_map_type&
+  pointer_types();
+
+  const istring_type_base_wptr_map_type&
+  pointer_types() const;
+
+  istring_type_base_wptr_map_type&
+  reference_types();
+
+  const istring_type_base_wptr_map_type&
+  reference_types() const;
+
+  istring_type_base_wptr_map_type&
+  array_types();
+
+  const istring_type_base_wptr_map_type&
+  array_types() const;
+
+  istring_type_base_wptr_map_type&
+  function_types();
+
+  const istring_type_base_wptr_map_type&
+  function_types() const;
+}; // end class type_maps;
+
 /// This is the abstraction of the set of relevant artefacts (types,
 /// variable declarations, functions, templates, etc) bundled together
 /// into a translation unit.
@@ -416,14 +493,14 @@ public:
   const global_scope_sptr
   get_global_scope() const;
 
-  const function_types_type
-  get_function_types() const;
-
-  const string_type_base_wptr_map_type&
+  const type_maps&
   get_types() const;
 
-  string_type_base_wptr_map_type&
+  type_maps&
   get_types();
+
+  const vector<function_type_sptr>&
+  get_live_fn_types() const;
 
   location_manager&
   get_loc_mgr();
@@ -1128,6 +1205,9 @@ public:
 
   void
   set_visibility(visibility v);
+
+  friend type_base_sptr
+  canonicalize(type_base_sptr);
 
   friend bool
   equals(const decl_base&, const decl_base&, change_kind*);

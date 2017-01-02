@@ -836,57 +836,197 @@ fqn_to_components(const std::string&,
 string
 components_to_type_name(const std::list<string>&);
 
-const shared_ptr<decl_base>
-lookup_type_in_corpus(const string&, const corpus&);
+type_decl_sptr
+lookup_basic_type(const type_decl&, const translation_unit&);
 
-const shared_ptr<class_decl>
-lookup_class_type_in_corpus(const string&, const corpus&);
+type_decl_sptr
+lookup_basic_type(const interned_string&, const translation_unit&);
 
-const shared_ptr<function_type>
-lookup_function_type_in_corpus(const function_type&, const corpus&);
+type_decl_sptr
+lookup_basic_type(const string&, const translation_unit&);
+
+type_decl_sptr
+lookup_basic_type(const type_decl&, const corpus&);;
+
+type_decl_sptr
+lookup_basic_type(const string&, const corpus&);
+
+type_decl_sptr
+lookup_basic_type(const interned_string&, const corpus&);
+
+class_decl_sptr
+lookup_class_type(const class_decl&, const translation_unit&);
+
+class_decl_sptr
+lookup_class_type(const interned_string&, const translation_unit&);
+
+class_decl_sptr
+lookup_class_type(const string&, const translation_unit&);
+
+class_decl_sptr
+lookup_class_type(const class_decl&, const corpus&);
+
+class_decl_sptr
+lookup_class_type(const interned_string&, const corpus&);
+
+class_decl_sptr
+lookup_class_type(const string&, const corpus&);
+
+class_decl_sptr
+lookup_class_type_through_scopes(const std::list<string>&,
+				 const translation_unit&);
+
+union_decl_sptr
+lookup_union_type(const interned_string&, const translation_unit&);
+
+union_decl_sptr
+lookup_union_type(const interned_string&, const corpus&);
+
+union_decl_sptr
+lookup_union_type(const string&, const corpus&);
+
+enum_type_decl_sptr
+lookup_enum_type(const enum_type_decl&, const translation_unit&);
+
+enum_type_decl_sptr
+lookup_enum_type(const string&, const translation_unit&);
+
+enum_type_decl_sptr
+lookup_enum_type(const enum_type_decl&, const corpus&);
+
+enum_type_decl_sptr
+lookup_enum_type(const string&, const corpus&);
+
+enum_type_decl_sptr
+lookup_enum_type(const interned_string&, const corpus&);
+
+typedef_decl_sptr
+lookup_typedef_type(const typedef_decl&, const translation_unit&);
+
+typedef_decl_sptr
+lookup_typedef_type(const typedef_decl&, const corpus&);
+
+typedef_decl_sptr
+lookup_typedef_type(const interned_string&, const corpus&);
+
+typedef_decl_sptr
+lookup_typedef_type(const string&, const corpus&);
+
+type_base_sptr
+lookup_class_or_typedef_type(const string&, const translation_unit&);
+
+type_base_sptr
+lookup_class_typedef_or_enum_type(const string&, const translation_unit&);
+
+type_base_sptr
+lookup_class_or_typedef_type(const string&, const corpus&);
+
+type_base_sptr
+lookup_class_typedef_or_enum_type(const string&, const corpus&);
+
+qualified_type_def_sptr
+lookup_qualified_type(const qualified_type_def&, const translation_unit&);
+
+qualified_type_def_sptr
+lookup_qualified_type(const string&, const translation_unit&);
+
+qualified_type_def_sptr
+lookup_qualified_type(const qualified_type_def&, const corpus&);
+
+qualified_type_def_sptr
+lookup_qualified_type(const interned_string&, const corpus&);
+
+pointer_type_def_sptr
+lookup_pointer_type(const pointer_type_def&, const translation_unit&);
+
+pointer_type_def_sptr
+lookup_pointer_type(const string&, const translation_unit&);
+
+pointer_type_def_sptr
+lookup_pointer_type(const pointer_type_def&, const corpus&);
+
+pointer_type_def_sptr
+lookup_pointer_type(const interned_string&, const corpus&);
+
+const reference_type_def_sptr
+lookup_reference_type(const reference_type_def&, const translation_unit&);
+
+const reference_type_def_sptr
+lookup_reference_type(const string&, const translation_unit&);
+
+reference_type_def_sptr
+lookup_reference_type(const reference_type_def&, const corpus&);
+
+reference_type_def_sptr
+lookup_reference_type(const interned_string&, const corpus&);
+
+array_type_def_sptr
+lookup_array_type(const array_type_def&, const translation_unit&);
+
+array_type_def_sptr
+lookup_array_type(const string&, const translation_unit&);
+
+array_type_def_sptr
+lookup_array_type(const array_type_def&, const corpus&);
+
+array_type_def_sptr
+lookup_array_type(const interned_string&, const corpus&);
+
+function_type_sptr
+lookup_function_type(const string&,
+		     const translation_unit&);
+
+function_type_sptr
+lookup_function_type(const interned_string&,
+		     const translation_unit&);
+
+function_type_sptr
+lookup_function_type(const function_type&,
+		     const translation_unit&);
+
+function_type_sptr
+lookup_function_type(const function_type_sptr&,
+		     const translation_unit&);
+
+function_type_sptr
+lookup_function_type(const function_type&, const corpus&);
+
+function_type_sptr
+lookup_function_type(const function_type_sptr&, const corpus&);
+
+function_type_sptr
+lookup_function_type(const function_type&, const corpus&);
+
+function_type_sptr
+lookup_function_type(const interned_string&, const corpus&);
+
+type_base_sptr
+lookup_type(const string&, const translation_unit&);
+
+const type_base_sptr
+lookup_type(const type_base_sptr, const translation_unit&);
+
+type_base_sptr
+lookup_type(const interned_string&, const corpus&);
+
+type_base_sptr
+lookup_type(const type_base&, const corpus&);
+
+type_base_sptr
+lookup_type(const type_base_sptr&, const corpus&);
 
 type_base_sptr
 lookup_type_through_scopes(const std::list<string>&,
 			   const translation_unit&);
 
-const shared_ptr<decl_base>
-lookup_type_in_translation_unit(const std::list<string>&,
-				const translation_unit&);
-const shared_ptr<decl_base>
-lookup_type_in_translation_unit(const string&,
-				const translation_unit&);
+function_type_sptr
+lookup_or_synthesize_fn_type(const function_type_sptr&,
+			     const corpus&);
 
-const shared_ptr<class_decl>
-lookup_class_type_in_translation_unit(const std::list<string>& fqn,
-				      const translation_unit& tu);
-
-const shared_ptr<class_decl>
-lookup_class_type_in_translation_unit(const string& fqn,
-				      const translation_unit& tu);
-
-const shared_ptr<type_base>
-lookup_type_in_translation_unit(const shared_ptr<type_base>,
-				const translation_unit&);
-
-shared_ptr<function_type>
-lookup_function_type_in_translation_unit(const function_type&,
-					 const translation_unit&);
-
-
-
-shared_ptr<function_type>
-lookup_function_type_in_translation_unit(const shared_ptr<function_type>&,
-					 const translation_unit&);
-
-shared_ptr<function_type>
-lookup_function_type_in_corpus(const shared_ptr<function_type>&,
-			       corpus&);
 type_base_sptr
-synthesize_type_from_translation_unit(const type_base_sptr& type,
-				      translation_unit& tu);
+synthesize_type_from_translation_unit(const type_base_sptr&,
+				      translation_unit&);
 
-shared_ptr<type_base>
-lookup_type_in_corpus(const shared_ptr<type_base>&, corpus&);
 function_type_sptr
 synthesize_function_type_from_translation_unit(const function_type&,
 					       translation_unit&);

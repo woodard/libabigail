@@ -365,6 +365,24 @@ public:
 
       return r1 < r2;
     }
+
+    /// The comparison operator of the functor.
+    ///
+    /// @param l the first type to consider.
+    ///
+    /// @param r the second type to consider.
+    ///
+    /// @return true if the string representation of type @p l is
+    /// considered to be "less than" the string representation of the
+    /// type @p r.
+    ///
+    /// But when the two string representations are equal (for
+    /// instance, for typedefs that have the same string
+    /// representation), this function compares the type-ids of the
+    /// types.  This allows for a stable result.
+    bool
+    operator()(const type_base_sptr& l, const type_base_sptr& r) const
+    {return operator()(l.get(), r.get());}
   }; // end struct type_ptr_cmp
 
   /// Sort the content of a map of type pointers into a vector.
@@ -385,6 +403,49 @@ public:
 	 i != types.end();
 	 ++i)
 	sorted.push_back(i->first);
+    type_ptr_cmp comp(&m_type_id_map);
+    sort(sorted.begin(), sorted.end(), comp);
+  }
+
+  /// Sort the content of a map of type pointers into a vector.
+  ///
+  /// The pointers are sorted by using their string representation as
+  /// the key to sort, lexicographically.
+  ///
+  /// @param types the map to sort.
+  ///
+  /// @param sorted the resulted sorted vector.  It's set by this
+  /// function with the result of the sorting.
+  void
+  sort_types(const istring_type_base_wptr_map_type& types,
+	     vector<type_base_sptr> &sorted)
+  {
+    for (istring_type_base_wptr_map_type::const_iterator i = types.begin();
+	 i != types.end();
+	 ++i)
+      sorted.push_back(type_base_sptr(i->second));
+    type_ptr_cmp comp(&m_type_id_map);
+    sort(sorted.begin(), sorted.end(), comp);
+  }
+
+  /// Sort the content of a vector of function types into a vector of
+  /// types.
+  ///
+  /// The pointers are sorted by using their string representation as
+  /// the key to sort, lexicographically.
+  ///
+  /// @param types the vector of function types to store.
+  ///
+  /// @param sorted the resulted sorted vector.  It's set by this
+  /// function with the result of the sorting.
+  void
+  sort_types(const vector<function_type_sptr>& types,
+	     vector<type_base_sptr> &sorted)
+  {
+    for (vector<function_type_sptr>::const_iterator i = types.begin();
+	 i != types.end();
+	 ++i)
+      sorted.push_back(*i);
     type_ptr_cmp comp(&m_type_id_map);
     sort(sorted.begin(), sorted.end(), comp);
   }
@@ -1404,18 +1465,24 @@ write_translation_unit(const translation_unit&	tu,
 	}
     }
 
-  typedef scope_decl::function_types function_types;
-  typedef function_types::const_iterator const_fn_iterator;
-  const function_types& t = tu.get_function_types();
+  // Now handle all function types that were not only referenced by
+  // emitted types.
+  const vector<function_type_sptr>& t = tu.get_live_fn_types();
+  vector<type_base_sptr> sorted_types;
+  ctxt.sort_types(t, sorted_types);
 
-  for (const_fn_iterator i = t.begin(); i != t.end(); ++i)
+  for (vector<type_base_sptr>::const_iterator i = sorted_types.begin();
+       i != sorted_types.end();
+       ++i)
     {
-      if (!ctxt.type_is_referenced(*i) || ctxt.type_is_emitted(*i))
+      function_type_sptr fn_type = is_function_type(*i);
+
+      if (!ctxt.type_is_referenced(fn_type) || ctxt.type_is_emitted(fn_type))
 	// This function type is either not referenced by any emitted
 	// pointer or reference type, or has already been emitted, so skip it.
 	continue;
       o << "\n";
-      write_function_type(*i, ctxt, indent + c.get_xml_element_indent());
+      write_function_type(fn_type, ctxt, indent + c.get_xml_element_indent());
     }
 
   o << "\n";

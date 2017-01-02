@@ -3638,8 +3638,7 @@ public:
 	  }
 
 	if (decl_base_sptr type_decl =
-	    lookup_class_type_in_corpus(i->first,
-					*current_corpus()))
+	    lookup_class_type(i->first, *current_corpus()))
 	  {
 	    class_decl_sptr klass = is_class_type(type_decl);
 	    assert(klass);
@@ -9461,16 +9460,15 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 	    fqn_to_components(demangled_name, fqn_comps);
 	    string mem_name = fqn_comps.back();
 	    fqn_comps.pop_back();
-	    decl_base_sptr ty_decl;
+	    class_decl_sptr class_type;
 	    string ty_name;
 	    if (!fqn_comps.empty())
 	      {
 		ty_name = components_to_type_name(fqn_comps);
-		ty_decl =
-		  lookup_type_in_translation_unit(ty_name,
-						  *ctxt.cur_transl_unit());
+		class_type =
+		  lookup_class_type(ty_name, *ctxt.cur_transl_unit());
 	      }
-	    if (class_decl_sptr cl = dynamic_pointer_cast<class_decl>(ty_decl))
+	    if (class_type)
 	      {
 		// So we are seeing a member variable for which there
 		// is a global variable definition DIE not having a
@@ -9479,7 +9477,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 		// variable definition from its current non-class
 		// scope ...
 		decl_base_sptr d;
-		if (d = lookup_var_decl_in_scope(mem_name,cl))
+		if (d = lookup_var_decl_in_scope(mem_name, class_type))
 		  // This is the data member with the same name in cl.
 		  // We just need to flag it as static.
 		  ;
@@ -9489,15 +9487,13 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 		    // same name in cl already.  Let's add it there then
 		    // ...
 		    remove_decl_from_scope(*v);
-		    d = add_decl_to_scope(*v, cl);
+		    d = add_decl_to_scope(*v, class_type);
 		  }
 
 		assert(dynamic_pointer_cast<var_decl>(d));
 		// Let's flag the data member as static.
 		set_member_is_static(d, true);
 	      }
-	    if (ty_decl)
-	      assert(ty_decl->get_scope());
 	  }
       }
   ctxt.var_decls_to_re_add_to_tree().clear();

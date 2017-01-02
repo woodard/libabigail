@@ -30,6 +30,8 @@
 
 #include <string>
 
+#include "abg-ir.h"
+
 namespace abigail
 {
 
@@ -129,6 +131,38 @@ operator|=(integral_type::modifiers_type& l, integral_type::modifiers_type r);
 bool
 parse_integral_type(const string& type_name,
 		    integral_type& type);
+
+/// Private type to hold private members of @ref translation_unit
+struct translation_unit::priv
+{
+  const environment*				env_;
+  corpus*					corp;
+  bool						is_constructed_;
+  char						address_size_;
+  language					language_;
+  std::string					path_;
+  location_manager				loc_mgr_;
+  mutable global_scope_sptr			global_scope_;
+  mutable vector<type_base_sptr>		synthesized_types_;
+  vector<function_type_sptr>			live_fn_types_;
+  type_maps					types_;
+
+
+  priv(const environment* env)
+    : env_(env),
+      corp(),
+      is_constructed_(),
+      address_size_(),
+      language_(LANG_UNKNOWN)
+  {}
+
+  ~priv()
+  {}
+
+  type_maps&
+  get_types()
+  {return types_;}
+}; // end translation_unit::priv
 
 } // end namespace ir
 

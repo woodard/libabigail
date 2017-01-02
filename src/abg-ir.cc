@@ -33,7 +33,6 @@
 #include <sstream>
 #include <tr1/memory>
 #include <tr1/unordered_map>
-#include "abg-ir-priv.h"
 
 #include "abg-internal.h"
 // <headers defining libabigail's API go under here>
@@ -46,6 +45,9 @@ ABG_BEGIN_EXPORT_DECLARATIONS
 
 ABG_END_EXPORT_DECLARATIONS
 // </headers defining libabigail's API>
+
+#include "abg-tools-utils.h"
+#include "abg-ir-priv.h"
 
 namespace
 {
@@ -395,32 +397,147 @@ typedef unordered_map<function_type_sptr,
 		      function_type::hash,
 		      type_shared_ptr_equal> fn_type_ptr_map;
 
-/// Private type to hold private members of @ref translation_unit
-struct translation_unit::priv
+// <type_maps stuff>
+
+struct type_maps::priv
 {
-  const environment*				env_;
-  corpus*					corp;
-  bool						is_constructed_;
-  char						address_size_;
-  language					language_;
-  std::string					path_;
-  location_manager				loc_mgr_;
-  mutable global_scope_sptr			global_scope_;
-  mutable function_types_type			function_types_;
-  mutable vector<type_base_sptr>		synthesized_types_;
-  mutable string_type_base_wptr_map_type	types_;
+  mutable istring_type_base_wptr_map_type	basic_types_;
+  mutable istring_type_base_wptr_map_type	class_types_;
+  mutable istring_type_base_wptr_map_type	union_types_;
+  mutable istring_type_base_wptr_map_type	enum_types_;
+  mutable istring_type_base_wptr_map_type	typedef_types_;
+  mutable istring_type_base_wptr_map_type	qualified_types_;
+  mutable istring_type_base_wptr_map_type	pointer_types_;
+  mutable istring_type_base_wptr_map_type	reference_types_;
+  mutable istring_type_base_wptr_map_type	array_types_;
+  mutable istring_type_base_wptr_map_type	function_types_;
+}; // end struct type_maps::priv
 
-  priv(const environment* env)
-    : env_(env),
-      corp(),
-      is_constructed_(),
-      address_size_(),
-      language_(LANG_UNKNOWN)
-  {}
+type_maps::type_maps()
+  : priv_(new priv)
+{}
 
-  ~priv()
-  {}
-}; // end translation_unit::priv
+/// Getter for the map that associates the name of a basic type to
+/// the @ref type_decl_sptr that represents that type.
+const istring_type_base_wptr_map_type&
+type_maps::basic_types() const
+{return priv_->basic_types_;}
+
+/// Getter for the map that associates the name of a basic type to
+/// the @ref type_decl_sptr that represents that type.
+istring_type_base_wptr_map_type&
+type_maps::basic_types()
+{return priv_->basic_types_;}
+
+/// Getter for the map that associates the name of a class type to
+/// the @ref class_decl_sptr that represents that type.
+const istring_type_base_wptr_map_type&
+type_maps::class_types() const
+{return priv_->class_types_;}
+
+/// Getter for the map that associates the name of a class type to
+/// the @ref class_decl_sptr that represents that type.
+istring_type_base_wptr_map_type&
+type_maps::class_types()
+{return priv_->class_types_;}
+
+/// Getter for the map that associates the name of a union type to
+/// the @ref union_decl_sptr that represents that type.
+istring_type_base_wptr_map_type&
+type_maps::union_types()
+{return priv_->union_types_;}
+
+/// Getter for the map that associates the name of a union type to
+/// the @ref union_decl_sptr that represents that type.
+const istring_type_base_wptr_map_type&
+type_maps::union_types() const
+{return priv_->union_types_;}
+
+/// Getter for the map that associates the name of an enum type to
+/// the @ref enum_type_decl_sptr that represents that type.
+istring_type_base_wptr_map_type&
+type_maps::enum_types()
+{return priv_->enum_types_;}
+
+/// Getter for the map that associates the name of an enum type to
+/// the @ref enum_type_decl_sptr that represents that type.
+const istring_type_base_wptr_map_type&
+type_maps::enum_types() const
+{return priv_->enum_types_;}
+
+/// Getter for the map that associates the name of a typedef to the
+/// @ref typedef_decl_sptr that represents tha type.
+istring_type_base_wptr_map_type&
+type_maps::typedef_types()
+{return priv_->typedef_types_;}
+
+/// Getter for the map that associates the name of a typedef to the
+/// @ref typedef_decl_sptr that represents tha type.
+const istring_type_base_wptr_map_type&
+type_maps::typedef_types() const
+{return priv_->typedef_types_;}
+
+/// Getter for the map that associates the name of a qualified type
+/// to the @ref qualified_type_def_sptr.
+istring_type_base_wptr_map_type&
+type_maps::qualified_types()
+{return priv_->qualified_types_;}
+
+/// Getter for the map that associates the name of a qualified type
+/// to the @ref qualified_type_def_sptr.
+const istring_type_base_wptr_map_type&
+type_maps::qualified_types() const
+{return priv_->qualified_types_;}
+
+/// Getter for the map that associates the name of a pointer type to
+/// the @ref pointer_type_def_sptr that represents that type.
+istring_type_base_wptr_map_type&
+type_maps::pointer_types()
+{return priv_->pointer_types_;}
+
+/// Getter for the map that associates the name of a pointer type to
+/// the @ref pointer_type_def_sptr that represents that type.
+const istring_type_base_wptr_map_type&
+type_maps::pointer_types() const
+{return priv_->pointer_types_;}
+
+/// Getter for the map that associates the name of a reference type to
+/// the @ref reference_type_def_sptr that represents that type.
+istring_type_base_wptr_map_type&
+type_maps::reference_types()
+{return priv_->reference_types_;}
+
+/// Getter for the map that associates the name of a reference type to
+/// the @ref reference_type_def_sptr that represents that type.
+const istring_type_base_wptr_map_type&
+type_maps::reference_types() const
+{return priv_->reference_types_;}
+
+/// Getter for the map that associates the name of an array type to
+/// the @ref array_type_def_sptr that represents that type.
+istring_type_base_wptr_map_type&
+type_maps::array_types()
+{return priv_->array_types_;}
+
+/// Getter for the map that associates the name of an array type to
+/// the @ref array_type_def_sptr that represents that type.
+const istring_type_base_wptr_map_type&
+type_maps::array_types() const
+{return priv_->array_types_;}
+
+/// Getter for the map that associates the name of a function type
+/// to the @ref function_type_sptr that represents that type.
+const istring_type_base_wptr_map_type&
+type_maps::function_types() const
+{return priv_->function_types_;}
+
+/// Getter for the map that associates the name of a function type
+/// to the @ref function_type_sptr that represents that type.
+istring_type_base_wptr_map_type&
+type_maps::function_types()
+{return priv_->function_types_;}
+
+// </type_maps stuff>
 
 // <translation_unit stuff>
 
@@ -466,28 +583,28 @@ translation_unit::get_global_scope() const
   return priv_->global_scope_;
 }
 
-/// Getter of the function types of the current @ref translation_unit.
-///
-/// @return the function types of the current translation unit.
-const function_types_type
-translation_unit::get_function_types() const
-{ return priv_->function_types_; }
-
 /// Getter of the types of the current @ref translation_unit.
 ///
-/// @return a map of the types of the translation unit.  The key of
-/// the map is the qualified name of the type, and value is the type.
-const string_type_base_wptr_map_type&
+/// @return the maps of the types of the translation unit.
+const type_maps&
 translation_unit::get_types() const
 {return priv_->types_;}
 
 /// Getter of the types of the current @ref translation_unit.
 ///
-/// @return a map of the types of the translation unit.  The key of
-/// the map is the qualified name of the type, and value is the type.
-string_type_base_wptr_map_type&
+/// @return the maps of the types of the translation unit.
+type_maps&
 translation_unit::get_types()
 {return priv_->types_;}
+
+/// Get the vector of function types that are used in the current
+/// translation unit.
+///
+/// @return the vector of function types that are used in the current
+/// translation unit.
+const vector<function_type_sptr>&
+translation_unit::get_live_fn_types() const
+{return priv_->live_fn_types_;}
 
 /// Getter of the environment of the current @ref translation_unit.
 ///
@@ -669,16 +786,20 @@ translation_unit::operator!=(const translation_unit& o) const
 void
 translation_unit::bind_function_type_life_time(function_type_sptr ftype) const
 {
-  priv_->function_types_.push_back(ftype);
+  const environment* env = get_environment();
+  assert(env);
+
+  const_cast<translation_unit*>(this)->priv_->live_fn_types_.push_back(ftype);
+
+  interned_string repr = get_type_name(ftype);
+  const_cast<translation_unit*>(this)->get_types().function_types()[repr]
+    = ftype;
 
   // The function type must be out of the same environment as its
   // translation unit.
-  if (const environment* env = get_environment())
-    {
-      if (const environment* e = ftype->get_environment())
-	assert(env == e);
-      ftype->set_environment(const_cast<environment*>(env));
-    }
+  if (const environment* e = ftype->get_environment())
+    assert(env == e);
+  ftype->set_environment(const_cast<environment*>(env));
 
   if (const translation_unit* existing_tu = ftype->get_translation_unit())
     assert(existing_tu == this);
@@ -6333,30 +6454,57 @@ iterator_is_last(T& container,
   return (next == container.end());
 }
 
-/// Lookup a type in a translation unit, starting from the global
-/// namespace.
-///
-/// @param fqn the fully qualified name of the type to lookup.
-///
-/// @param tu the translation unit to consider.
-///
-/// @return the declaration of the type if found, NULL otherwise.
-const decl_base_sptr
-lookup_type_in_translation_unit(const string& fqn,
-				const translation_unit& tu)
-{
-  decl_base_sptr result;
-  const string_type_base_wptr_map_type& types = tu.get_types();
-  string_type_base_wptr_map_type::const_iterator it, nil = types.end();
-  it = types.find(fqn);
-  if (it != nil)
-    if (!it->second.expired())
-      result = get_type_declaration(type_base_sptr(it->second));
+//--------------------------------
+// <type and decls lookup stuff>
+// ------------------------------
 
-  return result;
+/// Lookup a type (with a given name) in a map that associates a type
+/// name to a type.
+///
+/// @tparam TypeKind the type of the type this function is supposed to
+/// return.
+///
+/// @param type_name the name of the type to lookup.
+///
+/// @param type_map the map in which to look.
+///
+/// @return a shared_ptr to the type found.  If no type was found or
+/// if the type found was not of type @p TypeKind then the function
+/// returns nil.
+template <class TypeKind>
+static shared_ptr<TypeKind>
+lookup_type_in_map(const interned_string& type_name,
+		   const istring_type_base_wptr_map_type& type_map)
+{
+  istring_type_base_wptr_map_type::const_iterator i = type_map.find(type_name);
+  if (i != type_map.end())
+    return dynamic_pointer_cast<TypeKind>(type_base_sptr(i->second));
+  return shared_ptr<TypeKind>();
+}
+
+/// Lookup a basic type from a translation unit.
+///
+/// This is done by looking the type up in the type map that is
+/// maintained in the translation unit.  So this is as fast as
+/// possible.
+///
+/// @param type_name the name of the basic type to look for.
+///
+/// @param tu the translation unit to look into.
+///
+/// @return the basic type found or nil if no basic type was found.
+type_decl_sptr
+lookup_basic_type(const interned_string& type_name, const translation_unit& tu)
+{
+  return lookup_type_in_map<type_decl>(type_name,
+				       tu.get_types().basic_types());
 }
 
 /// Lookup a class type from a translation unit.
+///
+/// This is done by looking the type up in the type map that is
+/// maintained in the translation unit.  So this is as fast as
+/// possible.
 ///
 /// @param fqn the fully qualified name of the class type node to look
 /// up.
@@ -6365,54 +6513,191 @@ lookup_type_in_translation_unit(const string& fqn,
 ///
 /// @return the declaration of the class type IR node found, NULL
 /// otherwise.
-const class_decl_sptr
-lookup_class_type_in_translation_unit(const string& fqn,
-				      const translation_unit& tu)
-{return is_class_type(lookup_type_in_translation_unit(fqn, tu));}
+class_decl_sptr
+lookup_class_type(const string& fqn, const translation_unit& tu)
+{
+  const environment* env = tu.get_environment();
+  assert(env);
+
+  interned_string s = env->intern(fqn);
+  return lookup_class_type(s, tu);
+}
+
+/// Lookup a class type from a translation unit.
+///
+/// This is done by looking the type up in the type map that is
+/// maintained in the translation unit.  So this is as fast as
+/// possible.
+///
+/// @param type_name the name of the class type to look for.
+///
+/// @param tu the translation unit to look into.
+///
+/// @return the class type found or nil if no class type was found.
+class_decl_sptr
+lookup_class_type(const interned_string& type_name, const translation_unit& tu)
+{
+  return lookup_type_in_map<class_decl>(type_name,
+					tu.get_types().class_types());
+}
+
+/// Lookup a union type from a translation unit.
+///
+/// This is done by looking the type up in the type map that is
+/// maintained in the translation unit.  So this is as fast as
+/// possible.
+///
+/// @param type_name the name of the union type to look for.
+///
+/// @param tu the translation unit to look into.
+///
+/// @return the union type found or nil if no union type was found.
+union_decl_sptr
+lookup_union_type(const interned_string& type_name, const translation_unit& tu)
+{
+  return lookup_type_in_map<union_decl>(type_name,
+					tu.get_types().union_types());
+}
+
+/// Lookup a enum type from a translation unit.
+///
+/// This is done by looking the type up in the type map that is
+/// maintained in the translation unit.  So this is as fast as
+/// possible.
+///
+/// @param type_name the name of the enum type to look for.
+///
+/// @param tu the translation unit to look into.
+///
+/// @return the enum type found or nil if no enum type was found.
+enum_type_decl_sptr
+lookup_enum_type(const interned_string& type_name, const translation_unit& tu)
+{
+  return lookup_type_in_map<enum_type_decl>(type_name,
+					    tu.get_types().enum_types());
+}
+
+/// Lookup a typedef type from a translation unit.
+///
+/// This is done by looking the type up in the type map that is
+/// maintained in the translation unit.  So this is as fast as
+/// possible.
+///
+/// @param type_name the name of the typedef type to look for.
+///
+/// @param tu the translation unit to look into.
+///
+/// @return the typedef type found or nil if no typedef type was
+/// found.
+typedef_decl_sptr
+lookup_typedef_type(const interned_string& type_name,
+		    const translation_unit& tu)
+{
+  return lookup_type_in_map<typedef_decl>(type_name,
+					  tu.get_types().typedef_types());
+}
+
+/// Lookup a qualified type from a translation unit.
+///
+/// This is done by looking the type up in the type map that is
+/// maintained in the translation unit.  So this is as fast as
+/// possible.
+///
+/// @param type_name the name of the qualified type to look for.
+///
+/// @param tu the translation unit to look into.
+///
+/// @return the qualified type found or nil if no qualified type was
+/// found.
+qualified_type_def_sptr
+lookup_qualified_type(const interned_string& type_name,
+		      const translation_unit& tu)
+{
+  const type_maps& m = tu.get_types();
+  return lookup_type_in_map<qualified_type_def>(type_name,
+						m.qualified_types());
+}
+
+/// Lookup a pointer type from a translation unit.
+///
+/// This is done by looking the type up in the type map that is
+/// maintained in the translation unit.  So this is as fast as
+/// possible.
+///
+/// @param type_name the name of the pointer type to look for.
+///
+/// @param tu the translation unit to look into.
+///
+/// @return the pointer type found or nil if no pointer type was
+/// found.
+pointer_type_def_sptr
+lookup_pointer_type(const interned_string& type_name,
+		    const translation_unit& tu)
+{
+  const type_maps& m = tu.get_types();
+  return lookup_type_in_map<pointer_type_def>(type_name,
+					      m.pointer_types());
+}
+
+/// Lookup a reference type from a translation unit.
+///
+/// This is done by looking the type up in the type map that is
+/// maintained in the translation unit.  So this is as fast as
+/// possible.
+///
+/// @param type_name the name of the reference type to look for.
+///
+/// @param tu the translation unit to look into.
+///
+/// @return the reference type found or nil if no reference type was
+/// found.
+reference_type_def_sptr
+lookup_reference_type(const interned_string& type_name,
+		      const translation_unit& tu)
+{
+  const type_maps& m = tu.get_types();
+  return lookup_type_in_map<reference_type_def>(type_name,
+						m.reference_types());
+}
+
+/// Lookup an array type from a translation unit.
+///
+/// This is done by looking the type up in the type map that is
+/// maintained in the translation unit.  So this is as fast as
+/// possible.
+///
+/// @param type_name the name of the array type to look for.
+///
+/// @param tu the translation unit to look into.
+///
+/// @return the array type found or nil if no array type was found.
+array_type_def_sptr
+lookup_array_type(const interned_string& type_name,
+		  const translation_unit& tu)
+{
+  const type_maps& m = tu.get_types();
+  return lookup_type_in_map<array_type_def>(type_name,
+					    m.array_types());
+}
 
 /// Lookup a function type from a translation unit.
 ///
-/// This walks all the function types held by the translation unit and
-/// compare their sub-type *names*.  If the names match then return
-/// the function type found in the translation unit.
+/// This is done by looking the type up in the type map that is
+/// maintained in the translation unit.  So this is as fast as
+/// possible.
 ///
-/// @param t the function type to look for.
+/// @param type_name the name of the type to lookup.
 ///
 /// @param tu the translation unit to look into.
 ///
 /// @return the function type found, or NULL of none was found.
 function_type_sptr
-lookup_function_type_in_translation_unit(const function_type& t,
-					 const translation_unit& tu)
+lookup_function_type(const interned_string& type_name,
+		     const translation_unit& tu)
 {
-  interned_string type_name = get_type_name(t), n;
-  function_types_type& fn_types = tu.priv_->function_types_;
-  for (function_types_type::const_iterator i = fn_types.begin();
-       i != fn_types.end();
-       ++i)
-    {
-      n = get_type_name(**i);
-      bool skip_this = false;
-      if (type_name == n)
-	{
-	  for (function_decl::parameters::const_iterator p0 =
-		 t.get_parameters().begin(),
-		 p1 = (**i).get_parameters().begin();
-	       (p0 != t.get_parameters().end()
-		&& p1 != (**i).get_parameters().end());
-	       ++p0, ++p1)
-	    if ((*p0)->get_artificial() != (*p1)->get_artificial()
-		|| (*p0)->get_variadic_marker() != (*p1)->get_variadic_marker())
-	      {
-		skip_this = true;
-		break;
-	      }
-	  if (skip_this)
-	    continue;
-	  return *i;
-	}
-    }
-  return function_type_sptr();
+  const type_maps& m = tu.get_types();
+  return lookup_type_in_map<function_type>(type_name,
+					   m.function_types());
 }
 
 /// Lookup a function type from a translation unit.
@@ -6427,152 +6712,98 @@ lookup_function_type_in_translation_unit(const function_type& t,
 ///
 /// @return the function type found, or NULL of none was found.
 function_type_sptr
-lookup_function_type_in_translation_unit(const function_type_sptr& t,
-					 const translation_unit& tu)
-{return lookup_function_type_in_translation_unit(*t, tu);}
+lookup_function_type(const function_type& t,
+		     const translation_unit& tu)
+{
+  interned_string type_name = get_type_name(t);
+  return lookup_function_type(type_name, tu);
+}
 
-/// In a translation unit, lookup a given type or synthesize it if
-/// it's a qualified type.
+/// Lookup a function type from a translation unit.
 ///
-/// So this function first looks the type up in the translation unit.
-/// If it's found, then OK, it's returned.  Otherwise, if it's a
-/// qualified type, lookup the unqualified underlying type and
-/// synthesize the qualified type from it.
+/// This is done by looking the type up in the type map that is
+/// maintained in the translation unit.  So this is as fast as
+/// possible.
 ///
-/// If the unqualified underlying type is not found either, then give
-/// up and return nil.
+/// @param t the function type to look for.
 ///
-/// If the type is not
-type_base_sptr
-synthesize_type_from_translation_unit(const type_base_sptr& type,
-				      translation_unit& tu)
+/// @param tu the translation unit to look into.
+///
+/// @return the function type found, or NULL of none was found.
+function_type_sptr
+lookup_function_type(const function_type_sptr& t,
+		     const translation_unit& tu)
+{return lookup_function_type(*t, tu);}
+
+/// Lookup a type in a translation unit.
+///
+/// @param fqn the fully qualified name of the type to lookup.
+///
+/// @param tu the translation unit to consider.
+///
+/// @return the declaration of the type if found, NULL otherwise.
+const type_base_sptr
+lookup_type(const interned_string& fqn,
+	    const translation_unit& tu)
 {
   type_base_sptr result;
-
-  // TODO: Maybe handle the case of a function type here?
-  result = lookup_type_in_translation_unit(type, tu);
-
-  if (!result)
-    {
-      if (qualified_type_def_sptr qual = is_qualified_type(type))
-	{
-	  type_base_sptr underlying_type =
-	    synthesize_type_from_translation_unit(qual->get_underlying_type(),
-						  tu);
-	  if (underlying_type)
-	    {
-	      result.reset(new qualified_type_def(underlying_type,
-						  qual->get_cv_quals(),
-						  qual->get_location()));
-	    }
-	}
-      else if (pointer_type_def_sptr p = is_pointer_type(type))
-	{
-	  type_base_sptr pointed_to_type =
-	    synthesize_type_from_translation_unit(p->get_pointed_to_type(),
-						  tu);
-	  if (pointed_to_type)
-	    {
-	      result.reset(new pointer_type_def(pointed_to_type,
-						p->get_size_in_bits(),
-						p->get_alignment_in_bits(),
-						p->get_location()));
-	      result->set_environment(pointed_to_type->get_environment());
-	    }
-	}
-      else if (reference_type_def_sptr r = is_reference_type(type))
-	{
-	  type_base_sptr pointed_to_type =
-	    synthesize_type_from_translation_unit(r->get_pointed_to_type(), tu);
-	  if (pointed_to_type)
-	    {
-	      result.reset(new reference_type_def(pointed_to_type,
-						  r->is_lvalue(),
-						  r->get_size_in_bits(),
-						  r->get_alignment_in_bits(),
-						  r->get_location()));
-	      result->set_environment(pointed_to_type->get_environment());
-	    }
-	}
-    }
-
-  if (result)
-    tu.priv_->synthesized_types_.push_back(result);
+  ((result = lookup_typedef_type(fqn, tu))
+   || (result = lookup_class_type(fqn, tu))
+   || (result = lookup_union_type(fqn, tu))
+   || (result = lookup_enum_type(fqn, tu))
+   || (result = lookup_qualified_type(fqn, tu))
+   || (result = lookup_pointer_type(fqn, tu))
+   || (result = lookup_reference_type(fqn, tu))
+   || (result = lookup_array_type(fqn, tu))
+   || (result = lookup_function_type(fqn, tu))
+   || (result = lookup_basic_type(fqn, tu)));
 
   return result;
 }
 
-/// In a translation unit, lookup the sub-types that make up a given
-/// function type and if the sub-types are all found, synthesize and
-/// return a function_type with them.
+/// Lookup a type in a translation unit, starting from the global
+/// namespace.
 ///
-/// This function is like lookup_function_type_in_translation_unit()
-/// execept that it constructs the function type from the sub-types
-/// found in the translation, rather than just looking for the
-/// function types held by the translation unit.  This can be useful
-/// if the translation unit doesnt hold the function type we are
-/// looking for (i.e, lookup_function_type_in_translation_unit()
-/// returned NULL) but we still want to see if the sub-types of the
-/// function types are present in the translation unit.
+/// @param fqn the fully qualified name of the type to lookup.
 ///
-/// @param fn_type the function type to consider.
+/// @param tu the translation unit to consider.
 ///
-/// @param tu the translation unit to look into.
-///
-/// @return the resulting synthesized function type if all its
-/// sub-types have been found, NULL otherwise.
-function_type_sptr
-synthesize_function_type_from_translation_unit(const function_type& fn_type,
-					       translation_unit& tu)
+/// @return the declaration of the type if found, NULL otherwise.
+type_base_sptr
+lookup_type(const string& fqn, const translation_unit& tu)
 {
-  function_type_sptr nil = function_type_sptr();
-
-  environment* env = tu.get_environment();
+  const environment *env = tu.get_environment();
   assert(env);
+  interned_string ifqn = env->intern(fqn);
+  return lookup_type(ifqn, tu);
+}
 
-  type_base_sptr return_type = fn_type.get_return_type();
-  type_base_sptr result_return_type;
-  if (!return_type || env->is_void_type(return_type))
-    result_return_type = env->get_void_type();
-  else
-    result_return_type = synthesize_type_from_translation_unit(return_type, tu);
-  if (!result_return_type)
-    return nil;
-
-  function_type::parameters parms;
-  type_base_sptr parm_type;
-  function_decl::parameter_sptr parm;
-  for (function_type::parameters::const_iterator i =
-	 fn_type.get_parameters().begin();
-       i != fn_type.get_parameters().end();
-       ++i)
-    {
-      type_base_sptr t = (*i)->get_type();
-      parm_type = synthesize_type_from_translation_unit(t, tu);
-      if (!parm_type)
-	return nil;
-      parm.reset(new function_decl::parameter(parm_type,
-					      (*i)->get_index(),
-					      (*i)->get_name(),
-					      (*i)->get_location()));
-      parms.push_back(parm);
-    }
-
-  function_type_sptr result_fn_type
-    (new function_type(result_return_type,
-		       parms,
-		       fn_type.get_size_in_bits(),
-		       fn_type.get_alignment_in_bits()));
-
-  tu.priv_->synthesized_types_.push_back(result_fn_type);
-  // The new synthesized type must be in the same environment as its
-  // translation unit.
-  result_fn_type->set_environment(tu.get_environment());
-
-  return result_fn_type;
+/// Lookup a type from a translation unit.
+///
+/// @param fqn the components of the fully qualified name of the node
+/// to look up.
+///
+/// @param tu the translation unit to perform lookup from.
+///
+/// @return the declaration of the IR node found, NULL otherwise.
+const type_base_sptr
+lookup_type(const type_base_sptr type,
+	    const translation_unit& tu)
+{
+  interned_string type_name = get_type_name(type);
+  return lookup_type(type_name, tu);
 }
 
 /// Lookup a type in a scope.
+///
+/// This is really slow as it walks the member types of the scope in
+/// sequence to find the type with a given name.
+///
+/// If possible, users should prefer looking up types from the
+/// enclosing translation unit or even ABI corpus because both the
+/// translation unit and the corpus have a map of type, indexed by
+/// their name.  Looking up a type from those maps is thus much
+/// faster.
 ///
 /// @param fqn the fully qualified name of the type to lookup.
 ///
@@ -6606,7 +6837,10 @@ lookup_var_decl_in_scope(const string& fqn,
 }
 
 /// A generic function (template) to get the name of a node, whatever
-/// node it is.  This has to specialized for the kind of node we want
+/// node it is.  This has to be specialized for the kind of node we
+/// want.
+///
+/// Note that a node is a member of a scope.
 ///
 /// @tparam NodeKind the kind of node to consider.
 ///
@@ -6693,8 +6927,8 @@ convert_node_to_decl(var_decl_sptr node)
 ///
 /// @tparam the type of the node to lookup.
 ///
-/// @param fqn the components of the fully qualified name of the the
-/// node to lookup.
+/// @param fqn the components of the fully qualified name of the node
+/// to lookup.
 ///
 /// @param skope the scope to look into.
 ///
@@ -6755,6 +6989,16 @@ lookup_node_in_scope(const list<string>& fqn,
 
 /// lookup a type in a scope.
 ///
+///
+/// This is really slow as it walks the member types of the scope in
+/// sequence to find the type with a given name.
+///
+/// If possible, users should prefer looking up types from the
+/// enclosing translation unit or even ABI corpus because both the
+/// translation unit and the corpus have a map of type, indexed by
+/// their name.  Looking up a type from those maps is thus much
+/// faster.
+///
 /// @param comps the components of the fully qualified name of the
 /// type to lookup.
 ///
@@ -6767,6 +7011,15 @@ lookup_type_in_scope(const list<string>& comps,
 {return is_type(lookup_node_in_scope<type_base>(comps, scope));}
 
 /// lookup a type in a scope.
+///
+/// This is really slow as it walks the member types of the scope in
+/// sequence to find the type with a given name.
+///
+/// If possible, users should prefer looking up types from the
+/// enclosing translation unit or even ABI corpus because both the
+/// translation unit and the corpus have a map of type, indexed by
+/// their name.  Looking up a type from those maps is thus much
+/// faster.
 ///
 /// @param type the type to look for.
 ///
@@ -6830,6 +7083,15 @@ lookup_type_in_scope(const type_base& type,
 
 /// lookup a type in a scope.
 ///
+/// This is really slow as it walks the member types of the scope in
+/// sequence to find the type with a given name.
+///
+/// If possible, users should prefer looking up types from the
+/// enclosing translation unit or even ABI corpus because both the
+/// translation unit and the corpus have a map of type, indexed by
+/// their name.  Looking up a type from those maps is thus much
+/// faster.
+///
 /// @param type the type to look for.
 ///
 /// @param scope the top-most scope into which to look for @p type.
@@ -6852,6 +7114,34 @@ lookup_type_in_scope(const type_base_sptr type,
 	break;
     }
   return lookup_type_in_scope(*type, access_path, scope);
+}
+
+/// Lookup a type from a translation unit by walking the scopes of the
+/// translation unit in sequence and looking into them.
+///
+/// This is really slow as it walks the member types of the scopes in
+/// sequence to find the type with a given name.
+///
+/// If possible, users should prefer looking up types from the
+/// translation unit or even ABI corpus in a more direct way, by using
+/// the lookup_type() functins.
+///
+///
+/// This is because both the translation unit and the corpus have a
+/// map of types, indexed by their name.  Looking up a type from those
+/// maps is thus much faster.  @param fqn the components of the fully
+/// qualified name of the node to look up.
+///
+/// @param tu the translation unit to perform lookup from.
+///
+/// @return the declaration of the IR node found, NULL otherwise.
+const type_base_sptr
+lookup_type_through_scopes(const type_base_sptr type,
+			   const translation_unit& tu)
+{
+  if (function_type_sptr fn_type = is_function_type(type))
+    return lookup_function_type(fn_type, tu);
+  return lookup_type_in_scope(type, tu.get_global_scope().get());
 }
 
 /// lookup a var_decl in a scope.
@@ -6882,7 +7172,10 @@ lookup_node_in_translation_unit(const list<string>& fqn,
 				const translation_unit& tu)
 {return lookup_node_in_scope<NodeKind>(fqn, tu.get_global_scope());}
 
-/// Lookup a type from a translation unit.
+/// Lookup a type from a translation unit by walking its scopes in
+/// sequence and by looking into them.
+///
+/// This is much slower than using the lookup_type() function.
 ///
 /// @param fqn the components of the fully qualified name of the node
 /// to look up.
@@ -6893,9 +7186,15 @@ lookup_node_in_translation_unit(const list<string>& fqn,
 type_base_sptr
 lookup_type_through_scopes(const list<string>& fqn,
 			   const translation_unit& tu)
-{return is_type(lookup_node_in_translation_unit<type_base>(fqn,tu));}
+{return is_type(lookup_node_in_translation_unit<type_base>(fqn, tu));}
 
-/// Lookup a class type from a translation unit.
+
+/// Lookup a class type from a translation unit by walking its scopes
+/// in sequence and by looking into them.
+///
+/// This is much slower than using the lookup_class_type() function
+/// because it walks all the scopes of the translation unit in
+/// sequence and lookup the types to find one that has a given name.
 ///
 /// @param fqn the components of the fully qualified name of the class
 /// type node to look up.
@@ -6904,26 +7203,1585 @@ lookup_type_through_scopes(const list<string>& fqn,
 ///
 /// @return the declaration of the class type IR node found, NULL
 /// otherwise.
-const class_decl_sptr
-lookup_class_type_in_translation_unit(const list<string>& fqn,
-				      const translation_unit& tu)
+class_decl_sptr
+lookup_class_type_through_scopes(const list<string>& fqn,
+				 const translation_unit& tu)
 {return is_class_type(lookup_node_in_translation_unit<class_decl>(fqn, tu));}
 
-/// Lookup a type from a translation unit.
+/// Lookup a basic type from all the translation units of a given
+/// corpus.
 ///
-/// @param fqn the components of the fully qualified name of the node
-/// to look up.
+/// @param fqn the components of the fully qualified name of the basic
+/// type node to look up.
 ///
 /// @param tu the translation unit to perform lookup from.
 ///
-/// @return the declaration of the IR node found, NULL otherwise.
-const type_base_sptr
-lookup_type_in_translation_unit(const type_base_sptr type,
-				const translation_unit& tu)
+/// @return the declaration of the basic type IR node found, NULL
+/// otherwise.
+static type_decl_sptr
+lookup_basic_type_through_translation_units(const interned_string& type_name,
+					    const corpus& abi_corpus)
 {
-  if (function_type_sptr fn_type = is_function_type(type))
-    return lookup_function_type_in_translation_unit(fn_type, tu);
-  return lookup_type_in_scope(type, tu.get_global_scope().get());
+  type_decl_sptr result;
+
+  for (translation_units::const_iterator tu =
+	 abi_corpus.get_translation_units().begin();
+       tu != abi_corpus.get_translation_units().end();
+       ++tu)
+    if ((result = lookup_basic_type(type_name, **tu)))
+      break;
+
+  return result;
+}
+
+/// Lookup a union type from all the translation units of a given
+/// corpus.
+///
+/// @param fqn the components of the fully qualified name of the union
+/// type node to look up.
+///
+/// @param tu the translation unit to perform lookup from.
+///
+/// @return the declaration of the union type IR node found, NULL
+/// otherwise.
+static union_decl_sptr
+lookup_union_type_through_translation_units(const interned_string& type_name,
+					    const corpus & abi_corpus)
+{
+ union_decl_sptr result;
+
+  for (translation_units::const_iterator tu =
+	 abi_corpus.get_translation_units().begin();
+       tu != abi_corpus.get_translation_units().end();
+       ++tu)
+    if ((result = lookup_union_type(type_name, **tu)))
+      break;
+
+  return result;
+}
+
+/// Lookup an enum type from all the translation units of a given
+/// corpus.
+///
+/// @param fqn the components of the fully qualified name of the enum
+/// type node to look up.
+///
+/// @param tu the translation unit to perform lookup from.
+///
+/// @return the declaration of the enum type IR node found, NULL
+/// otherwise.
+static enum_type_decl_sptr
+lookup_enum_type_through_translation_units(const interned_string& type_name,
+					   const corpus & abi_corpus)
+{
+  enum_type_decl_sptr result;
+
+  for (translation_units::const_iterator tu =
+	 abi_corpus.get_translation_units().begin();
+       tu != abi_corpus.get_translation_units().end();
+       ++tu)
+    if ((result = lookup_enum_type(type_name, **tu)))
+      break;
+
+  return result;
+}
+
+/// Lookup a class type definition in all the translation units of a
+/// given ABI corpus.
+///
+/// @param @param qn the fully qualified name of the class type to lookup.
+///
+/// @param abi_corpus the ABI corpus which to look the type up in.
+///
+/// @return the type definition if any was found, or a NULL pointer.
+static const class_decl_sptr
+lookup_class_type_through_translation_units(const string& qn,
+					    const corpus& abi_corpus)
+{
+  class_decl_sptr result;
+
+  for (translation_units::const_iterator tu =
+	 abi_corpus.get_translation_units().begin();
+       tu != abi_corpus.get_translation_units().end();
+       ++tu)
+    if ((result = lookup_class_type(qn, **tu)))
+      break;
+
+  return result;
+}
+
+/// Lookup a typedef type definition in all the translation units of a
+/// given ABI corpus.
+///
+/// @param @param qn the fully qualified name of the typedef type to lookup.
+///
+/// @param abi_corpus the ABI corpus which to look the type up in.
+///
+/// @return the type definition if any was found, or a NULL pointer.
+static typedef_decl_sptr
+lookup_typedef_type_through_translation_units(const interned_string& type_name,
+					      const corpus & abi_corpus)
+{
+  typedef_decl_sptr result;
+
+  for (translation_units::const_iterator tu =
+	 abi_corpus.get_translation_units().begin();
+       tu != abi_corpus.get_translation_units().end();
+       ++tu)
+    if ((result = lookup_typedef_type(type_name, **tu)))
+      break;
+
+  return result;
+}
+
+/// Lookup a qualified type definition in all the translation units of a
+/// given ABI corpus.
+///
+/// @param @param qn the fully qualified name of the qualified type to
+/// lookup.
+///
+/// @param abi_corpus the ABI corpus which to look the type up in.
+///
+/// @return the type definition if any was found, or a NULL pointer.
+static qualified_type_def_sptr
+lookup_qualified_type_through_translation_units(const interned_string& t_name,
+						const corpus & abi_corpus)
+{
+  qualified_type_def_sptr result;
+
+  for (translation_units::const_iterator tu =
+	 abi_corpus.get_translation_units().begin();
+       tu != abi_corpus.get_translation_units().end();
+       ++tu)
+    if ((result = lookup_qualified_type(t_name, **tu)))
+      break;
+
+  return result;
+}
+
+/// Lookup a pointer type definition in all the translation units of a
+/// given ABI corpus.
+///
+/// @param @param qn the fully qualified name of the pointer type to
+/// lookup.
+///
+/// @param abi_corpus the ABI corpus which to look the type up in.
+///
+/// @return the type definition if any was found, or a NULL pointer.
+static pointer_type_def_sptr
+lookup_pointer_type_through_translation_units(const interned_string& type_name,
+					      const corpus & abi_corpus)
+{
+  pointer_type_def_sptr result;
+
+  for (translation_units::const_iterator tu =
+	 abi_corpus.get_translation_units().begin();
+       tu != abi_corpus.get_translation_units().end();
+       ++tu)
+    if ((result = lookup_pointer_type(type_name, **tu)))
+      break;
+
+  return result;
+}
+
+/// Lookup a reference type definition in all the translation units of a
+/// given ABI corpus.
+///
+/// @param @param qn the fully qualified name of the reference type to
+/// lookup.
+///
+/// @param abi_corpus the ABI corpus which to look the type up in.
+///
+/// @return the type definition if any was found, or a NULL pointer.
+static reference_type_def_sptr
+lookup_reference_type_through_translation_units(const interned_string& t_name,
+						const corpus & abi_corpus)
+{
+  reference_type_def_sptr result;
+
+  for (translation_units::const_iterator tu =
+	 abi_corpus.get_translation_units().begin();
+       tu != abi_corpus.get_translation_units().end();
+       ++tu)
+    if ((result = lookup_reference_type(t_name, **tu)))
+      break;
+
+  return result;
+}
+
+/// Lookup a array type definition in all the translation units of a
+/// given ABI corpus.
+///
+/// @param @param qn the fully qualified name of the array type to
+/// lookup.
+///
+/// @param abi_corpus the ABI corpus which to look the type up in.
+///
+/// @return the type definition if any was found, or a NULL pointer.
+static array_type_def_sptr
+lookup_array_type_through_translation_units(const interned_string& type_name,
+					    const corpus & abi_corpus)
+{
+  array_type_def_sptr result;
+
+  for (translation_units::const_iterator tu =
+	 abi_corpus.get_translation_units().begin();
+       tu != abi_corpus.get_translation_units().end();
+       ++tu)
+    if ((result = lookup_array_type(type_name, **tu)))
+      break;
+
+  return result;
+}
+
+/// Lookup a function type definition in all the translation units of
+/// a given ABI corpus.
+///
+/// @param @param qn the fully qualified name of the function type to
+/// lookup.
+///
+/// @param abi_corpus the ABI corpus which to look the type up in.
+///
+/// @return the type definition if any was found, or a NULL pointer.
+static function_type_sptr
+lookup_function_type_through_translation_units(const interned_string& type_name,
+					       const corpus & abi_corpus)
+{
+  function_type_sptr result;
+
+  for (translation_units::const_iterator tu =
+	 abi_corpus.get_translation_units().begin();
+       tu != abi_corpus.get_translation_units().end();
+       ++tu)
+    if ((result = lookup_function_type(type_name, **tu)))
+      break;
+
+  return result;
+}
+
+/// Lookup a type definition in all the translation units of a given
+/// ABI corpus.
+///
+/// @param @param qn the fully qualified name of the type to lookup.
+///
+/// @param abi_corpus the ABI corpus which to look the type up in.
+///
+/// @return the type definition if any was found, or a NULL pointer.
+type_base_sptr
+lookup_type_through_translation_units(const string& qn,
+				      const corpus& abi_corpus)
+{
+  type_base_sptr result;
+
+  for (translation_units::const_iterator tu =
+	 abi_corpus.get_translation_units().begin();
+       tu != abi_corpus.get_translation_units().end();
+       ++tu)
+    if ((result = lookup_type(qn, **tu)))
+      break;
+
+  return result;
+}
+
+/// Look into an ABI corpus for a function type.
+///
+/// @param fn_type the function type to be looked for in the ABI
+/// corpus.
+///
+/// @param corpus the ABI corpus into which to look for the function
+/// type.
+///
+/// @return the function type found in the corpus.
+function_type_sptr
+lookup_or_synthesize_fn_type(const function_type_sptr& fn_t,
+			     const corpus& corpus)
+{
+  assert(fn_t);
+
+  function_type_sptr result;
+
+  if ((result = lookup_function_type(fn_t, corpus)))
+    return result;
+
+  for (translation_units::const_iterator i =
+	 corpus.get_translation_units().begin();
+       i != corpus.get_translation_units().end();
+       ++i)
+    if ((result = synthesize_function_type_from_translation_unit(*fn_t,
+								 **i)))
+      return result;
+
+  return result;
+}
+
+/// Look into a given corpus to find a type which has the same
+/// qualified name as a giventype.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param t the type which has the same qualified name as the type we
+/// are looking for.
+///
+/// @param corp the ABI corpus to look into for the type.
+type_decl_sptr
+lookup_basic_type(const type_decl& t, const corpus& corp)
+{return lookup_basic_type(t.get_name(), corp);}
+
+/// Look into a given corpus to find a basic type which has a given
+/// qualified name.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param qualified_name the qualified name of the basic type to look
+/// for.
+///
+/// @param corp the corpus to look into.
+type_decl_sptr
+lookup_basic_type(const interned_string &qualified_name, const corpus& corp)
+{
+  const istring_type_base_wptr_map_type& m = corp.get_types().basic_types();
+  type_decl_sptr result;
+
+  if (!m.empty())
+    result = lookup_type_in_map<type_decl>(qualified_name, m);
+  else
+    result = lookup_basic_type_through_translation_units(qualified_name, corp);
+
+  return result;
+}
+
+/// Look into a given corpus to find a basic type which has a given
+/// qualified name.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param qualified_name the qualified name of the basic type to look
+/// for.
+///
+/// @param corp the corpus to look into.
+type_decl_sptr
+lookup_basic_type(const string& qualified_name, const corpus& corp)
+{
+  return lookup_basic_type(corp.get_environment()->intern(qualified_name),
+			   corp);
+}
+
+/// Look into a given corpus to find a class type which has the same
+/// qualified name as a given type.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param t the class decl type which has the same qualified name as
+/// the type we are looking for.
+///
+/// @param corp the corpus to look into.
+class_decl_sptr
+lookup_class_type(const class_decl& t, const corpus& corp)
+{
+  interned_string s = get_type_name(t);
+  return lookup_class_type(s, corp);
+}
+
+/// Look into a given corpus to find a class type which has a given
+/// qualified name.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param qualified_name the qualified name of the type to look for.
+///
+/// @param corp the corpus to look into.
+class_decl_sptr
+lookup_class_type(const string& qualified_name, const corpus& corp)
+{
+  interned_string s = corp.get_environment()->intern(qualified_name);
+  return lookup_class_type(s, corp);
+}
+
+/// Look into a given corpus to find a class type which has a given
+/// qualified name.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param qualified_name the qualified name of the type to look for.
+///
+/// @param corp the corpus to look into.
+class_decl_sptr
+lookup_class_type(const interned_string& qualified_name, const corpus& corp)
+{
+  const istring_type_base_wptr_map_type& m = corp.get_types().class_types();
+
+  class_decl_sptr result = lookup_type_in_map<class_decl>(qualified_name, m);
+  if (!result)
+    result = lookup_class_type_through_translation_units(qualified_name, corp);
+
+  return result;
+}
+
+/// Look into a given corpus to find a union type which has a given
+/// qualified name.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param qualified_name the qualified name of the type to look for.
+///
+/// @param corp the corpus to look into.
+union_decl_sptr
+lookup_union_type(const interned_string& type_name, const corpus& corp)
+{
+  const istring_type_base_wptr_map_type& m = corp.get_types().union_types();
+
+  union_decl_sptr result = lookup_type_in_map<union_decl>(type_name, m);
+  if (!result)
+    result = lookup_union_type_through_translation_units(type_name, corp);
+
+  return result;
+}
+
+/// Look into a given corpus to find a union type which has a given
+/// qualified name.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param qualified_name the qualified name of the type to look for.
+///
+/// @param corp the corpus to look into.
+union_decl_sptr
+lookup_union_type(const string& type_name, const corpus& corp)
+{
+  interned_string s = corp.get_environment()->intern(type_name);
+  return lookup_union_type(s, corp);
+}
+
+/// Look into a given corpus to find a enum type which has the same
+/// qualified name as a given enum type.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param t the enum type which has the same qualified name as the
+/// type we are looking for.
+///
+/// @param corp the corpus to look into.
+enum_type_decl_sptr
+lookup_enum_type(const enum_type_decl& t, const corpus& corp)
+{
+  interned_string s = get_type_name(t);
+  return lookup_enum_type(s, corp);
+}
+
+/// Look into a given corpus to find an enum type which has a given
+/// qualified name.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param qualified_name the qualified name of the enum type to look
+/// for.
+///
+/// @param corp the corpus to look into.
+enum_type_decl_sptr
+lookup_enum_type(const string& qualified_name, const corpus& corp)
+{
+  interned_string s = corp.get_environment()->intern(qualified_name);
+  return lookup_enum_type(s, corp);
+}
+
+/// Look into a given corpus to find an enum type which has a given
+/// qualified name.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param qualified_name the qualified name of the enum type to look
+/// for.
+///
+/// @param corp the corpus to look into.
+enum_type_decl_sptr
+lookup_enum_type(const interned_string& qualified_name, const corpus& corp)
+{
+  const istring_type_base_wptr_map_type& m = corp.get_types().enum_types();
+
+  enum_type_decl_sptr result =
+    lookup_type_in_map<enum_type_decl>(qualified_name, m);
+  if (!result)
+    result = lookup_enum_type_through_translation_units(qualified_name, corp);
+
+  return result;
+}
+
+/// Look into a given corpus to find a typedef type which has the
+/// same qualified name as a given typedef type.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param t the typedef type which has the same qualified name as the
+/// typedef type we are looking for.
+///
+/// @param corp the corpus to look into.
+typedef_decl_sptr
+lookup_typedef_type(const typedef_decl& t, const corpus& corp)
+{
+  interned_string s = get_type_name(t);
+  return lookup_typedef_type(s, corp);
+}
+
+/// Look into a given corpus to find a typedef type which has the
+/// same qualified name as a given typedef type.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param t the typedef type which has the same qualified name as the
+/// typedef type we are looking for.
+///
+/// @param corp the corpus to look into.
+typedef_decl_sptr
+lookup_typedef_type(const string& qualified_name, const corpus& corp)
+{
+  interned_string s = corp.get_environment()->intern(qualified_name);
+  return lookup_typedef_type(s, corp);
+}
+
+/// Look into a given corpus to find a typedef type which has a
+/// given qualified name.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param qualified_name the qualified name of the typedef type to
+/// look for.
+///
+/// @param corp the corpus to look into.
+typedef_decl_sptr
+lookup_typedef_type(const interned_string& qualified_name, const corpus& corp)
+{
+  const istring_type_base_wptr_map_type& m = corp.get_types().typedef_types();
+
+  typedef_decl_sptr result =
+    lookup_type_in_map<typedef_decl>(qualified_name, m);
+  if (!result)
+    result = lookup_typedef_type_through_translation_units(qualified_name,
+							   corp);
+
+  return result;
+}
+
+/// Look into a corpus to find a class or typedef type which has a
+/// given qualified name.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param qualified_name the name of the type to find.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the typedef or class type found.
+type_base_sptr
+lookup_class_or_typedef_type(const string& qualified_name, const corpus& corp)
+{
+  type_base_sptr result = lookup_class_type(qualified_name, corp);
+  if (!result)
+    result = lookup_typedef_type(qualified_name, corp);
+  return result;
+}
+
+/// Look into a corpus to find a class, typedef or enum type which has
+/// a given qualified name.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param qualified_name the qualified name of the type to look for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the typedef, class or enum type found.
+type_base_sptr
+lookup_class_typedef_or_enum_type(const string& qualified_name,
+				  const corpus& corp)
+{
+  type_base_sptr result = lookup_class_or_typedef_type(qualified_name, corp);
+  if (!result)
+    result = lookup_enum_type(qualified_name, corp);
+
+  return result;
+}
+
+/// Look into a given corpus to find a qualified type which has the
+/// same qualified name as a given type.
+///
+/// @param t the type which has the same qualified name as the
+/// qualified type we are looking for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the qualified type found.
+qualified_type_def_sptr
+lookup_qualified_type(const qualified_type_def& t, const corpus& corp)
+{
+  interned_string s = get_type_name(t);
+  return lookup_qualified_type(s, corp);
+}
+
+/// Look into a given corpus to find a qualified type which has a
+/// given qualified name.
+///
+/// @param qualified_name the qualified name of the type to look for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the type found.
+qualified_type_def_sptr
+lookup_qualified_type(const interned_string& qualified_name, const corpus& corp)
+{
+  const istring_type_base_wptr_map_type& m = corp.get_types().qualified_types();
+
+  qualified_type_def_sptr result =
+    lookup_type_in_map<qualified_type_def>(qualified_name, m);
+
+  if (!result)
+    result = lookup_qualified_type_through_translation_units(qualified_name,
+							     corp);
+
+  return result;
+}
+
+/// Look into a given corpus to find a pointer type which has the same
+/// qualified name as a given pointer type.
+///
+/// @param t the pointer type which has the same qualified name as the
+/// type we are looking for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the pointer type found.
+pointer_type_def_sptr
+lookup_pointer_type(const pointer_type_def& t, const corpus& corp)
+{
+  interned_string s = get_type_name(t);
+  return lookup_pointer_type(s, corp);
+}
+
+/// Look into a given corpus to find a pointer type which has a given
+/// qualified name.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param qualified_name the qualified name of the pointer type to
+/// look for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the pointer type found.
+pointer_type_def_sptr
+lookup_pointer_type(const interned_string& qualified_name, const corpus& corp)
+{
+  const istring_type_base_wptr_map_type& m = corp.get_types().pointer_types();
+
+  pointer_type_def_sptr result =
+    lookup_type_in_map<pointer_type_def>(qualified_name, m);
+  if (!result)
+    result = lookup_pointer_type_through_translation_units(qualified_name,
+							   corp);
+
+  return result;
+}
+
+/// Look into a given corpus to find a reference type which has the
+/// same qualified name as a given reference type.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param t the reference type which has the same qualified name as
+/// the reference type we are looking for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the reference type found.
+reference_type_def_sptr
+lookup_reference_type(const reference_type_def& t, const corpus& corp)
+{
+  interned_string s = get_type_name(t);
+  return lookup_reference_type(s, corp);
+}
+
+/// Look into a given corpus to find a reference type which has a
+/// given qualified name.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param qualified_name the qualified name of the reference type to
+/// look for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the reference type found.
+reference_type_def_sptr
+lookup_reference_type(const interned_string& qualified_name, const corpus& corp)
+{
+  const istring_type_base_wptr_map_type& m = corp.get_types().reference_types();
+
+  reference_type_def_sptr result =
+    lookup_type_in_map<reference_type_def>(qualified_name, m);
+  if (!result)
+    result = lookup_reference_type_through_translation_units(qualified_name,
+							     corp);
+
+  return result;
+}
+
+/// Look into a given corpus to find an array type which has a given
+/// qualified name.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param qualified_name the qualified name of the array type to look
+/// for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the array type found.
+array_type_def_sptr
+lookup_array_type(const array_type_def& t, const corpus& corp)
+{
+  interned_string s = get_type_name(t);
+  return lookup_array_type(s, corp);
+}
+
+/// Look into a given corpus to find an array type which has the same
+/// qualified name as a given array type.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param t the type which has the same qualified name as the type we
+/// are looking for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the type found.
+array_type_def_sptr
+lookup_array_type(const interned_string& qualified_name, const corpus& corp)
+{
+  const istring_type_base_wptr_map_type& m = corp.get_types().array_types();
+
+  array_type_def_sptr result =
+    lookup_type_in_map<array_type_def>(qualified_name, m);
+  if (!result)
+    result = lookup_array_type_through_translation_units(qualified_name, corp);
+
+  return result;
+}
+
+/// Look into a given corpus to find a function type which has the same
+/// qualified name as a given function type.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param t the function type which has the same qualified name as
+/// the function type we are looking for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the function type found.
+function_type_sptr
+lookup_function_type(const function_type&t, const corpus& corp)
+{
+  interned_string type_name = get_type_name(t);
+  return lookup_function_type(type_name, corp);
+}
+
+/// Look into a given corpus to find a function type which has the same
+/// qualified name as a given function type.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param t the function type which has the same qualified name as
+/// the function type we are looking for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the function type found.
+function_type_sptr
+lookup_function_type(const function_type_sptr& fn_t,
+		     const corpus& corpus)
+{
+  if (fn_t)
+    return lookup_function_type(*fn_t, corpus);
+  return function_type_sptr();
+}
+
+/// Look into a given corpus to find a function type which has a given
+/// qualified name.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param qualified_name the qualified name of the function type to
+/// look for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the function type found.
+function_type_sptr
+lookup_function_type(const interned_string& qualified_name, const corpus& corp)
+{
+  const istring_type_base_wptr_map_type& m = corp.get_types().function_types();
+
+  function_type_sptr result =
+    lookup_type_in_map<function_type>(qualified_name, m);
+  if (!result)
+    result = lookup_function_type_through_translation_units(qualified_name,
+							    corp);
+
+  return result;
+}
+
+/// Look into a given corpus to find a type which has a given
+/// qualified name.
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param qualified_name the qualified name of the function type to
+/// look for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the function type found.
+type_base_sptr
+lookup_type(const interned_string& n, const corpus& corp)
+{
+  type_base_sptr result;
+
+  ((result = lookup_basic_type(n, corp))
+   || (result = lookup_class_type(n, corp))
+   || (result = lookup_union_type(n, corp))
+   || (result = lookup_enum_type(n, corp))
+   || (result = lookup_typedef_type(n, corp))
+   || (result = lookup_qualified_type(n, corp))
+   || (result = lookup_pointer_type(n, corp))
+   || (result = lookup_reference_type(n, corp))
+   || (result = lookup_array_type(n, corp))
+   || (result= lookup_function_type(n, corp)));
+
+  return result;
+}
+
+/// Look into a given corpus to find a type
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param qualified_name the qualified name of the function type to
+/// look for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the function type found.
+type_base_sptr
+lookup_type(const type_base&t, const corpus& corp)
+{
+  interned_string n = get_type_name(t);
+  return lookup_type(n, corp);
+}
+
+/// Look into a given corpus to find a type
+///
+/// If the per-corpus type map is non-empty (because the corpus allows
+/// the One Definition Rule) then the type islooked up in that
+/// per-corpus type map.  Otherwise, the type is looked-up in each
+/// translation unit.
+///
+/// @param qualified_name the qualified name of the function type to
+/// look for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the function type found.
+type_base_sptr
+lookup_type(const type_base_sptr&t, const corpus& corp)
+{
+  if (t)
+    return lookup_type(*t, corp);
+  return type_base_sptr();
+}
+
+/// Update the map that associates a fully qualified name of a given
+/// type to that type.
+///
+///
+/// @param type the type we are considering.
+///
+/// @param types_map the map to update.  It's a map that assciates a
+/// fully qualified name of a type to the type itself.
+///
+/// @param erase_if_exists_already if true and if a type with a given
+/// name already exists in the map @p types_map, then erase the type
+/// that exists already.  Otherwise, if this parameter is false, if a
+/// type with the same name already exists in the map, then, do
+/// nothing; do not even update the map in that case.
+///
+/// @return true iff the type was added to the map.
+template<typename TypeKind>
+bool
+maybe_update_types_lookup_map(const shared_ptr<TypeKind>& type,
+			      istring_type_base_wptr_map_type& types_map,
+			      bool erase_if_exists_already = false)
+{
+  interned_string s = get_type_name(type);
+  istring_type_base_wptr_map_type::iterator i = types_map.find(s);
+  bool result = false;
+
+  if (types_map.find(s) == types_map.end())
+    {
+      types_map[s]= type;
+      result = true;
+    }
+  else if (erase_if_exists_already)
+    types_map.erase(i);
+
+  return result;
+}
+
+/// This is the specialization for type @ref class_decl of the
+/// function template:
+///
+///    maybe_update_types_lookup_map<T>(scope_decl*,
+///					const shared_ptr<T>&,
+///					istring_type_base_wptr_map_type&)
+///
+/// @param class_type the type to consider.
+///
+/// @param types_map the type map to update.
+///
+/// @param erase_if_exists_already if true and if a type with a given
+/// name already exists in the map @p types_map, then erase the type
+/// that exists already.  Otherwise, if this parameter is false, if a
+/// type with the same name already exists in the map, then, do
+/// nothing; do not even update the map in that case.
+///
+/// @return true iff the type was added to the map.
+template<>
+bool
+maybe_update_types_lookup_map<class_decl>(const class_decl_sptr& class_type,
+					  istring_type_base_wptr_map_type& map,
+					  bool erase_if_exists_already)
+{
+  class_decl_sptr type = class_type;
+
+  bool update_qname_map = true;
+  if (type->get_is_declaration_only())
+    {
+      if (class_decl_sptr def = class_type->get_definition_of_declaration())
+	type = def;
+      else
+	update_qname_map = false;
+    }
+
+  if (!update_qname_map)
+    return false;
+
+  string qname = type->get_qualified_name();
+  interned_string s = type->get_environment()->intern(qname);
+  bool result = false;
+  istring_type_base_wptr_map_type::iterator i = map.find(s);
+  if (i == map.end())
+    {
+      map[s]= type;
+      result = true;
+    }
+  else if (erase_if_exists_already)
+    map.erase(i);
+
+  return result;
+}
+
+/// This is the specialization for type @ref function_type of the
+/// function template:
+///
+///    maybe_update_types_lookup_map<T>(scope_decl*,
+///					const shared_ptr<T>&,
+///					istring_type_base_wptr_map_type&)
+///
+/// @param scope the scope of the type to consider.
+///
+/// @param class_type the type to consider.
+///
+/// @param types_map the type map to update.
+///
+/// @param erase_if_exists_already if true and if a type with a given
+/// name already exists in the map @p types_map, then erase the type
+/// that exists already.  Otherwise, if this parameter is false, if a
+/// type with the same name already exists in the map, then, do
+/// nothing; do not even update the map in that case.
+///
+/// @return true iff the type was added to the map.
+template<>
+bool
+maybe_update_types_lookup_map<function_type>
+(const function_type_sptr& type,
+ istring_type_base_wptr_map_type& types_map,
+ bool erase_if_exists_already)
+{
+  bool result = false;
+  interned_string s = get_type_name(type);
+  istring_type_base_wptr_map_type::iterator i = types_map.find(s);
+  if (i == types_map.end())
+    {
+      types_map[s]= type;
+      result = true;
+    }
+  else if (erase_if_exists_already)
+    types_map.erase(i);
+
+  return result;
+}
+
+/// Update the map that associates the fully qualified name of a basic
+/// type with the type itself.
+///
+/// The per-translation unit type map is updated if no type with this
+/// name was already existing in that map.
+///
+/// If no type with this name did already exist in the per-corpus type
+/// map, then that per-corpus type map is updated. Otherwise, that
+/// type is erased from that per-corpus map.
+///
+/// @param basic_type the basic type to consider.
+void
+maybe_update_types_lookup_map(const type_decl_sptr& basic_type)
+{
+  if (translation_unit *tu = basic_type->get_translation_unit())
+    maybe_update_types_lookup_map<type_decl>
+      (basic_type, tu->get_types().basic_types());
+
+  if (corpus *type_corpus = basic_type->get_corpus())
+    maybe_update_types_lookup_map<type_decl>
+      (basic_type,
+       type_corpus->priv_->get_types().basic_types(),
+       /*erase_if_exists_already=*/true);
+}
+
+/// Update the map that associates the fully qualified name of a class
+/// type with the type itself.
+///
+/// The per-translation unit type map is updated if no type with this
+/// name was already existing in that map.
+///
+/// If no type with this name did already exist in the per-corpus type
+/// map, then that per-corpus type map is updated. Otherwise, that
+/// type is erased from that per-corpus map.
+///
+/// @param class_type the class type to consider.
+void
+maybe_update_types_lookup_map(const class_decl_sptr& class_type)
+{
+  if (translation_unit *tu = class_type->get_translation_unit())
+    maybe_update_types_lookup_map<class_decl>
+      (class_type, tu->get_types().class_types());
+
+  if (corpus *type_corpus = class_type->get_corpus())
+    maybe_update_types_lookup_map<class_decl>
+      (class_type,
+       type_corpus->priv_->get_types().class_types(),
+       /*erase_if_exists_already=*/true);
+}
+
+/// Update the map that associates the fully qualified name of a union
+/// type with the type itself.
+///
+/// The per-translation unit type map is updated if no type with this
+/// name was already existing in that map.
+///
+/// If no type with this name did already exist in the per-corpus type
+/// map, then that per-corpus type map is updated. Otherwise, that
+/// type is erased from that per-corpus map.
+///
+/// @param union_type the union type to consider.
+void
+maybe_update_types_lookup_map(const union_decl_sptr& union_type)
+{
+  if (translation_unit *tu = union_type->get_translation_unit())
+    maybe_update_types_lookup_map<union_decl>
+      (union_type, tu->get_types().union_types());
+
+  if (corpus *type_corpus = union_type->get_corpus())
+    maybe_update_types_lookup_map<union_decl>
+      (union_type,
+       type_corpus->priv_->get_types().union_types(),
+       /*erase_if_exists_already=*/true);
+}
+
+/// Update the map that associates the fully qualified name of an enum
+/// type with the type itself.
+///
+/// The per-translation unit type map is updated if no type with this
+/// name was already existing in that map.
+///
+/// If no type with this name did already exist in the per-corpus type
+/// map, then that per-corpus type map is updated. Otherwise, that
+/// type is erased from that per-corpus map.
+///
+/// @param enum_type the type to consider.
+void
+maybe_update_types_lookup_map(const enum_type_decl_sptr& enum_type)
+
+{
+  if (translation_unit *tu = enum_type->get_translation_unit())
+    maybe_update_types_lookup_map<enum_type_decl>
+      (enum_type, tu->get_types().enum_types());
+
+  if (corpus *type_corpus = enum_type->get_corpus())
+    maybe_update_types_lookup_map<enum_type_decl>
+      (enum_type,
+       type_corpus->priv_->get_types().enum_types(),
+       /*erase_if_exists_already=*/true);
+}
+
+/// Update the map that associates the fully qualified name of a
+/// typedef type with the type itself.
+///
+/// The per-translation unit type map is updated if no type with this
+/// name was already existing in that map.
+///
+/// If no type with this name did already exist in the per-corpus type
+/// map, then that per-corpus type map is updated. Otherwise, that
+/// type is erased from that per-corpus map.
+///
+/// @param typedef_type the type to consider.
+void
+maybe_update_types_lookup_map(const typedef_decl_sptr& typedef_type)
+{
+  if (translation_unit *tu = typedef_type->get_translation_unit())
+    maybe_update_types_lookup_map<typedef_decl>
+      (typedef_type, tu->get_types().typedef_types());
+
+  if (corpus *type_corpus = typedef_type->get_corpus())
+    maybe_update_types_lookup_map<typedef_decl>
+      (typedef_type,
+       type_corpus->priv_->get_types().typedef_types(),
+       /*erase_if_exists_already=*/true);
+}
+
+/// Update the map that associates the fully qualified name of a
+/// qualified type with the type itself.
+///
+/// The per-translation unit type map is updated if no type with this
+/// name was already existing in that map.
+///
+/// If no type with this name did already exist in the per-corpus type
+/// map, then that per-corpus type map is updated. Otherwise, that
+/// type is erased from that per-corpus map.
+///
+/// @param qualified_type the type to consider.
+void
+maybe_update_types_lookup_map(const qualified_type_def_sptr& qualified_type)
+{
+  if (translation_unit *tu = qualified_type->get_translation_unit())
+    maybe_update_types_lookup_map<qualified_type_def>
+      (qualified_type, tu->get_types().qualified_types());
+
+  if (corpus *type_corpus = qualified_type->get_corpus())
+    maybe_update_types_lookup_map<qualified_type_def>
+      (qualified_type,
+       type_corpus->priv_->get_types().qualified_types(),
+       /*erase_if_exists_already=*/true);
+}
+
+/// Update the map that associates the fully qualified name of a
+/// pointer type with the type itself.
+///
+/// The per-translation unit type map is updated if no type with this
+/// name was already existing in that map.
+///
+/// If no type with this name did already exist in the per-corpus type
+/// map, then that per-corpus type map is updated. Otherwise, that
+/// type is erased from that per-corpus map.
+///
+/// @param pointer_type the type to consider.
+void
+maybe_update_types_lookup_map(const pointer_type_def_sptr& pointer_type)
+{
+  if (translation_unit *tu = pointer_type->get_translation_unit())
+    maybe_update_types_lookup_map<pointer_type_def>
+      (pointer_type, tu->get_types().pointer_types());
+
+  if (corpus *type_corpus = pointer_type->get_corpus())
+    maybe_update_types_lookup_map<pointer_type_def>
+      (pointer_type,
+       type_corpus->priv_->get_types().pointer_types(),
+       /*erase_if_exists_already=*/true);
+}
+
+/// Update the map that associates the fully qualified name of a
+/// reference type with the type itself.
+///
+/// The per-translation unit type map is updated if no type with this
+/// name was already existing in that map.
+///
+/// If no type with this name did already exist in the per-corpus type
+/// map, then that per-corpus type map is updated. Otherwise, that
+/// type is erased from that per-corpus map.
+///
+/// @param reference_type the type to consider.
+void
+maybe_update_types_lookup_map(const reference_type_def_sptr& reference_type)
+{
+  if (translation_unit *tu = reference_type->get_translation_unit())
+    maybe_update_types_lookup_map<reference_type_def>
+      (reference_type, tu->get_types().reference_types());
+
+  if (corpus *type_corpus = reference_type->get_corpus())
+    maybe_update_types_lookup_map<reference_type_def>
+      (reference_type,
+       type_corpus->priv_->get_types().reference_types(),
+       /*erase_if_exists_already=*/true);
+}
+
+/// Update the map that associates the fully qualified name of a type
+/// with the type itself.
+///
+/// The per-translation unit type map is updated if no type with this
+/// name was already existing in that map.
+///
+/// If no type with this name did already exist in the per-corpus type
+/// map, then that per-corpus type map is updated. Otherwise, that
+/// type is erased from that per-corpus map.
+///
+/// @param array_type the type to consider.
+void
+maybe_update_types_lookup_map(const array_type_def_sptr& array_type)
+{
+  if (translation_unit *tu = array_type->get_translation_unit())
+    maybe_update_types_lookup_map<array_type_def>
+      (array_type, tu->get_types().array_types());
+
+  if (corpus *type_corpus = array_type->get_corpus())
+    maybe_update_types_lookup_map<array_type_def>
+      (array_type,
+       type_corpus->priv_->get_types().array_types(),
+       /*erase_if_exists_already=*/true);
+}
+
+/// Update the map that associates the fully qualified name of a
+/// function type with the type itself.
+///
+/// The per-translation unit type map is updated if no type with this
+/// name was already existing in that map.
+///
+/// If no type with this name did already exist in the per-corpus type
+/// map, then that per-corpus type map is updated. Otherwise, that
+/// type is erased from that per-corpus map.
+///
+/// @param scope the scope of the function type.
+/// @param fn_type the type to consider.
+void
+maybe_update_types_lookup_map(const function_type_sptr& fn_type)
+{
+  if (translation_unit *tu = fn_type->get_translation_unit())
+    maybe_update_types_lookup_map<function_type>
+      (fn_type, tu->get_types().function_types());
+
+  if (corpus *type_corpus = fn_type->get_corpus())
+    maybe_update_types_lookup_map<function_type>
+      (fn_type,
+       type_corpus->priv_->get_types().function_types(),
+       /*erase_if_exists_already=*/true);
+}
+
+/// Update the map that associates the fully qualified name of a type
+/// declaration with the type itself.
+///
+/// The per-translation unit type map is updated if no type with this
+/// name was already existing in that map.
+///
+/// If no type with this name did already exist in the per-corpus type
+/// map, then that per-corpus type map is updated. Otherwise, that
+/// type is erased from that per-corpus map.
+///
+/// @param decl the declaration of the type to consider.
+void
+maybe_update_types_lookup_map(const decl_base_sptr& decl)
+{
+  if (!is_type(decl))
+    return;
+
+  if (type_decl_sptr basic_type = is_type_decl(decl))
+    maybe_update_types_lookup_map(basic_type);
+  else if (class_decl_sptr class_type = is_class_type(decl))
+    maybe_update_types_lookup_map(class_type);
+  else if (union_decl_sptr union_type = is_union_type(decl))
+    maybe_update_types_lookup_map(union_type);
+  else if (enum_type_decl_sptr enum_type = is_enum_type(decl))
+    maybe_update_types_lookup_map(enum_type);
+  else if (typedef_decl_sptr typedef_type = is_typedef(decl))
+    maybe_update_types_lookup_map(typedef_type);
+  else if (qualified_type_def_sptr qualified_type = is_qualified_type(decl))
+    maybe_update_types_lookup_map(qualified_type);
+  else if (pointer_type_def_sptr pointer_type = is_pointer_type(decl))
+    maybe_update_types_lookup_map(pointer_type);
+  else if (reference_type_def_sptr reference_type = is_reference_type(decl))
+    maybe_update_types_lookup_map(reference_type);
+  else if (array_type_def_sptr array_type = is_array_type(decl))
+    maybe_update_types_lookup_map(array_type);
+  else
+    ABG_ASSERT_NOT_REACHED;
+}
+
+/// Update the map that associates the fully qualified name of a type
+/// with the type itself.
+///
+/// The per-translation unit type map is updated if no type with this
+/// name was already existing in that map.
+///
+/// If no type with this name did already exist in the per-corpus type
+/// map, then that per-corpus type map is updated. Otherwise, that
+/// type is erased from that per-corpus map.
+///
+/// @param type the type to consider.
+void
+maybe_update_types_lookup_map(const type_base_sptr& type)
+{
+  if (decl_base_sptr decl = get_type_declaration(type))
+    maybe_update_types_lookup_map(decl);
+  else
+    ABG_ASSERT_NOT_REACHED;
+}
+
+//--------------------------------
+// </type and decls lookup stuff>
+// ------------------------------
+
+/// In a translation unit, lookup a given type or synthesize it if
+/// it's a qualified type.
+///
+/// So this function first looks the type up in the translation unit.
+/// If it's found, then OK, it's returned.  Otherwise, if it's a
+/// qualified, reference or pointer or function type (a composite
+/// type), lookup the underlying type, synthesize the type we want
+/// from it and return it.
+///
+/// If the underlying types is not not found, then give up and return
+/// nil.
+///
+/// @return the type that was found or the synthesized type.
+type_base_sptr
+synthesize_type_from_translation_unit(const type_base_sptr& type,
+				      translation_unit& tu)
+{
+  type_base_sptr result;
+
+   result = lookup_type(type, tu);
+
+  if (!result)
+    {
+      if (qualified_type_def_sptr qual = is_qualified_type(type))
+	{
+	  type_base_sptr underlying_type =
+	    synthesize_type_from_translation_unit(qual->get_underlying_type(),
+						  tu);
+	  if (underlying_type)
+	    {
+	      result.reset(new qualified_type_def(underlying_type,
+						  qual->get_cv_quals(),
+						  qual->get_location()));
+	    }
+	}
+      else if (pointer_type_def_sptr p = is_pointer_type(type))
+	{
+	  type_base_sptr pointed_to_type =
+	    synthesize_type_from_translation_unit(p->get_pointed_to_type(),
+						  tu);
+	  if (pointed_to_type)
+	    {
+	      result.reset(new pointer_type_def(pointed_to_type,
+						p->get_size_in_bits(),
+						p->get_alignment_in_bits(),
+						p->get_location()));
+	      result->set_environment(pointed_to_type->get_environment());
+	    }
+	}
+      else if (reference_type_def_sptr r = is_reference_type(type))
+	{
+	  type_base_sptr pointed_to_type =
+	    synthesize_type_from_translation_unit(r->get_pointed_to_type(), tu);
+	  if (pointed_to_type)
+	    {
+	      result.reset(new reference_type_def(pointed_to_type,
+						  r->is_lvalue(),
+						  r->get_size_in_bits(),
+						  r->get_alignment_in_bits(),
+						  r->get_location()));
+	      result->set_environment(pointed_to_type->get_environment());
+	    }
+	}
+      else if (function_type_sptr f = is_function_type(type))
+	result = synthesize_function_type_from_translation_unit(*f, tu);
+    }
+
+  if (result)
+    tu.priv_->synthesized_types_.push_back(result);
+
+  return result;
+}
+
+/// In a translation unit, lookup the sub-types that make up a given
+/// function type and if the sub-types are all found, synthesize and
+/// return a function_type with them.
+///
+/// This function is like lookup_function_type_in_translation_unit()
+/// execept that it constructs the function type from the sub-types
+/// found in the translation, rather than just looking for the
+/// function types held by the translation unit.  This can be useful
+/// if the translation unit doesnt hold the function type we are
+/// looking for (i.e, lookup_function_type_in_translation_unit()
+/// returned NULL) but we still want to see if the sub-types of the
+/// function types are present in the translation unit.
+///
+/// @param fn_type the function type to consider.
+///
+/// @param tu the translation unit to look into.
+///
+/// @return the resulting synthesized function type if all its
+/// sub-types have been found, NULL otherwise.
+function_type_sptr
+synthesize_function_type_from_translation_unit(const function_type& fn_type,
+					       translation_unit& tu)
+{
+  function_type_sptr nil = function_type_sptr();
+
+  environment* env = tu.get_environment();
+  assert(env);
+
+  type_base_sptr return_type = fn_type.get_return_type();
+  type_base_sptr result_return_type;
+  if (!return_type || env->is_void_type(return_type))
+    result_return_type = env->get_void_type();
+  else
+    result_return_type = synthesize_type_from_translation_unit(return_type, tu);
+  if (!result_return_type)
+    return nil;
+
+  function_type::parameters parms;
+  type_base_sptr parm_type;
+  function_decl::parameter_sptr parm;
+  for (function_type::parameters::const_iterator i =
+	 fn_type.get_parameters().begin();
+       i != fn_type.get_parameters().end();
+       ++i)
+    {
+      type_base_sptr t = (*i)->get_type();
+      parm_type = synthesize_type_from_translation_unit(t, tu);
+      if (!parm_type)
+	return nil;
+      parm.reset(new function_decl::parameter(parm_type,
+					      (*i)->get_index(),
+					      (*i)->get_name(),
+					      (*i)->get_location(),
+					      (*i)->get_variadic_marker(),
+					      (*i)->get_artificial()));
+      parms.push_back(parm);
+    }
+
+  class_or_union_sptr class_type;
+  const method_type* method = is_method_type(&fn_type);
+  if (method)
+    {
+      class_type = is_class_or_union_type
+	(synthesize_type_from_translation_unit(method->get_class_type(), tu));
+      assert(class_type);
+    }
+
+  function_type_sptr result_fn_type;
+
+  if (class_type)
+    result_fn_type.reset(new method_type(result_return_type,
+					 class_type,
+					 parms,
+					 method->get_is_const(),
+					 fn_type.get_size_in_bits(),
+					 fn_type.get_alignment_in_bits()));
+  else
+    result_fn_type.reset(new function_type(result_return_type,
+					   parms,
+					   fn_type.get_size_in_bits(),
+					   fn_type.get_alignment_in_bits()));
+
+  tu.priv_->synthesized_types_.push_back(result_fn_type);
+  // The new synthesized type must be in the same environment as its
+  // translation unit.
+  result_fn_type->set_environment(tu.get_environment());
+
+  return result_fn_type;
 }
 
 /// Demangle a C++ mangled name and return the resulting string
