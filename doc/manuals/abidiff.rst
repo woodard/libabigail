@@ -166,6 +166,15 @@ Options
     the global variables that were added (defined) to
     *second-shared-library*.
 
+  * ``--no-added-syms``
+
+    In the resulting report about the differences between
+    *first-shared-library* and *second-shared-library*, do not display
+    added functions or variables.  Do not display added functions or
+    variables ELF symbols either.  All other kinds of changes are
+    displayed unless they are explicitely forbidden by other options
+    on the command line.
+
   * ``--no-linkage-name``
 
     In the resulting report, do not display the linkage names of

@@ -84,6 +84,7 @@ struct options
   bool			show_deleted_fns;
   bool			show_changed_fns;
   bool			show_added_fns;
+  bool			show_added_syms;
   bool			show_all_fns;
   bool			show_deleted_vars;
   bool			show_changed_vars;
@@ -114,6 +115,7 @@ struct options
       show_deleted_fns(),
       show_changed_fns(),
       show_added_fns(),
+      show_added_syms(true),
       show_all_fns(true),
       show_deleted_vars(),
       show_changed_vars(),
@@ -156,6 +158,7 @@ display_usage(const string& prog_name, ostream& out)
     << " --deleted-vars  display deleted global public variables\n"
     << " --changed-vars  display changed global public variables\n"
     << " --added-vars  display added global public variables\n"
+    << " --no-added-syms  do not display added functions or variables\n"
     << " --no-linkage-name  do not display linkage names of "
     "added/removed/changed\n"
     << " --no-unreferenced-symbols  do not display changes "
@@ -322,6 +325,32 @@ parse_command_line(int argc, char* argv[], options& opts)
       else if (!strcmp(argv[i], "--added-vars"))
 	{
 	  opts.show_added_vars = true;
+	  opts.show_all_fns = false;
+	  opts.show_all_vars = false;
+	}
+      else if (!strcmp(argv[i], "--no-added-syms"))
+	{
+	  opts.show_added_syms = false;
+	  opts.show_added_vars = false;
+	  opts.show_added_fns = false;
+
+	  // If any of the {changed,deleted}_{vars,fns} is already
+	  // specified, --no-added-syms has no further effect.  If it
+	  // is the only option specified (as of the time of parsing
+	  // it), it shall mean "show everything, except added vars,
+	  // fns and unreferenced symbols.
+	  if (!(opts.show_changed_fns
+		|| opts.show_changed_vars
+		|| opts.show_deleted_fns
+		|| opts.show_deleted_vars))
+	    {
+	      opts.show_changed_fns = true;
+	      opts.show_changed_vars = true;
+
+	      opts.show_deleted_vars = true;
+	      opts.show_deleted_fns = true;
+	    }
+
 	  opts.show_all_fns = false;
 	  opts.show_all_vars = false;
 	}
@@ -525,6 +554,8 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
   ctxt->show_redundant_changes(opts.show_redundant_changes);
   ctxt->show_symbols_unreferenced_by_debug_info
     (opts.show_symbols_not_referenced_by_debug_info);
+  ctxt->show_added_symbols_unreferenced_by_debug_info
+    (opts.show_symbols_not_referenced_by_debug_info && opts.show_added_syms);
 
   if (!opts.show_harmless_changes)
       ctxt->switch_categories_off

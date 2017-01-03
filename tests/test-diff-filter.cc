@@ -422,6 +422,20 @@ InOutSpec in_out_specs[] =
     "data/test-diff-filter/test34-report-0.txt",
     "output/test-diff-filter/test34-report-0.txt",
   },
+  {
+    "data/test-diff-filter/test30-pr18904-rvalueref-liba.so",
+    "data/test-diff-filter/test30-pr18904-rvalueref-libb.so",
+    "--no-default-suppression --no-linkage-name --no-show-locs --no-redundant --no-added-syms",
+    "data/test-diff-filter/test35-pr18754-no-added-syms-report-0.txt",
+    "output/test-diff-filter/test35-pr18754-no-added-syms-report-0.txt",
+  },
+  {
+    "data/test-diff-filter/test30-pr18904-rvalueref-liba.so",
+    "data/test-diff-filter/test30-pr18904-rvalueref-libb.so",
+    "--no-default-suppression --no-linkage-name --no-show-locs --no-redundant --deleted-fns --changed-vars --no-added-syms",
+    "data/test-diff-filter/test35-pr18754-no-added-syms-report-1.txt",
+    "output/test-diff-filter/test35-pr18754-no-added-syms-report-1.txt",
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };
