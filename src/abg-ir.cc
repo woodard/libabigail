@@ -16899,7 +16899,7 @@ set_member_is_static(decl_base& d, bool s)
 		 i != cl->priv_->non_static_data_members_.end();
 		 ++i)
 	      {
-		if (**i == *v)
+		if ((*i)->get_name() == v->get_name())
 		  {
 		    cl->priv_->non_static_data_members_.erase(i);
 		    break;
@@ -16913,7 +16913,7 @@ set_member_is_static(decl_base& d, bool s)
 		   i != cl->priv_->non_static_data_members_.end();
 		   ++i)
 	      {
-		if (**i == *v)
+		if ((*i)->get_name() == v->get_name())
 		  {
 		    is_already_in_non_static_data_members = true;
 		    break;
@@ -16928,7 +16928,7 @@ set_member_is_static(decl_base& d, bool s)
 		       i != cl->priv_->data_members_.end();
 		       ++i)
 		    {
-		      if (**i == *v)
+		      if ((*i)->get_name() == v->get_name())
 			{
 			  var = *i;
 			  break;
