@@ -9030,12 +9030,11 @@ type_base::get_canonical_type_for(type_base_sptr t)
 	  translation_unit::language other_lang =
 	    (*it)->get_translation_unit()->get_language();
 
+	  bool is_odr_allowed =
+	    is_cplus_plus_language(lang) && is_cplus_plus_language(other_lang);
+
 	  if (t_corpus
-	      && ((is_c_language(lang) || is_cplus_plus_language(lang))
-		  && (is_c_language(other_lang)
-		      || is_cplus_plus_language(other_lang)))
-	      // We are doing the ODR-based optimization just for
-	      // non-anonymous user-defined types, and built-in types
+	      && is_odr_allowed
 	      && type_eligible_for_odr_based_comparison(t))
 	    {
 	      if (const corpus* it_corpus = (*it)->get_corpus())
