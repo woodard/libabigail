@@ -14669,15 +14669,18 @@ class_or_union::get_is_declaration_only() const
 void
 class_or_union::set_is_declaration_only(bool f)
 {
+  bool update_types_lookup_map = !f && priv_->is_declaration_only_;
+
   priv_->is_declaration_only_ = f;
-  if (!f)
+
+  if (update_types_lookup_map)
     if (scope_decl* s = get_scope())
       {
 	declarations::iterator i;
 	if (s->find_iterator_for_member(this, i))
 	  maybe_update_types_lookup_map(*i);
 	else
-	  abort();
+	  ABG_ASSERT_NOT_REACHED;
       }
 }
 
