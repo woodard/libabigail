@@ -10346,21 +10346,21 @@ qualified_type_def::get_qualified_name(bool internal) const
   if (!get_canonical_type())
     {
       // The type hasn't been canonicalized yet. We want to return a
-      // temporary name.
+      // temporary name that is not cached because the structure of
+      // this type (and so its name) can change until its
+      // canonicalized.
       if (internal)
 	{
-	  // We are asked to return a temporary *internal* name.  So
-	  // let's return it from the right cache.
-	  if (priv_->temporary_internal_name_.empty())
-	    priv_->temporary_internal_name_ =
+	  // We are asked to return a temporary *internal* name.
+	  // Lets compute it and return a reference to where it's
+	  // stored.
+	  priv_->temporary_internal_name_ =
 	      env->intern(build_name(true, /*internal=*/true));
 	  return priv_->temporary_internal_name_;
 	}
       else
 	{
 	  // We are asked to return a temporary non-internal name.
-	  // This comes from a different cache.
-	  if (peek_temporary_qualified_name().empty())
 	    set_temporary_qualified_name
 	      (env->intern(build_name(true, /*internal=*/false)));
 	  return peek_temporary_qualified_name();
@@ -10369,7 +10369,7 @@ qualified_type_def::get_qualified_name(bool internal) const
   else
     {
       // The type has already been canonicalized. We want to return
-      // the definitive name.
+      // the definitive name and cache it.
       if (internal)
 	{
 	  if (priv_->internal_name_.empty())
@@ -10383,7 +10383,7 @@ qualified_type_def::get_qualified_name(bool internal) const
 	  if (peek_qualified_name().empty())
 	    set_qualified_name
 	      (env->intern(build_name(/*qualified=*/true,
-					     /*internal=*/false)));
+				      /*internal=*/false)));
 	  return peek_qualified_name();
 	}
     }
@@ -10735,14 +10735,15 @@ pointer_type_def::get_qualified_name(bool internal) const
 	}
       else
 	{
-	  if (priv_->temp_internal_qualified_name_.empty())
-	    {
-	      string n = string(get_type_name(pointed_to_type,
-					      /*qualified_name=*/true,
-					      /*internal=*/true))
-		+ "*";
-	      priv_->temp_internal_qualified_name_ = env->intern(n);
-	    }
+	  // As the type hasn't yet been canonicalized, its structure
+	  // (and so its name) can change.  So let's invalidate the
+	  // cache where we store its name at each invocation of this
+	  // function.
+	  string n = string(get_type_name(pointed_to_type,
+					  /*qualified_name=*/true,
+					  /*internal=*/true))
+	    + "*";
+	  priv_->temp_internal_qualified_name_ = env->intern(n);
 	  return priv_->temp_internal_qualified_name_;
 	}
     }
@@ -10761,6 +10762,10 @@ pointer_type_def::get_qualified_name(bool internal) const
 	}
       else
 	{
+	  // As the type hasn't yet been canonicalized, its structure
+	  // (and so its name) can change.  So let's invalidate the
+	  // cache where we store its name at each invocation of this
+	  // function.
 	  string qn = get_type_name(pointed_to_type,
 				    /*qualified_name=*/true,
 				    /*internal=*/false) + "*";
@@ -11487,9 +11492,8 @@ array_type_def::get_qualified_name(bool internal) const
 	}
       else
 	{
-	  if (priv_->temp_internal_qualified_name_.empty())
-	    priv_->temp_internal_qualified_name_ =
-	      env->intern(get_type_representation(*this, /*internal=*/true));
+	  priv_->temp_internal_qualified_name_ =
+	    env->intern(get_type_representation(*this, /*internal=*/true));
 	  return priv_->temp_internal_qualified_name_;
 	}
     }
@@ -11498,14 +11502,14 @@ array_type_def::get_qualified_name(bool internal) const
       if (get_canonical_type())
 	{
 	  if (decl_base::peek_qualified_name().empty())
-	    set_qualified_name
-	      (env->intern(get_type_representation(*this, /*internal=*/false)));
+	    set_qualified_name(env->intern(get_type_representation
+					   (*this, /*internal=*/false)));
 	  return decl_base::peek_qualified_name();
 	}
       else
 	{
-	  set_qualified_name
-	    (env->intern(get_type_representation(*this, /*internal=*/false)));
+	  set_qualified_name(env->intern(get_type_representation
+					 (*this, /*internal=*/false)));
 	  return decl_base::peek_qualified_name();
 	}
     }
