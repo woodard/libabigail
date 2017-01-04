@@ -39,7 +39,6 @@
 #include <elfutils/libdwfl.h>
 #include <dwarf.h>
 #include <algorithm>
-#include <iostream>
 #include <tr1/unordered_map>
 #include <stack>
 #include <deque>
@@ -335,6 +334,15 @@ eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
 				  size_t	expr_len,
 				  ssize_t&	value,
 				  bool&	is_tls_address);
+
+static translation_unit::language
+dwarf_language_to_tu_language(size_t l);
+
+static bool
+die_unsigned_constant_attribute(Dwarf_Die*	die,
+				unsigned	attr_name,
+				uint64_t&	cst);
+
 static bool
 die_address_attribute(Dwarf_Die* die, unsigned attr_name, Dwarf_Addr& result);
 
@@ -2326,6 +2334,7 @@ class read_context
   const string			elf_path_;
   Dwarf_Die*			cur_tu_die_;
   istring_type_or_decl_base_sptr_map_type name_artefacts_map_;
+  istring_type_or_decl_base_sptr_map_type per_tu_name_artefacts_map_;
   mutable die_source_dependant_container_set<die_istring_map_type>
   die_qualified_name_maps_;
   mutable die_source_dependant_container_set<die_istring_map_type>
@@ -2459,6 +2468,7 @@ public:
     while (!scope_stack().empty())
       scope_stack().pop();
     var_decls_to_re_add_to_tree().clear();
+    per_tu_name_artefacts_map_.clear();
   }
 
   /// Clear the data that is relevant for the current corpus being
@@ -2856,10 +2866,25 @@ public:
   /// @param decl the decl to consider.
   ///
   /// @param where_offset where in the DIE stream we logically are.
+  ///
+  /// @param do_associate_by_repr if true then this function
+  /// associates the representation string of @p die with the
+  /// declaration @p decl, in a corpus-wide manner.  That is, in the
+  /// entire current corpus, there is going to be just one declaration
+  /// associated with a DIE of the string representation of @p die.
+  ///
+  /// @param do_associate_by_repr_per_tu if true, then this function
+  /// associates the representation string of @p die with the
+  /// declaration @p decl in a translation unit wide manner.  That is,
+  /// in the entire current translation unit, there is going to be
+  /// just one declaration associated with a DIE of the string
+  /// representation of @p die.
   void
   associate_die_to_decl(Dwarf_Die* die,
 			decl_base_sptr decl,
-			size_t where_offset)
+			size_t where_offset,
+			bool do_associate_by_repr = true,
+			bool do_associate_by_repr_per_tu = false)
   {
     if (!die)
       return;
@@ -2885,7 +2910,9 @@ public:
 	ABG_ASSERT_NOT_REACHED;
       }
 
-    associate_die_to_artifact_by_repr(die, decl, where_offset);
+    if (do_associate_by_repr)
+      associate_die_to_artifact_by_repr(die, decl, where_offset,
+					do_associate_by_repr_per_tu);
   }
 
 public:
@@ -3159,6 +3186,9 @@ public:
   /// Note that the DIE must have previously been associated with the
   /// artifact using the function associate_die_to_artifact_by_repr.
   ///
+  /// Also, note that the scope of the lookup is the current ABI
+  /// corpus.
+  ///
   /// @param die the DIE to consider.
   ///
   /// @param where_offset where in the DIE stream we logically are.
@@ -3172,12 +3202,39 @@ public:
     return lookup_artifact_from_die_representation(representation);
   }
 
+  /// Lookup the artifact that was built to represent a type that has
+  /// the same pretty representation as the type denoted by a given
+  /// DIE.
+  ///
+  /// Note that the DIE must have previously been associated with the
+  /// artifact using the function associate_die_to_artifact_by_repr,
+  /// for the current translation unit.
+  ///
+  /// Also, note that the scope of the lookup is the current
+  /// translation unit.
+  ///
+  /// @param die the DIE to consider.
+  ///
+  /// @param where_offset where in the DIE stream we logically are.
+  ///
+  /// @return the type artifact found.
+  type_or_decl_base_sptr
+  lookup_type_artifact_from_die_per_tu(Dwarf_Die *die, size_t where_offset)
+  {
+    string representation =
+      get_die_pretty_type_representation(die, where_offset);
+    return lookup_artifact_from_per_tu_die_representation(representation);
+  }
+
   /// Lookup the artifact that was built to represent a type or a
   /// declaration that has the same pretty representation as the type
   /// denoted by a given DIE.
   ///
   /// Note that the DIE must have previously been associated with the
   /// artifact using the function associate_die_to_artifact_by_repr.
+  ///
+  /// Also, note that the scope of the lookup is the current ABI
+  /// corpus.
   ///
   /// @param die the DIE to consider.
   ///
@@ -3192,10 +3249,35 @@ public:
   }
 
   /// Lookup the artifact that was built to represent a type or a
+  /// declaration that has the same pretty representation as the type
+  /// denoted by a given DIE.
+  ///
+  /// Note that the DIE must have previously been associated with the
+  /// artifact using the function associate_die_to_artifact_by_repr,
+  /// for the current translation unit.
+  ///
+  /// Also, note that the scope of the lookup is the current
+  /// translation unit.
+  ///
+  /// @param die the DIE to consider.
+  ///
+  /// @param where_offset where in the DIE stream we logically are.
+  ///
+  /// @return the artifact found.
+  type_or_decl_base_sptr
+  lookup_artifact_from_die_per_tu(Dwarf_Die *die, size_t where_offset)
+  {
+    string representation = get_die_pretty_representation(die, where_offset);
+    return lookup_artifact_from_per_tu_die_representation(representation);
+  }
+
+  /// Lookup the artifact that was built to represent a type or a
   /// declaration with a given pretty representation.
   ///
   /// Note that the DIE must have previously been associated with the
   /// artifact using the function associate_die_to_artifact_by_repr.
+  ///
+  /// The scope of the lookup is the current ABI corpus.
   ///
   /// @param repr the pretty representation to consider.
   ///
@@ -3206,6 +3288,29 @@ public:
     assert(!repr.empty());
     istring_type_or_decl_base_sptr_map_type::iterator i =
       name_artefacts_map_.find(env()->intern(repr));
+    if (i == name_artefacts_map_.end())
+      return type_or_decl_base_sptr();
+    return i->second;
+  }
+
+  /// Lookup the artifact that was built to represent a type or a
+  /// declaration with a given pretty representation.
+  ///
+  /// Note that the DIE must have previously been associated with the
+  /// artifact using the function associate_die_to_artifact_by_repr,
+  /// for the current translation unit.
+  ///
+  /// The scope of the lookup is the current translation unit.
+  ///
+  /// @param repr the pretty representation to consider.
+  ///
+  /// @return the artifact found.
+  type_or_decl_base_sptr
+  lookup_artifact_from_per_tu_die_representation(const string& repr)
+  {
+    assert(!repr.empty());
+    istring_type_or_decl_base_sptr_map_type::iterator i =
+      per_tu_name_artefacts_map_.find(env()->intern(repr));
     if (i == name_artefacts_map_.end())
       return type_or_decl_base_sptr();
     return i->second;
@@ -3229,10 +3334,12 @@ public:
   associate_die_to_artifact_by_repr(Dwarf_Die *die,
 				    const type_or_decl_base_sptr& artifact,
 				    size_t where_offset,
-				    string& repr)
+				    string& repr,
+				    bool do_associate_per_tu)
   {
     repr = associate_die_to_artifact_by_repr_internal(die, artifact,
-						      where_offset);
+						      where_offset,
+						      do_associate_per_tu);
   }
 
   /// Associate a DIE (or any DIE with the same pretty representation)
@@ -3250,9 +3357,11 @@ public:
   void
   associate_die_to_artifact_by_repr(Dwarf_Die *die,
 				    const type_or_decl_base_sptr& artifact,
-				    size_t where_offset)
+				    size_t where_offset,
+				    bool do_associate_per_tu = false)
   {
-    associate_die_to_artifact_by_repr_internal(die, artifact, where_offset);
+    associate_die_to_artifact_by_repr_internal(die, artifact, where_offset,
+					       do_associate_per_tu);
   }
 
   /// Associate a DIE (or any DIE with the same pretty representation)
@@ -3276,14 +3385,47 @@ public:
   string
   associate_die_to_artifact_by_repr_internal(Dwarf_Die *die,
 					     const type_or_decl_base_sptr& a,
-					     size_t where_offset)
+					     size_t where_offset,
+					     bool do_associate_per_tu)
   {
     string representation = get_die_pretty_representation(die, where_offset);
     assert(!representation.empty());
-    if (!lookup_artifact_from_die_representation(representation))
-      name_artefacts_map_[env()->intern(representation)] = a;
+    interned_string interned_repr = env()->intern(representation);
+
+    if (do_associate_per_tu)
+      {
+	if (!lookup_artifact_from_per_tu_die_representation(representation))
+	  per_tu_name_artefacts_map_[interned_repr] = a;
+      }
+    else if (!lookup_artifact_from_die_representation(representation))
+      name_artefacts_map_[interned_repr] = a;
+
     return representation;
   }
+
+
+  /// Check if we can assume the One Definition Rule[1] to be relevant
+  /// for the current translation unit.
+  ///
+  /// [1]: https://en.wikipedia.org/wiki/One_Definition_Rule
+  ///
+  /// At the moment this returns true if the current translation unit
+  /// is in C++ language.  In that case, it's relevant to assume that
+  /// we use optimizations based on the ODR.
+  bool
+  odr_is_relevant() const
+  {return odr_is_relevant(cur_transl_unit()->get_language());}
+
+  /// Check if we can assume the One Definition Rule[1] to be relevant
+  /// for a given language.
+  ///
+  /// [1]: https://en.wikipedia.org/wiki/One_Definition_Rule
+  ///
+  /// At the moment this returns true if the language considered
+  /// is C++.
+  bool
+  odr_is_relevant(translation_unit::language l) const
+  {return is_cplus_plus_language(l);}
 
   /// Return the map that associates DIEs to the type they represent.
   ///
@@ -3327,7 +3469,7 @@ public:
   die_type_map(die_source source) const
   {return const_cast<read_context*>(this)->die_type_map(source);}
 
-  /// Associated a DIE (representing a type) to the type that it
+  /// Associate a DIE (representing a type) to the type that it
   /// represents.
   ///
   /// @param die the DIE to consider.
@@ -3337,12 +3479,18 @@ public:
   /// @param where_offset where in the DIE stream we logically are.
   ///
   /// @param do_associate_by_repr if true then associate the pretty
-  /// representation of the type denoted by @p die with @p type too.
+  /// representation of the type denoted by @p die with @p type too,
+  /// in the entire current ABI corpus.
+  ///
+  /// @param do_associate_by_repr_tu if true then associate the pretty
+  /// representation of the type denoted by @p die with @p type too,
+  /// in the current translation unit.
   void
   associate_die_to_type(Dwarf_Die	*die,
 			type_base_sptr	type,
 			size_t		where_offset,
-			bool		do_associate_by_repr = true)
+			bool		do_associate_by_repr = true,
+			bool		do_associate_per_tu = false)
   {
     if (!type)
       return;
@@ -3355,7 +3503,8 @@ public:
     m[die_offset] = type;
 
     if (do_associate_by_repr)
-      associate_die_to_artifact_by_repr(die, type, where_offset);
+      associate_die_to_artifact_by_repr(die, type, where_offset,
+					do_associate_per_tu);
   }
 
   /// Lookup the type associated to a given DIE.
@@ -9650,6 +9799,17 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
       enum_is_anonymous = true;
     }
 
+  bool odr_is_relevant = !enum_is_anonymous && ctxt.odr_is_relevant();
+
+  if (odr_is_relevant)
+    if (enum_type_decl_sptr pre_existing_enum =
+	is_enum_type(ctxt.lookup_artifact_from_die(die, where_offset)))
+      {
+	result = pre_existing_enum;
+	ctxt.associate_die_to_type(die, result, where_offset);
+	return result;
+      }
+
   uint64_t size = 0;
   if (die_unsigned_constant_attribute(die, DW_AT_byte_size, size))
     size *= 8;
@@ -10088,7 +10248,16 @@ add_or_update_class_type(read_context&	 ctxt,
       is_anonymous = true;
     }
 
-  if (!is_anonymous && !klass)
+  bool use_odr = ctxt.odr_is_relevant();
+  bool do_associate_by_repr = !is_anonymous && use_odr;
+
+  if (do_associate_by_repr)
+    // So we can rely on the One Definition Rule to say that if
+    // several different named classes have the same name across
+    // the entire binary, then they ought to designate the same
+    // type.  So let's ensure that if we've already seen a class
+    // with the same name as the name of 'die', then it's the
+    // same type as the one denoted by 'die'.
     if (class_decl_sptr pre_existing_class =
 	is_class_type(ctxt.lookup_artifact_from_die(die, where_offset)))
       klass = pre_existing_class;
@@ -10128,7 +10297,8 @@ add_or_update_class_type(read_context&	 ctxt,
       result->set_is_declaration_only(false);
     }
 
-  ctxt.associate_die_to_type(die, result, where_offset);
+  ctxt.associate_die_to_type(die, result, where_offset, do_associate_by_repr);
+
   ctxt.maybe_schedule_declaration_only_class_for_resolution(result);
 
   if (!has_child)
@@ -10259,7 +10429,8 @@ add_or_update_class_type(read_context&	 ctxt,
 	      result->add_data_member(dm, access, is_laid_out,
 				      is_static, offset_in_bits);
 	      assert(has_scope(dm));
-	      ctxt.associate_die_to_decl(&child, dm, where_offset);
+	      ctxt.associate_die_to_decl(&child, dm, where_offset,
+					 /*associate_by_repr=*/false);
 	    }
 	  // Handle member functions;
 	  else if (tag == DW_TAG_subprogram)
@@ -10269,7 +10440,8 @@ add_or_update_class_type(read_context&	 ctxt,
 					      called_from_public_decl,
 					      where_offset);
 	      if (function_decl_sptr f = is_function_decl(r))
-		ctxt.associate_die_to_decl(&child, f, where_offset);
+		ctxt.associate_die_to_decl(&child, f, where_offset,
+					   /*associate_by_repr=*/false);
 	    }
 	  // Handle member types
 	  else if (die_is_type(&child))
@@ -10366,7 +10538,16 @@ add_or_update_union_type(read_context&	ctxt,
       is_anonymous = true;
     }
 
-  if (!is_anonymous && !union_type)
+  bool use_odr = ctxt.odr_is_relevant();
+  bool do_associate_by_repr = !is_anonymous && use_odr;
+
+  if (do_associate_by_repr)
+    // So we can rely on the One Definition Rule to say that if
+    // several different named unions have the same name across the
+    // entire binary, then they ought to designate the same type.
+    // So let's ensure that if we've already seen a union with the
+    // same name as the name of 'die', then it's the same type as
+    // the one denoted by 'die'.
     if (union_decl_sptr pre_existing_union =
 	is_union_type(ctxt.lookup_artifact_from_die(die, where_offset)))
       union_type = pre_existing_union;
@@ -10398,7 +10579,8 @@ add_or_update_union_type(read_context&	ctxt,
       result->set_is_declaration_only(false);
     }
 
-  ctxt.associate_die_to_type(die, result, where_offset);
+  ctxt.associate_die_to_type(die, result, where_offset, do_associate_by_repr);
+
   // TODO: maybe schedule declaration-only union for result like we do
   // for classes:
   // ctxt.maybe_schedule_declaration_only_class_for_resolution(result);
@@ -10456,7 +10638,8 @@ add_or_update_union_type(read_context&	ctxt,
 				      /*is_static=*/false,
 				      offset_in_bits);
 	      assert(has_scope(dm));
-	      ctxt.associate_die_to_decl(&child, dm, where_offset);
+	      ctxt.associate_die_to_decl(&child, dm, where_offset,
+					 /*associate_by_repr=*/false);
 	    }
 	  // Handle member functions;
 	  else if (tag == DW_TAG_subprogram)
@@ -10474,7 +10657,8 @@ add_or_update_union_type(read_context&	ctxt,
 
 	      finish_member_function_reading(&child, f, result, ctxt);
 
-	      ctxt.associate_die_to_decl(&child, f, where_offset);
+	      ctxt.associate_die_to_decl(&child, f, where_offset,
+					 /*associate_by_repr=*/false);
 	    }
 	  // Handle member types
 	  else if (die_is_type(&child))
@@ -10707,10 +10891,8 @@ build_pointer_type_def(read_context&	ctxt,
   result.reset(new pointer_type_def(utype, size, /*alignment=*/0, location()));
   assert(result->get_pointed_to_type());
 
-  if (corpus_sptr corp = ctxt.current_corpus())
-    if (pointer_type_def_sptr ptr = lookup_pointer_type(*result, *corp))
-      result = ptr;
-  ctxt.associate_die_to_type(die, result, where_offset);
+  ctxt.associate_die_to_type(die, result, where_offset,
+			     /*do_associate_by_repr=*/false);
   return result;
 }
 
@@ -10843,12 +11025,42 @@ build_function_type(read_context&	ctxt,
       return result;
     }
 
-  if (function_type_sptr fn_type =
-      is_function_type(ctxt.lookup_type_artifact_from_die(die, where_offset)))
+  bool odr_is_relevant = ctxt.odr_is_relevant();
+  if (odr_is_relevant)
     {
-      ctxt.associate_die_to_type(die, fn_type, where_offset,
-				 /*do_associate_by_name=*/false);
-      return fn_type;
+      // So we can rely on the One Definition Rule to say that if
+      // several different function types have the same name (or
+      // rather, representation) across the entire binary, then they
+      // ought to designate the same function type.  So let's ensure
+      // that if we've already seen a function type with the same
+      // representation as the function type 'die', then it's the same
+      // type as the one denoted by 'die'.
+      if (function_type_sptr fn_type =
+	  is_function_type(ctxt.lookup_type_artifact_from_die(die,
+							      where_offset)))
+	{
+	  ctxt.associate_die_to_type(die, fn_type, where_offset,
+				     /*do_associate_by_name=*/false);
+	  return fn_type;
+	}
+    }
+  else
+    {
+      // We cannot rely on the One Definition Rule across the entire
+      // binary.  But then we can still say that inside the current
+      // *translation unit*, if two function types have the same name
+      // (rather representation) then they designate the same type.
+      // Thus, if we've already seen a DIE with the same
+      // representation as the one of 'die', then it designates the
+      // same function type.
+      if (function_type_sptr fn_type =
+	  is_function_type
+	  (ctxt.lookup_type_artifact_from_die_per_tu(die, where_offset)))
+	{
+	  ctxt.associate_die_to_type(die, fn_type, where_offset,
+				     /*do_associate_by_name=*/false);
+	  return fn_type;
+	}
     }
 
   // Let's look at the DIE to detect if it's the DIE for a method
@@ -10876,10 +11088,10 @@ build_function_type(read_context&	ctxt,
 	  // We were initially called as if the function represented
 	  // by DIE was *NOT* a member function.  But now we know it's
 	  // a member function.  Let's take that into account.
-	  class_decl_sptr klass_type =
-	    is_class_type(build_ir_node_from_die(ctxt, &class_type_die,
-						 /*called_from_pub_decl=*/true,
-						 where_offset));
+	  class_or_union_sptr klass_type =
+	    is_class_or_union_type(build_ir_node_from_die(ctxt, &class_type_die,
+							  /*called_from_pub_decl=*/true,
+							  where_offset));
 	  assert(klass_type);
 	  is_method = klass_type;
 	}
@@ -10896,7 +11108,9 @@ build_function_type(read_context&	ctxt,
 				 /*alignment=*/0)
 	       : new function_type(ctxt.env(), tu->get_address_size(),
 				   /*alignment=*/0));
-  ctxt.associate_die_to_type(die, result, where_offset);
+  ctxt.associate_die_to_type(die, result, where_offset,
+			     /*do_associate_by_repr=*/true,
+			     /*do_associate_per_tu=*/!odr_is_relevant);
   ctxt.die_wip_function_types_map(source)[dwarf_dieoffset(die)] = result;
 
   type_base_sptr return_type;
@@ -11192,7 +11406,9 @@ build_typedef_type(read_context&	ctxt,
   die_loc_and_name(ctxt, die, loc, name, linkage_name);
 
   result.reset(new typedef_decl(name, utype, loc, linkage_name));
-  ctxt.associate_die_to_type(die, result, where_offset);
+
+  ctxt.associate_die_to_type(die, result, where_offset,
+			     /*do_associate_by_repr=*/false);
 
   if (class_decl_sptr klass = is_class_type(utype))
     if (is_anonymous_type(klass))
@@ -11409,9 +11625,12 @@ build_or_get_fn_decl_if_not_suppressed(read_context&	  ctxt,
   if (function_is_suppressed(ctxt, scope, fn_die))
     return fn;
 
-  if (function_decl_sptr fn =
-      is_function_decl(ctxt.lookup_artifact_from_die(fn_die, where_offset)))
-    return fn;
+  if ((fn = is_function_decl(ctxt.lookup_artifact_from_die(fn_die,
+							   where_offset))))
+    {
+      ctxt.associate_die_to_decl(fn_die, fn, /*do_associate_by_repr=*/true);
+      return fn;
+    }
 
   fn = build_function_decl(ctxt, fn_die, where_offset, result);
 
@@ -12110,7 +12329,8 @@ build_ir_node_from_die(read_context&	ctxt,
 		    if (is_data_member(m))
 		      {
 			set_member_is_static(m, true);
-			ctxt.associate_die_to_decl(die, m, where_offset);
+			ctxt.associate_die_to_decl(die, m, where_offset,
+						   /*associate_by_repr=*/false);
 		      }
 		    else
 		      {
@@ -12217,7 +12437,8 @@ build_ir_node_from_die(read_context&	ctxt,
 	if (fn)
 	  {
 	    ctxt.maybe_add_fn_to_exported_decls(fn.get());
-	    ctxt.associate_die_to_decl(die, fn, where_offset);
+	    ctxt.associate_die_to_decl(die, fn, where_offset,
+				       /*associate_by_repr=*/false);
 	    maybe_canonicalize_type(die, ctxt);
 	  }
 
@@ -12286,7 +12507,8 @@ build_ir_node_from_die(read_context&	ctxt,
     }
 
   if (result && tag != DW_TAG_subroutine_type)
-    ctxt.associate_die_to_decl(die, is_decl(result), where_offset);
+    ctxt.associate_die_to_decl(die, is_decl(result), where_offset,
+			       /*associate_by_repr=*/false);
 
   return result;
 }
