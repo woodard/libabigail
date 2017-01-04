@@ -5255,7 +5255,7 @@ get_method_type_name(const method_type* fn_type,
 		     bool internal)
 {
   if (fn_type)
-    get_method_type_name(*fn_type, internal);
+    return get_method_type_name(*fn_type, internal);
 
   return interned_string();
 }
