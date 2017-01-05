@@ -1410,8 +1410,7 @@ write_translation_unit(const translation_unit&	tu,
        ++i)
     {
       type_base_sptr type(i->first, noop_deleter());
-      if (get_type_declaration(type)
-	  && !ctxt.type_is_emitted(type)
+      if (!ctxt.type_is_emitted(type)
 	  && !ctxt.decl_only_type_is_emitted(type))
 	// A referenced type that was not emitted at all must be
 	// emitted now.
@@ -1434,20 +1433,27 @@ write_translation_unit(const translation_unit&	tu,
 	   i != sorted_referenced_types.end();
 	   ++i)
 	{
-	  // We handle types which have declarations here.
-	  // Types that don't have declarations, like function types
-	  // are handled later.  Other types with no declarations must
-	  // have been emitted already, by virtue of walking all
-	  // namespaces in declaration order, up to now.
-	  if (decl_base* d = get_type_declaration(*i))
+	  // We handle types which have declarations *and* function
+	  // types here.
+	  type_base_sptr t(*i, noop_deleter());
+	  if (!ctxt.type_is_emitted(t))
 	    {
-	      decl_base_sptr decl(d, noop_deleter());
-	      o << "\n";
-	      write_decl_in_scope(decl, ctxt,
-				  indent + c.get_xml_element_indent());
+	      if (decl_base* d = get_type_declaration(*i))
+		{
+		  decl_base_sptr decl(d, noop_deleter());
+		  o << "\n";
+		  write_decl_in_scope(decl, ctxt,
+				      indent + c.get_xml_element_indent());
+		}
+	      else if (function_type_sptr fn_type = is_function_type(t))
+		{
+		  o << "\n";
+		  write_function_type(fn_type, ctxt,
+				      indent + c.get_xml_element_indent());
+		}
+	      else
+		ABG_ASSERT_NOT_REACHED;
 	    }
-	  else
-	    abort();
 	}
 
       // So all referenced types that we wanted to emit were emitted.
@@ -1465,8 +1471,7 @@ write_translation_unit(const translation_unit&	tu,
 	   ++i)
 	{
 	  type_base_sptr type(i->first, noop_deleter());
-	  if (get_type_declaration(type)
-	      && !ctxt.type_is_emitted(type)
+	  if (!ctxt.type_is_emitted(type)
 	      && !ctxt.decl_only_type_is_emitted(type))
 	    referenced_types_to_emit[type.get()] = interned_string();
 	}
@@ -1488,6 +1493,8 @@ write_translation_unit(const translation_unit&	tu,
 	// This function type is either not referenced by any emitted
 	// pointer or reference type, or has already been emitted, so skip it.
 	continue;
+
+      assert(fn_type);
       o << "\n";
       write_function_type(fn_type, ctxt, indent + c.get_xml_element_indent());
     }
