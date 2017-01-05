@@ -128,7 +128,7 @@ display_usage(const string& prog_name, ostream& out)
     "of <elf-path>\n"
     << "  --check-alternate-debug-info-base-name <elf-path>  check alternate "
     "debug info of <elf-path>, and show its base name\n"
-    << "  --load-all-types  read all types including those not reachable from"
+    << "  --load-all-types  read all types including those not reachable from "
     "exported declarations\n"
     << "  --abidiff  compare the loaded ABI against itself\n"
     << "  --stats  show statistics about various internal stuff\n"

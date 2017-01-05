@@ -446,16 +446,17 @@ struct var_change
 /// Perform a compatibility check of an application corpus and a
 /// library corpus.
 ///
+/// The types of the variables and functions exported by the library
+/// and consumed by the application are compared with the types
+/// expected by the application.  This function checks that the types
+/// mean the same thing; otherwise it emits on standard output type
+/// layout differences found.
+///
 /// @param opts the options the tool got invoked with.
 ///
 /// @param app_corpus the application corpus to consider.
 ///
-/// @param lib_corpus the library corpus to consider.  The types of
-/// the variables and functions exported by this library and consumed
-/// by the application are compared with the types expected by the
-/// application @p app_corpus.  This function checks that the types
-/// mean the same thing; otherwise it emits on standard output type
-/// layout differences found.
+/// @param lib_corpus the library corpus to consider.
 ///
 /// @return a status bitfield.
 static abidiff_status
@@ -468,6 +469,16 @@ perform_compat_check_in_weak_mode(options& opts,
   assert(app_corpus);
 
   abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
+
+  // Functions and variables defined and exported by lib_corpus which
+  // symbols are undefined in app_corpus are the artifacts we are
+  // interested in.
+  //
+  // So let's drop all functions and variables from lib_corpus that
+  // are so that their symbols are *NOT* undefined in app_corpus.
+  //
+  // In other words, let's only keep the functiond and variables from
+  // lib_corpus that are consumed by app_corpus.
 
   for (elf_symbols::const_iterator i =
 	 app_corpus->get_sorted_undefined_fun_symbols().begin();
@@ -490,6 +501,16 @@ perform_compat_check_in_weak_mode(options& opts,
       || !app_corpus->get_sorted_undefined_fun_symbols().empty())
     lib_corpus->maybe_drop_some_exported_decls();
 
+  // OK now, lib_corpus only contains functions and variables which
+  // symbol are consumed by app_corpus.
+
+  // So we are now going to compare the functions that are exported by
+  // lib_corpus against those that app_corpus expects.
+  //
+  // In other words, the functions which symbols are defined by
+  // lib_corpus are going to be compared to the functions and
+  // variables which are undefined in app_corpus.
+
   {
     function_type_sptr lib_fn_type, app_fn_type;
     vector<fn_change> fn_changes;
@@ -498,6 +519,8 @@ perform_compat_check_in_weak_mode(options& opts,
 	 i != lib_corpus->get_functions().end();
 	 ++i)
       {
+	// lib_fn_type contains the type of a function that is defined
+	// in lib_corpus.
 	lib_fn_type = (*i)->get_type();
 	assert(lib_fn_type);
 
@@ -510,6 +533,9 @@ perform_compat_check_in_weak_mode(options& opts,
 	function_type_diff_sptr fn_type_diff;
 	if (app_fn_type)
 	  fn_type_diff = compute_diff(app_fn_type, lib_fn_type, ctxt);
+
+	// If the two types of functions are different, then let's
+	// store their difference in the "fn_changes" vector.
 	if (fn_type_diff && fn_type_diff->to_be_reported())
 	  fn_changes.push_back(fn_change(*i, fn_type_diff));
       }
@@ -521,6 +547,7 @@ perform_compat_check_in_weak_mode(options& opts,
 	base_name(opts.app_path, app_path);
       }
 
+    // If some function changes were detected, then report them.
     if (!fn_changes.empty())
       {
 	cout << "functions defined in library "
@@ -542,6 +569,12 @@ perform_compat_check_in_weak_mode(options& opts,
 
     if (!fn_changes.empty())
       status |= abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+
+    // OK now, let's do something similar for *variables* changes.
+    //
+    // That is, let's compare the variables expected by app_corpus
+    // against the variables actually provided by lib_corpus and
+    // report the difference that might have been found.
 
     type_base_sptr lib_var_type, app_var_type;
     vector<var_change> var_changes;

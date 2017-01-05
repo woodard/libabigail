@@ -1762,7 +1762,7 @@ lookup_symbol_from_gnu_hash_tab(const environment*		env,
       stop_word = *stop_wordp;
       if ((stop_word & ~ 1)!= (h1 & ~1))
 	// A given bucket can reference several hashes.  Here we
-	// stumbled accross a hash value different from the one we are
+	// stumbled across a hash value different from the one we are
 	// looking for.  Let's keep walking.
 	continue;
 
