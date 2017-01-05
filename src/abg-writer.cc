@@ -2410,8 +2410,10 @@ write_function_type(const function_type_sptr& fn_type,
 			       /*is_static=*/false, o);
     }
 
+  interned_string id = ctxt.get_id_for_type(fn_type);
+
   o << " id='"
-    << ctxt.get_id_for_type(fn_type) << "'";
+    <<  id << "'";
   o << ">\n";
 
   type_base_sptr parm_type;

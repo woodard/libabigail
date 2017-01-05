@@ -31,10 +31,6 @@ namespace abigail
 namespace ir
 {
 
-class corpus;
-/// A convenience typedef for shared pointer to @ref corpus.
-typedef shared_ptr<corpus> corpus_sptr;
-
 /// This is the abstraction of a set of translation units (themselves
 /// seen as bundles of unitary abi artefacts like types and decls)
 /// bundled together as a corpus.  A corpus is thus the Application

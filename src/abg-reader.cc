@@ -2714,14 +2714,14 @@ build_function_decl(read_context&	ctxt,
 	}
     }
 
-  assert(return_type);
-
   function_type_sptr fn_type(as_method_decl
 			     ? new method_type(return_type, as_method_decl,
 					       parms, /*is_const=*/false,
 					       size, align)
 			     : new function_type(return_type,
 						 parms, size, align));
+
+  assert(fn_type);
 
   function_decl_sptr fn_decl(as_method_decl
 			     ? new method_decl (name, fn_type,

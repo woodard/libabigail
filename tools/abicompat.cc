@@ -488,6 +488,7 @@ perform_compat_check_in_weak_mode(options& opts,
       string id = (*i)->get_id_string();
       lib_corpus->get_sym_ids_of_fns_to_keep().push_back(id);
     }
+
   for (elf_symbols::const_iterator i =
 	 app_corpus->get_sorted_undefined_var_symbols().begin();
        i != app_corpus->get_sorted_undefined_var_symbols().end();

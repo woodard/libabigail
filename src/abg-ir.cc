@@ -6902,7 +6902,6 @@ decl_base_sptr
 convert_node_to_decl(class_decl_sptr node)
 {return node;}
 
-
 /// Get the declaration of a type_base node.
 ///
 /// @param node the type node to consider.
