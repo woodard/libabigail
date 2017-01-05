@@ -11973,7 +11973,9 @@ maybe_canonicalize_type(Dwarf_Die *die, read_context&	ctxt)
   assert(t);
 
   type_base_sptr peeled_type = peel_typedef_pointer_or_reference_type(t);
-  if (is_class_type(peeled_type) || is_union_type(peeled_type))
+  if (is_class_type(peeled_type)
+      || is_union_type(peeled_type)
+      || is_function_type(peeled_type))
     // We delay canonicalization of classes/unions or typedef,
     // pointers, references and array to classes/unions.  This is
     // because the (underlying) class might not be finished yet and we
