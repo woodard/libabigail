@@ -9799,16 +9799,36 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
       enum_is_anonymous = true;
     }
 
-  bool odr_is_relevant = !enum_is_anonymous && ctxt.odr_is_relevant();
+  bool use_odr = ctxt.odr_is_relevant();
+  // If the type has location, then associate it to its
+  // representation.  This way, all occurences of types with the same
+  // representation (name) and location can be later detected as being
+  // for the same type.
+  bool associate_die_to_repr = !enum_is_anonymous && (loc || use_odr);
 
-  if (odr_is_relevant)
-    if (enum_type_decl_sptr pre_existing_enum =
-	is_enum_type(ctxt.lookup_artifact_from_die(die, where_offset)))
-      {
-	result = pre_existing_enum;
-	ctxt.associate_die_to_type(die, result, where_offset);
-	return result;
-      }
+  if (!enum_is_anonymous)
+    {
+      if (use_odr)
+	{
+	  if (enum_type_decl_sptr pre_existing_enum =
+	      is_enum_type(ctxt.lookup_artifact_from_die(die, where_offset)))
+	    result = pre_existing_enum;
+	}
+      else if (loc)
+	{
+	   if (enum_type_decl_sptr pre_existing_enum =
+	      is_enum_type(ctxt.lookup_artifact_from_die(die, where_offset)))
+	     if (pre_existing_enum->get_location() == loc)
+	       result = pre_existing_enum;
+	}
+
+      if (result)
+	{
+	  ctxt.associate_die_to_type(die, result, where_offset,
+				     /*associate_die_to_repr=*/false);
+	  return result;
+	}
+    }
 
   uint64_t size = 0;
   if (die_unsigned_constant_attribute(die, DW_AT_byte_size, size))
@@ -9861,7 +9881,7 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
   assert(t);
   result.reset(new enum_type_decl(name, loc, t, enms, linkage_name));
   result->set_is_anonymous(enum_is_anonymous);
-  ctxt.associate_die_to_type(die, result, where_offset);
+  ctxt.associate_die_to_type(die, result, where_offset, associate_die_to_repr);
   return result;
 }
 
@@ -10249,18 +10269,43 @@ add_or_update_class_type(read_context&	 ctxt,
     }
 
   bool use_odr = ctxt.odr_is_relevant();
-  bool do_associate_by_repr = !is_anonymous && use_odr;
 
-  if (do_associate_by_repr)
-    // So we can rely on the One Definition Rule to say that if
-    // several different named classes have the same name across
-    // the entire binary, then they ought to designate the same
-    // type.  So let's ensure that if we've already seen a class
-    // with the same name as the name of 'die', then it's the
-    // same type as the one denoted by 'die'.
-    if (class_decl_sptr pre_existing_class =
-	is_class_type(ctxt.lookup_artifact_from_die(die, where_offset)))
-      klass = pre_existing_class;
+  // If the type has location, then associate it to its
+  // representation.  This way, all occurences of types with the same
+  // representation (name) and location can be later detected as being
+  // for the same type.
+  bool associate_die_to_repr = !is_anonymous && (loc || use_odr);
+
+  if (!is_anonymous)
+    {
+      if (use_odr)
+	{
+	  // So we can rely on the One Definition Rule to say that if
+	  // several different named class types have the same
+	  // representation (name) across the entire binary, then they
+	  // ought to designate the same type.  So let's ensure that
+	  // if we've already seen a class with the same name as the
+	  // name of 'die', then it's the same type as the one denoted
+	  // by 'die'.
+	  if (class_decl_sptr pre_existing_class =
+	      is_class_type(ctxt.lookup_artifact_from_die(die, where_offset)))
+	    klass = pre_existing_class;
+	}
+      else if (loc)
+	{
+	  // The current type we are looking at does have a location.
+	  // So, even if we can't assume ODR, we can assume that this
+	  // class type we are looking at is the same as other class
+	  // types with the same representation and the same location.
+	  if (class_decl_sptr pre_existing_class =
+	      is_class_type(ctxt.lookup_artifact_from_die(die, where_offset)))
+	    if (class_decl_sptr cl =
+		look_through_decl_only_class(pre_existing_class))
+	      if (!cl->get_definition_of_declaration()
+		  || cl->get_location() == loc)
+		klass = pre_existing_class;
+	}
+    }
 
   uint64_t size = 0;
   die_size_in_bits(die, size);
@@ -10297,7 +10342,7 @@ add_or_update_class_type(read_context&	 ctxt,
       result->set_is_declaration_only(false);
     }
 
-  ctxt.associate_die_to_type(die, result, where_offset, do_associate_by_repr);
+  ctxt.associate_die_to_type(die, result, where_offset, associate_die_to_repr);
 
   ctxt.maybe_schedule_declaration_only_class_for_resolution(result);
 
@@ -10539,18 +10584,40 @@ add_or_update_union_type(read_context&	ctxt,
     }
 
   bool use_odr = ctxt.odr_is_relevant();
-  bool do_associate_by_repr = !is_anonymous && use_odr;
 
-  if (do_associate_by_repr)
-    // So we can rely on the One Definition Rule to say that if
-    // several different named unions have the same name across the
-    // entire binary, then they ought to designate the same type.
-    // So let's ensure that if we've already seen a union with the
-    // same name as the name of 'die', then it's the same type as
-    // the one denoted by 'die'.
-    if (union_decl_sptr pre_existing_union =
-	is_union_type(ctxt.lookup_artifact_from_die(die, where_offset)))
-      union_type = pre_existing_union;
+  // If the type has location, then associate it to its
+  // representation.  This way, all occurences of types with the same
+  // representation (name) and location can be later detected as being
+  // for the same type.
+  bool associate_die_to_repr = !is_anonymous && (loc || use_odr);
+
+  if (!is_anonymous)
+    {
+      if (use_odr)
+	{
+	  // So we can rely on the One Definition Rule to say that if
+	  // several different named union types have the same
+	  // representation (name) across the entire binary, then they
+	  // ought to designate the same type.  So let's ensure that
+	  // if we've already seen a union with the same name as the
+	  // name of 'die', then it's the same type as the one denoted
+	  // by 'die'.
+	  if (union_decl_sptr pre_existing_union =
+	      is_union_type(ctxt.lookup_artifact_from_die(die, where_offset)))
+	    union_type = pre_existing_union;
+	}
+      else if (loc)
+	{
+	  // The current type we are looking at does have a location.
+	  // So, even if we can't assume ODR, we can assume that this
+	  // union type we are looking at is the same as other union
+	  // types with the same representation and the same location.
+	  if (union_decl_sptr pre_existing_union =
+	      is_union_type(ctxt.lookup_artifact_from_die(die, where_offset)))
+	    if (pre_existing_union->get_location() == loc)
+	      union_type = pre_existing_union;
+	}
+    }
 
   uint64_t size = 0;
   die_size_in_bits(die, size);
@@ -10579,7 +10646,7 @@ add_or_update_union_type(read_context&	ctxt,
       result->set_is_declaration_only(false);
     }
 
-  ctxt.associate_die_to_type(die, result, where_offset, do_associate_by_repr);
+  ctxt.associate_die_to_type(die, result, where_offset, associate_die_to_repr);
 
   // TODO: maybe schedule declaration-only union for result like we do
   // for classes:
