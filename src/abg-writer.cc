@@ -35,6 +35,8 @@
 #include <algorithm>
 #include <tr1/unordered_map>
 
+#include "abg-tools-utils.h"
+
 #include "abg-internal.h"
 // <headers defining libabigail's API go under here>
 ABG_BEGIN_EXPORT_DECLARATIONS
@@ -359,8 +361,13 @@ public:
 
       if (r1 == r2)
 	{
-	  r1 = (*map)[const_cast<type_base*>(l)];
-	  r2 = (*map)[const_cast<type_base*>(r)];
+	  type_ptr_map::const_iterator i =
+	    map->find(const_cast<type_base*>(l));
+	  if (i != map->end())
+	    r1 = i->second;
+	  i = map->find(const_cast<type_base*>(r));
+	  if (i != map->end())
+	    r2 = i->second;
 	}
 
       return r1 < r2;
