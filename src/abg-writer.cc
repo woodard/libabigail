@@ -3754,6 +3754,31 @@ dump(const translation_unit_sptr t)
     dump(*t);
 }
 
+/// Serialize a source location to an output stream.
+///
+/// @param l the declaration to consider.
+///
+/// @param o the output stream to serialize to.
+void
+dump_location(const location& l, ostream& o)
+{
+  string path;
+  unsigned line = 0, col = 0;
+
+  l.expand(path, line, col);
+  o << path << ":" << line << "," << col << "\n";
+}
+
+/// Serialize a source location for debugging purposes.
+///
+/// The location is serialized to the standard error output stream.
+///
+/// @param l the declaration to consider.
+///
+void
+dump_location(const location& l)
+{dump_location(l, cerr);}
+
 /// Serialize the source location of a decl to an output stream for
 /// debugging purposes.
 ///
@@ -3762,14 +3787,7 @@ dump(const translation_unit_sptr t)
 /// @param o the output stream to serizalize the location to.
 void
 dump_decl_location(const decl_base& d, ostream& o)
-{
-  string path;
-  unsigned line = 0, col = 0;
-
-  const location& l = d.get_location();
-  l.expand(path, line, col);
-  o << path << ":" << line << "," << col << "\n";
-}
+{dump_location(d.get_location(), o);}
 
 /// Serialize the source location of a decl to stderr for debugging
 /// purposes.
