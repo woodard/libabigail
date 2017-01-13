@@ -3418,7 +3418,11 @@ public:
 					     size_t where_offset,
 					     bool do_associate_per_tu)
   {
-    string representation = get_die_pretty_representation(die, where_offset);
+    string representation =
+      is_type(a)
+      ? get_die_pretty_type_representation(die, where_offset)
+      : get_die_pretty_representation(die, where_offset);
+
     assert(!representation.empty());
     interned_string interned_repr = env()->intern(representation);
 

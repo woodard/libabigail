@@ -373,9 +373,9 @@
       <return type-id='type-id-11'/>
     </function-decl>
     <function-decl name='dbus_bus_add_match' mangled-name='dbus_bus_add_match' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-bus.c' line='1526' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_bus_add_match'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-bus.c' line='1526' column='1'/>
-      <parameter type-id='type-id-3' name='rule' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-bus.c' line='1527' column='1'/>
-      <parameter type-id='type-id-19' name='error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-bus.c' line='1528' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-bus.c' line='1576' column='1'/>
+      <parameter type-id='type-id-3' name='rule' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-bus.c' line='1577' column='1'/>
+      <parameter type-id='type-id-19' name='error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-bus.c' line='1578' column='1'/>
       <return type-id='type-id-11'/>
     </function-decl>
     <pointer-type-def type-id='type-id-21' size-in-bits='64' id='type-id-28'/>
@@ -446,8 +446,8 @@
       <return type-id='type-id-27'/>
     </function-decl>
     <function-decl name='dbus_bus_get' mangled-name='dbus_bus_get' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-bus.c' line='558' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_bus_get'>
-      <parameter type-id='type-id-32' name='type' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-bus.c' line='558' column='1'/>
-      <parameter type-id='type-id-19' name='error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-bus.c' line='559' column='1'/>
+      <parameter type-id='type-id-32' name='type' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-bus.c' line='590' column='1'/>
+      <parameter type-id='type-id-19' name='error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-bus.c' line='591' column='1'/>
       <return type-id='type-id-27'/>
     </function-decl>
   </abi-instr>
@@ -758,11 +758,11 @@
       <return type-id='type-id-60'/>
     </function-decl>
     <function-decl name='dbus_connection_get_outgoing_size' mangled-name='dbus_connection_get_outgoing_size' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6235' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_get_outgoing_size'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6235' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6296' column='1'/>
       <return type-id='type-id-60'/>
     </function-decl>
     <function-decl name='dbus_connection_get_max_received_unix_fds' mangled-name='dbus_connection_get_max_received_unix_fds' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6212' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_get_max_received_unix_fds'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6212' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6296' column='1'/>
       <return type-id='type-id-60'/>
     </function-decl>
     <function-decl name='dbus_connection_set_max_received_unix_fds' mangled-name='dbus_connection_set_max_received_unix_fds' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6194' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_set_max_received_unix_fds'>
@@ -771,30 +771,30 @@
       <return type-id='type-id-11'/>
     </function-decl>
     <function-decl name='dbus_connection_get_max_received_size' mangled-name='dbus_connection_get_max_received_size' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6170' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_get_max_received_size'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6170' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6296' column='1'/>
       <return type-id='type-id-60'/>
     </function-decl>
     <function-decl name='dbus_connection_set_max_received_size' mangled-name='dbus_connection_set_max_received_size' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6152' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_set_max_received_size'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6152' column='1'/>
-      <parameter type-id='type-id-60' name='size' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6153' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6194' column='1'/>
+      <parameter type-id='type-id-60' name='n' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6195' column='1'/>
       <return type-id='type-id-11'/>
     </function-decl>
     <function-decl name='dbus_connection_get_max_message_unix_fds' mangled-name='dbus_connection_get_max_message_unix_fds' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6114' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_get_max_message_unix_fds'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6114' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6296' column='1'/>
       <return type-id='type-id-60'/>
     </function-decl>
     <function-decl name='dbus_connection_set_max_message_unix_fds' mangled-name='dbus_connection_set_max_message_unix_fds' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6096' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_set_max_message_unix_fds'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6096' column='1'/>
-      <parameter type-id='type-id-60' name='n' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6097' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6194' column='1'/>
+      <parameter type-id='type-id-60' name='n' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6195' column='1'/>
       <return type-id='type-id-11'/>
     </function-decl>
     <function-decl name='dbus_connection_get_max_message_size' mangled-name='dbus_connection_get_max_message_size' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6075' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_get_max_message_size'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6075' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6296' column='1'/>
       <return type-id='type-id-60'/>
     </function-decl>
     <function-decl name='dbus_connection_set_max_message_size' mangled-name='dbus_connection_set_max_message_size' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6057' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_set_max_message_size'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6057' column='1'/>
-      <parameter type-id='type-id-60' name='size' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6058' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6194' column='1'/>
+      <parameter type-id='type-id-60' name='n' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6195' column='1'/>
       <return type-id='type-id-11'/>
     </function-decl>
     <pointer-type-def type-id='type-id-8' size-in-bits='64' id='type-id-90'/>
@@ -854,18 +854,18 @@
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_connection_register_object_path' mangled-name='dbus_connection_register_object_path' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5702' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_register_object_path'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5702' column='1'/>
-      <parameter type-id='type-id-3' name='path' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5703' column='1'/>
-      <parameter type-id='type-id-102' name='vtable' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5704' column='1'/>
-      <parameter type-id='type-id-8' name='user_data' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5705' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5774' column='1'/>
+      <parameter type-id='type-id-3' name='path' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5775' column='1'/>
+      <parameter type-id='type-id-102' name='vtable' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5776' column='1'/>
+      <parameter type-id='type-id-8' name='user_data' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5777' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_connection_try_register_object_path' mangled-name='dbus_connection_try_register_object_path' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5672' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_try_register_object_path'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5672' column='1'/>
-      <parameter type-id='type-id-3' name='path' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5673' column='1'/>
-      <parameter type-id='type-id-102' name='vtable' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5674' column='1'/>
-      <parameter type-id='type-id-8' name='user_data' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5675' column='1'/>
-      <parameter type-id='type-id-19' name='error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5676' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5742' column='1'/>
+      <parameter type-id='type-id-3' name='path' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5743' column='1'/>
+      <parameter type-id='type-id-102' name='vtable' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5744' column='1'/>
+      <parameter type-id='type-id-8' name='user_data' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5745' column='1'/>
+      <parameter type-id='type-id-19' name='error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5746' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <typedef-decl name='DBusHandleMessageFunction' type-id='type-id-99' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.h' line='169' column='1' id='type-id-103'/>
@@ -888,8 +888,8 @@
       <return type-id='type-id-11'/>
     </function-decl>
     <function-decl name='dbus_connection_set_allow_anonymous' mangled-name='dbus_connection_set_allow_anonymous' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5451' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_set_allow_anonymous'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5451' column='1'/>
-      <parameter type-id='type-id-22' name='value' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5452' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5479' column='1'/>
+      <parameter type-id='type-id-22' name='value' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5480' column='1'/>
       <return type-id='type-id-11'/>
     </function-decl>
     <pointer-type-def type-id='type-id-104' size-in-bits='64' id='type-id-105'/>
@@ -928,8 +928,8 @@
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_connection_get_unix_user' mangled-name='dbus_connection_get_unix_user' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5190' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_get_unix_user'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5190' column='1'/>
-      <parameter type-id='type-id-110' name='uid' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5191' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5226' column='1'/>
+      <parameter type-id='type-id-110' name='pid' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5227' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_connection_get_socket' mangled-name='dbus_connection_get_socket' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5148' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_get_socket'>
@@ -938,8 +938,8 @@
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_connection_get_unix_fd' mangled-name='dbus_connection_get_unix_fd' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5118' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_get_unix_fd'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5118' column='1'/>
-      <parameter type-id='type-id-24' name='fd' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5119' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5148' column='1'/>
+      <parameter type-id='type-id-24' name='fd' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5149' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_connection_set_dispatch_status_function' mangled-name='dbus_connection_set_dispatch_status_function' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5073' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_set_dispatch_status_function'>
@@ -991,8 +991,8 @@
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_connection_set_exit_on_disconnect' mangled-name='dbus_connection_set_exit_on_disconnect' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3145' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_set_exit_on_disconnect'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3145' column='1'/>
-      <parameter type-id='type-id-22' name='exit_on_disconnect' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3146' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5479' column='1'/>
+      <parameter type-id='type-id-22' name='value' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='5480' column='1'/>
       <return type-id='type-id-11'/>
     </function-decl>
     <function-decl name='dbus_connection_get_is_authenticated' mangled-name='dbus_connection_get_is_authenticated' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='2995' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_get_is_authenticated'>
@@ -1000,7 +1000,7 @@
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_connection_has_messages_to_send' mangled-name='dbus_connection_has_messages_to_send' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='588' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_has_messages_to_send'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='588' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='2995' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <class-decl name='DBusPreallocatedSend' size-in-bits='192' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='241' column='1' id='type-id-131'>
@@ -1021,7 +1021,7 @@
       <return type-id='type-id-133'/>
     </function-decl>
     <function-decl name='dbus_connection_get_is_connected' mangled-name='dbus_connection_get_is_connected' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='2973' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_get_is_connected'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='2973' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='2995' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_connection_free_preallocated_send' mangled-name='dbus_connection_free_preallocated_send' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3191' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_free_preallocated_send'>
@@ -1039,7 +1039,7 @@
       <return type-id='type-id-16'/>
     </function-decl>
     <function-decl name='dbus_connection_get_is_anonymous' mangled-name='dbus_connection_get_is_anonymous' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3029' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_get_is_anonymous'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3029' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='2995' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_connection_unref' mangled-name='dbus_connection_unref' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='2817' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_unref'>
@@ -1055,7 +1055,7 @@
       <return type-id='type-id-37'/>
     </function-decl>
     <function-decl name='dbus_connection_pop_message' mangled-name='dbus_connection_pop_message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='4091' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_pop_message'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='4091' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3850' column='1'/>
       <return type-id='type-id-37'/>
     </function-decl>
     <function-decl name='dbus_connection_steal_borrowed_message' mangled-name='dbus_connection_steal_borrowed_message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3935' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_steal_borrowed_message'>
@@ -1064,12 +1064,12 @@
       <return type-id='type-id-11'/>
     </function-decl>
     <function-decl name='dbus_connection_return_message' mangled-name='dbus_connection_return_message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3901' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_return_message'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3901' column='1'/>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3902' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3935' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3936' column='1'/>
       <return type-id='type-id-11'/>
     </function-decl>
     <function-decl name='dbus_connection_flush' mangled-name='dbus_connection_flush' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3641' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_flush'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3641' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='2817' column='1'/>
       <return type-id='type-id-11'/>
     </function-decl>
     <function-decl name='dbus_connection_send_preallocated' mangled-name='dbus_connection_send_preallocated' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3217' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_send_preallocated'>
@@ -1086,7 +1086,7 @@
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_connection_close' mangled-name='dbus_connection_close' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='2932' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_close'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='2932' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='2817' column='1'/>
       <return type-id='type-id-11'/>
     </function-decl>
     <function-decl name='dbus_connection_open_private' mangled-name='dbus_connection_open_private' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='2659' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_open_private'>
@@ -1095,8 +1095,8 @@
       <return type-id='type-id-27'/>
     </function-decl>
     <function-decl name='dbus_connection_open' mangled-name='dbus_connection_open' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='2616' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_open'>
-      <parameter type-id='type-id-3' name='address' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='2616' column='1'/>
-      <parameter type-id='type-id-19' name='error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='2617' column='1'/>
+      <parameter type-id='type-id-3' name='address' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='2659' column='1'/>
+      <parameter type-id='type-id-19' name='error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='2660' column='1'/>
       <return type-id='type-id-27'/>
     </function-decl>
     <class-decl name='DBusPendingCall' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-134'/>
@@ -1118,17 +1118,17 @@
       <return type-id='type-id-37'/>
     </function-decl>
     <function-decl name='dbus_connection_dispatch' mangled-name='dbus_connection_dispatch' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='4549' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_dispatch'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='4549' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='4378' column='1'/>
       <return type-id='type-id-47'/>
     </function-decl>
     <function-decl name='dbus_connection_read_write' mangled-name='dbus_connection_read_write' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3801' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_read_write'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3801' column='1'/>
-      <parameter type-id='type-id-9' name='timeout_milliseconds' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3802' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3105' column='1'/>
+      <parameter type-id='type-id-9' name='type' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3106' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_connection_read_write_dispatch' mangled-name='dbus_connection_read_write_dispatch' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3769' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_read_write_dispatch'>
-      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3769' column='1'/>
-      <parameter type-id='type-id-9' name='timeout_milliseconds' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3770' column='1'/>
+      <parameter type-id='type-id-27' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3105' column='1'/>
+      <parameter type-id='type-id-9' name='type' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='3106' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-type size-in-bits='64' id='type-id-98'>
@@ -1197,7 +1197,7 @@
       <return type-id='type-id-11'/>
     </function-decl>
     <function-decl name='dbus_error_free' mangled-name='dbus_error_free' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-errors.c' line='211' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_error_free'>
-      <parameter type-id='type-id-19' name='error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-errors.c' line='211' column='1'/>
+      <parameter type-id='type-id-19' name='error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-errors.c' line='188' column='1'/>
       <return type-id='type-id-11'/>
     </function-decl>
     <function-decl name='dbus_move_error' mangled-name='dbus_move_error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-errors.c' line='279' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_move_error'>
@@ -1276,43 +1276,43 @@
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_message_get_destination' mangled-name='dbus_message_get_destination' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3450' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_get_destination'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3450' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3510' column='1'/>
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='dbus_message_has_destination' mangled-name='dbus_message_has_destination' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3690' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_has_destination'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3690' column='1'/>
-      <parameter type-id='type-id-3' name='name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3691' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3725' column='1'/>
+      <parameter type-id='type-id-3' name='name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3726' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_message_get_error_name' mangled-name='dbus_message_get_error_name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3397' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_get_error_name'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3397' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3510' column='1'/>
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='dbus_message_get_member' mangled-name='dbus_message_get_member' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3313' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_get_member'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3313' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3510' column='1'/>
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='dbus_message_has_member' mangled-name='dbus_message_has_member' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3335' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_has_member'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3335' column='1'/>
-      <parameter type-id='type-id-3' name='member' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3336' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3725' column='1'/>
+      <parameter type-id='type-id-3' name='name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3726' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_message_get_interface' mangled-name='dbus_message_get_interface' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3227' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_get_interface'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3227' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3510' column='1'/>
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='dbus_message_has_interface' mangled-name='dbus_message_has_interface' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3249' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_has_interface'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3249' column='1'/>
-      <parameter type-id='type-id-3' name='iface' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3250' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3725' column='1'/>
+      <parameter type-id='type-id-3' name='name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3726' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_message_get_path' mangled-name='dbus_message_get_path' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3096' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_get_path'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3096' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3510' column='1'/>
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='dbus_message_has_path' mangled-name='dbus_message_has_path' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3120' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_has_path'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3120' column='1'/>
-      <parameter type-id='type-id-3' name='path' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3121' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3725' column='1'/>
+      <parameter type-id='type-id-3' name='name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3726' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_message_get_reply_serial' mangled-name='dbus_message_get_reply_serial' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='1163' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_get_reply_serial'>
@@ -1320,22 +1320,22 @@
       <return type-id='type-id-21'/>
     </function-decl>
     <function-decl name='dbus_message_get_signature' mangled-name='dbus_message_get_signature' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3543' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_get_signature'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3543' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3510' column='1'/>
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='dbus_message_has_signature' mangled-name='dbus_message_has_signature' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3754' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_has_signature'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3754' column='1'/>
-      <parameter type-id='type-id-3' name='signature' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3755' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3725' column='1'/>
+      <parameter type-id='type-id-3' name='name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3726' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_message_set_sender' mangled-name='dbus_message_set_sender' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3479' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_set_sender'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3479' column='1'/>
-      <parameter type-id='type-id-3' name='sender' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3480' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3725' column='1'/>
+      <parameter type-id='type-id-3' name='name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3726' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_message_set_destination' mangled-name='dbus_message_set_destination' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3425' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_set_destination'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3425' column='1'/>
-      <parameter type-id='type-id-3' name='destination' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3426' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3725' column='1'/>
+      <parameter type-id='type-id-3' name='name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3726' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_message_set_reply_serial' mangled-name='dbus_message_set_reply_serial' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='1143' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_set_reply_serial'>
@@ -1344,18 +1344,18 @@
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_message_set_error_name' mangled-name='dbus_message_set_error_name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3371' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_set_error_name'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3371' column='1'/>
-      <parameter type-id='type-id-3' name='error_name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3372' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3725' column='1'/>
+      <parameter type-id='type-id-3' name='name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3726' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_message_set_member' mangled-name='dbus_message_set_member' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3286' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_set_member'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3286' column='1'/>
-      <parameter type-id='type-id-3' name='member' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3287' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3725' column='1'/>
+      <parameter type-id='type-id-3' name='name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3726' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_message_set_interface' mangled-name='dbus_message_set_interface' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3198' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_set_interface'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3198' column='1'/>
-      <parameter type-id='type-id-3' name='iface' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3199' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3725' column='1'/>
+      <parameter type-id='type-id-3' name='name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3726' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_message_get_path_decomposed' mangled-name='dbus_message_get_path_decomposed' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3164' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_get_path_decomposed'>
@@ -1364,16 +1364,16 @@
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_message_set_path' mangled-name='dbus_message_set_path' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3067' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_set_path'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3067' column='1'/>
-      <parameter type-id='type-id-3' name='object_path' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3068' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3725' column='1'/>
+      <parameter type-id='type-id-3' name='name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3726' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_message_get_auto_start' mangled-name='dbus_message_get_auto_start' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3045' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_get_auto_start'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3045' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3825' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_message_get_no_reply' mangled-name='dbus_message_get_no_reply' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3003' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_get_no_reply'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3003' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3825' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_message_set_auto_start' mangled-name='dbus_message_set_auto_start' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3026' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_set_auto_start'>
@@ -1382,8 +1382,8 @@
       <return type-id='type-id-11'/>
     </function-decl>
     <function-decl name='dbus_message_set_no_reply' mangled-name='dbus_message_set_no_reply' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='2984' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_set_no_reply'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='2984' column='1'/>
-      <parameter type-id='type-id-22' name='no_reply' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='2985' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3026' column='1'/>
+      <parameter type-id='type-id-22' name='auto_start' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3027' column='1'/>
       <return type-id='type-id-11'/>
     </function-decl>
     <class-decl name='DBusMessageIter' size-in-bits='576' is-struct='yes' visibility='default' filepath='../dbus/dbus-message.h' line='52' column='1' id='type-id-140'>
@@ -1478,7 +1478,7 @@
       <return type-id='type-id-11'/>
     </function-decl>
     <function-decl name='dbus_message_iter_get_array_len' mangled-name='dbus_message_iter_get_array_len' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='2346' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_iter_get_array_len'>
-      <parameter type-id='type-id-142' name='iter' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='2346' column='1'/>
+      <parameter type-id='type-id-142' name='iter' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='2139' column='1'/>
       <return type-id='type-id-9'/>
     </function-decl>
     <function-decl name='dbus_message_iter_get_basic' mangled-name='dbus_message_iter_get_basic' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='2293' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_iter_get_basic'>
@@ -1491,12 +1491,12 @@
       <return type-id='type-id-16'/>
     </function-decl>
     <function-decl name='dbus_message_iter_recurse' mangled-name='dbus_message_iter_recurse' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='2195' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_iter_recurse'>
-      <parameter type-id='type-id-142' name='iter' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='2195' column='1'/>
-      <parameter type-id='type-id-142' name='sub' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='2196' column='1'/>
+      <parameter type-id='type-id-142' name='iter' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='2951' column='1'/>
+      <parameter type-id='type-id-142' name='sub' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='2952' column='1'/>
       <return type-id='type-id-11'/>
     </function-decl>
     <function-decl name='dbus_message_iter_get_element_type' mangled-name='dbus_message_iter_get_element_type' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='2158' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_iter_get_element_type'>
-      <parameter type-id='type-id-142' name='iter' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='2158' column='1'/>
+      <parameter type-id='type-id-142' name='iter' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='2139' column='1'/>
       <return type-id='type-id-9'/>
     </function-decl>
     <function-decl name='dbus_message_iter_next' mangled-name='dbus_message_iter_next' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='2114' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_iter_next'>
@@ -1504,7 +1504,7 @@
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_message_iter_has_next' mangled-name='dbus_message_iter_has_next' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='2095' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_iter_has_next'>
-      <parameter type-id='type-id-142' name='iter' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='2095' column='1'/>
+      <parameter type-id='type-id-142' name='iter' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='2114' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_message_iter_init' mangled-name='dbus_message_iter_init' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='2064' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_iter_init'>
@@ -1544,8 +1544,8 @@
       <return type-id='type-id-9'/>
     </function-decl>
     <function-decl name='dbus_message_is_error' mangled-name='dbus_message_is_error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3657' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_is_error'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3657' column='1'/>
-      <parameter type-id='type-id-3' name='error_name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3658' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3725' column='1'/>
+      <parameter type-id='type-id-3' name='name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3726' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_message_is_signal' mangled-name='dbus_message_is_signal' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3630' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_is_signal'>
@@ -1555,9 +1555,9 @@
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_message_is_method_call' mangled-name='dbus_message_is_method_call' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3602' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_is_method_call'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3602' column='1'/>
-      <parameter type-id='type-id-3' name='iface' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3603' column='1'/>
-      <parameter type-id='type-id-3' name='method' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3604' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3630' column='1'/>
+      <parameter type-id='type-id-3' name='iface' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3631' column='1'/>
+      <parameter type-id='type-id-3' name='signal_name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3632' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_message_unref' mangled-name='dbus_message_unref' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='1690' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_unref'>
@@ -1594,7 +1594,7 @@
       <return type-id='type-id-37'/>
     </function-decl>
     <function-decl name='dbus_message_get_serial' mangled-name='dbus_message_get_serial' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='1127' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_get_serial'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='1127' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='1163' column='1'/>
       <return type-id='type-id-21'/>
     </function-decl>
     <function-decl name='dbus_message_new_error' mangled-name='dbus_message_new_error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='1470' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_new_error'>
@@ -1611,7 +1611,7 @@
       <return type-id='type-id-37'/>
     </function-decl>
     <function-decl name='dbus_message_new_method_return' mangled-name='dbus_message_new_method_return' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='1373' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_new_method_return'>
-      <parameter type-id='type-id-37' name='method_call' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='1373' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='1667' column='1'/>
       <return type-id='type-id-37'/>
     </function-decl>
     <function-decl name='dbus_message_get_args_valist' mangled-name='dbus_message_get_args_valist' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='2009' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_get_args_valist'>
@@ -1634,7 +1634,7 @@
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_message_lock' mangled-name='dbus_message_lock' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='384' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_lock'>
-      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='384' column='1'/>
+      <parameter type-id='type-id-37' name='message' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='1690' column='1'/>
       <return type-id='type-id-11'/>
     </function-decl>
     <function-decl name='dbus_message_marshal' mangled-name='dbus_message_marshal' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='4721' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_marshal'>
@@ -1722,11 +1722,11 @@
       <return type-id='type-id-11'/>
     </function-decl>
     <function-decl name='dbus_pending_call_cancel' mangled-name='dbus_pending_call_cancel' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-pending-call.c' line='663' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_pending_call_cancel'>
-      <parameter type-id='type-id-136' name='pending' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-pending-call.c' line='663' column='1'/>
+      <parameter type-id='type-id-136' name='pending' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-pending-call.c' line='737' column='1'/>
       <return type-id='type-id-11'/>
     </function-decl>
     <function-decl name='dbus_pending_call_unref' mangled-name='dbus_pending_call_unref' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-pending-call.c' line='597' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_pending_call_unref'>
-      <parameter type-id='type-id-136' name='pending' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-pending-call.c' line='597' column='1'/>
+      <parameter type-id='type-id-136' name='pending' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-pending-call.c' line='737' column='1'/>
       <return type-id='type-id-11'/>
     </function-decl>
     <function-decl name='dbus_pending_call_ref' mangled-name='dbus_pending_call_ref' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-pending-call.c' line='577' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_pending_call_ref'>
@@ -1903,7 +1903,7 @@
       <return type-id='type-id-16'/>
     </function-decl>
     <function-decl name='dbus_server_get_address' mangled-name='dbus_server_get_address' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-server.c' line='818' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_server_get_address'>
-      <parameter type-id='type-id-157' name='server' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-server.c' line='818' column='1'/>
+      <parameter type-id='type-id-157' name='server' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-server.c' line='854' column='1'/>
       <return type-id='type-id-16'/>
     </function-decl>
     <function-decl name='dbus_server_unref' mangled-name='dbus_server_unref' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-server.c' line='720' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_server_unref'>
@@ -1977,15 +1977,15 @@
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_type_is_fixed' mangled-name='dbus_type_is_fixed' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.c' line='349' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_type_is_fixed'>
-      <parameter type-id='type-id-9' name='typecode' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.c' line='349' column='1'/>
+      <parameter type-id='type-id-9' name='typecode' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.c' line='383' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_type_is_basic' mangled-name='dbus_type_is_basic' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.c' line='318' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_type_is_basic'>
-      <parameter type-id='type-id-9' name='typecode' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.c' line='318' column='1'/>
+      <parameter type-id='type-id-9' name='typecode' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.c' line='383' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_type_is_container' mangled-name='dbus_type_is_container' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.c' line='294' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_type_is_container'>
-      <parameter type-id='type-id-9' name='typecode' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.c' line='294' column='1'/>
+      <parameter type-id='type-id-9' name='typecode' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.c' line='383' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_signature_validate' mangled-name='dbus_signature_validate' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.c' line='233' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_signature_validate'>
@@ -2004,8 +2004,8 @@
       <return type-id='type-id-9'/>
     </function-decl>
     <function-decl name='dbus_signature_validate_single' mangled-name='dbus_signature_validate_single' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.c' line='264' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_signature_validate_single'>
-      <parameter type-id='type-id-3' name='signature' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.c' line='264' column='1'/>
-      <parameter type-id='type-id-19' name='error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.c' line='265' column='1'/>
+      <parameter type-id='type-id-3' name='signature' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.c' line='233' column='1'/>
+      <parameter type-id='type-id-19' name='error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.c' line='234' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_signature_iter_recurse' mangled-name='dbus_signature_iter_recurse' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.c' line='207' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_signature_iter_recurse'>
@@ -2014,7 +2014,7 @@
       <return type-id='type-id-11'/>
     </function-decl>
     <function-decl name='dbus_signature_iter_get_element_type' mangled-name='dbus_signature_iter_get_element_type' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.c' line='146' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_signature_iter_get_element_type'>
-      <parameter type-id='type-id-171' name='iter' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.c' line='146' column='1'/>
+      <parameter type-id='type-id-171' name='iter' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.c' line='92' column='1'/>
       <return type-id='type-id-9'/>
     </function-decl>
     <function-decl name='dbus_signature_iter_get_signature' mangled-name='dbus_signature_iter_get_signature' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.c' line='112' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_signature_iter_get_signature'>
@@ -2029,28 +2029,28 @@
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_validate_bus_name' mangled-name='dbus_validate_bus_name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='242' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_validate_bus_name'>
-      <parameter type-id='type-id-3' name='name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='242' column='1'/>
-      <parameter type-id='type-id-19' name='error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='243' column='1'/>
+      <parameter type-id='type-id-3' name='alleged_utf8' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='289' column='1'/>
+      <parameter type-id='type-id-19' name='error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='290' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_validate_error_name' mangled-name='dbus_validate_error_name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='195' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_validate_error_name'>
-      <parameter type-id='type-id-3' name='name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='195' column='1'/>
-      <parameter type-id='type-id-19' name='error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='196' column='1'/>
+      <parameter type-id='type-id-3' name='alleged_utf8' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='289' column='1'/>
+      <parameter type-id='type-id-19' name='error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='290' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_validate_member' mangled-name='dbus_validate_member' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='148' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_validate_member'>
-      <parameter type-id='type-id-3' name='name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='148' column='1'/>
-      <parameter type-id='type-id-19' name='error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='149' column='1'/>
+      <parameter type-id='type-id-3' name='alleged_utf8' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='289' column='1'/>
+      <parameter type-id='type-id-19' name='error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='290' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_validate_interface' mangled-name='dbus_validate_interface' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='101' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_validate_interface'>
-      <parameter type-id='type-id-3' name='name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='101' column='1'/>
-      <parameter type-id='type-id-19' name='error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='102' column='1'/>
+      <parameter type-id='type-id-3' name='alleged_utf8' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='289' column='1'/>
+      <parameter type-id='type-id-19' name='error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='290' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_validate_path' mangled-name='dbus_validate_path' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='54' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_validate_path'>
-      <parameter type-id='type-id-3' name='path' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='54' column='1'/>
-      <parameter type-id='type-id-19' name='error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='55' column='1'/>
+      <parameter type-id='type-id-3' name='alleged_utf8' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='289' column='1'/>
+      <parameter type-id='type-id-19' name='error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='290' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
   </abi-instr>
@@ -2102,7 +2102,7 @@
       <return type-id='type-id-22'/>
     </function-decl>
     <function-decl name='dbus_timeout_get_enabled' mangled-name='dbus_timeout_get_enabled' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-timeout.c' line='486' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_timeout_get_enabled'>
-      <parameter type-id='type-id-113' name='timeout' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-timeout.c' line='486' column='1'/>
+      <parameter type-id='type-id-113' name='timeout' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-timeout.c' line='472' column='1'/>
       <return type-id='type-id-22'/>
     </function-decl>
     <function-type size-in-bits='64' id='type-id-173'>
@@ -2302,11 +2302,11 @@
       <return type-id='type-id-9'/>
     </function-decl>
     <function-decl name='dbus_watch_get_unix_fd' mangled-name='dbus_watch_get_unix_fd' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-watch.c' line='557' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_watch_get_unix_fd'>
-      <parameter type-id='type-id-123' name='watch' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-watch.c' line='557' column='1'/>
+      <parameter type-id='type-id-123' name='watch' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-watch.c' line='586' column='1'/>
       <return type-id='type-id-9'/>
     </function-decl>
     <function-decl name='dbus_watch_get_fd' mangled-name='dbus_watch_get_fd' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-watch.c' line='536' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_watch_get_fd'>
-      <parameter type-id='type-id-123' name='watch' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-watch.c' line='536' column='1'/>
+      <parameter type-id='type-id-123' name='watch' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-watch.c' line='586' column='1'/>
       <return type-id='type-id-9'/>
     </function-decl>
     <function-type size-in-bits='64' id='type-id-213'>
@@ -2339,7 +2339,7 @@
       <return type-id='type-id-8'/>
     </function-decl>
     <function-decl name='dbus_malloc' mangled-name='dbus_malloc' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-memory.c' line='461' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_malloc'>
-      <parameter type-id='type-id-215' name='bytes' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-memory.c' line='461' column='1'/>
+      <parameter type-id='type-id-215' name='bytes' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-memory.c' line='531' column='1'/>
       <return type-id='type-id-8'/>
     </function-decl>
   </abi-instr>

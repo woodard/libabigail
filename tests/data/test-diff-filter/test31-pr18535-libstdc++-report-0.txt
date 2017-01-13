@@ -1,4 +1,4 @@
-Functions changes summary: 0 Removed, 2 Changed (2 filtered out), 13 Added functions
+Functions changes summary: 0 Removed, 3 Changed (3 filtered out), 13 Added functions
 Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 Function symbols changes summary: 0 Removed, 0 Added function symbol not referenced by debug info
 Variable symbols changes summary: 0 Removed, 6 Added variable symbols not referenced by debug info
@@ -25,7 +25,7 @@ Variable symbols changes summary: 0 Removed, 6 Added variable symbols not refere
   'function std::unexpected_handler std::get_unexpected()'
   'method std::regex_error::regex_error(std::regex_constants::error_type)'
 
-2 functions with some indirect sub-type change:
+3 functions with some indirect sub-type change:
 
   [C]'function __cxxabiv1::__cxa_dependent_exception* __cxxabiv1::__cxa_allocate_dependent_exception()' has some indirect sub-type changes:
     return type changed:
@@ -46,6 +46,21 @@ Variable symbols changes summary: 0 Removed, 6 Added variable symbols not refere
       type size hasn't changed
       1 enumerator deletion:
         'std::regex_constants::error_type::_S_error_last' value '13'
+
+
+  [C]'method std::random_device* std::random_device::_M_init(const std::string&)' has some indirect sub-type changes:
+    return type changed:
+      in pointed to type 'class std::random_device':
+        type size hasn't changed
+        1 data member change:
+         type of 'std::random_device::__anonymous_union__ ' changed:
+           type size hasn't changed
+           1 data member change:
+            type of 'FILE* std::random_device::__anonymous_union__::_M_file' changed:
+              in pointed to type 'typedef FILE':
+                entity changed from 'typedef FILE' to 'void'
+                type size changed from 1216 to 0 bits
+
 
 
 
