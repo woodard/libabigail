@@ -10535,8 +10535,8 @@ finish_member_function_reading(Dwarf_Die*		  die,
       is_static = true;
   }
   set_member_access_specifier(m, access);
-  set_member_function_is_virtual(m, is_virtual);
   set_member_function_vtable_offset(m, vindex);
+  set_member_function_is_virtual(m, is_virtual);
   set_member_is_static(m, is_static);
   set_member_function_is_ctor(m, is_ctor);
   set_member_function_is_dtor(m, is_dtor);

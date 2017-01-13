@@ -15584,7 +15584,8 @@ struct class_decl::priv
   base_specs			bases_;
   unordered_map<string, base_spec_sptr>	bases_map_;
   member_functions		virtual_mem_fns_;
-  bool				is_struct_;
+  virtual_mem_fn_map_type			virtual_mem_fns_map_;
+  bool						is_struct_;
 
   priv()
     : is_struct_(false)
@@ -15696,6 +15697,12 @@ void
 class_decl::on_canonical_type_set()
 {
   sort_virtual_mem_fns();
+
+  for (class_decl::virtual_mem_fn_map_type::iterator i =
+	 priv_->virtual_mem_fns_map_.begin();
+       i != priv_->virtual_mem_fns_map_.end();
+       ++i)
+    sort_virtual_member_functions(i->second);
 }
 
 const class_decl_sptr
@@ -15762,6 +15769,25 @@ class_decl::find_base_class(const string& qualified_name) const
 const class_decl::member_functions&
 class_decl::get_virtual_mem_fns() const
 {return priv_->virtual_mem_fns_;}
+
+/// Get the map that associates a virtual table offset to the virtual
+/// member functions with that virtual table offset.
+///
+/// Usually, there should be a 1:1 mapping between a given vtable
+/// offset and virtual member functions of that vtable offset.  But
+/// because of some implementation details, there can be several C++
+/// destructor functions that are *generated* by compilers, for a
+/// given destructor that is defined in the source code.  If the
+/// destructor is virtual then those generated functions have some
+/// DWARF attributes in common with the constructor that the user
+/// actually defined in its source code.  Among those attributes are
+/// the vtable offset of the destructor.
+///
+/// @return the map that associates a virtual table offset to the
+/// virtual member functions with that virtual table offset.
+const class_decl::virtual_mem_fn_map_type&
+class_decl::get_virtual_mem_fns_map() const
+{return priv_->virtual_mem_fns_map_;}
 
 /// Sort the virtual member functions by their virtual index.
 void
@@ -16336,8 +16362,8 @@ class_decl::add_member_function(method_decl_sptr f,
 {
   class_or_union::add_member_function(f, a, is_static, is_ctor,
 				      is_dtor, is_const);
-  set_member_function_is_virtual(f, is_virtual);
   set_member_function_vtable_offset(f, vtable_offset);
+  set_member_function_is_virtual(f, is_virtual);
 
   if (is_virtual)
     sort_virtual_member_functions(priv_->virtual_mem_fns_);
@@ -16345,8 +16371,8 @@ class_decl::add_member_function(method_decl_sptr f,
 
 /// When a virtual member function has seen its virtualness set by
 /// set_member_function_is_virtual(), this function ensures that the
-/// member function is added to the specific vectors of virtual member
-/// function of its class.
+/// member function is added to the specific vectors and maps of
+/// virtual member function of its class.
 ///
 /// @param method the method to fixup.
 void
@@ -16356,7 +16382,8 @@ fixup_virtual_member_function(method_decl_sptr method)
     return;
 
   class_decl_sptr klass = is_class_type(method->get_type()->get_class_type());
-  class_decl::member_functions::iterator m;
+
+  class_decl::member_functions::const_iterator m;
   for (m = klass->priv_->virtual_mem_fns_.begin();
        m != klass->priv_->virtual_mem_fns_.end();
        ++m)
@@ -16364,6 +16391,26 @@ fixup_virtual_member_function(method_decl_sptr method)
       break;
   if (m == klass->priv_->virtual_mem_fns_.end())
     klass->priv_->virtual_mem_fns_.push_back(method);
+
+  // Build or udpate the map that associates a vtable offset to the
+  // number of virtual member functions that "point" to it.
+  size_t voffset = get_member_function_vtable_offset(method);
+  class_decl::virtual_mem_fn_map_type::iterator i =
+    klass->priv_->virtual_mem_fns_map_.find(voffset);
+  if (i == klass->priv_->virtual_mem_fns_map_.end())
+    {
+      class_decl::member_functions virtual_mem_fns_at_voffset;
+      virtual_mem_fns_at_voffset.push_back(method);
+      klass->priv_->virtual_mem_fns_map_[voffset] = virtual_mem_fns_at_voffset;
+    }
+  else
+    {
+      for (m = i->second.begin() ; m != i->second.end(); ++m)
+	if (m->get() == method.get())
+	  break;
+      if (m == i->second.end())
+	i->second.push_back(method);
+    }
 }
 
 /// Return true iff the class has no entity in its scope.

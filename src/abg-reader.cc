@@ -4182,8 +4182,8 @@ build_class_decl(read_context&		ctxt,
 		  assert(m);
 		  set_member_access_specifier(m, access);
 		  set_member_is_static(m, is_static);
-		  set_member_function_is_virtual(m, is_virtual);
 		  set_member_function_vtable_offset(m, vtable_offset);
+		  set_member_function_is_virtual(m, is_virtual);
 		  set_member_function_is_ctor(m, is_ctor);
 		  set_member_function_is_dtor(m, is_dtor);
 		  set_member_function_is_const(m, is_const);
