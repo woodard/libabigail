@@ -12742,7 +12742,9 @@ maybe_canonicalize_type(Dwarf_Die *die, read_context&	ctxt)
 
   size_t die_offset = dwarf_dieoffset(die);
   type_base_sptr t = ctxt.lookup_type_from_die(die);
-  assert(t);
+
+  if (!t)
+    return;
 
   type_base_sptr peeled_type = peel_typedef_pointer_or_reference_type(t);
   if (is_class_type(peeled_type)
