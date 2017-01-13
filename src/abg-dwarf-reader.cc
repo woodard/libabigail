@@ -389,7 +389,8 @@ die_return_and_parm_names_from_fn_type_die(read_context& ctxt,
 					   string &return_type_name,
 					   string &class_name,
 					   vector<string>& parm_names,
-					   bool& is_const);
+					   bool& is_const,
+					   bool& is_static);
 
 static string
 die_function_signature(read_context& ctxt, Dwarf_Die *die, size_t where_offset);
@@ -8925,11 +8926,13 @@ die_qualified_type_name(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
 	string class_name;
 	vector<string> parm_names;
 	bool is_const = false;
+	bool is_static = false;
 
 	die_return_and_parm_names_from_fn_type_die(ctxt, die, where_offset,
 						   /*pretty_print=*/true,
 						   return_type_name, class_name,
-						   parm_names, is_const);
+						   parm_names, is_const,
+						   is_static);
 	if (return_type_name.empty())
 	  return_type_name = "void";
 
@@ -9144,6 +9147,9 @@ die_qualified_type_name_empty(read_context& ctxt, Dwarf_Die* die,
 ///
 /// @param is_const out parameter.  If the function is a member
 /// function, this is set to true iff the member function is const.
+///
+/// @param is_static out parameter.  If the function is a static
+/// member function, then this is set to true.
 static void
 die_return_and_parm_names_from_fn_type_die(read_context& ctxt,
 					   Dwarf_Die* die,
@@ -9152,7 +9158,8 @@ die_return_and_parm_names_from_fn_type_die(read_context& ctxt,
 					   string &return_type_name,
 					   string &class_name,
 					   vector<string>& parm_names,
-					   bool& is_const)
+					   bool& is_const,
+					   bool& is_static)
 {
   Dwarf_Die child;
   Dwarf_Die ret_type_die;
@@ -9168,7 +9175,6 @@ die_return_and_parm_names_from_fn_type_die(read_context& ctxt,
     return_type_name = "void";
 
   Dwarf_Die object_pointer_die, class_die;
-  bool is_static = false;
   bool is_method_type =
     die_function_type_is_method_type(ctxt, die, where_offset,
 				     object_pointer_die,
@@ -9270,11 +9276,12 @@ die_function_signature(read_context& ctxt,
   string class_name;
   vector<string> parm_names;
   bool is_const = false;
+  bool is_static = false;
 
   die_return_and_parm_names_from_fn_type_die(ctxt, fn_die, where_offset,
 					     /*pretty_print=*/false,
 					     return_type_name, class_name,
-					     parm_names, is_const);
+					     parm_names, is_const, is_static);
 
   bool is_virtual = die_is_virtual(fn_die);
 
@@ -9300,8 +9307,8 @@ die_function_signature(read_context& ctxt,
 	    repr += ", ";
 	}
       else
-	if (!class_name.empty())
-	  // We are printing a method name, skip the implicit "this"
+	if (!is_static && !class_name.empty())
+	  // We are printing a non-static method name, skip the implicit "this"
 	  // parameter type.
 	  continue;
       repr += *i;
@@ -9430,11 +9437,13 @@ die_pretty_print_type(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
 	string class_name;
 	vector<string> parm_names;
 	bool is_const = false;
+	bool is_static = false;
 
 	die_return_and_parm_names_from_fn_type_die(ctxt, die, where_offset,
 						   /*pretty_print=*/true,
 						   return_type_name, class_name,
-						   parm_names, is_const);
+						   parm_names, is_const,
+						   is_static);
 	if (class_name.empty())
 	  repr = "function type";
 	else
