@@ -12291,12 +12291,13 @@ build_or_get_fn_decl_if_not_suppressed(read_context&	  ctxt,
   if (function_is_suppressed(ctxt, scope, fn_die))
     return fn;
 
-  if ((fn = is_function_decl(ctxt.lookup_artifact_from_die(fn_die,
-							   where_offset))))
-    {
-      ctxt.associate_die_to_decl(fn_die, fn, /*do_associate_by_repr=*/true);
-      return fn;
-    }
+  if (!result)
+    if ((fn = is_function_decl(ctxt.lookup_artifact_from_die(fn_die,
+							     where_offset))))
+      {
+	ctxt.associate_die_to_decl(fn_die, fn, /*do_associate_by_repr=*/true);
+	return fn;
+      }
 
   fn = build_function_decl(ctxt, fn_die, where_offset, result);
 
