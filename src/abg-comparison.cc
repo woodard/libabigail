@@ -191,15 +191,16 @@ operator~(visiting_kind l)
 /// @param S2 the second diff subject to take in account.
 #define RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER(S1, S2) \
   do {									\
-    if (diff_sptr _diff_ = context()->get_canonical_diff_for(S1, S2))	\
-      if (_diff_->currently_reporting() || _diff_->reported_once())	\
-	{								\
-	  if (_diff_->currently_reporting())				\
-	    out << indent << "details are being reported\n";		\
-	  else								\
-	    out << indent << "details were reported earlier\n";	\
-	  return ;							\
-	}								\
+    if (diff_context_sptr ctxt = context())				\
+      if (diff_sptr _diff_ = ctxt->get_canonical_diff_for(S1, S2))	\
+	if (_diff_->currently_reporting() || _diff_->reported_once())	\
+	  {								\
+	    if (_diff_->currently_reporting())				\
+	      out << indent << "details are being reported\n";		\
+	    else							\
+	      out << indent << "details were reported earlier\n";	\
+	    return ;							\
+	  }								\
   } while (false)
 
 /// This is a subroutine of a *::report() function.
@@ -1433,8 +1434,11 @@ public:
   is_filtered_out(diff_category category)
   {
     diff_context_sptr ctxt = get_context();
+    if (!ctxt)
+      return false;
+
     if (ctxt->get_allowed_category() == EVERYTHING_CATEGORY)
-    return false;
+      return false;
 
   /// We don't want to display nodes suppressed by a user-provided
   /// suppression specification.
