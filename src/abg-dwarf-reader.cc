@@ -11069,7 +11069,7 @@ add_or_update_class_type(read_context&	 ctxt,
 					      where_offset);
 	      if (function_decl_sptr f = is_function_decl(r))
 		ctxt.associate_die_to_decl(&child, f, where_offset,
-					   /*associate_by_repr=*/false);
+					   /*associate_by_repr=*/true);
 	    }
 	  // Handle member types
 	  else if (die_is_type(&child))
