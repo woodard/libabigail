@@ -3207,8 +3207,8 @@ public:
 
   /// Convenience typedef
   /// @{
-  typedef vector<type_base_sptr>			member_types;
-  typedef vector<var_decl_sptr>			data_members;
+  typedef vector<type_base_sptr>		member_types;
+  typedef vector<var_decl_sptr>		data_members;
   typedef vector<method_decl_sptr>		member_functions;
   typedef unordered_map<ssize_t, member_functions> virtual_mem_fn_map_type;
   typedef unordered_map<string, method_decl*> string_mem_fn_ptr_map_type;

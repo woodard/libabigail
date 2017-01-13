@@ -15600,9 +15600,9 @@ sort_virtual_member_functions(class_decl::member_functions& mem_fns);
 /// The private data for the class_decl type.
 struct class_decl::priv
 {
-  base_specs			bases_;
+  base_specs					bases_;
   unordered_map<string, base_spec_sptr>	bases_map_;
-  member_functions		virtual_mem_fns_;
+  member_functions				virtual_mem_fns_;
   virtual_mem_fn_map_type			virtual_mem_fns_map_;
   bool						is_struct_;
 
@@ -16304,7 +16304,7 @@ struct virtual_member_function_less_than
       {
 	string fn, sn;
 
-	// If the functions have symbols, the compare their symbol-id
+	// If the functions have symbols, then compare their symbol-id
 	// string.
 	if (f.get_symbol() && s.get_symbol())
 	  {

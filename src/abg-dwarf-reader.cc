@@ -3189,6 +3189,7 @@ public:
   get_die_pretty_representation(Dwarf_Die *die, size_t where_offset) const
   {
     assert(die);
+
     die_istring_map_type& map =
       die_pretty_repr_maps_.get_container(*const_cast<read_context*>(this),
 					  die);
