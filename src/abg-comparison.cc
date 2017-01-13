@@ -2803,7 +2803,7 @@ represent(const diff_context& ctxt,
 	<< get_member_function_vtable_offset(mem_fn)
 	<< "/"
 	<< is_class_type(meth->get_type()->get_class_type())->
-      get_virtual_mem_fns().size();
+      get_biggest_vtable_offset();
 
   if (ctxt.show_linkage_names()
       && (mem_fn->get_symbol()))
@@ -6147,34 +6147,18 @@ class_or_union_diff::chain_into_hierarchy()
 struct class_diff::priv
 {
   edit_script base_changes_;
-  edit_script member_types_changes_;
-  edit_script member_fns_changes_;
-
   string_base_sptr_map deleted_bases_;
   class_decl::base_specs sorted_deleted_bases_;
   string_base_sptr_map inserted_bases_;
   class_decl::base_specs sorted_inserted_bases_;
   string_base_diff_sptr_map changed_bases_;
   base_diff_sptrs_type sorted_changed_bases_;
-  string_member_function_sptr_map deleted_member_functions_;
-  string_member_function_sptr_map inserted_member_functions_;
-  string_function_decl_diff_sptr_map changed_member_functions_;
-  function_decl_diff_sptrs_type sorted_changed_member_functions_;
 
   class_decl::base_spec_sptr
   base_has_changed(class_decl::base_spec_sptr) const;
 
   size_t
   count_filtered_bases();
-
-  size_t
-  count_filtered_changed_mem_fns(const diff_context_sptr&);
-
-  size_t
-  count_filtered_inserted_mem_fns(const diff_context_sptr&);
-
-  size_t
-  count_filtered_deleted_mem_fns(const diff_context_sptr&);
 
   priv()
   {}
@@ -6190,9 +6174,6 @@ class_diff::clear_lookup_tables(void)
   priv_->deleted_bases_.clear();
   priv_->inserted_bases_.clear();
   priv_->changed_bases_.clear();
-  priv_->deleted_member_functions_.clear();
-  priv_->inserted_member_functions_.clear();
-  priv_->changed_member_functions_.clear();
 }
 
 /// Tests if the lookup tables are empty.
@@ -6203,10 +6184,7 @@ class_diff::lookup_tables_empty(void) const
 {
   return (priv_->deleted_bases_.empty()
 	  && priv_->inserted_bases_.empty()
-	  && priv_->changed_bases_.empty()
-	  && priv_->inserted_member_functions_.empty()
-	  && priv_->deleted_member_functions_.empty()
-	  && priv_->changed_member_functions_.empty());
+	  && priv_->changed_bases_.empty());
 }
 
 /// If the lookup tables are not yet built, walk the differences and
@@ -6220,7 +6198,7 @@ class_diff::ensure_lookup_tables_populated(void) const
     return;
 
   {
-    edit_script& e = priv_->base_changes_;
+    edit_script& e = get_priv()->base_changes_;
 
     for (vector<deletion>::const_iterator it = e.deletions().begin();
 	 it != e.deletions().end();
@@ -6230,9 +6208,9 @@ class_diff::ensure_lookup_tables_populated(void) const
 	class_decl::base_spec_sptr b =
 	  first_class_decl()->get_base_specifiers()[i];
 	string qname = b->get_base_class()->get_qualified_name();
-	assert(priv_->deleted_bases_.find(qname)
-	       == priv_->deleted_bases_.end());
-	priv_->deleted_bases_[qname] = b;
+	assert(get_priv()->deleted_bases_.find(qname)
+	       == get_priv()->deleted_bases_.end());
+	get_priv()->deleted_bases_[qname] = b;
       }
 
     for (vector<insertion>::const_iterator it = e.insertions().begin();
@@ -6248,32 +6226,32 @@ class_diff::ensure_lookup_tables_populated(void) const
 	    class_decl::base_spec_sptr b =
 	      second_class_decl()->get_base_specifiers()[i];
 	    string qname = b->get_base_class()->get_qualified_name();
-	    assert(priv_->inserted_bases_.find(qname)
-		   == priv_->inserted_bases_.end());
+	    assert(get_priv()->inserted_bases_.find(qname)
+		   == get_priv()->inserted_bases_.end());
 	    string_base_sptr_map::const_iterator j =
-	      priv_->deleted_bases_.find(qname);
-	    if (j != priv_->deleted_bases_.end())
+	      get_priv()->deleted_bases_.find(qname);
+	    if (j != get_priv()->deleted_bases_.end())
 	      {
 		if (j->second != b)
-		  priv_->changed_bases_[qname] =
+		  get_priv()->changed_bases_[qname] =
 		    compute_diff(j->second, b, context());
-		priv_->deleted_bases_.erase(j);
+		get_priv()->deleted_bases_.erase(j);
 	      }
 	    else
-	      priv_->inserted_bases_[qname] = b;
+	      get_priv()->inserted_bases_[qname] = b;
 	  }
       }
   }
 
-  sort_string_base_sptr_map(priv_->deleted_bases_,
-			    priv_->sorted_deleted_bases_);
-  sort_string_base_sptr_map(priv_->inserted_bases_,
-			    priv_->sorted_inserted_bases_);
-  sort_string_base_diff_sptr_map(priv_->changed_bases_,
-				 priv_->sorted_changed_bases_);
+  sort_string_base_sptr_map(get_priv()->deleted_bases_,
+			    get_priv()->sorted_deleted_bases_);
+  sort_string_base_sptr_map(get_priv()->inserted_bases_,
+			    get_priv()->sorted_inserted_bases_);
+  sort_string_base_diff_sptr_map(get_priv()->changed_bases_,
+				 get_priv()->sorted_changed_bases_);
 
   {
-    const class_or_union_diff::priv_sptr &p = class_or_union_diff::priv_;
+    const class_or_union_diff::priv_sptr &p = class_or_union_diff::get_priv();
 
     edit_script& e = p->member_fns_changes_;
 
@@ -6343,11 +6321,15 @@ class_diff::ensure_lookup_tables_populated(void) const
 	     deleted_member_fns().begin();
 	   i != deleted_member_fns().end();
 	   ++i)
-	// We assume that all the functions we look at here have ELF
-	// symbols.
-	if (!i->second->get_symbol()
-		|| s->lookup_function_symbol(*i->second->get_symbol()))
-	  to_delete.push_back(i->first);
+	{
+	  if (get_member_function_is_virtual(i->second))
+	    continue;
+	  // We assume that all non-virtual member functions functions
+	  // we look at here have ELF symbols.
+	  if (!i->second->get_symbol()
+	      || s->lookup_function_symbol(*i->second->get_symbol()))
+	    to_delete.push_back(i->first);
+	}
 
 
     for (vector<string>::const_iterator i = to_delete.begin();
@@ -6362,9 +6344,15 @@ class_diff::ensure_lookup_tables_populated(void) const
 	     inserted_member_fns().begin();
 	   i != inserted_member_fns().end();
 	   ++i)
-	if (!i->second->get_symbol()
-	    || f->lookup_function_symbol(*i->second->get_symbol()))
-	  to_delete.push_back(i->first);
+	{
+	  if (get_member_function_is_virtual(i->second))
+	    continue;
+	  // We assume that all non-virtual member functions functions
+	  // we look at here have ELF symbols.
+	  if (!i->second->get_symbol()
+	      || f->lookup_function_symbol(*i->second->get_symbol()))
+	    to_delete.push_back(i->first);
+	}
 
     for (vector<string>::const_iterator i = to_delete.begin();
 	 i != to_delete.end();
@@ -6426,117 +6414,6 @@ class_diff::priv::count_filtered_bases()
   return num_filtered;
 }
 
-/// Count the number of member functions whose changes got filtered
-/// out.
-///
-/// @param ctxt the diff context to use to get the filtering settings
-/// from the user.
-///
-/// @return the number of member functions whose changes got filtered
-/// out.
-size_t
-class_diff::priv::count_filtered_changed_mem_fns(const diff_context_sptr& ctxt)
-{
-  size_t count = 0;
-  diff_category allowed_category = ctxt->get_allowed_category();
-
-  for (function_decl_diff_sptrs_type::const_iterator i =
-	 sorted_changed_member_functions_.begin();
-       i != sorted_changed_member_functions_.end();
-       ++i)
-    {
-      method_decl_sptr f =
-	dynamic_pointer_cast<method_decl>
-	((*i)->first_function_decl());
-      assert(f);
-
-      method_decl_sptr s =
-	dynamic_pointer_cast<method_decl>
-	((*i)->second_function_decl());
-      assert(s);
-
-      SKIP_MEM_FN_IF_VIRTUALITY_DISALLOWED;
-
-      diff_sptr diff = *i;
-      ctxt->maybe_apply_filters(diff);
-
-      if (diff->is_filtered_out())
-	++count;
-    }
-
-  return count;
-}
-
-/// Count the number of inserted member functions whose got filtered
-/// out.
-///
-/// @param ctxt the diff context to use to get the filtering settings
-/// from the user.
-///
-/// @return the number of inserted member functions whose got filtered
-/// out.
-size_t
-class_diff::priv::count_filtered_inserted_mem_fns(const diff_context_sptr& ctxt)
-{
-  size_t count = 0;
-  diff_category allowed_category = ctxt->get_allowed_category();
-
-  for (string_member_function_sptr_map::const_iterator i =
-	 inserted_member_functions_.begin();
-       i != inserted_member_functions_.end();
-       ++i)
-    {
-      method_decl_sptr f = i->second,
-	s = i->second;
-
-      SKIP_MEM_FN_IF_VIRTUALITY_DISALLOWED;
-
-      diff_sptr diff = compute_diff_for_decls(f, s, ctxt);
-      ctxt->maybe_apply_filters(diff);
-
-      if (diff->get_category() != NO_CHANGE_CATEGORY
-	  && diff->is_filtered_out())
-	++count;
-    }
-
-  return count;
-}
-
-/// Count the number of deleted member functions whose got filtered
-/// out.
-///
-/// @param ctxt the diff context to use to get the filtering settings
-/// from the user.
-///
-/// @return the number of deleted member functions whose got filtered
-/// out.
-size_t
-class_diff::priv::count_filtered_deleted_mem_fns(const diff_context_sptr& ctxt)
-{
-  size_t count = 0;
-  diff_category allowed_category = ctxt->get_allowed_category();
-
-  for (string_member_function_sptr_map::const_iterator i =
-	 deleted_member_functions_.begin();
-       i != deleted_member_functions_.end();
-       ++i)
-    {
-      method_decl_sptr f = i->second,
-	s = i->second;
-
-      SKIP_MEM_FN_IF_VIRTUALITY_DISALLOWED;
-
-      diff_sptr diff = compute_diff_for_decls(f, s, ctxt);
-      ctxt->maybe_apply_filters(diff);
-
-      if (diff->get_category() != NO_CHANGE_CATEGORY
-	  && diff->is_filtered_out())
-	++count;
-    }
-
-  return count;
-}
-
 /// Populate the vector of children node of the @ref diff base type
 /// sub-object of this instance of @ref class_diff.
 ///
@@ -6551,14 +6428,6 @@ class_diff::chain_into_hierarchy()
   for (base_diff_sptrs_type::const_iterator i =
 	 get_priv()->sorted_changed_bases_.begin();
        i != get_priv()->sorted_changed_bases_.end();
-       ++i)
-    if (diff_sptr d = *i)
-      append_child_node(d);
-
-  // member function changes
-  for (function_decl_diff_sptrs_type::const_iterator i =
-	 get_priv()->sorted_changed_member_functions_.begin();
-       i != get_priv()->sorted_changed_member_functions_.end();
        ++i)
     if (diff_sptr d = *i)
       append_child_node(d);
@@ -7000,102 +6869,6 @@ class_diff::report(ostream& out, const string& indent) const
 	    }
 	  out << "\n";
 	}
-    }
-
-  // member functions
-  if (member_fns_changes())
-    {
-      // report deletions
-      int numdels = get_priv()->deleted_member_functions_.size();
-      size_t num_filtered = get_priv()->count_filtered_deleted_mem_fns(context());
-      if (numdels)
-	report_mem_header(out, numdels, num_filtered, del_kind,
-			  "member function", indent);
-      bool emitted = false;
-      for (string_member_function_sptr_map::const_iterator i =
-	     get_priv()->deleted_member_functions_.begin();
-	   i != get_priv()->deleted_member_functions_.end();
-	   ++i)
-	{
-	  if (!(context()->get_allowed_category()
-		& NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
-	      && !get_member_function_is_virtual(i->second))
-	    continue;
-
-	  if (emitted
-	      && i != get_priv()->deleted_member_functions_.begin())
-	    out << "\n";
-	  method_decl_sptr mem_fun = i->second;
-	  out << indent << "  ";
-	  represent(*context(), mem_fun, out);
-	  emitted = true;
-	}
-      if (emitted)
-	out << "\n";
-
-      // report insertions;
-      int numins = get_priv()->inserted_member_functions_.size();
-      num_filtered = get_priv()->count_filtered_inserted_mem_fns(context());
-      if (numins)
-	report_mem_header(out, numins, num_filtered, ins_kind,
-			  "member function", indent);
-      emitted = false;
-      for (string_member_function_sptr_map::const_iterator i =
-	     get_priv()->inserted_member_functions_.begin();
-	   i != get_priv()->inserted_member_functions_.end();
-	   ++i)
-	{
-	  if (!(context()->get_allowed_category()
-		& NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
-	      && !get_member_function_is_virtual(i->second))
-	    continue;
-
-	  if (emitted
-	      && i != get_priv()->inserted_member_functions_.begin())
-	    out << "\n";
-	  method_decl_sptr mem_fun = i->second;
-	  out << indent << "  ";
-	  represent(*context(), mem_fun, out);
-	  emitted = true;
-	}
-      if (emitted)
-	out << "\n";
-
-      // report member function with sub-types changes
-      int numchanges = get_priv()->sorted_changed_member_functions_.size();
-      num_filtered = get_priv()->count_filtered_changed_mem_fns(context());
-      if (numchanges)
-	report_mem_header(out, numchanges, num_filtered, change_kind,
-			  "member function", indent);
-      emitted = false;
-      for (function_decl_diff_sptrs_type::const_iterator i =
-	     get_priv()->sorted_changed_member_functions_.begin();
-	   i != get_priv()->sorted_changed_member_functions_.end();
-	   ++i)
-	{
-	  if (!(context()->get_allowed_category()
-		& NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
-	      && !(get_member_function_is_virtual
-		   ((*i)->first_function_decl()))
-	      && !(get_member_function_is_virtual
-		   ((*i)->second_function_decl())))
-	    continue;
-
-	  diff_sptr diff = *i;
-	  if (!diff || !diff->to_be_reported())
-	    continue;
-
-	  string repr =
-	    (*i)->first_function_decl()->get_pretty_representation();
-	  if (emitted
-	      && i != get_priv()->sorted_changed_member_functions_.begin())
-	    out << "\n";
-	  out << indent << "  '" << repr << "' has some sub-type changes:\n";
-	  diff->report(out, indent + "    ");
-	  emitted = true;
-	}
-      if (numchanges)
-	out << "\n";
     }
 
   class_or_union_diff::report(out, indent);

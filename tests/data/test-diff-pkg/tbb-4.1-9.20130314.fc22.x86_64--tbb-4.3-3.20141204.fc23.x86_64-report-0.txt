@@ -130,6 +130,12 @@
 
 
 
+               1 member function deletion:
+                 'method virtual tbb::task* tbb::internal::generic_scheduler::receive_or_steal_task(tbb::internal::reference_count&, bool)' at scheduler.h:391:1, virtual at voffset 7/7
+
+               1 member function insertion:
+                 'method virtual tbb::task* tbb::internal::generic_scheduler::receive_or_steal_task(tbb::internal::reference_count&)' at scheduler.h:362:1, virtual at voffset 7/7
+
                3 data member deletions:
                  'unsigned int tbb::internal::generic_scheduler::hint_for_push', at offset 896 (in bits) at scheduler.h:171:1
 

@@ -3495,6 +3495,9 @@ public:
   bool
   has_vtable() const;
 
+  ssize_t
+  get_biggest_vtable_offset() const;
+
   virtual size_t
   get_hash() const;
 

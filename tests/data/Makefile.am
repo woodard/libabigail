@@ -302,6 +302,9 @@ test-diff-dwarf/libtest40-v1.so \
 test-diff-dwarf/test40-report-0.txt \
 test-diff-dwarf/test40-v0.c \
 test-diff-dwarf/test40-v1.c \
+test-diff-dwarf/libtest41-PR20476-hidden-new.so \
+test-diff-dwarf/libtest41-PR20476-hidden-old.so \
+test-diff-dwarf/test41-PR20476-hidden-report-0.txt \
 \
 test-read-dwarf/test0			\
 test-read-dwarf/test0.abi			\

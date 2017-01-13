@@ -4530,6 +4530,17 @@
           </member-function>
           <member-function access='public' destructor='yes' vtable-offset='0'>
             <!-- boost::system::error_category::~error_category(int) -->
+            <function-decl name='~error_category' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='188' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <!-- implicit parameter of type 'boost::system::error_category*' -->
+              <parameter type-id='type-id-145' is-artificial='yes'/>
+              <!-- artificial parameter of type 'int' -->
+              <parameter type-id='type-id-37' is-artificial='yes'/>
+              <!-- void -->
+              <return type-id='type-id-7'/>
+            </function-decl>
+          </member-function>
+          <member-function access='public' destructor='yes' vtable-offset='0'>
+            <!-- boost::system::error_category::~error_category(int) -->
             <function-decl name='~error_category' mangled-name='_ZN5boost6system14error_categoryD0Ev' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='188' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system14error_categoryD0Ev'>
               <!-- implicit parameter of type 'boost::system::error_category*' -->
               <parameter type-id='type-id-145' is-artificial='yes'/>
@@ -4542,17 +4553,6 @@
           <member-function access='public' destructor='yes' vtable-offset='0'>
             <!-- boost::system::error_category::~error_category(int) -->
             <function-decl name='~error_category' mangled-name='_ZN5boost6system14error_categoryD2Ev' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='188' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system14error_categoryD2Ev'>
-              <!-- implicit parameter of type 'boost::system::error_category*' -->
-              <parameter type-id='type-id-145' is-artificial='yes'/>
-              <!-- artificial parameter of type 'int' -->
-              <parameter type-id='type-id-37' is-artificial='yes'/>
-              <!-- void -->
-              <return type-id='type-id-7'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' destructor='yes' vtable-offset='0'>
-            <!-- boost::system::error_category::~error_category(int) -->
-            <function-decl name='~error_category' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='188' column='1' visibility='default' binding='global' size-in-bits='64'>
               <!-- implicit parameter of type 'boost::system::error_category*' -->
               <parameter type-id='type-id-145' is-artificial='yes'/>
               <!-- artificial parameter of type 'int' -->
@@ -9839,6 +9839,17 @@
           </member-function>
           <member-function access='public' destructor='yes' vtable-offset='0'>
             <!-- boost::detail::sp_counted_base::~sp_counted_base(int) -->
+            <function-decl name='~sp_counted_base' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/detail/sp_counted_base_gcc_x86.hpp' line='113' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <!-- implicit parameter of type 'boost::detail::sp_counted_base*' -->
+              <parameter type-id='type-id-349' is-artificial='yes'/>
+              <!-- artificial parameter of type 'int' -->
+              <parameter type-id='type-id-37' is-artificial='yes'/>
+              <!-- void -->
+              <return type-id='type-id-7'/>
+            </function-decl>
+          </member-function>
+          <member-function access='public' destructor='yes' vtable-offset='0'>
+            <!-- boost::detail::sp_counted_base::~sp_counted_base(int) -->
             <function-decl name='~sp_counted_base' mangled-name='_ZN5boost6detail15sp_counted_baseD0Ev' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/detail/sp_counted_base_gcc_x86.hpp' line='113' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6detail15sp_counted_baseD0Ev'>
               <!-- implicit parameter of type 'boost::detail::sp_counted_base*' -->
               <parameter type-id='type-id-349' is-artificial='yes'/>
@@ -9851,17 +9862,6 @@
           <member-function access='public' destructor='yes' vtable-offset='0'>
             <!-- boost::detail::sp_counted_base::~sp_counted_base(int) -->
             <function-decl name='~sp_counted_base' mangled-name='_ZN5boost6detail15sp_counted_baseD2Ev' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/detail/sp_counted_base_gcc_x86.hpp' line='113' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6detail15sp_counted_baseD2Ev'>
-              <!-- implicit parameter of type 'boost::detail::sp_counted_base*' -->
-              <parameter type-id='type-id-349' is-artificial='yes'/>
-              <!-- artificial parameter of type 'int' -->
-              <parameter type-id='type-id-37' is-artificial='yes'/>
-              <!-- void -->
-              <return type-id='type-id-7'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' destructor='yes' vtable-offset='0'>
-            <!-- boost::detail::sp_counted_base::~sp_counted_base(int) -->
-            <function-decl name='~sp_counted_base' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/detail/sp_counted_base_gcc_x86.hpp' line='113' column='1' visibility='default' binding='global' size-in-bits='64'>
               <!-- implicit parameter of type 'boost::detail::sp_counted_base*' -->
               <parameter type-id='type-id-349' is-artificial='yes'/>
               <!-- artificial parameter of type 'int' -->
@@ -12852,6 +12852,17 @@
           </member-function>
           <member-function access='public' destructor='yes' vtable-offset='0'>
             <!-- boost::filesystem::filesystem_error::~filesystem_error(int) -->
+            <function-decl name='~filesystem_error' filepath='src/third_party/boost-1.56.0/boost/filesystem/operations.hpp' line='114' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <!-- implicit parameter of type 'boost::filesystem::filesystem_error*' -->
+              <parameter type-id='type-id-457' is-artificial='yes'/>
+              <!-- artificial parameter of type 'int' -->
+              <parameter type-id='type-id-37' is-artificial='yes'/>
+              <!-- void -->
+              <return type-id='type-id-7'/>
+            </function-decl>
+          </member-function>
+          <member-function access='public' destructor='yes' vtable-offset='0'>
+            <!-- boost::filesystem::filesystem_error::~filesystem_error(int) -->
             <function-decl name='~filesystem_error' mangled-name='_ZN5boost10filesystem16filesystem_errorD0Ev' filepath='src/third_party/boost-1.56.0/boost/filesystem/operations.hpp' line='114' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem16filesystem_errorD0Ev'>
               <!-- implicit parameter of type 'boost::filesystem::filesystem_error*' -->
               <parameter type-id='type-id-457' is-artificial='yes'/>
@@ -12864,17 +12875,6 @@
           <member-function access='public' destructor='yes' vtable-offset='0'>
             <!-- boost::filesystem::filesystem_error::~filesystem_error(int) -->
             <function-decl name='~filesystem_error' mangled-name='_ZN5boost10filesystem16filesystem_errorD2Ev' filepath='src/third_party/boost-1.56.0/boost/filesystem/operations.hpp' line='114' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem16filesystem_errorD1Ev'>
-              <!-- implicit parameter of type 'boost::filesystem::filesystem_error*' -->
-              <parameter type-id='type-id-457' is-artificial='yes'/>
-              <!-- artificial parameter of type 'int' -->
-              <parameter type-id='type-id-37' is-artificial='yes'/>
-              <!-- void -->
-              <return type-id='type-id-7'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' destructor='yes' vtable-offset='0'>
-            <!-- boost::filesystem::filesystem_error::~filesystem_error(int) -->
-            <function-decl name='~filesystem_error' filepath='src/third_party/boost-1.56.0/boost/filesystem/operations.hpp' line='114' column='1' visibility='default' binding='global' size-in-bits='64'>
               <!-- implicit parameter of type 'boost::filesystem::filesystem_error*' -->
               <parameter type-id='type-id-457' is-artificial='yes'/>
               <!-- artificial parameter of type 'int' -->
@@ -13183,117 +13183,117 @@
           </member-function>
           <member-function access='public' destructor='yes' vtable-offset='0'>
             <!-- boost::system::system_error::~system_error(int) -->
-            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD0Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD0Ev'>
-              <!-- implicit parameter of type 'boost::system::system_error*' -->
-              <parameter type-id='type-id-465' is-artificial='yes'/>
-              <!-- artificial parameter of type 'int' -->
-              <parameter type-id='type-id-37' is-artificial='yes'/>
-              <!-- void -->
-              <return type-id='type-id-7'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' destructor='yes' vtable-offset='0'>
-            <!-- boost::system::system_error::~system_error(int) -->
-            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD0Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD0Ev'>
-              <!-- implicit parameter of type 'boost::system::system_error*' -->
-              <parameter type-id='type-id-465' is-artificial='yes'/>
-              <!-- artificial parameter of type 'int' -->
-              <parameter type-id='type-id-37' is-artificial='yes'/>
-              <!-- void -->
-              <return type-id='type-id-7'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' destructor='yes' vtable-offset='0'>
-            <!-- boost::system::system_error::~system_error(int) -->
-            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD0Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD0Ev'>
-              <!-- implicit parameter of type 'boost::system::system_error*' -->
-              <parameter type-id='type-id-465' is-artificial='yes'/>
-              <!-- artificial parameter of type 'int' -->
-              <parameter type-id='type-id-37' is-artificial='yes'/>
-              <!-- void -->
-              <return type-id='type-id-7'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' destructor='yes' vtable-offset='0'>
-            <!-- boost::system::system_error::~system_error(int) -->
-            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD0Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD0Ev'>
-              <!-- implicit parameter of type 'boost::system::system_error*' -->
-              <parameter type-id='type-id-465' is-artificial='yes'/>
-              <!-- artificial parameter of type 'int' -->
-              <parameter type-id='type-id-37' is-artificial='yes'/>
-              <!-- void -->
-              <return type-id='type-id-7'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' destructor='yes' vtable-offset='0'>
-            <!-- boost::system::system_error::~system_error(int) -->
-            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD0Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD0Ev'>
-              <!-- implicit parameter of type 'boost::system::system_error*' -->
-              <parameter type-id='type-id-465' is-artificial='yes'/>
-              <!-- artificial parameter of type 'int' -->
-              <parameter type-id='type-id-37' is-artificial='yes'/>
-              <!-- void -->
-              <return type-id='type-id-7'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' destructor='yes' vtable-offset='0'>
-            <!-- boost::system::system_error::~system_error(int) -->
-            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD2Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD1Ev'>
-              <!-- implicit parameter of type 'boost::system::system_error*' -->
-              <parameter type-id='type-id-465' is-artificial='yes'/>
-              <!-- artificial parameter of type 'int' -->
-              <parameter type-id='type-id-37' is-artificial='yes'/>
-              <!-- void -->
-              <return type-id='type-id-7'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' destructor='yes' vtable-offset='0'>
-            <!-- boost::system::system_error::~system_error(int) -->
-            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD2Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD1Ev'>
-              <!-- implicit parameter of type 'boost::system::system_error*' -->
-              <parameter type-id='type-id-465' is-artificial='yes'/>
-              <!-- artificial parameter of type 'int' -->
-              <parameter type-id='type-id-37' is-artificial='yes'/>
-              <!-- void -->
-              <return type-id='type-id-7'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' destructor='yes' vtable-offset='0'>
-            <!-- boost::system::system_error::~system_error(int) -->
-            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD2Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD1Ev'>
-              <!-- implicit parameter of type 'boost::system::system_error*' -->
-              <parameter type-id='type-id-465' is-artificial='yes'/>
-              <!-- artificial parameter of type 'int' -->
-              <parameter type-id='type-id-37' is-artificial='yes'/>
-              <!-- void -->
-              <return type-id='type-id-7'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' destructor='yes' vtable-offset='0'>
-            <!-- boost::system::system_error::~system_error(int) -->
-            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD2Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD1Ev'>
-              <!-- implicit parameter of type 'boost::system::system_error*' -->
-              <parameter type-id='type-id-465' is-artificial='yes'/>
-              <!-- artificial parameter of type 'int' -->
-              <parameter type-id='type-id-37' is-artificial='yes'/>
-              <!-- void -->
-              <return type-id='type-id-7'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' destructor='yes' vtable-offset='0'>
-            <!-- boost::system::system_error::~system_error(int) -->
-            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD2Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD1Ev'>
-              <!-- implicit parameter of type 'boost::system::system_error*' -->
-              <parameter type-id='type-id-465' is-artificial='yes'/>
-              <!-- artificial parameter of type 'int' -->
-              <parameter type-id='type-id-37' is-artificial='yes'/>
-              <!-- void -->
-              <return type-id='type-id-7'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' destructor='yes' vtable-offset='0'>
-            <!-- boost::system::system_error::~system_error(int) -->
             <function-decl name='~system_error' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <!-- implicit parameter of type 'boost::system::system_error*' -->
+              <parameter type-id='type-id-465' is-artificial='yes'/>
+              <!-- artificial parameter of type 'int' -->
+              <parameter type-id='type-id-37' is-artificial='yes'/>
+              <!-- void -->
+              <return type-id='type-id-7'/>
+            </function-decl>
+          </member-function>
+          <member-function access='public' destructor='yes' vtable-offset='0'>
+            <!-- boost::system::system_error::~system_error(int) -->
+            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD0Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD0Ev'>
+              <!-- implicit parameter of type 'boost::system::system_error*' -->
+              <parameter type-id='type-id-465' is-artificial='yes'/>
+              <!-- artificial parameter of type 'int' -->
+              <parameter type-id='type-id-37' is-artificial='yes'/>
+              <!-- void -->
+              <return type-id='type-id-7'/>
+            </function-decl>
+          </member-function>
+          <member-function access='public' destructor='yes' vtable-offset='0'>
+            <!-- boost::system::system_error::~system_error(int) -->
+            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD0Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD0Ev'>
+              <!-- implicit parameter of type 'boost::system::system_error*' -->
+              <parameter type-id='type-id-465' is-artificial='yes'/>
+              <!-- artificial parameter of type 'int' -->
+              <parameter type-id='type-id-37' is-artificial='yes'/>
+              <!-- void -->
+              <return type-id='type-id-7'/>
+            </function-decl>
+          </member-function>
+          <member-function access='public' destructor='yes' vtable-offset='0'>
+            <!-- boost::system::system_error::~system_error(int) -->
+            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD0Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD0Ev'>
+              <!-- implicit parameter of type 'boost::system::system_error*' -->
+              <parameter type-id='type-id-465' is-artificial='yes'/>
+              <!-- artificial parameter of type 'int' -->
+              <parameter type-id='type-id-37' is-artificial='yes'/>
+              <!-- void -->
+              <return type-id='type-id-7'/>
+            </function-decl>
+          </member-function>
+          <member-function access='public' destructor='yes' vtable-offset='0'>
+            <!-- boost::system::system_error::~system_error(int) -->
+            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD0Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD0Ev'>
+              <!-- implicit parameter of type 'boost::system::system_error*' -->
+              <parameter type-id='type-id-465' is-artificial='yes'/>
+              <!-- artificial parameter of type 'int' -->
+              <parameter type-id='type-id-37' is-artificial='yes'/>
+              <!-- void -->
+              <return type-id='type-id-7'/>
+            </function-decl>
+          </member-function>
+          <member-function access='public' destructor='yes' vtable-offset='0'>
+            <!-- boost::system::system_error::~system_error(int) -->
+            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD0Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD0Ev'>
+              <!-- implicit parameter of type 'boost::system::system_error*' -->
+              <parameter type-id='type-id-465' is-artificial='yes'/>
+              <!-- artificial parameter of type 'int' -->
+              <parameter type-id='type-id-37' is-artificial='yes'/>
+              <!-- void -->
+              <return type-id='type-id-7'/>
+            </function-decl>
+          </member-function>
+          <member-function access='public' destructor='yes' vtable-offset='0'>
+            <!-- boost::system::system_error::~system_error(int) -->
+            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD2Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD1Ev'>
+              <!-- implicit parameter of type 'boost::system::system_error*' -->
+              <parameter type-id='type-id-465' is-artificial='yes'/>
+              <!-- artificial parameter of type 'int' -->
+              <parameter type-id='type-id-37' is-artificial='yes'/>
+              <!-- void -->
+              <return type-id='type-id-7'/>
+            </function-decl>
+          </member-function>
+          <member-function access='public' destructor='yes' vtable-offset='0'>
+            <!-- boost::system::system_error::~system_error(int) -->
+            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD2Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD1Ev'>
+              <!-- implicit parameter of type 'boost::system::system_error*' -->
+              <parameter type-id='type-id-465' is-artificial='yes'/>
+              <!-- artificial parameter of type 'int' -->
+              <parameter type-id='type-id-37' is-artificial='yes'/>
+              <!-- void -->
+              <return type-id='type-id-7'/>
+            </function-decl>
+          </member-function>
+          <member-function access='public' destructor='yes' vtable-offset='0'>
+            <!-- boost::system::system_error::~system_error(int) -->
+            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD2Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD1Ev'>
+              <!-- implicit parameter of type 'boost::system::system_error*' -->
+              <parameter type-id='type-id-465' is-artificial='yes'/>
+              <!-- artificial parameter of type 'int' -->
+              <parameter type-id='type-id-37' is-artificial='yes'/>
+              <!-- void -->
+              <return type-id='type-id-7'/>
+            </function-decl>
+          </member-function>
+          <member-function access='public' destructor='yes' vtable-offset='0'>
+            <!-- boost::system::system_error::~system_error(int) -->
+            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD2Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD1Ev'>
+              <!-- implicit parameter of type 'boost::system::system_error*' -->
+              <parameter type-id='type-id-465' is-artificial='yes'/>
+              <!-- artificial parameter of type 'int' -->
+              <parameter type-id='type-id-37' is-artificial='yes'/>
+              <!-- void -->
+              <return type-id='type-id-7'/>
+            </function-decl>
+          </member-function>
+          <member-function access='public' destructor='yes' vtable-offset='0'>
+            <!-- boost::system::system_error::~system_error(int) -->
+            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD2Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD1Ev'>
               <!-- implicit parameter of type 'boost::system::system_error*' -->
               <parameter type-id='type-id-465' is-artificial='yes'/>
               <!-- artificial parameter of type 'int' -->

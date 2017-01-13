@@ -32149,6 +32149,13 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes' vtable-offset='0'>
+          <function-decl name='~DBException' filepath='src/mongo/util/assert_util.h' line='109' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-2531' is-artificial='yes'/>
+            <parameter type-id='type-id-160' is-artificial='yes'/>
+            <return type-id='type-id-4'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' destructor='yes' vtable-offset='0'>
           <function-decl name='~DBException' mangled-name='_ZN5mongo11DBExceptionD0Ev' filepath='src/mongo/util/assert_util.h' line='109' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo11DBExceptionD0Ev'>
             <parameter type-id='type-id-2531' is-artificial='yes'/>
             <parameter type-id='type-id-160' is-artificial='yes'/>
@@ -32157,13 +32164,6 @@
         </member-function>
         <member-function access='public' destructor='yes' vtable-offset='0'>
           <function-decl name='~DBException' mangled-name='_ZN5mongo11DBExceptionD2Ev' filepath='src/mongo/util/assert_util.h' line='109' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo11DBExceptionD1Ev'>
-            <parameter type-id='type-id-2531' is-artificial='yes'/>
-            <parameter type-id='type-id-160' is-artificial='yes'/>
-            <return type-id='type-id-4'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' destructor='yes' vtable-offset='0'>
-          <function-decl name='~DBException' filepath='src/mongo/util/assert_util.h' line='109' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-2531' is-artificial='yes'/>
             <parameter type-id='type-id-160' is-artificial='yes'/>
             <return type-id='type-id-4'/>
@@ -32230,6 +32230,13 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes' vtable-offset='0'>
+          <function-decl name='~AssertionException' filepath='src/mongo/util/assert_util.h' line='157' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-2535' is-artificial='yes'/>
+            <parameter type-id='type-id-160' is-artificial='yes'/>
+            <return type-id='type-id-4'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' destructor='yes' vtable-offset='0'>
           <function-decl name='~AssertionException' mangled-name='_ZN5mongo18AssertionExceptionD0Ev' filepath='src/mongo/util/assert_util.h' line='157' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo18AssertionExceptionD0Ev'>
             <parameter type-id='type-id-2535' is-artificial='yes'/>
             <parameter type-id='type-id-160' is-artificial='yes'/>
@@ -32238,13 +32245,6 @@
         </member-function>
         <member-function access='public' destructor='yes' vtable-offset='0'>
           <function-decl name='~AssertionException' mangled-name='_ZN5mongo18AssertionExceptionD2Ev' filepath='src/mongo/util/assert_util.h' line='157' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo18AssertionExceptionD1Ev'>
-            <parameter type-id='type-id-2535' is-artificial='yes'/>
-            <parameter type-id='type-id-160' is-artificial='yes'/>
-            <return type-id='type-id-4'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' destructor='yes' vtable-offset='0'>
-          <function-decl name='~AssertionException' filepath='src/mongo/util/assert_util.h' line='157' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-2535' is-artificial='yes'/>
             <parameter type-id='type-id-160' is-artificial='yes'/>
             <return type-id='type-id-4'/>
@@ -32360,6 +32360,13 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes' vtable-offset='0'>
+          <function-decl name='~ExportedServerParameter' filepath='src/mongo/db/server_parameters.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-2547' is-artificial='yes'/>
+            <parameter type-id='type-id-160' is-artificial='yes'/>
+            <return type-id='type-id-4'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' destructor='yes' vtable-offset='0'>
           <function-decl name='~ExportedServerParameter' mangled-name='_ZN5mongo23ExportedServerParameterIiED0Ev' filepath='src/mongo/db/server_parameters.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo23ExportedServerParameterIiED0Ev'>
             <parameter type-id='type-id-2547' is-artificial='yes'/>
             <parameter type-id='type-id-160' is-artificial='yes'/>
@@ -32368,13 +32375,6 @@
         </member-function>
         <member-function access='public' destructor='yes' vtable-offset='0'>
           <function-decl name='~ExportedServerParameter' mangled-name='_ZN5mongo23ExportedServerParameterIiED2Ev' filepath='src/mongo/db/server_parameters.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo23ExportedServerParameterIiED2Ev'>
-            <parameter type-id='type-id-2547' is-artificial='yes'/>
-            <parameter type-id='type-id-160' is-artificial='yes'/>
-            <return type-id='type-id-4'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' destructor='yes' vtable-offset='0'>
-          <function-decl name='~ExportedServerParameter' filepath='src/mongo/db/server_parameters.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-2547' is-artificial='yes'/>
             <parameter type-id='type-id-160' is-artificial='yes'/>
             <return type-id='type-id-4'/>
@@ -32480,6 +32480,13 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes' vtable-offset='0'>
+          <function-decl name='~ExportedServerParameter' filepath='src/mongo/db/server_parameters.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-2557' is-artificial='yes'/>
+            <parameter type-id='type-id-160' is-artificial='yes'/>
+            <return type-id='type-id-4'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' destructor='yes' vtable-offset='0'>
           <function-decl name='~ExportedServerParameter' mangled-name='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEED0Ev' filepath='src/mongo/db/server_parameters.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEED0Ev'>
             <parameter type-id='type-id-2557' is-artificial='yes'/>
             <parameter type-id='type-id-160' is-artificial='yes'/>
@@ -32488,13 +32495,6 @@
         </member-function>
         <member-function access='public' destructor='yes' vtable-offset='0'>
           <function-decl name='~ExportedServerParameter' mangled-name='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEED2Ev' filepath='src/mongo/db/server_parameters.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEED1Ev'>
-            <parameter type-id='type-id-2557' is-artificial='yes'/>
-            <parameter type-id='type-id-160' is-artificial='yes'/>
-            <return type-id='type-id-4'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' destructor='yes' vtable-offset='0'>
-          <function-decl name='~ExportedServerParameter' filepath='src/mongo/db/server_parameters.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-2557' is-artificial='yes'/>
             <parameter type-id='type-id-160' is-artificial='yes'/>
             <return type-id='type-id-4'/>
@@ -32572,6 +32572,13 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes' vtable-offset='0'>
+          <function-decl name='~ExportedServerParameter' filepath='src/mongo/db/server_parameters.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-2560' is-artificial='yes'/>
+            <parameter type-id='type-id-160' is-artificial='yes'/>
+            <return type-id='type-id-4'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' destructor='yes' vtable-offset='0'>
           <function-decl name='~ExportedServerParameter' mangled-name='_ZN5mongo23ExportedServerParameterISsED0Ev' filepath='src/mongo/db/server_parameters.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo23ExportedServerParameterISsED0Ev'>
             <parameter type-id='type-id-2560' is-artificial='yes'/>
             <parameter type-id='type-id-160' is-artificial='yes'/>
@@ -32580,13 +32587,6 @@
         </member-function>
         <member-function access='public' destructor='yes' vtable-offset='0'>
           <function-decl name='~ExportedServerParameter' mangled-name='_ZN5mongo23ExportedServerParameterISsED2Ev' filepath='src/mongo/db/server_parameters.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo23ExportedServerParameterISsED1Ev'>
-            <parameter type-id='type-id-2560' is-artificial='yes'/>
-            <parameter type-id='type-id-160' is-artificial='yes'/>
-            <return type-id='type-id-4'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' destructor='yes' vtable-offset='0'>
-          <function-decl name='~ExportedServerParameter' filepath='src/mongo/db/server_parameters.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-2560' is-artificial='yes'/>
             <parameter type-id='type-id-160' is-artificial='yes'/>
             <return type-id='type-id-4'/>
@@ -33316,17 +33316,17 @@
           </member-function>
         </class-decl>
         <class-decl name='value_semantic' size-in-bits='64' visibility='default' filepath='src/third_party/boost-1.56.0/boost/program_options/value_semantic.hpp' line='26' column='1' id='type-id-2628'>
-          <member-function access='public' const='yes' vtable-offset='0'>
-            <function-decl name='name' mangled-name='_ZNK5boost15program_options14value_semantic4nameEv' filepath='src/third_party/boost-1.56.0/boost/program_options/value_semantic.hpp' line='31' column='1' visibility='default' binding='global' size-in-bits='64'>
-              <parameter type-id='type-id-2627' is-artificial='yes'/>
-              <return type-id='type-id-348'/>
-            </function-decl>
-          </member-function>
           <member-function access='public' destructor='yes' vtable-offset='0'>
             <function-decl name='~value_semantic' filepath='src/third_party/boost-1.56.0/boost/program_options/value_semantic.hpp' line='71' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-2629' is-artificial='yes'/>
               <parameter type-id='type-id-160' is-artificial='yes'/>
               <return type-id='type-id-4'/>
+            </function-decl>
+          </member-function>
+          <member-function access='public' const='yes' vtable-offset='0'>
+            <function-decl name='name' mangled-name='_ZNK5boost15program_options14value_semantic4nameEv' filepath='src/third_party/boost-1.56.0/boost/program_options/value_semantic.hpp' line='31' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-2627' is-artificial='yes'/>
+              <return type-id='type-id-348'/>
             </function-decl>
           </member-function>
           <member-function access='public' const='yes' vtable-offset='1'>

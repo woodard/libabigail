@@ -16304,21 +16304,21 @@ struct virtual_member_function_less_than
       {
 	string fn, sn;
 
-	if (f.get_symbol())
-	  fn = f.get_symbol()->get_id_string();
-	else
-	  fn = f.get_linkage_name();
+	// If the functions have symbols, the compare their symbol-id
+	// string.
+	if (f.get_symbol() && s.get_symbol())
+	  {
+	    fn = f.get_symbol()->get_id_string();
+	    sn = s.get_symbol()->get_id_string();
+	  }
 
-	if (s.get_symbol())
-	  sn = s.get_symbol()->get_id_string();
-	else
-	  sn = s.get_linkage_name();
-
+	// If either one of the functions don't have symbols, then
+	// compare their pretty representation.
 	if (fn.empty())
-	  fn = f.get_pretty_representation();
-	if (sn.empty())
-	  sn = s.get_pretty_representation();
-
+	  {
+	    fn = f.get_pretty_representation();
+	    sn = s.get_pretty_representation();
+	  }
 	return fn < sn;
       }
 
@@ -16482,6 +16482,25 @@ class_decl::has_vtable() const
   return false;
 }
 
+/// Get the highest vtable offset of all the virtual methods of the
+/// class.
+///
+/// @return the highest vtable offset of all the virtual methods of
+/// the class.
+ssize_t
+class_decl::get_biggest_vtable_offset() const
+{
+  ssize_t offset = -1;
+  for (class_decl::virtual_mem_fn_map_type::const_iterator e =
+	 get_virtual_mem_fns_map().begin();
+       e != get_virtual_mem_fns_map().end();
+       ++e)
+    if (e->first > offset)
+      offset = e->first;
+
+  return offset;
+}
+
 /// Return the hash value for the current instance.
 ///
 /// @return the hash value.
@@ -16490,6 +16509,72 @@ class_decl::get_hash() const
 {
   class_decl::hash hash_class;
   return hash_class(this);
+}
+
+/// Test if two methods are equal without taking their symbol or
+/// linkage name into account.
+///
+/// @param f the first method.
+///
+/// @param s the second method.
+///
+/// @return true iff @p f equals @p s without taking their linkage
+/// name or symbol into account.
+static bool
+methods_equal_modulo_elf_symbol(const method_decl_sptr& f,
+				const method_decl_sptr& s)
+{
+  method_decl_sptr first = f, second = s;
+  elf_symbol_sptr saved_first_elf_symbol =
+    first->get_symbol();
+  elf_symbol_sptr saved_second_elf_symbol =
+    second->get_symbol();
+  interned_string saved_first_linkage_name =
+    first->get_linkage_name();
+  interned_string saved_second_linkage_name =
+    second->get_linkage_name();
+
+  first->set_symbol(elf_symbol_sptr());
+  first->set_linkage_name("");
+  second->set_symbol(elf_symbol_sptr());
+  second->set_linkage_name("");
+
+  bool equal = *first == *second;
+
+  first->set_symbol(saved_first_elf_symbol);
+  first->set_linkage_name(saved_first_linkage_name);
+  second->set_symbol(saved_second_elf_symbol);
+  second->set_linkage_name(saved_second_linkage_name);
+
+  return equal;
+}
+
+/// Test if a given method is equivalent to at least of other method
+/// that is in a vector of methods.
+///
+/// Note that "equivalent" here means being equal without taking the
+/// linkage name or the symbol of the methods into account.
+///
+/// This is a sub-routine of the 'equals' function that compares @ref
+/// class_decl.
+///
+/// @param method the method to compare.
+///
+/// @param fns the vector of functions to compare @p method against.
+///
+/// @return true iff @p is equivalent to at least one method in @p
+/// fns.
+static bool
+method_matches_at_least_one_in_vector(const method_decl_sptr& method,
+				      const class_decl::member_functions& fns)
+{
+  for (class_decl::member_functions::const_iterator i = fns.begin();
+       i != fns.end();
+       ++i)
+    if (methods_equal_modulo_elf_symbol(*i, method))
+      return true;
+
+  return false;
 }
 
 /// Compares two instances of @ref class_decl.
@@ -16572,6 +16657,88 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	    }
 	  RETURN(result);
 	}
+
+    // Compare virtual member functions
+
+    // We look at the map that associates a given vtable offset to a
+    // vector of virtual member functions that point to that offset.
+    //
+    // This is because there are cases where several functions can
+    // point to the same virtual table offset.
+    //
+    // This is usually the case for virtual destructors.  Even though
+    // there can be only one virtual destructor declared in source
+    // code, there are actually potentially up to three generated
+    // functions for that destructor.  Some of these generated
+    // functions can be clones of other functions that are among those
+    // generated ones.  In any cases, they all have the same
+    // properties, including the vtable offset property.
+
+    // So, there should be the same number of different vtable
+    // offsets, the size of two maps must be equals.
+    if (l.get_virtual_mem_fns_map().size()
+	!= r.get_virtual_mem_fns_map().size())
+      {
+	result = false;
+	if (k)
+	  *k |= SUBTYPE_CHANGE_KIND;
+	else
+	  RETURN(result);
+      }
+
+    // Then, each virtual member function of a given vtable offset in
+    // the first class type, must match an equivalent virtual member
+    // function of a the same vtable offset in the second class type.
+    //
+    // By "match", I mean that the two virtual member function should
+    // be equal if we don't take into account their symbol name or
+    // their linkage name.  This is because two destructor functions
+    // clones (for instance) might have different linkage name, but
+    // are still equivalent if their other properties are the same.
+    for (class_decl::virtual_mem_fn_map_type::const_iterator first_v_fn_entry =
+	   l.get_virtual_mem_fns_map().begin();
+	 first_v_fn_entry != l.get_virtual_mem_fns_map().end();
+	 ++first_v_fn_entry)
+      {
+	unsigned voffset = first_v_fn_entry->first;
+	const class_decl::member_functions& first_vfns =
+	  first_v_fn_entry->second;
+
+	const class_decl::virtual_mem_fn_map_type::const_iterator
+	  second_v_fn_entry = r.get_virtual_mem_fns_map().find(voffset);
+
+	if (second_v_fn_entry == r.get_virtual_mem_fns_map().end())
+	  {
+	    result = false;
+	    if (k)
+	      *k |= SUBTYPE_CHANGE_KIND;
+	    else
+	      RETURN(result);
+	  }
+
+	const class_decl::member_functions& second_vfns =
+	  second_v_fn_entry->second;
+
+	bool matches = false;
+	for (class_decl::member_functions::const_iterator i =
+	       first_vfns.begin();
+	     i != first_vfns.end();
+	     ++i)
+	  if (method_matches_at_least_one_in_vector(*i, second_vfns))
+	    {
+	      matches = true;
+	      break;
+	    }
+
+	if (!matches)
+	  {
+	    result = false;
+	    if (k)
+	      *k |= SUBTYPE_CHANGE_KIND;
+	    else
+	      RETURN(result);
+	  }
+      }
 
   RETURN(result);
 #undef RETURN
