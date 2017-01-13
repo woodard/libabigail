@@ -13813,6 +13813,40 @@ function_decl::traverse(ir_node_visitor& v)
 function_decl::~function_decl()
 {delete priv_;}
 
+/// A deep comparison operator for a shared pointer to @ref function_decl
+///
+/// This function compares to shared pointers to @ref function_decl by
+/// looking at the pointed-to instances of @ref function_dec
+/// comparing them too.  If the two pointed-to objects are equal then
+/// this function returns true.
+///
+/// @param l the left-hand side argument of the equality operator.
+///
+/// @param r the right-hand side argument of the equality operator.
+///
+/// @return true iff @p l equals @p r.
+bool
+operator==(const function_decl_sptr& l, const function_decl_sptr& r)
+{
+  if (l.get() == r.get())
+    return true;
+  if (!!l != !!r)
+    return false;
+
+  return *l == *r;
+}
+
+/// A deep inequality operator for smart pointers to functions.
+///
+/// @param l the left-hand side argument of the inequality operator.
+///
+/// @pram r the right-hand side argument of the inequality operator.
+///
+/// @return true iff @p is not equal to @p r.
+bool
+operator!=(const function_decl_sptr& l, const function_decl_sptr& r)
+{return !operator==(l, r);}
+
 // <function_decl definitions>
 
 // <function_decl::parameter definitions>
@@ -16047,6 +16081,41 @@ method_decl::set_scope(scope_decl* scope)
   else
     get_context_rel()->set_scope(scope);
 }
+
+/// Equality operator for @ref method_decl_sptr.
+///
+/// This is a deep equality operator, as it compares the @ref
+/// method_decl that is pointed-to by the smart pointer.
+///
+/// @param l the left-hand side argument of the equality operator.
+///
+/// @param r the righ-hand side argument of the equality operator.
+///
+/// @return true iff @p l equals @p r.
+bool
+operator==(const method_decl_sptr& l, const method_decl_sptr& r)
+{
+  if (l.get() == r.get())
+    return true;
+  if (!!l != !!r)
+    return false;
+
+  return *l == *r;
+}
+
+/// Inequality operator for @ref method_decl_sptr.
+///
+/// This is a deep equality operator, as it compares the @ref
+/// method_decl that is pointed-to by the smart pointer.
+///
+/// @param l the left-hand side argument of the equality operator.
+///
+/// @param r the righ-hand side argument of the equality operator.
+///
+/// @return true iff @p l differs from @p r.
+bool
+operator!=(const method_decl_sptr& l, const method_decl_sptr& r)
+{return !operator==(l, r);}
 
 /// Test if a function_decl is actually a method_decl.
 ///

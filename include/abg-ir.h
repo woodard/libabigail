@@ -2419,6 +2419,12 @@ public:
 }; // end class function_decl
 
 bool
+operator==(const function_decl_sptr& l, const function_decl_sptr& r);
+
+bool
+operator!=(const function_decl_sptr& l, const function_decl_sptr& r);
+
+bool
 function_decls_alias(const function_decl& f1, const function_decl& f2);
 
 bool
@@ -3157,6 +3163,12 @@ public:
 
   virtual ~method_decl();
 };// end class method_decl
+
+bool
+operator==(const method_decl_sptr& l, const method_decl_sptr& r);
+
+bool
+operator!=(const method_decl_sptr& l, const method_decl_sptr& r);
 
 /// The base type of @ref class_decl and @ref union_decl
 class class_or_union : public scope_type_decl
