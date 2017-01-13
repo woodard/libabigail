@@ -5279,7 +5279,12 @@ get_method_type_name(const method_type& fn_type,
   const environment* env = fn_type.get_environment();
   assert(env);
 
-  o <<  get_pretty_representation(return_type, internal);
+  if (return_type)
+    o << return_type->get_cached_pretty_representation(internal);
+  else
+    // There are still some abixml files out there in which "void"
+    // can be expressed as an empty type.
+    o << "void";
 
   class_or_union_sptr class_type = fn_type.get_class_type();
   assert(class_type);
@@ -5294,7 +5299,12 @@ get_method_type_name(const method_type& fn_type,
     {
       if (i != fn_type.get_parameters().begin())
 	o << ", ";
-      o << get_pretty_representation((*i)->get_type(), internal);
+      if (*i)
+	o << (*i)->get_type()->get_cached_pretty_representation(internal);
+      else
+	// There are still some abixml files out there in which "void"
+	// can be expressed as an empty type.
+	o << "void";
     }
   o <<")";
 
@@ -8823,6 +8833,11 @@ struct type_base::priv
   // canonical_type above implies creating a shared_ptr, and that has
   // been measured to be slow for some performance hot spots.
   type_base*		naked_canonical_type;
+  // Computing the representation of a type again and again can be
+  // costly.  So we cache the internal and non-internal type
+  // representation strings here.
+  interned_string	internal_cached_repr_;
+  interned_string	cached_repr_;
 
   priv()
     : size_in_bits(),
@@ -8941,7 +8956,7 @@ type_base::get_canonical_type_for(type_base_sptr t)
   // So in this case, the pretty representation of Foo is going to be
   // "class Foo", regardless of its struct-ness. This also applies to
   // composite types which would have "class Foo" as a sub-type.
-  string repr = ir::get_pretty_representation(t, /*internal=*/true);
+  string repr = t->get_cached_pretty_representation(/*internal=*/true);
 
   // This is the corpus of the type we want to canonicalize.
   const corpus* t_corpus = t->get_corpus();
@@ -9212,6 +9227,41 @@ type_base::get_canonical_type() const
 type_base*
 type_base::get_naked_canonical_type() const
 {return priv_->naked_canonical_type;}
+
+/// Get the pretty representation of the current type.
+///
+/// The pretty representation is retrieved from a cache.  If the cache
+/// is empty, this function computes the pretty representation, put it
+/// in the cache and returns it.
+///
+/// Note that if the type is *NOT* canonicalized, the pretty
+/// representation is never cached.
+///
+/// @param internal if true, then the pretty representation is to be
+/// used for purpuses that are internal to the libabigail library
+/// itself.  If you don't know what this means, then you probably
+/// should set this parameter to "false".
+const interned_string&
+type_base::get_cached_pretty_representation(bool internal) const
+{
+  if (internal)
+    {
+      if (!get_naked_canonical_type() || priv_->internal_cached_repr_.empty())
+	{
+	  string r = ir::get_pretty_representation(this, internal);
+	  priv_->internal_cached_repr_ = get_environment()->intern(r);
+	}
+      return priv_->internal_cached_repr_;
+    }
+
+  if (!get_naked_canonical_type() || priv_->cached_repr_.empty())
+    {
+      string r = ir::get_pretty_representation(this, internal);
+      priv_->cached_repr_ = get_environment()->intern(r);
+    }
+
+  return priv_->cached_repr_;
+}
 
 /// Compares two instances of @ref type_base.
 ///
@@ -12504,6 +12554,8 @@ struct function_type::priv
 {
   parameters parms_;
   type_base_wptr return_type_;
+  interned_string cached_name_;
+  interned_string internal_cached_name_;
 
   priv()
   {}
@@ -12526,8 +12578,7 @@ struct function_type::priv
   {
     const environment* env = type.get_environment();
     assert(env);
-    interned_string fn_type_name = get_function_type_name(type,
-							  /*internal=*/true);
+    interned_string fn_type_name = type.get_cached_name(/*internal=*/true);
     env->priv_->fn_types_being_compared_.insert(fn_type_name);
   }
 
@@ -12541,8 +12592,7 @@ struct function_type::priv
   {
     const environment* env = type.get_environment();
     assert(env);
-    interned_string fn_type_name = get_function_type_name(type,
-							  /*internal=*/true);
+    interned_string fn_type_name = type.get_cached_name(/*internal=*/true);
     env->priv_->fn_types_being_compared_.erase(fn_type_name);
   }
 
@@ -12556,8 +12606,7 @@ struct function_type::priv
   {
     const environment* env = type.get_environment();
     assert(env);
-    interned_string fn_type_name = get_function_type_name(type,
-							  /*internal=*/true);
+    interned_string fn_type_name = type.get_cached_name(/*internal=*/true);
     interned_string_set_type& c = env->priv_->fn_types_being_compared_;
     return (c.find(fn_type_name) != c.end());
   }
@@ -12935,6 +12984,39 @@ function_type::get_first_non_implicit_parm() const
     ++i;
 
   return i;
+}
+
+/// Get the name of the current @ref function_type.
+///
+/// The name is retrieved from a cache.  If the cache is empty, this
+/// function computes the name of the type, stores it in the cache and
+/// returns it.  Subsequent invocation of the function are going to
+/// just hit the cache.
+///
+/// Note that if the type is *NOT* canonicalized then function type
+/// name is never cached.
+///
+/// @param internal if true then it means the function type name is
+/// going to be used for purposes that are internal to libabigail
+/// itself.  If you don't know what this is then you probably should
+/// set this parameter to 'false'.
+///
+/// @return the name of the function type.
+const interned_string&
+function_type::get_cached_name(bool internal) const
+{
+  if (internal)
+    {
+      if (!get_naked_canonical_type() || priv_->internal_cached_name_.empty())
+	priv_->internal_cached_name_ = get_function_type_name(this, internal);
+
+      return priv_->internal_cached_name_;
+    }
+
+  if (!get_naked_canonical_type() || priv_->cached_name_.empty())
+    priv_->cached_name_ = get_function_type_name(this, internal);
+
+  return priv_->cached_name_;
 }
 
 /// Equality operator for function_type.

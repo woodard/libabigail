@@ -1460,6 +1460,9 @@ public:
   type_base*
   get_naked_canonical_type() const;
 
+  const interned_string&
+  get_cached_pretty_representation(bool internal = false) const;
+
   virtual bool
   operator==(const type_base&) const;
 
@@ -2600,6 +2603,9 @@ public:
 
   parameters::const_iterator
   get_first_non_implicit_parm() const;
+
+  const interned_string&
+  get_cached_name(bool internal = false) const;
 
   virtual bool
   operator==(const type_base&) const;
