@@ -4155,7 +4155,7 @@ build_class_decl(read_context&		ctxt,
 	  read_access(n, access);
 
 	  bool is_virtual = false;
-	  size_t vtable_offset = 0;
+	  ssize_t vtable_offset = -1;
 	  if (xml_char_sptr s =
 	      XML_NODE_GET_ATTRIBUTE(n, "vtable-offset"))
 	    {
@@ -4182,7 +4182,8 @@ build_class_decl(read_context&		ctxt,
 		  assert(m);
 		  set_member_access_specifier(m, access);
 		  set_member_is_static(m, is_static);
-		  set_member_function_vtable_offset(m, vtable_offset);
+		  if (vtable_offset != -1)
+		    set_member_function_vtable_offset(m, vtable_offset);
 		  set_member_function_is_virtual(m, is_virtual);
 		  set_member_function_is_ctor(m, is_ctor);
 		  set_member_function_is_dtor(m, is_dtor);

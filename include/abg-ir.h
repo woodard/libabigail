@@ -3152,14 +3152,17 @@ public:
   friend void
   set_member_function_is_const(const function_decl_sptr&, bool);
 
-  friend size_t
+  friend bool
+  member_function_has_vtable_offset(const function_decl&);
+
+  friend ssize_t
   get_member_function_vtable_offset(const function_decl&);
 
   friend void
-  set_member_function_vtable_offset(function_decl&, size_t);
+  set_member_function_vtable_offset(function_decl&, ssize_t);
 
   friend void
-  set_member_function_vtable_offset(const function_decl_sptr&, size_t);
+  set_member_function_vtable_offset(const function_decl_sptr&, ssize_t);
 
   friend bool
   get_member_function_is_virtual(const function_decl&);
@@ -3207,7 +3210,7 @@ public:
   typedef vector<type_base_sptr>			member_types;
   typedef vector<var_decl_sptr>			data_members;
   typedef vector<method_decl_sptr>		member_functions;
-  typedef unordered_map<unsigned, member_functions> virtual_mem_fn_map_type;
+  typedef unordered_map<ssize_t, member_functions> virtual_mem_fn_map_type;
   typedef unordered_map<string, method_decl*> string_mem_fn_ptr_map_type;
   /// @}
 
@@ -3686,7 +3689,7 @@ class mem_fn_context_rel : public context_rel
 {
 protected:
   bool		is_virtual_;
-  size_t	vtable_offset_in_bits_;
+  ssize_t	vtable_offset_in_bits_;
   bool		is_constructor_;
   bool		is_destructor_;
   bool		is_const_;
@@ -3695,7 +3698,7 @@ public:
   mem_fn_context_rel()
     : context_rel(),
       is_virtual_(false),
-      vtable_offset_in_bits_(0),
+      vtable_offset_in_bits_(-1),
       is_constructor_(false),
       is_destructor_(false),
       is_const_(false)

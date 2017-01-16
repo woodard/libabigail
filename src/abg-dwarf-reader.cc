@@ -8702,7 +8702,7 @@ die_location_address(Dwarf_Die*	die,
 /// attribute.
 static bool
 die_virtual_function_index(Dwarf_Die* die,
-			   uint64_t& vindex)
+			   int64_t& vindex)
 {
   if (!die)
     return false;
@@ -10507,7 +10507,7 @@ finish_member_function_reading(Dwarf_Die*		  die,
   bool is_dtor = (!f->get_name().empty()
 		  && static_cast<string>(f->get_name())[0] == '~');
   bool is_virtual = die_is_virtual(die);
-  uint64_t vindex = 0;
+  int64_t vindex = -1;
   if (is_virtual)
     die_virtual_function_index(die, vindex);
   access_specifier access = private_access;
@@ -10548,7 +10548,8 @@ finish_member_function_reading(Dwarf_Die*		  die,
       is_static = true;
   }
   set_member_access_specifier(m, access);
-  set_member_function_vtable_offset(m, vindex);
+  if (vindex != -1)
+    set_member_function_vtable_offset(m, vindex);
   set_member_function_is_virtual(m, is_virtual);
   set_member_is_static(m, is_static);
   set_member_function_is_ctor(m, is_ctor);

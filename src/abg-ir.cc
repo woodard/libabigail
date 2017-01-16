@@ -3772,12 +3772,24 @@ void
 set_member_function_is_const(const function_decl_sptr& f, bool is_const)
 {set_member_function_is_const(*f, is_const);}
 
+/// Test if a virtual member function has a vtable offset set.
+///
+/// @param f the virtual member function to consider.
+///
+/// @return true iff the virtual member function has its vtable offset
+/// set, i.e, if the vtable offset of @p is different from -1.
+bool
+member_function_has_vtable_offset(const function_decl& f)
+{return get_member_function_vtable_offset(f) != -1;}
+
 /// Get the vtable offset of a member function.
 ///
 /// @param f the member function to consider.
 ///
-/// @return the vtable offset of @p f.
-size_t
+/// @return the vtable offset of @p f.  Note that a vtable offset of
+/// value -1 means that the member function does *NOT* yet have a
+/// vtable offset associated to it.
+ssize_t
 get_member_function_vtable_offset(const function_decl& f)
 {
   assert(is_member_function(f));
@@ -3796,8 +3808,10 @@ get_member_function_vtable_offset(const function_decl& f)
 ///
 /// @param f the member function to consider.
 ///
-/// @return the vtable offset of @p f.
-size_t
+/// @return the vtable offset of @p f.  Note that a vtable offset of
+/// value -1 means that the member function does *NOT* yet have a
+/// vtable offset associated to it.
+ssize_t
 get_member_function_vtable_offset(const function_decl_sptr& f)
 {return get_member_function_vtable_offset(*f);}
 
@@ -3805,9 +3819,11 @@ get_member_function_vtable_offset(const function_decl_sptr& f)
 ///
 /// @param f the member function to consider.
 ///
-/// @param s the new vtable offset.
+/// @param s the new vtable offset.  Please note that a vtable offset
+/// of value -1 means that the virtual member function does not (yet)
+/// have any vtable offset associated to it.
 void
-set_member_function_vtable_offset(function_decl& f, size_t s)
+set_member_function_vtable_offset(function_decl& f, ssize_t s)
 {
   assert(is_member_function(f));
 
@@ -3819,13 +3835,16 @@ set_member_function_vtable_offset(function_decl& f, size_t s)
 
   ctxt->vtable_offset(s);
 }
+
 /// Get the vtable offset of a member function.
 ///
 /// @param f the member function to consider.
 ///
-/// @param s the new vtable offset.
+/// @param s the new vtable offset.  Please note that a vtable offset
+/// of value -1 means that the virtual member function does not (yet)
+/// have any vtable offset associated to it.
 void
-set_member_function_vtable_offset(const function_decl_sptr& f, size_t s)
+set_member_function_vtable_offset(const function_decl_sptr& f, ssize_t s)
 {return set_member_function_vtable_offset(*f, s);}
 
 /// Test if a given member function is virtual.
@@ -16394,7 +16413,10 @@ fixup_virtual_member_function(method_decl_sptr method)
 
   // Build or udpate the map that associates a vtable offset to the
   // number of virtual member functions that "point" to it.
-  size_t voffset = get_member_function_vtable_offset(method);
+  ssize_t voffset = get_member_function_vtable_offset(method);
+  if (voffset == -1)
+    return;
+
   class_decl::virtual_mem_fn_map_type::iterator i =
     klass->priv_->virtual_mem_fns_map_.find(voffset);
   if (i == klass->priv_->virtual_mem_fns_map_.end())

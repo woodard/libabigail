@@ -23,6 +23,7 @@
 #ifndef __ABG_IRFWD_H__
 #define __ABG_IRFWD_H__
 
+#include <cstdlib>
 #include <cstddef>
 #include <tr1/memory>
 #include <list>
@@ -636,19 +637,22 @@ set_member_function_is_const(function_decl&, bool);
 void
 set_member_function_is_const(const function_decl_sptr&, bool);
 
-size_t
+bool
+member_function_has_vtable_offset(const function_decl&);
+
+ssize_t
 get_member_function_vtable_offset(const function_decl&);
 
-size_t
+ssize_t
 get_member_function_vtable_offset(const function_decl_sptr&);
 
 void
 set_member_function_vtable_offset(const function_decl& f,
-				  size_t s);
+				  ssize_t s);
 
 void
 set_member_function_vtable_offset(const function_decl_sptr &f,
-				  size_t s);
+				  ssize_t s);
 
 bool
 get_member_function_is_virtual(const function_decl&);
