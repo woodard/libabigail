@@ -10544,10 +10544,6 @@ finish_member_function_reading(Dwarf_Die*		  die,
 
   assert(is_member_function(m));
 
-  if (is_virtual)
-    if (class_decl_sptr c = is_class_type(klass))
-      c->sort_virtual_mem_fns();
-
   if (is_virtual && !f->get_linkage_name().empty() && !f->get_symbol())
     {
       // This is a virtual member function which has a linkage name

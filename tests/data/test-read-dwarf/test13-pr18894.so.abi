@@ -283,7 +283,7 @@
     <type-decl name='int' size-in-bits='32' id='type-id-9'/>
     <type-decl name='unsigned int' size-in-bits='32' id='type-id-10'/>
     <typedef-decl name='DBusString' type-id='type-id-7' filepath='../dbus/dbus-string.h' line='40' column='1' id='type-id-5'/>
-    <class-decl name='DBusList' size-in-bits='192' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-list.h' line='35' column='1' id='type-id-12'>
+    <class-decl name='DBusList' size-in-bits='192' is-struct='yes' visibility='default' filepath='../dbus/dbus-list.h' line='35' column='1' id='type-id-12'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='prev' type-id='type-id-6' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-list.h' line='36' column='1'/>
       </data-member>

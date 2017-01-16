@@ -1431,6 +1431,10 @@ private:
   static type_base_sptr
   get_canonical_type_for(type_base_sptr);
 
+protected:
+  virtual void
+  on_canonical_type_set();
+
 public:
 
   /// A hasher for type_base types.
@@ -3386,6 +3390,10 @@ public:
   typedef vector<base_spec_sptr>			base_specs;
 
   /// @}
+
+protected:
+  virtual void
+  on_canonical_type_set();
 
 private:
   struct priv;

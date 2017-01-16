@@ -40720,41 +40720,73 @@
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-13'/>
     </function-decl>
-    <class-decl name='backtrace_state' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1670'/>
-    <pointer-type-def type-id='type-id-1670' size-in-bits='64' id='type-id-1671'/>
-    <pointer-type-def type-id='type-id-1672' size-in-bits='64' id='type-id-1673'/>
-    <typedef-decl name='backtrace_error_callback' type-id='type-id-1673' filepath='../../.././libsanitizer/../libbacktrace/backtrace.h' line='82' column='1' id='type-id-1674'/>
+    <class-decl name='backtrace_state' size-in-bits='576' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='127' column='1' id='type-id-1670'>
+      <data-member access='public' layout-offset-in-bits='0'>
+        <var-decl name='filename' type-id='type-id-30' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='130' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='64'>
+        <var-decl name='threaded' type-id='type-id-13' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='132' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='128'>
+        <var-decl name='lock' type-id='type-id-3' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='136' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='192'>
+        <var-decl name='fileline_fn' type-id='type-id-1671' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='138' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='256'>
+        <var-decl name='fileline_data' type-id='type-id-3' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='140' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='320'>
+        <var-decl name='syminfo_fn' type-id='type-id-1672' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='142' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='384'>
+        <var-decl name='syminfo_data' type-id='type-id-3' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='144' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='448'>
+        <var-decl name='fileline_initialization_failed' type-id='type-id-13' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='146' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='480'>
+        <var-decl name='lock_alloc' type-id='type-id-13' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='148' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='512'>
+        <var-decl name='freelist' type-id='type-id-1673' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='150' column='1'/>
+      </data-member>
+    </class-decl>
+    <pointer-type-def type-id='type-id-1670' size-in-bits='64' id='type-id-1674'/>
+    <pointer-type-def type-id='type-id-1675' size-in-bits='64' id='type-id-1676'/>
+    <typedef-decl name='backtrace_error_callback' type-id='type-id-1676' filepath='../../.././libsanitizer/../libbacktrace/backtrace.h' line='82' column='1' id='type-id-1677'/>
     <function-decl name='__asan_backtrace_create_state' filepath='../../.././libsanitizer/../libbacktrace/backtrace.h' line='97' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-30'/>
       <parameter type-id='type-id-13'/>
-      <parameter type-id='type-id-1674'/>
+      <parameter type-id='type-id-1677'/>
       <parameter type-id='type-id-3'/>
-      <return type-id='type-id-1671'/>
+      <return type-id='type-id-1674'/>
     </function-decl>
-    <typedef-decl name='uintptr_t' type-id='type-id-1' filepath='/usr/include/stdint.h' line='123' column='1' id='type-id-1675'/>
-    <pointer-type-def type-id='type-id-1676' size-in-bits='64' id='type-id-1677'/>
-    <typedef-decl name='backtrace_full_callback' type-id='type-id-1677' filepath='../../.././libsanitizer/../libbacktrace/backtrace.h' line='110' column='1' id='type-id-1678'/>
-    <function-decl name='__asan_backtrace_pcinfo' filepath='../../.././libsanitizer/../libbacktrace/backtrace.h' line='164' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-1671'/>
-      <parameter type-id='type-id-1675'/>
-      <parameter type-id='type-id-1678'/>
-      <parameter type-id='type-id-1674'/>
-      <parameter type-id='type-id-3'/>
-      <return type-id='type-id-13'/>
-    </function-decl>
+    <typedef-decl name='uintptr_t' type-id='type-id-1' filepath='/usr/include/stdint.h' line='123' column='1' id='type-id-1678'/>
     <pointer-type-def type-id='type-id-1679' size-in-bits='64' id='type-id-1680'/>
-    <typedef-decl name='backtrace_syminfo_callback' type-id='type-id-1680' filepath='../../.././libsanitizer/../libbacktrace/backtrace.h' line='175' column='1' id='type-id-1681'/>
-    <function-decl name='__asan_backtrace_syminfo' filepath='../../.././libsanitizer/../libbacktrace/backtrace.h' line='190' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-1671'/>
-      <parameter type-id='type-id-1675'/>
-      <parameter type-id='type-id-1681'/>
+    <typedef-decl name='backtrace_full_callback' type-id='type-id-1680' filepath='../../.././libsanitizer/../libbacktrace/backtrace.h' line='110' column='1' id='type-id-1681'/>
+    <function-decl name='__asan_backtrace_pcinfo' filepath='../../.././libsanitizer/../libbacktrace/backtrace.h' line='164' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-1674'/>
+      <parameter type-id='type-id-1678'/>
+      <parameter type-id='type-id-1681'/>
+      <parameter type-id='type-id-1677'/>
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-13'/>
     </function-decl>
-    <function-type size-in-bits='64' id='type-id-1676'>
+    <pointer-type-def type-id='type-id-1682' size-in-bits='64' id='type-id-1683'/>
+    <typedef-decl name='backtrace_syminfo_callback' type-id='type-id-1683' filepath='../../.././libsanitizer/../libbacktrace/backtrace.h' line='175' column='1' id='type-id-1684'/>
+    <function-decl name='__asan_backtrace_syminfo' filepath='../../.././libsanitizer/../libbacktrace/backtrace.h' line='190' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-1674'/>
+      <parameter type-id='type-id-1678'/>
+      <parameter type-id='type-id-1684'/>
+      <parameter type-id='type-id-1677'/>
       <parameter type-id='type-id-3'/>
-      <parameter type-id='type-id-1675'/>
+      <return type-id='type-id-13'/>
+    </function-decl>
+    <pointer-type-def type-id='type-id-1685' size-in-bits='64' id='type-id-1673'/>
+    <function-type size-in-bits='64' id='type-id-1679'>
+      <parameter type-id='type-id-3'/>
+      <parameter type-id='type-id-1678'/>
       <parameter type-id='type-id-30'/>
       <parameter type-id='type-id-13'/>
       <parameter type-id='type-id-30'/>
@@ -40766,18 +40798,39 @@
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-6'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-1672'>
+    <function-type size-in-bits='64' id='type-id-1675'>
       <parameter type-id='type-id-3'/>
       <parameter type-id='type-id-30'/>
       <parameter type-id='type-id-13'/>
       <return type-id='type-id-6'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-1679'>
+    <function-type size-in-bits='64' id='type-id-1682'>
       <parameter type-id='type-id-3'/>
-      <parameter type-id='type-id-1675'/>
+      <parameter type-id='type-id-1678'/>
       <parameter type-id='type-id-30'/>
-      <parameter type-id='type-id-1675'/>
-      <parameter type-id='type-id-1675'/>
+      <parameter type-id='type-id-1678'/>
+      <parameter type-id='type-id-1678'/>
+      <return type-id='type-id-6'/>
+    </function-type>
+    <typedef-decl name='fileline' type-id='type-id-1686' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='114' column='1' id='type-id-1671'/>
+    <typedef-decl name='syminfo' type-id='type-id-1687' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='121' column='1' id='type-id-1672'/>
+    <pointer-type-def type-id='type-id-1688' size-in-bits='64' id='type-id-1686'/>
+    <class-decl name='backtrace_freelist_struct' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1685'/>
+    <pointer-type-def type-id='type-id-1689' size-in-bits='64' id='type-id-1687'/>
+    <function-type size-in-bits='64' id='type-id-1688'>
+      <parameter type-id='type-id-1674'/>
+      <parameter type-id='type-id-1678'/>
+      <parameter type-id='type-id-1681'/>
+      <parameter type-id='type-id-1677'/>
+      <parameter type-id='type-id-3'/>
+      <return type-id='type-id-13'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-1689'>
+      <parameter type-id='type-id-1674'/>
+      <parameter type-id='type-id-1678'/>
+      <parameter type-id='type-id-1684'/>
+      <parameter type-id='type-id-1677'/>
+      <parameter type-id='type-id-3'/>
       <return type-id='type-id-6'/>
     </function-type>
   </abi-instr>
@@ -40888,50 +40941,13 @@
 
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/atomic.c' language='LANG_C89'/>  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' language='LANG_C89'>
-    <class-decl name='backtrace_state' size-in-bits='576' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='127' column='1' id='type-id-1670'>
-      <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='filename' type-id='type-id-30' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='130' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='threaded' type-id='type-id-13' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='132' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='lock' type-id='type-id-3' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='136' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='192'>
-        <var-decl name='fileline_fn' type-id='type-id-1682' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='138' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='256'>
-        <var-decl name='fileline_data' type-id='type-id-3' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='140' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='320'>
-        <var-decl name='syminfo_fn' type-id='type-id-1683' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='142' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='384'>
-        <var-decl name='syminfo_data' type-id='type-id-3' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='144' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='448'>
-        <var-decl name='fileline_initialization_failed' type-id='type-id-13' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='146' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='480'>
-        <var-decl name='lock_alloc' type-id='type-id-13' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='148' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='512'>
-        <var-decl name='freelist' type-id='type-id-1684' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='150' column='1'/>
-      </data-member>
-    </class-decl>
-    <pointer-type-def type-id='type-id-1685' size-in-bits='64' id='type-id-1686'/>
-    <typedef-decl name='fileline' type-id='type-id-1686' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='114' column='1' id='type-id-1682'/>
-    <pointer-type-def type-id='type-id-1687' size-in-bits='64' id='type-id-1688'/>
-    <typedef-decl name='syminfo' type-id='type-id-1688' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='121' column='1' id='type-id-1683'/>
-    <class-decl name='backtrace_freelist_struct' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1689'/>
-    <pointer-type-def type-id='type-id-1689' size-in-bits='64' id='type-id-1684'/>
+    <class-decl name='backtrace_freelist_struct' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1685'/>
     <qualified-type-def type-id='type-id-63' const='yes' id='type-id-1690'/>
     <pointer-type-def type-id='type-id-1690' size-in-bits='64' id='type-id-1691'/>
-    <pointer-type-def type-id='type-id-1682' size-in-bits='64' id='type-id-1692'/>
+    <pointer-type-def type-id='type-id-1671' size-in-bits='64' id='type-id-1692'/>
     <function-decl name='__asan_backtrace_dwarf_add' mangled-name='__asan_backtrace_dwarf_add' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2958' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_dwarf_add'>
-      <parameter type-id='type-id-1671' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2958' column='1'/>
-      <parameter type-id='type-id-1675' name='base_address' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2959' column='1'/>
+      <parameter type-id='type-id-1674' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2958' column='1'/>
+      <parameter type-id='type-id-1678' name='base_address' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2959' column='1'/>
       <parameter type-id='type-id-1691' name='dwarf_info' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2960' column='1'/>
       <parameter type-id='type-id-1512' name='dwarf_info_size' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2961' column='1'/>
       <parameter type-id='type-id-1691' name='dwarf_line' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2962' column='1'/>
@@ -40943,7 +40959,7 @@
       <parameter type-id='type-id-1691' name='dwarf_str' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2968' column='1'/>
       <parameter type-id='type-id-1512' name='dwarf_str_size' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2969' column='1'/>
       <parameter type-id='type-id-13' name='is_bigendian' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2970' column='1'/>
-      <parameter type-id='type-id-1674' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2971' column='1'/>
+      <parameter type-id='type-id-1677' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2971' column='1'/>
       <parameter type-id='type-id-3' name='data' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2972' column='1'/>
       <parameter type-id='type-id-1692' name='fileline_fn' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2972' column='1'/>
       <return type-id='type-id-13'/>
@@ -40961,9 +40977,9 @@
     </class-decl>
     <pointer-type-def type-id='type-id-1693' size-in-bits='64' id='type-id-1694'/>
     <function-decl name='__asan_backtrace_vector_grow' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='235' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-1671'/>
-      <parameter type-id='type-id-1512'/>
       <parameter type-id='type-id-1674'/>
+      <parameter type-id='type-id-1512'/>
+      <parameter type-id='type-id-1677'/>
       <parameter type-id='type-id-3'/>
       <parameter type-id='type-id-1694'/>
       <return type-id='type-id-3'/>
@@ -40976,10 +40992,10 @@
       <return type-id='type-id-13'/>
     </function-decl>
     <function-decl name='__asan_backtrace_free' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='212' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-1671'/>
+      <parameter type-id='type-id-1674'/>
       <parameter type-id='type-id-3'/>
       <parameter type-id='type-id-1512'/>
-      <parameter type-id='type-id-1674'/>
+      <parameter type-id='type-id-1677'/>
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-6'/>
     </function-decl>
@@ -41009,9 +41025,9 @@
       <return type-id='type-id-13'/>
     </function-decl>
     <function-decl name='__asan_backtrace_alloc' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='206' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-1671'/>
-      <parameter type-id='type-id-1512'/>
       <parameter type-id='type-id-1674'/>
+      <parameter type-id='type-id-1512'/>
+      <parameter type-id='type-id-1677'/>
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-3'/>
     </function-decl>
@@ -41023,58 +41039,41 @@
       <return type-id='type-id-6'/>
     </function-decl>
     <function-decl name='__asan_backtrace_vector_release' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='253' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-1671'/>
-      <parameter type-id='type-id-1694'/>
       <parameter type-id='type-id-1674'/>
+      <parameter type-id='type-id-1694'/>
+      <parameter type-id='type-id-1677'/>
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-13'/>
     </function-decl>
-    <function-type size-in-bits='64' id='type-id-1685'>
-      <parameter type-id='type-id-1671'/>
-      <parameter type-id='type-id-1675'/>
-      <parameter type-id='type-id-1678'/>
-      <parameter type-id='type-id-1674'/>
-      <parameter type-id='type-id-3'/>
-      <return type-id='type-id-13'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-1687'>
-      <parameter type-id='type-id-1671'/>
-      <parameter type-id='type-id-1675'/>
-      <parameter type-id='type-id-1681'/>
-      <parameter type-id='type-id-1674'/>
-      <parameter type-id='type-id-3'/>
-      <return type-id='type-id-6'/>
-    </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' language='LANG_C89'>
-    <class-decl name='backtrace_freelist_struct' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1689'/>
     <function-decl name='__asan_backtrace_pcinfo' mangled-name='__asan_backtrace_pcinfo' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='166' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_pcinfo'>
-      <parameter type-id='type-id-1671' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='166' column='1'/>
-      <parameter type-id='type-id-1675' name='pc' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='166' column='1'/>
-      <parameter type-id='type-id-1678' name='callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='167' column='1'/>
-      <parameter type-id='type-id-1674' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='168' column='1'/>
+      <parameter type-id='type-id-1674' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='166' column='1'/>
+      <parameter type-id='type-id-1678' name='pc' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='166' column='1'/>
+      <parameter type-id='type-id-1681' name='callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='167' column='1'/>
+      <parameter type-id='type-id-1677' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='168' column='1'/>
       <parameter type-id='type-id-3' name='data' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='168' column='1'/>
       <return type-id='type-id-13'/>
     </function-decl>
     <function-decl name='__asan_backtrace_syminfo' mangled-name='__asan_backtrace_syminfo' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='182' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_syminfo'>
-      <parameter type-id='type-id-1671' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='182' column='1'/>
-      <parameter type-id='type-id-1675' name='pc' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='182' column='1'/>
-      <parameter type-id='type-id-1681' name='callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='183' column='1'/>
-      <parameter type-id='type-id-1674' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='184' column='1'/>
+      <parameter type-id='type-id-1674' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='182' column='1'/>
+      <parameter type-id='type-id-1678' name='pc' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='182' column='1'/>
+      <parameter type-id='type-id-1684' name='callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='183' column='1'/>
+      <parameter type-id='type-id-1677' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='184' column='1'/>
       <parameter type-id='type-id-3' name='data' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='184' column='1'/>
       <return type-id='type-id-13'/>
     </function-decl>
     <function-decl name='__asan_backtrace_open' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='159' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-30'/>
-      <parameter type-id='type-id-1674'/>
+      <parameter type-id='type-id-1677'/>
       <parameter type-id='type-id-3'/>
       <parameter type-id='type-id-452'/>
       <return type-id='type-id-13'/>
     </function-decl>
     <function-decl name='__asan_backtrace_initialize' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='268' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-1671'/>
-      <parameter type-id='type-id-13'/>
       <parameter type-id='type-id-1674'/>
+      <parameter type-id='type-id-13'/>
+      <parameter type-id='type-id-1677'/>
       <parameter type-id='type-id-3'/>
       <parameter type-id='type-id-1692'/>
       <return type-id='type-id-13'/>
@@ -41083,14 +41082,14 @@
   <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/posix.c' language='LANG_C89'>
     <function-decl name='__asan_backtrace_open' mangled-name='__asan_backtrace_open' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/posix.c' line='59' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_open'>
       <parameter type-id='type-id-30' name='filename' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/posix.c' line='59' column='1'/>
-      <parameter type-id='type-id-1674' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/posix.c' line='59' column='1'/>
+      <parameter type-id='type-id-1677' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/posix.c' line='59' column='1'/>
       <parameter type-id='type-id-3' name='data' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/posix.c' line='60' column='1'/>
       <parameter type-id='type-id-452' name='does_not_exist' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/posix.c' line='60' column='1'/>
       <return type-id='type-id-13'/>
     </function-decl>
     <function-decl name='__asan_backtrace_close' mangled-name='__asan_backtrace_close' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/posix.c' line='91' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_close'>
       <parameter type-id='type-id-13' name='descriptor' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/posix.c' line='91' column='1'/>
-      <parameter type-id='type-id-1674' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/posix.c' line='91' column='1'/>
+      <parameter type-id='type-id-1677' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/posix.c' line='91' column='1'/>
       <parameter type-id='type-id-3' name='data' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/posix.c' line='92' column='1'/>
       <return type-id='type-id-13'/>
     </function-decl>
@@ -41124,13 +41123,12 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/state.c' language='LANG_C89'>
-    <class-decl name='backtrace_freelist_struct' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1689'/>
     <function-decl name='__asan_backtrace_create_state' mangled-name='__asan_backtrace_create_state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/state.c' line='46' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_create_state'>
       <parameter type-id='type-id-30' name='filename' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/state.c' line='46' column='1'/>
       <parameter type-id='type-id-13' name='threaded' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/state.c' line='46' column='1'/>
-      <parameter type-id='type-id-1674' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/state.c' line='47' column='1'/>
+      <parameter type-id='type-id-1677' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/state.c' line='47' column='1'/>
       <parameter type-id='type-id-3' name='data' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/state.c' line='48' column='1'/>
-      <return type-id='type-id-1671'/>
+      <return type-id='type-id-1674'/>
     </function-decl>
     <function-decl name='__asan_internal_memset' filepath='../../.././libsanitizer/libbacktrace/backtrace-rename.h' line='41' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
@@ -41139,9 +41137,9 @@
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='__asan_backtrace_alloc' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='206' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-1671'/>
-      <parameter type-id='type-id-1512'/>
       <parameter type-id='type-id-1674'/>
+      <parameter type-id='type-id-1512'/>
+      <parameter type-id='type-id-1677'/>
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-3'/>
     </function-decl>
@@ -41693,11 +41691,10 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/elf.c' language='LANG_C89'>
-    <class-decl name='backtrace_freelist_struct' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1689'/>
     <function-decl name='__asan_backtrace_initialize' mangled-name='__asan_backtrace_initialize' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/elf.c' line='921' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_initialize'>
-      <parameter type-id='type-id-1671' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/elf.c' line='921' column='1'/>
+      <parameter type-id='type-id-1674' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/elf.c' line='921' column='1'/>
       <parameter type-id='type-id-13' name='descriptor' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/elf.c' line='921' column='1'/>
-      <parameter type-id='type-id-1674' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/elf.c' line='922' column='1'/>
+      <parameter type-id='type-id-1677' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/elf.c' line='922' column='1'/>
       <parameter type-id='type-id-3' name='data' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/elf.c' line='923' column='1'/>
       <parameter type-id='type-id-1692' name='fileline_fn' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/elf.c' line='923' column='1'/>
       <return type-id='type-id-13'/>
@@ -41712,13 +41709,13 @@
     </function-decl>
     <function-decl name='__asan_backtrace_close' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='195' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-13'/>
-      <parameter type-id='type-id-1674'/>
+      <parameter type-id='type-id-1677'/>
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-13'/>
     </function-decl>
     <function-decl name='__asan_backtrace_open' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='159' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-30'/>
-      <parameter type-id='type-id-1674'/>
+      <parameter type-id='type-id-1677'/>
       <parameter type-id='type-id-3'/>
       <parameter type-id='type-id-452'/>
       <return type-id='type-id-13'/>
@@ -41730,7 +41727,6 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' language='LANG_C89'>
-    <class-decl name='backtrace_freelist_struct' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1689'/>
     <typedef-decl name='__off_t' type-id='type-id-277' filepath='/usr/include/bits/types.h' line='141' column='1' id='type-id-1730'/>
     <typedef-decl name='off_t' type-id='type-id-1730' filepath='/usr/include/sys/types.h' line='87' column='1' id='type-id-1731'/>
     <class-decl name='backtrace_view' size-in-bits='192' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='169' column='1' id='type-id-1732'>
@@ -41746,19 +41742,19 @@
     </class-decl>
     <pointer-type-def type-id='type-id-1732' size-in-bits='64' id='type-id-1733'/>
     <function-decl name='__asan_backtrace_get_view' mangled-name='__asan_backtrace_get_view' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='53' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_get_view'>
-      <parameter type-id='type-id-1671' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='53' column='1'/>
+      <parameter type-id='type-id-1674' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='53' column='1'/>
       <parameter type-id='type-id-13' name='descriptor' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='54' column='1'/>
       <parameter type-id='type-id-1731' name='offset' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='54' column='1'/>
       <parameter type-id='type-id-1512' name='size' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='54' column='1'/>
-      <parameter type-id='type-id-1674' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='55' column='1'/>
+      <parameter type-id='type-id-1677' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='55' column='1'/>
       <parameter type-id='type-id-3' name='data' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='56' column='1'/>
       <parameter type-id='type-id-1733' name='view' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='56' column='1'/>
       <return type-id='type-id-13'/>
     </function-decl>
     <function-decl name='__asan_backtrace_release_view' mangled-name='__asan_backtrace_release_view' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='87' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_release_view'>
-      <parameter type-id='type-id-1671' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='87' column='1'/>
+      <parameter type-id='type-id-1674' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='87' column='1'/>
       <parameter type-id='type-id-1733' name='view' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='88' column='1'/>
-      <parameter type-id='type-id-1674' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='89' column='1'/>
+      <parameter type-id='type-id-1677' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='89' column='1'/>
       <parameter type-id='type-id-3' name='data' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='90' column='1'/>
       <return type-id='type-id-6'/>
     </function-decl>
@@ -41784,48 +41780,40 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' language='LANG_C89'>
-    <class-decl name='backtrace_freelist_struct' size-in-bits='128' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='55' column='1' id='type-id-1689'>
-      <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='next' type-id='type-id-1684' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='58' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='size' type-id='type-id-1512' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='60' column='1'/>
-      </data-member>
-    </class-decl>
     <function-decl name='__asan_backtrace_free' mangled-name='__asan_backtrace_free' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='161' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_free'>
-      <parameter type-id='type-id-1671' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='161' column='1'/>
+      <parameter type-id='type-id-1674' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='161' column='1'/>
       <parameter type-id='type-id-3' name='addr' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='161' column='1'/>
       <parameter type-id='type-id-1512' name='size' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='161' column='1'/>
-      <parameter type-id='type-id-1674' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='162' column='1'/>
+      <parameter type-id='type-id-1677' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='162' column='1'/>
       <parameter type-id='type-id-3' name='data' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='163' column='1'/>
       <return type-id='type-id-6'/>
     </function-decl>
     <function-decl name='__asan_backtrace_alloc' mangled-name='__asan_backtrace_alloc' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='83' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_alloc'>
-      <parameter type-id='type-id-1671' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='83' column='1'/>
+      <parameter type-id='type-id-1674' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='83' column='1'/>
       <parameter type-id='type-id-1512' name='size' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='84' column='1'/>
-      <parameter type-id='type-id-1674' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='84' column='1'/>
+      <parameter type-id='type-id-1677' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='84' column='1'/>
       <parameter type-id='type-id-3' name='data' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='85' column='1'/>
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='__asan_backtrace_vector_grow' mangled-name='__asan_backtrace_vector_grow' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='209' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_vector_grow'>
-      <parameter type-id='type-id-1671' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='209' column='1'/>
+      <parameter type-id='type-id-1674' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='209' column='1'/>
       <parameter type-id='type-id-1512' name='size' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='209' column='1'/>
-      <parameter type-id='type-id-1674' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='210' column='1'/>
+      <parameter type-id='type-id-1677' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='210' column='1'/>
       <parameter type-id='type-id-3' name='data' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='211' column='1'/>
       <parameter type-id='type-id-1694' name='vec' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='211' column='1'/>
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='__asan_backtrace_vector_finish' mangled-name='__asan_backtrace_vector_finish' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='258' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_vector_finish'>
-      <parameter type-id='type-id-1671' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='259' column='1'/>
+      <parameter type-id='type-id-1674' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='259' column='1'/>
       <parameter type-id='type-id-1694' name='vec' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='260' column='1'/>
-      <parameter type-id='type-id-1674' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='261' column='1'/>
+      <parameter type-id='type-id-1677' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='261' column='1'/>
       <parameter type-id='type-id-3' name='data' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='262' column='1'/>
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='__asan_backtrace_vector_release' mangled-name='__asan_backtrace_vector_release' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='275' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_vector_release'>
-      <parameter type-id='type-id-1671' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='275' column='1'/>
+      <parameter type-id='type-id-1674' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='275' column='1'/>
       <parameter type-id='type-id-1694' name='vec' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='276' column='1'/>
-      <parameter type-id='type-id-1674' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='277' column='1'/>
+      <parameter type-id='type-id-1677' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='277' column='1'/>
       <parameter type-id='type-id-3' name='data' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='278' column='1'/>
       <return type-id='type-id-13'/>
     </function-decl>

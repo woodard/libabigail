@@ -9063,6 +9063,12 @@ type_base::get_canonical_type_for(type_base_sptr t)
   return result;
 }
 
+/// This method is invoked automatically right after the current
+/// instance of @ref class_decl has been canonicalized.
+void
+type_base::on_canonical_type_set()
+{}
+
 /// This is a subroutine of the canonicalize() function.
 ///
 /// When the canonical type C of type T has just been computed, there
@@ -9162,6 +9168,7 @@ canonicalize(type_base_sptr t)
 	  d->priv_->naked_canonical_type = canonical.get();
 	}
 
+  t->on_canonical_type_set();
   return canonical;
 }
 
@@ -15564,6 +15571,17 @@ class_decl::class_decl(const environment* env, const string& name,
     priv_(new priv(is_struct))
 {}
 
+/// This method is invoked automatically right after the current
+/// instance of @ref class_decl has been canonicalized.
+///
+/// Currently, the only thing it does is to sort the virtual member
+/// functions vector.
+void
+class_decl::on_canonical_type_set()
+{
+  sort_virtual_mem_fns();
+}
+
 const class_decl_sptr
 class_decl::get_definition_of_declaration() const
 {return is_class_type(class_or_union::get_definition_of_declaration());}
@@ -16194,10 +16212,7 @@ fixup_virtual_member_function(method_decl_sptr method)
     if (m->get() == method.get())
       break;
   if (m == klass->priv_->virtual_mem_fns_.end())
-    {
-      klass->priv_->virtual_mem_fns_.push_back(method);
-      klass->sort_virtual_mem_fns();
-    }
+    klass->priv_->virtual_mem_fns_.push_back(method);
 }
 
 /// Return true iff the class has no entity in its scope.
