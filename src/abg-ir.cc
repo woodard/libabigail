@@ -6892,36 +6892,6 @@ template<typename NodeKind>
 static decl_base_sptr
 convert_node_to_decl(shared_ptr<NodeKind> node);
 
-/// Get the declaration of a given class_decl node
-///
-/// @param node the class_decl node to consider.
-///
-/// @return the declaration of the node.
-template<>
-decl_base_sptr
-convert_node_to_decl(class_decl_sptr node)
-{return node;}
-
-/// Get the declaration of a type_base node.
-///
-/// @param node the type node to consider.
-///
-/// @return the declaration of the type_base.
-template<>
-decl_base_sptr
-convert_node_to_decl(type_base_sptr node)
-{return get_type_declaration(node);}
-
-/// Get the declaration of a var_decl.
-///
-/// @param node the var_decl to consider.
-///
-/// @return the declaration of the var_decl.
-template<>
-decl_base_sptr
-convert_node_to_decl(var_decl_sptr node)
-{return node;}
-
 /// Lookup a node in a given scope.
 ///
 /// @tparam the type of the node to lookup.
