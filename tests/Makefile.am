@@ -23,6 +23,7 @@ endif
 
 TESTS=				\
 runtestreaddwarf		\
+runtestannotate			\
 runtestcanonicalizetypes.sh	\
 runtestdiffpkg			\
 runtestdifffilter		\
@@ -73,6 +74,9 @@ runtestwritereadarchive_LDADD= libtestutils.la $(top_builddir)/src/libabigail.la
 runtestreaddwarf_SOURCES=test-read-dwarf.cc
 runtestreaddwarf_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 runtestreaddwarf_LDFLAGS=-pthread
+
+runtestannotate_SOURCES=test-annotate.cc
+runtestannotate_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestlookupsyms_SOURCES=test-lookup-syms.cc
 runtestlookupsyms_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la

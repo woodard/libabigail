@@ -56,6 +56,10 @@ Options
     builds the internal representation of the ABI and exits.  This
     option is usually useful for debugging purposes.
 
+  * ``--no-corpus-path``
+
+    Do not emit the path attribute for the ABI corpus.
+
   * ``--suppressions | suppr`` <*path-to-suppression-specifications-file*>
 
     Use a :ref:`suppression specification <suppr_spec_label>` file
@@ -121,7 +125,14 @@ Options
     diagnostic and exits with a non-zero code.
 
     This is a debugging and sanity check option.
- 
+
+  *  ``--annotate``
+
+    Annotate the ABIXML output with comments above most elements.  The
+    comments are made of the pretty-printed form types, declaration or
+    even ELF symbols.  The purpose is to make the ABIXML output more
+    human-readable for debugging or documenting purposes.
+
   * ``--stats``
 
     Emit statistics about various internal things.

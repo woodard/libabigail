@@ -88,12 +88,14 @@ struct options
   bool			check_alt_debug_info_path;
   bool			show_base_name_alt_debug_info_path;
   bool			write_architecture;
+  bool			write_corpus_path;
   bool			load_all_types;
   bool			linux_kernel_mode;
   bool			show_stats;
   bool			noout;
   bool			show_locs;
   bool			abidiff;
+  bool			annotate;
   bool			do_log;
 
   options()
@@ -101,6 +103,7 @@ struct options
       check_alt_debug_info_path(),
       show_base_name_alt_debug_info_path(),
       write_architecture(true),
+      write_corpus_path(true),
       load_all_types(),
       linux_kernel_mode(true),
       show_stats(),
@@ -125,6 +128,7 @@ display_usage(const string& prog_name, ostream& out)
     << "  --noout  do not emit anything after reading the binary\n"
     << "  --suppressions|--suppr <path> specify a suppression file\n"
     << "  --no-architecture  do not emit architecture info in the output\n"
+    << "  --no-corpus-path  do not take the path to the corpora into account\n"
     << "  --no-show-locs  do now show location information\n"
     << "  --check-alternate-debug-info <elf-path>  check alternate debug info "
     "of <elf-path>\n"
@@ -135,6 +139,7 @@ display_usage(const string& prog_name, ostream& out)
     << "  --no-linux-kernel-mode  don't consider the input binary as "
        "a Linux Kernel binary\n"
     << "  --abidiff  compare the loaded ABI against itself\n"
+    << "  --annotate  annotate the ABI artifacts emitted in the output\n"
     << "  --stats  show statistics about various internal stuff\n"
     << "  --verbose show verbose messages about internal stuff\n";
   ;
@@ -203,6 +208,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.noout = true;
       else if (!strcmp(argv[i], "--no-architecture"))
 	opts.write_architecture = false;
+      else if (!strcmp(argv[i], "--no-corpus-path"))
+	opts.write_corpus_path = false;
       else if (!strcmp(argv[i], "--no-show-locs"))
 	opts.show_locs = false;
       else if (!strcmp(argv[i], "--check-alternate-debug-info")
@@ -224,6 +231,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.linux_kernel_mode = false;
       else if (!strcmp(argv[i], "--abidiff"))
 	opts.abidiff = true;
+      else if (!strcmp(argv[i], "--annotate"))
+	opts.annotate = true;
       else if (!strcmp(argv[i], "--stats"))
 	opts.show_stats = true;
       else if (!strcmp(argv[i], "--verbose"))
@@ -433,7 +442,7 @@ main(int argc, char* argv[])
 	  // it back, and compare the ABI of what we've read back
 	  // against the ABI of the input ELF file.
 	  temp_file_sptr tmp_file = temp_file::create();
-	  write_corpus_to_native_xml(corp, 0, tmp_file->get_stream());
+	  write_corpus_to_native_xml(corp, 0, tmp_file->get_stream(), opts.annotate);
 	  tmp_file->get_stream().flush();
 	  corpus_sptr corp2 =
 	    read_corpus_from_native_xml_file(tmp_file->get_path(),
@@ -463,6 +472,8 @@ main(int argc, char* argv[])
 
       if (!opts.write_architecture)
 	corp->set_architecture_name("");
+      if (!opts.write_corpus_path)
+	corp->set_path("");
 
       if (!opts.out_file_path.empty())
 	{
@@ -474,12 +485,12 @@ main(int argc, char* argv[])
 		<< opts.out_file_path << "'\n";
 	      return 1;
 	    }
-	  abigail::xml_writer::write_corpus_to_native_xml(corp, 0, of);
+	  abigail::xml_writer::write_corpus_to_native_xml(corp, 0, of, opts.annotate);
 	  of.close();
 	  return 0;
 	}
       else
-	abigail::xml_writer::write_corpus_to_native_xml(corp, 0, cout);
+	abigail::xml_writer::write_corpus_to_native_xml(corp, 0, cout, opts.annotate);
     }
 
   return 0;

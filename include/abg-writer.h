@@ -36,35 +36,47 @@ namespace xml_writer
 
 using namespace abigail::ir;
 
-bool
-write_translation_unit(const translation_unit&	tu,
-		       unsigned		indent,
-		       std::ostream&		out);
+class write_context;
+
+/// A convenience typedef for a shared pointer to write_context.
+typedef shared_ptr<write_context> write_context_sptr;
 
 bool
 write_translation_unit(const translation_unit&	tu,
 		       unsigned		indent,
-		       const string&		path);
+		       std::ostream&		out,
+		       const bool		annotate = false);
+
+bool
+write_translation_unit(const translation_unit&	tu,
+		       unsigned		indent,
+		       const string&		path,
+		       const bool		annotate = false);
 
 bool
 write_corpus_to_archive(const corpus& corp,
-			const string& path);
+			const string& path,
+			const bool  annotate = false);
 
 bool
-write_corpus_to_archive(const corpus& corp);
+write_corpus_to_archive(const corpus& corp,
+			const bool annotate = false);
 
 bool
-write_corpus_to_archive(const corpus_sptr corp);
+write_corpus_to_archive(const corpus_sptr corp,
+			const bool annotate = false);
 
 bool
 write_corpus_to_native_xml(const corpus_sptr	corpus,
 			   unsigned		indent,
-			   std::ostream&	out);
+			   std::ostream&	out,
+			   const bool		annotate = false);
 
 bool
 write_corpus_to_native_xml_file(const corpus_sptr	corpus,
 				unsigned		indent,
-				const string&		path);
+				const string&		path,
+				const bool		annotate = false);
 
 }// end namespace xml_writer
 }// end namespace abigail

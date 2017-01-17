@@ -249,6 +249,48 @@ escape_xml_string(const std::string& str)
   return result;
 }
 
+/// Escape the '-' character, to avoid having a '--' in a comment.
+///
+/// The resulting entity for '-' is '&#45;'.
+///
+//// @param str the input string to read to search for the characters
+//// to escape.
+////
+//// @param escaped the output string where to write the resulting
+//// string that contains the pre-defined characters escaped as
+//// predefined entitites.
+void
+escape_xml_comment(const std::string& str,
+		   std::string& escaped)
+{
+  for (std::string::const_iterator i = str.begin(); i != str.end(); ++i)
+    switch (*i)
+      {
+      case '-':
+	escaped += "&#45;";
+	break;
+      default:
+	escaped += *i;
+      }
+}
+
+/// Escape the '-' character, to avoid having a '--' in a comment.
+///
+/// The resulting entity for '-' is '&#45;'.
+///
+//// @param str the input string to read to search for the characters
+//// to escape.
+////
+//// @return the resulting string that contains the pre-defined
+//// characters escaped as predefined entitites.
+std::string
+escape_xml_comment(const std::string& str)
+{
+  std::string result;
+  escape_xml_comment(str, result);
+  return result;
+}
+
 /// Read a string, detect the 5 predefined XML entities it may contain
 /// and un-escape them, by writting their corresponding characters
 /// back in.  The pre-defined entities are:
@@ -339,6 +381,50 @@ unescape_xml_string(const std::string& str)
 {
   std::string result;
   unescape_xml_string(str, result);
+  return result;
+}
+
+/// Read a string, detect the '#&45;' entity and un-escape it into
+/// the '-' character.
+///
+///   @param str the input XML string to consider.
+///
+///   @param escaped where to write the resulting un-escaped string.
+void
+unescape_xml_comment(const std::string& str,
+		     std::string& escaped)
+{
+  std::string::size_type i = 0;
+  while (i < str.size())
+    {
+      if (str[i] == '&'
+	  && str[i + 1] == '#'
+	  && str[i + 2] == '4'
+	  && str[i + 3] == '5'
+	  && str[i + 4] == ';')
+	{
+	  escaped += '-';
+	  i += 5;
+	}
+      else
+	{
+	  escaped += str[i];
+	  ++i;
+	}
+    }
+}
+
+/// Read a string, detect the '#&45;' entity and un-escape it into
+/// the '-' character.
+///
+///   @param str the input XML string to consider.
+///
+///   @return escaped where to write the resulting un-escaped string.
+std::string
+unescape_xml_comment(const std::string& str)
+{
+  std::string result;
+  unescape_xml_comment(str, result);
   return result;
 }
 

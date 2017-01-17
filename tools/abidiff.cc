@@ -81,6 +81,7 @@ struct options
   bool			linux_kernel_mode;
   bool			no_default_supprs;
   bool			no_arch;
+  bool			no_corpus;
   bool			show_relative_offset_changes;
   bool			show_stats_only;
   bool			show_symtabs;
@@ -113,6 +114,7 @@ struct options
       linux_kernel_mode(true),
       no_default_supprs(),
       no_arch(),
+      no_corpus(),
       show_relative_offset_changes(true),
       show_stats_only(),
       show_symtabs(),
@@ -160,6 +162,7 @@ display_usage(const string& prog_name, ostream& out)
     << " --no-default-suppression  don't load any "
        "default suppression specification\n"
     << " --no-architecture  do not take architecture in account\n"
+    << " --no-corpus-path  do not take the path to the corpora into account\n"
     << " --deleted-fns  display deleted public functions\n"
     << " --changed-fns  display changed public functions\n"
     << " --added-fns  display added public functions\n"
@@ -313,6 +316,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.no_default_supprs = true;
       else if (!strcmp(argv[i], "--no-architecture"))
 	opts.no_arch = true;
+      else if (!strcmp(argv[i], "--no-corpus-path"))
+	opts.no_corpus = true;
       else if (!strcmp(argv[i], "--deleted-fns"))
 	{
 	  opts.show_deleted_fns = true;
@@ -1016,6 +1021,13 @@ main(int argc, char* argv[])
 	    c1->set_architecture_name("");
 	  if (c2)
 	    c2->set_architecture_name("");
+	}
+      if (opts.no_corpus)
+	{
+	  if (c1)
+	    c1->set_path("");
+	  if (c2)
+	    c2->set_path("");
 	}
 
       if (t1)

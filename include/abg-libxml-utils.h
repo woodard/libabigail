@@ -93,13 +93,26 @@ escape_xml_string(const std::string& str,
 std::string
 escape_xml_string(const std::string& str);
 
+void
+escape_xml_comment(const std::string& str,
+		   std::string& escaped);
+
+std::string
+escape_xml_comment(const std::string& str);
 
 void
 unescape_xml_string(const std::string& str,
-		  std::string& escaped);
+		    std::string& escaped);
 
 std::string
 unescape_xml_string(const std::string& str);
+
+void
+unescape_xml_comment(const std::string& str,
+		     std::string& escaped);
+
+std::string
+unescape_xml_comment(const std::string& str);
 
 }//end namespace xml
 }//end namespace abigail

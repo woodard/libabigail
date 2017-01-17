@@ -158,6 +158,7 @@ class write_context
   id_manager				m_id_manager;
   config				m_config;
   ostream&				m_ostream;
+  bool					m_annotate;
   mutable type_ptr_map				m_type_id_map;
   mutable unordered_map<interned_string,
 			bool, hash_interned_string> m_emitted_type_id_map;
@@ -179,10 +180,11 @@ public:
   /// @param env the enviroment we are operating from.
   ///
   /// @param os the output stream to write to.
-  write_context(const environment* env, ostream& os)
+  write_context(const environment* env, ostream& os, const bool annotate = false)
     : m_env(env),
       m_id_manager(env),
-      m_ostream(os)
+      m_ostream(os),
+      m_annotate(annotate)
   {}
 
   /// Getter of the environment we are operating from.
@@ -199,6 +201,13 @@ public:
   ostream&
   get_ostream()
   {return m_ostream;}
+
+  /// Getter of the annotation option.
+  ///
+  /// @return true iff ABIXML annotations are turned on
+  bool
+  get_annotate()
+  {return m_annotate;}
 
   /// Getter of the @ref id_manager.
   ///
@@ -690,6 +699,255 @@ get_indent_to_level(write_context& ctxt, unsigned initial_indent,
     int nb_ws = initial_indent +
       level * ctxt.get_config().get_xml_element_indent();
     return nb_ws;
+}
+
+/// Annotate a declaration in form of an ABIXML comment.
+///
+/// This function is further specialized for declarations and types
+/// with special requirements.
+///
+/// @tparam T shall be of type decl_base_sptr or a shared pointer to a
+/// type derived from it, for the instantiation to be syntactically
+/// correct.
+///
+/// @param decl_sptr the shared pointer to the declaration of type T.
+///
+/// @param ctxt the context of the parsing.
+///
+/// @param indent the amount of white space to indent to.
+///
+/// @return true iff decl is valid.
+template <typename T>
+static bool
+annotate(const T&	decl,
+	 write_context& ctxt,
+	 unsigned	indent)
+{
+  if (!decl)
+    return false;
+
+  if (!ctxt.get_annotate())
+    return true;
+
+  ostream& o = ctxt.get_ostream();
+
+  do_indent(o, indent);
+
+  o << "<!-- "
+    << xml::escape_xml_comment(decl->get_pretty_representation())
+    << " -->\n";
+
+  return true;
+}
+
+/// Annotate an elf symbol in form of an ABIXML comment, effectively
+/// writing out its demangled form.
+///
+/// @param sym the symbol, whose name should be demangled.
+///
+/// @param ctxt the context of the parsing.
+///
+/// @param indent the amount of white space to indent to.
+///
+/// @return true iff decl is valid
+template<>
+bool
+annotate(const elf_symbol_sptr& sym,
+	 write_context&	ctxt,
+	 unsigned		indent)
+{
+  if (!sym)
+    return false;
+
+  if (!ctxt.get_annotate())
+    return true;
+
+  ostream& o = ctxt.get_ostream();
+
+  do_indent(o, indent);
+  o << "<!-- "
+    << xml::escape_xml_comment(abigail::ir::demangle_cplus_mangled_name(sym->get_name()))
+    << " -->\n";
+
+  return true;
+}
+
+/// Annotate a typedef declaration in form of an ABIXML comment.
+///
+/// @param typedef_decl the typedef to annotate.
+///
+/// @param ctxt the context of the parsing.
+///
+/// @param indent the amount of white space to indent to.
+///
+/// @return true iff decl is valid
+template<>
+bool
+annotate(const typedef_decl_sptr&	typedef_decl,
+	 write_context&		ctxt,
+	 unsigned			indent)
+{
+  if (!typedef_decl)
+    return false;
+
+  if (!ctxt.get_annotate())
+    return true;
+
+  ostream& o = ctxt.get_ostream();
+
+  do_indent(o, indent);
+
+  o << "<!-- typedef "
+    << get_type_name(typedef_decl->get_underlying_type())
+    << " "
+    << get_type_name(typedef_decl)
+    << " -->\n";
+
+  return true;
+}
+
+/// Annotate a function type in form of an ABIXML comment.
+///
+/// @param function_type the function type to annotate.
+///
+/// @param ctxt the context of the parsing.
+///
+/// @param indent the amount of white space to indent to.
+///
+/// @param skip_first_parm if true, do not serialize the first
+/// parameter of the function decl.
+//
+/// @return true iff decl is valid
+bool
+annotate(const function_type_sptr&	function_type,
+	 write_context&		ctxt,
+	 unsigned			indent)
+{
+  if (!function_type)
+    return false;
+
+  if (!ctxt.get_annotate())
+    return true;
+
+  ostream& o = ctxt.get_ostream();
+
+  do_indent(o, indent);
+  o << "<!-- "
+    << xml::escape_xml_comment(get_type_name(function_type->get_return_type()))
+    << " (";
+
+  vector<shared_ptr<function_decl::parameter> >::const_iterator pi =
+    function_type->get_first_non_implicit_parm();
+
+  for (; pi != function_type->get_parameters().end(); ++pi)
+    {
+      o << xml::escape_xml_comment((*pi)->get_type_name());
+      // emit a comma after a param type, unless it's the last one
+      if (distance(pi, function_type->get_parameters().end()) > 1)
+	o << ", ";
+    }
+  o << ") -->\n";
+
+  return true;
+}
+
+/// Annotate a function declaration in form of an ABIXML comment.
+///
+/// @param fn the function decl to annotate.
+///
+/// @param ctxt the context of the parsing.
+///
+/// @param indent the amount of white space to indent to.
+///
+/// @param skip_first_parm if true, do not serialize the first
+/// parameter of the function decl.
+//
+/// @return true iff decl is valid
+static bool
+annotate(const function_decl_sptr&	fn,
+	 write_context&		ctxt,
+	 unsigned			indent)
+{
+  if (!fn)
+    return false;
+
+  if (!ctxt.get_annotate())
+    return true;
+
+  ostream& o = ctxt.get_ostream();
+
+  do_indent(o, indent);
+  o << "<!-- ";
+
+  if (is_member_function(fn)
+      && (get_member_function_is_ctor(fn) || get_member_function_is_dtor(fn)))
+    ; // we don't emit return types for ctor or dtors
+  else
+    o << xml::escape_xml_comment(get_type_name(fn->get_return_type()))
+      << " ";
+
+    o << xml::escape_xml_comment(fn->get_qualified_name()) << "(";
+
+  vector<function_decl::parameter_sptr>::const_iterator pi =
+    fn->get_first_non_implicit_parm();
+
+  for (; pi != fn->get_parameters().end(); ++pi)
+    {
+      o << xml::escape_xml_comment((*pi)->get_type_name());
+      // emit a comma after a param type, unless it's the last one
+      if (distance(pi, fn->get_parameters().end()) > 1)
+	o << ", ";
+    }
+  o << ") -->\n";
+
+  return true;
+}
+
+/// Annotate a function parameter in form of an ABIXML comment.
+///
+/// @param parm the function parameter to annotate.
+///
+/// @param ctxt the context of the parsing.
+///
+/// @param indent the amount of white space to indent to.
+///
+/// @return true iff decl is valid
+template<>
+bool
+annotate(const function_decl::parameter_sptr&	parm,
+	 write_context&			ctxt,
+	 unsigned				indent)
+{
+  if (!parm)
+    return false;
+
+  if (!ctxt.get_annotate())
+    return true;
+
+  ostream &o = ctxt.get_ostream();
+
+  do_indent(o, indent);
+
+  o << "<!-- ";
+
+  if (parm->get_variadic_marker())
+    o << "variadic parameter";
+  else
+    {
+      if (parm->get_artificial())
+	{
+	  if (parm->get_index() == 0)
+	    o << "implicit ";
+	  else
+	    o << "artificial ";
+	}
+      o << "parameter of type '"
+	<< xml::escape_xml_comment(get_pretty_representation(parm->get_type()));
+    }
+
+  o << "' -->\n" ;
+
+  return true;
 }
 
 /// Write a location to the output stream.
@@ -1519,9 +1777,10 @@ write_translation_unit(const translation_unit&	tu,
 bool
 write_translation_unit(const translation_unit&	tu,
 		       unsigned		indent,
-		       std::ostream&		out)
+		       std::ostream&		out,
+		       const bool		annotate)
 {
-  write_context ctxt(tu.get_environment(), out);
+  write_context ctxt(tu.get_environment(), out, annotate);
   return write_translation_unit(tu, ctxt, indent);
 }
 
@@ -1538,7 +1797,8 @@ write_translation_unit(const translation_unit&	tu,
 bool
 write_translation_unit(const translation_unit&	tu,
 		       unsigned		indent,
-		       const string&		path)
+		       const string&		path,
+		       const bool annotate)
 {
   bool result = true;
 
@@ -1551,7 +1811,7 @@ write_translation_unit(const translation_unit&	tu,
 	  return false;
 	}
 
-      if (!write_translation_unit(tu, indent, of))
+      if (!write_translation_unit(tu, indent, of, annotate))
 	{
 	  cerr << "failed to access " << path << "\n";
 	  result = false;
@@ -1588,6 +1848,8 @@ write_type_decl(const type_decl_sptr& d, write_context& ctxt, unsigned indent)
     return false;
 
   ostream& o = ctxt.get_ostream();
+
+  annotate(d, ctxt, indent);
 
   do_indent(o, indent);
 
@@ -1626,6 +1888,8 @@ write_namespace_decl(const namespace_decl_sptr& decl,
 
   ostream& o = ctxt.get_ostream();
   const config &c = ctxt.get_config();
+
+  annotate(decl, ctxt, indent);
 
   do_indent(o, indent);
 
@@ -1684,10 +1948,12 @@ write_qualified_type_def(const qualified_type_def_sptr&	decl,
 
   ostream& o = ctxt.get_ostream();
 
-  do_indent(o, indent);
 
   type_base_sptr underlying_type = decl->get_underlying_type();
 
+  annotate(decl, ctxt, indent);
+
+  do_indent(o, indent);
   o << "<qualified-type-def type-id='"
     << ctxt.get_id_for_type(underlying_type)
     << "'";
@@ -1758,9 +2024,12 @@ write_pointer_type_def(const pointer_type_def_sptr&	decl,
 
   ostream& o = ctxt.get_ostream();
 
-  do_indent(o, indent);
 
   type_base_sptr pointed_to_type = decl->get_pointed_to_type();
+
+  annotate(decl->get_canonical_type(), ctxt, indent);
+
+  do_indent(o, indent);
   o << "<pointer-type-def type-id='"
     << ctxt.get_id_for_type(pointed_to_type)
     << "'";
@@ -1823,6 +2092,8 @@ write_reference_type_def(const reference_type_def_sptr&	decl,
 {
   if (!decl)
     return false;
+
+  annotate(decl->get_canonical_type(), ctxt, indent);
 
   ostream& o = ctxt.get_ostream();
 
@@ -1899,6 +2170,8 @@ write_array_type_def(const array_type_def_sptr&	decl,
 {
   if (!decl)
     return false;
+
+  annotate(decl, ctxt, indent);
 
   ostream& o = ctxt.get_ostream();
 
@@ -1998,6 +2271,8 @@ write_enum_type_decl(const enum_type_decl_sptr& decl,
   if (!decl)
     return false;
 
+  annotate(decl->get_canonical_type(), ctxt, indent);
+
   ostream& o = ctxt.get_ostream();
 
   do_indent(o, indent);
@@ -2076,6 +2351,7 @@ write_elf_symbol(const elf_symbol_sptr&	sym,
 
   ostream &o = ctxt.get_ostream();
 
+  annotate(sym, ctxt, indent);
   do_indent(o, indent);
   o << "<elf-symbol name='" << sym->get_name() << "'";
   if (sym->is_variable() && sym->get_size())
@@ -2203,6 +2479,8 @@ write_typedef_decl(const typedef_decl_sptr&	decl,
 
   ostream &o = ctxt.get_ostream();
 
+  annotate(decl, ctxt, indent);
+
   do_indent(o, indent);
 
   o << "<typedef-decl name='"
@@ -2261,6 +2539,8 @@ write_var_decl(const var_decl_sptr& decl, write_context& ctxt,
   if (!decl)
     return false;
 
+  annotate(decl, ctxt, indent);
+
   ostream &o = ctxt.get_ostream();
 
   do_indent(o, indent);
@@ -2309,6 +2589,8 @@ write_function_decl(const function_decl_sptr& decl, write_context& ctxt,
   if (!decl)
     return false;
 
+  annotate(decl, ctxt, indent);
+
   ostream &o = ctxt.get_ostream();
 
   do_indent(o, indent);
@@ -2342,12 +2624,20 @@ write_function_decl(const function_decl_sptr& decl, write_context& ctxt,
        pi != decl->get_parameters().end();
        ++pi)
     {
-      do_indent(o, indent + ctxt.get_config().get_xml_element_indent());
       if ((*pi)->get_variadic_marker())
-	o << "<parameter is-variadic='yes'";
+        {
+          do_indent(o, indent + ctxt.get_config().get_xml_element_indent());
+          o << "<parameter is-variadic='yes'";
+        }
       else
 	{
 	  parm_type = (*pi)->get_type();
+
+          annotate(*pi, ctxt,
+		   indent + ctxt.get_config().get_xml_element_indent());
+
+          do_indent(o, indent + ctxt.get_config().get_xml_element_indent());
+
 	  o << "<parameter type-id='"
 	    << ctxt.get_id_for_type(parm_type)
 	    << "'";
@@ -2364,6 +2654,8 @@ write_function_decl(const function_decl_sptr& decl, write_context& ctxt,
 
   if (shared_ptr<type_base> return_type = decl->get_return_type())
     {
+      annotate(return_type , ctxt,
+	       indent + ctxt.get_config().get_xml_element_indent());
       do_indent(o, indent + ctxt.get_config().get_xml_element_indent());
       o << "<return type-id='" << ctxt.get_id_for_type(return_type) << "'/>\n";
       ctxt.record_type_as_referenced(return_type);
@@ -2392,6 +2684,8 @@ write_function_type(const function_type_sptr& fn_type,
     return false;
 
   ostream &o = ctxt.get_ostream();
+
+  annotate(fn_type, ctxt, indent);
 
   do_indent(o, indent);
 
@@ -2422,12 +2716,19 @@ write_function_type(const function_type_sptr& fn_type,
        pi != fn_type->get_parameters().end();
        ++pi)
     {
-      do_indent(o, indent + ctxt.get_config().get_xml_element_indent());
+
       if ((*pi)->get_variadic_marker())
-	o << "<parameter is-variadic='yes'";
+        {
+          do_indent(o, indent + ctxt.get_config().get_xml_element_indent());
+          o << "<parameter is-variadic='yes'";
+        }
       else
 	{
 	  parm_type = (*pi)->get_type();
+
+          annotate(*pi, ctxt, indent + ctxt.get_config().get_xml_element_indent());
+
+          do_indent(o, indent + ctxt.get_config().get_xml_element_indent());
 	  o << "<parameter type-id='"
 	    << ctxt.get_id_for_type(parm_type)
 	    << "'";
@@ -2446,6 +2747,7 @@ write_function_type(const function_type_sptr& fn_type,
 
   if (type_base_sptr return_type = fn_type->get_return_type())
     {
+      annotate(return_type, ctxt, indent + ctxt.get_config().get_xml_element_indent());
       do_indent(o, indent + ctxt.get_config().get_xml_element_indent());
       o << "<return type-id='" << ctxt.get_id_for_type(return_type) << "'/>\n";
       ctxt.record_type_as_referenced(return_type);
@@ -2618,6 +2920,8 @@ write_class_decl(const class_decl_sptr& decl,
   if (!decl)
     return false;
 
+  annotate(decl, ctxt, indent);
+
   ostream& o = ctxt.get_ostream();
 
   write_class_decl_opening_tag(decl, id, ctxt, indent,
@@ -2632,6 +2936,7 @@ write_class_decl(const class_decl_sptr& decl,
 	   base != decl->get_base_specifiers().end();
 	   ++base)
 	{
+          annotate((*base)->get_base_class(), ctxt, indent);
 	  do_indent(o, nb_ws);
 	  o << "<base-class";
 
@@ -2828,6 +3133,8 @@ write_union_decl(const union_decl_sptr& decl,
 {
   if (!decl)
     return false;
+
+  annotate(decl, ctxt, indent);
 
   ostream& o = ctxt.get_ostream();
 
@@ -3409,17 +3716,20 @@ create_archive_write_context(const string& archive_path)
 /// information about where the archive is on disk, the zip archive,
 /// and the buffers holding the temporary data to be flushed into the archive.
 ///
+/// @param annotate whether ABIXML output should be annotated.
+///
 /// @return true upon succesful serialization occured, false
 /// otherwise.
 static bool
 write_translation_unit_to_archive(const translation_unit& tu,
-				  archive_write_ctxt& ctxt)
+				  archive_write_ctxt& ctxt,
+                                  const bool annotate)
 {
   if (!ctxt.archive)
     return false;
 
   ostringstream os;
-  if (!write_translation_unit(tu, /*indent=*/0, os))
+  if (!write_translation_unit(tu, /*indent=*/0, os, annotate))
     return false;
   ctxt.serialized_tus.push_back(os.str());
 
@@ -3449,17 +3759,20 @@ write_translation_unit_to_archive(const translation_unit& tu,
  /// object, and the buffers holding the temporary data to be flushed
  /// into the archive.
  ///
+ /// @param annotate whether ABIXML output should be annotated.
+ ///
  /// @return true upon successful completion, false otherwise.
 static bool
 write_corpus_to_archive(const corpus& corp,
-			archive_write_ctxt& ctxt)
+			archive_write_ctxt& ctxt,
+                        const bool annotate)
 {
   for (translation_units::const_iterator i =
 	 corp.get_translation_units().begin();
        i != corp.get_translation_units().end();
        ++i)
     {
-      if (! write_translation_unit_to_archive(**i, ctxt))
+      if (! write_translation_unit_to_archive(**i, ctxt, annotate))
 	return false;
     }
 
@@ -3477,11 +3790,14 @@ write_corpus_to_archive(const corpus& corp,
  /// object, and the buffers holding the temporary data to be flushed
  /// into the archive.
  ///
+ /// @param annotate whether ABIXML output should be annotated.
+ ///
  /// @return upon successful completion, false otherwise.
 static bool
 write_corpus_to_archive(const corpus& corp,
-			archive_write_ctxt_sptr ctxt)
-{return write_corpus_to_archive(corp, *ctxt);}
+			archive_write_ctxt_sptr ctxt,
+                        const bool annotate)
+{return write_corpus_to_archive(corp, *ctxt, annotate);}
 
  /// Serialize the current corpus to disk in a file at a given path.
  ///
@@ -3490,14 +3806,17 @@ write_corpus_to_archive(const corpus& corp,
  /// @param path the path of the file to serialize the
  /// translation_unit to.
  ///
+ /// @param annotate whether ABIXML output should be annotated.
+ ///
  /// @return true upon successful completion, false otherwise.
 bool
 write_corpus_to_archive(const corpus& corp,
-			const string& path)
+			const string& path,
+                        const bool annotate)
 {
   archive_write_ctxt_sptr ctxt = create_archive_write_context(path);
   assert(ctxt);
-  return write_corpus_to_archive(corp, ctxt);
+  return write_corpus_to_archive(corp, ctxt, annotate);
 }
 
  /// Serialize the current corpus to disk in a file.  The file path is
@@ -3505,20 +3824,24 @@ write_corpus_to_archive(const corpus& corp,
  ///
  /// @param tu the translation unit to serialize.
  ///
+ /// @param annotate whether ABIXML output should be annotated.
+ ///
  /// @return true upon successful completion, false otherwise.
 bool
-write_corpus_to_archive(const corpus& corp)
-{return write_corpus_to_archive(corp, corp.get_path());}
+write_corpus_to_archive(const corpus& corp, const bool annotate)
+{return write_corpus_to_archive(corp, corp.get_path(), annotate);}
 
  /// Serialize the current corpus to disk in a file.  The file path is
  /// given by translation_unit::get_path().
  ///
  /// @param tu the translation unit to serialize.
  ///
+ /// @param annotate whether ABIXML output should be annotated.
+ ///
  /// @return true upon successful completion, false otherwise.
 bool
-write_corpus_to_archive(const corpus_sptr corp)
-{return write_corpus_to_archive(*corp);}
+write_corpus_to_archive(const corpus_sptr corp, const bool annotate)
+{return write_corpus_to_archive(*corp, annotate);}
 
 #endif //WITH_ZIP_ARCHIVE
 
@@ -3530,15 +3853,20 @@ write_corpus_to_archive(const corpus_sptr corp)
 /// @param indent the number of white space indentation to use.
 ///
 /// @param out the output stream to serialize the ABI corpus to.
+///
+/// @param annotate whether ABIXML output should be annotated.
+///
+/// @return true upon successful completion, false otherwise.
 bool
 write_corpus_to_native_xml(const corpus_sptr	corpus,
 			   unsigned		indent,
-			   std::ostream&	out)
+			   std::ostream&	out,
+			   const bool		annotate)
 {
   if (!corpus)
     return false;
 
-  write_context ctxt(corpus->get_environment(), out);
+  write_context ctxt(corpus->get_environment(), out, annotate);
 
   do_indent_to_level(ctxt, indent, 0);
   out << "<abi-corpus";
@@ -3617,10 +3945,15 @@ write_corpus_to_native_xml(const corpus_sptr	corpus,
 /// @param indent the number of white space indentation to use.
 ///
 /// @param out the output file to serialize the ABI corpus to.
+///
+/// @param annotate whether ABIXML output should be annotated.
+///
+/// @return true upon successful completion, false otherwise.
 bool
 write_corpus_to_native_xml_file(const corpus_sptr	corpus,
 				unsigned		indent,
-				const string&		path)
+				const string&		path,
+                                const bool		annotate)
 {
     bool result = true;
 
@@ -3633,7 +3966,7 @@ write_corpus_to_native_xml_file(const corpus_sptr	corpus,
 	  return false;
 	}
 
-      if (!write_corpus_to_native_xml(corpus, indent, of))
+      if (!write_corpus_to_native_xml(corpus, indent, of, annotate))
 	{
 	  cerr << "failed to access " << path << "\n";
 	  result = false;
@@ -3661,10 +3994,12 @@ using namespace abigail::ir;
 /// @param d the pointer to decl_base to serialize.
 ///
 /// @param o the output stream to consider.
+///
+/// @param annotate whether ABIXML output should be annotated.
 void
-dump(const decl_base_sptr d, std::ostream& o)
+dump(const decl_base_sptr d, std::ostream& o, const bool annotate)
 {
-  xml_writer::write_context ctxt(d->get_environment(), o);
+  xml_writer::write_context ctxt(d->get_environment(), o, annotate);
   write_decl(d, ctxt, /*indent=*/0);
   o << "\n";
 }
@@ -3672,35 +4007,43 @@ dump(const decl_base_sptr d, std::ostream& o)
 /// Serialize a pointer to decl_base to stderr.
 ///
 /// @param d the pointer to decl_base to serialize.
+///
+/// @param annotate whether ABIXML output should be annotated.
 void
-dump(const decl_base_sptr d)
-{dump(d, cerr);}
+dump(const decl_base_sptr d, const bool annotate)
+{dump(d, cerr, annotate);}
 
 /// Serialize a pointer to type_base to an output stream.
 ///
 /// @param t the pointer to type_base to serialize.
 ///
 /// @param o the output stream to serialize the @ref type_base to.
+///
+/// @param annotate whether ABIXML output should be annotated.
 void
-dump(const type_base_sptr t, std::ostream& o)
-{dump(get_type_declaration(t), o);}
+dump(const type_base_sptr t, std::ostream& o, const bool annotate)
+{dump(get_type_declaration(t), o, annotate);}
 
 /// Serialize a pointer to type_base to stderr.
 ///
 /// @param t the pointer to type_base to serialize.
+///
+/// @param annotate whether ABIXML output should be annotated.
 void
-dump(const type_base_sptr t)
-{dump(t, cerr);}
+dump(const type_base_sptr t, const bool annotate)
+{dump(t, cerr, annotate);}
 
 /// Serialize a pointer to var_decl to an output stream.
 ///
 /// @param v the pointer to var_decl to serialize.
 ///
 /// @param o the output stream to serialize the @ref var_decl to.
+///
+/// @param annotate whether ABIXML output should be annotated.
 void
-dump(const var_decl_sptr v, std::ostream& o)
+dump(const var_decl_sptr v, std::ostream& o, const bool annotate)
 {
-  xml_writer::write_context ctxt(v->get_environment(), o);
+  xml_writer::write_context ctxt(v->get_environment(), o, annotate);
   write_var_decl(v, ctxt, /*linkage_name*/true, /*indent=*/0);
   cerr << "\n";
 }
@@ -3708,19 +4051,23 @@ dump(const var_decl_sptr v, std::ostream& o)
 /// Serialize a pointer to var_decl to stderr.
 ///
 /// @param v the pointer to var_decl to serialize.
+///
+/// @param annotate whether ABIXML output should be annotated.
 void
-dump(const var_decl_sptr v)
-{dump(v, cerr);}
+dump(const var_decl_sptr v, const bool annotate)
+{dump(v, cerr, annotate);}
 
 /// Serialize a @ref translation_unit to an output stream.
 ///
 /// @param t the translation_unit to serialize.
 ///
 /// @param o the outpout stream to serialize the translation_unit to.
+///
+/// @param annotate whether ABIXML output should be annotated.
 void
-dump(const translation_unit& t, std::ostream& o)
+dump(const translation_unit& t, std::ostream& o, const bool annotate)
 {
-  xml_writer::write_context ctxt(t.get_environment(), o);
+  xml_writer::write_context ctxt(t.get_environment(), o, annotate);
   write_translation_unit(t, ctxt, /*indent=*/0);
   o << "\n";
 }
@@ -3729,29 +4076,33 @@ dump(const translation_unit& t, std::ostream& o)
 ///
 /// @param t the translation_unit to serialize.
 void
-dump(const translation_unit& t)
-{dump(t, cerr);}
+dump(const translation_unit& t, const bool annotate)
+{dump(t, cerr, annotate);}
 
 /// Serialize a pointer to @ref translation_unit to an output stream.
 ///
 /// @param t the @ref translation_unit_sptr to serialize.
 ///
 /// @param o the output stream to serialize the translation unit to.
+///
+/// @param annotate whether ABIXML output should be annotated.
 void
-dump(const translation_unit_sptr t, std::ostream& o)
+dump(const translation_unit_sptr t, std::ostream& o, const bool annotate)
 {
   if (t)
-    dump(*t, o);
+    dump(*t, o, annotate);
 }
 
 /// Serialize a pointer to @ref translation_unit to stderr.
 ///
 /// @param t the translation_unit_sptr to serialize.
+///
+/// @param annotate whether ABIXML output should be annotated.
 void
-dump(const translation_unit_sptr t)
+dump(const translation_unit_sptr t, const bool annotate)
 {
   if (t)
-    dump(*t);
+    dump(*t, annotate);
 }
 
 /// Serialize a source location to an output stream.

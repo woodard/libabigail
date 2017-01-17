@@ -304,6 +304,10 @@ Options
 
     Do not take architecture in account when comparing ABIs.
 
+  * ``--no-corpus-path``
+
+    Do not emit the path attribute for the ABI corpus.
+
   *  ``--dump-diff-tree``
 
     After the diff report, emit a textual representation of the diff
