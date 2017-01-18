@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2016 Red Hat, Inc.
+// Copyright (C) 2016-2017 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -25,18 +25,19 @@
 /// This contains the implementation of the suppression engine of
 /// libabigail.
 
-#include "abg-suppression-priv.h"
-
 #include "abg-internal.h"
 // <headers defining libabigail's API go under here>
 ABG_BEGIN_EXPORT_DECLARATIONS
 
 #include "abg-ini.h"
 #include "abg-comp-filter.h"
+#include "abg-suppression.h"
 #include "abg-tools-utils.h"
 
-// <headers defining libabigail's API go under here>
-ABG_BEGIN_EXPORT_DECLARATIONS
+ABG_END_EXPORT_DECLARATIONS
+// </headers defining libabigail's API>
+
+#include "abg-suppression-priv.h"
 
 namespace abigail
 {
