@@ -107,22 +107,23 @@ Options
     ELF binary.  It thus considers functions and variables which are
     defined and exported in the ELF sense.
 
-  * ``--dont-drop-private-types``
+  * ``--drop-private-types``
 
     This option is to be used with the ``--headers-dir1`` and
-    ``--headers-dir2`` options.  Without this option, types that are
+    ``--headers-dir2`` options.  With this option, types that are
     *NOT* defined in the headers are entirely dropped from the
     internal representation build by Libabigail to represent the ABI.
     They thus don't have to be filtered out from the final ABI change
     report because they are not even present in Libabigail's
     representation.
 
-    With this option however, those private types are kept in the
+    Without this option however, those private types are kept in the
     internal representation and later filtered out from the report.
 
-    This options thus potentially makes Libabigail to potentially
-    consume more memory.  It's meant to be mainly used for debugging
-    purposes.
+    This options thus potentially makes Libabigail consume less
+    memory.  It's meant to be mainly used to optimize the memory
+    consumption of the tool on binaries with a lot of publicly defined
+    and exported types.
 
   * ``--stat``
 

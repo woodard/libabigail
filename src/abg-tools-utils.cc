@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2016 Red Hat, Inc.
+// Copyright (C) 2013-2017 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -853,11 +853,19 @@ handle_fts_entry(const FTSENT *entry,
 	  || string_ends_with(fname, ".hxx"))
 	{
 	  if (!suppr)
-	    suppr.reset(new type_suppression(PRIVATE_TYPES_SUPPR_SPEC_NAME,
-					     /*type_name_regexp=*/"",
-					     /*type_name=*/""));
-	  suppr->set_is_artificial(true);
-	  suppr->set_drops_artifact_from_ir(true);
+	    {
+	      suppr.reset(new type_suppression(PRIVATE_TYPES_SUPPR_SPEC_NAME,
+					       /*type_name_regexp=*/"",
+					       /*type_name=*/""));
+
+	      // Types that are defined in system headers are usually
+	      // OK to be considered as public types.
+	      suppr->set_source_location_to_keep_regex_str("^/usr/include/");
+	      suppr->set_is_artificial(true);
+	    }
+	  // And types that are defined in header files that are under
+	  // the header directory file we are looking are to be
+	  // considered public types too.
 	  suppr->get_source_locations_to_keep().insert(fname);
 	}
     }

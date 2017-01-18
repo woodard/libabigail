@@ -171,6 +171,7 @@ public:
   string	debug_package2;
   string	devel_package1;
   string	devel_package2;
+  bool		drop_private_types;
   bool		show_relative_offset_changes;
   bool		no_default_suppression;
   bool		keep_tmp_files;
@@ -192,6 +193,7 @@ public:
       nonexistent_file(),
       abignore(true),
       parallel(true),
+      drop_private_types(false),
       show_relative_offset_changes(true),
       no_default_suppression(),
       keep_tmp_files(),
@@ -612,6 +614,8 @@ display_usage(const string& prog_name, ostream& out)
     << " --debug-info-pkg2|--d2 <path>  path of debug-info package of package2\n"
     << " --devel-pkg1|--devel1 <path>   path of devel package of pakage1\n"
     << " --devel-pkg2|--devel2 <path>   path of devel package of pakage1\n"
+    << " --drop-private-types\n  drop private types from "
+    "internal representation\n"
     << " --no-default-suppression       don't load any default "
        "suppression specifications\n"
     << " --suppressions|--suppr <path>  specify supression specification path\n"
@@ -1375,8 +1379,10 @@ create_maps_of_package_content(package& package,
 /// @return true iff suppression specifications were generated for
 /// types private to the package.
 static bool
-maybe_create_private_types_suppressions(package& pkg)
+maybe_create_private_types_suppressions(package_descriptor& desc)
 {
+  package& pkg = desc.pkg;
+
   if (!pkg.private_types_suppressions().empty())
     return false;
 
@@ -1400,7 +1406,11 @@ maybe_create_private_types_suppressions(package& pkg)
     gen_suppr_spec_from_headers(headers_path);
 
   if (suppr)
-    pkg.private_types_suppressions().push_back(suppr);
+    {
+      if (desc.opts.drop_private_types)
+	suppr->set_drops_artifact_from_ir(true);
+      pkg.private_types_suppressions().push_back(suppr);
+    }
 
   return suppr;
 }
@@ -1504,7 +1514,7 @@ pthread_routine_extract_pkg_and_map_its_content(package_descriptor *a)
   if (has_devel_pkg && opts.parallel)
     result &= pthread_join(thr_devel);
 
-  maybe_create_private_types_suppressions(package);
+  maybe_create_private_types_suppressions(*a);
 
   // Let's wait for debug package extractions to finish before
   // we exit.
@@ -1925,6 +1935,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    abigail::tools_utils::make_path_absolute(argv[j]).get();
           ++i;
         }
+      else if (!strcmp(argv[i], "--drop-private-types"))
+	opts.drop_private_types = true;
       else if (!strcmp(argv[i], "--no-default-suppression"))
 	opts.no_default_suppression = true;
       else if (!strcmp(argv[i], "--keep-tmp-files"))

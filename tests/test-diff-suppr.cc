@@ -1604,7 +1604,7 @@ InOutSpec in_out_specs[] =
     "",
     "",
     "",
-    "--no-default-suppression --dont-drop-private-types",
+    "--no-default-suppression",
     "data/test-diff-suppr/test30-report-0.txt",
     "output/test-diff-suppr/test30-report-0.txt"
   },
@@ -1614,7 +1614,7 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test30-include-dir-v0",
     "data/test-diff-suppr/test30-include-dir-v1",
     "",
-    "--no-default-suppression --dont-drop-private-types",
+    "--no-default-suppression",
     "data/test-diff-suppr/test30-report-1.txt",
     "output/test-diff-suppr/test30-report-1.txt"
   },
@@ -1674,7 +1674,7 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test34-pub-include-dir-v0",
     "data/test-diff-suppr/test34-pub-include-dir-v1",
     "",
-    "--no-default-suppression --dont-drop-private-types",
+    "--no-default-suppression",
     "data/test-diff-suppr/test34-report-0.txt",
     "output/test-diff-suppr/test34-report-0.txt"
   },

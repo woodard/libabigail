@@ -100,6 +100,24 @@ Options
     filters out reports about ABI changes to types that are *NOT*
     defined in these header files.
 
+  * ``--drop-private-types``
+
+    This option is to be used with the ``--devel-pkg1`` and
+    ``--devel-pkg2`` options.  With this option, types that are *NOT*
+    defined in the headers are entirely dropped from the internal
+    representation build by Libabigail to represent the ABI.  They
+    thus don't have to be filtered out from the final ABI change
+    report because they are not even present in Libabigail's
+    representation.
+
+    Without this option however, those private types are kept in the
+    internal representation and later filtered out from the report.
+
+    This options thus potentially makes Libabigail consume less
+    memory.  It's meant to be mainly used to optimize the memory
+    consumption of the tool on binaries with a lot of publicly defined
+    and exported types.
+
   * ``--dso-only``
 
     Compare ELF files that are shared libraries, only.  Do not compare

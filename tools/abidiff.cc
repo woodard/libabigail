@@ -109,7 +109,7 @@ struct options
     : display_usage(),
       display_version(),
       missing_operand(),
-      drop_private_types(true),
+      drop_private_types(false),
       linux_kernel_mode(true),
       no_default_supprs(),
       no_arch(),
@@ -149,7 +149,7 @@ display_usage(const string& prog_name, ostream& out)
     << " --debug-info-dir2|--d2 <path> the root for the debug info of file2\n"
     << " --headers-dir1|--hd1 <path>  the path to headers of file1\n"
     << " --headers-dir2|--hd2 <path>  the path to headers of file2\n"
-    << "  --dont-drop-private-types\n  keep private types in "
+    << "  --drop-private-types\n  drop private types from "
     "internal representation\n"
     << " --no-linux-kernel-mode  don't consider the input binaries as "
        "linux kernel binaries\n"
@@ -307,8 +307,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.display_usage = true;
 	  return true;
 	}
-      else if (!strcmp(argv[i], "--dont-drop-private-types"))
-	opts.drop_private_types = false;
+      else if (!strcmp(argv[i], "--drop-private-types"))
+	opts.drop_private_types = true;
       else if (!strcmp(argv[i], "--no-default-suppression"))
 	opts.no_default_supprs = true;
       else if (!strcmp(argv[i], "--no-architecture"))
@@ -664,34 +664,39 @@ set_suppressions(ReadContextType& read_ctxt, const options& opts)
        ++i)
     read_suppressions(*i, supprs);
 
-  if (opts.drop_private_types)
+  if (!opts.headers_dir1.empty())
     {
-      if (!opts.headers_dir1.empty())
+      // Generate suppression specification to avoid showing ABI
+      // changes on types that are not defined in public headers.
+      //
+      // As these suppression specifications are applied during the
+      // corpus loading, they are going to be dropped from the
+      // internal representation altogether.
+      suppression_sptr suppr =
+	gen_suppr_spec_from_headers(opts.headers_dir1);
+      if (suppr)
 	{
-	  // Generate suppression specification to avoid showing ABI
-	  // changes on types that are not defined in public headers.
-	  //
-	  // As these suppression specifications are applied during the
-	  // corpus loading, they are going to be dropped from the
-	  // internal representation altogether.
-	  suppression_sptr suppr =
-	    gen_suppr_spec_from_headers(opts.headers_dir1);
-	  if (suppr)
-	    supprs.push_back(suppr);
+	  if (opts.drop_private_types)
+	    suppr->set_drops_artifact_from_ir(true);
+	  supprs.push_back(suppr);
 	}
+    }
 
-      if (!opts.headers_dir2.empty())
+  if (!opts.headers_dir2.empty())
+    {
+      // Generate suppression specification to avoid showing ABI
+      // changes on types that are not defined in public headers.
+      //
+      // As these suppression specifications are applied during the
+      // corpus loading, they are going to be dropped from the
+      // internal representation altogether.
+      suppression_sptr suppr =
+	gen_suppr_spec_from_headers(opts.headers_dir2);
+      if (suppr)
 	{
-	  // Generate suppression specification to avoid showing ABI
-	  // changes on types that are not defined in public headers.
-	  //
-	  // As these suppression specifications are applied during the
-	  // corpus loading, they are going to be dropped from the
-	  // internal representation altogether.
-	  suppression_sptr suppr =
-	    gen_suppr_spec_from_headers(opts.headers_dir2);
-	  if (suppr)
-	    supprs.push_back(suppr);
+	  if (opts.drop_private_types)
+	    suppr->set_drops_artifact_from_ir(true);
+	  supprs.push_back(suppr);
 	}
     }
 
