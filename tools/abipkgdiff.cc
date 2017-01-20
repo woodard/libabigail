@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2015-2016 Red Hat, Inc.
+// Copyright (C) 2015-2017 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -178,6 +178,7 @@ public:
   bool		compare_dso_only;
   bool		show_linkage_names;
   bool		show_redundant_changes;
+  bool		show_harmless_changes;
   bool		show_locs;
   bool		show_added_syms;
   bool		show_added_binaries;
@@ -200,6 +201,7 @@ public:
       compare_dso_only(),
       show_linkage_names(true),
       show_redundant_changes(),
+      show_harmless_changes(),
       show_locs(true),
       show_added_syms(true),
       show_added_binaries(true),
@@ -624,6 +626,7 @@ display_usage(const string& prog_name, ostream& out)
     << " --no-linkage-name		do not display linkage names of "
     "added/removed/changed\n"
     << " --redundant                    display redundant changes\n"
+    << " --harmless                     display the harmless changes\n"
     << " --no-show-locs                 do not show location information\n"
     << " --no-show-relative-offset-changes  do not show relative"
     " offset changes\n"
@@ -1002,14 +1005,15 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
   ctxt->show_added_symbols_unreferenced_by_debug_info
     (opts.show_added_syms);
 
-  ctxt->switch_categories_off
-    (abigail::comparison::ACCESS_CHANGE_CATEGORY
-     | abigail::comparison::COMPATIBLE_TYPE_CHANGE_CATEGORY
-     | abigail::comparison::HARMLESS_DECL_NAME_CHANGE_CATEGORY
-     | abigail::comparison::NON_VIRT_MEM_FUN_CHANGE_CATEGORY
-     | abigail::comparison::STATIC_DATA_MEMBER_CHANGE_CATEGORY
-     | abigail::comparison::HARMLESS_ENUM_CHANGE_CATEGORY
-     | abigail::comparison::HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY);
+  if (!opts.show_harmless_changes)
+    ctxt->switch_categories_off
+      (abigail::comparison::ACCESS_CHANGE_CATEGORY
+       | abigail::comparison::COMPATIBLE_TYPE_CHANGE_CATEGORY
+       | abigail::comparison::HARMLESS_DECL_NAME_CHANGE_CATEGORY
+       | abigail::comparison::NON_VIRT_MEM_FUN_CHANGE_CATEGORY
+       | abigail::comparison::STATIC_DATA_MEMBER_CHANGE_CATEGORY
+       | abigail::comparison::HARMLESS_ENUM_CHANGE_CATEGORY
+       | abigail::comparison::HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY);
 
   suppressions_type supprs;
   for (vector<string>::const_iterator i = opts.suppression_paths.begin();
@@ -1947,6 +1951,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.show_linkage_names = false;
       else if (!strcmp(argv[i], "--redundant"))
 	opts.show_redundant_changes = true;
+      else if (!strcmp(argv[i], "--harmless"))
+	opts.show_harmless_changes = true;
       else if (!strcmp(argv[i], "--no-show-locs"))
 	opts.show_locs = false;
       else if (!strcmp(argv[i], "--no-show-relative-offset-changes"))

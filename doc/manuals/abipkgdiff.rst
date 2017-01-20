@@ -129,6 +129,13 @@ Options
     change is a change that has been displayed elsewhere in a given
     report.
 
+  * ``--harmless``
+
+    In the diff report, display only the :ref:`harmless
+    <harmlesschangeconcept_label>` changes.  By default, the harmless
+    changes are filtered out of the diff report keep the clutter to a
+    minimum and have a greater chance to spot real ABI issues.
+
   * ``--no-linkage-name``
 
     In the resulting report, do not display the linkage names of

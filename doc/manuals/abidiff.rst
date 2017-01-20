@@ -280,7 +280,7 @@ Options
     In the diff report, display only the :ref:`harmless
     <harmlesschangeconcept_label>` changes.  By default, the harmless
     changes are filtered out of the diff report keep the clutter to a
-    minimum and have a greater change to spot real ABI issues.
+    minimum and have a greater chance to spot real ABI issues.
 
   * ``--no-harmful``
 
