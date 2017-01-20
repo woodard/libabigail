@@ -743,6 +743,9 @@ public:
   get_local_category() const;
 
   diff_category
+  get_class_of_equiv_category() const;
+
+  diff_category
   add_to_category(diff_category c);
 
   diff_category

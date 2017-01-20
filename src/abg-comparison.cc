@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2016 Red Hat, Inc.
+// Copyright (C) 2013-2017 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -1859,6 +1859,22 @@ diff::reported_once(bool f) const
 diff_category
 diff::get_local_category() const
 {return priv_->local_category_;}
+
+/// Getter of the category of the class of equivalence of the current
+/// diff tree node.
+///
+/// That is, if the current diff tree node has a canonical node,
+/// return the category of that canonical node.  Otherwise, return the
+/// category of the current node.
+///
+/// @return the category of the class of equivalence of the current
+/// tree node.
+diff_category
+diff::get_class_of_equiv_category() const
+{
+  diff* canonical = get_canonical_diff();
+  return canonical ? canonical->get_category() : get_category();
+}
 
 /// Getter for the category of the current diff tree node.
 ///
@@ -13254,7 +13270,7 @@ struct suppression_categorization_visitor : public diff_node_visitor
 	    if (child->has_changes())
 	      {
 		has_non_empty_child = true;
-		if (child->get_category() & SUPPRESSED_CATEGORY)
+		if (child->get_class_of_equiv_category() & SUPPRESSED_CATEGORY)
 		  has_suppressed_child = true;
 		else
 		  has_non_suppressed_child = true;
