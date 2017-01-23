@@ -258,10 +258,21 @@ class RPM(object):
             raise AttributeError('No attribute name {0}'.format(name))
 
     def is_peer(self, another_rpm):
-        """Determine if this is the peer of a given rpm"""
+        """Determine if this is the peer of a given rpm.
+
+        Here is what "peer" means.
+
+        Consider a package P for which the tripplet Name, Version,
+        Release is made of the values {N,V,R}.  Then, consider a
+        package P' for which the similar tripplet is {N', V', R'}.
+
+        P' is a peer of P if N == N', and either V != V' or R != R'.
+        given package with a given NVR is another package with a N'V'
+        """
         return self.name == another_rpm.name and \
             self.arch == another_rpm.arch and \
-            self.release != another_rpm.release
+            not (self.version == another_rpm.version
+                 and self.release == another_rpm.release)
 
     @property
     def nvra(self):

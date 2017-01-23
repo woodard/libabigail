@@ -109,6 +109,7 @@ packages = [
     {'id': 286, 'name': 'gnutls'},
     {'id': 612, 'name': 'dbus-glib'},
     {'id': 9041, 'name': 'nss-util'},
+    {'id': 18494, 'name': 'vte291'},
     ]
 
 builds = [
@@ -158,6 +159,16 @@ builds = [
     {'build_id': 649701, 'nvr': 'gnutls-3.4.2-1.fc23',
      'name': 'gnutls', 'release': '1.fc23', 'version': '3.4.2',
      'package_id': 286, 'package_name': 'gnutls', 'state': 1,
+     },
+
+    # builds of package vte291
+    {'build_id': 600011, 'nvr': 'vte291-0.39.1-1.fc22',
+     'name': 'vte291', 'version': '0.39.1', 'release': '1.fc22',
+     'package_id': 18494, 'package_name': 'vte291', 'state': 1,
+     },
+    {'build_id': 612610, 'nvr': 'vte291-0.39.90-1.fc22',
+     'name': 'vte291', 'version': '0.39.90', 'release': '1.fc22',
+     'package_id': 18494, 'package_name': 'vte291', 'state': 1,
      },
     ]
 
@@ -239,7 +250,34 @@ rpms = [
      'name': 'nss-util-devel', 'release': '2.0.fc25', 'version': '3.24.0',
      'arch': 'x86_64', 'nvr': 'nss-util-devel-3.24.0-2.0.fc25',
      },
-    ]
+    # RPMs of build vte291-0.39.1-1.fc22
+    {'build_id': 600011,
+     'name': 'vte291', 'version': '0.39.1', 'release': '1.fc22', 
+     'arch': 'x86_64', 'nvr': 'vte291-0.39.1-1.fc22',
+    },
+    {'build_id': 600011,
+     'name': 'vte291-devel', 'version': '0.39.1', 'release': '1.fc22', 
+     'arch': 'x86_64', 'nvr': 'vte291-0.39.1-1.fc22',
+    },
+    {'build_id': 600011,
+     'name': 'vte291-debuginfo', 'version': '0.39.1', 'release': '1.fc22', 
+     'arch': 'x86_64', 'nvr': 'vte291-0.39.1-1.fc22',
+    },
+
+    # RPMs of build vte291-0.39.90-1.fc22
+    {'build_id': 612610,
+     'name': 'vte291', 'version': '0.39.90', 'release': '1.fc22', 
+     'arch': 'x86_64', 'nvr': 'vte291-0.39.90-1.fc22',
+    },
+    {'build_id': 612610,
+     'name': 'vte291-devel', 'version': '0.39.90', 'release': '1.fc22', 
+     'arch': 'x86_64', 'nvr': 'vte291-0.39.90-1.fc22',
+    },
+    {'build_id': 612610,
+     'name': 'vte291-debuginfo', 'version': '0.39.90', 'release': '1.fc22', 
+     'arch': 'x86_64', 'nvr': 'vte291-0.39.90-1.fc22',
+    },
+   ]
 
 # -----------------  End of Koji resource storage ------------------
 

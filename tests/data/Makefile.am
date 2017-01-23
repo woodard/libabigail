@@ -1308,6 +1308,13 @@ test-fedabipkgdiff/packages/nss-util/3.12.6/1.fc14/x86_64/nss-util-debuginfo-3.1
 test-fedabipkgdiff/packages/nss-util/3.24.0/2.0.fc25/x86_64/nss-util-debuginfo-3.24.0-2.0.fc25.x86_64.rpm \
 test-fedabipkgdiff/packages/nss-util/3.24.0/2.0.fc25/x86_64/nss-util-devel-3.24.0-2.0.fc25.x86_64.rpm \
 test-fedabipkgdiff/packages/nss-util/3.24.0/2.0.fc25/x86_64/nss-util-3.24.0-2.0.fc25.x86_64.rpm \
+test-fedabipkgdiff/packages/vte291/0.39.1/1.fc22/x86_64/vte291-0.39.1-1.fc22.x86_64.rpm \
+test-fedabipkgdiff/packages/vte291/0.39.1/1.fc22/x86_64/vte291-debuginfo-0.39.1-1.fc22.x86_64.rpm \
+test-fedabipkgdiff/packages/vte291/0.39.1/1.fc22/x86_64/vte291-devel-0.39.1-1.fc22.x86_64.rpm \
+test-fedabipkgdiff/packages/vte291/0.39.90/1.fc22/x86_64/vte291-0.39.90-1.fc22.x86_64.rpm \
+test-fedabipkgdiff/packages/vte291/0.39.90/1.fc22/x86_64/vte291-debuginfo-0.39.90-1.fc22.x86_64.rpm \
+test-fedabipkgdiff/packages/vte291/0.39.90/1.fc22/x86_64/vte291-devel-0.39.90-1.fc22.x86_64.rpm \
+test-fedabipkgdiff/vte291-0.39.1-1.fc22.x86_64--vte291-0.39.90-1.fc22.x86_64-report-0.txt \
 \
 test-default-supprs/test0-type-suppr-0.suppr \
 test-default-supprs/test0-type-suppr-report-0.txt \

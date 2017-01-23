@@ -73,6 +73,10 @@ FEDABIPKGDIFF_TEST_SPECS = [
      'data/test-fedabipkgdiff/test3-dbus-glib-0.100.2-2.fc20.i686--dbus-glib-0.106-1.fc23.i686-report-0.txt',
      'output/test-fedabipkgdiff/test3-dbus-glib-0.100.2-2.fc20.i686--dbus-glib-0.106-1.fc23.i686-report-0.txt'),
 
+    (['vte291-0.39.1-1.fc22.x86_64', 'vte291-0.39.90-1.fc22.x86_64'],
+     'data/test-fedabipkgdiff/vte291-0.39.1-1.fc22.x86_64--vte291-0.39.90-1.fc22.x86_64-report-0.txt',
+     'output/test-fedabipkgdiff/vte291-0.39.1-1.fc22.x86_64--vte291-0.39.90-1.fc22.x86_64-report-0.txt'),
+
     ([os.path.join(INPUT_DIR, 'packages/dbus-glib/0.100.2/2.fc20/x86_64/dbus-glib-0.100.2-2.fc20.x86_64.rpm'),
       os.path.join(INPUT_DIR, 'packages/dbus-glib/0.106/1.fc23/x86_64/dbus-glib-0.106-1.fc23.x86_64.rpm')],
      'data/test-fedabipkgdiff/test4-glib-0.100.2-2.fc20.x86_64.rpm-glib-0.106-1.fc23.x86_64.rpm-report-0.txt',
