@@ -1287,6 +1287,9 @@ test-fedabipkgdiff/test0-from-fc20-to-fc23-dbus-glib-report-0.txt \
 test-fedabipkgdiff/test1-from-fc20-to-dbus-glib-0.106-1.fc23.x86_64-report-0.txt \
 test-fedabipkgdiff/test2-dbus-glib-0.100.2-2.fc20--dbus-glib-0.106-1.fc23-report-0.txt \
 test-fedabipkgdiff/test3-dbus-glib-0.100.2-2.fc20.i686--dbus-glib-0.106-1.fc23.i686-report-0.txt \
+test-fedabipkgdiff/test4-glib-0.100.2-2.fc20.x86_64.rpm-glib-0.106-1.fc23.x86_64.rpm-report-0.txt \
+test-fedabipkgdiff/test5-same-dir-dbus-glib-0.100.2-2.fc20.x86_64--dbus-glib-0.106-1.fc23.x86_64-report-0.txt \
+test-fedabipkgdiff/test6-nss-util-3.12.6-1.fc14.x86_64--nss-util-3.24.0-2.0.fc25.x86_64-report-0.txt \
 test-fedabipkgdiff/packages/dbus-glib/0.100.2/2.fc20/i686/dbus-glib-0.100.2-2.fc20.i686.rpm \
 test-fedabipkgdiff/packages/dbus-glib/0.100.2/2.fc20/i686/dbus-glib-debuginfo-0.100.2-2.fc20.i686.rpm \
 test-fedabipkgdiff/packages/dbus-glib/0.100.2/2.fc20/i686/dbus-glib-devel-0.100.2-2.fc20.i686.rpm \
