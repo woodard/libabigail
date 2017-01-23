@@ -359,7 +359,7 @@ class MockClientSession(object):
 
 
 @patch('koji.ClientSession', new=MockClientSession)
-@patch('fedabipkgdiff.DEFAULT_KOJI_TOPDIR', new=TEST_TOPDIR)
+@patch('fedabipkgdiff.DEFAULT_KOJI_TOPURL', new=TEST_TOPDIR)
 @patch('fedabipkgdiff.DEFAULT_ABIPKGDIFF', new=ABIPKGDIFF)
 @patch('fedabipkgdiff.get_download_dir', side_effect=mock_get_download_dir)
 def run_fedabipkgdiff(get_download_dir):

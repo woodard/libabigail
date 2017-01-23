@@ -150,14 +150,13 @@ def main():
     This creates the output directory and launches the tests for the
     fedabipkgdiff program.
 
+    :return: 0 upon success, 1 otherwise.
     """
 
     ensure_output_dir_created()
     result = 0
     result = run_fedabipkgdiff_tests()
-    if not result:
-        return result
-
+    return not result
 
 if __name__ == '__main__':
     exit_code = main()
