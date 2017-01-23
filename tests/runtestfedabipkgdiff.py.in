@@ -131,7 +131,7 @@ def run_fedabipkgdiff_tests():
             subprocess.call(cmd, stdout=out_file)
 
             if not os.path.exists(reference_report_path):
-                sys.stderr.write('file not found: ' + reference_report_path)
+                sys.stderr.write('file not found: ' + reference_report_path + '\n')
                 return_code = -1
             else:
                 diffcmd = ['diff', '-u', reference_report_path, output_path]
