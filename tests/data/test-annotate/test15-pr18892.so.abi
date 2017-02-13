@@ -32333,7 +32333,7 @@
       <!-- int -->
       <return type-id='type-id-13'/>
     </function-type>
-    <!-- int (const char*, const char*, variadic parameter type) -->
+    <!-- int (const char*, const char*, ...) -->
     <function-type size-in-bits='64' id='type-id-1252'>
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-30' name='str'/>
@@ -32372,7 +32372,7 @@
       <!-- int -->
       <return type-id='type-id-13'/>
     </function-type>
-    <!-- int (const char*, variadic parameter type) -->
+    <!-- int (const char*, ...) -->
     <function-type size-in-bits='64' id='type-id-1248'>
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-30' name='format'/>
@@ -32853,7 +32853,7 @@
       <!-- int -->
       <return type-id='type-id-13'/>
     </function-type>
-    <!-- int (void*, const char*, variadic parameter type) -->
+    <!-- int (void*, const char*, ...) -->
     <function-type size-in-bits='64' id='type-id-1250'>
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-3' name='stream'/>
