@@ -123,7 +123,7 @@ display_usage(const string& prog_name, ostream& out)
     << "  --help|-h  display this message\n"
     << "  --version|-v  display program version information and exit\n"
     << "  --debug-info-dir|-d <dir-path>  look for debug info under 'dir-path'\n"
-    << "  --headers-dir|--hd <patch> the path to headers of the elf file\n"
+    << "  --headers-dir|--hd <path> the path to headers of the elf file\n"
     << "  --out-file <file-path>  write the output to 'file-path'\n"
     << "  --noout  do not emit anything after reading the binary\n"
     << "  --suppressions|--suppr <path> specify a suppression file\n"
