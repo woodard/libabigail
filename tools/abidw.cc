@@ -167,8 +167,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	       || !strcmp(argv[i], "-d"))
 	{
 	  if (argc <= i + 1
-	      || argv[i + 1][0] == '-'
-	      || !opts.out_file_path.empty())
+	      || argv[i + 1][0] == '-')
 	    return false;
 	  // elfutils wants the root path to the debug info to be
 	  // absolute.
