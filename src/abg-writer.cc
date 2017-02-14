@@ -886,7 +886,7 @@ annotate(const function_decl_sptr&	fn,
     o << xml::escape_xml_comment(get_type_name(fn->get_return_type()))
       << " ";
 
-    o << xml::escape_xml_comment(fn->get_qualified_name()) << "(";
+  o << xml::escape_xml_comment(fn->get_qualified_name()) << "(";
 
   vector<function_decl::parameter_sptr>::const_iterator pi =
     fn->get_first_non_implicit_parm();
