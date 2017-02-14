@@ -616,7 +616,7 @@ display_usage(const string& prog_name, ostream& out)
     << " --debug-info-pkg2|--d2 <path>  path of debug-info package of package2\n"
     << " --devel-pkg1|--devel1 <path>   path of devel package of pakage1\n"
     << " --devel-pkg2|--devel2 <path>   path of devel package of pakage1\n"
-    << " --drop-private-types\n  drop private types from "
+    << " --drop-private-types  drop private types from "
     "internal representation\n"
     << " --no-default-suppression       don't load any default "
        "suppression specifications\n"
