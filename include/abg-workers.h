@@ -87,6 +87,9 @@ public:
   struct priv;
   typedef shared_ptr<priv> priv_sptr;
 
+  /// A convenience typedef for a vector of @ref task_sptr
+  typedef std::vector<task_sptr> tasks_type;
+
 private:
   priv_sptr p_;
 
@@ -95,11 +98,12 @@ public:
   queue();
   queue(unsigned number_of_workers);
   queue(unsigned number_of_workers,
-	const task_done_notify& notifier);
+	task_done_notify& notifier);
   size_t get_size() const;
   bool schedule_task(const task_sptr&);
+  bool schedule_tasks(const tasks_type&);
   void wait_for_workers_to_complete();
-  const std::vector<task_sptr>& get_completed_tasks() const;
+  tasks_type& get_completed_tasks() const;
   ~queue();
 }; // end class queue
 
