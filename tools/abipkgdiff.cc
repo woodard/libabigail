@@ -59,12 +59,13 @@
 
 // For package configuration macros.
 #include "config.h"
+
 #include <iostream>
 #include <string>
 #include <cstring>
 #include <cstdlib>
 #include <vector>
-#include <ftw.h>
+#include <fts.h>
 #include <algorithm>
 #include <map>
 #include <assert.h>
@@ -72,8 +73,8 @@
 #include <sys/stat.h>
 #include <elf.h>
 #include <elfutils/libdw.h>
-#include <unistd.h>
-#include <pthread.h>
+
+#include "abg-workers.h"
 #include "abg-config.h"
 #include "abg-tools-utils.h"
 #include "abg-comparison.h"
@@ -88,6 +89,10 @@ using std::vector;
 using std::map;
 using std::ostringstream;
 using std::tr1::shared_ptr;
+using std::tr1::dynamic_pointer_cast;
+using abigail::workers::task;
+using abigail::workers::task_sptr;
+using abigail::workers::queue;
 using abigail::tools_utils::maybe_get_symlink_target_file_path;
 using abigail::tools_utils::file_exists;
 using abigail::tools_utils::is_dir;
@@ -119,37 +124,6 @@ using abigail::dwarf_reader::get_soname_of_elf_file;
 using abigail::dwarf_reader::get_type_of_elf_file;
 using abigail::dwarf_reader::read_corpus_from_elf;
 
-/// Set to true if the user wants to see verbose information about the
-/// progress of what's being done.
-static bool verbose;
-
-/// The key for getting the thread-local elf_file_paths vector, which
-/// contains the set of files of a given package.  The vector is populated
-/// by a worker function that is invoked on each file contained in the
-/// package, specifically by the
-/// {first,second}_package_tree_walker_callback_fn() functions.  Its content
-/// is relevant only until the mapping of the packages elf files is done.
-static pthread_key_t elf_file_paths_tls_key;
-
-/// A convenience typedef for a map of corpus diffs
-typedef map<string, shared_ptr<ostringstream> > corpora_report_map;
-/// This map is used to gather the computed diffs of ELF pairs
-static corpora_report_map reports_map;
-
-/// This map is used to keep environments for differing corpora
-/// referenced. The environment needs to be kept alive longer than
-/// all the objects that depend on it.
-static map<corpus_diff_sptr, abigail::ir::environment_sptr> env_map;
-
-/// This mutex is used to control access to the reports_map
-static pthread_mutex_t map_lock = PTHREAD_MUTEX_INITIALIZER;
-/// This mutex is used to control access to the pre-computed list of ELF pairs
-static pthread_mutex_t arg_lock = PTHREAD_MUTEX_INITIALIZER;
-
-/// This points to the set of options shared by all the routines of the
-/// program.
-static struct options *prog_options;
-
 /// The options passed to the current program.
 class options
 {
@@ -171,6 +145,8 @@ public:
   string	debug_package2;
   string	devel_package1;
   string	devel_package2;
+  size_t	num_workers;
+  bool		verbose;
   bool		drop_private_types;
   bool		show_relative_offset_changes;
   bool		no_default_suppression;
@@ -194,6 +170,7 @@ public:
       nonexistent_file(),
       abignore(true),
       parallel(true),
+      verbose(false),
       drop_private_types(false),
       show_relative_offset_changes(true),
       no_default_suppression(),
@@ -207,7 +184,12 @@ public:
       show_added_binaries(true),
       fail_if_no_debug_info(),
       show_identical_binaries()
-  {}
+  {
+    // set num_workers to the default number of threads of the
+    // underlying maching.  This is the default value for the number
+    // of workers to use in workers queues throughout the code.
+    num_workers = abigail::workers::get_number_of_threads();
+  }
 };
 
 /// Abstract ELF files from the packages which ABIs ought to be
@@ -241,10 +223,6 @@ public:
 
 /// A convenience typedef for a shared pointer to elf_file.
 typedef shared_ptr<elf_file> elf_file_sptr;
-
-/// A convenience typedef for a pointer to a function type that
-/// the ftw() function accepts.
-typedef int (*ftw_cb_type)(const char *, const struct stat*, int);
 
 /// Abstract the result of comparing two packages.
 ///
@@ -457,8 +435,10 @@ public:
 
   /// Erase the content of the temporary extraction directory that has
   /// been populated by the @ref extract_package() function;
+  ///
+  /// @param opts the options passed to the current program.
   void
-  erase_extraction_directory() const
+  erase_extraction_directory(const options &opts) const
   {
     if (type() == abigail::tools_utils::FILE_TYPE_DIR)
       // If we are comparing two directories, do not erase the
@@ -466,7 +446,7 @@ public:
       // temporary directory we created ourselves.
       return;
 
-    if (verbose)
+    if (opts.verbose)
       emit_prefix("abipkgdiff", cerr)
 	<< "Erasing temporary extraction directory "
 	<< extracted_dir_path()
@@ -475,37 +455,31 @@ public:
     string cmd = "rm -rf " + extracted_dir_path();
     if (system(cmd.c_str()))
       {
-	if (verbose)
+	if (opts.verbose)
 	  emit_prefix("abipkgdiff", cerr) << " FAILED\n";
       }
     else
       {
-	if (verbose)
+	if (opts.verbose)
 	  emit_prefix("abipkgdiff", cerr) << " DONE\n";
       }
   }
 
   /// Erase the content of all the temporary extraction directories.
+  ///
+  /// @param opts the options passed to the current program.
   void
-  erase_extraction_directories() const
+  erase_extraction_directories(const options &opts) const
   {
-    erase_extraction_directory();
+    erase_extraction_directory(opts);
     if (debug_info_package())
-      debug_info_package()->erase_extraction_directory();
+      debug_info_package()->erase_extraction_directory(opts);
     if (devel_package())
-      devel_package()->erase_extraction_directory();
+      devel_package()->erase_extraction_directory(opts);
   }
-};
+}; // end class package.
 
-/// Arguments passed to the package extraction functions.
-struct package_descriptor
-{
-  package &pkg;
-  const options& opts;
-  ftw_cb_type callback;
-};
-
-/// Arguments passed to the comparison workers.
+/// Arguments passed to the comparison tasks.
 struct compare_args
 {
   const elf_file	elf1;
@@ -541,9 +515,13 @@ struct compare_args
       private_types_suppr2(priv_types_suppr2),
       opts(opts)
   {}
-};
+}; // end struct compare_args
+
 /// A convenience typedef for arguments passed to the comparison workers.
 typedef shared_ptr<compare_args> compare_args_sptr;
+
+static bool extract_package_and_map_its_content(package &pkg,
+						options &opts);
 
 /// Getter for the path to the parent directory under which packages
 /// extracted by the current thread are placed.
@@ -651,12 +629,15 @@ display_usage(const string& prog_name, ostream& out)
 /// @param extracted_package_dir_path the path where to extract the
 /// package to.
 ///
+/// @param opts the options passed to the current program.
+///
 /// @return true upon successful completion, false otherwise.
 static bool
 extract_rpm(const string& package_path,
-	    const string& extracted_package_dir_path)
+	    const string& extracted_package_dir_path,
+	    const options &opts)
 {
-  if (verbose)
+  if (opts.verbose)
     emit_prefix("abipkgdiff", cerr)
       << "Extracting package "
       << package_path
@@ -670,7 +651,7 @@ extract_rpm(const string& package_path,
 
   if (system(cmd.c_str()))
     {
-      if (verbose)
+      if (opts.verbose)
 	emit_prefix("abipkgdiff", cerr) << "command " << cmd << " FAILED\n";
     }
 
@@ -680,12 +661,12 @@ extract_rpm(const string& package_path,
 
   if (system(cmd.c_str()))
     {
-      if (verbose)
+      if (opts.verbose)
 	emit_prefix("abipkgdiff", cerr) << " FAILED\n";
       return false;
     }
 
-  if (verbose)
+  if (opts.verbose)
     emit_prefix("abipkgdiff", cerr) << " DONE\n";
 
   return true;
@@ -702,12 +683,15 @@ extract_rpm(const string& package_path,
 /// @param extracted_package_dir_path the path where to extract the
 /// package to.
 ///
+/// @param opts the options passed to the current program.
+///
 /// @return true upon successful completion, false otherwise.
 static bool
 extract_deb(const string& package_path,
-	    const string& extracted_package_dir_path)
+	    const string& extracted_package_dir_path,
+	    const options &opts)
 {
-  if (verbose)
+  if (opts.verbose)
     emit_prefix("abipkgdiff", cerr)
       << "Extracting package "
       << package_path
@@ -721,7 +705,7 @@ extract_deb(const string& package_path,
 
   if (system(cmd.c_str()))
     {
-      if (verbose)
+      if (opts.verbose)
 	emit_prefix("abipkgdiff", cerr) << "command "  << cmd <<  " FAILED\n";
     }
 
@@ -730,12 +714,12 @@ extract_deb(const string& package_path,
 
   if (system(cmd.c_str()))
     {
-      if (verbose)
+      if (opts.verbose)
 	emit_prefix("abipkgdiff", cerr) << " FAILED\n";
       return false;
     }
 
-  if (verbose)
+  if (opts.verbose)
     emit_prefix("abipkgdiff", cerr) << " DONE\n";
 
   return true;
@@ -752,12 +736,15 @@ extract_deb(const string& package_path,
 /// @param extracted_package_dir_path the path where to extract the
 /// archive to.
 ///
+/// @param opts the options passed to the current program.
+///
 /// @return true upon successful completion, false otherwise.
 static bool
 extract_tar(const string& package_path,
-	    const string& extracted_package_dir_path)
+	    const string& extracted_package_dir_path,
+	    const options &opts)
 {
-  if (verbose)
+  if (opts.verbose)
     emit_prefix("abipkgdiff", cerr)
       << "Extracting tar archive "
       << package_path
@@ -771,7 +758,7 @@ extract_tar(const string& package_path,
 
   if (system(cmd.c_str()))
     {
-      if (verbose)
+      if (opts.verbose)
 	emit_prefix("abipkgdiff", cerr) << "command " << cmd << " FAILED\n";
     }
 
@@ -780,12 +767,12 @@ extract_tar(const string& package_path,
 
   if (system(cmd.c_str()))
     {
-      if (verbose)
+      if (opts.verbose)
 	emit_prefix("abipkgdiff", cerr) << " FAILED\n";
       return false;
     }
 
-  if (verbose)
+  if (opts.verbose)
     emit_prefix("abipkgdiff", cerr) << " DONE\n";
 
   return true;
@@ -798,21 +785,24 @@ extract_tar(const string& package_path,
 ///
 /// @param first_package the first package to consider.
 ///
+/// @param opts the options passed to the current program.
+///
 /// @param second_package the second package to consider.
 static void
 erase_created_temporary_directories(const package& first_package,
-				    const package& second_package)
+				    const package& second_package,
+				    const options &opts)
 {
-  first_package.erase_extraction_directories();
-  second_package.erase_extraction_directories();
+  first_package.erase_extraction_directories(opts);
+  second_package.erase_extraction_directories(opts);
 }
 
 /// Erase the root of all the temporary directories created by the
 /// current thread.
 static void
-erase_created_temporary_directories_parent()
+erase_created_temporary_directories_parent(const options &opts)
 {
-  if (verbose)
+  if (opts.verbose)
     emit_prefix("abipkgdiff", cerr)
       << "Erasing temporary extraction parent directory "
       << package::extracted_packages_parent_dir()
@@ -821,12 +811,12 @@ erase_created_temporary_directories_parent()
   string cmd = "rm -rf " + package::extracted_packages_parent_dir();
   if (system(cmd.c_str()))
     {
-      if (verbose)
+      if (opts.verbose)
 	emit_prefix("abipkgdiff", cerr) << "FAILED\n";
     }
   else
     {
-      if (verbose)
+      if (opts.verbose)
 	emit_prefix("abipkgdiff", cerr) << "DONE\n";
     }
 }
@@ -834,14 +824,17 @@ erase_created_temporary_directories_parent()
 /// Extract the content of a package.
 ///
 /// @param package the package we are looking at.
+///
+/// @param opts the options passed to the current program.
 static bool
-extract_package(const package& package)
+extract_package(const package& package,
+		const options &opts)
 {
   switch(package.type())
     {
     case abigail::tools_utils::FILE_TYPE_RPM:
 #ifdef WITH_RPM
-      if (!extract_rpm(package.path(), package.extracted_dir_path()))
+      if (!extract_rpm(package.path(), package.extracted_dir_path(), opts))
         {
           emit_prefix("abipkgdiff", cerr)
 	    << "Error while extracting package" << package.path() << "\n";
@@ -851,13 +844,13 @@ extract_package(const package& package)
 #else
       emit_prefix("abipkgdiff", cerr)
 	<< "Support for rpm hasn't been enabled.  Please consider "
-	"enabling it at package configure time\n";
+      "enabling it at package configure time\n";
       return false;
 #endif // WITH_RPM
       break;
     case abigail::tools_utils::FILE_TYPE_DEB:
 #ifdef WITH_DEB
-      if (!extract_deb(package.path(), package.extracted_dir_path()))
+      if (!extract_deb(package.path(), package.extracted_dir_path(), opts))
         {
           emit_prefix("abipkgdiff", cerr)
 	    << "Error while extracting package" << package.path() << "\n";
@@ -879,7 +872,7 @@ extract_package(const package& package)
 
     case abigail::tools_utils::FILE_TYPE_TAR:
 #ifdef WITH_TAR
-      if (!extract_tar(package.path(), package.extracted_dir_path()))
+      if (!extract_tar(package.path(), package.extracted_dir_path(), opts))
         {
           emit_prefix("abipkgdiff", cerr)
 	    << "Error while extracting GNU tar archive "
@@ -899,71 +892,6 @@ extract_package(const package& package)
       return false;
     }
   return true;
-}
-/// A wrapper to call extract_package in a separate thread.
-///
-/// @param pkg the package we want to extract.
-///
-/// @return via pthread_exit() a pointer to a boolean value of true upon
-/// successful completion, false otherwise.
-static void
-pthread_routine_extract_package(void *pkg)
-{
-  const package &package = *static_cast<class package*>(pkg);
-  pthread_exit(new bool(extract_package(package)));
-}
-
-/// A callback function invoked by the ftw() function while walking
-/// the directory of files extracted from the first package.
-///
-/// @param fpath the path to the file being considered.
-///
-/// @param stat the stat struct of the file.
-static int
-first_package_tree_walker_callback_fn(const char *fpath,
-				      const struct stat *,
-				      int /*flag*/)
-{
-  string path = fpath;
-  // If path is a symbolic link, then set it to the path of its target
-  // file.
-  maybe_get_symlink_target_file_path(path, path);
-  if (guess_file_type(path) == abigail::tools_utils::FILE_TYPE_ELF)
-    {
-      vector<string> *elf_file_paths
-	= static_cast<vector<string>*>(pthread_getspecific(elf_file_paths_tls_key));
-      elf_file_paths->push_back(path);
-    }
-  return 0;
-}
-
-/// A callback function invoked by the ftw() function while walking
-/// the directory of files extracted from the second package.
-///
-/// @param fpath the path to the file being considered.
-///
-/// @param stat the stat struct of the file.
-static int
-second_package_tree_walker_callback_fn(const char *fpath,
-				       const struct stat *,
-				       int /*flag*/)
-{
-  string path = fpath;
-  // If path is a symbolic link, then set it to the path of its target
-  // file.
-  maybe_get_symlink_target_file_path(path, path);
-  if (guess_file_type(path) == abigail::tools_utils::FILE_TYPE_ELF)
-    {
-      vector<string> *elf_file_paths
-	= static_cast<vector<string>*>(pthread_getspecific(elf_file_paths_tls_key));
-      elf_file_paths->push_back(path);
-    }
-  /// We go through the files of the newer (second) pkg to look for
-  /// suppression specifications, matching the "*.abignore" name pattern.
-  else if (prog_options->abignore && string_ends_with(fpath, ".abignore"))
-    prog_options->suppression_paths.push_back(fpath);
-
-  return 0;
 }
 
 /// Check that the suppression specification files supplied are
@@ -1061,7 +989,7 @@ compare(const elf_file& elf1,
   char *di_dir1 = (char*) debug_dir1.c_str(),
 	*di_dir2 = (char*) debug_dir2.c_str();
 
-  if (verbose)
+  if (opts.verbose)
     emit_prefix("abipkgdiff", cerr)
       << "Comparing the ABIs of file "
       << elf1.path
@@ -1080,7 +1008,7 @@ compare(const elf_file& elf1,
 
   if (files_suppressed)
     {
-      if (verbose)
+      if (opts.verbose)
 	emit_prefix("abipkgdiff", cerr)
 	  << "  input file "
 	  << elf1.path << " or " << elf2.path
@@ -1103,7 +1031,7 @@ compare(const elf_file& elf1,
        ++i)
     supprs.push_back(*i);
 
-  if (verbose)
+  if (opts.verbose)
     emit_prefix("abipkgdiff", cerr)
       << "  Reading file "
       << elf1.path
@@ -1118,7 +1046,7 @@ compare(const elf_file& elf1,
 
     if (!(c1_status & abigail::dwarf_reader::STATUS_OK))
       {
-	if (verbose)
+	if (opts.verbose)
 	  emit_prefix("abipkgdiff", cerr)
 	    << "Could not read file '"
 	    << elf1.path
@@ -1139,13 +1067,13 @@ compare(const elf_file& elf1,
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
-  if (verbose)
+  if (opts.verbose)
     emit_prefix("abipkgdiff", cerr)
       << " DONE reading file "
       << elf1.path
       << "\n";
 
-  if (verbose)
+  if (opts.verbose)
     emit_prefix("abipkgdiff", cerr)
       << "  Reading file "
       << elf2.path
@@ -1160,7 +1088,7 @@ compare(const elf_file& elf1,
 
     if (!(c2_status & abigail::dwarf_reader::STATUS_OK))
       {
-	if (verbose)
+	if (opts.verbose)
 	  emit_prefix("abipkgdiff", cerr)
 	    << "Could not find the read file '"
 	    << elf2.path
@@ -1183,11 +1111,11 @@ compare(const elf_file& elf1,
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
-  if (verbose)
+  if (opts.verbose)
     emit_prefix("abipkgdiff", cerr)
       << " DONE reading file " << elf2.path << "\n";
 
-  if (verbose)
+  if (opts.verbose)
     emit_prefix("abipkgdiff", cerr)
       << "  Comparing the ABIs of: \n"
       << "    " << elf1.path << "\n"
@@ -1195,7 +1123,7 @@ compare(const elf_file& elf1,
 
   diff = compute_diff(corpus1, corpus2, ctxt);
 
-  if (verbose)
+  if (opts.verbose)
     emit_prefix("abipkgdiff", cerr)
       << "Comparing the ABIs of file "
       << elf1.path
@@ -1210,158 +1138,6 @@ compare(const elf_file& elf1,
     s |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
 
   return s;
-}
-
-/// A wrapper to call compare in a separate thread.
-/// The result of the comparison is saved to a global corpus map.
-///
-/// @args the vector of argument sets used for comparison.
-///
-/// @return the status of the comparison via pthread_exit().
-static void
-pthread_routine_compare(vector<compare_args_sptr> *args)
-{
-  abidiff_status s, status = abigail::tools_utils::ABIDIFF_OK;
-  compare_args_sptr a;
-  corpus_diff_sptr diff;
-  diff_context_sptr ctxt;
-
-  while (true)
-    {
-      pthread_mutex_lock(&arg_lock);
-      if (args->empty())
-	a = compare_args_sptr();
-      else
-	{
-	  a = *args->begin();
-	  args->erase(args->begin());
-	}
-      pthread_mutex_unlock(&arg_lock);
-
-      if (!a)
-	break;
-
-      abigail::ir::environment_sptr env(new abigail::ir::environment);
-      status |= s = compare(a->elf1, a->debug_dir1, a->private_types_suppr1,
-			    a->elf2, a->debug_dir2, a->private_types_suppr2,
-			    a->opts, env, diff, ctxt);
-
-      const string key = a->elf1.path;
-      if ((s & abigail::tools_utils::ABIDIFF_ABI_CHANGE)
-	  || (verbose && diff->has_changes()))
-	{
-	  const string prefix = "  ";
-	  shared_ptr<ostringstream> out(new ostringstream);
-	  diff->report(*out, prefix);
-	  pthread_mutex_lock(&map_lock);
-	  reports_map[key] = out;
-	  // We need to keep the environment around, until the corpus is
-	  // report()-ed.
-	  env_map[diff] = env;
-	  pthread_mutex_unlock(&map_lock);
-	}
-      else
-	{
-	  pthread_mutex_lock(&map_lock);
-	  if (a->opts.show_identical_binaries)
-	    {
-	      shared_ptr<ostringstream> out(new ostringstream);
-	      *out << "No ABI change detected\n";
-	      reports_map[key] = out;
-	      env_map[diff] = env;
-	    }
-	  else
-	    reports_map[key] = shared_ptr<ostringstream>();
-	  pthread_mutex_unlock(&map_lock);
-	}
-    }
-
-  pthread_exit(new abidiff_status(status));
-}
-
-/// Create maps of the content of a given package.
-///
-/// The maps contain relevant metadata about the content of the
-/// files.  These maps are used afterwards during the comparison of
-/// the content of the package.  Note that the maps are stored in the
-/// object that represents that package.
-///
-/// @param package the package to consider.
-///
-/// @param opts the options the current program has been called with.
-///
-/// @param true upon successful completion, false otherwise.
-static bool
-create_maps_of_package_content(package& package,
-			       const options& opts,
-			       ftw_cb_type callback)
-{
-  vector<string> *elf_file_paths = new vector<string>;
-  pthread_setspecific(elf_file_paths_tls_key, elf_file_paths);
-
-  if (verbose)
-    emit_prefix("abipkgdiff", cerr)
-      << "Analyzing the content of package "
-      << package.path()
-      << " extracted to "
-      << package.extracted_dir_path()
-      << " ...\n";
-
-  if (ftw(package.extracted_dir_path().c_str(), callback, 16))
-    {
-      emit_prefix("abipkgdiff", cerr)
-	<< "Error while inspecting files in package"
-	<< package.extracted_dir_path() << "\n";
-      return false;
-    }
-
-  if (verbose)
-    emit_prefix("abipkgdiff", cerr)
-      << "Found " << elf_file_paths->size() << " files in "
-      << package.extracted_dir_path() << "\n";
-
-  for (vector<string>::const_iterator file =
-	 elf_file_paths->begin();
-       file != elf_file_paths->end();
-       ++file)
-    {
-      elf_file_sptr e (new elf_file(*file));
-      if (opts.compare_dso_only)
-	{
-	  if (e->type != abigail::dwarf_reader::ELF_TYPE_DSO)
-	    {
-	      if (verbose)
-		emit_prefix("abipkgdiff", cerr)
-		  << "skipping non-DSO file " << e->path << "\n";
-	      continue;
-	    }
-	}
-      else
-	{
-	  if (e->type != abigail::dwarf_reader::ELF_TYPE_DSO
-	      && e->type != abigail::dwarf_reader::ELF_TYPE_EXEC
-              && e->type != abigail::dwarf_reader::ELF_TYPE_PI_EXEC)
-	    {
-	      if (verbose)
-		emit_prefix("abipkgdiff", cerr)
-		  << "skipping non-DSO non-executable file " << e->path << "\n";
-	      continue;
-	    }
-	}
-
-      if (e->soname.empty())
-	package.path_elf_file_sptr_map()[e->name] = e;
-      else
-	package.path_elf_file_sptr_map()[e->soname] = e;
-    }
-
-  pthread_setspecific(elf_file_paths_tls_key, /*value=*/NULL);
-  delete elf_file_paths;
-
-  if (verbose)
-    emit_prefix("abipkgdiff", cerr)
-      << " Analysis of " << package.path() << " DONE\n";
-  return true;
 }
 
 /// If devel packages were associated to the main package we are
@@ -1380,13 +1156,13 @@ create_maps_of_package_content(package& package,
 ///
 /// @param pkg the main package we are looking at.
 ///
+/// @param opts the options of the current program.
+///
 /// @return true iff suppression specifications were generated for
 /// types private to the package.
 static bool
-maybe_create_private_types_suppressions(package_descriptor& desc)
+maybe_create_private_types_suppressions(package& pkg, const options &opts)
 {
-  package& pkg = desc.pkg;
-
   if (!pkg.private_types_suppressions().empty())
     return false;
 
@@ -1411,7 +1187,7 @@ maybe_create_private_types_suppressions(package_descriptor& desc)
 
   if (suppr)
     {
-      if (desc.opts.drop_private_types)
+      if (opts.drop_private_types)
 	suppr->set_drops_artifact_from_ir(true);
       pkg.private_types_suppressions().push_back(suppr);
     }
@@ -1419,181 +1195,347 @@ maybe_create_private_types_suppressions(package_descriptor& desc)
   return suppr;
 }
 
-static inline bool
-pthread_join(pthread_t thr)
+/// The task that performs the extraction of the content of a package
+/// into a temporary directory.
+///
+/// Note that several instanaces of tasks can perform their jobs in
+/// parallel.
+class pkg_extraction_task : public task
 {
-  bool *thread_retval;
-  if (!pthread_join(thr, reinterpret_cast<void**>(&thread_retval)))
-    {
-      bool retval = *thread_retval;
-      delete thread_retval;
-      return retval;
-    }
-  else
-    return false;
-}
+  pkg_extraction_task();
 
-/// Extract the content of a package and map its content.
-/// Also extract its accompanying debuginfo package.
+public:
+  package &pkg;
+  const options &opts;
+  bool is_ok;
+
+  pkg_extraction_task(package &p, const options &o)
+    : pkg(p), opts(o), is_ok(false)
+  {}
+
+  /// The job performed by the current task.  It's to be performed in
+  /// parallel with other jobs.
+  virtual void
+  perform()
+  {
+    is_ok = extract_package(pkg, opts);
+  }
+}; //end class pkg_extraction_task
+
+/// A convenience typedef for a shared pointer to @f pkg_extraction_task.
+typedef shared_ptr<pkg_extraction_task> pkg_extraction_task_sptr;
+
+/// The worker task which job is to prepares a package.
 ///
-/// The extracting is done to a temporary directory.
+/// Preparing a package means:
 ///
-/// @param a the set of arguments needed for successful extraction;
-/// specifically the package itself, the options the current package has been
-/// called with and a callback to traverse the directory structure.
+/// 	1/ Extract the package and its ancillary packages.
 ///
-/// @return via pthread_exit() true upon successful completion, false
-/// otherwise.
+/// 	2/ Analyze the extracted content, map that content so that we
+/// 	determine what the ELF files to be analyze are.
+class pkg_prepare_task : public abigail::workers::task
+{
+  pkg_prepare_task();
+
+public:
+  package &pkg;
+  options &opts;
+  bool is_ok;
+
+  pkg_prepare_task(package &p, options &o)
+    : pkg(p), opts(o), is_ok(false)
+  {}
+
+  /// The job performed by this task.
+  virtual void
+  perform()
+  {
+    is_ok = extract_package_and_map_its_content(pkg, opts);
+  }
+}; //end class pkg_prepare_task
+
+/// A convenience typedef for a shared_ptr to @ref pkg_prepare_task
+typedef shared_ptr<pkg_prepare_task> pkg_prepare_task_sptr;
+
+/// The worker task which job is to compare two ELF binaries
+class compare_task : public abigail::workers::task
+{
+public:
+
+  compare_args_sptr args;
+  abidiff_status status;
+  ostringstream out;
+  string pretty_output;
+
+  compare_task()
+    : status(abigail::tools_utils::ABIDIFF_OK)
+  {}
+
+  compare_task(const compare_args_sptr& a)
+    : args(a),
+      status(abigail::tools_utils::ABIDIFF_OK)
+  {}
+
+  /// The job performed by the task.
+  ///
+  /// This compares two ELF files, gets the resulting test report and
+  /// stores it in an output stream.
+  virtual void
+  perform()
+  {
+    abigail::ir::environment_sptr env(new abigail::ir::environment);
+    diff_context_sptr ctxt;
+    corpus_diff_sptr diff;
+
+    status |= compare(args->elf1, args->debug_dir1, args->private_types_suppr1,
+		      args->elf2, args->debug_dir2, args->private_types_suppr2,
+		      args->opts, env, diff, ctxt);
+
+    if ((status & abigail::tools_utils::ABIDIFF_ABI_CHANGE)
+	|| (args->opts.verbose && diff->has_changes()))
+	diff->report(out, /*prefix=*/"  ");
+    else
+      {
+	if (args->opts.show_identical_binaries)
+	  out << "No ABI change detected\n";
+      }
+
+    if (status != abigail::tools_utils::ABIDIFF_OK)
+      {
+	string name = args->elf1.name;
+
+	pretty_output =
+	  string("================ changes of '") + name + "'===============\n"
+	  + out.str()
+
+	  + "================ end of changes of '"
+	  + name + "'===============\n\n";
+      }
+  }
+}; // end class compare_task
+
+/// Convenience typedef for a shared_ptr of @ref compare_task.
+typedef shared_ptr<compare_task> compare_task_sptr;
+
+/// This function is sub-routine of create_maps_of_package_content.
+///
+/// It's called during the walking of the directory tree containing
+/// the extracted content of package.  It's called with an entry of
+/// that directory tree.
+///
+/// Depending on the kind of file this function is called on, it
+/// updates the vector of paths of the directory and the set of
+/// suppression paths found.
+///
+/// @param entry the directory entry to analyze.
+///
+/// @param opts the options of the current program.
+///
+/// @param paths out parameter.  This is the set of meaningful paths
+/// of the current directory tree being analyzed.  These paths are
+/// those that are going to be involved in ABI comparison.
 static void
-pthread_routine_extract_pkg_and_map_its_content(package_descriptor *a)
+maybe_update_vector_of_package_content(const FTSENT *entry,
+				       options &opts,
+				       vector<string>& paths)
 {
-  pthread_t thr_pkg, thr_debug, thr_devel;
-  package& package = a->pkg;
-  const options& opts = a->opts;
-  ftw_cb_type callback = a->callback;
-  bool has_debug_info_pkg, has_devel_pkg, result = true;
+  if (entry == NULL
+      || (entry->fts_info != FTS_F && entry->fts_info != FTS_SL)
+      || entry->fts_info == FTS_ERR
+      || entry->fts_info == FTS_NS)
+    return;
 
-  // The debug-info package usually takes longer to extract than the main
-  // package plus that package's mapping for ELFs and optionally suppression
-  // specs, so we run it ASAP.
-  if ((has_debug_info_pkg = package.debug_info_package()))
-    {
-      if (pthread_create(&thr_debug, /*attr=*/NULL,
-			 reinterpret_cast<void*(*)(void*)>(pthread_routine_extract_package),
-			 package.debug_info_package().get()))
-	{
-	  result = false;
-	  goto exit;
-	}
+  string path = entry->fts_path;
+  maybe_get_symlink_target_file_path(path, path);
 
-      // Wait for debug-info package extraction to complete if we're
-      // not running in parallel.
-      if (!opts.parallel)
-	{
-	  result = pthread_join(thr_debug);
-	  if (!result)
-	    goto exit;
-	}
-    }
-
-  if ((has_devel_pkg = package.devel_package()))
-    {
-      // A devel package was provided for 'package'.  Let's extract it
-      // too.
-      if (pthread_create(&thr_devel, /*attr=*/NULL,
-			 reinterpret_cast<void*(*)(void*)>
-			 (pthread_routine_extract_package),
-			 package.devel_package().get()))
-	{
-	  result = false;
-	  goto exit;
-	}
-
-      // Wait for devel package extraction to complete if we're
-      // not running in parallel.
-      if (!opts.parallel)
-	{
-	  result = pthread_join(thr_devel);
-	  if (!result)
-	    goto exit;
-	}
-    }
-
-  // Extract the package itself.
-  if (pthread_create(&thr_pkg, /*attr=*/NULL,
-		     reinterpret_cast<void*(*)(void*)>(pthread_routine_extract_package),
-		     &package))
-    result = false;
-
-  // We need to wait for the package's successful extraction, if we
-  // want to do a mapping on its files.
-  if (result)
-    result = pthread_join(thr_pkg);
-
-  // If extracting the package failed, there's no sense in going further.
-  if (result)
-    result = create_maps_of_package_content(package, opts, callback);
-
-  // Wait for devel package extraction to finish
-  if (has_devel_pkg && opts.parallel)
-    result &= pthread_join(thr_devel);
-
-  maybe_create_private_types_suppressions(*a);
-
-  // Let's wait for debug package extractions to finish before
-  // we exit.
-  if (has_debug_info_pkg && opts.parallel)
-    result &= pthread_join(thr_debug);
-
-exit:
-  pthread_exit(new bool(result));
-
+  if (guess_file_type(path) == abigail::tools_utils::FILE_TYPE_ELF)
+    paths.push_back(path);
+  else if (opts.abignore && string_ends_with(path, ".abignore"))
+    opts.suppression_paths.push_back(path);
 }
 
-/// Prepare the packages for comparison.
+/// Create maps of the content of a given package.
 ///
-/// This function extracts the content of each package and maps it.
+/// The maps contain relevant metadata about the content of the
+/// files.  These maps are used afterwards during the comparison of
+/// the content of the package.  Note that the maps are stored in the
+/// object that represents that package.
 ///
-/// @param first_package the first package to prepare.
-///
-/// @param second_package the second package to prepare.
+/// @param package the package to consider.
 ///
 /// @param opts the options the current program has been called with.
 ///
-/// @return true upon successful completion, false otherwise.
+/// @param true upon successful completion, false otherwise.
 static bool
-prepare_packages(package&	first_package,
-		 package&	second_package,
-		 const options& opts)
+create_maps_of_package_content(package& package, options& opts)
 {
-  bool result = true;
-  const int npkgs = 2;
-  pthread_t extract_thread[npkgs];
+  if (opts.verbose)
+    emit_prefix("abipkgdiff", cerr)
+      << "Analyzing the content of package "
+      << package.path()
+      << " extracted to "
+      << package.extracted_dir_path()
+      << " ...\n";
 
-  package_descriptor ea[] =
+  bool is_ok = false;
+  char* paths[] = {const_cast<char*>(package.extracted_dir_path().c_str()), 0};
+
+  FTS *file_hierarchy = fts_open(paths, FTS_LOGICAL|FTS_NOCHDIR, NULL);
+  if (!file_hierarchy)
+    return is_ok;
+
+  vector<string> elf_file_paths;
+  FTSENT *entry;
+  while ((entry = fts_read(file_hierarchy)))
+    maybe_update_vector_of_package_content(entry, opts, elf_file_paths);
+
+  if (opts.verbose)
+    emit_prefix("abipkgdiff", cerr)
+      << "Found " << elf_file_paths.size() << " files in "
+      << package.extracted_dir_path() << "\n";
+
+  for (vector<string>::const_iterator file = elf_file_paths.begin();
+       file != elf_file_paths.end();
+       ++file)
     {
-      {
-	first_package,
-	opts,
-	first_package_tree_walker_callback_fn
-      },
-      {
-	second_package,
-	opts,
-	second_package_tree_walker_callback_fn
-      },
-    };
+      elf_file_sptr e (new elf_file(*file));
+      if (opts.compare_dso_only)
+	{
+	  if (e->type != abigail::dwarf_reader::ELF_TYPE_DSO)
+	    {
+	      if (opts.verbose)
+		emit_prefix("abipkgdiff", cerr)
+		  << "skipping non-DSO file " << e->path << "\n";
+	      continue;
+	    }
+	}
+      else
+	{
+	  if (e->type != abigail::dwarf_reader::ELF_TYPE_DSO
+	      && e->type != abigail::dwarf_reader::ELF_TYPE_EXEC
+              && e->type != abigail::dwarf_reader::ELF_TYPE_PI_EXEC)
+	    {
+	      if (opts.verbose)
+		emit_prefix("abipkgdiff", cerr)
+		  << "skipping non-DSO non-executable file " << e->path << "\n";
+	      continue;
+	    }
+	}
 
-  // Since we can't pass custom arguments to the callback of ftw(),
-  // and we are going to walk two directory trees in parallel, we
-  // need a separate thread-local vector of files for each package.
-  pthread_key_create(&elf_file_paths_tls_key, /*destructor=*/NULL);
-
-  for (int i = 0; i < npkgs; ++i)
-    {
-      pthread_create(&extract_thread[i], /*attr=*/NULL,
-		     reinterpret_cast<void*(*)(void*)>(pthread_routine_extract_pkg_and_map_its_content),
-		     &ea[i]);
-
-      if (!opts.parallel)
-	// We're not running in parallel, so wait for the first package set to
-	// finish extracting before starting to work on the second one.
-	result &= pthread_join(extract_thread[i]);
+      if (e->soname.empty())
+	package.path_elf_file_sptr_map()[e->name] = e;
+      else
+	package.path_elf_file_sptr_map()[e->soname] = e;
     }
 
-  if (opts.parallel)
-    {
-      // We're running in parallel, so we collect the threads here.
-      for (int i = 0; i < npkgs; ++i)
-	result &= pthread_join(extract_thread[i]);
-    }
+  if (opts.verbose)
+    emit_prefix("abipkgdiff", cerr)
+      << " Analysis of " << package.path() << " DONE\n";
 
-  pthread_key_delete(elf_file_paths_tls_key);
-  return result;
+  is_ok = true;
+
+  return is_ok;
 }
 
-/// Compare the added sizes of a ELF pair specified by @a1
-/// with the sizes of a ELF pair from @a2.
+/// Extract the content of a package (and its ancillary packages) and
+/// map its content.
+///
+/// First, the content of the package and its ancillary packages are
+/// extracted, in parallel.
+///
+/// Then, after that extraction is done, the content of the package if
+/// walked and analyzed.
+///
+/// @param pkg the package to extract and to analyze.
+///
+/// @param opts the options of the current program.
+///
+/// @return true iff the extraction and analyzing went well.
+static bool
+extract_package_and_map_its_content(package &pkg, options &opts)
+{
+
+  pkg_extraction_task_sptr main_pkg_extraction;
+  pkg_extraction_task_sptr dbg_extraction;
+  pkg_extraction_task_sptr devel_extraction;
+
+  size_t NUM_EXTRACTIONS = 3;
+
+  main_pkg_extraction.reset(new pkg_extraction_task(pkg, opts));
+
+  if (package_sptr dbg_pkg = pkg.debug_info_package())
+    dbg_extraction.reset(new pkg_extraction_task(*dbg_pkg, opts));
+
+  if (package_sptr devel_pkg = pkg.devel_package())
+    devel_extraction.reset(new pkg_extraction_task(*devel_pkg, opts));
+
+  size_t num_workers = (opts.parallel
+			? std::min(opts.num_workers, NUM_EXTRACTIONS)
+			: 1);
+  abigail::workers::queue extraction_queue(num_workers);
+
+  // Perform the extraction of the 3 packages in parallel.
+  extraction_queue.schedule_task(dbg_extraction);
+  extraction_queue.schedule_task(main_pkg_extraction);
+  extraction_queue.schedule_task(devel_extraction);
+
+  // Wait for the extraction to be done.
+  extraction_queue.wait_for_workers_to_complete();
+
+  // Analyze and map the content of the extracted package.
+  bool is_ok = false;
+  if (main_pkg_extraction->is_ok)
+    is_ok = create_maps_of_package_content(pkg, opts);
+
+  if (is_ok)
+    maybe_create_private_types_suppressions(pkg, opts);
+
+  return is_ok;
+}
+
+/// Extract the two packages (and their ancillary packages) and
+/// analyze their content, so that we later know what files from the
+/// first package to compare against what files from the second
+/// package.
+///
+/// Note that preparing the first package and its ancillary packages
+/// happens in parallel with preparing the second package and its
+/// ancillary packages.  The function then waits for the two
+/// preparations to complete before returning.
+///
+/// @param first_package the first package to consider.
+///
+/// @param second_package the second package to consider.
+///
+/// @param opts the options of the current program.
+///
+/// @return true iff the preparation went well.
+static bool
+prepare_packages(package &first_package, package &second_package, options &opts)
+{
+  pkg_prepare_task_sptr first_pkg_prepare;
+  pkg_prepare_task_sptr second_pkg_prepare;
+  size_t NUM_PREPARATIONS = 2;
+
+  first_pkg_prepare.reset(new pkg_prepare_task(first_package, opts));
+  second_pkg_prepare.reset(new pkg_prepare_task(second_package, opts));
+
+  size_t num_workers = (opts.parallel
+			? std::min(opts.num_workers, NUM_PREPARATIONS)
+			: 1);
+  abigail::workers::queue preparation_queue(num_workers);
+
+  preparation_queue.schedule_task(first_pkg_prepare);
+  preparation_queue.schedule_task(second_pkg_prepare);
+
+  preparation_queue.wait_for_workers_to_complete();
+
+  return first_pkg_prepare->is_ok && second_pkg_prepare->is_ok;
+}
+
+/// Compare the added sizes of an ELF pair (specified by a comparison
+/// task that compares two ELF files) against the added sizes of a
+/// second ELF pair.
 ///
 /// Larger filesize strongly raises the possibility of larger debug-info,
 /// hence longer diff time. For a package containing several relatively
@@ -1601,19 +1543,65 @@ prepare_packages(package&	first_package,
 /// the larger ones first. This function is used to order the pairs by
 /// size, starting from the largest.
 ///
-/// @a1 the first set of arguments containing also the size information about
-/// the ELF pair being compared.
+/// @param t1 the first comparison task that compares a pair of ELF
+/// files.
 ///
-/// @a2 the second set of arguments containing also the size information about
-/// the ELF pair being compared.
+/// @param t2 the second comparison task that compares a pair of ELF
+/// files.
+///
+/// @return true if @p task1 is greater than @p task2.
 bool
-elf_size_is_greater(const compare_args_sptr &a1, const compare_args_sptr &a2)
+elf_size_is_greater(const task_sptr &task1,
+		    const task_sptr &task2)
 {
-  off_t s1 = a1->elf1.size + a1->elf2.size;
-  off_t s2 = a2->elf1.size + a2->elf2.size;
+  compare_task_sptr t1 = dynamic_pointer_cast<compare_task>(task1);
+  compare_task_sptr t2 = dynamic_pointer_cast<compare_task>(task2);
+
+  off_t s1 = t1->args->elf1.size + t1->args->elf2.size;
+  off_t s2 = t2->args->elf1.size + t2->args->elf2.size;
 
   return s1 > s2;
 }
+
+/// This type is used to notify the calling thread that the comparison
+/// of two ELF files is done.
+class comparison_done_notify : public abigail::workers::queue::task_done_notify
+{
+  comparison_done_notify();
+
+public:
+  abi_diff& diff;
+  abidiff_status status;
+
+  comparison_done_notify(abi_diff &d)
+    : diff(d),
+      status(abigail::tools_utils::ABIDIFF_OK)
+  {}
+
+  /// This operator is invoked by the worker queue whenever a
+  /// comparison task is done.
+  ///
+  /// The operator collects the status of the job of the task and also
+  /// updates the the count of binaries that have ABI changes.
+  ///
+  /// @param task_done the task that is done.
+  virtual void
+  operator()(const task_sptr& task_done)
+  {
+    compare_task_sptr comp_task = dynamic_pointer_cast<compare_task>(task_done);
+    assert(comp_task);
+
+    status |= comp_task->status;
+
+    if (status != abigail::tools_utils::ABIDIFF_OK)
+      {
+	string name = comp_task->args->elf1.name;
+
+	if (status & abigail::tools_utils::ABIDIFF_ABI_CHANGE)
+	  diff.changed_binaries.push_back(name);
+      }
+  }
+}; // end struct comparison_done_notify
 
 /// Compare the ABI of two packages
 ///
@@ -1627,13 +1615,17 @@ elf_size_is_greater(const compare_args_sptr &a1, const compare_args_sptr &a2)
 /// @param diff out parameter.  If this function returns true, then
 /// this parameter is set to the result of the comparison.
 ///
+/// @param opts the options of the current program.
+///
 /// @return the status of the comparison.
 static abidiff_status
-compare(package&	first_package,
-	package&	second_package,
-	const options&	opts,
-	abi_diff&	diff)
+compare(package& first_package, package& second_package,
+	abi_diff& diff, options& opts)
 {
+  // Prepare (extract and analyze the contents) the packages and their
+  // ancillary packages.
+  //
+  // Note that the package preparations happens in parallel.
   if (!prepare_packages(first_package, second_package, opts))
     return abigail::tools_utils::ABIDIFF_ERROR;
 
@@ -1653,7 +1645,7 @@ compare(package&	first_package,
 
   abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
 
-  vector<compare_args_sptr> elf_pairs;
+  abigail::workers::queue::tasks_type compare_tasks;
 
   for (map<string, elf_file_sptr>::iterator it =
 	 first_package.path_elf_file_sptr_map().begin();
@@ -1668,15 +1660,19 @@ compare(package&	first_package,
 	      || iter->second->type == abigail::dwarf_reader::ELF_TYPE_EXEC
               || iter->second->type == abigail::dwarf_reader::ELF_TYPE_PI_EXEC))
 	{
-	  elf_pairs.push_back
-	    (compare_args_sptr (new compare_args
-				(*it->second,
-				 debug_dir1,
-				 first_package.private_types_suppressions(),
-				 *iter->second,
-				 debug_dir2,
-				 second_package.private_types_suppressions(),
-				 opts)));
+	  compare_args_sptr args
+	    (new compare_args(*it->second,
+			      debug_dir1,
+			      first_package.private_types_suppressions(),
+			      *iter->second,
+			      debug_dir2,
+			      second_package.private_types_suppressions(),
+			      opts));
+
+	  compare_task_sptr t(new compare_task(args));
+	  compare_tasks.push_back(t);
+
+	  second_package.path_elf_file_sptr_map().erase(iter);
 	}
       else
 	{
@@ -1686,102 +1682,50 @@ compare(package&	first_package,
 	}
     }
 
+  if (compare_tasks.empty())
+    return abigail::tools_utils::ABIDIFF_OK;
+
   // Larger elfs are processed first, since it's usually safe to assume
   // their debug-info is larger as well, but the results are still
   // in a map ordered by looked up in elf.name order.
-  std::sort(elf_pairs.begin(), elf_pairs.end(), elf_size_is_greater);
+  std::sort(compare_tasks.begin(), compare_tasks.end(), elf_size_is_greater);
 
-  size_t nprocs = opts.parallel ? sysconf(_SC_NPROCESSORS_ONLN) : 1;
-  assert(nprocs >= 1);
-  // There's no reason to spawn more threads than there are pairs to be diffed.
-  nprocs = std::min(nprocs, elf_pairs.size());
+  // There's no reason to spawn more workers than there are ELF pairs
+  // to be compared.
+  size_t num_workers = (opts.parallel
+			? std::min(opts.num_workers, compare_tasks.size())
+			: 1);
+  assert(num_workers >= 1);
 
-  // if nprocs is zero, it means we have no binary to compare.
+  comparison_done_notify notifier(diff);
+  abigail::workers::queue comparison_queue(num_workers, notifier);
 
-  // We've identified the elf couples to compare, let's spawn NPROCS threads
-  // to do comparisons.
-  pthread_t thr;
-  vector<pthread_t> waitlist;
-  for (size_t i = 0; i < nprocs; ++i)
+  // Compare all the binaries, in parallel and then wait for the
+  // comparisons to complete.
+  comparison_queue.schedule_tasks(compare_tasks);
+  comparison_queue.wait_for_workers_to_complete();
+
+  // Get the set of comparison tasks that were perform and sort them.
+  queue::tasks_type& done_tasks = comparison_queue.get_completed_tasks();
+  std::sort(done_tasks.begin(), done_tasks.end(), elf_size_is_greater);
+
+  // Print the reports of the comparison to standard output.
+  for (queue::tasks_type::const_iterator i = done_tasks.begin();
+       i != done_tasks.end();
+       ++i)
     {
-      if (!pthread_create(&thr, /*attr=*/NULL,
-			  reinterpret_cast<void*(*)(void*)>(pthread_routine_compare),
-			  &elf_pairs))
-        // Record all the threads we will be waiting for.
-	waitlist.push_back(thr);
+      compare_task_sptr t = dynamic_pointer_cast<compare_task>(*i);
+      cout << t->pretty_output;
     }
 
-  // Let's iterate over the valid ELF pairs in-order again, this time
-  // waiting for their diffs to come up from the other threads and reporting
-  // them ASAP.
-  for (map<string, elf_file_sptr>::iterator it =
-	 first_package.path_elf_file_sptr_map().begin();
-       it != first_package.path_elf_file_sptr_map().end();
-       ++it)
-    {
-      map<string, elf_file_sptr>::iterator iter =
-	second_package.path_elf_file_sptr_map().find(it->first);
-
-      if (iter != second_package.path_elf_file_sptr_map().end()
-	  && (iter->second->type == abigail::dwarf_reader::ELF_TYPE_DSO
-	      || iter->second->type == abigail::dwarf_reader::ELF_TYPE_EXEC
-              || iter->second->type == abigail::dwarf_reader::ELF_TYPE_PI_EXEC))
-	{
-	  second_package.path_elf_file_sptr_map().erase(iter);
-	  while (true)
-	    {
-	      pthread_mutex_lock(&map_lock);
-	      corpora_report_map::iterator d = reports_map.find(it->second->path);
-	      pthread_mutex_unlock(&map_lock);
-
-	      if (d == reports_map.end())
-		// No result yet.
-		continue;
-	      if (!d->second)
-		// The objects match.
-		break;
-	      else
-		{
-		  // Report exist, emit it.
-		  string name = it->second->name;
-		  diff.changed_binaries.push_back(name);
-		  const string prefix = "  ";
-
-		  cout << "================ changes of '"
-		       << name
-		       << "'===============\n";
-		  cout << d->second->str();
-
-		  cout << "================ end of changes of '"
-		       << name
-		       << "'===============\n\n";
-
-		  pthread_mutex_lock(&map_lock);
-		  reports_map.erase(d);
-		  pthread_mutex_unlock(&map_lock);
-
-		  break;
-		}
-	    }
-	}
-    }
-
-  abidiff_status *s;
-  // Join the comparison threads and collect the statuses.
-  for (vector<pthread_t>::iterator it = waitlist.begin(); it != waitlist.end();
-       ++it)
-    {
-      pthread_join(*it, reinterpret_cast<void **>(&s));
-      status |= *s;
-      delete s;
-    }
-
+  // Update the count of added binaries.
   for (map<string, elf_file_sptr>::iterator it =
 	 second_package.path_elf_file_sptr_map().begin();
        it != second_package.path_elf_file_sptr_map().end();
        ++it)
     diff.added_binaries.push_back(it->second);
 
+  // Print information about removed binaries on standard output.
   if (diff.removed_binaries.size())
     {
       cout << "Removed binaries:\n";
@@ -1799,6 +1743,7 @@ compare(package&	first_package,
 	}
     }
 
+  // Print information about added binaries on standard output.
   if (opts.show_added_binaries && diff.added_binaries.size())
     {
       cout << "Added binaries:\n";
@@ -1816,11 +1761,14 @@ compare(package&	first_package,
 	}
     }
 
+  // Erase temporary directory tree we might have left behind.
   if (!opts.keep_tmp_files)
     {
-      erase_created_temporary_directories(first_package, second_package);
-      erase_created_temporary_directories_parent();
+      erase_created_temporary_directories(first_package, second_package, opts);
+      erase_created_temporary_directories_parent(opts);
     }
+
+  status = notifier.status;
 
   return status;
 }
@@ -1835,10 +1783,10 @@ compare(package&	first_package,
 ///
 /// @return the status of the comparison.
 static abidiff_status
-compare(package& first_package, package& second_package, const options& opts)
+compare(package& first_package, package& second_package, options& opts)
 {
   abi_diff diff;
-  return compare(first_package, second_package, opts, diff);
+  return compare(first_package, second_package, diff, opts);
 }
 
 /// Parse the command line of the current program.
@@ -1964,7 +1912,7 @@ parse_command_line(int argc, char* argv[], options& opts)
       else if (!strcmp(argv[i], "--fail-no-dbg"))
 	opts.fail_if_no_debug_info = true;
       else if (!strcmp(argv[i], "--verbose"))
-	verbose = true;
+	opts.verbose = true;
       else if (!strcmp(argv[i], "--no-abignore"))
 	opts.abignore = false;
       else if (!strcmp(argv[i], "--no-parallel"))
@@ -2007,8 +1955,7 @@ int
 main(int argc, char* argv[])
 {
   options opts(argv[0]);
-  prog_options = &opts;
-  vector<package_sptr> packages;
+
   if (!parse_command_line(argc, argv, opts))
     {
       if (!opts.wrong_option.empty())
