@@ -184,10 +184,12 @@ else
 valgrind_lt =
 endif
 
-# Use recursive makes in order to ignore errors during check
+# Initial comment: Use recursive makes in order to ignore errors during check
+# Dodji Comment: We do not want to ignore errors during checks.
+# We want Make to keep going as much as it can.
 check-valgrind:
 ifeq ($(VALGRIND_ENABLED),yes)
-	-$(A''M_V_at)$(foreach tool,$(valgrind_enabled_tools), \
+	$(A''M_V_at)$(foreach tool,$(valgrind_enabled_tools), \
 		$(MAKE) $(AM_MAKEFLAGS) -k check-valgrind-$(tool); \
 	)
 else
