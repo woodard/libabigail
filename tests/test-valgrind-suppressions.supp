@@ -40,3 +40,29 @@
  ...
  obj:*bash
 }
+
+{
+   suppress helgrind race report from elfutils's elf_version function.
+   Helgrind:Race
+   fun:elf_version
+}
+
+{
+   suppress helgrind race report from elfutils's elf_begin function.
+   Helgrind:Race
+   fun:elf_begin
+}
+
+{
+   suppress helgrind race report from inserting into an ostringstream from abigail::ir::array_type_def::subrange_type::as_string() const
+   Helgrind:Race
+   fun:_ZNSo9_M_insertImEERSoT_
+   fun:_ZNK7abigail2ir14array_type_def13subrange_type9as_stringEv
+}
+
+{
+   suppress helgrind race report from inserting into an ostringstream from abigail::comparison::corpus_diff::priv::emit_diff_stats
+   Helgrind:Race
+   fun:_ZNSo9_M_insertImEERSoT_
+   fun:_ZN7abigail10comparison11corpus_diff4priv15emit_diff_statsERKNS1_10diff_statsERSoRKSs
+}

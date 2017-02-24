@@ -176,3 +176,6 @@ RECURSIVE_VALGRIND_FLAGS = \
 
 check-valgrind-memcheck-recursive:
 	$(MAKE) check-valgrind-memcheck VALGRIND_FLAGS="${RECURSIVE_VALGRIND_FLAGS}"
+
+check-valgrind-helgrind-recursive:
+	$(MAKE) check-valgrind-helgrind VALGRIND_FLAGS="${RECURSIVE_VALGRIND_FLAGS}"
