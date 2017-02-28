@@ -143,6 +143,7 @@ def run_fedabipkgdiff_tests():
             if return_code:
                 sys.stderr.write('fedabipkgdiff test failed for ' +
                                  reference_report_path + '\n')
+                sys.stderr.write('command was: ' + ' '.join(cmd) + '\n');
             result &=  not return_code
 
     return result
