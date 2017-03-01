@@ -27,18 +27,20 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <vector>
 #include <cstdlib>
-#include <unistd.h>
-#include <pthread.h>
 #include "abg-ir.h"
 #include "abg-dwarf-reader.h"
+#include "abg-workers.h"
 #include "abg-writer.h"
 #include "abg-tools-utils.h"
 #include "test-utils.h"
 
+using std::vector;
 using std::string;
 using std::ofstream;
 using std::cerr;
+using std::tr1::dynamic_pointer_cast;
 using abigail::tests::get_build_dir;
 using abigail::dwarf_reader::read_corpus_from_elf;
 using abigail::dwarf_reader::read_context;
@@ -218,20 +220,6 @@ InOutSpec in_out_specs[] =
   {NULL, NULL, NULL, NULL}
 };
 
-// The global pointer to the testsuite paths.
-InOutSpec *iospec = in_out_specs;
-// Lock to help atomically increment iospec.
-pthread_mutex_t spec_lock = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t write_lock = PTHREAD_MUTEX_INITIALIZER;
-// No lock needed here, since is_ok is only ever re-set to false.
-bool is_ok = true;
-
-// These prefixes don't change during the program's lifetime, so
-// we only get them once.
-const string out_abi_base = string(get_build_dir()) + "/tests/";
-const string in_elf_base  = string(abigail::tests::get_src_dir()) + "/tests/";
-const string in_abi_base = in_elf_base;
-
 using abigail::suppr::suppression_sptr;
 using abigail::suppr::suppressions_type;
 using abigail::suppr::read_suppressions;
@@ -249,45 +237,47 @@ set_suppressions(read_context& read_ctxt, const string& path)
   add_read_context_suppressions(read_ctxt, supprs);
 }
 
-/// Read the current entry of the global in_out_specs variable and
-/// according to the data it contains, read an ELF binary (possibly
-/// taking its accompanying suppression specification into account),
-/// serialize its ABI into the .abi format, compare that .abi against
-/// a reference one using GNU diff.
-///
-/// Also run abidw --abidiff against the ELF binary specified by the
-/// current entry of in_out_specs.
-///
-/// Note that the current entry of in_out_specs is the one pointed to
-/// by the iospec pointer.  This function increments that pointer
-/// after each invocation.
-void
-handle_in_out_spec(void)
+/// The task that peforms the tests.
+struct test_task : public abigail::workers::task
 {
-  string in_elf_path, in_abi_path, in_suppr_spec_path, out_abi_path;
-  abigail::ir::environment_sptr env;
-  InOutSpec *s;
+  bool is_ok;
+  InOutSpec spec;
+  string error_message;
+  string out_abi_base;
+  string in_elf_base;
+  string in_abi_base;
 
-  while (true)
+  test_task(const InOutSpec &s,
+	    string& a_out_abi_base,
+	    string& a_in_elf_base,
+	    string& a_in_abi_base)
+    : is_ok(true),
+      spec(s),
+      out_abi_base(a_out_abi_base),
+      in_elf_base(a_in_elf_base),
+      in_abi_base(a_in_abi_base)
+  {}
+
+  /// The actual test.
+  ///
+  /// This reads the corpus into memory, saves it to disk, loads it
+  /// again and compares the new in-memory representation against the
+  /// saved one.
+  virtual void
+  perform()
   {
-    pthread_mutex_lock(&spec_lock);
-    if (iospec->in_elf_path)
-      s = iospec++;
-    else
-      s = NULL;
-    pthread_mutex_unlock(&spec_lock);
+    string in_elf_path, in_abi_path, in_suppr_spec_path, out_abi_path;
+    abigail::ir::environment_sptr env;
 
-    if (!s)
-      pthread_exit(NULL);
-    in_elf_path = in_elf_base + s->in_elf_path;
-    if (s->in_suppr_spec_path)
-      in_suppr_spec_path = in_elf_base + s->in_suppr_spec_path;
+    in_elf_path = in_elf_base + spec.in_elf_path;
+    if (spec.in_suppr_spec_path)
+      in_suppr_spec_path = in_elf_base + spec.in_suppr_spec_path;
     else
       in_suppr_spec_path.clear();
 
     env.reset(new abigail::ir::environment);
     abigail::dwarf_reader::status status =
-      abigail::dwarf_reader::STATUS_UNKNOWN;
+    abigail::dwarf_reader::STATUS_UNKNOWN;
     read_context_sptr ctxt = create_read_context(in_elf_path,
 						 /*debug_info_root_path=*/0,
 						 env.get());
@@ -298,71 +288,66 @@ handle_in_out_spec(void)
     abigail::corpus_sptr corp = read_corpus_from_elf(*ctxt, status);
     if (!corp)
       {
-	cerr << "failed to read " << in_elf_path << "\n";
+	error_message = string("failed to read ") + in_elf_path  + "\n";
 	is_ok = false;
-	continue;
+	return;
       }
-    corp->set_path(s->in_elf_path);
+    corp->set_path(spec.in_elf_path);
     // Do not take architecture names in comparison so that these
     // test input binaries can come from whatever arch the
     // programmer likes.
     corp->set_architecture_name("");
 
-    out_abi_path = out_abi_base + s->out_abi_path;
+    out_abi_path = out_abi_base + spec.out_abi_path;
     if (!abigail::tools_utils::ensure_parent_dir_created(out_abi_path))
       {
-	cerr << "Could not create parent directory for " << out_abi_path;
+	error_message =
+	  string("Could not create parent directory for ") + out_abi_path;
 	is_ok = false;
-	exit(1);
+	return;
       }
 
     ofstream of(out_abi_path.c_str(), std::ios_base::trunc);
     if (!of.is_open())
       {
-	cerr << "failed to read " << out_abi_path << "\n";
+	error_message = string("failed to read ") + out_abi_path + "\n";
 	is_ok = false;
-	continue;
+	return;
       }
-
-    pthread_mutex_lock(&write_lock);
     is_ok =
-      abigail::xml_writer::write_corpus_to_native_xml(corp,
-						      /*indent=*/0,
-						      of);
-    pthread_mutex_unlock(&write_lock);
+      abigail::xml_writer::write_corpus_to_native_xml(corp, /*indent=*/0, of);
     of.close();
 
     string abidw = string(get_build_dir()) + "/tools/abidw";
     string cmd = abidw + " --abidiff " + in_elf_path;
     if (system(cmd.c_str()))
       {
-	cerr << "ABIs differ:\n"
-	     << in_elf_path
-	     << "\nand:\n"
-	     << out_abi_path
-	     << "\n";
+	error_message = string("ABIs differ:\n")
+	  + in_elf_path
+	  + "\nand:\n"
+	  + out_abi_path
+	  + "\n";
 	is_ok = false;
       }
 
-    in_abi_path = in_abi_base +  s->in_abi_path;
+    in_abi_path = in_abi_base +  spec.in_abi_path;
     cmd = "diff -u " + in_abi_path + " " + out_abi_path;
     if (system(cmd.c_str()))
       is_ok = false;
   }
-}
+}; // end struct test_task
+
+typedef shared_ptr<test_task> test_task_sptr;
 
 int
 main(int argc, char *argv[])
 {
-  // Number of currently online processors in the system.
-  size_t nprocs = sysconf(_SC_NPROCESSORS_ONLN);
-  // All the pthread_ts we've created.
-  pthread_t *pthr = new pthread_t[nprocs];
+  bool no_parallel = false;
 
   if (argc == 2)
     {
       if (argv[1] == string("--no-parallel"))
-	nprocs = 1;
+	no_parallel = true;
       else
 	{
 	  cerr << "unrecognized option\n";
@@ -371,17 +356,55 @@ main(int argc, char *argv[])
 	}
     }
 
-  assert(nprocs >= 1);
+  /// Create a task queue.  The max number of worker threads of the
+  /// queue is the number of the concurrent threads supported by the
+  /// processor of the machine this code runs on.  But if
+  /// --no-parallel was provided then the number of worker threads
+  /// equals 1.
+  const size_t num_tests = sizeof(in_out_specs) / sizeof (InOutSpec) - 1;
+  size_t num_workers = (no_parallel
+			? 1
+			: std::min(abigail::workers::get_number_of_threads(),
+				   num_tests));
+  abigail::workers::queue task_queue(num_workers);
+  bool is_ok = true;
 
-  for (size_t i = 0; i < nprocs; ++i)
-    pthread_create(&pthr[i], NULL,
-		   (void*(*)(void*))handle_in_out_spec,
-		   NULL);
+  string out_abi_base = string(get_build_dir()) + "/tests/";
+  string in_elf_base  = string(abigail::tests::get_src_dir()) + "/tests/";
+  string in_abi_base = in_elf_base;
 
-  for (size_t i = 0; i < nprocs; ++i)
-    pthread_join(pthr[i], NULL);
+  for (InOutSpec *s = in_out_specs; s->in_elf_path; ++s)
+    {
+      test_task_sptr t(new test_task(*s, out_abi_base,
+				     in_elf_base,
+				     in_abi_base));
+      assert(task_queue.schedule_task(t));
+    }
 
-  delete [] pthr;
+  /// Wait for all worker threads to finish their job, and wind down.
+  task_queue.wait_for_workers_to_complete();
+
+  // Now walk the results and print whatever error messages need to be
+  // printed.
+
+  const vector<abigail::workers::task_sptr>& completed_tasks =
+    task_queue.get_completed_tasks();
+
+  assert(completed_tasks.size() == num_tests);
+
+  for (vector<abigail::workers::task_sptr>::const_iterator ti =
+	 completed_tasks.begin();
+       ti != completed_tasks.end();
+       ++ti)
+    {
+      test_task_sptr t = dynamic_pointer_cast<test_task>(*ti);
+      if (!t->is_ok)
+	{
+	  is_ok = false;
+	  if (!t->error_message.empty())
+	    cerr << t->error_message << '\n';
+	}
+    }
 
   return !is_ok;
 }

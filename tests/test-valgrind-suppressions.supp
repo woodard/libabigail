@@ -54,6 +54,12 @@
 }
 
 {
+   suppress helgrind another race report from elfutils.
+   Helgrind:Race
+   fun:_dlerror_run
+}
+
+{
    suppress helgrind race report from inserting into an ostringstream from abigail::ir::array_type_def::subrange_type::as_string() const
    Helgrind:Race
    fun:_ZNSo9_M_insertImEERSoT_
@@ -65,4 +71,32 @@
    Helgrind:Race
    fun:_ZNSo9_M_insertImEERSoT_
    fun:_ZN7abigail10comparison11corpus_diff4priv15emit_diff_statsERKNS1_10diff_statsERSoRKSs
+}
+
+{
+   suppress helgrind race report from inserting into an ostream from abigail::xml_writer::write_translation_unit
+   Helgrind:Race
+   fun:_ZNSo9_M_insertIlEERSoT_
+   fun:_ZN7abigail10xml_writerL22write_translation_unitERKNS_2ir16translation_unitERNS0_13write_contextEj
+}
+
+{
+   Writting to ostream has data races (IAUI) due to facets-related manipulations.
+   Helgrind:Race
+   fun:_ZNSo9_M_insertImEERSoT_
+   fun:_ZN7abigail10xml_writerL16write_elf_symbolERKNSt3tr110shared_ptrINS_2ir10elf_symbolEEERNS0_13write_contextEj
+}
+
+{
+   Writting to ostream has data races (IAUI) I believe due to facets-related manipulations.
+   Helgrind:Race
+   fun:_ZNSo9_M_insertImEERSoT_
+   fun:_ZN7abigail10xml_writerL16write_elf_symbolERKNSt3tr110shared_ptrINS_2ir10elf_symbolEEERNS0_13write_contextEj
+}
+
+{
+   Writting to ostream has data races (IAUI) I believe due to facets-related manipulations.
+   Helgrind:Race
+   fun:_ZNSo9_M_insertIyEERSoT_
+   fun:_ZNK7abigail10xml_writer10id_manager18get_id_with_prefixERKSs
 }
