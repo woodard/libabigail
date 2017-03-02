@@ -88,42 +88,42 @@
 {
    <insert_a_suppression_name_here>
    Helgrind:Race
-   obj:/usr/lib64/libgcc_s-6.3.1-20161221.so.1
+   obj:/usr/lib64/libgcc_s*.so*
    fun:_Unwind_RaiseException
 }
 
 {
    <insert_a_suppression_name_here>
    Helgrind:Race
-   obj:/usr/lib64/libgcc_s-6.3.1-20161221.so.1
-   obj:/usr/lib64/libgcc_s-6.3.1-20161221.so.1
+   obj:/usr/lib64/libgcc_s*.so*
+   obj:/usr/lib64/libgcc_s*.so*
    fun:_Unwind_RaiseException
 }
 
 {
    <insert_a_suppression_name_here>
    Helgrind:Race
-   obj:/usr/lib64/libgcc_s-6.3.1-20161221.so.1
-   obj:/usr/lib64/libgcc_s-6.3.1-20161221.so.1
-   obj:/usr/lib64/libgcc_s-6.3.1-20161221.so.1
+   obj:/usr/lib64/libgcc_s*.so*
+   obj:/usr/lib64/libgcc_s*.so*
+   obj:/usr/lib64/libgcc_s*so.*
    fun:_Unwind_RaiseException
 }
 
-
-{
-   <insert_a_suppression_name_here>
-   Helgrind:Race
-   fun:_Unwind_SetGR
-   fun:__gxx_personality_v0
-   obj:/usr/lib64/libgcc_s-6.3.1-20161221.so.1
-   fun:_Unwind_RaiseException
-}
 
 {
    <insert_a_suppression_name_here>
    Helgrind:Race
    fun:_Unwind_SetGR
    fun:__gxx_personality_v0
-   obj:/usr/lib64/libgcc_s-6.3.1-20161221.so.1
+   obj:/usr/lib64/libgcc_s*.so*
+   fun:_Unwind_RaiseException
+}
+
+{
+   <insert_a_suppression_name_here>
+   Helgrind:Race
+   fun:_Unwind_SetGR
+   fun:__gxx_personality_v0
+   obj:/usr/lib64/libgcc_s*.so*
    fun:_Unwind_RaiseException
 }
