@@ -76,3 +76,13 @@
    Helgrind:Race
    fun:_ZNSo9_M_insertIyEERSoT_
 }
+
+{
+   Helgrind:Race
+   fun:_Unwind_RaiseException
+}
+
+{
+   Helgrind:Race
+   fun:_Unwind_SetGR
+}
