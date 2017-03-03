@@ -16327,6 +16327,22 @@ struct virtual_member_function_less_than
 		sn = s.get_pretty_representation();
 	      }
 	  }
+
+	/// If it's just the file paths that are different then sort
+	/// them too.
+	if (fn == sn)
+	  {
+	    string fn_filepath, sn_filepath;
+	    unsigned line = 0, column = 0;
+	    location fn_loc = f.get_location(), sn_loc = s.get_location();
+	    if (fn_loc)
+	      fn_loc.expand(fn_filepath, line, column);
+	    if (sn_loc)
+	      sn_loc.expand(sn_filepath, line, column);
+
+	    if (!fn_filepath.empty() && !sn_filepath.empty())
+	      return fn_filepath < sn_filepath;
+	  }
 	return fn < sn;
       }
 
