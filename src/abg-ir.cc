@@ -16292,6 +16292,8 @@ struct virtual_member_function_less_than
   /// @param f the first method to consider.
   ///
   /// @param s the second method to consider.
+  ///
+  /// @return true if method @p is less than method @s.
   bool
   operator()(const method_decl& f,
 	     const method_decl& s)
@@ -16311,13 +16313,19 @@ struct virtual_member_function_less_than
 	    fn = f.get_symbol()->get_id_string();
 	    sn = s.get_symbol()->get_id_string();
 	  }
-
-	// If either one of the functions don't have symbols, then
-	// compare their pretty representation.
-	if (fn.empty())
+	else if (f.get_symbol())
+	  return false;
+	else if (s.get_symbol())
+	  return true;
+	else
 	  {
-	    fn = f.get_pretty_representation();
-	    sn = s.get_pretty_representation();
+	    // None of the functions have symbols, so compare their
+	    // pretty representation.
+	    if (fn.empty())
+	      {
+		fn = f.get_pretty_representation();
+		sn = s.get_pretty_representation();
+	      }
 	  }
 	return fn < sn;
       }

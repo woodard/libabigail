@@ -85,26 +85,6 @@ InOutSpec in_out_specs[] =
     "output/test-annotate/test8-qualified-this-pointer.so.abi"
   },
   {
-    "data/test-read-dwarf/test9-pr18818-clang.so",
-    "data/test-annotate/test9-pr18818-clang.so.abi",
-    "output/test-annotate/test9-pr18818-clang.so.abi"
-  },
-  {
-    "data/test-read-dwarf/test10-pr18818-gcc.so",
-    "data/test-annotate/test10-pr18818-gcc.so.abi",
-    "output/test-annotate/test10-pr18818-gcc.so.abi"
-  },
-  {
-    "data/test-read-dwarf/test11-pr18828.so",
-    "data/test-annotate/test11-pr18828.so.abi",
-    "output/test-annotate/test11-pr18828.so.abi",
-  },
-  {
-    "data/test-read-dwarf/test12-pr18844.so",
-    "data/test-annotate/test12-pr18844.so.abi",
-    "output/test-annotate/test12-pr18844.so.abi",
-  },
-  {
     "data/test-read-dwarf/test13-pr18894.so",
     "data/test-annotate/test13-pr18894.so.abi",
     "output/test-annotate/test13-pr18894.so.abi",
@@ -118,11 +98,6 @@ InOutSpec in_out_specs[] =
     "data/test-read-dwarf/test15-pr18892.so",
     "data/test-annotate/test15-pr18892.so.abi",
     "output/test-annotate/test15-pr18892.so.abi",
-  },
-  {
-    "data/test-read-dwarf/test16-pr18904.so",
-    "data/test-annotate/test16-pr18904.so.abi",
-    "output/test-annotate/test16-pr18904.so.abi",
   },
   {
     "data/test-read-dwarf/test17-pr19027.so",
@@ -148,11 +123,6 @@ InOutSpec in_out_specs[] =
     "data/test-read-dwarf/test21-pr19092.so",
     "data/test-annotate/test21-pr19092.so.abi",
     "output/test-annotate/test21-pr19092.so.abi",
-  },
-  {
-    "data/test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so",
-    "data/test-annotate/test22-pr19097-libstdc++.so.6.0.17.so.abi",
-    "output/test-annotate/test22-pr19097-libstdc++.so.6.0.17.so.abi",
   },
   {
     "data/test-read-dwarf/libtest23.so",
