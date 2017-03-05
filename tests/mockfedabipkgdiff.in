@@ -68,24 +68,18 @@ ABIPKGDIFF = '@abs_top_builddir@/tools/abipkgdiff'
 FEDABIPKGDIFF = '@abs_top_srcdir@/tools/fedabipkgdiff'
 INPUT_DIR =  '@abs_top_srcdir@/tests/data/test-fedabipkgdiff'
 OUTPUT_DIR = '@abs_top_builddir@/tests/output/test-fedabipkgdiff'
-DOWNLOAD_CACHE_DIR_PREFIX=os.path.join(OUTPUT_DIR, 'download-cache')
 TEST_TOPDIR = 'file://{0}'.format(INPUT_DIR)
 
+DOWNLOAD_CACHE_DIR_PREFIX=os.path.join(OUTPUT_DIR, 'download-cache')
+if not os.path.exists(DOWNLOAD_CACHE_DIR_PREFIX):
+    os.makedirs(DOWNLOAD_CACHE_DIR_PREFIX)
+DOWNLOAD_CACHE_DIR=tempfile.mkdtemp(dir=DOWNLOAD_CACHE_DIR_PREFIX)
+
+
 def get_download_dir():
-
-    if not os.path.exists(DOWNLOAD_CACHE_DIR_PREFIX):
-        try:
-            os.makedirs(DOWNLOAD_CACHE_DIR_PREFIX)
-        except:
-            pass
-        if not os.path.exists(DOWNLOAD_CACHE_DIR_PREFIX):
-            sys.exit(1);
-
-    return tempfile.mkdtemp(dir=DOWNLOAD_CACHE_DIR_PREFIX)
-
-DOWNLOAD_CACHE_DIR = get_download_dir()
-
-def mock_get_download_dir():
+    """Mock get_download_dir"""
+    if not os.path.exists(DOWNLOAD_CACHE_DIR):
+        os.makedirs(DOWNLOAD_CACHE_DIR)
     return DOWNLOAD_CACHE_DIR
 
 
@@ -399,12 +393,14 @@ class MockClientSession(object):
 @patch('koji.ClientSession', new=MockClientSession)
 @patch('fedabipkgdiff.DEFAULT_KOJI_TOPURL', new=TEST_TOPDIR)
 @patch('fedabipkgdiff.DEFAULT_ABIPKGDIFF', new=ABIPKGDIFF)
-@patch('fedabipkgdiff.get_download_dir', side_effect=mock_get_download_dir)
-def run_fedabipkgdiff(get_download_dir):
+@patch('fedabipkgdiff.get_download_dir', new=get_download_dir)
+def run_fedabipkgdiff():
     return fedabipkgdiff_mod.main()
+
 
 def do_main():
     run_fedabipkgdiff()
+
 
 if __name__ == '__main__':
     do_main()

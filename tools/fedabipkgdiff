@@ -28,6 +28,7 @@ import logging
 import mimetypes
 import os
 import re
+import shutil
 import subprocess
 import sys
 
@@ -151,6 +152,14 @@ class CannotFindLatestBuildError(Exception):
     """Cannot find latest build from a package"""
 
 
+class SetCleanCacheAction(argparse._StoreTrueAction):
+    """Custom Action making clean-cache as bundle of clean-cache-before and clean-cache-after"""
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        setattr(namespace, 'clean_cache_before', self.const)
+        setattr(namespace, 'clean_cache_after', self.const)
+
+
 def is_distro_valid(distro):
     """Adjust if a distro is valid
 
@@ -221,6 +230,16 @@ def log_call(func):
         logger.debug('Result from %s: %s', func.__name__, result)
         return result
     return proxy
+
+
+def delete_download_cache():
+    """Delete download cache directory"""
+    download_dir = get_download_dir()
+    if global_config.dry_run:
+        print('DRY-RUN: Delete cached downloaded RPM packages at {0}'.format(download_dir))
+    else:
+        logger.debug('Delete cached downloaded RPM packages at {0}'.format(download_dir))
+        shutil.rmtree(download_dir)
 
 
 class RPM(object):
@@ -1063,8 +1082,16 @@ def diff_local_rpm_with_latest_rpm_from_koji():
                                              arches=local_rpm.arch)
     rpm_col2 = RPMCollection.gather_from_dir(local_rpm_file)
 
+    if global_config.clean_cache_before:
+        delete_download_cache()
+
     download_rpms(rpm_col1.rpms_iter())
-    return run_abipkgdiff(rpm_col1, rpm_col2)
+    result = run_abipkgdiff(rpm_col1, rpm_col2)
+
+    if global_config.clean_cache_after:
+        delete_download_cache()
+
+    return result
 
 
 @log_call
@@ -1093,9 +1120,16 @@ def diff_latest_rpms_based_on_distros():
     rpm_col2 = session.get_latest_built_rpms(package_name,
                                              distro=global_config.to_distro)
 
-    download_rpms(chain(rpm_col1.rpms_iter(), rpm_col2.rpms_iter()))
+    if global_config.clean_cache_before:
+        delete_download_cache()
 
-    return run_abipkgdiff(rpm_col1, rpm_col2)
+    download_rpms(chain(rpm_col1.rpms_iter(), rpm_col2.rpms_iter()))
+    result = run_abipkgdiff(rpm_col1, rpm_col2)
+
+    if global_config.clean_cache_after:
+        delete_download_cache()
+
+    return result
 
 
 @log_call
@@ -1141,9 +1175,16 @@ def diff_two_nvras_from_koji():
         build_id, params2[0], arches=params2[3],
         select_subpackages=global_config.check_all_subpackages)
 
-    download_rpms(chain(rpm_col1.rpms_iter(), rpm_col2.rpms_iter()))
+    if global_config.clean_cache_before:
+        delete_download_cache()
 
-    return run_abipkgdiff(rpm_col1, rpm_col2)
+    download_rpms(chain(rpm_col1.rpms_iter(), rpm_col2.rpms_iter()))
+    result = run_abipkgdiff(rpm_col1, rpm_col2)
+
+    if global_config.clean_cache_after:
+        delete_download_cache()
+
+    return result
 
 
 @log_call
@@ -1151,8 +1192,13 @@ def diff_from_two_rpm_files(from_rpm_file, to_rpm_file):
     """Diff two RPM files"""
     rpm_col1 = RPMCollection.gather_from_dir(from_rpm_file)
     rpm_col2 = RPMCollection.gather_from_dir(to_rpm_file)
+    if global_config.clean_cache_before:
+        delete_download_cache()
     download_rpms(chain(rpm_col1.rpms_iter(), rpm_col2.rpms_iter()))
-    return run_abipkgdiff(rpm_col1, rpm_col2)
+    result = run_abipkgdiff(rpm_col1, rpm_col2)
+    if global_config.clean_cache_after:
+        delete_download_cache()
+    return result
 
 
 def build_commandline_args_parser():
@@ -1259,6 +1305,28 @@ def build_commandline_args_parser():
         action='store_true',
         dest='error_on_warning',
         help='Raise error instead of warning')
+    parser.add_argument(
+        '--clean-cache',
+        required=False,
+        action=SetCleanCacheAction,
+        dest='clean_cache',
+        default=None,
+        help='A convenient way to clean cache without specifying '
+             '--clean-cache-before and --clean-cache-after at same time')
+    parser.add_argument(
+        '--clean-cache-before',
+        required=False,
+        action='store_true',
+        dest='clean_cache_before',
+        default=None,
+        help='Clean cache before ABI comparison')
+    parser.add_argument(
+        '--clean-cache-after',
+        required=False,
+        action='store_true',
+        dest='clean_cache_after',
+        default=None,
+        help='Clean cache after ABI comparison')
     return parser
 
 

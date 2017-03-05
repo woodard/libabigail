@@ -16,7 +16,10 @@ _fedabipkgdiff_module()
                     --dso-only
                     --no-default-suppression
                     --no-devel-pkg
-                    --abipkgdiff"
+                    --abipkgdiff
+                    --clean-cache
+                    --clean-cache-before
+                    --clean-cache-after"
 	    COMPREPLY=( $(compgen -W "${OPTS[*]}" -- $cur) )
 	    return 0
 	    ;;

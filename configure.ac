@@ -338,7 +338,7 @@ if test x$CHECK_DEPS_FOR_FEDABIPKGDIFF = xyes; then
 
   REQUIRED_PYTHON_MODULES_FOR_FEDABIPKGDIFF="\
    argparse logging os re subprocess sys urlparse \
-   xdg koji mock rpm imp tempfile mimetypes"
+   xdg koji mock rpm imp tempfile mimetypes shutil"
 
   if test x$ENABLE_FEDABIPKGDIFF != xno; then
     AX_CHECK_PYTHON_MODULES([$REQUIRED_PYTHON_MODULES_FOR_FEDABIPKGDIFF],

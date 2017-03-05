@@ -142,6 +142,20 @@ Options
 
     Specify an alternative abipkgdiff instead of the one installed in system.
 
+  * ``--clean-cache-before``
+
+    Clean cache before ABI comparison.
+
+  * ``--clean-cache-after``
+
+    Clean cache after ABI comparison.
+
+  * ``--clean-cache``
+
+    If you want to clean cache both before and after ABI comparison,
+    ``--clean-cache`` is the convenient way for you to save typing of two
+    options at same time.
+
 .. _build:
 
 Note that a build is a specific version and release of an RPM package.

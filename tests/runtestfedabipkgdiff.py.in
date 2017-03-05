@@ -129,7 +129,8 @@ def run_fedabipkgdiff_tests():
         output_path = os.path.join(TEST_BUILD_DIR, output_path)
         cmd = [FEDABIPKGDIFF,
                '--no-default-suppression',
-               '--show-identical-binaries'] + args
+               '--show-identical-binaries',
+               '--clean-cache'] + args
 
         with open(output_path, 'w') as out_file:
             subprocess.call(cmd, stdout=out_file)
@@ -162,6 +163,7 @@ def main():
     result = 0
     result = run_fedabipkgdiff_tests()
     return not result
+
 
 if __name__ == '__main__':
     exit_code = main()
