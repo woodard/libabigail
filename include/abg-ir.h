@@ -3302,6 +3302,14 @@ public:
 		      bool is_static, bool is_ctor,
 		      bool is_dtor, bool is_const);
 
+  void
+  add_member_function(method_decl_sptr f,
+		      access_specifier a,
+		      bool is_virtual,
+		      size_t vtable_offset,
+		      bool is_static, bool is_ctor,
+		      bool is_dtor, bool is_const);
+
   const member_functions&
   get_member_functions() const;
 
@@ -3466,14 +3474,6 @@ public:
   class_decl_sptr
   find_base_class(const string&) const;
 
-  void
-  add_member_function(method_decl_sptr f,
-		      access_specifier a,
-		      bool is_virtual,
-		      size_t vtable_offset,
-		      bool is_static, bool is_ctor,
-		      bool is_dtor, bool is_const);
-
   const member_functions&
   get_virtual_mem_fns() const;
 
@@ -3525,6 +3525,7 @@ public:
   equals(const class_decl&, const class_decl&, change_kind*);
 
   friend class method_decl;
+  friend class class_or_union;
 };// end class class_decl
 
 bool

@@ -1247,6 +1247,11 @@ test-diff-pkg/tbb-devel-4.1-9.20130314.fc22.x86_64.rpm \
 test-diff-pkg/tbb-devel-4.3-3.20141204.fc23.x86_64.rpm \
 test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64--tbb-4.3-3.20141204.fc23.x86_64-report-0.txt \
 test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64--tbb-4.3-3.20141204.fc23.x86_64-report-1.txt \
+test-diff-pkg/tbb-2017-9.20170118.fc27.x86_64.rpm \
+test-diff-pkg/tbb-2017-8.20161128.fc26.x86_64.rpm \
+test-diff-pkg/tbb-debuginfo-2017-8.20161128.fc26.x86_64.rpm \
+test-diff-pkg/tbb-debuginfo-2017-9.20170118.fc27.x86_64.rpm \
+test-diff-pkg/tbb-2017-8.20161128.fc26.x86_64--tbb-2017-9.20170118.fc27.x86_64.txt \
 test-diff-pkg/libICE-debuginfo-1.0.6-1.el6.x86_64.rpm \
 test-diff-pkg/libICE-debuginfo-1.0.9-2.el7.x86_64.rpm \
 test-diff-pkg/libICE-1.0.6-1.el6.x86_64.rpm \

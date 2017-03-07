@@ -13630,7 +13630,7 @@ function_decl::clone() const
 				      get_linkage_name(),
 				      get_visibility(),
 				      get_binding()));
-      class_decl* scope = dynamic_cast<class_decl*>(get_scope());
+      class_or_union* scope = is_class_or_union_type(get_scope());
       assert(scope);
       scope->add_member_function(m, get_member_access_specifier(*this),
 				 get_member_function_is_virtual(*this),
@@ -16377,16 +16377,20 @@ sort_virtual_member_functions(class_decl::member_functions& mem_fns)
   std::sort(mem_fns.begin(), mem_fns.end(), lt);
 }
 
-/// Add a member function to the current instance of class_decl.
+/// Add a member function to the current instance of @ref class_or_union.
 ///
 /// @param f a method_decl to add to the current class.  This function
 /// should not have been already added to a scope.
 ///
 /// @param access the access specifier for the member function to add.
 ///
+/// @param is_virtual if this is true then it means the function @p f
+/// is a virtual function.  That also means that the current instance
+/// of @ref class_or_union is actually an instance of @ref class_decl.
+///
 /// @param vtable_offset the offset of the member function in the
-/// virtual table.  If the member function is not virtual, this offset
-/// must be 0 (zero).
+/// virtual table.  This parameter is taken into account only if @p
+/// is_virtual is true.
 ///
 /// @param is_static whether the member function is static.
 ///
@@ -16396,20 +16400,25 @@ sort_virtual_member_functions(class_decl::member_functions& mem_fns)
 ///
 /// @param is_const whether the member function is const.
 void
-class_decl::add_member_function(method_decl_sptr f,
-				access_specifier a,
-				bool is_virtual,
-				size_t vtable_offset,
-				bool is_static, bool is_ctor,
-				bool is_dtor, bool is_const)
+class_or_union::add_member_function(method_decl_sptr f,
+				    access_specifier a,
+				    bool is_virtual,
+				    size_t vtable_offset,
+				    bool is_static, bool is_ctor,
+				    bool is_dtor, bool is_const)
 {
-  class_or_union::add_member_function(f, a, is_static, is_ctor,
-				      is_dtor, is_const);
-  set_member_function_vtable_offset(f, vtable_offset);
-  set_member_function_is_virtual(f, is_virtual);
+  add_member_function(f, a, is_static, is_ctor,
+		      is_dtor, is_const);
 
-  if (is_virtual)
-    sort_virtual_member_functions(priv_->virtual_mem_fns_);
+  if (class_decl* klass = is_class_type(this))
+    {
+      set_member_function_is_virtual(f, is_virtual);
+      if (is_virtual)
+	{
+	  set_member_function_vtable_offset(f, vtable_offset);
+	  sort_virtual_member_functions(klass->priv_->virtual_mem_fns_);
+	}
+    }
 }
 
 /// When a virtual member function has seen its virtualness set by
