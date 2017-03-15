@@ -430,22 +430,25 @@ worker::wait_to_execute_a_task(queue::priv* p)
 {
   pthread_mutex_lock(&p->tasks_todo_mutex);
   bool more_tasks = !p->tasks_todo.empty();
+  bool bring_workers_down = p->bring_workers_down;
   pthread_mutex_unlock(&p->tasks_todo_mutex);
 
   do
     {
       // If there is no more tasks to perform and the queue is not to
       // be brought down then wait (sleep) for new tasks to come up.
-      pthread_mutex_lock(&p->queue_cond_mutex);
-      while (!more_tasks && !p->bring_workers_down)
+      while (!more_tasks && !bring_workers_down)
 	{
+	  pthread_mutex_lock(&p->queue_cond_mutex);
 	  pthread_cond_wait(&p->queue_cond, &p->queue_cond_mutex);
+	  pthread_mutex_unlock(&p->queue_cond_mutex);
 
 	  pthread_mutex_lock(&p->tasks_todo_mutex);
 	  more_tasks = !p->tasks_todo.empty();
+	  bring_workers_down = p->bring_workers_down;
 	  pthread_mutex_unlock(&p->tasks_todo_mutex);
 	}
-      pthread_mutex_unlock(&p->queue_cond_mutex);
+
 
       // We were woken up.  So maybe there are tasks to perform?  If
       // so, get a task from the queue ...
@@ -480,6 +483,7 @@ worker::wait_to_execute_a_task(queue::priv* p)
 
       pthread_mutex_lock(&p->tasks_todo_mutex);
       more_tasks = !p->tasks_todo.empty();
+      bring_workers_down = p->bring_workers_down;
       pthread_mutex_unlock(&p->tasks_todo_mutex);
     }
     while (!p->bring_workers_down || more_tasks);
