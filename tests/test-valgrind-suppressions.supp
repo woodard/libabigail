@@ -127,3 +127,10 @@
    obj:/usr/lib64/libgcc_s*.so*
    fun:_Unwind_RaiseException
 }
+
+{
+   <insert_a_suppression_name_here>
+   Helgrind:Race
+   fun:memcpy
+   fun:__libc_sigaction
+}
