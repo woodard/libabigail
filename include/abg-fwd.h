@@ -23,6 +23,7 @@
 #ifndef __ABG_IRFWD_H__
 #define __ABG_IRFWD_H__
 
+#include <stdint.h>
 #include <cstdlib>
 #include <cstddef>
 #include <tr1/memory>
@@ -575,15 +576,15 @@ array_type_def_sptr
 is_array_type(const type_or_decl_base_sptr& decl);
 
 void
-set_data_member_offset(var_decl_sptr, size_t);
+set_data_member_offset(var_decl_sptr, uint64_t);
 
-size_t
+uint64_t
 get_data_member_offset(const var_decl&);
 
-size_t
+uint64_t
 get_data_member_offset(const var_decl_sptr);
 
-size_t
+uint64_t
 get_data_member_offset(const decl_base_sptr);
 
 void
