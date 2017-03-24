@@ -22,6 +22,7 @@ FEDABIPKGDIFF_TEST += runtestfedabipkgdiff.py
 endif
 
 TESTS=				\
+$(FEDABIPKGDIFF_TEST) 		\
 runtestreaddwarf		\
 runtestannotate			\
 runtestcanonicalizetypes.sh	\
@@ -40,7 +41,7 @@ runtestaltdwarf			\
 runtestcorediff			\
 runtestabidiffexit		\
 runtestdefaultsupprs.py		\
-$(FEDABIPKGDIFF_TEST) $(CXX11_TESTS)
+$(CXX11_TESTS)
 
 
 EXTRA_DIST = \
