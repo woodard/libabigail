@@ -458,6 +458,9 @@ is_qualified_type(const type_or_decl_base*);
 qualified_type_def_sptr
 is_qualified_type(const type_or_decl_base_sptr&);
 
+type_base_sptr
+look_through_no_op_qualified_type(const shared_ptr<type_base>& t);
+
 function_type_sptr
 is_function_type(const type_or_decl_base_sptr&);
 

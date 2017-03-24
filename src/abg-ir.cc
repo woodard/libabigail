@@ -6181,6 +6181,32 @@ qualified_type_def_sptr
 is_qualified_type(const type_or_decl_base_sptr& t)
 {return dynamic_pointer_cast<qualified_type_def>(t);}
 
+/// Strip a type from its top level no-op qualifier.
+///
+/// Note that a no-op qualifier is how we represents, for instance, a
+/// "const reference".  As a reference is always const, that const
+/// qualifier just adds noise in terms of change analysis.  Se we
+/// represent it as a no-op qualifier so that we can strip it.
+///
+/// @param t to type to strip from its potential top-level no-op
+/// qualifier.
+///
+/// @return If @t is a no-op qualified type, then return the first
+/// underlying type that is not a no-op qualified type.
+type_base_sptr
+look_through_no_op_qualified_type(const type_base_sptr& t)
+{
+  type_base_sptr ty;
+  if (qualified_type_def_sptr qt = is_qualified_type(t))
+    if (qt->get_cv_quals() == qualified_type_def::CV_NONE)
+      ty = qt->get_underlying_type();
+
+  if (is_qualified_type(ty))
+    return look_through_no_op_qualified_type(ty);
+
+  return ty ? ty : t;
+}
+
 /// Test whether a type is a function_type.
 ///
 /// @param t the type to test.
@@ -14146,7 +14172,11 @@ equals(const function_decl::parameter& l,
 	return false;
     }
 
-  if (l.get_type() != r.get_type())
+  // Sometimes, function parameters can be wrapped into a no-op
+  // qualifier.  Let's strip that qualifier out.
+  type_base_sptr l_type = look_through_no_op_qualified_type(l.get_type());
+  type_base_sptr r_type = look_through_no_op_qualified_type(r.get_type());
+  if (l_type != r_type)
     {
       result = false;
       if (k)

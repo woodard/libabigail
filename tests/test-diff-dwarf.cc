@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2016 Red Hat, Inc.
+// Copyright (C) 2013-2017 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -319,6 +319,12 @@ InOutSpec in_out_specs[] =
     "data/test-diff-dwarf/libtest41-PR20476-hidden-new.so",
     "data/test-diff-dwarf/test41-PR20476-hidden-report-0.txt",
     "output/test-diff-dwarf/test41-PR20476-hidden-report-0.txt"
+  },
+  {
+    "data/test-diff-dwarf/test42-PR21296-libgcc.so",
+    "data/test-diff-dwarf/test42-PR21296-libclang.so",
+    "data/test-diff-dwarf/test42-PR21296-clanggcc-report0.txt",
+    "output/test-diff-dwarf/test42-PR21296-clanggcc-report0.txt"
   },
   // This should be the last entry
   {NULL, NULL, NULL, NULL}
