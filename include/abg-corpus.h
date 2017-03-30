@@ -93,6 +93,9 @@ public:
   const translation_units&
   get_translation_units() const;
 
+  const translation_unit_sptr
+  find_translation_unit(const string &path) const;
+
   void
   drop_translation_units();
 
@@ -101,6 +104,12 @@ public:
 
   const type_maps&
   get_types() const;
+
+  type_maps&
+  get_type_per_loc_map();
+
+  const type_maps&
+  get_type_per_loc_map() const;
 
   origin
   get_origin() const;
@@ -127,12 +136,12 @@ public:
   set_soname(const string&);
 
   const string&
-  get_architecture_name();
+  get_architecture_name() const;
 
   void
   set_architecture_name(const string&);
 
-  bool
+  virtual bool
   is_empty() const;
 
   bool
@@ -162,7 +171,7 @@ public:
   const string_elf_symbols_map_type&
   get_undefined_fun_symbol_map() const;
 
-  const elf_symbols&
+  virtual const elf_symbols&
   get_sorted_fun_symbols() const;
 
   const elf_symbols&
@@ -180,7 +189,7 @@ public:
   const string_elf_symbols_map_type&
   get_undefined_var_symbol_map() const;
 
-  const elf_symbols&
+  virtual const elf_symbols&
   get_sorted_var_symbols() const;
 
   const elf_symbols&
@@ -206,7 +215,7 @@ public:
   const elf_symbol_sptr
   lookup_variable_symbol(const elf_symbol& symbol) const;
 
-  const functions&
+  virtual const functions&
   get_functions() const;
 
   const vector<function_decl*>*
@@ -215,16 +224,16 @@ public:
   void
   sort_functions();
 
-  const variables&
+  virtual const variables&
   get_variables() const;
 
   void
   sort_variables();
 
-  const elf_symbols&
+  virtual const elf_symbols&
   get_unreferenced_function_symbols() const;
 
-  const elf_symbols&
+  virtual const elf_symbols&
   get_unreferenced_variable_symbols() const;
 
   vector<string>&
@@ -324,6 +333,65 @@ public:
   void
   maybe_add_var_to_exported_vars(var_decl*);
 }; //corpus::exported_decls_builder
+
+/// Abstraction of a group of corpora.
+///
+/// A corpus group is a union of corpora.  It provides a unified view
+/// of a set of corpora.  It lets you get the set of functions,
+/// variables and symbols that are defined and exported by a set of
+/// corpora.
+class corpus_group : public corpus
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+
+  // Forbid copy
+  corpus_group(const corpus_group&);
+
+public:
+  typedef vector<corpus_sptr> corpora_type;
+
+  corpus_group(ir::environment*, const string&);
+
+  virtual ~corpus_group();
+
+  void add_corpus(const corpus_sptr&);
+
+  const corpora_type&
+  get_corpora() const;
+
+  virtual bool
+  is_empty() const;
+
+  virtual const corpus::functions&
+  get_functions() const;
+
+  virtual const corpus::variables&
+  get_variables() const;
+
+  const string_elf_symbols_map_type&
+  get_var_symbol_map() const;
+
+  const string_elf_symbols_map_type&
+  get_fun_symbol_map() const;
+
+  virtual const elf_symbols&
+  get_sorted_fun_symbols() const;
+
+  virtual const elf_symbols&
+  get_sorted_var_symbols() const;
+
+  virtual const elf_symbols&
+  get_unreferenced_function_symbols() const;
+
+  virtual const elf_symbols&
+  get_unreferenced_variable_symbols() const;
+
+  bool
+  operator==(const corpus_group&) const;
+}; // end class corpus_group
 
 }// end namespace ir
 }//end namespace abigail

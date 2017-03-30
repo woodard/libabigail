@@ -690,6 +690,7 @@ struct corpus::priv
   string					soname;
   string					architecture_name;
   translation_units				members;
+  string_tu_map_type				path_tu_map;
   vector<function_decl*>			fns;
   vector<var_decl*>				vars;
   string_elf_symbols_map_sptr			var_symbol_map;
@@ -714,6 +715,7 @@ struct corpus::priv
   // data member.  Otherwise, the lookup must be made by looking into
   // the type maps of each translation unit.
   type_maps					types_;
+  type_maps					type_per_loc_map_;
 
 private:
   priv();
@@ -732,7 +734,7 @@ public:
   type_maps&
   get_types();
 
-   const type_maps&
+  const type_maps&
   get_types() const;
 }; // end struct corpus::priv
 

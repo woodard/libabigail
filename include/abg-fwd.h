@@ -31,6 +31,7 @@
 #include <vector>
 #include <string>
 #include <tr1/functional>
+#include <tr1/unordered_map>
 #include <typeinfo>
 #include <utility> // for std::rel_ops, at least.
 #include <ostream>
@@ -66,6 +67,7 @@ namespace abigail
 // Inject some types.
 using std::tr1::shared_ptr;
 using std::tr1::weak_ptr;
+using std::tr1::unordered_map;
 using std::string;
 using std::vector;
 
@@ -78,6 +80,10 @@ namespace ir
 // Forward declarations for corpus.
 
 class corpus;
+typedef shared_ptr<corpus> corpus_sptr;
+
+class corpus_group;
+typedef shared_ptr<corpus_group> corpus_group_sptr;
 
 // Forward declarations for ir.
 
@@ -121,6 +127,9 @@ class translation_unit;
 typedef shared_ptr<translation_unit> translation_unit_sptr;
 /// Convenience typedef for a vector of @ref translation_unit_sptr.
 typedef std::vector<translation_unit_sptr> translation_units;
+/// Convenience typedef for a map that associates a string to a
+/// translation unit.
+typedef unordered_map<string, translation_unit_sptr> string_tu_map_type;
 
 class decl_base;
 
@@ -213,6 +222,10 @@ class var_decl;
 /// Convenience typedef for a shared pointer on a @ref var_decl
 typedef shared_ptr<var_decl> var_decl_sptr;
 
+typedef unordered_map<interned_string,
+		      var_decl*,
+		      hash_interned_string> istring_var_decl_ptr_map_type;
+
 class scope_decl;
 
 /// Convenience typedef for a shared pointer on a @ref scope_decl.
@@ -222,6 +235,10 @@ class function_decl;
 
 /// Convenience typedef for a shared pointer on a @ref function_decl
 typedef shared_ptr<function_decl> function_decl_sptr;
+
+typedef unordered_map<interned_string,
+		      function_decl*,
+		      hash_interned_string> istring_function_decl_ptr_map_type;
 
 class method_decl;
 

@@ -1,6 +1,6 @@
 // -*- mode: C++ -*-
 //
-// Copyright (C) 2013-2016 Red Hat, Inc.
+// Copyright (C) 2013-2017 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -525,6 +525,10 @@ corpus::set_environment(environment* e) const
 /// the corpus are going to be serialized on disk in the file
 /// associated to the current corpus.
 ///
+/// Note that two translation units with the same path (as returned by
+/// translation_unit::get_path) cannot be added to the same @ref
+/// corpus.  If that happens, the library aborts.
+///
 /// @param tu the new translation unit to add.
 void
 corpus::add(const translation_unit_sptr tu)
@@ -535,6 +539,14 @@ corpus::add(const translation_unit_sptr tu)
   assert(tu->get_environment() == get_environment());
 
   priv_->members.push_back(tu);
+  if (!tu->get_path().empty())
+    {
+      // Update the path -> translation_unit map.
+      string_tu_map_type::const_iterator i =
+	priv_->path_tu_map.find(tu->get_path());
+      assert(i == priv_->path_tu_map.end());
+      priv_->path_tu_map[tu->get_path()] = tu;
+    }
 
   tu->set_corpus(this);
 }
@@ -545,6 +557,23 @@ corpus::add(const translation_unit_sptr tu)
 const translation_units&
 corpus::get_translation_units() const
 {return priv_->members;}
+
+/// Find the translation unit that has a given path.
+///
+/// @param path the path of the translation unit to look for.
+///
+/// @return the translation unit found, if any.  Otherwise, return
+/// nil.
+const translation_unit_sptr
+corpus::find_translation_unit(const string &path) const
+{
+  string_tu_map_type::const_iterator i =
+    priv_->path_tu_map.find(path);
+
+  if (i == priv_->path_tu_map.end())
+    return translation_unit_sptr();
+  return i->second;
+}
 
 /// Erase the translation units contained in this in-memory object.
 ///
@@ -568,6 +597,32 @@ corpus::get_types()
 const type_maps&
 corpus::get_types() const
 {return priv_->types_;}
+
+/// Get the maps that associate a location string to a certain kind of
+/// type.
+///
+/// The location string is the result of the invocation to the
+/// function abigail::ir::location::expand().  It has the form
+/// "file.c:4:1", with 'file.c' being the file name, '4' being the
+/// line number and '1' being the column number.
+///
+/// @return the maps.
+const type_maps&
+corpus::get_type_per_loc_map() const
+{return priv_->type_per_loc_map_;}
+
+/// Get the maps that associate a location string to a certain kind of
+/// type.
+///
+/// The location string is the result of the invocation to the
+/// function abigail::ir::location::expand().  It has the form
+/// "file.c:4:1", with 'file.c' being the file name, '4' being the
+/// line number and '1' being the column number.
+///
+/// @return the maps.
+type_maps&
+corpus::get_type_per_loc_map()
+{return priv_->type_per_loc_map_;}
 
 /// Getter for the origin of the corpus.
 ///
@@ -660,7 +715,7 @@ corpus::set_soname(const string& soname)
 ///
 /// @return the architecture name string.
 const string&
-corpus::get_architecture_name()
+corpus::get_architecture_name() const
 {return priv_->architecture_name;}
 
 /// Setter for the architecture name of the corpus.
@@ -1426,5 +1481,337 @@ corpus::get_exported_decls_builder() const
 }
 
 // </corpus stuff>
+
+// <corpus_group stuff>
+
+/// Type of the private data of @ref corpus_group
+struct corpus_group::priv
+{
+  corpora_type			corpora;
+  istring_function_decl_ptr_map_type fns_map;
+  vector<function_decl*>	fns;
+  istring_var_decl_ptr_map_type vars_map;
+  vector<var_decl*>		vars;
+  string_elf_symbols_map_type	var_symbol_map;
+  string_elf_symbols_map_type	fun_symbol_map;
+  elf_symbols			sorted_var_symbols;
+  elf_symbols			sorted_fun_symbols;
+  unordered_map<string, elf_symbol_sptr> unrefed_fun_symbol_map;
+  elf_symbols			unrefed_fun_symbols;
+  unordered_map<string, elf_symbol_sptr> unrefed_var_symbol_map;
+  elf_symbols			unrefed_var_symbols;
+
+  priv()
+  {}
+}; // end struct::priv
+
+/// Default constructor of the @ref corpus_group type.
+corpus_group::corpus_group(environment* env, const string& path = "")
+  : corpus(env, path), priv_(new priv)
+{}
+
+/// Desctructor of the @ref corpus_group type.
+corpus_group::~corpus_group()
+{}
+
+/// Add a new corpus to the current instance of @ref corpus_group.
+///
+/// @param corp the new corpus to add.
+void
+corpus_group::add_corpus(const corpus_sptr& corp)
+{
+  if (!corp)
+    return;
+
+  // Ensure the new environment patches the current one.
+  if (const environment* cur_env = get_environment())
+    {
+      if (environment* corp_env = corp->get_environment())
+	assert(cur_env == corp_env);
+    }
+  else
+    set_environment(corp->get_environment());
+
+  // Ensure the new architecture name matches the current one.
+  string cur_arch = get_architecture_name(),
+    corp_arch = corp->get_architecture_name();
+  if (cur_arch.empty())
+    set_architecture_name(corp_arch);
+  else
+    assert(cur_arch == corp_arch);
+
+  priv_->corpora.push_back(corp);
+}
+
+/// Getter of the vector of corpora held by the current @ref
+/// corpus_group.
+///
+/// @return the vector corpora.
+const corpus_group::corpora_type&
+corpus_group::get_corpora() const
+{return priv_->corpora;}
+
+/// Test if the current corpus group is empty.
+///
+/// @return true iff the current corpus group is empty.
+bool
+corpus_group::is_empty() const
+{return get_corpora().empty();}
+
+/// Get the functions exported by the corpora of the current corpus
+/// group.
+///
+/// Upon its first invocation, this function walks the corpora
+/// contained in the corpus group and caches the functions they exported.
+///
+/// Subsequent invocations just return the cached functions.
+///
+/// @return the exported functions.
+const corpus::functions&
+corpus_group::get_functions() const
+{
+  if (priv_->fns.empty())
+    for (corpora_type::const_iterator i = get_corpora().begin();
+	 i != get_corpora().end();
+	 ++i)
+      {
+	corpus_sptr c = *i;
+	for (corpus::functions::const_iterator f = c->get_functions().begin();
+	     f != c->get_functions().end();
+	     ++f)
+	  {
+	    interned_string fid = (*f)->get_id();
+	    istring_function_decl_ptr_map_type::const_iterator j =
+	      priv_->fns_map.find(fid);
+
+	    if (j != priv_->fns_map.end())
+	      // Don't cache the same function twice ...
+	      continue;
+
+	    priv_->fns_map[fid] = *f;
+	    // really cache the function now.
+	    priv_->fns.push_back(*f);
+	  }
+      }
+
+  return priv_->fns;
+}
+
+/// Get the global variables exported by the corpora of the current
+/// corpus group.
+///
+/// Upon its first invocation, this function walks the corpora
+/// contained in the corpus group and caches the variables they
+/// export.
+///
+/// @return the exported variables.
+const corpus::variables&
+corpus_group::get_variables() const
+{
+  if (priv_->vars.empty())
+    for (corpora_type::const_iterator i = get_corpora().begin();
+	 i != get_corpora().end();
+	 ++i)
+      {
+	corpus_sptr c = *i;
+	for (corpus::variables::const_iterator v = c->get_variables().begin();
+	     v != c->get_variables().end();
+	     ++v)
+	  {
+	    interned_string vid = (*v)->get_id();
+	    istring_var_decl_ptr_map_type::const_iterator j =
+	      priv_->vars_map.find(vid);
+
+	    if (j != priv_->vars_map.end())
+	      // Don't cache the same variable twice ...
+	      continue;
+
+	    priv_->vars_map[vid] = *v;
+	    // Really cache the variable now.
+	    priv_->vars.push_back(*v);
+	  }
+      }
+
+  return priv_->vars;
+}
+
+/// Get the symbols of the global variables exported by the corpora of
+/// the current @ref corpus_group.
+///
+/// @return the symbols of the global variables exported by the corpora
+const string_elf_symbols_map_type&
+corpus_group::get_var_symbol_map() const
+{
+  if (priv_->var_symbol_map.empty())
+    for (corpora_type::const_iterator i = get_corpora().begin();
+	 i != get_corpora().end();
+	 ++i)
+      priv_->var_symbol_map.insert((*i)->get_var_symbol_map().begin(),
+				     (*i)->get_var_symbol_map().end());
+
+  return priv_->var_symbol_map;
+}
+
+/// Get the symbols of the global functions exported by the corpora of
+/// the current @ref corpus_group.
+///
+/// @return the symbols of the global functions exported by the corpora
+const string_elf_symbols_map_type&
+corpus_group::get_fun_symbol_map() const
+{
+  if (priv_->fun_symbol_map.empty())
+    for (corpora_type::const_iterator i = get_corpora().begin();
+	 i != get_corpora().end();
+	 ++i)
+      priv_->fun_symbol_map.insert((*i)->get_fun_symbol_map().begin(),
+				   (*i)->get_fun_symbol_map().end());
+
+  return priv_->fun_symbol_map;
+}
+
+/// Get a sorted vector of the symbols of the functions exported by
+/// the corpora of the current group.
+///
+/// @return the sorted vectors of the exported function symbols.
+const elf_symbols&
+corpus_group::get_sorted_fun_symbols() const
+{
+  if (priv_->sorted_fun_symbols.empty()
+      && !get_fun_symbol_map().empty())
+    {
+      for (corpora_type::const_iterator i = get_corpora().begin();
+	   i != get_corpora().end();
+	   ++i)
+	{
+	  corpus_sptr c = *i;
+	  for (string_elf_symbols_map_type::const_iterator j =
+		 c->get_fun_symbol_map().begin();
+	       j != c->get_fun_symbol_map().begin();
+	       ++j)
+	    priv_->sorted_fun_symbols.insert(priv_->sorted_fun_symbols.end(),
+					     j->second.begin(),
+					     j->second.end());
+	}
+      comp_elf_symbols_functor comp;
+      std::sort(priv_->sorted_fun_symbols.begin(),
+		priv_->sorted_fun_symbols.end(),
+		comp);
+    }
+
+  return priv_->sorted_fun_symbols;
+}
+
+/// Get a sorted vector of the symbols of the variables exported by
+/// the corpora of the current group.
+///
+/// @return the sorted vectors of the exported variable symbols.
+const elf_symbols&
+corpus_group::get_sorted_var_symbols() const
+{
+  if (priv_->sorted_var_symbols.empty()
+      && !get_var_symbol_map().empty())
+    {
+      for (corpora_type::const_iterator i = get_corpora().begin();
+	   i != get_corpora().end();
+	   ++i)
+	{
+	  corpus_sptr c = *i;
+	  for (string_elf_symbols_map_type::const_iterator j =
+		 c->get_var_symbol_map().begin();
+	       j != c->get_var_symbol_map().begin();
+	       ++j)
+	    priv_->sorted_var_symbols.insert(priv_->sorted_var_symbols.end(),
+					     j->second.begin(),
+					     j->second.end());
+	}
+      comp_elf_symbols_functor comp;
+      std::sort(priv_->sorted_var_symbols.begin(),
+		priv_->sorted_var_symbols.end(),
+		comp);
+    }
+
+  return priv_->sorted_var_symbols;
+}
+
+/// Get the set of function symbols not referenced by any debug info,
+/// from all the corpora of the current corpus group.
+///
+/// Upon its first invocation, this function walks all the copora of
+/// this corpus group and caches the unreferenced symbols they
+/// export.  The function then returns the cache.
+///
+/// Upon subsequent invocations, this functions just returns the
+/// cached symbols.
+///
+/// @return the unreferenced symbols.
+const elf_symbols&
+corpus_group::get_unreferenced_function_symbols() const
+{
+  if (priv_->unrefed_fun_symbols.empty())
+    for (corpora_type::const_iterator i = get_corpora().begin();
+	 i != get_corpora().end();
+	 ++i)
+      {
+	corpus_sptr c = *i;
+	for (elf_symbols::const_iterator e =
+	       c->get_unreferenced_function_symbols().begin();
+	     e != c->get_unreferenced_function_symbols().end();
+	     ++e)
+	  {
+	    string sym_id = (*e)->get_id_string();
+	    unordered_map<string, elf_symbol_sptr>::const_iterator j =
+	      priv_->unrefed_fun_symbol_map.find(sym_id);
+	    if (j != priv_->unrefed_fun_symbol_map.end())
+	      continue;
+
+	    priv_->unrefed_fun_symbol_map[sym_id] = *e;
+	    priv_->unrefed_fun_symbols.push_back(*e);
+	  }
+      }
+
+  return priv_->unrefed_fun_symbols;
+}
+
+/// Get the set of variable symbols not referenced by any debug info,
+/// from all the corpora of the current corpus group.
+///
+/// Upon its first invocation, this function walks all the copora of
+/// this corpus group and caches the unreferenced symbols they
+/// export.  The function then returns the cache.
+///
+/// Upon subsequent invocations, this functions just returns the
+/// cached symbols.
+///
+/// @return the unreferenced symbols.
+const elf_symbols&
+corpus_group::get_unreferenced_variable_symbols() const
+{
+  if (priv_->unrefed_var_symbols.empty())
+    for (corpora_type::const_iterator i = get_corpora().begin();
+	 i != get_corpora().end();
+	 ++i)
+      {
+	corpus_sptr c = *i;
+	for (elf_symbols::const_iterator e =
+	       c->get_unreferenced_variable_symbols().begin();
+	     e != c->get_unreferenced_variable_symbols().end();
+	     ++e)
+	  {
+	    string sym_id = (*e)->get_id_string();
+	    unordered_map<string, elf_symbol_sptr>::const_iterator j =
+	      priv_->unrefed_var_symbol_map.find(sym_id);
+	    if (j != priv_->unrefed_var_symbol_map.end())
+	      continue;
+
+	    priv_->unrefed_var_symbol_map[sym_id] = *e;
+	    priv_->unrefed_var_symbols.push_back(*e);
+	  }
+      }
+
+  return priv_->unrefed_var_symbols;
+}
+
+// </corpus_group stuff>
+
 }// end namespace ir
 }// end namespace abigail
