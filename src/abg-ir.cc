@@ -335,6 +335,22 @@ location::expand(std::string& path, unsigned& line, unsigned& column) const
   get_location_manager()->expand_location(*this, path, line, column);
 }
 
+
+/// Expand the location into a string.
+///
+/// @return the string representing the location.
+string
+location::expand(void) const
+{
+  string path, result;
+  unsigned line = 0, column = 0;
+  expand(path, line, column);
+
+  std::ostringstream o;
+  o << path << ":" << line << ":" << column;
+  return o.str();
+}
+
 struct location_manager::priv
 {
   /// This sorted vector contains the expanded locations of the tokens
@@ -417,6 +433,23 @@ type_maps::type_maps()
   : priv_(new priv)
 {}
 
+/// Test if the type_maps is empty.
+///
+/// @return true iff the type_maps is empty.
+bool
+type_maps::empty() const
+{
+  return (basic_types().empty()
+	  && class_types().empty()
+	  && union_types().empty()
+	  && enum_types().empty()
+	  && typedef_types().empty()
+	  && qualified_types().empty()
+	  && pointer_types().empty()
+	  && reference_types().empty()
+	  && array_types().empty()
+	  && function_types().empty());
+}
 /// Getter for the map that associates the name of a basic type to
 /// the @ref type_decl_sptr that represents that type.
 const istring_type_base_wptr_map_type&
@@ -4988,6 +5021,33 @@ get_top_most_scope_under(const decl_base_sptr decl,
 
 // </scope_decl stuff>
 
+
+/// Get the string representation of a CV qualifier bitmap.
+///
+/// @param cv_quals the bitmap of CV qualifiers to consider.
+///
+/// @return the string representation.
+string
+get_string_representation_of_cv_quals(const qualified_type_def::CV cv_quals)
+{
+  string repr;
+  if (cv_quals & qualified_type_def::CV_RESTRICT)
+    repr = "restrict";
+  if (cv_quals & qualified_type_def::CV_CONST)
+    {
+      if (!repr.empty())
+	repr += ' ';
+      repr += "const";
+    }
+  if (cv_quals & qualified_type_def::CV_VOLATILE)
+    {
+      if (!repr.empty())
+	repr += ' ';
+      repr += "volatile";
+    }
+  return repr;
+}
+
 /// Build and return a copy of the name of an ABI artifact that is
 /// either a type of a decl.
 ///
@@ -5181,6 +5241,111 @@ get_type_name(const type_base* t, bool qualified, bool internal)
 interned_string
 get_type_name(const type_base& t, bool qualified, bool internal)
 {return get_type_name(&t, qualified, internal);}
+
+/// Get the name of the pointer to a given type.
+///
+/// @param pointed_to_type the pointed-to-type to consider.
+///
+/// @param qualified this is true if the resulting name should be of a
+/// pointer to a *fully-qualified* pointed-to-type.
+///
+/// @param internal true if the name is for libabigail-internal
+/// purposes.
+///
+/// @return the name (string representation) of the pointer.
+interned_string
+get_name_of_pointer_to_type(const type_base& pointed_to_type,
+			    bool qualified, bool internal)
+{
+  const environment* env = pointed_to_type.get_environment();
+  assert(env);
+
+  string tn = get_type_name(pointed_to_type, qualified, internal);
+  tn =  tn + "*";
+
+  return env->intern(tn);
+}
+
+/// Get the name of the reference to a given type.
+///
+/// @param pointed_to_type the pointed-to-type to consider.
+///
+/// @param qualified this is true if the resulting name should be of a
+/// reference to a *fully-qualified* pointed-to-type.
+///
+/// @param internal true if the name is for libabigail-internal
+/// purposes.
+///
+/// @return the name (string representation) of the reference.
+interned_string
+get_name_of_reference_to_type(const type_base& pointed_to_type,
+			      bool lvalue_reference,
+			      bool qualified, bool internal)
+{
+  const environment* env = pointed_to_type.get_environment();
+  assert(env);
+
+  string name = get_type_name(pointed_to_type, qualified, internal);
+  if (lvalue_reference)
+    name = name + "&";
+  else
+    name = name + "&&";
+
+  return env->intern(name);
+}
+
+/// Get the name of a qualified type, given the underlying type and
+/// its qualifiers.
+///
+/// @param underlying_type the underlying type to consider.
+///
+/// @param quals the CV qualifiers of the name.
+///
+/// @param qualified true if we should consider the fully qualified
+/// name of @p underlying_type.
+///
+/// @param internal true if the result is to be used for
+/// libabigail-internal purposes.
+///
+/// @return the name (string representation) of the qualified type.
+interned_string
+get_name_of_qualified_type(const type_base_sptr& underlying_type,
+			   qualified_type_def::CV quals,
+			   bool qualified, bool internal)
+{
+  const environment* env = underlying_type->get_environment();
+  assert(env);
+
+  string quals_repr = get_string_representation_of_cv_quals(quals);
+  string name = get_type_name(underlying_type, qualified, internal);
+
+  if (quals_repr.empty() && internal)
+    // We are asked to return the internal name, that might be used
+    // for type canonicalization.  For that canonicalization, we need
+    // to make a difference between a no-op qualified type which
+    // underlying type is foo (the qualified type is named "none
+    // foo"), and the name of foo, which is just "foo".
+    //
+    // Please remember that this has to be kept in sync with what is
+    // done in die_qualified_name, in abg-dwarf-reader.cc.  So if you
+    // change this code here, please change that code there too.
+    quals_repr = "noop-qual";
+
+  if (!quals_repr.empty())
+    {
+      if (is_pointer_type(underlying_type)
+	  || is_reference_type(underlying_type)
+	  || is_array_type(underlying_type))
+	{
+	  name += " ";
+	  name += quals_repr;
+	}
+      else
+	name = quals_repr + " " + name;
+    }
+
+  return env->intern(name);
+}
 
 /// Get the name of a given function type and return a copy of it.
 ///
@@ -5558,6 +5723,20 @@ get_pretty_representation(const method_type* method, bool internal)
 string
 get_pretty_representation(const method_type_sptr method, bool internal)
 {return get_pretty_representation(method.get(), internal);}
+
+/// By looking at the language of the TU a given ABI artifact belongs
+/// to, test if the ONE Definition Rule should apply.
+///
+/// @param artifact the ABI artifact to consider.
+///
+/// @return true iff the One Definition Rule should apply.
+bool
+odr_is_relevant(type_or_decl_base& artifact)
+{
+  if (is_cplus_plus_language(artifact.get_translation_unit()->get_language()))
+    return true;
+  return false;
+}
 
 /// Get the declaration for a given type.
 ///
@@ -6513,6 +6692,10 @@ static shared_ptr<TypeKind>
 lookup_type_in_map(const interned_string& type_name,
 		   const istring_type_base_wptr_map_type& type_map)
 {
+  // TODO: when we fully support types indexed by type locations (and
+  // then, one location being able to have several different types)
+  // then there should be another function similar to this one that
+  // returns a vector of types for a type location.
   istring_type_base_wptr_map_type::const_iterator i = type_map.find(type_name);
   if (i != type_map.end())
     return dynamic_pointer_cast<TypeKind>(type_base_sptr(i->second));
@@ -6535,6 +6718,27 @@ lookup_basic_type(const interned_string& type_name, const translation_unit& tu)
 {
   return lookup_type_in_map<type_decl>(type_name,
 				       tu.get_types().basic_types());
+}
+
+/// Lookup a basic type from a translation unit.
+///
+/// This is done by looking the type up in the type map that is
+/// maintained in the translation unit.  So this is as fast as
+/// possible.
+///
+/// @param type_name the name of the basic type to look for.
+///
+/// @param tu the translation unit to look into.
+///
+/// @return the basic type found or nil if no basic type was found.
+type_decl_sptr
+lookup_basic_type(const string& type_name, const translation_unit& tu)
+{
+  const environment* env = tu.get_environment();
+  assert(env);
+
+  interned_string s = env->intern(type_name);
+  return lookup_basic_type(s, tu);
 }
 
 /// Lookup a class type from a translation unit.
@@ -6596,6 +6800,39 @@ lookup_union_type(const interned_string& type_name, const translation_unit& tu)
 					tu.get_types().union_types());
 }
 
+/// Lookup a union type in a given corpus, from its location.
+///
+/// @param loc the location of the union type to look for.
+///
+/// @param corp the corpus to look it from.
+///
+/// @return the resulting union_decl.
+union_decl_sptr
+lookup_union_type_per_location(const interned_string &loc, const corpus& corp)
+{
+  const istring_type_base_wptr_map_type& m =
+    corp.get_type_per_loc_map().union_types();
+  union_decl_sptr result = lookup_type_in_map<union_decl>(loc, m);
+
+  return result;
+}
+
+/// Lookup a union type in a given corpus, from its location.
+///
+/// @param loc the location of the union type to look for.
+///
+/// @param corp the corpus to look it from.
+///
+/// @return the resulting union_decl.
+union_decl_sptr
+lookup_union_type_per_location(const string& loc, const corpus& corp)
+{
+  const environment* env = corp.get_environment();
+  assert(env);
+
+  return lookup_union_type_per_location(env->intern(loc), corp);
+}
+
 /// Lookup a enum type from a translation unit.
 ///
 /// This is done by looking the type up in the type map that is
@@ -6612,6 +6849,27 @@ lookup_enum_type(const interned_string& type_name, const translation_unit& tu)
 {
   return lookup_type_in_map<enum_type_decl>(type_name,
 					    tu.get_types().enum_types());
+}
+
+/// Lookup a enum type from a translation unit.
+///
+/// This is done by looking the type up in the type map that is
+/// maintained in the translation unit.  So this is as fast as
+/// possible.
+///
+/// @param type_name the name of the enum type to look for.
+///
+/// @param tu the translation unit to look into.
+///
+/// @return the enum type found or nil if no enum type was found.
+enum_type_decl_sptr
+lookup_enum_type(const string& type_name, const translation_unit& tu)
+{
+  const environment* env = tu.get_environment();
+  assert(env);
+
+  interned_string s = env->intern(type_name);
+  return lookup_enum_type(s, tu);
 }
 
 /// Lookup a typedef type from a translation unit.
@@ -6632,6 +6890,28 @@ lookup_typedef_type(const interned_string& type_name,
 {
   return lookup_type_in_map<typedef_decl>(type_name,
 					  tu.get_types().typedef_types());
+}
+
+/// Lookup a typedef type from a translation unit.
+///
+/// This is done by looking the type up in the type map that is
+/// maintained in the translation unit.  So this is as fast as
+/// possible.
+///
+/// @param type_name the name of the typedef type to look for.
+///
+/// @param tu the translation unit to look into.
+///
+/// @return the typedef type found or nil if no typedef type was
+/// found.
+typedef_decl_sptr
+lookup_typedef_type(const string& type_name, const translation_unit& tu)
+{
+  const environment* env = tu.get_environment();
+  assert(env);
+
+  interned_string s = env->intern(type_name);
+  return lookup_typedef_type(s, tu);
 }
 
 /// Lookup a qualified type from a translation unit.
@@ -6655,6 +6935,31 @@ lookup_qualified_type(const interned_string& type_name,
 						m.qualified_types());
 }
 
+/// Lookup a qualified type from a translation unit.
+///
+/// This is done by looking the type up in the type map that is
+/// maintained in the translation unit.  So this is as fast as
+/// possible.
+///
+/// @param underlying_type the underying type of the qualified type to
+/// look up.
+///
+/// @param quals the CV-qualifiers of the qualified type to look for.
+///
+/// @param tu the translation unit to look into.
+///
+/// @return the qualified type found or nil if no qualified type was
+/// found.
+qualified_type_def_sptr
+lookup_qualified_type(const type_base_sptr& underlying_type,
+		      qualified_type_def::CV quals,
+		      const translation_unit& tu)
+{
+  interned_string type_name = get_name_of_qualified_type(underlying_type,
+							 quals);
+  return lookup_qualified_type(type_name, tu);
+}
+
 /// Lookup a pointer type from a translation unit.
 ///
 /// This is done by looking the type up in the type map that is
@@ -6676,6 +6981,48 @@ lookup_pointer_type(const interned_string& type_name,
 					      m.pointer_types());
 }
 
+/// Lookup a pointer type from a translation unit.
+///
+/// This is done by looking the type up in the type map that is
+/// maintained in the translation unit.  So this is as fast as
+/// possible.
+///
+/// @param type_name the name of the pointer type to look for.
+///
+/// @param tu the translation unit to look into.
+///
+/// @return the pointer type found or nil if no pointer type was
+/// found.
+pointer_type_def_sptr
+lookup_pointer_type(const string& type_name, const translation_unit& tu)
+{
+  const environment* env = tu.get_environment();
+  assert(env);
+
+  interned_string s = env->intern(type_name);
+  return lookup_pointer_type(s, tu);
+}
+
+/// Lookup a pointer type from a translation unit.
+///
+/// This is done by looking the type up in the type map that is
+/// maintained in the translation unit.  So this is as fast as
+/// possible.
+///
+/// @param pointed_to_type the pointed-to-type of the pointer to look for.
+///
+/// @param tu the translation unit to look into.
+///
+/// @return the pointer type found or nil if no pointer type was
+/// found.
+pointer_type_def_sptr
+lookup_pointer_type(const type_base_sptr& pointed_to_type,
+		    const translation_unit& tu)
+{
+  interned_string type_name = get_name_of_pointer_to_type(*pointed_to_type);
+  return lookup_pointer_type(type_name, tu);
+}
+
 /// Lookup a reference type from a translation unit.
 ///
 /// This is done by looking the type up in the type map that is
@@ -6695,6 +7042,29 @@ lookup_reference_type(const interned_string& type_name,
   const type_maps& m = tu.get_types();
   return lookup_type_in_map<reference_type_def>(type_name,
 						m.reference_types());
+}
+
+/// Lookup a reference type from a translation unit.
+///
+/// This is done by looking the type up in the type map that is
+/// maintained in the translation unit.  So this is as fast as
+/// possible.
+///
+/// @param pointed_to_type the pointed-to-type of the reference to
+/// look up.
+///
+/// @param tu the translation unit to look into.
+///
+/// @return the reference type found or nil if no reference type was
+/// found.
+const reference_type_def_sptr
+lookup_reference_type(const type_base_sptr& pointed_to_type,
+		      bool lvalue_reference,
+		      const translation_unit& tu)
+{
+  interned_string type_name =
+    get_name_of_reference_to_type(*pointed_to_type, lvalue_reference);
+  return lookup_reference_type(type_name, tu);
 }
 
 /// Lookup an array type from a translation unit.
@@ -7489,6 +7859,31 @@ lookup_type_through_translation_units(const string& qn,
   return result;
 }
 
+/// Lookup a type from a given translation unit present in a give corpus.
+///
+/// @param type_name the name of the type to look for.
+///
+/// @parm tu_path the path of the translation unit to consider.
+///
+/// @param corp the corpus to consider.
+///
+/// @return the resulting type, if any.
+type_base_sptr
+lookup_type_from_translation_unit(const string& type_name,
+				  const string& tu_path,
+				  const corpus& corp)
+{
+  string_tu_map_type::const_iterator i =  corp.priv_->path_tu_map.find(tu_path);
+  if (i == corp.priv_->path_tu_map.end())
+    return type_base_sptr();
+
+  translation_unit_sptr tu = i->second;
+  assert(tu);
+
+  type_base_sptr t = lookup_type(type_name, *tu);
+  return t;
+}
+
 /// Look into an ABI corpus for a function type.
 ///
 /// @param fn_type the function type to be looked for in the ABI
@@ -7560,6 +7955,42 @@ lookup_basic_type(const interned_string &qualified_name, const corpus& corp)
     result = lookup_basic_type_through_translation_units(qualified_name, corp);
 
   return result;
+}
+
+/// Lookup a @ref type_decl type from a given corpus, by its location.
+///
+/// @param loc the location to consider.
+///
+/// @param corp the corpus to consider.
+///
+/// @return the resulting basic type, if any.
+type_decl_sptr
+lookup_basic_type_per_location(const interned_string &loc,
+			       const corpus &corp)
+{
+  const istring_type_base_wptr_map_type& m =
+    corp.get_type_per_loc_map().basic_types();
+  type_decl_sptr result;
+
+  result = lookup_type_in_map<type_decl>(loc, m);
+
+  return result;
+}
+
+/// Lookup a @ref type_decl type from a given corpus, by its location.
+///
+/// @param loc the location to consider.
+///
+/// @param corp the corpus to consider.
+///
+/// @return the resulting basic type, if any.
+type_decl_sptr
+lookup_basic_type_per_location(const string &loc, const corpus &corp)
+{
+  const environment* env = corp.get_environment();
+  assert(env);
+
+  return lookup_basic_type_per_location(env->intern(loc), corp);
 }
 
 /// Look into a given corpus to find a basic type which has a given
@@ -7639,6 +8070,40 @@ lookup_class_type(const interned_string& qualified_name, const corpus& corp)
     result = lookup_class_type_through_translation_units(qualified_name, corp);
 
   return result;
+}
+
+/// Look up a @ref class_decl from a given corpus by its location.
+///
+/// @param loc the location to consider.
+///
+/// @param corp the corpus to consider.
+///
+/// @return the resulting class decl, if any.
+class_decl_sptr
+lookup_class_type_per_location(const interned_string& loc,
+			       const corpus& corp)
+{
+  const istring_type_base_wptr_map_type& m =
+    corp.get_type_per_loc_map().class_types();
+  class_decl_sptr result = lookup_type_in_map<class_decl>(loc, m);
+
+  return result;
+}
+
+/// Look up a @ref class_decl from a given corpus by its location.
+///
+/// @param loc the location to consider.
+///
+/// @param corp the corpus to consider.
+///
+/// @return the resulting class decl, if any.
+class_decl_sptr
+lookup_class_type_per_location(const string &loc, const corpus &corp)
+{
+  const environment* env = corp.get_environment();
+  assert(env);
+
+  return lookup_class_type_per_location(env->intern(loc), corp);
 }
 
 /// Look into a given corpus to find a union type which has a given
@@ -7745,6 +8210,39 @@ lookup_enum_type(const interned_string& qualified_name, const corpus& corp)
   return result;
 }
 
+/// Look up an @ref enum_type_decl from a given corpus, by its location.
+///
+/// @param loc the location to consider.
+///
+/// @param corp the corpus to look the type from.
+///
+/// @return the resulting enum type, if any.
+enum_type_decl_sptr
+lookup_enum_type_per_location(const interned_string &loc, const corpus& corp)
+{
+  const istring_type_base_wptr_map_type& m =
+    corp.get_type_per_loc_map().enum_types();
+  enum_type_decl_sptr result = lookup_type_in_map<enum_type_decl>(loc, m);
+
+  return result;
+}
+
+/// Look up an @ref enum_type_decl from a given corpus, by its location.
+///
+/// @param loc the location to consider.
+///
+/// @param corp the corpus to look the type from.
+///
+/// @return the resulting enum type, if any.
+enum_type_decl_sptr
+lookup_enum_type_per_location(const string &loc, const corpus &corp)
+{
+  const environment* env = corp.get_environment();
+  assert(env);
+
+  return lookup_enum_type_per_location(env->intern(loc), corp);
+}
+
 /// Look into a given corpus to find a typedef type which has the
 /// same qualified name as a given typedef type.
 ///
@@ -7807,6 +8305,39 @@ lookup_typedef_type(const interned_string& qualified_name, const corpus& corp)
 							   corp);
 
   return result;
+}
+
+/// Lookup a @ref typedef_decl from a corpus, by its location.
+///
+/// @param loc the location to consider.
+///
+/// @param corp the corpus to consider.
+///
+/// @return the typedef_decl found, if any.
+typedef_decl_sptr
+lookup_typedef_type_per_location(const interned_string &loc, const corpus &corp)
+{
+  const istring_type_base_wptr_map_type& m =
+    corp.get_type_per_loc_map().typedef_types();
+  typedef_decl_sptr result = lookup_type_in_map<typedef_decl>(loc, m);
+
+  return result;
+}
+
+/// Lookup a @ref typedef_decl from a corpus, by its location.
+///
+/// @param loc the location to consider.
+///
+/// @param corp the corpus to consider.
+///
+/// @return the typedef_decl found, if any.
+typedef_decl_sptr
+lookup_typedef_type_per_location(const string &loc, const corpus &corp)
+{
+  const environment* env = corp.get_environment();
+  assert(env);
+
+  return lookup_typedef_type_per_location(env->intern(loc), corp);
 }
 
 /// Look into a corpus to find a class or typedef type which has a
@@ -8140,6 +8671,33 @@ lookup_type(const interned_string& n, const corpus& corp)
   return result;
 }
 
+/// Lookup a type from a corpus, by its location.
+///
+/// @param loc the location to consider.
+///
+/// @param corp the corpus to look the type from.
+///
+/// @return the resulting type, if any found.
+type_base_sptr
+lookup_type_per_location(const interned_string& loc, const corpus& corp)
+{
+  // TODO: finish this.
+
+  //TODO: when we fully support types indexed by their location, this
+  //function should return a vector of types because at each location,
+  //there can be several types that are defined (yay, C and C++,
+  //*sigh*).
+
+  type_base_sptr result;
+  ((result = lookup_basic_type_per_location(loc, corp))
+   || (result = lookup_class_type_per_location(loc, corp))
+   || (result = lookup_union_type_per_location(loc, corp))
+   || (result = lookup_enum_type_per_location(loc, corp))
+   || (result = lookup_typedef_type_per_location(loc, corp)));
+
+  return result;
+}
+
 /// Look into a given corpus to find a type
 ///
 /// If the per-corpus type map is non-empty (because the corpus allows
@@ -8196,14 +8754,28 @@ lookup_type(const type_base_sptr&t, const corpus& corp)
 /// type with the same name already exists in the map, then, do
 /// nothing; do not even update the map in that case.
 ///
+/// @param use_type_name_as_key if true, use the name of the type as
+/// the key to look it up later.  If false, then use the location of
+/// the type as a key to look it up later.
+///
 /// @return true iff the type was added to the map.
 template<typename TypeKind>
 bool
 maybe_update_types_lookup_map(const shared_ptr<TypeKind>& type,
 			      istring_type_base_wptr_map_type& types_map,
-			      bool erase_if_exists_already = false)
+			      bool erase_if_exists_already = false,
+			      bool use_type_name_as_key = true)
 {
-  interned_string s = get_type_name(type);
+  interned_string s;
+
+  if (use_type_name_as_key)
+    s = get_type_name(type);
+  else if (location l = type->get_location())
+    {
+      string str = l.expand();
+      s = type->get_environment()->intern(str);
+    }
+
   istring_type_base_wptr_map_type::iterator i = types_map.find(s);
   bool result = false;
 
@@ -8240,7 +8812,8 @@ template<>
 bool
 maybe_update_types_lookup_map<class_decl>(const class_decl_sptr& class_type,
 					  istring_type_base_wptr_map_type& map,
-					  bool erase_if_exists_already)
+					  bool erase_if_exists_already,
+					  bool use_type_name_as_key)
 {
   class_decl_sptr type = class_type;
 
@@ -8256,8 +8829,18 @@ maybe_update_types_lookup_map<class_decl>(const class_decl_sptr& class_type,
   if (!update_qname_map)
     return false;
 
-  string qname = type->get_qualified_name();
-  interned_string s = type->get_environment()->intern(qname);
+  interned_string s;
+  if (use_type_name_as_key)
+    {
+      string qname = type->get_qualified_name();
+      s = type->get_environment()->intern(qname);
+    }
+  else if (location l = type->get_location())
+    {
+      string str = l.expand();
+      s = type->get_environment()->intern(str);
+    }
+
   bool result = false;
   istring_type_base_wptr_map_type::iterator i = map.find(s);
   if (i == map.end())
@@ -8296,7 +8879,8 @@ bool
 maybe_update_types_lookup_map<function_type>
 (const function_type_sptr& type,
  istring_type_base_wptr_map_type& types_map,
- bool erase_if_exists_already)
+ bool erase_if_exists_already,
+ bool /*use_type_name_as_key*/)
 {
   bool result = false;
   interned_string s = get_type_name(type);
@@ -8331,10 +8915,18 @@ maybe_update_types_lookup_map(const type_decl_sptr& basic_type)
       (basic_type, tu->get_types().basic_types());
 
   if (corpus *type_corpus = basic_type->get_corpus())
-    maybe_update_types_lookup_map<type_decl>
-      (basic_type,
-       type_corpus->priv_->get_types().basic_types(),
-       /*erase_if_exists_already=*/true);
+    {
+      maybe_update_types_lookup_map<type_decl>
+	(basic_type,
+	 type_corpus->priv_->get_types().basic_types(),
+	 /*erase_if_exists_already=*/odr_is_relevant(*basic_type));
+
+      maybe_update_types_lookup_map<type_decl>
+	(basic_type,
+	 type_corpus->get_type_per_loc_map().basic_types(),
+	 /*erase_if_exists_already=*/false,
+	 /*use_type_name_as_key*/false);
+    }
 }
 
 /// Update the map that associates the fully qualified name of a class
@@ -8356,10 +8948,18 @@ maybe_update_types_lookup_map(const class_decl_sptr& class_type)
       (class_type, tu->get_types().class_types());
 
   if (corpus *type_corpus = class_type->get_corpus())
-    maybe_update_types_lookup_map<class_decl>
-      (class_type,
-       type_corpus->priv_->get_types().class_types(),
-       /*erase_if_exists_already=*/true);
+    {
+      maybe_update_types_lookup_map<class_decl>
+	(class_type,
+	 type_corpus->priv_->get_types().class_types(),
+	 /*erase_if_exists_already=*/odr_is_relevant(*class_type));
+
+      maybe_update_types_lookup_map<class_decl>
+	(class_type,
+	 type_corpus->get_type_per_loc_map().class_types(),
+	 /*erase_if_exists_already=*/false,
+	 /*use_type_name_as_key*/false);
+    }
 }
 
 /// Update the map that associates the fully qualified name of a union
@@ -8381,10 +8981,18 @@ maybe_update_types_lookup_map(const union_decl_sptr& union_type)
       (union_type, tu->get_types().union_types());
 
   if (corpus *type_corpus = union_type->get_corpus())
-    maybe_update_types_lookup_map<union_decl>
-      (union_type,
-       type_corpus->priv_->get_types().union_types(),
-       /*erase_if_exists_already=*/true);
+    {
+      maybe_update_types_lookup_map<union_decl>
+	(union_type,
+	 type_corpus->priv_->get_types().union_types(),
+	 /*erase_if_exists_already=*/odr_is_relevant(*union_type));
+
+      maybe_update_types_lookup_map<union_decl>
+	(union_type,
+	 type_corpus->get_type_per_loc_map().union_types(),
+	 /*erase_if_exists_already=*/false,
+	 /*use_type_name_as_key*/false);
+    }
 }
 
 /// Update the map that associates the fully qualified name of an enum
@@ -8407,10 +9015,18 @@ maybe_update_types_lookup_map(const enum_type_decl_sptr& enum_type)
       (enum_type, tu->get_types().enum_types());
 
   if (corpus *type_corpus = enum_type->get_corpus())
-    maybe_update_types_lookup_map<enum_type_decl>
-      (enum_type,
-       type_corpus->priv_->get_types().enum_types(),
-       /*erase_if_exists_already=*/true);
+    {
+      maybe_update_types_lookup_map<enum_type_decl>
+	(enum_type,
+	 type_corpus->priv_->get_types().enum_types(),
+	 /*erase_if_exists_already=*/odr_is_relevant(*enum_type));
+
+      maybe_update_types_lookup_map<enum_type_decl>
+	(enum_type,
+	 type_corpus->get_type_per_loc_map().enum_types(),
+	 /*erase_if_exists_already=*/false,
+	 /*use_type_name_as_key*/false);
+    }
 }
 
 /// Update the map that associates the fully qualified name of a
@@ -8432,10 +9048,18 @@ maybe_update_types_lookup_map(const typedef_decl_sptr& typedef_type)
       (typedef_type, tu->get_types().typedef_types());
 
   if (corpus *type_corpus = typedef_type->get_corpus())
-    maybe_update_types_lookup_map<typedef_decl>
-      (typedef_type,
-       type_corpus->priv_->get_types().typedef_types(),
-       /*erase_if_exists_already=*/true);
+    {
+      maybe_update_types_lookup_map<typedef_decl>
+	(typedef_type,
+	 type_corpus->priv_->get_types().typedef_types(),
+	 /*erase_if_exists_already=*/odr_is_relevant(*typedef_type));
+
+      maybe_update_types_lookup_map<typedef_decl>
+	(typedef_type,
+	 type_corpus->get_type_per_loc_map().typedef_types(),
+	 /*erase_if_exists_already=*/false,
+	 /*use_type_name_as_key*/false);
+    }
 }
 
 /// Update the map that associates the fully qualified name of a
@@ -8532,10 +9156,18 @@ maybe_update_types_lookup_map(const array_type_def_sptr& array_type)
       (array_type, tu->get_types().array_types());
 
   if (corpus *type_corpus = array_type->get_corpus())
-    maybe_update_types_lookup_map<array_type_def>
-      (array_type,
-       type_corpus->priv_->get_types().array_types(),
-       /*erase_if_exists_already=*/true);
+    {
+      maybe_update_types_lookup_map<array_type_def>
+	(array_type,
+	 type_corpus->priv_->get_types().array_types(),
+	 /*erase_if_exists_already=*/true);
+
+      maybe_update_types_lookup_map<array_type_def>
+	(array_type,
+	 type_corpus->get_type_per_loc_map().array_types(),
+	 /*erase_if_exists_already=*/false,
+	 /*use_type_name_as_key*/false);
+    }
 }
 
 /// Update the map that associates the fully qualified name of a
@@ -10191,37 +10823,10 @@ string
 qualified_type_def::build_name(bool fully_qualified, bool internal) const
 {
   assert(get_underlying_type());
-  string quals = get_cv_quals_string_prefix();
-  string name = get_type_name(get_underlying_type(),
-			      fully_qualified,
-			      internal);
 
-  if (quals.empty() && internal)
-    // We are asked to return the internal name, that might be used
-    // for type canonicalization.  For that canonicalization, we need
-    // to make a difference between a no-op qualified type which
-    // underlying type is foo (the qualified type is named "none
-    // foo"), and the name of foo, which is just "foo".
-    //
-    // Please remember that this has to be kept in sync with what is
-    // done in die_qualified_name, in abg-dwarf-reader.cc.  So if you
-    // change this code here, please change that code there too.
-    quals = "noop-qual";
-
-  if (!quals.empty())
-    {
-      if (is_pointer_type(get_underlying_type())
-	  || is_reference_type(get_underlying_type())
-	  || is_array_type(get_underlying_type()))
-	{
-	  name += " ";
-	  name += quals;
-	}
-      else
-	name = quals + " " + name;
-    }
-
-  return name;
+  return get_name_of_qualified_type(get_underlying_type(),
+				    get_cv_quals(),
+				    fully_qualified, internal);
 }
 
 /// Constructor of the qualified_type_def
@@ -10426,7 +11031,7 @@ qualified_type_def::get_qualified_name(bool internal) const
 	  if (priv_->internal_name_.empty())
 	    priv_->internal_name_ =
 	      env->intern(build_name(/*qualified=*/true,
-					    /*internal=*/true));
+				     /*internal=*/true));
 	  return priv_->internal_name_;
 	}
       else
@@ -10484,24 +11089,7 @@ qualified_type_def::set_cv_quals(CV cv_quals)
 /// @return the newly-built cv string.
 string
 qualified_type_def::get_cv_quals_string_prefix() const
-{
-  string prefix;
-  if (priv_->cv_quals_ & qualified_type_def::CV_RESTRICT)
-    prefix = "restrict";
-  if (priv_->cv_quals_ & qualified_type_def::CV_CONST)
-    {
-      if (!prefix.empty())
-	prefix += ' ';
-      prefix += "const";
-    }
-  if (priv_->cv_quals_ & qualified_type_def::CV_VOLATILE)
-    {
-      if (!prefix.empty())
-	prefix += ' ';
-      prefix += "volatile";
-    }
-  return prefix;
-}
+{return get_string_representation_of_cv_quals(priv_->cv_quals_);}
 
 /// Getter of the underlying type
 shared_ptr<type_base>
@@ -10543,11 +11131,18 @@ operator!=(const qualified_type_def_sptr& l, const qualified_type_def_sptr& r)
 
 /// Overloaded bitwise OR operator for cv qualifiers.
 qualified_type_def::CV
-operator| (qualified_type_def::CV lhs,
-	   qualified_type_def::CV rhs)
+operator|(qualified_type_def::CV lhs, qualified_type_def::CV rhs)
 {
   return static_cast<qualified_type_def::CV>
     (static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs));
+}
+
+/// Overloaded bitwise |= operator for cv qualifiers.
+qualified_type_def::CV&
+operator|=(qualified_type_def::CV& l, qualified_type_def::CV r)
+{
+  l = l | r;
+  return l;
 }
 
 /// Overloaded bitwise AND operator for CV qualifiers.
@@ -10767,21 +11362,16 @@ const interned_string&
 pointer_type_def::get_qualified_name(bool internal) const
 {
   type_base* pointed_to_type = get_naked_pointed_to_type();
-  const environment* env = pointed_to_type->get_environment();
-  assert(env);
 
   if (internal)
     {
       if (get_canonical_type())
 	{
 	  if (priv_->internal_qualified_name_.empty())
-	    {
-	      string n = string(get_type_name(pointed_to_type,
-					      /*qualified_name=*/true,
-					      /*internal=*/true))
-		+ "*";
-	      priv_->internal_qualified_name_ = env->intern(n);
-	    }
+	    priv_->internal_qualified_name_ =
+	      get_name_of_pointer_to_type(*pointed_to_type,
+					  /*qualified_name=*/true,
+					  /*internal=*/true);
 	  return priv_->internal_qualified_name_;
 	}
       else
@@ -10790,11 +11380,10 @@ pointer_type_def::get_qualified_name(bool internal) const
 	  // (and so its name) can change.  So let's invalidate the
 	  // cache where we store its name at each invocation of this
 	  // function.
-	  string n = string(get_type_name(pointed_to_type,
-					  /*qualified_name=*/true,
-					  /*internal=*/true))
-	    + "*";
-	  priv_->temp_internal_qualified_name_ = env->intern(n);
+	  priv_->temp_internal_qualified_name_ =
+	    get_name_of_pointer_to_type(*pointed_to_type,
+					/*qualified_name=*/true,
+					/*internal=*/true);
 	  return priv_->temp_internal_qualified_name_;
 	}
     }
@@ -10803,12 +11392,10 @@ pointer_type_def::get_qualified_name(bool internal) const
       if (get_naked_canonical_type())
 	{
 	  if (decl_base::peek_qualified_name().empty())
-	    {
-	      string qn = get_type_name(pointed_to_type,
-					/*qualified_name=*/true,
-					/*internal=*/false) + "*";
-	      set_qualified_name(env->intern(qn));
-	    }
+	    set_qualified_name
+	      (get_name_of_pointer_to_type(*pointed_to_type,
+					   /*qualified_name=*/true,
+					   /*internal=*/false));
 	  return decl_base::peek_qualified_name();
 	}
       else
@@ -10817,10 +11404,10 @@ pointer_type_def::get_qualified_name(bool internal) const
 	  // (and so its name) can change.  So let's invalidate the
 	  // cache where we store its name at each invocation of this
 	  // function.
-	  string qn = get_type_name(pointed_to_type,
-				    /*qualified_name=*/true,
-				    /*internal=*/false) + "*";
-	  set_qualified_name(env->intern(qn));
+	  set_qualified_name
+	    (get_name_of_pointer_to_type(*pointed_to_type,
+					 /*qualified_name=*/true,
+					 /*internal=*/false));
 	  return decl_base::peek_qualified_name();
 	}
     }
@@ -11059,18 +11646,10 @@ reference_type_def::get_qualified_name(bool internal) const
 {
   if (peek_qualified_name().empty()
       || !get_canonical_type())
-    {
-      const environment* env = get_pointed_to_type()->get_environment();
-      assert(env);
-
-      string name = get_type_name(get_pointed_to_type(),
-				  /*qualified_name=*/true,
-				  internal);
-      if (is_lvalue())
-	set_qualified_name(env->intern(name + "&"));
-      else
-	set_qualified_name(env->intern(name + "&&"));
-    }
+    set_qualified_name(get_name_of_reference_to_type(*get_pointed_to_type(),
+						     is_lvalue(),
+						     /*qualified_name=*/true,
+						     internal));
   return peek_qualified_name();
 }
 

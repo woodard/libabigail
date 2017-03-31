@@ -759,6 +759,17 @@ get_type_name(const type_base&,
 	      bool internal = false);
 
 interned_string
+get_name_of_pointer_to_type(const type_base& pointed_to_type,
+			    bool qualified = true,
+			    bool internal = false);
+
+interned_string
+get_name_of_reference_to_type(const type_base& pointed_to_type,
+			      bool lvalue_reference = false,
+			      bool qualified = true,
+			      bool internal = false);
+
+interned_string
 get_function_type_name(const function_type_sptr&,
 		       bool internal = false);
 
@@ -816,6 +827,9 @@ string
 get_pretty_representation(const method_type_sptr&,
 			  bool internal = false);
 
+bool
+odr_is_relevant(type_or_decl_base&);
+
 const decl_base*
 get_type_declaration(const type_base*);
 
@@ -870,6 +884,12 @@ lookup_basic_type(const string&, const corpus&);
 type_decl_sptr
 lookup_basic_type(const interned_string&, const corpus&);
 
+type_decl_sptr
+lookup_basic_type_per_location(const interned_string&, const corpus&);
+
+type_decl_sptr
+lookup_basic_type_per_location(const string&, const corpus&);
+
 class_decl_sptr
 lookup_class_type(const class_decl&, const translation_unit&);
 
@@ -886,6 +906,12 @@ class_decl_sptr
 lookup_class_type(const interned_string&, const corpus&);
 
 class_decl_sptr
+lookup_class_type_per_location(const interned_string&, const corpus&);
+
+class_decl_sptr
+lookup_class_type_per_location(const string&, const corpus&);
+
+class_decl_sptr
 lookup_class_type(const string&, const corpus&);
 
 class_decl_sptr
@@ -897,6 +923,12 @@ lookup_union_type(const interned_string&, const translation_unit&);
 
 union_decl_sptr
 lookup_union_type(const interned_string&, const corpus&);
+
+union_decl_sptr
+lookup_union_type_per_location(const interned_string&, const corpus&);
+
+union_decl_sptr
+lookup_union_type_per_location(const string&, const corpus&);
 
 union_decl_sptr
 lookup_union_type(const string&, const corpus&);
@@ -916,6 +948,12 @@ lookup_enum_type(const string&, const corpus&);
 enum_type_decl_sptr
 lookup_enum_type(const interned_string&, const corpus&);
 
+enum_type_decl_sptr
+lookup_enum_type_per_location(const interned_string&, const corpus&);
+
+enum_type_decl_sptr
+lookup_enum_type_per_location(const string&, const corpus&);
+
 typedef_decl_sptr
 lookup_typedef_type(const typedef_decl&, const translation_unit&);
 
@@ -923,7 +961,20 @@ typedef_decl_sptr
 lookup_typedef_type(const typedef_decl&, const corpus&);
 
 typedef_decl_sptr
+lookup_typedef_type(const interned_string& type_name,
+		    const translation_unit& tu);
+
+typedef_decl_sptr
+lookup_typedef_type(const string& type_name, const translation_unit& tu);
+
+typedef_decl_sptr
 lookup_typedef_type(const interned_string&, const corpus&);
+
+typedef_decl_sptr
+lookup_typedef_type_per_location(const interned_string&, const corpus &);
+
+typedef_decl_sptr
+lookup_typedef_type_per_location(const string&, const corpus &);
 
 typedef_decl_sptr
 lookup_typedef_type(const string&, const corpus&);
@@ -959,6 +1010,10 @@ pointer_type_def_sptr
 lookup_pointer_type(const string&, const translation_unit&);
 
 pointer_type_def_sptr
+lookup_pointer_type(const type_base_sptr& pointed_to_type,
+		    const translation_unit& tu);
+
+pointer_type_def_sptr
 lookup_pointer_type(const pointer_type_def&, const corpus&);
 
 pointer_type_def_sptr
@@ -969,6 +1024,11 @@ lookup_reference_type(const reference_type_def&, const translation_unit&);
 
 const reference_type_def_sptr
 lookup_reference_type(const string&, const translation_unit&);
+
+const reference_type_def_sptr
+lookup_reference_type(const type_base_sptr& pointed_to_type,
+		      bool lvalue_reference,
+		      const translation_unit& tu);
 
 reference_type_def_sptr
 lookup_reference_type(const reference_type_def&, const corpus&);
@@ -1026,6 +1086,9 @@ type_base_sptr
 lookup_type(const interned_string&, const corpus&);
 
 type_base_sptr
+lookup_type_per_location(const interned_string&, const corpus&);
+
+type_base_sptr
 lookup_type(const type_base&, const corpus&);
 
 type_base_sptr
@@ -1034,6 +1097,14 @@ lookup_type(const type_base_sptr&, const corpus&);
 type_base_sptr
 lookup_type_through_scopes(const std::list<string>&,
 			   const translation_unit&);
+
+type_base_sptr
+lookup_type_through_translation_units(const string&, const corpus&);
+
+type_base_sptr
+lookup_type_from_translation_unit(const string& type_name,
+				  const string& tu_path,
+				  const corpus& corp);
 
 function_type_sptr
 lookup_or_synthesize_fn_type(const function_type_sptr&,

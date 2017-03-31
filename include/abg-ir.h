@@ -272,6 +272,9 @@ public:
   void
   expand(std::string& path, unsigned& line, unsigned& column) const;
 
+  string
+  expand(void) const;
+
   friend class location_manager;
 }; // end class location
 
@@ -343,6 +346,9 @@ class type_maps
 public:
 
   type_maps();
+
+  bool
+  empty() const;
 
   const istring_type_base_wptr_map_type&
   basic_types() const;
@@ -1721,6 +1727,9 @@ operator!=(const qualified_type_def_sptr&, const qualified_type_def_sptr&);
 qualified_type_def::CV
 operator|(qualified_type_def::CV, qualified_type_def::CV);
 
+qualified_type_def::CV&
+operator|=(qualified_type_def::CV&, qualified_type_def::CV);
+
 qualified_type_def::CV
 operator&(qualified_type_def::CV, qualified_type_def::CV);
 
@@ -1730,6 +1739,18 @@ operator~(qualified_type_def::CV);
 std::ostream&
 operator<<(std::ostream&, qualified_type_def::CV);
 
+string
+get_string_representation_of_cv_quals(const qualified_type_def::CV);
+
+interned_string
+get_name_of_qualified_type(const type_base_sptr& underlying_type,
+			   qualified_type_def::CV quals,
+			   bool qualified = true, bool internal = false);
+
+qualified_type_def_sptr
+lookup_qualified_type(const type_base_sptr&,
+		      qualified_type_def::CV,
+		      const translation_unit&);
 bool
 equals(const pointer_type_def&, const pointer_type_def&, change_kind*);
 
