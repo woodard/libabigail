@@ -11414,7 +11414,7 @@ equals(const array_type_def& l, const array_type_def& r, change_kind* k)
 
   std::vector<array_type_def::subrange_sptr >::const_iterator i,j;
   for (i = this_subs.begin(), j = other_subs.begin();
-       i != this_subs.end();
+       i != this_subs.end() && j != other_subs.end();
        ++i, ++j)
     if (**i != **j)
       {
