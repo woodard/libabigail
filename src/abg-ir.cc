@@ -566,8 +566,19 @@ translation_unit::translation_unit(const environment*	env,
 /// @return the global scope of the current translation unit.  If
 /// there is not global scope allocated yet, this function creates one
 /// and returns it.
-const global_scope_sptr
+const scope_decl_sptr&
 translation_unit::get_global_scope() const
+{
+  return const_cast<translation_unit*>(this)->get_global_scope();
+}
+
+/// Getter of the the global scope of the translation unit.
+///
+/// @return the global scope of the current translation unit.  If
+/// there is not global scope allocated yet, this function creates one
+/// and returns it.
+scope_decl_sptr&
+translation_unit::get_global_scope()
 {
   if (!priv_->global_scope_)
     {

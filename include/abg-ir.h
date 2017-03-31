@@ -420,7 +420,7 @@ class translation_unit : public traversable_base
 
 public:
   /// Convenience typedef for a shared pointer on a @ref global_scope.
-  typedef shared_ptr<global_scope> global_scope_sptr;
+  typedef shared_ptr<scope_decl> global_scope_sptr;
 
   /// The language of the translation unit.
   enum language
@@ -490,8 +490,11 @@ public:
   corpus*
   get_corpus();
 
-  const global_scope_sptr
+  const scope_decl_sptr&
   get_global_scope() const;
+
+  scope_decl_sptr&
+  get_global_scope();
 
   const type_maps&
   get_types() const;

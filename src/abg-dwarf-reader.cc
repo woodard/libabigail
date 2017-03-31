@@ -2388,6 +2388,7 @@ class read_context
   die_tu_map_type		die_tu_map_;
   corpus_sptr			cur_corpus_;
   translation_unit_sptr	cur_tu_;
+  scope_decl_sptr		nil_scope_;
   scope_stack_type		scope_stack_;
   offset_offset_map		primary_die_parent_map_;
   // A map that associates each tu die to a vector of unit import
@@ -4215,7 +4216,7 @@ public:
   /// Getter of the current translation unit.
   ///
   /// @return the current translation unit being constructed.
-  const translation_unit_sptr
+  const translation_unit_sptr&
   cur_transl_unit() const
   {return cur_tu_;}
 
@@ -4235,6 +4236,20 @@ public:
     if (tu)
       cur_tu_ = tu;
   }
+
+  /// Return the global scope of the current translation unit.
+  ///
+  /// @return the global scope of the current translation unit.
+  const scope_decl_sptr&
+  global_scope() const
+  {return cur_transl_unit()->get_global_scope();}
+
+  /// Return a scope that is nil.
+  ///
+  /// @return a scope that is nil.
+  const scope_decl_sptr&
+  nil_scope() const
+  {return nil_scope_;}
 
   const scope_stack_type&
   scope_stack() const
@@ -6472,14 +6487,57 @@ public:
   /// alternate debug info as well) and build maps representing the
   /// relationship DIE -> parent.  That is, make it so that we can get
   /// the parent for a given DIE.
+  ///
+  /// Note that the goal of this map is to be able to get the parent
+  /// of a given DIE. This is to mainly to handle namespaces.  For instance,
+  /// when we get a DIE of a type, and we want to build an internal
+  /// representation for it, we need to get its fully qualified name.
+  /// For that, we need to know what is the parent DIE of that type
+  /// DIE, so that we can know what the namespace of that type is.
+  ///
+  /// Note that as the C language doesn't have namespaces (all types
+  /// are defined in the same global namespace), this function doesn't
+  /// build the DIE -> parent map if the current translation unit
+  /// comes from C.  This saves time on big C ELF files with a lot of
+  /// DIEs.
   void
   build_die_parent_maps()
   {
+    bool we_do_have_to_build_die_parent_map = false;
+    uint8_t address_size = 0;
+    size_t header_size = 0;
+    // Get the DIE of the current translation unit, look at it to get
+    // its language. If that language is in C, then all types are in
+    // the global namespace so we don't need to build the DIE ->
+    // parent map.  So we dont build it in that case.
+    for (Dwarf_Off offset = 0, next_offset = 0;
+	 (dwarf_next_unit(dwarf(), offset, &next_offset, &header_size,
+			  NULL, NULL, &address_size, NULL, NULL, NULL) == 0);
+	 offset = next_offset)
+      {
+	Dwarf_Off die_offset = offset + header_size;
+	Dwarf_Die cu;
+	if (!dwarf_offdie(dwarf(), die_offset, &cu))
+	  continue;
+
+	uint64_t l = 0;
+	die_unsigned_constant_attribute(&cu, DW_AT_language, l);
+	translation_unit::language lang = dwarf_language_to_tu_language(l);
+	if (!is_c_language(lang) && lang != translation_unit::LANG_UNKNOWN)
+	  {
+	    // So we'll build the DIE -> parent map as we are
+	    // looking at a translation unit that is not C.
+	    we_do_have_to_build_die_parent_map = true;
+	    break;
+	  }
+      }
+
+    if (!we_do_have_to_build_die_parent_map)
+      return;
+
     // Build the DIE -> parent relation for DIEs coming from the
     // .debug_info section in the alternate debug info file.
     die_source source = ALT_DEBUG_INFO_DIE_SOURCE;
-    uint8_t address_size = 0;
-    size_t header_size = 0;
     for (Dwarf_Off offset = 0, next_offset = 0;
 	 (dwarf_next_unit(alt_dwarf(), offset, &next_offset, &header_size,
 			  NULL, NULL, &address_size, NULL, NULL, NULL) == 0);
@@ -9824,6 +9882,9 @@ get_parent_die(const read_context&	ctxt,
 /// This is the only case where a scope DIE is different from the
 /// parent DIE of a given DIE.
 ///
+/// Also note that if the current translation unit is from C, then
+/// this returns the global scope.
+///
 /// @param ctxt the reading context to use.
 ///
 /// @param die the DIE to consider.
@@ -9838,6 +9899,12 @@ get_scope_die(const read_context&	ctxt,
 	      size_t			where_offset,
 	      Dwarf_Die&		scope_die)
 {
+  if (is_c_language(ctxt.cur_transl_unit()->get_language()))
+    {
+      assert(dwarf_tag(die) != DW_TAG_member);
+      return dwarf_diecu(die, &scope_die, 0, 0);
+    }
+
   Dwarf_Die logical_parent_die;
   if (die_die_attribute(die, DW_AT_specification,
 			logical_parent_die, false)
@@ -9860,6 +9927,9 @@ get_scope_die(const read_context&	ctxt,
 /// attribute, it's the scope of the referred-to DIE (via these
 /// attributes) that is returned.
 ///
+/// Also note that if the current translation unit is from C, then
+/// this returns the global scope.
+///
 /// @param ctxt the dwarf reading context to use.
 ///
 /// @param die the DIE to get the scope for.
@@ -9880,6 +9950,12 @@ get_scope_for_die(read_context& ctxt,
   die_source source_of_die;
   assert(ctxt.get_die_source(die, source_of_die));
 
+  if (is_c_language(ctxt.cur_transl_unit()->get_language()))
+    {
+      assert(dwarf_tag(die) != DW_TAG_member);
+      return ctxt.global_scope();
+    }
+
   Dwarf_Die cloned_die;
   if (die_die_attribute(die, DW_AT_specification, cloned_die, false)
       || die_die_attribute(die, DW_AT_abstract_origin, cloned_die, false))
@@ -9890,7 +9966,7 @@ get_scope_for_die(read_context& ctxt,
   Dwarf_Die parent_die;
 
   if (!get_parent_die(ctxt, die, parent_die, where_offset))
-    return scope_decl_sptr();
+    return ctxt.nil_scope();
 
   if (dwarf_tag(&parent_die) == DW_TAG_compile_unit
       || dwarf_tag(&parent_die) == DW_TAG_partial_unit
@@ -9934,7 +10010,7 @@ get_scope_for_die(read_context& ctxt,
   if (!s)
     // this is an entity defined in someting that is not a scope.
     // Let's drop it.
-    return scope_decl_sptr();
+    return ctxt.nil_scope();
 
   class_decl_sptr cl = dynamic_pointer_cast<class_decl>(d);
   if (cl && cl->get_is_declaration_only())
