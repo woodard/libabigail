@@ -1,9 +1,9 @@
 h=$(abs_srcdir)
 
 if ENABLE_ZIP_ARCHIVE
-  bin_PROGRAMS = abiar abidiff abilint abidw abicompat abipkgdiff
+  bin_PROGRAMS = abiar abidiff abilint abidw abicompat abipkgdiff kmidiff
 else
-  bin_PROGRAMS = abidiff abilint abidw abicompat abipkgdiff
+  bin_PROGRAMS = abidiff abilint abidw abicompat abipkgdiff kmidiff
 endif
 
 if ENABLE_FEDABIPKGDIFF
@@ -48,6 +48,11 @@ abipkgdiff_SOURCES = abipkgdiff.cc
 abipkgdiffdir = $(bindir)
 abipkgdiff_LDADD = $(abs_top_builddir)/src/libabigail.la
 abipkgdiff_LDFLAGS = -pthread
+
+kmidiff_SOURCES = kmidiff.cc
+kmidiffdir = $(bindir)
+kmidiff_LDADD = $(abs_top_builddir)/src/libabigail.la
+kmidiff_LDFLAGS = -pthread
 
 AM_CXXFLAGS = \
 $(VISIBILITY_FLAGS) -I$(abs_top_srcdir)/include \

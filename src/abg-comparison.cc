@@ -12665,6 +12665,33 @@ compute_diff(const corpus_sptr	f,
 
 // </corpus stuff>
 
+/// Compute the diff between two instances of @ref corpus_group.
+///
+/// Note that the two corpus_diff must have been created in the same
+/// @ref environment, otherwise, this function aborts.
+///
+/// @param f the first @ref corpus_group to consider for the diff.
+///
+/// @param s the second @ref corpus_group to consider for the diff.
+///
+/// @param ctxt the diff context to use.
+///
+/// @return the resulting diff between the two @ref corpus_group.
+corpus_diff_sptr
+compute_diff(const corpus_group_sptr&	f,
+	     const corpus_group_sptr&	s,
+	     diff_context_sptr	ctxt)
+{
+
+  corpus_sptr c1 = f;
+  corpus_sptr c2 = s;
+
+  return compute_diff(c1, c2, ctxt);
+}
+
+// <corpus_group stuff>
+
+// </corpus_group stuff>
 // <diff_node_visitor stuff>
 
 /// This is called by the traversing code on a @ref diff node just

@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2016 Red Hat, Inc.
+// Copyright (C) 2013-2017 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -104,6 +104,9 @@ void
 add_read_context_suppressions(read_context& ctxt,
 			      const suppr::suppressions_type& supprs);
 
+void
+set_read_context_corpus_group(read_context& ctxt, corpus_group_sptr& group);
+
 corpus_sptr
 read_corpus_from_elf(read_context& ctxt, status& stat);
 
@@ -113,6 +116,9 @@ read_corpus_from_elf(const std::string& elf_path,
 		     ir::environment*	environment,
 		     bool		load_all_types,
 		     status&);
+
+corpus_sptr
+read_and_add_corpus_to_group_from_elf(read_context&, corpus_group&, status&);
 
 bool
 lookup_symbol_from_elf(const environment*		env,
@@ -162,6 +168,12 @@ set_show_stats(read_context& ctxt,
 
 void
 set_do_log(read_context& ctxt, bool f);
+
+void
+set_ignore_symbol_table(read_context &ctxt, bool f);
+
+bool
+get_ignore_symbol_table(read_context &ctxt);
 
 void
 set_environment(read_context& ctxt,

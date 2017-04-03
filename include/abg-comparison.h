@@ -2165,6 +2165,11 @@ compute_diff(const corpus_sptr,
 	     const corpus_sptr,
 	     diff_context_sptr = diff_context_sptr());
 
+corpus_diff_sptr
+compute_diff(const corpus_group_sptr&,
+	     const corpus_group_sptr&,
+	     diff_context_sptr	ctxt);
+
 /// This is a document class that aims to capture statistics about the
 /// changes carried by a @ref corpus_diff type.
 ///

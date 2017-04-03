@@ -270,6 +270,10 @@ static bool
 operator<(const imported_unit_point& l, const imported_unit_point& r)
 {return l.offset_of_import < r.offset_of_import;}
 
+static void
+add_symbol_to_map(const elf_symbol_sptr& sym,
+		  string_elf_symbols_map_type& map);
+
 static bool
 find_symbol_table_section(Elf* elf_handle, Elf_Scn*& section);
 
@@ -2235,6 +2239,26 @@ elf_file_type(Elf* elf)
 /// get some important data from it.
 class read_context
 {
+public:
+  struct options_type
+  {
+    environment*	env;
+    bool		load_in_linux_kernel_mode;
+    bool		load_all_types;
+    bool		ignore_symbol_table;
+    bool		show_stats;
+    bool		do_log;
+
+    options_type()
+      : env(),
+	load_in_linux_kernel_mode(),
+	load_all_types(),
+	ignore_symbol_table(),
+	show_stats(),
+	do_log()
+    {}
+  };// read_context::options_type
+
   /// A set of containers that contains one container per kind of @ref
   /// die_source.  This allows to associate DIEs to things, depending
   /// on the source of the DIE.
@@ -2324,9 +2348,17 @@ class read_context
       return const_cast<die_source_dependant_container_set*>(this)->
 	get_container(die);
     }
+
+    /// Clear the container set.
+    void
+    clear()
+    {
+      primary_debug_info_container_.clear();
+      alt_debug_info_container_.clear();
+      type_unit_container_.clear();
+    }
   }; // end die_dependant_container_set
 
-  environment*			env_;
   suppr::suppressions_type	supprs_;
   unsigned short		dwarf_version_;
   Dwfl_Callbacks		offline_callbacks_;
@@ -2346,6 +2378,29 @@ class read_context
   Dwfl_Module*			elf_module_;
   mutable Elf*			elf_handle_;
   const string			elf_path_;
+  mutable Elf_Scn*		bss_section_;
+  mutable Elf_Scn*		text_section_;
+  mutable Elf_Scn*		rodata_section_;
+  mutable Elf_Scn*		data_section_;
+  mutable Elf_Scn*		data1_section_;
+  mutable Elf_Scn*		symtab_section_;
+  // The "Official procedure descriptor section, aka .opd", used in
+  // ppc64 elf v1 binaries.  This section contains the procedure
+  // descriptors on that platform.
+  Elf_Scn*			opd_section_;
+  /// The special __ksymtab and __ksymtab_gpl sections from linux
+  /// kernel or module binaries.  The former is used to store
+  /// references to symbols exported using the EXPORT_SYMBOL macro
+  /// from the linux kernel.  The latter is used to store references
+  /// to symbols exported using the EXPORT_SYMBOL_GPL macro from the
+  /// linux kernel.
+  Elf_Scn*			ksymtab_section_;
+  Elf_Scn*			ksymtab_gpl_section_;
+  Elf_Scn*			versym_section_;
+  Elf_Scn*			verdef_section_;
+  Elf_Scn*			verneed_section_;
+  bool				symbol_versionning_sections_loaded_;
+  bool				symbol_versionning_sections_found_;
   Dwarf_Die*			cur_tu_die_;
   istring_type_or_decl_base_sptr_map_type name_artefacts_map_;
   istring_type_or_decl_base_sptr_map_type per_tu_name_artefacts_map_;
@@ -2386,6 +2441,7 @@ class read_context
   vector<Dwarf_Off>		type_unit_types_to_canonicalize_;
   string_classes_map		decl_only_classes_map_;
   die_tu_map_type		die_tu_map_;
+  corpus_group_sptr		cur_corpus_group_;
   corpus_sptr			cur_corpus_;
   translation_unit_sptr	cur_tu_;
   scope_decl_sptr		nil_scope_;
@@ -2403,24 +2459,6 @@ class read_context
   offset_offset_map		alternate_die_parent_map_;
   offset_offset_map		type_section_die_parent_map_;
   list<var_decl_sptr>		var_decls_to_add_;
-  Elf_Scn*			symtab_section_;
-  // The "Official procedure descriptor section, aka .opd", used in
-  // ppc64 elf v1 binaries.  This section contains the procedure
-  // descriptors on that platform.
-  Elf_Scn*			opd_section_;
-  /// The special __ksymtab and __ksymtab_gpl sections from linux
-  /// kernel or module binaries.  The former is used to store
-  /// references to symbols exported using the EXPORT_SYMBOL macro
-  /// from the linux kernel.  The latter is used to store references
-  /// to symbols exported using the EXPORT_SYMBOL_GPL macro from the
-  /// linux kernel.
-  Elf_Scn*			ksymtab_section_;
-  Elf_Scn*			ksymtab_gpl_section_;
-  bool				symbol_versionning_sections_loaded_;
-  bool				symbol_versionning_sections_found_;
-  Elf_Scn*			versym_section_;
-  Elf_Scn*			verdef_section_;
-  Elf_Scn*			verneed_section_;
   addr_elf_symbol_sptr_map_sptr fun_addr_sym_map_;
   // On PPC64, the function entry point address is different from the
   // GElf_Sym::st_value value, which is the address of the descriptor
@@ -2442,17 +2480,41 @@ class read_context
   string			dt_soname_;
   string			elf_architecture_;
   corpus::exported_decls_builder* exported_decls_builder_;
-  bool				load_in_linux_kernel_mode_;
-  bool				load_all_types_;
-  bool				show_stats_;
-  bool				do_log_;
-
+  options_type			options_;
   read_context();
 
 public:
-  read_context(const string& elf_path)
-    : env_(),
-      dwarf_version_(),
+
+  /// Constructor of read_context.
+  ///
+  /// @param elf_path the path to the elf file the context is to be
+  /// used for.
+  ///
+  /// @param a pointer to the path to the root directory under which
+  /// the debug info is to be found for @p elf_path.  Leave this to
+  /// NULL if the debug info is not in a split file.
+  ///
+  /// @param environment the environment used by the current context.
+  /// This environment contains resources needed by the reader and by
+  /// the types and declarations that are to be created later.  Note
+  /// that ABI artifacts that are to be compared all need to be
+  /// created within the same environment.
+  ///
+  /// Please also note that the life time of this environment object
+  /// must be greater than the life time of the resulting @ref
+  /// read_context the context uses resources that are allocated in
+  /// the environment.
+  ///
+  /// @param load_all_types if set to false only the types that are
+  /// reachable from publicly exported declarations (of functions and
+  /// variables) are read.  If set to true then all types found in the
+  /// debug information are loaded.
+  read_context(const string&	elf_path,
+	       char**		debug_info_root_path,
+	       ir::environment* environment,
+	       bool		load_all_types,
+	       bool		linux_kernel_mode)
+    : dwarf_version_(),
       handle_(),
       dwarf_(),
       alt_fd_(),
@@ -2460,34 +2522,53 @@ public:
       elf_module_(),
       elf_handle_(),
       elf_path_(elf_path),
-      cur_tu_die_(),
+      bss_section_(),
+      text_section_(),
+      rodata_section_(),
+      data_section_(),
+      data1_section_(),
       symtab_section_(),
       opd_section_(),
       ksymtab_section_(),
       ksymtab_gpl_section_(),
-      symbol_versionning_sections_loaded_(),
-      symbol_versionning_sections_found_(),
       versym_section_(),
       verdef_section_(),
       verneed_section_(),
-      exported_decls_builder_(),
-      load_in_linux_kernel_mode_(),
-      load_all_types_(),
-      show_stats_(),
-      do_log_()
+      symbol_versionning_sections_loaded_(),
+      symbol_versionning_sections_found_(),
+      cur_tu_die_(),
+      exported_decls_builder_()
   {
     memset(&offline_callbacks_, 0, sizeof(offline_callbacks_));
+    create_default_dwfl(debug_info_root_path);
+    options_.env = environment;
+    options_.load_in_linux_kernel_mode = linux_kernel_mode;
+    options_.load_all_types = load_all_types;
+    load_in_linux_kernel_mode(linux_kernel_mode);
+    env(environment);
+  }
+
+  /// Clear the resources related to the alternate DWARF data.
+  void
+  clear_alt_debug_info_data()
+  {
+    if (alt_fd_)
+      {
+	close(alt_fd_);
+	alt_fd_ = 0;
+	if (alt_dwarf_)
+	  {
+	    dwarf_end(alt_dwarf_);
+	    alt_dwarf_ = 0;
+	  }
+	alt_debug_info_path_.clear();
+      }
   }
 
   /// Detructor of the @ref read_context type.
   ~read_context()
   {
-    if (alt_fd_)
-      {
-	close(alt_fd_);
-	if (alt_dwarf_)
-	  dwarf_end(alt_dwarf_);
-      }
+    clear_alt_debug_info_data();
   }
 
   /// Clear the data that is relevant only for the current translation
@@ -2507,32 +2588,57 @@ public:
   void
   clear_per_corpus_data()
   {
+    name_artefacts_map_.clear();
+    die_qualified_name_maps_.clear();
+    die_pretty_repr_maps_.clear();
+    die_pretty_type_repr_maps_.clear();
     die_decl_map().clear();
     alternate_die_decl_map().clear();
     clear_die_type_maps();
     clear_types_to_canonicalize();
   }
 
+  /// Getter of the options of the read context.
+  ///
+  /// @return the options of the read context.
+  options_type&
+  options()
+  {return options_;}
+
+  /// Getter of the options of the read context.
+  ///
+  /// @return the options of the read context.
+  const options_type&
+  options() const
+  {return options_;}
+
+  /// Getter of the options of the read context.
+  ///
+  /// @return the options of the read context.
+  void
+  options(const options_type& o)
+  {options_ = o;}
+
   /// Getter for the current environment.
   ///
   /// @return the current environment.
   const ir::environment*
   env() const
-  {return env_;}
+  {return options_.env;}
 
   /// Getter for the current environment.
   ///
   /// @return the current environment.
   ir::environment*
   env()
-  {return env_;}
+  {return options_.env;}
 
   /// Setter for the current environment.
   ///
   /// @param env the new current environment.
   void
   env(ir::environment* env)
-  {env_ = env;}
+  {options_.env = env;}
 
   /// Getter of the suppression specifications to be used during
   /// ELF/DWARF parsing.
@@ -2722,9 +2828,102 @@ public:
   alt_debug_info_path() const
   {return alt_debug_info_path_;}
 
+  /// Return the path to the ELF path we are reading.
+  ///
+  /// @return the elf path.
   const string&
   elf_path() const
   {return elf_path_;}
+
+  /// Return the bss section of the ELF file we are reading.
+  ///
+  /// The first time this function is called, the ELF file is scanned
+  /// to look for the section we are looking for.  Once the section is
+  /// found, it's cached.
+  ///
+  /// Subsequent calls to this function just return the cached
+  /// version.
+  ///
+  /// @return the bss section.
+  Elf_Scn*
+  bss_section() const
+  {
+    if (!bss_section_)
+      bss_section_ = find_bss_section(elf_handle());
+    return bss_section_;
+  }
+
+  /// Return the text section of the ELF file we are reading.
+  ///
+  /// The first time this function is called, the ELF file is scanned
+  /// to look for the section we are looking for.  Once the section is
+  /// found, it's cached.
+  ///
+  /// Subsequent calls to this function just return the cached
+  /// version.
+  ///
+  /// return the text section.
+  Elf_Scn*
+  text_section() const
+  {
+    if (!text_section_)
+      text_section_ = find_text_section(elf_handle());
+    return text_section_;
+  }
+
+  /// Return the rodata section of the ELF file we are reading.
+  ///
+  /// The first time this function is called, the ELF file is scanned
+  /// to look for the section we are looking for.  Once the section is
+  /// found, it's cached.
+  ///
+  /// Subsequent calls to this function just return the cached
+  /// version.
+  ///
+  /// return the rodata section.
+  Elf_Scn*
+  rodata_section() const
+  {
+    if (!rodata_section_)
+      rodata_section_ =find_rodata_section(elf_handle());
+    return rodata_section_;
+  }
+
+  /// Return the data section of the ELF file we are reading.
+  ///
+  /// The first time this function is called, the ELF file is scanned
+  /// to look for the section we are looking for.  Once the section is
+  /// found, it's cached.
+  ///
+  /// Subsequent calls to this function just return the cached
+  /// version.
+  ///
+  /// return the data section.
+  Elf_Scn*
+  data_section() const
+  {
+    if (!data_section_)
+      data_section_ = find_data_section(elf_handle());
+    return data_section_;
+  }
+
+  /// Return the data1 section of the ELF file we are reading.
+  ///
+  /// The first time this function is called, the ELF file is scanned
+  /// to look for the section we are looking for.  Once the section is
+  /// found, it's cached.
+  ///
+  /// Subsequent calls to this function just return the cached
+  /// version.
+  ///
+  /// return the data1 section.
+  Elf_Scn*
+  data1_section() const
+  {
+    if (!data1_section_)
+      data1_section_ = find_data1_section(elf_handle());
+    return data1_section_;
+  }
 
   const Dwarf_Die*
   cur_tu_die() const
@@ -3113,6 +3312,11 @@ public:
   get_die_qualified_type_name(Dwarf_Die *die, size_t where_offset) const
   {
     assert(die);
+
+    // The name of the translation unit die is "".
+    if (die == cur_tu_die())
+      return env()->intern("");
+
     die_istring_map_type& map =
       die_qualified_name_maps_.get_container(*const_cast<read_context*>(this),
 					     die);
@@ -4152,24 +4356,128 @@ public:
     return tu_die_imported_unit_points_map_;
   }
 
+  /// Getter of the current corpus being constructed.
+  ///
+  /// @return the current corpus.
   const corpus_sptr
   current_corpus() const
   {return cur_corpus_;}
 
+  /// Getter of the current corpus being constructed.
+  ///
+  /// @return the current corpus.
   corpus_sptr
   current_corpus()
   {return cur_corpus_;}
 
+  /// Setter of the current corpus being constructed.
+  ///
+  /// @param c the new corpus.
   void
-  current_corpus(corpus_sptr c)
+  current_corpus(const corpus_sptr& c)
   {
     if (c)
       cur_corpus_ = c;
   }
 
+  /// Reset the current corpus being constructed.
+  ///
+  /// This actually deletes the current corpus being constructed.
   void
   reset_current_corpus()
   {cur_corpus_.reset();}
+
+  /// Getter of the current corpus group being constructed.
+  ///
+  /// @return current the current corpus being constructed, if any, or
+  /// nil.
+  const corpus_group_sptr
+  current_corpus_group() const
+  {return cur_corpus_group_;}
+
+  /// Getter of the current corpus group being constructed.
+  ///
+  /// @return current the current corpus being constructed, if any, or
+  /// nil.
+  corpus_group_sptr
+  current_corpus_group()
+  {return cur_corpus_group_;}
+
+  /// Setter of the current corpus group being constructed.
+  ///
+  /// @param g the new corpus group.
+  void
+  current_corpus_group(const corpus_group_sptr& g)
+  {
+    if (g)
+      cur_corpus_group_ = g;
+  }
+
+  /// Test if there is a corpus group being built.
+  ///
+  /// @return if there is a corpus group being built, false otherwise.
+  bool
+  has_corpus_group() const
+  {return cur_corpus_group_;}
+
+  /// Return the main corpus from the current corpus group, if any.
+  ///
+  /// @return the main corpus of the current corpus group, if any, nil
+  /// if no corpus group is being constructed.
+  corpus_sptr
+  main_corpus_from_current_group()
+  {
+    if (cur_corpus_group_ && !cur_corpus_group_->get_corpora().empty())
+      return cur_corpus_group_->get_corpora().front();
+
+    return corpus_sptr();
+  }
+
+  /// Return the main corpus from the current corpus group, if any.
+  ///
+  /// @return the main corpus of the current corpus group, if any, nil
+  /// if no corpus group is being constructed.
+  const corpus_sptr
+  main_corpus_from_current_group() const
+  {return const_cast<read_context*>(this)->main_corpus_from_current_group();}
+
+  /// Test if the current corpus being built is the main corpus of the
+  /// current corpus group.
+  ///
+  /// @return return true iff the current corpus being built is the
+  /// main corpus of the current corpus group.
+  bool
+  current_corpus_is_main_corpus_from_current_group() const
+  {
+    corpus_sptr main_corpus = main_corpus_from_current_group();
+
+    if (main_corpus && main_corpus.get() == cur_corpus_.get())
+      return true;
+
+    return false;
+  }
+
+  /// Return true if the current corpus is part of a corpus group
+  /// being built and if it's not the main corpus of the group.
+  ///
+  /// For instance, this would return true if we are loading a linux
+  /// kernel *module* that is part of the current corpus group that is
+  /// being built.  In this case, it means we should re-use types
+  /// coming from the "vmlinux" binary that is the main corpus of the
+  /// group.
+  ///
+  /// @return true if the current corpus is part of a corpus group
+  /// being built and if it's not the main corpus of the group.
+  corpus_sptr
+  should_reuse_type_from_corpus_group() const
+  {
+    if (has_corpus_group() && is_c_language(cur_transl_unit()->get_language()))
+      if (corpus_sptr main_corpus = main_corpus_from_current_group())
+	if (!current_corpus_is_main_corpus_from_current_group())
+	  return main_corpus;
+
+    return corpus_sptr();
+  }
 
   /// Get the map that associates each DIE to its parent DIE.  This is
   /// for DIEs coming from the main debug info sections.
@@ -5806,16 +6114,20 @@ public:
     if (!undefined_var_syms_)
       undefined_var_syms_.reset(new string_elf_symbols_map_type);
 
-    if (load_symbol_maps_from_symtab_section(load_fun_map,
-					     load_var_map,
-					     load_undefined_fun_map,
-					     load_undefined_var_map))
+    if (!options_.ignore_symbol_table)
       {
-	if (load_in_linux_kernel_mode() && is_linux_kernel_binary())
-	  return load_linux_specific_exported_symbol_maps();
-	return true;
+	if (load_symbol_maps_from_symtab_section(load_fun_map,
+						 load_var_map,
+						 load_undefined_fun_map,
+						 load_undefined_var_map))
+	  {
+	    if (load_in_linux_kernel_mode() && is_linux_kernel_binary())
+	      return load_linux_specific_exported_symbol_maps();
+	    return true;
+	  }
+	return false;
       }
-    return false;
+    return true;
   }
 
   /// Return true if an address is in the ".opd" section that is
@@ -5998,37 +6310,35 @@ public:
      return false;
    }
 
-   /// Get the section which a global variable address comes from.
-   ///
-   /// @param elf the elf handle to consider.
-     ///
+  /// Get the section which a global variable address comes from.
+  ///
   /// @param var_addr the address for the variable.
   ///
   /// @return the ELF section the @p var_addr comes from, or nil if no
   /// section was found for that variable address.
   Elf_Scn*
-  get_data_section_for_variable_address(Elf* elf, Dwarf_Addr var_addr) const
+  get_data_section_for_variable_address(Dwarf_Addr var_addr) const
   {
-    // There are several potential 'data sections" from which an
+    // There are several potential 'data sections" from which a
     // variable address can come from: .data, .data1 and .rodata.
     // Let's try to try them all in sequence.
 
-    Elf_Scn* data_section = find_bss_section(elf);
-    if (!address_is_in_section(var_addr, data_section))
+    Elf_Scn* data_scn = bss_section();
+    if (!address_is_in_section(var_addr, data_scn))
       {
-	data_section = find_data_section(elf);
-	if (!address_is_in_section(var_addr, data_section))
+	data_scn = data_section();
+	if (!address_is_in_section(var_addr, data_scn))
 	  {
-	    data_section = find_data1_section(elf);
-	    if (!address_is_in_section(var_addr, data_section))
+	    data_scn = data1_section();
+	    if (!address_is_in_section(var_addr, data_scn))
 	      {
-		data_section = find_rodata_section(elf);
-		if (!address_is_in_section(var_addr, data_section))
+		data_scn = rodata_section();
+		if (!address_is_in_section(var_addr, data_scn))
 		  return 0;
 	      }
 	  }
       }
-    return data_section;
+    return data_scn;
   }
 
   /// For a relocatable (*.o) elf file, this function expects an
@@ -6059,8 +6369,7 @@ public:
 
     if (elf_header->e_type == ET_REL)
       {
-	Elf_Scn* data_section =
-	  get_data_section_for_variable_address(elf, addr);
+	Elf_Scn* data_section = get_data_section_for_variable_address(addr);
 	if (!data_section)
 	  // It's likely that this address doesn't come from any
 	  // data section.
@@ -6335,7 +6644,7 @@ public:
   /// @return the load_all_types flag.
   bool
   load_all_types() const
-  {return load_all_types_;}
+  {return options_.load_all_types;}
 
   /// Setter of the "load_all_types" flag.  This flag tells if all the
   /// types (including those not reachable by public declarations) are
@@ -6344,15 +6653,15 @@ public:
   /// @param f the new load_all_types flag.
   void
   load_all_types(bool f)
-  {load_all_types_ = f;}
+  {options_.load_all_types = f;}
 
   bool
   load_in_linux_kernel_mode() const
-  {return load_in_linux_kernel_mode_;}
+  {return options_.load_in_linux_kernel_mode;}
 
   void
   load_in_linux_kernel_mode(bool f)
-  {load_in_linux_kernel_mode_ = f;}
+  {options_.load_in_linux_kernel_mode = f;}
 
   /// Guess if the current binary is a Linux Kernel or a Linux Kernel module.
   ///
@@ -6371,7 +6680,7 @@ public:
   /// @return the value of the flag.
   bool
   show_stats() const
-  {return show_stats_;}
+  {return options_.show_stats;}
 
   /// Setter of the "show_stats" flag.
   ///
@@ -6381,7 +6690,7 @@ public:
   /// @param f the value of the flag.
   void
   show_stats(bool f)
-  {show_stats_ = f;}
+  {options_.show_stats = f;}
 
   /// Getter of the "do_log" flag.
   ///
@@ -6391,7 +6700,7 @@ public:
   /// return the "do_log" flag.
   bool
   do_log() const
-  {return do_log_;}
+  {return options_.do_log;}
 
   /// Setter of the "do_log" flag.
   ///
@@ -6400,7 +6709,7 @@ public:
   /// @param f the new value of the flag.
   void
   do_log(bool f)
-  {do_log_ = f;}
+  {options_.do_log = f;}
 
   /// If a given function decl is suitable for the set of exported
   /// functions of the current corpus, this function adds it to that
@@ -6737,6 +7046,46 @@ set_show_stats(read_context& ctxt, bool f)
 void
 set_do_log(read_context& ctxt, bool f)
 {ctxt.do_log(f);}
+
+/// Setter of the "set_ignore_symbol_table" flag.
+///
+/// This flag tells if we should load information about ELF symbol
+/// tables.  Not loading the symbol tables is a speed optimization
+/// that is done when the set of symbols we care about is provided
+/// off-hand.  This is the case when we are supposed to analyze a
+/// Linux kernel binary.  In that case, because we have the white list
+/// of functions/variable symbols we care about, we don't need to
+/// analyze the symbol table; things are thus faster in that case.
+///
+/// By default, the symbol table is analyzed so this boolean is set to
+/// false.
+///
+/// @param ctxt the read context to consider.
+///
+/// @param f the new value of the flag.
+void
+set_ignore_symbol_table(read_context &ctxt, bool f)
+{ctxt.options_.ignore_symbol_table = f;}
+
+/// Getter of the "set_ignore_symbol_table" flag.
+///
+/// This flag tells if we should load information about ELF symbol
+/// tables.  Not loading the symbol tables is a speed optimization
+/// that is done when the set of symbols we care about is provided
+/// off-hand.  This is the case when we are supposed to analyze a
+/// Linux kernel binary.  In that case, because we have the white list
+/// of functions/variable symbols we care about, we don't need to
+/// analyze the symbol table; things are thus faster in that case.
+///
+/// By default, the symbol table is analyzed so this boolean is set to
+/// false.
+///
+/// @param ctxt the read context to consider.
+///
+/// @return the value of the flag.
+bool
+get_ignore_symbol_table(read_context& ctxt)
+{return ctxt.options_.ignore_symbol_table;}
 
 /// Get the value of an attribute that is supposed to be a string, or
 /// an empty string if the attribute could not be found.
@@ -10426,6 +10775,15 @@ build_type_decl(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
 	return result;
     }
 
+  if (corpus_sptr corp = ctxt.should_reuse_type_from_corpus_group())
+    {
+      string normalized_type_name = type_name;
+      integral_type int_type;
+      if (parse_integral_type(type_name, int_type))
+	normalized_type_name = int_type.to_string();
+      result = lookup_basic_type(normalized_type_name, *corp);
+    }
+
   if (!result)
     if (corpus_sptr corp = ctxt.current_corpus())
       result = lookup_basic_type(type_name, *corp);
@@ -10482,6 +10840,11 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
 	      is_enum_type(ctxt.lookup_artifact_from_die(die, where_offset)))
 	    result = pre_existing_enum;
 	}
+      else if (corpus_sptr corp = ctxt.should_reuse_type_from_corpus_group())
+	{
+	  if (loc)
+	    result = lookup_enum_type_per_location(loc.expand(), *corp);
+	}
       else if (loc)
 	{
 	   if (enum_type_decl_sptr pre_existing_enum =
@@ -10497,6 +10860,8 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
 	  return result;
 	}
     }
+  // TODO: for anymous enums, maybe have a map of loc -> enums so that
+  // we can look them up?
 
   uint64_t size = 0;
   if (die_unsigned_constant_attribute(die, DW_AT_byte_size, size))
@@ -10525,7 +10890,7 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
 
 	  string n, m;
 	  location l;
-	  die_loc_and_name(ctxt, &child, loc, n, m);
+	  die_loc_and_name(ctxt, &child, l, n, m);
 	  uint64_t val = 0;
 	  die_unsigned_constant_attribute(&child, DW_AT_const_value, val);
 	  enms.push_back(enum_type_decl::enumerator(ctxt.env(), n, val));
@@ -10922,6 +11287,7 @@ add_or_update_class_type(read_context&	 ctxt,
   string name, linkage_name;
   location loc;
   die_loc_and_name(ctxt, die, loc, name, linkage_name);
+  bool is_declaration_only = die_is_declaration_only(die);
 
   bool is_anonymous = false;
   if (name.empty())
@@ -10956,6 +11322,19 @@ add_or_update_class_type(read_context&	 ctxt,
 	      is_class_type(ctxt.lookup_artifact_from_die(die, where_offset)))
 	    klass = pre_existing_class;
 	}
+      else if (corpus_sptr corp = ctxt.should_reuse_type_from_corpus_group())
+	{
+	  if (loc)
+	    result = lookup_class_type_per_location(loc.expand(), *corp);
+	  else
+	    result = lookup_class_type(name, *corp);
+	  if (result)
+	    {
+	      ctxt.associate_die_to_type(die, result, where_offset,
+					 associate_die_to_repr);
+	      return result;
+	    }
+	}
       else if (loc)
 	{
 	  // The current type we are looking at does have a location.
@@ -10977,7 +11356,6 @@ add_or_update_class_type(read_context&	 ctxt,
 
   Dwarf_Die child;
   bool has_child = (dwarf_child(die, &child) == 0);
-  bool is_declaration_only = die_is_declaration_only(die);
 
   decl_base_sptr res;
   if (klass)
@@ -11236,6 +11614,7 @@ add_or_update_union_type(read_context&	ctxt,
   string name, linkage_name;
   location loc;
   die_loc_and_name(ctxt, die, loc, name, linkage_name);
+  bool is_declaration_only = die_is_declaration_only(die);
 
   bool is_anonymous = false;
   if (name.empty())
@@ -11270,6 +11649,20 @@ add_or_update_union_type(read_context&	ctxt,
 	      is_union_type(ctxt.lookup_artifact_from_die(die, where_offset)))
 	    union_type = pre_existing_union;
 	}
+      else if (corpus_sptr corp = ctxt.should_reuse_type_from_corpus_group())
+	{
+	  if (loc)
+	    result = lookup_union_type_per_location(loc.expand(), *corp);
+	  else
+	    result = lookup_union_type(name, *corp);
+
+	  if (result)
+	    {
+	      ctxt.associate_die_to_type(die, result, where_offset,
+					 associate_die_to_repr);
+	      return result;
+	    }
+	}
       else if (loc)
 	{
 	  // The current type we are looking at does have a location.
@@ -11285,8 +11678,6 @@ add_or_update_union_type(read_context&	ctxt,
 
   uint64_t size = 0;
   die_size_in_bits(die, size);
-
-  bool is_declaration_only = die_is_declaration_only(die);
 
   if (union_type)
     {
@@ -11481,24 +11872,19 @@ build_qualified_type(read_context&	ctxt,
   type_base_sptr utype = is_type(utype_decl);
   assert(utype);
 
+  qualified_type_def::CV qual = qualified_type_def::CV_NONE;
   if (tag == DW_TAG_const_type)
-    result.reset(new qualified_type_def(utype,
-					qualified_type_def::CV_CONST,
-					location()));
+    qual |= qualified_type_def::CV_CONST;
   else if (tag == DW_TAG_volatile_type)
-    result.reset(new qualified_type_def(utype,
-					qualified_type_def::CV_VOLATILE,
-					location()));
+    qual |= qualified_type_def::CV_VOLATILE;
   else if (tag == DW_TAG_restrict_type)
-    result.reset(new qualified_type_def(utype,
-					qualified_type_def::CV_RESTRICT,
-					location()));
+    qual |= qualified_type_def::CV_RESTRICT;
+  else
+    ABG_ASSERT_NOT_REACHED;
 
-  if (result)
-    if (corpus_sptr corp = ctxt.current_corpus())
-      if (qualified_type_def_sptr t =
-	  lookup_qualified_type(*is_qualified_type(result), *corp))
-	result = t;
+  if (!result)
+    result.reset(new qualified_type_def(utype, qual, location()));
+
   ctxt.associate_die_to_type(die, result, where_offset);
 
   return result;
@@ -12114,40 +12500,47 @@ build_typedef_type(read_context&	ctxt,
   if (tag != DW_TAG_typedef)
     return result;
 
-  Dwarf_Die underlying_type_die;
-  if (!die_die_attribute(die, DW_AT_type, underlying_type_die))
-    return result;
-
-  type_base_sptr utype = is_type(build_ir_node_from_die(ctxt,
-							&underlying_type_die,
-							called_from_public_decl,
-							where_offset));
-  if (!utype)
-    return result;
-
-  // The call to build_ir_node_from_die() could have triggered the
-  // creation of the type for this DIE.  In that case, just return it.
-  if (type_base_sptr t = ctxt.lookup_type_from_die(die))
-    {
-      result = is_typedef(t);
-      assert(result);
-      return result;
-    }
-
-  assert(utype);
-
   string name, linkage_name;
   location loc;
   die_loc_and_name(ctxt, die, loc, name, linkage_name);
 
-  result.reset(new typedef_decl(name, utype, loc, linkage_name));
+  if (corpus_sptr corp = ctxt.should_reuse_type_from_corpus_group())
+    if (loc)
+      result = lookup_typedef_type_per_location(loc.expand(), *corp);
+
+  if (!result)
+    {
+      Dwarf_Die underlying_type_die;
+      if (!die_die_attribute(die, DW_AT_type, underlying_type_die))
+	return result;
+
+      type_base_sptr utype =
+	is_type(build_ir_node_from_die(ctxt,
+				       &underlying_type_die,
+				       called_from_public_decl,
+				       where_offset));
+      if (!utype)
+	return result;
+
+      // The call to build_ir_node_from_die() could have triggered the
+      // creation of the type for this DIE.  In that case, just return it.
+      if (type_base_sptr t = ctxt.lookup_type_from_die(die))
+	{
+	  result = is_typedef(t);
+	  assert(result);
+	  return result;
+	}
+
+      assert(utype);
+      result.reset(new typedef_decl(name, utype, loc, linkage_name));
+
+      if (class_decl_sptr klass = is_class_type(utype))
+	if (is_anonymous_type(klass))
+	  klass->set_naming_typedef(result);
+    }
 
   ctxt.associate_die_to_type(die, result, where_offset,
 			     /*do_associate_by_repr=*/false);
-
-  if (class_decl_sptr klass = is_class_type(utype))
-    if (is_anonymous_type(klass))
-      klass->set_naming_typedef(result);
 
   return result;
 }
@@ -12201,6 +12594,30 @@ build_or_get_var_decl_if_not_suppressed(read_context&	ctxt,
     }
   var = build_var_decl(ctxt, die, where_offset, result);
   return var;
+}
+
+/// Create a variable symbol with a given name.
+///
+/// @param sym_name the name of the variable symbol.
+///
+/// @param env the environment to create the default symbol in.
+///
+/// @return the newly created symbol.
+static elf_symbol_sptr
+create_default_var_sym(const string& sym_name, const environment *env)
+{
+  elf_symbol::version ver;
+  elf_symbol_sptr result =
+    elf_symbol::create(env,
+		       /*symbol index=*/ 0,
+		       /*symbol size=*/ 0,
+		       sym_name,
+		       /*symbol type=*/ elf_symbol::OBJECT_TYPE,
+		       /*symbol binding=*/ elf_symbol::GLOBAL_BINDING,
+		       /*symbol is defined=*/ true,
+		       /*symbol is common=*/ false,
+		       /*symbol version=*/ ver);
+  return result;
 }
 
 /// Build a @ref var_decl out of a DW_TAG_variable DIE.
@@ -12276,10 +12693,26 @@ build_var_decl(read_context&	ctxt,
   // not set already.
   if (!result->get_symbol())
     {
-      Dwarf_Addr var_addr;
       elf_symbol_sptr var_sym;
-      if (ctxt.get_variable_address(die, var_addr)
-	  && (var_sym = ctxt.variable_symbol_is_exported(var_addr)))
+      if (get_ignore_symbol_table(ctxt))
+	{
+	  string var_name =
+	    result->get_linkage_name().empty()
+	    ? result->get_name()
+	    : result->get_linkage_name();
+
+	  var_sym = create_default_var_sym(var_name, ctxt.env());
+	  assert(var_sym);
+	  add_symbol_to_map(var_sym, ctxt.var_syms());
+	}
+      else
+	{
+	  Dwarf_Addr var_addr;
+	  if (ctxt.get_variable_address(die, var_addr))
+	    var_sym = var_sym = ctxt.variable_symbol_is_exported(var_addr);
+	}
+
+      if (var_sym)
 	{
 	  result->set_symbol(var_sym);
 	  // If the linkage name is not set or is wrong, set it to
@@ -12478,6 +12911,30 @@ type_is_suppressed(const read_context& ctxt,
 				   /*require_drop_property=*/true);
 }
 
+/// Create a function symbol with a given name.
+///
+/// @param sym_name the name of the symbol to create.
+///
+/// @param env the environment to create the symbol in.
+///
+/// @return the newly created symbol.
+elf_symbol_sptr
+create_default_fn_sym(const string& sym_name, const environment *env)
+{
+  elf_symbol::version ver;
+  elf_symbol_sptr result =
+    elf_symbol::create(env,
+		       /*symbol index=*/ 0,
+		       /*symbol size=*/ 0,
+		       sym_name,
+		       /*symbol type=*/ elf_symbol::FUNC_TYPE,
+		       /*symbol binding=*/ elf_symbol::GLOBAL_BINDING,
+		       /*symbol is defined=*/ true,
+		       /*symbol is common=*/ false,
+		       /*symbol version=*/ ver);
+  return result;
+}
+
 /// Build a @ref function_decl our of a DW_TAG_subprogram DIE.
 ///
 /// @param ctxt the read context to use
@@ -12556,14 +13013,31 @@ build_function_decl(read_context&	ctxt,
   // or is wrong, set it to the name of the underlying symbol.
   if (!result->get_symbol())
     {
-      Dwarf_Addr fn_addr;
       elf_symbol_sptr fn_sym;
-      if (ctxt.get_function_address(die, fn_addr)
-	  && (fn_sym = ctxt.function_symbol_is_exported(fn_addr)))
+      if (get_ignore_symbol_table(ctxt))
+	{
+	  string fn_name =
+	    result->get_linkage_name().empty()
+	    ? result->get_name()
+	    : result->get_linkage_name();
+
+	  fn_sym = create_default_fn_sym(fn_name, ctxt.env());
+	  assert(fn_sym);
+	  add_symbol_to_map(fn_sym, ctxt.fun_syms());
+	}
+      else
+	{
+	  Dwarf_Addr fn_addr;
+	  if (ctxt.get_function_address(die, fn_addr))
+	    fn_sym = ctxt.function_symbol_is_exported(fn_addr);
+	}
+
+      if (fn_sym)
 	{
 	  result->set_symbol(fn_sym);
 	  string linkage_name = result->get_linkage_name();
-	  if (linkage_name.empty() || !fn_sym->get_alias_from_name(linkage_name))
+	  if (linkage_name.empty()
+	      || !fn_sym->get_alias_from_name(linkage_name))
 	    result->set_linkage_name(fn_sym->get_name());
 	  result->set_is_in_public_symbol_table(true);
 	}
@@ -12612,6 +13086,29 @@ add_fn_symbols_to_map(address_set_type& syms,
       assert(it != ctxt.fun_syms().end());
       map.insert(*it);
     }
+}
+
+/// Add a symbol to a symbol map.
+///
+/// @param sym the symbol to add.
+///
+/// @param map the symbol map to add the symbol into.
+static void
+add_symbol_to_map(const elf_symbol_sptr& sym,
+		  string_elf_symbols_map_type& map)
+{
+  if (!sym)
+    return;
+
+  string_elf_symbols_map_type::iterator it = map.find(sym->get_name());
+  if (it == map.end())
+    {
+      elf_symbols syms;
+      syms.push_back(sym);
+      map[sym->get_name()] = syms;
+    }
+  else
+    it->second.push_back(sym);
 }
 
 /// Add a set of addresses (representing variable symbols) to a
@@ -12672,38 +13169,46 @@ read_debug_info_into_corpus(read_context& ctxt)
   ctxt.current_corpus()->set_architecture_name(ctxt.elf_architecture());
 
   // Set symbols information to the corpus.
-  if (ctxt.load_in_linux_kernel_mode() && ctxt.is_linux_kernel_binary())
+  if (!get_ignore_symbol_table(ctxt))
     {
-      string_elf_symbols_map_sptr exported_fn_symbols_map
-	(new string_elf_symbols_map_type);
-      add_fn_symbols_to_map(*ctxt.linux_exported_fn_syms(),
-			    *exported_fn_symbols_map,
-			    ctxt);
-      add_fn_symbols_to_map(*ctxt.linux_exported_gpl_fn_syms(),
-			    *exported_fn_symbols_map,
-			    ctxt);
-     ctxt.current_corpus()->set_fun_symbol_map(exported_fn_symbols_map);
+      if (ctxt.load_in_linux_kernel_mode() && ctxt.is_linux_kernel_binary())
+	{
+	  string_elf_symbols_map_sptr exported_fn_symbols_map
+	    (new string_elf_symbols_map_type);
+	  add_fn_symbols_to_map(*ctxt.linux_exported_fn_syms(),
+				*exported_fn_symbols_map,
+				ctxt);
+	  add_fn_symbols_to_map(*ctxt.linux_exported_gpl_fn_syms(),
+				*exported_fn_symbols_map,
+				ctxt);
+	  ctxt.current_corpus()->set_fun_symbol_map(exported_fn_symbols_map);
 
-      string_elf_symbols_map_sptr exported_var_symbols_map
-	(new string_elf_symbols_map_type);
-      add_var_symbols_to_map(*ctxt.linux_exported_var_syms(),
-			     *exported_var_symbols_map,
-			     ctxt);
-      add_var_symbols_to_map(*ctxt.linux_exported_gpl_var_syms(),
-			     *exported_var_symbols_map,
-			     ctxt);
-      ctxt.current_corpus()->set_var_symbol_map(exported_var_symbols_map);
+	  string_elf_symbols_map_sptr exported_var_symbols_map
+	    (new string_elf_symbols_map_type);
+	  add_var_symbols_to_map(*ctxt.linux_exported_var_syms(),
+				 *exported_var_symbols_map,
+				 ctxt);
+	  add_var_symbols_to_map(*ctxt.linux_exported_gpl_var_syms(),
+				 *exported_var_symbols_map,
+				 ctxt);
+	  ctxt.current_corpus()->set_var_symbol_map(exported_var_symbols_map);
+	}
+      else
+	{
+	  ctxt.current_corpus()->set_fun_symbol_map(ctxt.fun_syms_sptr());
+	  ctxt.current_corpus()->set_var_symbol_map(ctxt.var_syms_sptr());
+	}
+
+      ctxt.current_corpus()->set_undefined_fun_symbol_map
+	(ctxt.undefined_fun_syms_sptr());
+      ctxt.current_corpus()->set_undefined_var_symbol_map
+	(ctxt.undefined_var_syms_sptr());
     }
   else
     {
       ctxt.current_corpus()->set_fun_symbol_map(ctxt.fun_syms_sptr());
       ctxt.current_corpus()->set_var_symbol_map(ctxt.var_syms_sptr());
     }
-
-  ctxt.current_corpus()->set_undefined_fun_symbol_map
-    (ctxt.undefined_fun_syms_sptr());
-  ctxt.current_corpus()->set_undefined_var_symbol_map
-    (ctxt.undefined_var_syms_sptr());
 
   // Get out now if no debug info is found.
   if (!ctxt.dwarf())
@@ -13168,6 +13673,10 @@ build_ir_node_from_die(read_context&	ctxt,
       {
 	Dwarf_Die spec_die;
 	bool var_is_cloned = false;
+
+	if (tag == DW_TAG_member)
+	  assert(!is_c_language(ctxt.cur_transl_unit()->get_language()));
+
 	if (die_die_attribute(die, DW_AT_specification, spec_die,false)
 	    || (var_is_cloned = die_die_attribute(die, DW_AT_abstract_origin,
 						  spec_die, false)))
@@ -13289,12 +13798,12 @@ build_ir_node_from_die(read_context&	ctxt,
 							die, where_offset, fn);
 
 	if (result && !fn)
-	  result = add_decl_to_scope(is_decl(result), scope);
+	  result = add_decl_to_scope(is_decl(result), logical_scope);
 
 	fn = is_function_decl(result);
 	if (fn && is_member_function(fn))
 	  {
-	    class_decl_sptr klass(static_cast<class_decl*>(scope),
+	    class_decl_sptr klass(static_cast<class_decl*>(logical_scope),
 				  sptr_utils::noop_deleter());
 	    assert(klass);
 	    finish_member_function_reading(die, fn, klass, ctxt);
@@ -13429,6 +13938,14 @@ build_ir_node_from_die(read_context&	ctxt,
   if (!die)
     return decl_base_sptr();
 
+  if (is_c_language(ctxt.cur_transl_unit()->get_language()))
+    {
+      const scope_decl_sptr& scop = ctxt.global_scope();
+      return build_ir_node_from_die(ctxt, die, scop.get(),
+				    called_from_public_decl,
+				    where_offset);
+    }
+
   scope_decl_sptr scope = get_scope_for_die(ctxt, die,
 					    called_from_public_decl,
 					    where_offset);
@@ -13499,11 +14016,9 @@ create_read_context(const std::string&		elf_path,
 {
   // Create a DWARF Front End Library handle to be used by functions
   // of that library.
-  read_context_sptr result(new read_context(elf_path));
-  result->create_default_dwfl(debug_info_root_path);
-  result->load_all_types(load_all_types);
-  result->load_in_linux_kernel_mode(linux_kernel_mode);
-  result->env(environment);
+  read_context_sptr result(new read_context(elf_path, debug_info_root_path,
+					    environment, load_all_types,
+					    linux_kernel_mode));
   return result;
 }
 
@@ -13542,6 +14057,18 @@ add_read_context_suppressions(read_context& ctxt,
       ctxt.get_suppressions().push_back(*i);
 }
 
+/// Set the @ref corpus_group being created to the current read context.
+///
+/// @param ctxt the read_context to consider.
+///
+/// @param group the @ref corpus_group to set.
+void
+set_read_context_corpus_group(read_context& ctxt,
+			      corpus_group_sptr& group)
+{
+  ctxt.cur_corpus_group_ = group;
+}
+
 /// Read all @ref abigail::translation_unit possible from the debug info
 /// accessible from an elf file, stuff them into a libabigail ABI
 /// Corpus and return it.
@@ -13560,11 +14087,13 @@ read_corpus_from_elf(read_context& ctxt, status& status)
   if (!ctxt.load_debug_info())
     status |= STATUS_DEBUG_INFO_NOT_FOUND;
 
-  ctxt.load_elf_properties();
-
-  // First read the symbols for publicly defined decls
-  if (!ctxt.load_symbol_maps())
-    status |= STATUS_NO_SYMBOLS_FOUND;
+  if (!get_ignore_symbol_table(ctxt))
+    {
+      ctxt.load_elf_properties();
+      // Read the symbols for publicly defined decls
+      if (!ctxt.load_symbol_maps())
+	status |= STATUS_NO_SYMBOLS_FOUND;
+    }
 
   if (status & STATUS_NO_SYMBOLS_FOUND)
     return corpus_sptr();
@@ -13576,6 +14105,30 @@ read_corpus_from_elf(read_context& ctxt, status& status)
   status |= STATUS_OK;
 
   return corp;
+}
+
+/// Read a corpus and add it to a given @ref corpus_group.
+///
+/// @param ctxt the reading context to consider.
+///
+/// @param group the @ref corpus_group to add the new corpus to.
+///
+/// @param status output parameter. The status of the read.  It is set
+/// by this function upon its completion.
+corpus_sptr
+read_and_add_corpus_to_group_from_elf(read_context& ctxt,
+				      corpus_group& group,
+				      status& status)
+{
+  corpus_sptr result;
+  corpus_sptr corp = read_corpus_from_elf(ctxt, status);
+  if (status & STATUS_OK)
+    {
+      group.add_corpus(corp);
+      result = corp;
+    }
+
+  return result;
 }
 
 /// Read all @ref abigail::translation_unit possible from the debug info
