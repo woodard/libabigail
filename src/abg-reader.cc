@@ -1037,8 +1037,10 @@ public:
 };// end class read_context
 
 static int	advance_cursor(read_context&);
+static bool
+read_translation_unit(read_context&, translation_unit&, xmlNodePtr);
 static translation_unit_sptr
-read_translation_unit(read_context&, xmlNodePtr);
+get_or_read_and_add_translation_unit(read_context&, xmlNodePtr);
 static translation_unit_sptr read_translation_unit_from_input(read_context&);
 static bool	read_symbol_db_from_input(read_context&,
 					  string_elf_symbols_map_sptr&,
@@ -1231,8 +1233,7 @@ read_context::get_scope_for_node(xmlNodePtr node,
       if (xmlStrEqual(parent->name, BAD_CAST("abi-instr")))
 	{
 	  translation_unit_sptr tu =
-	    read_translation_unit(*this, parent);
-	  get_corpus()->add(tu);
+	    get_or_read_and_add_translation_unit(*this, parent);
 	  return tu->get_global_scope();
 	}
 
@@ -1347,43 +1348,33 @@ walk_xml_node_to_map_type_ids(read_context& ctxt,
     walk_xml_node_to_map_type_ids(ctxt, n);
 }
 
-static translation_unit_sptr
-read_translation_unit(read_context& ctxt, xmlNodePtr node)
+static bool
+read_translation_unit(read_context& ctxt, translation_unit& tu, xmlNodePtr node)
 {
-  translation_unit_sptr tu, nil;
-
-  if (!node
-      || node->type != XML_ELEMENT_NODE
-      || !xmlStrEqual(node->name, BAD_CAST("abi-instr")))
-    return nil;
-
-  ctxt.set_corpus_node(node);
-
-  tu.reset(new translation_unit(ctxt.get_environment(), ""));
-  tu->set_corpus(ctxt.get_corpus().get());
+  tu.set_corpus(ctxt.get_corpus().get());
 
   xml::xml_char_sptr addrsize_str =
     XML_NODE_GET_ATTRIBUTE(node, "address-size");
   if (addrsize_str)
     {
       char address_size = atoi(reinterpret_cast<char*>(addrsize_str.get()));
-      tu->set_address_size(address_size);
+      tu.set_address_size(address_size);
     }
 
   xml::xml_char_sptr path_str = XML_NODE_GET_ATTRIBUTE(node, "path");
   if (path_str)
-    tu->set_path(reinterpret_cast<char*>(path_str.get()));
+    tu.set_path(reinterpret_cast<char*>(path_str.get()));
 
   xml::xml_char_sptr language_str = XML_NODE_GET_ATTRIBUTE(node, "language");
   if (language_str)
-    tu->set_language(string_to_translation_unit_language
+    tu.set_language(string_to_translation_unit_language
 		     (reinterpret_cast<char*>(language_str.get())));
 
 
   // We are at global scope, as we've just seen the top-most
   // "abi-instr" element.
-  ctxt.push_decl(tu->get_global_scope());
-  ctxt.map_xml_node_to_decl(node, tu->get_global_scope());
+  ctxt.push_decl(tu.get_global_scope());
+  ctxt.map_xml_node_to_decl(node, tu.get_global_scope());
 
   if (ctxt.get_id_xml_node_map().empty()
       || !ctxt.get_corpus())
@@ -1396,15 +1387,59 @@ read_translation_unit(read_context& ctxt, xmlNodePtr node)
       handle_element_node(ctxt, n, /*add_decl_to_scope=*/true);
     }
 
-  ctxt.pop_scope_or_abort(tu->get_global_scope());
+  ctxt.pop_scope_or_abort(tu.get_global_scope());
 
   xml::reader_sptr reader = ctxt.get_reader();
   if (!reader)
-    return nil;
+    return false;
 
   ctxt.clear_per_translation_unit_data();
 
-  return tu;
+  return true;
+}
+
+/// Read a given xml node representing a tranlsation unit.
+///
+/// If the current corpus already contains a translation unit of the
+/// path of the xml node we need to look at, then return that
+/// translation unit.  Otherwise, read the translation unit, build a
+/// @ref translation_unit out of it, add it to the current corpus and
+/// return it.
+///
+/// @param ctxt the read context.
+///
+/// @param node the XML node to consider.
+///
+/// @return the resulting translation unit.
+static translation_unit_sptr
+get_or_read_and_add_translation_unit(read_context& ctxt, xmlNodePtr node)
+{
+  corpus_sptr corp = ctxt.get_corpus();
+
+  translation_unit_sptr tu;
+  string tu_path;
+  xml::xml_char_sptr path_str = XML_NODE_GET_ATTRIBUTE(node, "path");
+
+  if (path_str)
+    {
+      tu_path = reinterpret_cast<char*>(path_str.get());
+      assert(!tu_path.empty());
+
+      if (corp)
+	tu = corp->find_translation_unit(tu_path);
+
+      if (tu)
+	return tu;
+    }
+
+  tu.reset(new translation_unit(ctxt.get_environment(), tu_path));
+  if (corp)
+    corp->add(tu);
+
+  if (read_translation_unit(ctxt, *tu, node))
+    return tu;
+
+  return translation_unit_sptr();
 }
 
 /// Parse the input XML document containing a translation_unit,
@@ -1459,7 +1494,7 @@ read_translation_unit_from_input(read_context&	ctxt)
   if (node == 0)
     return nil;
 
-  tu = read_translation_unit(ctxt, node);
+  tu = get_or_read_and_add_translation_unit(ctxt, node);
   // So read_translation_unit() can trigger (under the hood) reading
   // from several translation units just because
   // read_context::get_scope_for_node() has been called.  In that
@@ -1793,8 +1828,6 @@ read_corpus_from_input(read_context& ctxt)
     {
       translation_unit_sptr tu = read_translation_unit_from_input(ctxt);
       is_ok = tu;
-      if (is_ok)
-	corp.add(tu);
     }
   while (is_ok);
 
