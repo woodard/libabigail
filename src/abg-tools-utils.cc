@@ -23,6 +23,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <dirent.h>
 #include <time.h>
 #include <fts.h>
 #include <cstdlib>
@@ -183,6 +184,37 @@ file_exists(const string& path)
   DECLARE_STAT(st);
 
   return get_stat(path, &st);
+}
+
+/// Test that a given directory exists.
+///
+/// @param path the path of the directory to consider.
+///
+/// @return true iff a directory exists with the name @p path
+bool
+dir_exists(const string &path)
+{return file_exists(path) && is_dir(path);}
+
+/// Test if a given directory exists and is empty.
+///
+/// @param path the path of the directory to consider
+bool
+dir_is_empty(const string &path)
+{
+  if (!dir_exists(path))
+    return false;
+
+  DIR* dir = opendir(path.c_str());
+  if (!dir)
+    return false;
+
+  dirent entry, *result = 0;
+  if (readdir_r(dir, &entry, &result))
+    return false;
+
+  closedir(dir);
+
+  return result == 0;
 }
 
 /// Test if path is a path to a regular file or a symbolic link to a
@@ -427,6 +459,29 @@ string_ends_with(const string& str, const string& suffix)
   if (str_len < suffix_len)
     return false;
   return str.compare(str_len - suffix_len, suffix_len, suffix) == 0;
+}
+
+/// Test if a given string begins with a particular prefix.
+///
+/// @param str the string consider.
+///
+/// @param prefix the prefix to look for.
+///
+/// @return true iff string @p str begins with prefix @p prefix.
+bool
+string_begins_with(const string& str, const string& prefix)
+{
+  if (str.empty())
+    return false;
+
+  if (prefix.empty())
+    return true;
+
+  string::size_type prefix_len = prefix.length();
+  if (prefix_len > str.length())
+    return false;
+
+  return str.compare(0, prefix.length(), prefix) == 0;
 }
 
 /// Test if a string is made of ascii characters.
@@ -779,6 +834,188 @@ guess_file_type(const string& file_path)
   return r;
 }
 
+/// Get the package name of a .deb package.
+///
+/// @param str the string containing the .deb NVR.
+///
+/// @param name output parameter.  This is set with the package name
+/// of the .deb package iff the function returns true.
+///
+/// @return true iff the function successfully finds the .deb package
+/// name.
+bool
+get_deb_name(const string& str, string& name)
+{
+  if (str.empty() || str[0] == '_')
+    return false;
+
+  string::size_type str_len = str.length(), i = 0 ;
+
+  for (; i < str_len; ++i)
+    {
+      if (str[i] == '_')
+	break;
+    }
+
+  if (i == str_len)
+    return false;
+
+  name = str.substr(0, i);
+  return true;
+}
+
+/// Get the package name of an rpm package.
+///
+/// @param str the string containing the NVR of the rpm.
+///
+/// @param name output parameter.  This is set with the package name
+/// of the rpm package iff the function returns true.
+///
+/// @return true iff the function successfully finds the rpm package
+/// name.
+bool
+get_rpm_name(const string& str, string& name)
+{
+  if (str.empty() || str[0] == '-')
+    return false;
+
+  string::size_type str_len = str.length(), i = 0;
+  string::value_type c;
+
+  for (; i < str_len; ++i)
+    {
+      c = str[i];
+      string::size_type next_index = i + 1;
+      if ((next_index < str_len) && c == '-' && isdigit(str[next_index]))
+	break;
+    }
+
+  if (i == str_len)
+    return false;
+
+  name = str.substr(0, i);
+
+  return true;
+}
+
+/// Get the architecture string from the NVR of an rpm.
+///
+/// @param str the NVR to consider.
+///
+/// @param arch output parameter.  Is set to the resulting
+/// archirecture string iff the function returns true.
+///
+/// @return true iff the function could find the architecture string
+/// from the NVR.
+bool
+get_rpm_arch(const string& str, string& arch)
+{
+  if (str.empty())
+    return false;
+
+  if (!string_ends_with(str, ".rpm"))
+    return false;
+
+  string::size_type str_len = str.length(), i = 0;
+  string::value_type c;
+  string::size_type last_dot_index = 0, dot_before_last_index = 0;
+
+  for (i = str_len - 1; i > 0; --i)
+    {
+      c = str[i];
+      if (c == '.')
+	{
+	  last_dot_index = i;
+	  break;
+	}
+    }
+
+  if (i == 0)
+    return false;
+
+  for(--i; i > 0; --i)
+    {
+      c = str[i];
+      if (c == '.')
+	{
+	  dot_before_last_index = i;
+	  break;
+	}
+    }
+
+  if (i == 0)
+    return false;
+
+  arch = str.substr(dot_before_last_index + 1,
+		    last_dot_index - dot_before_last_index - 1);
+
+  return true;
+}
+
+/// Tests if a given file name designates a kernel package.
+///
+/// @param file_name the file name to consider.
+///
+/// @param file_type the type of the file @p file_name.
+///
+/// @return true iff @p file_name of kind @p file_type designates a
+/// kernel package.
+bool
+file_is_kernel_package(string& file_name, file_type file_type)
+{
+  bool result = false;
+  string package_name;
+
+  if (file_type == FILE_TYPE_RPM)
+    {
+      if (!get_rpm_name(file_name, package_name))
+	return false;
+      result = (package_name == "kernel");
+    }
+  else if (file_type == FILE_TYPE_DEB)
+    {
+      if (!get_deb_name(file_name, package_name))
+	return false;
+      result = (string_begins_with(package_name, "linux-image"));
+    }
+
+  return result;
+}
+
+/// Tests if a given file name designates a kernel debuginfo package.
+///
+/// @param file_name the file name to consider.
+///
+/// @param file_type the type of the file @p file_name.
+///
+/// @return true iff @p file_name of kind @p file_type designates a
+/// kernel debuginfo package.
+bool
+file_is_kernel_debuginfo_package(string& file_name, file_type file_type)
+{
+  bool result = false;
+  string package_name;
+
+  if (file_type == FILE_TYPE_RPM)
+    {
+      if (!get_rpm_name(file_name, package_name))
+	return false;
+      result = (package_name == "kernel-debuginfo");
+    }
+  else if (file_type == FILE_TYPE_DEB)
+    {
+      if (!get_deb_name(file_name, package_name))
+	return false;
+      result = (string_begins_with(package_name, "linux-image")
+		&& (string_ends_with(package_name, "-dbg")
+		    || string_ends_with(package_name, "-dbgsyms")));
+    }
+
+  return result;
+}
+
+/// The delete functor of a char buffer that has been created using
+/// malloc.
 struct malloced_char_star_deleter
 {
   void
@@ -905,13 +1142,14 @@ gen_suppr_spec_from_headers(const string& headers_root_dir)
 /// with the sub-string "whitelist".  For instance
 /// RHEL7_x86_64_whitelist.
 ///
-/// Then the content of the section is a set of function names, one
-/// name per line.  Each function names is the name of a function
-/// whose changes are to be keept.
+/// Then the content of the section is a set of function or variable
+/// names, one name per line.  Each function or variable name is the
+/// name of a function or a variable whose changes are to be keept.
 ///
-/// This function reads the white list and generate
-/// function_suppression_sptr (or several, if there are more than one
-/// section) that is added to a vector of suppressions.
+/// This function reads the white list and generates a
+/// function_suppression_sptr or variable_suppression_sptr (or
+/// several, if there are more than one section) that is added to a
+/// vector of suppressions.
 ///
 /// @param abi_whitelist_path the path to the Kernel ABI whitelist.
 ///
@@ -941,8 +1179,9 @@ gen_suppr_spec_from_kernel_abi_whitelist(const string& abi_whitelist_path,
       if (!string_ends_with(section_name, "whitelist"))
 	continue;
 
-      function_suppression_sptr suppr;
-      string function_names_regexp;
+      function_suppression_sptr fn_suppr;
+      variable_suppression_sptr var_suppr;
+      string function_names_regexp, variable_names_regexp;
       for (config::properties_type::const_iterator p =
 	     (*s)->get_properties().begin();
 	   p != (*s)->get_properties().end();
@@ -951,23 +1190,37 @@ gen_suppr_spec_from_kernel_abi_whitelist(const string& abi_whitelist_path,
 	  if (simple_property_sptr prop = is_simple_property(*p))
 	    if (prop->has_empty_value())
 	      {
-		const string &function_name = prop->get_name();
-		if (!function_name.empty())
+		const string &name = prop->get_name();
+		if (!name.empty())
 		  {
 		    if (!function_names_regexp.empty())
 		      function_names_regexp += "|";
-		    function_names_regexp += "^" + function_name + "$";
+		    function_names_regexp += "^" + name + "$";
+
+		    if (!variable_names_regexp.empty())
+		      variable_names_regexp += "|";
+		    variable_names_regexp += "^" + name + "$";
 		  }
 	      }
 	}
 
       if (!function_names_regexp.empty())
 	{
-	  suppr.reset(new function_suppression);
-	  suppr->set_label(section_name);
-	  suppr->set_name_not_regex_str(function_names_regexp);
-	  suppr->set_drops_artifact_from_ir(true);
-	  supprs.push_back(suppr);
+	  fn_suppr.reset(new function_suppression);
+	  fn_suppr->set_label(section_name);
+	  fn_suppr->set_name_not_regex_str(function_names_regexp);
+	  fn_suppr->set_drops_artifact_from_ir(true);
+	  supprs.push_back(fn_suppr);
+	  created_a_suppr = true;
+	}
+
+      if (!variable_names_regexp.empty())
+	{
+	  var_suppr.reset(new variable_suppression);
+	  var_suppr->set_label(section_name);
+	  var_suppr->set_name_not_regex_str(variable_names_regexp);
+	  var_suppr->set_drops_artifact_from_ir(true);
+	  supprs.push_back(var_suppr);
 	  created_a_suppr = true;
 	}
     }

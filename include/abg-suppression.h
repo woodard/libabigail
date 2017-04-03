@@ -645,15 +645,15 @@ public:
 
   priv_sptr priv_;
 
-  variable_suppression(const string& label,
-		       const string& name,
-		       const string& name_regex_str,
-		       const string& symbol_name,
-		       const string& symbol_name_regex_str,
-		       const string& symbol_version,
-		       const string& symbol_version_regex_str,
-		       const string& type_name,
-		       const string& type_name_regex_str);
+  variable_suppression(const string& label = "",
+		       const string& name = "",
+		       const string& name_regex_str = "",
+		       const string& symbol_name = "",
+		       const string& symbol_name_regex_str = "",
+		       const string& symbol_version = "",
+		       const string& symbol_version_regex_str = "",
+		       const string& type_name = "",
+		       const string& type_name_regex_str = "");
 
   virtual ~variable_suppression();
 

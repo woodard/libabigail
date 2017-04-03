@@ -184,6 +184,56 @@ Options
     the :ref:`default suppression specification files
     <abipkgdiff_default_supprs_label>` are loaded .
 
+  * ``--linux-kernel-abi-whitelist | --lkaw`` <*path-to-whitelist*>
+
+    When comparing two Linux kernel RPM packages, this option points
+    to the white list of names of ELF symbols of functions and
+    variables that must be compared for ABI changes.  That white list
+    is called a "Linux kernel ABI white list".
+
+    Any other function or variable which ELF symbol are not present in
+    that white list will not be considered by the ABI comparison
+    process.
+
+    If this option is not provided -- thus if no white list is
+    provided -- then the ABI of all publicly defined and exported
+    functions and global variables by the Linux Kernel binaries are
+    compared.
+
+  * ``--lkaw-pkg`` <*path-to-whitelist-package*>
+
+    When comparing two Linux kernel RPM packages, this option points
+    an RPM package containining several white lists of names of ELF
+    symbols of functions and variables that must be compared for ABI
+    changes.  Those white lists are called "Linux kernel ABI white
+    lists".
+
+    From the content of that white list package, this program then
+    chooses the appropriate Linux kernel ABI white list to consider
+    when comparing the ABI of Linux kernel binaries contained in the
+    Linux kernel packages provided on the command line.
+
+    That choosen Linux kernel ABI white list contains the list of
+    names of ELF symbols of functions and variables that must be
+    compared for ABI changes.
+
+    Any other function or variable which ELF symbol are not present in
+    that white list will not be considered by the ABI comparison
+    process.
+
+    If this option is not provided -- thus if no white list is
+    provided -- then the ABI of all publicly defined and exported
+    functions and global variables by the Linux Kernel binaries are
+    compared.
+
+  * ``--no-unreferenced-symbols``
+
+    In the resulting report, do not display change information about
+    function and variable symbols that are not referenced by any debug
+    information.  Note that for these symbols not referenced by any
+    debug information, the change information displayed is either
+    added or removed symbols.
+    
   * ``--no-show-locs``
 
    Do not show information about where in the *second shared library*

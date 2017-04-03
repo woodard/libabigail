@@ -103,7 +103,10 @@ using abigail::tools_utils::string_ends_with;
 using abigail::tools_utils::file_type;
 using abigail::tools_utils::make_path_absolute;
 using abigail::tools_utils::base_name;
+using abigail::tools_utils::get_rpm_arch;
+using abigail::tools_utils::file_is_kernel_package;
 using abigail::tools_utils::gen_suppr_spec_from_headers;
+using abigail::tools_utils::gen_suppr_spec_from_kernel_abi_whitelist;
 using abigail::tools_utils::get_default_system_suppression_file_path;
 using abigail::tools_utils::get_default_user_suppression_file_path;
 using abigail::tools_utils::load_default_system_suppressions;
@@ -144,6 +147,7 @@ public:
   string	debug_package2;
   string	devel_package1;
   string	devel_package2;
+  string	kabi_whitelist_package;
   size_t	num_workers;
   bool		verbose;
   bool		drop_private_types;
@@ -156,10 +160,13 @@ public:
   bool		show_harmless_changes;
   bool		show_locs;
   bool		show_added_syms;
+  bool		show_symbols_not_referenced_by_debug_info;
   bool		show_added_binaries;
   bool		fail_if_no_debug_info;
   bool		show_identical_binaries;
   vector<string> suppression_paths;
+  vector<string> kabi_whitelist_paths;
+  suppressions_type kabi_suppressions;
 
   options(const string& program_name)
     : prog_name(program_name),
@@ -180,6 +187,7 @@ public:
       show_harmless_changes(),
       show_locs(true),
       show_added_syms(true),
+      show_symbols_not_referenced_by_debug_info(true),
       show_added_binaries(true),
       fail_if_no_debug_info(),
       show_identical_binaries()
@@ -266,6 +274,8 @@ public:
     /// Debug info package.  Contains the debug info for the binaries
     /// int he main packge.
     KIND_DEBUG_INFO,
+    /// Contains kernel ABI whitelists
+    KIND_KABI_WHITELISTS,
     /// Source package.  Contains the source of the binaries in the
     /// main package.
     KIND_SRC
@@ -279,6 +289,7 @@ private:
   map<string, elf_file_sptr>		path_elf_file_sptr_map_;
   package_sptr				debug_info_package_;
   package_sptr				devel_package_;
+  package_sptr				kabi_whitelist_package_;
   suppressions_type			private_types_suppressions_;
 
 public:
@@ -316,6 +327,17 @@ public:
   void
   path(const string& s)
   {path_ = s;}
+
+  /// Getter of the base name of the package.
+  ///
+  /// @return the base name of the package.
+  string
+  base_name() const
+  {
+    string name;
+    abigail::tools_utils::base_name(path(), name);
+    return name;
+  }
 
   /// Getter for the path to the root dir where the packages are
   /// extracted.
@@ -414,6 +436,20 @@ public:
   devel_package(const package_sptr& p)
   {devel_package_ = p;}
 
+  /// Getter of the associated kernel abi whitelist package, if any.
+  ///
+  /// @return the associated kernel abi whitelist package.
+  const package_sptr
+  kabi_whitelist_package() const
+  {return kabi_whitelist_package_;}
+
+  /// Setter of the associated kernel abi whitelist package.
+  ///
+  /// @param p the new kernel abi whitelist package.
+  void
+  kabi_whitelist_package(const package_sptr& p)
+  {kabi_whitelist_package_ = p;}
+
   /// Getter of the specifications to suppress change reports about
   /// private types.
   ///
@@ -481,13 +517,13 @@ public:
 /// Arguments passed to the comparison tasks.
 struct compare_args
 {
-  const elf_file	elf1;
-  const string&	debug_dir1;
+  const elf_file		elf1;
+  const string&		debug_dir1;
   const suppressions_type&	private_types_suppr1;
-  const elf_file	elf2;
-  const string&	debug_dir2;
+  const elf_file		elf2;
+  const string&		debug_dir2;
   const suppressions_type&	private_types_suppr2;
-  const options&	opts;
+  const options&		opts;
 
   /// Constructor for compare_args, which is used to pass
   /// information to the comparison threads.
@@ -598,6 +634,9 @@ display_usage(const string& prog_name, ostream& out)
     << " --no-default-suppression       don't load any default "
        "suppression specifications\n"
     << " --suppressions|--suppr <path>  specify supression specification path\n"
+    << " --linux-kernel-abi-whitelist|--lkaw path to a "
+    "linux kernel abi whitelist\n"
+    << " --lkaw-pkg <path>  path to a linux kernel abi whitelist package\n"
     << " --keep-tmp-files               don't erase created temporary files\n"
     << " --dso-only                     compare shared libraries only\n"
     << " --no-linkage-name		do not display linkage names of "
@@ -608,6 +647,8 @@ display_usage(const string& prog_name, ostream& out)
     << " --no-show-relative-offset-changes  do not show relative"
     " offset changes\n"
     << " --no-added-syms                do not display added functions or variables\n"
+    << " --no-unreferenced-symbols do not display changes "
+    "about symbols not referenced by debug info\n"
     << " --no-added-binaries            do not display added binaries\n"
     << " --no-abignore                  do not look for *.abignore files\n"
     << " --no-parallel                  do not execute in parallel\n"
@@ -909,6 +950,13 @@ maybe_check_suppression_files(const options& opts)
     if (!check_file(*i, cerr, opts.prog_name))
       return false;
 
+  for (vector<string>::const_iterator i =
+	 opts.kabi_whitelist_paths.begin();
+       i != opts.kabi_whitelist_paths.end();
+       ++i)
+    if (!check_file(*i, cerr, "abidiff"))
+      return false;
+
   return true;
 }
 
@@ -931,6 +979,8 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
   ctxt->show_added_vars(opts.show_added_syms);
   ctxt->show_added_symbols_unreferenced_by_debug_info
     (opts.show_added_syms);
+  ctxt->show_symbols_unreferenced_by_debug_info
+    (opts.show_symbols_not_referenced_by_debug_info);
 
   if (!opts.show_harmless_changes)
     ctxt->switch_categories_off
@@ -1041,6 +1091,9 @@ compare(const elf_file& elf1,
     read_context_sptr c = create_read_context(elf1.path, &di_dir1, env.get(),
 					      /*load_all_types=*/false);
     add_read_context_suppressions(*c, priv_types_supprs1);
+    if (!opts.kabi_suppressions.empty())
+      add_read_context_suppressions(*c, opts.kabi_suppressions);
+
     corpus1 = read_corpus_from_elf(*c, c1_status);
 
     if (!(c1_status & abigail::dwarf_reader::STATUS_OK))
@@ -1083,6 +1136,10 @@ compare(const elf_file& elf1,
     read_context_sptr c = create_read_context(elf2.path, &di_dir2, env.get(),
 					      /*load_all_types=*/false);
     add_read_context_suppressions(*c, priv_types_supprs2);
+
+    if (!opts.kabi_suppressions.empty())
+      add_read_context_suppressions(*c, opts.kabi_suppressions);
+
     corpus2 = read_corpus_from_elf(*c, c2_status);
 
     if (!(c2_status & abigail::dwarf_reader::STATUS_OK))
@@ -1192,6 +1249,127 @@ maybe_create_private_types_suppressions(package& pkg, const options &opts)
     }
 
   return suppr;
+}
+
+/// While walking a file directory, check if a directory entry is a
+/// kabi whitelist of a particular architecture.
+///
+/// If it is, then save its file path in a vector of whitelists.
+///
+/// @param entry the directory entry to consider.
+///
+/// @param arch the architecture to consider.
+///
+/// @param whitelists out parameter.  If @p entry is the whitelist we
+/// are looking for, add its path to this output parameter.
+static void
+maybe_collect_kabi_whitelists(const FTSENT *entry,
+			      const string arch,
+			      vector<string> &whitelists)
+{
+  if (entry == NULL
+      || (entry->fts_info != FTS_F && entry->fts_info != FTS_SL)
+      || entry->fts_info == FTS_ERR
+      || entry->fts_info == FTS_NS)
+    return;
+
+  string path = entry->fts_path;
+  maybe_get_symlink_target_file_path(path, path);
+
+  string kabi_whitelist_name = "kabi_whitelist_" + arch;
+
+  if (string_ends_with(path, kabi_whitelist_name))
+    whitelists.push_back(path);
+}
+
+/// Get the kabi whitelist for a particular architecture under a given
+/// directory.
+///
+/// @param dir the directory to look at.
+///
+/// @param arch the architecture to consider.
+///
+/// @param whitelist_paths the vector where to add the whitelists
+/// found.  Note that a whitelist is added to this parameter iff the
+/// function returns true.
+///
+/// @return true iff the function found a whitelist at least.
+static bool
+get_kabi_whitelists_from_arch_under_dir(const string& dir,
+					const string& arch,
+					vector<string>& whitelist_paths)
+{
+ bool is_ok = false;
+  char* paths[] = {const_cast<char*>(dir.c_str()), 0};
+
+  FTS *file_hierarchy = fts_open(paths, FTS_LOGICAL|FTS_NOCHDIR, NULL);
+  if (!file_hierarchy)
+    return is_ok;
+
+  FTSENT *entry;
+  while ((entry = fts_read(file_hierarchy)))
+    maybe_collect_kabi_whitelists(entry, arch, whitelist_paths);
+
+  fts_close(file_hierarchy);
+
+  return true;
+}
+
+/// Find a kabi whitelist in a linux kernel RPM package.
+///
+/// Note that the linux kernel RPM package must have been extracted
+/// somewhere already.
+///
+/// This function then looks for the whitelist under the /lib/modules
+/// directory inside the extracted content of the package.  If it
+/// finds it and saves its file path in the
+/// options::kabi_whitelist_paths data member.
+///
+/// @param pkg the linux kernel package to consider.
+///
+/// @param opts the options the program was invoked with.
+static bool
+maybe_handle_kabi_whitelist_pkg(const package& pkg, options &opts)
+{
+  if (opts.kabi_whitelist_package.empty()
+      || !opts.kabi_whitelist_paths.empty()
+      || !pkg.kabi_whitelist_package())
+    return false;
+
+  if (pkg.type() != abigail::tools_utils::FILE_TYPE_RPM)
+    return false;
+
+  string pkg_name = pkg.base_name();
+  bool is_linux_kernel_package = file_is_kernel_package(pkg_name, pkg.type());
+
+  if (!is_linux_kernel_package)
+    return false;
+
+  package_sptr kabi_wl_pkg = pkg.kabi_whitelist_package();
+  assert(kabi_wl_pkg);
+
+  if (!file_exists(kabi_wl_pkg->extracted_dir_path())
+      || !is_dir(kabi_wl_pkg->extracted_dir_path()))
+    return false;
+
+  string rpm_arch;
+  if (!get_rpm_arch(pkg_name, rpm_arch))
+    return false;
+
+  string kabi_wl_path = kabi_wl_pkg->extracted_dir_path();
+  kabi_wl_path += "/lib/modules";
+  vector<string> whitelist_paths;
+
+  get_kabi_whitelists_from_arch_under_dir(kabi_wl_path, rpm_arch,
+					  whitelist_paths);
+
+  if (!whitelist_paths.empty())
+    {
+      std::sort(whitelist_paths.begin(), whitelist_paths.end());
+      opts.kabi_whitelist_paths.push_back(whitelist_paths.back());
+    }
+
+  return true;
 }
 
 /// The task that performs the extraction of the content of a package
@@ -1316,7 +1494,7 @@ public:
 /// Convenience typedef for a shared_ptr of @ref compare_task.
 typedef shared_ptr<compare_task> compare_task_sptr;
 
-/// This function is sub-routine of create_maps_of_package_content.
+/// This function is a sub-routine of create_maps_of_package_content.
 ///
 /// It's called during the walking of the directory tree containing
 /// the extracted content of package.  It's called with an entry of
@@ -1330,12 +1508,17 @@ typedef shared_ptr<compare_task> compare_task_sptr;
 ///
 /// @param opts the options of the current program.
 ///
+/// @param file_name_to_look_for if this parameter is set, the
+/// function only looks for a file name which name is the same as the
+/// value of this parameter.
+///
 /// @param paths out parameter.  This is the set of meaningful paths
 /// of the current directory tree being analyzed.  These paths are
 /// those that are going to be involved in ABI comparison.
 static void
 maybe_update_vector_of_package_content(const FTSENT *entry,
 				       options &opts,
+				       const string& file_name_to_look_for,
 				       vector<string>& paths)
 {
   if (entry == NULL
@@ -1347,10 +1530,59 @@ maybe_update_vector_of_package_content(const FTSENT *entry,
   string path = entry->fts_path;
   maybe_get_symlink_target_file_path(path, path);
 
+  if (!file_name_to_look_for.empty())
+    {
+      string name;
+      abigail::tools_utils::base_name(path, name);
+      if (name == file_name_to_look_for)
+	paths.push_back(path);
+      return;
+    }
+
   if (guess_file_type(path) == abigail::tools_utils::FILE_TYPE_ELF)
     paths.push_back(path);
   else if (opts.abignore && string_ends_with(path, ".abignore"))
     opts.suppression_paths.push_back(path);
+}
+
+/// Walk a given directory to collect files that are "interesting" to
+/// analyze.  By default, "interesting" means interesting from a
+/// kernel package analysis point of view.
+///
+/// @param dir the directory to walk.
+///
+/// @param file_name_to_look_for if this parameter is set, only a file
+/// with this name is going to be collected.
+///
+/// @param interesting_files out parameter.  This parameter is
+/// populated with the interesting files found by the function iff the
+/// function returns true.
+///
+/// @return true iff the function completed successfully.
+static bool
+get_interesting_files_under_dir(const string dir,
+				const string& file_name_to_look_for,
+				options& opts,
+				vector<string>& interesting_files)
+{
+  bool is_ok = false;
+  char* paths[] = {const_cast<char*>(dir.c_str()), 0};
+
+  FTS *file_hierarchy = fts_open(paths, FTS_LOGICAL|FTS_NOCHDIR, NULL);
+  if (!file_hierarchy)
+    return is_ok;
+
+  FTSENT *entry;
+  while ((entry = fts_read(file_hierarchy)))
+    maybe_update_vector_of_package_content(entry, opts,
+					   file_name_to_look_for,
+					   interesting_files);
+
+  fts_close(file_hierarchy);
+
+  is_ok = true;
+
+  return is_ok;
 }
 
 /// Create maps of the content of a given package.
@@ -1376,17 +1608,24 @@ create_maps_of_package_content(package& package, options& opts)
       << package.extracted_dir_path()
       << " ...\n";
 
-  bool is_ok = false;
-  char* paths[] = {const_cast<char*>(package.extracted_dir_path().c_str()), 0};
-
-  FTS *file_hierarchy = fts_open(paths, FTS_LOGICAL|FTS_NOCHDIR, NULL);
-  if (!file_hierarchy)
-    return is_ok;
-
+  bool is_ok = true;
   vector<string> elf_file_paths;
-  FTSENT *entry;
-  while ((entry = fts_read(file_hierarchy)))
-    maybe_update_vector_of_package_content(entry, opts, elf_file_paths);
+
+  // if package is linux kernel package and its associated debug
+  // info package looks like a kernel debuginfo package, then try to
+  // go find the vmlinux file in that debug info file.
+  string pkg_name = package.base_name();
+  bool is_linux_kernel_package = file_is_kernel_package(pkg_name,
+							package.type());
+  if (is_linux_kernel_package)
+    if (package_sptr debuginfo_pkg = package.debug_info_package())
+      is_ok =
+	get_interesting_files_under_dir(debuginfo_pkg->extracted_dir_path(),
+					"vmlinux", opts, elf_file_paths);
+
+  is_ok &= get_interesting_files_under_dir(package.extracted_dir_path(),
+					   /*file_name_to_look_for=*/"",
+					   opts, elf_file_paths);
 
   if (opts.verbose)
     emit_prefix("abipkgdiff", cerr)
@@ -1414,10 +1653,22 @@ create_maps_of_package_content(package& package, options& opts)
 	      && e->type != abigail::dwarf_reader::ELF_TYPE_EXEC
               && e->type != abigail::dwarf_reader::ELF_TYPE_PI_EXEC)
 	    {
-	      if (opts.verbose)
-		emit_prefix("abipkgdiff", cerr)
-		  << "skipping non-DSO non-executable file " << e->path << "\n";
-	      continue;
+	      if (is_linux_kernel_package)
+		{
+		  if (e->type == abigail::dwarf_reader::ELF_TYPE_RELOCATABLE)
+		    {
+		      // This is a Linux Kernel module.
+		      ;
+		    }
+		}
+	      else if (opts.verbose)
+		{
+		  emit_prefix("abipkgdiff", cerr)
+		    << "skipping non-DSO non-executable file "
+		    << e->path
+		    << "\n";
+		  continue;
+		}
 	    }
 	}
 
@@ -1457,26 +1708,41 @@ extract_package_and_map_its_content(package &pkg, options &opts)
   pkg_extraction_task_sptr main_pkg_extraction;
   pkg_extraction_task_sptr dbg_extraction;
   pkg_extraction_task_sptr devel_extraction;
+  pkg_extraction_task_sptr kabi_whitelist_extraction;
 
-  size_t NUM_EXTRACTIONS = 3;
+  size_t NUM_EXTRACTIONS = 1;
 
   main_pkg_extraction.reset(new pkg_extraction_task(pkg, opts));
 
   if (package_sptr dbg_pkg = pkg.debug_info_package())
-    dbg_extraction.reset(new pkg_extraction_task(*dbg_pkg, opts));
+    {
+      dbg_extraction.reset(new pkg_extraction_task(*dbg_pkg, opts));
+      ++NUM_EXTRACTIONS;
+    }
 
   if (package_sptr devel_pkg = pkg.devel_package())
-    devel_extraction.reset(new pkg_extraction_task(*devel_pkg, opts));
+    {
+      devel_extraction.reset(new pkg_extraction_task(*devel_pkg, opts));
+      ++NUM_EXTRACTIONS;
+    }
+
+  if (package_sptr kabi_wl_pkg = pkg.kabi_whitelist_package())
+    {
+      kabi_whitelist_extraction.reset(new pkg_extraction_task(*kabi_wl_pkg,
+							      opts));
+      ++NUM_EXTRACTIONS;
+    }
 
   size_t num_workers = (opts.parallel
 			? std::min(opts.num_workers, NUM_EXTRACTIONS)
 			: 1);
   abigail::workers::queue extraction_queue(num_workers);
 
-  // Perform the extraction of the 3 packages in parallel.
+  // Perform the extraction of the NUM_WORKERS packages in parallel.
   extraction_queue.schedule_task(dbg_extraction);
   extraction_queue.schedule_task(main_pkg_extraction);
   extraction_queue.schedule_task(devel_extraction);
+  extraction_queue.schedule_task(kabi_whitelist_extraction);
 
   // Wait for the extraction to be done.
   extraction_queue.wait_for_workers_to_complete();
@@ -1487,7 +1753,10 @@ extract_package_and_map_its_content(package &pkg, options &opts)
     is_ok = create_maps_of_package_content(pkg, opts);
 
   if (is_ok)
-    maybe_create_private_types_suppressions(pkg, opts);
+    {
+      maybe_create_private_types_suppressions(pkg, opts);
+      maybe_handle_kabi_whitelist_pkg(pkg, opts);
+    }
 
   return is_ok;
 }
@@ -1651,6 +1920,11 @@ compare(package& first_package, package& second_package,
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
+  string pkg_name = first_package.base_name();
+  bool is_linux_kernel_package =
+    abigail::tools_utils::file_is_kernel_package(pkg_name,
+						 first_package.type());
+
   // Setting debug-info path of libraries
   string debug_dir1, debug_dir2, relative_debug_path = "/usr/lib/debug/";
   if (first_package.debug_info_package()
@@ -1669,6 +1943,16 @@ compare(package& first_package, package& second_package,
 
   abigail::workers::queue::tasks_type compare_tasks;
 
+  if (is_linux_kernel_package)
+    {
+      opts.show_symbols_not_referenced_by_debug_info = false;
+      for (vector<string>::const_iterator i =
+	     opts.kabi_whitelist_paths.begin();
+	   i != opts.kabi_whitelist_paths.end();
+	   ++i)
+	gen_suppr_spec_from_kernel_abi_whitelist(*i, opts.kabi_suppressions);
+    }
+
   for (map<string, elf_file_sptr>::iterator it =
 	 first_package.path_elf_file_sptr_map().begin();
        it != first_package.path_elf_file_sptr_map().end();
@@ -1680,23 +1964,31 @@ compare(package& first_package, package& second_package,
       if (iter != second_package.path_elf_file_sptr_map().end()
 	  && (iter->second->type == abigail::dwarf_reader::ELF_TYPE_DSO
 	      || iter->second->type == abigail::dwarf_reader::ELF_TYPE_EXEC
-              || iter->second->type == abigail::dwarf_reader::ELF_TYPE_PI_EXEC))
+              || iter->second->type == abigail::dwarf_reader::ELF_TYPE_PI_EXEC
+	      || iter->second->type
+	      == abigail::dwarf_reader::ELF_TYPE_RELOCATABLE))
 	{
-	  compare_args_sptr args
-	    (new compare_args(*it->second,
-			      debug_dir1,
-			      first_package.private_types_suppressions(),
-			      *iter->second,
-			      debug_dir2,
-			      second_package.private_types_suppressions(),
-			      opts));
+	  if ((((iter->second->type
+		 == abigail::dwarf_reader::ELF_TYPE_RELOCATABLE)
+		&& is_linux_kernel_package)
+	       || (iter->second->type
+		   != abigail::dwarf_reader::ELF_TYPE_RELOCATABLE)))
+	    {
+	      compare_args_sptr args
+		(new compare_args(*it->second,
+				  debug_dir1,
+				  first_package.private_types_suppressions(),
+				  *iter->second,
+				  debug_dir2,
+				  second_package.private_types_suppressions(),
+				  opts));
 
-	  compare_task_sptr t(new compare_task(args));
-	  compare_tasks.push_back(t);
-
+	      compare_task_sptr t(new compare_task(args));
+	      compare_tasks.push_back(t);
+	    }
 	  second_package.path_elf_file_sptr_map().erase(iter);
 	}
-      else
+      else if (iter == second_package.path_elf_file_sptr_map().end())
 	{
 	  diff.removed_binaries.push_back(it->second);
 	  status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
@@ -1928,6 +2220,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.show_relative_offset_changes = false;
       else if (!strcmp(argv[i], "--no-added-syms"))
 	opts.show_added_syms = false;
+      else if (!strcmp(argv[i], "--no-unreferenced-symbols"))
+	opts.show_symbols_not_referenced_by_debug_info = false;
       else if (!strcmp(argv[i], "--no-added-binaries"))
 	opts.show_added_binaries = false;
       else if (!strcmp(argv[i], "--fail-no-dbg"))
@@ -1947,6 +2241,31 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  if (j >= argc)
 	    return false;
 	  opts.suppression_paths.push_back(argv[j]);
+	  ++i;
+	}
+      else if (!strcmp(argv[i], "--linux-kernel-abi-whitelist")
+	       || !strcmp(argv[i], "--lkaw"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    {
+	      opts.missing_operand = true;
+	      opts.wrong_option = argv[i];
+	      return true;
+	    }
+	  opts.kabi_whitelist_paths.push_back(argv[j]);
+	  ++i;
+	}
+      else if (!strcmp(argv[i], "--lkaw-pkg"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    {
+	      opts.missing_operand = true;
+	      opts.wrong_option = argv[i];
+	      return true;
+	    }
+	  opts.kabi_whitelist_package = argv[j];
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--help")
@@ -2080,6 +2399,13 @@ main(int argc, char* argv[])
       (package_sptr(new package(opts.devel_package2,
 				"devel_package2",
 				/*pkg_kind=*/package::KIND_DEVEL)));
+
+  if (!opts.kabi_whitelist_package.empty())
+    first_package->kabi_whitelist_package
+      (package_sptr(new package
+		    (opts.kabi_whitelist_package,
+		     "kabi_whitelist_package",
+		     /*pkg_kind=*/package::KIND_KABI_WHITELISTS)));
 
   string package_name;
   switch (first_package->type())

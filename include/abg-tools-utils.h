@@ -43,6 +43,8 @@ const char* get_system_libdir();
 bool file_exists(const string&);
 bool is_regular_file(const string&);
 bool is_dir(const string&);
+bool dir_exists(const string&);
+bool dir_is_empty(const string &);
 bool maybe_get_symlink_target_file_path(const string& file_path,
 					string& target_path);
 bool base_name(string const& path,
@@ -54,6 +56,7 @@ bool ensure_parent_dir_created(const string&);
 ostream& emit_prefix(const string& prog_name, ostream& out);
 bool check_file(const string& path, ostream& out, const string& prog_name = "");
 bool string_ends_with(const string&, const string&);
+bool string_begins_with(const string&, const string&);
 bool string_is_ascii(const string&);
 bool string_is_ascii_identifier(const string&);
 
@@ -195,6 +198,7 @@ operator&(abidiff_status, abidiff_status);
 
 abidiff_status&
 operator|=(abidiff_status&l, abidiff_status r);
+
 bool
 abidiff_status_has_error(abidiff_status s);
 
@@ -208,7 +212,25 @@ ostream&
 operator<<(ostream& output, file_type r);
 
 file_type guess_file_type(istream& in);
+
 file_type guess_file_type(const string& file_path);
+
+bool
+get_rpm_name(const string& str, string& name);
+
+bool
+get_rpm_arch(const string& str, string& arch);
+
+bool
+get_deb_name(const string& str, string& name);
+
+bool
+file_is_kernel_package(string& file_path,
+		       file_type file_type);
+
+bool
+file_is_kernel_debuginfo_package(string& file_path,
+				 file_type file_type);
 
 std::tr1::shared_ptr<char>
 make_path_absolute(const char*p);
