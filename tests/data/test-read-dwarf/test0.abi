@@ -35,7 +35,7 @@
         <parameter type-id='type-id-3'/>
         <return type-id='type-id-2'/>
       </function-decl>
-      <enum-decl name='E' id='type-id-4'>
+      <enum-decl name='E' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='19' column='1' id='type-id-4'>
         <underlying-type type-id='type-id-5'/>
         <enumerator name='e0' value='0'/>
         <enumerator name='e1' value='1'/>

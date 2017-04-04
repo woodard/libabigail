@@ -795,7 +795,7 @@
     <!-- unnamed&#45;enum&#45;underlying&#45;type -->
     <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-30'/>
     <!-- enum __anonymous_enum__ -->
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-31'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='../dbus/dbus-shared.h' line='57' column='1' id='type-id-31'>
       <underlying-type type-id='type-id-30'/>
       <enumerator name='DBUS_BUS_SESSION' value='0'/>
       <enumerator name='DBUS_BUS_SYSTEM' value='1'/>
@@ -1188,7 +1188,7 @@
     <!-- typedef void (void*)* DBusWakeupMainFunction -->
     <typedef-decl name='DBusWakeupMainFunction' type-id='type-id-69' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.h' line='135' column='1' id='type-id-44'/>
     <!-- enum __anonymous_enum__ -->
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-82'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.h' line='80' column='1' id='type-id-82'>
       <underlying-type type-id='type-id-30'/>
       <enumerator name='DBUS_DISPATCH_DATA_REMAINS' value='0'/>
       <enumerator name='DBUS_DISPATCH_COMPLETE' value='1'/>
@@ -1398,7 +1398,7 @@
     <!-- typedef void (DBusConnection*, void*)* DBusObjectPathUnregisterFunction -->
     <typedef-decl name='DBusObjectPathUnregisterFunction' type-id='type-id-95' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.h' line='367' column='1' id='type-id-92'/>
     <!-- enum __anonymous_enum__ -->
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-96'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-shared.h' line='67' column='1' id='type-id-96'>
       <underlying-type type-id='type-id-30'/>
       <enumerator name='DBUS_HANDLER_RESULT_HANDLED' value='0'/>
       <enumerator name='DBUS_HANDLER_RESULT_NOT_YET_HANDLED' value='1'/>

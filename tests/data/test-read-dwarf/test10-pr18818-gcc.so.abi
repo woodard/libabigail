@@ -7492,7 +7492,7 @@
             </function-decl>
           </member-function>
         </class-decl>
-        <enum-decl name='file_type' id='type-id-435'>
+        <enum-decl name='file_type' filepath='src/third_party/boost-1.56.0/boost/filesystem/operations.hpp' line='172' column='1' id='type-id-435'>
           <underlying-type type-id='type-id-440'/>
           <enumerator name='status_error' value='0'/>
           <enumerator name='status_unknown' value='0'/>
@@ -7508,7 +7508,7 @@
           <enumerator name='type_unknown' value='10'/>
           <enumerator name='_detail_directory_symlink' value='11'/>
         </enum-decl>
-        <enum-decl name='perms' id='type-id-436'>
+        <enum-decl name='perms' filepath='src/third_party/boost-1.56.0/boost/filesystem/operations.hpp' line='198' column='1' id='type-id-436'>
           <underlying-type type-id='type-id-440'/>
           <enumerator name='no_perms' value='0'/>
           <enumerator name='owner_read' value='256'/>
@@ -7756,7 +7756,7 @@
             </member-function>
           </class-decl>
         </namespace-decl>
-        <enum-decl name='copy_option' id='type-id-441'>
+        <enum-decl name='copy_option' filepath='src/third_party/boost-1.56.0/boost/filesystem/operations.hpp' line='304' column='1' id='type-id-441'>
           <underlying-type type-id='type-id-440'/>
           <enumerator name='none' value='0'/>
           <enumerator name='fail_if_exists' value='0'/>
@@ -11104,7 +11104,7 @@
       </class-decl>
       <class-decl name='codecvt_base' size-in-bits='8' visibility='default' filepath='/usr/include/c++/4.9/bits/codecvt.h' line='46' column='1' id='type-id-605'>
         <member-type access='public'>
-          <enum-decl name='result' id='type-id-591'>
+          <enum-decl name='result' filepath='/usr/include/c++/4.9/bits/codecvt.h' line='49' column='1' id='type-id-591'>
             <underlying-type type-id='type-id-440'/>
             <enumerator name='ok' value='0'/>
             <enumerator name='partial' value='1'/>
@@ -13610,13 +13610,13 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <enum-decl name='float_denorm_style' id='type-id-621'>
+      <enum-decl name='float_denorm_style' filepath='/usr/include/c++/4.9/limits' line='171' column='1' id='type-id-621'>
         <underlying-type type-id='type-id-440'/>
         <enumerator name='denorm_indeterminate' value='-1'/>
         <enumerator name='denorm_absent' value='0'/>
         <enumerator name='denorm_present' value='1'/>
       </enum-decl>
-      <enum-decl name='float_round_style' id='type-id-622'>
+      <enum-decl name='float_round_style' filepath='/usr/include/c++/4.9/limits' line='156' column='1' id='type-id-622'>
         <underlying-type type-id='type-id-440'/>
         <enumerator name='round_indeterminate' value='-1'/>
         <enumerator name='round_toward_zero' value='0'/>

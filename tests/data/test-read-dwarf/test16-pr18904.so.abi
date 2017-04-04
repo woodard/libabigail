@@ -4106,14 +4106,14 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <enum-decl name='_Ios_Seekdir' id='type-id-139'>
+      <enum-decl name='_Ios_Seekdir' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/ios_base.h' line='187' column='1' id='type-id-139'>
         <underlying-type type-id='type-id-154'/>
         <enumerator name='_S_beg' value='0'/>
         <enumerator name='_S_cur' value='1'/>
         <enumerator name='_S_end' value='2'/>
         <enumerator name='_S_ios_seekdir_end' value='65536'/>
       </enum-decl>
-      <enum-decl name='_Ios_Openmode' id='type-id-141'>
+      <enum-decl name='_Ios_Openmode' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/ios_base.h' line='109' column='1' id='type-id-141'>
         <underlying-type type-id='type-id-154'/>
         <enumerator name='_S_app' value='1'/>
         <enumerator name='_S_ate' value='2'/>
@@ -4123,7 +4123,7 @@
         <enumerator name='_S_trunc' value='32'/>
         <enumerator name='_S_ios_openmode_end' value='65536'/>
       </enum-decl>
-      <enum-decl name='_Ios_Iostate' id='type-id-143'>
+      <enum-decl name='_Ios_Iostate' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/ios_base.h' line='149' column='1' id='type-id-143'>
         <underlying-type type-id='type-id-154'/>
         <enumerator name='_S_goodbit' value='0'/>
         <enumerator name='_S_badbit' value='1'/>
@@ -4131,7 +4131,7 @@
         <enumerator name='_S_failbit' value='4'/>
         <enumerator name='_S_ios_iostate_end' value='65536'/>
       </enum-decl>
-      <enum-decl name='_Ios_Fmtflags' id='type-id-145'>
+      <enum-decl name='_Ios_Fmtflags' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/ios_base.h' line='57' column='1' id='type-id-145'>
         <underlying-type type-id='type-id-154'/>
         <enumerator name='_S_boolalpha' value='1'/>
         <enumerator name='_S_dec' value='2'/>
@@ -11585,7 +11585,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-993' size-in-bits='64' id='type-id-863'/>
     <reference-type-def kind='lvalue' type-id='type-id-365' size-in-bits='64' id='type-id-860'/>
     <namespace-decl name='std'>
-      <enum-decl name='_Rb_tree_color' id='type-id-941'>
+      <enum-decl name='_Rb_tree_color' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/stl_tree.h' line='92' column='1' id='type-id-941'>
         <underlying-type type-id='type-id-154'/>
         <enumerator name='_S_red' value='0'/>
         <enumerator name='_S_black' value='1'/>
@@ -11599,7 +11599,7 @@
     <pointer-type-def type-id='type-id-850' size-in-bits='64' id='type-id-862'/>
     <class-decl name='OffloadDescriptor' size-in-bits='2368' is-struct='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_host.h' line='68' column='1' id='type-id-853'>
       <member-type access='public'>
-        <enum-decl name='OmpAsyncLastEventType' id='type-id-994'>
+        <enum-decl name='OmpAsyncLastEventType' filepath='../../../gcc/liboffloadmic/runtime/offload_host.h' line='71' column='1' id='type-id-994'>
           <underlying-type type-id='type-id-154'/>
           <enumerator name='c_last_not' value='0'/>
           <enumerator name='c_last_write' value='1'/>
@@ -16349,7 +16349,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-1292' size-in-bits='64' id='type-id-1129'/>
     <reference-type-def kind='lvalue' type-id='type-id-1293' size-in-bits='64' id='type-id-1130'/>
     <qualified-type-def type-id='type-id-860' id='type-id-1141'/>
-    <enum-decl name='COIRESULT' id='type-id-1170'>
+    <enum-decl name='COIRESULT' filepath='../../../gcc/liboffloadmic/include/coi/source/../common/COIResult_common.h' line='57' column='1' id='type-id-1170'>
       <underlying-type type-id='type-id-154'/>
       <enumerator name='COI_SUCCESS' value='0'/>
       <enumerator name='COI_ERROR' value='1'/>
@@ -16382,7 +16382,7 @@
       <enumerator name='COI_AUTHENTICATION_FAILURE' value='28'/>
       <enumerator name='COI_NUM_RESULTS' value='29'/>
     </enum-decl>
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='15_Offload_result' id='type-id-1172'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='15_Offload_result' filepath='../../../gcc/liboffloadmic/runtime/offload.h' line='80' column='1' id='type-id-1172'>
       <underlying-type type-id='type-id-154'/>
       <enumerator name='OFFLOAD_SUCCESS' value='0'/>
       <enumerator name='OFFLOAD_DISABLED' value='1'/>
@@ -16391,7 +16391,7 @@
       <enumerator name='OFFLOAD_PROCESS_DIED' value='4'/>
       <enumerator name='OFFLOAD_ERROR' value='5'/>
     </enum-decl>
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='11error_types' id='type-id-1176'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='11error_types' filepath='../../../gcc/liboffloadmic/runtime/liboffload_error_codes.h' line='38' column='1' id='type-id-1176'>
       <underlying-type type-id='type-id-154'/>
       <enumerator name='c_device_is_not_available' value='0'/>
       <enumerator name='c_invalid_device_number' value='1'/>
@@ -17789,7 +17789,7 @@
         <typedef-decl name='SignalMap' type-id='type-id-1409' filepath='../../../gcc/liboffloadmic/runtime/offload_engine.h' line='608' column='1' id='type-id-1408'/>
       </member-type>
       <member-type access='private'>
-        <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-1410'>
+        <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='../../../gcc/liboffloadmic/runtime/offload_engine.h' line='647' column='1' id='type-id-1410'>
           <underlying-type type-id='type-id-154'/>
           <enumerator name='c_func_compute' value='0'/>
           <enumerator name='c_func_myo_init' value='1'/>
@@ -17802,7 +17802,7 @@
         </enum-decl>
       </member-type>
       <member-type access='private'>
-        <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-1410'>
+        <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='../../../gcc/liboffloadmic/runtime/offload_engine.h' line='647' column='1' id='type-id-1410'>
           <underlying-type type-id='type-id-154'/>
           <enumerator name='c_func_compute' value='0'/>
           <enumerator name='c_func_myo_init' value='1'/>
@@ -28282,7 +28282,7 @@
 
 
 
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='12COI_ISA_TYPE' id='type-id-2279'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='12COI_ISA_TYPE' filepath='../../../gcc/liboffloadmic/include/coi/source/../common/COIEngine_common.h' line='70' column='1' id='type-id-2279'>
       <underlying-type type-id='type-id-154'/>
       <enumerator name='COI_ISA_INVALID' value='0'/>
       <enumerator name='COI_ISA_x86_64' value='1'/>
@@ -28326,7 +28326,7 @@
     <class-decl name='coibuffer' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-794'/>
     <qualified-type-def type-id='type-id-620' const='yes' id='type-id-2309'/>
     <pointer-type-def type-id='type-id-2309' size-in-bits='64' id='type-id-2310'/>
-    <enum-decl name='COI_ACCESS_FLAGS' id='type-id-2311'>
+    <enum-decl name='COI_ACCESS_FLAGS' filepath='../../../gcc/liboffloadmic/include/coi/source/COIPipeline_source.h' line='69' column='1' id='type-id-2311'>
       <underlying-type type-id='type-id-154'/>
       <enumerator name='COI_SINK_READ' value='1'/>
       <enumerator name='COI_SINK_WRITE' value='2'/>
@@ -28339,7 +28339,7 @@
     <qualified-type-def type-id='type-id-2312' const='yes' id='type-id-2313'/>
     <pointer-type-def type-id='type-id-2313' size-in-bits='64' id='type-id-2314'/>
     <pointer-type-def type-id='type-id-2315' size-in-bits='64' id='type-id-2261'/>
-    <enum-decl name='COI_BUFFER_TYPE' id='type-id-2316'>
+    <enum-decl name='COI_BUFFER_TYPE' filepath='../../../gcc/liboffloadmic/include/coi/source/COIBuffer_source.h' line='65' column='1' id='type-id-2316'>
       <underlying-type type-id='type-id-154'/>
       <enumerator name='COI_BUFFER_NORMAL' value='1'/>
       <enumerator name='COI_BUFFER_RESERVED_1' value='2'/>
@@ -28352,7 +28352,7 @@
     <pointer-type-def type-id='type-id-620' size-in-bits='64' id='type-id-2319'/>
     <pointer-type-def type-id='type-id-2320' size-in-bits='64' id='type-id-2262'/>
     <pointer-type-def type-id='type-id-2321' size-in-bits='64' id='type-id-2263'/>
-    <enum-decl name='COI_MAP_TYPE' id='type-id-2322'>
+    <enum-decl name='COI_MAP_TYPE' filepath='../../../gcc/liboffloadmic/include/coi/source/COIBuffer_source.h' line='183' column='1' id='type-id-2322'>
       <underlying-type type-id='type-id-154'/>
       <enumerator name='COI_MAP_READ_WRITE' value='1'/>
       <enumerator name='COI_MAP_READ_ONLY' value='2'/>
@@ -28365,7 +28365,7 @@
     <pointer-type-def type-id='type-id-2326' size-in-bits='64' id='type-id-2327'/>
     <pointer-type-def type-id='type-id-2328' size-in-bits='64' id='type-id-2264'/>
     <pointer-type-def type-id='type-id-2329' size-in-bits='64' id='type-id-2265'/>
-    <enum-decl name='COI_COPY_TYPE' id='type-id-2330'>
+    <enum-decl name='COI_COPY_TYPE' filepath='../../../gcc/liboffloadmic/include/coi/source/COIBuffer_source.h' line='240' column='1' id='type-id-2330'>
       <underlying-type type-id='type-id-154'/>
       <enumerator name='COI_COPY_UNSPECIFIED' value='0'/>
       <enumerator name='COI_COPY_USE_DMA' value='1'/>
@@ -28380,7 +28380,7 @@
     <pointer-type-def type-id='type-id-2334' size-in-bits='64' id='type-id-2268'/>
     <pointer-type-def type-id='type-id-2335' size-in-bits='64' id='type-id-2269'/>
     <pointer-type-def type-id='type-id-2336' size-in-bits='64' id='type-id-2270'/>
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='16COI_BUFFER_STATE' id='type-id-2337'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='16COI_BUFFER_STATE' filepath='../../../gcc/liboffloadmic/include/coi/source/COIBuffer_source.h' line='335' column='1' id='type-id-2337'>
       <underlying-type type-id='type-id-154'/>
       <enumerator name='COI_BUFFER_VALID' value='0'/>
       <enumerator name='COI_BUFFER_INVALID' value='1'/>
@@ -28388,7 +28388,7 @@
       <enumerator name='COI_BUFFER_RESERVED' value='3'/>
     </enum-decl>
     <typedef-decl name='COI_BUFFER_STATE' type-id='type-id-2337' filepath='../../../gcc/liboffloadmic/include/coi/source/COIBuffer_source.h' line='342' column='1' id='type-id-2338'/>
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='20COI_BUFFER_MOVE_FLAG' id='type-id-2339'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='20COI_BUFFER_MOVE_FLAG' filepath='../../../gcc/liboffloadmic/include/coi/source/COIBuffer_source.h' line='359' column='1' id='type-id-2339'>
       <underlying-type type-id='type-id-154'/>
       <enumerator name='COI_BUFFER_MOVE' value='0'/>
       <enumerator name='COI_BUFFER_NO_MOVE' value='1'/>
@@ -28452,7 +28452,7 @@
     <array-type-def dimensions='1' type-id='type-id-411' size-in-bits='8160' id='type-id-2347'>
       <subrange length='255'/>
     </array-type-def>
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='12coi_eng_misc' id='type-id-2350'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='12coi_eng_misc' filepath='../../../gcc/liboffloadmic/include/coi/source/COIEngine_source.h' line='70' column='1' id='type-id-2350'>
       <underlying-type type-id='type-id-154'/>
       <enumerator name='COI_ENG_ECC_DISABLED' value='0'/>
       <enumerator name='COI_ENG_ECC_ENABLED' value='1'/>
@@ -31606,7 +31606,7 @@
       <parameter type-id='type-id-11' name='signal' filepath='../../../gcc/liboffloadmic/runtime/compiler_if_host.cpp' line='399' column='1'/>
       <return type-id='type-id-31'/>
     </function-decl>
-    <enum-decl name='TARGET_TYPE' id='type-id-2526'>
+    <enum-decl name='TARGET_TYPE' filepath='../../../gcc/liboffloadmic/runtime/offload.h' line='61' column='1' id='type-id-2526'>
       <underlying-type type-id='type-id-154'/>
       <enumerator name='TARGET_NONE' value='0'/>
       <enumerator name='TARGET_HOST' value='1'/>
@@ -38641,7 +38641,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-2812' size-in-bits='64' id='type-id-2823'/>
     <pointer-type-def type-id='type-id-2814' size-in-bits='64' id='type-id-2824'/>
     <pointer-type-def type-id='type-id-904' size-in-bits='64' id='type-id-3059'/>
-    <enum-decl name='MicEnvVarKind' id='type-id-3061'>
+    <enum-decl name='MicEnvVarKind' filepath='../../../gcc/liboffloadmic/runtime/offload_env.h' line='39' column='1' id='type-id-3061'>
       <underlying-type type-id='type-id-154'/>
       <enumerator name='c_no_mic' value='0'/>
       <enumerator name='c_mic_var' value='1'/>
@@ -40592,7 +40592,7 @@
     <var-decl name='mic_proxy_io' type-id='type-id-59' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_host.h' line='412' column='1'/>
     <var-decl name='mic_proxy_fs_root' type-id='type-id-6' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_host.h' line='413' column='1'/>
     <var-decl name='__offload_use_2mb_buffers' type-id='type-id-52' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_host.h' line='416' column='1'/>
-    <enum-decl name='OffloadInitType' id='type-id-3214'>
+    <enum-decl name='OffloadInitType' filepath='../../../gcc/liboffloadmic/runtime/offload_host.h' line='366' column='1' id='type-id-3214'>
       <underlying-type type-id='type-id-154'/>
       <enumerator name='c_init_on_start' value='0'/>
       <enumerator name='c_init_on_offload' value='1'/>
@@ -40772,7 +40772,7 @@
         </function-decl>
       </member-function>
     </class-decl>
-    <enum-decl name='OffloadHostPhase' id='type-id-3226'>
+    <enum-decl name='OffloadHostPhase' filepath='../../../gcc/liboffloadmic/runtime/liboffload_error_codes.h' line='186' column='1' id='type-id-3226'>
       <underlying-type type-id='type-id-154'/>
       <enumerator name='c_offload_host_total_offload' value='0'/>
       <enumerator name='c_offload_host_initialize' value='1'/>
@@ -42903,7 +42903,7 @@
       <parameter type-id='type-id-4' name='align' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='1151' column='1'/>
       <return type-id='type-id-2'/>
     </function-decl>
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='16MyoOwnershipType' id='type-id-3365'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='16MyoOwnershipType' filepath='../../../gcc/liboffloadmic/include/myo/myotypes.h' line='83' column='1' id='type-id-3365'>
       <underlying-type type-id='type-id-154'/>
       <enumerator name='MYO_ARENA_MINE' value='1'/>
       <enumerator name='MYO_ARENA_OURS' value='2'/>
@@ -43223,7 +43223,7 @@
         </function-decl>
       </member-function>
     </class-decl>
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='8MyoError' id='type-id-3390'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='8MyoError' filepath='../../../gcc/liboffloadmic/include/myo/myotypes.h' line='61' column='1' id='type-id-3390'>
       <underlying-type type-id='type-id-154'/>
       <enumerator name='MYO_SUCCESS' value='0'/>
       <enumerator name='MYO_ERROR' value='1'/>
@@ -44034,7 +44034,7 @@
       <parameter type-id='type-id-3417' name='lock' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='307' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <enum-decl name='omp_sched_t' id='type-id-3418'>
+    <enum-decl name='omp_sched_t' filepath='./../libgomp/omp.h' line='48' column='1' id='type-id-3418'>
       <underlying-type type-id='type-id-154'/>
       <enumerator name='omp_sched_static' value='1'/>
       <enumerator name='omp_sched_dynamic' value='2'/>
@@ -45456,7 +45456,7 @@
         <var-decl name='cpu_set' type-id='type-id-3432' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='55' column='1'/>
       </data-member>
     </class-decl>
-    <enum-decl name='ORSLBusySetType' id='type-id-3433'>
+    <enum-decl name='ORSLBusySetType' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='45' column='1' id='type-id-3433'>
       <underlying-type type-id='type-id-154'/>
       <enumerator name='BUSY_SET_EMPTY' value='0'/>
       <enumerator name='BUSY_SET_PARTIAL' value='1'/>
@@ -45485,7 +45485,7 @@
       <parameter type-id='type-id-3441' name='tag' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='329' column='1'/>
       <return type-id='type-id-31'/>
     </function-decl>
-    <enum-decl name='ORSLPartialGranularity' id='type-id-3442'>
+    <enum-decl name='ORSLPartialGranularity' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='148' column='1' id='type-id-3442'>
       <underlying-type type-id='type-id-154'/>
       <enumerator name='GRAN_CARD' value='0'/>
       <enumerator name='GRAN_THREAD' value='1'/>

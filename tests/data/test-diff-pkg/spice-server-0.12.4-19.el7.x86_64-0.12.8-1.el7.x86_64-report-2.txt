@@ -442,7 +442,7 @@
 
     [C]'function spice_image_compression_t spice_server_get_image_compression(SpiceServer*)' at reds.c:3618:1 has some indirect sub-type changes:
       return type changed:
-        underlying type 'enum __anonymous_enum__' changed:
+        underlying type 'enum __anonymous_enum__' at enums.h:186:1 changed:
           type size hasn't changed
           7 enumerator deletions:
             '__anonymous_enum__::SPICE_IMAGE_COMPRESS_INVALID' value '0'
@@ -568,7 +568,7 @@
         in pointed to type 'typedef SpiceServer' at spice-server.h:38:1:
           underlying type 'struct RedsState' changed, as reported earlier
       parameter 2 of type 'typedef spice_image_compression_t' changed:
-        underlying type 'enum __anonymous_enum__' changed:
+        underlying type 'enum __anonymous_enum__' at enums.h:186:1 changed:
           type size hasn't changed
           7 enumerator deletions:
             '__anonymous_enum__::SPICE_IMAGE_COMPRESS_INVALID' value '0'

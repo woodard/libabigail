@@ -3087,7 +3087,7 @@
         <return type-id='type-id-6'/>
       </function-decl>
       <!-- enum __tsan::MBlockType -->
-      <enum-decl name='MBlockType' id='type-id-7'>
+      <enum-decl name='MBlockType' filepath='../../.././libsanitizer/tsan/tsan_mman.h' line='41' column='1' id='type-id-7'>
         <underlying-type type-id='type-id-8'/>
         <enumerator name='MBlockScopedBuf' value='0'/>
         <enumerator name='MBlockString' value='1'/>
@@ -3718,7 +3718,7 @@
         </data-member>
       </class-decl>
       <!-- enum __sanitizer::AllocatorStat -->
-      <enum-decl name='AllocatorStat' id='type-id-45'>
+      <enum-decl name='AllocatorStat' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_allocator.h' line='198' column='1' id='type-id-45'>
         <underlying-type type-id='type-id-8'/>
         <enumerator name='AllocatorStatMalloced' value='0'/>
         <enumerator name='AllocatorStatFreed' value='1'/>
@@ -6111,7 +6111,7 @@
         </data-member>
       </class-decl>
       <!-- enum __sanitizer::SuppressionType -->
-      <enum-decl name='SuppressionType' id='type-id-144'>
+      <enum-decl name='SuppressionType' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_suppressions.h' line='19' column='1' id='type-id-144'>
         <underlying-type type-id='type-id-8'/>
         <enumerator name='SuppressionNone' value='0'/>
         <enumerator name='SuppressionRace' value='1'/>
@@ -7080,7 +7080,7 @@
         </member-function>
       </class-decl>
       <!-- enum __tsan::MutexType -->
-      <enum-decl name='MutexType' id='type-id-181'>
+      <enum-decl name='MutexType' filepath='../../.././libsanitizer/tsan/tsan_mutex.h' line='20' column='1' id='type-id-181'>
         <underlying-type type-id='type-id-8'/>
         <enumerator name='MutexTypeInvalid' value='0'/>
         <enumerator name='MutexTypeTrace' value='1'/>
@@ -7527,7 +7527,7 @@
         </member-function>
       </class-decl>
       <!-- enum __tsan::StatType -->
-      <enum-decl name='StatType' id='type-id-199'>
+      <enum-decl name='StatType' filepath='../../.././libsanitizer/tsan/tsan_stat.h' line='17' column='1' id='type-id-199'>
         <underlying-type type-id='type-id-8'/>
         <enumerator name='StatMop' value='0'/>
         <enumerator name='StatMopRead' value='1'/>
@@ -8451,7 +8451,7 @@
         </data-member>
       </class-decl>
       <!-- enum __tsan::ReportType -->
-      <enum-decl name='ReportType' id='type-id-223'>
+      <enum-decl name='ReportType' filepath='../../.././libsanitizer/tsan/tsan_report.h' line='19' column='1' id='type-id-223'>
         <underlying-type type-id='type-id-8'/>
         <enumerator name='ReportTypeRace' value='0'/>
         <enumerator name='ReportTypeVptrRace' value='1'/>
@@ -8594,7 +8594,7 @@
         <return type-id='type-id-2'/>
       </function-decl>
       <!-- enum __tsan::EventType -->
-      <enum-decl name='EventType' id='type-id-225'>
+      <enum-decl name='EventType' filepath='../../.././libsanitizer/tsan/tsan_trace.h' line='27' column='1' id='type-id-225'>
         <underlying-type type-id='type-id-8'/>
         <enumerator name='EventTypeMop' value='0'/>
         <enumerator name='EventTypeFuncEnter' value='1'/>
@@ -8823,7 +8823,7 @@
     <!-- __sanitizer::BlockingMutex* -->
     <pointer-type-def type-id='type-id-66' size-in-bits='64' id='type-id-75'/>
     <!-- enum LinkerInitialized -->
-    <enum-decl name='LinkerInitialized' id='type-id-76'>
+    <enum-decl name='LinkerInitialized' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_internal_defs.h' line='283' column='1' id='type-id-76'>
       <underlying-type type-id='type-id-8'/>
       <enumerator name='LINKER_INITIALIZED' value='0'/>
     </enum-decl>
@@ -9095,7 +9095,7 @@
     <!-- const volatile void* -->
     <pointer-type-def type-id='type-id-258' size-in-bits='64' id='type-id-255'/>
     <!-- enum __anonymous_enum__ -->
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='19__tsan_memory_order' id='type-id-259'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='19__tsan_memory_order' filepath='../../.././libsanitizer/tsan/tsan_interface_atomic.h' line='38' column='1' id='type-id-259'>
       <underlying-type type-id='type-id-8'/>
       <enumerator name='__tsan_memory_order_relaxed' value='0'/>
       <enumerator name='__tsan_memory_order_consume' value='1'/>
@@ -9918,7 +9918,7 @@
     </array-type-def>
     <namespace-decl name='__sanitizer'>
       <!-- enum __sanitizer::ThreadStatus -->
-      <enum-decl name='ThreadStatus' id='type-id-131'>
+      <enum-decl name='ThreadStatus' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_thread_registry.h' line='22' column='1' id='type-id-131'>
         <underlying-type type-id='type-id-8'/>
         <enumerator name='ThreadStatusInvalid' value='0'/>
         <enumerator name='ThreadStatusCreated' value='1'/>
@@ -10013,7 +10013,7 @@
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
       <!-- enum __sanitizer::memory_order -->
-      <enum-decl name='memory_order' id='type-id-304'>
+      <enum-decl name='memory_order' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_atomic.h' line='19' column='1' id='type-id-304'>
         <underlying-type type-id='type-id-8'/>
         <enumerator name='memory_order_relaxed' value='1'/>
         <enumerator name='memory_order_consume' value='2'/>
@@ -11214,7 +11214,7 @@
         </data-member>
       </class-decl>
       <!-- enum __tsan::ReportLocationType -->
-      <enum-decl name='ReportLocationType' id='type-id-358'>
+      <enum-decl name='ReportLocationType' filepath='../../.././libsanitizer/tsan/tsan_report.h' line='57' column='1' id='type-id-358'>
         <underlying-type type-id='type-id-8'/>
         <enumerator name='ReportLocationGlobal' value='0'/>
         <enumerator name='ReportLocationHeap' value='1'/>
@@ -17944,7 +17944,7 @@
     <class-decl name='ioctl_desc' size-in-bits='128' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors_ioctl.inc' line='13' column='1' id='type-id-625'>
       <member-type access='public'>
         <!-- enum ioctl_desc::__anonymous_enum__ -->
-        <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-626'>
+        <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors_ioctl.inc' line='16' column='1' id='type-id-626'>
           <underlying-type type-id='type-id-8'/>
           <enumerator name='NONE' value='0'/>
           <enumerator name='READ' value='1'/>
@@ -42887,7 +42887,7 @@
     <!-- _Unwind_Context* -->
     <pointer-type-def type-id='type-id-1601' size-in-bits='64' id='type-id-1597'/>
     <!-- enum __anonymous_enum__ -->
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='19_Unwind_Reason_Code' id='type-id-1602'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='19_Unwind_Reason_Code' filepath='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/host-x86_64-unknown-linux-gnu/gcc/include/unwind.h' line='66' column='1' id='type-id-1602'>
       <underlying-type type-id='type-id-8'/>
       <enumerator name='_URC_NO_REASON' value='0'/>
       <enumerator name='_URC_FOREIGN_EXCEPTION_CAUGHT' value='1'/>
@@ -47698,7 +47698,7 @@
       </data-member>
     </class-decl>
     <!-- enum demangle_component_type -->
-    <enum-decl name='demangle_component_type' id='type-id-1697'>
+    <enum-decl name='demangle_component_type' filepath='../../.././libsanitizer/../include/demangle.h' line='223' column='1' id='type-id-1697'>
       <underlying-type type-id='type-id-8'/>
       <enumerator name='DEMANGLE_COMPONENT_NAME' value='0'/>
       <enumerator name='DEMANGLE_COMPONENT_QUAL_NAME' value='1'/>
@@ -47909,7 +47909,7 @@
       </data-member>
     </class-decl>
     <!-- enum gnu_v3_ctor_kinds -->
-    <enum-decl name='gnu_v3_ctor_kinds' id='type-id-1715'>
+    <enum-decl name='gnu_v3_ctor_kinds' filepath='../../.././libsanitizer/../include/demangle.h' line='172' column='1' id='type-id-1715'>
       <underlying-type type-id='type-id-8'/>
       <enumerator name='gnu_v3_complete_object_ctor' value='1'/>
       <enumerator name='gnu_v3_base_object_ctor' value='2'/>
@@ -47929,7 +47929,7 @@
       </data-member>
     </class-decl>
     <!-- enum gnu_v3_dtor_kinds -->
-    <enum-decl name='gnu_v3_dtor_kinds' id='type-id-1716'>
+    <enum-decl name='gnu_v3_dtor_kinds' filepath='../../.././libsanitizer/../include/demangle.h' line='191' column='1' id='type-id-1716'>
       <underlying-type type-id='type-id-8'/>
       <enumerator name='gnu_v3_deleting_dtor' value='1'/>
       <enumerator name='gnu_v3_complete_object_dtor' value='2'/>
@@ -47968,7 +47968,7 @@
       </data-member>
     </class-decl>
     <!-- enum d_builtin_type_print -->
-    <enum-decl name='d_builtin_type_print' id='type-id-1719'>
+    <enum-decl name='d_builtin_type_print' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.h' line='51' column='1' id='type-id-1719'>
       <underlying-type type-id='type-id-8'/>
       <enumerator name='D_PRINT_DEFAULT' value='0'/>
       <enumerator name='D_PRINT_INT' value='1'/>

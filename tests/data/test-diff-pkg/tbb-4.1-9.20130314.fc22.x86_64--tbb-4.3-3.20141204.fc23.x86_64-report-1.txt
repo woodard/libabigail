@@ -33,7 +33,7 @@
           'tbb::internal::exception_id::eid_bad_tagged_msg_cast' value '20'
 
         1 enumerator change:
-          'tbb::internal::exception_id::eid_max' from value '20' to '21'
+          'tbb::internal::exception_id::eid_max' from value '20' to '21' at tbb_exception.h:79:1
 
 
     [C]'method void tbb::mutex::scoped_lock::internal_acquire(tbb::mutex&)' at mutex.h:129:1 has some indirect sub-type changes:

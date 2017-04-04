@@ -465,7 +465,7 @@
       </data-member>
     </class-decl>
     <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-50'/>
-    <enum-decl name='TessState' id='type-id-31'>
+    <enum-decl name='TessState' filepath='libtess/tess.h' line='47' column='1' id='type-id-31'>
       <underlying-type type-id='type-id-50'/>
       <enumerator name='T_DORMANT' value='0'/>
       <enumerator name='T_IN_POLYGON' value='1'/>
@@ -890,7 +890,7 @@
   <abi-instr version='1.0' address-size='64' path='libtess/tessmono.c' language='LANG_C99'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/interface/bezierEval.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/interface/bezierPatch.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/interface/bezierPatchMesh.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/interface/glcurveval.cc' language='LANG_C_plus_plus'>
     <class-decl name='CachingEvaluator' size-in-bits='64' visibility='default' filepath='libnurbs/internals/cachingeval.h' line='39' column='1' id='type-id-117'>
       <member-type access='private'>
-        <enum-decl name='ServiceMode' id='type-id-118'>
+        <enum-decl name='ServiceMode' filepath='libnurbs/internals/cachingeval.h' line='42' column='1' id='type-id-118'>
           <underlying-type type-id='type-id-50'/>
           <enumerator name='play' value='0'/>
           <enumerator name='record' value='1'/>
@@ -3504,7 +3504,7 @@
     </class-decl>
     <class-decl name='Pool' size-in-bits='2496' visibility='default' filepath='libnurbs/internals/bufpool.h' line='50' column='1' id='type-id-167'>
       <member-type access='protected'>
-        <enum-decl name='Magic' id='type-id-205'>
+        <enum-decl name='Magic' filepath='libnurbs/internals/bufpool.h' line='70' column='1' id='type-id-205'>
           <underlying-type type-id='type-id-50'/>
           <enumerator name='is_allocated' value='62369'/>
           <enumerator name='is_free' value='61858'/>
@@ -3584,7 +3584,7 @@
     </class-decl>
     <class-decl name='Subdivider' size-in-bits='20416' visibility='default' filepath='libnurbs/internals/subdivider.h' line='55' column='1' id='type-id-165'>
       <member-type access='private'>
-        <enum-decl name='dir' id='type-id-210'>
+        <enum-decl name='dir' filepath='libnurbs/internals/subdivider.h' line='105' column='1' id='type-id-210'>
           <underlying-type type-id='type-id-50'/>
           <enumerator name='down' value='0'/>
           <enumerator name='same' value='1'/>
@@ -6074,7 +6074,7 @@
       </member-function>
     </class-decl>
     <qualified-type-def type-id='type-id-122' const='yes' id='type-id-267'/>
-    <enum-decl name='Curvetype' id='type-id-271'>
+    <enum-decl name='Curvetype' filepath='libnurbs/internals/reader.h' line='42' column='1' id='type-id-271'>
       <underlying-type type-id='type-id-50'/>
       <enumerator name='ct_nurbscurve' value='0'/>
       <enumerator name='ct_pwlcurve' value='1'/>
@@ -8271,7 +8271,7 @@
         </function-decl>
       </member-function>
     </class-decl>
-    <enum-decl name='arc_side' id='type-id-335'>
+    <enum-decl name='arc_side' filepath='libnurbs/internals/arc.h' line='52' column='1' id='type-id-335'>
       <underlying-type type-id='type-id-50'/>
       <enumerator name='arc_none' value='0'/>
       <enumerator name='arc_right' value='1'/>

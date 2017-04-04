@@ -2209,7 +2209,7 @@
     <!-- unnamed&#45;enum&#45;underlying&#45;type -->
     <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-86'/>
     <!-- enum __anonymous_enum__ -->
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='10pp_padding' id='type-id-87'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='10pp_padding' filepath='../.././gcc/pretty-print.h' line='106' column='1' id='type-id-87'>
       <underlying-type type-id='type-id-86'/>
       <enumerator name='pp_none' value='0'/>
       <enumerator name='pp_before' value='1'/>
@@ -2229,7 +2229,7 @@
       </data-member>
     </class-decl>
     <!-- enum __anonymous_enum__ -->
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='27diagnostic_prefixing_rule_t' id='type-id-90'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='27diagnostic_prefixing_rule_t' filepath='../.././gcc/pretty-print.h' line='48' column='1' id='type-id-90'>
       <underlying-type type-id='type-id-86'/>
       <enumerator name='DIAGNOSTICS_SHOW_PREFIX_ONCE' value='0'/>
       <enumerator name='DIAGNOSTICS_SHOW_PREFIX_NEVER' value='1'/>
@@ -2297,7 +2297,7 @@
       <subrange length='12'/>
     </array-type-def>
     <!-- enum __anonymous_enum__ -->
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='12diagnostic_t' id='type-id-105'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='12diagnostic_t' filepath='../.././gcc/diagnostic-core.h' line='32' column='1' id='type-id-105'>
       <underlying-type type-id='type-id-86'/>
       <enumerator name='DK_UNSPECIFIED' value='0'/>
       <enumerator name='DK_IGNORED' value='1'/>
@@ -2496,7 +2496,7 @@
     <!-- source_location* -->
     <pointer-type-def type-id='type-id-100' size-in-bits='64' id='type-id-128'/>
     <!-- enum lc_reason -->
-    <enum-decl name='lc_reason' id='type-id-124'>
+    <enum-decl name='lc_reason' filepath='../.././gcc/../libcpp/include/line-map.h' line='37' column='1' id='type-id-124'>
       <underlying-type type-id='type-id-86'/>
       <enumerator name='LC_ENTER' value='0'/>
       <enumerator name='LC_LEAVE' value='1'/>
@@ -2558,7 +2558,7 @@
     <!-- const pex_funcs* -->
     <pointer-type-def type-id='type-id-138' size-in-bits='64' id='type-id-28'/>
     <!-- enum node_type -->
-    <enum-decl name='node_type' id='type-id-131'>
+    <enum-decl name='node_type' filepath='../.././libcpp/include/cpplib.h' line='614' column='1' id='type-id-131'>
       <underlying-type type-id='type-id-86'/>
       <enumerator name='NT_VOID' value='0'/>
       <enumerator name='NT_MACRO' value='1'/>
@@ -2716,7 +2716,7 @@
     <!-- cpp_macro* -->
     <pointer-type-def type-id='type-id-148' size-in-bits='64' id='type-id-142'/>
     <!-- enum cpp_builtin_type -->
-    <enum-decl name='cpp_builtin_type' id='type-id-144'>
+    <enum-decl name='cpp_builtin_type' filepath='../.././libcpp/include/cpplib.h' line='623' column='1' id='type-id-144'>
       <underlying-type type-id='type-id-86'/>
       <enumerator name='BT_SPECLINE' value='0'/>
       <enumerator name='BT_DATE' value='1'/>
@@ -3044,7 +3044,7 @@
     <!-- cpp_token* -->
     <pointer-type-def type-id='type-id-160' size-in-bits='64' id='type-id-175'/>
     <!-- enum cpp_ttype -->
-    <enum-decl name='cpp_ttype' id='type-id-178'>
+    <enum-decl name='cpp_ttype' filepath='../.././libcpp/include/cpplib.h' line='153' column='1' id='type-id-178'>
       <underlying-type type-id='type-id-86'/>
       <enumerator name='CPP_EQ' value='0'/>
       <enumerator name='CPP_NOT' value='1'/>
@@ -3565,7 +3565,7 @@
     <!-- typedef htab* htab_t -->
     <typedef-decl name='htab_t' type-id='type-id-210' filepath='../.././gcc/../include/hashtab.h' line='144' column='1' id='type-id-211'/>
     <!-- enum insert_option -->
-    <enum-decl name='insert_option' id='type-id-212'>
+    <enum-decl name='insert_option' filepath='../.././gcc/../include/hashtab.h' line='147' column='1' id='type-id-212'>
       <underlying-type type-id='type-id-86'/>
       <enumerator name='NO_INSERT' value='0'/>
       <enumerator name='INSERT' value='1'/>
@@ -4232,7 +4232,7 @@
       <return type-id='type-id-8'/>
     </function-decl>
     <!-- enum gt_types_enum -->
-    <enum-decl name='gt_types_enum' id='type-id-213'>
+    <enum-decl name='gt_types_enum' filepath='./gtype-desc.h' line='23' column='1' id='type-id-213'>
       <underlying-type type-id='type-id-86'/>
       <enumerator name='gt_ggc_e_24lazy_hex_fp_value_struct' value='0'/>
       <enumerator name='gt_ggc_e_15c_inline_static' value='1'/>
@@ -5535,7 +5535,7 @@
     <!-- line_maps* -->
     <pointer-type-def type-id='type-id-215' size-in-bits='64' id='type-id-224'/>
     <!-- enum location_resolution_kind -->
-    <enum-decl name='location_resolution_kind' id='type-id-225'>
+    <enum-decl name='location_resolution_kind' filepath='../.././gcc/../libcpp/include/line-map.h' line='604' column='1' id='type-id-225'>
       <underlying-type type-id='type-id-86'/>
       <enumerator name='LRK_MACRO_EXPANSION_POINT' value='0'/>
       <enumerator name='LRK_SPELLING_LOCATION' value='1'/>
@@ -7848,7 +7848,7 @@
     <!-- cpp_context* -->
     <pointer-type-def type-id='type-id-254' size-in-bits='64' id='type-id-255'/>
     <!-- enum context_tokens_kind -->
-    <enum-decl name='context_tokens_kind' id='type-id-304'>
+    <enum-decl name='context_tokens_kind' filepath='../.././libcpp/internal.h' line='161' column='1' id='type-id-304'>
       <underlying-type type-id='type-id-86'/>
       <enumerator name='TOKENS_KIND_INDIRECT' value='0'/>
       <enumerator name='TOKENS_KIND_DIRECT' value='1'/>
@@ -8421,14 +8421,14 @@
       </data-member>
     </class-decl>
     <!-- enum cpp_deps_style -->
-    <enum-decl name='cpp_deps_style' id='type-id-366'>
+    <enum-decl name='cpp_deps_style' filepath='../.././libcpp/include/cpplib.h' line='273' column='1' id='type-id-366'>
       <underlying-type type-id='type-id-86'/>
       <enumerator name='DEPS_NONE' value='0'/>
       <enumerator name='DEPS_USER' value='1'/>
       <enumerator name='DEPS_SYSTEM' value='2'/>
     </enum-decl>
     <!-- enum c_lang -->
-    <enum-decl name='c_lang' id='type-id-367'>
+    <enum-decl name='c_lang' filepath='../.././libcpp/include/cpplib.h' line='168' column='1' id='type-id-367'>
       <underlying-type type-id='type-id-86'/>
       <enumerator name='CLK_GNUC89' value='0'/>
       <enumerator name='CLK_GNUC99' value='1'/>
@@ -8444,7 +8444,7 @@
       <enumerator name='CLK_ASM' value='11'/>
     </enum-decl>
     <!-- enum cpp_normalize_level -->
-    <enum-decl name='cpp_normalize_level' id='type-id-368'>
+    <enum-decl name='cpp_normalize_level' filepath='../.././libcpp/include/cpplib.h' line='276' column='1' id='type-id-368'>
       <underlying-type type-id='type-id-86'/>
       <enumerator name='normalized_KC' value='0'/>
       <enumerator name='normalized_C' value='1'/>
@@ -9546,7 +9546,7 @@
       <return type-id='type-id-2'/>
     </function-decl>
     <!-- enum ht_lookup_option -->
-    <enum-decl name='ht_lookup_option' id='type-id-393'>
+    <enum-decl name='ht_lookup_option' filepath='../.././libcpp/include/symtab.h' line='44' column='1' id='type-id-393'>
       <underlying-type type-id='type-id-86'/>
       <enumerator name='HT_NO_INSERT' value='0'/>
       <enumerator name='HT_ALLOC' value='1'/>
@@ -10261,7 +10261,7 @@
       <return type-id='type-id-2'/>
     </function-decl>
     <!-- enum include_type -->
-    <enum-decl name='include_type' id='type-id-400'>
+    <enum-decl name='include_type' filepath='../.././libcpp/internal.h' line='120' column='1' id='type-id-400'>
       <underlying-type type-id='type-id-86'/>
       <enumerator name='IT_INCLUDE' value='0'/>
       <enumerator name='IT_INCLUDE_NEXT' value='1'/>
@@ -12116,7 +12116,7 @@
       <return type-id='type-id-250'/>
     </function-decl>
     <!-- enum cpp_token_fld_kind -->
-    <enum-decl name='cpp_token_fld_kind' id='type-id-427'>
+    <enum-decl name='cpp_token_fld_kind' filepath='../.././libcpp/include/cpplib.h' line='195' column='1' id='type-id-427'>
       <underlying-type type-id='type-id-86'/>
       <enumerator name='CPP_TOKEN_FLD_NODE' value='0'/>
       <enumerator name='CPP_TOKEN_FLD_SOURCE' value='1'/>
@@ -13457,7 +13457,7 @@
       <return type-id='type-id-8'/>
     </function-decl>
     <!-- enum demangling_styles -->
-    <enum-decl name='demangling_styles' id='type-id-434'>
+    <enum-decl name='demangling_styles' filepath='../.././libiberty/../include/demangle.h' line='78' column='1' id='type-id-434'>
       <underlying-type type-id='type-id-86'/>
       <enumerator name='no_demangling' value='-1'/>
       <enumerator name='unknown_demangling' value='0'/>
@@ -13769,7 +13769,7 @@
       </data-member>
     </class-decl>
     <!-- enum demangle_component_type -->
-    <enum-decl name='demangle_component_type' id='type-id-441'>
+    <enum-decl name='demangle_component_type' filepath='../.././libiberty/../include/demangle.h' line='215' column='1' id='type-id-441'>
       <underlying-type type-id='type-id-86'/>
       <enumerator name='DEMANGLE_COMPONENT_NAME' value='0'/>
       <enumerator name='DEMANGLE_COMPONENT_QUAL_NAME' value='1'/>
@@ -13977,7 +13977,7 @@
       </data-member>
     </class-decl>
     <!-- enum gnu_v3_ctor_kinds -->
-    <enum-decl name='gnu_v3_ctor_kinds' id='type-id-460'>
+    <enum-decl name='gnu_v3_ctor_kinds' filepath='../.././libiberty/../include/demangle.h' line='172' column='1' id='type-id-460'>
       <underlying-type type-id='type-id-86'/>
       <enumerator name='gnu_v3_complete_object_ctor' value='1'/>
       <enumerator name='gnu_v3_base_object_ctor' value='2'/>
@@ -13996,7 +13996,7 @@
       </data-member>
     </class-decl>
     <!-- enum gnu_v3_dtor_kinds -->
-    <enum-decl name='gnu_v3_dtor_kinds' id='type-id-461'>
+    <enum-decl name='gnu_v3_dtor_kinds' filepath='../.././libiberty/../include/demangle.h' line='187' column='1' id='type-id-461'>
       <underlying-type type-id='type-id-86'/>
       <enumerator name='gnu_v3_deleting_dtor' value='1'/>
       <enumerator name='gnu_v3_complete_object_dtor' value='2'/>
@@ -14034,7 +14034,7 @@
       </data-member>
     </class-decl>
     <!-- enum d_builtin_type_print -->
-    <enum-decl name='d_builtin_type_print' id='type-id-464'>
+    <enum-decl name='d_builtin_type_print' filepath='../.././libiberty/cp-demangle.h' line='51' column='1' id='type-id-464'>
       <underlying-type type-id='type-id-86'/>
       <enumerator name='D_PRINT_DEFAULT' value='0'/>
       <enumerator name='D_PRINT_INT' value='1'/>

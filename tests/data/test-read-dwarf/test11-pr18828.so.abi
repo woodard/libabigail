@@ -1763,7 +1763,7 @@
         <typedef-decl name='seconds' type-id='type-id-172' filepath='/usr/include/c++/4.9/chrono' line='536' column='1' id='type-id-179'/>
       </namespace-decl>
 
-      <enum-decl name='_Ios_Openmode' id='type-id-180'>
+      <enum-decl name='_Ios_Openmode' filepath='/usr/include/c++/4.9/bits/ios_base.h' line='103' column='1' id='type-id-180'>
         <underlying-type type-id='type-id-181'/>
         <enumerator name='_S_app' value='1'/>
         <enumerator name='_S_ate' value='2'/>
@@ -4426,7 +4426,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <enum-decl name='memory_order' id='type-id-364'>
+      <enum-decl name='memory_order' filepath='/usr/include/c++/4.9/bits/atomic_base.h' line='56' column='1' id='type-id-364'>
         <underlying-type type-id='type-id-181'/>
         <enumerator name='memory_order_relaxed' value='0'/>
         <enumerator name='memory_order_consume' value='1'/>
@@ -8123,7 +8123,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <enum-decl name='_Rb_tree_color' id='type-id-638'>
+      <enum-decl name='_Rb_tree_color' filepath='/usr/include/c++/4.9/bits/stl_tree.h' line='90' column='1' id='type-id-638'>
         <underlying-type type-id='type-id-181'/>
         <enumerator name='_S_red' value='0'/>
         <enumerator name='_S_black' value='1'/>
@@ -14244,7 +14244,7 @@
       </class-decl>
       <class-decl name='_Mutex_base&lt;(__gnu_cxx::_Lock_policy)2u&gt;' size-in-bits='8' visibility='default' filepath='/usr/include/c++/4.9/bits/shared_ptr_base.h' line='88' column='1' id='type-id-1151'>
         <member-type access='protected'>
-          <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-1155'>
+          <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/usr/include/c++/4.9/bits/shared_ptr_base.h' line='92' column='1' id='type-id-1155'>
             <underlying-type type-id='type-id-181'/>
             <enumerator name='_S_need_barriers' value='0'/>
           </enum-decl>
@@ -18972,7 +18972,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <enum-decl name='_Manager_operation' id='type-id-1614'>
+      <enum-decl name='_Manager_operation' filepath='/usr/include/c++/4.9/functional' line='1783' column='1' id='type-id-1614'>
         <underlying-type type-id='type-id-181'/>
         <enumerator name='__get_type_info' value='0'/>
         <enumerator name='__get_functor_ptr' value='1'/>
@@ -20498,7 +20498,7 @@
           <var-decl name='end' type-id='type-id-1730' visibility='default' filepath='/usr/include/c++/4.9/bits/ios_base.h' line='402' column='1'/>
         </data-member>
       </class-decl>
-      <enum-decl name='_Ios_Fmtflags' id='type-id-1721'>
+      <enum-decl name='_Ios_Fmtflags' filepath='/usr/include/c++/4.9/bits/ios_base.h' line='51' column='1' id='type-id-1721'>
         <underlying-type type-id='type-id-181'/>
         <enumerator name='_S_boolalpha' value='1'/>
         <enumerator name='_S_dec' value='2'/>
@@ -20520,7 +20520,7 @@
         <enumerator name='_S_floatfield' value='260'/>
         <enumerator name='_S_ios_fmtflags_end' value='65536'/>
       </enum-decl>
-      <enum-decl name='_Ios_Iostate' id='type-id-1723'>
+      <enum-decl name='_Ios_Iostate' filepath='/usr/include/c++/4.9/bits/ios_base.h' line='143' column='1' id='type-id-1723'>
         <underlying-type type-id='type-id-181'/>
         <enumerator name='_S_goodbit' value='0'/>
         <enumerator name='_S_badbit' value='1'/>
@@ -20528,7 +20528,7 @@
         <enumerator name='_S_failbit' value='4'/>
         <enumerator name='_S_ios_iostate_end' value='65536'/>
       </enum-decl>
-      <enum-decl name='_Ios_Seekdir' id='type-id-1726'>
+      <enum-decl name='_Ios_Seekdir' filepath='/usr/include/c++/4.9/bits/ios_base.h' line='181' column='1' id='type-id-1726'>
         <underlying-type type-id='type-id-181'/>
         <enumerator name='_S_beg' value='0'/>
         <enumerator name='_S_cur' value='1'/>
@@ -25810,7 +25810,7 @@
             </function-decl>
           </member-function>
         </class-decl>
-        <enum-decl name='OptionType' id='type-id-2226'>
+        <enum-decl name='OptionType' filepath='src/mongo/util/options_parser/option_description.h' line='45' column='1' id='type-id-2226'>
           <underlying-type type-id='type-id-181'/>
           <enumerator name='StringVector' value='0'/>
           <enumerator name='StringMap' value='1'/>
@@ -25847,7 +25847,7 @@
             </union-decl>
           </member-type>
           <member-type access='private'>
-            <enum-decl name='Type' id='type-id-2234'>
+            <enum-decl name='Type' filepath='src/mongo/util/options_parser/value.h' line='150' column='1' id='type-id-2234'>
               <underlying-type type-id='type-id-181'/>
               <enumerator name='StringVector' value='0'/>
               <enumerator name='StringMap' value='1'/>
@@ -26073,7 +26073,7 @@
         </class-decl>
         <typedef-decl name='StringVector_t' type-id='type-id-466' filepath='src/mongo/util/options_parser/value.h' line='46' column='1' id='type-id-2235'/>
         <typedef-decl name='StringMap_t' type-id='type-id-553' filepath='src/mongo/util/options_parser/value.h' line='45' column='1' id='type-id-2236'/>
-        <enum-decl name='OptionSources' id='type-id-2228'>
+        <enum-decl name='OptionSources' filepath='src/mongo/util/options_parser/option_description.h' line='61' column='1' id='type-id-2228'>
           <underlying-type type-id='type-id-181'/>
           <enumerator name='SourceCommandLine' value='1'/>
           <enumerator name='SourceINIConfig' value='2'/>
@@ -26709,7 +26709,7 @@
         </class-decl>
         <class-decl name='LogComponent' size-in-bits='32' visibility='default' filepath='src/mongo/logger/log_component.h' line='43' column='1' id='type-id-2268'>
           <member-type access='public'>
-            <enum-decl name='Value' id='type-id-2286'>
+            <enum-decl name='Value' filepath='src/mongo/logger/log_component.h' line='45' column='1' id='type-id-2286'>
               <underlying-type type-id='type-id-181'/>
               <enumerator name='kDefault' value='0'/>
               <enumerator name='kAccessControl' value='1'/>
@@ -27834,7 +27834,7 @@
       <typedef-decl name='AtomicUInt32' type-id='type-id-2337' filepath='src/mongo/platform/atomic_word.h' line='159' column='1' id='type-id-2326'/>
       <class-decl name='ErrorCodes' size-in-bits='8' visibility='default' filepath='build/debug/mongo/base/error_codes.h' line='45' column='1' id='type-id-2340'>
         <member-type access='public'>
-          <enum-decl name='Error' id='type-id-2329'>
+          <enum-decl name='Error' filepath='build/debug/mongo/base/error_codes.h' line='47' column='1' id='type-id-2329'>
             <underlying-type type-id='type-id-181'/>
             <enumerator name='OK' value='0'/>
             <enumerator name='InternalError' value='1'/>
@@ -29187,7 +29187,7 @@
           </class-decl>
         </member-type>
         <member-type access='public'>
-          <enum-decl name='RoundingMode' id='type-id-2392'>
+          <enum-decl name='RoundingMode' filepath='src/mongo/platform/decimal128.h' line='87' column='1' id='type-id-2392'>
             <underlying-type type-id='type-id-181'/>
             <enumerator name='kRoundTiesToEven' value='0'/>
             <enumerator name='kRoundTowardNegative' value='1'/>
@@ -29197,7 +29197,7 @@
           </enum-decl>
         </member-type>
         <member-type access='public'>
-          <enum-decl name='SignalingFlag' id='type-id-2393'>
+          <enum-decl name='SignalingFlag' filepath='src/mongo/platform/decimal128.h' line='108' column='1' id='type-id-2393'>
             <underlying-type type-id='type-id-181'/>
             <enumerator name='kNoFlag' value='0'/>
             <enumerator name='kInvalid' value='1'/>
@@ -29542,7 +29542,7 @@
         </member-function>
       </class-decl>
       <typedef-decl name='StringBuilder' type-id='type-id-2374' filepath='src/mongo/bson/util/builder.h' line='451' column='1' id='type-id-2400'/>
-      <enum-decl name='JsonStringFormat' id='type-id-2358'>
+      <enum-decl name='JsonStringFormat' filepath='src/mongo/bson/oid.h' line='225' column='1' id='type-id-2358'>
         <underlying-type type-id='type-id-181'/>
         <enumerator name='Strict' value='0'/>
         <enumerator name='TenGen' value='1'/>
@@ -30580,7 +30580,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <enum-decl name='BSONType' id='type-id-2366'>
+      <enum-decl name='BSONType' filepath='src/mongo/bson/bsontypes.h' line='55' column='1' id='type-id-2366'>
         <underlying-type type-id='type-id-181'/>
         <enumerator name='MinKey' value='-1'/>
         <enumerator name='EOO' value='0'/>
@@ -30606,7 +30606,7 @@
         <enumerator name='JSTypeMax' value='18'/>
         <enumerator name='MaxKey' value='127'/>
       </enum-decl>
-      <enum-decl name='BinDataType' id='type-id-2412'>
+      <enum-decl name='BinDataType' filepath='src/mongo/bson/bsontypes.h' line='113' column='1' id='type-id-2412'>
         <underlying-type type-id='type-id-181'/>
         <enumerator name='BinDataGeneral' value='0'/>
         <enumerator name='Function' value='1'/>
@@ -31898,7 +31898,7 @@
       </class-decl>
       <class-decl name='BSONSizeTracker' size-in-bits='352' visibility='default' filepath='src/mongo/bson/bsonmisc.h' line='271' column='1' id='type-id-2510'>
         <member-type access='private'>
-          <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-2511'>
+          <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='src/mongo/bson/bsonmisc.h' line='299' column='1' id='type-id-2511'>
             <underlying-type type-id='type-id-181'/>
             <enumerator name='SIZE' value='10'/>
           </enum-decl>
@@ -32045,7 +32045,7 @@
         </member-function>
       </class-decl>
       <class-decl name='GENOIDLabeler' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/mongo/bson/bsonmisc.h' line='96' column='1' id='type-id-2489'/>
-      <enum-decl name='ExitCode' id='type-id-2310'>
+      <enum-decl name='ExitCode' filepath='src/mongo/util/exit_code.h' line='37' column='1' id='type-id-2310'>
         <underlying-type type-id='type-id-181'/>
         <enumerator name='EXIT_CLEAN' value='0'/>
         <enumerator name='EXIT_BADOPTIONS' value='2'/>
