@@ -1,6 +1,4 @@
-======
-abidw
-======
+====== abidw ======
 
 abidw reads a shared library in `ELF`_ format and emits an XML
 representation of its ABI to standard output.  The emitted
@@ -68,6 +66,25 @@ Options
     that case, all of the provided suppression specification files are
     taken into account.  ABI artifacts matched by the suppression
     specifications are suppressed from the output of this tool.
+
+
+  * ``--kmi-whitelist | -kaw`` <*path-to-whitelist*>
+
+    When analyzing a Linux kernel binary, this option points to the
+    white list of names of ELF symbols of functions and variables
+    which ABI must be written out.  That white list is called a "
+    Kernel Module Interface white list".  This is because for the
+    Kernel, we don't talk about the ABI; we rather talk about the
+    interface between the Kernel and its module. Hence the term
+    ``KMI`` rather than ``ABI``
+
+    Any other function or variable which ELF symbol are not present in
+    that white list will not be considered by the KMI writing process.
+
+    If this option is not provided -- thus if no white list is
+    provided -- then the entire KMI, that is, all publicly defined and
+    exported functions and global variables by the Linux Kernel
+    binaries is emitted.
 
   * ``--headers-dir | --hd`` <headers-directory-path-1>
 

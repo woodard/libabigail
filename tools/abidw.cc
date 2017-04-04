@@ -84,6 +84,8 @@ struct options
   shared_ptr<char>	di_root_path;
   string		headers_dir;
   vector<string>	suppression_paths;
+  vector<string>	kabi_whitelist_paths;
+  suppressions_type	kabi_whitelist_supprs;
   bool			display_version;
   bool			check_alt_debug_info_path;
   bool			show_base_name_alt_debug_info_path;
@@ -138,6 +140,8 @@ display_usage(const string& prog_name, ostream& out)
     "exported declarations\n"
     << "  --no-linux-kernel-mode  don't consider the input binary as "
        "a Linux Kernel binary\n"
+    << "  --kmi-whitelist|-w  path to a linux kernel "
+    "abi whitelist\n"
     << "  --abidiff  compare the loaded ABI against itself\n"
     << "  --annotate  annotate the ABI artifacts emitted in the output\n"
     << "  --stats  show statistics about various internal stuff\n"
@@ -201,6 +205,15 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  if (j >= argc)
 	    return false;
 	  opts.suppression_paths.push_back(argv[j]);
+	  ++i;
+	}
+      else if (!strcmp(argv[i], "--kmi-whitelist")
+	       || !strcmp(argv[i], "-w"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    return false;
+	  opts.kabi_whitelist_paths.push_back(argv[j]);
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--noout"))
@@ -279,7 +292,14 @@ maybe_check_suppression_files(const options& opts)
   for (vector<string>::const_iterator i = opts.suppression_paths.begin();
        i != opts.suppression_paths.end();
        ++i)
-    if (!check_file(*i, cerr, "abidiff"))
+    if (!check_file(*i, cerr, "abidw"))
+      return false;
+
+  for (vector<string>::const_iterator i =
+	 opts.kabi_whitelist_paths.begin();
+       i != opts.kabi_whitelist_paths.end();
+       ++i)
+    if (!check_file(*i, cerr, "abidw"))
       return false;
 
   return true;
@@ -298,7 +318,7 @@ maybe_check_suppression_files(const options& opts)
 /// @param opts the options where to get the suppression
 /// specifications from.
 static void
-set_suppressions(read_context& read_ctxt, const options& opts)
+set_suppressions(read_context& read_ctxt, options& opts)
 {
   suppressions_type supprs;
   for (vector<string>::const_iterator i = opts.suppression_paths.begin();
@@ -311,7 +331,15 @@ set_suppressions(read_context& read_ctxt, const options& opts)
   if (suppr)
     supprs.push_back(suppr);
 
+  using abigail::tools_utils::gen_suppr_spec_from_kernel_abi_whitelist;
+  for (vector<string>::const_iterator i =
+	 opts.kabi_whitelist_paths.begin();
+       i != opts.kabi_whitelist_paths.end();
+       ++i)
+    gen_suppr_spec_from_kernel_abi_whitelist(*i, opts.kabi_whitelist_supprs);
+
   add_read_context_suppressions(read_ctxt, supprs);
+  add_read_context_suppressions(read_ctxt, opts.kabi_whitelist_supprs);
 }
 
 int
@@ -367,6 +395,8 @@ main(int argc, char* argv[])
   set_show_stats(ctxt, opts.show_stats);
   set_suppressions(ctxt, opts);
   abigail::dwarf_reader::set_do_log(ctxt, opts.do_log);
+  if (!opts.kabi_whitelist_supprs.empty())
+    set_ignore_symbol_table(ctxt, true);
 
   if (opts.check_alt_debug_info_path)
     {
@@ -374,7 +404,8 @@ main(int argc, char* argv[])
       string alt_di_path;
       abigail::dwarf_reader::status status =
 	abigail::dwarf_reader::has_alt_debug_info(ctxt,
-						  has_alt_di, alt_di_path);
+						  has_alt_di,
+						  alt_di_path);
       if (status & abigail::dwarf_reader::STATUS_OK)
 	{
 	  if (alt_di_path.empty())
