@@ -68,7 +68,7 @@ using abigail::comparison::corpus_diff_sptr;
 using abigail::comparison::compute_diff;
 using abigail::comparison::diff_context_sptr;
 using abigail::comparison::diff_context;
-using abigail::xml_writer::write_corpus_to_native_xml;
+using abigail::xml_writer::write_corpus;
 using abigail::xml_reader::read_corpus_from_native_xml_file;
 using abigail::dwarf_reader::read_context;
 using abigail::dwarf_reader::read_context_sptr;
@@ -472,7 +472,7 @@ main(int argc, char* argv[])
 	  // it back, and compare the ABI of what we've read back
 	  // against the ABI of the input ELF file.
 	  temp_file_sptr tmp_file = temp_file::create();
-	  write_corpus_to_native_xml(corp, 0, tmp_file->get_stream(), opts.annotate);
+	  write_corpus(corp, 0, tmp_file->get_stream(), opts.annotate);
 	  tmp_file->get_stream().flush();
 	  corpus_sptr corp2 =
 	    read_corpus_from_native_xml_file(tmp_file->get_path(),
@@ -515,12 +515,12 @@ main(int argc, char* argv[])
 		<< opts.out_file_path << "'\n";
 	      return 1;
 	    }
-	  abigail::xml_writer::write_corpus_to_native_xml(corp, 0, of, opts.annotate);
+	  abigail::xml_writer::write_corpus(corp, 0, of, opts.annotate);
 	  of.close();
 	  return 0;
 	}
       else
-	abigail::xml_writer::write_corpus_to_native_xml(corp, 0, cout, opts.annotate);
+	abigail::xml_writer::write_corpus(corp, 0, cout, opts.annotate);
     }
 
   return 0;

@@ -3859,10 +3859,10 @@ write_corpus_to_archive(const corpus_sptr corp, const bool annotate)
 ///
 /// @return true upon successful completion, false otherwise.
 bool
-write_corpus_to_native_xml(const corpus_sptr	corpus,
-			   unsigned		indent,
-			   std::ostream&	out,
-			   const bool		annotate)
+write_corpus(const corpus_sptr	corpus,
+	     unsigned		indent,
+	     std::ostream&	out,
+	     const bool	annotate)
 {
   if (!corpus)
     return false;
@@ -3951,10 +3951,10 @@ write_corpus_to_native_xml(const corpus_sptr	corpus,
 ///
 /// @return true upon successful completion, false otherwise.
 bool
-write_corpus_to_native_xml_file(const corpus_sptr	corpus,
-				unsigned		indent,
-				const string&		path,
-                                const bool		annotate)
+write_corpus(const corpus_sptr	corpus,
+	     unsigned		indent,
+	     const string&	path,
+	     const bool	annotate)
 {
     bool result = true;
 
@@ -3967,7 +3967,7 @@ write_corpus_to_native_xml_file(const corpus_sptr	corpus,
 	  return false;
 	}
 
-      if (!write_corpus_to_native_xml(corpus, indent, of, annotate))
+      if (!write_corpus(corpus, indent, of, annotate))
 	{
 	  cerr << "failed to access " << path << "\n";
 	  result = false;

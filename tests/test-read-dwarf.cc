@@ -315,7 +315,7 @@ struct test_task : public abigail::workers::task
 	return;
       }
     is_ok =
-      abigail::xml_writer::write_corpus_to_native_xml(corp, /*indent=*/0, of);
+      abigail::xml_writer::write_corpus(corp, /*indent=*/0, of);
     of.close();
 
     string abidw = string(get_build_dir()) + "/tools/abidw";

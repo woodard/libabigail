@@ -67,16 +67,16 @@ write_corpus_to_archive(const corpus_sptr corp,
 			const bool annotate = false);
 
 bool
-write_corpus_to_native_xml(const corpus_sptr	corpus,
-			   unsigned		indent,
-			   std::ostream&	out,
-			   const bool		annotate = false);
+write_corpus(const corpus_sptr	corpus,
+	     unsigned		indent,
+	     std::ostream&	out,
+	     const bool	annotate = false);
 
 bool
-write_corpus_to_native_xml_file(const corpus_sptr	corpus,
-				unsigned		indent,
-				const string&		path,
-				const bool		annotate = false);
+write_corpus(const corpus_sptr	corpus,
+	     unsigned		indent,
+	     const string&	path,
+	     const bool	annotate = false);
 
 }// end namespace xml_writer
 }// end namespace abigail

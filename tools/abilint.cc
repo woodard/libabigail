@@ -67,7 +67,7 @@ using abigail::xml_reader::read_corpus_from_native_xml;
 using abigail::xml_reader::read_corpus_from_native_xml_file;
 using abigail::dwarf_reader::read_corpus_from_elf;
 using abigail::xml_writer::write_translation_unit;
-using abigail::xml_writer::write_corpus_to_native_xml;
+using abigail::xml_writer::write_corpus;
 using abigail::xml_writer::write_corpus_to_archive;
 
 struct options
@@ -300,7 +300,7 @@ main(int argc, char* argv[])
 	  set_suppressions(*ctxt, opts);
 	  corpus_sptr corp = abigail::xml_reader::read_corpus_from_input(*ctxt);
 	  if (!opts.noout)
-	    write_corpus_to_native_xml(corp, /*indent=*/0, cout);
+	    write_corpus(corp, /*indent=*/0, cout);
 	  return false;
 	}
     }
@@ -420,10 +420,10 @@ main(int argc, char* argv[])
 	  if (type == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
 	    {
 	      if (opts.diff)
-		r = write_corpus_to_native_xml(corp, /*indent=*/0, of);
+		r = write_corpus(corp, /*indent=*/0, of);
 
 	      if (!opts.noout && !opts.diff)
-		r &= write_corpus_to_native_xml(corp, /*indent=*/0, cout);
+		r &= write_corpus(corp, /*indent=*/0, cout);
 	    }
 	  else if (type == abigail::tools_utils::FILE_TYPE_ZIP_CORPUS)
 	    {
@@ -435,7 +435,7 @@ main(int argc, char* argv[])
 	  else if (type == abigail::tools_utils::FILE_TYPE_ELF)
 	    {
 	      if (!opts.noout)
-		r = write_corpus_to_native_xml(corp, /*indent=*/0, cout);
+		r = write_corpus(corp, /*indent=*/0, cout);
 	    }
 	}
 
