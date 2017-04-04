@@ -38,23 +38,22 @@
 /// of actions performed, including where things are done
 /// concurrently.
 ///
-/// (steps 1/ to /5 are performed in sequence)
+/// (steps 1/ and 2/ are performed concurrently.  Then steps 3/ and 4/
+/// are performed in sequence)
 ///
-/// 1/ the first package and its debug info are extracted concurrently.
-/// One thread extracts the package (and maps its content) and another one
-/// extracts the debug info package.
+/// 1/ the first package and its ancillary packages (debug info and
+/// devel packages) are extracted concurrently.
+/// There is one thread per package being extracted.  So if there are
+/// 3 thread packages (one package, one debug info package and one
+/// devel package), then there are 3 threads to extracts them.  Then
+/// when the extracting is done, another thread performs the analysis
+/// of th1 extracted content.
 ///
-/// 2/ the second package and its debug info are extracted in parallel.
-/// One thread extracts the package (and maps its content) and another one
-/// extracts the debug info package.
+/// 2/ A similar thing is done for the second package.
 ///
-/// 3/ the file system trees of extracted packages are traversed to
-/// identify existing pairs and a list of arguments for future comparison
-/// is made.  The trees are traversed concurrently.
+/// 3/ comparisons are performed concurrently.
 ///
-/// 4/ comparisons are performed concurrently.
-///
-/// 5/ the reports are then emitted to standard output, always in the same
+/// 4/ the reports are then emitted to standard output, always in the same
 /// order.
 
 // For package configuration macros.
