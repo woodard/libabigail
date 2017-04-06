@@ -159,7 +159,7 @@ class write_context
   config				m_config;
   ostream&				m_ostream;
   bool					m_annotate;
-  mutable type_ptr_map				m_type_id_map;
+  mutable type_ptr_map			m_type_id_map;
   mutable unordered_map<interned_string,
 			bool, hash_interned_string> m_emitted_type_id_map;
   type_ptr_map				m_emitted_decl_only_map;
@@ -577,14 +577,15 @@ public:
 static bool write_translation_unit(const translation_unit&,
 				   write_context&, unsigned);
 static void write_location(const location&, ostream&);
-static void write_location(const shared_ptr<decl_base>&, ostream&);
-static bool write_visibility(const shared_ptr<decl_base>&, ostream&);
-static bool write_binding(const shared_ptr<decl_base>&, ostream&);
-static void write_array_size_and_alignment(const shared_ptr<array_type_def>, ostream&);
-static void write_size_and_alignment(const shared_ptr<type_base>, ostream&);
+static void write_location(const decl_base_sptr&, ostream&);
+static bool write_visibility(const decl_base_sptr&, ostream&);
+static bool write_binding(const decl_base_sptr&, ostream&);
+static void write_array_size_and_alignment(const array_type_def_sptr,
+					   ostream&);
+static void write_size_and_alignment(const type_base_sptr, ostream&);
 static void write_access(access_specifier, ostream&);
 static void write_layout_offset(var_decl_sptr, ostream&);
-static void write_layout_offset(shared_ptr<class_decl::base_spec>, ostream&);
+static void write_layout_offset(class_decl::base_spec_sptr, ostream&);
 static void write_cdtor_const_static(bool, bool, bool, bool, ostream&);
 static void write_voffset(function_decl_sptr, ostream&);
 static void write_elf_symbol_type(elf_symbol::type, ostream&);
@@ -1680,7 +1681,7 @@ write_translation_unit(const translation_unit&	tu,
     {
       // But first, we need to sort them, otherwise, emitting the ABI
       // (in xml) of the same binary twice will yield different
-      // results, because we'd be walking a *unordered* hash table.
+      // results, because we'd be walking an *unordered* hash table.
       vector<type_base*> sorted_referenced_types;
       ctxt.sort_types(referenced_types_to_emit,
 		      sorted_referenced_types);
