@@ -3990,6 +3990,7 @@ write_corpus(const corpus_sptr	corpus,
 	write_translation_unit(tu, ctxt, get_indent_to_level(ctxt, indent, 1));
     }
 
+  do_indent_to_level(ctxt, indent, 0);
   out << "</abi-corpus>\n";
 
   return true;
