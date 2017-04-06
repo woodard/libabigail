@@ -170,6 +170,9 @@ class write_context
   class_tmpl_shared_ptr_map		m_class_tmpl_id_map;
   string_elf_symbol_sptr_map_type	m_fun_symbol_map;
   string_elf_symbol_sptr_map_type	m_var_symbol_map;
+  mutable unordered_map<interned_string,
+			bool,
+			hash_interned_string> m_emitted_decls_map;
 
   write_context();
 
@@ -502,6 +505,35 @@ public:
     return type_id_is_emitted(id);
   }
 
+  /// Test if the name of a given decl has been written out to the XML
+  /// output.
+  ///
+  /// @param the decl to consider.
+  ///
+  /// @return true if the decl has already been emitted, false
+  /// otherwise.
+  bool
+  decl_name_is_emitted(const interned_string& name) const
+  {return m_emitted_decls_map.find(name) != m_emitted_decls_map.end();}
+
+  /// Test if a given decl has been written out to the XML output.
+  ///
+  /// @param the decl to consider.
+  ///
+  /// @return true if the decl has already been emitted, false
+  /// otherwise.
+  bool
+  decl_is_emitted(decl_base_sptr& decl) const
+  {
+    if (is_type(decl))
+      return false;
+
+    string repr = get_pretty_representation(decl, true);
+    interned_string irepr = decl->get_environment()->intern(repr);
+    bool is_emitted = decl_name_is_emitted(irepr);
+    return is_emitted;
+  }
+
   /// Record a declaration-only class as being emitted.
   ///
   /// For now, this function expects a declaration-only class,
@@ -556,6 +588,18 @@ public:
   void
   clear_emitted_types_map()
   {m_emitted_type_id_map.clear();}
+
+  /// Record a declaration as emitted in the abixml output.
+  ///
+  /// @param decl the decl to consider.
+  void
+  record_decl_as_emitted(const decl_base_sptr &decl)const
+  {
+
+    string repr = get_pretty_representation(decl, true);
+    interned_string irepr = decl->get_environment()->intern(repr);
+    m_emitted_decls_map[irepr] = true;
+  }
 
   /// Clear the map that contains the IDs of the types that has been
   /// recorded as having been written out to the XML output.
@@ -1653,6 +1697,11 @@ write_translation_unit(const translation_unit&	tu,
 	  // This type has already been written out to the current
 	  // translation unit, so do not emit it again.
 	  continue;
+
+      if (decl_base_sptr d = is_decl(*i))
+	if (ctxt.decl_is_emitted(d))
+	  continue;
+
       o << "\n";
       write_decl(*i, ctxt, indent + c.get_xml_element_indent());
     }
@@ -2568,6 +2617,8 @@ write_var_decl(const var_decl_sptr& decl, write_context& ctxt,
 
   o << "/>";
 
+  ctxt.record_decl_as_emitted(decl);
+
   return true;
 }
 
@@ -2664,6 +2715,8 @@ write_function_decl(const function_decl_sptr& decl, write_context& ctxt,
 
   do_indent(o, indent);
   o << "</function-decl>";
+
+  ctxt.record_decl_as_emitted(decl);
 
   return true;
 }
