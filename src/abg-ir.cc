@@ -16641,6 +16641,13 @@ method_matches_at_least_one_in_vector(const method_decl_sptr& method,
 bool
 equals(const class_decl& l, const class_decl& r, change_kind* k)
 {
+  // if one of the classes is declaration-only then we take a fast
+  // path here.
+  if (l.get_is_declaration_only() || r.get_is_declaration_only())
+    return equals(static_cast<const class_or_union&>(l),
+		  static_cast<const class_or_union&>(r),
+		  k);
+
   if (l.class_or_union::priv_->comparison_started(l)
       || l.class_or_union::priv_->comparison_started(r))
     return true;
@@ -16654,12 +16661,6 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
       if (!k)
 	return result;
     }
-
-  // if one of the classes is declaration-only then we are done.
-  bool l_is_decl_only = l.get_is_declaration_only();
-  bool r_is_decl_only = r.get_is_declaration_only();
-  if (l_is_decl_only || r_is_decl_only)
-    return result;
 
   l.class_or_union::priv_->mark_as_being_compared(l);
   l.class_or_union::priv_->mark_as_being_compared(r);
