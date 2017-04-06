@@ -200,34 +200,6 @@ maybe_check_suppression_files(const options& opts)
   return true;
 }
 
-/// If the user specified suppression specification files, this
-/// function parses those, set them to the options of the program and
-/// set the read context with the suppression specification.
-///
-/// @param read_ctxt the read context to consider.
-///
-/// @param opts the options to consider.
-static void
-set_suppressions(read_context &read_ctxt, options& opts)
-{
-  if (opts.read_time_supprs.empty())
-    {
-      for (vector<string>::const_iterator i = opts.suppression_paths.begin();
-	   i != opts.suppression_paths.end();
-	   ++i)
-	read_suppressions(*i, opts.read_time_supprs);
-
-      for (vector<string>::const_iterator i =
-	     opts.kabi_whitelist_paths.begin();
-	   i != opts.kabi_whitelist_paths.end();
-	   ++i)
-	gen_suppr_spec_from_kernel_abi_whitelist(*i, opts.read_time_supprs);
-    }
-
-  abigail::dwarf_reader::add_read_context_suppressions(read_ctxt,
-						       opts.read_time_supprs);
-}
-
 /// Setup the diff context from the program's options.
 ///
 /// @param ctxt the diff context to consider.
@@ -260,301 +232,6 @@ set_diff_context(diff_context_sptr ctxt, const options& opts)
 
   if (!opts.diff_time_supprs.empty())
     ctxt->add_suppressions(opts.diff_time_supprs);
-}
-
-/// Test if an FTSENT pointer (resulting from fts_read) represents the
-/// vmlinux binary.
-///
-/// @param entry the FTSENT to consider.
-///
-/// @return true iff @p entry is for a vmlinux binary.
-static bool
-is_vmlinux(const FTSENT *entry)
-{
-  if (entry == NULL
-      || (entry->fts_info != FTS_F && entry->fts_info != FTS_SL)
-      || entry->fts_info == FTS_ERR
-      || entry->fts_info == FTS_NS)
-    return false;
-
-  string fname = entry->fts_name;
-
-  if (fname == "vmlinux")
-    {
-      string dirname;
-      dir_name(entry->fts_path, dirname);
-      if (string_ends_with(dirname, "compressed"))
-	return false;
-
-      return true;
-    }
-
-  return false;
-}
-
-/// Test if an FTSENT pointer (resulting from fts_read) represents a a
-/// linux kernel module binary.
-///
-/// @param entry the FTSENT to consider.
-///
-/// @return true iff @p entry is for a linux kernel module binary.
-static bool
-is_kernel_module(const FTSENT *entry)
-{
-    if (entry == NULL
-      || (entry->fts_info != FTS_F && entry->fts_info != FTS_SL)
-      || entry->fts_info == FTS_ERR
-      || entry->fts_info == FTS_NS)
-    return false;
-
-  string fname = entry->fts_name;
-  if (string_ends_with(fname, ".ko")
-      || string_ends_with(fname, ".ko.xz")
-      || string_ends_with(fname, ".ko.gz"))
-    return true;
-
-  return false;
-}
-
-/// Find a vmlinux and its kernel modules in a given directory tree.
-///
-/// @param from the directory tree to start looking from.
-///
-/// @param vmlinux_path output parameter.  This is set to the path
-/// where the vmlinux binary is found.  This is set iff the returns
-/// true.
-///
-/// @param module_paths output parameter.  This is set to the paths of
-/// the linux kernel module binaries.
-///
-/// @return true iff at least the vmlinux binary was found.
-static bool
-find_vmlinux_and_module_paths(const string&	from,
-			      string		&vmlinux_path,
-			      vector<string>	&module_paths)
-{
-  char* path[] = {const_cast<char*>(from.c_str()), 0};
-
-  FTS *file_hierarchy = fts_open(path, FTS_PHYSICAL|FTS_NOCHDIR|FTS_XDEV, 0);
-  if (!file_hierarchy)
-    return false;
-
-  bool found_vmlinux = false;
-  FTSENT *entry;
-  while ((entry = fts_read(file_hierarchy)))
-    {
-      // Skip descendents of symbolic links.
-      if (entry->fts_info == FTS_SL || entry->fts_info == FTS_SLNONE)
-	{
-	  fts_set(file_hierarchy, entry, FTS_SKIP);
-	  continue;
-	}
-
-      if (!found_vmlinux && is_vmlinux(entry))
-	{
-	  vmlinux_path = entry->fts_path;
-	  found_vmlinux = true;
-	}
-      else if (is_kernel_module(entry))
-	module_paths.push_back(entry->fts_path);
-    }
-
-  fts_close(file_hierarchy);
-
-  return found_vmlinux;
-}
-
-/// Get the paths of the vmlinux and kernel module binaries under
-/// given directory.
-///
-/// @param dist_root the directory under which to look for.
-///
-/// @param vmlinux_path output parameter.  The path of the vmlinux
-/// binary that was found.
-///
-/// @param module_paths output parameter.  The paths of the kernel
-/// module binaries that were found.
-///
-/// @param debug_info_root_path output parameter. If a debug info
-/// sub-directory is found under @p dist_root, it's set to this
-/// parameter.
-///
-/// @return true if at least the path to the vmlinux binary was found.
-static bool
-get_binary_paths_from_kernel_dist(const string&	dist_root,
-				  string&		vmlinux_path,
-				  vector<string>&	module_paths,
-				  string&		debug_info_root_path)
-{
-  if (!dir_exists(dist_root))
-    return false;
-
-  // For now, we assume either an Enterprise Linux or a Fedora kernel
-  // distribution directory.
-  //
-  // We also take into account split debug info package for these.  In
-  // this case, the content split debug info package is installed
-  // under the 'dist_root' directory as well, and its content is
-  // accessible from <dist_root>/usr/lib/debug directory.
-
-  string kernel_modules_root;
-  string debug_info_root;
-  if (dir_exists(dist_root + "/lib/modules"))
-    {
-      dist_root + "/lib/modules";
-      debug_info_root = dist_root + "/usr/lib/debug";
-    }
-
-  if (dir_is_empty(debug_info_root))
-    debug_info_root.clear();
-
-  bool found = false;
-  string from = !debug_info_root.empty() ? debug_info_root : dist_root;
-  if (find_vmlinux_and_module_paths(from, vmlinux_path, module_paths))
-    found = true;
-
-  debug_info_root_path = debug_info_root;
-
-  return found;
-}
-
-/// Get the paths of the vmlinux and kernel module binaries under
-/// given directory.
-///
-/// @param dist_root the directory under which to look for.
-///
-/// @param vmlinux_path output parameter.  The path of the vmlinux
-/// binary that was found.
-///
-/// @param module_paths output parameter.  The paths of the kernel
-/// module binaries that were found.
-///
-/// @return true if at least the path to the vmlinux binary was found.
-static bool
-get_binary_paths_from_kernel_dist(const string&	dist_root,
-				  string&		vmlinux_path,
-				  vector<string>&	module_paths)
-{
-  string debug_info_root_path;
-  return get_binary_paths_from_kernel_dist(dist_root,
-					   vmlinux_path,
-					   module_paths,
-					   debug_info_root_path);
-}
-
-/// Walk a given directory and build an instance of @ref corpus_group
-/// from the vmlinux kernel binary and the linux kernel modules found
-/// under that directory and under its sub-directories, recursively.
-///
-/// The main corpus of the @ref corpus_group is made of the vmlinux
-/// binary.  The other corpora are made of the linux kernel binaries.
-///
-/// @param root the path of the directory under which vmlinux and its
-/// kernel modules are to be found.
-///
-/// @param opts the options to use during the search.
-///
-/// @param env the environment to create the corpus_group in.
-static corpus_group_sptr
-build_corpus_group_from_kernel_dist_under(const string&	root,
-					  options&		opts,
-					  environment_sptr&	env)
-{
-  corpus_group_sptr result;
-  string vmlinux;
-  vector<string> modules;
-  string debug_info_root_path;
-
-  if (opts.verbose)
-    cout << "Analysing kernel dist root '" << root << "' ... " << std::flush;
-
-  bool got_binary_paths =
-    get_binary_paths_from_kernel_dist(root, vmlinux, modules,
-				      debug_info_root_path);
-
-  if (opts.verbose)
-    cout << "DONE\n";
-
-  if (got_binary_paths)
-    {
-      shared_ptr<char> di_root =
-	make_path_absolute(debug_info_root_path.c_str());
-      char *di_root_ptr = di_root.get();
-      abigail::dwarf_reader::status status = abigail::dwarf_reader::STATUS_OK;
-      corpus_group_sptr group;
-      if (!vmlinux.empty())
-	{
-	  read_context_sptr ctxt =
-	    create_read_context(vmlinux, &di_root_ptr, env.get(),
-				/*read_all_types=*/false,
-				/*linux_kernel_mode=*/true);
-
-	  set_suppressions(*ctxt, opts);
-
-	  // If we have been given a whitelist of functions and
-	  // variable symbols to look at, then we can avoid loading
-	  // and analyzing the ELF symbol table.
-	  bool do_ignore_symbol_table = !opts.read_time_supprs.empty();
-	  set_ignore_symbol_table(*ctxt, do_ignore_symbol_table);
-
-	  group.reset(new corpus_group(env.get(), root));
-
-	  set_read_context_corpus_group(*ctxt, group);
-
-	  if (opts.verbose)
-	    cout << "reading kernel binary '"
-		 << vmlinux << "' ... " << std::flush;
-
-	  // Read the vmlinux corpus and add it to the group.
-	  read_and_add_corpus_to_group_from_elf(*ctxt, *group, status);
-
-	    if (opts.verbose)
-	      cout << " DONE\n";
-	}
-
-      if (!group->is_empty())
-	{
-	  // Now add the corpora of the modules to the corpus group.
-	  int total_nb_modules = modules.size();
-	  int cur_module_index = 1;
-	  for (vector<string>::const_iterator m = modules.begin();
-	       m != modules.end();
-	       ++m, ++cur_module_index)
-	    {
-	      if (opts.verbose)
-		cout << "reading module '"
-		     << *m << "' ("
-		     << cur_module_index
-		     << "/" << total_nb_modules
-		     << ") ... " << std::flush;
-
-	      read_context_sptr module_ctxt =
-		create_read_context(*m, &di_root_ptr, env.get(),
-				    /*read_all_types=*/false,
-				    /*linux_kernel_mode=*/true);
-
-	      // If we have been given a whitelist of functions and
-	      // variable symbols to look at, then we can avoid loading
-	      // and analyzing the ELF symbol table.
-	      bool do_ignore_symbol_table = !opts.read_time_supprs.empty();
-
-	      set_ignore_symbol_table(*module_ctxt, do_ignore_symbol_table);
-
-	      set_suppressions(*module_ctxt, opts);
-
-	      set_read_context_corpus_group(*module_ctxt, group);
-
-	      read_and_add_corpus_to_group_from_elf(*module_ctxt,
-						    *group, status);
-	      if (opts.verbose)
-		cout << " DONE\n";
-	    }
-
-	  result = group;
-	}
-    }
-
-  return result;
 }
 
 /// Print information about the kernel (and modules) binaries found
@@ -637,7 +314,11 @@ main(int argc, char* argv[])
     {
       group1 =
 	build_corpus_group_from_kernel_dist_under(opts.kernel_dist_root1,
-						  opts, env);
+						  opts.suppression_paths,
+						  opts.kabi_whitelist_paths,
+						  opts.read_time_supprs,
+						  opts.verbose,
+						  env);
       print_kernel_dist_binary_paths_under(opts.kernel_dist_root1, opts);
     }
 
@@ -645,7 +326,11 @@ main(int argc, char* argv[])
     {
       group2 =
 	build_corpus_group_from_kernel_dist_under(opts.kernel_dist_root2,
-						  opts, env);
+						  opts.suppression_paths,
+						  opts.kabi_whitelist_paths,
+						  opts.read_time_supprs,
+						  opts.verbose,
+						  env);
       print_kernel_dist_binary_paths_under(opts.kernel_dist_root2, opts);
     }
 

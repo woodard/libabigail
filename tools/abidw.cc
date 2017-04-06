@@ -55,6 +55,7 @@ using abigail::tools_utils::emit_prefix;
 using abigail::tools_utils::temp_file;
 using abigail::tools_utils::temp_file_sptr;
 using abigail::tools_utils::check_file;
+using abigail::tools_utils::build_corpus_group_from_kernel_dist_under;
 using abigail::ir::environment_sptr;
 using abigail::ir::environment;
 using abigail::corpus;
@@ -93,6 +94,7 @@ struct options
   bool			write_corpus_path;
   bool			load_all_types;
   bool			linux_kernel_mode;
+  bool			corpus_group_for_linux;
   bool			show_stats;
   bool			noout;
   bool			show_locs;
@@ -108,6 +110,7 @@ struct options
       write_corpus_path(true),
       load_all_types(),
       linux_kernel_mode(true),
+      corpus_group_for_linux(false),
       show_stats(),
       noout(),
       show_locs(true),
@@ -142,6 +145,8 @@ display_usage(const string& prog_name, ostream& out)
        "a Linux Kernel binary\n"
     << "  --kmi-whitelist|-w  path to a linux kernel "
     "abi whitelist\n"
+    << "  --linux-tree|--lt  emit the ABI for the union of a"
+    "vmlinux and its modules\n"
     << "  --abidiff  compare the loaded ABI against itself\n"
     << "  --annotate  annotate the ABI artifacts emitted in the output\n"
     << "  --stats  show statistics about various internal stuff\n"
@@ -216,6 +221,9 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.kabi_whitelist_paths.push_back(argv[j]);
 	  ++i;
 	}
+      else if (!strcmp(argv[i], "--linux-tree")
+	       || !strcmp(argv[i], "--lt"))
+	opts.corpus_group_for_linux = true;
       else if (!strcmp(argv[i], "--noout"))
 	opts.noout = true;
       else if (!strcmp(argv[i], "--no-architecture"))
@@ -342,102 +350,37 @@ set_suppressions(read_context& read_ctxt, options& opts)
   add_read_context_suppressions(read_ctxt, opts.kabi_whitelist_supprs);
 }
 
-int
-main(int argc, char* argv[])
+/// Load an ABI @ref corpus (the internal representation of the ABI of
+/// a binary) and write it out as an abixml.
+///
+/// @param argv the arguments the program was called with.
+///
+/// @param env the environment the ABI artifacts are being created in.
+///
+/// @param context the context of the ELF reading.
+///
+/// @param opts the options of the program.
+///
+/// @return the exit code: 0 if everything went fine, non-zero
+/// otherwise.
+static int
+load_corpus_and_write_abixml(char* argv[],
+			     environment_sptr& env,
+			     read_context_sptr& context,
+			     const options& opts)
 {
-  options opts;
+  int exit_code = 0;
 
-  if (!parse_command_line(argc, argv, opts)
-      || (opts.in_file_path.empty()
-	  && !opts.display_version))
-    {
-      if (!opts.wrong_option.empty())
-	emit_prefix(argv[0], cerr)
-	  << "unrecognized option: " << opts.wrong_option << "\n";
-      display_usage(argv[0], cerr);
-      return 1;
-    }
-
-  if (opts.display_version)
-    {
-      string major, minor, revision;
-      abigail::abigail_get_library_version(major, minor, revision);
-      cout << major << "." << minor << "." << revision << "\n";
-      return 0;
-    }
-
-  assert(!opts.in_file_path.empty());
-  if (!abigail::tools_utils::check_file(opts.in_file_path, cerr, argv[0]))
-    return 1;
-
-  if (!maybe_check_suppression_files(opts))
-    return 1;
-
-  abigail::tools_utils::file_type type =
-    abigail::tools_utils::guess_file_type(opts.in_file_path);
-  if (type != abigail::tools_utils::FILE_TYPE_ELF
-      && type != abigail::tools_utils::FILE_TYPE_AR)
-    {
-      emit_prefix(argv[0], cerr)
-	<< opts.in_file_path << " is not an ELF file\n";
-      return 1;
-    }
-
-  char* p = opts.di_root_path.get();
-  environment_sptr env(new environment);
+  read_context& ctxt = *context;
   corpus_sptr corp;
-  read_context_sptr c = create_read_context(opts.in_file_path,
-					    &p, env.get(),
-					    opts.load_all_types,
-					    opts.linux_kernel_mode);
-  read_context& ctxt = *c;
-
-  set_show_stats(ctxt, opts.show_stats);
-  set_suppressions(ctxt, opts);
-  abigail::dwarf_reader::set_do_log(ctxt, opts.do_log);
-  if (!opts.kabi_whitelist_supprs.empty())
-    set_ignore_symbol_table(ctxt, true);
-
-  if (opts.check_alt_debug_info_path)
-    {
-      bool has_alt_di = false;
-      string alt_di_path;
-      abigail::dwarf_reader::status status =
-	abigail::dwarf_reader::has_alt_debug_info(ctxt,
-						  has_alt_di,
-						  alt_di_path);
-      if (status & abigail::dwarf_reader::STATUS_OK)
-	{
-	  if (alt_di_path.empty())
-	    ;
-	  else
-	    {
-	      cout << "found the alternate debug info file";
-	      if (opts.show_base_name_alt_debug_info_path)
-		{
-		  tools_utils::base_name(alt_di_path, alt_di_path);
-		  cout << " '" << alt_di_path << "'";
-		}
-	      cout << "\n";
-	    }
-	  return 0;
-	}
-      else
-	{
-	  emit_prefix(argv[0], cerr)
-	    << "could not find alternate debug info file\n";
-	  return 1;
-	}
-    }
-
   dwarf_reader::status s = dwarf_reader::STATUS_UNKNOWN;
   corp = read_corpus_from_elf(ctxt, s);
-  c.reset();
+  context.reset();
   if (!corp)
     {
       if (s == dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
 	{
-	  if (p == 0)
+	  if (opts.di_root_path.get() == 0)
 	    {
 	      emit_prefix(argv[0], cerr)
 		<< "Could not read debug info from "
@@ -453,7 +396,8 @@ main(int argc, char* argv[])
 	    {
 	      emit_prefix(argv[0], cerr)
 		<< "Could not read debug info for '" << opts.in_file_path
-		<< "' from debug info root directory '" << p
+		<< "' from debug info root directory '"
+		<< opts.di_root_path.get()
 		<< "'\n";
 	    }
 	}
@@ -520,8 +464,170 @@ main(int argc, char* argv[])
 	  return 0;
 	}
       else
-	abigail::xml_writer::write_corpus(corp, 0, cout, opts.annotate);
+	exit_code = !abigail::xml_writer::write_corpus(corp, 0, cout,
+						       opts.annotate);
     }
 
-  return 0;
+  return exit_code;
+}
+
+/// Load a corpus group representing the union of a Linux Kernel
+/// vmlinux binary and its modules, and emit an abixml representation
+/// for it.
+///
+/// @param argv the arguments this program was called with.
+///
+/// @param env the environment the ABI artifacts are created in.
+///
+/// @param opts the options this program was created with.
+///
+/// @return the exit code.  Zero if everything went well, non-zero
+/// otherwise.
+static int
+load_kernel_corpus_group_and_write_abixml(char* argv[],
+					  environment_sptr& env,
+					  options& opts)
+{
+  if (!(tools_utils::is_dir(opts.in_file_path) && opts.corpus_group_for_linux))
+    return 0;
+
+  int exit_code = 0;
+
+  suppressions_type supprs;
+  corpus_group_sptr group =
+    build_corpus_group_from_kernel_dist_under(opts.in_file_path,
+					      opts.suppression_paths,
+					      opts.kabi_whitelist_paths,
+					      supprs, opts.do_log, env);
+
+  if (!group)
+    return exit_code;
+
+  if (!opts.write_architecture)
+    group->set_architecture_name("");
+  if (!opts.write_corpus_path)
+    group->set_path("");
+
+  if (!opts.out_file_path.empty())
+    {
+      ofstream of(opts.out_file_path.c_str(), std::ios_base::trunc);
+      if (!of.is_open())
+	{
+	  emit_prefix(argv[0], cerr)
+	    << "could not open output file '"
+	    << opts.out_file_path << "'\n";
+	  return 1;
+	}
+      exit_code = !xml_writer::write_corpus_group(group, 0, of, opts.annotate);
+    }
+  else
+    exit_code = !xml_writer::write_corpus_group(group, 0, cout, opts.annotate);
+
+  return exit_code;
+}
+
+int
+main(int argc, char* argv[])
+{
+  options opts;
+
+  if (!parse_command_line(argc, argv, opts)
+      || (opts.in_file_path.empty()
+	  && !opts.display_version))
+    {
+      if (!opts.wrong_option.empty())
+	emit_prefix(argv[0], cerr)
+	  << "unrecognized option: " << opts.wrong_option << "\n";
+      display_usage(argv[0], cerr);
+      return 1;
+    }
+
+  if (opts.display_version)
+    {
+      string major, minor, revision;
+      abigail::abigail_get_library_version(major, minor, revision);
+      cout << major << "." << minor << "." << revision << "\n";
+      return 0;
+    }
+
+  assert(!opts.in_file_path.empty());
+  if (opts.corpus_group_for_linux)
+    {
+      if (!abigail::tools_utils::check_dir(opts.in_file_path, cerr, argv[0]))
+	return 1;
+    }
+  else
+    {
+      if (!abigail::tools_utils::check_file(opts.in_file_path, cerr, argv[0]))
+	return 1;
+    }
+
+  if (!maybe_check_suppression_files(opts))
+    return 1;
+
+  abigail::tools_utils::file_type type =
+    abigail::tools_utils::guess_file_type(opts.in_file_path);
+  if (type != abigail::tools_utils::FILE_TYPE_ELF
+      && type != abigail::tools_utils::FILE_TYPE_AR
+      && type != abigail::tools_utils::FILE_TYPE_DIR)
+    {
+      emit_prefix(argv[0], cerr)
+	<< "files of the kind of "<< opts.in_file_path << " are not handled\n";
+      return 1;
+    }
+
+  char* p = opts.di_root_path.get();
+  environment_sptr env(new environment);
+  int exit_code = 0;
+
+  if (tools_utils::is_regular_file(opts.in_file_path))
+    {
+      read_context_sptr c = create_read_context(opts.in_file_path,
+						&p, env.get(),
+						opts.load_all_types,
+						opts.linux_kernel_mode);
+      read_context& ctxt = *c;
+      set_show_stats(ctxt, opts.show_stats);
+      set_suppressions(ctxt, opts);
+      abigail::dwarf_reader::set_do_log(ctxt, opts.do_log);
+      if (!opts.kabi_whitelist_supprs.empty())
+	set_ignore_symbol_table(ctxt, true);
+
+      if (opts.check_alt_debug_info_path)
+	{
+	  bool has_alt_di = false;
+	  string alt_di_path;
+	  abigail::dwarf_reader::status status =
+	    abigail::dwarf_reader::has_alt_debug_info(ctxt,
+						      has_alt_di,
+						      alt_di_path);
+	  if (status & abigail::dwarf_reader::STATUS_OK)
+	    {
+	      if (alt_di_path.empty())
+		;
+	      else
+		{
+		  cout << "found the alternate debug info file";
+		  if (opts.show_base_name_alt_debug_info_path)
+		    {
+		      tools_utils::base_name(alt_di_path, alt_di_path);
+		      cout << " '" << alt_di_path << "'";
+		    }
+		  cout << "\n";
+		}
+	      return 0;
+	    }
+	  else
+	    {
+	      emit_prefix(argv[0], cerr)
+		<< "could not find alternate debug info file\n";
+	      return 1;
+	    }
+	}
+      exit_code = load_corpus_and_write_abixml(argv, env, c, opts);
+    }
+  else
+    exit_code = load_kernel_corpus_group_and_write_abixml(argv, env, opts);
+
+  return exit_code;
 }

@@ -8,6 +8,16 @@ also includes a representation of the globally defined ELF symbols of
 the file.  The input shared library must contain associated debug
 information in `DWARF`_ format.
 
+When given the ``--linux-tree`` option, this program can also handle a
+Linux kernel tree.  That is, a directory tree that contains both the
+vmlinux binary and Linux kernel modules.  It analyses those Linux
+kernel binaries and emits an XML representation of the interface
+between the kernel and its module, to standard output.  In this case,
+we don't call it an ABI, but a KMI (Kernel Module Interface).  The
+emitted KMI includes all the globally defined functions and variables,
+along with a complete representation of their types.  The input
+binaries must contain associated debug information in `DWARF`_ format.
+
 Invocation
 ==========
 
@@ -85,6 +95,28 @@ Options
     provided -- then the entire KMI, that is, all publicly defined and
     exported functions and global variables by the Linux Kernel
     binaries is emitted.
+    
+  * ``--linux-tree | --lt``
+
+    Make ``abidw`` to consider the input path as a path to a directory
+    containing the vmlinux binary as several kernel modules binaries.
+    In that case, this program emits the representation of the Kernel
+    Module Interface (KMI) on the standard output.
+
+    Below is an example of usage of ``abidw`` on a Linux Kernel tree.
+
+    First, checkout a Linux kernel source tree and build it.  Then
+    install the kernel modules in a directory somewhere.  Copy the
+    vmlinux binary into that directory too.  And then serialize the
+    KMI of that kernel to disk, using ``abidw``: ::
+
+       $ git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+       $ cd linux && git checkout v4.5
+       $ make allyesconfig all
+       $ mkdir build-output
+       $ make INSTALL_MOD_PATH=./build-output modules_install 
+       $ cp vmlinux build-output/modules/4.5.0
+       $ abidw --linux-tree build-output/modules/4.5.0 > build-output/linux-4.5.0.kmi
 
   * ``--headers-dir | --hd`` <headers-directory-path-1>
 

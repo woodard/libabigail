@@ -53,7 +53,6 @@ using abigail::corpus_sptr;
 using abigail::xml_reader::read_translation_unit_from_file;
 using abigail::xml_reader::read_corpus_from_native_xml_file;
 using abigail::xml_writer::write_translation_unit;
-using abigail::xml_writer::write_corpus;
 
 using abigail::workers::queue;
 using abigail::workers::task;

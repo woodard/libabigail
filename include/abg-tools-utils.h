@@ -55,6 +55,7 @@ bool ensure_dir_path_created(const string&);
 bool ensure_parent_dir_created(const string&);
 ostream& emit_prefix(const string& prog_name, ostream& out);
 bool check_file(const string& path, ostream& out, const string& prog_name = "");
+bool check_dir(const string& path, ostream& out, const string& prog_name="");
 bool string_ends_with(const string&, const string&);
 bool string_begins_with(const string&, const string&);
 bool string_is_ascii(const string&);
@@ -66,6 +67,17 @@ gen_suppr_spec_from_headers(const string& hdrs_root_dir);
 bool
 gen_suppr_spec_from_kernel_abi_whitelist(const string& abi_whitelist_path,
 					 suppr::suppressions_type& s);
+
+bool
+get_binary_paths_from_kernel_dist(const string&	dist_root,
+				  string&		vmlinux_path,
+				  vector<string>&	module_paths,
+				  string&		debug_info_root_path);
+
+bool
+get_binary_paths_from_kernel_dist(const string&	dist_root,
+				  string&		vmlinux_path,
+				  vector<string>&	module_paths);
 
 string
 get_default_system_suppression_file_path();
@@ -234,6 +246,14 @@ file_is_kernel_debuginfo_package(string& file_path,
 
 std::tr1::shared_ptr<char>
 make_path_absolute(const char*p);
+
+corpus_group_sptr
+build_corpus_group_from_kernel_dist_under(const string&		root,
+					  vector<string>&		suppr_paths,
+					  vector<string>&		kabi_wl_paths,
+					  suppr::suppressions_type&	supprs,
+					  bool				verbose,
+					  environment_sptr&		env);
 
 extern const char* PRIVATE_TYPES_SUPPR_SPEC_NAME;
 }// end namespace tools_utils

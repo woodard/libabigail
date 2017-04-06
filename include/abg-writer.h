@@ -69,6 +69,13 @@ write_corpus_to_archive(const corpus_sptr corp,
 bool
 write_corpus(const corpus_sptr	corpus,
 	     unsigned		indent,
+	     write_context&	ctxt,
+	     std::ostream&	out,
+	     const bool	annotate = false);
+
+bool
+write_corpus(const corpus_sptr	corpus,
+	     unsigned		indent,
 	     std::ostream&	out,
 	     const bool	annotate = false);
 
@@ -77,6 +84,25 @@ write_corpus(const corpus_sptr	corpus,
 	     unsigned		indent,
 	     const string&	path,
 	     const bool	annotate = false);
+
+bool
+write_corpus_group(const corpus_group_sptr&	group,
+		   unsigned			indent,
+		   write_context&		ctxt,
+		   std::ostream&		out,
+		   const bool			annotate = false);
+
+bool
+write_corpus_group(const corpus_group_sptr&	group,
+		   unsigned			indent,
+		   std::ostream&		out,
+		   const bool			annotate = false);
+
+bool
+write_corpus_group(const corpus_group_sptr&	group,
+		   unsigned			indent,
+		   const string&		path,
+		   const bool			annotate = false);
 
 }// end namespace xml_writer
 }// end namespace abigail
