@@ -79,7 +79,7 @@
       <return type-id='type-id-4'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libutil/glue.c' language='LANG_C99'/>  <abi-instr version='1.0' address-size='64' path='libutil/mipmap.c' language='LANG_C99'>
+  <abi-instr version='1.0' address-size='64' path='libutil/mipmap.c' language='LANG_C99'>
     <type-decl name='int' size-in-bits='32' id='type-id-7'/>
     <typedef-decl name='GLint' type-id='type-id-7' filepath='../../../include/GL/gl.h' line='155' column='1' id='type-id-8'/>
     <typedef-decl name='GLsizei' type-id='type-id-7' filepath='../../../include/GL/gl.h' line='159' column='1' id='type-id-9'/>
@@ -362,7 +362,7 @@
       <return type-id='type-id-22'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libtess/dict.c' language='LANG_C99'/>  <abi-instr version='1.0' address-size='64' path='libtess/geom.c' language='LANG_C99'/>  <abi-instr version='1.0' address-size='64' path='libtess/memalloc.c' language='LANG_C99'/>  <abi-instr version='1.0' address-size='64' path='libtess/mesh.c' language='LANG_C99'/>  <abi-instr version='1.0' address-size='64' path='libtess/normal.c' language='LANG_C99'/>  <abi-instr version='1.0' address-size='64' path='libtess/priorityq.c' language='LANG_C99'/>  <abi-instr version='1.0' address-size='64' path='libtess/render.c' language='LANG_C99'/>  <abi-instr version='1.0' address-size='64' path='libtess/sweep.c' language='LANG_C99'/>  <abi-instr version='1.0' address-size='64' path='libtess/tess.c' language='LANG_C99'>
+  <abi-instr version='1.0' address-size='64' path='libtess/tess.c' language='LANG_C99'>
     <class-decl name='GLUtesselator' size-in-bits='29376' is-struct='yes' visibility='default' filepath='libtess/tess.h' line='59' column='1' id='type-id-30'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='state' type-id='type-id-31' visibility='default' filepath='libtess/tess.h' line='63' column='1'/>
@@ -887,7 +887,7 @@
       <return type-id='type-id-10'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libtess/tessmono.c' language='LANG_C99'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/interface/bezierEval.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/interface/bezierPatch.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/interface/bezierPatchMesh.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/interface/glcurveval.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/interface/glcurveval.cc' language='LANG_C_plus_plus'>
     <class-decl name='CachingEvaluator' size-in-bits='64' visibility='default' filepath='libnurbs/internals/cachingeval.h' line='39' column='1' id='type-id-117'>
       <member-type access='private'>
         <enum-decl name='ServiceMode' filepath='libnurbs/internals/cachingeval.h' line='42' column='1' id='type-id-118'>
@@ -8728,7 +8728,7 @@
   <abi-instr version='1.0' address-size='64' path='libnurbs/interface/glsurfeval.cc' language='LANG_C_plus_plus'>
     <class-decl name='SurfaceMap' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-160'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/interface/incurveeval.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/interface/insurfeval.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/arc.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/arc.cc' language='LANG_C_plus_plus'>
     <class-decl name='BezierArc' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-278'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libnurbs/internals/arcsorter.cc' language='LANG_C_plus_plus'>
@@ -8829,15 +8829,15 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libnurbs/internals/basicsurfeval.cc' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/bin.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/bufpool.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/cachingeval.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/cachingeval.cc' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/ccw.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/coveandtiler.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/coveandtiler.cc' language='LANG_C_plus_plus'>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libnurbs/internals/curve.cc' language='LANG_C_plus_plus'>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libnurbs/internals/curvelist.cc' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/curvesub.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/dataTransform.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/displaylist.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/displaylist.cc' language='LANG_C_plus_plus'>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libnurbs/internals/flist.cc' language='LANG_C_plus_plus'>
   </abi-instr>
@@ -8845,9 +8845,9 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libnurbs/internals/hull.cc' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/intersect.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/knotvector.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/knotvector.cc' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/mapdesc.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/mapdescv.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/maplist.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/maplist.cc' language='LANG_C_plus_plus'>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libnurbs/internals/mesher.cc' language='LANG_C_plus_plus'>
   </abi-instr>
@@ -9066,17 +9066,17 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libnurbs/internals/monotonizer.cc' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/mycode.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/nurbsinterfac.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/nurbsinterfac.cc' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/nurbstess.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/patch.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/patch.cc' language='LANG_C_plus_plus'>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libnurbs/internals/patchlist.cc' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/quilt.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/reader.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/renderhints.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/slicer.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/slicer.cc' language='LANG_C_plus_plus'>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libnurbs/internals/sorter.cc' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/splitarcs.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/subdivider.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/tobezier.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/tobezier.cc' language='LANG_C_plus_plus'>
     <class-decl name='Knotspec' size-in-bits='1152' is-struct='yes' visibility='default' filepath='libnurbs/internals/tobezier.cc' line='54' column='1' id='type-id-377'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='order' type-id='type-id-55' visibility='default' filepath='libnurbs/internals/tobezier.cc' line='55' column='1'/>
@@ -9334,7 +9334,7 @@
     <pointer-type-def type-id='type-id-382' size-in-bits='64' id='type-id-383'/>
     <typedef-decl name='Quilt_ptr' type-id='type-id-216' filepath='libnurbs/internals/quilt.h' line='90' column='1' id='type-id-384'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/trimline.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/trimregion.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/trimvertpool.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/uarray.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/varray.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/varray.cc' language='LANG_C_plus_plus'>
     <class-decl name='Varray' size-in-bits='96192' visibility='default' filepath='libnurbs/internals/varray.h' line='43' column='1' id='type-id-385'>
       <data-member access='private' layout-offset-in-bits='0'>
         <var-decl name='varray' type-id='type-id-123' visibility='default' filepath='libnurbs/internals/varray.h' line='48' column='1'/>
@@ -9890,7 +9890,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-327' size-in-bits='64' id='type-id-397'/>
     <pointer-type-def type-id='type-id-391' size-in-bits='64' id='type-id-398'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/gridWrap.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/monoChain.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/monoChain.cc' language='LANG_C_plus_plus'>
     <class-decl name='monoChain' size-in-bits='640' visibility='default' filepath='libnurbs/nurbtess/monoChain.h' line='41' column='1' id='type-id-399'>
       <data-member access='private' layout-offset-in-bits='0'>
         <var-decl name='chainHead' type-id='type-id-394' visibility='default' filepath='libnurbs/nurbtess/monoChain.h' line='42' column='1'/>
@@ -10079,4 +10079,4 @@
     <pointer-type-def type-id='type-id-399' size-in-bits='64' id='type-id-400'/>
     <pointer-type-def type-id='type-id-400' size-in-bits='64' id='type-id-401'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/monoPolyPart.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/monoTriangulation.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/partitionX.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/partitionY.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/polyDBG.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/polyUtil.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/primitiveStream.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/quicksort.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/rectBlock.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/sampleComp.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/sampleCompBot.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/sampleCompRight.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/sampleCompTop.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/sampleMonoPoly.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/sampledLine.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/searchTree.cc' language='LANG_C_plus_plus'/></abi-corpus>
+</abi-corpus>

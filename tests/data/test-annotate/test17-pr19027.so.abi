@@ -35152,7 +35152,7 @@
       <return type-id='type-id-172'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-shaper.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='hb-unicode.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='hb-unicode.cc' language='LANG_C_plus_plus'>
     <!-- hb_unicode_funcs_t* hb_unicode_funcs_get_empty() -->
     <function-decl name='hb_unicode_funcs_get_empty' mangled-name='hb_unicode_funcs_get_empty' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-unicode.cc' line='215' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='hb_unicode_funcs_get_empty'>
       <!-- hb_unicode_funcs_t* -->
@@ -35416,7 +35416,7 @@
       <return type-id='type-id-63'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-warning.cc' language='LANG_C_plus_plus'/>  <abi-instr version='1.0' address-size='64' path='hb-ot-font.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='hb-ot-font.cc' language='LANG_C_plus_plus'>
     <!-- namespace OT -->
     <namespace-decl name='OT'>
       <!-- struct OT::Supplier<OT::CmapSubtableLongGroup> -->
