@@ -3984,7 +3984,11 @@ write_corpus(const corpus_sptr	corpus,
 	 corpus->get_translation_units().begin();
        i != corpus->get_translation_units().end();
        ++i)
-    write_translation_unit(**i, ctxt, get_indent_to_level(ctxt, indent, 1));
+    {
+      translation_unit& tu = **i;
+      if (!tu.is_empty())
+	write_translation_unit(tu, ctxt, get_indent_to_level(ctxt, indent, 1));
+    }
 
   out << "</abi-corpus>\n";
 
