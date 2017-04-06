@@ -9792,8 +9792,8 @@ type_decl::operator==(const decl_base& o) const
   if (!other)
     return false;
 
-  if (get_canonical_type() && other->get_canonical_type())
-    return get_canonical_type().get() == other->get_canonical_type().get();
+  if (get_naked_canonical_type() && other->get_naked_canonical_type())
+    return get_naked_canonical_type() == other->get_naked_canonical_type();
 
   return equals(*this, *other, 0);
 }
@@ -10311,8 +10311,8 @@ qualified_type_def::operator==(const decl_base& o) const
   if (!other)
     return false;
 
-  if (get_canonical_type() && other->get_canonical_type())
-    return get_canonical_type().get() == other->get_canonical_type().get();
+  if (get_naked_canonical_type() && other->get_naked_canonical_type())
+    return get_naked_canonical_type() == other->get_naked_canonical_type();
 
 
   return equals(*this, *other, 0);
@@ -11419,8 +11419,8 @@ array_type_def::operator==(const decl_base& o) const
   if (!other)
     return false;
 
-  if (get_canonical_type() && other->get_canonical_type())
-    return get_canonical_type().get() == other->get_canonical_type().get();
+  if (get_naked_canonical_type() && other->get_naked_canonical_type())
+    return get_naked_canonical_type() == other->get_naked_canonical_type();
 
   return equals(*this, *other, 0);
 }
@@ -11785,8 +11785,8 @@ enum_type_decl::operator==(const decl_base& o) const
   if (!op)
     return false;
 
-  if (get_canonical_type() && op->get_canonical_type())
-    return get_canonical_type().get() == op->get_canonical_type().get();
+  if (get_naked_canonical_type() && op->get_naked_canonical_type())
+    return get_naked_canonical_type() == op->get_naked_canonical_type();
 
   return equals(*this, *op, 0);
 }
@@ -14300,6 +14300,7 @@ struct class_or_union::priv
   typedef_decl_wptr		naming_typedef_;
   decl_base_sptr		declaration_;
   class_or_union_wptr		definition_of_declaration_;
+  class_or_union*		naked_definition_of_declaration_;
   member_types			member_types_;
   data_members			data_members_;
   data_members			non_static_data_members_;
@@ -14314,13 +14315,15 @@ struct class_or_union::priv
   bool				is_declaration_only_;
 
   priv()
-    : is_declaration_only_(false)
+    : naked_definition_of_declaration_(),
+      is_declaration_only_(false)
   {}
 
   priv(class_or_union::member_types& mbr_types,
        class_or_union::data_members& data_mbrs,
        class_or_union::member_functions& mbr_fns)
-    : member_types_(mbr_types),
+    : naked_definition_of_declaration_(),
+      member_types_(mbr_types),
       data_members_(data_mbrs),
       member_functions_(mbr_fns),
       is_declaration_only_(false)
@@ -14333,7 +14336,8 @@ struct class_or_union::priv
   }
 
   priv(bool is_declaration_only)
-    : is_declaration_only_(is_declaration_only)
+    : naked_definition_of_declaration_(),
+      is_declaration_only_(is_declaration_only)
   {}
 
   /// Mark a class or union or union as being currently compared using
@@ -14848,6 +14852,8 @@ class_or_union::set_definition_of_declaration(class_or_union_sptr d)
   priv_->definition_of_declaration_ = d;
   if (d->get_canonical_type())
     type_base::priv_->canonical_type = d->get_canonical_type();
+
+  priv_->naked_definition_of_declaration_ = d.get();
 }
 
 /// If this @ref class_or_union_sptr is declaration-only, get its
@@ -14861,6 +14867,22 @@ class_or_union::get_definition_of_declaration() const
     return class_or_union_sptr();
   return class_or_union_sptr(priv_->definition_of_declaration_);
 }
+
+///  If this @ref class_or_union is declaration-only, get its
+///  definition, if any.
+///
+/// Note that this function doesn't return a smart pointer, but rather
+/// the underlying pointer managed by the smart pointer.  So it's as
+/// fast as possible.  This getter is to be used in code paths that
+/// are proven to be performance hot spots; especially, when comparing
+/// sensitive types like class or unions.  Those are compared
+/// extremely frequently and thus, their access to the definition of
+/// declaration must be fast.
+///
+/// @return the definition of the class.
+const class_or_union*
+class_or_union::get_naked_definition_of_declaration() const
+{return priv_->naked_definition_of_declaration_;}
 
 /// If this @ref class_or_union_sptr is a definitin, get its earlier
 /// declaration.
@@ -15202,16 +15224,16 @@ class_or_union::operator==(const decl_base& other) const
   // the canonical type of the definition, if any.
   if (!canonical_type
       && get_is_declaration_only()
-      && get_definition_of_declaration())
+      && get_naked_definition_of_declaration())
     canonical_type =
-      get_definition_of_declaration()->get_naked_canonical_type();
+      get_naked_definition_of_declaration()->get_naked_canonical_type();
 
   // Likewise for the other class.
   if (!other_canonical_type
       && op->get_is_declaration_only()
-      && op->get_definition_of_declaration())
+      && op->get_naked_definition_of_declaration())
     other_canonical_type =
-      op->get_definition_of_declaration()->get_naked_canonical_type();
+      op->get_naked_definition_of_declaration()->get_naked_canonical_type();
 
   if (canonical_type && other_canonical_type)
     return canonical_type == other_canonical_type;
@@ -15282,11 +15304,11 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
   if (l_is_decl_only || r_is_decl_only)
     {
       const class_or_union* def1 = l_is_decl_only
-	? l.get_definition_of_declaration().get()
+	? l.get_naked_definition_of_declaration()
 	: &l;
 
       const class_or_union* def2 = r_is_decl_only
-	? r.get_definition_of_declaration().get()
+	? r.get_naked_definition_of_declaration()
 	: &r;
 
       if (!def1 || !def2)
@@ -15733,9 +15755,29 @@ class_decl::on_canonical_type_set()
     sort_virtual_member_functions(i->second);
 }
 
+///  If this @ref class_decl is declaration-only, get its definition,
+///  if any.
+///
+/// @return the definition of the class.
 const class_decl_sptr
 class_decl::get_definition_of_declaration() const
 {return is_class_type(class_or_union::get_definition_of_declaration());}
+
+///  If this @ref class_decl is declaration-only, get its definition,
+///  if any.
+///
+/// Note that this function doesn't return a smart pointer, but rather
+/// the underlying pointer managed by the smart pointer.  So it's as
+/// fast as possible.  This getter is to be used in code paths that
+/// are proven to be performance hot spots; especially, when comparing
+/// sensitive types like class or unions.  Those are compared
+/// extremely frequently and thus, their access to the definition of
+/// declaration must be fast.
+///
+/// @return the definition of the class.
+const class_decl*
+class_decl::get_naked_definition_of_declaration() const
+{return is_class_type(class_or_union::get_naked_definition_of_declaration());}
 
 /// Set the "is-struct" flag of the class.
 ///
@@ -16829,16 +16871,16 @@ class_decl::operator==(const decl_base& other) const
   // the canonical type of the definition, if any.
   if (!canonical_type
       && get_is_declaration_only()
-      && get_definition_of_declaration())
+      && get_naked_definition_of_declaration())
     canonical_type =
-      get_definition_of_declaration()->get_naked_canonical_type();
+      get_naked_definition_of_declaration()->get_naked_canonical_type();
 
   // Likewise for the other class.
   if (!other_canonical_type
       && op->get_is_declaration_only()
-      && op->get_definition_of_declaration())
+      && op->get_naked_definition_of_declaration())
     other_canonical_type =
-      op->get_definition_of_declaration()->get_naked_canonical_type();
+      op->get_naked_definition_of_declaration()->get_naked_canonical_type();
 
   if (canonical_type && other_canonical_type)
     return canonical_type == other_canonical_type;
@@ -18601,11 +18643,11 @@ hash_type_or_decl(const type_or_decl_base *tod)
       else if (const class_decl* cl = is_class_type(t))
 	{
 	  if (cl->get_is_declaration_only()
-	      && cl->get_definition_of_declaration())
+	      && cl->get_naked_definition_of_declaration())
 	    // The is a declaration-only class, so it has no canonical
 	    // type; but then it's class definition has one.  Let's
 	    // use that one.
-	    return hash_type_or_decl(cl->get_definition_of_declaration());
+	    return hash_type_or_decl(cl->get_naked_definition_of_declaration());
 	  else
 	    {
 	      // The class really has no canonical type, let's use the

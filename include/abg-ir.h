@@ -3257,6 +3257,9 @@ public:
   const class_or_union_sptr
   get_definition_of_declaration() const;
 
+  const class_or_union*
+  get_naked_definition_of_declaration() const;
+
   decl_base_sptr
   get_earlier_declaration() const;
 
@@ -3455,6 +3458,9 @@ public:
 
   const class_decl_sptr
   get_definition_of_declaration() const;
+
+  const class_decl*
+  get_naked_definition_of_declaration() const;
 
   virtual string
   get_pretty_representation(bool internal = false) const;
