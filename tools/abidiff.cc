@@ -44,6 +44,7 @@ using abigail::ir::environment_sptr;
 using abigail::translation_unit;
 using abigail::translation_unit_sptr;
 using abigail::corpus_sptr;
+using abigail::corpus_group_sptr;
 using abigail::comparison::translation_unit_diff_sptr;
 using abigail::comparison::corpus_diff;
 using abigail::comparison::corpus_diff_sptr;
@@ -752,6 +753,20 @@ set_corpus_keep_drop_regex_patterns(options& opts, corpus_sptr c)
     }
 }
 
+/// This function sets diff context options that are specific to
+/// kernel module interface comparison.
+///
+/// @param ctxt the diff context to consider.
+static void
+adjust_diff_context_for_kmidiff(diff_context_sptr &ctxt)
+{
+  ctxt->show_linkage_names(false);
+  ctxt->show_added_fns(false);
+  ctxt->show_added_vars(false);
+  ctxt->show_added_symbols_unreferenced_by_debug_info
+    (false);
+}
+
 int
 main(int argc, char* argv[])
 {
@@ -828,6 +843,7 @@ main(int argc, char* argv[])
 	abigail::dwarf_reader::STATUS_OK,
 	c2_status = abigail::dwarf_reader::STATUS_OK;
       corpus_sptr c1, c2;
+      corpus_group_sptr g1, g2;
       char *di_dir1 = 0, *di_dir2 = 0;
       bool files_suppressed = false;
 
@@ -881,18 +897,28 @@ main(int argc, char* argv[])
 	    c1 = abigail::xml_reader::read_corpus_from_input(*ctxt);
 	  }
 	  break;
+	case abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP:
+	  {
+	    abigail::xml_reader::read_context_sptr ctxt =
+	      abigail::xml_reader::create_native_xml_read_context(opts.file1,
+								  env.get());
+	    assert(ctxt);
+	    set_suppressions(*ctxt, opts);
+	    g1 = abigail::xml_reader::read_corpus_group_from_input(*ctxt);
+	  }
+	  break;
 	case abigail::tools_utils::FILE_TYPE_ZIP_CORPUS:
 #ifdef WITH_ZIP_ARCHIVE
 	  c1 = abigail::xml_reader::read_corpus_from_file(opts.file1);
 #endif //WITH_ZIP_ARCHIVE
-          break;
-        case abigail::tools_utils::FILE_TYPE_RPM:
-        case abigail::tools_utils::FILE_TYPE_SRPM:
-        case abigail::tools_utils::FILE_TYPE_DEB:
-        case abigail::tools_utils::FILE_TYPE_DIR:
-        case abigail::tools_utils::FILE_TYPE_TAR:
-          break;
-        }
+	  break;
+	case abigail::tools_utils::FILE_TYPE_RPM:
+	case abigail::tools_utils::FILE_TYPE_SRPM:
+	case abigail::tools_utils::FILE_TYPE_DEB:
+	case abigail::tools_utils::FILE_TYPE_DIR:
+	case abigail::tools_utils::FILE_TYPE_TAR:
+	  break;
+	}
 
       switch (t2_type)
 	{
@@ -932,20 +958,30 @@ main(int argc, char* argv[])
 	    c2 = abigail::xml_reader::read_corpus_from_input(*ctxt);
 	  }
 	  break;
+	case abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP:
+	  {
+	    abigail::xml_reader::read_context_sptr ctxt =
+	      abigail::xml_reader::create_native_xml_read_context(opts.file2,
+								  env.get());
+	    assert(ctxt);
+	    set_suppressions(*ctxt, opts);
+	    g2 = abigail::xml_reader::read_corpus_group_from_input(*ctxt);
+	  }
+	  break;
 	case abigail::tools_utils::FILE_TYPE_ZIP_CORPUS:
 #ifdef WITH_ZIP_ARCHIVE
 	  c2 = abigail::xml_reader::read_corpus_from_file(opts.file2);
 #endif //WITH_ZIP_ARCHIVE
-          break;
-        case abigail::tools_utils::FILE_TYPE_RPM:
-        case abigail::tools_utils::FILE_TYPE_SRPM:
-        case abigail::tools_utils::FILE_TYPE_DEB:
-        case abigail::tools_utils::FILE_TYPE_DIR:
-        case abigail::tools_utils::FILE_TYPE_TAR:
-          break;
-        }
+	  break;
+	case abigail::tools_utils::FILE_TYPE_RPM:
+	case abigail::tools_utils::FILE_TYPE_SRPM:
+	case abigail::tools_utils::FILE_TYPE_DEB:
+	case abigail::tools_utils::FILE_TYPE_DIR:
+	case abigail::tools_utils::FILE_TYPE_TAR:
+	  break;
+	}
 
-      if (!t1 && !c1)
+      if (!t1 && !c1 && !g1)
 	{
 	  emit_prefix(argv[0], cerr)
 	    << "failed to read input file " << opts.file1 << "\n";
@@ -977,7 +1013,7 @@ main(int argc, char* argv[])
 	    }
 	}
 
-      if (!t2 && !c2)
+      if (!t2 && !c2 && !g2)
 	{
 	  emit_prefix(argv[0],  cerr)
 	    << "failed to read input file " << opts.file2 << "\n";
@@ -1010,7 +1046,8 @@ main(int argc, char* argv[])
 	}
 
       if (!!c1 != !!c2
-	  || !!t1 != !!t2)
+	  || !!t1 != !!t2
+	  || !!g1 != !!g2)
 	{
 	  emit_prefix(argv[0], cerr)
 	    << "the two input should be of the same kind\n";
@@ -1060,6 +1097,27 @@ main(int argc, char* argv[])
 
 	  if (diff->has_changes())
 	    diff->report(cout);
+	}
+      else if (g1)
+	{
+	  if (opts.show_symtabs)
+	    {
+	      display_symtabs(c1, c2, cout);
+	      return abigail::tools_utils::ABIDIFF_OK;
+	    }
+
+	  adjust_diff_context_for_kmidiff(ctxt);
+	  corpus_diff_sptr diff = compute_diff(g1, g2, ctxt);
+
+	  if (diff->has_net_changes())
+	    status = abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+
+	  if (diff->has_incompatible_changes())
+	    status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
+
+	  if (diff->has_changes())
+	    diff->report(cout);
+
 	}
       else
 	status = abigail::tools_utils::ABIDIFF_ERROR;

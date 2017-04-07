@@ -351,18 +351,20 @@ main(int argc, char* argv[])
 #if WITH_ZIP_ARCHIVE
 	  corp = read_corpus_from_file(opts.file_path);
 #endif
-          break;
-        case abigail::tools_utils::FILE_TYPE_RPM:
-          break;
-        case abigail::tools_utils::FILE_TYPE_SRPM:
-          break;
-        case abigail::tools_utils::FILE_TYPE_DEB:
-          break;
-        case abigail::tools_utils::FILE_TYPE_DIR:
-          break;
-        case abigail::tools_utils::FILE_TYPE_TAR:
-          break;
-        }
+	  break;
+	case abigail::tools_utils::FILE_TYPE_RPM:
+	  break;
+	case abigail::tools_utils::FILE_TYPE_SRPM:
+	  break;
+	case abigail::tools_utils::FILE_TYPE_DEB:
+	  break;
+	case abigail::tools_utils::FILE_TYPE_DIR:
+	  break;
+	case abigail::tools_utils::FILE_TYPE_TAR:
+	  break;
+	case abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP:
+	  break;
+	}
 
       if (!tu && !corp)
 	{

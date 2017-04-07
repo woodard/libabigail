@@ -85,6 +85,17 @@ read_corpus_from_native_xml_file(const string& path,
 corpus_sptr
 read_corpus_from_input(read_context& ctxt);
 
+corpus_group_sptr
+read_corpus_group_from_input(read_context& ctxt);
+
+corpus_group_sptr
+read_corpus_group_from_native_xml(std::istream* in,
+				  environment*  env);
+
+corpus_group_sptr
+read_corpus_group_from_native_xml_file(const string& path,
+				       environment*  env);
+
 void
 add_read_context_suppressions(read_context& ctxt,
 			      const suppr::suppressions_type& supprs);

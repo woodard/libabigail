@@ -149,9 +149,12 @@ enum file_type
   FILE_TYPE_ELF,
   /// An archive (AR) file.
   FILE_TYPE_AR,
-  // A native xml file format representing a corpus of one or several
-  // translation units.
+  // A native abixml file format representing a corpus of one or
+  // several translation units.
   FILE_TYPE_XML_CORPUS,
+  // A native abixml file format representing a corpus group of one or
+  // several corpora.
+  FILE_TYPE_XML_CORPUS_GROUP,
   // A zip file, possibly containing a corpus of one of several
   // translation units.
   FILE_TYPE_ZIP_CORPUS,

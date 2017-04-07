@@ -708,6 +708,9 @@ operator<<(ostream& output,
     case FILE_TYPE_XML_CORPUS:
       repr = "native XML corpus file type";
       break;
+    case FILE_TYPE_XML_CORPUS_GROUP:
+      repr = "native XML corpus group file type";
+      break;
     case FILE_TYPE_ZIP_CORPUS:
       repr = "native ZIP corpus file type";
       break;
@@ -785,6 +788,26 @@ guess_file_type(istream& in)
       && buf[9] == 'r'
       && buf[10] == ' ')
     return FILE_TYPE_NATIVE_BI;
+
+  if (buf[0]     == '<'
+      && buf[1]  == 'a'
+      && buf[2]  == 'b'
+      && buf[3]  == 'i'
+      && buf[4]  == '-'
+      && buf[5]  == 'c'
+      && buf[6]  == 'o'
+      && buf[7]  == 'r'
+      && buf[8]  == 'p'
+      && buf[9]  == 'u'
+      && buf[10] == 's'
+      && buf[11] == '-'
+      && buf[12] == 'g'
+      && buf[13] == 'r'
+      && buf[14] == 'o'
+      && buf[15] == 'u'
+      && buf[16] == 'p'
+      && buf[17] == ' ')
+    return FILE_TYPE_XML_CORPUS_GROUP;
 
   if (buf[0]     == '<'
       && buf[1]  == 'a'

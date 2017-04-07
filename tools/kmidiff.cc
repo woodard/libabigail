@@ -36,6 +36,7 @@
 #include "abg-tools-utils.h"
 #include "abg-corpus.h"
 #include "abg-dwarf-reader.h"
+#include "abg-reader.h"
 #include "abg-comparison.h"
 
 using std::string;
@@ -58,6 +59,9 @@ using abigail::suppr::suppression_sptr;
 using abigail::suppr::suppressions_type;
 using abigail::suppr::read_suppressions;
 using abigail::tools_utils::gen_suppr_spec_from_kernel_abi_whitelist;
+using abigail::tools_utils::guess_file_type;
+using abigail::tools_utils::file_type;
+using abigail::xml_reader::read_corpus_group_from_native_xml_file;
 
 /// The options of this program.
 struct options
@@ -312,26 +316,43 @@ main(int argc, char* argv[])
   corpus_group_sptr group1, group2;
   if (!opts.kernel_dist_root1.empty())
     {
-      group1 =
-	build_corpus_group_from_kernel_dist_under(opts.kernel_dist_root1,
-						  opts.suppression_paths,
-						  opts.kabi_whitelist_paths,
-						  opts.read_time_supprs,
-						  opts.verbose,
-						  env);
-      print_kernel_dist_binary_paths_under(opts.kernel_dist_root1, opts);
+      file_type ftype = guess_file_type(opts.kernel_dist_root1);
+      if (ftype == FILE_TYPE_DIR)
+	{
+	  group1 =
+	    build_corpus_group_from_kernel_dist_under(opts.kernel_dist_root1,
+						      opts.suppression_paths,
+						      opts.kabi_whitelist_paths,
+						      opts.read_time_supprs,
+						      opts.verbose,
+						      env);
+	  print_kernel_dist_binary_paths_under(opts.kernel_dist_root1, opts);
+	}
+      else if (ftype == FILE_TYPE_XML_CORPUS_GROUP)
+	group1 =
+	  read_corpus_group_from_native_xml_file(opts.kernel_dist_root1,
+						 env.get());
+
     }
 
   if (!opts.kernel_dist_root2.empty())
     {
-      group2 =
-	build_corpus_group_from_kernel_dist_under(opts.kernel_dist_root2,
-						  opts.suppression_paths,
-						  opts.kabi_whitelist_paths,
-						  opts.read_time_supprs,
-						  opts.verbose,
-						  env);
-      print_kernel_dist_binary_paths_under(opts.kernel_dist_root2, opts);
+      file_type ftype = guess_file_type(opts.kernel_dist_root2);
+      if (ftype == FILE_TYPE_DIR)
+	{
+	  group2 =
+	    build_corpus_group_from_kernel_dist_under(opts.kernel_dist_root2,
+						      opts.suppression_paths,
+						      opts.kabi_whitelist_paths,
+						      opts.read_time_supprs,
+						      opts.verbose,
+						      env);
+	  print_kernel_dist_binary_paths_under(opts.kernel_dist_root2, opts);
+	}
+      else if (ftype == FILE_TYPE_XML_CORPUS_GROUP)
+	group2 =
+	  read_corpus_group_from_native_xml_file(opts.kernel_dist_root2,
+						 env.get());
     }
 
   abidiff_status status = abigail::tools_utils::ABIDIFF_OK;

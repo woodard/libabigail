@@ -8,6 +8,10 @@ abidiff compares the Application Binary Interfaces (ABI) of two shared
 libraries in `ELF`_ format.  It emits a meaningful report describing the
 differences between the two ABIs.
 
+This tool can also compare the textual representations of the ABI of
+two ELF binaries (as emitted by ``abidw``) or an ELF binary against a
+textual representation of another ELF binary.
+
 For a comprehensive ABI change report that includes changes about
 function and variable sub-types, the two input shared libraries must
 be accompanied with their debug information in `DWARF`_ format.

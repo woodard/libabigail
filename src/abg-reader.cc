@@ -122,6 +122,7 @@ private:
   xmlNodePtr						m_corp_node;
   deque<shared_ptr<decl_base> >			m_decls_stack;
   corpus_sptr						m_corpus;
+  corpus_group_sptr					m_corpus_group;
   corpus::exported_decls_builder*			m_exported_decls_builder;
   suppr::suppressions_type				m_supprs;
 
@@ -712,6 +713,27 @@ public:
   void
   set_corpus(corpus_sptr c)
   {m_corpus = c;}
+
+  /// Getter of the current corpus group.
+  ///
+  /// @return the current corpus group.n
+  const corpus_group_sptr&
+  get_corpus_group() const
+  {return m_corpus_group;}
+
+  /// Getter of the current corpus group.
+  ///
+  /// @return the current corpus group.
+  corpus_group_sptr&
+  get_corpus_group()
+  {return m_corpus_group;}
+
+  /// Setter of the corpus_group
+  ///
+  /// @param group the new corpus group.
+  void
+  set_corpus_group(const corpus_group_sptr& group)
+  {m_corpus_group = group;}
 
   /// Getter for the object that determines if a given declaration
   /// ought to be put in the set of exported decls of the current
@@ -1455,8 +1477,8 @@ read_translation_unit_from_input(read_context&	ctxt)
 {
   translation_unit_sptr tu, nil;
 
-  xmlNodePtr node = 0;
-  if (!ctxt.get_corpus_node())
+  xmlNodePtr node = ctxt.get_corpus_node();
+  if (!node)
     {
       xml::reader_sptr reader = ctxt.get_reader();
       if (!reader)
@@ -1755,45 +1777,90 @@ read_corpus_from_input(read_context& ctxt)
   if (!reader)
     return nil;
 
-  // The document must start with the abi-corpus node.
-  int status = 1;
-  while (status == 1
-	 && XML_READER_GET_NODE_TYPE(reader) != XML_READER_TYPE_ELEMENT)
-    status = advance_cursor (ctxt);
+  bool call_reader_next = false;
 
-  if (status != 1 || !xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
-				   BAD_CAST("abi-corpus")))
-    return nil;
-
-  if (!ctxt.get_corpus())
+  xmlNodePtr node = ctxt.get_corpus_node();
+  if (!node)
     {
-      corpus_sptr c(new corpus(ctxt.get_environment(), ""));
-      ctxt.set_corpus(c);
+      // The document must start with the abi-corpus node.
+      int status = 1;
+      while (status == 1
+	     && XML_READER_GET_NODE_TYPE(reader) != XML_READER_TYPE_ELEMENT)
+	status = advance_cursor (ctxt);
+
+      if (status != 1 || !xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
+				       BAD_CAST("abi-corpus")))
+	return nil;
+
+      if (!ctxt.get_corpus())
+	{
+	  corpus_sptr c(new corpus(ctxt.get_environment(), ""));
+	  ctxt.set_corpus(c);
+	}
+
+      if (!ctxt.get_corpus_group())
+	ctxt.clear_per_corpus_data();
+
+      corpus& corp = *ctxt.get_corpus();
+      ctxt.set_exported_decls_builder(corp.get_exported_decls_builder().get());
+
+      xml::xml_char_sptr path_str = XML_READER_GET_ATTRIBUTE(reader, "path");
+      if (path_str)
+	corp.set_path(reinterpret_cast<char*>(path_str.get()));
+
+      xml::xml_char_sptr architecture_str =
+	XML_READER_GET_ATTRIBUTE(reader, "architecture");
+      if (architecture_str)
+	corp.set_architecture_name
+	  (reinterpret_cast<char*>(architecture_str.get()));
+
+      xml::xml_char_sptr soname_str =
+	XML_READER_GET_ATTRIBUTE(reader, "soname");
+      if (soname_str)
+	corp.set_soname(reinterpret_cast<char*>(soname_str.get()));
+
+      node = xmlTextReaderExpand(reader.get());
+      if (!node)
+	return nil;
+
+      call_reader_next = true;
+
+      ctxt.set_corpus_node(node->children);
+    }
+  else
+    {
+      if (!ctxt.get_corpus())
+	{
+	  corpus_sptr c(new corpus(ctxt.get_environment(), ""));
+	  ctxt.set_corpus(c);
+	}
+
+      if (!ctxt.get_corpus_group())
+	ctxt.clear_per_corpus_data();
+
+      corpus& corp = *ctxt.get_corpus();
+      ctxt.set_exported_decls_builder(corp.get_exported_decls_builder().get());
+
+      xml::xml_char_sptr path_str = XML_NODE_GET_ATTRIBUTE(node, "path");
+      if (path_str)
+	corp.set_path(reinterpret_cast<char*>(path_str.get()));
+
+      xml::xml_char_sptr architecture_str =
+	XML_NODE_GET_ATTRIBUTE(node, "architecture");
+      if (architecture_str)
+	corp.set_architecture_name
+	  (reinterpret_cast<char*>(architecture_str.get()));
+
+      xml::xml_char_sptr soname_str =
+	XML_NODE_GET_ATTRIBUTE(node, "soname");
+      if (soname_str)
+	corp.set_soname(reinterpret_cast<char*>(soname_str.get()));
+
+      ctxt.set_corpus_node(node->children);
     }
 
-  ctxt.clear_per_corpus_data();
-
   corpus& corp = *ctxt.get_corpus();
-  ctxt.set_exported_decls_builder(corp.get_exported_decls_builder().get());
 
-  xml::xml_char_sptr path_str = XML_READER_GET_ATTRIBUTE(reader, "path");
-  if (path_str)
-    corp.set_path(reinterpret_cast<char*>(path_str.get()));
-
-  xml::xml_char_sptr architecture_str =
-    XML_READER_GET_ATTRIBUTE(reader, "architecture");
-  if (architecture_str)
-    corp.set_architecture_name(reinterpret_cast<char*>(architecture_str.get()));
-
-  xml::xml_char_sptr soname_str = XML_READER_GET_ATTRIBUTE(reader, "soname");
-  if (soname_str)
-    corp.set_soname(reinterpret_cast<char*>(soname_str.get()));
-
-  xmlNodePtr node = xmlTextReaderExpand(reader.get());
-  if (!node)
-    return nil;
-
-  ctxt.set_corpus_node(node->children);
   walk_xml_node_to_map_type_ids(ctxt, node);
 
   // Read the needed element
@@ -1837,11 +1904,123 @@ read_corpus_from_input(read_context& ctxt)
 
   corp.set_origin(corpus::NATIVE_XML_ORIGIN);
 
-  // This is the necessary counter-part of the xmlTextReaderExpand()
-  // call at the beginning of the function.
-  xmlTextReaderNext(reader.get());
+  if (call_reader_next)
+    {
+      // This is the necessary counter-part of the xmlTextReaderExpand()
+      // call at the beginning of the function.
+      xmlTextReaderNext(reader.get());
+    }
+  else
+    {
+      node = ctxt.get_corpus_node();
+      node = xml::advance_to_next_sibling_element(node);
+      if (!node)
+	{
+	  node = ctxt.get_corpus_node();
+	  node = xml::advance_to_next_sibling_element(node->parent);
+	}
+      ctxt.set_corpus_node(node);
+    }
 
   return ctxt.get_corpus();;
+}
+
+/// Parse the input XML document containing an ABI corpus group,
+/// represented by an 'abi-corpus-group' element node, associated to
+/// the current context.
+///
+/// @param ctxt the current input context.
+///
+/// @return the corpus group resulting from the parsing
+corpus_group_sptr
+read_corpus_group_from_input(read_context& ctxt)
+{
+  corpus_group_sptr nil;
+
+  xml::reader_sptr reader = ctxt.get_reader();
+  if (!reader)
+    return nil;
+
+  // The document must start with the abi-corpus-group node.
+  int status = 1;
+  while (status == 1
+	 && XML_READER_GET_NODE_TYPE(reader) != XML_READER_TYPE_ELEMENT)
+    status = advance_cursor (ctxt);
+
+  if (status != 1 || !xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
+				   BAD_CAST("abi-corpus-group")))
+    return nil;
+
+  if (!ctxt.get_corpus_group())
+    {
+      corpus_group_sptr g(new corpus_group(ctxt.get_environment(),
+					   ctxt.get_path()));
+      ctxt.set_corpus_group(g);
+    }
+
+  corpus_group_sptr group = ctxt.get_corpus_group();
+  xml::xml_char_sptr path_str = XML_READER_GET_ATTRIBUTE(reader, "path");
+  if (path_str)
+    group->set_path(reinterpret_cast<char*>(path_str.get()));
+
+  xmlNodePtr node = xmlTextReaderExpand(reader.get());
+  if (!node)
+    return nil;
+
+  //node = xml::get_first_element_sibling_if_text(node->children);
+  node = xml::advance_to_next_sibling_element(node->children);
+  ctxt.set_corpus_node(node);
+
+  corpus_sptr corp;
+  while (corp = read_corpus_from_input(ctxt))
+    ctxt.get_corpus_group()->add_corpus(corp);
+
+  xmlTextReaderNext(reader.get());
+
+  return ctxt.get_corpus_group();
+}
+
+/// De-serialize an ABI corpus group from an input XML document which
+/// root node is 'abi-corpus-group'.
+///
+/// @param in the input stream to read the XML document from.
+///
+/// @param env the environment to use.  Note that the life time of
+/// this environment must be greater than the lifetime of the
+/// resulting corpus as the corpus uses resources that are allocated
+/// in the environment.
+///
+/// @return the resulting corpus group de-serialized from the parsing.
+/// This is non-null iff the parsing resulted in a valid corpus group.
+corpus_group_sptr
+read_corpus_group_from_native_xml(std::istream* in,
+				  environment*  env)
+{
+  read_context_sptr read_ctxt = create_native_xml_read_context(in, env);
+  return read_corpus_group_from_input(*read_ctxt);
+}
+
+/// De-serialize an ABI corpus group from an XML document file which
+/// root node is 'abi-corpus-group'.
+///
+/// @param path the path to the input file to read the XML document
+/// from.
+///
+/// @param env the environment to use.  Note that the life time of
+/// this environment must be greater than the lifetime of the
+/// resulting corpus as the corpus uses resources that are allocated
+/// in the environment.
+///
+/// @return the resulting corpus group de-serialized from the parsing.
+/// This is non-null if the parsing successfully resulted in a corpus
+/// group.
+corpus_group_sptr
+read_corpus_group_from_native_xml_file(const string& path,
+				       environment*  env)
+{
+    read_context_sptr read_ctxt = create_native_xml_read_context(path, env);
+    corpus_group_sptr group = read_corpus_group_from_input(*read_ctxt);
+    return group;
 }
 
 /// Parse an ABI instrumentation file (in XML format) at a given path.
@@ -5496,13 +5675,6 @@ create_native_xml_read_context(std::istream* in, environment* env)
   result->set_corpus(corp);
   return result;
 }
-
-/// Read an ABI corpus from a given reading context.
-///
-/// @return the resulting ABI corpus.
-corpus_sptr
-read_corpus_from_native_xml(read_context& ctxt)
-{return read_corpus_from_input(ctxt);}
 
 /// De-serialize an ABI corpus from an input XML document which root
 /// node is 'abi-corpus'.
