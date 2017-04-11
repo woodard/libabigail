@@ -1,5 +1,5 @@
-#!/bin/bash 
+#!/bin/bash
 
-for i in *.svg; 
-  do inkscape $i --export-png=`echo $i | sed -e 's/svg$/png/'` --export-pdf=`echo $i | sed -e 's/svg$/pdf/'`; 
+for i in *.svg;
+  do inkscape "$i" --export-png="${i//svg/png}" --export-pdf="${i//svg/pdf}"
 done
