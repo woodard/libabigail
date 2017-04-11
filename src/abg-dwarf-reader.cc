@@ -3342,7 +3342,7 @@ public:
     assert(!repr.empty());
     istring_type_or_decl_base_sptr_map_type::iterator i =
       per_tu_name_artefacts_map_.find(env()->intern(repr));
-    if (i == name_artefacts_map_.end())
+    if (i == per_tu_name_artefacts_map_.end())
       return type_or_decl_base_sptr();
     return i->second;
   }
