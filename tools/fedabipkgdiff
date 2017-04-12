@@ -1021,7 +1021,25 @@ def abipkgdiff(cmp_half1, cmp_half2):
 
     proc = subprocess.Popen(' '.join(cmd), shell=True,
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = proc.communicate()
+    # So we could have done: stdout, stderr = proc.communicate()
+    # But then the documentatin of proc.communicate says:
+    #
+    #    Note: The data read is buffered in memory, so do not use this
+    #    method if the data size is large or unlimited. "
+    #
+    # In practice, we are seeing random cases where this
+    # proc.communicate() function does *NOT* terminate and seems to be
+    # in a deadlock state.  So we are avoiding it altogether.  We are
+    # then busy looping, waiting for the spawn process to finish, and
+    # then we get its output.
+    #
+
+    while True:
+        if proc.poll() != None:
+            break
+
+    stdout = ''.join(proc.stdout.readlines())
+    stderr = ''.join(proc.stderr.readlines())
 
     is_ok = proc.returncode == ABIDIFF_OK
     is_internal_error = proc.returncode & ABIDIFF_ERROR or proc.returncode & ABIDIFF_USAGE_ERROR
