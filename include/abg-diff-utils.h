@@ -1255,7 +1255,7 @@ template<typename RandomAccessOutputIterator>
 void
 print_snake(RandomAccessOutputIterator a_begin,
 	    RandomAccessOutputIterator b_begin,
-	    const snake s, ostream& out)
+	    const snake &s, ostream& out)
 {
   if (s.is_empty())
     return;

@@ -43,7 +43,7 @@ struct node_base
   const style&		_M_style;
 
   explicit
-  node_base(std::string __id, type __t, const style& __sty)
+  node_base(const std::string& __id, type __t, const style& __sty)
     : _M_id(__id), _M_count(++_M_count_total), 
     _M_type(__t), _M_x_space(0.4), _M_y_space(0.2), _M_style(__sty)
   { }
@@ -66,7 +66,7 @@ extern const style child_sty;
  */
 struct parent_node : public node_base 
 {
-   parent_node(std::string __id) 
+   parent_node(const std::string& __id)
    : node_base(__id, node_base::parent, parent_sty)
    { }
 };
@@ -83,7 +83,7 @@ struct parent_node : public node_base
  */
 struct child_node : public node_base 
 {
-   child_node(std::string __id) 
+   child_node(const std::string& __id)
    : node_base(__id, node_base::child, child_sty)
    { }
 };
@@ -118,7 +118,7 @@ private:
   
 public:
 
-  dot(const std::string __title, 
+  dot(const std::string &__title,
       const canvas& __cv = ansi_letter_canvas,
       const typography& __typo = arial_typo) 
   : _M_title(__title), _M_canvas(__cv), _M_typo(__typo)

@@ -1768,10 +1768,9 @@ read_corpus_from_input(read_context& ctxt)
     corp.set_needed(needed);
 
   string_elf_symbols_map_sptr fn_sym_db, var_sym_db;
-  bool is_ok = false;
 
   // Read the symbol databases.
-  is_ok = read_symbol_db_from_input(ctxt, fn_sym_db, var_sym_db);
+  bool is_ok = read_symbol_db_from_input(ctxt, fn_sym_db, var_sym_db);
   if (is_ok)
     {
       assert(fn_sym_db || var_sym_db);
@@ -2556,7 +2555,7 @@ build_elf_symbol_db(read_context& ctxt,
       while (std::getline(aliases, item, ','))
         elems.push_back(item);
       for (std::vector<string>::iterator alias = elems.begin();
-           alias != elems.end(); alias++)
+           alias != elems.end(); ++alias)
         {
           string_elf_symbol_sptr_map_type::const_iterator i =
           id_sym_map.find(*alias);

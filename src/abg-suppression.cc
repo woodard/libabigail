@@ -912,7 +912,7 @@ suppression_matches_type_name(const suppr::type_suppression&	s,
 /// @return true iff the suppression @p s matches location @p loc.
 bool
 suppression_matches_type_location(const type_suppression&	s,
-				  const location		loc)
+				  const location&		loc)
 {
   if (loc)
     {

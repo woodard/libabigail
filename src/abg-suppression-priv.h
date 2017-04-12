@@ -774,7 +774,7 @@ suppression_matches_type_name(const suppr::type_suppression&	s,
 
 bool
 suppression_matches_type_location(const type_suppression&	s,
-				  const location		loc);
+				  const location&		loc);
 
 bool
 suppression_matches_type_location(const type_suppression&	s,

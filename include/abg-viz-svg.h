@@ -99,7 +99,7 @@ private:
 
 public:
 
-  svg(const std::string __title, 
+  svg(const std::string &__title,
       const canvas& __cv = ansi_letter_canvas,
       const typography& __typo = arial_typo) 
   : _M_title(__title), _M_canvas(__cv), _M_typo(__typo), _M_y_size(0)

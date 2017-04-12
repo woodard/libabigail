@@ -245,7 +245,7 @@ public:
   ///
   /// @return true iff both locations are equal.
   bool
-  operator==(const location other) const
+  operator==(const location &other) const
   {return value_ == other.value_;}
 
   /// "Less than" operator of the @ref location type.
@@ -255,7 +255,7 @@ public:
   /// @return true iff the current instance is less than the @p other
   /// one.
   bool
-  operator<(const location other) const
+  operator<(const location &other) const
   {return value_ < other.value_;}
 
   /// Expand the current location into a tripplet file path, line and

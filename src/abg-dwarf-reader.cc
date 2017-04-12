@@ -11027,8 +11027,7 @@ add_or_update_class_type(read_context&	 ctxt,
 		continue;
 
 	      int64_t offset_in_bits = 0;
-	      bool is_laid_out = false;
-	      is_laid_out = die_member_offset(&child, offset_in_bits);
+	      bool is_laid_out = die_member_offset(&child, offset_in_bits);
 	      // For now, is_static == !is_laid_out.  When we have
 	      // templates, we'll try to be more specific.  For now,
 	      // this approximation should do OK.

@@ -2599,14 +2599,14 @@ struct decl_base::priv
       location_(locus),
       context_(),
       name_(name),
+      qualified_name_(name),
       linkage_name_(linkage_name),
       visibility_(vis)
   {
-    qualified_name_ = name;
     is_anonymous_ = name_.empty();
   }
 
-  priv(location l)
+  priv(const location& l)
     : in_pub_sym_tab_(false),
       is_anonymous_(true),
       location_(l),
@@ -9959,9 +9959,7 @@ scope_type_decl::scope_type_decl(const environment*	env,
 bool
 equals(const scope_type_decl& l, const scope_type_decl& r, change_kind* k)
 {
-  bool result = true;
-
-  result = equals(static_cast<const scope_decl&>(l),
+  bool result = equals(static_cast<const scope_decl&>(l),
 		  static_cast<const scope_decl&>(r),
 		  k);
 
