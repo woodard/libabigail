@@ -9559,7 +9559,7 @@ parse_integral_type(const string&			type_name,
 	  prev_word = cur_word;
 	  cur_word = input.substr(prev_pos, cur_pos - prev_pos);
 	  if (cur_word == "long")
-	    cur_word == "long long";
+	    cur_word = "long long";
 	  else
 	    {
 	      cur_pos = prev_pos;
