@@ -1498,12 +1498,60 @@ struct corpus_group::priv
   elf_symbols			sorted_fun_symbols;
   unordered_map<string, elf_symbol_sptr> unrefed_fun_symbol_map;
   elf_symbols			unrefed_fun_symbols;
+  bool				unrefed_fun_symbols_built;
   unordered_map<string, elf_symbol_sptr> unrefed_var_symbol_map;
   elf_symbols			unrefed_var_symbols;
+  bool				unrefed_var_symbols_built;
 
   priv()
+    : unrefed_fun_symbols_built(),
+      unrefed_var_symbols_built()
   {}
-}; // end struct::priv
+
+  /// Add symbols to the set of corpus group function symbols that are
+  /// *NOT* referenced by debug info.
+  ///
+  /// @param syms the set the symbols to add.
+  void
+  add_unref_fun_symbols(const elf_symbols& syms)
+  {
+    for (elf_symbols::const_iterator e =
+	   syms.begin(); e != syms.end(); ++e)
+      {
+	string sym_id = (*e)->get_id_string();
+	unordered_map<string, elf_symbol_sptr>::const_iterator j =
+	  unrefed_fun_symbol_map.find(sym_id);
+	if (j != unrefed_fun_symbol_map.end())
+	  continue;
+
+	unrefed_fun_symbol_map[sym_id] = *e;
+	unrefed_fun_symbols.push_back(*e);
+      }
+    unrefed_fun_symbols_built = true;
+  }
+
+  /// Add symbols to the set of corpus group variable symbols that are
+  /// *NOT* referenced by debug info.
+  ///
+  /// @param syms the set the symbols to add.
+  void
+  add_unref_var_symbols(const elf_symbols& syms)
+  {
+    for (elf_symbols::const_iterator e =
+	   syms.begin(); e != syms.end(); ++e)
+      {
+	string sym_id = (*e)->get_id_string();
+	unordered_map<string, elf_symbol_sptr>::const_iterator j =
+	  unrefed_var_symbol_map.find(sym_id);
+	if (j != unrefed_var_symbol_map.end())
+	  continue;
+
+	unrefed_var_symbol_map[sym_id] = *e;
+	unrefed_var_symbols.push_back(*e);
+      }
+    unrefed_var_symbols_built = true;
+  }
+}; // end corpus_group::priv
 
 /// Default constructor of the @ref corpus_group type.
 corpus_group::corpus_group(environment* env, const string& path = "")
@@ -1541,6 +1589,11 @@ corpus_group::add_corpus(const corpus_sptr& corp)
     assert(cur_arch == corp_arch);
 
   priv_->corpora.push_back(corp);
+
+  /// Add the unreferenced function and variable symbols of this
+  /// corpus to the unreferenced symbols of the current corpus group.
+  priv_->add_unref_fun_symbols(get_unreferenced_function_symbols());
+  priv_->add_unref_var_symbols(get_unreferenced_variable_symbols());
 }
 
 /// Getter of the vector of corpora held by the current @ref
@@ -1736,9 +1789,9 @@ corpus_group::get_sorted_var_symbols() const
 /// Get the set of function symbols not referenced by any debug info,
 /// from all the corpora of the current corpus group.
 ///
-/// Upon its first invocation, this function walks all the copora of
-/// this corpus group and caches the unreferenced symbols they
-/// export.  The function then returns the cache.
+/// Upon its first invocation, this function possibly walks all the
+/// copora of this corpus group and caches the unreferenced symbols
+/// they export.  The function then returns the cache.
 ///
 /// Upon subsequent invocations, this functions just returns the
 /// cached symbols.
@@ -1747,26 +1800,30 @@ corpus_group::get_sorted_var_symbols() const
 const elf_symbols&
 corpus_group::get_unreferenced_function_symbols() const
 {
-  if (priv_->unrefed_fun_symbols.empty())
-    for (corpora_type::const_iterator i = get_corpora().begin();
-	 i != get_corpora().end();
-	 ++i)
+  if (!priv_->unrefed_fun_symbols_built)
+    if (priv_->unrefed_fun_symbols.empty())
       {
-	corpus_sptr c = *i;
-	for (elf_symbols::const_iterator e =
-	       c->get_unreferenced_function_symbols().begin();
-	     e != c->get_unreferenced_function_symbols().end();
-	     ++e)
+	for (corpora_type::const_iterator i = get_corpora().begin();
+	     i != get_corpora().end();
+	     ++i)
 	  {
-	    string sym_id = (*e)->get_id_string();
-	    unordered_map<string, elf_symbol_sptr>::const_iterator j =
-	      priv_->unrefed_fun_symbol_map.find(sym_id);
-	    if (j != priv_->unrefed_fun_symbol_map.end())
-	      continue;
+	    corpus_sptr c = *i;
+	    for (elf_symbols::const_iterator e =
+		   c->get_unreferenced_function_symbols().begin();
+		 e != c->get_unreferenced_function_symbols().end();
+		 ++e)
+	      {
+		string sym_id = (*e)->get_id_string();
+		unordered_map<string, elf_symbol_sptr>::const_iterator j =
+		  priv_->unrefed_fun_symbol_map.find(sym_id);
+		if (j != priv_->unrefed_fun_symbol_map.end())
+		  continue;
 
-	    priv_->unrefed_fun_symbol_map[sym_id] = *e;
-	    priv_->unrefed_fun_symbols.push_back(*e);
+		priv_->unrefed_fun_symbol_map[sym_id] = *e;
+		priv_->unrefed_fun_symbols.push_back(*e);
+	      }
 	  }
+	priv_->unrefed_fun_symbols_built = true;
       }
 
   return priv_->unrefed_fun_symbols;
@@ -1775,9 +1832,9 @@ corpus_group::get_unreferenced_function_symbols() const
 /// Get the set of variable symbols not referenced by any debug info,
 /// from all the corpora of the current corpus group.
 ///
-/// Upon its first invocation, this function walks all the copora of
-/// this corpus group and caches the unreferenced symbols they
-/// export.  The function then returns the cache.
+/// Upon its first invocation, this function possibly walks all the
+/// copora of this corpus group and caches the unreferenced symbols
+/// they export.  The function then returns the cache.
 ///
 /// Upon subsequent invocations, this functions just returns the
 /// cached symbols.
@@ -1786,26 +1843,30 @@ corpus_group::get_unreferenced_function_symbols() const
 const elf_symbols&
 corpus_group::get_unreferenced_variable_symbols() const
 {
-  if (priv_->unrefed_var_symbols.empty())
-    for (corpora_type::const_iterator i = get_corpora().begin();
-	 i != get_corpora().end();
-	 ++i)
+  if (!priv_->unrefed_var_symbols_built)
+    if (priv_->unrefed_var_symbols.empty())
       {
-	corpus_sptr c = *i;
-	for (elf_symbols::const_iterator e =
-	       c->get_unreferenced_variable_symbols().begin();
-	     e != c->get_unreferenced_variable_symbols().end();
-	     ++e)
+	for (corpora_type::const_iterator i = get_corpora().begin();
+	     i != get_corpora().end();
+	     ++i)
 	  {
-	    string sym_id = (*e)->get_id_string();
-	    unordered_map<string, elf_symbol_sptr>::const_iterator j =
-	      priv_->unrefed_var_symbol_map.find(sym_id);
-	    if (j != priv_->unrefed_var_symbol_map.end())
-	      continue;
+	    corpus_sptr c = *i;
+	    for (elf_symbols::const_iterator e =
+		   c->get_unreferenced_variable_symbols().begin();
+		 e != c->get_unreferenced_variable_symbols().end();
+		 ++e)
+	      {
+		string sym_id = (*e)->get_id_string();
+		unordered_map<string, elf_symbol_sptr>::const_iterator j =
+		  priv_->unrefed_var_symbol_map.find(sym_id);
+		if (j != priv_->unrefed_var_symbol_map.end())
+		  continue;
 
-	    priv_->unrefed_var_symbol_map[sym_id] = *e;
-	    priv_->unrefed_var_symbols.push_back(*e);
+		priv_->unrefed_var_symbol_map[sym_id] = *e;
+		priv_->unrefed_var_symbols.push_back(*e);
+	      }
 	  }
+	priv_->unrefed_var_symbols_built = true;
       }
 
   return priv_->unrefed_var_symbols;
