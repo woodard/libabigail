@@ -27,15 +27,20 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
+#include <vector>
 #include "abg-ir.h"
 #include "abg-reader.h"
 #include "abg-writer.h"
+#include "abg-workers.h"
 #include "abg-tools-utils.h"
 #include "test-utils.h"
 
 using std::string;
+using std::vector;
 using std::ofstream;
 using std::cerr;
+
+using std::tr1::dynamic_pointer_cast;
 
 using abigail::tools_utils::file_type;
 using abigail::tools_utils::check_file;
@@ -49,6 +54,11 @@ using abigail::xml_reader::read_translation_unit_from_file;
 using abigail::xml_reader::read_corpus_from_native_xml_file;
 using abigail::xml_writer::write_translation_unit;
 using abigail::xml_writer::write_corpus_to_native_xml;
+
+using abigail::workers::queue;
+using abigail::workers::task;
+using abigail::workers::task_sptr;
+using abigail::workers::get_number_of_threads;
 
 /// This is an aggregate that specifies where a test shall get its
 /// input from, and where it shall write its ouput to.
@@ -247,79 +257,155 @@ InOutSpec in_out_specs[] =
   {NULL, NULL, NULL, NULL}
 };
 
+/// A task wihch reads an abixml file using abilint and compares its
+/// output against a reference output.
+struct test_task : public abigail::workers::task
+{
+  InOutSpec spec;
+  bool is_ok;
+  string in_path, out_path, in_suppr_spec_path, ref_out_path;
+  string diff_cmd, error_message;
+
+  /// Constructor of the task.
+  ///
+  /// @param the spec of where to find the abixml file to read and the
+  /// reference output of the test.
+  test_task( InOutSpec& s)
+    : spec(s),
+      is_ok(true)
+  {}
+
+  /// This method defines what the task performs.
+  virtual void
+  perform()
+  {
+    string input_suffix(spec.in_path);
+    in_path =
+      string(abigail::tests::get_src_dir()) + "/tests/" + input_suffix;
+
+    if (!check_file(in_path, cerr))
+      {
+	is_ok = false;
+	return;
+      }
+
+    string ref_out_path_suffix(spec.ref_out_path);
+    ref_out_path =
+      string(abigail::tests::get_src_dir())
+      + "/tests/" + ref_out_path_suffix;
+
+    if (!check_file(ref_out_path, cerr))
+      {
+	is_ok = false;
+	return;
+      }
+
+    if (spec.in_suppr_spec_path && strcmp(spec.in_suppr_spec_path, ""))
+      {
+	in_suppr_spec_path = string(spec.in_suppr_spec_path);
+	in_suppr_spec_path =
+	  string(abigail::tests::get_src_dir())
+	  + "/tests/"
+	  + in_suppr_spec_path;
+      }
+    else
+      in_suppr_spec_path.clear();
+
+    environment_sptr env(new environment);
+    translation_unit_sptr tu;
+    corpus_sptr corpus;
+
+    file_type t = guess_file_type(in_path);
+    if (t == abigail::tools_utils::FILE_TYPE_UNKNOWN)
+      {
+	cerr << in_path << "is an unknown file type\n";
+	is_ok = false;
+	return;
+      }
+
+    string output_suffix(spec.out_path);
+    out_path =
+      string(abigail::tests::get_build_dir()) + "/tests/" + output_suffix;
+    if (!abigail::tools_utils::ensure_parent_dir_created(out_path))
+      {
+	error_message =
+	  "Could not create parent director for " + out_path;
+	is_ok = false;
+	return;
+      }
+
+    string abilint = string(get_build_dir()) + "/tools/abilint";
+    if (!in_suppr_spec_path.empty())
+      abilint +=string(" --suppr ") + in_suppr_spec_path;
+    string cmd = abilint + " " + in_path + " > " + out_path;
+
+    if (system(cmd.c_str()))
+      {
+	error_message =
+	  "ABI XML file doesn't pass abilint: " + out_path + "\n";
+	is_ok = false;
+      }
+
+    cmd = "diff -u " + ref_out_path + " " + out_path;
+    diff_cmd = cmd;
+    if (system(cmd.c_str()))
+      is_ok = false;
+  }
+};// end struct test_task
+
+/// A convenience typedef for shared
+typedef shared_ptr<test_task> test_task_sptr;
+
 /// Walk the array of InOutSpecs above, read the input files it points
 /// to, write it into the output it points to and diff them.
 int
 main()
 {
-  unsigned result = 1;
+  using abigail::workers::queue;
+  using abigail::workers::task;
+  using abigail::workers::task_sptr;
+  using abigail::workers::get_number_of_threads;
+
+  const size_t num_tests = sizeof(in_out_specs) / sizeof (InOutSpec) - 1;
+  size_t num_workers = std::min(get_number_of_threads(), num_tests);
+  queue task_queue(num_workers);
 
   bool is_ok = true;
+
+
   string in_path, out_path, in_suppr_spec_path, ref_out_path;
   for (InOutSpec* s = in_out_specs; s->in_path; ++s)
     {
-      string input_suffix(s->in_path);
-      in_path =
-	string(abigail::tests::get_src_dir()) + "/tests/" + input_suffix;
+      test_task_sptr t(new test_task(*s));
+      assert(task_queue.schedule_task(t));
+    }
 
-      if (!check_file(in_path, cerr))
-	return true;
+  /// Wait for all worker threads to finish their job, and wind down.
+  task_queue.wait_for_workers_to_complete();
 
-      string ref_out_path_suffix(s->ref_out_path);
-      ref_out_path =
-	string(abigail::tests::get_src_dir())
-	+ "/tests/" + ref_out_path_suffix;
+  // Now walk the results and print whatever error messages need to be
+  // printed.
 
-      if (!check_file(ref_out_path, cerr))
-	return true;
+  const vector<task_sptr>& completed_tasks =
+    task_queue.get_completed_tasks();
 
-      if (s->in_suppr_spec_path && strcmp(s->in_suppr_spec_path, ""))
+  assert(completed_tasks.size() == num_tests);
+
+  for (vector<task_sptr>::const_iterator ti = completed_tasks.begin();
+       ti != completed_tasks.end();
+       ++ti)
+    {
+      test_task_sptr t = dynamic_pointer_cast<test_task>(*ti);
+      if (!t->is_ok)
 	{
-	  in_suppr_spec_path = string(s->in_suppr_spec_path);
-	  in_suppr_spec_path =
-	    string(abigail::tests::get_src_dir())
-	    + "/tests/"
-	    + in_suppr_spec_path;
-	}
-      else
-	in_suppr_spec_path.clear();
-
-      environment_sptr env(new environment);
-      translation_unit_sptr tu;
-      corpus_sptr corpus;
-
-      file_type t = guess_file_type(in_path);
-      if (t == abigail::tools_utils::FILE_TYPE_UNKNOWN)
-	{
-	  cerr << in_path << "is an unknown file type\n";
 	  is_ok = false;
-	  continue;
+
+	  if (!t->error_message.empty())
+	    cerr << t->error_message << '\n';
+
+	  if (!t->diff_cmd.empty())
+	    system(t->diff_cmd.c_str());
 	}
-
-      string output_suffix(s->out_path);
-      out_path =
-	string(abigail::tests::get_build_dir()) + "/tests/" + output_suffix;
-      if (!abigail::tools_utils::ensure_parent_dir_created(out_path))
-	{
-	  cerr << "Could not create parent director for " << out_path;
-	  is_ok = false;
-	  return result;
-	}
-
-      string abilint = string(get_build_dir()) + "/tools/abilint";
-      if (!in_suppr_spec_path.empty())
-	abilint +=string(" --suppr ") + in_suppr_spec_path;
-      string cmd = abilint + " " + in_path + " > " + out_path;
-
-      if (system(cmd.c_str()))
-	{
-	  cerr << "ABI XML file doesn't pass abilint: " << out_path << "\n";
-	  is_ok &= false;
-	}
-
-      cmd = "diff -u " + ref_out_path + " " + out_path;
-      if (system(cmd.c_str()))
-	is_ok &= false;
     }
 
   return !is_ok;
