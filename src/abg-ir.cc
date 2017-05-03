@@ -12293,7 +12293,12 @@ var_decl::set_binding(decl_base::binding b)
 /// @param sym the new ELF symbol for this variable decl.
 void
 var_decl::set_symbol(const elf_symbol_sptr& sym)
-{priv_->symbol_ = sym;}
+{
+  priv_->symbol_ = sym;
+  // The variable id cache that depends on the symbol must be
+  // invalidated because the symbol changed.
+  priv_->id_ = get_environment()->intern("");
+}
 
 /// Gets the the underlying ELF symbol for the current variable,
 /// that was set using var_decl::set_symbol().  Please read the
@@ -13557,7 +13562,12 @@ function_decl::set_type(const function_type_sptr& fn_type)
 /// @param sym the new ELF symbol for this function decl.
 void
 function_decl::set_symbol(const elf_symbol_sptr& sym)
-{priv_->symbol_ = sym;}
+{
+  priv_->symbol_ = sym;
+  // The function id cache that depends on the symbol must be
+  // invalidated because the symbol changed.
+  priv_->id_ = get_environment()->intern("");
+}
 
 /// Gets the the underlying ELF symbol for the current variable,
 /// that was set using function_decl::set_symbol().  Please read the
