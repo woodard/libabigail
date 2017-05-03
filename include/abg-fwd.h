@@ -376,15 +376,6 @@ type_base_sptr
 is_type(const type_or_decl_base_sptr& tod);
 
 bool
-is_type(const decl_base&);
-
-type_base_sptr
-is_type(const decl_base_sptr);
-
-type_base*
-is_type(decl_base*);
-
-bool
 is_anonymous_type(type_base*);
 
 bool

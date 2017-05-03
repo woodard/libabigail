@@ -5874,35 +5874,6 @@ is_type(const type_or_decl_base_sptr& tod)
 /// @param d the declaration to test for.
 ///
 /// @return true if the declaration is a type, false otherwise.
-bool
-is_type(const decl_base& d)
-{
-  if (dynamic_cast<const type_base*>(&d))
-    return true;
-  return false;
-}
-
-/// Tests whether a declaration is a type, and return it properly
-/// converted into a type in that case.
-///
-/// @param decl the declaration to consider.
-///
-/// @return the pointer to type_base representing @p decl converted as
-/// a type, iff it's a type, or NULL otherwise.
-type_base_sptr
-is_type(const decl_base_sptr decl)
-{return dynamic_pointer_cast<type_base>(decl);}
-
-/// Tests whether a declaration is a type, and return it properly
-/// converted into a type in that case.
-///
-/// @param decl the declaration to consider.
-///
-/// @return the pointer to type_base representing @p decl converted as
-/// a type, iff it's a type, or NULL otherwise.
-type_base*
-is_type(decl_base* decl)
-{return dynamic_cast<type_base*>(decl);}
 
 /// Test if a given type is anonymous.
 ///
