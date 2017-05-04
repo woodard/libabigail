@@ -9225,7 +9225,6 @@ maybe_update_types_lookup_map(const union_decl_sptr& union_type)
 /// @param enum_type the type to consider.
 void
 maybe_update_types_lookup_map(const enum_type_decl_sptr& enum_type)
-
 {
   if (translation_unit *tu = enum_type->get_translation_unit())
     maybe_update_types_lookup_map<enum_type_decl>

@@ -843,8 +843,8 @@ e_machine_to_string(GElf_Half e_machine)
 	result = o.str();
       }
       break;
-  }
-    return result;
+    }
+  return result;
 }
 
 /// The kind of ELF hash table found by the function
@@ -1393,15 +1393,15 @@ get_version_needed_for_versym(Elf*			elf_handle,
 	    break;
 	  vna_offset += verneed->vn_next;
 	  verneed = (verneed->vn_next == 0
-		    ? 0
-		    : gelf_getverneed(verneed_data, vna_offset, &verneed_mem));
+		     ? 0
+		     : gelf_getverneed(verneed_data, vna_offset, &verneed_mem));
 	}
 
       if (verneed != 0 && vernaux != 0 && vernaux->vna_other == *versym)
 	{
 	  GElf_Shdr header_mem;
 	  GElf_Shdr* verneed_section_header = gelf_getshdr(verneed_section,
-							  &header_mem);
+							   &header_mem);
 	  size_t verneed_stridx = verneed_section_header->sh_link;
 	  version.str(elf_strptr(elf_handle,
 				 verneed_stridx,
@@ -2140,7 +2140,7 @@ lookup_public_function_symbol_from_elf(const environment*		env,
 	      func_syms.push_back(*i);
 	      found = true;
 	    }
-      }
+	}
     }
 
   return found;
@@ -2175,10 +2175,10 @@ lookup_public_variable_symbol_from_elf(const environment*		env,
 	if ((*i)->is_variable()
 	    && ((*i)->get_binding() == elf_symbol::GLOBAL_BINDING
 		|| (*i)->get_binding() == elf_symbol::WEAK_BINDING))
-	    {
-	      var_syms.push_back(*i);
-	      found = true;
-	    }
+	  {
+	    var_syms.push_back(*i);
+	    found = true;
+	  }
     }
 
   return found;
@@ -2222,7 +2222,7 @@ lookup_data_tag_from_dynamic_segment(Elf*                       elf,
       Elf_Scn *dynamic_section = gelf_offscn(elf, phdr->p_offset);
       GElf_Shdr  shdr_mem;
       GElf_Shdr *dynamic_section_header = gelf_getshdr(dynamic_section,
-                                                        &shdr_mem);
+						       &shdr_mem);
       if (dynamic_section_header == NULL
           || dynamic_section_header->sh_type != SHT_DYNAMIC)
         continue;
@@ -2244,7 +2244,7 @@ lookup_data_tag_from_dynamic_segment(Elf*                       elf,
       GElf_Shdr *link =
         gelf_getshdr(elf_getscn(elf,
                                 dynamic_section_header->sh_link),
-                      &link_mem);
+		     &link_mem);
       assert(link != NULL);
 
       size_t num_dynamic_section_entries =
@@ -2262,7 +2262,7 @@ lookup_data_tag_from_dynamic_segment(Elf*                       elf,
             {
               dt_tag_data.push_back(elf_strptr(elf,
                                                dynamic_section_header->sh_link,
-                                              dynamic_section->d_un.d_val));
+					       dynamic_section->d_un.d_val));
               found = true;
             }
         }
@@ -4718,7 +4718,7 @@ public:
   die_class_or_union_map_type&
   die_wip_classes_map(die_source source)
   {
-    switch(source)
+    switch (source)
       {
       case PRIMARY_DEBUG_INFO_DIE_SOURCE:
 	break;
@@ -4754,7 +4754,7 @@ public:
   die_function_type_map_type&
   die_wip_function_types_map(die_source source)
   {
-    switch(source)
+    switch (source)
       {
       case PRIMARY_DEBUG_INFO_DIE_SOURCE:
 	break;
@@ -4890,8 +4890,8 @@ public:
       {
 	bool to_resolve = false;
 	for (classes_type::iterator j = i->second.begin();
-		 j != i->second.end();
-		 ++j)
+	     j != i->second.end();
+	     ++j)
 	  if ((*j)->get_is_declaration_only()
 	      && ((*j)->get_definition_of_declaration() == 0))
 	    to_resolve = true;
@@ -5036,8 +5036,8 @@ public:
       die_function_decl_with_no_symbol_map();
 
     if (do_log())
-	cerr << fns_with_no_symbol.size()
-	     << " functions to fixup, potentially\n";
+      cerr << fns_with_no_symbol.size()
+	   << " functions to fixup, potentially\n";
 
     for (die_function_decl_map_type::iterator i = fns_with_no_symbol.begin();
 	 i != fns_with_no_symbol.end();
@@ -5067,7 +5067,7 @@ public:
   vector<Dwarf_Off>&
   types_to_canonicalize(die_source source)
   {
-    switch(source)
+    switch (source)
       {
       case PRIMARY_DEBUG_INFO_DIE_SOURCE:
 	break;
@@ -5285,7 +5285,7 @@ public:
   tu_die_imported_unit_points_map_type&
   tu_die_imported_unit_points_map(die_source source)
   {
-    switch(source)
+    switch (source)
       {
       case PRIMARY_DEBUG_INFO_DIE_SOURCE:
 	break;
@@ -5443,7 +5443,7 @@ public:
   offset_offset_map&
   die_parent_map(die_source source)
   {
-    switch(source)
+    switch (source)
       {
       case PRIMARY_DEBUG_INFO_DIE_SOURCE:
 	break;
@@ -6692,7 +6692,7 @@ public:
 		      // symbol map.  This is in addition to the
 		      // function pointer -> symbol map.  This is
 		      // because on ppc64 ELFv1, a function pointer is
-		      // different from a function entry poinut
+		      // different from a function entry point
 		      // address.
 		      //
 		      // On ppc64 ELFv1, the DWARF DIE of a function
@@ -6770,7 +6770,7 @@ public:
 			    // an artificial one.
 			    fun_entry_addr_sym_map()[fn_entry_point_addr] = symbol;
 			}
-		   }
+		    }
 		}
 	      }
 	    else if (load_undefined_fun_map && !symbol->is_defined())
@@ -6886,7 +6886,7 @@ public:
     Elf_Scn *section = 0;
     address_set_sptr linux_exported_fns_set, linux_exported_vars_set;
 
-    switch(kind)
+    switch (kind)
       {
       case KERNEL_SYMBOL_TABLE_KIND_UNDEFINED:
 	break;
@@ -7123,140 +7123,140 @@ public:
     vector<string> dt_tag_data;
     lookup_data_tag_from_dynamic_segment(elf_handle(), DT_SONAME, dt_tag_data);
     if (!dt_tag_data.empty())
-       dt_soname_ = dt_tag_data[0];
-   }
+      dt_soname_ = dt_tag_data[0];
+  }
 
-   /// Read the string representing the architecture of the current ELF
-   /// file.
-   void
-   load_elf_architecture()
-   {
-     if (!elf_handle())
-       return;
+  /// Read the string representing the architecture of the current ELF
+  /// file.
+  void
+  load_elf_architecture()
+  {
+    if (!elf_handle())
+      return;
 
-     GElf_Ehdr eh_mem;
-     GElf_Ehdr* elf_header = gelf_getehdr(elf_handle(), &eh_mem);
+    GElf_Ehdr eh_mem;
+    GElf_Ehdr* elf_header = gelf_getehdr(elf_handle(), &eh_mem);
 
-     elf_architecture_ = e_machine_to_string(elf_header->e_machine);
-   }
+    elf_architecture_ = e_machine_to_string(elf_header->e_machine);
+  }
 
-   /// Load various ELF data.
-   ///
-   /// This function loads ELF data that are not symbol maps or debug
-   /// info.  That is, things like various tags, elf architecture and
-   /// so on.
-   void
-   load_elf_properties()
-   {
-     load_dt_soname_and_needed();
-     load_elf_architecture();
-   }
+  /// Load various ELF data.
+  ///
+  /// This function loads ELF data that are not symbol maps or debug
+  /// info.  That is, things like various tags, elf architecture and
+  /// so on.
+  void
+  load_elf_properties()
+  {
+    load_dt_soname_and_needed();
+    load_elf_architecture();
+  }
 
-   /// This is a sub-routine of maybe_adjust_fn_sym_address and
-   /// maybe_adjust_var_sym_address.
-   ///
-   /// Given an address that we got by looking at some debug
-   /// information (e.g, a symbol's address referred to by a DWARF
-   /// TAG), If the ELF file we are interested in is a shared library
-   /// or an executable, then adjust the address to be coherent with
-   /// where the executable (or shared library) is loaded.  That way,
-   /// the address can be used to look for symbols in the executable or
-   /// shared library.
-   ///
-   /// @return the adjusted address, or the same address as @p addr if
-   /// it didn't need any adjustment.
-   Dwarf_Addr
-   maybe_adjust_address_for_exec_or_dyn(Dwarf_Addr addr) const
-   {
-     GElf_Ehdr eh_mem;
-     GElf_Ehdr *elf_header = gelf_getehdr(elf_handle(), &eh_mem);
+  /// This is a sub-routine of maybe_adjust_fn_sym_address and
+  /// maybe_adjust_var_sym_address.
+  ///
+  /// Given an address that we got by looking at some debug
+  /// information (e.g, a symbol's address referred to by a DWARF
+  /// TAG), If the ELF file we are interested in is a shared library
+  /// or an executable, then adjust the address to be coherent with
+  /// where the executable (or shared library) is loaded.  That way,
+  /// the address can be used to look for symbols in the executable or
+  /// shared library.
+  ///
+  /// @return the adjusted address, or the same address as @p addr if
+  /// it didn't need any adjustment.
+  Dwarf_Addr
+  maybe_adjust_address_for_exec_or_dyn(Dwarf_Addr addr) const
+  {
+    GElf_Ehdr eh_mem;
+    GElf_Ehdr *elf_header = gelf_getehdr(elf_handle(), &eh_mem);
 
-     if (elf_header->e_type == ET_DYN || elf_header->e_type == ET_EXEC)
-       {
-	 Dwarf_Addr dwarf_elf_load_address = 0, elf_load_address = 0;
-	 assert(get_binary_load_address(dwarf_elf_handle(),
-					dwarf_elf_load_address));
-	 assert(get_binary_load_address(elf_handle(),
-					elf_load_address));
-	 if (dwarf_is_splitted()
-	     && (dwarf_elf_load_address != elf_load_address))
-	   // This means that in theory the DWARF an the executable are
-	   // not loaded at the same address.  And addr is meaningful
-	   // only in the context of the DWARF.
-	   //
-	   // So let's transform addr into an offset relative to where
-	   // the DWARF is loaded, and let's add that relative offset
-	   // to the load address of the executable.  That way, addr
-	   // becomes meaningful in the context of the executable and
-	   // can thus be used to compare against the address of
-	   // symbols of the executable, for instance.
-	   addr = addr - dwarf_elf_load_address + elf_load_address;
-       }
+    if (elf_header->e_type == ET_DYN || elf_header->e_type == ET_EXEC)
+      {
+	Dwarf_Addr dwarf_elf_load_address = 0, elf_load_address = 0;
+	assert(get_binary_load_address(dwarf_elf_handle(),
+				       dwarf_elf_load_address));
+	assert(get_binary_load_address(elf_handle(),
+				       elf_load_address));
+	if (dwarf_is_splitted()
+	    && (dwarf_elf_load_address != elf_load_address))
+	  // This means that in theory the DWARF an the executable are
+	  // not loaded at the same address.  And addr is meaningful
+	  // only in the context of the DWARF.
+	  //
+	  // So let's transform addr into an offset relative to where
+	  // the DWARF is loaded, and let's add that relative offset
+	  // to the load address of the executable.  That way, addr
+	  // becomes meaningful in the context of the executable and
+	  // can thus be used to compare against the address of
+	  // symbols of the executable, for instance.
+	  addr = addr - dwarf_elf_load_address + elf_load_address;
+      }
 
-     return addr;
-   }
+    return addr;
+  }
 
-   /// For a relocatable (*.o) elf file, this function expects an
-   /// absolute address, representing a function symbol.  It then
-   /// extracts the address of the .text section from the symbol
-   /// absolute address to get the relative address of the function
-   /// from the beginning of the .text section.
-   ///
-   /// For executable or shared library, this function expects an
-   /// address of a function symbol that was retrieved by looking at a
-   /// DWARF "file".  The function thus adjusts the address to make it
-   /// be meaningful in the context of the ELF file.
-   ///
-   /// In both cases, the address can then be compared against the
-   /// st_value field of a function symbol from the ELF file.
-   ///
-   /// @param addr an adress for a function symbol that was retrieved
-   /// from a DWARF file.
-   ///
-   /// @return the (possibly) adjusted address, or just @p addr if no
-   /// adjustment took place.
-   Dwarf_Addr
-   maybe_adjust_fn_sym_address(Dwarf_Addr addr) const
-   {
-     Elf* elf = elf_handle();
-     GElf_Ehdr eh_mem;
-     GElf_Ehdr* elf_header = gelf_getehdr(elf, &eh_mem);
+  /// For a relocatable (*.o) elf file, this function expects an
+  /// absolute address, representing a function symbol.  It then
+  /// extracts the address of the .text section from the symbol
+  /// absolute address to get the relative address of the function
+  /// from the beginning of the .text section.
+  ///
+  /// For executable or shared library, this function expects an
+  /// address of a function symbol that was retrieved by looking at a
+  /// DWARF "file".  The function thus adjusts the address to make it
+  /// be meaningful in the context of the ELF file.
+  ///
+  /// In both cases, the address can then be compared against the
+  /// st_value field of a function symbol from the ELF file.
+  ///
+  /// @param addr an adress for a function symbol that was retrieved
+  /// from a DWARF file.
+  ///
+  /// @return the (possibly) adjusted address, or just @p addr if no
+  /// adjustment took place.
+  Dwarf_Addr
+  maybe_adjust_fn_sym_address(Dwarf_Addr addr) const
+  {
+    Elf* elf = elf_handle();
+    GElf_Ehdr eh_mem;
+    GElf_Ehdr* elf_header = gelf_getehdr(elf, &eh_mem);
 
-     if (elf_header->e_type == ET_REL)
-       {
-	 Elf_Scn* text_section = find_text_section(elf);
-	 assert(text_section);
+    if (elf_header->e_type == ET_REL)
+      {
+	Elf_Scn* text_section = find_text_section(elf);
+	assert(text_section);
 
-	 GElf_Shdr sheader_mem;
-	 GElf_Shdr* text_sheader = gelf_getshdr(text_section, &sheader_mem);
-	 assert(text_sheader);
-	 addr = addr - text_sheader->sh_addr;
-       }
-     else
-       addr = maybe_adjust_address_for_exec_or_dyn(addr);
+	GElf_Shdr sheader_mem;
+	GElf_Shdr* text_sheader = gelf_getshdr(text_section, &sheader_mem);
+	assert(text_sheader);
+	addr = addr - text_sheader->sh_addr;
+      }
+    else
+      addr = maybe_adjust_address_for_exec_or_dyn(addr);
 
-     return addr;
-   }
+    return addr;
+  }
 
-   /// Test if a given address is in a given section.
-   ///
-   /// @param addr the address to consider.
-   ///
-   /// @param section the section to consider.
-   bool
-   address_is_in_section(Dwarf_Addr addr, Elf_Scn* section) const
-   {
-     if (!section)
-       return false;
+  /// Test if a given address is in a given section.
+  ///
+  /// @param addr the address to consider.
+  ///
+  /// @param section the section to consider.
+  bool
+  address_is_in_section(Dwarf_Addr addr, Elf_Scn* section) const
+  {
+    if (!section)
+      return false;
 
-     GElf_Shdr sheader_mem;
-     GElf_Shdr* sheader = gelf_getshdr(section, &sheader_mem);
+    GElf_Shdr sheader_mem;
+    GElf_Shdr* sheader = gelf_getshdr(section, &sheader_mem);
 
-     if (sheader->sh_addr <= addr && addr <= sheader->sh_addr + sheader->sh_size)
-       return true;
+    if (sheader->sh_addr <= addr && addr <= sheader->sh_addr + sheader->sh_size)
+      return true;
 
-     return false;
-   }
+    return false;
+  }
 
   /// Get the section which a global variable address comes from.
   ///
@@ -7841,10 +7841,10 @@ public:
     uint64_t type_signature = 0;
     Dwarf_Off type_offset;
     for (Dwarf_Off offset = 0, next_offset = 0;
-    (dwarf_next_unit(dwarf(), offset, &next_offset, &header_size,
-      NULL, NULL, &address_size, NULL,
-      &type_signature, &type_offset) == 0);
-    offset = next_offset)
+	 (dwarf_next_unit(dwarf(), offset, &next_offset, &header_size,
+			  NULL, NULL, &address_size, NULL,
+			  &type_signature, &type_offset) == 0);
+	 offset = next_offset)
       {
 	Dwarf_Off die_offset = offset + header_size;
 	Dwarf_Die cu;
@@ -8392,9 +8392,9 @@ die_is_public_decl(Dwarf_Die* die)
 static bool
 die_is_declaration_only(Dwarf_Die* die)
 {
- bool is_declaration_only = false;
- die_flag_attribute(die, DW_AT_declaration, is_declaration_only);
- return is_declaration_only;
+  bool is_declaration_only = false;
+  die_flag_attribute(die, DW_AT_declaration, is_declaration_only);
+  return is_declaration_only;
 }
 
 /// Tests whether a given DIE is artificial.
@@ -8617,7 +8617,7 @@ die_is_pointer_type(Dwarf_Die* die)
 static bool
 die_is_reference_type(Dwarf_Die* die)
 {
-    if (!die)
+  if (!die)
     return false;
 
   int tag = dwarf_tag(die);
@@ -8868,7 +8868,7 @@ die_function_type_is_method_type(const read_context& ctxt,
 			       spec_or_origin_die))
 	{
 	  if (die_has_object_pointer(&spec_or_origin_die,
-				      object_pointer_die))
+				     object_pointer_die))
 	    has_object_pointer = true;
 	  else
 	    {
@@ -9273,7 +9273,7 @@ op_pushes_constant_value(Dwarf_Op*			ops,
     }
 
   expr_result r(value);
-  ctxt.stack.push_front(r);
+  ctxt.push(r);
   ctxt.accum = r;
   next_index = index + 1;
 
@@ -9403,7 +9403,7 @@ op_pushes_non_constant_value(Dwarf_Op* ops,
     }
 
   expr_result r(false);
-  ctxt.stack.push_front(r);
+  ctxt.push(r);
 
   return true;
 }
@@ -9444,60 +9444,60 @@ op_manipulates_stack(Dwarf_Op* expr,
     {
     case DW_OP_dup:
       v = ctxt.stack.front();
-      ctxt.stack.push_front(v);
+      ctxt.push(v);
       break;
 
     case DW_OP_drop:
       v = ctxt.stack.front();
-      ctxt.stack.pop_front();
+      ctxt.pop();
       break;
 
     case DW_OP_over:
-	assert(ctxt.stack.size() > 1);
-	v = ctxt.stack[1];
-	ctxt.stack.push_front(v);
+      assert(ctxt.stack.size() > 1);
+      v = ctxt.stack[1];
+      ctxt.push(v);
       break;
 
     case DW_OP_pick:
-	assert(index + 1 < expr_len);
-	v = op.number;
-	ctxt.stack.push_front(v);
+      assert(index + 1 < expr_len);
+      v = op.number;
+      ctxt.push(v);
       break;
 
     case DW_OP_swap:
-	assert(ctxt.stack.size() > 1);
-	v = ctxt.stack[1];
-	ctxt.stack.erase(ctxt.stack.begin() + 1);
-	ctxt.stack.push_front(v);
+      assert(ctxt.stack.size() > 1);
+      v = ctxt.stack[1];
+      ctxt.stack.erase(ctxt.stack.begin() + 1);
+      ctxt.push(v);
       break;
 
     case DW_OP_rot:
-	assert(ctxt.stack.size() > 2);
-	v = ctxt.stack[2];
-	ctxt.stack.erase(ctxt.stack.begin() + 2);
-	ctxt.stack.push_front(v);
+      assert(ctxt.stack.size() > 2);
+      v = ctxt.stack[2];
+      ctxt.stack.erase(ctxt.stack.begin() + 2);
+      ctxt.push(v);
       break;
 
     case DW_OP_deref:
     case DW_OP_deref_size:
       assert(ctxt.stack.size() > 0);
-      ctxt.stack.pop_front();
+      ctxt.pop();
       v.is_const(false);
-      ctxt.stack.push_front(v);
+      ctxt.push(v);
       break;
 
     case DW_OP_xderef:
     case DW_OP_xderef_size:
       assert(ctxt.stack.size() > 1);
-      ctxt.stack.pop_front();
-      ctxt.stack.pop_front();
+      ctxt.pop();
+      ctxt.pop();
       v.is_const(false);
-      ctxt.stack.push_front(v);
+      ctxt.push(v);
       break;
 
     case DW_OP_push_object_address:
       v.is_const(false);
-      ctxt.stack.push_front(v);
+      ctxt.push(v);
       break;
 
     case DW_OP_form_tls_address:
@@ -9506,12 +9506,12 @@ op_manipulates_stack(Dwarf_Op* expr,
       v = ctxt.pop();
       if (op.atom == DW_OP_form_tls_address)
 	v.is_const(false);
-      ctxt.stack.push_front(v);
+      ctxt.push(v);
       break;
 
     case DW_OP_call_frame_cfa:
       v.is_const(false);
-      ctxt.stack.push_front(v);
+      ctxt.push(v);
       break;
 
     default:
@@ -9694,7 +9694,7 @@ op_is_control_flow(Dwarf_Op* expr,
 		   uint64_t& next_index,
 		   dwarf_expr_eval_context& ctxt)
 {
-    assert(index < expr_len);
+  assert(index < expr_len);
 
   Dwarf_Op& op = expr[index];
   expr_result val1, val2;
@@ -9711,21 +9711,21 @@ op_is_control_flow(Dwarf_Op* expr,
 	bool value = true;
 	val1 = ctxt.pop();
 	val2 = ctxt.pop();
-      if (op.atom == DW_OP_eq)
-	value = val2 == val1;
-      else if (op.atom == DW_OP_ge)
-	value = val2 >= val1;
-      else if (op.atom == DW_OP_gt)
-	value = val2 > val1;
-      else if (op.atom == DW_OP_le)
-	value = val2 <= val1;
-      else if (op.atom == DW_OP_lt)
-	value = val2 < val1;
-      else if (op.atom == DW_OP_ne)
-	value = val2 != val1;
+	if (op.atom == DW_OP_eq)
+	  value = val2 == val1;
+	else if (op.atom == DW_OP_ge)
+	  value = val2 >= val1;
+	else if (op.atom == DW_OP_gt)
+	  value = val2 > val1;
+	else if (op.atom == DW_OP_le)
+	  value = val2 <= val1;
+	else if (op.atom == DW_OP_lt)
+	  value = val2 < val1;
+	else if (op.atom == DW_OP_ne)
+	  value = val2 != val1;
 
-      val1 = value ? 1 : 0;
-      ctxt.push(val1);
+	val1 = value ? 1 : 0;
+	ctxt.push(val1);
       }
       break;
 
@@ -9737,7 +9737,7 @@ op_is_control_flow(Dwarf_Op* expr,
     case DW_OP_bra:
       val1 = ctxt.pop();
       if (val1 != 0)
-	  index += val1.const_value() - 1;
+	index += val1.const_value() - 1;
       break;
 
     case DW_OP_call2:
@@ -10544,7 +10544,7 @@ die_return_and_parm_names_from_fn_type_die(const read_context& ctxt,
 	    break;
 	  }
       }
-  while (dwarf_siblingof(&child, &child) == 0);
+    while (dwarf_siblingof(&child, &child) == 0);
 
   if (class_name.empty())
     {
@@ -10633,7 +10633,7 @@ die_function_signature(const read_context& ctxt,
   if (!return_type_name.empty())
     repr += " " + return_type_name;
 
-   repr += " " + fn_name;
+  repr += " " + fn_name;
 
   // Now parameters.
   repr += "(";
@@ -10722,7 +10722,7 @@ die_pretty_print_type(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
     case DW_TAG_pointer_type:
     case DW_TAG_reference_type:
     case DW_TAG_rvalue_reference_type:
-	repr = ctxt.get_die_qualified_type_name(die, where_offset);
+      repr = ctxt.get_die_qualified_type_name(die, where_offset);
       break;
 
     case DW_TAG_enumeration_type:
@@ -11666,7 +11666,7 @@ get_parent_die(const read_context&	ctxt,
   if (i == m.end())
     return false;
 
-  switch(source)
+  switch (source)
     {
     case PRIMARY_DEBUG_INFO_DIE_SOURCE:
       assert(dwarf_offdie(ctxt.dwarf(), i->second, &parent_die));
@@ -11968,7 +11968,7 @@ static int
 get_default_array_lower_bound(translation_unit::language l)
 {
   int value = 0;
-    switch (l)
+  switch (l)
     {
     case translation_unit::LANG_UNKNOWN:
       value = 0;
@@ -12012,7 +12012,7 @@ get_default_array_lower_bound(translation_unit::language l)
       break;
     }
 
-    return value;
+  return value;
 }
 
 /// For a given offset, find the lower bound of a sorted vector of
@@ -12107,7 +12107,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 	 v != ctxt.var_decls_to_re_add_to_tree().end();
 	 ++v)
       {
-	  if (is_member_decl(*v))
+	if (is_member_decl(*v))
 	  continue;
 
 	assert((*v)->get_scope());
@@ -12351,7 +12351,7 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
 	  return result;
 	}
     }
-  // TODO: for anymous enums, maybe have a map of loc -> enums so that
+  // TODO: for anonymous enums, maybe have a map of loc -> enums so that
   // we can look them up?
 
   uint64_t size = 0;
@@ -12954,14 +12954,14 @@ add_or_update_class_type(read_context&	 ctxt,
 	      string n, m;
 	      location loc;
 	      die_loc_and_name(ctxt, &child, loc, n, m);
-	       /// For now, we skip the hidden vtable pointer.
-	       /// Currently, we're looking for a member starting with
-	       /// "_vptr[^0-9a-zA-Z_]", which is what Clang and GCC
-	       /// use as a name for the hidden vtable pointer.
+	      /// For now, we skip the hidden vtable pointer.
+	      /// Currently, we're looking for a member starting with
+	      /// "_vptr[^0-9a-zA-Z_]", which is what Clang and GCC
+	      /// use as a name for the hidden vtable pointer.
 	      if (n.substr(0, 5) == "_vptr"
 		  && !std::isalnum(n.at(5))
 		  && n.at(5) != '_')
-                continue;
+		continue;
 
 	      // If the variable is already a member of this class,
 	      // move on.
@@ -12982,9 +12982,9 @@ add_or_update_class_type(read_context&	 ctxt,
 		continue;
 
 	      decl_base_sptr ty = is_decl(
-		build_ir_node_from_die(ctxt, &type_die,
-				       called_from_public_decl,
-				       where_offset));
+					  build_ir_node_from_die(ctxt, &type_die,
+								 called_from_public_decl,
+								 where_offset));
 	      type_base_sptr t = is_type(ty);
 	      if (!t)
 		continue;
@@ -13760,7 +13760,7 @@ build_function_type(read_context&	ctxt,
 	    break;
 	  }
       }
-  while (dwarf_siblingof(&child, &child) == 0);
+    while (dwarf_siblingof(&child, &child) == 0);
 
   result->set_parameters(function_parms);
 
@@ -14426,10 +14426,10 @@ build_function_decl(read_context&	ctxt,
   die_source source;
   assert(ctxt.get_die_source(die, source));
 
- if (!die_is_public_decl(die))
-   return result;
+  if (!die_is_public_decl(die))
+    return result;
 
- translation_unit_sptr tu = ctxt.cur_transl_unit();
+  translation_unit_sptr tu = ctxt.cur_transl_unit();
   assert(tu);
 
   string fname, flinkage_name;
@@ -14911,11 +14911,11 @@ build_ir_node_from_die(read_context&	ctxt,
       // Type DIEs we support.
     case DW_TAG_base_type:
       if (type_decl_sptr t = build_type_decl(ctxt, die, where_offset))
-	  {
-	    result =
-	      add_decl_to_scope(t, ctxt.cur_transl_unit()->get_global_scope());
-	    canonicalize(t);
-	  }
+	{
+	  result =
+	    add_decl_to_scope(t, ctxt.cur_transl_unit()->get_global_scope());
+	  canonicalize(t);
+	}
       break;
 
     case DW_TAG_typedef:
@@ -15058,20 +15058,20 @@ build_ir_node_from_die(read_context&	ctxt,
       }
       break;
     case DW_TAG_union_type:
-	if (!type_is_suppressed(ctxt, scope, die))
-	  {
-	    union_decl_sptr union_type =
-	      add_or_update_union_type(ctxt, die, scope,
-				       union_decl_sptr(),
-				       called_from_public_decl,
-				       where_offset);
-	    if (union_type)
-	      {
-		maybe_set_member_type_access_specifier(union_type, die);
-		maybe_canonicalize_type(die, ctxt);
-	      }
-	    result = union_type;
-	  }
+      if (!type_is_suppressed(ctxt, scope, die))
+	{
+	  union_decl_sptr union_type =
+	    add_or_update_union_type(ctxt, die, scope,
+				     union_decl_sptr(),
+				     called_from_public_decl,
+				     where_offset);
+	  if (union_type)
+	    {
+	      maybe_set_member_type_access_specifier(union_type, die);
+	      maybe_canonicalize_type(die, ctxt);
+	    }
+	  result = union_type;
+	}
       break;
     case DW_TAG_string_type:
       break;
@@ -15199,58 +15199,58 @@ build_ir_node_from_die(read_context&	ctxt,
 
     case DW_TAG_subprogram:
       {
-	  Dwarf_Die spec_die;
-	  Dwarf_Die abstract_origin_die;
-	  Dwarf_Die *interface_die = 0, *origin_die = 0;
-	  scope_decl_sptr interface_scope;
-	  if (die_is_artificial(die))
-	    break;
+	Dwarf_Die spec_die;
+	Dwarf_Die abstract_origin_die;
+	Dwarf_Die *interface_die = 0, *origin_die = 0;
+	scope_decl_sptr interface_scope;
+	if (die_is_artificial(die))
+	  break;
 
-	  function_decl_sptr fn;
-	  bool has_spec = die_die_attribute(die, DW_AT_specification,
-					    spec_die, true);
-	  bool has_abstract_origin =
-	    die_die_attribute(die, DW_AT_abstract_origin,
-			      abstract_origin_die, true);
-	  if (has_spec || has_abstract_origin)
-	    {
-	      interface_die =
-		has_spec
-		? &spec_die
-		: &abstract_origin_die;
-	      origin_die =
-		has_abstract_origin
-		? &abstract_origin_die
-		: &spec_die;
+	function_decl_sptr fn;
+	bool has_spec = die_die_attribute(die, DW_AT_specification,
+					  spec_die, true);
+	bool has_abstract_origin =
+	  die_die_attribute(die, DW_AT_abstract_origin,
+			    abstract_origin_die, true);
+	if (has_spec || has_abstract_origin)
+	  {
+	    interface_die =
+	      has_spec
+	      ? &spec_die
+	      : &abstract_origin_die;
+	    origin_die =
+	      has_abstract_origin
+	      ? &abstract_origin_die
+	      : &spec_die;
 
-	      string linkage_name = die_linkage_name(die);
-	      string spec_linkage_name = die_linkage_name(interface_die);
+	    string linkage_name = die_linkage_name(die);
+	    string spec_linkage_name = die_linkage_name(interface_die);
 
-	      interface_scope = get_scope_for_die(ctxt, interface_die,
-						  called_from_public_decl,
-						  where_offset);
-	      if (interface_scope)
-		{
-		  decl_base_sptr d =
-		    is_decl(build_ir_node_from_die(ctxt,
-						   origin_die,
-						   interface_scope.get(),
-						   called_from_public_decl,
-						   where_offset));
-		  if (d)
-		    {
-		      fn = dynamic_pointer_cast<function_decl>(d);
-		      if (has_abstract_origin
-			  && (linkage_name != spec_linkage_name))
-			// The current DIE has 'd' as abstract orign,
-			// and has a linkage name that is different
-			// from from the linkage name of 'd'.  That
-			// means, the current DIE represents a clone
-			// of 'd'.
-			fn = fn->clone();
-		    }
-		}
-	    }
+	    interface_scope = get_scope_for_die(ctxt, interface_die,
+						called_from_public_decl,
+						where_offset);
+	    if (interface_scope)
+	      {
+		decl_base_sptr d =
+		  is_decl(build_ir_node_from_die(ctxt,
+						 origin_die,
+						 interface_scope.get(),
+						 called_from_public_decl,
+						 where_offset));
+		if (d)
+		  {
+		    fn = dynamic_pointer_cast<function_decl>(d);
+		    if (has_abstract_origin
+			&& (linkage_name != spec_linkage_name))
+		      // The current DIE has 'd' as abstract orign,
+		      // and has a linkage name that is different
+		      // from from the linkage name of 'd'.  That
+		      // means, the current DIE represents a clone
+		      // of 'd'.
+		      fn = fn->clone();
+		  }
+	      }
+	  }
 	ctxt.scope_stack().push(scope);
 
 	scope_decl* logical_scope =
@@ -15770,7 +15770,7 @@ lookup_public_function_symbol_from_elf(const environment*		env,
 
   struct stat s;
   if (fstat(fd, &s))
-      return false;
+    return false;
 
   Elf* elf = elf_begin(fd, ELF_C_READ, 0);
   if (elf == 0)
