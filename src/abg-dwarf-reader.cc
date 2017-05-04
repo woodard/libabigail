@@ -11358,13 +11358,13 @@ add_or_update_union_type(read_context&	ctxt,
 /// the DIE tree.
 ///
 /// @return the resulting qualified_type_def.
-static qualified_type_def_sptr
+static type_base_sptr
 build_qualified_type(read_context&	ctxt,
 		     Dwarf_Die*	die,
 		     bool		called_from_public_decl,
 		     size_t		where_offset)
 {
-  qualified_type_def_sptr result;
+  type_base_sptr result;
   if (!die)
     return result;
 
@@ -11397,8 +11397,8 @@ build_qualified_type(read_context&	ctxt,
   // creation of the type for this DIE.  In that case, just return it.
   if (type_base_sptr t = ctxt.lookup_type_from_die(die))
     {
-      result = is_qualified_type(t);
-      assert(result);
+      result = t;
+      ctxt.associate_die_to_type(die, result, where_offset);
       return result;
     }
 
@@ -11418,9 +11418,11 @@ build_qualified_type(read_context&	ctxt,
 					qualified_type_def::CV_RESTRICT,
 					location()));
 
-  if (corpus_sptr corp = ctxt.current_corpus())
-    if (qualified_type_def_sptr t = lookup_qualified_type(*result, *corp))
-      result = t;
+  if (result)
+    if (corpus_sptr corp = ctxt.current_corpus())
+      if (qualified_type_def_sptr t =
+	  lookup_qualified_type(*is_qualified_type(result), *corp))
+	result = t;
   ctxt.associate_die_to_type(die, result, where_offset);
 
   return result;
@@ -12923,7 +12925,7 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_volatile_type:
     case DW_TAG_restrict_type:
       {
-	qualified_type_def_sptr q =
+	type_base_sptr q =
 	  build_qualified_type(ctxt, die,
 			       called_from_public_decl,
 			       where_offset);
@@ -12931,7 +12933,10 @@ build_ir_node_from_die(read_context&	ctxt,
 	  {
 	    // Strip some potentially redundant type qualifiers from
 	    // the qualified type we just built.
-	    decl_base_sptr d = maybe_strip_qualification(q);
+	    decl_base_sptr d = maybe_strip_qualification(is_qualified_type(q));
+	    if (!d)
+	      d = get_type_declaration(q);
+	    assert(d);
 	    type_base_sptr ty = is_type(d);
 	    // Associate the die to type ty again because 'ty'might be
 	    // different from 'q', because 'ty' is 'q' possibly
