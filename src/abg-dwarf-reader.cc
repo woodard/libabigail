@@ -11859,17 +11859,18 @@ build_function_type(read_context&	ctxt,
 /// @param die the DIE of tag DW_TAG_array_type which contains
 /// children DIEs that represent the sub-ranges.
 ///
-/// @param lower_bound the lower bound to consider given our context.
+/// @param default_lower_bound the default lower bound to consider
+/// given our context.
 ///
 /// @param subranges out parameter.  This is set to the sub-ranges
 /// that are built from @p die.
 static void
 build_subranges_from_array_type_die(Dwarf_Die*	die,
-				    uint64_t lower_bound,
+				    uint64_t default_lower_bound,
 				    array_type_def::subranges_type& subranges)
 {
   Dwarf_Die child;
-  uint64_t upper_bound = 0;
+  uint64_t upper_bound = 0, lower_bound = 0;
   uint64_t count = 0;
 
   if (dwarf_child(die, &child) == 0)
@@ -11879,6 +11880,7 @@ build_subranges_from_array_type_die(Dwarf_Die*	die,
 	  int child_tag = dwarf_tag(&child);
 	  if (child_tag == DW_TAG_subrange_type)
 	    {
+	      lower_bound = default_lower_bound;
 	      // The DWARF 4 specifications says, in [5.11 Subrange
 	      // Type Entries]:
 	      //
