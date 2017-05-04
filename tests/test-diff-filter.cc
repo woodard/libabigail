@@ -437,6 +437,13 @@ InOutSpec in_out_specs[] =
     "output/test-diff-filter/test35-pr18754-no-added-syms-report-1.txt",
   },
   {
+    "data/test-diff-filter/libtest36-v0.so",
+    "data/test-diff-filter/libtest36-v1.so",
+    "--no-default-suppression --no-linkage-name",
+    "data/test-diff-filter/test36-report-0.txt",
+    "output/test-diff-filter/test36-report-0.txt",
+  },
+  {
     "data/test-diff-filter/libtest37-v0.so",
     "data/test-diff-filter/libtest37-v1.so",
     "--no-default-suppression --no-linkage-name",

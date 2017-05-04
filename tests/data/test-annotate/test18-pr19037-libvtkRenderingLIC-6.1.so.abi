@@ -7949,10 +7949,6 @@
         <!-- typedef double vtkPixelTransfer::VTK_TT -->
         <typedef-decl name='VTK_TT' type-id='type-id-76' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.cxx' line='19' column='1' id='type-id-284'/>
       </member-type>
-      <member-type access='private'>
-        <!-- typedef double vtkPixelTransfer::VTK_TT -->
-        <typedef-decl name='VTK_TT' type-id='type-id-76' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='138' column='1' id='type-id-284'/>
-      </member-type>
       <member-function access='private' static='yes'>
         <!-- int vtkPixelTransfer::Blit(int, int, void*, int, void*) -->
         <function-decl name='Blit' mangled-name='_ZN16vtkPixelTransfer4BlitERK14vtkPixelExtentiiPviS3_' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='44' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -8353,43 +8349,6 @@
     <!-- namespace std -->
     <namespace-decl name='std'>
 
-      <!-- std::ios_base& std::dec(std::ios_base&) -->
-      <function-decl name='dec' mangled-name='_ZSt3decRSt8ios_base' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='937' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::ios_base&' -->
-        <parameter type-id='type-id-41'/>
-        <!-- std::ios_base& -->
-        <return type-id='type-id-41'/>
-      </function-decl>
-      <!-- std::ios_base& std::hex(std::ios_base&) -->
-      <function-decl name='hex' mangled-name='_ZSt3hexRSt8ios_base' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='945' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::ios_base&' -->
-        <parameter type-id='type-id-41'/>
-        <!-- std::ios_base& -->
-        <return type-id='type-id-41'/>
-      </function-decl>
-      <!-- std::_Setw std::setw(int) -->
-      <function-decl name='setw' mangled-name='_ZSt4setwi' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iomanip' line='238' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-7'/>
-        <!-- struct std::_Setw -->
-        <return type-id='type-id-42'/>
-      </function-decl>
-      <!-- std::_Setprecision std::setprecision(int) -->
-      <function-decl name='setprecision' mangled-name='_ZSt12setprecisioni' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iomanip' line='204' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-7'/>
-        <!-- struct std::_Setprecision -->
-        <return type-id='type-id-43'/>
-      </function-decl>
-      <!-- std::_Ios_Iostate std::operator|(std::_Ios_Iostate, std::_Ios_Iostate) -->
-      <function-decl name='operator|' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='166' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'enum std::_Ios_Iostate' -->
-        <parameter type-id='type-id-18'/>
-        <!-- parameter of type 'enum std::_Ios_Iostate' -->
-        <parameter type-id='type-id-18'/>
-        <!-- enum std::_Ios_Iostate -->
-        <return type-id='type-id-18'/>
-      </function-decl>
       <!-- class std::ctype<char> -->
       <class-decl name='ctype&lt;char&gt;' visibility='default' is-declaration-only='yes' id='type-id-303'>
         <member-type access='private'>
@@ -8422,15 +8381,6 @@
         <!-- std::basic_ostream<char, std::char_traits<char> >& -->
         <return type-id='type-id-77'/>
       </function-decl>
-      <!-- std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, const char*) -->
-      <function-decl name='operator&lt;&lt; &lt;std::char_traits&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ostream' line='505' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::basic_ostream<char, std::char_traits<char> >&' -->
-        <parameter type-id='type-id-77'/>
-        <!-- parameter of type 'const char*' -->
-        <parameter type-id='type-id-30'/>
-        <!-- std::basic_ostream<char, std::char_traits<char> >& -->
-        <return type-id='type-id-77'/>
-      </function-decl>
       <!-- std::basic_ostream<char, std::char_traits<char> >& std::endl<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&) -->
       <function-decl name='endl&lt;char, std::char_traits&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ostream' line='538' column='1' visibility='default' binding='global' size-in-bits='64'>
         <!-- parameter of type 'std::basic_ostream<char, std::char_traits<char> >&' -->
@@ -8453,59 +8403,6 @@
     <!-- namespace std -->
     <namespace-decl name='std'>
 
-      <!-- std::ios_base& std::dec(std::ios_base&) -->
-      <function-decl name='dec' mangled-name='_ZSt3decRSt8ios_base' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='937' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::ios_base&' -->
-        <parameter type-id='type-id-41'/>
-        <!-- std::ios_base& -->
-        <return type-id='type-id-41'/>
-      </function-decl>
-      <!-- std::ios_base& std::hex(std::ios_base&) -->
-      <function-decl name='hex' mangled-name='_ZSt3hexRSt8ios_base' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='945' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::ios_base&' -->
-        <parameter type-id='type-id-41'/>
-        <!-- std::ios_base& -->
-        <return type-id='type-id-41'/>
-      </function-decl>
-      <!-- std::_Setw std::setw(int) -->
-      <function-decl name='setw' mangled-name='_ZSt4setwi' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iomanip' line='238' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-7'/>
-        <!-- struct std::_Setw -->
-        <return type-id='type-id-42'/>
-      </function-decl>
-      <!-- std::_Setprecision std::setprecision(int) -->
-      <function-decl name='setprecision' mangled-name='_ZSt12setprecisioni' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iomanip' line='204' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-7'/>
-        <!-- struct std::_Setprecision -->
-        <return type-id='type-id-43'/>
-      </function-decl>
-      <!-- const int& std::max<int>(const int&, const int&) -->
-      <function-decl name='max&lt;int&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='209' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const int&' -->
-        <parameter type-id='type-id-44'/>
-        <!-- parameter of type 'const int&' -->
-        <parameter type-id='type-id-44'/>
-        <!-- const int& -->
-        <return type-id='type-id-44'/>
-      </function-decl>
-      <!-- const int& std::min<int>(const int&, const int&) -->
-      <function-decl name='min&lt;int&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='186' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const int&' -->
-        <parameter type-id='type-id-44'/>
-        <!-- parameter of type 'const int&' -->
-        <parameter type-id='type-id-44'/>
-        <!-- const int& -->
-        <return type-id='type-id-44'/>
-      </function-decl>
-      <!-- size_t std::__deque_buf_size(size_t) -->
-      <function-decl name='__deque_buf_size' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'typedef size_t' -->
-        <parameter type-id='type-id-45'/>
-        <!-- typedef size_t -->
-        <return type-id='type-id-45'/>
-      </function-decl>
       <!-- ptrdiff_t std::operator&#45;<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>(const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&, const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&) -->
       <function-decl name='operator-&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='319' column='1' visibility='default' binding='global' size-in-bits='64'>
         <!-- parameter of type 'const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&' -->
@@ -8736,29 +8633,6 @@
         <!-- typedef ptrdiff_t -->
         <return type-id='type-id-39'/>
       </function-decl>
-      <!-- std::_Ios_Iostate std::operator|(std::_Ios_Iostate, std::_Ios_Iostate) -->
-      <function-decl name='operator|' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='166' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'enum std::_Ios_Iostate' -->
-        <parameter type-id='type-id-18'/>
-        <!-- parameter of type 'enum std::_Ios_Iostate' -->
-        <parameter type-id='type-id-18'/>
-        <!-- enum std::_Ios_Iostate -->
-        <return type-id='type-id-18'/>
-      </function-decl>
-      <!-- const std::ctype<char>& std::__check_facet<std::ctype<char> >(const std::ctype<char>*) -->
-      <function-decl name='__check_facet&lt;std::ctype&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_ios.h' line='46' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const std::ctype<char>*' -->
-        <parameter type-id='type-id-305'/>
-        <!-- const std::ctype<char>& -->
-        <return type-id='type-id-306'/>
-      </function-decl>
-      <!-- std::basic_ostream<char, std::char_traits<char> >& std::flush<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&) -->
-      <function-decl name='flush&lt;char, std::char_traits&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ostream' line='559' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::basic_ostream<char, std::char_traits<char> >&' -->
-        <parameter type-id='type-id-77'/>
-        <!-- std::basic_ostream<char, std::char_traits<char> >& -->
-        <return type-id='type-id-77'/>
-      </function-decl>
       <!-- void std::_Destroy<float*, float>(float*, float*, std::allocator<float>&) -->
       <function-decl name='_Destroy&lt;float*, float&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='146' column='1' visibility='default' binding='global' size-in-bits='64'>
         <!-- parameter of type 'float*' -->
@@ -8769,15 +8643,6 @@
         <parameter type-id='type-id-319'/>
         <!-- void -->
         <return type-id='type-id-6'/>
-      </function-decl>
-      <!-- const size_t& std::max<size_t>(const size_t&, const size_t&) -->
-      <function-decl name='max&lt;size_t&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='209' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const size_t&' -->
-        <parameter type-id='type-id-73'/>
-        <!-- parameter of type 'const size_t&' -->
-        <parameter type-id='type-id-73'/>
-        <!-- const size_t& -->
-        <return type-id='type-id-73'/>
       </function-decl>
       <!-- struct std::allocator<char> -->
       <class-decl name='allocator&lt;char&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stringfwd.h' line='45' column='1' id='type-id-323'>
@@ -8907,22 +8772,6 @@
         <parameter type-id='type-id-48'/>
         <!-- vtkPixelExtent** -->
         <return type-id='type-id-48'/>
-      </function-decl>
-      <!-- std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, const char*) -->
-      <function-decl name='operator&lt;&lt; &lt;std::char_traits&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ostream' line='505' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::basic_ostream<char, std::char_traits<char> >&' -->
-        <parameter type-id='type-id-77'/>
-        <!-- parameter of type 'const char*' -->
-        <parameter type-id='type-id-30'/>
-        <!-- std::basic_ostream<char, std::char_traits<char> >& -->
-        <return type-id='type-id-77'/>
-      </function-decl>
-      <!-- std::basic_ostream<char, std::char_traits<char> >& std::endl<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&) -->
-      <function-decl name='endl&lt;char, std::char_traits&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ostream' line='538' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::basic_ostream<char, std::char_traits<char> >&' -->
-        <parameter type-id='type-id-77'/>
-        <!-- std::basic_ostream<char, std::char_traits<char> >& -->
-        <return type-id='type-id-77'/>
       </function-decl>
       <!-- struct std::basic_string<char, std::char_traits<char>, std::allocator<char> > -->
       <class-decl name='basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stringfwd.h' line='52' column='1' id='type-id-327'>
@@ -12347,22 +12196,6 @@
     </namespace-decl>
     <!-- namespace __gnu_cxx -->
     <namespace-decl name='__gnu_cxx'>
-      <!-- long long int __gnu_cxx::abs(long long int) -->
-      <function-decl name='abs' mangled-name='_ZN9__gnu_cxx3absEx' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/cstdlib' line='170' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'long long int' -->
-        <parameter type-id='type-id-138'/>
-        <!-- long long int -->
-        <return type-id='type-id-138'/>
-      </function-decl>
-      <!-- lldiv_t __gnu_cxx::div(long long int, long long int) -->
-      <function-decl name='div' mangled-name='_ZN9__gnu_cxx3divExx' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/cstdlib' line='176' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'long long int' -->
-        <parameter type-id='type-id-138'/>
-        <!-- parameter of type 'long long int' -->
-        <parameter type-id='type-id-138'/>
-        <!-- struct lldiv_t -->
-        <return type-id='type-id-139'/>
-      </function-decl>
       <!-- bool __gnu_cxx::__is_null_pointer<char>(char*) -->
       <function-decl name='__is_null_pointer&lt;char&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/type_traits.h' line='148' column='1' visibility='default' binding='global' size-in-bits='64'>
         <!-- parameter of type 'char*' -->
@@ -14731,202 +14564,13 @@
     <qualified-type-def type-id='type-id-85' const='yes' id='type-id-447'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.cxx' language='LANG_C_plus_plus'>
-    <!-- namespace std -->
-    <namespace-decl name='std'>
 
-      <!-- std::ios_base& std::dec(std::ios_base&) -->
-      <function-decl name='dec' mangled-name='_ZSt3decRSt8ios_base' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='937' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::ios_base&' -->
-        <parameter type-id='type-id-41'/>
-        <!-- std::ios_base& -->
-        <return type-id='type-id-41'/>
-      </function-decl>
-      <!-- std::ios_base& std::hex(std::ios_base&) -->
-      <function-decl name='hex' mangled-name='_ZSt3hexRSt8ios_base' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='945' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::ios_base&' -->
-        <parameter type-id='type-id-41'/>
-        <!-- std::ios_base& -->
-        <return type-id='type-id-41'/>
-      </function-decl>
-      <!-- std::_Setw std::setw(int) -->
-      <function-decl name='setw' mangled-name='_ZSt4setwi' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iomanip' line='238' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-7'/>
-        <!-- struct std::_Setw -->
-        <return type-id='type-id-42'/>
-      </function-decl>
-      <!-- std::_Setprecision std::setprecision(int) -->
-      <function-decl name='setprecision' mangled-name='_ZSt12setprecisioni' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iomanip' line='204' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-7'/>
-        <!-- struct std::_Setprecision -->
-        <return type-id='type-id-43'/>
-      </function-decl>
-    </namespace-decl>
-    <!-- namespace __gnu_cxx -->
-    <namespace-decl name='__gnu_cxx'>
-      <!-- long long int __gnu_cxx::abs(long long int) -->
-      <function-decl name='abs' mangled-name='_ZN9__gnu_cxx3absEx' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/cstdlib' line='170' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'long long int' -->
-        <parameter type-id='type-id-138'/>
-        <!-- long long int -->
-        <return type-id='type-id-138'/>
-      </function-decl>
-      <!-- lldiv_t __gnu_cxx::div(long long int, long long int) -->
-      <function-decl name='div' mangled-name='_ZN9__gnu_cxx3divExx' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/cstdlib' line='176' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'long long int' -->
-        <parameter type-id='type-id-138'/>
-        <!-- parameter of type 'long long int' -->
-        <parameter type-id='type-id-138'/>
-        <!-- struct lldiv_t -->
-        <return type-id='type-id-139'/>
-      </function-decl>
-    </namespace-decl>
+
 
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkStructuredGridLIC2D.cxx' language='LANG_C_plus_plus'>
-    <!-- namespace std -->
-    <namespace-decl name='std'>
 
-      <!-- std::ios_base& std::dec(std::ios_base&) -->
-      <function-decl name='dec' mangled-name='_ZSt3decRSt8ios_base' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='937' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::ios_base&' -->
-        <parameter type-id='type-id-41'/>
-        <!-- std::ios_base& -->
-        <return type-id='type-id-41'/>
-      </function-decl>
-      <!-- std::ios_base& std::hex(std::ios_base&) -->
-      <function-decl name='hex' mangled-name='_ZSt3hexRSt8ios_base' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='945' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::ios_base&' -->
-        <parameter type-id='type-id-41'/>
-        <!-- std::ios_base& -->
-        <return type-id='type-id-41'/>
-      </function-decl>
-      <!-- std::_Setw std::setw(int) -->
-      <function-decl name='setw' mangled-name='_ZSt4setwi' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iomanip' line='238' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-7'/>
-        <!-- struct std::_Setw -->
-        <return type-id='type-id-42'/>
-      </function-decl>
-      <!-- std::_Setprecision std::setprecision(int) -->
-      <function-decl name='setprecision' mangled-name='_ZSt12setprecisioni' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iomanip' line='204' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-7'/>
-        <!-- struct std::_Setprecision -->
-        <return type-id='type-id-43'/>
-      </function-decl>
-      <!-- std::random_access_iterator_tag std::__iterator_category<char*>(char* const&) -->
-      <function-decl name='__iterator_category&lt;char*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='160' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'char* const&' -->
-        <parameter type-id='type-id-322'/>
-        <!-- struct std::random_access_iterator_tag -->
-        <return type-id='type-id-320'/>
-      </function-decl>
-      <!-- ptrdiff_t std::__distance<char*>(char*, char*, std::random_access_iterator_tag) -->
-      <function-decl name='__distance&lt;char*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_funcs.h' line='87' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'char*' -->
-        <parameter type-id='type-id-33'/>
-        <!-- parameter of type 'char*' -->
-        <parameter type-id='type-id-33'/>
-        <!-- parameter of type 'struct std::random_access_iterator_tag' -->
-        <parameter type-id='type-id-320'/>
-        <!-- typedef ptrdiff_t -->
-        <return type-id='type-id-39'/>
-      </function-decl>
-      <!-- std::_Ios_Iostate std::operator|(std::_Ios_Iostate, std::_Ios_Iostate) -->
-      <function-decl name='operator|' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='166' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'enum std::_Ios_Iostate' -->
-        <parameter type-id='type-id-18'/>
-        <!-- parameter of type 'enum std::_Ios_Iostate' -->
-        <parameter type-id='type-id-18'/>
-        <!-- enum std::_Ios_Iostate -->
-        <return type-id='type-id-18'/>
-      </function-decl>
-      <!-- const std::ctype<char>& std::__check_facet<std::ctype<char> >(const std::ctype<char>*) -->
-      <function-decl name='__check_facet&lt;std::ctype&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_ios.h' line='46' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const std::ctype<char>*' -->
-        <parameter type-id='type-id-305'/>
-        <!-- const std::ctype<char>& -->
-        <return type-id='type-id-306'/>
-      </function-decl>
-      <!-- std::basic_ostream<char, std::char_traits<char> >& std::flush<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&) -->
-      <function-decl name='flush&lt;char, std::char_traits&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ostream' line='559' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::basic_ostream<char, std::char_traits<char> >&' -->
-        <parameter type-id='type-id-77'/>
-        <!-- std::basic_ostream<char, std::char_traits<char> >& -->
-        <return type-id='type-id-77'/>
-      </function-decl>
-      <!-- bool std::operator==<char>(const std::allocator<char>&, const std::allocator<char>&) -->
-      <function-decl name='operator==&lt;char&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/allocator.h' line='121' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const std::allocator<char>&' -->
-        <parameter type-id='type-id-326'/>
-        <!-- parameter of type 'const std::allocator<char>&' -->
-        <parameter type-id='type-id-326'/>
-        <!-- bool -->
-        <return type-id='type-id-4'/>
-      </function-decl>
-      <!-- ptrdiff_t std::distance<char*>(char*, char*) -->
-      <function-decl name='distance&lt;char*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_funcs.h' line='110' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'char*' -->
-        <parameter type-id='type-id-33'/>
-        <!-- parameter of type 'char*' -->
-        <parameter type-id='type-id-33'/>
-        <!-- typedef ptrdiff_t -->
-        <return type-id='type-id-39'/>
-      </function-decl>
-      <!-- std::_Ios_Openmode std::operator|(std::_Ios_Openmode, std::_Ios_Openmode) -->
-      <function-decl name='operator|' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'enum std::_Ios_Openmode' -->
-        <parameter type-id='type-id-24'/>
-        <!-- parameter of type 'enum std::_Ios_Openmode' -->
-        <parameter type-id='type-id-24'/>
-        <!-- enum std::_Ios_Openmode -->
-        <return type-id='type-id-24'/>
-      </function-decl>
-      <!-- std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, const char*) -->
-      <function-decl name='operator&lt;&lt; &lt;std::char_traits&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ostream' line='505' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::basic_ostream<char, std::char_traits<char> >&' -->
-        <parameter type-id='type-id-77'/>
-        <!-- parameter of type 'const char*' -->
-        <parameter type-id='type-id-30'/>
-        <!-- std::basic_ostream<char, std::char_traits<char> >& -->
-        <return type-id='type-id-77'/>
-      </function-decl>
-      <!-- std::basic_ostream<char, std::char_traits<char> >& std::endl<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&) -->
-      <function-decl name='endl&lt;char, std::char_traits&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ostream' line='538' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::basic_ostream<char, std::char_traits<char> >&' -->
-        <parameter type-id='type-id-77'/>
-        <!-- std::basic_ostream<char, std::char_traits<char> >& -->
-        <return type-id='type-id-77'/>
-      </function-decl>
-    </namespace-decl>
-    <!-- namespace __gnu_cxx -->
-    <namespace-decl name='__gnu_cxx'>
-      <!-- long long int __gnu_cxx::abs(long long int) -->
-      <function-decl name='abs' mangled-name='_ZN9__gnu_cxx3absEx' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/cstdlib' line='170' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'long long int' -->
-        <parameter type-id='type-id-138'/>
-        <!-- long long int -->
-        <return type-id='type-id-138'/>
-      </function-decl>
-      <!-- lldiv_t __gnu_cxx::div(long long int, long long int) -->
-      <function-decl name='div' mangled-name='_ZN9__gnu_cxx3divExx' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/cstdlib' line='176' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'long long int' -->
-        <parameter type-id='type-id-138'/>
-        <!-- parameter of type 'long long int' -->
-        <parameter type-id='type-id-138'/>
-        <!-- struct lldiv_t -->
-        <return type-id='type-id-139'/>
-      </function-decl>
-      <!-- bool __gnu_cxx::__is_null_pointer<char>(char*) -->
-      <function-decl name='__is_null_pointer&lt;char&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/type_traits.h' line='148' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'char*' -->
-        <parameter type-id='type-id-33'/>
-        <!-- bool -->
-        <return type-id='type-id-4'/>
-      </function-decl>
-    </namespace-decl>
+
 
     <!-- namespace detail -->
     <namespace-decl name='detail'>
@@ -15563,52 +15207,6 @@
     <!-- namespace std -->
     <namespace-decl name='std'>
 
-      <!-- std::ios_base& std::dec(std::ios_base&) -->
-      <function-decl name='dec' mangled-name='_ZSt3decRSt8ios_base' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='937' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::ios_base&' -->
-        <parameter type-id='type-id-41'/>
-        <!-- std::ios_base& -->
-        <return type-id='type-id-41'/>
-      </function-decl>
-      <!-- std::ios_base& std::hex(std::ios_base&) -->
-      <function-decl name='hex' mangled-name='_ZSt3hexRSt8ios_base' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='945' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::ios_base&' -->
-        <parameter type-id='type-id-41'/>
-        <!-- std::ios_base& -->
-        <return type-id='type-id-41'/>
-      </function-decl>
-      <!-- std::_Setw std::setw(int) -->
-      <function-decl name='setw' mangled-name='_ZSt4setwi' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iomanip' line='238' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-7'/>
-        <!-- struct std::_Setw -->
-        <return type-id='type-id-42'/>
-      </function-decl>
-      <!-- std::_Setprecision std::setprecision(int) -->
-      <function-decl name='setprecision' mangled-name='_ZSt12setprecisioni' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iomanip' line='204' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-7'/>
-        <!-- struct std::_Setprecision -->
-        <return type-id='type-id-43'/>
-      </function-decl>
-      <!-- const int& std::min<int>(const int&, const int&) -->
-      <function-decl name='min&lt;int&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='186' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const int&' -->
-        <parameter type-id='type-id-44'/>
-        <!-- parameter of type 'const int&' -->
-        <parameter type-id='type-id-44'/>
-        <!-- const int& -->
-        <return type-id='type-id-44'/>
-      </function-decl>
-      <!-- const int& std::max<int>(const int&, const int&) -->
-      <function-decl name='max&lt;int&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='209' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const int&' -->
-        <parameter type-id='type-id-44'/>
-        <!-- parameter of type 'const int&' -->
-        <parameter type-id='type-id-44'/>
-        <!-- const int& -->
-        <return type-id='type-id-44'/>
-      </function-decl>
       <!-- bool std::operator==<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>(const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&, const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&) -->
       <function-decl name='operator==&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='235' column='1' visibility='default' binding='global' size-in-bits='64'>
         <!-- parameter of type 'const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&' -->
@@ -15617,33 +15215,6 @@
         <parameter type-id='type-id-50'/>
         <!-- bool -->
         <return type-id='type-id-4'/>
-      </function-decl>
-      <!-- size_t std::__deque_buf_size(size_t) -->
-      <function-decl name='__deque_buf_size' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'typedef size_t' -->
-        <parameter type-id='type-id-45'/>
-        <!-- typedef size_t -->
-        <return type-id='type-id-45'/>
-      </function-decl>
-      <!-- void std::_Destroy<float*>(float*, float*) -->
-      <function-decl name='_Destroy&lt;float*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='119' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'float*' -->
-        <parameter type-id='type-id-85'/>
-        <!-- parameter of type 'float*' -->
-        <parameter type-id='type-id-85'/>
-        <!-- void -->
-        <return type-id='type-id-6'/>
-      </function-decl>
-      <!-- void std::_Destroy<float*, float>(float*, float*, std::allocator<float>&) -->
-      <function-decl name='_Destroy&lt;float*, float&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='146' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'float*' -->
-        <parameter type-id='type-id-85'/>
-        <!-- parameter of type 'float*' -->
-        <parameter type-id='type-id-85'/>
-        <!-- parameter of type 'std::allocator<float>&' -->
-        <parameter type-id='type-id-319'/>
-        <!-- void -->
-        <return type-id='type-id-6'/>
       </function-decl>
       <!-- bool std::operator!=<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>(const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&, const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&) -->
       <function-decl name='operator!=&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='248' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -15662,15 +15233,6 @@
         <parameter type-id='type-id-85'/>
         <!-- parameter of type 'const float&' -->
         <parameter type-id='type-id-314'/>
-        <!-- void -->
-        <return type-id='type-id-6'/>
-      </function-decl>
-      <!-- void std::_Destroy<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
-      <function-decl name='_Destroy&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='119' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
         <!-- void -->
         <return type-id='type-id-6'/>
       </function-decl>
@@ -15790,52 +15352,6 @@
         <!-- void -->
         <return type-id='type-id-6'/>
       </function-decl>
-      <!-- float* std::__fill_n_a<float*, long unsigned int, float>(float*, unsigned long int, const float&) -->
-      <function-decl name='__fill_n_a&lt;float*, long unsigned int, float&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='754' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'float*' -->
-        <parameter type-id='type-id-85'/>
-        <!-- parameter of type 'unsigned long int' -->
-        <parameter type-id='type-id-58'/>
-        <!-- parameter of type 'const float&' -->
-        <parameter type-id='type-id-314'/>
-        <!-- float* -->
-        <return type-id='type-id-85'/>
-      </function-decl>
-      <!-- float* std::fill_n<float*, long unsigned int, float>(float*, unsigned long int, const float&) -->
-      <function-decl name='fill_n&lt;float*, long unsigned int, float&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='785' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'float*' -->
-        <parameter type-id='type-id-85'/>
-        <!-- parameter of type 'unsigned long int' -->
-        <parameter type-id='type-id-58'/>
-        <!-- parameter of type 'const float&' -->
-        <parameter type-id='type-id-314'/>
-        <!-- float* -->
-        <return type-id='type-id-85'/>
-      </function-decl>
-      <!-- void std::uninitialized_fill_n<float*, long unsigned int, float>(float*, unsigned long int, const float&) -->
-      <function-decl name='uninitialized_fill_n&lt;float*, long unsigned int, float&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='217' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'float*' -->
-        <parameter type-id='type-id-85'/>
-        <!-- parameter of type 'unsigned long int' -->
-        <parameter type-id='type-id-58'/>
-        <!-- parameter of type 'const float&' -->
-        <parameter type-id='type-id-314'/>
-        <!-- void -->
-        <return type-id='type-id-6'/>
-      </function-decl>
-      <!-- void std::__uninitialized_fill_n_a<float*, long unsigned int, float, float>(float*, unsigned long int, const float&, std::allocator<float>&) -->
-      <function-decl name='__uninitialized_fill_n_a&lt;float*, long unsigned int, float, float&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='315' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'float*' -->
-        <parameter type-id='type-id-85'/>
-        <!-- parameter of type 'unsigned long int' -->
-        <parameter type-id='type-id-58'/>
-        <!-- parameter of type 'const float&' -->
-        <parameter type-id='type-id-314'/>
-        <!-- parameter of type 'std::allocator<float>&' -->
-        <parameter type-id='type-id-319'/>
-        <!-- void -->
-        <return type-id='type-id-6'/>
-      </function-decl>
       <!-- void std::__heap_select<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
       <function-decl name='__heap_select&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algo.h' line='1900' column='1' visibility='default' binding='global' size-in-bits='64'>
         <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
@@ -15931,38 +15447,6 @@
         <!-- struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> -->
         <return type-id='type-id-46'/>
       </function-decl>
-      <!-- std::_Ios_Iostate std::operator|(std::_Ios_Iostate, std::_Ios_Iostate) -->
-      <function-decl name='operator|' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='166' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'enum std::_Ios_Iostate' -->
-        <parameter type-id='type-id-18'/>
-        <!-- parameter of type 'enum std::_Ios_Iostate' -->
-        <parameter type-id='type-id-18'/>
-        <!-- enum std::_Ios_Iostate -->
-        <return type-id='type-id-18'/>
-      </function-decl>
-      <!-- const std::ctype<char>& std::__check_facet<std::ctype<char> >(const std::ctype<char>*) -->
-      <function-decl name='__check_facet&lt;std::ctype&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_ios.h' line='46' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const std::ctype<char>*' -->
-        <parameter type-id='type-id-305'/>
-        <!-- const std::ctype<char>& -->
-        <return type-id='type-id-306'/>
-      </function-decl>
-      <!-- std::basic_ostream<char, std::char_traits<char> >& std::flush<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&) -->
-      <function-decl name='flush&lt;char, std::char_traits&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ostream' line='559' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::basic_ostream<char, std::char_traits<char> >&' -->
-        <parameter type-id='type-id-77'/>
-        <!-- std::basic_ostream<char, std::char_traits<char> >& -->
-        <return type-id='type-id-77'/>
-      </function-decl>
-      <!-- void std::_Construct<vtkPixelExtent, vtkPixelExtent>(vtkPixelExtent*, const vtkPixelExtent&) -->
-      <function-decl name='_Construct&lt;vtkPixelExtent, vtkPixelExtent&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='76' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelExtent*' -->
-        <parameter type-id='type-id-47'/>
-        <!-- parameter of type 'const vtkPixelExtent&' -->
-        <parameter type-id='type-id-59'/>
-        <!-- void -->
-        <return type-id='type-id-6'/>
-      </function-decl>
       <!-- bool std::operator!=<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>(const std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&, const std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&) -->
       <function-decl name='operator!=&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='248' column='1' visibility='default' binding='global' size-in-bits='64'>
         <!-- parameter of type 'const std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&' -->
@@ -15993,114 +15477,6 @@
         <parameter type-id='type-id-46'/>
         <!-- struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> -->
         <return type-id='type-id-46'/>
-      </function-decl>
-      <!-- void std::_Destroy<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, vtkPixelExtent>(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::allocator<vtkPixelExtent>&) -->
-      <function-decl name='_Destroy&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, vtkPixelExtent&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='146' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'std::allocator<vtkPixelExtent>&' -->
-        <parameter type-id='type-id-72'/>
-        <!-- void -->
-        <return type-id='type-id-6'/>
-      </function-decl>
-      <!-- void std::_Destroy<vtkPixelExtent*>(vtkPixelExtent*, vtkPixelExtent*) -->
-      <function-decl name='_Destroy&lt;vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='119' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelExtent*' -->
-        <parameter type-id='type-id-47'/>
-        <!-- parameter of type 'vtkPixelExtent*' -->
-        <parameter type-id='type-id-47'/>
-        <!-- void -->
-        <return type-id='type-id-6'/>
-      </function-decl>
-      <!-- void std::uninitialized_fill<vtkPixelExtent*, vtkPixelExtent>(vtkPixelExtent*, vtkPixelExtent*, const vtkPixelExtent&) -->
-      <function-decl name='uninitialized_fill&lt;vtkPixelExtent*, vtkPixelExtent&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='163' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelExtent*' -->
-        <parameter type-id='type-id-47'/>
-        <!-- parameter of type 'vtkPixelExtent*' -->
-        <parameter type-id='type-id-47'/>
-        <!-- parameter of type 'const vtkPixelExtent&' -->
-        <parameter type-id='type-id-59'/>
-        <!-- void -->
-        <return type-id='type-id-6'/>
-      </function-decl>
-      <!-- void std::__uninitialized_fill_a<vtkPixelExtent*, vtkPixelExtent, vtkPixelExtent>(vtkPixelExtent*, vtkPixelExtent*, const vtkPixelExtent&, std::allocator<vtkPixelExtent>&) -->
-      <function-decl name='__uninitialized_fill_a&lt;vtkPixelExtent*, vtkPixelExtent, vtkPixelExtent&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='289' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelExtent*' -->
-        <parameter type-id='type-id-47'/>
-        <!-- parameter of type 'vtkPixelExtent*' -->
-        <parameter type-id='type-id-47'/>
-        <!-- parameter of type 'const vtkPixelExtent&' -->
-        <parameter type-id='type-id-59'/>
-        <!-- parameter of type 'std::allocator<vtkPixelExtent>&' -->
-        <parameter type-id='type-id-72'/>
-        <!-- void -->
-        <return type-id='type-id-6'/>
-      </function-decl>
-      <!-- const size_t& std::max<size_t>(const size_t&, const size_t&) -->
-      <function-decl name='max&lt;size_t&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='209' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const size_t&' -->
-        <parameter type-id='type-id-73'/>
-        <!-- parameter of type 'const size_t&' -->
-        <parameter type-id='type-id-73'/>
-        <!-- const size_t& -->
-        <return type-id='type-id-73'/>
-      </function-decl>
-      <!-- vtkPixelExtent** std::__copy_move_backward_a<false, vtkPixelExtent**, vtkPixelExtent**>(vtkPixelExtent**, vtkPixelExtent**, vtkPixelExtent**) -->
-      <function-decl name='__copy_move_backward_a&lt;false, vtkPixelExtent**, vtkPixelExtent**&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='582' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- vtkPixelExtent** -->
-        <return type-id='type-id-48'/>
-      </function-decl>
-      <!-- vtkPixelExtent** std::__copy_move_backward_a2<false, vtkPixelExtent**, vtkPixelExtent**>(vtkPixelExtent**, vtkPixelExtent**, vtkPixelExtent**) -->
-      <function-decl name='__copy_move_backward_a2&lt;false, vtkPixelExtent**, vtkPixelExtent**&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='600' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- vtkPixelExtent** -->
-        <return type-id='type-id-48'/>
-      </function-decl>
-      <!-- vtkPixelExtent** std::__copy_move_a<false, vtkPixelExtent**, vtkPixelExtent**>(vtkPixelExtent**, vtkPixelExtent**, vtkPixelExtent**) -->
-      <function-decl name='__copy_move_a&lt;false, vtkPixelExtent**, vtkPixelExtent**&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- vtkPixelExtent** -->
-        <return type-id='type-id-48'/>
-      </function-decl>
-      <!-- vtkPixelExtent** std::__copy_move_a2<false, vtkPixelExtent**, vtkPixelExtent**>(vtkPixelExtent**, vtkPixelExtent**, vtkPixelExtent**) -->
-      <function-decl name='__copy_move_a2&lt;false, vtkPixelExtent**, vtkPixelExtent**&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='431' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- vtkPixelExtent** -->
-        <return type-id='type-id-48'/>
-      </function-decl>
-      <!-- vtkPixelExtent** std::copy_backward<vtkPixelExtent**, vtkPixelExtent**>(vtkPixelExtent**, vtkPixelExtent**, vtkPixelExtent**) -->
-      <function-decl name='copy_backward&lt;vtkPixelExtent**, vtkPixelExtent**&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='628' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- vtkPixelExtent** -->
-        <return type-id='type-id-48'/>
       </function-decl>
       <!-- void std::advance<std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, long int>(std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&, long int) -->
       <function-decl name='advance&lt;std::_Deque_iterator&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt;, long int&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_funcs.h' line='168' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -16369,17 +15745,6 @@
         <!-- float* -->
         <return type-id='type-id-85'/>
       </function-decl>
-      <!-- vtkPixelExtent** std::copy<vtkPixelExtent**, vtkPixelExtent**>(vtkPixelExtent**, vtkPixelExtent**, vtkPixelExtent**) -->
-      <function-decl name='copy&lt;vtkPixelExtent**, vtkPixelExtent**&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='458' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- vtkPixelExtent** -->
-        <return type-id='type-id-48'/>
-      </function-decl>
       <!-- void std::__push_heap<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, long int, vtkPixelExtent>(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, long int, long int, vtkPixelExtent) -->
       <function-decl name='__push_heap&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, long int, vtkPixelExtent&gt;' mangled-name='_ZSt11__push_heapISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ElS1_EvT_T0_S6_T1_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_heap.h' line='130' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt11__push_heapISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ElS1_EvT_T0_S6_T1_'>
         <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
@@ -16416,15 +15781,6 @@
         <parameter type-id='type-id-46'/>
         <!-- struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> -->
         <return type-id='type-id-46'/>
-      </function-decl>
-      <!-- ptrdiff_t std::operator&#45;<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>(const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&, const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&) -->
-      <function-decl name='operator-&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='319' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&' -->
-        <parameter type-id='type-id-50'/>
-        <!-- parameter of type 'const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&' -->
-        <parameter type-id='type-id-50'/>
-        <!-- typedef ptrdiff_t -->
-        <return type-id='type-id-39'/>
       </function-decl>
       <!-- void std::make_heap<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
       <function-decl name='make_heap&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' mangled-name='_ZSt9make_heapISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_EEvT_S5_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_heap.h' line='373' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt9make_heapISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_EEvT_S5_'>
@@ -16498,22 +15854,6 @@
         <parameter type-id='type-id-72'/>
         <!-- struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> -->
         <return type-id='type-id-46'/>
-      </function-decl>
-      <!-- std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, const char*) -->
-      <function-decl name='operator&lt;&lt; &lt;std::char_traits&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ostream' line='505' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::basic_ostream<char, std::char_traits<char> >&' -->
-        <parameter type-id='type-id-77'/>
-        <!-- parameter of type 'const char*' -->
-        <parameter type-id='type-id-30'/>
-        <!-- std::basic_ostream<char, std::char_traits<char> >& -->
-        <return type-id='type-id-77'/>
-      </function-decl>
-      <!-- std::basic_ostream<char, std::char_traits<char> >& std::endl<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&) -->
-      <function-decl name='endl&lt;char, std::char_traits&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ostream' line='538' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::basic_ostream<char, std::char_traits<char> >&' -->
-        <parameter type-id='type-id-77'/>
-        <!-- std::basic_ostream<char, std::char_traits<char> >& -->
-        <return type-id='type-id-77'/>
       </function-decl>
       <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::__uninitialized_move_a<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::allocator<vtkPixelExtent> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::allocator<vtkPixelExtent>&) -->
       <function-decl name='__uninitialized_move_a&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, std::allocator&lt;vtkPixelExtent&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='261' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -16730,22 +16070,6 @@
     <reference-type-def kind='lvalue' type-id='type-id-296' size-in-bits='64' id='type-id-470'/>
     <!-- namespace __gnu_cxx -->
     <namespace-decl name='__gnu_cxx'>
-      <!-- long long int __gnu_cxx::abs(long long int) -->
-      <function-decl name='abs' mangled-name='_ZN9__gnu_cxx3absEx' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/cstdlib' line='170' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'long long int' -->
-        <parameter type-id='type-id-138'/>
-        <!-- long long int -->
-        <return type-id='type-id-138'/>
-      </function-decl>
-      <!-- lldiv_t __gnu_cxx::div(long long int, long long int) -->
-      <function-decl name='div' mangled-name='_ZN9__gnu_cxx3divExx' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/cstdlib' line='176' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'long long int' -->
-        <parameter type-id='type-id-138'/>
-        <!-- parameter of type 'long long int' -->
-        <parameter type-id='type-id-138'/>
-        <!-- struct lldiv_t -->
-        <return type-id='type-id-139'/>
-      </function-decl>
       <!-- ptrdiff_t __gnu_cxx::operator&#45;<float*, std::vector<float, std::allocator<float> > >(const __gnu_cxx::__normal_iterator<float*, std::vector<float, std::allocator<float> > >&, const __gnu_cxx::__normal_iterator<float*, std::vector<float, std::allocator<float> > >&) -->
       <function-decl name='operator-&lt;float*, std::vector&lt;float, std::allocator&lt;float&gt; &gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator.h' line='856' column='1' visibility='default' binding='global' size-in-bits='64'>
         <!-- parameter of type 'const __gnu_cxx::__normal_iterator<float*, std::vector<float, std::allocator<float> > >&' -->
@@ -17276,77 +16600,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-487' size-in-bits='64' id='type-id-485'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICDefaultPainter.cxx' language='LANG_C_plus_plus'>
-    <!-- namespace std -->
-    <namespace-decl name='std'>
 
-      <!-- std::ios_base& std::dec(std::ios_base&) -->
-      <function-decl name='dec' mangled-name='_ZSt3decRSt8ios_base' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='937' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::ios_base&' -->
-        <parameter type-id='type-id-41'/>
-        <!-- std::ios_base& -->
-        <return type-id='type-id-41'/>
-      </function-decl>
-      <!-- std::ios_base& std::hex(std::ios_base&) -->
-      <function-decl name='hex' mangled-name='_ZSt3hexRSt8ios_base' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='945' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::ios_base&' -->
-        <parameter type-id='type-id-41'/>
-        <!-- std::ios_base& -->
-        <return type-id='type-id-41'/>
-      </function-decl>
-      <!-- std::_Setw std::setw(int) -->
-      <function-decl name='setw' mangled-name='_ZSt4setwi' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iomanip' line='238' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-7'/>
-        <!-- struct std::_Setw -->
-        <return type-id='type-id-42'/>
-      </function-decl>
-      <!-- std::_Setprecision std::setprecision(int) -->
-      <function-decl name='setprecision' mangled-name='_ZSt12setprecisioni' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iomanip' line='204' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-7'/>
-        <!-- struct std::_Setprecision -->
-        <return type-id='type-id-43'/>
-      </function-decl>
-      <!-- std::_Ios_Iostate std::operator|(std::_Ios_Iostate, std::_Ios_Iostate) -->
-      <function-decl name='operator|' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='166' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'enum std::_Ios_Iostate' -->
-        <parameter type-id='type-id-18'/>
-        <!-- parameter of type 'enum std::_Ios_Iostate' -->
-        <parameter type-id='type-id-18'/>
-        <!-- enum std::_Ios_Iostate -->
-        <return type-id='type-id-18'/>
-      </function-decl>
-      <!-- const std::ctype<char>& std::__check_facet<std::ctype<char> >(const std::ctype<char>*) -->
-      <function-decl name='__check_facet&lt;std::ctype&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_ios.h' line='46' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const std::ctype<char>*' -->
-        <parameter type-id='type-id-305'/>
-        <!-- const std::ctype<char>& -->
-        <return type-id='type-id-306'/>
-      </function-decl>
-      <!-- std::basic_ostream<char, std::char_traits<char> >& std::flush<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&) -->
-      <function-decl name='flush&lt;char, std::char_traits&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ostream' line='559' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::basic_ostream<char, std::char_traits<char> >&' -->
-        <parameter type-id='type-id-77'/>
-        <!-- std::basic_ostream<char, std::char_traits<char> >& -->
-        <return type-id='type-id-77'/>
-      </function-decl>
-      <!-- std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, const char*) -->
-      <function-decl name='operator&lt;&lt; &lt;std::char_traits&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ostream' line='505' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::basic_ostream<char, std::char_traits<char> >&' -->
-        <parameter type-id='type-id-77'/>
-        <!-- parameter of type 'const char*' -->
-        <parameter type-id='type-id-30'/>
-        <!-- std::basic_ostream<char, std::char_traits<char> >& -->
-        <return type-id='type-id-77'/>
-      </function-decl>
-      <!-- std::basic_ostream<char, std::char_traits<char> >& std::endl<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&) -->
-      <function-decl name='endl&lt;char, std::char_traits&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ostream' line='538' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::basic_ostream<char, std::char_traits<char> >&' -->
-        <parameter type-id='type-id-77'/>
-        <!-- std::basic_ostream<char, std::char_traits<char> >& -->
-        <return type-id='type-id-77'/>
-      </function-decl>
-    </namespace-decl>
 
 
 
@@ -21912,322 +21166,6 @@
     <!-- namespace std -->
     <namespace-decl name='std'>
 
-      <!-- std::ios_base& std::dec(std::ios_base&) -->
-      <function-decl name='dec' mangled-name='_ZSt3decRSt8ios_base' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='937' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::ios_base&' -->
-        <parameter type-id='type-id-41'/>
-        <!-- std::ios_base& -->
-        <return type-id='type-id-41'/>
-      </function-decl>
-      <!-- std::ios_base& std::hex(std::ios_base&) -->
-      <function-decl name='hex' mangled-name='_ZSt3hexRSt8ios_base' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='945' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::ios_base&' -->
-        <parameter type-id='type-id-41'/>
-        <!-- std::ios_base& -->
-        <return type-id='type-id-41'/>
-      </function-decl>
-      <!-- std::_Setw std::setw(int) -->
-      <function-decl name='setw' mangled-name='_ZSt4setwi' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iomanip' line='238' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-7'/>
-        <!-- struct std::_Setw -->
-        <return type-id='type-id-42'/>
-      </function-decl>
-      <!-- std::_Setprecision std::setprecision(int) -->
-      <function-decl name='setprecision' mangled-name='_ZSt12setprecisioni' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iomanip' line='204' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-7'/>
-        <!-- struct std::_Setprecision -->
-        <return type-id='type-id-43'/>
-      </function-decl>
-      <!-- const int& std::max<int>(const int&, const int&) -->
-      <function-decl name='max&lt;int&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='209' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const int&' -->
-        <parameter type-id='type-id-44'/>
-        <!-- parameter of type 'const int&' -->
-        <parameter type-id='type-id-44'/>
-        <!-- const int& -->
-        <return type-id='type-id-44'/>
-      </function-decl>
-      <!-- const int& std::min<int>(const int&, const int&) -->
-      <function-decl name='min&lt;int&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='186' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const int&' -->
-        <parameter type-id='type-id-44'/>
-        <!-- parameter of type 'const int&' -->
-        <parameter type-id='type-id-44'/>
-        <!-- const int& -->
-        <return type-id='type-id-44'/>
-      </function-decl>
-      <!-- size_t std::__deque_buf_size(size_t) -->
-      <function-decl name='__deque_buf_size' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'typedef size_t' -->
-        <parameter type-id='type-id-45'/>
-        <!-- typedef size_t -->
-        <return type-id='type-id-45'/>
-      </function-decl>
-      <!-- void std::_Destroy<vtkPixelBufferObject**>(vtkPixelBufferObject**, vtkPixelBufferObject**) -->
-      <function-decl name='_Destroy&lt;vtkPixelBufferObject**&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='119' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelBufferObject**' -->
-        <parameter type-id='type-id-84'/>
-        <!-- parameter of type 'vtkPixelBufferObject**' -->
-        <parameter type-id='type-id-84'/>
-        <!-- void -->
-        <return type-id='type-id-6'/>
-      </function-decl>
-      <!-- void std::_Destroy<vtkPixelExtent*>(vtkPixelExtent*, vtkPixelExtent*) -->
-      <function-decl name='_Destroy&lt;vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='119' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelExtent*' -->
-        <parameter type-id='type-id-47'/>
-        <!-- parameter of type 'vtkPixelExtent*' -->
-        <parameter type-id='type-id-47'/>
-        <!-- void -->
-        <return type-id='type-id-6'/>
-      </function-decl>
-      <!-- std::random_access_iterator_tag std::__iterator_category<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&) -->
-      <function-decl name='__iterator_category&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='160' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&' -->
-        <parameter type-id='type-id-50'/>
-        <!-- struct std::random_access_iterator_tag -->
-        <return type-id='type-id-320'/>
-      </function-decl>
-      <!-- ptrdiff_t std::__distance<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::random_access_iterator_tag) -->
-      <function-decl name='__distance&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_funcs.h' line='87' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::random_access_iterator_tag' -->
-        <parameter type-id='type-id-320'/>
-        <!-- typedef ptrdiff_t -->
-        <return type-id='type-id-39'/>
-      </function-decl>
-      <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::__copy_move_a<false, std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
-      <function-decl name='__copy_move_a&lt;false, std::_Deque_iterator&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>' -->
-        <parameter type-id='type-id-64'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>' -->
-        <parameter type-id='type-id-64'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> -->
-        <return type-id='type-id-46'/>
-      </function-decl>
-      <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::__copy_move_a2<false, std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
-      <function-decl name='__copy_move_a2&lt;false, std::_Deque_iterator&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='431' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>' -->
-        <parameter type-id='type-id-64'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>' -->
-        <parameter type-id='type-id-64'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> -->
-        <return type-id='type-id-46'/>
-      </function-decl>
-      <!-- std::random_access_iterator_tag std::__iterator_category<std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*> >(const std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&) -->
-      <function-decl name='__iterator_category&lt;std::_Deque_iterator&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='160' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&' -->
-        <parameter type-id='type-id-470'/>
-        <!-- struct std::random_access_iterator_tag -->
-        <return type-id='type-id-320'/>
-      </function-decl>
-      <!-- ptrdiff_t std::__distance<std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::random_access_iterator_tag) -->
-      <function-decl name='__distance&lt;std::_Deque_iterator&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_funcs.h' line='87' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>' -->
-        <parameter type-id='type-id-64'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>' -->
-        <parameter type-id='type-id-64'/>
-        <!-- parameter of type 'struct std::random_access_iterator_tag' -->
-        <parameter type-id='type-id-320'/>
-        <!-- typedef ptrdiff_t -->
-        <return type-id='type-id-39'/>
-      </function-decl>
-      <!-- vtkPixelBufferObject** std::__fill_n_a<vtkPixelBufferObject**, long unsigned int, vtkPixelBufferObject*>(vtkPixelBufferObject**, unsigned long int, vtkPixelBufferObject* const&) -->
-      <function-decl name='__fill_n_a&lt;vtkPixelBufferObject**, long unsigned int, vtkPixelBufferObject*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='754' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelBufferObject**' -->
-        <parameter type-id='type-id-84'/>
-        <!-- parameter of type 'unsigned long int' -->
-        <parameter type-id='type-id-58'/>
-        <!-- parameter of type 'vtkPixelBufferObject* const&' -->
-        <parameter type-id='type-id-313'/>
-        <!-- vtkPixelBufferObject** -->
-        <return type-id='type-id-84'/>
-      </function-decl>
-      <!-- vtkPixelBufferObject** std::fill_n<vtkPixelBufferObject**, long unsigned int, vtkPixelBufferObject*>(vtkPixelBufferObject**, unsigned long int, vtkPixelBufferObject* const&) -->
-      <function-decl name='fill_n&lt;vtkPixelBufferObject**, long unsigned int, vtkPixelBufferObject*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='785' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelBufferObject**' -->
-        <parameter type-id='type-id-84'/>
-        <!-- parameter of type 'unsigned long int' -->
-        <parameter type-id='type-id-58'/>
-        <!-- parameter of type 'vtkPixelBufferObject* const&' -->
-        <parameter type-id='type-id-313'/>
-        <!-- vtkPixelBufferObject** -->
-        <return type-id='type-id-84'/>
-      </function-decl>
-      <!-- void std::uninitialized_fill_n<vtkPixelBufferObject**, long unsigned int, vtkPixelBufferObject*>(vtkPixelBufferObject**, unsigned long int, vtkPixelBufferObject* const&) -->
-      <function-decl name='uninitialized_fill_n&lt;vtkPixelBufferObject**, long unsigned int, vtkPixelBufferObject*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='217' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelBufferObject**' -->
-        <parameter type-id='type-id-84'/>
-        <!-- parameter of type 'unsigned long int' -->
-        <parameter type-id='type-id-58'/>
-        <!-- parameter of type 'vtkPixelBufferObject* const&' -->
-        <parameter type-id='type-id-313'/>
-        <!-- void -->
-        <return type-id='type-id-6'/>
-      </function-decl>
-      <!-- void std::__uninitialized_fill_n_a<vtkPixelBufferObject**, long unsigned int, vtkPixelBufferObject*, vtkPixelBufferObject*>(vtkPixelBufferObject**, unsigned long int, vtkPixelBufferObject* const&, std::allocator<vtkPixelBufferObject*>&) -->
-      <function-decl name='__uninitialized_fill_n_a&lt;vtkPixelBufferObject**, long unsigned int, vtkPixelBufferObject*, vtkPixelBufferObject*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='315' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelBufferObject**' -->
-        <parameter type-id='type-id-84'/>
-        <!-- parameter of type 'unsigned long int' -->
-        <parameter type-id='type-id-58'/>
-        <!-- parameter of type 'vtkPixelBufferObject* const&' -->
-        <parameter type-id='type-id-313'/>
-        <!-- parameter of type 'std::allocator<vtkPixelBufferObject*>&' -->
-        <parameter type-id='type-id-312'/>
-        <!-- void -->
-        <return type-id='type-id-6'/>
-      </function-decl>
-      <!-- void std::__advance<std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, long int>(std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&, long int, std::random_access_iterator_tag) -->
-      <function-decl name='__advance&lt;std::_Deque_iterator&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt;, long int&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_funcs.h' line='145' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&' -->
-        <parameter type-id='type-id-107'/>
-        <!-- parameter of type 'long int' -->
-        <parameter type-id='type-id-40'/>
-        <!-- parameter of type 'struct std::random_access_iterator_tag' -->
-        <parameter type-id='type-id-320'/>
-        <!-- void -->
-        <return type-id='type-id-6'/>
-      </function-decl>
-      <!-- bool std::operator==<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>(const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&, const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&) -->
-      <function-decl name='operator==&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='235' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&' -->
-        <parameter type-id='type-id-50'/>
-        <!-- parameter of type 'const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&' -->
-        <parameter type-id='type-id-50'/>
-        <!-- bool -->
-        <return type-id='type-id-4'/>
-      </function-decl>
-      <!-- std::random_access_iterator_tag std::__iterator_category<char*>(char* const&) -->
-      <function-decl name='__iterator_category&lt;char*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='160' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'char* const&' -->
-        <parameter type-id='type-id-322'/>
-        <!-- struct std::random_access_iterator_tag -->
-        <return type-id='type-id-320'/>
-      </function-decl>
-      <!-- ptrdiff_t std::__distance<char*>(char*, char*, std::random_access_iterator_tag) -->
-      <function-decl name='__distance&lt;char*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_funcs.h' line='87' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'char*' -->
-        <parameter type-id='type-id-33'/>
-        <!-- parameter of type 'char*' -->
-        <parameter type-id='type-id-33'/>
-        <!-- parameter of type 'struct std::random_access_iterator_tag' -->
-        <parameter type-id='type-id-320'/>
-        <!-- typedef ptrdiff_t -->
-        <return type-id='type-id-39'/>
-      </function-decl>
-      <!-- bool std::operator==<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>(const std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&, const std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&) -->
-      <function-decl name='operator==&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='235' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&' -->
-        <parameter type-id='type-id-470'/>
-        <!-- parameter of type 'const std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&' -->
-        <parameter type-id='type-id-470'/>
-        <!-- bool -->
-        <return type-id='type-id-4'/>
-      </function-decl>
-      <!-- void std::_Destroy<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
-      <function-decl name='_Destroy&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='119' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- void -->
-        <return type-id='type-id-6'/>
-      </function-decl>
-      <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::__copy_move_a<false, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
-      <function-decl name='__copy_move_a&lt;false, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> -->
-        <return type-id='type-id-46'/>
-      </function-decl>
-      <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::__copy_move_a2<false, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
-      <function-decl name='__copy_move_a2&lt;false, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='431' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> -->
-        <return type-id='type-id-46'/>
-      </function-decl>
-      <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::__copy_move_backward_a<false, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
-      <function-decl name='__copy_move_backward_a&lt;false, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='582' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> -->
-        <return type-id='type-id-46'/>
-      </function-decl>
-      <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::__copy_move_backward_a2<false, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
-      <function-decl name='__copy_move_backward_a2&lt;false, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='600' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> -->
-        <return type-id='type-id-46'/>
-      </function-decl>
-      <!-- std::_Ios_Iostate std::operator|(std::_Ios_Iostate, std::_Ios_Iostate) -->
-      <function-decl name='operator|' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='166' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'enum std::_Ios_Iostate' -->
-        <parameter type-id='type-id-18'/>
-        <!-- parameter of type 'enum std::_Ios_Iostate' -->
-        <parameter type-id='type-id-18'/>
-        <!-- enum std::_Ios_Iostate -->
-        <return type-id='type-id-18'/>
-      </function-decl>
-      <!-- const std::ctype<char>& std::__check_facet<std::ctype<char> >(const std::ctype<char>*) -->
-      <function-decl name='__check_facet&lt;std::ctype&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_ios.h' line='46' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const std::ctype<char>*' -->
-        <parameter type-id='type-id-305'/>
-        <!-- const std::ctype<char>& -->
-        <return type-id='type-id-306'/>
-      </function-decl>
-      <!-- std::basic_ostream<char, std::char_traits<char> >& std::flush<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&) -->
-      <function-decl name='flush&lt;char, std::char_traits&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ostream' line='559' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::basic_ostream<char, std::char_traits<char> >&' -->
-        <parameter type-id='type-id-77'/>
-        <!-- std::basic_ostream<char, std::char_traits<char> >& -->
-        <return type-id='type-id-77'/>
-      </function-decl>
-      <!-- void std::_Construct<vtkPixelExtent, vtkPixelExtent>(vtkPixelExtent*, const vtkPixelExtent&) -->
-      <function-decl name='_Construct&lt;vtkPixelExtent, vtkPixelExtent&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='76' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelExtent*' -->
-        <parameter type-id='type-id-47'/>
-        <!-- parameter of type 'const vtkPixelExtent&' -->
-        <parameter type-id='type-id-59'/>
-        <!-- void -->
-        <return type-id='type-id-6'/>
-      </function-decl>
-      <!-- bool std::operator!=<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>(const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&, const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&) -->
-      <function-decl name='operator!=&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='248' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&' -->
-        <parameter type-id='type-id-50'/>
-        <!-- parameter of type 'const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&' -->
-        <parameter type-id='type-id-50'/>
-        <!-- bool -->
-        <return type-id='type-id-4'/>
-      </function-decl>
       <!-- vtkPixelExtent* std::uninitialized_copy<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, vtkPixelExtent*>(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, vtkPixelExtent*) -->
       <function-decl name='uninitialized_copy&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='106' column='1' visibility='default' binding='global' size-in-bits='64'>
         <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
@@ -22238,15 +21176,6 @@
         <parameter type-id='type-id-47'/>
         <!-- vtkPixelExtent* -->
         <return type-id='type-id-47'/>
-      </function-decl>
-      <!-- ptrdiff_t std::distance<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
-      <function-decl name='distance&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_funcs.h' line='110' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- typedef ptrdiff_t -->
-        <return type-id='type-id-39'/>
       </function-decl>
       <!-- vtkPixelExtent* std::__uninitialized_copy_a<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, vtkPixelExtent*, vtkPixelExtent>(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, vtkPixelExtent*, std::allocator<vtkPixelExtent>&) -->
       <function-decl name='__uninitialized_copy_a&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, vtkPixelExtent*, vtkPixelExtent&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='254' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -22261,61 +21190,6 @@
         <!-- vtkPixelExtent* -->
         <return type-id='type-id-47'/>
       </function-decl>
-      <!-- bool std::operator!=<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>(const std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&, const std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&) -->
-      <function-decl name='operator!=&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='248' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&' -->
-        <parameter type-id='type-id-470'/>
-        <!-- parameter of type 'const std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&' -->
-        <parameter type-id='type-id-470'/>
-        <!-- bool -->
-        <return type-id='type-id-4'/>
-      </function-decl>
-      <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::uninitialized_copy<std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
-      <function-decl name='uninitialized_copy&lt;std::_Deque_iterator&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='106' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>' -->
-        <parameter type-id='type-id-64'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>' -->
-        <parameter type-id='type-id-64'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> -->
-        <return type-id='type-id-46'/>
-      </function-decl>
-      <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::uninitialized_copy<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
-      <function-decl name='uninitialized_copy&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='106' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> -->
-        <return type-id='type-id-46'/>
-      </function-decl>
-      <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::__uninitialized_copy_a<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, vtkPixelExtent>(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::allocator<vtkPixelExtent>&) -->
-      <function-decl name='__uninitialized_copy_a&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, vtkPixelExtent&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='254' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'std::allocator<vtkPixelExtent>&' -->
-        <parameter type-id='type-id-72'/>
-        <!-- struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> -->
-        <return type-id='type-id-46'/>
-      </function-decl>
-      <!-- void std::_Destroy<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, vtkPixelExtent>(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::allocator<vtkPixelExtent>&) -->
-      <function-decl name='_Destroy&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, vtkPixelExtent&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='146' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'std::allocator<vtkPixelExtent>&' -->
-        <parameter type-id='type-id-72'/>
-        <!-- void -->
-        <return type-id='type-id-6'/>
-      </function-decl>
       <!-- void std::_Destroy<vtkPixelExtent*, vtkPixelExtent>(vtkPixelExtent*, vtkPixelExtent*, std::allocator<vtkPixelExtent>&) -->
       <function-decl name='_Destroy&lt;vtkPixelExtent*, vtkPixelExtent&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='146' column='1' visibility='default' binding='global' size-in-bits='64'>
         <!-- parameter of type 'vtkPixelExtent*' -->
@@ -22326,182 +21200,6 @@
         <parameter type-id='type-id-72'/>
         <!-- void -->
         <return type-id='type-id-6'/>
-      </function-decl>
-      <!-- const size_t& std::max<size_t>(const size_t&, const size_t&) -->
-      <function-decl name='max&lt;size_t&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='209' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const size_t&' -->
-        <parameter type-id='type-id-73'/>
-        <!-- parameter of type 'const size_t&' -->
-        <parameter type-id='type-id-73'/>
-        <!-- const size_t& -->
-        <return type-id='type-id-73'/>
-      </function-decl>
-      <!-- void std::_Destroy<vtkPixelBufferObject**, vtkPixelBufferObject*>(vtkPixelBufferObject**, vtkPixelBufferObject**, std::allocator<vtkPixelBufferObject*>&) -->
-      <function-decl name='_Destroy&lt;vtkPixelBufferObject**, vtkPixelBufferObject*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='146' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelBufferObject**' -->
-        <parameter type-id='type-id-84'/>
-        <!-- parameter of type 'vtkPixelBufferObject**' -->
-        <parameter type-id='type-id-84'/>
-        <!-- parameter of type 'std::allocator<vtkPixelBufferObject*>&' -->
-        <parameter type-id='type-id-312'/>
-        <!-- void -->
-        <return type-id='type-id-6'/>
-      </function-decl>
-      <!-- vtkPixelExtent** std::__copy_move_backward_a<false, vtkPixelExtent**, vtkPixelExtent**>(vtkPixelExtent**, vtkPixelExtent**, vtkPixelExtent**) -->
-      <function-decl name='__copy_move_backward_a&lt;false, vtkPixelExtent**, vtkPixelExtent**&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='582' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- vtkPixelExtent** -->
-        <return type-id='type-id-48'/>
-      </function-decl>
-      <!-- vtkPixelExtent** std::__copy_move_backward_a2<false, vtkPixelExtent**, vtkPixelExtent**>(vtkPixelExtent**, vtkPixelExtent**, vtkPixelExtent**) -->
-      <function-decl name='__copy_move_backward_a2&lt;false, vtkPixelExtent**, vtkPixelExtent**&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='600' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- vtkPixelExtent** -->
-        <return type-id='type-id-48'/>
-      </function-decl>
-      <!-- vtkPixelExtent** std::__copy_move_a<false, vtkPixelExtent**, vtkPixelExtent**>(vtkPixelExtent**, vtkPixelExtent**, vtkPixelExtent**) -->
-      <function-decl name='__copy_move_a&lt;false, vtkPixelExtent**, vtkPixelExtent**&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- vtkPixelExtent** -->
-        <return type-id='type-id-48'/>
-      </function-decl>
-      <!-- vtkPixelExtent** std::__copy_move_a2<false, vtkPixelExtent**, vtkPixelExtent**>(vtkPixelExtent**, vtkPixelExtent**, vtkPixelExtent**) -->
-      <function-decl name='__copy_move_a2&lt;false, vtkPixelExtent**, vtkPixelExtent**&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='431' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- vtkPixelExtent** -->
-        <return type-id='type-id-48'/>
-      </function-decl>
-      <!-- vtkPixelExtent** std::copy_backward<vtkPixelExtent**, vtkPixelExtent**>(vtkPixelExtent**, vtkPixelExtent**, vtkPixelExtent**) -->
-      <function-decl name='copy_backward&lt;vtkPixelExtent**, vtkPixelExtent**&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='628' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- vtkPixelExtent** -->
-        <return type-id='type-id-48'/>
-      </function-decl>
-      <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::copy<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
-      <function-decl name='copy&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='458' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> -->
-        <return type-id='type-id-46'/>
-      </function-decl>
-      <!-- void std::advance<std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, long int>(std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&, long int) -->
-      <function-decl name='advance&lt;std::_Deque_iterator&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt;, long int&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_funcs.h' line='168' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&' -->
-        <parameter type-id='type-id-107'/>
-        <!-- parameter of type 'long int' -->
-        <parameter type-id='type-id-40'/>
-        <!-- void -->
-        <return type-id='type-id-6'/>
-      </function-decl>
-      <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::__uninitialized_move_copy<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::allocator<vtkPixelExtent> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::allocator<vtkPixelExtent>&) -->
-      <function-decl name='__uninitialized_move_copy&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, std::allocator&lt;vtkPixelExtent&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='360' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>' -->
-        <parameter type-id='type-id-64'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>' -->
-        <parameter type-id='type-id-64'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'std::allocator<vtkPixelExtent>&' -->
-        <parameter type-id='type-id-72'/>
-        <!-- struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> -->
-        <return type-id='type-id-46'/>
-      </function-decl>
-      <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::copy_backward<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
-      <function-decl name='copy_backward&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='628' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> -->
-        <return type-id='type-id-46'/>
-      </function-decl>
-      <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::__uninitialized_copy_move<std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::allocator<vtkPixelExtent> >(std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::allocator<vtkPixelExtent>&) -->
-      <function-decl name='__uninitialized_copy_move&lt;std::_Deque_iterator&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, std::allocator&lt;vtkPixelExtent&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='332' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>' -->
-        <parameter type-id='type-id-64'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>' -->
-        <parameter type-id='type-id-64'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'std::allocator<vtkPixelExtent>&' -->
-        <parameter type-id='type-id-72'/>
-        <!-- struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> -->
-        <return type-id='type-id-46'/>
-      </function-decl>
-      <!-- ptrdiff_t std::distance<std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>) -->
-      <function-decl name='distance&lt;std::_Deque_iterator&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_funcs.h' line='110' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>' -->
-        <parameter type-id='type-id-64'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>' -->
-        <parameter type-id='type-id-64'/>
-        <!-- typedef ptrdiff_t -->
-        <return type-id='type-id-39'/>
-      </function-decl>
-      <!-- bool std::operator==<char>(const std::allocator<char>&, const std::allocator<char>&) -->
-      <function-decl name='operator==&lt;char&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/allocator.h' line='121' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const std::allocator<char>&' -->
-        <parameter type-id='type-id-326'/>
-        <!-- parameter of type 'const std::allocator<char>&' -->
-        <parameter type-id='type-id-326'/>
-        <!-- bool -->
-        <return type-id='type-id-4'/>
-      </function-decl>
-      <!-- ptrdiff_t std::distance<char*>(char*, char*) -->
-      <function-decl name='distance&lt;char*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_funcs.h' line='110' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'char*' -->
-        <parameter type-id='type-id-33'/>
-        <!-- parameter of type 'char*' -->
-        <parameter type-id='type-id-33'/>
-        <!-- typedef ptrdiff_t -->
-        <return type-id='type-id-39'/>
-      </function-decl>
-      <!-- std::_Ios_Openmode std::operator|(std::_Ios_Openmode, std::_Ios_Openmode) -->
-      <function-decl name='operator|' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'enum std::_Ios_Openmode' -->
-        <parameter type-id='type-id-24'/>
-        <!-- parameter of type 'enum std::_Ios_Openmode' -->
-        <parameter type-id='type-id-24'/>
-        <!-- enum std::_Ios_Openmode -->
-        <return type-id='type-id-24'/>
       </function-decl>
       <!-- bool std::operator==<char, std::char_traits<char>, std::allocator<char> >(const std::basic_string<char, std::char_traits<char>, std::allocator<char> >&, const char*) -->
       <function-decl name='operator==&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='2265' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -22520,88 +21218,6 @@
         <parameter type-id='type-id-30'/>
         <!-- bool -->
         <return type-id='type-id-4'/>
-      </function-decl>
-      <!-- vtkPixelExtent** std::copy<vtkPixelExtent**, vtkPixelExtent**>(vtkPixelExtent**, vtkPixelExtent**, vtkPixelExtent**) -->
-      <function-decl name='copy&lt;vtkPixelExtent**, vtkPixelExtent**&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='458' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- parameter of type 'vtkPixelExtent**' -->
-        <parameter type-id='type-id-48'/>
-        <!-- vtkPixelExtent** -->
-        <return type-id='type-id-48'/>
-      </function-decl>
-      <!-- ptrdiff_t std::operator&#45;<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>(const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&, const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&) -->
-      <function-decl name='operator-&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='319' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&' -->
-        <parameter type-id='type-id-50'/>
-        <!-- parameter of type 'const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&' -->
-        <parameter type-id='type-id-50'/>
-        <!-- typedef ptrdiff_t -->
-        <return type-id='type-id-39'/>
-      </function-decl>
-      <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::__uninitialized_move_a<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::allocator<vtkPixelExtent> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::allocator<vtkPixelExtent>&) -->
-      <function-decl name='__uninitialized_move_a&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, std::allocator&lt;vtkPixelExtent&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='261' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'std::allocator<vtkPixelExtent>&' -->
-        <parameter type-id='type-id-72'/>
-        <!-- struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> -->
-        <return type-id='type-id-46'/>
-      </function-decl>
-      <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::copy<std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
-      <function-decl name='copy&lt;std::_Deque_iterator&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='458' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>' -->
-        <parameter type-id='type-id-64'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>' -->
-        <parameter type-id='type-id-64'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> -->
-        <return type-id='type-id-46'/>
-      </function-decl>
-      <!-- ptrdiff_t std::operator&#45;<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>(const std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&, const std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&) -->
-      <function-decl name='operator-&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='319' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&' -->
-        <parameter type-id='type-id-470'/>
-        <!-- parameter of type 'const std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&' -->
-        <parameter type-id='type-id-470'/>
-        <!-- typedef ptrdiff_t -->
-        <return type-id='type-id-39'/>
-      </function-decl>
-      <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::__uninitialized_copy_a<std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, vtkPixelExtent>(std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::allocator<vtkPixelExtent>&) -->
-      <function-decl name='__uninitialized_copy_a&lt;std::_Deque_iterator&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, vtkPixelExtent&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='254' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>' -->
-        <parameter type-id='type-id-64'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>' -->
-        <parameter type-id='type-id-64'/>
-        <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
-        <parameter type-id='type-id-46'/>
-        <!-- parameter of type 'std::allocator<vtkPixelExtent>&' -->
-        <parameter type-id='type-id-72'/>
-        <!-- struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> -->
-        <return type-id='type-id-46'/>
-      </function-decl>
-      <!-- std::basic_ostream<char, std::char_traits<char> >& std::endl<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&) -->
-      <function-decl name='endl&lt;char, std::char_traits&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ostream' line='538' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::basic_ostream<char, std::char_traits<char> >&' -->
-        <parameter type-id='type-id-77'/>
-        <!-- std::basic_ostream<char, std::char_traits<char> >& -->
-        <return type-id='type-id-77'/>
-      </function-decl>
-      <!-- std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, const char*) -->
-      <function-decl name='operator&lt;&lt; &lt;std::char_traits&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ostream' line='505' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::basic_ostream<char, std::char_traits<char> >&' -->
-        <parameter type-id='type-id-77'/>
-        <!-- parameter of type 'const char*' -->
-        <parameter type-id='type-id-30'/>
-        <!-- std::basic_ostream<char, std::char_traits<char> >& -->
-        <return type-id='type-id-77'/>
       </function-decl>
       <!-- struct std::_Vector_base<vtkPixelExtent, std::allocator<vtkPixelExtent> > -->
       <class-decl name='_Vector_base&lt;vtkPixelExtent, std::allocator&lt;vtkPixelExtent&gt; &gt;' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='70' column='1' id='type-id-629'>
@@ -23293,29 +21909,6 @@
     </namespace-decl>
     <!-- namespace __gnu_cxx -->
     <namespace-decl name='__gnu_cxx'>
-      <!-- long long int __gnu_cxx::abs(long long int) -->
-      <function-decl name='abs' mangled-name='_ZN9__gnu_cxx3absEx' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/cstdlib' line='170' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'long long int' -->
-        <parameter type-id='type-id-138'/>
-        <!-- long long int -->
-        <return type-id='type-id-138'/>
-      </function-decl>
-      <!-- lldiv_t __gnu_cxx::div(long long int, long long int) -->
-      <function-decl name='div' mangled-name='_ZN9__gnu_cxx3divExx' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/cstdlib' line='176' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'long long int' -->
-        <parameter type-id='type-id-138'/>
-        <!-- parameter of type 'long long int' -->
-        <parameter type-id='type-id-138'/>
-        <!-- struct lldiv_t -->
-        <return type-id='type-id-139'/>
-      </function-decl>
-      <!-- bool __gnu_cxx::__is_null_pointer<char>(char*) -->
-      <function-decl name='__is_null_pointer&lt;char&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/type_traits.h' line='148' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'char*' -->
-        <parameter type-id='type-id-33'/>
-        <!-- bool -->
-        <return type-id='type-id-4'/>
-      </function-decl>
       <!-- class __gnu_cxx::__normal_iterator<vtkPixelExtent*, std::vector<vtkPixelExtent, std::allocator<vtkPixelExtent> > > -->
       <class-decl name='__normal_iterator&lt;vtkPixelExtent*, std::vector&lt;vtkPixelExtent, std::allocator&lt;vtkPixelExtent&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-638'/>
       <!-- class __gnu_cxx::__normal_iterator<const vtkPixelExtent*, std::vector<vtkPixelExtent, std::allocator<vtkPixelExtent> > > -->
@@ -24552,73 +23145,8 @@
 
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkTextureIO.cxx' language='LANG_C_plus_plus'>
-    <!-- namespace std -->
-    <namespace-decl name='std'>
 
-      <!-- std::ios_base& std::dec(std::ios_base&) -->
-      <function-decl name='dec' mangled-name='_ZSt3decRSt8ios_base' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='937' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::ios_base&' -->
-        <parameter type-id='type-id-41'/>
-        <!-- std::ios_base& -->
-        <return type-id='type-id-41'/>
-      </function-decl>
-      <!-- std::ios_base& std::hex(std::ios_base&) -->
-      <function-decl name='hex' mangled-name='_ZSt3hexRSt8ios_base' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='945' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'std::ios_base&' -->
-        <parameter type-id='type-id-41'/>
-        <!-- std::ios_base& -->
-        <return type-id='type-id-41'/>
-      </function-decl>
-      <!-- std::_Setw std::setw(int) -->
-      <function-decl name='setw' mangled-name='_ZSt4setwi' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iomanip' line='238' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-7'/>
-        <!-- struct std::_Setw -->
-        <return type-id='type-id-42'/>
-      </function-decl>
-      <!-- std::_Setprecision std::setprecision(int) -->
-      <function-decl name='setprecision' mangled-name='_ZSt12setprecisioni' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iomanip' line='204' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-7'/>
-        <!-- struct std::_Setprecision -->
-        <return type-id='type-id-43'/>
-      </function-decl>
-      <!-- size_t std::__deque_buf_size(size_t) -->
-      <function-decl name='__deque_buf_size' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'typedef size_t' -->
-        <parameter type-id='type-id-45'/>
-        <!-- typedef size_t -->
-        <return type-id='type-id-45'/>
-      </function-decl>
-      <!-- ptrdiff_t std::operator&#45;<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>(const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&, const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&) -->
-      <function-decl name='operator-&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='319' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&' -->
-        <parameter type-id='type-id-50'/>
-        <!-- parameter of type 'const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&' -->
-        <parameter type-id='type-id-50'/>
-        <!-- typedef ptrdiff_t -->
-        <return type-id='type-id-39'/>
-      </function-decl>
-    </namespace-decl>
-    <!-- namespace __gnu_cxx -->
-    <namespace-decl name='__gnu_cxx'>
-      <!-- long long int __gnu_cxx::abs(long long int) -->
-      <function-decl name='abs' mangled-name='_ZN9__gnu_cxx3absEx' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/cstdlib' line='170' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'long long int' -->
-        <parameter type-id='type-id-138'/>
-        <!-- long long int -->
-        <return type-id='type-id-138'/>
-      </function-decl>
-      <!-- lldiv_t __gnu_cxx::div(long long int, long long int) -->
-      <function-decl name='div' mangled-name='_ZN9__gnu_cxx3divExx' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/cstdlib' line='176' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'long long int' -->
-        <parameter type-id='type-id-138'/>
-        <!-- parameter of type 'long long int' -->
-        <parameter type-id='type-id-138'/>
-        <!-- struct lldiv_t -->
-        <return type-id='type-id-139'/>
-      </function-decl>
-    </namespace-decl>
+
 
 
     <!-- class vtkTextureIO -->

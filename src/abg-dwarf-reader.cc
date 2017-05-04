@@ -116,14 +116,12 @@ struct dwfl_deleter
 /// A convenience typedef for a shared pointer to a Dwfl.
 typedef shared_ptr<Dwfl> dwfl_sptr;
 
-/// Convenience typedef for a map which key is the offset of a dwarf
-/// die, (given by dwarf_dieoffset()) and which value is the
-/// corresponding decl_base.
-typedef unordered_map<Dwarf_Off, decl_base_sptr> die_decl_map_type;
+/// A convenience typedef for a vector of Dwarf_Off.
+typedef vector<Dwarf_Off> dwarf_offsets_type;
 
 /// Convenience typedef for a map which key is the offset of a dwarf
-/// die and which value is the corresponding type_base.
-typedef unordered_map<Dwarf_Off, type_base_sptr> die_type_map_type;
+/// die and which value is the corresponding artefact.
+typedef unordered_map<Dwarf_Off, type_or_decl_base_sptr> die_artefact_map_type;
 
 /// Convenience typedef for a map which key is the offset of a dwarf
 /// die, (given by dwarf_dieoffset()) and which value is the
@@ -152,12 +150,24 @@ typedef unordered_map<Dwarf_Off, translation_unit_sptr> die_tu_map_type;
 /// the value is the corresponding qualified name of the DIE.
 typedef unordered_map<Dwarf_Off, interned_string> die_istring_map_type;
 
+/// Convenience typedef for a vector of Dwarf_Offset.
+typedef vector<Dwarf_Off> dwarf_offsets_type;
+
+/// Convenience typedef for a map which is an interned_string and
+/// which value is a vector of offsets.
+typedef unordered_map<interned_string,
+		      dwarf_offsets_type,
+		      hash_interned_string>
+istring_dwarf_offsets_map_type;
+
 /// Convenience typedef for a map which key is an elf address and
 /// which value is an elf_symbol_sptr.
 typedef unordered_map<GElf_Addr, elf_symbol_sptr> addr_elf_symbol_sptr_map_type;
 
 /// Convenience typedef for a set of ELF addresses.
 typedef unordered_set<GElf_Addr> address_set_type;
+
+typedef unordered_set<interned_string, hash_interned_string> istring_set_type;
 
 /// Convenience typedef for a shared pointer to an @ref address_set_type.
 typedef shared_ptr<address_set_type> address_set_sptr;
@@ -296,6 +306,9 @@ get_scope_die(const read_context&	ctxt,
 	      Dwarf_Die&		scope_die);
 
 static bool
+die_is_anonymous(Dwarf_Die* die);
+
+static bool
 die_is_type(Dwarf_Die* die);
 
 static bool
@@ -337,7 +350,7 @@ static bool
 die_object_pointer_is_for_const_method(Dwarf_Die* die);
 
 static bool
-die_is_at_class_scope(read_context& ctxt,
+die_is_at_class_scope(const read_context& ctxt,
 		      Dwarf_Die* die,
 		      size_t where_offset,
 		      Dwarf_Die& class_scope_die);
@@ -361,6 +374,9 @@ die_address_attribute(Dwarf_Die* die, unsigned attr_name, Dwarf_Addr& result);
 static string
 die_name(Dwarf_Die* die);
 
+static location
+die_location(const read_context& ctxt, Dwarf_Die* die);
+
 static bool
 die_location_address(Dwarf_Die*	die,
 		     Dwarf_Addr&	address,
@@ -373,20 +389,21 @@ die_die_attribute(Dwarf_Die* die,
 		  bool look_thru_abstract_origin = true);
 
 static string
-die_qualified_type_name(read_context& ctxt, Dwarf_Die* die, size_t where);
+die_qualified_type_name(const read_context& ctxt, Dwarf_Die* die, size_t where);
 
 static string
-die_qualified_decl_name(read_context& ctxt, Dwarf_Die* die, size_t where);
+die_qualified_decl_name(const read_context& ctxt, Dwarf_Die* die, size_t where);
 
 static string
-die_qualified_name(read_context& ctxt, Dwarf_Die* die, size_t where);
+die_qualified_name(const read_context& ctxt, Dwarf_Die* die, size_t where);
 
 static bool
-die_qualified_type_name_empty(read_context& ctxt, Dwarf_Die* die, size_t where,
+die_qualified_type_name_empty(const read_context& ctxt,
+			      Dwarf_Die* die, size_t where,
 			      string &qualified_name);
 
 static void
-die_return_and_parm_names_from_fn_type_die(read_context& ctxt,
+die_return_and_parm_names_from_fn_type_die(const read_context& ctxt,
 					   Dwarf_Die* die,
 					   size_t where_offset,
 					   bool pretty_print,
@@ -397,13 +414,15 @@ die_return_and_parm_names_from_fn_type_die(read_context& ctxt,
 					   bool& is_static);
 
 static string
-die_function_signature(read_context& ctxt, Dwarf_Die *die, size_t where_offset);
+die_function_signature(const read_context& ctxt,
+		       Dwarf_Die *die,
+		       size_t where_offset);
 
 static bool
 die_peel_qual_ptr(Dwarf_Die *die, Dwarf_Die& peeled_die);
 
 static bool
-die_function_type_is_method_type(read_context& ctxt,
+die_function_type_is_method_type(const read_context& ctxt,
 				 Dwarf_Die *die,
 				 size_t where_offset,
 				 Dwarf_Die& object_pointer_die,
@@ -434,6 +453,11 @@ static void
 build_subranges_from_array_type_die(Dwarf_Die*	die,
 				    uint64_t lower_bound,
 				    array_type_def::subranges_type& subranges);
+
+static bool
+compare_dies(const read_context& ctxt,
+	     Dwarf_Die *l, Dwarf_Die *r,
+	     bool update_canonical_dies_on_the_fly);
 
 /// Convert an elf symbol type (given by the ELF{32,64}_ST_TYPE
 /// macros) into an elf_symbol::type value.
@@ -2231,6 +2255,363 @@ elf_file_type(Elf* elf)
     }
 }
 
+// ---------------------------------------
+// <location expression evaluation types>
+// ---------------------------------------
+
+/// An abstraction of a value representing the result of the
+/// evaluation of a dwarf expression.  This is abstraction represents
+/// a partial view on the possible values because we are only
+/// interested in extracting the latest and longuest constant
+/// sub-expression of a given dwarf expression.
+class expr_result
+{
+  bool is_const_;
+  int64_t const_value_;
+
+public:
+  expr_result()
+    : is_const_(true),
+      const_value_(0)
+  {}
+
+  expr_result(bool is_const)
+    : is_const_(is_const),
+      const_value_(0)
+  {}
+
+  explicit expr_result(int64_t v)
+    :is_const_(true),
+     const_value_(v)
+  {}
+
+  /// @return true if the value is a constant.  Otherwise, return
+  /// false, meaning the value represents a quantity for which we need
+  /// inferior (a running program) state to determine the value.
+  bool
+  is_const() const
+  {return is_const_;}
+
+
+  /// @param f a flag saying if the value is set to a constant or not.
+  void
+  is_const(bool f)
+  {is_const_ = f;}
+
+  /// Get the current constant value iff this represents a
+  /// constant.
+  ///
+  /// @param value the out parameter.  Is set to the constant value of
+  /// the @ref expr_result.  This is set iff the function return true.
+  ///
+  ///@return true if this has a constant value, false otherwise.
+  bool
+  const_value(int64_t& value)
+  {
+    if (is_const())
+      {
+	value = const_value_;
+	return true;
+      }
+    return false;
+  }
+
+  /// Getter of the constant value of the current @ref expr_result.
+  ///
+  /// Note that the current @ref expr_result must be constant,
+  /// otherwise the current process is aborted.
+  ///
+  /// @return the constant value of the current @ref expr_result.
+  int64_t
+  const_value() const
+  {
+    assert(is_const());
+    return const_value_;
+  }
+
+  operator int64_t() const
+  {return const_value();}
+
+  expr_result&
+  operator=(const int64_t v)
+  {
+    const_value_ = v;
+    return *this;
+  }
+
+  bool
+  operator==(const expr_result& o) const
+  {return const_value_ == o.const_value_ && is_const_ == o.is_const_;}
+
+  bool
+  operator>=(const expr_result& o) const
+  {return const_value_ >= o.const_value_;}
+
+  bool
+  operator<=(const expr_result& o) const
+  {return const_value_ <= o.const_value_;}
+
+  bool
+  operator>(const expr_result& o) const
+  {return const_value_ > o.const_value_;}
+
+  bool
+  operator<(const expr_result& o) const
+  {return const_value_ < o.const_value_;}
+
+  expr_result
+  operator+(const expr_result& v) const
+  {
+    expr_result r(*this);
+    r.const_value_ += v.const_value_;
+    r.is_const_ = r.is_const_ && v.is_const_;
+    return r;
+  }
+
+  expr_result&
+  operator+=(int64_t v)
+  {
+    const_value_ += v;
+    return *this;
+  }
+
+  expr_result
+  operator-(const expr_result& v) const
+  {
+    expr_result r(*this);
+    r.const_value_ -= v.const_value_;
+    r.is_const_ = r.is_const_ && v.is_const_;
+    return r;
+  }
+
+  expr_result
+  operator%(const expr_result& v) const
+  {
+    expr_result r(*this);
+    r.const_value_ %= v.const_value_;
+    r.is_const_ = r.is_const_ && v.is_const();
+    return r;
+  }
+
+  expr_result
+  operator*(const expr_result& v) const
+  {
+    expr_result r(*this);
+    r.const_value_ *= v.const_value_;
+    r.is_const_ = r.is_const_ && v.is_const();
+    return r;
+  }
+
+  expr_result
+  operator|(const expr_result& v) const
+  {
+    expr_result r(*this);
+    r.const_value_ |= v.const_value_;
+    r.is_const_ = r.is_const_ && v.is_const_;
+    return r;
+  }
+
+  expr_result
+  operator^(const expr_result& v) const
+  {
+    expr_result r(*this);
+    r.const_value_ ^= v.const_value_;
+    r.is_const_ = r.is_const_ && v.is_const_;
+    return r;
+  }
+
+  expr_result
+  operator>>(const expr_result& v) const
+  {
+    expr_result r(*this);
+    r.const_value_ = r.const_value_ >> v.const_value_;
+    r.is_const_ = r.is_const_ && v.is_const_;
+    return r;
+  }
+
+  expr_result
+  operator<<(const expr_result& v) const
+  {
+    expr_result r(*this);
+    r.const_value_ = r.const_value_ << v.const_value_;
+    r.is_const_ = r.is_const_ && v.is_const_;
+    return r;
+  }
+
+  expr_result
+  operator~() const
+  {
+    expr_result r(*this);
+    r.const_value_ = ~r.const_value_;
+    return r;
+  }
+
+  expr_result
+  neg() const
+  {
+    expr_result r(*this);
+    r.const_value_ = -r.const_value_;
+    return r;
+  }
+
+  expr_result
+  abs() const
+  {
+    expr_result r = *this;
+    r.const_value_ = std::abs(static_cast<long double>(r.const_value()));
+    return r;
+  }
+
+  expr_result
+  operator&(const expr_result& o)
+  {
+    expr_result r(*this);
+    r.const_value_ = *this & o;
+    r.is_const_ = r.is_const_ && o.is_const_;
+    return r;
+  }
+
+  expr_result
+  operator/(const expr_result& o)
+  {
+    expr_result r(*this);
+    r.is_const_ = r.is_const_ && o.is_const_;
+    return r.const_value() / o.const_value();
+  }
+};// class end expr_result;
+
+/// A class that implements a stack of @ref expr_result, to be used in
+/// the engine evaluating DWARF expressions.
+class expr_result_stack_type
+{
+  vector<expr_result> elems_;
+
+public:
+
+  expr_result_stack_type()
+  {elems_.reserve(4);}
+
+  expr_result&
+  operator[](unsigned i)
+  {
+    unsigned s = elems_.size();
+    assert(s > i);
+    return elems_[s - 1 -i];
+  }
+
+  const expr_result&
+  operator[](unsigned i) const
+  {return const_cast<expr_result_stack_type*>(this)->operator[](i);}
+
+  unsigned
+  size() const
+  {return elems_.size();}
+
+  vector<expr_result>::reverse_iterator
+  begin()
+  {return elems_.rbegin();}
+
+  const vector<expr_result>::reverse_iterator
+  begin() const
+  {return const_cast<expr_result_stack_type*>(this)->begin();}
+
+  vector<expr_result>::reverse_iterator
+  end()
+  {return elems_.rend();}
+
+  const vector<expr_result>::reverse_iterator
+  end() const
+  {return const_cast<expr_result_stack_type*>(this)->end();}
+
+  expr_result&
+  front()
+  {return elems_.back();}
+
+  const expr_result&
+  front() const
+  {return const_cast<expr_result_stack_type*>(this)->front();}
+
+  void
+  push_front(expr_result e)
+  {elems_.push_back(e);}
+
+  expr_result
+  pop_front()
+  {
+    expr_result r = front();
+    elems_.pop_back();
+    return r;
+  }
+
+  void
+  erase(vector<expr_result>::reverse_iterator i)
+  {elems_.erase(--i.base());}
+
+  void
+  clear()
+  {elems_.clear();}
+}; // end class expr_result_stack_type
+
+/// Abstraction of the evaluation context of a dwarf expression.
+struct dwarf_expr_eval_context
+{
+  expr_result accum;
+  expr_result_stack_type stack;
+  // Is set to true if the result of the expression that got evaluated
+  // is a TLS address.
+  bool set_tls_addr;
+
+  dwarf_expr_eval_context()
+    : accum(/*is_const=*/false),
+      set_tls_addr(false)
+  {
+    stack.push_front(expr_result(true));
+  }
+
+  void
+  reset()
+  {
+    stack.clear();
+    stack.push_front(expr_result(true));
+    accum = expr_result(false);
+    set_tls_addr = false;
+  }
+
+  /// Set a flag to to tell that the result of the expression that got
+  /// evaluated is a TLS address.
+  ///
+  /// @param f true iff the result of the expression that got
+  /// evaluated is a TLS address, false otherwise.
+  void
+  set_tls_address(bool f)
+  {set_tls_addr = f;}
+
+  /// Getter for the flag that tells if the result of the expression
+  /// that got evaluated is a TLS address.
+  ///
+  /// @return true iff the result of the expression that got evaluated
+  /// is a TLS address.
+  bool
+  set_tls_address() const
+  {return set_tls_addr;}
+
+  expr_result
+  pop()
+  {
+    expr_result r = stack.front();
+    stack.pop_front();
+    return r;
+  }
+
+  void
+  push(const expr_result& v)
+  {stack.push_front(v);}
+};//end class dwarf_expr_eval_context
+
+// ---------------------------------------
+// </location expression evaluation types>
+// ---------------------------------------
+
 /// The context used to build ABI corpus from debug info in DWARF
 /// format.
 ///
@@ -2325,7 +2706,7 @@ public:
     /// @return the container that associates DIEs coming from the
     /// same source as @p die.
     ContainerType&
-    get_container(read_context& ctxt, Dwarf_Die *die)
+    get_container(const read_context& ctxt, Dwarf_Die *die)
     {
       die_source source = NO_DEBUG_INFO_DIE_SOURCE;
       assert(ctxt.get_die_source(die, source));
@@ -2343,10 +2724,10 @@ public:
     /// @return the container that associates DIEs coming from the
     /// same source as @p die.
     const ContainerType&
-    get_container(read_context& ctxt, Dwarf_Die *die) const
+    get_container(const read_context& ctxt, Dwarf_Die *die) const
     {
       return const_cast<die_source_dependant_container_set*>(this)->
-	get_container(die);
+	get_container(ctxt, die);
     }
 
     /// Clear the container set.
@@ -2402,33 +2783,39 @@ public:
   bool				symbol_versionning_sections_loaded_;
   bool				symbol_versionning_sections_found_;
   Dwarf_Die*			cur_tu_die_;
-  istring_type_or_decl_base_sptr_map_type name_artefacts_map_;
-  istring_type_or_decl_base_sptr_map_type per_tu_name_artefacts_map_;
+  mutable dwarf_expr_eval_context	dwarf_expr_eval_context_;
+  // A set of maps (one per kind of die source) that associates a decl
+  // string representation with the DIEs (offsets) representing that
+  // decl.
+  mutable die_source_dependant_container_set<istring_dwarf_offsets_map_type>
+  decl_die_repr_die_offsets_maps_;
+  // A set of maps (one per kind of die source) that associates a type
+  // string representation with the DIEs (offsets) representing that
+  // type.
+  mutable die_source_dependant_container_set<istring_dwarf_offsets_map_type>
+  type_die_repr_die_offsets_maps_;
   mutable die_source_dependant_container_set<die_istring_map_type>
   die_qualified_name_maps_;
   mutable die_source_dependant_container_set<die_istring_map_type>
   die_pretty_repr_maps_;
   mutable die_source_dependant_container_set<die_istring_map_type>
   die_pretty_type_repr_maps_;
-  // This is a map that associates a decl to the DIE that represents
-  // it.  This is for DIEs that come from the main debug info file we
-  // are looking at.
-  die_decl_map_type		die_decl_map_;
-  // This is a similar map as die_decl_map_, but it's for DIEs that
-  // com from the alternate debug info file.  Alternate debug info is
-  // described by the DWARF extension (as of DWARF4) described at
-  // http://www.dwarfstd.org/ShowIssue.php?issue=120604.1.
-  die_decl_map_type		alternate_die_decl_map_;
-  die_decl_map_type		type_unit_die_decl_map_;
-  // This is a map that associates DIE offsets to their types.  This
-  // is for DIEs that represent types.  Note that it's for DIEs
-  // defined in the main debug info section.
-  die_type_map_type		die_type_map_;
-  // This is a map that associates DIE offsets to their types.  This
-  // is for DIEs that represent types.  Note that it's for DIEs
-  // defined in the alternate debug info section.
-  die_type_map_type		alternate_die_type_map_;
-  die_type_map_type		type_unit_die_type_map_;
+  // A set of maps (one per kind of die source) that associates the
+  // offset of a decl die to its corresponding decl artifact.
+  mutable die_source_dependant_container_set<die_artefact_map_type>
+  decl_die_artefact_maps_;
+  // A set of maps (one per kind of die source) that associates the
+  // offset of a type die to its corresponding type artifact.
+  mutable die_source_dependant_container_set<die_artefact_map_type>
+  type_die_artefact_maps_;
+  /// A set of vectors (one per kind of die source) that associates
+  /// the offset of a type DIE to the offset of its canonical DIE.
+  mutable die_source_dependant_container_set<dwarf_offsets_type>
+  canonical_type_die_vecs_;
+  /// A set of vectors (one per kind of die source) that associates
+  /// the offset of a decl DIE to the offset of its canonical DIE.
+  mutable die_source_dependant_container_set<dwarf_offsets_type>
+  canonical_decl_die_vecs_;
   die_class_or_union_map_type	die_wip_classes_map_;
   die_class_or_union_map_type	alternate_die_wip_classes_map_;
   die_class_or_union_map_type	type_unit_die_wip_classes_map_;
@@ -2580,7 +2967,6 @@ public:
     while (!scope_stack().empty())
       scope_stack().pop();
     var_decls_to_re_add_to_tree().clear();
-    per_tu_name_artefacts_map_.clear();
   }
 
   /// Clear the data that is relevant for the current corpus being
@@ -2588,13 +2974,9 @@ public:
   void
   clear_per_corpus_data()
   {
-    name_artefacts_map_.clear();
     die_qualified_name_maps_.clear();
     die_pretty_repr_maps_.clear();
     die_pretty_type_repr_maps_.clear();
-    die_decl_map().clear();
-    alternate_die_decl_map().clear();
-    clear_die_type_maps();
     clear_types_to_canonicalize();
   }
 
@@ -2815,6 +3197,32 @@ public:
   alt_dwarf() const
   {return alt_dwarf_;}
 
+  /// Return the correct debug info, depending on the DIE source we
+  /// are looking at.
+  ///
+  /// @param source the DIE source to consider.
+  ///
+  /// @return the right debug info, depending on @p source.
+  Dwarf*
+  dwarf_per_die_source(die_source source) const
+  {
+    Dwarf *result = 0;
+    switch(source)
+      {
+      case PRIMARY_DEBUG_INFO_DIE_SOURCE:
+      case TYPE_UNIT_DIE_SOURCE:
+	result = dwarf();
+	break;
+      case ALT_DEBUG_INFO_DIE_SOURCE:
+	result = alt_dwarf();
+	break;
+      case NO_DEBUG_INFO_DIE_SOURCE:
+      case NUMBER_OF_DIE_SOURCES:
+	ABG_ASSERT_NOT_REACHED;
+      }
+    return result;
+  }
+
   /// Return the path to the alternate debug info as contained in the
   /// .gnu_debugaltlink section of the main elf file.
   ///
@@ -2933,14 +3341,430 @@ public:
   cur_tu_die(Dwarf_Die* cur_tu_die)
   {cur_tu_die_ = cur_tu_die;}
 
-  /// Return the map that associates a decl to the DIE that represents
-  /// it.  This if for DIEs that come from the main debug info file we
-  /// are looking at.
+  dwarf_expr_eval_context&
+  dwarf_expr_eval_ctxt() const
+  {return dwarf_expr_eval_context_;}
+
+  /// Getter of the maps set that associates a representation of a
+  /// decl DIE to a vector of offsets of DIEs having that representation.
   ///
-  /// @return the die -> decl map of the main debug info file.
-  const die_decl_map_type&
-  die_decl_map() const
-  {return die_decl_map_;}
+  /// @return the maps set that associates a representation of a decl
+  /// DIE to a vector of offsets of DIEs having that representation.
+  const die_source_dependant_container_set<istring_dwarf_offsets_map_type>&
+  decl_die_repr_die_offsets_maps() const
+  {return decl_die_repr_die_offsets_maps_;}
+
+  /// Getter of the maps set that associates a representation of a
+  /// decl DIE to a vector of offsets of DIEs having that representation.
+  ///
+  /// @return the maps set that associates a representation of a decl
+  /// DIE to a vector of offsets of DIEs having that representation.
+  die_source_dependant_container_set<istring_dwarf_offsets_map_type>&
+  decl_die_repr_die_offsets_maps()
+  {return decl_die_repr_die_offsets_maps_;}
+
+  /// Getter of the maps set that associate a representation of a type
+  /// DIE to a vector of offsets of DIEs having that representation.
+  ///
+  /// @return the maps set that associate a representation of a type
+  /// DIE to a vector of offsets of DIEs having that representation.
+  const die_source_dependant_container_set<istring_dwarf_offsets_map_type>&
+  type_die_repr_die_offsets_maps() const
+  {return type_die_repr_die_offsets_maps_;}
+
+  /// Getter of the maps set that associate a representation of a type
+  /// DIE to a vector of offsets of DIEs having that representation.
+  ///
+  /// @return the maps set that associate a representation of a type
+  /// DIE to a vector of offsets of DIEs having that representation.
+  die_source_dependant_container_set<istring_dwarf_offsets_map_type>&
+  type_die_repr_die_offsets_maps()
+  {return type_die_repr_die_offsets_maps_;}
+
+
+  /// Compute the offset of the canonical DIE of a given DIE.
+  ///
+  /// @param die the DIE to consider.
+  ///
+  /// @param canonical_die_offset out parameter.  This is set to the
+  /// resulting canonical DIE that was computed.
+  ///
+  /// @param die_as_type if yes, it means @p die has to be considered
+  /// as a type.
+  void
+  compute_canonical_die_offset(Dwarf_Die *die,
+			       Dwarf_Off &canonical_die_offset,
+			       bool die_as_type) const
+  {
+    dwarf_offsets_type &canonical_dies =
+      die_as_type
+      ? const_cast<read_context*>(this)->canonical_type_die_vecs_.
+      get_container(*this, die)
+      : const_cast<read_context*>(this)->canonical_decl_die_vecs_.
+      get_container(*this, die);
+
+    Dwarf_Die canonical_die;
+    compute_canonical_die(die, canonical_dies, canonical_die, die_as_type);
+
+    canonical_die_offset = dwarf_dieoffset(&canonical_die);
+  }
+
+  /// Compute (find) the canonical DIE of a given DIE.
+  ///
+  /// @param die the DIE to consider.
+  ///
+  /// @param canonical_dies the vector in which the canonical dies ar
+  /// stored.  The index of each element is the offset of the DIE we
+  /// want the canonical DIE for.  And the value of the element at
+  /// that index is the canonical DIE offset we are looking for.
+  ///
+  /// @param canonical_die_offset out parameter.  This is set to the
+  /// resulting canonical DIE that was computed.
+  ///
+  /// @param die_as_type if yes, it means @p die has to be considered
+  /// as a type.
+  void
+  compute_canonical_die(Dwarf_Die *die,
+			dwarf_offsets_type& canonical_dies,
+			Dwarf_Die &canonical_die,
+			bool die_as_type) const
+  {
+    die_source source;
+    assert(get_die_source(die, source));
+
+    Dwarf_Off die_offset = dwarf_dieoffset(die);
+
+    compute_canonical_die(die_offset, source,
+			  canonical_dies,
+			  canonical_die, die_as_type);
+  }
+
+  /// Compute (find) the canonical DIE of a given DIE.
+  ///
+  /// @param die_offset the offset of the DIE to consider.
+  ///
+  /// @param source the source of the DIE to consider.
+  ///
+  /// @param canonical_dies the vector in which the canonical dies ar
+  /// stored.  The index of each element is the offset of the DIE we
+  /// want the canonical DIE for.  And the value of the element at
+  /// that index is the canonical DIE offset we are looking for.
+  ///
+  /// @param canonical_die_offset out parameter.  This is set to the
+  /// resulting canonical DIE that was computed.
+  ///
+  /// @param die_as_type if yes, it means @p die has to be considered
+  /// as a type.
+  void
+  compute_canonical_die(Dwarf_Off die_offset,
+			die_source source,
+			dwarf_offsets_type& canonical_dies,
+			Dwarf_Die &canonical_die,
+			bool die_as_type) const
+  {
+    // The map that associates the string representation of 'die'
+    // with a vector of offsets of potentially equivalent DIEs.
+    istring_dwarf_offsets_map_type& map =
+      die_as_type
+      ? (const_cast<read_context*>(this)->
+	 type_die_repr_die_offsets_maps().get_container(source))
+      : (const_cast<read_context*>(this)->
+	 decl_die_repr_die_offsets_maps().get_container(source));
+
+    Dwarf_Die die;
+    assert(dwarf_offdie(dwarf_per_die_source(source), die_offset, &die));
+
+    // The variable repr is the the string representation of 'die'.
+    //
+    // Even if die_as_type is true -- which means that 'die' is said
+    // to be considered as a type -- we always consider a
+    // DW_TAG_subprogram DIE as a decl here, as far as its string
+    // representation is concerned.
+    interned_string name =
+      (die_as_type)
+      ? get_die_pretty_type_representation(&die, /*where=*/0)
+      : get_die_pretty_representation(&die, /*where=*/0);
+
+    Dwarf_Off canonical_die_offset = 0;
+    istring_dwarf_offsets_map_type::iterator i = map.find(name);
+    if (i == map.end())
+      {
+	dwarf_offsets_type offsets;
+	offsets.push_back(die_offset);
+	map[name] = offsets;
+	set_canonical_die_offset(canonical_dies, die_offset, die_offset);
+	get_die_from_offset(source, die_offset, &canonical_die);
+	return;
+      }
+
+    if (odr_is_relevant(&die))
+      {
+	// ODR is relevant for this DIE.  In this case, all types with
+	// the same name are considered equivalent.  So the array
+	// i->second shoud only have on element.  If not, then
+	// the DIEs referenced in the array should all compare equal.
+	// Otherwise, this is an ODR violation.  In any case, return
+	// the first element of the array.
+	// assert(i->second.size() == 1);
+	canonical_die_offset = i->second.front();
+	get_die_from_offset(source, canonical_die_offset, &canonical_die);
+	set_canonical_die_offset(canonical_dies, die_offset, die_offset);
+	return;
+      }
+
+    Dwarf_Off cur_die_offset;
+    Dwarf_Die potential_canonical_die;
+    for (dwarf_offsets_type::const_iterator o = i->second.begin();
+	 o != i->second.end();
+	 ++o)
+      {
+	cur_die_offset = *o;
+	get_die_from_offset(source, cur_die_offset, &potential_canonical_die);
+	if (compare_dies(*this, &die, &potential_canonical_die,
+			 /*update_canonical_dies_on_the_fly=*/false))
+	  {
+	    canonical_die_offset = cur_die_offset;
+	    set_canonical_die_offset(canonical_dies, die_offset,
+				     canonical_die_offset);
+	    get_die_from_offset(source, canonical_die_offset, &canonical_die);
+	    return;
+	  }
+      }
+
+    canonical_die_offset = die_offset;
+    i->second.push_back(die_offset);
+    set_canonical_die_offset(canonical_dies, die_offset, die_offset);
+    get_die_from_offset(source, canonical_die_offset, &canonical_die);
+  }
+
+  /// Getter of the canonical DIE of a given DIE.
+  ///
+  /// @param die the DIE to consider.
+  ///
+  /// @param canonical_die output parameter.  Is set to the resuling
+  /// canonical die, if this function returns true.
+  ///
+  /// @param where the offset of the logical DIE we are supposed to be
+  /// calling this function from.  If set to zero this means this is
+  /// to be ignored.
+  ///
+  /// @param die_as_type if set to yes, it means @p die is to be
+  /// considered as a type DIE.
+  ///
+  /// @return true iff a canonical DIE was found for @p die.
+  bool
+  get_canonical_die(Dwarf_Die *die,
+		    Dwarf_Die &canonical_die,
+		    size_t where,
+		    bool die_as_type) const
+  {
+    die_source source;
+    assert(get_die_source(die, source));
+
+    dwarf_offsets_type &canonical_dies =
+      die_as_type
+      ? const_cast<read_context*>(this)->canonical_type_die_vecs_.
+      get_container(source)
+      : const_cast<read_context*>(this)->canonical_decl_die_vecs_.
+      get_container(source);
+
+    Dwarf_Off die_offset = dwarf_dieoffset(die);
+    if (Dwarf_Off canonical_die_offset =
+	get_canonical_die_offset(canonical_dies, die_offset))
+      {
+	get_die_from_offset(source, canonical_die_offset, &canonical_die);
+	return true;
+      }
+
+    // The map that associates the string representation of 'die'
+    // with a vector of offsets of potentially equivalent DIEs.
+    istring_dwarf_offsets_map_type& map =
+      die_as_type
+      ? (const_cast<read_context*>(this)->
+	 type_die_repr_die_offsets_maps().get_container(*this, die))
+      : (const_cast<read_context*>(this)->
+	 decl_die_repr_die_offsets_maps().get_container(*this, die));
+
+    // The variable repr is the the string representation of 'die'.
+    //
+    // Even if die_as_type is true -- which means that 'die' is said
+    // to be considered as a type -- we always consider a
+    // DW_TAG_subprogram DIE as a decl here, as far as its string
+    // representation is concerned.
+    interned_string name =
+      (die_as_type /*&& dwarf_tag(die) != DW_TAG_subprogram*/)
+      ? get_die_pretty_type_representation(die, where)
+      : get_die_pretty_representation(die, where);
+
+    istring_dwarf_offsets_map_type::iterator i = map.find(name);
+    if (i == map.end())
+      return false;
+
+    if (odr_is_relevant(die))
+      {
+	// ODR is relevant for this DIE.  In this case, all types with
+	// the same name are considered equivalent.  So the array
+	// i->second shoud only have on element.  If not, then
+	// the DIEs referenced in the array should all compare equal.
+	// Otherwise, this is an ODR violation.  In any case, return
+	// the first element of the array.
+	// assert(i->second.size() == 1);
+	Dwarf_Off canonical_die_offset = i->second.front();
+	get_die_from_offset(source, canonical_die_offset, &canonical_die);
+	set_canonical_die_offset(canonical_dies,
+				 die_offset,
+				 canonical_die_offset);
+	return true;
+      }
+
+    Dwarf_Off cur_die_offset;
+    for (dwarf_offsets_type::const_iterator o = i->second.begin();
+	 o != i->second.end();
+	 ++o)
+      {
+	cur_die_offset = *o;
+	get_die_from_offset(source, cur_die_offset, &canonical_die);
+	// compare die and canonical_die.
+	if (compare_dies(*this, die, &canonical_die,
+			 /*update_canonical_dies_on_the_fly=*/true))
+	  {
+	    set_canonical_die_offset(canonical_dies,
+				     die_offset,
+				     cur_die_offset);
+	    return true;
+	  }
+      }
+
+    return false;
+  }
+
+  /// Retrieve the canonical DIE of a given DIE.
+  ///
+  /// The canonical DIE is a DIE that is structurally equivalent to
+  /// this one.
+  ///
+  /// Note that this function caches the canonical DIE that was
+  /// computed.  Subsequent invocations of this function on the same
+  /// DIE return the same cached DIE.
+  ///
+  /// @param die the DIE to get a canonical type for.
+  ///
+  /// @param canonical_die the resulting canonical DIE.
+  ///
+  /// @param where the offset of the logical DIE we are supposed to be
+  /// calling this function from.  If set to zero this means this is
+  /// to be ignored.
+  ///
+  /// @param die_as_type if true, consider DIE is a type.
+  ///
+  /// @return true if an *existing* canonical DIE was found.
+  /// Otherwise, @p die is considered as being a canonical DIE for
+  /// itself. @p canonical_die is thus set to the canonical die in
+  /// either cases.
+  bool
+  get_or_compute_canonical_die(Dwarf_Die* die,
+			       Dwarf_Die& canonical_die,
+			       size_t where,
+			       bool die_as_type) const
+  {
+    die_source source;
+    assert(get_die_source(die, source));
+
+    dwarf_offsets_type &canonical_dies =
+      die_as_type
+      ? const_cast<read_context*>(this)->canonical_type_die_vecs_.
+      get_container(source)
+      : const_cast<read_context*>(this)->canonical_decl_die_vecs_.
+      get_container(source);
+
+    Dwarf_Off initial_die_offset = dwarf_dieoffset(die);
+
+    if (Dwarf_Off canonical_die_offset =
+	get_canonical_die_offset(canonical_dies,
+				 initial_die_offset))
+      {
+	get_die_from_offset(source, canonical_die_offset, &canonical_die);
+	return true;
+      }
+
+    // The map that associates the string representation of 'die'
+    // with a vector of offsets of potentially equivalent DIEs.
+    istring_dwarf_offsets_map_type& map =
+      die_as_type
+      ? (const_cast<read_context*>(this)->
+	 type_die_repr_die_offsets_maps().get_container(*this, die))
+      : (const_cast<read_context*>(this)->
+	 decl_die_repr_die_offsets_maps().get_container(*this, die));
+
+    // The variable repr is the the string representation of 'die'.
+    //
+    // Even if die_as_type is true -- which means that 'die' is said
+    // to be considered as a type -- we always consider a
+    // DW_TAG_subprogram DIE as a decl here, as far as its string
+    // representation is concerned.
+    interned_string name =
+      (die_as_type)
+      ? get_die_pretty_type_representation(die, where)
+      : get_die_pretty_representation(die, where);
+
+    istring_dwarf_offsets_map_type::iterator i = map.find(name);
+    if (i == map.end())
+      {
+	dwarf_offsets_type offsets;
+	offsets.push_back(initial_die_offset);
+	map[name] = offsets;
+	get_die_from_offset(source, initial_die_offset, &canonical_die);
+	set_canonical_die_offset(canonical_dies,
+				 initial_die_offset,
+				 initial_die_offset);
+	return false;
+      }
+
+    if (odr_is_relevant(die))
+      {
+	// ODR is relevant for this DIE.  In this case, all types with
+	// the same name are considered equivalent.  So the array
+	// i->second shoud only have on element.  If not, then
+	// the DIEs referenced in the array should all compare equal.
+	// Otherwise, this is an ODR violation.  In any case, return
+	// the first element of the array.
+	// assert(i->second.size() == 1);
+	Dwarf_Off die_offset = i->second.front();
+	get_die_from_offset(source, die_offset, &canonical_die);
+	set_canonical_die_offset(canonical_dies,
+				 initial_die_offset,
+				 die_offset);
+	return true;
+      }
+
+    Dwarf_Off die_offset;
+    for (dwarf_offsets_type::const_iterator o = i->second.begin();
+	 o != i->second.end();
+	 ++o)
+      {
+	die_offset = *o;
+	get_die_from_offset(source, die_offset, &canonical_die);
+	// compare die and canonical_die.
+	if (compare_dies(*this, die, &canonical_die,
+			 /*update_canonical_dies_on_the_fly=*/true))
+	  {
+	    set_canonical_die_offset(canonical_dies,
+				     initial_die_offset,
+				     die_offset);
+	    return true;
+	  }
+      }
+
+    // We didn't find a canonical DIE for 'die'.  So let's consider
+    // that it is its own canonical DIE.
+    get_die_from_offset(source, initial_die_offset, &canonical_die);
+    i->second.push_back(initial_die_offset);
+    set_canonical_die_offset(canonical_dies,
+			     initial_die_offset,
+			     initial_die_offset);
+
+    return false;
+  }
 
   /// Get the source of the DIE.
   ///
@@ -3017,75 +3841,22 @@ public:
     return true;
   }
 
-  /// Return the map that associates a decl to the DIE that represents
-  /// it.  This if for DIEs that come from the main debug info file we
-  /// are looking at.
+  /// Getter for the DIE designated by an offset.
   ///
-  /// @return the die -> decl map of the main debug info file.
-  die_decl_map_type&
-  die_decl_map()
-  {return die_decl_map_;}
-
-  /// Return the map that associates a decl to the DIE that represents
-  /// it.  This if for DIEs that come from the alternate debug info file.
+  /// @param source the source of the DIE to get.
   ///
-  /// Note that "alternate debug info sections" is a GNU extension as
-  /// of DWARF4 and is described at
-  /// http://www.dwarfstd.org/ShowIssue.php?issue=120604.1
+  /// @param offset the offset of the DIE to get.
   ///
-  /// @return the die -> decl map of the alternate debug info file.
-  const die_decl_map_type&
-  alternate_die_decl_map() const
-  {return alternate_die_decl_map_;}
-
-  /// Return the map that associates a decl to the DIE that represents
-  /// it.  This if for DIEs that come from the alternate debug info file.
-  ///
-  /// Note that "alternate debug info sections" is a GNU extension as
-  /// of DWARF4 and is described at
-  /// http://www.dwarfstd.org/ShowIssue.php?issue=120604.1
-  ///
-  /// @return the die -> decl map of the alternate debug info file.
-  die_decl_map_type&
-  alternate_die_decl_map()
-  {return alternate_die_decl_map_;}
-
-private:
-  /// Add an entry to the die->decl map for DIEs coming from the main
-  /// (or primary) debug info file.
-  ///
-  /// @param die_offset the DIE offset of the DIE we are interested in.
-  ///
-  /// @param decl the decl we are interested in.
+  /// @param die the resulting DIE.  The pointer has to point to an
+  /// allocated memory region.
   void
-  associate_die_to_decl_primary(size_t die_offset,
-				decl_base_sptr decl)
-  {die_decl_map()[die_offset] = decl;}
-
-  /// Add an entry to the die->decl map for DIEs coming from the
-  /// alternate debug info file.
-  ///
-  /// Note that "alternate debug info sections" is a GNU extension as
-  /// of DWARF4 and is described at
-  /// http://www.dwarfstd.org/ShowIssue.php?issue=120604.1
-  ///
-  /// @param die_offset the DIE offset of the DIE we are interested in.
-  ///
-  /// @param decl the decl we are interested in.
-  void
-  associate_die_to_decl_alternate(size_t die_offset,
-				  decl_base_sptr decl)
-  {alternate_die_decl_map()[die_offset] = decl;}
-
-  /// Add an entry to the die->decl map for DIEs coming from the
-  /// type unit section.
-  ///
-  /// @param die_offset the DIE offset of the DIE we are interested in.
-  ///
-  /// @param decl the decl we are interested in.
-  void
-  associate_die_to_decl_from_type_unit(size_t die_offset, decl_base_sptr decl)
-  {type_unit_die_decl_map_[die_offset] = decl;}
+  get_die_from_offset(die_source source, Dwarf_Off offset, Dwarf_Die *die) const
+  {
+    if (source == TYPE_UNIT_DIE_SOURCE)
+      assert(dwarf_offdie_types(dwarf_per_die_source(source), offset, die));
+    else
+      assert(dwarf_offdie(dwarf_per_die_source(source), offset, die));
+  }
 
 public:
 
@@ -3113,95 +3884,36 @@ public:
   associate_die_to_decl(Dwarf_Die* die,
 			decl_base_sptr decl,
 			size_t where_offset,
-			bool do_associate_by_repr = true,
-			bool do_associate_by_repr_per_tu = false)
+			bool do_associate_by_repr = false)
   {
-    if (!die)
-      return;
-
     die_source source;
     assert(get_die_source(die, source));
 
-    size_t die_offset = dwarf_dieoffset(die);
+    die_artefact_map_type& m =
+      decl_die_artefact_maps().get_container(source);
 
-    switch(source)
-      {
-      case PRIMARY_DEBUG_INFO_DIE_SOURCE:
-	associate_die_to_decl_primary(die_offset, decl);
-	break;
-      case ALT_DEBUG_INFO_DIE_SOURCE:
-	associate_die_to_decl_alternate(die_offset, decl);
-	break;
-      case TYPE_UNIT_DIE_SOURCE:
-	associate_die_to_decl_from_type_unit(die_offset, decl);
-	break;
-      case NO_DEBUG_INFO_DIE_SOURCE:
-      case NUMBER_OF_DIE_SOURCES:
-	ABG_ASSERT_NOT_REACHED;
-      }
-
+    size_t die_offset;
     if (do_associate_by_repr)
-      associate_die_to_artifact_by_repr(die, decl, where_offset,
-					do_associate_by_repr_per_tu);
+      {
+	Dwarf_Die equiv_die;
+	get_or_compute_canonical_die(die, equiv_die, where_offset,
+				     /*die_as_type=*/false);
+	die_offset = dwarf_dieoffset(&equiv_die);
+      }
+    else
+      die_offset = dwarf_dieoffset(die);
+
+    m[die_offset] = decl;
   }
 
 public:
-  /// Lookup the decl for a given DIE.  This works on DIEs that come
-  /// from the main debug info sections.
-  ///
-  /// @param die_offset the offset of the DIE to consider.
-  ///
-  /// @return the resulting decl, or null if no decl is associated to
-  /// the DIE represented by @p die_offset.
-  decl_base_sptr
-  lookup_decl_from_die_offset_primary(size_t die_offset)
-  {
-    die_decl_map_type::const_iterator it =
-      die_decl_map().find(die_offset);
-    if (it == die_decl_map().end())
-      return decl_base_sptr();
-    return it->second;
-  }
-
-  /// Lookup the decl for a given DIE.  This works on DIEs that come
-  /// from the alternate debug info sections.
-  ///
-  /// Note that "alternate debug info sections" is a GNU extension as
-  /// of DWARF4 and is described at
-  /// http://www.dwarfstd.org/ShowIssue.php?issue=120604.1
-  ///
-  /// @param die_offset the offset of the DIE to consider.
-  ///
-  /// @return the resulting decl, or null if no decl is associated to
-  /// the DIE represented by @p die_offset.
-  decl_base_sptr
-  lookup_decl_from_die_offset_alternate(size_t die_offset)
-  {
-    die_decl_map_type::const_iterator it =
-      alternate_die_decl_map().find(die_offset);
-    if (it == alternate_die_decl_map().end())
-      return decl_base_sptr();
-    return it->second;
-  }
-
-  /// Lookup the decl for a given DIE.  This works on DIEs that come
-  /// from the type unit section.
-  ///
-  /// @param die_offset the offset of the DIE to consider.
-  ///
-  /// @return the resulting decl, or null if no decl is associated to
-  /// the DIE represented by @p die_offset.
-  decl_base_sptr
-  lookup_decl_from_type_unit_die_offset(size_t die_offset)
-  {
-    die_decl_map_type::const_iterator it =
-      type_unit_die_decl_map_.find(die_offset);
-    if (it == type_unit_die_decl_map_.end())
-      return decl_base_sptr();
-    return it->second;
-  }
 
   /// Lookup the decl for a given DIE.
+  ///
+  /// The returned decl is either the decl of the DIE that as the
+  /// exact offset @p die_offset
+  /// die_offset, or
+  /// give
   ///
   /// @param die_offset the offset of the DIE to consider.
   ///
@@ -3215,25 +3927,11 @@ public:
   /// @return the resulting decl, or null if no decl is associated to
   /// the DIE represented by @p die_offset.
   decl_base_sptr
-  lookup_decl_from_die_offset(size_t die_offset, die_source source)
+  lookup_decl_from_die_offset(Dwarf_Off die_offset, die_source source)
   {
-    decl_base_sptr result;
-
-    switch(source)
-      {
-      case PRIMARY_DEBUG_INFO_DIE_SOURCE:
-	result = lookup_decl_from_die_offset_primary(die_offset);
-	break;
-      case ALT_DEBUG_INFO_DIE_SOURCE:
-	result = lookup_decl_from_die_offset_alternate(die_offset);
-	break;
-      case TYPE_UNIT_DIE_SOURCE:
-	result = lookup_decl_from_type_unit_die_offset(die_offset);
-	break;
-      case NO_DEBUG_INFO_DIE_SOURCE:
-      case NUMBER_OF_DIE_SOURCES:
-	ABG_ASSERT_NOT_REACHED;
-      }
+    decl_base_sptr result =
+      is_decl(lookup_artifact_from_die_offset(die_offset, source,
+					      /*die_as_type=*/false));
 
     return result;
   }
@@ -3328,8 +4026,21 @@ public:
     if (i == map.end())
       {
 	read_context& ctxt  = *const_cast<read_context*>(this);
-	string qualified_name =
-	  die_qualified_type_name(ctxt, die, where_offset);
+	string qualified_name;
+	int tag = dwarf_tag(die);
+	if ((tag == DW_TAG_structure_type
+	     || tag == DW_TAG_class_type
+	     || tag == DW_TAG_union_type)
+	    && die_is_anonymous(die))
+	  {
+	    location l = die_location(*this, die);
+	    qualified_name = l ? l.expand() : "noloc";
+	    qualified_name = "unnamed-at-" + qualified_name;
+	  }
+	else
+	  qualified_name =
+	    die_qualified_type_name(ctxt, die, where_offset);
+
 	interned_string istr = env()->intern(qualified_name);
 	map[die_offset] = istr;
 	return istr;
@@ -3420,7 +4131,8 @@ public:
   /// DIE.
   ///
   /// Note that the DIE must have previously been associated with the
-  /// artifact using the function associate_die_to_artifact_by_repr.
+  /// artifact using the functions associate_die_to_decl or
+  /// associate_die_to_type.
   ///
   /// Also, note that the scope of the lookup is the current ABI
   /// corpus.
@@ -3431,35 +4143,13 @@ public:
   ///
   /// @return the type artifact found.
   type_or_decl_base_sptr
-  lookup_type_artifact_from_die(Dwarf_Die *die, size_t where_offset)
+  lookup_type_artifact_from_die(Dwarf_Die *die) const
   {
-    string representation =
-      get_die_pretty_type_representation(die, where_offset);
-    return lookup_artifact_from_die_representation(representation);
-  }
-
-  /// Lookup the artifact that was built to represent a type that has
-  /// the same pretty representation as the type denoted by a given
-  /// DIE.
-  ///
-  /// Note that the DIE must have previously been associated with the
-  /// artifact using the function associate_die_to_artifact_by_repr,
-  /// for the current translation unit.
-  ///
-  /// Also, note that the scope of the lookup is the current
-  /// translation unit.
-  ///
-  /// @param die the DIE to consider.
-  ///
-  /// @param where_offset where in the DIE stream we logically are.
-  ///
-  /// @return the type artifact found.
-  type_or_decl_base_sptr
-  lookup_type_artifact_from_die_per_tu(Dwarf_Die *die, size_t where_offset)
-  {
-    string representation =
-      get_die_pretty_type_representation(die, where_offset);
-    return lookup_artifact_from_per_tu_die_representation(representation);
+    type_or_decl_base_sptr artifact =
+      lookup_artifact_from_die(die, /*type_as_die=*/true);
+    if (function_decl_sptr fn = is_function_decl(artifact))
+      return fn->get_type();
+    return artifact;
   }
 
   /// Lookup the artifact that was built to represent a type or a
@@ -3467,7 +4157,8 @@ public:
   /// denoted by a given DIE.
   ///
   /// Note that the DIE must have previously been associated with the
-  /// artifact using the function associate_die_to_artifact_by_repr.
+  /// artifact using the functions associate_die_to_decl or
+  /// associate_die_to_type.
   ///
   /// Also, note that the scope of the lookup is the current ABI
   /// corpus.
@@ -3476,173 +4167,85 @@ public:
   ///
   /// @param where_offset where in the DIE stream we logically are.
   ///
+  /// @param die_as_type if true, it means the DIE is to be considered
+  /// as a type.
+  ///
   /// @return the artifact found.
   type_or_decl_base_sptr
-  lookup_artifact_from_die(Dwarf_Die *die, size_t where_offset)
+  lookup_artifact_from_die(Dwarf_Die *die, bool die_as_type = false) const
   {
-    string representation = get_die_pretty_representation(die, where_offset);
-    return lookup_artifact_from_die_representation(representation);
+    Dwarf_Die equiv_die;
+    if (!get_or_compute_canonical_die(die, equiv_die, /*where=*/0, die_as_type))
+      return type_or_decl_base_sptr();
+
+    const die_artefact_map_type& m =
+      die_as_type
+      ? type_die_artefact_maps().get_container(*this, &equiv_die)
+      : decl_die_artefact_maps().get_container(*this, &equiv_die);
+
+    size_t die_offset = dwarf_dieoffset(&equiv_die);
+    die_artefact_map_type::const_iterator i = m.find(die_offset);
+
+    if (i == m.end())
+      return type_or_decl_base_sptr();
+    return i->second;
   }
 
   /// Lookup the artifact that was built to represent a type or a
   /// declaration that has the same pretty representation as the type
-  /// denoted by a given DIE.
+  /// denoted by the offset of a given DIE.
   ///
   /// Note that the DIE must have previously been associated with the
-  /// artifact using the function associate_die_to_artifact_by_repr,
-  /// for the current translation unit.
+  /// artifact using either associate_die_to_decl or
+  /// associate_die_to_type.
   ///
-  /// Also, note that the scope of the lookup is the current
-  /// translation unit.
+  /// Also, note that the scope of the lookup is the current ABI
+  /// corpus.
   ///
   /// @param die the DIE to consider.
   ///
   /// @param where_offset where in the DIE stream we logically are.
   ///
+  /// @param die_as_type if true, it means the DIE is to be considered
+  /// as a type.
+  ///
   /// @return the artifact found.
   type_or_decl_base_sptr
-  lookup_artifact_from_die_per_tu(Dwarf_Die *die, size_t where_offset)
+  lookup_artifact_from_die_offset(Dwarf_Off die_offset,
+				  die_source source,
+				  bool die_as_type = false) const
   {
-    string representation = get_die_pretty_representation(die, where_offset);
-    return lookup_artifact_from_per_tu_die_representation(representation);
-  }
+    const die_artefact_map_type& m =
+      die_as_type
+      ? type_die_artefact_maps().get_container(source)
+      : decl_die_artefact_maps().get_container(source);
 
-  /// Lookup the artifact that was built to represent a type or a
-  /// declaration with a given pretty representation.
-  ///
-  /// Note that the DIE must have previously been associated with the
-  /// artifact using the function associate_die_to_artifact_by_repr.
-  ///
-  /// The scope of the lookup is the current ABI corpus.
-  ///
-  /// @param repr the pretty representation to consider.
-  ///
-  /// @return the artifact found.
-  type_or_decl_base_sptr
-  lookup_artifact_from_die_representation(const string& repr)
-  {
-    assert(!repr.empty());
-    istring_type_or_decl_base_sptr_map_type::iterator i =
-      name_artefacts_map_.find(env()->intern(repr));
-    if (i == name_artefacts_map_.end())
+    die_artefact_map_type::const_iterator i = m.find(die_offset);
+    if (i == m.end())
       return type_or_decl_base_sptr();
     return i->second;
   }
 
-  /// Lookup the artifact that was built to represent a type or a
-  /// declaration with a given pretty representation.
-  ///
-  /// Note that the DIE must have previously been associated with the
-  /// artifact using the function associate_die_to_artifact_by_repr,
-  /// for the current translation unit.
-  ///
-  /// The scope of the lookup is the current translation unit.
-  ///
-  /// @param repr the pretty representation to consider.
-  ///
-  /// @return the artifact found.
-  type_or_decl_base_sptr
-  lookup_artifact_from_per_tu_die_representation(const string& repr)
-  {
-    assert(!repr.empty());
-    istring_type_or_decl_base_sptr_map_type::iterator i =
-      per_tu_name_artefacts_map_.find(env()->intern(repr));
-    if (i == per_tu_name_artefacts_map_.end())
-      return type_or_decl_base_sptr();
-    return i->second;
-  }
-
-  /// Associate a DIE (or any DIE with the same pretty representation)
-  /// with a given ABI artifact.
-  ///
-  /// Note that the artifact that is associated with the DIE can be
-  /// later looked-up using the function lookup_artifact_from_die() or
-  /// lookup_artifact_from_die_representation().
+  /// Get the language used to generate a given DIE.
   ///
   /// @param die the DIE to consider.
   ///
-  /// @param artifact the ABI artifact to associate it to.
+  /// @param lang the resulting language.
   ///
-  /// @param where_offset where in the DIE stream we logically are.
-  ///
-  /// @param repr the actually pretty representation of @p die.
-  void
-  associate_die_to_artifact_by_repr(Dwarf_Die *die,
-				    const type_or_decl_base_sptr& artifact,
-				    size_t where_offset,
-				    string& repr,
-				    bool do_associate_per_tu)
+  /// @return true iff the language of the DIE was found.
+  bool
+  get_die_language(Dwarf_Die *die, translation_unit::language &lang) const
   {
-    repr = associate_die_to_artifact_by_repr_internal(die, artifact,
-						      where_offset,
-						      do_associate_per_tu);
+    Dwarf_Die cu_die;
+    assert(dwarf_diecu(die, &cu_die, 0, 0));
+
+    uint64_t l = 0;
+    if (!die_unsigned_constant_attribute(&cu_die, DW_AT_language, l))
+      return false;
+
+    lang = dwarf_language_to_tu_language(l);
+    return true;
   }
-
-  /// Associate a DIE (or any DIE with the same pretty representation)
-  /// with a given ABI artifact.
-  ///
-  /// Note that the artifact that is associated with the DIE can be
-  /// later looked-up using the function lookup_artifact_from_die() or
-  /// lookup_artifact_from_die_representation().
-  ///
-  /// @param die the DIE to consider.
-  ///
-  /// @param artifact the ABI artifact to associate it to.
-  ///
-  /// @param where_offset where in the DIE stream we logically are.
-  void
-  associate_die_to_artifact_by_repr(Dwarf_Die *die,
-				    const type_or_decl_base_sptr& artifact,
-				    size_t where_offset,
-				    bool do_associate_per_tu = false)
-  {
-    associate_die_to_artifact_by_repr_internal(die, artifact, where_offset,
-					       do_associate_per_tu);
-  }
-
-  /// Associate a DIE (or any DIE with the same pretty representation)
-  /// with a given ABI artifact.
-  ///
-  /// Note that the artifact that is associated with the DIE can be
-  /// later looked-up using the function lookup_artifact_from_die() or
-  /// lookup_artifact_from_die_representation().
-  ///
-  /// Please also note that this functin is intented to be for
-  /// internal purposes only.  It's an implementation detail for the
-  /// associate_die_to_artifact_by_repr() functions.
-  ///
-  /// @param die the DIE to consider.
-  ///
-  /// @param a the ABI artifact to associate it to.
-  ///
-  /// @param where_offset where in the DIE stream we logically are.
-  ///
-  /// @return the pretty representation of @p die.
-  string
-  associate_die_to_artifact_by_repr_internal(Dwarf_Die *die,
-					     const type_or_decl_base_sptr& a,
-					     size_t where_offset,
-					     bool do_associate_per_tu)
-  {
-    string representation =
-      is_type(a)
-      ? get_die_pretty_type_representation(die, where_offset)
-      : get_die_pretty_representation(die, where_offset);
-
-    assert(!representation.empty());
-    interned_string interned_repr = env()->intern(representation);
-
-    if (do_associate_per_tu)
-      {
-	if (!lookup_artifact_from_per_tu_die_representation(representation))
-	  per_tu_name_artefacts_map_[interned_repr] = a;
-      }
-    else if (!lookup_artifact_from_die_representation(representation))
-      name_artefacts_map_[interned_repr] = a;
-
-    return representation;
-  }
-
 
   /// Check if we can assume the One Definition Rule[1] to be relevant
   /// for the current translation unit.
@@ -3667,47 +4270,191 @@ public:
   odr_is_relevant(translation_unit::language l) const
   {return is_cplus_plus_language(l);}
 
-  /// Return the map that associates DIEs to the type they represent.
+  /// Check if we can assume the One Definition Rule to be relevant
+  /// for a given DIE.
   ///
-  /// @param source where the DIE comes from.
+  /// @param die the DIE to consider.
   ///
-  /// @return return the map that associated DIEs to the type they represent.
-  die_type_map_type&
-  die_type_map(die_source source)
+  /// @return true if the ODR is relevant for @p die.
+  bool
+  odr_is_relevant(Dwarf_Off die_offset, die_source source) const
   {
-    switch(source)
-      {
-      case PRIMARY_DEBUG_INFO_DIE_SOURCE:
-	break;
-      case ALT_DEBUG_INFO_DIE_SOURCE:
-	return alternate_die_type_map_;
-      case TYPE_UNIT_DIE_SOURCE:
-	return type_unit_die_type_map_;
-      case NO_DEBUG_INFO_DIE_SOURCE:
-      case NUMBER_OF_DIE_SOURCES:
-	// We should not reach this point!
-	ABG_ASSERT_NOT_REACHED;
-      }
-    return die_type_map_;
+    Dwarf_Die die;
+    assert(dwarf_offdie(dwarf_per_die_source(source), die_offset, &die));
+    return odr_is_relevant(&die);
   }
 
-  /// Clear the type maps that associate a die to a type.
+  /// Check if we can assume the One Definition Rule to be relevant
+  /// for a given DIE.
+  ///
+  /// @param die the DIE to consider.
+  ///
+  /// @return true if the ODR is relevant for @p die.
+  bool
+  odr_is_relevant(Dwarf_Die *die) const
+  {
+    translation_unit::language lang;
+    if (!get_die_language(die, lang))
+      return odr_is_relevant();
+
+    return odr_is_relevant(lang);
+  }
+
+  /// Getter for the maps set that associates a decl DIE offset to an
+  /// artifact.
+  ///
+  /// @return the maps set that associates a decl DIE offset to an
+  /// artifact.
+  die_source_dependant_container_set<die_artefact_map_type>&
+  decl_die_artefact_maps()
+  {return decl_die_artefact_maps_;}
+
+  /// Getter for the maps set that associates a decl DIE offset to an
+  /// artifact.
+  ///
+  /// @return the maps set that associates a decl DIE offset to an
+  /// artifact.
+  const die_source_dependant_container_set<die_artefact_map_type>&
+  decl_die_artefact_maps() const
+  {return decl_die_artefact_maps_;}
+
+  /// Getter for the maps set that associates a type DIE offset to an
+  /// artifact.
+  ///
+  /// @return the maps set that associates a type DIE offset to an
+  /// artifact.
+  die_source_dependant_container_set<die_artefact_map_type>&
+  type_die_artefact_maps()
+  {return type_die_artefact_maps_;}
+
+  /// Getter for the maps set that associates a type DIE offset to an
+  /// artifact.
+  ///
+  /// @return the maps set that associates a type DIE offset to an
+  /// artifact.
+  const die_source_dependant_container_set<die_artefact_map_type>&
+  type_die_artefact_maps() const
+  {return type_die_artefact_maps_;}
+
+  /// Set the canonical DIE offset of a given DIE.
+  ///
+  /// @param canonical_dies the vector that holds canonical DIEs.
+  ///
+  /// @param die_offset the offset of the DIE to set the canonical DIE
+  /// for.
+  ///
+  /// @param canonical_die_offset the canonical DIE offset to
+  /// associate to @p die_offset.
   void
-  clear_die_type_maps()
+  set_canonical_die_offset(dwarf_offsets_type &canonical_dies,
+			   Dwarf_Off die_offset,
+			   Dwarf_Off canonical_die_offset) const
   {
-    die_type_map_.clear();
-    alternate_die_type_map_.clear();
-    type_unit_die_type_map_.clear();
+    if (canonical_dies.size() <= die_offset)
+      canonical_dies.resize(2 * die_offset);
+
+    canonical_dies[die_offset] = canonical_die_offset;
   }
 
-  /// Return the map that associates DIEs to the type they represent.
+  /// Set the canonical DIE offset of a given DIE.
   ///
-  /// @param source where the DIE comes from.
   ///
-  /// @return the map that associated DIEs to the type they represent.
-  const die_type_map_type&
-  die_type_map(die_source source) const
-  {return const_cast<read_context*>(this)->die_type_map(source);}
+  /// @param die_offset the offset of the DIE to set the canonical DIE
+  /// for.
+  ///
+  /// @param source the source of the DIE denoted by @p die_offset.
+  ///
+  /// @param canonical_die_offset the canonical DIE offset to
+  /// associate to @p die_offset.
+  ///
+  /// @param die_as_type if true, it means that @p die_offset has to
+  /// be considered as a type.
+  void
+  set_canonical_die_offset(Dwarf_Off die_offset,
+			   die_source source,
+			   Dwarf_Off canonical_die_offset,
+			   bool die_as_type) const
+  {
+    dwarf_offsets_type &canonical_dies =
+      die_as_type
+      ? const_cast<read_context*>(this)->canonical_type_die_vecs_.
+      get_container(source)
+      : const_cast<read_context*>(this)->canonical_decl_die_vecs_.
+      get_container(source);
+
+    set_canonical_die_offset(canonical_dies,
+			     die_offset,
+			     canonical_die_offset);
+  }
+
+  /// Set the canonical DIE offset of a given DIE.
+  ///
+  ///
+  /// @param die the DIE to set the canonical DIE for.
+  ///
+  /// @param canonical_die_offset the canonical DIE offset to
+  /// associate to @p die_offset.
+  ///
+  /// @param die_as_type if true, it means that @p die has to be
+  /// considered as a type.
+  void
+  set_canonical_die_offset(Dwarf_Die *die,
+			   Dwarf_Off canonical_die_offset,
+			   bool die_as_type) const
+  {
+    die_source source;
+    assert(get_die_source(die, source));
+
+    Dwarf_Off die_offset = dwarf_dieoffset(die);
+
+    set_canonical_die_offset(die_offset, source,
+			     canonical_die_offset,
+			     die_as_type);
+  }
+
+  /// Get the canonical DIE offset of a given DIE.
+  ///
+  /// @param canonical_dies the vector that contains canonical DIES.
+  ///
+  /// @param die_offset the offset of the DIE to consider.
+  ///
+  /// @return the canonical of the DIE denoted by @p die_offset, or
+  /// zero if no canonical DIE was found.
+  Dwarf_Off
+  get_canonical_die_offset(dwarf_offsets_type &canonical_dies,
+			   Dwarf_Off die_offset) const
+  {
+    if (canonical_dies.size() <= die_offset)
+      return 0;
+
+    return canonical_dies[die_offset];
+  }
+
+  /// Get the canonical DIE offset of a given DIE.
+  ///
+  /// @param die_offset the offset of the DIE to consider.
+  ///
+  /// @param source the source of the DIE denoted by @p die_offset.
+  ///
+  /// @param die_as_type if true, it means that @p is to be considered
+  /// as a type DIE.
+  ///
+  /// @return the canonical of the DIE denoted by @p die_offset, or
+  /// zero if no canonical DIE was found.
+  Dwarf_Off
+  get_canonical_die_offset(Dwarf_Off die_offset,
+			   die_source source,
+			   bool die_as_type) const
+  {
+    dwarf_offsets_type &canonical_dies =
+      die_as_type
+      ? const_cast<read_context*>(this)->canonical_type_die_vecs_.
+      get_container(source)
+      : const_cast<read_context*>(this)->canonical_decl_die_vecs_.
+      get_container(source);
+
+    return get_canonical_die_offset(canonical_dies, die_offset);
+  }
 
   /// Associate a DIE (representing a type) to the type that it
   /// represents.
@@ -3717,34 +4464,22 @@ public:
   /// @param type the type to associate the DIE to.
   ///
   /// @param where_offset where in the DIE stream we logically are.
-  ///
-  /// @param do_associate_by_repr if true then associate the pretty
-  /// representation of the type denoted by @p die with @p type too,
-  /// in the entire current ABI corpus.
-  ///
-  /// @param do_associate_by_repr_tu if true then associate the pretty
-  /// representation of the type denoted by @p die with @p type too,
-  /// in the current translation unit.
   void
   associate_die_to_type(Dwarf_Die	*die,
 			type_base_sptr	type,
-			size_t		where_offset,
-			bool		do_associate_by_repr = true,
-			bool		do_associate_per_tu = false)
+			size_t		where)
   {
     if (!type)
       return;
 
-    die_source source;
-    assert(get_die_source(die, source));
+    Dwarf_Die equiv_die;
+    get_or_compute_canonical_die(die, equiv_die, where, /*die_as_type=*/true);
 
-    size_t die_offset = dwarf_dieoffset(die);
-    die_type_map_type& m = die_type_map(source);
+    die_artefact_map_type& m =
+      type_die_artefact_maps().get_container(*this, &equiv_die);
+
+    size_t die_offset = dwarf_dieoffset(&equiv_die);
     m[die_offset] = type;
-
-    if (do_associate_by_repr)
-      associate_die_to_artifact_by_repr(die, type, where_offset,
-					do_associate_per_tu);
   }
 
   /// Lookup the type associated to a given DIE.
@@ -3760,14 +4495,11 @@ public:
   type_base_sptr
   lookup_type_from_die(Dwarf_Die* die) const
   {
-    if (!die)
-      return type_base_sptr();
-
-    die_source source;
-    assert(get_die_source(die, source));
-
-    size_t die_offset = dwarf_dieoffset(die);
-    return lookup_type_from_die_offset(die_offset, source);
+    type_or_decl_base_sptr artifact =
+      lookup_artifact_from_die(die, /*die_as_type=*/true);
+    if (function_decl_sptr fn = is_function_decl(artifact))
+      return fn->get_type();
+    return is_type(artifact);
   }
 
   /// Lookup the type associated to a DIE at a given offset, from a
@@ -3787,13 +4519,15 @@ public:
   lookup_type_from_die_offset(size_t die_offset, die_source source) const
   {
     type_base_sptr result;
-    {
-      const die_type_map_type& m = die_type_map(source);
-      die_type_map_type::const_iterator i = m.find(die_offset);
-
-      if (i != m.end())
-	result = i->second;
-    }
+    const die_artefact_map_type& m =
+      type_die_artefact_maps().get_container(source);
+    die_artefact_map_type::const_iterator i = m.find(die_offset);
+    if (i != m.end())
+      {
+	if (function_decl_sptr fn = is_function_decl(i->second))
+	  return fn->get_type();
+	result = is_type(i->second);
+      }
 
     if (!result)
       {
@@ -4031,6 +4765,7 @@ public:
 	  {
 	    class_decl_sptr klass = is_class_type(type_decl);
 	    assert(klass);
+	    klass = is_class_type(look_through_decl_only_class(klass));
 	    if (klass->get_is_declaration_only())
 	      klass = is_class_type(klass->get_definition_of_declaration());
 	    assert(!klass->get_is_declaration_only());
@@ -4174,14 +4909,22 @@ public:
   void
   schedule_type_for_late_canonicalization(Dwarf_Die *die)
   {
+    Dwarf_Off o;
     die_source source;
-    assert(get_die_source(die, source));
-    Dwarf_Off o = dwarf_dieoffset(die);
 
-    // First, some sanity check: ensure that the offset 'o' is for a
-    // type DIE that we know about.
-    type_base_sptr t = lookup_type_from_die(die);
-    assert(t);
+    Dwarf_Die equiv_die;
+    assert(get_canonical_die(die, equiv_die,
+			     /*where=*/0,
+			     /*die_as_type=*/true));
+
+    assert(get_die_source(&equiv_die, source));
+    o = dwarf_dieoffset(&equiv_die);
+
+    const die_artefact_map_type& m =
+      type_die_artefact_maps().get_container(*this, die);
+
+    die_artefact_map_type::const_iterator i = m.find(o);
+    assert(i != m.end());
 
     // Then really do the scheduling.
     types_to_canonicalize(source).push_back(o);
@@ -7087,6 +7830,20 @@ bool
 get_ignore_symbol_table(read_context& ctxt)
 {return ctxt.options_.ignore_symbol_table;}
 
+/// Test if a given DIE is anonymous
+///
+/// @param die the DIE to consider.
+///
+/// @return true iff @p die is anonymous.
+static bool
+die_is_anonymous(Dwarf_Die* die)
+{
+  Dwarf_Attribute attr;
+  if (!dwarf_attr_integrate(die, DW_AT_name, &attr))
+    return true;
+  return false;
+}
+
 /// Get the value of an attribute that is supposed to be a string, or
 /// an empty string if the attribute could not be found.
 ///
@@ -7492,6 +8249,48 @@ is_type_tag(unsigned tag)
   return result;
 }
 
+/// Test if a given DIE is a type to be canonicalized.  note that a
+/// function DIE (DW_TAG_subprogram) is considered to be a
+/// canonicalize-able type too because we can consider that DIE as
+/// being the type of the function, as well as the function decl
+/// itself.
+///
+/// @param tag the tag of the DIE to consider.
+///
+/// @return true iff the DIE of tag @p tag is a canonicalize-able DIE.
+static bool
+is_canonicalizeable_type_tag(unsigned tag)
+{
+  bool result = false;
+
+  switch (tag)
+    {
+    case DW_TAG_array_type:
+    case DW_TAG_class_type:
+    case DW_TAG_enumeration_type:
+    case DW_TAG_pointer_type:
+    case DW_TAG_reference_type:
+    case DW_TAG_structure_type:
+    case DW_TAG_subroutine_type:
+    case DW_TAG_subprogram:
+    case DW_TAG_typedef:
+    case DW_TAG_union_type:
+    case DW_TAG_base_type:
+    case DW_TAG_const_type:
+    case DW_TAG_volatile_type:
+    case DW_TAG_restrict_type:
+    case DW_TAG_rvalue_reference_type:
+      result = true;
+      break;
+
+    default:
+      result = false;
+      break;
+    }
+
+  return result;
+}
+
 /// Test if a DIE tag represents a declaration.
 ///
 /// @param tag the DWARF tag to consider.
@@ -7757,7 +8556,7 @@ die_object_pointer_is_for_const_method(Dwarf_Die* die)
 /// class_scope_die is set to the DIE of the class that contains @p
 /// die.
 static bool
-die_is_at_class_scope(read_context& ctxt,
+die_is_at_class_scope(const read_context& ctxt,
 		      Dwarf_Die* die,
 		      size_t where_offset,
 		      Dwarf_Die& class_scope_die)
@@ -7840,7 +8639,7 @@ die_peel_qual_ptr(Dwarf_Die *die, Dwarf_Die& peeled_die)
 ///
 /// @return true iff @p die is a DIE for a method type.
 static bool
-die_function_type_is_method_type(read_context& ctxt,
+die_function_type_is_method_type(const read_context& ctxt,
 				 Dwarf_Die *die,
 				 size_t where_offset,
 				 Dwarf_Die& object_pointer_die,
@@ -7981,6 +8780,96 @@ die_is_declared_inline(Dwarf_Die* die)
   return inline_value == DW_INL_declared_inlined;
 }
 
+/// This function is a fast routine (optmization) to compare the values of
+/// two string attributes of two DIEs.
+///
+/// @param l the first DIE to consider.
+///
+/// @param r the second DIE to consider.
+///
+/// @param attr_name the name of the attribute to compare, on the two
+/// DIEs above.
+///
+/// @param result out parameter.  This is set to the result of the
+/// comparison.  If the value of attribute @p attr_name on DIE @p l
+/// equals the value of attribute @p attr_name on DIE @p r, then the
+/// the argument of this parameter is set to true.  Otherwise, it's
+/// set to false.  Note that the argument of this parameter is set iff
+/// the function returned true.
+///
+/// @return true iff the comparison could be performed.  There are
+/// cases in which the comparison cannot be performed.  For instance,
+/// if one of the DIEs does not have the attribute @p attr_name.  In
+/// any case, if this function returns true, then the parameter @p
+/// result is set to the result of the comparison.
+bool
+compare_dies_string_attribute_value(Dwarf_Die *l, Dwarf_Die *r,
+				    unsigned attr_name,
+				    bool &result)
+{
+  Dwarf_Attribute l_attr, r_attr;
+  if (!dwarf_attr_integrate(l, attr_name, &l_attr)
+      || !dwarf_attr_integrate(r, attr_name, &r_attr))
+    return false;
+
+  assert(l_attr.form == DW_FORM_strp
+	 || l_attr.form == DW_FORM_string
+	 || l_attr.form == DW_FORM_GNU_strp_alt);
+
+  assert(r_attr.form == DW_FORM_strp
+	 || r_attr.form == DW_FORM_string
+	 || r_attr.form == DW_FORM_GNU_strp_alt);
+
+  if ((l_attr.form == DW_FORM_strp
+       && r_attr.form == DW_FORM_strp)
+      || (l_attr.form == DW_FORM_GNU_strp_alt
+	  && r_attr.form == DW_FORM_GNU_strp_alt))
+    {
+      // So these string attributes are actually pointers into a
+      // string table.  The string table is most likely de-duplicated
+      // so comparing the *values* of the pointers should be enough.
+      //
+      // This is the fast path.
+      if (l_attr.valp == r_attr.valp)
+	  result = true;
+      else if (l_attr.valp && r_attr.valp)
+	result = *l_attr.valp == *r_attr.valp;
+      else
+	result = false;
+      return true;
+    }
+
+  // If we reached this point it means we couldn't use the fast path
+  // because the string atttributes are strings that are "inline" in
+  // the debug info section.  Let's just compare them the slow and
+  // obvious way.
+  string l_str = die_string_attribute(l, attr_name),
+    r_str = die_string_attribute(r, attr_name);
+  result = l_str == r_str;
+
+  return true;
+}
+
+/// Compare the file path of two compilation units (aka CU) dies.
+///
+/// @param l the first CU DIE to consider.
+///
+/// @param r the second CU DIE to consider.
+///
+/// @return true iff the file paths of the two CU are equal.
+static bool
+compare_dies_cu_decl_file(Dwarf_Die* l, Dwarf_Die *r, bool &result)
+{
+  Dwarf_Die l_cu, r_cu;
+  if (!dwarf_diecu(l, &l_cu, 0, 0)
+      ||!dwarf_diecu(r, &r_cu, 0, 0))
+    return false;
+
+  return compare_dies_string_attribute_value(&l_cu, &r_cu,
+					     DW_AT_name,
+					     result);
+}
+
 // -----------------------------------
 // <location expression evaluation>
 // -----------------------------------
@@ -8023,275 +8912,6 @@ die_location_expr(Dwarf_Die* die,
 
   return result;
 }
-
-/// An abstraction of a value representing the result of the
-/// evaluation of a dwarf expression.  This is abstraction represents
-/// a partial view on the possible values because we are only
-/// interested in extracting the latest and longuest constant
-/// sub-expression of a given dwarf expression.
-class expr_result
-{
-  bool is_const_;
-  int64_t const_value_;
-
-public:
-  expr_result()
-    : is_const_(true),
-      const_value_(0)
-  {}
-
-  expr_result(bool is_const)
-    : is_const_(is_const),
-      const_value_(0)
-  {}
-
-  explicit expr_result(int64_t v)
-    :is_const_(true),
-     const_value_(v)
-  {}
-
-  /// @return true if the value is a constant.  Otherwise, return
-  /// false, meaning the value represents a quantity for which we need
-  /// inferior (a running program) state to determine the value.
-  bool
-  is_const() const
-  {return is_const_;}
-
-
-  /// @param f a flag saying if the value is set to a constant or not.
-  void
-  is_const(bool f)
-  {is_const_ = f;}
-
-  /// Get the current constant value iff this represents a
-  /// constant.
-  ///
-  /// @param value the out parameter.  Is set to the constant value of
-  /// the @ref expr_result.  This is set iff the function return true.
-  ///
-  ///@return true if this has a constant value, false otherwise.
-  bool
-  const_value(int64_t& value)
-  {
-    if (is_const())
-      {
-	value = const_value_;
-	return true;
-      }
-    return false;
-  }
-
-  /// Getter of the constant value of the current @ref expr_result.
-  ///
-  /// Note that the current @ref expr_result must be constant,
-  /// otherwise the current process is aborted.
-  ///
-  /// @return the constant value of the current @ref expr_result.
-  int64_t
-  const_value() const
-  {
-    assert(is_const());
-    return const_value_;
-  }
-
-  operator int64_t() const
-  {return const_value();}
-
-  expr_result&
-  operator=(const int64_t v)
-  {
-    const_value_ = v;
-    return *this;
-  }
-
-  bool
-  operator==(const expr_result& o) const
-  {return const_value_ == o.const_value_ && is_const_ == o.is_const_;}
-
-  bool
-  operator>=(const expr_result& o) const
-  {return const_value_ >= o.const_value_;}
-
-  bool
-  operator<=(const expr_result& o) const
-  {return const_value_ <= o.const_value_;}
-
-  bool
-  operator>(const expr_result& o) const
-  {return const_value_ > o.const_value_;}
-
-  bool
-  operator<(const expr_result& o) const
-  {return const_value_ < o.const_value_;}
-
-  expr_result
-  operator+(const expr_result& v) const
-  {
-    expr_result r(*this);
-    r.const_value_ += v.const_value_;
-    r.is_const_ = r.is_const_ && v.is_const_;
-    return r;
-  }
-
-  expr_result&
-  operator+=(int64_t v)
-  {
-    const_value_ += v;
-    return *this;
-  }
-
-  expr_result
-  operator-(const expr_result& v) const
-  {
-    expr_result r(*this);
-    r.const_value_ -= v.const_value_;
-    r.is_const_ = r.is_const_ && v.is_const_;
-    return r;
-  }
-
-  expr_result
-  operator%(const expr_result& v) const
-  {
-    expr_result r(*this);
-    r.const_value_ %= v.const_value_;
-    r.is_const_ = r.is_const_ && v.is_const();
-    return r;
-  }
-
-  expr_result
-  operator*(const expr_result& v) const
-  {
-    expr_result r(*this);
-    r.const_value_ *= v.const_value_;
-    r.is_const_ = r.is_const_ && v.is_const();
-    return r;
-  }
-
-  expr_result
-  operator|(const expr_result& v) const
-  {
-    expr_result r(*this);
-    r.const_value_ |= v.const_value_;
-    r.is_const_ = r.is_const_ && v.is_const_;
-    return r;
-  }
-
-  expr_result
-  operator^(const expr_result& v) const
-  {
-    expr_result r(*this);
-    r.const_value_ ^= v.const_value_;
-    r.is_const_ = r.is_const_ && v.is_const_;
-    return r;
-  }
-
-  expr_result
-  operator>>(const expr_result& v) const
-  {
-    expr_result r(*this);
-    r.const_value_ = r.const_value_ >> v.const_value_;
-    r.is_const_ = r.is_const_ && v.is_const_;
-    return r;
-  }
-
-  expr_result
-  operator<<(const expr_result& v) const
-  {
-    expr_result r(*this);
-    r.const_value_ = r.const_value_ << v.const_value_;
-    r.is_const_ = r.is_const_ && v.is_const_;
-    return r;
-  }
-
-  expr_result
-  operator~() const
-  {
-    expr_result r(*this);
-    r.const_value_ = ~r.const_value_;
-    return r;
-  }
-
-  expr_result
-  neg() const
-  {
-    expr_result r(*this);
-    r.const_value_ = -r.const_value_;
-    return r;
-  }
-
-  expr_result
-  abs() const
-  {
-    expr_result r = *this;
-    r.const_value_ = std::abs(static_cast<long double>(r.const_value()));
-    return r;
-  }
-
-  expr_result
-  operator&(const expr_result& o)
-  {
-    expr_result r(*this);
-    r.const_value_ = *this & o;
-    r.is_const_ = r.is_const_ && o.is_const_;
-    return r;
-  }
-
-  expr_result
-  operator/(const expr_result& o)
-  {
-    expr_result r(*this);
-    r.is_const_ = r.is_const_ && o.is_const_;
-    return r.const_value() / o.const_value();
-  }
-};// class end expr_result;
-
-
-/// Abstraction of the evaluation context of a dwarf expression.
-struct dwarf_expr_eval_context
-{
-  expr_result accum;
-  deque<expr_result> stack;
-  // Is set to true if the result of the expression that got evaluated
-  // is a TLS address.
-  bool set_tls_addr;
-
-  dwarf_expr_eval_context()
-    : accum(/*is_const=*/false),
-      set_tls_addr(false)
-  {
-    stack.push_front(expr_result(true));
-  }
-
-  /// Set a flag to to tell that the result of the expression that got
-  /// evaluated is a TLS address.
-  ///
-  /// @param f true iff the result of the expression that got
-  /// evaluated is a TLS address, false otherwise.
-  void
-  set_tls_address(bool f)
-  {set_tls_addr = f;}
-
-  /// Getter for the flag that tells if the result of the expression
-  /// that got evaluated is a TLS address.
-  ///
-  /// @return true iff the result of the expression that got evaluated
-  /// is a TLS address.
-  bool
-  set_tls_address() const
-  {return set_tls_addr;}
-
-  expr_result
-  pop()
-  {
-    expr_result r = stack.front();
-    stack.pop_front();
-    return r;
-  }
-
-  void
-  push(const expr_result& v)
-  {stack.push_front(v);}
-};//end class dwarf_expr_eval_context
 
 /// If the current operation in the dwarf expression represents a push
 /// of a constant value onto the dwarf expr virtual machine (aka
@@ -8932,6 +9552,35 @@ op_is_control_flow(Dwarf_Op* expr,
   return true;
 }
 
+/// This function quickly evaluates a DWARF expression that is a
+/// constant.
+///
+/// This is a "fast path" function that quickly evaluates a DWARF
+/// expression that is only made of a DW_OP_plus_uconst operator.
+///
+/// This is a sub-routine of die_member_offset.
+///
+/// @param expr the DWARF expression to evaluate.
+///
+/// @param expr_len the length of the expression @p expr.
+///
+/// @param value out parameter.  This is set to the result of the
+/// evaluation of @p expr, iff this function returns true.
+///
+/// @return true iff the evaluation of @p expr went OK.
+static bool
+eval_quickly(Dwarf_Op*	expr,
+	     uint64_t	expr_len,
+	     int64_t&	value)
+{
+  if (expr_len == 1 && (expr[0].atom == DW_OP_plus_uconst))
+    {
+      value = expr[0].number;
+      return true;
+    }
+  return false;
+}
+
 /// Evaluate the value of the last sub-expression that is a constant,
 /// inside a given DWARF expression.
 ///
@@ -8943,15 +9592,25 @@ op_is_control_flow(Dwarf_Op* expr,
 /// sub-expression of the DWARF expression.  This is set iff the
 /// function returns true.
 ///
+/// @param is_tls_address out parameter.  This is set to true iff
+/// the resulting value of the evaluation is a TLS (thread local
+/// storage) address.
+///
+/// @param eval_ctxt the evaluation context to (re)use.  Note that
+/// this function initializes this context before using it.
+///
 /// @return true if the function could find a constant sub-expression
 /// to evaluate, false otherwise.
 static bool
 eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
 				  uint64_t	expr_len,
 				  int64_t&	value,
-				  bool&	is_tls_address)
+				  bool&	is_tls_address,
+				  dwarf_expr_eval_context &eval_ctxt)
 {
-  dwarf_expr_eval_context eval_ctxt;
+  // Reset the evaluation context before evaluating the constant sub
+  // expression contained in the DWARF expression 'expr'.
+  eval_ctxt.reset();
 
   uint64_t index = 0, next_index = 0;
   do
@@ -8981,6 +9640,30 @@ eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
       return true;
     }
   return false;
+}
+
+/// Evaluate the value of the last sub-expression that is a constant,
+/// inside a given DWARF expression.
+///
+/// @param expr the DWARF expression to consider.
+///
+/// @param expr_len the length of the expression to consider.
+///
+/// @param value the resulting value of the last constant
+/// sub-expression of the DWARF expression.  This is set iff the
+/// function returns true.
+///
+/// @return true if the function could find a constant sub-expression
+/// to evaluate, false otherwise.
+static bool
+eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
+				  uint64_t	expr_len,
+				  int64_t&	value,
+				  bool&	is_tls_address)
+{
+  dwarf_expr_eval_context eval_ctxt;
+  return eval_last_constant_dwarf_sub_expr(expr, expr_len, value,
+					   is_tls_address, eval_ctxt);
 }
 
 // -----------------------------------
@@ -9028,12 +9711,14 @@ eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
 ///     the offset of the function in the vtable.  In this case this
 ///     function returns that constant.
 ///
+///@param ctxt the read context to consider.
+///
 ///@param die the DIE to read the information from.
 ///
 ///@param offset the resulting constant offset, in bits.  This
 ///argument is set iff the function returns true.
 static bool
-die_member_offset(Dwarf_Die* die, int64_t& offset)
+die_member_offset(const read_context& ctxt, Dwarf_Die* die, int64_t& offset)
 {
   Dwarf_Op* expr = NULL;
   uint64_t expr_len = 0;
@@ -9057,10 +9742,14 @@ die_member_offset(Dwarf_Die* die, int64_t& offset)
   // In that case, let's evaluate it and get its constant
   // sub-expression and return that one.
 
-  bool is_tls_address = false;
-  if (!eval_last_constant_dwarf_sub_expr(expr, expr_len,
-					 offset, is_tls_address))
-    return false;
+  if (!eval_quickly(expr, expr_len, offset))
+    {
+      bool is_tls_address = false;
+      if (!eval_last_constant_dwarf_sub_expr(expr, expr_len,
+					     offset, is_tls_address,
+					     ctxt.dwarf_expr_eval_ctxt()))
+	return false;
+    }
 
   offset *= 8;
   return true;
@@ -9148,7 +9837,9 @@ die_virtual_function_index(Dwarf_Die* die,
 ///
 /// @return a copy of the qualified name of the type.
 static string
-die_qualified_type_name(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
+die_qualified_type_name(const read_context& ctxt,
+			Dwarf_Die* die,
+			size_t where_offset)
 {
   if (!die)
     return "";
@@ -9399,7 +10090,9 @@ die_qualified_type_name(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
 ///
 /// @return a copy of the computed name.
 static string
-die_qualified_decl_name(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
+die_qualified_decl_name(const read_context& ctxt,
+			Dwarf_Die* die,
+			size_t where_offset)
 {
   if (!die || !die_is_decl(die))
     return "";
@@ -9458,7 +10151,7 @@ die_qualified_decl_name(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
 ///
 /// @return a copy of the computed name.
 static string
-die_qualified_name(read_context& ctxt, Dwarf_Die* die, size_t where)
+die_qualified_name(const read_context& ctxt, Dwarf_Die* die, size_t where)
 {
   if (die_is_type(die))
     return die_qualified_type_name(ctxt, die, where);
@@ -9485,7 +10178,7 @@ die_qualified_name(read_context& ctxt, Dwarf_Die* die, size_t where)
 ///
 /// @return true if the qualified name of the DIE is empty.
 static bool
-die_qualified_type_name_empty(read_context& ctxt, Dwarf_Die* die,
+die_qualified_type_name_empty(const read_context& ctxt, Dwarf_Die* die,
 			      size_t where, string &qualified_name)
 {
   if (!die)
@@ -9563,7 +10256,7 @@ die_qualified_type_name_empty(read_context& ctxt, Dwarf_Die* die,
 /// @param is_static out parameter.  If the function is a static
 /// member function, then this is set to true.
 static void
-die_return_and_parm_names_from_fn_type_die(read_context& ctxt,
+die_return_and_parm_names_from_fn_type_die(const read_context& ctxt,
 					   Dwarf_Die* die,
 					   size_t where_offset,
 					   bool pretty_print,
@@ -9672,14 +10365,14 @@ die_return_and_parm_names_from_fn_type_die(read_context& ctxt,
 ///
 /// @return a copy of the computed function signature string.
 static string
-die_function_signature(read_context& ctxt,
+die_function_signature(const read_context& ctxt,
 		       Dwarf_Die *fn_die,
 		       size_t where_offset)
 {
   Dwarf_Die scope_die;
   string scope_name;
   if (get_scope_die(ctxt, fn_die, where_offset, scope_die))
-    scope_name = ctxt.get_die_qualified_type_name(&scope_die, where_offset);
+    scope_name = ctxt.get_die_qualified_name(&scope_die, where_offset);
   string fn_name = die_name(fn_die);
   if (!scope_name.empty())
     fn_name  = scope_name + "::" + fn_name;
@@ -9964,6 +10657,566 @@ die_pretty_print(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
 // </die pretty printer>
 // -----------------------------------
 
+
+// ----------------------------------
+// <die comparison engine>
+// ---------------------------------
+
+/// Compares two decls DIEs
+///
+/// This works only for DIEs emitted by the C language.
+///
+/// This implementation doesn't yet support namespaces.
+///
+/// This is a subroutine of compare_dies.
+///
+/// @return true iff @p l equals @p r.
+static bool
+compare_as_decl_dies(Dwarf_Die *l, Dwarf_Die *r)
+{
+  assert(l && r);
+
+  bool result = false;
+  if (compare_dies_string_attribute_value(l, r, DW_AT_linkage_name,
+					  result)
+      || compare_dies_string_attribute_value(l, r, DW_AT_MIPS_linkage_name,
+					     result))
+    {
+      if (!result)
+	return false;
+    }
+
+  if (compare_dies_string_attribute_value(l, r, DW_AT_name,
+					  result))
+    {
+      if (!result)
+	return false;
+    }
+
+  return true;
+}
+
+/// Compares two type DIEs
+///
+/// This is a subroutine of compare_dies.
+///
+/// @param l the left operand of the comparison operator.
+///
+/// @param r the right operand of the comparison operator.
+///
+/// @return true iff @p l equals @p r.
+static bool
+compare_as_type_dies(Dwarf_Die *l, Dwarf_Die *r)
+{
+  assert(l && r);
+  assert(die_is_type(l));
+  assert(die_is_type(r));
+
+  uint64_t l_size = 0, r_size = 0;
+  die_size_in_bits(l, l_size);
+  die_size_in_bits(r, r_size);
+
+  return l_size == r_size;
+}
+
+/// Compare two DIEs emitted by a C compiler.
+///
+/// @param ctxt the read context used to load the DWARF information.
+///
+/// @param l the left-hand-side argument of this comparison operator.
+///
+/// @param r the righ-hand-side argument of this comparison operator.
+///
+/// @param aggregates_being_compared this holds the names of the set
+/// of aggregates being compared.  It's used by the comparison
+/// function to avoid recursing infinitely when faced with types
+/// referencing themselves through pointers or references.  By
+/// default, just pass an empty instance of @ref istring_set_type to
+/// it.
+///
+/// @param update_canonical_dies_on_the_fly if true, when two
+/// sub-types compare equal (during the comparison of @p l and @p r)
+/// update their canonical type.  That way, two types of the same name
+/// are structurally compared to each other only once.  So the
+/// non-linear structural comparison of two types of the same name
+/// only happen once.
+///
+/// @return true iff @p l equals @p r.
+static bool
+compare_dies(const read_context& ctxt, Dwarf_Die *l, Dwarf_Die *r,
+	     istring_set_type& aggregates_being_compared,
+	     bool update_canonical_dies_on_the_fly)
+{
+  assert(l);
+  assert(r);
+
+  int l_tag = dwarf_tag(l), r_tag = dwarf_tag(r);
+
+  if (l_tag != r_tag)
+    return false;
+
+  Dwarf_Off l_offset = dwarf_dieoffset(l), r_offset = dwarf_dieoffset(r);
+  Dwarf_Off l_canonical_die_offset = 0, r_canonical_die_offset = 0;
+  die_source l_die_source, r_die_source;
+  assert(ctxt.get_die_source(l, l_die_source));
+  assert(ctxt.get_die_source(r, r_die_source));
+
+  // If 'l' and 'r' already have canonical DIEs, then just compare the
+  // offsets of their canonical DIEs.
+  bool l_has_canonical_die_offset =
+    (l_canonical_die_offset =
+     ctxt.get_canonical_die_offset(l_offset, l_die_source,
+				   /*die_as_type=*/true));
+
+  bool r_has_canonical_die_offset =
+    (r_canonical_die_offset =
+     ctxt.get_canonical_die_offset(r_offset, r_die_source,
+				   /*die_as_type=*/true));
+
+  if (l_has_canonical_die_offset && r_has_canonical_die_offset)
+    return l_canonical_die_offset == r_canonical_die_offset;
+
+  bool result = true;
+
+  switch (l_tag)
+    {
+    case DW_TAG_base_type:
+      if (!compare_as_type_dies(l, r)
+	  || !compare_as_decl_dies(l, r))
+	result = false;
+      break;
+
+    case DW_TAG_typedef:
+    case DW_TAG_pointer_type:
+    case DW_TAG_reference_type:
+    case DW_TAG_rvalue_reference_type:
+    case DW_TAG_const_type:
+    case DW_TAG_volatile_type:
+    case DW_TAG_restrict_type:
+      {
+	bool from_the_same_tu = false;
+	if (!compare_as_type_dies(l, r))
+	  result = false;
+	else if (compare_dies_cu_decl_file(l, r, from_the_same_tu)
+		 && from_the_same_tu)
+	  // These two typedefs, pointer, reference, or qualified
+	  // types have the same name and are defined in the same TU.
+	  // They thus ought to be the same.
+	  result = true;
+	else
+	  {
+	    Dwarf_Die lu_type_die, ru_type_die;
+	    bool lu_is_void, ru_is_void;
+
+	    lu_is_void = !die_die_attribute(l, DW_AT_type, lu_type_die);
+	    ru_is_void = !die_die_attribute(r, DW_AT_type, ru_type_die);
+
+	    if (lu_is_void && ru_is_void)
+	      ;
+	    else if (lu_is_void != ru_is_void)
+	      result = false;
+	    else
+	      result = compare_dies(ctxt, &lu_type_die, &ru_type_die,
+				    aggregates_being_compared,
+				    update_canonical_dies_on_the_fly);
+	  }
+      }
+      break;
+
+    case DW_TAG_enumeration_type:
+      if (!compare_as_type_dies(l, r)
+	  || !compare_as_decl_dies(l, r))
+	result = false;
+      else
+	{
+	  // Walk the enumerators.
+	  Dwarf_Die l_enumtor, r_enumtor;
+	  bool found_l_enumtor, found_r_enumtor;
+
+	  for (found_l_enumtor = dwarf_child(l, &l_enumtor) == 0,
+		 found_r_enumtor = dwarf_child(r, &r_enumtor) == 0;
+	       found_l_enumtor && found_r_enumtor;
+	       found_l_enumtor = dwarf_siblingof(&l_enumtor, &l_enumtor) == 0,
+		 found_r_enumtor = dwarf_siblingof(&r_enumtor, &r_enumtor) == 0)
+	    {
+	      int l_tag = dwarf_tag(&l_enumtor), r_tag = dwarf_tag(&r_enumtor);
+	      if ( l_tag != r_tag)
+		{
+		  result = false;
+		  break;
+		}
+
+	      if (l_tag != DW_TAG_enumerator)
+		continue;
+
+	      uint64_t l_val = 0, r_val = 0;
+	      die_unsigned_constant_attribute(&l_enumtor,
+					      DW_AT_const_value,
+					      l_val);
+	      die_unsigned_constant_attribute(&r_enumtor,
+					      DW_AT_const_value,
+					      r_val);
+	      if (l_val != r_val)
+		{
+		  result = false;
+		  break;
+		}
+	    }
+	  if (found_l_enumtor != found_r_enumtor )
+	    result = false;
+
+	}
+      break;
+
+    case DW_TAG_structure_type:
+    case DW_TAG_union_type:
+      {
+	interned_string ln = ctxt.get_die_pretty_type_representation(l, 0);
+	interned_string rn = ctxt.get_die_pretty_type_representation(r, 0);
+
+	if ((aggregates_being_compared.find(ln)
+	     != aggregates_being_compared.end())
+	    || (aggregates_being_compared.find(rn)
+		!= aggregates_being_compared.end()))
+	  result = true;
+	else if (!compare_as_decl_dies(l, r))
+	  result = false;
+	else if (!compare_as_type_dies(l, r))
+	  result = false;
+	else
+	  {
+	    aggregates_being_compared.insert(ln);
+	    aggregates_being_compared.insert(rn);
+
+	    Dwarf_Die l_member, r_member;
+	    bool found_l_member, found_r_member;
+	    for (found_l_member = dwarf_child(l, &l_member) == 0,
+		   found_r_member = dwarf_child(r, &r_member) == 0;
+		 found_l_member && found_r_member;
+		 found_l_member = dwarf_siblingof(&l_member, &l_member) == 0,
+		   found_r_member = dwarf_siblingof(&r_member, &r_member) == 0)
+	      {
+		int l_tag = dwarf_tag(&l_member), r_tag = dwarf_tag(&r_member);
+		if (l_tag != r_tag)
+		  {
+		    result = false;
+		    break;
+		  }
+
+		if (l_tag != DW_TAG_member && l_tag != DW_TAG_variable)
+		  continue;
+
+		if (!compare_dies(ctxt, &l_member, &r_member,
+				  aggregates_being_compared,
+				  update_canonical_dies_on_the_fly))
+		  {
+		    result = false;
+		    break;
+		  }
+	      }
+	    if (found_l_member != found_r_member)
+	      result = false;
+
+	    aggregates_being_compared.erase(ln);
+	    aggregates_being_compared.erase(rn);
+	  }
+      }
+      break;
+
+    case DW_TAG_array_type:
+      {
+	Dwarf_Die l_child, r_child;
+	bool found_l_child, found_r_child;
+	for (found_l_child = dwarf_child(l, &l_child) == 0,
+	       found_r_child = dwarf_child(r, &r_child) == 0;
+	     found_l_child && found_r_child;
+	     found_l_child = dwarf_siblingof(&l_child, &l_child) == 0,
+	       found_r_child = dwarf_siblingof(&r_child, &r_child) == 0)
+	  {
+	    int l_child_tag = dwarf_tag(&l_child),
+	      r_child_tag = dwarf_tag(&r_child);
+	    if (l_child_tag == DW_TAG_subrange_type
+		|| r_child_tag == DW_TAG_subrange_type)
+	      if (!compare_dies(ctxt, &l_child, &r_child,
+				aggregates_being_compared,
+				update_canonical_dies_on_the_fly))
+		{
+		  result = false;
+		  break;
+		}
+	  }
+	if (found_l_child != found_r_child)
+	  result = false;
+      }
+      break;
+
+    case DW_TAG_subrange_type:
+      {
+	uint64_t l_lower_bound = 0, r_lower_bound = 0,
+	  l_upper_bound = 0, r_upper_bound = 0;
+	die_unsigned_constant_attribute(l, DW_AT_lower_bound, l_lower_bound);
+	die_unsigned_constant_attribute(r, DW_AT_lower_bound, r_lower_bound);
+	if (!die_unsigned_constant_attribute(l, DW_AT_upper_bound,
+					     l_upper_bound))
+	  {
+	    uint64_t l_count = 0;
+	    if (die_unsigned_constant_attribute(l, DW_AT_count, l_count))
+	      {
+		l_upper_bound = l_lower_bound + l_count;
+		if (l_upper_bound)
+		  --l_upper_bound;
+	      }
+	  }
+	if (!die_unsigned_constant_attribute(r, DW_AT_upper_bound,
+					     r_upper_bound))
+	  {
+	    uint64_t r_count = 0;
+	    if (die_unsigned_constant_attribute(l, DW_AT_count, r_count))
+	      {
+		r_upper_bound = r_lower_bound + r_count;
+		if (r_upper_bound)
+		  --r_upper_bound;
+	      }
+	  }
+
+	if ((l_lower_bound != r_lower_bound)
+	    || (l_upper_bound != r_upper_bound))
+	  result = false;
+      }
+      break;
+
+    case DW_TAG_subroutine_type:
+    case DW_TAG_subprogram:
+      {
+	interned_string ln = ctxt.get_die_pretty_type_representation(l, 0);
+	interned_string rn = ctxt.get_die_pretty_type_representation(r, 0);
+
+	if ((aggregates_being_compared.find(ln)
+	     != aggregates_being_compared.end())
+	    || (aggregates_being_compared.find(rn)
+		!= aggregates_being_compared.end()))
+	  result = true;
+      else if (l_tag == DW_TAG_subroutine_type)
+	{
+	  // The string reprs of l and r are already equal.  Now let's
+	  // just check if they both come from the same TU.
+	  bool from_the_same_tu = false;
+	  if (compare_dies_cu_decl_file(l, r, from_the_same_tu)
+	      && from_the_same_tu)
+	    result = true;
+	}
+	else
+	  {
+	    aggregates_being_compared.insert(ln);
+	    aggregates_being_compared.insert(rn);
+
+	    Dwarf_Die l_return_type, r_return_type;
+	    bool l_return_type_is_void = !die_die_attribute(l, DW_AT_type,
+							    l_return_type);
+	    bool r_return_type_is_void = !die_die_attribute(r, DW_AT_type,
+							    r_return_type);
+	    if (l_return_type_is_void != r_return_type_is_void
+		|| (!l_return_type_is_void
+		    && !compare_dies(ctxt,
+				     &l_return_type, &r_return_type,
+				     aggregates_being_compared,
+				     update_canonical_dies_on_the_fly)))
+	      result = false;
+	    else
+	      {
+		Dwarf_Die l_child, r_child;
+		bool found_l_child, found_r_child;
+		for (found_l_child = dwarf_child(l, &l_child) == 0,
+		       found_r_child = dwarf_child(r, &r_child) == 0;
+		     found_l_child && found_r_child;
+		     found_l_child = dwarf_siblingof(&l_child,
+						     &l_child) == 0,
+		       found_r_child = dwarf_siblingof(&r_child,
+						       &r_child)==0)
+		  {
+		    int l_child_tag = dwarf_tag(&l_child);
+		    int r_child_tag = dwarf_tag(&r_child);
+		    if (l_child_tag != r_child_tag
+			|| (l_child_tag == DW_TAG_formal_parameter
+			    && !compare_dies(ctxt, &l_child, &r_child,
+					     aggregates_being_compared,
+					     update_canonical_dies_on_the_fly)))
+		      {
+			result = false;
+			break;
+		      }
+		  }
+		if (found_l_child != found_r_child)
+		  result = false;
+	      }
+
+	    aggregates_being_compared.erase(ln);
+	    aggregates_being_compared.erase(rn);
+	  }
+      }
+      break;
+
+    case DW_TAG_formal_parameter:
+      {
+	Dwarf_Die l_type, r_type;
+	bool l_type_is_void = !die_die_attribute(l, DW_AT_type, l_type);
+	bool r_type_is_void = !die_die_attribute(r, DW_AT_type, r_type);
+	if ((l_type_is_void != r_type_is_void)
+	    || !compare_dies(ctxt, &l_type, &r_type,
+			     aggregates_being_compared,
+			     update_canonical_dies_on_the_fly))
+	  result = false;
+      }
+      break;
+
+    case DW_TAG_variable:
+    case DW_TAG_member:
+      if (compare_as_decl_dies(l, r))
+	{
+	  // Compare the offsets of the data members
+	  if (l_tag == DW_TAG_member)
+	    {
+	      int64_t l_offset_in_bits = 0, r_offset_in_bits = 0;
+	      die_member_offset(ctxt, l, l_offset_in_bits);
+	      die_member_offset(ctxt, r, r_offset_in_bits);
+	      if (l_offset_in_bits != r_offset_in_bits)
+		result = false;
+	    }
+	  if (result)
+	    {
+	      // Compare the types of the data members or variables.
+	      Dwarf_Die l_type, r_type;
+	      assert(die_die_attribute(l, DW_AT_type, l_type));
+	      assert(die_die_attribute(r, DW_AT_type, r_type));
+	      if (aggregates_being_compared.size () < 5)
+		{
+		  if (!compare_dies(ctxt, &l_type, &r_type,
+				    aggregates_being_compared,
+				    update_canonical_dies_on_the_fly))
+		    result = false;
+		}
+	      else
+		{
+		  if (!compare_as_type_dies(&l_type, &r_type)
+		      ||!compare_as_decl_dies(&l_type, &r_type))
+		    return false;
+		}
+	    }
+	}
+      else
+	result = false;
+      break;
+
+    case DW_TAG_class_type:
+    case DW_TAG_enumerator:
+    case DW_TAG_packed_type:
+    case DW_TAG_set_type:
+    case DW_TAG_file_type:
+    case DW_TAG_ptr_to_member_type:
+    case DW_TAG_thrown_type:
+    case DW_TAG_interface_type:
+    case DW_TAG_unspecified_type:
+    case DW_TAG_shared_type:
+    case DW_TAG_compile_unit:
+    case DW_TAG_namespace:
+    case DW_TAG_module:
+    case DW_TAG_string_type:
+    case DW_TAG_constant:
+    case DW_TAG_partial_unit:
+    case DW_TAG_imported_unit:
+    case DW_TAG_dwarf_procedure:
+    case DW_TAG_imported_declaration:
+    case DW_TAG_entry_point:
+    case DW_TAG_label:
+    case DW_TAG_lexical_block:
+    case DW_TAG_unspecified_parameters:
+    case DW_TAG_variant:
+    case DW_TAG_common_block:
+    case DW_TAG_common_inclusion:
+    case DW_TAG_inheritance:
+    case DW_TAG_inlined_subroutine:
+    case DW_TAG_with_stmt:
+    case DW_TAG_access_declaration:
+    case DW_TAG_catch_block:
+    case DW_TAG_friend:
+    case DW_TAG_namelist:
+    case DW_TAG_namelist_item:
+    case DW_TAG_template_type_parameter:
+    case DW_TAG_template_value_parameter:
+    case DW_TAG_try_block:
+    case DW_TAG_variant_part:
+    case DW_TAG_imported_module:
+    case DW_TAG_condition:
+    case DW_TAG_type_unit:
+    case DW_TAG_template_alias:
+    case DW_TAG_lo_user:
+    case DW_TAG_MIPS_loop:
+    case DW_TAG_format_label:
+    case DW_TAG_function_template:
+    case DW_TAG_class_template:
+    case DW_TAG_GNU_BINCL:
+    case DW_TAG_GNU_EINCL:
+    case DW_TAG_GNU_template_template_param:
+    case DW_TAG_GNU_template_parameter_pack:
+    case DW_TAG_GNU_formal_parameter_pack:
+    case DW_TAG_GNU_call_site:
+    case DW_TAG_GNU_call_site_parameter:
+    case DW_TAG_hi_user:
+      ABG_ASSERT_NOT_REACHED;
+    }
+
+  if (result == true
+      && update_canonical_dies_on_the_fly
+      && is_canonicalizeable_type_tag(l_tag))
+    {
+      // If 'l' has no canonical DIE and if 'r' has one, then propagage
+      // the canonical DIE of 'r' to 'l'.
+      //
+      // In case 'r' has no canonical DIE, then compute it, and then
+      // propagate that canonical DIE to 'r'.
+      if (!l_has_canonical_die_offset)
+	{
+	  if (!r_has_canonical_die_offset)
+	    ctxt.compute_canonical_die_offset(r, r_canonical_die_offset,
+					      /*die_as_type=*/true);
+	  assert(r_canonical_die_offset);
+	  ctxt.set_canonical_die_offset(l, r_canonical_die_offset,
+					/*die_as_type=*/true);
+	}
+    }
+  return result;
+}
+
+/// Compare two DIEs emitted by a C compiler.
+///
+/// @param ctxt the read context used to load the DWARF information.
+///
+/// @param l the left-hand-side argument of this comparison operator.
+///
+/// @param r the righ-hand-side argument of this comparison operator.
+///
+/// @param update_canonical_dies_on_the_fly if yes, then this function
+/// updates the canonical DIEs of sub-type DIEs of 'l' and 'r', while
+/// comparing l and r.  This helps in making so that sub-type DIEs of
+/// 'l' and 'r' are compared structurally only once.  This is how we
+/// turn this exponential comparison problem into a problem that is a
+/// closer to a linear one.
+///
+/// @return true iff @p l equals @p r.
+static bool
+compare_dies(const read_context& ctxt,
+	     Dwarf_Die *l, Dwarf_Die *r,
+	     bool update_canonical_dies_on_the_fly)
+{
+  istring_set_type aggregates_being_compared;
+  return compare_dies(ctxt, l, r, aggregates_being_compared,
+		      update_canonical_dies_on_the_fly);
+}
+
+// ----------------------------------
+// </die comparison engine>
+// ---------------------------------
+
 /// Get the point where a DW_AT_import DIE is used to import a given
 /// (unit) DIE, between two DIEs.
 ///
@@ -10195,7 +11448,11 @@ get_parent_die(const read_context&	ctxt,
 
   if (dwarf_tag(&parent_die) == DW_TAG_partial_unit)
     {
-      assert(where_offset);
+      if (where_offset == 0)
+	{
+	  parent_die = *ctxt.cur_tu_die();
+	  return true;
+	}
       size_t import_point_offset = 0;
       bool found =
 	find_import_unit_point_before_die(ctxt,
@@ -10825,19 +12082,18 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
       enum_is_anonymous = true;
     }
 
-  bool use_odr = ctxt.odr_is_relevant();
+  bool use_odr = ctxt.odr_is_relevant(die);
   // If the type has location, then associate it to its
   // representation.  This way, all occurences of types with the same
   // representation (name) and location can be later detected as being
   // for the same type.
-  bool associate_die_to_repr = !enum_is_anonymous && (loc || use_odr);
 
   if (!enum_is_anonymous)
     {
       if (use_odr)
 	{
 	  if (enum_type_decl_sptr pre_existing_enum =
-	      is_enum_type(ctxt.lookup_artifact_from_die(die, where_offset)))
+	      is_enum_type(ctxt.lookup_artifact_from_die(die)))
 	    result = pre_existing_enum;
 	}
       else if (corpus_sptr corp = ctxt.should_reuse_type_from_corpus_group())
@@ -10847,16 +12103,15 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
 	}
       else if (loc)
 	{
-	   if (enum_type_decl_sptr pre_existing_enum =
-	      is_enum_type(ctxt.lookup_artifact_from_die(die, where_offset)))
-	     if (pre_existing_enum->get_location() == loc)
-	       result = pre_existing_enum;
+	  if (enum_type_decl_sptr pre_existing_enum =
+	      is_enum_type(ctxt.lookup_artifact_from_die(die)))
+	    if (pre_existing_enum->get_location() == loc)
+	      result = pre_existing_enum;
 	}
 
       if (result)
 	{
-	  ctxt.associate_die_to_type(die, result, where_offset,
-				     /*associate_die_to_repr=*/false);
+	  ctxt.associate_die_to_type(die, result, where_offset);
 	  return result;
 	}
     }
@@ -10914,7 +12169,7 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
   assert(t);
   result.reset(new enum_type_decl(name, loc, t, enms, linkage_name));
   result->set_is_anonymous(enum_is_anonymous);
-  ctxt.associate_die_to_type(die, result, where_offset, associate_die_to_repr);
+  ctxt.associate_die_to_type(die, result, where_offset);
   return result;
 }
 
@@ -11030,6 +12285,34 @@ finish_member_function_reading(Dwarf_Die*		  die,
 
 }
 
+/// If a function DIE has attributes which have not yet been read and
+/// added to the internal representation that represents that function
+/// then read those extra attributes and update the internal
+/// representation.
+///
+/// @param ctxt the read context to use.
+///
+/// @param die the function DIE to consider.
+///
+/// @param where_offset where we logical are, currently, in the stream
+/// of DIEs.  If you don't know what this is, you can just set it to zero.
+///
+/// @param existing_fn the representation of the function to update.
+///
+/// @return the updated function  representation.
+static function_decl_sptr
+maybe_finish_function_decl_reading(read_context&		ctxt,
+				   Dwarf_Die*			die,
+				   size_t			where_offset,
+				   const function_decl_sptr&	existing_fn)
+{
+  function_decl_sptr result = build_function_decl(ctxt, die,
+						  where_offset,
+						  existing_fn);
+
+  return result;
+}
+
 /// Lookup a class or a typedef with a given qualified name in the
 /// corpus that a given scope belongs to.
 ///
@@ -11142,11 +12425,9 @@ lookup_class_typedef_or_enum_type_from_corpus(Dwarf_Die* die,
 static method_decl_sptr
 is_function_for_die_a_member_of_class(read_context& ctxt,
 				      Dwarf_Die* function_die,
-				      const class_or_union_sptr& class_type,
-				      size_t where_offset)
+				      const class_or_union_sptr& class_type)
 {
-  type_or_decl_base_sptr artifact = ctxt.lookup_artifact_from_die(function_die,
-								  where_offset);
+  type_or_decl_base_sptr artifact = ctxt.lookup_artifact_from_die(function_die);
 
   if (!artifact)
     return method_decl_sptr();
@@ -11202,8 +12483,7 @@ add_or_update_member_function(read_context& ctxt,
 			      size_t where_offset)
 {
   method_decl_sptr method =
-    is_function_for_die_a_member_of_class(ctxt, function_die,
-					  class_type, where_offset);
+    is_function_for_die_a_member_of_class(ctxt, function_die, class_type);
 
   if (!method)
     method = is_method_decl(build_ir_node_from_die(ctxt, function_die,
@@ -11299,57 +12579,32 @@ add_or_update_class_type(read_context&	 ctxt,
       is_anonymous = true;
     }
 
-  bool use_odr = ctxt.odr_is_relevant();
-
-  // If the type has location, then associate it to its
-  // representation.  This way, all occurences of types with the same
-  // representation (name) and location can be later detected as being
-  // for the same type.
-  bool associate_die_to_repr = !is_anonymous && (loc || use_odr);
-
   if (!is_anonymous)
     {
-      if (use_odr)
-	{
-	  // So we can rely on the One Definition Rule to say that if
-	  // several different named class types have the same
-	  // representation (name) across the entire binary, then they
-	  // ought to designate the same type.  So let's ensure that
-	  // if we've already seen a class with the same name as the
-	  // name of 'die', then it's the same type as the one denoted
-	  // by 'die'.
-	  if (class_decl_sptr pre_existing_class =
-	      is_class_type(ctxt.lookup_artifact_from_die(die, where_offset)))
-	    klass = pre_existing_class;
-	}
-      else if (corpus_sptr corp = ctxt.should_reuse_type_from_corpus_group())
+      if (corpus_sptr corp = ctxt.should_reuse_type_from_corpus_group())
 	{
 	  if (loc)
+	    // TODO: if there is only one class defined in the corpus
+	    // for this location, then re-use it.  But if there are
+	    // more than one, then do not re-use it, for now.
 	    result = lookup_class_type_per_location(loc.expand(), *corp);
 	  else
+	    // TODO: if there is just one class for that name defined,
+	    // then re-use it.  Otherwise, don't.
 	    result = lookup_class_type(name, *corp);
 	  if (result)
 	    {
-	      ctxt.associate_die_to_type(die, result, where_offset,
-					 associate_die_to_repr);
+	      ctxt.associate_die_to_type(die, result, where_offset);
 	      return result;
 	    }
 	}
-      else if (loc)
-	{
-	  // The current type we are looking at does have a location.
-	  // So, even if we can't assume ODR, we can assume that this
-	  // class type we are looking at is the same as other class
-	  // types with the same representation and the same location.
-	  if (class_decl_sptr pre_existing_class =
-	      is_class_type(ctxt.lookup_artifact_from_die(die, where_offset)))
-	    if (class_decl_sptr cl =
-		look_through_decl_only_class(pre_existing_class))
-	      if (!cl->get_definition_of_declaration()
-		  || cl->get_location() == loc)
-		klass = pre_existing_class;
-	}
     }
+
+  // If we've already seen the same class as 'die', then let's
+  // re-use that one.
+  if (class_decl_sptr pre_existing_class =
+      is_class_type(ctxt.lookup_type_artifact_from_die(die)))
+    klass = pre_existing_class;
 
   uint64_t size = 0;
   die_size_in_bits(die, size);
@@ -11385,7 +12640,7 @@ add_or_update_class_type(read_context&	 ctxt,
       result->set_is_declaration_only(false);
     }
 
-  ctxt.associate_die_to_type(die, result, where_offset, associate_die_to_repr);
+  ctxt.associate_die_to_type(die, result, where_offset);
 
   ctxt.maybe_schedule_declaration_only_class_for_resolution(result);
 
@@ -11443,7 +12698,7 @@ add_or_update_class_type(read_context&	 ctxt,
 	      bool is_virt= die_is_virtual(&child);
 	      int64_t offset = 0;
 	      bool is_offset_present =
-		die_member_offset(&child, offset);
+		die_member_offset(ctxt, &child, offset);
 
 	      class_decl::base_spec_sptr base(new class_decl::base_spec
 					      (b, access,
@@ -11481,7 +12736,8 @@ add_or_update_class_type(read_context&	 ctxt,
 		continue;
 
 	      int64_t offset_in_bits = 0;
-	      bool is_laid_out = die_member_offset(&child, offset_in_bits);
+	      bool is_laid_out = die_member_offset(ctxt, &child,
+						   offset_in_bits);
 	      // For now, is_static == !is_laid_out.  When we have
 	      // templates, we'll try to be more specific.  For now,
 	      // this approximation should do OK.
@@ -11626,30 +12882,14 @@ add_or_update_union_type(read_context&	ctxt,
       is_anonymous = true;
     }
 
-  bool use_odr = ctxt.odr_is_relevant();
-
   // If the type has location, then associate it to its
   // representation.  This way, all occurences of types with the same
   // representation (name) and location can be later detected as being
   // for the same type.
-  bool associate_die_to_repr = !is_anonymous && (loc || use_odr);
 
   if (!is_anonymous)
     {
-      if (use_odr)
-	{
-	  // So we can rely on the One Definition Rule to say that if
-	  // several different named union types have the same
-	  // representation (name) across the entire binary, then they
-	  // ought to designate the same type.  So let's ensure that
-	  // if we've already seen a union with the same name as the
-	  // name of 'die', then it's the same type as the one denoted
-	  // by 'die'.
-	  if (union_decl_sptr pre_existing_union =
-	      is_union_type(ctxt.lookup_artifact_from_die(die, where_offset)))
-	    union_type = pre_existing_union;
-	}
-      else if (corpus_sptr corp = ctxt.should_reuse_type_from_corpus_group())
+      if (corpus_sptr corp = ctxt.should_reuse_type_from_corpus_group())
 	{
 	  if (loc)
 	    result = lookup_union_type_per_location(loc.expand(), *corp);
@@ -11658,23 +12898,17 @@ add_or_update_union_type(read_context&	ctxt,
 
 	  if (result)
 	    {
-	      ctxt.associate_die_to_type(die, result, where_offset,
-					 associate_die_to_repr);
+	      ctxt.associate_die_to_type(die, result, where_offset);
 	      return result;
 	    }
 	}
-      else if (loc)
-	{
-	  // The current type we are looking at does have a location.
-	  // So, even if we can't assume ODR, we can assume that this
-	  // union type we are looking at is the same as other union
-	  // types with the same representation and the same location.
-	  if (union_decl_sptr pre_existing_union =
-	      is_union_type(ctxt.lookup_artifact_from_die(die, where_offset)))
-	    if (pre_existing_union->get_location() == loc)
-	      union_type = pre_existing_union;
-	}
     }
+
+  // if we've already seen a union with the same union as
+  // 'die' then let's re-use that one.
+  if (union_decl_sptr pre_existing_union =
+      is_union_type(ctxt.lookup_artifact_from_die(die)))
+    union_type = pre_existing_union;
 
   uint64_t size = 0;
   die_size_in_bits(die, size);
@@ -11701,7 +12935,7 @@ add_or_update_union_type(read_context&	ctxt,
       result->set_is_declaration_only(false);
     }
 
-  ctxt.associate_die_to_type(die, result, where_offset, associate_die_to_repr);
+  ctxt.associate_die_to_type(die, result, where_offset);
 
   // TODO: maybe schedule declaration-only union for result like we do
   // for classes:
@@ -12010,8 +13244,7 @@ build_pointer_type_def(read_context&	ctxt,
   result.reset(new pointer_type_def(utype, size, /*alignment=*/0, location()));
   assert(result->get_pointed_to_type());
 
-  ctxt.associate_die_to_type(die, result, where_offset,
-			     /*do_associate_by_repr=*/false);
+  ctxt.associate_die_to_type(die, result, where_offset);
   return result;
 }
 
@@ -12141,10 +13374,11 @@ build_function_type(read_context&	ctxt,
     {
       result = is_function_type(t);
       assert(result);
+      ctxt.associate_die_to_type(die, result, where_offset);
       return result;
     }
 
-  bool odr_is_relevant = ctxt.odr_is_relevant();
+  bool odr_is_relevant = ctxt.odr_is_relevant(die);
   if (odr_is_relevant)
     {
       // So we can rely on the One Definition Rule to say that if
@@ -12155,11 +13389,9 @@ build_function_type(read_context&	ctxt,
       // representation as the function type 'die', then it's the same
       // type as the one denoted by 'die'.
       if (function_type_sptr fn_type =
-	  is_function_type(ctxt.lookup_type_artifact_from_die(die,
-							      where_offset)))
+	  is_function_type(ctxt.lookup_type_artifact_from_die(die)))
 	{
-	  ctxt.associate_die_to_type(die, fn_type, where_offset,
-				     /*do_associate_by_name=*/false);
+	  ctxt.associate_die_to_type(die, fn_type, where_offset);
 	  return fn_type;
 	}
     }
@@ -12173,11 +13405,9 @@ build_function_type(read_context&	ctxt,
       // representation as the one of 'die', then it designates the
       // same function type.
       if (function_type_sptr fn_type =
-	  is_function_type
-	  (ctxt.lookup_type_artifact_from_die_per_tu(die, where_offset)))
+	  is_function_type(ctxt.lookup_type_from_die(die)))
 	{
-	  ctxt.associate_die_to_type(die, fn_type, where_offset,
-				     /*do_associate_by_name=*/false);
+	  ctxt.associate_die_to_type(die, fn_type, where_offset);
 	  return fn_type;
 	}
     }
@@ -12227,9 +13457,7 @@ build_function_type(read_context&	ctxt,
 				 /*alignment=*/0)
 	       : new function_type(ctxt.env(), tu->get_address_size(),
 				   /*alignment=*/0));
-  ctxt.associate_die_to_type(die, result, where_offset,
-			     /*do_associate_by_repr=*/true,
-			     /*do_associate_per_tu=*/!odr_is_relevant);
+  ctxt.associate_die_to_type(die, result, where_offset);
   ctxt.die_wip_function_types_map(source)[dwarf_dieoffset(die)] = result;
 
   type_base_sptr return_type;
@@ -12539,8 +13767,7 @@ build_typedef_type(read_context&	ctxt,
 	  klass->set_naming_typedef(result);
     }
 
-  ctxt.associate_die_to_type(die, result, where_offset,
-			     /*do_associate_by_repr=*/false);
+  ctxt.associate_die_to_type(die, result, where_offset);
 
   return result;
 }
@@ -12810,10 +14037,11 @@ build_or_get_fn_decl_if_not_suppressed(read_context&	  ctxt,
     return fn;
 
   if (!result)
-    if ((fn = is_function_decl(ctxt.lookup_artifact_from_die(fn_die,
-							     where_offset))))
+    if ((fn = is_function_decl(ctxt.lookup_artifact_from_die(fn_die))))
       {
+	fn = maybe_finish_function_decl_reading(ctxt, fn_die, where_offset, fn);
 	ctxt.associate_die_to_decl(fn_die, fn, /*do_associate_by_repr=*/true);
+	ctxt.associate_die_to_type(fn_die, fn->get_type(), where_offset);
 	return fn;
       }
 
