@@ -8135,7 +8135,7 @@ fn_parm_diff::second_parameter() const
 /// @return a diff_sptr representing the changes on the type of the
 /// function parameter we are interested in.
 diff_sptr
-fn_parm_diff::get_type_diff() const
+fn_parm_diff::type_diff() const
 {return priv_->type_diff;}
 
 /// Build and return a textual representation of the current instance
@@ -8198,7 +8198,7 @@ fn_parm_diff::report(ostream& out, const string& indent) const
 
   if (to_be_reported())
     {
-      assert(get_type_diff() && get_type_diff()->to_be_reported());
+      assert(type_diff() && type_diff()->to_be_reported());
       out << indent
 	  << "parameter " << f->get_index();
       report_loc_info(f, *context(), out);
@@ -8210,7 +8210,7 @@ fn_parm_diff::report(ostream& out, const string& indent) const
       else
 	out << "' changed:\n";
 
-      get_type_diff()->report(out, indent + "  ");
+      type_diff()->report(out, indent + "  ");
     }
 }
 
@@ -8222,8 +8222,8 @@ fn_parm_diff::report(ostream& out, const string& indent) const
 void
 fn_parm_diff::chain_into_hierarchy()
 {
-  if (get_type_diff())
-    append_child_node(get_type_diff());
+  if (type_diff())
+    append_child_node(type_diff());
 }
 
 /// Compute the difference between two function_decl::parameter_sptr;
@@ -13353,7 +13353,7 @@ struct redundancy_marking_visitor : public diff_node_visitor
 		  // If this is a fn_parm_diff, look through the
 		  // fn_parm_diff node to get at the real type node.
 		  if (fn_parm_diff* f = dynamic_cast<fn_parm_diff*>(*s))
-		    sib = f->get_type_diff().get();
+		    sib = f->type_diff().get();
 		  if (sib == d)
 		    continue;
 		  if (sib->get_canonical_diff() == d->get_canonical_diff())
@@ -13662,7 +13662,7 @@ is_diff_of_variadic_parameter(const diff* d)
 {
   fn_parm_diff* diff =
     dynamic_cast<fn_parm_diff*>(const_cast<abigail::comparison::diff*>(d));
-  return (diff && is_diff_of_variadic_parameter_type(diff->get_type_diff()));
+  return (diff && is_diff_of_variadic_parameter_type(diff->type_diff()));
 }
 
 /// Test if a diff node represents the difference between a variadic

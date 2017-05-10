@@ -1728,7 +1728,7 @@ public:
   second_parameter() const;
 
   diff_sptr
-  get_type_diff() const;
+  type_diff() const;
 
   virtual const string&
   get_pretty_representation() const;
