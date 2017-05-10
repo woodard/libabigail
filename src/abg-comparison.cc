@@ -13363,6 +13363,11 @@ struct redundancy_marking_visitor : public diff_node_visitor
 		    }
 		}
 	    if (!redundant_with_sibling_node
+		// Changes to basic types should never be considered
+		// redundant.  For instance, if a member of integer
+		// type is changed into a char type in both a struct A
+		// and a struct B, we want to see both changes.
+		&& !has_basic_type_change_only(d)
 		// Functions with similar *local* changes are never marked
 		// redundant because otherwise one could miss important
 		// similar local changes that are applied to different
@@ -13675,5 +13680,40 @@ is_diff_of_variadic_parameter(const diff* d)
 bool
 is_diff_of_variadic_parameter(const diff_sptr& d)
 {return is_diff_of_variadic_parameter(d.get());}
+
+/// Test if a diff node represents a diff between two basic types.
+///
+/// @param d the diff node to consider.
+///
+/// @return true iff @p d is a diff between two basic types.
+bool
+is_diff_of_basic_type(const diff *d)
+{return dynamic_cast<const type_decl_diff*>(d);}
+
+/// Test if a diff node is a decl diff that only carries a basic type
+/// change on its type diff sub-node.
+///
+/// @param d the diff node to consider.
+///
+/// @return true iff @p d is a decl diff that only carries a basic
+/// type change on its type diff sub-node.
+bool
+has_basic_type_change_only(const diff *d)
+{
+  if (is_diff_of_basic_type(d) && d->has_changes())
+    return true;
+  else if (const var_diff * v = dynamic_cast<const var_diff*>(d))
+    return (!v->has_local_changes()
+	    && is_diff_of_basic_type(v->type_diff().get()));
+  else if (const fn_parm_diff * p = dynamic_cast<const fn_parm_diff*>(d))
+    return (!p->has_local_changes()
+	    && is_diff_of_basic_type(p->type_diff().get()));
+  else if (const function_decl_diff* f =
+	   dynamic_cast<const function_decl_diff*>(d))
+    return (!f->has_local_changes()
+	    && f->type_diff()
+	    && is_diff_of_basic_type(f->type_diff()->return_type_diff().get()));
+  return false;
+}
 }// end namespace comparison
 } // end namespace abigail

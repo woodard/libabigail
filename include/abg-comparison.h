@@ -2457,6 +2457,12 @@ is_type_diff(const diff* diff);
 const decl_diff_base*
 is_decl_diff(const diff* diff);
 
+bool
+is_diff_of_basic_type(const diff* diff);
+
+bool
+has_basic_type_change_only(const diff* diff);
+
 const class_diff*
 is_class_diff(const diff* diff);
 

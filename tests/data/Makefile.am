@@ -589,6 +589,11 @@ test-diff-filter/test34-libjemalloc.so.2-intel-16.0.3 \
 test-diff-filter/test34-report-0.txt \
 test-diff-filter/test35-pr18754-no-added-syms-report-0.txt \
 test-diff-filter/test35-pr18754-no-added-syms-report-1.txt \
+test-diff-filter/libtest37-v0.so \
+test-diff-filter/libtest37-v1.so \
+test-diff-filter/test37-report-0.txt \
+test-diff-filter/test37-v0.cc \
+test-diff-filter/test37-v1.cc \
 \
 test-diff-suppr/test0-type-suppr-v0.cc	\
 test-diff-suppr/test0-type-suppr-v1.cc	\
