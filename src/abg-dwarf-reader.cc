@@ -10294,7 +10294,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 		// variable definition from its current non-class
 		// scope ...
 		decl_base_sptr d;
-		if (d = lookup_var_decl_in_scope(mem_name, class_type))
+		if ((d = lookup_var_decl_in_scope(mem_name, class_type)))
 		  // This is the data member with the same name in cl.
 		  // We just need to flag it as static.
 		  ;
@@ -12933,8 +12933,8 @@ build_ir_node_from_die(read_context&	ctxt,
   die_source source_of_die;
   assert(ctxt.get_die_source(die, source_of_die));
 
-  if (result = ctxt.lookup_decl_from_die_offset(dwarf_dieoffset(die),
-						source_of_die))
+  if ((result = ctxt.lookup_decl_from_die_offset(dwarf_dieoffset(die),
+						 source_of_die)))
     return result;
 
   switch (tag)

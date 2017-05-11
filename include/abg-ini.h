@@ -392,7 +392,7 @@ public:
 /// The abstraction of one section of the .ini config.
 class config::section
 {
-  struct priv;
+  class priv;
   typedef shared_ptr<priv> priv_sptr;
 
   priv_sptr priv_;

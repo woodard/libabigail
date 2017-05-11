@@ -3039,8 +3039,8 @@ read_function_suppression(const ini::config::section& section)
       {
 	ini::simple_property_sptr prop = is_simple_property(*p);
 	assert(prop);
-	if (parm = read_parameter_spec_from_string
-	    (prop->get_value()->as_string()))
+	if ((parm = read_parameter_spec_from_string
+	      (prop->get_value()->as_string())))
 	  parms.push_back(parm);
       }
 
