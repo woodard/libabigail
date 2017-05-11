@@ -45,7 +45,7 @@ has_harmless_name_change(const decl_base_sptr& f, const decl_base_sptr& s);
 bool
 has_virtual_mem_fn_change(const function_decl_diff* diff);
 
-class filter_base;
+struct filter_base;
 /// Convenience typedef for a shared pointer to filter_base
 typedef shared_ptr<filter_base> filter_base_sptr;
 /// Convenience typedef for a vector of filter_base_sptr

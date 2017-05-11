@@ -341,7 +341,7 @@ corpus::priv::build_unreferenced_symbols_tables()
   for (vector<function_decl*>::const_iterator f = fns.begin();
        f != fns.end();
        ++f)
-    if (sym = (*f)->get_symbol())
+    if ((sym = (*f)->get_symbol()))
       {
 	refed_funs[sym->get_id_string()] = true;
 	for (elf_symbol_sptr a = sym->get_next_alias();
@@ -353,7 +353,7 @@ corpus::priv::build_unreferenced_symbols_tables()
   for (vector<var_decl*>::const_iterator v = vars.begin();
        v != vars.end();
        ++v)
-    if (sym = (*v)->get_symbol())
+    if ((sym = (*v)->get_symbol()))
       {
 	refed_vars[sym->get_id_string()] = true;
 	for (elf_symbol_sptr a = sym->get_next_alias();

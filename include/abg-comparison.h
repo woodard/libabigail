@@ -43,7 +43,7 @@ namespace comparison
 
 namespace filtering
 {
-class filter_base;
+struct filter_base;
 typedef shared_ptr<filter_base> filter_base_sptr;
 typedef std::vector<filter_base_sptr> filters;
 }
@@ -264,7 +264,7 @@ typedef weak_ptr<diff_context> diff_context_wptr;
 
 class diff_node_visitor;
 
-struct diff_traversable_base;
+class diff_traversable_base;
 
 /// Convenience typedef for shared_ptr on diff_traversable_base.
 typedef shared_ptr<diff_traversable_base> diff_traversable_base_sptr;
@@ -2154,7 +2154,7 @@ public:
   friend corpus_diff_sptr
   compute_diff(const corpus_sptr f,
 	       const corpus_sptr s,
-	       diff_context_sptr ctxt = diff_context_sptr());
+	       diff_context_sptr ctxt);
 
   friend void
   apply_suppressions(const corpus_diff* diff_tree);
@@ -2163,7 +2163,7 @@ public:
 corpus_diff_sptr
 compute_diff(const corpus_sptr,
 	     const corpus_sptr,
-	     diff_context_sptr);
+	     diff_context_sptr = diff_context_sptr());
 
 /// This is a document class that aims to capture statistics about the
 /// changes carried by a @ref corpus_diff type.

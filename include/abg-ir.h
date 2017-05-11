@@ -1869,7 +1869,7 @@ public:
   /// Convenience typedef for a vector of @ref subrange_sptr
   typedef std::vector<subrange_sptr> subranges_type;
 
-  /// Abtraction for an array dimension
+  /// Abstraction for an array dimension
   class subrange_type
   {
     struct priv;
@@ -2328,6 +2328,7 @@ public:
   /// Equality functor to compare pointers to function_decl
   struct ptr_equal;
 
+  /// Abstraction for the parameter of a function.
   class parameter;
 
   /// Convenience typedef for a shared pointer on a @ref
@@ -2336,9 +2337,6 @@ public:
 
   /// Convenience typedef for a vector of @ref parameter_sptr
   typedef std::vector<parameter_sptr> parameters;
-
-  /// Abtraction for the parameter of a function.
-  class parameter;
 
   function_decl(const string& name,
 		function_type_sptr function_type,
