@@ -14,7 +14,7 @@ Variable symbols changes summary: 0 Removed, 3 Added variable symbols not refere
 
   [C]'method void S::bar()' has some indirect sub-type changes:
     method void S::bar() is now declared virtual
-      note that a vtable was added to struct S
+      note that this induces a change to the vtable of struct S
 
 
 3 Added variable symbols not referenced by debug info:

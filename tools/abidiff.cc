@@ -49,6 +49,8 @@ using abigail::comparison::translation_unit_diff_sptr;
 using abigail::comparison::corpus_diff;
 using abigail::comparison::corpus_diff_sptr;
 using abigail::comparison::compute_diff;
+using abigail::comparison::get_default_harmless_categories_bitmap;
+using abigail::comparison::get_default_harmful_categories_bitmap;
 using abigail::suppr::suppression_sptr;
 using abigail::suppr::suppressions_type;
 using abigail::suppr::read_suppressions;
@@ -592,18 +594,10 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
     (opts.show_symbols_not_referenced_by_debug_info && opts.show_added_syms);
 
   if (!opts.show_harmless_changes)
-      ctxt->switch_categories_off
-	(abigail::comparison::ACCESS_CHANGE_CATEGORY
-	 | abigail::comparison::COMPATIBLE_TYPE_CHANGE_CATEGORY
-	 | abigail::comparison::HARMLESS_DECL_NAME_CHANGE_CATEGORY
-	 | abigail::comparison::NON_VIRT_MEM_FUN_CHANGE_CATEGORY
-	 | abigail::comparison::STATIC_DATA_MEMBER_CHANGE_CATEGORY
-	 | abigail::comparison::HARMLESS_ENUM_CHANGE_CATEGORY
-	 | abigail::comparison::HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY);
+      ctxt->switch_categories_off(get_default_harmless_categories_bitmap());
+
   if (!opts.show_harmful_changes)
-    ctxt->switch_categories_off
-      (abigail::comparison::SIZE_OR_OFFSET_CHANGE_CATEGORY
-       | abigail::comparison::VIRTUAL_MEMBER_CHANGE_CATEGORY);
+    ctxt->switch_categories_off(get_default_harmful_categories_bitmap());
 
   suppressions_type supprs;
   for (vector<string>::const_iterator i = opts.suppression_paths.begin();

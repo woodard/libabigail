@@ -44,479 +44,6 @@
                                type size changed from 960 to 1024 bits
                                1 data member insertion:
                                  'dispatcher_handle_any_message Dispatcher::any_handler', at offset 960 (in bits) at dispatcher.h:56:1
-                               1 data member change:
-                                type of 'SpiceCoreInterface* Dispatcher::recv_core' changed:
-                                  in pointed to type 'typedef SpiceCoreInterface' at spice-core.h:56:1:
-                                    underlying type 'struct SpiceCoreInterface' at spice-core.h:90:1 changed:
-                                      type size hasn't changed
-                                      3 data member changes:
-                                       type of 'SpiceWatch* (int, int, typedef SpiceWatchFunc, void*)* SpiceCoreInterface::watch_add' changed:
-                                         in pointed to type 'function type SpiceWatch* (int, int, typedef SpiceWatchFunc, void*)':
-                                           return type changed:
-                                             in pointed to type 'typedef SpiceWatch' at spice-core.h:68:1:
-                                               underlying type 'struct SpiceWatch' at red_worker.c:279:1 changed:
-                                                 type size hasn't changed
-                                                 1 data member change:
-                                                  type of 'RedWorker* SpiceWatch::worker' changed:
-                                                    in pointed to type 'struct RedWorker' at red_worker.c:932:1:
-                                                      type size changed from 15520192 to 14876992 bits
-                                                      1 data member deletion:
-                                                        'uint32_t RedWorker::preload_group_id', at offset 15379968 (in bits) at red_worker.c:992:1
-
-                                                      1 data member insertion:
-                                                        'FILE* RedWorker::record_fd', at offset 14876928 (in bits) at red_worker.c:1037:1
-                                                      37 data member changes:
-                                                       type of 'DisplayChannel* RedWorker::display_channel' changed:
-                                                         in pointed to type 'typedef DisplayChannel' at red_worker.c:434:1:
-                                                           underlying type 'struct DisplayChannel' at red_worker.c:732:1 changed:
-                                                             type size hasn't changed
-                                                             1 data member change:
-                                                              type of 'CommonChannel DisplayChannel::common' changed:
-                                                                underlying type 'struct CommonChannel' at red_worker.c:667:1 changed:
-                                                                  type size hasn't changed
-                                                                  2 data member changes:
-                                                                   type of 'RedChannel CommonChannel::base' changed:
-                                                                     underlying type 'struct RedChannel' at red_channel.h:298:1 changed:
-                                                                       type size hasn't changed
-                                                                       3 data member changes:
-                                                                        type of 'SpiceCoreInterface* RedChannel::core' changed:
-                                                                          in pointed to type 'typedef SpiceCoreInterface':
-                                                                            entity changed from 'typedef SpiceCoreInterface' to 'const SpiceCoreInterface'
-                                                                            type size hasn't changed
-
-                                                                        type of 'ChannelCbs RedChannel::channel_cbs' changed:
-                                                                          underlying type 'struct __anonymous_struct__' at red_channel.h:190:1 changed:
-                                                                            type size hasn't changed
-                                                                            10 data member changes:
-                                                                             type of 'channel_configure_socket_proc __anonymous_struct__::config_socket' changed:
-                                                                               underlying type 'int (RedChannelClient*)*' changed:
-                                                                                 in pointed to type 'function type int (RedChannelClient*)':
-                                                                                   parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                                                                     in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
-                                                                                       underlying type 'struct RedChannelClient' at red_channel.h:242:1 changed:
-                                                                                         type size hasn't changed
-                                                                                         3 data member changes:
-                                                                                          type of 'RedChannel* RedChannelClient::channel' changed:
-                                                                                            in pointed to type 'typedef RedChannel' at red_channel.h:130:1:
-                                                                                              underlying type 'struct RedChannel' changed; details are being reported
-
-                                                                                          type of 'RedClient* RedChannelClient::client' changed:
-                                                                                            in pointed to type 'typedef RedClient' at red_channel.h:132:1:
-                                                                                              underlying type 'struct RedClient' at red_channel.h:556:1 changed:
-                                                                                                type size hasn't changed
-                                                                                                1 data member change:
-                                                                                                 type of 'MainChannelClient* RedClient::mcc' changed:
-                                                                                                   in pointed to type 'typedef MainChannelClient' at red_channel.h:133:1:
-                                                                                                     underlying type 'struct MainChannelClient' at main_channel.c:140:1 changed:
-                                                                                                       type size hasn't changed
-                                                                                                       1 data member change:
-                                                                                                        type of 'RedChannelClient MainChannelClient::base' changed:
-                                                                                                          underlying type 'struct RedChannelClient' changed; details are being reported
-
-
-
-                                                                                          type of 'RedsStream* RedChannelClient::stream' changed:
-                                                                                            in pointed to type 'typedef RedsStream' at reds_stream.h:31:1:
-                                                                                              underlying type 'struct RedsStream' at reds_stream.h:34:1 changed:
-                                                                                                type size changed from 1280 to 256 bits
-                                                                                                5 data member deletions:
-                                                                                                  'RedsSASL RedsStream::sasl', at offset 256 (in bits) at reds.h:78:1
-
-                                                                                                  'SpiceChannelEventInfo* RedsStream::info', at offset 1024 (in bits) at reds.h:85:1
-
-                                                                                                  'typedef ssize_t (RedsStream*, void*, typedef size_t)* RedsStream::read', at offset 1088 (in bits) at reds.h:88:1
-
-                                                                                                  'typedef ssize_t (RedsStream*, void*, typedef size_t)* RedsStream::write', at offset 1152 (in bits) at reds.h:89:1
-
-                                                                                                  'typedef ssize_t (RedsStream*, const iovec*, int)* RedsStream::writev', at offset 1216 (in bits) at reds.h:90:1
-
-                                                                                                1 data member change:
-                                                                                                 type of 'SpiceWatch* RedsStream::watch' changed:
-                                                                                                   in pointed to type 'typedef SpiceWatch' at spice-core.h:68:1:
-                                                                                                     underlying type 'struct SpiceWatch' changed; details are being reported
-
-                                                                                                no data member change (1 filtered);
-
-
-                                                                             type of 'channel_disconnect_proc __anonymous_struct__::on_disconnect' changed:
-                                                                               underlying type 'void (RedChannelClient*)*' changed:
-                                                                                 in pointed to type 'function type void (RedChannelClient*)':
-                                                                                   parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                                                                     in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
-                                                                                       underlying type 'struct RedChannelClient' changed, as reported earlier
-
-                                                                             type of 'channel_send_pipe_item_proc __anonymous_struct__::send_item' changed:
-                                                                               underlying type 'void (RedChannelClient*, PipeItem*)*' changed:
-                                                                                 in pointed to type 'function type void (RedChannelClient*, PipeItem*)':
-                                                                                   parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                                                                     in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
-                                                                                       underlying type 'struct RedChannelClient' changed, as reported earlier
-
-                                                                             type of 'channel_hold_pipe_item_proc __anonymous_struct__::hold_item' changed:
-                                                                               underlying type 'void (RedChannelClient*, PipeItem*)*' changed:
-                                                                                 in pointed to type 'function type void (RedChannelClient*, PipeItem*)':
-                                                                                   parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                                                                     in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
-                                                                                       underlying type 'struct RedChannelClient' changed, as reported earlier
-
-                                                                             type of 'channel_release_pipe_item_proc __anonymous_struct__::release_item' changed:
-                                                                               underlying type 'void (RedChannelClient*, PipeItem*, int)*' changed:
-                                                                                 in pointed to type 'function type void (RedChannelClient*, PipeItem*, int)':
-                                                                                   parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                                                                     in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
-                                                                                       underlying type 'struct RedChannelClient' changed, as reported earlier
-
-                                                                             type of 'channel_alloc_msg_recv_buf_proc __anonymous_struct__::alloc_recv_buf' changed:
-                                                                               underlying type 'uint8_t* (RedChannelClient*, typedef uint16_t, typedef uint32_t)*' changed:
-                                                                                 in pointed to type 'function type uint8_t* (RedChannelClient*, typedef uint16_t, typedef uint32_t)':
-                                                                                   parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                                                                     in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
-                                                                                       underlying type 'struct RedChannelClient' changed, as reported earlier
-
-                                                                             type of 'channel_release_msg_recv_buf_proc __anonymous_struct__::release_recv_buf' changed:
-                                                                               underlying type 'void (RedChannelClient*, typedef uint16_t, typedef uint32_t, uint8_t*)*' changed:
-                                                                                 in pointed to type 'function type void (RedChannelClient*, typedef uint16_t, typedef uint32_t, uint8_t*)':
-                                                                                   parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                                                                     in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
-                                                                                       underlying type 'struct RedChannelClient' changed, as reported earlier
-
-                                                                             type of 'channel_handle_migrate_flush_mark_proc __anonymous_struct__::handle_migrate_flush_mark' changed:
-                                                                               underlying type 'int (RedChannelClient*)*' changed:
-                                                                                 in pointed to type 'function type int (RedChannelClient*)':
-                                                                                   parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                                                                     in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
-                                                                                       underlying type 'struct RedChannelClient' changed, as reported earlier
-
-                                                                             type of 'channel_handle_migrate_data_proc __anonymous_struct__::handle_migrate_data' changed:
-                                                                               underlying type 'int (RedChannelClient*, typedef uint32_t, void*)*' changed:
-                                                                                 in pointed to type 'function type int (RedChannelClient*, typedef uint32_t, void*)':
-                                                                                   parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                                                                     in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
-                                                                                       underlying type 'struct RedChannelClient' changed, as reported earlier
-
-                                                                             type of 'channel_handle_migrate_data_get_serial_proc __anonymous_struct__::handle_migrate_data_get_serial' changed:
-                                                                               underlying type 'typedef uint64_t (RedChannelClient*, typedef uint32_t, void*)*' changed:
-                                                                                 in pointed to type 'function type typedef uint64_t (RedChannelClient*, typedef uint32_t, void*)':
-                                                                                   parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                                                                     in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
-                                                                                       underlying type 'struct RedChannelClient' changed, as reported earlier
-
-
-                                                                        type of 'ClientCbs RedChannel::client_cbs' changed:
-                                                                          underlying type 'struct __anonymous_struct__' at red_channel.h:208:1 changed:
-                                                                            type size hasn't changed
-                                                                            3 data member changes:
-                                                                             type of 'channel_client_connect_proc __anonymous_struct__::connect' changed:
-                                                                               underlying type 'void (RedChannel*, RedClient*, RedsStream*, int, int, uint32_t*, int, uint32_t*)*' changed:
-                                                                                 in pointed to type 'function type void (RedChannel*, RedClient*, RedsStream*, int, int, uint32_t*, int, uint32_t*)':
-                                                                                   parameter 1 of type 'RedChannel*' has sub-type changes:
-                                                                                     in pointed to type 'typedef RedChannel' at red_channel.h:130:1:
-                                                                                       underlying type 'struct RedChannel' changed; details are being reported
-                                                                                   parameter 2 of type 'RedClient*' has sub-type changes:
-                                                                                     in pointed to type 'typedef RedClient' at red_channel.h:132:1:
-                                                                                       underlying type 'struct RedClient' changed, as reported earlier
-                                                                                   parameter 3 of type 'RedsStream*' has sub-type changes:
-                                                                                     in pointed to type 'typedef RedsStream' at reds_stream.h:31:1:
-                                                                                       underlying type 'struct RedsStream' changed, as reported earlier
-
-                                                                             type of 'channel_client_disconnect_proc __anonymous_struct__::disconnect' changed:
-                                                                               underlying type 'void (RedChannelClient*)*' changed:
-                                                                                 in pointed to type 'function type void (RedChannelClient*)':
-                                                                                   parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                                                                     in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
-                                                                                       underlying type 'struct RedChannelClient' changed, as reported earlier
-
-                                                                             type of 'channel_client_migrate_proc __anonymous_struct__::migrate' changed:
-                                                                               underlying type 'void (RedChannelClient*)*' changed:
-                                                                                 in pointed to type 'function type void (RedChannelClient*)':
-                                                                                   parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                                                                     in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
-                                                                                       underlying type 'struct RedChannelClient' changed, as reported earlier
-
-
-
-                                                                   type of 'RedWorker* CommonChannel::worker' changed:
-                                                                     pointed to type 'struct RedWorker' changed; details are being reported
-
-
-
-                                                       type of 'CursorChannel* RedWorker::cursor_channel' changed:
-                                                         in pointed to type 'typedef CursorChannel' at red_worker.c:774:1:
-                                                           underlying type 'struct CursorChannel' at red_worker.c:768:1 changed:
-                                                             type size hasn't changed
-                                                             1 data member change:
-                                                              type of 'CommonChannel CursorChannel::common' changed:
-                                                                underlying type 'struct CommonChannel' changed, as reported earlier
-
-
-                                                       type of 'QXLInstance* RedWorker::qxl' changed:
-                                                         in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
-                                                           underlying type 'struct QXLInstance' at spice-qxl.h:186:1 changed:
-                                                             type size hasn't changed
-                                                             1 data member change:
-                                                              type of 'QXLState* QXLInstance::st' changed:
-                                                                in pointed to type 'typedef QXLState' at spice-qxl.h:35:1:
-                                                                  underlying type 'struct QXLState' at reds.h:33:1 changed:
-                                                                    type size hasn't changed
-                                                                    1 data member change:
-                                                                     type of 'RedDispatcher* QXLState::dispatcher' changed:
-                                                                       pointed to type 'struct RedDispatcher' changed; details are being reported
-
-
-
-                                                       type of 'RedDispatcher* RedWorker::red_dispatcher' changed:
-                                                         in pointed to type 'typedef RedDispatcher':
-                                                           entity changed from 'typedef RedDispatcher' to compatible type 'struct RedDispatcher'
-                                                             details are being reported
-
-                                                       type of 'SpiceWatch RedWorker::watches[20]' changed:
-                                                         array element type 'struct SpiceWatch' changed: 
-                                                           details are being reported
-                                                         type size hasn't changed
-
-                                                       type of 'MonitorsConfig* RedWorker::monitors_config' changed:
-                                                         in pointed to type 'typedef MonitorsConfig' at red_worker.c:361:1:
-                                                           underlying type 'struct MonitorsConfig' at red_worker.c:355:1 changed:
-                                                             type size hasn't changed
-                                                             1 data member change:
-                                                              type of 'RedWorker* MonitorsConfig::worker' changed:
-                                                                pointed to type 'struct RedWorker' changed; details are being reported
-
-
-                                                       type of '_Drawable RedWorker::drawables[1000]' changed:
-                                                         array element type 'typedef _Drawable' changed: 
-                                                           underlying type 'struct _Drawable' at red_worker.c:866:1 changed:
-                                                             type size changed from 3200 to 2560 bits
-                                                             1 data member change:
-                                                              type of '__anonymous_union__ _Drawable::u' changed:
-                                                                type size changed from 3200 to 2560 bits
-                                                                2 data member changes:
-                                                                 type of 'Drawable __anonymous_union__::drawable' changed:
-                                                                   underlying type 'struct Drawable' at red_worker.c:833:1 changed:
-                                                                     type size changed from 3200 to 2560 bits
-                                                                     2 data member deletions:
-                                                                       'uint8_t* Drawable::backed_surface_data', at offset 2368 (in bits) at red_worker.c:864:1
-
-                                                                       'DependItem Drawable::pipe_depend_items[3]', at offset 2432 (in bits) at red_worker.c:865:1
-
-                                                                     6 data member changes:
-                                                                      type of 'Stream* Drawable::stream' changed:
-                                                                        in pointed to type 'typedef Stream' at red_worker.c:443:1:
-                                                                          underlying type 'struct Stream' at red_worker.c:444:1 changed:
-                                                                            type size changed from 896 to 832 bits
-                                                                            2 data member deletions:
-                                                                              'SpiceTimer* Stream::input_fps_timer', at offset 640 (in bits) at red_worker.c:444:1
-
-                                                                              'uint64_t Stream::input_fps_timer_start', at offset 768 (in bits) at red_worker.c:446:1
-
-                                                                            1 data member insertion:
-                                                                              'uint64_t Stream::input_fps_start_time', at offset 704 (in bits) at red_worker.c:456:1
-                                                                            4 data member changes:
-                                                                             type of 'Drawable* Stream::current' changed:
-                                                                               in pointed to type 'typedef Drawable' at red_worker.c:432:1:
-                                                                                 underlying type 'struct Drawable' changed; details are being reported
-
-                                                                             type of 'Stream* Stream::next' changed:
-                                                                               in pointed to type 'typedef Stream' at red_worker.c:443:1:
-                                                                                 underlying type 'struct Stream' changed; details are being reported
-
-                                                                             'uint32_t Stream::num_input_frames' offset changed from 704 to 640 (in bits) (by -64 bits)
-                                                                             'uint32_t Stream::input_fps' offset changed from 832 to 768 (in bits) (by -64 bits)
-
-                                                                      type of 'Stream* Drawable::sized_stream' changed:
-                                                                        in pointed to type 'typedef Stream' at red_worker.c:443:1:
-                                                                          underlying type 'struct Stream' changed, as reported earlier
-
-                                                                      type of 'DependItem Drawable::depend_items[3]' changed:
-                                                                        array element type 'typedef DependItem' changed: 
-                                                                          underlying type 'struct DependItem' at red_worker.c:820:1 changed:
-                                                                            type size hasn't changed
-                                                                            1 data member change:
-                                                                             type of 'Drawable* DependItem::drawable' changed:
-                                                                               in pointed to type 'typedef Drawable' at red_worker.c:432:1:
-                                                                                 underlying type 'struct Drawable' changed; details are being reported
-
-                                                                        type size hasn't changed
-
-                                                                      'int Drawable::surface_id' offset changed from 3008 to 2368 (in bits) (by -640 bits)
-                                                                      'int Drawable::surfaces_dest[3]' offset changed from 3040 to 2400 (in bits) (by -640 bits)
-                                                                      'uint32_t Drawable::process_commands_generation' offset changed from 3136 to 2496 (in bits) (by -640 bits)
-
-                                                                 type of '_Drawable* __anonymous_union__::next' changed:
-                                                                   in pointed to type 'typedef _Drawable' at red_worker.c:865:1:
-                                                                     underlying type 'struct _Drawable' changed; details are being reported
-
-
-                                                         array type size changed from 3200000 to 2560000 bits:
-
-                                                       type of '_Drawable* RedWorker::free_drawables' changed:
-                                                         in pointed to type 'typedef _Drawable' at red_worker.c:865:1:
-                                                           underlying type 'struct _Drawable' changed, as reported earlier
-                                                       and offset changed from 15366720 to 14726720 (in bits) (by -640000 bits)
-                                                       '_CursorItem RedWorker::cursor_items[100]' offset changed from 15366784 to 14726784 (in bits) (by -640000 bits)
-                                                       '_CursorItem* RedWorker::free_cursor_items' offset changed from 15379584 to 14739584 (in bits) (by -640000 bits)
-                                                       'RedMemSlotInfo RedWorker::mem_slots' offset changed from 15379648 to 14739648 (in bits) (by -640000 bits)
-                                                       'ImageCache RedWorker::image_cache' offset changed from 15380032 to 14739968 (in bits) (by -640064 bits)
-                                                       type of 'spice_image_compression_t RedWorker::image_compression' changed:
-                                                         underlying type 'enum __anonymous_enum__' at enums.h:186:1 changed:
-                                                           type size hasn't changed
-                                                           7 enumerator deletions:
-                                                             '__anonymous_enum__::SPICE_IMAGE_COMPRESS_INVALID' value '0'
-                                                             '__anonymous_enum__::SPICE_IMAGE_COMPRESS_OFF' value '1'
-                                                             '__anonymous_enum__::SPICE_IMAGE_COMPRESS_AUTO_GLZ' value '2'
-                                                             '__anonymous_enum__::SPICE_IMAGE_COMPRESS_AUTO_LZ' value '3'
-                                                             '__anonymous_enum__::SPICE_IMAGE_COMPRESS_QUIC' value '4'
-                                                             '__anonymous_enum__::SPICE_IMAGE_COMPRESS_GLZ' value '5'
-                                                             '__anonymous_enum__::SPICE_IMAGE_COMPRESS_LZ' value '6'
-
-                                                           9 enumerator insertions:
-                                                             'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_INVALID' value '0'
-                                                             'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_OFF' value '1'
-                                                             'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_AUTO_GLZ' value '2'
-                                                             'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_AUTO_LZ' value '3'
-                                                             'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_QUIC' value '4'
-                                                             'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_GLZ' value '5'
-                                                             'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_LZ' value '6'
-                                                             'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_LZ4' value '7'
-                                                             'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_ENUM_END' value '8'
-
-                                                       and offset changed from 15445824 to 14805760 (in bits) (by -640064 bits)
-                                                       'spice_wan_compression_t RedWorker::jpeg_state' offset changed from 15445856 to 14805792 (in bits) (by -640064 bits)
-                                                       'spice_wan_compression_t RedWorker::zlib_glz_state' offset changed from 15445888 to 14805824 (in bits) (by -640064 bits)
-                                                       'uint32_t RedWorker::mouse_mode' offset changed from 15445920 to 14805856 (in bits) (by -640064 bits)
-                                                       'uint32_t RedWorker::streaming_video' offset changed from 15445952 to 14805888 (in bits) (by -640064 bits)
-                                                       type of 'Stream RedWorker::streams_buf[50]' changed:
-                                                         array element type 'typedef Stream' changed: 
-                                                           underlying type 'struct Stream' changed, as reported earlier
-                                                         array type size changed from 44800 to 41600 bits:
-                                                       and offset changed from 15446016 to 14805952 (in bits) (by -640064 bits)
-                                                       type of 'Stream* RedWorker::free_streams' changed:
-                                                         in pointed to type 'typedef Stream' at red_worker.c:443:1:
-                                                           underlying type 'struct Stream' changed, as reported earlier
-                                                       and offset changed from 15490816 to 14847552 (in bits) (by -643264 bits)
-                                                       'Ring RedWorker::streams' offset changed from 15490880 to 14847616 (in bits) (by -643264 bits)
-                                                       'ItemTrace RedWorker::items_trace[8]' offset changed from 15491008 to 14847744 (in bits) (by -643264 bits)
-                                                       'uint32_t RedWorker::next_item_trace' offset changed from 15494080 to 14850816 (in bits) (by -643264 bits)
-                                                       'uint64_t RedWorker::streams_size_total' offset changed from 15494144 to 14850880 (in bits) (by -643264 bits)
-                                                       type of 'QuicData RedWorker::quic_data' changed:
-                                                         underlying type 'struct __anonymous_struct__' at red_worker.c:587:1 changed:
-                                                           type size hasn't changed
-                                                           1 data member change:
-                                                            type of 'EncoderData __anonymous_struct__::data' changed:
-                                                              underlying type 'struct __anonymous_struct__' at red_worker.c:567:1 changed:
-                                                                type size hasn't changed
-                                                                1 data member change:
-                                                                 type of 'DisplayChannelClient* __anonymous_struct__::dcc' changed:
-                                                                   in pointed to type 'typedef DisplayChannelClient' at red_worker.c:435:1:
-                                                                     underlying type 'struct DisplayChannelClient' at red_worker.c:689:1 changed:
-                                                                       type size hasn't changed
-                                                                       5 data member changes:
-                                                                        type of 'CommonChannelClient DisplayChannelClient::common' changed:
-                                                                          underlying type 'struct CommonChannelClient' at red_worker.c:679:1 changed:
-                                                                            type size hasn't changed
-                                                                            2 data member changes:
-                                                                             type of 'RedChannelClient CommonChannelClient::base' changed:
-                                                                               underlying type 'struct RedChannelClient' changed, as reported earlier
-
-                                                                             type of 'RedWorker* CommonChannelClient::worker' changed:
-                                                                               pointed to type 'struct RedWorker' changed; details are being reported
-
-
-                                                                        type of 'PixmapCache* DisplayChannelClient::pixmap_cache' changed:
-                                                                          in pointed to type 'typedef PixmapCache' at red_worker.c:527:1:
-                                                                            underlying type 'struct PixmapCache' at red_worker.c:528:1 changed:
-                                                                              type size hasn't changed
-                                                                              1 data member change:
-                                                                               type of 'RedClient* PixmapCache::client' changed:
-                                                                                 in pointed to type 'typedef RedClient' at red_channel.h:132:1:
-                                                                                   underlying type 'struct RedClient' changed, as reported earlier
-
-
-                                                                        type of 'GlzSharedDictionary* DisplayChannelClient::glz_dict' changed:
-                                                                          in pointed to type 'typedef GlzSharedDictionary' at red_worker.c:663:1:
-                                                                            underlying type 'struct GlzSharedDictionary' at red_worker.c:655:1 changed:
-                                                                              type size hasn't changed
-                                                                              1 data member change:
-                                                                               type of 'RedClient* GlzSharedDictionary::client' changed:
-                                                                                 in pointed to type 'typedef RedClient' at red_channel.h:132:1:
-                                                                                   underlying type 'struct RedClient' changed, as reported earlier
-
-
-                                                                        type of 'GlzData DisplayChannelClient::glz_data' changed:
-                                                                          underlying type 'struct __anonymous_struct__' at red_worker.c:597:1 changed:
-                                                                            type size hasn't changed
-                                                                            1 data member change:
-                                                                             type of 'EncoderData __anonymous_struct__::data' changed:
-                                                                               underlying type 'struct __anonymous_struct__' changed; details are being reported
-
-
-                                                                        type of 'StreamAgent DisplayChannelClient::stream_agents[50]' changed:
-                                                                          array element type 'typedef StreamAgent' changed: 
-                                                                            underlying type 'struct StreamAgent' at red_worker.c:474:1 changed:
-                                                                              type size hasn't changed
-                                                                              2 data member changes:
-                                                                               type of 'Stream* StreamAgent::stream' changed:
-                                                                                 in pointed to type 'typedef Stream' at red_worker.c:443:1:
-                                                                                   underlying type 'struct Stream' changed, as reported earlier
-
-                                                                               type of 'DisplayChannelClient* StreamAgent::dcc' changed:
-                                                                                 in pointed to type 'typedef DisplayChannelClient' at red_worker.c:435:1:
-                                                                                   underlying type 'struct DisplayChannelClient' changed; details are being reported
-
-                                                                          type size hasn't changed
-
-
-
-                                                       and offset changed from 15494208 to 14850944 (in bits) (by -643264 bits)
-                                                       'QuicContext* RedWorker::quic' offset changed from 15500736 to 14857472 (in bits) (by -643264 bits)
-                                                       type of 'LzData RedWorker::lz_data' changed:
-                                                         underlying type 'struct __anonymous_struct__' at red_worker.c:592:1 changed:
-                                                           type size hasn't changed
-                                                           1 data member change:
-                                                            type of 'EncoderData __anonymous_struct__::data' changed:
-                                                              underlying type 'struct __anonymous_struct__' changed, as reported earlier
-
-                                                       and offset changed from 15500800 to 14857536 (in bits) (by -643264 bits)
-                                                       'LzContext* RedWorker::lz' offset changed from 15507328 to 14864064 (in bits) (by -643264 bits)
-                                                       type of 'JpegData RedWorker::jpeg_data' changed:
-                                                         underlying type 'struct __anonymous_struct__' at red_worker.c:602:1 changed:
-                                                           type size hasn't changed
-                                                           1 data member change:
-                                                            type of 'EncoderData __anonymous_struct__::data' changed:
-                                                              underlying type 'struct __anonymous_struct__' changed, as reported earlier
-
-                                                       and offset changed from 15507392 to 14864128 (in bits) (by -643264 bits)
-                                                       'JpegEncoderContext* RedWorker::jpeg' offset changed from 15513600 to 14870336 (in bits) (by -643264 bits)
-                                                       type of 'ZlibData RedWorker::zlib_data' changed:
-                                                         underlying type 'struct __anonymous_struct__' at red_worker.c:614:1 changed:
-                                                           type size hasn't changed
-                                                           1 data member change:
-                                                            type of 'EncoderData __anonymous_struct__::data' changed:
-                                                              underlying type 'struct __anonymous_struct__' changed, as reported earlier
-
-                                                       and offset changed from 15513664 to 14870400 (in bits) (by -643264 bits)
-                                                       'ZlibEncoder* RedWorker::zlib' offset changed from 15519872 to 14876608 (in bits) (by -643264 bits)
-                                                       'uint32_t RedWorker::process_commands_generation' offset changed from 15519936 to 14876672 (in bits) (by -643264 bits)
-                                                       'StatNodeRef RedWorker::stat' offset changed from 15519968 to 14876704 (in bits) (by -643264 bits)
-                                                       'uint64_t* RedWorker::wakeup_counter' offset changed from 15520000 to 14876736 (in bits) (by -643264 bits)
-                                                       'uint64_t* RedWorker::command_counter' offset changed from 15520064 to 14876800 (in bits) (by -643264 bits)
-                                                       'int RedWorker::driver_cap_monitors_config' offset changed from 15520128 to 14876864 (in bits) (by -643264 bits)
-                                                       'int RedWorker::set_client_capabilities_pending' offset changed from 15520160 to 14876896 (in bits) (by -643264 bits)
-
-
-                                       type of 'void (SpiceWatch*, int)* SpiceCoreInterface::watch_update_mask' changed:
-                                         in pointed to type 'function type void (SpiceWatch*, int)':
-                                           parameter 1 of type 'SpiceWatch*' has sub-type changes:
-                                             in pointed to type 'typedef SpiceWatch' at spice-core.h:68:1:
-                                               underlying type 'struct SpiceWatch' changed, as reported earlier
-
-                                       type of 'void (SpiceWatch*)* SpiceCoreInterface::watch_remove' changed:
-                                         in pointed to type 'function type void (SpiceWatch*)':
-                                           parameter 1 of type 'SpiceWatch*' has sub-type changes:
-                                             in pointed to type 'typedef SpiceWatch' at spice-core.h:68:1:
-                                               underlying type 'struct SpiceWatch' changed, as reported earlier
-
-
 
                            'pthread_t RedDispatcher::worker_thread' offset changed from 2048 to 2112 (in bits) (by +64 bits)
                            'uint32_t RedDispatcher::pending' offset changed from 2112 to 2176 (in bits) (by +64 bits)
@@ -660,19 +187,11 @@
         in pointed to type 'typedef SpiceServer' at spice-server.h:38:1:
           underlying type 'struct RedsState' at reds-private.h:140:1 changed:
             type size hasn't changed
-            5 data member changes:
-             type of 'SpiceWatch* RedsState::listen_watch' changed:
-               in pointed to type 'typedef SpiceWatch' at spice-core.h:68:1:
-                 underlying type 'struct SpiceWatch' changed, as reported earlier
-
-             type of 'SpiceWatch* RedsState::secure_listen_watch' changed:
-               in pointed to type 'typedef SpiceWatch' at spice-core.h:68:1:
-                 underlying type 'struct SpiceWatch' changed, as reported earlier
-
+            2 data member changes:
              type of 'VDIPortState RedsState::agent_state' changed:
                underlying type 'struct VDIPortState' at reds-private.h:59:1 changed:
                  type size hasn't changed
-                 2 data member changes:
+                 1 data member change:
                   type of 'SpiceCharDeviceState* VDIPortState::base' changed:
                     in pointed to type 'typedef SpiceCharDeviceState' at spice-char.h:34:1:
                       underlying type 'struct SpiceCharDeviceState' at char_device.c:49:1 changed:
@@ -680,16 +199,7 @@
                         1 data member insertion:
                           'uint64_t SpiceCharDeviceState::cur_pool_size', at offset 384 (in bits) at char_device.c:57:1
                         12 data member changes:
-                         type of 'SpiceCharDeviceWriteBuffer* SpiceCharDeviceState::cur_write_buf' changed:
-                           in pointed to type 'typedef SpiceCharDeviceWriteBuffer' at char_device.h:94:1:
-                             underlying type 'struct SpiceCharDeviceWriteBuffer' at char_device.h:83:1 changed:
-                               type size hasn't changed
-                               1 data member change:
-                                type of 'RedClient* SpiceCharDeviceWriteBuffer::client' changed:
-                                  in pointed to type 'typedef RedClient' at red_channel.h:132:1:
-                                    underlying type 'struct RedClient' changed, as reported earlier
-
-                         and offset changed from 384 to 448 (in bits) (by +64 bits)
+                         'SpiceCharDeviceWriteBuffer* SpiceCharDeviceState::cur_write_buf' offset changed from 384 to 448 (in bits) (by +64 bits)
                          'uint8_t* SpiceCharDeviceState::cur_write_buf_pos' offset changed from 448 to 512 (in bits) (by +64 bits)
                          'SpiceTimer* SpiceCharDeviceState::write_to_dev_timer' offset changed from 512 to 576 (in bits) (by +64 bits)
                          'uint64_t SpiceCharDeviceState::num_self_tokens' offset changed from 576 to 640 (in bits) (by +64 bits)
@@ -711,37 +221,15 @@
                          type of 'SpiceCharDeviceCallbacks SpiceCharDeviceState::cbs' changed:
                            underlying type 'struct SpiceCharDeviceCallbacks' at char_device.h:98:1 changed:
                              type size hasn't changed
-                             4 data member changes:
+                             1 data member change:
                               type of 'void (SpiceCharDeviceInstance*, void*)* SpiceCharDeviceCallbacks::read_one_msg_from_device' changed:
                                 in pointed to type 'function type void (SpiceCharDeviceInstance*, void*)':
                                   parameter 1 of type 'SpiceCharDeviceInstance*' has sub-type changes:
                                     in pointed to type 'typedef SpiceCharDeviceInstance' at spice-char.h:33:1:
                                       underlying type 'struct SpiceCharDeviceInstance' changed, as reported earlier
 
-                              type of 'void (RedClient*, void*)* SpiceCharDeviceCallbacks::send_msg_to_client' changed:
-                                in pointed to type 'function type void (RedClient*, void*)':
-                                  parameter 1 of type 'RedClient*' has sub-type changes:
-                                    in pointed to type 'typedef RedClient' at red_channel.h:132:1:
-                                      underlying type 'struct RedClient' changed, as reported earlier
-
-                              type of 'void (RedClient*, typedef uint32_t, void*)* SpiceCharDeviceCallbacks::send_tokens_to_client' changed:
-                                in pointed to type 'function type void (RedClient*, typedef uint32_t, void*)':
-                                  parameter 1 of type 'RedClient*' has sub-type changes:
-                                    in pointed to type 'typedef RedClient' at red_channel.h:132:1:
-                                      underlying type 'struct RedClient' changed, as reported earlier
-
-                              type of 'void (RedClient*, void*)* SpiceCharDeviceCallbacks::remove_client' changed:
-                                in pointed to type 'function type void (RedClient*, void*)':
-                                  parameter 1 of type 'RedClient*' has sub-type changes:
-                                    in pointed to type 'typedef RedClient' at red_channel.h:132:1:
-                                      underlying type 'struct RedClient' changed, as reported earlier
-
                          and offset changed from 1024 to 1088 (in bits) (by +64 bits)
                          'void* SpiceCharDeviceState::opaque' offset changed from 1472 to 1536 (in bits) (by +64 bits)
-
-                  type of 'SpiceCharDeviceWriteBuffer* VDIPortState::recv_from_client_buf' changed:
-                    in pointed to type 'typedef SpiceCharDeviceWriteBuffer' at char_device.h:94:1:
-                      underlying type 'struct SpiceCharDeviceWriteBuffer' changed, as reported earlier
 
                  no data member changes (3 filtered);
 
@@ -751,16 +239,141 @@
                    type size hasn't changed
                    1 data member change:
                     type of 'RedChannel MainChannel::base' changed:
-                      underlying type 'struct RedChannel' changed, as reported earlier
+                      underlying type 'struct RedChannel' at red_channel.h:298:1 changed:
+                        type size hasn't changed
+                        3 data member changes:
+                         type of 'SpiceCoreInterface* RedChannel::core' changed:
+                           in pointed to type 'typedef SpiceCoreInterface':
+                             entity changed from 'typedef SpiceCoreInterface' to 'const SpiceCoreInterface'
+                             type size hasn't changed
+
+                         type of 'ChannelCbs RedChannel::channel_cbs' changed:
+                           underlying type 'struct __anonymous_struct__' at red_channel.h:190:1 changed:
+                             type size hasn't changed
+                             10 data member changes:
+                              type of 'channel_configure_socket_proc __anonymous_struct__::config_socket' changed:
+                                underlying type 'int (RedChannelClient*)*' changed:
+                                  in pointed to type 'function type int (RedChannelClient*)':
+                                    parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                      in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
+                                        underlying type 'struct RedChannelClient' at red_channel.h:242:1 changed:
+                                          type size hasn't changed
+                                          2 data member changes:
+                                           type of 'RedChannel* RedChannelClient::channel' changed:
+                                             in pointed to type 'typedef RedChannel' at red_channel.h:130:1:
+                                               underlying type 'struct RedChannel' changed; details are being reported
+
+                                           type of 'RedsStream* RedChannelClient::stream' changed:
+                                             in pointed to type 'typedef RedsStream' at reds_stream.h:31:1:
+                                               underlying type 'struct RedsStream' at reds_stream.h:34:1 changed:
+                                                 type size changed from 1280 to 256 bits
+                                                 5 data member deletions:
+                                                   'RedsSASL RedsStream::sasl', at offset 256 (in bits) at reds.h:78:1
+
+                                                   'SpiceChannelEventInfo* RedsStream::info', at offset 1024 (in bits) at reds.h:85:1
+
+                                                   'typedef ssize_t (RedsStream*, void*, typedef size_t)* RedsStream::read', at offset 1088 (in bits) at reds.h:88:1
+
+                                                   'typedef ssize_t (RedsStream*, void*, typedef size_t)* RedsStream::write', at offset 1152 (in bits) at reds.h:89:1
+
+                                                   'typedef ssize_t (RedsStream*, const iovec*, int)* RedsStream::writev', at offset 1216 (in bits) at reds.h:90:1
+
+                                                 no data member change (1 filtered);
 
 
-             type of 'RedsClientMonitorsConfig RedsState::client_monitors_config' changed:
-               underlying type 'struct RedsClientMonitorsConfig' at reds-private.h:133:1 changed:
-                 type size hasn't changed
-                 1 data member change:
-                  type of 'MainChannelClient* RedsClientMonitorsConfig::mcc' changed:
-                    in pointed to type 'typedef MainChannelClient' at red_channel.h:133:1:
-                      underlying type 'struct MainChannelClient' changed, as reported earlier
+                              type of 'channel_disconnect_proc __anonymous_struct__::on_disconnect' changed:
+                                underlying type 'void (RedChannelClient*)*' changed:
+                                  in pointed to type 'function type void (RedChannelClient*)':
+                                    parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                      in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
+                                        underlying type 'struct RedChannelClient' changed, as reported earlier
+
+                              type of 'channel_send_pipe_item_proc __anonymous_struct__::send_item' changed:
+                                underlying type 'void (RedChannelClient*, PipeItem*)*' changed:
+                                  in pointed to type 'function type void (RedChannelClient*, PipeItem*)':
+                                    parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                      in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
+                                        underlying type 'struct RedChannelClient' changed, as reported earlier
+
+                              type of 'channel_hold_pipe_item_proc __anonymous_struct__::hold_item' changed:
+                                underlying type 'void (RedChannelClient*, PipeItem*)*' changed:
+                                  in pointed to type 'function type void (RedChannelClient*, PipeItem*)':
+                                    parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                      in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
+                                        underlying type 'struct RedChannelClient' changed, as reported earlier
+
+                              type of 'channel_release_pipe_item_proc __anonymous_struct__::release_item' changed:
+                                underlying type 'void (RedChannelClient*, PipeItem*, int)*' changed:
+                                  in pointed to type 'function type void (RedChannelClient*, PipeItem*, int)':
+                                    parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                      in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
+                                        underlying type 'struct RedChannelClient' changed, as reported earlier
+
+                              type of 'channel_alloc_msg_recv_buf_proc __anonymous_struct__::alloc_recv_buf' changed:
+                                underlying type 'uint8_t* (RedChannelClient*, typedef uint16_t, typedef uint32_t)*' changed:
+                                  in pointed to type 'function type uint8_t* (RedChannelClient*, typedef uint16_t, typedef uint32_t)':
+                                    parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                      in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
+                                        underlying type 'struct RedChannelClient' changed, as reported earlier
+
+                              type of 'channel_release_msg_recv_buf_proc __anonymous_struct__::release_recv_buf' changed:
+                                underlying type 'void (RedChannelClient*, typedef uint16_t, typedef uint32_t, uint8_t*)*' changed:
+                                  in pointed to type 'function type void (RedChannelClient*, typedef uint16_t, typedef uint32_t, uint8_t*)':
+                                    parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                      in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
+                                        underlying type 'struct RedChannelClient' changed, as reported earlier
+
+                              type of 'channel_handle_migrate_flush_mark_proc __anonymous_struct__::handle_migrate_flush_mark' changed:
+                                underlying type 'int (RedChannelClient*)*' changed:
+                                  in pointed to type 'function type int (RedChannelClient*)':
+                                    parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                      in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
+                                        underlying type 'struct RedChannelClient' changed, as reported earlier
+
+                              type of 'channel_handle_migrate_data_proc __anonymous_struct__::handle_migrate_data' changed:
+                                underlying type 'int (RedChannelClient*, typedef uint32_t, void*)*' changed:
+                                  in pointed to type 'function type int (RedChannelClient*, typedef uint32_t, void*)':
+                                    parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                      in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
+                                        underlying type 'struct RedChannelClient' changed, as reported earlier
+
+                              type of 'channel_handle_migrate_data_get_serial_proc __anonymous_struct__::handle_migrate_data_get_serial' changed:
+                                underlying type 'typedef uint64_t (RedChannelClient*, typedef uint32_t, void*)*' changed:
+                                  in pointed to type 'function type typedef uint64_t (RedChannelClient*, typedef uint32_t, void*)':
+                                    parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                      in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
+                                        underlying type 'struct RedChannelClient' changed, as reported earlier
+
+
+                         type of 'ClientCbs RedChannel::client_cbs' changed:
+                           underlying type 'struct __anonymous_struct__' at red_channel.h:208:1 changed:
+                             type size hasn't changed
+                             3 data member changes:
+                              type of 'channel_client_connect_proc __anonymous_struct__::connect' changed:
+                                underlying type 'void (RedChannel*, RedClient*, RedsStream*, int, int, uint32_t*, int, uint32_t*)*' changed:
+                                  in pointed to type 'function type void (RedChannel*, RedClient*, RedsStream*, int, int, uint32_t*, int, uint32_t*)':
+                                    parameter 1 of type 'RedChannel*' has sub-type changes:
+                                      in pointed to type 'typedef RedChannel' at red_channel.h:130:1:
+                                        underlying type 'struct RedChannel' changed; details are being reported
+                                    parameter 3 of type 'RedsStream*' has sub-type changes:
+                                      in pointed to type 'typedef RedsStream' at reds_stream.h:31:1:
+                                        underlying type 'struct RedsStream' changed, as reported earlier
+
+                              type of 'channel_client_disconnect_proc __anonymous_struct__::disconnect' changed:
+                                underlying type 'void (RedChannelClient*)*' changed:
+                                  in pointed to type 'function type void (RedChannelClient*)':
+                                    parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                      in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
+                                        underlying type 'struct RedChannelClient' changed, as reported earlier
+
+                              type of 'channel_client_migrate_proc __anonymous_struct__::migrate' changed:
+                                underlying type 'void (RedChannelClient*)*' changed:
+                                  in pointed to type 'function type void (RedChannelClient*)':
+                                    parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                      in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
+                                        underlying type 'struct RedChannelClient' changed, as reported earlier
+
+
 
 
             no data member change (1 filtered);
@@ -837,9 +450,6 @@
       parameter 1 of type 'SpiceServer*' has sub-type changes:
         in pointed to type 'typedef SpiceServer' at spice-server.h:38:1:
           underlying type 'struct RedsState' changed, as reported earlier
-      parameter 2 of type 'SpiceCoreInterface*' has sub-type changes:
-        in pointed to type 'typedef SpiceCoreInterface' at spice-core.h:56:1:
-          underlying type 'struct SpiceCoreInterface' changed, as reported earlier
 
     [C]'function int spice_server_is_server_mouse(SpiceServer*)' at reds.c:3698:1 has some indirect sub-type changes:
       parameter 1 of type 'SpiceServer*' has sub-type changes:

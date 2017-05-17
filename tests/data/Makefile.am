@@ -601,6 +601,25 @@ test-diff-filter/libtest37-v1.so \
 test-diff-filter/test37-report-0.txt \
 test-diff-filter/test37-v0.cc \
 test-diff-filter/test37-v1.cc \
+test-diff-filter/test38/Makefile \
+test-diff-filter/test38/test38-a.c \
+test-diff-filter/test38/test38-b.c \
+test-diff-filter/test38/test38-c.c \
+test-diff-filter/test38/test38-report-0.txt \
+test-diff-filter/test38/test38-v0 \
+test-diff-filter/test38/test38-v1 \
+test-diff-filter/test38/test38.h \
+test-diff-filter/test39.h \
+test-diff-filter/test39-a-v0.c \
+test-diff-filter/test39-a-v1.c \
+test-diff-filter/test39-b-v0.c \
+test-diff-filter/test39-b-v1.c \
+test-diff-filter/test39-c-v0.c \
+test-diff-filter/test39-c-v1.c \
+test-diff-filter/test39-main.c \
+test-diff-filter/test39-v0 \
+test-diff-filter/test39-v1 \
+test-diff-filter/test39-report-0.txt \
 \
 test-diff-suppr/test0-type-suppr-v0.cc	\
 test-diff-suppr/test0-type-suppr-v1.cc	\

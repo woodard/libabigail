@@ -417,16 +417,16 @@ typedef unordered_map<function_type_sptr,
 
 struct type_maps::priv
 {
-  mutable istring_type_base_wptr_map_type	basic_types_;
-  mutable istring_type_base_wptr_map_type	class_types_;
-  mutable istring_type_base_wptr_map_type	union_types_;
-  mutable istring_type_base_wptr_map_type	enum_types_;
-  mutable istring_type_base_wptr_map_type	typedef_types_;
-  mutable istring_type_base_wptr_map_type	qualified_types_;
-  mutable istring_type_base_wptr_map_type	pointer_types_;
-  mutable istring_type_base_wptr_map_type	reference_types_;
-  mutable istring_type_base_wptr_map_type	array_types_;
-  mutable istring_type_base_wptr_map_type	function_types_;
+  mutable istring_type_base_wptrs_map_type	basic_types_;
+  mutable istring_type_base_wptrs_map_type	class_types_;
+  mutable istring_type_base_wptrs_map_type	union_types_;
+  mutable istring_type_base_wptrs_map_type	enum_types_;
+  mutable istring_type_base_wptrs_map_type	typedef_types_;
+  mutable istring_type_base_wptrs_map_type	qualified_types_;
+  mutable istring_type_base_wptrs_map_type	pointer_types_;
+  mutable istring_type_base_wptrs_map_type	reference_types_;
+  mutable istring_type_base_wptrs_map_type	array_types_;
+  mutable istring_type_base_wptrs_map_type	function_types_;
 }; // end struct type_maps::priv
 
 type_maps::type_maps()
@@ -450,123 +450,141 @@ type_maps::empty() const
 	  && array_types().empty()
 	  && function_types().empty());
 }
-/// Getter for the map that associates the name of a basic type to
-/// the @ref type_decl_sptr that represents that type.
-const istring_type_base_wptr_map_type&
+
+/// Getter for the map that associates the name of a basic type to the
+/// vector instances of type_decl_sptr that represents that type.
+const istring_type_base_wptrs_map_type&
 type_maps::basic_types() const
 {return priv_->basic_types_;}
 
-/// Getter for the map that associates the name of a basic type to
-/// the @ref type_decl_sptr that represents that type.
-istring_type_base_wptr_map_type&
+/// Getter for the map that associates the name of a basic type to the
+/// vector of instances of @ref type_decl_sptr that represents that
+/// type.
+istring_type_base_wptrs_map_type&
 type_maps::basic_types()
 {return priv_->basic_types_;}
 
-/// Getter for the map that associates the name of a class type to
-/// the @ref class_decl_sptr that represents that type.
-const istring_type_base_wptr_map_type&
+/// Getter for the map that associates the name of a class type to the
+/// vector of instances of @ref class_decl_sptr that represents that
+/// type.
+const istring_type_base_wptrs_map_type&
 type_maps::class_types() const
 {return priv_->class_types_;}
 
-/// Getter for the map that associates the name of a class type to
-/// the @ref class_decl_sptr that represents that type.
-istring_type_base_wptr_map_type&
+/// Getter for the map that associates the name of a class type to the
+/// vector of instances of @ref class_decl_sptr that represents that
+/// type.
+istring_type_base_wptrs_map_type&
 type_maps::class_types()
 {return priv_->class_types_;}
 
-/// Getter for the map that associates the name of a union type to
-/// the @ref union_decl_sptr that represents that type.
-istring_type_base_wptr_map_type&
+/// Getter for the map that associates the name of a union type to the
+/// vector of instances of @ref union_decl_sptr that represents that
+/// type.
+istring_type_base_wptrs_map_type&
 type_maps::union_types()
 {return priv_->union_types_;}
 
-/// Getter for the map that associates the name of a union type to
-/// the @ref union_decl_sptr that represents that type.
-const istring_type_base_wptr_map_type&
+/// Getter for the map that associates the name of a union type to the
+/// vector of instances of @ref union_decl_sptr that represents that
+/// type.
+const istring_type_base_wptrs_map_type&
 type_maps::union_types() const
 {return priv_->union_types_;}
 
-/// Getter for the map that associates the name of an enum type to
-/// the @ref enum_type_decl_sptr that represents that type.
-istring_type_base_wptr_map_type&
+/// Getter for the map that associates the name of an enum type to the
+/// vector of instances of @ref enum_type_decl_sptr that represents
+/// that type.
+istring_type_base_wptrs_map_type&
 type_maps::enum_types()
 {return priv_->enum_types_;}
 
-/// Getter for the map that associates the name of an enum type to
-/// the @ref enum_type_decl_sptr that represents that type.
-const istring_type_base_wptr_map_type&
+/// Getter for the map that associates the name of an enum type to the
+/// vector of instances of @ref enum_type_decl_sptr that represents
+/// that type.
+const istring_type_base_wptrs_map_type&
 type_maps::enum_types() const
 {return priv_->enum_types_;}
 
 /// Getter for the map that associates the name of a typedef to the
-/// @ref typedef_decl_sptr that represents tha type.
-istring_type_base_wptr_map_type&
+/// vector of instances of @ref typedef_decl_sptr that represents tha
+/// type.
+istring_type_base_wptrs_map_type&
 type_maps::typedef_types()
 {return priv_->typedef_types_;}
 
 /// Getter for the map that associates the name of a typedef to the
-/// @ref typedef_decl_sptr that represents tha type.
-const istring_type_base_wptr_map_type&
+/// vector of instances of @ref typedef_decl_sptr that represents tha
+/// type.
+const istring_type_base_wptrs_map_type&
 type_maps::typedef_types() const
 {return priv_->typedef_types_;}
 
-/// Getter for the map that associates the name of a qualified type
-/// to the @ref qualified_type_def_sptr.
-istring_type_base_wptr_map_type&
+/// Getter for the map that associates the name of a qualified type to
+/// the vector of instances of @ref qualified_type_def_sptr.
+istring_type_base_wptrs_map_type&
 type_maps::qualified_types()
 {return priv_->qualified_types_;}
 
-/// Getter for the map that associates the name of a qualified type
-/// to the @ref qualified_type_def_sptr.
-const istring_type_base_wptr_map_type&
+/// Getter for the map that associates the name of a qualified type to
+/// the vector of instances of @ref qualified_type_def_sptr.
+const istring_type_base_wptrs_map_type&
 type_maps::qualified_types() const
 {return priv_->qualified_types_;}
 
 /// Getter for the map that associates the name of a pointer type to
-/// the @ref pointer_type_def_sptr that represents that type.
-istring_type_base_wptr_map_type&
+/// the vector of instances of @ref pointer_type_def_sptr that
+/// represents that type.
+istring_type_base_wptrs_map_type&
 type_maps::pointer_types()
 {return priv_->pointer_types_;}
 
 /// Getter for the map that associates the name of a pointer type to
-/// the @ref pointer_type_def_sptr that represents that type.
-const istring_type_base_wptr_map_type&
+/// the vector of instances of @ref pointer_type_def_sptr that
+/// represents that type.
+const istring_type_base_wptrs_map_type&
 type_maps::pointer_types() const
 {return priv_->pointer_types_;}
 
 /// Getter for the map that associates the name of a reference type to
-/// the @ref reference_type_def_sptr that represents that type.
-istring_type_base_wptr_map_type&
+/// the vector of instances of @ref reference_type_def_sptr that
+/// represents that type.
+istring_type_base_wptrs_map_type&
 type_maps::reference_types()
 {return priv_->reference_types_;}
 
 /// Getter for the map that associates the name of a reference type to
-/// the @ref reference_type_def_sptr that represents that type.
-const istring_type_base_wptr_map_type&
+/// the vector of instances of @ref reference_type_def_sptr that
+/// represents that type.
+const istring_type_base_wptrs_map_type&
 type_maps::reference_types() const
 {return priv_->reference_types_;}
 
 /// Getter for the map that associates the name of an array type to
-/// the @ref array_type_def_sptr that represents that type.
-istring_type_base_wptr_map_type&
+/// the vector of instances of @ref array_type_def_sptr that
+/// represents that type.
+istring_type_base_wptrs_map_type&
 type_maps::array_types()
 {return priv_->array_types_;}
 
 /// Getter for the map that associates the name of an array type to
-/// the @ref array_type_def_sptr that represents that type.
-const istring_type_base_wptr_map_type&
+/// the vector of instances of @ref array_type_def_sptr that
+/// represents that type.
+const istring_type_base_wptrs_map_type&
 type_maps::array_types() const
 {return priv_->array_types_;}
 
-/// Getter for the map that associates the name of a function type
-/// to the @ref function_type_sptr that represents that type.
-const istring_type_base_wptr_map_type&
+/// Getter for the map that associates the name of a function type to
+/// the vector of instances of @ref function_type_sptr that represents
+/// that type.
+const istring_type_base_wptrs_map_type&
 type_maps::function_types() const
 {return priv_->function_types_;}
 
-/// Getter for the map that associates the name of a function type
-/// to the @ref function_type_sptr that represents that type.
-istring_type_base_wptr_map_type&
+/// Getter for the map that associates the name of a function type to
+/// the vector of instances of @ref function_type_sptr that represents
+/// that type.
+istring_type_base_wptrs_map_type&
 type_maps::function_types()
 {return priv_->function_types_;}
 
@@ -836,8 +854,8 @@ translation_unit::bind_function_type_life_time(function_type_sptr ftype) const
   const_cast<translation_unit*>(this)->priv_->live_fn_types_.push_back(ftype);
 
   interned_string repr = get_type_name(ftype);
-  const_cast<translation_unit*>(this)->get_types().function_types()[repr]
-    = ftype;
+  const_cast<translation_unit*>(this)->get_types().function_types()[repr].
+    push_back(ftype);
 
   // The function type must be out of the same environment as its
   // translation unit.
@@ -2222,10 +2240,12 @@ struct environment::priv
   interned_string_pool		string_pool_;
   bool				canonicalization_is_done_;
   bool				do_on_the_fly_canonicalization_;
+  bool				decl_only_class_equals_definition_;
 
   priv()
     : canonicalization_is_done_(),
-      do_on_the_fly_canonicalization_(true)
+      do_on_the_fly_canonicalization_(true),
+      decl_only_class_equals_definition_(false)
   {}
 };// end struct environment::priv
 
@@ -2316,6 +2336,55 @@ environment::do_on_the_fly_canonicalization() const
 void
 environment::do_on_the_fly_canonicalization(bool f)
 {priv_->do_on_the_fly_canonicalization_ = f;}
+
+/// Getter of the "decl-only-class-equals-definition" flag.
+///
+/// Usually, a declaration-only class named 'struct foo' compares
+/// equal to any class definition named "struct foo'.  This is at
+/// least true for C++.
+///
+/// In C, though, because there can be multiple definitions of 'struct
+/// foo' in the binary, a declaration-only "struct foo" might be
+/// considered to *NOT* resolve to any of the struct foo defined.  In
+/// that case, the declaration-only "struct foo" is considered
+/// different from the definitions.
+///
+/// This flag controls the behaviour of the comparison of an
+/// unresolved decl-only class against a definition of the same name.
+///
+/// If set to false, the the declaration equals the definition.  If
+/// set to false, then the decalration is considered different from
+/// the declaration.
+///
+/// @return the value of the "decl-only-class-equals-definition" flag.
+bool
+environment::decl_only_class_equals_definition() const
+{return priv_->decl_only_class_equals_definition_;}
+
+/// Setter of the "decl-only-class-equals-definition" flag.
+///
+/// Usually, a declaration-only class named 'struct foo' compares
+/// equal to any class definition named "struct foo'.  This is at
+/// least true for C++.
+///
+/// In C, though, because there can be multiple definitions of 'struct
+/// foo' in the binary, a declaration-only "struct foo" might be
+/// considered to *NOT* resolve to any of the struct foo defined.  In
+/// that case, the declaration-only "struct foo" is considered
+/// different from the definitions.
+///
+/// This flag controls the behaviour of the comparison of an
+/// unresolved decl-only class against a definition of the same name.
+///
+/// If set to false, the the declaration equals the definition.  If
+/// set to false, then the decalration is considered different from
+/// the declaration.
+///
+/// @param the new value of the "decl-only-class-equals-definition"
+/// flag.
+void
+environment::decl_only_class_equals_definition(bool f) const
+{priv_->decl_only_class_equals_definition_ = f;}
 
 /// Test if a given type is a void type as defined in the current
 /// environment.
@@ -5731,7 +5800,7 @@ get_pretty_representation(const method_type_sptr method, bool internal)
 ///
 /// @return true iff the One Definition Rule should apply.
 bool
-odr_is_relevant(type_or_decl_base& artifact)
+odr_is_relevant(const type_or_decl_base& artifact)
 {
   if (is_cplus_plus_language(artifact.get_translation_unit()->get_language()))
     return true;
@@ -6428,14 +6497,14 @@ method_type*
 is_method_type(type_or_decl_base* t)
 {return dynamic_cast<method_type*>(t);}
 
-/// If a class is a decl-only class, get its definition.  Otherwise,
-/// just return the initial class.
+/// If a class (or union) is a decl-only class, get its definition.
+/// Otherwise, just return the initial class.
 ///
-/// @param klass the class to consider.
+/// @param klass the class (or union) to consider.
 ///
 /// @return either the definition of the class, or the class itself.
-class_decl_sptr
-look_through_decl_only_class(class_decl_sptr klass)
+class_or_union_sptr
+look_through_decl_only_class(class_or_union_sptr klass)
 {
   if (!klass)
     return klass;
@@ -6674,8 +6743,29 @@ iterator_is_last(T& container,
 // <type and decls lookup stuff>
 // ------------------------------
 
+/// Lookup all the type*s* that have a given fully qualified name.
+///
+/// @param type_name the fully qualified name of the type to
+/// lookup.
+///
+/// @param type_map the map to look into.
+///
+/// @return the vector containing the types named @p type_name.  If
+/// the lookup didn't yield any type, then this function returns nil.
+static const type_base_wptrs_type*
+lookup_types_in_map(const interned_string& type_name,
+		    const istring_type_base_wptrs_map_type& type_map)
+{
+  istring_type_base_wptrs_map_type::const_iterator i = type_map.find(type_name);
+  if (i != type_map.end())
+    return &i->second;
+  return 0;
+}
+
 /// Lookup a type (with a given name) in a map that associates a type
-/// name to a type.
+/// name to a type.  If there are several types with a given name,
+/// then return the last of such types, that is, the last one that got
+/// registered.
 ///
 /// @tparam TypeKind the type of the type this function is supposed to
 /// return.
@@ -6690,15 +6780,11 @@ iterator_is_last(T& container,
 template <class TypeKind>
 static shared_ptr<TypeKind>
 lookup_type_in_map(const interned_string& type_name,
-		   const istring_type_base_wptr_map_type& type_map)
+		   const istring_type_base_wptrs_map_type& type_map)
 {
-  // TODO: when we fully support types indexed by type locations (and
-  // then, one location being able to have several different types)
-  // then there should be another function similar to this one that
-  // returns a vector of types for a type location.
-  istring_type_base_wptr_map_type::const_iterator i = type_map.find(type_name);
+  istring_type_base_wptrs_map_type::const_iterator i = type_map.find(type_name);
   if (i != type_map.end())
-    return dynamic_pointer_cast<TypeKind>(type_base_sptr(i->second));
+    return dynamic_pointer_cast<TypeKind>(type_base_sptr(i->second.back()));
   return shared_ptr<TypeKind>();
 }
 
@@ -6810,7 +6896,7 @@ lookup_union_type(const interned_string& type_name, const translation_unit& tu)
 union_decl_sptr
 lookup_union_type_per_location(const interned_string &loc, const corpus& corp)
 {
-  const istring_type_base_wptr_map_type& m =
+  const istring_type_base_wptrs_map_type& m =
     corp.get_type_per_loc_map().union_types();
   union_decl_sptr result = lookup_type_in_map<union_decl>(loc, m);
 
@@ -7946,7 +8032,7 @@ lookup_basic_type(const type_decl& t, const corpus& corp)
 type_decl_sptr
 lookup_basic_type(const interned_string &qualified_name, const corpus& corp)
 {
-  const istring_type_base_wptr_map_type& m = corp.get_types().basic_types();
+  const istring_type_base_wptrs_map_type& m = corp.get_types().basic_types();
   type_decl_sptr result;
 
   if (!m.empty())
@@ -7968,7 +8054,7 @@ type_decl_sptr
 lookup_basic_type_per_location(const interned_string &loc,
 			       const corpus &corp)
 {
-  const istring_type_base_wptr_map_type& m =
+  const istring_type_base_wptrs_map_type& m =
     corp.get_type_per_loc_map().basic_types();
   type_decl_sptr result;
 
@@ -8063,13 +8149,44 @@ lookup_class_type(const string& qualified_name, const corpus& corp)
 class_decl_sptr
 lookup_class_type(const interned_string& qualified_name, const corpus& corp)
 {
-  const istring_type_base_wptr_map_type& m = corp.get_types().class_types();
+  const istring_type_base_wptrs_map_type& m = corp.get_types().class_types();
 
   class_decl_sptr result = lookup_type_in_map<class_decl>(qualified_name, m);
   if (!result)
     result = lookup_class_type_through_translation_units(qualified_name, corp);
 
   return result;
+}
+
+/// Look into a given corpus to find the class type*s* that have a
+/// given qualified name.
+///
+/// @param qualified_name the qualified name of the type to look for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the vector of class types that which name is @p qualified_name.
+const type_base_wptrs_type *
+lookup_class_types(const interned_string& qualified_name, const corpus& corp)
+{
+  const istring_type_base_wptrs_map_type& m = corp.get_types().class_types();
+
+  return lookup_types_in_map(qualified_name, m);
+}
+
+/// Look into a given corpus to find the class type*s* that have a
+/// given qualified name.
+///
+/// @param qualified_name the qualified name of the type to look for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the vector of class types that which name is @p qualified_name.
+const type_base_wptrs_type*
+lookup_class_types(const string& qualified_name, const corpus& corp)
+{
+  interned_string s = corp.get_environment()->intern(qualified_name);
+  return lookup_class_types(s, corp);
 }
 
 /// Look up a @ref class_decl from a given corpus by its location.
@@ -8083,7 +8200,7 @@ class_decl_sptr
 lookup_class_type_per_location(const interned_string& loc,
 			       const corpus& corp)
 {
-  const istring_type_base_wptr_map_type& m =
+  const istring_type_base_wptrs_map_type& m =
     corp.get_type_per_loc_map().class_types();
   class_decl_sptr result = lookup_type_in_map<class_decl>(loc, m);
 
@@ -8120,7 +8237,7 @@ lookup_class_type_per_location(const string &loc, const corpus &corp)
 union_decl_sptr
 lookup_union_type(const interned_string& type_name, const corpus& corp)
 {
-  const istring_type_base_wptr_map_type& m = corp.get_types().union_types();
+  const istring_type_base_wptrs_map_type& m = corp.get_types().union_types();
 
   union_decl_sptr result = lookup_type_in_map<union_decl>(type_name, m);
   if (!result)
@@ -8200,7 +8317,7 @@ lookup_enum_type(const string& qualified_name, const corpus& corp)
 enum_type_decl_sptr
 lookup_enum_type(const interned_string& qualified_name, const corpus& corp)
 {
-  const istring_type_base_wptr_map_type& m = corp.get_types().enum_types();
+  const istring_type_base_wptrs_map_type& m = corp.get_types().enum_types();
 
   enum_type_decl_sptr result =
     lookup_type_in_map<enum_type_decl>(qualified_name, m);
@@ -8220,7 +8337,7 @@ lookup_enum_type(const interned_string& qualified_name, const corpus& corp)
 enum_type_decl_sptr
 lookup_enum_type_per_location(const interned_string &loc, const corpus& corp)
 {
-  const istring_type_base_wptr_map_type& m =
+  const istring_type_base_wptrs_map_type& m =
     corp.get_type_per_loc_map().enum_types();
   enum_type_decl_sptr result = lookup_type_in_map<enum_type_decl>(loc, m);
 
@@ -8296,7 +8413,7 @@ lookup_typedef_type(const string& qualified_name, const corpus& corp)
 typedef_decl_sptr
 lookup_typedef_type(const interned_string& qualified_name, const corpus& corp)
 {
-  const istring_type_base_wptr_map_type& m = corp.get_types().typedef_types();
+  const istring_type_base_wptrs_map_type& m = corp.get_types().typedef_types();
 
   typedef_decl_sptr result =
     lookup_type_in_map<typedef_decl>(qualified_name, m);
@@ -8317,7 +8434,7 @@ lookup_typedef_type(const interned_string& qualified_name, const corpus& corp)
 typedef_decl_sptr
 lookup_typedef_type_per_location(const interned_string &loc, const corpus &corp)
 {
-  const istring_type_base_wptr_map_type& m =
+  const istring_type_base_wptrs_map_type& m =
     corp.get_type_per_loc_map().typedef_types();
   typedef_decl_sptr result = lookup_type_in_map<typedef_decl>(loc, m);
 
@@ -8413,7 +8530,8 @@ lookup_qualified_type(const qualified_type_def& t, const corpus& corp)
 qualified_type_def_sptr
 lookup_qualified_type(const interned_string& qualified_name, const corpus& corp)
 {
-  const istring_type_base_wptr_map_type& m = corp.get_types().qualified_types();
+  const istring_type_base_wptrs_map_type& m =
+    corp.get_types().qualified_types();
 
   qualified_type_def_sptr result =
     lookup_type_in_map<qualified_type_def>(qualified_name, m);
@@ -8458,7 +8576,7 @@ lookup_pointer_type(const pointer_type_def& t, const corpus& corp)
 pointer_type_def_sptr
 lookup_pointer_type(const interned_string& qualified_name, const corpus& corp)
 {
-  const istring_type_base_wptr_map_type& m = corp.get_types().pointer_types();
+  const istring_type_base_wptrs_map_type& m = corp.get_types().pointer_types();
 
   pointer_type_def_sptr result =
     lookup_type_in_map<pointer_type_def>(qualified_name, m);
@@ -8507,7 +8625,8 @@ lookup_reference_type(const reference_type_def& t, const corpus& corp)
 reference_type_def_sptr
 lookup_reference_type(const interned_string& qualified_name, const corpus& corp)
 {
-  const istring_type_base_wptr_map_type& m = corp.get_types().reference_types();
+  const istring_type_base_wptrs_map_type& m =
+    corp.get_types().reference_types();
 
   reference_type_def_sptr result =
     lookup_type_in_map<reference_type_def>(qualified_name, m);
@@ -8556,7 +8675,7 @@ lookup_array_type(const array_type_def& t, const corpus& corp)
 array_type_def_sptr
 lookup_array_type(const interned_string& qualified_name, const corpus& corp)
 {
-  const istring_type_base_wptr_map_type& m = corp.get_types().array_types();
+  const istring_type_base_wptrs_map_type& m = corp.get_types().array_types();
 
   array_type_def_sptr result =
     lookup_type_in_map<array_type_def>(qualified_name, m);
@@ -8627,7 +8746,7 @@ lookup_function_type(const function_type_sptr& fn_t,
 function_type_sptr
 lookup_function_type(const interned_string& qualified_name, const corpus& corp)
 {
-  const istring_type_base_wptr_map_type& m = corp.get_types().function_types();
+  const istring_type_base_wptrs_map_type& m = corp.get_types().function_types();
 
   function_type_sptr result =
     lookup_type_in_map<function_type>(qualified_name, m);
@@ -8762,7 +8881,7 @@ lookup_type(const type_base_sptr&t, const corpus& corp)
 template<typename TypeKind>
 bool
 maybe_update_types_lookup_map(const shared_ptr<TypeKind>& type,
-			      istring_type_base_wptr_map_type& types_map,
+			      istring_type_base_wptrs_map_type& types_map,
 			      bool erase_if_exists_already = false,
 			      bool use_type_name_as_key = true)
 {
@@ -8776,16 +8895,18 @@ maybe_update_types_lookup_map(const shared_ptr<TypeKind>& type,
       s = type->get_environment()->intern(str);
     }
 
-  istring_type_base_wptr_map_type::iterator i = types_map.find(s);
+  istring_type_base_wptrs_map_type::iterator i = types_map.find(s);
   bool result = false;
 
-  if (types_map.find(s) == types_map.end())
+  if (i == types_map.end())
     {
-      types_map[s]= type;
+      types_map[s].push_back(type);
       result = true;
     }
   else if (erase_if_exists_already)
     types_map.erase(i);
+  else
+    i->second.push_back(type);
 
   return result;
 }
@@ -8795,7 +8916,7 @@ maybe_update_types_lookup_map(const shared_ptr<TypeKind>& type,
 ///
 ///    maybe_update_types_lookup_map<T>(scope_decl*,
 ///					const shared_ptr<T>&,
-///					istring_type_base_wptr_map_type&)
+///					istring_type_base_wptrs_map_type&)
 ///
 /// @param class_type the type to consider.
 ///
@@ -8811,7 +8932,7 @@ maybe_update_types_lookup_map(const shared_ptr<TypeKind>& type,
 template<>
 bool
 maybe_update_types_lookup_map<class_decl>(const class_decl_sptr& class_type,
-					  istring_type_base_wptr_map_type& map,
+					  istring_type_base_wptrs_map_type& map,
 					  bool erase_if_exists_already,
 					  bool use_type_name_as_key)
 {
@@ -8842,14 +8963,16 @@ maybe_update_types_lookup_map<class_decl>(const class_decl_sptr& class_type,
     }
 
   bool result = false;
-  istring_type_base_wptr_map_type::iterator i = map.find(s);
+  istring_type_base_wptrs_map_type::iterator i = map.find(s);
   if (i == map.end())
     {
-      map[s]= type;
+      map[s].push_back(type);
       result = true;
     }
   else if (erase_if_exists_already)
     map.erase(i);
+  else
+    i->second.push_back(type);
 
   return result;
 }
@@ -8859,7 +8982,7 @@ maybe_update_types_lookup_map<class_decl>(const class_decl_sptr& class_type,
 ///
 ///    maybe_update_types_lookup_map<T>(scope_decl*,
 ///					const shared_ptr<T>&,
-///					istring_type_base_wptr_map_type&)
+///					istring_type_base_wptrs_map_type&)
 ///
 /// @param scope the scope of the type to consider.
 ///
@@ -8878,20 +9001,22 @@ template<>
 bool
 maybe_update_types_lookup_map<function_type>
 (const function_type_sptr& type,
- istring_type_base_wptr_map_type& types_map,
+ istring_type_base_wptrs_map_type& types_map,
  bool erase_if_exists_already,
  bool /*use_type_name_as_key*/)
 {
   bool result = false;
   interned_string s = get_type_name(type);
-  istring_type_base_wptr_map_type::iterator i = types_map.find(s);
+  istring_type_base_wptrs_map_type::iterator i = types_map.find(s);
   if (i == types_map.end())
     {
-      types_map[s]= type;
+      types_map[s].push_back(type);
       result = true;
     }
   else if (erase_if_exists_already)
     types_map.erase(i);
+  else
+    i->second.push_back(type);
 
   return result;
 }
@@ -8919,7 +9044,7 @@ maybe_update_types_lookup_map(const type_decl_sptr& basic_type)
       maybe_update_types_lookup_map<type_decl>
 	(basic_type,
 	 type_corpus->priv_->get_types().basic_types(),
-	 /*erase_if_exists_already=*/odr_is_relevant(*basic_type));
+	 /*erase_if_exists_already=*/false);
 
       maybe_update_types_lookup_map<type_decl>
 	(basic_type,
@@ -8952,7 +9077,7 @@ maybe_update_types_lookup_map(const class_decl_sptr& class_type)
       maybe_update_types_lookup_map<class_decl>
 	(class_type,
 	 type_corpus->priv_->get_types().class_types(),
-	 /*erase_if_exists_already=*/odr_is_relevant(*class_type));
+	 /*erase_if_exists_already=*/false);
 
       maybe_update_types_lookup_map<class_decl>
 	(class_type,
@@ -8985,7 +9110,7 @@ maybe_update_types_lookup_map(const union_decl_sptr& union_type)
       maybe_update_types_lookup_map<union_decl>
 	(union_type,
 	 type_corpus->priv_->get_types().union_types(),
-	 /*erase_if_exists_already=*/odr_is_relevant(*union_type));
+	 /*erase_if_exists_already=*/false);
 
       maybe_update_types_lookup_map<union_decl>
 	(union_type,
@@ -9019,7 +9144,7 @@ maybe_update_types_lookup_map(const enum_type_decl_sptr& enum_type)
       maybe_update_types_lookup_map<enum_type_decl>
 	(enum_type,
 	 type_corpus->priv_->get_types().enum_types(),
-	 /*erase_if_exists_already=*/odr_is_relevant(*enum_type));
+	 /*erase_if_exists_already=*/false);
 
       maybe_update_types_lookup_map<enum_type_decl>
 	(enum_type,
@@ -9052,7 +9177,7 @@ maybe_update_types_lookup_map(const typedef_decl_sptr& typedef_type)
       maybe_update_types_lookup_map<typedef_decl>
 	(typedef_type,
 	 type_corpus->priv_->get_types().typedef_types(),
-	 /*erase_if_exists_already=*/odr_is_relevant(*typedef_type));
+	 /*erase_if_exists_already=*/false);
 
       maybe_update_types_lookup_map<typedef_decl>
 	(typedef_type,
@@ -9084,7 +9209,7 @@ maybe_update_types_lookup_map(const qualified_type_def_sptr& qualified_type)
     maybe_update_types_lookup_map<qualified_type_def>
       (qualified_type,
        type_corpus->priv_->get_types().qualified_types(),
-       /*erase_if_exists_already=*/true);
+       /*erase_if_exists_already=*/false);
 }
 
 /// Update the map that associates the fully qualified name of a
@@ -9109,7 +9234,7 @@ maybe_update_types_lookup_map(const pointer_type_def_sptr& pointer_type)
     maybe_update_types_lookup_map<pointer_type_def>
       (pointer_type,
        type_corpus->priv_->get_types().pointer_types(),
-       /*erase_if_exists_already=*/true);
+       /*erase_if_exists_already=*/false);
 }
 
 /// Update the map that associates the fully qualified name of a
@@ -9134,7 +9259,7 @@ maybe_update_types_lookup_map(const reference_type_def_sptr& reference_type)
     maybe_update_types_lookup_map<reference_type_def>
       (reference_type,
        type_corpus->priv_->get_types().reference_types(),
-       /*erase_if_exists_already=*/true);
+       /*erase_if_exists_already=*/false);
 }
 
 /// Update the map that associates the fully qualified name of a type
@@ -9160,7 +9285,7 @@ maybe_update_types_lookup_map(const array_type_def_sptr& array_type)
       maybe_update_types_lookup_map<array_type_def>
 	(array_type,
 	 type_corpus->priv_->get_types().array_types(),
-	 /*erase_if_exists_already=*/true);
+	 /*erase_if_exists_already=*/false);
 
       maybe_update_types_lookup_map<array_type_def>
 	(array_type,
@@ -9193,7 +9318,7 @@ maybe_update_types_lookup_map(const function_type_sptr& fn_type)
     maybe_update_types_lookup_map<function_type>
       (fn_type,
        type_corpus->priv_->get_types().function_types(),
-       /*erase_if_exists_already=*/true);
+       /*erase_if_exists_already=*/false);
 }
 
 /// Update the map that associates the fully qualified name of a type
@@ -9585,21 +9710,22 @@ type_base::get_canonical_type_for(type_base_sptr t)
   environment* env = t->get_environment();
   assert(env);
 
-  class_decl_sptr is_class;
-  // Look through declaration-only classes
-  if (class_decl_sptr class_declaration = is_class_type(t))
-    {
-      if (class_declaration->get_is_declaration_only())
-	{
-	  if (class_or_union_sptr def =
-	      class_declaration->get_definition_of_declaration())
-	    t = def;
-	  else
-	    return type_base_sptr();
-	}
-      is_class = is_class_type(t);
-    }
+  bool decl_only_class_equals_definition =
+    (odr_is_relevant(*t) && env->decl_only_class_equals_definition());
 
+  // Look through declaration-only classes
+  if (decl_only_class_equals_definition)
+    if (class_or_union_sptr cl = is_class_or_union_type(t))
+      {
+	cl = look_through_decl_only_class(cl);
+	if (cl->get_is_declaration_only())
+	  return type_base_sptr();
+	else
+	  t = cl;
+
+      }
+
+  class_decl_sptr is_class = is_class_type(t);
   if (t->get_canonical_type())
     return t->get_canonical_type();
 
@@ -9710,13 +9836,44 @@ type_base::get_canonical_type_for(type_base_sptr t)
 		    }
 		}
 	    }
+	  // Before the "*it == it" comparison below is done, let's
+	  // perform on-the-fly-canonicalization.  For C types, let's
+	  // consider that an unresolved struct declaration 'struct S'
+	  // is different from a definition 'struct S'.  This is
+	  // because normally, at this point all the declarations of
+	  // struct S that are compatible with the definition of
+	  // struct S have already been resolved to that definition,
+	  // during the DWARF parsing.  The remaining unresolved
+	  // declaration are thus considered different.  With this
+	  // setup we can properly handle cases of two *different*
+	  // struct S being defined in the same binary (in different
+	  // translation units), and a third struct S being only
+	  // declared as an opaque type in a third translation unit of
+	  // its own, with no definition in there.  In that case, the
+	  // declaration-only struct S should be left alone and not
+	  // resolved to any of the two definitions of struct S.
+	  bool saved_decl_only_class_equals_definition =
+	    env->decl_only_class_equals_definition();
 	  env->do_on_the_fly_canonicalization(true);
+	  if (!decl_only_class_equals_definition)
+	    env->decl_only_class_equals_definition(false);
 	  if (*it == t)
 	    {
+	      // Restore the state of the on-the-fly-canonicalization
+	      // and the
+	      // decl-only-class-being-equal-to-a-matching-definition
+	      // flags, as we are getting out of the loop.
+	      env->do_on_the_fly_canonicalization(false);
+	      if (!decl_only_class_equals_definition)
+		env->decl_only_class_equals_definition
+		  (saved_decl_only_class_equals_definition);
 	      result = *it;
 	      break;
 	    }
 	  env->do_on_the_fly_canonicalization(false);
+	  if (!decl_only_class_equals_definition)
+	    env->decl_only_class_equals_definition
+	      (saved_decl_only_class_equals_definition);
 	}
       if (!result)
 	{
@@ -15903,27 +16060,52 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 
       if (!def1 || !def2)
 	{
-	  const interned_string& q1 = l.get_qualified_name();
-	  const interned_string& q2 = r.get_qualified_name();
-	  if (q1 == q2)
-	    // Not using RETURN(true) here, because that causes
-	    // performance issues.  We don't need to do
-	    // l.priv_->unmark_as_being_compared({l,r}) here because
-	    // we haven't marked l or r as being compared yet, and
-	    // doing so has a peformance cost that shows up on
-	    // performance profiles for *big* libraries.
-	    return true;
-	  else
+	  if (odr_is_relevant(l)
+	      || l.get_environment()->decl_only_class_equals_definition())
 	    {
-	      if (k)
-		*k |= LOCAL_CHANGE_KIND;
-	      // Not using RETURN(true) here, because that causes
-	      // performance issues.  We don't need to do
-	      // l.priv_->unmark_as_being_compared({l,r}) here because
-	      // we haven't marked l or r as being compared yet, and
-	      // doing so has a peformance cost that shows up on
-	      // performance profiles for *big* libraries.
-	      return false;
+	      const interned_string& q1 = l.get_qualified_name();
+	      const interned_string& q2 = r.get_qualified_name();
+	      if (q1 == q2)
+		// Not using RETURN(true) here, because that causes
+		// performance issues.  We don't need to do
+		// l.priv_->unmark_as_being_compared({l,r}) here because
+		// we haven't marked l or r as being compared yet, and
+		// doing so has a peformance cost that shows up on
+		// performance profiles for *big* libraries.
+		return true;
+	      else
+		{
+		  if (k)
+		    *k |= LOCAL_CHANGE_KIND;
+		  // Not using RETURN(true) here, because that causes
+		  // performance issues.  We don't need to do
+		  // l.priv_->unmark_as_being_compared({l,r}) here because
+		  // we haven't marked l or r as being compared yet, and
+		  // doing so has a peformance cost that shows up on
+		  // performance profiles for *big* libraries.
+		  return false;
+		}
+	    }
+	  else // A decl-only class is considered different from a
+	       // class definition of the same name.
+	    {
+	      if (!!def1 != !!def2)
+		{
+		  if (k)
+		    *k |= LOCAL_CHANGE_KIND;
+		  return false;
+		}
+
+	      // both definitions are empty
+	      if (!(l.decl_base::operator==(r)
+		       && l.type_base::operator==(r)))
+		{
+		  if (k)
+		    *k |= LOCAL_CHANGE_KIND;
+		  return false;
+		}
+
+	      return true;
 	    }
 	}
 

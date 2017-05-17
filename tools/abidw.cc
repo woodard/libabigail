@@ -145,7 +145,7 @@ display_usage(const string& prog_name, ostream& out)
        "a Linux Kernel binary\n"
     << "  --kmi-whitelist|-w  path to a linux kernel "
     "abi whitelist\n"
-    << "  --linux-tree|--lt  emit the ABI for the union of a"
+    << "  --linux-tree|--lt  emit the ABI for the union of a "
     "vmlinux and its modules\n"
     << "  --abidiff  compare the loaded ABI against itself\n"
     << "  --annotate  annotate the ABI artifacts emitted in the output\n"

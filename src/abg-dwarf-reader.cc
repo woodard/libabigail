@@ -4760,22 +4760,82 @@ public:
 	    continue;
 	  }
 
-	if (decl_base_sptr type_decl =
-	    lookup_class_type(i->first, *current_corpus()))
+	// Now, for each decl-only class that have the current name
+	// 'i->first', let's try to poke at the fully defined class
+	// that is defined in the same translation unit as the
+	// declaration.
+	//
+	// If we find one class (defined in the TU of the declaration)
+	// that defines the declaration, then the declaration can be
+	// resolved to that class.
+	//
+	// If no defining class is found in the TU of the declaration,
+	// then there are possibly three cases to consider:
+	//
+	//   1/ There is exactly one class that defines the
+	//   declaration and that class is defined in another TU.  In
+	//   this case, the declaration is resolved to that
+	//   definition.
+	//
+	//   2/ There are more than one class that define that
+	//   declaration and none of them is defined in the TU of the
+	//   declaration.  In this case, the declaration is left
+	//   unresolved.
+	//
+	//   3/ No class defines the declaration.  In this case, the
+	//   declaration is left unresoved.
+
+	// So get the classes that might define the current
+	// declarations which name is i->first.
+	const type_base_wptrs_type *classes =
+	  lookup_class_types(i->first, *current_corpus());
+	if (!classes)
+	  continue;
+
+	unordered_map<string, class_decl_sptr> per_tu_class_map;
+	for (type_base_wptrs_type::const_iterator c = classes->begin();
+	     c != classes->end();
+	     ++c)
 	  {
-	    class_decl_sptr klass = is_class_type(type_decl);
+	    class_decl_sptr klass = is_class_type(type_base_sptr(*c));
 	    assert(klass);
+
 	    klass = is_class_type(look_through_decl_only_class(klass));
 	    if (klass->get_is_declaration_only())
-	      klass = is_class_type(klass->get_definition_of_declaration());
-	    assert(!klass->get_is_declaration_only());
+	      continue;
+
+	    string tu_path = klass->get_translation_unit()->get_path();
+	    if (tu_path.empty())
+	      continue;
+
+	    // Build a map that associates the translation unit path
+	    // to the class (that potentially defines the declarations
+	    // that we consider) that are defined in that translation unit.
+	    per_tu_class_map[tu_path] = klass;
+	  }
+
+	if (!per_tu_class_map.empty())
+	  {
+	    // Walk the declarations to resolve and resolve them
+	    // either to the definitions that are in the same TU as
+	    // the declaration, or to the definition found elsewhere,
+	    // if there is only one such definition.
 	    for (classes_type::iterator j = i->second.begin();
 		 j != i->second.end();
 		 ++j)
 	      {
 		if ((*j)->get_is_declaration_only()
 		    && ((*j)->get_definition_of_declaration() == 0))
-		  (*j)->set_definition_of_declaration(klass);
+		  {
+		    string tu_path = (*j)->get_translation_unit()->get_path();
+		    unordered_map<string, class_decl_sptr>::const_iterator e =
+		      per_tu_class_map.find(tu_path);
+		    if (e != per_tu_class_map.end())
+		      (*j)->set_definition_of_declaration(e->second);
+		    else if (per_tu_class_map.size() == 1)
+		      (*j)->set_definition_of_declaration
+			(per_tu_class_map.begin()->second);
+		  }
 	      }
 	    resolved_classes.push_back(i->first);
 	  }

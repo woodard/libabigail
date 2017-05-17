@@ -725,6 +725,58 @@ static bool
 base_classes_added_or_removed(const diff* diff)
 {return base_classes_added_or_removed(dynamic_cast<const class_diff*>(diff));}
 
+/// Test if two @ref class_or_union_sptr are different just by the
+/// fact that one is decl-only and the other one is defined.
+///
+/// @param first the first class or union to consider.
+///
+/// @param second the second class or union to consider.
+///
+/// @return true iff the two arguments are different just by the fact
+/// that one is decl-only and the other one is defined.
+bool
+has_class_decl_only_def_change(const class_or_union_sptr& first,
+			       const class_or_union_sptr& second)
+{
+  if (!first || !second)
+    return false;
+
+  class_or_union_sptr f =
+    look_through_decl_only_class(first);
+  class_or_union_sptr s =
+    look_through_decl_only_class(second);
+
+  if (f->get_qualified_name() != s->get_qualified_name())
+    return false;
+
+  return (f->get_is_declaration_only() != s->get_is_declaration_only());
+}
+
+/// Test if a class_or_union_diff carries a change in which the two
+/// classes are different by the fact that one is a decl-only and the
+/// other one is defined.
+///
+/// @param diff the diff node to consider.
+////
+//// @return true if the class_or_union_diff carries a change in which
+/// the two classes are different by the fact that one is a decl-only
+/// and the other one is defined.
+static bool
+has_class_decl_only_def_change(const diff *diff)
+{
+  const class_or_union_diff *d = dynamic_cast<const class_or_union_diff*>(diff);
+  if (!d)
+    return false;
+
+  class_or_union_sptr f =
+    look_through_decl_only_class(d->first_class_or_union());
+  class_or_union_sptr s =
+    look_through_decl_only_class(d->second_class_or_union());
+
+  return has_class_decl_only_def_change(f, s);
+}
+
+
 /// Test if an enum_diff carries an enumerator insertion.
 ///
 /// @param diff the enum_diff to consider.
@@ -788,6 +840,9 @@ categorize_harmless_diff_node(diff *d, bool pre)
 
       decl_base_sptr f = is_decl(d->first_subject()),
 	s = is_decl(d->second_subject());
+
+      if (has_class_decl_only_def_change(d))
+	category |= CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY;
 
       if (access_changed(f, s))
 	category |= ACCESS_CHANGE_CATEGORY;

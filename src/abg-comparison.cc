@@ -2543,6 +2543,37 @@ diff_category
 operator~(diff_category c)
 {return static_cast<diff_category>(~static_cast<unsigned>(c));}
 
+
+/// Getter of a bitmap made of the set of change categories that are
+/// considered harmless.
+///
+/// @return the bitmap made of the set of change categories that are
+/// considered harmless.
+diff_category
+get_default_harmless_categories_bitmap()
+{
+  return (abigail::comparison::ACCESS_CHANGE_CATEGORY
+	  | abigail::comparison::COMPATIBLE_TYPE_CHANGE_CATEGORY
+	  | abigail::comparison::HARMLESS_DECL_NAME_CHANGE_CATEGORY
+	  | abigail::comparison::NON_VIRT_MEM_FUN_CHANGE_CATEGORY
+	  | abigail::comparison::STATIC_DATA_MEMBER_CHANGE_CATEGORY
+	  | abigail::comparison::HARMLESS_ENUM_CHANGE_CATEGORY
+	  | abigail::comparison::HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY
+	  | abigail::comparison::CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY);
+}
+
+/// Getter of a bitmap made of the set of change categories that are
+/// considered harmful.
+///
+/// @return the bitmap made of the set of change categories that are
+/// considered harmful.
+diff_category
+get_default_harmful_categories_bitmap()
+{
+  return (abigail::comparison::SIZE_OR_OFFSET_CHANGE_CATEGORY
+	  | abigail::comparison::VIRTUAL_MEMBER_CHANGE_CATEGORY);
+}
+
 /// Serialize an instance of @ref diff_category to an output stream.
 ///
 /// @param o the output stream to serialize @p c to.
@@ -2637,6 +2668,14 @@ operator<<(ostream& o, diff_category c)
       if (emitted_a_category)
 	o << "|";
       o << "REDUNDANT_CATEGORY";
+      emitted_a_category |= true;
+    }
+
+  if (c & CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY)
+    {
+      if (emitted_a_category)
+	o << "|";
+      o << "CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY";
       emitted_a_category |= true;
     }
 
@@ -3093,6 +3132,17 @@ report_size_and_alignment_changes(type_or_decl_base_sptr	first,
     s = dynamic_pointer_cast<type_base>(second);
 
   if (!s || !f)
+    return false;
+
+  class_or_union_sptr first_class = is_class_or_union_type(first),
+    second_class = is_class_or_union_type(second);
+
+  if (filtering::has_class_decl_only_def_change(first_class, second_class)
+      && !ctxt->get_allowed_category() & CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY)
+    // So these two classes differ only by the fact that one is the
+    // declaration-only form of the second.  And the user asked that
+    // this kind of change be filtered out, so do not report any size
+    // change due to this.
     return false;
 
   bool n = false;
@@ -5698,6 +5748,25 @@ class_or_union_diff::report(ostream& out, const string& indent) const
   class_or_union_sptr first = first_class_or_union(),
     second = second_class_or_union();
 
+  // Report class decl-only -> definition change.
+  if (context()->get_allowed_category() & CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY)
+    if (filtering::has_class_decl_only_def_change(first, second))
+      {
+	string was =
+	  first->get_is_declaration_only()
+	  ? " was a declaration-only type"
+	  : " was a defined type";
+
+	string is_now =
+	  second->get_is_declaration_only()
+	  ? " and is now a declaration-only type"
+	  : " and is now a defined type";
+
+	out << indent << "type " << first->get_pretty_representation()
+	    << was << is_now;
+	return;
+      }
+
   // member functions
   if (member_fns_changes())
     {
@@ -6894,8 +6963,8 @@ compute_diff(const class_decl_sptr	first,
   if (first && second)
     assert(first->get_environment() == second->get_environment());
 
-  class_decl_sptr f = look_through_decl_only_class(first),
-    s = look_through_decl_only_class(second);
+  class_decl_sptr f = is_class_type(look_through_decl_only_class(first)),
+    s = is_class_type(look_through_decl_only_class(second));
 
   class_diff_sptr changes(new class_diff(f, s, ctxt));
 

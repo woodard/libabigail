@@ -131,6 +131,15 @@ typedef std::vector<translation_unit_sptr> translation_units;
 /// translation unit.
 typedef unordered_map<string, translation_unit_sptr> string_tu_map_type;
 
+/// A convenience typedef for a vector of type_base_wptr.
+typedef vector<type_base_wptr> type_base_wptrs_type;
+
+/// A convenience typedef for a map which key is an interned_string
+/// and which value is a vector of type_base_wptr.
+typedef unordered_map<interned_string,
+		      type_base_wptrs_type,
+		      hash_interned_string> istring_type_base_wptrs_map_type;
+
 class decl_base;
 
 // Convenience typedef for a smart pointer on @ref decl_base.
@@ -488,8 +497,8 @@ is_method_type(const type_or_decl_base*);
 method_type*
 is_method_type(type_or_decl_base*);
 
-class_decl_sptr
-look_through_decl_only_class(class_decl_sptr);
+class_or_union_sptr
+look_through_decl_only_class(class_or_union_sptr);
 
 var_decl*
 is_var_decl(const type_or_decl_base*);
@@ -828,7 +837,7 @@ get_pretty_representation(const method_type_sptr&,
 			  bool internal = false);
 
 bool
-odr_is_relevant(type_or_decl_base&);
+odr_is_relevant(const type_or_decl_base&);
 
 const decl_base*
 get_type_declaration(const type_base*);
@@ -904,6 +913,12 @@ lookup_class_type(const class_decl&, const corpus&);
 
 class_decl_sptr
 lookup_class_type(const interned_string&, const corpus&);
+
+const type_base_wptrs_type*
+lookup_class_types(const interned_string&, const corpus&);
+
+const type_base_wptrs_type*
+lookup_class_types(const string&, const corpus&);
 
 class_decl_sptr
 lookup_class_type_per_location(const interned_string&, const corpus&);

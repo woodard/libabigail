@@ -55,6 +55,8 @@ using abigail::comparison::translation_unit_diff_sptr;
 using abigail::comparison::corpus_diff;
 using abigail::comparison::corpus_diff_sptr;
 using abigail::comparison::compute_diff;
+using abigail::comparison::get_default_harmless_categories_bitmap;
+using abigail::comparison::get_default_harmful_categories_bitmap;
 using abigail::suppr::suppression_sptr;
 using abigail::suppr::suppressions_type;
 using abigail::suppr::read_suppressions;
@@ -225,14 +227,7 @@ set_diff_context(diff_context_sptr ctxt, const options& opts)
   ctxt->show_symbols_unreferenced_by_debug_info
     (true);
 
-  ctxt->switch_categories_off
-    (abigail::comparison::ACCESS_CHANGE_CATEGORY
-     | abigail::comparison::COMPATIBLE_TYPE_CHANGE_CATEGORY
-     | abigail::comparison::HARMLESS_DECL_NAME_CHANGE_CATEGORY
-     | abigail::comparison::NON_VIRT_MEM_FUN_CHANGE_CATEGORY
-     | abigail::comparison::STATIC_DATA_MEMBER_CHANGE_CATEGORY
-     | abigail::comparison::HARMLESS_ENUM_CHANGE_CATEGORY
-     | abigail::comparison::HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY);
+  ctxt->switch_categories_off(get_default_harmless_categories_bitmap());
 
   if (!opts.diff_time_supprs.empty())
     ctxt->add_suppressions(opts.diff_time_supprs);

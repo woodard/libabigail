@@ -363,6 +363,11 @@ enum diff_category
   /// present as a child of a other nodes in the diff tree.
   REDUNDANT_CATEGORY = 1 << 10,
 
+  /// This means that a diff node in the sub-tree carries a class type
+  /// that was declaration-only and that is now defined, or vice
+  /// versa.
+  CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY = 1 << 11,
+
   /// A special enumerator that is the logical 'or' all the
   /// enumerators above.
   ///
@@ -380,6 +385,7 @@ enum diff_category
   | SIZE_OR_OFFSET_CHANGE_CATEGORY
   | VIRTUAL_MEMBER_CHANGE_CATEGORY
   | REDUNDANT_CATEGORY
+  | CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY
 };
 
 diff_category
@@ -399,6 +405,12 @@ operator&(diff_category c1, diff_category c2);
 
 diff_category
 operator~(diff_category c);
+
+diff_category
+get_default_harmless_categories_bitmap();
+
+diff_category
+get_default_harmful_categories_bitmap();
 
 ostream&
 operator<<(ostream& o, diff_category);

@@ -164,6 +164,12 @@ public:
   do_on_the_fly_canonicalization(bool f);
 
   bool
+  decl_only_class_equals_definition() const;
+
+  void
+  decl_only_class_equals_definition(bool f) const;
+
+  bool
   is_void_type(const type_base_sptr&) const;
 
   bool
@@ -350,64 +356,64 @@ public:
   bool
   empty() const;
 
-  const istring_type_base_wptr_map_type&
+  const istring_type_base_wptrs_map_type&
   basic_types() const;
 
-  istring_type_base_wptr_map_type&
+  istring_type_base_wptrs_map_type&
   basic_types();
 
-  const istring_type_base_wptr_map_type&
+  const istring_type_base_wptrs_map_type&
   class_types() const;
 
-  istring_type_base_wptr_map_type&
+  istring_type_base_wptrs_map_type&
   class_types();
 
-  istring_type_base_wptr_map_type&
+  istring_type_base_wptrs_map_type&
   union_types();
 
-  const istring_type_base_wptr_map_type&
+  const istring_type_base_wptrs_map_type&
   union_types() const;
 
-  istring_type_base_wptr_map_type&
+  istring_type_base_wptrs_map_type&
   enum_types();
 
-  const istring_type_base_wptr_map_type&
+  const istring_type_base_wptrs_map_type&
   enum_types() const;
 
-  istring_type_base_wptr_map_type&
+  istring_type_base_wptrs_map_type&
   typedef_types();
 
-  const istring_type_base_wptr_map_type&
+  const istring_type_base_wptrs_map_type&
   typedef_types() const;
 
-  istring_type_base_wptr_map_type&
+  istring_type_base_wptrs_map_type&
   qualified_types();
 
-  const istring_type_base_wptr_map_type&
+  const istring_type_base_wptrs_map_type&
   qualified_types() const;
 
-  istring_type_base_wptr_map_type&
+  istring_type_base_wptrs_map_type&
   pointer_types();
 
-  const istring_type_base_wptr_map_type&
+  const istring_type_base_wptrs_map_type&
   pointer_types() const;
 
-  istring_type_base_wptr_map_type&
+  istring_type_base_wptrs_map_type&
   reference_types();
 
-  const istring_type_base_wptr_map_type&
+  const istring_type_base_wptrs_map_type&
   reference_types() const;
 
-  istring_type_base_wptr_map_type&
+  istring_type_base_wptrs_map_type&
   array_types();
 
-  const istring_type_base_wptr_map_type&
+  const istring_type_base_wptrs_map_type&
   array_types() const;
 
-  istring_type_base_wptr_map_type&
+  istring_type_base_wptrs_map_type&
   function_types();
 
-  const istring_type_base_wptr_map_type&
+  const istring_type_base_wptrs_map_type&
   function_types() const;
 }; // end class type_maps;
 
