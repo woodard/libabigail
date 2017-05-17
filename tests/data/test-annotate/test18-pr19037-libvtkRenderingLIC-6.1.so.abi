@@ -2582,7 +2582,7 @@
       <!-- typedef std::basic_ostream<char, std::char_traits<char> > std::ostream -->
       <typedef-decl name='ostream' type-id='type-id-74' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iosfwd' line='130' column='1' id='type-id-82'/>
       <!-- struct std::_Destroy_aux<true> -->
-      <class-decl name='_Destroy_aux&lt;true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='106' column='1' id='type-id-83'>
+      <class-decl name='_Destroy_aux&lt;true&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='106' column='1' is-declaration-only='yes' id='type-id-83'>
         <member-function access='public' static='yes'>
           <!-- void std::_Destroy_aux<true>::__destroy<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
           <function-decl name='__destroy&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='109' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -2629,7 +2629,7 @@
         </member-function>
       </class-decl>
       <!-- struct std::char_traits<char> -->
-      <class-decl name='char_traits&lt;char&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='238' column='1' id='type-id-86'>
+      <class-decl name='char_traits&lt;char&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='238' column='1' is-declaration-only='yes' id='type-id-86'>
         <member-type access='public'>
           <!-- typedef char std::char_traits<char>::char_type -->
           <typedef-decl name='char_type' type-id='type-id-21' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='239' column='1' id='type-id-87'/>
@@ -3078,7 +3078,7 @@
         </member-function>
       </class-decl>
       <!-- struct std::__uninitialized_fill<false> -->
-      <class-decl name='__uninitialized_fill&lt;false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='122' column='1' id='type-id-103'>
+      <class-decl name='__uninitialized_fill&lt;false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='122' column='1' is-declaration-only='yes' id='type-id-103'>
         <member-function access='public' static='yes'>
           <!-- void std::__uninitialized_fill<false>::uninitialized_fill<vtkPixelExtent*, vtkPixelExtent>(vtkPixelExtent*, const vtkPixelExtent&) -->
           <function-decl name='uninitialized_fill&lt;vtkPixelExtent*, vtkPixelExtent&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='125' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -4393,7 +4393,7 @@
         <return type-id='type-id-139'/>
       </function-decl>
       <!-- class __gnu_cxx::new_allocator<vtkPixelExtent> -->
-      <class-decl name='new_allocator&lt;vtkPixelExtent&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' id='type-id-70'>
+      <class-decl name='new_allocator&lt;vtkPixelExtent&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-70'>
         <member-function access='private'>
           <!-- void __gnu_cxx::new_allocator<vtkPixelExtent>::new_allocator() -->
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -4508,7 +4508,7 @@
         </member-function>
       </class-decl>
       <!-- class __gnu_cxx::new_allocator<vtkPixelExtent*> -->
-      <class-decl name='new_allocator&lt;vtkPixelExtent*&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' id='type-id-100'>
+      <class-decl name='new_allocator&lt;vtkPixelExtent*&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-100'>
         <member-function access='private'>
           <!-- void __gnu_cxx::new_allocator<vtkPixelExtent*>::new_allocator() -->
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -8294,7 +8294,7 @@
     <pointer-type-def type-id='type-id-64' size-in-bits='64' id='type-id-104'/>
     <namespace-decl name='std'>
       <!-- struct std::__false_type -->
-      <class-decl name='__false_type' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/cpp_type_traits.h' line='79' column='1' id='type-id-68'/>
+      <class-decl name='__false_type' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/cpp_type_traits.h' line='79' column='1' is-declaration-only='yes' id='type-id-68'/>
     </namespace-decl>
     <namespace-decl name='std'>
       <!-- struct std::forward_iterator_tag -->
@@ -8332,7 +8332,7 @@
     </function-type>
     <namespace-decl name='std'>
       <!-- struct std::input_iterator_tag -->
-      <class-decl name='input_iterator_tag' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='79' column='1' id='type-id-299'/>
+      <class-decl name='input_iterator_tag' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='79' column='1' is-declaration-only='yes' id='type-id-299'/>
     </namespace-decl>
     <!-- typedef float GLfloat -->
     <typedef-decl name='GLfloat' type-id='type-id-174' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/mesa@8.0.5-22dd4c4b/include/GL/gl.h' line='160' column='1' id='type-id-291'/>
@@ -8615,6 +8615,8 @@
       <!-- struct std::forward_iterator_tag -->
         <base-class access='public' layout-offset-in-bits='0' type-id='type-id-69'/>
       </class-decl>
+      <!-- struct std::input_iterator_tag -->
+      <class-decl name='input_iterator_tag' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='79' column='1' is-declaration-only='yes' id='type-id-299'/>
       <!-- std::random_access_iterator_tag std::__iterator_category<char*>(char* const&) -->
       <function-decl name='__iterator_category&lt;char*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='160' column='1' visibility='default' binding='global' size-in-bits='64'>
         <!-- parameter of type 'char* const&' -->
@@ -10668,6 +10670,8 @@
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-342'/>
       <!-- class std::reverse_iterator<__gnu_cxx::__normal_iterator<const char*, std::basic_string<char, std::char_traits<char>, std::allocator<char> > > > -->
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;const char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-343'/>
+      <!-- struct std::__false_type -->
+      <class-decl name='__false_type' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/cpp_type_traits.h' line='79' column='1' is-declaration-only='yes' id='type-id-68'/>
       <!-- typedef std::basic_string<char, std::char_traits<char>, std::allocator<char> > std::string -->
       <typedef-decl name='string' type-id='type-id-327' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stringfwd.h' line='56' column='1' id='type-id-346'/>
       <!-- struct std::_Vector_base<vtkPixelBufferObject*, std::allocator<vtkPixelBufferObject*> > -->
@@ -11313,7 +11317,7 @@
       <!-- class std::reverse_iterator<__gnu_cxx::__normal_iterator<vtkPixelBufferObject* const*, std::vector<vtkPixelBufferObject*, std::allocator<vtkPixelBufferObject*> > > > -->
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;vtkPixelBufferObject* const*, std::vector&lt;vtkPixelBufferObject*, std::allocator&lt;vtkPixelBufferObject*&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-360'/>
       <!-- struct std::__niter_base<vtkPixelBufferObject**, false> -->
-      <class-decl name='__niter_base&lt;vtkPixelBufferObject**, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' id='type-id-363'>
+      <class-decl name='__niter_base&lt;vtkPixelBufferObject**, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-363'>
         <member-function access='public' static='yes'>
           <!-- vtkPixelBufferObject** std::__niter_base<vtkPixelBufferObject**, false>::__b() -->
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIPP20vtkPixelBufferObjectLb0EE3__bES2_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -11325,7 +11329,7 @@
         </member-function>
       </class-decl>
       <!-- struct std::__uninitialized_fill_n<true> -->
-      <class-decl name='__uninitialized_fill_n&lt;true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='198' column='1' id='type-id-364'>
+      <class-decl name='__uninitialized_fill_n&lt;true&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='198' column='1' is-declaration-only='yes' id='type-id-364'>
         <member-function access='public' static='yes'>
           <!-- void std::__uninitialized_fill_n<true>::uninitialized_fill_n<vtkPixelBufferObject**, long unsigned int, vtkPixelBufferObject*>(unsigned long int, vtkPixelBufferObject* const&) -->
           <function-decl name='uninitialized_fill_n&lt;vtkPixelBufferObject**, long unsigned int, vtkPixelBufferObject*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='201' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -11354,7 +11358,7 @@
         </member-function>
       </class-decl>
       <!-- struct std::__niter_base<float*, false> -->
-      <class-decl name='__niter_base&lt;float*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' id='type-id-365'>
+      <class-decl name='__niter_base&lt;float*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-365'>
         <member-function access='public' static='yes'>
           <!-- float* std::__niter_base<float*, false>::__b() -->
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIPfLb0EE3__bES0_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -12098,7 +12102,7 @@
         </member-function>
       </class-decl>
       <!-- struct std::__copy_move_backward<false, true, std::random_access_iterator_tag> -->
-      <class-decl name='__copy_move_backward&lt;false, true, std::random_access_iterator_tag&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='511' column='1' id='type-id-388'>
+      <class-decl name='__copy_move_backward&lt;false, true, std::random_access_iterator_tag&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='511' column='1' is-declaration-only='yes' id='type-id-388'>
         <member-function access='public' static='yes'>
           <!-- vtkPixelExtent** std::__copy_move_backward<false, true, std::random_access_iterator_tag>::__copy_move_b<vtkPixelExtent*>(vtkPixelExtent* const*, vtkPixelExtent**) -->
           <function-decl name='__copy_move_b&lt;vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='572' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -12127,7 +12131,7 @@
         </member-function>
       </class-decl>
       <!-- struct std::__niter_base<vtkPixelExtent**, false> -->
-      <class-decl name='__niter_base&lt;vtkPixelExtent**, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' id='type-id-389'>
+      <class-decl name='__niter_base&lt;vtkPixelExtent**, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-389'>
         <member-function access='public' static='yes'>
           <!-- vtkPixelExtent** std::__niter_base<vtkPixelExtent**, false>::__b() -->
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIPP14vtkPixelExtentLb0EE3__bES2_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -12139,7 +12143,7 @@
         </member-function>
       </class-decl>
       <!-- struct std::__miter_base<vtkPixelExtent**, false> -->
-      <class-decl name='__miter_base&lt;vtkPixelExtent**, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' id='type-id-390'>
+      <class-decl name='__miter_base&lt;vtkPixelExtent**, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-390'>
         <member-function access='public' static='yes'>
           <!-- vtkPixelExtent** std::__miter_base<vtkPixelExtent**, false>::__b() -->
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIPP14vtkPixelExtentLb0EE3__bES2_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -12151,7 +12155,7 @@
         </member-function>
       </class-decl>
       <!-- struct std::__copy_move<false, true, std::random_access_iterator_tag> -->
-      <class-decl name='__copy_move&lt;false, true, std::random_access_iterator_tag&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='307' column='1' id='type-id-391'>
+      <class-decl name='__copy_move&lt;false, true, std::random_access_iterator_tag&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='307' column='1' is-declaration-only='yes' id='type-id-391'>
         <member-function access='public' static='yes'>
           <!-- vtkPixelExtent** std::__copy_move<false, true, std::random_access_iterator_tag>::__copy_m<vtkPixelExtent*>(vtkPixelExtent* const*, vtkPixelExtent**) -->
           <function-decl name='__copy_m&lt;vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='376' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -12204,7 +12208,7 @@
         <return type-id='type-id-4'/>
       </function-decl>
       <!-- class __gnu_cxx::new_allocator<vtkPixelBufferObject*> -->
-      <class-decl name='new_allocator&lt;vtkPixelBufferObject*&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' id='type-id-309'>
+      <class-decl name='new_allocator&lt;vtkPixelBufferObject*&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-309'>
         <member-function access='private'>
           <!-- void __gnu_cxx::new_allocator<vtkPixelBufferObject*>::new_allocator() -->
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -12319,7 +12323,7 @@
         </member-function>
       </class-decl>
       <!-- class __gnu_cxx::new_allocator<float> -->
-      <class-decl name='new_allocator&lt;float&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' id='type-id-316'>
+      <class-decl name='new_allocator&lt;float&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-316'>
         <member-function access='private'>
           <!-- void __gnu_cxx::new_allocator<float>::new_allocator() -->
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -12434,7 +12438,7 @@
         </member-function>
       </class-decl>
       <!-- class __gnu_cxx::new_allocator<char> -->
-      <class-decl name='new_allocator&lt;char&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' id='type-id-324'>
+      <class-decl name='new_allocator&lt;char&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-324'>
         <member-function access='private'>
           <!-- void __gnu_cxx::new_allocator<char>::new_allocator() -->
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -15889,7 +15893,7 @@
         <return type-id='type-id-39'/>
       </function-decl>
       <!-- struct std::__copy_move<false, false, std::random_access_iterator_tag> -->
-      <class-decl name='__copy_move&lt;false, false, std::random_access_iterator_tag&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='335' column='1' id='type-id-471'>
+      <class-decl name='__copy_move&lt;false, false, std::random_access_iterator_tag&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='335' column='1' is-declaration-only='yes' id='type-id-471'>
         <member-function access='public' static='yes'>
           <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::__copy_move<false, false, std::random_access_iterator_tag>::__copy_m<std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
           <function-decl name='__copy_m&lt;std::_Deque_iterator&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='338' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -15918,7 +15922,7 @@
         </member-function>
       </class-decl>
       <!-- struct std::__niter_base<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, false> -->
-      <class-decl name='__niter_base&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' id='type-id-472'>
+      <class-decl name='__niter_base&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-472'>
         <member-function access='public' static='yes'>
           <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::__niter_base<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, false>::__b() -->
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ELb0EE3__bES4_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -15930,7 +15934,7 @@
         </member-function>
       </class-decl>
       <!-- struct std::__niter_base<std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, false> -->
-      <class-decl name='__niter_base&lt;std::_Deque_iterator&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt;, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' id='type-id-473'>
+      <class-decl name='__niter_base&lt;std::_Deque_iterator&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt;, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-473'>
         <member-function access='public' static='yes'>
           <!-- std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*> std::__niter_base<std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, false>::__b() -->
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseISt15_Deque_iteratorI14vtkPixelExtentRKS1_PS2_ELb0EE3__bES5_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -15942,7 +15946,7 @@
         </member-function>
       </class-decl>
       <!-- struct std::__miter_base<std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, false> -->
-      <class-decl name='__miter_base&lt;std::_Deque_iterator&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt;, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' id='type-id-474'>
+      <class-decl name='__miter_base&lt;std::_Deque_iterator&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt;, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-474'>
         <member-function access='public' static='yes'>
           <!-- std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*> std::__miter_base<std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, false>::__b() -->
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseISt15_Deque_iteratorI14vtkPixelExtentRKS1_PS2_ELb0EE3__bES5_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -15954,7 +15958,7 @@
         </member-function>
       </class-decl>
       <!-- struct std::__iter_swap<true> -->
-      <class-decl name='__iter_swap&lt;true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='96' column='1' id='type-id-475'>
+      <class-decl name='__iter_swap&lt;true&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='96' column='1' is-declaration-only='yes' id='type-id-475'>
         <member-function access='public' static='yes'>
           <!-- void std::__iter_swap<true>::iter_swap<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
           <function-decl name='iter_swap&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='99' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -15968,7 +15972,7 @@
         </member-function>
       </class-decl>
       <!-- struct std::__copy_move_backward<false, false, std::random_access_iterator_tag> -->
-      <class-decl name='__copy_move_backward&lt;false, false, std::random_access_iterator_tag&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='539' column='1' id='type-id-476'>
+      <class-decl name='__copy_move_backward&lt;false, false, std::random_access_iterator_tag&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='539' column='1' is-declaration-only='yes' id='type-id-476'>
         <member-function access='public' static='yes'>
           <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::__copy_move_backward<false, false, std::random_access_iterator_tag>::__copy_move_b<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
           <function-decl name='__copy_move_b&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='542' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -15984,7 +15988,7 @@
         </member-function>
       </class-decl>
       <!-- struct std::__miter_base<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, false> -->
-      <class-decl name='__miter_base&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' id='type-id-477'>
+      <class-decl name='__miter_base&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-477'>
         <member-function access='public' static='yes'>
           <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::__miter_base<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, false>::__b() -->
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ELb0EE3__bES4_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -15996,7 +16000,7 @@
         </member-function>
       </class-decl>
       <!-- struct std::__uninitialized_copy<false> -->
-      <class-decl name='__uninitialized_copy&lt;false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='64' column='1' id='type-id-478'>
+      <class-decl name='__uninitialized_copy&lt;false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='64' column='1' is-declaration-only='yes' id='type-id-478'>
         <member-function access='public' static='yes'>
           <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::__uninitialized_copy<false>::uninitialized_copy<std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
           <function-decl name='uninitialized_copy&lt;std::_Deque_iterator&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='67' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -16038,7 +16042,7 @@
         </member-function>
       </class-decl>
       <!-- struct std::__miter_base<float*, false> -->
-      <class-decl name='__miter_base&lt;float*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' id='type-id-479'>
+      <class-decl name='__miter_base&lt;float*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-479'>
         <member-function access='public' static='yes'>
           <!-- float* std::__miter_base<float*, false>::__b() -->
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIPfLb0EE3__bES0_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -16050,7 +16054,7 @@
         </member-function>
       </class-decl>
       <!-- struct std::__uninitialized_copy<true> -->
-      <class-decl name='__uninitialized_copy&lt;true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='87' column='1' id='type-id-480'>
+      <class-decl name='__uninitialized_copy&lt;true&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='87' column='1' is-declaration-only='yes' id='type-id-480'>
         <member-function access='public' static='yes'>
           <!-- float* std::__uninitialized_copy<true>::uninitialized_copy<float*, float*>(float*, float*) -->
           <function-decl name='uninitialized_copy&lt;float*, float*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='90' column='1' visibility='default' binding='global' size-in-bits='64'>

@@ -892,7 +892,7 @@
         <parameter type-id='type-id-8'/>
         <return type-id='type-id-1'/>
       </function-decl>
-      <class-decl name='_Destroy_aux&lt;true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='106' column='1' id='type-id-10'>
+      <class-decl name='_Destroy_aux&lt;true&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='106' column='1' is-declaration-only='yes' id='type-id-10'>
         <member-function access='public' static='yes'>
           <function-decl name='__destroy&lt;MallocExtension::FreeListInfo*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='109' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1'/>
@@ -1321,7 +1321,7 @@
       </class-decl>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;MallocExtension::FreeListInfo*, std::vector&lt;MallocExtension::FreeListInfo, std::allocator&lt;MallocExtension::FreeListInfo&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-26'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;const MallocExtension::FreeListInfo*, std::vector&lt;MallocExtension::FreeListInfo, std::allocator&lt;MallocExtension::FreeListInfo&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-27'/>
-      <class-decl name='__copy_move_backward&lt;false, true, std::random_access_iterator_tag&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='511' column='1' id='type-id-34'>
+      <class-decl name='__copy_move_backward&lt;false, true, std::random_access_iterator_tag&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='511' column='1' is-declaration-only='yes' id='type-id-34'>
         <member-function access='public' static='yes'>
           <function-decl name='__copy_move_b&lt;MallocExtension::FreeListInfo&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='572' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-32'/>
@@ -1355,7 +1355,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;MallocExtension::FreeListInfo*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' id='type-id-40'>
+      <class-decl name='__niter_base&lt;MallocExtension::FreeListInfo*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-40'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIPN15MallocExtension12FreeListInfoELb0EE3__bES2_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1'/>
@@ -1363,7 +1363,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;MallocExtension::FreeListInfo*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' id='type-id-41'>
+      <class-decl name='__miter_base&lt;MallocExtension::FreeListInfo*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-41'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIPN15MallocExtension12FreeListInfoELb0EE3__bES2_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1'/>
@@ -1371,7 +1371,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__copy_move&lt;false, true, std::random_access_iterator_tag&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='307' column='1' id='type-id-42'>
+      <class-decl name='__copy_move&lt;false, true, std::random_access_iterator_tag&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='307' column='1' is-declaration-only='yes' id='type-id-42'>
         <member-function access='public' static='yes'>
           <function-decl name='__copy_m&lt;MallocExtension::FreeListInfo&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='376' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-32'/>
@@ -1405,7 +1405,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__uninitialized_copy&lt;true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='87' column='1' id='type-id-43'>
+      <class-decl name='__uninitialized_copy&lt;true&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='87' column='1' is-declaration-only='yes' id='type-id-43'>
         <member-function access='public' static='yes'>
           <function-decl name='uninitialized_copy&lt;MallocExtension::FreeListInfo*, MallocExtension::FreeListInfo*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='90' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1'/>
@@ -1423,7 +1423,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='numeric_limits&lt;long unsigned int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/limits' line='926' column='1' id='type-id-44'>
+      <class-decl name='numeric_limits&lt;long unsigned int&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/limits' line='926' column='1' is-declaration-only='yes' id='type-id-44'>
         <data-member access='public' static='yes'>
           <var-decl name='is_specialized' type-id='type-id-45' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/limits' line='927' column='1'/>
         </data-member>
@@ -2741,10 +2741,10 @@
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-78'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;const char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-79'/>
       <typedef-decl name='string' type-id='type-id-56' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stringfwd.h' line='56' column='1' id='type-id-84'/>
-      <class-decl name='nothrow_t' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/new' line='67' column='1' id='type-id-85'/>
+      <class-decl name='nothrow_t' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/new' line='67' column='1' is-declaration-only='yes' id='type-id-85'/>
     </namespace-decl>
     <type-decl name='void' id='type-id-2'/>
-    <class-decl name='MallocExtension' size-in-bits='64' visibility='default' filepath='src/gperftools/malloc_extension.h' line='90' column='1' id='type-id-86'>
+    <class-decl name='MallocExtension' visibility='default' filepath='src/gperftools/malloc_extension.h' line='90' column='1' is-declaration-only='yes' id='type-id-86'>
       <member-type access='private'>
         <enum-decl name='Ownership' filepath='./src/gperftools/malloc_extension.h' line='315' column='1' id='type-id-87'>
           <underlying-type type-id='type-id-50'/>
@@ -3089,7 +3089,7 @@
         <parameter type-id='type-id-105'/>
         <return type-id='type-id-106'/>
       </function-decl>
-      <class-decl name='new_allocator&lt;MallocExtension::FreeListInfo&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' id='type-id-4'>
+      <class-decl name='new_allocator&lt;MallocExtension::FreeListInfo&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-4'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-107' is-artificial='yes'/>
@@ -3163,7 +3163,7 @@
         </member-function>
       </class-decl>
       <class-decl name='__normal_iterator&lt;const MallocExtension::FreeListInfo*, std::vector&lt;MallocExtension::FreeListInfo, std::allocator&lt;MallocExtension::FreeListInfo&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-25'/>
-      <class-decl name='new_allocator&lt;char&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' id='type-id-82'>
+      <class-decl name='new_allocator&lt;char&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-82'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-110' is-artificial='yes'/>
@@ -4376,7 +4376,7 @@
           <return type-id='type-id-98'/>
         </function-decl>
       </namespace-decl>
-      <class-decl name='Static' size-in-bits='8' visibility='default' filepath='src/static_vars.h' line='50' column='1' id='type-id-199'>
+      <class-decl name='Static' visibility='default' filepath='src/static_vars.h' line='50' column='1' is-declaration-only='yes' id='type-id-199'>
         <data-member access='private' static='yes'>
           <var-decl name='pageheap_lock_' type-id='type-id-200' mangled-name='_ZN8tcmalloc6Static14pageheap_lock_E' visibility='default' filepath='src/static_vars.h' line='90' column='1' elf-symbol-id='_ZN8tcmalloc6Static14pageheap_lock_E'/>
         </data-member>
@@ -6506,7 +6506,7 @@
     <pointer-type-def type-id='type-id-324' size-in-bits='64' id='type-id-325'/>
     <pointer-type-def type-id='type-id-317' size-in-bits='64' id='type-id-319'/>
     <pointer-type-def type-id='type-id-28' size-in-bits='64' id='type-id-93'/>
-    <class-decl name='SysAllocator' size-in-bits='64' visibility='default' filepath='src/gperftools/malloc_extension.h' line='75' column='1' id='type-id-326'>
+    <class-decl name='SysAllocator' visibility='default' filepath='src/gperftools/malloc_extension.h' line='75' column='1' is-declaration-only='yes' id='type-id-326'>
       <member-function access='private' constructor='yes'>
         <function-decl name='SysAllocator' filepath='./src/gperftools/malloc_extension.h' line='77' column='1' visibility='default' binding='global' size-in-bits='64'>
           <parameter type-id='type-id-96' is-artificial='yes'/>
@@ -7342,7 +7342,7 @@
       <class-decl name='forward_iterator_tag' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='83' column='1' id='type-id-411'>
         <base-class access='public' layout-offset-in-bits='0' type-id='type-id-412'/>
       </class-decl>
-      <class-decl name='input_iterator_tag' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='79' column='1' id='type-id-412'/>
+      <class-decl name='input_iterator_tag' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='79' column='1' is-declaration-only='yes' id='type-id-412'/>
       <function-decl name='__iterator_category&lt;const char*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='160' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-413'/>
         <return type-id='type-id-409'/>
@@ -8895,7 +8895,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__alloc_swap&lt;STL_Allocator&lt;AllocObject, HeapLeakChecker::Allocator&gt;, true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/allocator.h' line='148' column='1' id='type-id-455'>
+      <class-decl name='__alloc_swap&lt;STL_Allocator&lt;AllocObject, HeapLeakChecker::Allocator&gt;, true&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/allocator.h' line='148' column='1' is-declaration-only='yes' id='type-id-455'>
         <member-function access='public' static='yes'>
           <function-decl name='_S_do_it' mangled-name='_ZNSt12__alloc_swapI13STL_AllocatorI11AllocObjectN15HeapLeakChecker9AllocatorEELb1EE8_S_do_itERS4_S6_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/allocator.h' line='148' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-408'/>
@@ -8906,7 +8906,7 @@
       </class-decl>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, STL_Allocator&lt;char, HeapLeakChecker::Allocator&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-445'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;const char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, STL_Allocator&lt;char, HeapLeakChecker::Allocator&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-446'/>
-      <class-decl name='__false_type' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/cpp_type_traits.h' line='79' column='1' id='type-id-447'/>
+      <class-decl name='__false_type' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/cpp_type_traits.h' line='79' column='1' is-declaration-only='yes' id='type-id-447'/>
       <class-decl name='vector&lt;AllocObject, STL_Allocator&lt;AllocObject, HeapLeakChecker::Allocator&gt; &gt;' size-in-bits='192' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='171' column='1' id='type-id-456'>
         <base-class access='protected' layout-offset-in-bits='0' type-id='type-id-448'/>
         <member-function access='private'>
@@ -10014,7 +10014,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='binary_function&lt;std::basic_string&lt;char, std::char_traits&lt;char&gt;, STL_Allocator&lt;char, HeapLeakChecker::Allocator&gt; &gt;, std::basic_string&lt;char, std::char_traits&lt;char&gt;, STL_Allocator&lt;char, HeapLeakChecker::Allocator&gt; &gt;, bool&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='113' column='1' id='type-id-516'/>
+      <class-decl name='binary_function&lt;std::basic_string&lt;char, std::char_traits&lt;char&gt;, STL_Allocator&lt;char, HeapLeakChecker::Allocator&gt; &gt;, std::basic_string&lt;char, std::char_traits&lt;char&gt;, STL_Allocator&lt;char, HeapLeakChecker::Allocator&gt; &gt;, bool&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='113' column='1' is-declaration-only='yes' id='type-id-516'/>
       <class-decl name='_Rb_tree_const_iterator&lt;std::pair&lt;const std::basic_string&lt;char, std::char_traits&lt;char&gt;, STL_Allocator&lt;char, HeapLeakChecker::Allocator&gt; &gt;, std::vector&lt;AllocObject, STL_Allocator&lt;AllocObject, HeapLeakChecker::Allocator&gt; &gt; &gt; &gt;' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='224' column='1' id='type-id-507'>
         <data-member access='public' layout-offset-in-bits='0'>
           <var-decl name='_M_node' type-id='type-id-478' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='294' column='1'/>
@@ -10792,7 +10792,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='binary_function&lt;long unsigned int, long unsigned int, bool&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='113' column='1' id='type-id-559'/>
+      <class-decl name='binary_function&lt;long unsigned int, long unsigned int, bool&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='113' column='1' is-declaration-only='yes' id='type-id-559'/>
       <class-decl name='_Rb_tree_const_iterator&lt;std::pair&lt;const long unsigned int, HeapLeakChecker::RangeValue&gt; &gt;' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='224' column='1' id='type-id-549'>
         <data-member access='public' layout-offset-in-bits='0'>
           <var-decl name='_M_node' type-id='type-id-478' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='294' column='1'/>
@@ -12345,7 +12345,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='unary_function&lt;long unsigned int, long unsigned int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' id='type-id-629'/>
+      <class-decl name='unary_function&lt;long unsigned int, long unsigned int&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' is-declaration-only='yes' id='type-id-629'/>
       <class-decl name='_Select1st&lt;std::pair&lt;const long unsigned int, long unsigned int&gt; &gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='482' column='1' id='type-id-631'>
         <base-class access='public' layout-offset-in-bits='0' type-id='type-id-632'/>
         <member-function access='public'>
@@ -12363,7 +12363,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='unary_function&lt;std::pair&lt;const long unsigned int, long unsigned int&gt;, const long unsigned int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' id='type-id-632'/>
+      <class-decl name='unary_function&lt;std::pair&lt;const long unsigned int, long unsigned int&gt;, const long unsigned int&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' is-declaration-only='yes' id='type-id-632'/>
       <class-decl name='_Vector_base&lt;void*, STL_Allocator&lt;void*, HeapLeakChecker::Allocator&gt; &gt;' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='70' column='1' id='type-id-634'>
         <member-type access='public'>
           <class-decl name='_Vector_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='75' column='1' id='type-id-635'>
@@ -12474,7 +12474,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='unary_function&lt;std::pair&lt;const long unsigned int, HeapLeakChecker::RangeValue&gt;, const long unsigned int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' id='type-id-642'/>
+      <class-decl name='unary_function&lt;std::pair&lt;const long unsigned int, HeapLeakChecker::RangeValue&gt;, const long unsigned int&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' is-declaration-only='yes' id='type-id-642'/>
       <class-decl name='_Select1st&lt;std::pair&lt;const std::basic_string&lt;char, std::char_traits&lt;char&gt;, STL_Allocator&lt;char, HeapLeakChecker::Allocator&gt; &gt;, std::vector&lt;AllocObject, STL_Allocator&lt;AllocObject, HeapLeakChecker::Allocator&gt; &gt; &gt; &gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='482' column='1' id='type-id-644'>
         <base-class access='public' layout-offset-in-bits='0' type-id='type-id-645'/>
         <member-function access='public'>
@@ -12492,7 +12492,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='unary_function&lt;std::pair&lt;const std::basic_string&lt;char, std::char_traits&lt;char&gt;, STL_Allocator&lt;char, HeapLeakChecker::Allocator&gt; &gt;, std::vector&lt;AllocObject, STL_Allocator&lt;AllocObject, HeapLeakChecker::Allocator&gt; &gt; &gt;, const std::basic_string&lt;char, std::char_traits&lt;char&gt;, STL_Allocator&lt;char, HeapLeakChecker::Allocator&gt; &gt; &gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' id='type-id-645'/>
+      <class-decl name='unary_function&lt;std::pair&lt;const std::basic_string&lt;char, std::char_traits&lt;char&gt;, STL_Allocator&lt;char, HeapLeakChecker::Allocator&gt; &gt;, std::vector&lt;AllocObject, STL_Allocator&lt;AllocObject, HeapLeakChecker::Allocator&gt; &gt; &gt;, const std::basic_string&lt;char, std::char_traits&lt;char&gt;, STL_Allocator&lt;char, HeapLeakChecker::Allocator&gt; &gt; &gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' is-declaration-only='yes' id='type-id-645'/>
       <class-decl name='_Vector_base&lt;void (*)(), std::allocator&lt;void (*)()&gt; &gt;' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='70' column='1' id='type-id-647'>
         <member-type access='public'>
           <class-decl name='_Vector_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='75' column='1' id='type-id-648'>
@@ -12586,7 +12586,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='char_traits&lt;char&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='238' column='1' id='type-id-652'>
+      <class-decl name='char_traits&lt;char&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='238' column='1' is-declaration-only='yes' id='type-id-652'>
         <member-type access='public'>
           <typedef-decl name='char_type' type-id='type-id-74' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='239' column='1' id='type-id-653'/>
         </member-type>
@@ -14001,7 +14001,7 @@
       </class-decl>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;void (**)(), std::vector&lt;void (*)(), std::allocator&lt;void (*)()&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-694'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;void (* const*)(), std::vector&lt;void (*)(), std::allocator&lt;void (*)()&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-695'/>
-      <class-decl name='__niter_base&lt;void (**)(), false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' id='type-id-697'>
+      <class-decl name='__niter_base&lt;void (**)(), false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-697'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIPPFvvELb0EE3__bES2_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-11'/>
@@ -14009,7 +14009,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;void (**)(), false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' id='type-id-698'>
+      <class-decl name='__miter_base&lt;void (**)(), false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-698'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIPPFvvELb0EE3__bES2_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-11'/>
@@ -14017,7 +14017,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;void**, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' id='type-id-699'>
+      <class-decl name='__niter_base&lt;void**, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-699'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIPPvLb0EE3__bES1_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-37'/>
@@ -14025,7 +14025,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;void**, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' id='type-id-700'>
+      <class-decl name='__miter_base&lt;void**, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-700'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIPPvLb0EE3__bES1_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-37'/>
@@ -14430,7 +14430,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__copy_move_backward&lt;false, false, std::random_access_iterator_tag&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='539' column='1' id='type-id-721'>
+      <class-decl name='__copy_move_backward&lt;false, false, std::random_access_iterator_tag&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='539' column='1' is-declaration-only='yes' id='type-id-721'>
         <member-function access='public' static='yes'>
           <function-decl name='__copy_move_b&lt;AllocObject*, AllocObject*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='542' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-407'/>
@@ -14448,7 +14448,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;AllocObject*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' id='type-id-723'>
+      <class-decl name='__niter_base&lt;AllocObject*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-723'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIP11AllocObjectLb0EE3__bES1_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-407'/>
@@ -14456,7 +14456,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;AllocObject*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' id='type-id-724'>
+      <class-decl name='__miter_base&lt;AllocObject*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-724'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIP11AllocObjectLb0EE3__bES1_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-407'/>
@@ -14464,7 +14464,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__copy_move&lt;false, false, std::random_access_iterator_tag&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='335' column='1' id='type-id-725'>
+      <class-decl name='__copy_move&lt;false, false, std::random_access_iterator_tag&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='335' column='1' is-declaration-only='yes' id='type-id-725'>
         <member-function access='public' static='yes'>
           <function-decl name='__copy_m&lt;AllocObject*, AllocObject*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='338' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-407'/>
@@ -14474,7 +14474,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;__gnu_cxx::__normal_iterator&lt;AllocObject*, std::vector&lt;AllocObject, STL_Allocator&lt;AllocObject, HeapLeakChecker::Allocator&gt; &gt; &gt;, true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' id='type-id-726'>
+      <class-decl name='__niter_base&lt;__gnu_cxx::__normal_iterator&lt;AllocObject*, std::vector&lt;AllocObject, STL_Allocator&lt;AllocObject, HeapLeakChecker::Allocator&gt; &gt; &gt;, true&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-726'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIN9__gnu_cxx17__normal_iteratorIP11AllocObjectSt6vectorIS2_13STL_AllocatorIS2_N15HeapLeakChecker9AllocatorEEEEELb1EE3__bESA_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='277' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-428'/>
@@ -14482,7 +14482,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;__gnu_cxx::__normal_iterator&lt;AllocObject*, std::vector&lt;AllocObject, STL_Allocator&lt;AllocObject, HeapLeakChecker::Allocator&gt; &gt; &gt;, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' id='type-id-727'>
+      <class-decl name='__miter_base&lt;__gnu_cxx::__normal_iterator&lt;AllocObject*, std::vector&lt;AllocObject, STL_Allocator&lt;AllocObject, HeapLeakChecker::Allocator&gt; &gt; &gt;, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-727'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIN9__gnu_cxx17__normal_iteratorIP11AllocObjectSt6vectorIS2_13STL_AllocatorIS2_N15HeapLeakChecker9AllocatorEEEEELb0EE3__bESA_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-428'/>
@@ -14840,7 +14840,7 @@
         </enum-decl>
       </member-type>
       <member-type access='private'>
-        <class-decl name='Allocator' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/heap-checker.cc' line='292' column='1' id='type-id-752'>
+        <class-decl name='Allocator' is-struct='yes' visibility='default' filepath='src/heap-checker.cc' line='292' column='1' is-declaration-only='yes' id='type-id-752'>
           <data-member access='private' static='yes'>
             <var-decl name='arena_' type-id='type-id-753' mangled-name='_ZN15HeapLeakChecker9Allocator6arena_E' visibility='default' filepath='src/heap-checker.cc' line='333' column='1' elf-symbol-id='_ZN15HeapLeakChecker9Allocator6arena_E'/>
           </data-member>
@@ -15655,7 +15655,7 @@
         <parameter type-id='type-id-33'/>
         <return type-id='type-id-30'/>
       </function-decl>
-      <class-decl name='new_allocator&lt;void (*)()&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' id='type-id-421'>
+      <class-decl name='new_allocator&lt;void (*)()&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-421'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-786' is-artificial='yes'/>
@@ -20530,7 +20530,7 @@
       </member-function>
     </class-decl>
     <namespace-decl name='__gnu_cxx'>
-      <class-decl name='new_allocator&lt;std::pair&lt;HeapProfileTable::Bucket* const, HeapProfileTable::Snapshot::Entry&gt; &gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' id='type-id-1077'>
+      <class-decl name='new_allocator&lt;std::pair&lt;HeapProfileTable::Bucket* const, HeapProfileTable::Snapshot::Entry&gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-1077'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1105' is-artificial='yes'/>
@@ -20672,7 +20672,7 @@
     <pointer-type-def type-id='type-id-1038' size-in-bits='64' id='type-id-1099'/>
     <pointer-type-def type-id='type-id-1025' size-in-bits='64' id='type-id-1100'/>
     <namespace-decl name='std'>
-      <class-decl name='binary_function&lt;HeapProfileTable::Bucket*, HeapProfileTable::Bucket*, bool&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='113' column='1' id='type-id-1097'/>
+      <class-decl name='binary_function&lt;HeapProfileTable::Bucket*, HeapProfileTable::Bucket*, bool&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='113' column='1' is-declaration-only='yes' id='type-id-1097'/>
     </namespace-decl>
     <namespace-decl name='std'>
       <class-decl name='pair&lt;std::_Rb_tree_iterator&lt;MemoryRegionMap::Region&gt;, bool&gt;' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_pair.h' line='68' column='1' id='type-id-1075'>
@@ -20704,7 +20704,7 @@
     <pointer-type-def type-id='type-id-1067' size-in-bits='64' id='type-id-1101'/>
     <pointer-type-def type-id='type-id-1077' size-in-bits='64' id='type-id-1105'/>
     <namespace-decl name='__gnu_cxx'>
-      <class-decl name='new_allocator&lt;std::_Rb_tree_node&lt;std::pair&lt;HeapProfileTable::Bucket* const, HeapProfileTable::Snapshot::Entry&gt; &gt; &gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' id='type-id-1108'>
+      <class-decl name='new_allocator&lt;std::_Rb_tree_node&lt;std::pair&lt;HeapProfileTable::Bucket* const, HeapProfileTable::Snapshot::Entry&gt; &gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-1108'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1121' is-artificial='yes'/>
@@ -21990,7 +21990,7 @@
       <class-decl name='reverse_iterator&lt;std::_List_const_iterator&lt;ProfileHandlerToken*&gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-1205'/>
     </namespace-decl>
     <namespace-decl name='__gnu_cxx'>
-      <class-decl name='new_allocator&lt;std::_List_node&lt;ProfileHandlerToken*&gt; &gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' id='type-id-1213'>
+      <class-decl name='new_allocator&lt;std::_List_node&lt;ProfileHandlerToken*&gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-1213'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1218' is-artificial='yes'/>
@@ -22063,7 +22063,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='new_allocator&lt;ProfileHandlerToken*&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' id='type-id-1216'>
+      <class-decl name='new_allocator&lt;ProfileHandlerToken*&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-1216'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1224' is-artificial='yes'/>
@@ -23530,7 +23530,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='binary_function&lt;const void*, const void*, bool&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='113' column='1' id='type-id-1308'/>
+      <class-decl name='binary_function&lt;const void*, const void*, bool&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='113' column='1' is-declaration-only='yes' id='type-id-1308'/>
       <class-decl name='allocator&lt;std::pair&lt;const void* const, const char*&gt; &gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/allocator.h' line='87' column='1' id='type-id-1291'>
         <base-class access='public' layout-offset-in-bits='0' type-id='type-id-1310'/>
         <member-function access='private'>
@@ -23773,7 +23773,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='unary_function&lt;std::pair&lt;const void* const, const char*&gt;, const void* const&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' id='type-id-1326'/>
+      <class-decl name='unary_function&lt;std::pair&lt;const void* const, const char*&gt;, const void* const&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' is-declaration-only='yes' id='type-id-1326'/>
       <class-decl name='map&lt;const void*, const char*, std::less&lt;const void*&gt;, std::allocator&lt;std::pair&lt;const void* const, const char*&gt; &gt; &gt;' size-in-bits='384' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_map.h' line='87' column='1' id='type-id-1328'>
         <member-type access='private'>
           <class-decl name='value_compare' visibility='default' is-declaration-only='yes' id='type-id-1329'/>
@@ -24030,7 +24030,7 @@
       </class-decl>
     </namespace-decl>
     <namespace-decl name='__gnu_cxx'>
-      <class-decl name='new_allocator&lt;std::_Rb_tree_node&lt;std::pair&lt;const void* const, const char*&gt; &gt; &gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' id='type-id-1305'>
+      <class-decl name='new_allocator&lt;std::_Rb_tree_node&lt;std::pair&lt;const void* const, const char*&gt; &gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-1305'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1335' is-artificial='yes'/>
@@ -24103,7 +24103,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='new_allocator&lt;std::pair&lt;const void* const, const char*&gt; &gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' id='type-id-1310'>
+      <class-decl name='new_allocator&lt;std::pair&lt;const void* const, const char*&gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-1310'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1340' is-artificial='yes'/>
@@ -25185,11 +25185,12 @@
         <return type-id='type-id-2'/>
       </function-decl>
       <class-decl name='_Rb_tree_node&lt;std::pair&lt;HeapProfileTable::Bucket* const, HeapProfileTable::Snapshot::Entry&gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1119'/>
+      <class-decl name='binary_function&lt;HeapProfileTable::Bucket*, HeapProfileTable::Bucket*, bool&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='113' column='1' is-declaration-only='yes' id='type-id-1097'/>
       <class-decl name='reverse_iterator&lt;std::_Rb_tree_iterator&lt;std::pair&lt;HeapProfileTable::Bucket* const, HeapProfileTable::Snapshot::Entry&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-1020'/>
       <class-decl name='reverse_iterator&lt;std::_Rb_tree_const_iterator&lt;std::pair&lt;HeapProfileTable::Bucket* const, HeapProfileTable::Snapshot::Entry&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-1021'/>
       <class-decl name='pair&lt;std::_Rb_tree_iterator&lt;std::pair&lt;HeapProfileTable::Bucket* const, HeapProfileTable::Snapshot::Entry&gt; &gt;, std::_Rb_tree_iterator&lt;std::pair&lt;HeapProfileTable::Bucket* const, HeapProfileTable::Snapshot::Entry&gt; &gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1027'/>
       <class-decl name='pair&lt;std::_Rb_tree_const_iterator&lt;std::pair&lt;HeapProfileTable::Bucket* const, HeapProfileTable::Snapshot::Entry&gt; &gt;, std::_Rb_tree_const_iterator&lt;std::pair&lt;HeapProfileTable::Bucket* const, HeapProfileTable::Snapshot::Entry&gt; &gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1028'/>
-      <class-decl name='__equal&lt;false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='796' column='1' id='type-id-1387'>
+      <class-decl name='__equal&lt;false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='796' column='1' is-declaration-only='yes' id='type-id-1387'>
         <member-function access='public' static='yes'>
           <function-decl name='equal&lt;const void* const*, const void**&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='799' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-36'/>
@@ -25207,7 +25208,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;const void**, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' id='type-id-1388'>
+      <class-decl name='__niter_base&lt;const void**, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1388'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIPPKvLb0EE3__bES2_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-37'/>
@@ -25215,7 +25216,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;const void* const*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' id='type-id-1389'>
+      <class-decl name='__niter_base&lt;const void* const*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1389'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIPKPKvLb0EE3__bES3_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-36'/>
@@ -25240,8 +25241,8 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='unary_function&lt;std::pair&lt;HeapProfileTable::Bucket* const, HeapProfileTable::Snapshot::Entry&gt;, HeapProfileTable::Bucket* const&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' id='type-id-1391'/>
-      <class-decl name='__iter_swap&lt;true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='96' column='1' id='type-id-1393'>
+      <class-decl name='unary_function&lt;std::pair&lt;HeapProfileTable::Bucket* const, HeapProfileTable::Snapshot::Entry&gt;, HeapProfileTable::Bucket* const&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' is-declaration-only='yes' id='type-id-1391'/>
+      <class-decl name='__iter_swap&lt;true&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='96' column='1' is-declaration-only='yes' id='type-id-1393'>
         <member-function access='public' static='yes'>
           <function-decl name='iter_swap&lt;HeapProfileTable::Bucket**, HeapProfileTable::Bucket**&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='99' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-39'/>
@@ -25257,7 +25258,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;HeapProfileTable::Snapshot::Entry*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' id='type-id-1394'>
+      <class-decl name='__niter_base&lt;HeapProfileTable::Snapshot::Entry*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1394'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIPN16HeapProfileTable8Snapshot5EntryELb0EE3__bES3_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-722'/>
@@ -25265,7 +25266,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;HeapProfileTable::Snapshot::Entry*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' id='type-id-1395'>
+      <class-decl name='__miter_base&lt;HeapProfileTable::Snapshot::Entry*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-1395'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIPN16HeapProfileTable8Snapshot5EntryELb0EE3__bES3_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-722'/>
@@ -25273,7 +25274,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;HeapProfileTable::Bucket**, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' id='type-id-1396'>
+      <class-decl name='__niter_base&lt;HeapProfileTable::Bucket**, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1396'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIPP17HeapProfileBucketLb0EE3__bES2_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-39'/>
@@ -25281,7 +25282,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;HeapProfileTable::Bucket**, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' id='type-id-1397'>
+      <class-decl name='__miter_base&lt;HeapProfileTable::Bucket**, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-1397'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIPP17HeapProfileBucketLb0EE3__bES2_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-39'/>
@@ -25289,7 +25290,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;const void* const*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' id='type-id-1398'>
+      <class-decl name='__miter_base&lt;const void* const*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-1398'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIPKPKvLb0EE3__bES3_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-36'/>
@@ -25301,6 +25302,152 @@
     <pointer-type-def type-id='type-id-1399' size-in-bits='64' id='type-id-1385'/>
     <reference-type-def kind='lvalue' type-id='type-id-366' size-in-bits='64' id='type-id-1386'/>
     <namespace-decl name='__gnu_cxx'>
+      <class-decl name='new_allocator&lt;std::_Rb_tree_node&lt;std::pair&lt;HeapProfileTable::Bucket* const, HeapProfileTable::Snapshot::Entry&gt; &gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-1108'>
+        <member-function access='private'>
+          <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-1121' is-artificial='yes'/>
+            <return type-id='type-id-2'/>
+          </function-decl>
+        </member-function>
+        <member-function access='private'>
+          <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='68' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-1121' is-artificial='yes'/>
+            <parameter type-id='type-id-1122'/>
+            <return type-id='type-id-2'/>
+          </function-decl>
+        </member-function>
+        <member-function access='private' destructor='yes'>
+          <function-decl name='~new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='73' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-1121' is-artificial='yes'/>
+            <parameter type-id='type-id-7' is-artificial='yes'/>
+            <return type-id='type-id-2'/>
+          </function-decl>
+        </member-function>
+        <member-function access='private'>
+          <function-decl name='address' mangled-name='_ZNK9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKP17HeapProfileBucketN16HeapProfileTable8Snapshot5EntryEEEE7addressERSA_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='76' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-1123' is-artificial='yes'/>
+            <parameter type-id='type-id-1124'/>
+            <return type-id='type-id-1062'/>
+          </function-decl>
+        </member-function>
+        <member-function access='private'>
+          <function-decl name='address' mangled-name='_ZNK9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKP17HeapProfileBucketN16HeapProfileTable8Snapshot5EntryEEEE7addressERKSA_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='79' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-1123' is-artificial='yes'/>
+            <parameter type-id='type-id-1125'/>
+            <return type-id='type-id-1063'/>
+          </function-decl>
+        </member-function>
+        <member-function access='private'>
+          <function-decl name='allocate' mangled-name='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKP17HeapProfileBucketN16HeapProfileTable8Snapshot5EntryEEEE8allocateEmPKv' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='84' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-1121' is-artificial='yes'/>
+            <parameter type-id='type-id-17'/>
+            <parameter type-id='type-id-91'/>
+            <return type-id='type-id-1062'/>
+          </function-decl>
+        </member-function>
+        <member-function access='private'>
+          <function-decl name='deallocate' mangled-name='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKP17HeapProfileBucketN16HeapProfileTable8Snapshot5EntryEEEE10deallocateEPSA_m' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='94' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-1121' is-artificial='yes'/>
+            <parameter type-id='type-id-1062'/>
+            <parameter type-id='type-id-17'/>
+            <return type-id='type-id-2'/>
+          </function-decl>
+        </member-function>
+        <member-function access='private'>
+          <function-decl name='max_size' mangled-name='_ZNK9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKP17HeapProfileBucketN16HeapProfileTable8Snapshot5EntryEEEE8max_sizeEv' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='98' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-1123' is-artificial='yes'/>
+            <return type-id='type-id-28'/>
+          </function-decl>
+        </member-function>
+        <member-function access='private'>
+          <function-decl name='construct' mangled-name='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKP17HeapProfileBucketN16HeapProfileTable8Snapshot5EntryEEEE9constructEPSA_RKSA_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='104' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-1121' is-artificial='yes'/>
+            <parameter type-id='type-id-1062'/>
+            <parameter type-id='type-id-1125'/>
+            <return type-id='type-id-2'/>
+          </function-decl>
+        </member-function>
+        <member-function access='private'>
+          <function-decl name='destroy' mangled-name='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKP17HeapProfileBucketN16HeapProfileTable8Snapshot5EntryEEEE7destroyEPSA_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='115' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-1121' is-artificial='yes'/>
+            <parameter type-id='type-id-1062'/>
+            <return type-id='type-id-2'/>
+          </function-decl>
+        </member-function>
+      </class-decl>
+      <class-decl name='new_allocator&lt;std::pair&lt;HeapProfileTable::Bucket* const, HeapProfileTable::Snapshot::Entry&gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-1077'>
+        <member-function access='private'>
+          <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-1105' is-artificial='yes'/>
+            <return type-id='type-id-2'/>
+          </function-decl>
+        </member-function>
+        <member-function access='private'>
+          <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='68' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-1105' is-artificial='yes'/>
+            <parameter type-id='type-id-1106'/>
+            <return type-id='type-id-2'/>
+          </function-decl>
+        </member-function>
+        <member-function access='private' destructor='yes'>
+          <function-decl name='~new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='73' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-1105' is-artificial='yes'/>
+            <parameter type-id='type-id-7' is-artificial='yes'/>
+            <return type-id='type-id-2'/>
+          </function-decl>
+        </member-function>
+        <member-function access='private'>
+          <function-decl name='address' mangled-name='_ZNK9__gnu_cxx13new_allocatorISt4pairIKP17HeapProfileBucketN16HeapProfileTable8Snapshot5EntryEEE7addressERS8_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='76' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-1107' is-artificial='yes'/>
+            <parameter type-id='type-id-1094'/>
+            <return type-id='type-id-1095'/>
+          </function-decl>
+        </member-function>
+        <member-function access='private'>
+          <function-decl name='address' mangled-name='_ZNK9__gnu_cxx13new_allocatorISt4pairIKP17HeapProfileBucketN16HeapProfileTable8Snapshot5EntryEEE7addressERKS8_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='79' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-1107' is-artificial='yes'/>
+            <parameter type-id='type-id-1024'/>
+            <return type-id='type-id-1089'/>
+          </function-decl>
+        </member-function>
+        <member-function access='private'>
+          <function-decl name='allocate' mangled-name='_ZN9__gnu_cxx13new_allocatorISt4pairIKP17HeapProfileBucketN16HeapProfileTable8Snapshot5EntryEEE8allocateEmPKv' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='84' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-1105' is-artificial='yes'/>
+            <parameter type-id='type-id-17'/>
+            <parameter type-id='type-id-91'/>
+            <return type-id='type-id-1095'/>
+          </function-decl>
+        </member-function>
+        <member-function access='private'>
+          <function-decl name='deallocate' mangled-name='_ZN9__gnu_cxx13new_allocatorISt4pairIKP17HeapProfileBucketN16HeapProfileTable8Snapshot5EntryEEE10deallocateEPS8_m' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='94' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-1105' is-artificial='yes'/>
+            <parameter type-id='type-id-1095'/>
+            <parameter type-id='type-id-17'/>
+            <return type-id='type-id-2'/>
+          </function-decl>
+        </member-function>
+        <member-function access='private'>
+          <function-decl name='max_size' mangled-name='_ZNK9__gnu_cxx13new_allocatorISt4pairIKP17HeapProfileBucketN16HeapProfileTable8Snapshot5EntryEEE8max_sizeEv' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='98' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-1107' is-artificial='yes'/>
+            <return type-id='type-id-28'/>
+          </function-decl>
+        </member-function>
+        <member-function access='private'>
+          <function-decl name='construct' mangled-name='_ZN9__gnu_cxx13new_allocatorISt4pairIKP17HeapProfileBucketN16HeapProfileTable8Snapshot5EntryEEE9constructEPS8_RKS8_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='104' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-1105' is-artificial='yes'/>
+            <parameter type-id='type-id-1095'/>
+            <parameter type-id='type-id-1024'/>
+            <return type-id='type-id-2'/>
+          </function-decl>
+        </member-function>
+        <member-function access='private'>
+          <function-decl name='destroy' mangled-name='_ZN9__gnu_cxx13new_allocatorISt4pairIKP17HeapProfileBucketN16HeapProfileTable8Snapshot5EntryEEE7destroyEPS8_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='115' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-1105' is-artificial='yes'/>
+            <parameter type-id='type-id-1095'/>
+            <return type-id='type-id-2'/>
+          </function-decl>
+        </member-function>
+      </class-decl>
     </namespace-decl>
 
 
@@ -25503,8 +25650,8 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='unary_function&lt;MemoryRegionMap::Region, MemoryRegionMap::Region&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' id='type-id-1410'/>
-      <class-decl name='__miter_base&lt;const void**, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' id='type-id-1412'>
+      <class-decl name='unary_function&lt;MemoryRegionMap::Region, MemoryRegionMap::Region&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' is-declaration-only='yes' id='type-id-1410'/>
+      <class-decl name='__miter_base&lt;const void**, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-1412'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIPPKvLb0EE3__bES2_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-37'/>
@@ -26254,7 +26401,7 @@
           <return type-id='type-id-2'/>
         </function-decl>
       </namespace-decl>
-      <class-decl name='VDSOInitHelper' size-in-bits='8' visibility='default' filepath='src/base/vdso_support.cc' line='137' column='1' id='type-id-1476'>
+      <class-decl name='VDSOInitHelper' visibility='default' filepath='src/base/vdso_support.cc' line='137' column='1' is-declaration-only='yes' id='type-id-1476'>
         <member-function access='private' constructor='yes'>
           <function-decl name='VDSOInitHelper' filepath='src/base/vdso_support.cc' line='139' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1477' is-artificial='yes'/>

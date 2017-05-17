@@ -12825,10 +12825,7 @@ add_or_update_class_type(read_context&	 ctxt,
     }
 
   if (size)
-    {
-      result->set_size_in_bits(size);
-      result->set_is_declaration_only(false);
-    }
+    result->set_size_in_bits(size);
 
   ctxt.associate_die_to_type(die, result, where_offset);
 

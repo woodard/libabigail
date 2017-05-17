@@ -906,12 +906,13 @@ categorize_harmful_diff_node(diff *d, bool pre)
       // or removal.
       //
       // TODO: be more specific -- not all size changes are harmful.
-      if (type_size_changed(f, s)
-	  || data_member_offset_changed(f, s)
-	  || non_static_data_member_type_size_changed(f, s)
-	  || non_static_data_member_added_or_removed(d)
-	  || base_classes_added_or_removed(d)
-	  || has_harmful_enum_change(d))
+      if (!has_class_decl_only_def_change(d)
+	  && (type_size_changed(f, s)
+	      || data_member_offset_changed(f, s)
+	      || non_static_data_member_type_size_changed(f, s)
+	      || non_static_data_member_added_or_removed(d)
+	      || base_classes_added_or_removed(d)
+	      || has_harmful_enum_change(d)))
 	category |= SIZE_OR_OFFSET_CHANGE_CATEGORY;
 
       if (has_virtual_mem_fn_change(d))
