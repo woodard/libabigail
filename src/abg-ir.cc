@@ -5286,7 +5286,7 @@ get_type_name(const type_base* t, bool qualified, bool internal)
     {
       const function_type* fn_type = is_function_type(t);
       assert(fn_type);
-      return get_function_type_name(fn_type, internal);
+      return fn_type->get_cached_name(internal);
     }
   if (qualified)
     return d->get_qualified_name(internal);
