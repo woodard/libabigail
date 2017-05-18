@@ -40248,7 +40248,7 @@
       <return type-id='type-id-6'/>
     </function-decl>
     <!-- void* __asan_internal_memset(void*, int, size_t) -->
-    <function-decl name='__asan_internal_memset' mangled-name='__asan_internal_memset' filepath='../../.././libsanitizer/libbacktrace/backtrace-rename.h' line='41' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_internal_memset'>
+    <function-decl name='__asan_internal_memset' filepath='../../.././libsanitizer/libbacktrace/backtrace-rename.h' line='41' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-3'/>
       <!-- parameter of type 'int' -->
@@ -40276,7 +40276,7 @@
       <return type-id='type-id-3'/>
     </function-decl>
     <!-- size_t __asan_internal_strnlen(const char*, size_t) -->
-    <function-decl name='__asan_internal_strnlen' mangled-name='__asan_internal_strnlen' filepath='../../.././libsanitizer/libbacktrace/backtrace-rename.h' line='46' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_internal_strnlen'>
+    <function-decl name='__asan_internal_strnlen' filepath='../../.././libsanitizer/libbacktrace/backtrace-rename.h' line='46' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-30'/>
       <!-- parameter of type 'typedef size_t' -->
@@ -40285,7 +40285,7 @@
       <return type-id='type-id-1512'/>
     </function-decl>
     <!-- int __asan_internal_strcmp(const char*, const char*) -->
-    <function-decl name='__asan_internal_strcmp' mangled-name='__asan_internal_strcmp' filepath='../../.././libsanitizer/libbacktrace/backtrace-rename.h' line='43' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_internal_strcmp'>
+    <function-decl name='__asan_internal_strcmp' filepath='../../.././libsanitizer/libbacktrace/backtrace-rename.h' line='43' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-30'/>
       <!-- parameter of type 'const char*' -->
@@ -41028,7 +41028,7 @@
       <return type-id='type-id-3'/>
     </function-decl>
     <!-- void* __asan_internal_memcpy(void*, void*, size_t) -->
-    <function-decl name='__asan_internal_memcpy' mangled-name='__asan_internal_memcpy' filepath='../../.././libsanitizer/libbacktrace/backtrace-rename.h' line='40' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_internal_memcpy'>
+    <function-decl name='__asan_internal_memcpy' filepath='../../.././libsanitizer/libbacktrace/backtrace-rename.h' line='40' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-3'/>
       <!-- parameter of type 'void*' -->
@@ -41039,7 +41039,7 @@
       <return type-id='type-id-3'/>
     </function-decl>
     <!-- size_t __asan_internal_strlen(const char*) -->
-    <function-decl name='__asan_internal_strlen' mangled-name='__asan_internal_strlen' filepath='../../.././libsanitizer/libbacktrace/backtrace-rename.h' line='45' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_internal_strlen'>
+    <function-decl name='__asan_internal_strlen' filepath='../../.././libsanitizer/libbacktrace/backtrace-rename.h' line='45' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-30'/>
       <!-- typedef size_t -->
@@ -41056,7 +41056,7 @@
       <return type-id='type-id-13'/>
     </function-decl>
     <!-- int __asan_internal_strncmp(const char*, const char*, size_t) -->
-    <function-decl name='__asan_internal_strncmp' mangled-name='__asan_internal_strncmp' filepath='../../.././libsanitizer/libbacktrace/backtrace-rename.h' line='44' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_internal_strncmp'>
+    <function-decl name='__asan_internal_strncmp' filepath='../../.././libsanitizer/libbacktrace/backtrace-rename.h' line='44' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-30'/>
       <!-- parameter of type 'const char*' -->
@@ -41067,7 +41067,7 @@
       <return type-id='type-id-13'/>
     </function-decl>
     <!-- int __asan_internal_memcmp(void*, void*, size_t) -->
-    <function-decl name='__asan_internal_memcmp' mangled-name='__asan_internal_memcmp' filepath='../../.././libsanitizer/libbacktrace/backtrace-rename.h' line='42' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_internal_memcmp'>
+    <function-decl name='__asan_internal_memcmp' filepath='../../.././libsanitizer/libbacktrace/backtrace-rename.h' line='42' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-3'/>
       <!-- parameter of type 'void*' -->

@@ -8546,7 +8546,7 @@
       <return type-id='type-id-1'/>
     </function-decl>
     <!-- size_t htab_elements(htab_t) -->
-    <function-decl name='htab_elements' mangled-name='htab_elements' filepath='../.././libcpp/../include/hashtab.h' line='188' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='htab_elements'>
+    <function-decl name='htab_elements' filepath='../.././libcpp/../include/hashtab.h' line='188' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'typedef htab_t' -->
       <parameter type-id='type-id-183'/>
       <!-- typedef size_t -->
@@ -9330,15 +9330,6 @@
     </function-decl>
     <!-- char* __builtin_stpcpy(char*, const char*) -->
     <function-decl name='__builtin_stpcpy' mangled-name='stpcpy' visibility='default' binding='global' size-in-bits='64'>
-      <!-- parameter of type 'char*' -->
-      <parameter type-id='type-id-9'/>
-      <!-- parameter of type 'const char*' -->
-      <parameter type-id='type-id-8'/>
-      <!-- char* -->
-      <return type-id='type-id-9'/>
-    </function-decl>
-    <!-- char* __builtin_strcpy(char*, const char*) -->
-    <function-decl name='__builtin_strcpy' mangled-name='strcpy' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'char*' -->
       <parameter type-id='type-id-9'/>
       <!-- parameter of type 'const char*' -->

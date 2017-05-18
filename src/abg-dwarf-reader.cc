@@ -10429,6 +10429,38 @@ die_function_signature(const read_context& ctxt,
 		       Dwarf_Die *fn_die,
 		       size_t where_offset)
 {
+
+  translation_unit::language lang;
+  bool has_lang = false;
+  if ((has_lang = ctxt.get_die_language(fn_die, lang)))
+    {
+      // In a binary originating from the C language, it's OK to use
+      // the linkage name of the function as a key for the map which
+      // is meant to reduce the number of DIE comparisons involved
+      // during DIE canonicalization computation.
+      if (is_c_language(lang))
+	{
+	  string fn_name = die_linkage_name(fn_die);
+	  if (fn_name.empty())
+	    fn_name = die_name(fn_die);
+	  return fn_name;
+	}
+    }
+
+  // TODO: When we can structurally compare DIEs originating from C++
+  // as well, we can use the linkage name of functions in C++ too, to
+  // reduce the number of comparisons involved during DIE
+  // canonicalization.
+
+  string return_type_name;
+  Dwarf_Die ret_type_die;
+  if (die_die_attribute(fn_die, DW_AT_type, ret_type_die))
+    return_type_name = ctxt.get_die_qualified_type_name(&ret_type_die,
+							where_offset);
+
+  if (return_type_name.empty())
+    return_type_name = "void";
+
   Dwarf_Die scope_die;
   string scope_name;
   if (get_scope_die(ctxt, fn_die, where_offset, scope_die))
@@ -10437,7 +10469,6 @@ die_function_signature(const read_context& ctxt,
   if (!scope_name.empty())
     fn_name  = scope_name + "::" + fn_name;
 
-  string return_type_name;
   string class_name;
   vector<string> parm_names;
   bool is_const = false;
