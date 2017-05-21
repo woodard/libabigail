@@ -19,7 +19,8 @@ _fedabipkgdiff_module()
                     --abipkgdiff
                     --clean-cache
                     --clean-cache-before
-                    --clean-cache-after"
+                    --clean-cache-after
+                    --self-compare"
 	    COMPREPLY=( $(compgen -W "${OPTS[*]}" -- $cur) )
 	    return 0
 	    ;;

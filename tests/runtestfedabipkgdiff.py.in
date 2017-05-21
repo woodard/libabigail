@@ -91,6 +91,10 @@ FEDABIPKGDIFF_TEST_SPECS = [
       os.path.join(INPUT_DIR, 'nss-util/nss-util-3.24.0-2.0.fc25.x86_64.rpm')],
      'data/test-fedabipkgdiff/test6-nss-util-3.12.6-1.fc14.x86_64--nss-util-3.24.0-2.0.fc25.x86_64-report-0.txt',
      'output/test-fedabipkgdiff/test6-nss-util-3.12.6-1.fc14.x86_64--nss-util-3.24.0-2.0.fc25.x86_64-report-0.txt'),
+
+    (['--self-compare', '-a', '--from', 'fc23', 'dbus-glib'],
+     'data/test-fedabipkgdiff/test7-self-compare-from-fc23-dbus-glib-report-0.txt',
+     'output/test-fedabipkgdiff/test7-self-compare-from-fc23-dbus-glib-report-0.txt'),
 ]
 
 

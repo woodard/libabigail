@@ -528,16 +528,23 @@ def generate_comparison_halves(rpm_col1, rpm_col2):
         if _rpm.is_devel and not global_config.check_all_subpackages:
             continue
 
-        rpm2 = rpm_col2.get_peer_rpm(_rpm)
-        if rpm2 is None:
-            logger.warning('Peer RPM of {0} is not found.'.format(_rpm.filename))
-            continue
+        if global_config.self_compare:
+            rpm2 = _rpm
+        else:
+            rpm2 = rpm_col2.get_peer_rpm(_rpm)
+            if rpm2 is None:
+                logger.warning('Peer RPM of {0} is not found.'.format(_rpm.filename))
+                continue
 
         debuginfo1 = rpm_col1.get_sibling_debuginfo(_rpm)
         devel1 = rpm_col1.get_sibling_devel(_rpm)
 
-        debuginfo2 = rpm_col2.get_sibling_debuginfo(rpm2)
-        devel2 = rpm_col2.get_sibling_devel(rpm2)
+        if global_config.self_compare:
+            debuginfo2 = debuginfo1
+            devel2 = devel1
+        else:
+            debuginfo2 = rpm_col2.get_sibling_debuginfo(rpm2)
+            devel2 = rpm_col2.get_sibling_devel(rpm2)
 
         yield (ComparisonHalf(subject=_rpm,
                               ancillary_debug=debuginfo1,
@@ -1206,6 +1213,40 @@ def diff_two_nvras_from_koji():
 
 
 @log_call
+def self_compare_rpms_from_distro():
+    """Compare ABI between same package from a distro
+
+    Doing ABI comparison on self package should return no
+    ABI change and hence return code should be 0. This is useful
+    to ensure that functionality of libabigail itself
+    didn't break. This utility can be invoked like this:
+
+    fedabipkgdiff --self-compare -a --from fc25 foo
+    """
+
+    from_distro = global_config.from_distro
+
+    if not is_distro_valid(from_distro):
+        raise InvalidDistroError('Invalid distro {0}'.format(from_distro))
+
+    package_name = global_config.NVR[0]
+
+    rpm_col1 = session.get_latest_built_rpms(package_name,
+                                             distro=global_config.from_distro)
+
+    if global_config.clean_cache_before:
+        delete_download_cache()
+
+    download_rpms(rpm_col1.rpms_iter())
+    result = run_abipkgdiff(rpm_col1, rpm_col1)
+
+    if global_config.clean_cache_after:
+        delete_download_cache()
+
+    return result
+
+
+@log_call
 def diff_from_two_rpm_files(from_rpm_file, to_rpm_file):
     """Diff two RPM files"""
     rpm_col1 = RPMCollection.gather_from_dir(from_rpm_file)
@@ -1345,6 +1386,13 @@ def build_commandline_args_parser():
         dest='clean_cache_after',
         default=None,
         help='Clean cache after ABI comparison')
+    parser.add_argument(
+        '--self-compare',
+        required=False,
+        action='store_true',
+        dest='self_compare',
+        default=None,
+        help='ABI comparison on same package')
     return parser
 
 
@@ -1366,6 +1414,10 @@ def main():
         logger.setLevel(logging.DEBUG)
 
     logger.debug(args)
+
+    if global_config.from_distro and global_config.self_compare and \
+            global_config.NVR:
+        return self_compare_rpms_from_distro()
 
     if global_config.from_distro and global_config.to_distro is None and \
             global_config.NVR:
