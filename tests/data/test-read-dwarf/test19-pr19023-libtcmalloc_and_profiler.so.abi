@@ -2788,7 +2788,7 @@
           <return type-id='type-id-2'/>
         </function-decl>
       </member-function>
-      <member-function access='private' destructor='yes' vtable-offset='0'>
+      <member-function access='private' destructor='yes' vtable-offset='-1'>
         <function-decl name='~MallocExtension' mangled-name='_ZN15MallocExtensionD1Ev' filepath='src/malloc_extension.cc' line='111' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN15MallocExtensionD1Ev'>
           <parameter type-id='type-id-90' is-artificial='yes'/>
           <parameter type-id='type-id-7' is-artificial='yes'/>
@@ -6513,7 +6513,7 @@
           <return type-id='type-id-2'/>
         </function-decl>
       </member-function>
-      <member-function access='private' destructor='yes' vtable-offset='0'>
+      <member-function access='private' destructor='yes' vtable-offset='-1'>
         <function-decl name='~SysAllocator' mangled-name='_ZN12SysAllocatorD1Ev' filepath='src/malloc_extension.cc' line='108' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN12SysAllocatorD1Ev'>
           <parameter type-id='type-id-96' is-artificial='yes'/>
           <parameter type-id='type-id-7' is-artificial='yes'/>

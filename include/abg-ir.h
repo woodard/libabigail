@@ -3745,7 +3745,7 @@ public:
   mem_fn_context_rel(scope_decl* s)
     : context_rel(s),
       is_virtual_(false),
-      vtable_offset_in_bits_(0),
+      vtable_offset_in_bits_(-1),
       is_constructor_(false),
       is_destructor_(false),
       is_const_(false)

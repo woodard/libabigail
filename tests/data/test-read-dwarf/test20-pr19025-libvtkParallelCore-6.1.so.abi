@@ -1065,7 +1065,7 @@
             <return type-id='type-id-6'/>
           </function-decl>
         </member-function>
-        <member-function access='public' destructor='yes' vtable-offset='0'>
+        <member-function access='public' destructor='yes' vtable-offset='-1'>
           <function-decl name='~basic_ostream' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ostream' line='91' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-73' is-artificial='yes'/>
             <parameter type-id='type-id-7' is-artificial='yes'/>
@@ -5466,6 +5466,13 @@
       </member-type>
       <member-type access='private'>
         <class-decl name='Operation' size-in-bits='64' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkCommunicator.h' line='94' column='1' id='type-id-297'>
+          <member-function access='private' destructor='yes' vtable-offset='-1'>
+            <function-decl name='~Operation' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkCommunicator.h' line='113' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-298' is-artificial='yes'/>
+              <parameter type-id='type-id-7' is-artificial='yes'/>
+              <return type-id='type-id-6'/>
+            </function-decl>
+          </member-function>
           <member-function access='private' vtable-offset='0'>
             <function-decl name='Function' mangled-name='_ZN15vtkCommunicator9Operation8FunctionEPKvPvxi' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkCommunicator.h' line='105' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-298' is-artificial='yes'/>
@@ -5473,13 +5480,6 @@
               <parameter type-id='type-id-76'/>
               <parameter type-id='type-id-299'/>
               <parameter type-id='type-id-7'/>
-              <return type-id='type-id-6'/>
-            </function-decl>
-          </member-function>
-          <member-function access='private' destructor='yes' vtable-offset='0'>
-            <function-decl name='~Operation' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkCommunicator.h' line='113' column='1' visibility='default' binding='global' size-in-bits='64'>
-              <parameter type-id='type-id-298' is-artificial='yes'/>
-              <parameter type-id='type-id-7' is-artificial='yes'/>
               <return type-id='type-id-6'/>
             </function-decl>
           </member-function>
@@ -6800,17 +6800,17 @@
           <return type-id='type-id-6'/>
         </function-decl>
       </member-function>
-      <member-function access='private' vtable-offset='0'>
-        <function-decl name='GetClassNameInternal' mangled-name='_ZNK15vtkCommunicator20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkCommunicator.h' line='49' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-301' is-artificial='yes'/>
-          <return type-id='type-id-30'/>
-        </function-decl>
-      </member-function>
-      <member-function access='protected' destructor='yes' vtable-offset='0'>
+      <member-function access='protected' destructor='yes' vtable-offset='-1'>
         <function-decl name='~vtkCommunicator' mangled-name='_ZN15vtkCommunicatorD1Ev' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkCommunicator.cxx' line='112' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN15vtkCommunicatorD1Ev'>
           <parameter type-id='type-id-300' is-artificial='yes'/>
           <parameter type-id='type-id-7'/>
           <return type-id='type-id-6'/>
+        </function-decl>
+      </member-function>
+      <member-function access='private' vtable-offset='0'>
+        <function-decl name='GetClassNameInternal' mangled-name='_ZNK15vtkCommunicator20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkCommunicator.h' line='49' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <parameter type-id='type-id-301' is-artificial='yes'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='1'>
@@ -9805,17 +9805,17 @@
           <return type-id='type-id-6'/>
         </function-decl>
       </member-function>
-      <member-function access='private' vtable-offset='0'>
-        <function-decl name='GetClassNameInternal' mangled-name='_ZNK20vtkDummyCommunicator20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkDummyCommunicator.h' line='34' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-515' is-artificial='yes'/>
-          <return type-id='type-id-30'/>
-        </function-decl>
-      </member-function>
-      <member-function access='protected' destructor='yes' vtable-offset='0'>
+      <member-function access='protected' destructor='yes' vtable-offset='-1'>
         <function-decl name='~vtkDummyCommunicator' mangled-name='_ZN20vtkDummyCommunicatorD1Ev' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkDummyCommunicator.cxx' line='27' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN20vtkDummyCommunicatorD1Ev'>
           <parameter type-id='type-id-514' is-artificial='yes'/>
           <parameter type-id='type-id-7' is-artificial='yes'/>
           <return type-id='type-id-6'/>
+        </function-decl>
+      </member-function>
+      <member-function access='private' vtable-offset='0'>
+        <function-decl name='GetClassNameInternal' mangled-name='_ZNK20vtkDummyCommunicator20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkDummyCommunicator.h' line='34' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <parameter type-id='type-id-515' is-artificial='yes'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='1'>
@@ -11336,17 +11336,17 @@
           <return type-id='type-id-6'/>
         </function-decl>
       </member-function>
-      <member-function access='private' vtable-offset='0'>
-        <function-decl name='GetClassNameInternal' mangled-name='_ZNK25vtkMultiProcessController20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessController.h' line='65' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-529' is-artificial='yes'/>
-          <return type-id='type-id-30'/>
-        </function-decl>
-      </member-function>
-      <member-function access='protected' destructor='yes' vtable-offset='0'>
+      <member-function access='protected' destructor='yes' vtable-offset='-1'>
         <function-decl name='~vtkMultiProcessController' mangled-name='_ZN25vtkMultiProcessControllerD1Ev' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessController.cxx' line='112' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN25vtkMultiProcessControllerD1Ev'>
           <parameter type-id='type-id-528' is-artificial='yes'/>
           <parameter type-id='type-id-7'/>
           <return type-id='type-id-6'/>
+        </function-decl>
+      </member-function>
+      <member-function access='private' vtable-offset='0'>
+        <function-decl name='GetClassNameInternal' mangled-name='_ZNK25vtkMultiProcessController20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessController.h' line='65' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <parameter type-id='type-id-529' is-artificial='yes'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='public' vtable-offset='1'>
@@ -11577,17 +11577,17 @@
           <return type-id='type-id-6'/>
         </function-decl>
       </member-function>
-      <member-function access='private' vtable-offset='0'>
-        <function-decl name='GetClassNameInternal' mangled-name='_ZNK18vtkDummyController20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkDummyController.h' line='33' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-538' is-artificial='yes'/>
-          <return type-id='type-id-30'/>
-        </function-decl>
-      </member-function>
-      <member-function access='protected' destructor='yes' vtable-offset='0'>
+      <member-function access='protected' destructor='yes' vtable-offset='-1'>
         <function-decl name='~vtkDummyController' mangled-name='_ZN18vtkDummyControllerD1Ev' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkDummyController.cxx' line='31' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN18vtkDummyControllerD1Ev'>
           <parameter type-id='type-id-537' is-artificial='yes'/>
           <parameter type-id='type-id-7'/>
           <return type-id='type-id-6'/>
+        </function-decl>
+      </member-function>
+      <member-function access='private' vtable-offset='0'>
+        <function-decl name='GetClassNameInternal' mangled-name='_ZNK18vtkDummyController20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkDummyController.h' line='33' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <parameter type-id='type-id-538' is-artificial='yes'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='1'>
@@ -12642,17 +12642,17 @@
           <return type-id='type-id-6'/>
         </function-decl>
       </member-function>
-      <member-function access='private' vtable-offset='0'>
-        <function-decl name='GetClassNameInternal' mangled-name='_ZNK15vtkProcessGroup20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkProcessGroup.h' line='54' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-596' is-artificial='yes'/>
-          <return type-id='type-id-30'/>
-        </function-decl>
-      </member-function>
-      <member-function access='protected' destructor='yes' vtable-offset='0'>
+      <member-function access='protected' destructor='yes' vtable-offset='-1'>
         <function-decl name='~vtkProcessGroup' mangled-name='_ZN15vtkProcessGroupD1Ev' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkProcessGroup.cxx' line='42' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN15vtkProcessGroupD1Ev'>
           <parameter type-id='type-id-535' is-artificial='yes'/>
           <parameter type-id='type-id-7' is-artificial='yes'/>
           <return type-id='type-id-6'/>
+        </function-decl>
+      </member-function>
+      <member-function access='private' vtable-offset='0'>
+        <function-decl name='GetClassNameInternal' mangled-name='_ZNK15vtkProcessGroup20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkProcessGroup.h' line='54' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <parameter type-id='type-id-596' is-artificial='yes'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='1'>
@@ -24992,17 +24992,17 @@
           <return type-id='type-id-7'/>
         </function-decl>
       </member-function>
-      <member-function access='private' vtable-offset='0'>
-        <function-decl name='GetClassNameInternal' mangled-name='_ZNK21vtkSocketCommunicator20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketCommunicator.h' line='58' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-1255' is-artificial='yes'/>
-          <return type-id='type-id-30'/>
-        </function-decl>
-      </member-function>
-      <member-function access='protected' destructor='yes' vtable-offset='0'>
+      <member-function access='protected' destructor='yes' vtable-offset='-1'>
         <function-decl name='~vtkSocketCommunicator' mangled-name='_ZN21vtkSocketCommunicatorD1Ev' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketCommunicator.cxx' line='117' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN21vtkSocketCommunicatorD1Ev'>
           <parameter type-id='type-id-1254' is-artificial='yes'/>
           <parameter type-id='type-id-7'/>
           <return type-id='type-id-6'/>
+        </function-decl>
+      </member-function>
+      <member-function access='private' vtable-offset='0'>
+        <function-decl name='GetClassNameInternal' mangled-name='_ZNK21vtkSocketCommunicator20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketCommunicator.h' line='58' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <parameter type-id='type-id-1255' is-artificial='yes'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='1'>
@@ -25585,17 +25585,17 @@
           <return type-id='type-id-6'/>
         </function-decl>
       </member-function>
-      <member-function access='private' vtable-offset='0'>
-        <function-decl name='GetClassNameInternal' mangled-name='_ZNK19vtkSocketController20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketController.h' line='50' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-1294' is-artificial='yes'/>
-          <return type-id='type-id-30'/>
-        </function-decl>
-      </member-function>
-      <member-function access='protected' destructor='yes' vtable-offset='0'>
+      <member-function access='protected' destructor='yes' vtable-offset='-1'>
         <function-decl name='~vtkSocketController' mangled-name='_ZN19vtkSocketControllerD1Ev' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketController.cxx' line='39' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN19vtkSocketControllerD1Ev'>
           <parameter type-id='type-id-1293' is-artificial='yes'/>
           <parameter type-id='type-id-7'/>
           <return type-id='type-id-6'/>
+        </function-decl>
+      </member-function>
+      <member-function access='private' vtable-offset='0'>
+        <function-decl name='GetClassNameInternal' mangled-name='_ZNK19vtkSocketController20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketController.h' line='50' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <parameter type-id='type-id-1294' is-artificial='yes'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='1'>
@@ -25753,17 +25753,17 @@
           <return type-id='type-id-6'/>
         </function-decl>
       </member-function>
-      <member-function access='private' vtable-offset='0'>
-        <function-decl name='GetClassNameInternal' mangled-name='_ZNK18vtkSubCommunicator20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSubCommunicator.h' line='54' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-1299' is-artificial='yes'/>
-          <return type-id='type-id-30'/>
-        </function-decl>
-      </member-function>
-      <member-function access='protected' destructor='yes' vtable-offset='0'>
+      <member-function access='protected' destructor='yes' vtable-offset='-1'>
         <function-decl name='~vtkSubCommunicator' mangled-name='_ZN18vtkSubCommunicatorD1Ev' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSubCommunicator.cxx' line='36' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN18vtkSubCommunicatorD1Ev'>
           <parameter type-id='type-id-1298' is-artificial='yes'/>
           <parameter type-id='type-id-7' is-artificial='yes'/>
           <return type-id='type-id-6'/>
+        </function-decl>
+      </member-function>
+      <member-function access='private' vtable-offset='0'>
+        <function-decl name='GetClassNameInternal' mangled-name='_ZNK18vtkSubCommunicator20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSubCommunicator.h' line='54' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <parameter type-id='type-id-1299' is-artificial='yes'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='1'>
@@ -26293,17 +26293,17 @@
           <return type-id='type-id-6'/>
         </function-decl>
       </member-function>
-      <member-function access='private' vtable-offset='0'>
-        <function-decl name='GetClassNameInternal' mangled-name='_ZNK11vtkSubGroup20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSubGroup.h' line='51' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-1306' is-artificial='yes'/>
-          <return type-id='type-id-30'/>
-        </function-decl>
-      </member-function>
-      <member-function access='protected' destructor='yes' vtable-offset='0'>
+      <member-function access='protected' destructor='yes' vtable-offset='-1'>
         <function-decl name='~vtkSubGroup' mangled-name='_ZN11vtkSubGroupD1Ev' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSubGroup.cxx' line='167' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN11vtkSubGroupD1Ev'>
           <parameter type-id='type-id-1305' is-artificial='yes'/>
           <parameter type-id='type-id-7' is-artificial='yes'/>
           <return type-id='type-id-6'/>
+        </function-decl>
+      </member-function>
+      <member-function access='private' vtable-offset='0'>
+        <function-decl name='GetClassNameInternal' mangled-name='_ZNK11vtkSubGroup20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSubGroup.h' line='51' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <parameter type-id='type-id-1306' is-artificial='yes'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='1'>
@@ -26509,17 +26509,17 @@
           <return type-id='type-id-6'/>
         </function-decl>
       </member-function>
-      <member-function access='private' vtable-offset='0'>
-        <function-decl name='GetClassNameInternal' mangled-name='_ZNK22vtkFieldDataSerializer20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkFieldDataSerializer.h' line='44' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-1312' is-artificial='yes'/>
-          <return type-id='type-id-30'/>
-        </function-decl>
-      </member-function>
-      <member-function access='protected' destructor='yes' vtable-offset='0'>
+      <member-function access='protected' destructor='yes' vtable-offset='-1'>
         <function-decl name='~vtkFieldDataSerializer' mangled-name='_ZN22vtkFieldDataSerializerD1Ev' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkFieldDataSerializer.cxx' line='37' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN22vtkFieldDataSerializerD1Ev'>
           <parameter type-id='type-id-1311' is-artificial='yes'/>
           <parameter type-id='type-id-7' is-artificial='yes'/>
           <return type-id='type-id-6'/>
+        </function-decl>
+      </member-function>
+      <member-function access='private' vtable-offset='0'>
+        <function-decl name='GetClassNameInternal' mangled-name='_ZNK22vtkFieldDataSerializer20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkFieldDataSerializer.h' line='44' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <parameter type-id='type-id-1312' is-artificial='yes'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='1'>

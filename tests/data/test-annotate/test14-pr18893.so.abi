@@ -1477,7 +1477,7 @@
           <enumerator name='playAndRecord' value='2'/>
         </enum-decl>
       </member-type>
-      <member-function access='private' destructor='yes' vtable-offset='0'>
+      <member-function access='private' destructor='yes' vtable-offset='-1'>
         <!-- CachingEvaluator::~CachingEvaluator(int) -->
         <function-decl name='~CachingEvaluator' filepath='libnurbs/internals/cachingeval.h' line='41' column='1' visibility='default' binding='global' size-in-bits='64'>
           <!-- implicit parameter of type 'CachingEvaluator*' -->
@@ -1568,7 +1568,7 @@
     <class-decl name='BasicCurveEvaluator' size-in-bits='64' is-struct='yes' visibility='default' filepath='libnurbs/internals/basiccrveval.h' line='43' column='1' id='type-id-120'>
     <!-- class CachingEvaluator -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-117'/>
-      <member-function access='public' destructor='yes' vtable-offset='0'>
+      <member-function access='public' destructor='yes' vtable-offset='-1'>
         <!-- BasicCurveEvaluator::~BasicCurveEvaluator(int) -->
         <function-decl name='~BasicCurveEvaluator' filepath='libnurbs/internals/basiccrveval.h' line='45' column='1' visibility='default' binding='global' size-in-bits='64'>
           <!-- implicit parameter of type 'BasicCurveEvaluator*' -->
@@ -2057,7 +2057,7 @@
           <return type-id='type-id-10'/>
         </function-decl>
       </member-function>
-      <member-function access='private' destructor='yes' vtable-offset='0'>
+      <member-function access='private' destructor='yes' vtable-offset='-1'>
         <!-- OpenGLCurveEvaluator::~OpenGLCurveEvaluator(int) -->
         <function-decl name='~OpenGLCurveEvaluator' filepath='libnurbs/interface/glcurveval.cc' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
           <!-- implicit parameter of type 'OpenGLCurveEvaluator*' -->
@@ -3354,7 +3354,7 @@
           <return type-id='type-id-10'/>
         </function-decl>
       </member-function>
-      <member-function access='public' destructor='yes' vtable-offset='0'>
+      <member-function access='public' destructor='yes' vtable-offset='-1'>
         <!-- OpenGLSurfaceEvaluator::~OpenGLSurfaceEvaluator(int) -->
         <function-decl name='~OpenGLSurfaceEvaluator' filepath='libnurbs/interface/glsurfeval.cc' line='162' column='1' visibility='default' binding='global' size-in-bits='64'>
           <!-- implicit parameter of type 'OpenGLSurfaceEvaluator*' -->
@@ -4953,7 +4953,7 @@
           <return type-id='type-id-10'/>
         </function-decl>
       </member-function>
-      <member-function access='private' destructor='yes' vtable-offset='0'>
+      <member-function access='private' destructor='yes' vtable-offset='-1'>
         <!-- NurbsTessellator::~NurbsTessellator(int) -->
         <function-decl name='~NurbsTessellator' filepath='libnurbs/internals/nurbsinterfac.cc' line='88' column='1' visibility='default' binding='global' size-in-bits='64'>
           <!-- implicit parameter of type 'NurbsTessellator*' -->
@@ -5018,7 +5018,7 @@
     <class-decl name='BasicSurfaceEvaluator' size-in-bits='64' is-struct='yes' visibility='default' filepath='libnurbs/internals/basicsurfeval.h' line='43' column='1' id='type-id-140'>
     <!-- class CachingEvaluator -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-117'/>
-      <member-function access='public' destructor='yes' vtable-offset='0'>
+      <member-function access='public' destructor='yes' vtable-offset='-1'>
         <!-- BasicSurfaceEvaluator::~BasicSurfaceEvaluator(int) -->
         <function-decl name='~BasicSurfaceEvaluator' filepath='libnurbs/internals/basicsurfeval.h' line='45' column='1' visibility='default' binding='global' size-in-bits='64'>
           <!-- implicit parameter of type 'BasicSurfaceEvaluator*' -->
@@ -9111,7 +9111,7 @@
           <return type-id='type-id-10'/>
         </function-decl>
       </member-function>
-      <member-function access='private' destructor='yes' vtable-offset='0'>
+      <member-function access='private' destructor='yes' vtable-offset='-1'>
         <!-- FlistSorter::~FlistSorter(int) -->
         <function-decl name='~FlistSorter' filepath='libnurbs/internals/flistsorter.h' line='45' column='1' visibility='default' binding='global' size-in-bits='64'>
           <!-- implicit parameter of type 'FlistSorter*' -->
@@ -11337,7 +11337,7 @@
           <return type-id='type-id-10'/>
         </function-decl>
       </member-function>
-      <member-function access='private' destructor='yes' vtable-offset='0'>
+      <member-function access='private' destructor='yes' vtable-offset='-1'>
         <!-- Sorter::~Sorter(int) -->
         <function-decl name='~Sorter' filepath='libnurbs/internals/sorter.h' line='39' column='1' visibility='default' binding='global' size-in-bits='64'>
           <!-- implicit parameter of type 'Sorter*' -->

@@ -1106,7 +1106,7 @@
             <return type-id='type-id-6'/>
           </function-decl>
         </member-function>
-        <member-function access='public' destructor='yes' vtable-offset='0'>
+        <member-function access='public' destructor='yes' vtable-offset='-1'>
           <!-- std::basic_ios<char, std::char_traits<char> >::~basic_ios(int) -->
           <function-decl name='~basic_ios' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_ios.h' line='272' column='1' visibility='default' binding='global' size-in-bits='64'>
             <!-- implicit parameter of type 'std::basic_ios<char, std::char_traits<char> >*' -->
@@ -2556,7 +2556,7 @@
             <return type-id='type-id-6'/>
           </function-decl>
         </member-function>
-        <member-function access='public' destructor='yes' vtable-offset='0'>
+        <member-function access='public' destructor='yes' vtable-offset='-1'>
           <!-- std::basic_ostream<char, std::char_traits<char> >::~basic_ostream(int, void**) -->
           <function-decl name='~basic_ostream' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ostream' line='91' column='1' visibility='default' binding='global' size-in-bits='64'>
             <!-- implicit parameter of type 'std::basic_ostream<char, std::char_traits<char> >*' -->
@@ -6810,16 +6810,7 @@
           <return type-id='type-id-6'/>
         </function-decl>
       </member-function>
-      <member-function access='private' vtable-offset='0'>
-        <!-- const char* vtkImageDataLIC2D::GetClassNameInternal() -->
-        <function-decl name='GetClassNameInternal' mangled-name='_ZNK17vtkImageDataLIC2D20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2D.h' line='48' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <!-- implicit parameter of type 'const vtkImageDataLIC2D*' -->
-          <parameter type-id='type-id-237' is-artificial='yes'/>
-          <!-- const char* -->
-          <return type-id='type-id-30'/>
-        </function-decl>
-      </member-function>
-      <member-function access='protected' destructor='yes' vtable-offset='0'>
+      <member-function access='protected' destructor='yes' vtable-offset='-1'>
         <!-- vtkImageDataLIC2D::~vtkImageDataLIC2D(int) -->
         <function-decl name='~vtkImageDataLIC2D' mangled-name='_ZN17vtkImageDataLIC2DD1Ev' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2D.cxx' line='92' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN17vtkImageDataLIC2DD1Ev'>
           <!-- implicit parameter of type 'vtkImageDataLIC2D*' -->
@@ -6828,6 +6819,15 @@
           <parameter type-id='type-id-7'/>
           <!-- void -->
           <return type-id='type-id-6'/>
+        </function-decl>
+      </member-function>
+      <member-function access='private' vtable-offset='0'>
+        <!-- const char* vtkImageDataLIC2D::GetClassNameInternal() -->
+        <function-decl name='GetClassNameInternal' mangled-name='_ZNK17vtkImageDataLIC2D20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2D.h' line='48' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <!-- implicit parameter of type 'const vtkImageDataLIC2D*' -->
+          <parameter type-id='type-id-237' is-artificial='yes'/>
+          <!-- const char* -->
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='1'>
@@ -7321,16 +7321,7 @@
           <return type-id='type-id-6'/>
         </function-decl>
       </member-function>
-      <member-function access='private' vtable-offset='0'>
-        <!-- const char* vtkImageDataLIC2DExtentTranslator::GetClassNameInternal() -->
-        <function-decl name='GetClassNameInternal' mangled-name='_ZNK33vtkImageDataLIC2DExtentTranslator20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2DExtentTranslator.h' line='35' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <!-- implicit parameter of type 'const vtkImageDataLIC2DExtentTranslator*' -->
-          <parameter type-id='type-id-264' is-artificial='yes'/>
-          <!-- const char* -->
-          <return type-id='type-id-30'/>
-        </function-decl>
-      </member-function>
-      <member-function access='protected' destructor='yes' vtable-offset='0'>
+      <member-function access='protected' destructor='yes' vtable-offset='-1'>
         <!-- vtkImageDataLIC2DExtentTranslator::~vtkImageDataLIC2DExtentTranslator(int) -->
         <function-decl name='~vtkImageDataLIC2DExtentTranslator' mangled-name='_ZN33vtkImageDataLIC2DExtentTranslatorD1Ev' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2DExtentTranslator.cxx' line='43' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN33vtkImageDataLIC2DExtentTranslatorD1Ev'>
           <!-- implicit parameter of type 'vtkImageDataLIC2DExtentTranslator*' -->
@@ -7339,6 +7330,15 @@
           <parameter type-id='type-id-7' is-artificial='yes'/>
           <!-- void -->
           <return type-id='type-id-6'/>
+        </function-decl>
+      </member-function>
+      <member-function access='private' vtable-offset='0'>
+        <!-- const char* vtkImageDataLIC2DExtentTranslator::GetClassNameInternal() -->
+        <function-decl name='GetClassNameInternal' mangled-name='_ZNK33vtkImageDataLIC2DExtentTranslator20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2DExtentTranslator.h' line='35' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <!-- implicit parameter of type 'const vtkImageDataLIC2DExtentTranslator*' -->
+          <parameter type-id='type-id-264' is-artificial='yes'/>
+          <!-- const char* -->
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='1'>
@@ -12045,7 +12045,7 @@
             <return type-id='type-id-6'/>
           </function-decl>
         </member-function>
-        <member-function access='public' destructor='yes' vtable-offset='0'>
+        <member-function access='public' destructor='yes' vtable-offset='-1'>
           <!-- std::basic_streambuf<char, std::char_traits<char> >::~basic_streambuf(int) -->
           <function-decl name='~basic_streambuf' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/streambuf' line='192' column='1' visibility='default' binding='global' size-in-bits='64'>
             <!-- implicit parameter of type 'std::basic_streambuf<char, std::char_traits<char> >*' -->
@@ -12083,7 +12083,7 @@
             <return type-id='type-id-6'/>
           </function-decl>
         </member-function>
-        <member-function access='public' destructor='yes' vtable-offset='0'>
+        <member-function access='public' destructor='yes' vtable-offset='-1'>
           <!-- std::basic_ostringstream<char, std::char_traits<char>, std::allocator<char> >::~basic_ostringstream(int, void**) -->
           <function-decl name='~basic_ostringstream' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/sstream' line='431' column='1' visibility='default' binding='global' size-in-bits='64'>
             <!-- implicit parameter of type 'std::basic_ostringstream<char, std::char_traits<char>, std::allocator<char> >*' -->
@@ -13365,16 +13365,7 @@
           <return type-id='type-id-6'/>
         </function-decl>
       </member-function>
-      <member-function access='private' vtable-offset='0'>
-        <!-- const char* vtkLineIntegralConvolution2D::GetClassNameInternal() -->
-        <function-decl name='GetClassNameInternal' mangled-name='_ZNK28vtkLineIntegralConvolution2D20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.h' line='108' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <!-- implicit parameter of type 'const vtkLineIntegralConvolution2D*' -->
-          <parameter type-id='type-id-430' is-artificial='yes'/>
-          <!-- const char* -->
-          <return type-id='type-id-30'/>
-        </function-decl>
-      </member-function>
-      <member-function access='protected' destructor='yes' vtable-offset='0'>
+      <member-function access='protected' destructor='yes' vtable-offset='-1'>
         <!-- vtkLineIntegralConvolution2D::~vtkLineIntegralConvolution2D(int) -->
         <function-decl name='~vtkLineIntegralConvolution2D' mangled-name='_ZN28vtkLineIntegralConvolution2DD1Ev' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.cxx' line='994' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN28vtkLineIntegralConvolution2DD1Ev'>
           <!-- implicit parameter of type 'vtkLineIntegralConvolution2D*' -->
@@ -13383,6 +13374,15 @@
           <parameter type-id='type-id-7'/>
           <!-- void -->
           <return type-id='type-id-6'/>
+        </function-decl>
+      </member-function>
+      <member-function access='private' vtable-offset='0'>
+        <!-- const char* vtkLineIntegralConvolution2D::GetClassNameInternal() -->
+        <function-decl name='GetClassNameInternal' mangled-name='_ZNK28vtkLineIntegralConvolution2D20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.h' line='108' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <!-- implicit parameter of type 'const vtkLineIntegralConvolution2D*' -->
+          <parameter type-id='type-id-430' is-artificial='yes'/>
+          <!-- const char* -->
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='1'>
@@ -13967,7 +13967,7 @@
           <return type-id='type-id-434'/>
         </function-decl>
       </member-function>
-      <member-function access='private' destructor='yes' vtable-offset='0'>
+      <member-function access='private' destructor='yes' vtable-offset='-1'>
         <!-- vtkPainterCommunicator::~vtkPainterCommunicator(int) -->
         <function-decl name='~vtkPainterCommunicator' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPainterCommunicator.h' line='33' column='1' visibility='default' binding='global' size-in-bits='64'>
           <!-- implicit parameter of type 'vtkPainterCommunicator*' -->
@@ -14812,16 +14812,7 @@
           <return type-id='type-id-6'/>
         </function-decl>
       </member-function>
-      <member-function access='private' vtable-offset='0'>
-        <!-- const char* vtkStructuredGridLIC2D::GetClassNameInternal() -->
-        <function-decl name='GetClassNameInternal' mangled-name='_ZNK22vtkStructuredGridLIC2D20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkStructuredGridLIC2D.h' line='54' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <!-- implicit parameter of type 'const vtkStructuredGridLIC2D*' -->
-          <parameter type-id='type-id-455' is-artificial='yes'/>
-          <!-- const char* -->
-          <return type-id='type-id-30'/>
-        </function-decl>
-      </member-function>
-      <member-function access='protected' destructor='yes' vtable-offset='0'>
+      <member-function access='protected' destructor='yes' vtable-offset='-1'>
         <!-- vtkStructuredGridLIC2D::~vtkStructuredGridLIC2D(int) -->
         <function-decl name='~vtkStructuredGridLIC2D' mangled-name='_ZN22vtkStructuredGridLIC2DD1Ev' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkStructuredGridLIC2D.cxx' line='72' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN22vtkStructuredGridLIC2DD1Ev'>
           <!-- implicit parameter of type 'vtkStructuredGridLIC2D*' -->
@@ -14830,6 +14821,15 @@
           <parameter type-id='type-id-7'/>
           <!-- void -->
           <return type-id='type-id-6'/>
+        </function-decl>
+      </member-function>
+      <member-function access='private' vtable-offset='0'>
+        <!-- const char* vtkStructuredGridLIC2D::GetClassNameInternal() -->
+        <function-decl name='GetClassNameInternal' mangled-name='_ZNK22vtkStructuredGridLIC2D20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkStructuredGridLIC2D.h' line='54' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <!-- implicit parameter of type 'const vtkStructuredGridLIC2D*' -->
+          <parameter type-id='type-id-455' is-artificial='yes'/>
+          <!-- const char* -->
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='1'>
@@ -16449,16 +16449,7 @@
           <return type-id='type-id-6'/>
         </function-decl>
       </member-function>
-      <member-function access='private' vtable-offset='0'>
-        <!-- const char* vtkSurfaceLICComposite::GetClassNameInternal() -->
-        <function-decl name='GetClassNameInternal' mangled-name='_ZNK22vtkSurfaceLICComposite20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICComposite.h' line='41' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <!-- implicit parameter of type 'const vtkSurfaceLICComposite*' -->
-          <parameter type-id='type-id-484' is-artificial='yes'/>
-          <!-- const char* -->
-          <return type-id='type-id-30'/>
-        </function-decl>
-      </member-function>
-      <member-function access='protected' destructor='yes' vtable-offset='0'>
+      <member-function access='protected' destructor='yes' vtable-offset='-1'>
         <!-- vtkSurfaceLICComposite::~vtkSurfaceLICComposite(int) -->
         <function-decl name='~vtkSurfaceLICComposite' mangled-name='_ZN22vtkSurfaceLICCompositeD1Ev' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICComposite.cxx' line='52' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN22vtkSurfaceLICCompositeD1Ev'>
           <!-- implicit parameter of type 'vtkSurfaceLICComposite*' -->
@@ -16467,6 +16458,15 @@
           <parameter type-id='type-id-7'/>
           <!-- void -->
           <return type-id='type-id-6'/>
+        </function-decl>
+      </member-function>
+      <member-function access='private' vtable-offset='0'>
+        <!-- const char* vtkSurfaceLICComposite::GetClassNameInternal() -->
+        <function-decl name='GetClassNameInternal' mangled-name='_ZNK22vtkSurfaceLICComposite20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICComposite.h' line='41' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <!-- implicit parameter of type 'const vtkSurfaceLICComposite*' -->
+          <parameter type-id='type-id-484' is-artificial='yes'/>
+          <!-- const char* -->
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='1'>
@@ -16942,16 +16942,7 @@
           <return type-id='type-id-6'/>
         </function-decl>
       </member-function>
-      <member-function access='private' vtable-offset='0'>
-        <!-- const char* vtkSurfaceLICDefaultPainter::GetClassNameInternal() -->
-        <function-decl name='GetClassNameInternal' mangled-name='_ZNK27vtkSurfaceLICDefaultPainter20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICDefaultPainter.h' line='40' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <!-- implicit parameter of type 'const vtkSurfaceLICDefaultPainter*' -->
-          <parameter type-id='type-id-514' is-artificial='yes'/>
-          <!-- const char* -->
-          <return type-id='type-id-30'/>
-        </function-decl>
-      </member-function>
-      <member-function access='protected' destructor='yes' vtable-offset='0'>
+      <member-function access='protected' destructor='yes' vtable-offset='-1'>
         <!-- vtkSurfaceLICDefaultPainter::~vtkSurfaceLICDefaultPainter(int) -->
         <function-decl name='~vtkSurfaceLICDefaultPainter' mangled-name='_ZN27vtkSurfaceLICDefaultPainterD1Ev' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICDefaultPainter.cxx' line='41' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN27vtkSurfaceLICDefaultPainterD1Ev'>
           <!-- implicit parameter of type 'vtkSurfaceLICDefaultPainter*' -->
@@ -16960,6 +16951,15 @@
           <parameter type-id='type-id-7' is-artificial='yes'/>
           <!-- void -->
           <return type-id='type-id-6'/>
+        </function-decl>
+      </member-function>
+      <member-function access='private' vtable-offset='0'>
+        <!-- const char* vtkSurfaceLICDefaultPainter::GetClassNameInternal() -->
+        <function-decl name='GetClassNameInternal' mangled-name='_ZNK27vtkSurfaceLICDefaultPainter20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICDefaultPainter.h' line='40' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <!-- implicit parameter of type 'const vtkSurfaceLICDefaultPainter*' -->
+          <parameter type-id='type-id-514' is-artificial='yes'/>
+          <!-- const char* -->
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='1'>
@@ -18310,16 +18310,7 @@
           <return type-id='type-id-6'/>
         </function-decl>
       </member-function>
-      <member-function access='private' vtable-offset='0'>
-        <!-- const char* vtkSurfaceLICPainter::GetClassNameInternal() -->
-        <function-decl name='GetClassNameInternal' mangled-name='_ZNK20vtkSurfaceLICPainter20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.h' line='70' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <!-- implicit parameter of type 'const vtkSurfaceLICPainter*' -->
-          <parameter type-id='type-id-536' is-artificial='yes'/>
-          <!-- const char* -->
-          <return type-id='type-id-30'/>
-        </function-decl>
-      </member-function>
-      <member-function access='protected' destructor='yes' vtable-offset='0'>
+      <member-function access='protected' destructor='yes' vtable-offset='-1'>
         <!-- vtkSurfaceLICPainter::~vtkSurfaceLICPainter(int) -->
         <function-decl name='~vtkSurfaceLICPainter' mangled-name='_ZN20vtkSurfaceLICPainterD1Ev' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1567' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN20vtkSurfaceLICPainterD1Ev'>
           <!-- implicit parameter of type 'vtkSurfaceLICPainter*' -->
@@ -18328,6 +18319,15 @@
           <parameter type-id='type-id-7'/>
           <!-- void -->
           <return type-id='type-id-6'/>
+        </function-decl>
+      </member-function>
+      <member-function access='private' vtable-offset='0'>
+        <!-- const char* vtkSurfaceLICPainter::GetClassNameInternal() -->
+        <function-decl name='GetClassNameInternal' mangled-name='_ZNK20vtkSurfaceLICPainter20GetClassNameInternalEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.h' line='70' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <!-- implicit parameter of type 'const vtkSurfaceLICPainter*' -->
+          <parameter type-id='type-id-536' is-artificial='yes'/>
+          <!-- const char* -->
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='1'>

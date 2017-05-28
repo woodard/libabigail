@@ -2834,11 +2834,18 @@ represent(const diff_context& ctxt,
   out << "'" << mem_fn->get_pretty_representation() << "'";
   report_loc_info(meth, ctxt, out);
   if (get_member_function_is_virtual(mem_fn))
-    out << ", virtual at voffset "
-	<< get_member_function_vtable_offset(mem_fn)
-	<< "/"
-	<< is_class_type(meth->get_type()->get_class_type())->
-      get_biggest_vtable_offset();
+    {
+
+      ssize_t voffset = get_member_function_vtable_offset(mem_fn);
+      ssize_t biggest_voffset =
+	is_class_type(meth->get_type()->get_class_type())->
+	get_biggest_vtable_offset();
+      if (voffset > -1)
+	out << ", virtual at voffset "
+	    << get_member_function_vtable_offset(mem_fn)
+	    << "/"
+	    << biggest_voffset;
+    }
 
   if (ctxt.show_linkage_names()
       && (mem_fn->get_symbol()))

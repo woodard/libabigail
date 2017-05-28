@@ -1258,7 +1258,7 @@ write_voffset(function_decl_sptr fn, ostream&o)
 
   if (get_member_function_is_virtual(fn))
     {
-      size_t voffset = get_member_function_vtable_offset(fn);
+      ssize_t voffset = get_member_function_vtable_offset(fn);
       o << " vtable-offset='" << voffset << "'";
     }
 }
