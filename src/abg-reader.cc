@@ -3905,7 +3905,7 @@ build_enum_type_decl(read_context&	ctxt,
 	  if (a)
 	    {
 	      value = strtoll(CHAR_STR(a), NULL, 0);
-	      if (errno == ERANGE)
+	      if (value == LLONG_MIN || value == LLONG_MAX)
 		return nil;
 	    }
 
