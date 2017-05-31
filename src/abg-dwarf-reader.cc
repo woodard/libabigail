@@ -2618,6 +2618,10 @@ struct dwarf_expr_eval_context
 /// This context is to be created by create_read_context().  It's then
 /// passed to all the routines that read specific dwarf bits as they
 /// get some important data from it.
+///
+/// When a new data member is added to this context, it must be
+/// initiliazed by the read_context::initiliaze() function.  So please
+/// do not forget.
 class read_context
 {
 public:
@@ -2758,7 +2762,7 @@ public:
   // The address range of the offline elf file we are looking at.
   Dwfl_Module*			elf_module_;
   mutable Elf*			elf_handle_;
-  const string			elf_path_;
+  string			elf_path_;
   mutable Elf_Scn*		bss_section_;
   mutable Elf_Scn*		text_section_;
   mutable Elf_Scn*		rodata_section_;
@@ -2896,43 +2900,138 @@ public:
   /// reachable from publicly exported declarations (of functions and
   /// variables) are read.  If set to true then all types found in the
   /// debug information are loaded.
+  ///
+  /// @param linux_kernel_mode if set to true, then consider the special
+  /// linux kernel symbol tables when determining if a symbol is
+  /// exported or not.
   read_context(const string&	elf_path,
 	       char**		debug_info_root_path,
 	       ir::environment* environment,
 	       bool		load_all_types,
 	       bool		linux_kernel_mode)
-    : dwarf_version_(),
-      handle_(),
-      dwarf_(),
-      alt_fd_(),
-      alt_dwarf_(),
-      elf_module_(),
-      elf_handle_(),
-      elf_path_(elf_path),
-      bss_section_(),
-      text_section_(),
-      rodata_section_(),
-      data_section_(),
-      data1_section_(),
-      symtab_section_(),
-      opd_section_(),
-      ksymtab_section_(),
-      ksymtab_gpl_section_(),
-      versym_section_(),
-      verdef_section_(),
-      verneed_section_(),
-      symbol_versionning_sections_loaded_(),
-      symbol_versionning_sections_found_(),
-      cur_tu_die_(),
-      exported_decls_builder_()
   {
+    initialize(elf_path, debug_info_root_path, environment,
+	       load_all_types, linux_kernel_mode);
+  }
+
+  /// Initializer of read_context.
+  ///
+  /// @param elf_path the path to the elf file the context is to be
+  /// used for.
+  ///
+  /// @param debug_info_root_path a pointer to the path to the root
+  /// directory under which the debug info is to be found for @p
+  /// elf_path.  Leave this to NULL if the debug info is not in a
+  /// split file.
+  ///
+  /// @param environment the environment used by the current context.
+  /// This environment contains resources needed by the reader and by
+  /// the types and declarations that are to be created later.  Note
+  /// that ABI artifacts that are to be compared all need to be
+  /// created within the same environment.
+  ///
+  /// Please also note that the life time of this environment object
+  /// must be greater than the life time of the resulting @ref
+  /// read_context the context uses resources that are allocated in
+  /// the environment.
+  ///
+  /// @param load_all_types if set to false only the types that are
+  /// reachable from publicly exported declarations (of functions and
+  /// variables) are read.  If set to true then all types found in the
+  /// debug information are loaded.
+  ///
+  /// @param linux_kernel_mode if set to true, then consider the
+  /// special linux kernel symbol tables when determining if a symbol
+  /// is exported or not.
+  void
+  initialize(const string&	elf_path,
+	     char**		debug_info_root_path,
+	     ir::environment* environment,
+	     bool		load_all_types,
+	     bool		linux_kernel_mode)
+  {
+    dwarf_version_ = 0;
+    dwarf_ = 0;
+    handle_.reset();
+    alt_fd_ = 0;
+    alt_dwarf_ = 0;
+    elf_module_ = 0;
+    elf_handle_ = 0;
+    elf_path_ = elf_path;
+    bss_section_ = 0;
+    text_section_ = 0;
+    rodata_section_ = 0;
+    data_section_ = 0;
+    data1_section_ = 0;
+    symtab_section_ = 0;
+    opd_section_ = 0;
+    ksymtab_section_ = 0;
+    ksymtab_gpl_section_ = 0;
+    versym_section_ = 0;
+    verdef_section_ = 0;
+    verneed_section_ = 0;
+    symbol_versionning_sections_loaded_ = 0;
+    symbol_versionning_sections_found_ = 0;
+    cur_tu_die_ =  0;
+    exported_decls_builder_ = 0;
+
+    clear_alt_debug_info_data();
+
+    supprs_.clear();
+    decl_die_repr_die_offsets_maps_.clear();
+    type_die_repr_die_offsets_maps_.clear();
+    die_qualified_name_maps_.clear();
+    die_pretty_repr_maps_.clear();
+    die_pretty_type_repr_maps_.clear();
+    decl_die_artefact_maps_.clear();
+    type_die_artefact_maps_.clear();
+    canonical_type_die_vecs_.clear();
+    canonical_decl_die_vecs_.clear();
+    die_wip_classes_map_.clear();
+    alternate_die_wip_classes_map_.clear();
+    type_unit_die_wip_classes_map_.clear();
+    die_wip_function_types_map_.clear();
+    alternate_die_wip_function_types_map_.clear();
+    type_unit_die_wip_function_types_map_.clear();
+    die_function_with_no_symbol_map_.clear();
+    types_to_canonicalize_.clear();
+    alt_types_to_canonicalize_.clear();
+    type_unit_types_to_canonicalize_.clear();
+    decl_only_classes_map_.clear();
+    die_tu_map_.clear();
+    cur_corpus_group_.reset();
+    cur_corpus_.reset();
+    cur_tu_.reset();
+    primary_die_parent_map_.clear();
+    tu_die_imported_unit_points_map_.clear();
+    alt_tu_die_imported_unit_points_map_.clear();
+    type_units_tu_die_imported_unit_points_map_.clear();
+    alternate_die_parent_map_.clear();
+    type_section_die_parent_map_.clear();
+    var_decls_to_add_.clear();
+    fun_addr_sym_map_.reset();
+    fun_entry_addr_sym_map_.reset();
+    fun_syms_.reset();
+    var_addr_sym_map_.reset();
+    var_syms_.reset();
+    undefined_fun_syms_.reset();
+    undefined_var_syms_.reset();
+    linux_exported_fn_syms_.reset();
+    linux_exported_var_syms_.reset();
+    linux_exported_gpl_fn_syms_.reset();
+    linux_exported_gpl_var_syms_.reset();
+    dt_needed_.clear();
+    dt_soname_.clear();
+    elf_architecture_.clear();
+
+    clear_per_translation_unit_data();
+
     memset(&offline_callbacks_, 0, sizeof(offline_callbacks_));
     create_default_dwfl(debug_info_root_path);
     options_.env = environment;
     options_.load_in_linux_kernel_mode = linux_kernel_mode;
     options_.load_all_types = load_all_types;
     load_in_linux_kernel_mode(linux_kernel_mode);
-    env(environment);
   }
 
   /// Clear the resources related to the alternate DWARF data.
@@ -15305,9 +15404,10 @@ operator&=(status& l, status r)
 ///
 /// @param elf_path the path to the elf file the context is to be used for.
 ///
-/// @param a pointer to the path to the root directory under which the
-/// debug info is to be found for @p elf_path.  Leave this to NULL if
-/// the debug info is not in a split file.
+/// @param debug_info_root_path a pointer to the path to the root
+/// directory under which the debug info is to be found for @p
+/// elf_path.  Leave this to NULL if the debug info is not in a split
+/// file.
 ///
 /// @param environment the environment used by the current context.
 /// This environment contains resources needed by the reader and by
@@ -15325,6 +15425,10 @@ operator&=(status& l, status r)
 /// variables) are read.  If set to true then all types found in the
 /// debug information are loaded.
 ///
+/// @param linux_kernel_mode if set to true, then consider the special
+/// linux kernel symbol tables when determining if a symbol is
+/// exported or not.
+///
 /// @return a smart pointer to the resulting dwarf_reader::read_context.
 read_context_sptr
 create_read_context(const std::string&		elf_path,
@@ -15339,6 +15443,53 @@ create_read_context(const std::string&		elf_path,
 					    environment, load_all_types,
 					    linux_kernel_mode));
   return result;
+}
+
+/// Re-initialize a read_context so that it can re-used to read
+/// another binary.
+///
+/// @param ctxt the context to re-initialize.
+///
+/// @param elf_path the path to the elf file the context is to be used
+/// for.
+///
+/// @param debug_info_root_path a pointer to the path to the root
+/// directory under which the debug info is to be found for @p
+/// elf_path.  Leave this to NULL if the debug info is not in a split
+/// file.
+///
+/// @param environment the environment used by the current context.
+/// This environment contains resources needed by the reader and by
+/// the types and declarations that are to be created later.  Note
+/// that ABI artifacts that are to be compared all need to be created
+/// within the same environment.
+///
+/// Please also note that the life time of this environment object
+/// must be greater than the life time of the resulting @ref
+/// read_context the context uses resources that are allocated in the
+/// environment.
+///
+/// @param load_all_types if set to false only the types that are
+/// reachable from publicly exported declarations (of functions and
+/// variables) are read.  If set to true then all types found in the
+/// debug information are loaded.
+///
+/// @param linux_kernel_mode if set to true, then consider the special
+/// linux kernel symbol tables when determining if a symbol is
+/// exported or not.
+///
+/// @return a smart pointer to the resulting dwarf_reader::read_context.
+void
+reset_read_context(read_context_sptr	&ctxt,
+		   const std::string&	 elf_path,
+		   char**		 debug_info_root_path,
+		   ir::environment*	 environment,
+		   bool		 read_all_types,
+		   bool		 linux_kernel_mode)
+{
+  if (ctxt)
+    ctxt->initialize(elf_path, debug_info_root_path, environment,
+		     read_all_types, linux_kernel_mode);
 }
 
 /// Add suppressions specifications to the set of suppressions to be

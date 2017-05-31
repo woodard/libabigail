@@ -1635,6 +1635,7 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
   if (verbose)
     std::cout << "DONE\n";
 
+  dwarf_reader::read_context_sptr ctxt;
   if (got_binary_paths)
     {
       shared_ptr<char> di_root =
@@ -1644,8 +1645,8 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
       corpus_group_sptr group;
       if (!vmlinux.empty())
 	{
-	  dwarf_reader::read_context_sptr ctxt =
-	    dwarf_reader::create_read_context(vmlinux, &di_root_ptr, env.get(),
+	  ctxt =
+	    dwarf_reader::create_read_context(vmlinux, &di_root_ptr,env.get(),
 					      /*read_all_types=*/false,
 					      /*linux_kernel_mode=*/true);
 
@@ -1689,24 +1690,23 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
 			  << "/" << total_nb_modules
 			  << ") ... " << std::flush;
 
-	      dwarf_reader::read_context_sptr module_ctxt =
-		dwarf_reader::create_read_context(*m, &di_root_ptr, env.get(),
-						  /*read_all_types=*/false,
-						  /*linux_kernel_mode=*/true);
+	      reset_read_context(ctxt, *m, &di_root_ptr, env.get(),
+				 /*read_all_types=*/false,
+				 /*linux_kernel_mode=*/true);
 
 	      // If we have been given a whitelist of functions and
 	      // variable symbols to look at, then we can avoid loading
 	      // and analyzing the ELF symbol table.
 	      bool do_ignore_symbol_table = !kabi_wl_paths.empty();
 
-	      set_ignore_symbol_table(*module_ctxt, do_ignore_symbol_table);
+	      set_ignore_symbol_table(*ctxt, do_ignore_symbol_table);
 
-	      load_generate_apply_suppressions(*module_ctxt, suppr_paths,
+	      load_generate_apply_suppressions(*ctxt, suppr_paths,
 					       kabi_wl_paths, supprs);
 
-	      set_read_context_corpus_group(*module_ctxt, group);
+	      set_read_context_corpus_group(*ctxt, group);
 
-	      read_and_add_corpus_to_group_from_elf(*module_ctxt,
+	      read_and_add_corpus_to_group_from_elf(*ctxt,
 						    *group, status);
 	      if (verbose)
 		std::cout << " DONE\n";
