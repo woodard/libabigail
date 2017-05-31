@@ -63,7 +63,7 @@ Options
 
     Display a short help about the command and exit.
 
-  * `--version | -v`
+  * ``--version | -v``
 
     Display the version of the program and exit.
 
