@@ -251,9 +251,10 @@ std::tr1::shared_ptr<char>
 make_path_absolute(const char*p);
 
 corpus_group_sptr
-build_corpus_group_from_kernel_dist_under(const string&		root,
-					  vector<string>&		suppr_paths,
-					  vector<string>&		kabi_wl_paths,
+build_corpus_group_from_kernel_dist_under(const string&	root,
+					  const string&	vmlinux_path,
+					  vector<string>&	suppr_paths,
+					  vector<string>&	kabi_wl_paths,
 					  suppr::suppressions_type&	supprs,
 					  bool				verbose,
 					  environment_sptr&		env);

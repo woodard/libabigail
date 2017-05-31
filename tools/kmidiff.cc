@@ -75,6 +75,8 @@ struct options
   string	wrong_option;
   string	kernel_dist_root1;
   string	kernel_dist_root2;
+  string	vmlinux1;
+  string	vmlinux2;
   vector<string> kabi_whitelist_paths;
   vector<string> suppression_paths;
   suppressions_type read_time_supprs;
@@ -97,11 +99,13 @@ static void
 display_usage(const string& prog_name, ostream& out)
 {
   emit_prefix(prog_name, out)
-    << "usage: " << prog_name << " [options] kernel-package1 kernel-package2\n"
+    << "usage: " << prog_name << " [options] kernel-modules-dir1 kernel-modules-dir2\n"
     << " where options can be:\n"
     << " --help|-h  display this message\n"
     << " --version|-v  display program version information and exit\n"
     << " --verbose  display verbose messages\n"
+    << " --vmlinux1|--l1 <path>  the path to the first vmlinux"
+    << " --vmlinux2|--l2 <path>  the path to the second vmlinux"
     << " --suppressions|--suppr <path>  specify a suppression file\n"
     << " --kmi-whitelist|-w <path>  path to a kernel module interface "
     "whitelist\n";
@@ -148,6 +152,32 @@ parse_command_line(int argc, char* argv[], options& opts)
 	{
 	  opts.display_usage = true;
 	  return true;
+	}
+      else if (!strcmp(argv[i], "--vmlinux1")
+	       || !strcmp(argv[i], "--l1"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    {
+	      opts.missing_operand = true;
+	      opts.wrong_option = argv[i];
+	      return false;
+	    }
+	  opts.vmlinux1 = argv[j];
+	  ++i;
+	}
+      else if (!strcmp(argv[i], "--vmlinux2")
+	       || !strcmp(argv[i], "--l2"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    {
+	      opts.missing_operand = true;
+	      opts.wrong_option = argv[i];
+	      return false;
+	    }
+	  opts.vmlinux2 = argv[j];
+	  ++i;
 	}
       else if (!strcmp(argv[i], "--kmi-whitelist")
 	       || !strcmp(argv[i], "-w"))
@@ -316,6 +346,7 @@ main(int argc, char* argv[])
 	{
 	  group1 =
 	    build_corpus_group_from_kernel_dist_under(opts.kernel_dist_root1,
+						      opts.vmlinux1,
 						      opts.suppression_paths,
 						      opts.kabi_whitelist_paths,
 						      opts.read_time_supprs,
@@ -337,6 +368,7 @@ main(int argc, char* argv[])
 	{
 	  group2 =
 	    build_corpus_group_from_kernel_dist_under(opts.kernel_dist_root2,
+						      opts.vmlinux2,
 						      opts.suppression_paths,
 						      opts.kabi_whitelist_paths,
 						      opts.read_time_supprs,

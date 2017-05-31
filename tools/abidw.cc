@@ -84,6 +84,7 @@ struct options
   string		out_file_path;
   shared_ptr<char>	di_root_path;
   string		headers_dir;
+  string		vmlinux;
   vector<string>	suppression_paths;
   vector<string>	kabi_whitelist_paths;
   suppressions_type	kabi_whitelist_supprs;
@@ -147,6 +148,8 @@ display_usage(const string& prog_name, ostream& out)
     "abi whitelist\n"
     << "  --linux-tree|--lt  emit the ABI for the union of a "
     "vmlinux and its modules\n"
+    << "  --vmlinux <path>  the path to the vmlinux binary to consider to emit "
+       "the ABI of the union of vmlinux and its modules\n"
     << "  --abidiff  compare the loaded ABI against itself\n"
     << "  --annotate  annotate the ABI artifacts emitted in the output\n"
     << "  --stats  show statistics about various internal stuff\n"
@@ -224,6 +227,14 @@ parse_command_line(int argc, char* argv[], options& opts)
       else if (!strcmp(argv[i], "--linux-tree")
 	       || !strcmp(argv[i], "--lt"))
 	opts.corpus_group_for_linux = true;
+      else if (!strcmp(argv[i], "--vmlinux"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    return false;
+	  opts.vmlinux = argv[j];
+	  ++i;
+	}
       else if (!strcmp(argv[i], "--noout"))
 	opts.noout = true;
       else if (!strcmp(argv[i], "--no-architecture"))
@@ -489,39 +500,49 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
 					  options& opts)
 {
   if (!(tools_utils::is_dir(opts.in_file_path) && opts.corpus_group_for_linux))
-    return 0;
+    return 1;
 
   int exit_code = 0;
+
+  if (!opts.vmlinux.empty())
+    if (!abigail::tools_utils::check_file(opts.vmlinux, cerr, argv[0]))
+      return 1;
 
   suppressions_type supprs;
   corpus_group_sptr group =
     build_corpus_group_from_kernel_dist_under(opts.in_file_path,
+					      opts.vmlinux,
 					      opts.suppression_paths,
 					      opts.kabi_whitelist_paths,
 					      supprs, opts.do_log, env);
 
   if (!group)
-    return exit_code;
+    return 1;
 
   if (!opts.write_architecture)
     group->set_architecture_name("");
   if (!opts.write_corpus_path)
     group->set_path("");
 
-  if (!opts.out_file_path.empty())
+  if (!opts.noout)
     {
-      ofstream of(opts.out_file_path.c_str(), std::ios_base::trunc);
-      if (!of.is_open())
+      if (!opts.out_file_path.empty())
 	{
-	  emit_prefix(argv[0], cerr)
-	    << "could not open output file '"
-	    << opts.out_file_path << "'\n";
-	  return 1;
+	  ofstream of(opts.out_file_path.c_str(), std::ios_base::trunc);
+	  if (!of.is_open())
+	    {
+	      emit_prefix(argv[0], cerr)
+		<< "could not open output file '"
+		<< opts.out_file_path << "'\n";
+	      return 1;
+	    }
+	  exit_code = !xml_writer::write_corpus_group(group, 0, of,
+						      opts.annotate);
 	}
-      exit_code = !xml_writer::write_corpus_group(group, 0, of, opts.annotate);
+      else
+	exit_code = !xml_writer::write_corpus_group(group, 0, cout,
+						    opts.annotate);
     }
-  else
-    exit_code = !xml_writer::write_corpus_group(group, 0, cout, opts.annotate);
 
   return exit_code;
 }

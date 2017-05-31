@@ -1459,7 +1459,7 @@ is_kernel_module(const FTSENT *entry)
 ///
 /// @param vmlinux_path output parameter.  This is set to the path
 /// where the vmlinux binary is found.  This is set iff the returns
-/// true.
+/// true and if this argument was empty to begin with.
 ///
 /// @param module_paths output parameter.  This is set to the paths of
 /// the linux kernel module binaries.
@@ -1476,7 +1476,7 @@ find_vmlinux_and_module_paths(const string&	from,
   if (!file_hierarchy)
     return false;
 
-  bool found_vmlinux = false;
+  bool found_vmlinux = !vmlinux_path.empty();
   FTSENT *entry;
   while ((entry = fts_read(file_hierarchy)))
     {
@@ -1586,22 +1586,41 @@ get_binary_paths_from_kernel_dist(const string&	dist_root,
 /// The main corpus of the @ref corpus_group is made of the vmlinux
 /// binary.  The other corpora are made of the linux kernel binaries.
 ///
-/// @param root the path of the directory under which vmlinux and its
-/// kernel modules are to be found.
+/// @param root the path of the directory under which the kernel
+/// kernel modules are to be found.  The vmlinux can also be found
+/// somewhere under that directory, but if it's not in there, its path
+/// can be set to the @p vmlinux_path parameter.
 ///
-/// @param opts the options to use during the search.
+/// @param vmlinux_path the path to the vmlinux binary, if that binary
+/// is not under the @p root directory.  If this is empty, then it
+/// means the vmlinux binary is to be found under the @p root
+/// directory.
+///
+/// @param suppr_paths the paths to the suppression specifications to
+/// apply while loading the binaries.
+///
+/// @param kabi_wl_path the paths to the kabi whitelist files to take
+/// into account while loading the binaries.
+///
+/// @param supprs the suppressions resulting from parsing the
+/// suppression specifications at @p suppr_paths.  This is set by this
+/// function.
+///
+/// @param verbose true if the function has to emit some verbose
+/// messages.
 ///
 /// @param env the environment to create the corpus_group in.
 corpus_group_sptr
 build_corpus_group_from_kernel_dist_under(const string&	root,
+					  const string&	vmlinux_path,
 					  vector<string>&	suppr_paths,
 					  vector<string>&	kabi_wl_paths,
 					  suppressions_type&	supprs,
 					  bool			verbose,
 					  environment_sptr&	env)
 {
+  string vmlinux = vmlinux_path;
   corpus_group_sptr result;
-  string vmlinux;
   vector<string> modules;
   string debug_info_root_path;
 
