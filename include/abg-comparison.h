@@ -368,6 +368,10 @@ enum diff_category
   /// versa.
   CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY = 1 << 11,
 
+  /// A diff node in this category is a function parameter type which
+  /// top cv-qualifiers change.
+  FN_PARM_TYPE_TOP_CV_CHANGE_CATEGORY = 1 << 12,
+
   /// A special enumerator that is the logical 'or' all the
   /// enumerators above.
   ///
@@ -386,7 +390,8 @@ enum diff_category
   | VIRTUAL_MEMBER_CHANGE_CATEGORY
   | REDUNDANT_CATEGORY
   | CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY
-};
+  | FN_PARM_TYPE_TOP_CV_CHANGE_CATEGORY
+}; // enum diff_category
 
 diff_category
 operator|(diff_category c1, diff_category c2);

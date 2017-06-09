@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2016 Red Hat, Inc.
+// Copyright (C) 2013-2017 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -818,6 +818,67 @@ has_harmful_enum_change(const diff* diff)
   return false;
 }
 
+/// Test if an @ref fn_parm_diff node has a top cv qualifier change on
+/// the type of the function parameter.
+///
+/// @param diff the diff node to consider.  It should be a @ref
+/// fn_parm_diff, otherwise the function returns 'false' directly.
+///
+/// @return true iff @p diff is a @ref fn_parm_diff node that has a
+/// top cv qualifier change on the type of the function parameter.
+static bool
+has_fn_parm_type_cv_qual_change(const diff* diff)
+{
+  // is diff a "function parameter diff node?
+  const fn_parm_diff* parm_diff = is_fn_parm_diff(diff);
+
+  if (!parm_diff || !parm_diff->has_changes())
+    // diff either carries no change or is not a function parameter
+    // diff node.  So bail out.
+    return false;
+
+  function_decl::parameter_sptr first_parm = parm_diff->first_parameter();
+  function_decl::parameter_sptr second_parm = parm_diff->second_parameter();
+
+  type_base_sptr first_parm_type = first_parm->get_type();
+  type_base_sptr second_parm_type = second_parm->get_type();
+
+  if (!is_qualified_type(first_parm_type)
+      && !is_qualified_type(second_parm_type))
+    // None of the parameter types is qualified.
+    return false;
+
+  qualified_type_def::CV cv_quals_1 = qualified_type_def::CV_NONE;
+  qualified_type_def::CV cv_quals_2 = qualified_type_def::CV_NONE;
+  type_base_sptr peeled_type_1 = first_parm_type;
+  type_base_sptr peeled_type_2 = second_parm_type;
+
+  if (qualified_type_def_sptr qtype1 = is_qualified_type(first_parm_type))
+    {
+      cv_quals_1 = qtype1->get_cv_quals();
+      peeled_type_1 = peel_qualified_type(qtype1);
+    }
+
+  if (qualified_type_def_sptr qtype2 = is_qualified_type(second_parm_type))
+    {
+      cv_quals_2 = qtype2->get_cv_quals();
+      peeled_type_2 = peel_qualified_type(qtype2);
+    }
+
+  if (peeled_type_1
+      && peeled_type_2
+      && get_type_name(peeled_type_1) == get_type_name(peeled_type_2)
+      && cv_quals_1 != cv_quals_2)
+    // The top-level CV qualifiers of the function type are different
+    // and the un-qualified variant (peeled) of said function types
+    // are equal.  This means the only change the function types have
+    // are about top-level CV qualifiers.
+    return true;
+
+  return false;
+
+}
+
 /// Detect if the changes carried by a given diff node are deemed
 /// harmless and do categorize the diff node accordingly.
 ///
@@ -867,6 +928,9 @@ categorize_harmless_diff_node(diff *d, bool pre)
 
       if (function_name_changed_but_not_symbol(d))
 	category |= HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY;
+
+      if (has_fn_parm_type_cv_qual_change(d))
+	category |= FN_PARM_TYPE_TOP_CV_CHANGE_CATEGORY;
 
       if (category)
 	{

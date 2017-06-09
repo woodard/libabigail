@@ -1,4 +1,4 @@
-Functions changes summary: 82 Removed, 7 Changed (13 filtered out), 0 Added functions (1081 filtered out)
+Functions changes summary: 82 Removed, 5 Changed (15 filtered out), 0 Added functions (1081 filtered out)
 Variables changes summary: 47 Removed, 1 Changed, 0 Added variables (11 filtered out)
 Function symbols changes summary: 7 Removed, 0 Added (76 filtered out) function symbols not referenced by debug info
 Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referenced by debug info
@@ -88,27 +88,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   'function void std::__unguarded_linear_insert<VarList::BufEntry*, __gnu_cxx::__ops::_Val_comp_iter<bool (*)(const VarList::BufEntry&, const VarList::BufEntry&)> >(VarList::BufEntry*, __gnu_cxx::__ops::_Val_comp_iter<bool (*)(const VarList::BufEntry&, const VarList::BufEntry&)>)'
   'function void write_message(FILE*, int, __va_list_tag*)'
 
-7 functions with some indirect sub-type change:
-
-  [C]'function int ORSLRelease(const int, const int* restrict, const ORSLBusySet* restrict, const restrict ORSLTag)' has some indirect sub-type changes:
-    parameter 2 of type 'const int* restrict' changed:
-      entity changed from 'const int* restrict' to 'const int*'
-      type size hasn't changed
-    parameter 3 of type 'const ORSLBusySet* restrict' changed:
-      entity changed from 'const ORSLBusySet* restrict' to 'const ORSLBusySet*'
-      type size hasn't changed
-    parameter 4 of type 'const restrict ORSLTag' changed:
-      'const restrict ORSLTag' changed to 'const ORSLTag'
-
-  [C]'function int ORSLReservePartial(const ORSLPartialGranularity, const int, const int* restrict, ORSLBusySet* restrict, const restrict ORSLTag)' has some indirect sub-type changes:
-    parameter 3 of type 'const int* restrict' changed:
-      entity changed from 'const int* restrict' to 'const int*'
-      type size hasn't changed
-    parameter 4 of type 'ORSLBusySet* restrict' changed:
-      entity changed from 'ORSLBusySet* restrict' to 'ORSLBusySet*'
-      type size hasn't changed
-    parameter 5 of type 'const restrict ORSLTag' changed:
-      'const restrict ORSLTag' changed to 'const ORSLTag'
+5 functions with some indirect sub-type change:
 
   [C]'method void OffloadDescriptor::report_coi_error(error_types, COIRESULT)' has some indirect sub-type changes:
     parameter 1 of type 'typedef error_types' has sub-type changes:

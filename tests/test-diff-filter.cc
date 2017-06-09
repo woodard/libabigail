@@ -464,6 +464,13 @@ InOutSpec in_out_specs[] =
     "data/test-diff-filter/test39/test39-report-0.txt",
     "output/test-diff-filter/test39/test39-report-0.txt",
   },
+  {
+    "data/test-diff-filter/libtest40-v0.so",
+    "data/test-diff-filter/libtest40-v1.so",
+    "--no-default-suppression --no-linkage-name",
+    "data/test-diff-filter/test40-report-0.txt",
+    "output/test-diff-filter/test40-report-0.txt",
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };

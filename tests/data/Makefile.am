@@ -620,6 +620,11 @@ test-diff-filter/test39-main.c \
 test-diff-filter/test39-v0 \
 test-diff-filter/test39-v1 \
 test-diff-filter/test39-report-0.txt \
+test-diff-filter/libtest40-v0.so \
+test-diff-filter/libtest40-v1.so \
+test-diff-filter/test40-report-0.txt \
+test-diff-filter/test40-v0.cc \
+test-diff-filter/test40-v1.cc \
 \
 test-diff-suppr/test0-type-suppr-v0.cc	\
 test-diff-suppr/test0-type-suppr-v1.cc	\
