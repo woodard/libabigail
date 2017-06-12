@@ -12,511 +12,511 @@
   </elf-needed>
   <elf-function-symbols>
     <!-- _fini -->
-    <elf-symbol name='_fini' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_fini' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _init -->
-    <elf-symbol name='_init' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_init' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_blob_create -->
-    <elf-symbol name='hb_blob_create' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_blob_create' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_blob_create_sub_blob -->
-    <elf-symbol name='hb_blob_create_sub_blob' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_blob_create_sub_blob' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_blob_destroy -->
-    <elf-symbol name='hb_blob_destroy' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_blob_destroy' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_blob_get_data -->
-    <elf-symbol name='hb_blob_get_data' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_blob_get_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_blob_get_data_writable -->
-    <elf-symbol name='hb_blob_get_data_writable' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_blob_get_data_writable' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_blob_get_empty -->
-    <elf-symbol name='hb_blob_get_empty' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_blob_get_empty' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_blob_get_length -->
-    <elf-symbol name='hb_blob_get_length' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_blob_get_length' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_blob_get_user_data -->
-    <elf-symbol name='hb_blob_get_user_data' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_blob_get_user_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_blob_is_immutable -->
-    <elf-symbol name='hb_blob_is_immutable' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_blob_is_immutable' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_blob_make_immutable -->
-    <elf-symbol name='hb_blob_make_immutable' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_blob_make_immutable' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_blob_reference -->
-    <elf-symbol name='hb_blob_reference' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_blob_reference' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_blob_set_user_data -->
-    <elf-symbol name='hb_blob_set_user_data' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_blob_set_user_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_add -->
-    <elf-symbol name='hb_buffer_add' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_add' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_add_codepoints -->
-    <elf-symbol name='hb_buffer_add_codepoints' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_add_codepoints' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_add_utf16 -->
-    <elf-symbol name='hb_buffer_add_utf16' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_add_utf16' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_add_utf32 -->
-    <elf-symbol name='hb_buffer_add_utf32' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_add_utf32' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_add_utf8 -->
-    <elf-symbol name='hb_buffer_add_utf8' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_add_utf8' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_allocation_successful -->
-    <elf-symbol name='hb_buffer_allocation_successful' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_allocation_successful' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_clear_contents -->
-    <elf-symbol name='hb_buffer_clear_contents' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_clear_contents' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_create -->
-    <elf-symbol name='hb_buffer_create' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_create' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_deserialize_glyphs -->
-    <elf-symbol name='hb_buffer_deserialize_glyphs' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_deserialize_glyphs' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_destroy -->
-    <elf-symbol name='hb_buffer_destroy' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_destroy' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_get_content_type -->
-    <elf-symbol name='hb_buffer_get_content_type' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_get_content_type' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_get_direction -->
-    <elf-symbol name='hb_buffer_get_direction' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_get_direction' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_get_empty -->
-    <elf-symbol name='hb_buffer_get_empty' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_get_empty' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_get_flags -->
-    <elf-symbol name='hb_buffer_get_flags' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_get_flags' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_get_glyph_infos -->
-    <elf-symbol name='hb_buffer_get_glyph_infos' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_get_glyph_infos' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_get_glyph_positions -->
-    <elf-symbol name='hb_buffer_get_glyph_positions' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_get_glyph_positions' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_get_language -->
-    <elf-symbol name='hb_buffer_get_language' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_get_language' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_get_length -->
-    <elf-symbol name='hb_buffer_get_length' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_get_length' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_get_replacement_codepoint -->
-    <elf-symbol name='hb_buffer_get_replacement_codepoint' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_get_replacement_codepoint' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_get_script -->
-    <elf-symbol name='hb_buffer_get_script' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_get_script' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_get_segment_properties -->
-    <elf-symbol name='hb_buffer_get_segment_properties' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_get_segment_properties' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_get_unicode_funcs -->
-    <elf-symbol name='hb_buffer_get_unicode_funcs' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_get_unicode_funcs' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_get_user_data -->
-    <elf-symbol name='hb_buffer_get_user_data' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_get_user_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_guess_segment_properties -->
-    <elf-symbol name='hb_buffer_guess_segment_properties' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_guess_segment_properties' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_normalize_glyphs -->
-    <elf-symbol name='hb_buffer_normalize_glyphs' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_normalize_glyphs' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_pre_allocate -->
-    <elf-symbol name='hb_buffer_pre_allocate' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_pre_allocate' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_reference -->
-    <elf-symbol name='hb_buffer_reference' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_reference' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_reset -->
-    <elf-symbol name='hb_buffer_reset' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_reset' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_reverse -->
-    <elf-symbol name='hb_buffer_reverse' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_reverse' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_reverse_clusters -->
-    <elf-symbol name='hb_buffer_reverse_clusters' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_reverse_clusters' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_serialize_format_from_string -->
-    <elf-symbol name='hb_buffer_serialize_format_from_string' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_serialize_format_from_string' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_serialize_format_to_string -->
-    <elf-symbol name='hb_buffer_serialize_format_to_string' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_serialize_format_to_string' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_serialize_glyphs -->
-    <elf-symbol name='hb_buffer_serialize_glyphs' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_serialize_glyphs' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_serialize_list_formats -->
-    <elf-symbol name='hb_buffer_serialize_list_formats' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_serialize_list_formats' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_set_content_type -->
-    <elf-symbol name='hb_buffer_set_content_type' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_set_content_type' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_set_direction -->
-    <elf-symbol name='hb_buffer_set_direction' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_set_direction' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_set_flags -->
-    <elf-symbol name='hb_buffer_set_flags' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_set_flags' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_set_language -->
-    <elf-symbol name='hb_buffer_set_language' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_set_language' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_set_length -->
-    <elf-symbol name='hb_buffer_set_length' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_set_length' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_set_replacement_codepoint -->
-    <elf-symbol name='hb_buffer_set_replacement_codepoint' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_set_replacement_codepoint' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_set_script -->
-    <elf-symbol name='hb_buffer_set_script' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_set_script' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_set_segment_properties -->
-    <elf-symbol name='hb_buffer_set_segment_properties' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_set_segment_properties' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_set_unicode_funcs -->
-    <elf-symbol name='hb_buffer_set_unicode_funcs' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_set_unicode_funcs' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_buffer_set_user_data -->
-    <elf-symbol name='hb_buffer_set_user_data' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_buffer_set_user_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_direction_from_string -->
-    <elf-symbol name='hb_direction_from_string' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_direction_from_string' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_direction_to_string -->
-    <elf-symbol name='hb_direction_to_string' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_direction_to_string' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_face_create -->
-    <elf-symbol name='hb_face_create' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_face_create' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_face_create_for_tables -->
-    <elf-symbol name='hb_face_create_for_tables' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_face_create_for_tables' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_face_destroy -->
-    <elf-symbol name='hb_face_destroy' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_face_destroy' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_face_get_empty -->
-    <elf-symbol name='hb_face_get_empty' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_face_get_empty' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_face_get_glyph_count -->
-    <elf-symbol name='hb_face_get_glyph_count' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_face_get_glyph_count' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_face_get_index -->
-    <elf-symbol name='hb_face_get_index' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_face_get_index' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_face_get_upem -->
-    <elf-symbol name='hb_face_get_upem' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_face_get_upem' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_face_get_user_data -->
-    <elf-symbol name='hb_face_get_user_data' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_face_get_user_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_face_is_immutable -->
-    <elf-symbol name='hb_face_is_immutable' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_face_is_immutable' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_face_make_immutable -->
-    <elf-symbol name='hb_face_make_immutable' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_face_make_immutable' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_face_reference -->
-    <elf-symbol name='hb_face_reference' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_face_reference' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_face_reference_blob -->
-    <elf-symbol name='hb_face_reference_blob' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_face_reference_blob' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_face_reference_table -->
-    <elf-symbol name='hb_face_reference_table' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_face_reference_table' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_face_set_glyph_count -->
-    <elf-symbol name='hb_face_set_glyph_count' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_face_set_glyph_count' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_face_set_index -->
-    <elf-symbol name='hb_face_set_index' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_face_set_index' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_face_set_upem -->
-    <elf-symbol name='hb_face_set_upem' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_face_set_upem' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_face_set_user_data -->
-    <elf-symbol name='hb_face_set_user_data' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_face_set_user_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_feature_from_string -->
-    <elf-symbol name='hb_feature_from_string' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_feature_from_string' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_feature_to_string -->
-    <elf-symbol name='hb_feature_to_string' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_feature_to_string' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_add_glyph_origin_for_direction -->
-    <elf-symbol name='hb_font_add_glyph_origin_for_direction' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_add_glyph_origin_for_direction' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_create -->
-    <elf-symbol name='hb_font_create' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_create' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_create_sub_font -->
-    <elf-symbol name='hb_font_create_sub_font' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_create_sub_font' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_destroy -->
-    <elf-symbol name='hb_font_destroy' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_destroy' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_funcs_create -->
-    <elf-symbol name='hb_font_funcs_create' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_funcs_create' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_funcs_destroy -->
-    <elf-symbol name='hb_font_funcs_destroy' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_funcs_destroy' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_funcs_get_empty -->
-    <elf-symbol name='hb_font_funcs_get_empty' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_funcs_get_empty' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_funcs_get_user_data -->
-    <elf-symbol name='hb_font_funcs_get_user_data' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_funcs_get_user_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_funcs_is_immutable -->
-    <elf-symbol name='hb_font_funcs_is_immutable' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_funcs_is_immutable' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_funcs_make_immutable -->
-    <elf-symbol name='hb_font_funcs_make_immutable' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_funcs_make_immutable' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_funcs_reference -->
-    <elf-symbol name='hb_font_funcs_reference' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_funcs_reference' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_funcs_set_glyph_contour_point_func -->
-    <elf-symbol name='hb_font_funcs_set_glyph_contour_point_func' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_funcs_set_glyph_contour_point_func' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_funcs_set_glyph_extents_func -->
-    <elf-symbol name='hb_font_funcs_set_glyph_extents_func' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_funcs_set_glyph_extents_func' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_funcs_set_glyph_from_name_func -->
-    <elf-symbol name='hb_font_funcs_set_glyph_from_name_func' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_funcs_set_glyph_from_name_func' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_funcs_set_glyph_func -->
-    <elf-symbol name='hb_font_funcs_set_glyph_func' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_funcs_set_glyph_func' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_funcs_set_glyph_h_advance_func -->
-    <elf-symbol name='hb_font_funcs_set_glyph_h_advance_func' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_funcs_set_glyph_h_advance_func' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_funcs_set_glyph_h_kerning_func -->
-    <elf-symbol name='hb_font_funcs_set_glyph_h_kerning_func' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_funcs_set_glyph_h_kerning_func' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_funcs_set_glyph_h_origin_func -->
-    <elf-symbol name='hb_font_funcs_set_glyph_h_origin_func' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_funcs_set_glyph_h_origin_func' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_funcs_set_glyph_name_func -->
-    <elf-symbol name='hb_font_funcs_set_glyph_name_func' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_funcs_set_glyph_name_func' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_funcs_set_glyph_v_advance_func -->
-    <elf-symbol name='hb_font_funcs_set_glyph_v_advance_func' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_funcs_set_glyph_v_advance_func' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_funcs_set_glyph_v_kerning_func -->
-    <elf-symbol name='hb_font_funcs_set_glyph_v_kerning_func' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_funcs_set_glyph_v_kerning_func' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_funcs_set_glyph_v_origin_func -->
-    <elf-symbol name='hb_font_funcs_set_glyph_v_origin_func' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_funcs_set_glyph_v_origin_func' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_funcs_set_user_data -->
-    <elf-symbol name='hb_font_funcs_set_user_data' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_funcs_set_user_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_get_empty -->
-    <elf-symbol name='hb_font_get_empty' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_get_empty' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_get_face -->
-    <elf-symbol name='hb_font_get_face' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_get_face' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_get_glyph -->
-    <elf-symbol name='hb_font_get_glyph' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_get_glyph' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_get_glyph_advance_for_direction -->
-    <elf-symbol name='hb_font_get_glyph_advance_for_direction' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_get_glyph_advance_for_direction' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_get_glyph_contour_point -->
-    <elf-symbol name='hb_font_get_glyph_contour_point' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_get_glyph_contour_point' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_get_glyph_contour_point_for_origin -->
-    <elf-symbol name='hb_font_get_glyph_contour_point_for_origin' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_get_glyph_contour_point_for_origin' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_get_glyph_extents -->
-    <elf-symbol name='hb_font_get_glyph_extents' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_get_glyph_extents' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_get_glyph_extents_for_origin -->
-    <elf-symbol name='hb_font_get_glyph_extents_for_origin' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_get_glyph_extents_for_origin' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_get_glyph_from_name -->
-    <elf-symbol name='hb_font_get_glyph_from_name' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_get_glyph_from_name' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_get_glyph_h_advance -->
-    <elf-symbol name='hb_font_get_glyph_h_advance' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_get_glyph_h_advance' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_get_glyph_h_kerning -->
-    <elf-symbol name='hb_font_get_glyph_h_kerning' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_get_glyph_h_kerning' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_get_glyph_h_origin -->
-    <elf-symbol name='hb_font_get_glyph_h_origin' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_get_glyph_h_origin' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_get_glyph_kerning_for_direction -->
-    <elf-symbol name='hb_font_get_glyph_kerning_for_direction' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_get_glyph_kerning_for_direction' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_get_glyph_name -->
-    <elf-symbol name='hb_font_get_glyph_name' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_get_glyph_name' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_get_glyph_origin_for_direction -->
-    <elf-symbol name='hb_font_get_glyph_origin_for_direction' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_get_glyph_origin_for_direction' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_get_glyph_v_advance -->
-    <elf-symbol name='hb_font_get_glyph_v_advance' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_get_glyph_v_advance' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_get_glyph_v_kerning -->
-    <elf-symbol name='hb_font_get_glyph_v_kerning' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_get_glyph_v_kerning' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_get_glyph_v_origin -->
-    <elf-symbol name='hb_font_get_glyph_v_origin' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_get_glyph_v_origin' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_get_parent -->
-    <elf-symbol name='hb_font_get_parent' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_get_parent' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_get_ppem -->
-    <elf-symbol name='hb_font_get_ppem' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_get_ppem' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_get_scale -->
-    <elf-symbol name='hb_font_get_scale' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_get_scale' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_get_user_data -->
-    <elf-symbol name='hb_font_get_user_data' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_get_user_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_glyph_from_string -->
-    <elf-symbol name='hb_font_glyph_from_string' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_glyph_from_string' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_glyph_to_string -->
-    <elf-symbol name='hb_font_glyph_to_string' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_glyph_to_string' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_is_immutable -->
-    <elf-symbol name='hb_font_is_immutable' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_is_immutable' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_make_immutable -->
-    <elf-symbol name='hb_font_make_immutable' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_make_immutable' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_reference -->
-    <elf-symbol name='hb_font_reference' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_reference' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_set_funcs -->
-    <elf-symbol name='hb_font_set_funcs' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_set_funcs' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_set_funcs_data -->
-    <elf-symbol name='hb_font_set_funcs_data' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_set_funcs_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_set_ppem -->
-    <elf-symbol name='hb_font_set_ppem' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_set_ppem' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_set_scale -->
-    <elf-symbol name='hb_font_set_scale' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_set_scale' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_set_user_data -->
-    <elf-symbol name='hb_font_set_user_data' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_set_user_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_font_subtract_glyph_origin_for_direction -->
-    <elf-symbol name='hb_font_subtract_glyph_origin_for_direction' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_font_subtract_glyph_origin_for_direction' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ft_face_create -->
-    <elf-symbol name='hb_ft_face_create' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ft_face_create' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ft_face_create_cached -->
-    <elf-symbol name='hb_ft_face_create_cached' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ft_face_create_cached' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ft_font_create -->
-    <elf-symbol name='hb_ft_font_create' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ft_font_create' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ft_font_get_face -->
-    <elf-symbol name='hb_ft_font_get_face' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ft_font_get_face' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ft_font_set_funcs -->
-    <elf-symbol name='hb_ft_font_set_funcs' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ft_font_set_funcs' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_glib_get_unicode_funcs -->
-    <elf-symbol name='hb_glib_get_unicode_funcs' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_glib_get_unicode_funcs' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_glib_script_from_script -->
-    <elf-symbol name='hb_glib_script_from_script' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_glib_script_from_script' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_glib_script_to_script -->
-    <elf-symbol name='hb_glib_script_to_script' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_glib_script_to_script' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_language_from_string -->
-    <elf-symbol name='hb_language_from_string' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_language_from_string' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_language_get_default -->
-    <elf-symbol name='hb_language_get_default' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_language_get_default' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_language_to_string -->
-    <elf-symbol name='hb_language_to_string' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_language_to_string' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_font_set_funcs -->
-    <elf-symbol name='hb_ot_font_set_funcs' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_font_set_funcs' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_collect_lookups -->
-    <elf-symbol name='hb_ot_layout_collect_lookups' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_collect_lookups' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_feature_get_lookups -->
-    <elf-symbol name='hb_ot_layout_feature_get_lookups' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_feature_get_lookups' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_get_attach_points -->
-    <elf-symbol name='hb_ot_layout_get_attach_points' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_get_attach_points' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_get_glyph_class -->
-    <elf-symbol name='hb_ot_layout_get_glyph_class' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_get_glyph_class' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_get_glyphs_in_class -->
-    <elf-symbol name='hb_ot_layout_get_glyphs_in_class' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_get_glyphs_in_class' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_get_ligature_carets -->
-    <elf-symbol name='hb_ot_layout_get_ligature_carets' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_get_ligature_carets' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_get_size_params -->
-    <elf-symbol name='hb_ot_layout_get_size_params' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_get_size_params' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_has_glyph_classes -->
-    <elf-symbol name='hb_ot_layout_has_glyph_classes' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_has_glyph_classes' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_has_positioning -->
-    <elf-symbol name='hb_ot_layout_has_positioning' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_has_positioning' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_has_substitution -->
-    <elf-symbol name='hb_ot_layout_has_substitution' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_has_substitution' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_language_find_feature -->
-    <elf-symbol name='hb_ot_layout_language_find_feature' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_language_find_feature' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_language_get_feature_indexes -->
-    <elf-symbol name='hb_ot_layout_language_get_feature_indexes' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_language_get_feature_indexes' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_language_get_feature_tags -->
-    <elf-symbol name='hb_ot_layout_language_get_feature_tags' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_language_get_feature_tags' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_language_get_required_feature -->
-    <elf-symbol name='hb_ot_layout_language_get_required_feature' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_language_get_required_feature' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_language_get_required_feature_index -->
-    <elf-symbol name='hb_ot_layout_language_get_required_feature_index' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_language_get_required_feature_index' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_lookup_collect_glyphs -->
-    <elf-symbol name='hb_ot_layout_lookup_collect_glyphs' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_lookup_collect_glyphs' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_lookup_substitute_closure -->
-    <elf-symbol name='hb_ot_layout_lookup_substitute_closure' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_lookup_substitute_closure' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_lookup_would_substitute -->
-    <elf-symbol name='hb_ot_layout_lookup_would_substitute' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_lookup_would_substitute' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_script_find_language -->
-    <elf-symbol name='hb_ot_layout_script_find_language' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_script_find_language' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_script_get_language_tags -->
-    <elf-symbol name='hb_ot_layout_script_get_language_tags' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_script_get_language_tags' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_table_choose_script -->
-    <elf-symbol name='hb_ot_layout_table_choose_script' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_table_choose_script' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_table_find_script -->
-    <elf-symbol name='hb_ot_layout_table_find_script' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_table_find_script' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_table_get_feature_tags -->
-    <elf-symbol name='hb_ot_layout_table_get_feature_tags' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_table_get_feature_tags' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_table_get_lookup_count -->
-    <elf-symbol name='hb_ot_layout_table_get_lookup_count' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_table_get_lookup_count' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_layout_table_get_script_tags -->
-    <elf-symbol name='hb_ot_layout_table_get_script_tags' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_layout_table_get_script_tags' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_shape_glyphs_closure -->
-    <elf-symbol name='hb_ot_shape_glyphs_closure' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_shape_glyphs_closure' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_shape_plan_collect_lookups -->
-    <elf-symbol name='hb_ot_shape_plan_collect_lookups' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_shape_plan_collect_lookups' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_tag_from_language -->
-    <elf-symbol name='hb_ot_tag_from_language' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_tag_from_language' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_tag_to_language -->
-    <elf-symbol name='hb_ot_tag_to_language' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_tag_to_language' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_tag_to_script -->
-    <elf-symbol name='hb_ot_tag_to_script' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_tag_to_script' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_ot_tags_from_script -->
-    <elf-symbol name='hb_ot_tags_from_script' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_ot_tags_from_script' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_script_from_iso15924_tag -->
-    <elf-symbol name='hb_script_from_iso15924_tag' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_script_from_iso15924_tag' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_script_from_string -->
-    <elf-symbol name='hb_script_from_string' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_script_from_string' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_script_get_horizontal_direction -->
-    <elf-symbol name='hb_script_get_horizontal_direction' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_script_get_horizontal_direction' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_script_to_iso15924_tag -->
-    <elf-symbol name='hb_script_to_iso15924_tag' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_script_to_iso15924_tag' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_segment_properties_equal -->
-    <elf-symbol name='hb_segment_properties_equal' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_segment_properties_equal' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_segment_properties_hash -->
-    <elf-symbol name='hb_segment_properties_hash' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_segment_properties_hash' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_add -->
-    <elf-symbol name='hb_set_add' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_add' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_add_range -->
-    <elf-symbol name='hb_set_add_range' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_add_range' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_allocation_successful -->
-    <elf-symbol name='hb_set_allocation_successful' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_allocation_successful' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_clear -->
-    <elf-symbol name='hb_set_clear' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_clear' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_create -->
-    <elf-symbol name='hb_set_create' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_create' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_del -->
-    <elf-symbol name='hb_set_del' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_del' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_del_range -->
-    <elf-symbol name='hb_set_del_range' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_del_range' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_destroy -->
-    <elf-symbol name='hb_set_destroy' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_destroy' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_get_empty -->
-    <elf-symbol name='hb_set_get_empty' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_get_empty' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_get_max -->
-    <elf-symbol name='hb_set_get_max' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_get_max' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_get_min -->
-    <elf-symbol name='hb_set_get_min' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_get_min' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_get_population -->
-    <elf-symbol name='hb_set_get_population' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_get_population' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_get_user_data -->
-    <elf-symbol name='hb_set_get_user_data' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_get_user_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_has -->
-    <elf-symbol name='hb_set_has' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_has' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_intersect -->
-    <elf-symbol name='hb_set_intersect' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_intersect' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_invert -->
-    <elf-symbol name='hb_set_invert' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_invert' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_is_empty -->
-    <elf-symbol name='hb_set_is_empty' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_is_empty' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_is_equal -->
-    <elf-symbol name='hb_set_is_equal' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_is_equal' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_next -->
-    <elf-symbol name='hb_set_next' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_next' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_next_range -->
-    <elf-symbol name='hb_set_next_range' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_next_range' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_reference -->
-    <elf-symbol name='hb_set_reference' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_reference' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_set -->
-    <elf-symbol name='hb_set_set' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_set' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_set_user_data -->
-    <elf-symbol name='hb_set_set_user_data' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_set_user_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_subtract -->
-    <elf-symbol name='hb_set_subtract' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_subtract' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_symmetric_difference -->
-    <elf-symbol name='hb_set_symmetric_difference' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_symmetric_difference' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_set_union -->
-    <elf-symbol name='hb_set_union' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_set_union' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_shape -->
-    <elf-symbol name='hb_shape' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_shape' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_shape_full -->
-    <elf-symbol name='hb_shape_full' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_shape_full' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_shape_list_shapers -->
-    <elf-symbol name='hb_shape_list_shapers' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_shape_list_shapers' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_shape_plan_create -->
-    <elf-symbol name='hb_shape_plan_create' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_shape_plan_create' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_shape_plan_create_cached -->
-    <elf-symbol name='hb_shape_plan_create_cached' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_shape_plan_create_cached' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_shape_plan_destroy -->
-    <elf-symbol name='hb_shape_plan_destroy' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_shape_plan_destroy' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_shape_plan_execute -->
-    <elf-symbol name='hb_shape_plan_execute' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_shape_plan_execute' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_shape_plan_get_empty -->
-    <elf-symbol name='hb_shape_plan_get_empty' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_shape_plan_get_empty' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_shape_plan_get_shaper -->
-    <elf-symbol name='hb_shape_plan_get_shaper' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_shape_plan_get_shaper' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_shape_plan_get_user_data -->
-    <elf-symbol name='hb_shape_plan_get_user_data' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_shape_plan_get_user_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_shape_plan_reference -->
-    <elf-symbol name='hb_shape_plan_reference' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_shape_plan_reference' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_shape_plan_set_user_data -->
-    <elf-symbol name='hb_shape_plan_set_user_data' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_shape_plan_set_user_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_tag_from_string -->
-    <elf-symbol name='hb_tag_from_string' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_tag_from_string' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_tag_to_string -->
-    <elf-symbol name='hb_tag_to_string' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_tag_to_string' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_combining_class -->
-    <elf-symbol name='hb_unicode_combining_class' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_combining_class' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_compose -->
-    <elf-symbol name='hb_unicode_compose' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_compose' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_decompose -->
-    <elf-symbol name='hb_unicode_decompose' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_decompose' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_decompose_compatibility -->
-    <elf-symbol name='hb_unicode_decompose_compatibility' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_decompose_compatibility' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_eastasian_width -->
-    <elf-symbol name='hb_unicode_eastasian_width' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_eastasian_width' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_funcs_create -->
-    <elf-symbol name='hb_unicode_funcs_create' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_funcs_create' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_funcs_destroy -->
-    <elf-symbol name='hb_unicode_funcs_destroy' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_funcs_destroy' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_funcs_get_default -->
-    <elf-symbol name='hb_unicode_funcs_get_default' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_funcs_get_default' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_funcs_get_empty -->
-    <elf-symbol name='hb_unicode_funcs_get_empty' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_funcs_get_empty' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_funcs_get_parent -->
-    <elf-symbol name='hb_unicode_funcs_get_parent' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_funcs_get_parent' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_funcs_get_user_data -->
-    <elf-symbol name='hb_unicode_funcs_get_user_data' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_funcs_get_user_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_funcs_is_immutable -->
-    <elf-symbol name='hb_unicode_funcs_is_immutable' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_funcs_is_immutable' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_funcs_make_immutable -->
-    <elf-symbol name='hb_unicode_funcs_make_immutable' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_funcs_make_immutable' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_funcs_reference -->
-    <elf-symbol name='hb_unicode_funcs_reference' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_funcs_reference' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_funcs_set_combining_class_func -->
-    <elf-symbol name='hb_unicode_funcs_set_combining_class_func' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_funcs_set_combining_class_func' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_funcs_set_compose_func -->
-    <elf-symbol name='hb_unicode_funcs_set_compose_func' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_funcs_set_compose_func' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_funcs_set_decompose_compatibility_func -->
-    <elf-symbol name='hb_unicode_funcs_set_decompose_compatibility_func' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_funcs_set_decompose_compatibility_func' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_funcs_set_decompose_func -->
-    <elf-symbol name='hb_unicode_funcs_set_decompose_func' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_funcs_set_decompose_func' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_funcs_set_eastasian_width_func -->
-    <elf-symbol name='hb_unicode_funcs_set_eastasian_width_func' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_funcs_set_eastasian_width_func' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_funcs_set_general_category_func -->
-    <elf-symbol name='hb_unicode_funcs_set_general_category_func' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_funcs_set_general_category_func' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_funcs_set_mirroring_func -->
-    <elf-symbol name='hb_unicode_funcs_set_mirroring_func' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_funcs_set_mirroring_func' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_funcs_set_script_func -->
-    <elf-symbol name='hb_unicode_funcs_set_script_func' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_funcs_set_script_func' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_funcs_set_user_data -->
-    <elf-symbol name='hb_unicode_funcs_set_user_data' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_funcs_set_user_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_general_category -->
-    <elf-symbol name='hb_unicode_general_category' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_general_category' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_mirroring -->
-    <elf-symbol name='hb_unicode_mirroring' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_mirroring' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_unicode_script -->
-    <elf-symbol name='hb_unicode_script' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_unicode_script' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_version -->
-    <elf-symbol name='hb_version' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_version' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_version_atleast -->
-    <elf-symbol name='hb_version_atleast' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_version_atleast' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hb_version_string -->
-    <elf-symbol name='hb_version_string' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hb_version_string' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
   <abi-instr version='1.0' address-size='64' path='hb-blob.cc' language='LANG_C_plus_plus'>
     <!-- struct hb_reference_count_t -->

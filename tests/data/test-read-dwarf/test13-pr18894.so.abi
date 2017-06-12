@@ -5,240 +5,240 @@
     <dependency name='libc.so.6'/>
   </elf-needed>
   <elf-function-symbols>
-    <elf-symbol name='dbus_address_entries_free' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_address_entry_get_method' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_address_entry_get_value' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_address_escape_value' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_address_unescape_value' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_bus_add_match' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_bus_get' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_bus_get_id' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_bus_get_private' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_bus_get_unique_name' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_bus_get_unix_user' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_bus_name_has_owner' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_bus_register' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_bus_release_name' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_bus_remove_match' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_bus_request_name' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_bus_set_unique_name' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_bus_start_service_by_name' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_add_filter' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_allocate_data_slot' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_borrow_message' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_can_send_type' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_close' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_dispatch' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_flush' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_free_data_slot' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_free_preallocated_send' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_get_adt_audit_session_data' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_get_data' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_get_dispatch_status' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_get_is_anonymous' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_get_is_authenticated' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_get_is_connected' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_get_max_message_size' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_get_max_message_unix_fds' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_get_max_received_size' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_get_max_received_unix_fds' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_get_object_path_data' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_get_outgoing_size' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_get_outgoing_unix_fds' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_get_server_id' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_get_socket' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_get_unix_fd' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_get_unix_process_id' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_get_unix_user' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_get_windows_user' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_has_messages_to_send' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_list_registered' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_open' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_open_private' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_pop_message' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_preallocate_send' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_read_write' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_read_write_dispatch' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_ref' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_register_fallback' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_register_object_path' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_remove_filter' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_return_message' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_send' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_send_preallocated' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_send_with_reply' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_send_with_reply_and_block' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_set_allow_anonymous' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_set_change_sigpipe' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_set_data' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_set_dispatch_status_function' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_set_exit_on_disconnect' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_set_max_message_size' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_set_max_message_unix_fds' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_set_max_received_size' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_set_max_received_unix_fds' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_set_route_peer_messages' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_set_timeout_functions' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_set_unix_user_function' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_set_wakeup_main_function' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_set_watch_functions' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_set_windows_user_function' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_steal_borrowed_message' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_try_register_fallback' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_try_register_object_path' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_unref' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_connection_unregister_object_path' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_error_free' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_error_has_name' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_error_init' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_error_is_set' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_free' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_free_string_array' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_get_local_machine_id' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_get_version' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_internal_do_not_use_create_uuid' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_internal_do_not_use_get_uuid' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_malloc' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_malloc0' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_allocate_data_slot' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_append_args' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_append_args_valist' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_contains_unix_fds' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_copy' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_demarshal' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_demarshal_bytes_needed' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_free_data_slot' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_get_args' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_get_args_valist' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_get_auto_start' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_get_data' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_get_destination' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_get_error_name' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_get_interface' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_get_member' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_get_no_reply' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_get_path' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_get_path_decomposed' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_get_reply_serial' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_get_sender' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_get_serial' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_get_signature' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_get_type' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_has_destination' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_has_interface' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_has_member' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_has_path' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_has_sender' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_has_signature' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_is_error' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_is_method_call' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_is_signal' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_iter_abandon_container' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_iter_append_basic' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_iter_append_fixed_array' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_iter_close_container' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_iter_get_arg_type' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_iter_get_array_len' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_iter_get_basic' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_iter_get_element_type' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_iter_get_fixed_array' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_iter_get_signature' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_iter_has_next' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_iter_init' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_iter_init_append' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_iter_next' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_iter_open_container' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_iter_recurse' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_lock' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_marshal' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_new' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_new_error' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_new_error_printf' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_new_method_call' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_new_method_return' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_new_signal' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_ref' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_set_auto_start' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_set_data' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_set_destination' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_set_error_name' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_set_interface' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_set_member' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_set_no_reply' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_set_path' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_set_reply_serial' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_set_sender' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_set_serial' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_type_from_string' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_type_to_string' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_message_unref' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_move_error' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_parse_address' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_pending_call_allocate_data_slot' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_pending_call_block' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_pending_call_cancel' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_pending_call_free_data_slot' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_pending_call_get_completed' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_pending_call_get_data' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_pending_call_ref' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_pending_call_set_data' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_pending_call_set_notify' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_pending_call_steal_reply' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_pending_call_unref' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_realloc' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_server_allocate_data_slot' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_server_disconnect' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_server_free_data_slot' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_server_get_address' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_server_get_data' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_server_get_id' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_server_get_is_connected' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_server_listen' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_server_ref' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_server_set_auth_mechanisms' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_server_set_data' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_server_set_new_connection_function' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_server_set_timeout_functions' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_server_set_watch_functions' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_server_unref' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_set_error' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_set_error_const' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_set_error_from_message' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_setenv' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_shutdown' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_signature_iter_get_current_type' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_signature_iter_get_element_type' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_signature_iter_get_signature' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_signature_iter_init' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_signature_iter_next' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_signature_iter_recurse' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_signature_validate' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_signature_validate_single' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_threads_init' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_threads_init_default' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_timeout_get_data' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_timeout_get_enabled' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_timeout_get_interval' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_timeout_handle' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_timeout_set_data' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_type_is_basic' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_type_is_container' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_type_is_fixed' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_type_is_valid' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_validate_bus_name' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_validate_error_name' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_validate_interface' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_validate_member' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_validate_path' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_validate_utf8' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_watch_get_data' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_watch_get_enabled' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_watch_get_fd' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_watch_get_flags' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_watch_get_socket' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_watch_get_unix_fd' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_watch_handle' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='dbus_watch_set_data' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='dbus_address_entries_free' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_address_entry_get_method' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_address_entry_get_value' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_address_escape_value' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_address_unescape_value' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_bus_add_match' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_bus_get' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_bus_get_id' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_bus_get_private' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_bus_get_unique_name' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_bus_get_unix_user' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_bus_name_has_owner' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_bus_register' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_bus_release_name' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_bus_remove_match' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_bus_request_name' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_bus_set_unique_name' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_bus_start_service_by_name' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_add_filter' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_allocate_data_slot' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_borrow_message' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_can_send_type' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_close' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_dispatch' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_flush' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_free_data_slot' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_free_preallocated_send' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_get_adt_audit_session_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_get_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_get_dispatch_status' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_get_is_anonymous' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_get_is_authenticated' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_get_is_connected' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_get_max_message_size' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_get_max_message_unix_fds' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_get_max_received_size' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_get_max_received_unix_fds' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_get_object_path_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_get_outgoing_size' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_get_outgoing_unix_fds' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_get_server_id' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_get_socket' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_get_unix_fd' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_get_unix_process_id' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_get_unix_user' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_get_windows_user' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_has_messages_to_send' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_list_registered' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_open' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_open_private' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_pop_message' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_preallocate_send' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_read_write' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_read_write_dispatch' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_ref' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_register_fallback' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_register_object_path' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_remove_filter' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_return_message' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_send' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_send_preallocated' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_send_with_reply' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_send_with_reply_and_block' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_set_allow_anonymous' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_set_change_sigpipe' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_set_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_set_dispatch_status_function' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_set_exit_on_disconnect' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_set_max_message_size' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_set_max_message_unix_fds' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_set_max_received_size' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_set_max_received_unix_fds' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_set_route_peer_messages' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_set_timeout_functions' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_set_unix_user_function' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_set_wakeup_main_function' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_set_watch_functions' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_set_windows_user_function' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_steal_borrowed_message' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_try_register_fallback' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_try_register_object_path' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_unref' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_connection_unregister_object_path' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_error_free' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_error_has_name' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_error_init' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_error_is_set' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_free' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_free_string_array' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_get_local_machine_id' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_get_version' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_internal_do_not_use_create_uuid' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_internal_do_not_use_get_uuid' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_malloc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_malloc0' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_allocate_data_slot' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_append_args' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_append_args_valist' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_contains_unix_fds' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_copy' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_demarshal' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_demarshal_bytes_needed' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_free_data_slot' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_get_args' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_get_args_valist' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_get_auto_start' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_get_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_get_destination' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_get_error_name' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_get_interface' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_get_member' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_get_no_reply' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_get_path' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_get_path_decomposed' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_get_reply_serial' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_get_sender' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_get_serial' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_get_signature' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_get_type' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_has_destination' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_has_interface' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_has_member' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_has_path' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_has_sender' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_has_signature' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_is_error' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_is_method_call' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_is_signal' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_iter_abandon_container' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_iter_append_basic' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_iter_append_fixed_array' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_iter_close_container' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_iter_get_arg_type' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_iter_get_array_len' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_iter_get_basic' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_iter_get_element_type' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_iter_get_fixed_array' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_iter_get_signature' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_iter_has_next' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_iter_init' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_iter_init_append' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_iter_next' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_iter_open_container' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_iter_recurse' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_lock' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_marshal' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_new' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_new_error' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_new_error_printf' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_new_method_call' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_new_method_return' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_new_signal' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_ref' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_set_auto_start' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_set_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_set_destination' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_set_error_name' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_set_interface' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_set_member' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_set_no_reply' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_set_path' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_set_reply_serial' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_set_sender' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_set_serial' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_type_from_string' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_type_to_string' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_message_unref' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_move_error' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_parse_address' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_pending_call_allocate_data_slot' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_pending_call_block' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_pending_call_cancel' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_pending_call_free_data_slot' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_pending_call_get_completed' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_pending_call_get_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_pending_call_ref' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_pending_call_set_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_pending_call_set_notify' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_pending_call_steal_reply' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_pending_call_unref' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_realloc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_server_allocate_data_slot' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_server_disconnect' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_server_free_data_slot' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_server_get_address' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_server_get_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_server_get_id' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_server_get_is_connected' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_server_listen' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_server_ref' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_server_set_auth_mechanisms' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_server_set_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_server_set_new_connection_function' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_server_set_timeout_functions' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_server_set_watch_functions' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_server_unref' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_set_error' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_set_error_const' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_set_error_from_message' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_setenv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_shutdown' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_signature_iter_get_current_type' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_signature_iter_get_element_type' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_signature_iter_get_signature' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_signature_iter_init' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_signature_iter_next' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_signature_iter_recurse' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_signature_validate' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_signature_validate_single' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_threads_init' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_threads_init_default' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_timeout_get_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_timeout_get_enabled' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_timeout_get_interval' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_timeout_handle' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_timeout_set_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_type_is_basic' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_type_is_container' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_type_is_fixed' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_type_is_valid' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_validate_bus_name' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_validate_error_name' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_validate_interface' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_validate_member' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_validate_path' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_validate_utf8' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_watch_get_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_watch_get_enabled' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_watch_get_fd' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_watch_get_flags' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_watch_get_socket' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_watch_get_unix_fd' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_watch_handle' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='dbus_watch_set_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
   <abi-instr version='1.0' address-size='64' path='dbus-address.c' language='LANG_C89'>
     <type-decl name='char' size-in-bits='8' id='type-id-1'/>

@@ -1,6 +1,6 @@
 <abi-corpus path='data/test-read-dwarf/test7.so'>
   <elf-function-symbols>
-    <elf-symbol name='_Z3fooR1S' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z3fooR1S' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
   <abi-instr version='1.0' address-size='64' path='test7.cc' language='LANG_C_plus_plus'>
     <type-decl name='int' size-in-bits='32' id='type-id-1'/>

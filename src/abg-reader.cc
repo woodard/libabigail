@@ -2501,6 +2501,28 @@ read_elf_symbol_binding(xmlNodePtr node, elf_symbol::binding& b)
   return false;
 }
 
+/// Read the 'visibility' attribute of the of the 'elf-symbol'
+/// element.
+///
+/// @param node the XML node to read the attribute from.
+///
+/// @param b the XML the resulting elf_symbol::visibility.
+///
+/// @return true iff the function completed successfully.
+static bool
+read_elf_symbol_binding(xmlNodePtr node, elf_symbol::visibility& v)
+{
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "visibility"))
+    {
+      string str;
+      xml::xml_char_sptr_to_string(s, str);
+      if (!string_to_elf_symbol_visibility(str, v))
+	return false;
+      return true;
+    }
+  return false;
+}
+
 /// Build a @ref namespace_decl from an XML element node which name is
 /// "namespace-decl".  Note that this function recursively reads the
 /// content of the namespace and builds the proper IR nodes
@@ -2620,8 +2642,11 @@ build_elf_symbol(read_context& ctxt, const xmlNodePtr node)
   elf_symbol::type type = elf_symbol::NOTYPE_TYPE;
   read_elf_symbol_type(node, type);
 
-  elf_symbol::binding binding;
+  elf_symbol::binding binding = elf_symbol::GLOBAL_BINDING;
   read_elf_symbol_binding(node, binding);
+
+  elf_symbol::visibility visibility = elf_symbol::DEFAULT_VISIBILITY;
+  read_elf_symbol_binding(node, visibility);
 
   elf_symbol::version version(version_string, is_default_version);
 
@@ -2629,7 +2654,7 @@ build_elf_symbol(read_context& ctxt, const xmlNodePtr node)
   elf_symbol_sptr e = elf_symbol::create(env, /*index=*/0, size,
 					 name, type, binding,
 					 is_defined, is_common,
-					 version);
+					 version, visibility);
   return e;
 }
 

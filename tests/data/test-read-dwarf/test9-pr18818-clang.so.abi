@@ -10,341 +10,341 @@
     <dependency name='libc.so.6'/>
   </elf-needed>
   <elf-function-symbols>
-    <elf-symbol name='_ZN5boost10filesystem10is_symlinkENS0_11file_statusE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem11file_statusC2ENS0_9file_typeENS0_5permsE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem11file_statusC2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem11path_traits7convertEPKcRSsRKSt7codecvtIwc11__mbstate_tE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem11path_traits7convertEPKcS3_RSbIwSt11char_traitsIwESaIwEERKSt7codecvtIwc11__mbstate_tE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem11path_traits7convertEPKcS3_RSsRKSt7codecvtIwc11__mbstate_tE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem11path_traits7convertEPKwS3_RSsRKSt7codecvtIwc11__mbstate_tE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem11path_traits8dispatchERKNS0_15directory_entryERSsRKSt7codecvtIwc11__mbstate_tE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem11path_traits8dispatchISsEEvRKSbIwSt11char_traitsIwESaIwEERT_RKSt7codecvtIwc11__mbstate_tE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem11path_traits8dispatchISsEEvRKSsRT_RKSt7codecvtIwc11__mbstate_tE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem11path_traits8dispatchIcSsEEvRKPT_RT0_RKSt7codecvtIwc11__mbstate_tE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem12copy_symlinkERKNS0_4pathES3_RNS_6system10error_codeE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem12current_pathEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem12is_directoryENS0_11file_statusE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem12is_directoryERKNS0_4pathE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem12is_directoryERKNS0_4pathERNS_6system10error_codeE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem12status_knownENS0_11file_statusE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem12type_presentENS0_11file_statusE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem12windows_nameERKSs' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem13portable_nameERKSs' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem14copy_directoryERKNS0_4pathES3_RNS_6system10error_codeE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem14symlink_statusERKNS0_4pathERNS_6system10error_codeE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem15directory_entry16replace_filenameERKNS0_4pathENS0_11file_statusES5_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem15directory_entry6assignERKNS0_4pathENS0_11file_statusES5_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem15directory_entryC2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem15directory_entryD2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem15is_regular_fileENS0_11file_statusE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem16filesystem_error5m_impC2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem16filesystem_error5m_impD2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem16filesystem_errorC2ERKSsNS_6system10error_codeE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem16filesystem_errorC2ERKSsRKNS0_4pathENS_6system10error_codeE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem16filesystem_errorC2ERKSsRKNS0_4pathES6_NS_6system10error_codeE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem16filesystem_errorD0Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem16filesystem_errorD2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem18create_directoriesERKNS0_4pathERNS_6system10error_codeE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem18directory_iterator9incrementERNS_6system10error_codeE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem18directory_iterator9incrementEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem18directory_iteratorC2ERKNS0_4pathE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem18directory_iteratorC2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem18directory_iteratorD2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem18portable_file_nameERKSs' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem19permissions_presentENS0_11file_statusE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem19portable_posix_nameERKSs' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem22codecvt_error_categoryEv' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem23portable_directory_nameERKSs' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4path11m_normalizeEv' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4path15remove_filenameEv' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4path17replace_extensionERKS1_' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4path25m_path_iterator_decrementERNS1_8iteratorE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4path25m_path_iterator_incrementERNS1_8iteratorE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4path27m_erase_redundant_separatorEm' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4path28m_append_separator_if_neededEv' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4path5clearEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4path5imbueERKSt6locale' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4path6assignIPcEERS1_T_S5_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4path6assignIPcEERS1_T_S5_RKSt7codecvtIwc11__mbstate_tE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4path7codecvtEv' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4path8iterator9decrementEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4path8iterator9incrementEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4path8iteratorC2ERKS2_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4path8iteratorC2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4path8iteratorD2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4pathC2EPKc' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4pathC2ERKS1_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4pathC2ERKSs' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4pathC2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4pathC2IPKcEET_S5_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4pathC2ISbIwSt11char_traitsIwESaIwEEEERKT_PNS_9enable_ifINS0_11path_traits11is_pathableINS_5decayIS7_E4typeEEEvE4typeE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4pathD2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4pathaSERKS1_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4pathaSIPcEENS_9enable_ifINS0_11path_traits11is_pathableINS_5decayIT_E4typeEEERS1_E4typeERKS8_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4pathaSISsEENS_9enable_ifINS0_11path_traits11is_pathableINS_5decayIT_E4typeEEERS1_E4typeERKS7_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4pathdVEPKc' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4pathdVERKS1_' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail10equivalentERKNS0_4pathES4_PNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail10remove_allERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail11dir_itr_impC2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail11dir_itr_impD2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail11lex_compareENS0_4path8iteratorES3_S3_S3_' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail11permissionsERKNS0_4pathENS0_5permsEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail11resize_fileERKNS0_4pathEmPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail11unique_pathERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail12copy_symlinkERKNS0_4pathES4_PNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail12current_pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail12current_pathERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail12initial_pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail12read_symlinkERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail13dir_itr_closeERPvS3_' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail14copy_directoryERKNS0_4pathES4_PNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail14create_symlinkERKNS0_4pathES4_PNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail14symlink_statusERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail15hard_link_countERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail15last_write_timeERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail15last_write_timeERKNS0_4pathElPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail15system_completeERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail16create_directoryERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail16create_hard_linkERKNS0_4pathES4_PNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail18create_directoriesERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail18utf8_codecvt_facet15get_octet_countEh' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail18utf8_codecvt_facet20get_cont_octet_countEh' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail18utf8_codecvt_facetD0Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail18utf8_codecvt_facetD2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail19temp_directory_pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail24create_directory_symlinkERKNS0_4pathES4_PNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail28directory_iterator_constructERNS0_18directory_iteratorERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail28directory_iterator_incrementERNS0_18directory_iteratorEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail32possible_large_file_size_supportEv' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail4copyERKNS0_4pathES4_PNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail5spaceERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail6removeERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail6renameERKNS0_4pathES4_PNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail6statusERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail8is_emptyERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail9canonicalERKNS0_4pathES4_PNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail9copy_fileERKNS0_4pathES4_NS0_11copy_optionEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail9file_sizeERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail9mode_castENS0_5permsE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6nativeERKSs' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6statusERKNS0_4pathERNS_6system10error_codeE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem8absoluteERKNS0_4pathES3_' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem9copy_fileERKNS0_4pathES3_NS0_11copy_optionERNS_6system10error_codeE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystemanENS0_5permsES1_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystemcoENS0_5permsE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystemdvERKNS0_4pathES3_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystemeqERKNS0_4pathES3_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystemneERKNS0_4pathES3_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystemoRERNS0_5permsES1_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystemorENS0_5permsES1_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEE4swapERS4_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEE5resetEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEE5resetIS3_EEvPT_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEEC2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEEC2IS3_EEPT_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEED2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEE4swapERS4_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEE5resetEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEEC2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEEC2IS3_EEPT_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEED2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost12scoped_arrayIcEC2EPc' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost12scoped_arrayIcED2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost12scoped_arrayIwEC2EPw' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost12scoped_arrayIwED2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost14checked_deleteINS_10filesystem16filesystem_error5m_impEEEvPT_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost14checked_deleteINS_10filesystem6detail11dir_itr_impEEEvPT_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost15iterator_facadeINS_10filesystem18directory_iteratorENS1_15directory_entryENS_25single_pass_traversal_tagERS3_lE7derivedEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost15iterator_facadeINS_10filesystem18directory_iteratorENS1_15directory_entryENS_25single_pass_traversal_tagERS3_lEppEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost15iterator_facadeINS_10filesystem4path8iteratorEKS2_NS_27bidirectional_traversal_tagERS4_lE7derivedEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost15iterator_facadeINS_10filesystem4path8iteratorEKS2_NS_27bidirectional_traversal_tagERS4_lEmmEi' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost15iterator_facadeINS_10filesystem4path8iteratorEKS2_NS_27bidirectional_traversal_tagERS4_lEmmEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost15iterator_facadeINS_10filesystem4path8iteratorEKS2_NS_27bidirectional_traversal_tagERS4_lEppEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost20checked_array_deleteIcEEvPT_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost20checked_array_deleteIwEEvPT_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost20iterator_core_access11dereferenceINS_10filesystem18directory_iteratorEEENT_9referenceERKS4_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost20iterator_core_access11dereferenceINS_10filesystem4path8iteratorEEENT_9referenceERKS5_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost20iterator_core_access5equalINS_10filesystem18directory_iteratorES3_EEbRKT_RKT0_N4mpl_5bool_ILb1EEE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost20iterator_core_access5equalINS_10filesystem4path8iteratorES4_EEbRKT_RKT0_N4mpl_5bool_ILb1EEE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost20iterator_core_access9decrementINS_10filesystem4path8iteratorEEEvRT_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost20iterator_core_access9incrementINS_10filesystem18directory_iteratorEEEvRT_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost20iterator_core_access9incrementINS_10filesystem4path8iteratorEEEvRT_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail12shared_count4swapERS1_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail12shared_countC2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail12shared_countC2INS_10filesystem16filesystem_error5m_impEEEPT_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail12shared_countC2INS_10filesystem6detail11dir_itr_impEEEPT_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail12shared_countD2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail15sp_counted_base12weak_releaseEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail15sp_counted_base7destroyEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail15sp_counted_base7releaseEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail15sp_counted_baseC2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail15sp_counted_baseD0Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail15sp_counted_baseD2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEE11get_deleterERKSt9type_info' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEE19get_untyped_deleterEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEE7disposeEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEC2EPS4_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEED0Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEED2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEE11get_deleterERKSt9type_info' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEE19get_untyped_deleterEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEE7disposeEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEEC2EPS4_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEED0Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEED2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail20sp_pointer_constructINS_10filesystem16filesystem_error5m_impES4_EEvPNS_10shared_ptrIT_EEPT0_RNS0_12shared_countE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail20sp_pointer_constructINS_10filesystem6detail11dir_itr_impES4_EEvPNS_10shared_ptrIT_EEPT0_RNS0_12shared_countE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail23atomic_exchange_and_addEPii' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail23operator_arrow_dispatchIRKNS_10filesystem4pathEPS4_E5applyES5_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail23operator_arrow_dispatchIRNS_10filesystem15directory_entryEPS3_E5applyES4_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail26sp_enable_shared_from_thisEz' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6system10error_code21unspecified_bool_trueEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6system10error_code5clearEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6system10error_code6assignEiRKNS0_14error_categoryE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6system10error_codeC2EiRKNS0_14error_categoryE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6system10error_codeC2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6system12system_errorC2ENS0_10error_codeERKSs' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6system12system_errorC2EiRKNS0_14error_categoryEPKc' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6system12system_errorD0Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6system12system_errorD2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6system14error_categoryC2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6system14error_categoryD0Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6system14error_categoryD2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6system15error_conditionC2EiRKNS0_14error_categoryE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6systemeqERKNS0_15error_conditionES3_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boosteqINS_10filesystem18directory_iteratorENS1_15directory_entryENS_25single_pass_traversal_tagERS3_lS2_S3_S4_S5_lEENS_6detail23enable_if_interoperableIT_T4_NS_3mpl6apply2INS6_12always_bool2ES8_S9_E4typeEE4typeERKNS_15iterator_facadeIS8_T0_T1_T2_T3_EERKNSH_IS9_T5_T6_T7_T8_EE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boosteqINS_10filesystem4path8iteratorEKS2_NS_27bidirectional_traversal_tagERS4_lS3_S4_S5_S6_lEENS_6detail23enable_if_interoperableIT_T4_NS_3mpl6apply2INS7_12always_bool2ES9_SA_E4typeEE4typeERKNS_15iterator_facadeIS9_T0_T1_T2_T3_EERKNSI_ISA_T5_T6_T7_T8_EE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boosteqINS_10filesystem6detail11dir_itr_impES3_EEbRKNS_10shared_ptrIT_EERKNS4_IT0_EE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boostneINS_10filesystem18directory_iteratorENS1_15directory_entryENS_25single_pass_traversal_tagERS3_lS2_S3_S4_S5_lEENS_6detail23enable_if_interoperableIT_T4_NS_3mpl6apply2INS6_12always_bool2ES8_S9_E4typeEE4typeERKNS_15iterator_facadeIS8_T0_T1_T2_T3_EERKNSH_IS9_T5_T6_T7_T8_EE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5boostneINS_10filesystem4path8iteratorEKS2_NS_27bidirectional_traversal_tagERS4_lS3_S4_S5_S6_lEENS_6detail23enable_if_interoperableIT_T4_NS_3mpl6apply2INS7_12always_bool2ES9_SA_E4typeEE4typeERKNS_15iterator_facadeIS9_T0_T1_T2_T3_EERKNSI_ISA_T5_T6_T7_T8_EE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx17__is_null_pointerIKcEEbPT_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx17__is_null_pointerIcEEbPT_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx17__normal_iteratorIPKcSsEC2ERKS2_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx17__normal_iteratorIPcSsEC2ERKS1_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem11file_status11permissionsEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem11file_status4typeEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem15directory_entry12m_get_statusEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem15directory_entry20m_get_symlink_statusEPNS_6system10error_codeE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem15directory_entry4pathEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem16filesystem_error4whatEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem18directory_iterator11dereferenceEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem18directory_iterator5equalERKS1_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem4path11is_absoluteEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem4path11parent_pathEv' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem4path13relative_pathEv' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem4path14root_directoryEv' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem4path17m_parent_path_endEv' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem4path18has_root_directoryEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem4path3endEv' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem4path4stemEv' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem4path5beginEv' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem4path5c_strEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem4path5emptyEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem4path6nativeEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem4path6stringEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem4path7compareERKS1_' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem4path7wstringERKSt7codecvtIwc11__mbstate_tE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem4path7wstringEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem4path8filenameEv' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem4path8iterator11dereferenceEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem4path8iterator5equalERKS2_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem4path9extensionEv' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem4path9root_nameEv' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem4path9root_pathEv' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet10do_unshiftER11__mbstate_tPcS5_RS5_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet11do_encodingEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet13do_max_lengthEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet16do_always_noconvEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet21invalid_leading_octetEh' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet24get_cont_octet_out_countEw' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet24invalid_continuing_octetEh' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet5do_inER11__mbstate_tPKcS6_RS6_PwS8_RS8_' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet6do_outER11__mbstate_tPKwS6_RS6_PcS8_RS8_' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet9do_lengthER11__mbstate_tPKcS6_m' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEE3getEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEEptEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEE3getEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEEptEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost12scoped_arrayIcE3getEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost12scoped_arrayIwE3getEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost15iterator_facadeINS_10filesystem18directory_iteratorENS1_15directory_entryENS_25single_pass_traversal_tagERS3_lE7derivedEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost15iterator_facadeINS_10filesystem18directory_iteratorENS1_15directory_entryENS_25single_pass_traversal_tagERS3_lEdeEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost15iterator_facadeINS_10filesystem18directory_iteratorENS1_15directory_entryENS_25single_pass_traversal_tagERS3_lEptEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost15iterator_facadeINS_10filesystem4path8iteratorEKS2_NS_27bidirectional_traversal_tagERS4_lE7derivedEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost15iterator_facadeINS_10filesystem4path8iteratorEKS2_NS_27bidirectional_traversal_tagERS4_lEdeEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost15iterator_facadeINS_10filesystem4path8iteratorEKS2_NS_27bidirectional_traversal_tagERS4_lEptEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost6system10error_code5valueEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost6system10error_code7messageEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost6system10error_code8categoryEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost6system10error_codecvPFvvEEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost6system12system_error4whatEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost6system14error_category10equivalentERKNS0_10error_codeEi' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost6system14error_category10equivalentEiRKNS0_15error_conditionE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost6system14error_category23default_error_conditionEi' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK5boost6system14error_categoryeqERKS1_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK9__gnu_cxx17__normal_iteratorIPKcSsEdeEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK9__gnu_cxx17__normal_iteratorIPKcSsEmiEl' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK9__gnu_cxx17__normal_iteratorIPKwSbIwSt11char_traitsIwESaIwEEEdeEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK9__gnu_cxx17__normal_iteratorIPcSsEdeEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNK9__gnu_cxx17__normal_iteratorIPcSsEmiEl' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNKSt23__codecvt_abstract_baseIwc11__mbstate_tE2inERS0_PKcS4_RS4_PwS6_RS6_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNKSt23__codecvt_abstract_baseIwc11__mbstate_tE3outERS0_PKwS4_RS4_PcS6_RS6_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNSbIwSt11char_traitsIwESaIwEE6appendIPwEERS2_T_S6_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNSs12_S_constructIPKcEEPcT_S3_RKSaIcE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNSs12_S_constructIPKcEEPcT_S3_RKSaIcESt20forward_iterator_tag' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNSs12_S_constructIPcEES0_T_S1_RKSaIcE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNSs12_S_constructIPcEES0_T_S1_RKSaIcESt20forward_iterator_tag' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNSs16_S_construct_auxIPKcEEPcT_S3_RKSaIcESt12__false_type' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNSs16_S_construct_auxIPcEES0_T_S1_RKSaIcESt12__false_type' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNSs6appendIPKcEERSsT_S3_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNSs6appendIPcEERSsT_S2_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNSsC2IPKcEET_S2_RKSaIcE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNSsC2IPcEET_S1_RKSaIcE' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNSt11char_traitsIcE7compareEPKcS2_m' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNSt14numeric_limitsIwE3maxEv' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZSt10__distanceIPKcENSt15iterator_traitsIT_E15difference_typeES3_S3_St26random_access_iterator_tag' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZSt10__distanceIPcENSt15iterator_traitsIT_E15difference_typeES2_S2_St26random_access_iterator_tag' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZSt19__iterator_categoryIPKcENSt15iterator_traitsIT_E17iterator_categoryERKS3_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZSt19__iterator_categoryIPcENSt15iterator_traitsIT_E17iterator_categoryERKS2_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZSt4moveIRPN5boost10filesystem16filesystem_error5m_impEEONSt16remove_referenceIT_E4typeEOS7_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZSt4moveIRPN5boost10filesystem6detail11dir_itr_impEEONSt16remove_referenceIT_E4typeEOS7_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZSt4swapIPN5boost10filesystem16filesystem_error5m_impEEvRT_S6_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZSt4swapIPN5boost10filesystem6detail11dir_itr_impEEvRT_S6_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZSt8distanceIPKcENSt15iterator_traitsIT_E15difference_typeES3_S3_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZSt8distanceIPcENSt15iterator_traitsIT_E15difference_typeES2_S2_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZSteqIcEN9__gnu_cxx11__enable_ifIXsr9__is_charIT_EE7__valueEbE6__typeERKSbIS2_St11char_traitsIS2_ESaIS2_EESA_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZSteqIcEbRKSaIT_ES3_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZSteqIcSt11char_traitsIcESaIcEEbRKSbIT_T0_T1_EPKS3_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZStltIcSt11char_traitsIcESaIcEEbRKSbIT_T0_T1_ES8_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZStneIcSt11char_traitsIcESaIcEEbRKSbIT_T0_T1_EPKS3_' type='func-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_fini' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_init' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem10is_symlinkENS0_11file_statusE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem11file_statusC2ENS0_9file_typeENS0_5permsE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem11file_statusC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem11path_traits7convertEPKcRSsRKSt7codecvtIwc11__mbstate_tE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem11path_traits7convertEPKcS3_RSbIwSt11char_traitsIwESaIwEERKSt7codecvtIwc11__mbstate_tE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem11path_traits7convertEPKcS3_RSsRKSt7codecvtIwc11__mbstate_tE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem11path_traits7convertEPKwS3_RSsRKSt7codecvtIwc11__mbstate_tE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem11path_traits8dispatchERKNS0_15directory_entryERSsRKSt7codecvtIwc11__mbstate_tE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem11path_traits8dispatchISsEEvRKSbIwSt11char_traitsIwESaIwEERT_RKSt7codecvtIwc11__mbstate_tE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem11path_traits8dispatchISsEEvRKSsRT_RKSt7codecvtIwc11__mbstate_tE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem11path_traits8dispatchIcSsEEvRKPT_RT0_RKSt7codecvtIwc11__mbstate_tE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem12copy_symlinkERKNS0_4pathES3_RNS_6system10error_codeE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem12current_pathEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem12is_directoryENS0_11file_statusE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem12is_directoryERKNS0_4pathE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem12is_directoryERKNS0_4pathERNS_6system10error_codeE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem12status_knownENS0_11file_statusE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem12type_presentENS0_11file_statusE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem12windows_nameERKSs' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem13portable_nameERKSs' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem14copy_directoryERKNS0_4pathES3_RNS_6system10error_codeE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem14symlink_statusERKNS0_4pathERNS_6system10error_codeE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem15directory_entry16replace_filenameERKNS0_4pathENS0_11file_statusES5_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem15directory_entry6assignERKNS0_4pathENS0_11file_statusES5_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem15directory_entryC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem15directory_entryD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem15is_regular_fileENS0_11file_statusE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem16filesystem_error5m_impC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem16filesystem_error5m_impD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem16filesystem_errorC2ERKSsNS_6system10error_codeE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem16filesystem_errorC2ERKSsRKNS0_4pathENS_6system10error_codeE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem16filesystem_errorC2ERKSsRKNS0_4pathES6_NS_6system10error_codeE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem16filesystem_errorD0Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem16filesystem_errorD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem18create_directoriesERKNS0_4pathERNS_6system10error_codeE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem18directory_iterator9incrementERNS_6system10error_codeE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem18directory_iterator9incrementEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem18directory_iteratorC2ERKNS0_4pathE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem18directory_iteratorC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem18directory_iteratorD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem18portable_file_nameERKSs' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem19permissions_presentENS0_11file_statusE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem19portable_posix_nameERKSs' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem22codecvt_error_categoryEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem23portable_directory_nameERKSs' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4path11m_normalizeEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4path15remove_filenameEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4path17replace_extensionERKS1_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4path25m_path_iterator_decrementERNS1_8iteratorE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4path25m_path_iterator_incrementERNS1_8iteratorE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4path27m_erase_redundant_separatorEm' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4path28m_append_separator_if_neededEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4path5clearEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4path5imbueERKSt6locale' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4path6assignIPcEERS1_T_S5_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4path6assignIPcEERS1_T_S5_RKSt7codecvtIwc11__mbstate_tE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4path7codecvtEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4path8iterator9decrementEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4path8iterator9incrementEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4path8iteratorC2ERKS2_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4path8iteratorC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4path8iteratorD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4pathC2EPKc' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4pathC2ERKS1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4pathC2ERKSs' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4pathC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4pathC2IPKcEET_S5_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4pathC2ISbIwSt11char_traitsIwESaIwEEEERKT_PNS_9enable_ifINS0_11path_traits11is_pathableINS_5decayIS7_E4typeEEEvE4typeE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4pathD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4pathaSERKS1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4pathaSIPcEENS_9enable_ifINS0_11path_traits11is_pathableINS_5decayIT_E4typeEEERS1_E4typeERKS8_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4pathaSISsEENS_9enable_ifINS0_11path_traits11is_pathableINS_5decayIT_E4typeEEERS1_E4typeERKS7_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4pathdVEPKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4pathdVERKS1_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail10equivalentERKNS0_4pathES4_PNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail10remove_allERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail11dir_itr_impC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail11dir_itr_impD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail11lex_compareENS0_4path8iteratorES3_S3_S3_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail11permissionsERKNS0_4pathENS0_5permsEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail11resize_fileERKNS0_4pathEmPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail11unique_pathERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail12copy_symlinkERKNS0_4pathES4_PNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail12current_pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail12current_pathERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail12initial_pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail12read_symlinkERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail13dir_itr_closeERPvS3_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail14copy_directoryERKNS0_4pathES4_PNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail14create_symlinkERKNS0_4pathES4_PNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail14symlink_statusERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail15hard_link_countERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail15last_write_timeERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail15last_write_timeERKNS0_4pathElPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail15system_completeERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail16create_directoryERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail16create_hard_linkERKNS0_4pathES4_PNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail18create_directoriesERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail18utf8_codecvt_facet15get_octet_countEh' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail18utf8_codecvt_facet20get_cont_octet_countEh' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail18utf8_codecvt_facetD0Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail18utf8_codecvt_facetD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail19temp_directory_pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail24create_directory_symlinkERKNS0_4pathES4_PNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail28directory_iterator_constructERNS0_18directory_iteratorERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail28directory_iterator_incrementERNS0_18directory_iteratorEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail32possible_large_file_size_supportEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail4copyERKNS0_4pathES4_PNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail5spaceERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail6removeERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail6renameERKNS0_4pathES4_PNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail6statusERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail8is_emptyERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail9canonicalERKNS0_4pathES4_PNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail9copy_fileERKNS0_4pathES4_NS0_11copy_optionEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail9file_sizeERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail9mode_castENS0_5permsE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6nativeERKSs' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6statusERKNS0_4pathERNS_6system10error_codeE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem8absoluteERKNS0_4pathES3_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem9copy_fileERKNS0_4pathES3_NS0_11copy_optionERNS_6system10error_codeE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystemanENS0_5permsES1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystemcoENS0_5permsE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystemdvERKNS0_4pathES3_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystemeqERKNS0_4pathES3_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystemneERKNS0_4pathES3_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystemoRERNS0_5permsES1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystemorENS0_5permsES1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEE4swapERS4_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEE5resetEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEE5resetIS3_EEvPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEEC2IS3_EEPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEE4swapERS4_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEE5resetEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEEC2IS3_EEPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost12scoped_arrayIcEC2EPc' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost12scoped_arrayIcED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost12scoped_arrayIwEC2EPw' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost12scoped_arrayIwED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost14checked_deleteINS_10filesystem16filesystem_error5m_impEEEvPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost14checked_deleteINS_10filesystem6detail11dir_itr_impEEEvPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost15iterator_facadeINS_10filesystem18directory_iteratorENS1_15directory_entryENS_25single_pass_traversal_tagERS3_lE7derivedEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost15iterator_facadeINS_10filesystem18directory_iteratorENS1_15directory_entryENS_25single_pass_traversal_tagERS3_lEppEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost15iterator_facadeINS_10filesystem4path8iteratorEKS2_NS_27bidirectional_traversal_tagERS4_lE7derivedEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost15iterator_facadeINS_10filesystem4path8iteratorEKS2_NS_27bidirectional_traversal_tagERS4_lEmmEi' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost15iterator_facadeINS_10filesystem4path8iteratorEKS2_NS_27bidirectional_traversal_tagERS4_lEmmEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost15iterator_facadeINS_10filesystem4path8iteratorEKS2_NS_27bidirectional_traversal_tagERS4_lEppEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost20checked_array_deleteIcEEvPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost20checked_array_deleteIwEEvPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost20iterator_core_access11dereferenceINS_10filesystem18directory_iteratorEEENT_9referenceERKS4_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost20iterator_core_access11dereferenceINS_10filesystem4path8iteratorEEENT_9referenceERKS5_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost20iterator_core_access5equalINS_10filesystem18directory_iteratorES3_EEbRKT_RKT0_N4mpl_5bool_ILb1EEE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost20iterator_core_access5equalINS_10filesystem4path8iteratorES4_EEbRKT_RKT0_N4mpl_5bool_ILb1EEE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost20iterator_core_access9decrementINS_10filesystem4path8iteratorEEEvRT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost20iterator_core_access9incrementINS_10filesystem18directory_iteratorEEEvRT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost20iterator_core_access9incrementINS_10filesystem4path8iteratorEEEvRT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail12shared_count4swapERS1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail12shared_countC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail12shared_countC2INS_10filesystem16filesystem_error5m_impEEEPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail12shared_countC2INS_10filesystem6detail11dir_itr_impEEEPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail12shared_countD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail15sp_counted_base12weak_releaseEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail15sp_counted_base7destroyEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail15sp_counted_base7releaseEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail15sp_counted_baseC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail15sp_counted_baseD0Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail15sp_counted_baseD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEE11get_deleterERKSt9type_info' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEE19get_untyped_deleterEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEE7disposeEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEC2EPS4_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEED0Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEE11get_deleterERKSt9type_info' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEE19get_untyped_deleterEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEE7disposeEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEEC2EPS4_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEED0Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail20sp_pointer_constructINS_10filesystem16filesystem_error5m_impES4_EEvPNS_10shared_ptrIT_EEPT0_RNS0_12shared_countE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail20sp_pointer_constructINS_10filesystem6detail11dir_itr_impES4_EEvPNS_10shared_ptrIT_EEPT0_RNS0_12shared_countE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail23atomic_exchange_and_addEPii' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail23operator_arrow_dispatchIRKNS_10filesystem4pathEPS4_E5applyES5_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail23operator_arrow_dispatchIRNS_10filesystem15directory_entryEPS3_E5applyES4_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail26sp_enable_shared_from_thisEz' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6system10error_code21unspecified_bool_trueEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6system10error_code5clearEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6system10error_code6assignEiRKNS0_14error_categoryE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6system10error_codeC2EiRKNS0_14error_categoryE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6system10error_codeC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6system12system_errorC2ENS0_10error_codeERKSs' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6system12system_errorC2EiRKNS0_14error_categoryEPKc' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6system12system_errorD0Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6system12system_errorD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6system14error_categoryC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6system14error_categoryD0Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6system14error_categoryD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6system15error_conditionC2EiRKNS0_14error_categoryE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6systemeqERKNS0_15error_conditionES3_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boosteqINS_10filesystem18directory_iteratorENS1_15directory_entryENS_25single_pass_traversal_tagERS3_lS2_S3_S4_S5_lEENS_6detail23enable_if_interoperableIT_T4_NS_3mpl6apply2INS6_12always_bool2ES8_S9_E4typeEE4typeERKNS_15iterator_facadeIS8_T0_T1_T2_T3_EERKNSH_IS9_T5_T6_T7_T8_EE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boosteqINS_10filesystem4path8iteratorEKS2_NS_27bidirectional_traversal_tagERS4_lS3_S4_S5_S6_lEENS_6detail23enable_if_interoperableIT_T4_NS_3mpl6apply2INS7_12always_bool2ES9_SA_E4typeEE4typeERKNS_15iterator_facadeIS9_T0_T1_T2_T3_EERKNSI_ISA_T5_T6_T7_T8_EE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boosteqINS_10filesystem6detail11dir_itr_impES3_EEbRKNS_10shared_ptrIT_EERKNS4_IT0_EE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boostneINS_10filesystem18directory_iteratorENS1_15directory_entryENS_25single_pass_traversal_tagERS3_lS2_S3_S4_S5_lEENS_6detail23enable_if_interoperableIT_T4_NS_3mpl6apply2INS6_12always_bool2ES8_S9_E4typeEE4typeERKNS_15iterator_facadeIS8_T0_T1_T2_T3_EERKNSH_IS9_T5_T6_T7_T8_EE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boostneINS_10filesystem4path8iteratorEKS2_NS_27bidirectional_traversal_tagERS4_lS3_S4_S5_S6_lEENS_6detail23enable_if_interoperableIT_T4_NS_3mpl6apply2INS7_12always_bool2ES9_SA_E4typeEE4typeERKNS_15iterator_facadeIS9_T0_T1_T2_T3_EERKNSI_ISA_T5_T6_T7_T8_EE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx17__is_null_pointerIKcEEbPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx17__is_null_pointerIcEEbPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx17__normal_iteratorIPKcSsEC2ERKS2_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx17__normal_iteratorIPcSsEC2ERKS1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem11file_status11permissionsEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem11file_status4typeEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem15directory_entry12m_get_statusEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem15directory_entry20m_get_symlink_statusEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem15directory_entry4pathEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem16filesystem_error4whatEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem18directory_iterator11dereferenceEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem18directory_iterator5equalERKS1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem4path11is_absoluteEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem4path11parent_pathEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem4path13relative_pathEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem4path14root_directoryEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem4path17m_parent_path_endEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem4path18has_root_directoryEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem4path3endEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem4path4stemEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem4path5beginEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem4path5c_strEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem4path5emptyEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem4path6nativeEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem4path6stringEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem4path7compareERKS1_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem4path7wstringERKSt7codecvtIwc11__mbstate_tE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem4path7wstringEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem4path8filenameEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem4path8iterator11dereferenceEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem4path8iterator5equalERKS2_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem4path9extensionEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem4path9root_nameEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem4path9root_pathEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet10do_unshiftER11__mbstate_tPcS5_RS5_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet11do_encodingEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet13do_max_lengthEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet16do_always_noconvEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet21invalid_leading_octetEh' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet24get_cont_octet_out_countEw' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet24invalid_continuing_octetEh' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet5do_inER11__mbstate_tPKcS6_RS6_PwS8_RS8_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet6do_outER11__mbstate_tPKwS6_RS6_PcS8_RS8_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet9do_lengthER11__mbstate_tPKcS6_m' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEE3getEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEEptEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEE3getEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEEptEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost12scoped_arrayIcE3getEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost12scoped_arrayIwE3getEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost15iterator_facadeINS_10filesystem18directory_iteratorENS1_15directory_entryENS_25single_pass_traversal_tagERS3_lE7derivedEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost15iterator_facadeINS_10filesystem18directory_iteratorENS1_15directory_entryENS_25single_pass_traversal_tagERS3_lEdeEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost15iterator_facadeINS_10filesystem18directory_iteratorENS1_15directory_entryENS_25single_pass_traversal_tagERS3_lEptEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost15iterator_facadeINS_10filesystem4path8iteratorEKS2_NS_27bidirectional_traversal_tagERS4_lE7derivedEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost15iterator_facadeINS_10filesystem4path8iteratorEKS2_NS_27bidirectional_traversal_tagERS4_lEdeEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost15iterator_facadeINS_10filesystem4path8iteratorEKS2_NS_27bidirectional_traversal_tagERS4_lEptEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost6system10error_code5valueEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost6system10error_code7messageEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost6system10error_code8categoryEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost6system10error_codecvPFvvEEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost6system12system_error4whatEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost6system14error_category10equivalentERKNS0_10error_codeEi' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost6system14error_category10equivalentEiRKNS0_15error_conditionE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost6system14error_category23default_error_conditionEi' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK5boost6system14error_categoryeqERKS1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK9__gnu_cxx17__normal_iteratorIPKcSsEdeEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK9__gnu_cxx17__normal_iteratorIPKcSsEmiEl' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK9__gnu_cxx17__normal_iteratorIPKwSbIwSt11char_traitsIwESaIwEEEdeEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK9__gnu_cxx17__normal_iteratorIPcSsEdeEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNK9__gnu_cxx17__normal_iteratorIPcSsEmiEl' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNKSt23__codecvt_abstract_baseIwc11__mbstate_tE2inERS0_PKcS4_RS4_PwS6_RS6_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNKSt23__codecvt_abstract_baseIwc11__mbstate_tE3outERS0_PKwS4_RS4_PcS6_RS6_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSbIwSt11char_traitsIwESaIwEE6appendIPwEERS2_T_S6_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSs12_S_constructIPKcEEPcT_S3_RKSaIcE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSs12_S_constructIPKcEEPcT_S3_RKSaIcESt20forward_iterator_tag' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSs12_S_constructIPcEES0_T_S1_RKSaIcE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSs12_S_constructIPcEES0_T_S1_RKSaIcESt20forward_iterator_tag' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSs16_S_construct_auxIPKcEEPcT_S3_RKSaIcESt12__false_type' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSs16_S_construct_auxIPcEES0_T_S1_RKSaIcESt12__false_type' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSs6appendIPKcEERSsT_S3_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSs6appendIPcEERSsT_S2_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSsC2IPKcEET_S2_RKSaIcE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSsC2IPcEET_S1_RKSaIcE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt11char_traitsIcE7compareEPKcS2_m' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt14numeric_limitsIwE3maxEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZSt10__distanceIPKcENSt15iterator_traitsIT_E15difference_typeES3_S3_St26random_access_iterator_tag' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZSt10__distanceIPcENSt15iterator_traitsIT_E15difference_typeES2_S2_St26random_access_iterator_tag' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZSt19__iterator_categoryIPKcENSt15iterator_traitsIT_E17iterator_categoryERKS3_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZSt19__iterator_categoryIPcENSt15iterator_traitsIT_E17iterator_categoryERKS2_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZSt4moveIRPN5boost10filesystem16filesystem_error5m_impEEONSt16remove_referenceIT_E4typeEOS7_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZSt4moveIRPN5boost10filesystem6detail11dir_itr_impEEONSt16remove_referenceIT_E4typeEOS7_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZSt4swapIPN5boost10filesystem16filesystem_error5m_impEEvRT_S6_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZSt4swapIPN5boost10filesystem6detail11dir_itr_impEEvRT_S6_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZSt8distanceIPKcENSt15iterator_traitsIT_E15difference_typeES3_S3_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZSt8distanceIPcENSt15iterator_traitsIT_E15difference_typeES2_S2_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZSteqIcEN9__gnu_cxx11__enable_ifIXsr9__is_charIT_EE7__valueEbE6__typeERKSbIS2_St11char_traitsIS2_ESaIS2_EESA_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZSteqIcEbRKSaIT_ES3_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZSteqIcSt11char_traitsIcESaIcEEbRKSbIT_T0_T1_EPKS3_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZStltIcSt11char_traitsIcESaIcEEbRKSbIT_T0_T1_ES8_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZStneIcSt11char_traitsIcESaIcEEbRKSbIT_T0_T1_EPKS3_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_fini' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_init' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
   <elf-variable-symbols>
-    <elf-symbol name='_ZTIN5boost10filesystem16filesystem_errorE' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTIN5boost10filesystem6detail18utf8_codecvt_facetE' size='24' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTIN5boost12noncopyable_11noncopyableE' size='16' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTIN5boost6detail15sp_counted_baseE' size='16' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTIN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEE' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTIN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEEE' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTIN5boost6system12system_errorE' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTIN5boost6system14error_categoryE' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTSN5boost10filesystem16filesystem_errorE' size='39' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTSN5boost10filesystem6detail18utf8_codecvt_facetE' size='48' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTSN5boost12noncopyable_11noncopyableE' size='36' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTSN5boost6detail15sp_counted_baseE' size='33' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTSN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEE' size='77' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTSN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEEE' size='73' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTSN5boost6system12system_errorE' size='30' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTSN5boost6system14error_categoryE' size='32' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTVN5boost10filesystem16filesystem_errorE' size='40' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTVN5boost10filesystem6detail18utf8_codecvt_facetE' size='88' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTVN5boost6detail15sp_counted_baseE' size='64' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTVN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEE' size='64' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTVN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEEE' size='64' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTVN5boost6system12system_errorE' size='40' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTVN5boost6system14error_categoryE' size='72' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTIN5boost10filesystem16filesystem_errorE' size='24' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZTIN5boost10filesystem6detail18utf8_codecvt_facetE' size='24' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZTIN5boost12noncopyable_11noncopyableE' size='16' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZTIN5boost6detail15sp_counted_baseE' size='16' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZTIN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEE' size='24' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZTIN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEEE' size='24' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZTIN5boost6system12system_errorE' size='24' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZTIN5boost6system14error_categoryE' size='24' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZTSN5boost10filesystem16filesystem_errorE' size='39' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZTSN5boost10filesystem6detail18utf8_codecvt_facetE' size='48' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZTSN5boost12noncopyable_11noncopyableE' size='36' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZTSN5boost6detail15sp_counted_baseE' size='33' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZTSN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEE' size='77' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZTSN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEEE' size='73' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZTSN5boost6system12system_errorE' size='30' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZTSN5boost6system14error_categoryE' size='32' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZTVN5boost10filesystem16filesystem_errorE' size='40' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZTVN5boost10filesystem6detail18utf8_codecvt_facetE' size='88' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZTVN5boost6detail15sp_counted_baseE' size='64' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZTVN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEE' size='64' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZTVN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEEE' size='64' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZTVN5boost6system12system_errorE' size='40' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZTVN5boost6system14error_categoryE' size='72' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/codecvt_error_category.cpp' language='LANG_C_plus_plus'>
     <namespace-decl name='boost'>

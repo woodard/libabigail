@@ -32,839 +32,839 @@
   </elf-needed>
   <elf-function-symbols>
     <!-- vtkTextureIO::Write(char const*, vtkTextureObject*, unsigned int const*, double const*) -->
-    <elf-symbol name='_ZN12vtkTextureIO5WriteEPKcP16vtkTextureObjectPKjPKd' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN12vtkTextureIO5WriteEPKcP16vtkTextureObjectPKjPKd' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkTextureIO::Write(char const*, vtkTextureObject*, std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> > const&, double const*) -->
-    <elf-symbol name='_ZN12vtkTextureIO5WriteEPKcP16vtkTextureObjectRKSt5dequeI14vtkPixelExtentSaIS5_EEPKd' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN12vtkTextureIO5WriteEPKcP16vtkTextureObjectRKSt5dequeI14vtkPixelExtentSaIS5_EEPKd' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkPixelTransfer::Blit(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, int, void*, int, int, void*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitERK14vtkPixelExtentS2_S2_S2_iiPviiS3_' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitERK14vtkPixelExtentS2_S2_S2_iiPviiS3_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<signed char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, signed char*, int, int, void*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<signed char, signed char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, signed char*, int, signed char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIaaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIaaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<signed char, char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, signed char*, int, char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIacEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIacEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<signed char, double>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, signed char*, int, double*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIadEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIadEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<signed char, float>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, signed char*, int, float*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIafEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIafEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<signed char, unsigned char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, signed char*, int, unsigned char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIahEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIahEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<signed char, int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, signed char*, int, int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIaiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIaiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<signed char, unsigned int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, signed char*, int, unsigned int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIajEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIajEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<signed char, long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, signed char*, int, long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIalEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIalEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<signed char, unsigned long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, signed char*, int, unsigned long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIamEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIamEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<signed char, short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, signed char*, int, short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIasEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIasEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<signed char, unsigned short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, signed char*, int, unsigned short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIatEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIatEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<signed char, long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, signed char*, int, long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIaxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIaxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<signed char, unsigned long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, signed char*, int, unsigned long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIayEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIayEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, char*, int, int, void*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIcEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIcEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<char, signed char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, char*, int, signed char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIcaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIcaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<char, char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, char*, int, char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIccEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIccEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<char, double>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, char*, int, double*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIcdEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIcdEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<char, float>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, char*, int, float*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIcfEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIcfEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<char, unsigned char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, char*, int, unsigned char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIchEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIchEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<char, int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, char*, int, int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIciEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIciEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<char, unsigned int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, char*, int, unsigned int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIcjEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIcjEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<char, long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, char*, int, long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIclEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIclEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<char, unsigned long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, char*, int, unsigned long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIcmEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIcmEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<char, short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, char*, int, short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIcsEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIcsEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<char, unsigned short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, char*, int, unsigned short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIctEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIctEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<char, long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, char*, int, long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIcxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIcxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<char, unsigned long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, char*, int, unsigned long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIcyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIcyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<double>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, double*, int, int, void*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<double, signed char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, double*, int, signed char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<double, char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, double*, int, char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdcEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdcEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<double, double>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, double*, int, double*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIddEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIddEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<double, float>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, double*, int, float*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdfEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdfEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<double, unsigned char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, double*, int, unsigned char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdhEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdhEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<double, int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, double*, int, int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<double, unsigned int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, double*, int, unsigned int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdjEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdjEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<double, long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, double*, int, long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdlEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdlEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<double, unsigned long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, double*, int, unsigned long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdmEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdmEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<double, short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, double*, int, short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdsEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdsEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<double, unsigned short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, double*, int, unsigned short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdtEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdtEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<double, long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, double*, int, long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<double, unsigned long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, double*, int, unsigned long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIdyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<float>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, float*, int, int, void*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIfEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIfEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<float, signed char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, float*, int, signed char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIfaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIfaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<float, char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, float*, int, char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIfcEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIfcEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<float, double>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, float*, int, double*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIfdEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIfdEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<float, float>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, float*, int, float*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIffEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIffEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<float, unsigned char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, float*, int, unsigned char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIfhEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIfhEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<float, int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, float*, int, int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIfiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIfiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<float, unsigned int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, float*, int, unsigned int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIfjEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIfjEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<float, long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, float*, int, long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIflEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIflEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<float, unsigned long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, float*, int, unsigned long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIfmEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIfmEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<float, short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, float*, int, short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIfsEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIfsEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<float, unsigned short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, float*, int, unsigned short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIftEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIftEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<float, long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, float*, int, long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIfxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIfxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<float, unsigned long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, float*, int, unsigned long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIfyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIfyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned char*, int, int, void*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned char, signed char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned char*, int, signed char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned char, char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned char*, int, char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhcEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhcEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned char, double>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned char*, int, double*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhdEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhdEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned char, float>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned char*, int, float*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhfEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhfEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned char, unsigned char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned char*, int, unsigned char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhhEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhhEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned char, int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned char*, int, int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned char, unsigned int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned char*, int, unsigned int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhjEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhjEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned char, long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned char*, int, long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhlEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhlEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned char, unsigned long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned char*, int, unsigned long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhmEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhmEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned char, short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned char*, int, short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhsEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhsEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned char, unsigned short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned char*, int, unsigned short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhtEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhtEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned char, long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned char*, int, long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned char, unsigned long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned char*, int, unsigned long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIhyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, int*, int, int, void*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<int, signed char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, int*, int, signed char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIiaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIiaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<int, char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, int*, int, char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIicEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIicEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<int, double>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, int*, int, double*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIidEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIidEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<int, float>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, int*, int, float*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIifEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIifEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<int, unsigned char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, int*, int, unsigned char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIihEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIihEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<int, int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, int*, int, int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIiiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIiiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<int, unsigned int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, int*, int, unsigned int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIijEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIijEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<int, long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, int*, int, long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIilEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIilEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<int, unsigned long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, int*, int, unsigned long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIimEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIimEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<int, short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, int*, int, short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIisEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIisEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<int, unsigned short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, int*, int, unsigned short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIitEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIitEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<int, long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, int*, int, long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIixEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIixEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<int, unsigned long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, int*, int, unsigned long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIiyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIiyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned int*, int, int, void*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned int, signed char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned int*, int, signed char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned int, char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned int*, int, char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjcEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjcEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned int, double>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned int*, int, double*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjdEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjdEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned int, float>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned int*, int, float*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjfEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjfEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned int, unsigned char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned int*, int, unsigned char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjhEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjhEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned int, int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned int*, int, int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned int, unsigned int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned int*, int, unsigned int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjjEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjjEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned int, long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned int*, int, long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjlEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjlEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned int, unsigned long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned int*, int, unsigned long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjmEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjmEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned int, short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned int*, int, short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjsEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjsEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned int, unsigned short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned int*, int, unsigned short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjtEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjtEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned int, long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned int*, int, long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned int, unsigned long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned int*, int, unsigned long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIjyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long*, int, int, void*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIlEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIlEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long, signed char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long*, int, signed char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIlaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIlaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long, char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long*, int, char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIlcEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIlcEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long, double>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long*, int, double*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIldEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIldEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long, float>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long*, int, float*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIlfEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIlfEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long, unsigned char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long*, int, unsigned char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIlhEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIlhEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long, int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long*, int, int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIliEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIliEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long, unsigned int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long*, int, unsigned int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIljEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIljEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long, long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long*, int, long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIllEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIllEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long, unsigned long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long*, int, unsigned long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIlmEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIlmEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long, short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long*, int, short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIlsEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIlsEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long, unsigned short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long*, int, unsigned short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIltEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIltEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long, long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long*, int, long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIlxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIlxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long, unsigned long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long*, int, unsigned long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIlyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIlyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long*, int, int, void*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long, signed char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long*, int, signed char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long, char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long*, int, char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImcEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImcEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long, double>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long*, int, double*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImdEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImdEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long, float>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long*, int, float*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImfEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImfEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long, unsigned char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long*, int, unsigned char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImhEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImhEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long, int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long*, int, int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long, unsigned int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long*, int, unsigned int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImjEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImjEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long, long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long*, int, long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImlEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImlEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long, unsigned long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long*, int, unsigned long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImmEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImmEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long, short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long*, int, short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImsEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImsEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long, unsigned short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long*, int, unsigned short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImtEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImtEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long, long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long*, int, long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long, unsigned long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long*, int, unsigned long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitImyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, short*, int, int, void*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIsEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIsEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<short, signed char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, short*, int, signed char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIsaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIsaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<short, char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, short*, int, char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIscEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIscEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<short, double>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, short*, int, double*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIsdEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIsdEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<short, float>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, short*, int, float*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIsfEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIsfEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<short, unsigned char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, short*, int, unsigned char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIshEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIshEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<short, int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, short*, int, int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIsiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIsiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<short, unsigned int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, short*, int, unsigned int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIsjEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIsjEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<short, long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, short*, int, long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIslEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIslEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<short, unsigned long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, short*, int, unsigned long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIsmEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIsmEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<short, short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, short*, int, short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIssEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIssEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<short, unsigned short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, short*, int, unsigned short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIstEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIstEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<short, long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, short*, int, long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIsxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIsxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<short, unsigned long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, short*, int, unsigned long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIsyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIsyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned short*, int, int, void*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned short, signed char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned short*, int, signed char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned short, char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned short*, int, char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItcEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItcEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned short, double>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned short*, int, double*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItdEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItdEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned short, float>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned short*, int, float*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItfEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItfEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned short, unsigned char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned short*, int, unsigned char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIthEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIthEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned short, int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned short*, int, int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned short, unsigned int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned short*, int, unsigned int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItjEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItjEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned short, long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned short*, int, long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItlEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItlEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned short, unsigned long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned short*, int, unsigned long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItmEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItmEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned short, short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned short*, int, short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItsEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItsEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned short, unsigned short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned short*, int, unsigned short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIttEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIttEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned short, long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned short*, int, long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned short, unsigned long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned short*, int, unsigned long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitItyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long long*, int, int, void*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long long, signed char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long long*, int, signed char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long long, char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long long*, int, char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxcEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxcEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long long, double>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long long*, int, double*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxdEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxdEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long long, float>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long long*, int, float*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxfEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxfEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long long, unsigned char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long long*, int, unsigned char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxhEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxhEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long long, int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long long*, int, int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long long, unsigned int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long long*, int, unsigned int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxjEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxjEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long long, long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long long*, int, long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxlEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxlEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long long, unsigned long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long long*, int, unsigned long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxmEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxmEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long long, short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long long*, int, short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxsEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxsEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long long, unsigned short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long long*, int, unsigned short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxtEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxtEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long long, long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long long*, int, long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<long long, unsigned long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, long long*, int, unsigned long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIxyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long long*, int, int, void*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iiPv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long long, signed char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long long*, int, signed char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIyaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIyaEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long long, char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long long*, int, char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIycEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIycEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long long, double>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long long*, int, double*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIydEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIydEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long long, float>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long long*, int, float*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIyfEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIyfEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long long, unsigned char>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long long*, int, unsigned char*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIyhEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIyhEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long long, int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long long*, int, int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIyiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIyiEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long long, unsigned int>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long long*, int, unsigned int*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIyjEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIyjEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long long, long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long long*, int, long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIylEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIylEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long long, unsigned long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long long*, int, unsigned long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIymEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIymEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long long, short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long long*, int, short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIysEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIysEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long long, unsigned short>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long long*, int, unsigned short*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIytEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIytEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long long, long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long long*, int, long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIyxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIyxEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- int vtkPixelTransfer::Blit<unsigned long long, unsigned long long>(vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, vtkPixelExtent const&, int, unsigned long long*, int, unsigned long long*) -->
-    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIyyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16vtkPixelTransfer4BlitIyyEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkImageDataLIC2D::GetContext() -->
-    <elf-symbol name='_ZN17vtkImageDataLIC2D10GetContextEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN17vtkImageDataLIC2D10GetContextEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkImageDataLIC2D::SetContext(vtkRenderWindow*) -->
-    <elf-symbol name='_ZN17vtkImageDataLIC2D10SetContextEP15vtkRenderWindow' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN17vtkImageDataLIC2D10SetContextEP15vtkRenderWindow' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkImageDataLIC2D::RequestData(vtkInformation*, vtkInformationVector**, vtkInformationVector*) -->
-    <elf-symbol name='_ZN17vtkImageDataLIC2D11RequestDataEP14vtkInformationPP20vtkInformationVectorS3_' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN17vtkImageDataLIC2D11RequestDataEP14vtkInformationPP20vtkInformationVectorS3_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkImageDataLIC2D::RequestInformation(vtkInformation*, vtkInformationVector**, vtkInformationVector*) -->
-    <elf-symbol name='_ZN17vtkImageDataLIC2D18RequestInformationEP14vtkInformationPP20vtkInformationVectorS3_' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN17vtkImageDataLIC2D18RequestInformationEP14vtkInformationPP20vtkInformationVectorS3_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkImageDataLIC2D::RequestUpdateExtent(vtkInformation*, vtkInformationVector**, vtkInformationVector*) -->
-    <elf-symbol name='_ZN17vtkImageDataLIC2D19RequestUpdateExtentEP14vtkInformationPP20vtkInformationVectorS3_' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN17vtkImageDataLIC2D19RequestUpdateExtentEP14vtkInformationPP20vtkInformationVectorS3_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkImageDataLIC2D::TranslateInputExtent(int const*, int const*, int*) -->
-    <elf-symbol name='_ZN17vtkImageDataLIC2D20TranslateInputExtentEPKiS1_Pi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN17vtkImageDataLIC2D20TranslateInputExtentEPKiS1_Pi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkImageDataLIC2D::FillInputPortInformation(int, vtkInformation*) -->
-    <elf-symbol name='_ZN17vtkImageDataLIC2D24FillInputPortInformationEiP14vtkInformation' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN17vtkImageDataLIC2D24FillInputPortInformationEiP14vtkInformation' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkImageDataLIC2D::New() -->
-    <elf-symbol name='_ZN17vtkImageDataLIC2D3NewEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN17vtkImageDataLIC2D3NewEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkImageDataLIC2D::PrintSelf(std::ostream&, vtkIndent) -->
-    <elf-symbol name='_ZN17vtkImageDataLIC2D9PrintSelfERSo9vtkIndent' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN17vtkImageDataLIC2D9PrintSelfERSo9vtkIndent' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkImageDataLIC2D::vtkImageDataLIC2D() -->
-    <elf-symbol name='_ZN17vtkImageDataLIC2DC1Ev' type='func-type' binding='global-binding' alias='_ZN17vtkImageDataLIC2DC2Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN17vtkImageDataLIC2DC1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN17vtkImageDataLIC2DC2Ev' is-defined='yes'/>
     <!-- vtkImageDataLIC2D::vtkImageDataLIC2D() -->
-    <elf-symbol name='_ZN17vtkImageDataLIC2DC2Ev' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN17vtkImageDataLIC2DC2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkImageDataLIC2D::~vtkImageDataLIC2D() -->
-    <elf-symbol name='_ZN17vtkImageDataLIC2DD0Ev' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN17vtkImageDataLIC2DD0Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkImageDataLIC2D::~vtkImageDataLIC2D() -->
-    <elf-symbol name='_ZN17vtkImageDataLIC2DD1Ev' type='func-type' binding='global-binding' alias='_ZN17vtkImageDataLIC2DD2Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN17vtkImageDataLIC2DD1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN17vtkImageDataLIC2DD2Ev' is-defined='yes'/>
     <!-- vtkImageDataLIC2D::~vtkImageDataLIC2D() -->
-    <elf-symbol name='_ZN17vtkImageDataLIC2DD2Ev' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN17vtkImageDataLIC2DD2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::IsSupported(vtkRenderWindow*) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter11IsSupportedEP15vtkRenderWindow' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter11IsSupportedEP15vtkRenderWindow' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetStepSize(double) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter11SetStepSizeEd' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter11SetStepSizeEd' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::ClearTCoords(vtkDataSet*) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter12ClearTCoordsEP10vtkDataSet' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter12ClearTCoordsEP10vtkDataSet' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetAntiAlias(int) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter12SetAntiAliasEi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter12SetAntiAliasEi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetColorMode(int) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter12SetColorModeEi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter12SetColorModeEi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetMaskColor(double*) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter12SetMaskColorEPd' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter12SetMaskColorEPd' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetNoiseType(int) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter12SetNoiseTypeEi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter12SetNoiseTypeEi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetUpdateAll() -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter12SetUpdateAllEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter12SetUpdateAllEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::PrepareOutput() -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter13PrepareOutputEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter13PrepareOutputEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::NeedToColorLIC() -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter14NeedToColorLICEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter14NeedToColorLICEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::RenderInternal(vtkRenderer*, vtkActor*, unsigned long, bool) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter14RenderInternalEP11vtkRendererP8vtkActormb' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter14RenderInternalEP11vtkRendererP8vtkActormb' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetEnhancedLIC(int) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter14SetEnhancedLICEi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter14SetEnhancedLICEi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetMapModeBias(double) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter14SetMapModeBiasEd' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter14SetMapModeBiasEd' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::GetNoiseDataSet() -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter15GetNoiseDataSetEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter15GetNoiseDataSetEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetLICIntensity(double) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter15SetLICIntensityEd' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter15SetLICIntensityEd' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetNoiseDataSet(vtkImageData*) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter15SetNoiseDataSetEP12vtkImageData' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter15SetNoiseDataSetEP12vtkImageData' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::ValidateContext(vtkRenderer*) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter15ValidateContextEP11vtkRenderer' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter15ValidateContextEP11vtkRenderer' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::NeedToComputeLIC() -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter16NeedToComputeLICEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter16NeedToComputeLICEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::ReportReferences(vtkGarbageCollector*) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter16ReportReferencesEP19vtkGarbageCollector' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter16ReportReferencesEP19vtkGarbageCollector' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetMaskIntensity(double) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter16SetMaskIntensityEd' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter16SetMaskIntensityEd' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetMaskOnSurface(int) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter16SetMaskOnSurfaceEi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter16SetMaskOnSurfaceEi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetMaskThreshold(double) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter16SetMaskThresholdEd' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter16SetMaskThresholdEd' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetMaxNoiseValue(double) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter16SetMaxNoiseValueEd' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter16SetMaxNoiseValueEd' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetMinNoiseValue(double) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter16SetMinNoiseValueEd' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter16SetMinNoiseValueEd' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetNumberOfSteps(int) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter16SetNumberOfStepsEi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter16SetNumberOfStepsEi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::UpdateNoiseImage(vtkRenderWindow*) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter16UpdateNoiseImageEP15vtkRenderWindow' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter16UpdateNoiseImageEP15vtkRenderWindow' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::VectorsToTCoords(vtkDataSet*) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter16VectorsToTCoordsEP10vtkDataSet' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter16VectorsToTCoordsEP10vtkDataSet' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::VectorsToTCoords(vtkDataObject*) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter16VectorsToTCoordsEP13vtkDataObject' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter16VectorsToTCoordsEP13vtkDataObject' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetNoiseGrainSize(int) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter17SetNoiseGrainSizeEi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter17SetNoiseGrainSizeEi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::CreateCommunicator(int) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter18CreateCommunicatorEi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter18CreateCommunicatorEi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::CreateCommunicator() -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter18CreateCommunicatorEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter18CreateCommunicatorEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::ProcessInformation(vtkInformation*) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter18ProcessInformationEP14vtkInformation' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter18ProcessInformationEP14vtkInformation' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetEnhanceContrast(int) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter18SetEnhanceContrastEi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter18SetEnhanceContrastEi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::CanRenderSurfaceLIC(vtkActor*, int) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter19CanRenderSurfaceLICEP8vtkActori' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter19CanRenderSurfaceLICEP8vtkActori' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::InitializeResources() -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter19InitializeResourcesEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter19InitializeResourcesEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::NeedToGatherVectors() -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter19NeedToGatherVectorsEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter19NeedToGatherVectorsEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetNoiseTextureSize(int) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter19SetNoiseTextureSizeEi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter19SetNoiseTextureSizeEi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetNormalizeVectors(int) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter19SetNormalizeVectorsEi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter19SetNormalizeVectorsEi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::NeedToRenderGeometry(vtkRenderer*, vtkActor*) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter20NeedToRenderGeometryEP11vtkRendererP8vtkActor' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter20NeedToRenderGeometryEP11vtkRendererP8vtkActor' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetCompositeStrategy(int) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter20SetCompositeStrategyEi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter20SetCompositeStrategyEi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetNoiseGeneratorSeed(int) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter21SetNoiseGeneratorSeedEi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter21SetNoiseGeneratorSeedEi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::NeedToUpdateOutputData() -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter22NeedToUpdateOutputDataEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter22NeedToUpdateOutputDataEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetInputArrayToProcess(int, char const*) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter22SetInputArrayToProcessEiPKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter22SetInputArrayToProcessEiPKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetInputArrayToProcess(int, int) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter22SetInputArrayToProcessEii' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter22SetInputArrayToProcessEii' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetNumberOfNoiseLevels(int) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter22SetNumberOfNoiseLevelsEi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter22SetNumberOfNoiseLevelsEi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetGenerateNoiseTexture(int) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter23SetGenerateNoiseTextureEi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter23SetGenerateNoiseTextureEi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::NeedToUpdateCommunicator() -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter24NeedToUpdateCommunicatorEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter24NeedToUpdateCommunicatorEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::ReleaseGraphicsResources(vtkWindow*) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter24ReleaseGraphicsResourcesEP9vtkWindow' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter24ReleaseGraphicsResourcesEP9vtkWindow' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetImpulseNoiseProbability(double) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter26SetImpulseNoiseProbabilityEd' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter26SetImpulseNoiseProbabilityEd' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetImpulseNoiseBackgroundValue(double) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter30SetImpulseNoiseBackgroundValueEd' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter30SetImpulseNoiseBackgroundValueEd' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetLowLICContrastEnhancementFactor(double) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter34SetLowLICContrastEnhancementFactorEd' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter34SetLowLICContrastEnhancementFactorEd' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetHighLICContrastEnhancementFactor(double) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter35SetHighLICContrastEnhancementFactorEd' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter35SetHighLICContrastEnhancementFactorEd' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetLowColorContrastEnhancementFactor(double) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter36SetLowColorContrastEnhancementFactorEd' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter36SetLowColorContrastEnhancementFactorEd' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetHighColorContrastEnhancementFactor(double) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter37SetHighColorContrastEnhancementFactorEd' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter37SetHighColorContrastEnhancementFactorEd' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::New() -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter3NewEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter3NewEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::GetBounds(vtkDataObject*, double*) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter9GetBoundsEP13vtkDataObjectPd' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter9GetBoundsEP13vtkDataObjectPd' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::GetOutput() -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter9GetOutputEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter9GetOutputEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::PrintSelf(std::ostream&, vtkIndent) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter9PrintSelfERSo9vtkIndent' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter9PrintSelfERSo9vtkIndent' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::SetEnable(int) -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainter9SetEnableEi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainter9SetEnableEi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::vtkSurfaceLICPainter() -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainterC1Ev' type='func-type' binding='global-binding' alias='_ZN20vtkSurfaceLICPainterC2Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainterC1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN20vtkSurfaceLICPainterC2Ev' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::vtkSurfaceLICPainter() -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainterC2Ev' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainterC2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::~vtkSurfaceLICPainter() -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainterD0Ev' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainterD0Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::~vtkSurfaceLICPainter() -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainterD1Ev' type='func-type' binding='global-binding' alias='_ZN20vtkSurfaceLICPainterD2Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainterD1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN20vtkSurfaceLICPainterD2Ev' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter::~vtkSurfaceLICPainter() -->
-    <elf-symbol name='_ZN20vtkSurfaceLICPainterD2Ev' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN20vtkSurfaceLICPainterD2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkStructuredGridLIC2D::GetContext() -->
-    <elf-symbol name='_ZN22vtkStructuredGridLIC2D10GetContextEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkStructuredGridLIC2D10GetContextEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkStructuredGridLIC2D::SetContext(vtkRenderWindow*) -->
-    <elf-symbol name='_ZN22vtkStructuredGridLIC2D10SetContextEP15vtkRenderWindow' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkStructuredGridLIC2D10SetContextEP15vtkRenderWindow' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkStructuredGridLIC2D::RequestData(vtkInformation*, vtkInformationVector**, vtkInformationVector*) -->
-    <elf-symbol name='_ZN22vtkStructuredGridLIC2D11RequestDataEP14vtkInformationPP20vtkInformationVectorS3_' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkStructuredGridLIC2D11RequestDataEP14vtkInformationPP20vtkInformationVectorS3_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkStructuredGridLIC2D::AllocateScalars(vtkStructuredGrid*, vtkInformation*) -->
-    <elf-symbol name='_ZN22vtkStructuredGridLIC2D15AllocateScalarsEP17vtkStructuredGridP14vtkInformation' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkStructuredGridLIC2D15AllocateScalarsEP17vtkStructuredGridP14vtkInformation' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkStructuredGridLIC2D::AllocateOutputData(vtkDataObject*, vtkInformation*) -->
-    <elf-symbol name='_ZN22vtkStructuredGridLIC2D18AllocateOutputDataEP13vtkDataObjectP14vtkInformation' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkStructuredGridLIC2D18AllocateOutputDataEP13vtkDataObjectP14vtkInformation' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkStructuredGridLIC2D::RequestInformation(vtkInformation*, vtkInformationVector**, vtkInformationVector*) -->
-    <elf-symbol name='_ZN22vtkStructuredGridLIC2D18RequestInformationEP14vtkInformationPP20vtkInformationVectorS3_' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkStructuredGridLIC2D18RequestInformationEP14vtkInformationPP20vtkInformationVectorS3_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkStructuredGridLIC2D::RequestUpdateExtent(vtkInformation*, vtkInformationVector**, vtkInformationVector*) -->
-    <elf-symbol name='_ZN22vtkStructuredGridLIC2D19RequestUpdateExtentEP14vtkInformationPP20vtkInformationVectorS3_' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkStructuredGridLIC2D19RequestUpdateExtentEP14vtkInformationPP20vtkInformationVectorS3_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkStructuredGridLIC2D::FillInputPortInformation(int, vtkInformation*) -->
-    <elf-symbol name='_ZN22vtkStructuredGridLIC2D24FillInputPortInformationEiP14vtkInformation' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkStructuredGridLIC2D24FillInputPortInformationEiP14vtkInformation' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkStructuredGridLIC2D::FillOutputPortInformation(int, vtkInformation*) -->
-    <elf-symbol name='_ZN22vtkStructuredGridLIC2D25FillOutputPortInformationEiP14vtkInformation' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkStructuredGridLIC2D25FillOutputPortInformationEiP14vtkInformation' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkStructuredGridLIC2D::New() -->
-    <elf-symbol name='_ZN22vtkStructuredGridLIC2D3NewEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkStructuredGridLIC2D3NewEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkStructuredGridLIC2D::PrintSelf(std::ostream&, vtkIndent) -->
-    <elf-symbol name='_ZN22vtkStructuredGridLIC2D9PrintSelfERSo9vtkIndent' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkStructuredGridLIC2D9PrintSelfERSo9vtkIndent' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkStructuredGridLIC2D::vtkStructuredGridLIC2D() -->
-    <elf-symbol name='_ZN22vtkStructuredGridLIC2DC1Ev' type='func-type' binding='global-binding' alias='_ZN22vtkStructuredGridLIC2DC2Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkStructuredGridLIC2DC1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN22vtkStructuredGridLIC2DC2Ev' is-defined='yes'/>
     <!-- vtkStructuredGridLIC2D::vtkStructuredGridLIC2D() -->
-    <elf-symbol name='_ZN22vtkStructuredGridLIC2DC2Ev' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkStructuredGridLIC2DC2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkStructuredGridLIC2D::~vtkStructuredGridLIC2D() -->
-    <elf-symbol name='_ZN22vtkStructuredGridLIC2DD0Ev' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkStructuredGridLIC2DD0Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkStructuredGridLIC2D::~vtkStructuredGridLIC2D() -->
-    <elf-symbol name='_ZN22vtkStructuredGridLIC2DD1Ev' type='func-type' binding='global-binding' alias='_ZN22vtkStructuredGridLIC2DD2Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkStructuredGridLIC2DD1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN22vtkStructuredGridLIC2DD2Ev' is-defined='yes'/>
     <!-- vtkStructuredGridLIC2D::~vtkStructuredGridLIC2D() -->
-    <elf-symbol name='_ZN22vtkStructuredGridLIC2DD2Ev' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkStructuredGridLIC2DD2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICComposite::Initialize(vtkPixelExtent const&, std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> > const&, int, double, int, int, int, int) -->
-    <elf-symbol name='_ZN22vtkSurfaceLICComposite10InitializeERK14vtkPixelExtentRKSt5dequeIS0_SaIS0_EEidiiii' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkSurfaceLICComposite10InitializeERK14vtkPixelExtentRKSt5dequeIS0_SaIS0_EEidiiii' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICComposite::AddGuardPixels(std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> > const&, std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> >&, std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> >&, float*) -->
-    <elf-symbol name='_ZN22vtkSurfaceLICComposite14AddGuardPixelsERKSt5dequeI14vtkPixelExtentSaIS1_EERS3_S6_Pf' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkSurfaceLICComposite14AddGuardPixelsERKSt5dequeI14vtkPixelExtentSaIS1_EERS3_S6_Pf' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICComposite::GetFudgeFactor(int*) -->
-    <elf-symbol name='_ZN22vtkSurfaceLICComposite14GetFudgeFactorEPi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkSurfaceLICComposite14GetFudgeFactorEPi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICComposite::GetPixelBounds(float*, int, vtkPixelExtent&) -->
-    <elf-symbol name='_ZN22vtkSurfaceLICComposite14GetPixelBoundsEPfiR14vtkPixelExtent' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkSurfaceLICComposite14GetPixelBoundsEPfiR14vtkPixelExtent' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICComposite::MakeDecompDisjoint(std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> > const&, std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> >&, float*) -->
-    <elf-symbol name='_ZN22vtkSurfaceLICComposite18MakeDecompDisjointERKSt5dequeI14vtkPixelExtentSaIS1_EERS3_Pf' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkSurfaceLICComposite18MakeDecompDisjointERKSt5dequeI14vtkPixelExtentSaIS1_EERS3_Pf' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICComposite::MakeDecompDisjoint(std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> >&, std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> >&) -->
-    <elf-symbol name='_ZN22vtkSurfaceLICComposite18MakeDecompDisjointERSt5dequeI14vtkPixelExtentSaIS1_EES4_' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkSurfaceLICComposite18MakeDecompDisjointERSt5dequeI14vtkPixelExtentSaIS1_EES4_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICComposite::InitializeCompositeExtents(float*) -->
-    <elf-symbol name='_ZN22vtkSurfaceLICComposite26InitializeCompositeExtentsEPf' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkSurfaceLICComposite26InitializeCompositeExtentsEPf' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICComposite::New() -->
-    <elf-symbol name='_ZN22vtkSurfaceLICComposite3NewEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkSurfaceLICComposite3NewEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICComposite::PrintSelf(std::ostream&, vtkIndent) -->
-    <elf-symbol name='_ZN22vtkSurfaceLICComposite9PrintSelfERSo9vtkIndent' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkSurfaceLICComposite9PrintSelfERSo9vtkIndent' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICComposite::VectorMax(vtkPixelExtent const&, float*) -->
-    <elf-symbol name='_ZN22vtkSurfaceLICComposite9VectorMaxERK14vtkPixelExtentPf' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkSurfaceLICComposite9VectorMaxERK14vtkPixelExtentPf' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICComposite::VectorMax(std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> > const&, float*, std::vector<float, std::allocator<float> >&) -->
-    <elf-symbol name='_ZN22vtkSurfaceLICComposite9VectorMaxERKSt5dequeI14vtkPixelExtentSaIS1_EEPfRSt6vectorIfSaIfEE' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkSurfaceLICComposite9VectorMaxERKSt5dequeI14vtkPixelExtentSaIS1_EEPfRSt6vectorIfSaIfEE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICComposite::vtkSurfaceLICComposite() -->
-    <elf-symbol name='_ZN22vtkSurfaceLICCompositeC1Ev' type='func-type' binding='global-binding' alias='_ZN22vtkSurfaceLICCompositeC2Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkSurfaceLICCompositeC1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN22vtkSurfaceLICCompositeC2Ev' is-defined='yes'/>
     <!-- vtkSurfaceLICComposite::vtkSurfaceLICComposite() -->
-    <elf-symbol name='_ZN22vtkSurfaceLICCompositeC2Ev' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkSurfaceLICCompositeC2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICComposite::~vtkSurfaceLICComposite() -->
-    <elf-symbol name='_ZN22vtkSurfaceLICCompositeD0Ev' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkSurfaceLICCompositeD0Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICComposite::~vtkSurfaceLICComposite() -->
-    <elf-symbol name='_ZN22vtkSurfaceLICCompositeD1Ev' type='func-type' binding='global-binding' alias='_ZN22vtkSurfaceLICCompositeD2Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkSurfaceLICCompositeD1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN22vtkSurfaceLICCompositeD2Ev' is-defined='yes'/>
     <!-- vtkSurfaceLICComposite::~vtkSurfaceLICComposite() -->
-    <elf-symbol name='_ZN22vtkSurfaceLICCompositeD2Ev' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN22vtkSurfaceLICCompositeD2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICDefaultPainter::UpdateBounds(double*) -->
-    <elf-symbol name='_ZN27vtkSurfaceLICDefaultPainter12UpdateBoundsEPd' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN27vtkSurfaceLICDefaultPainter12UpdateBoundsEPd' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICDefaultPainter::ReportReferences(vtkGarbageCollector*) -->
-    <elf-symbol name='_ZN27vtkSurfaceLICDefaultPainter16ReportReferencesEP19vtkGarbageCollector' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN27vtkSurfaceLICDefaultPainter16ReportReferencesEP19vtkGarbageCollector' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICDefaultPainter::BuildPainterChain() -->
-    <elf-symbol name='_ZN27vtkSurfaceLICDefaultPainter17BuildPainterChainEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN27vtkSurfaceLICDefaultPainter17BuildPainterChainEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICDefaultPainter::SetSurfaceLICPainter(vtkSurfaceLICPainter*) -->
-    <elf-symbol name='_ZN27vtkSurfaceLICDefaultPainter20SetSurfaceLICPainterEP20vtkSurfaceLICPainter' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN27vtkSurfaceLICDefaultPainter20SetSurfaceLICPainterEP20vtkSurfaceLICPainter' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICDefaultPainter::New() -->
-    <elf-symbol name='_ZN27vtkSurfaceLICDefaultPainter3NewEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN27vtkSurfaceLICDefaultPainter3NewEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICDefaultPainter::PrintSelf(std::ostream&, vtkIndent) -->
-    <elf-symbol name='_ZN27vtkSurfaceLICDefaultPainter9PrintSelfERSo9vtkIndent' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN27vtkSurfaceLICDefaultPainter9PrintSelfERSo9vtkIndent' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICDefaultPainter::vtkSurfaceLICDefaultPainter() -->
-    <elf-symbol name='_ZN27vtkSurfaceLICDefaultPainterC1Ev' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN27vtkSurfaceLICDefaultPainterC1Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICDefaultPainter::vtkSurfaceLICDefaultPainter() -->
-    <elf-symbol name='_ZN27vtkSurfaceLICDefaultPainterC2Ev' type='func-type' binding='global-binding' alias='_ZN27vtkSurfaceLICDefaultPainterC1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN27vtkSurfaceLICDefaultPainterC2Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN27vtkSurfaceLICDefaultPainterC1Ev' is-defined='yes'/>
     <!-- vtkSurfaceLICDefaultPainter::~vtkSurfaceLICDefaultPainter() -->
-    <elf-symbol name='_ZN27vtkSurfaceLICDefaultPainterD0Ev' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN27vtkSurfaceLICDefaultPainterD0Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICDefaultPainter::~vtkSurfaceLICDefaultPainter() -->
-    <elf-symbol name='_ZN27vtkSurfaceLICDefaultPainterD1Ev' type='func-type' binding='global-binding' alias='_ZN27vtkSurfaceLICDefaultPainterD2Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN27vtkSurfaceLICDefaultPainterD1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN27vtkSurfaceLICDefaultPainterD2Ev' is-defined='yes'/>
     <!-- vtkSurfaceLICDefaultPainter::~vtkSurfaceLICDefaultPainter() -->
-    <elf-symbol name='_ZN27vtkSurfaceLICDefaultPainterD2Ev' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN27vtkSurfaceLICDefaultPainterD2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::GetContext() -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D10GetContextEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D10GetContextEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::SetContext(vtkRenderWindow*) -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D10SetContextEP15vtkRenderWindow' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D10SetContextEP15vtkRenderWindow' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::IsSupported(vtkRenderWindow*) -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D11IsSupportedEP15vtkRenderWindow' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D11IsSupportedEP15vtkRenderWindow' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::SetCEShader(vtkShaderProgram2*) -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D11SetCEShaderEP17vtkShaderProgram2' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D11SetCEShaderEP17vtkShaderProgram2' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::SetEEShader(vtkShaderProgram2*) -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D11SetEEShaderEP17vtkShaderProgram2' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D11SetEEShaderEP17vtkShaderProgram2' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::SetVTShader(vtkShaderProgram2*) -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D11SetVTShaderEP17vtkShaderProgram2' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D11SetVTShaderEP17vtkShaderProgram2' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::BuildShaders() -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D12BuildShadersEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D12BuildShadersEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::SetAAHShader(vtkShaderProgram2*) -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D12SetAAHShaderEP17vtkShaderProgram2' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D12SetAAHShaderEP17vtkShaderProgram2' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::SetAAVShader(vtkShaderProgram2*) -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D12SetAAVShaderEP17vtkShaderProgram2' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D12SetAAVShaderEP17vtkShaderProgram2' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::SetLIC0Shader(vtkShaderProgram2*) -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D13SetLIC0ShaderEP17vtkShaderProgram2' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D13SetLIC0ShaderEP17vtkShaderProgram2' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::SetLICIShader(vtkShaderProgram2*) -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D13SetLICIShaderEP17vtkShaderProgram2' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D13SetLICIShaderEP17vtkShaderProgram2' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::SetLICNShader(vtkShaderProgram2*) -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D13SetLICNShaderEP17vtkShaderProgram2' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D13SetLICNShaderEP17vtkShaderProgram2' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::GetCommunicator() -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D15GetCommunicatorEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D15GetCommunicatorEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::SetComponentIds(int, int) -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D15SetComponentIdsEii' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D15SetComponentIdsEii' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::SetNormalizeVectors(int) -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D19SetNormalizeVectorsEi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D19SetNormalizeVectorsEi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::SetTransformVectors(int) -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D19SetTransformVectorsEi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D19SetTransformVectorsEi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::SetNoiseTexParameters(vtkTextureObject*) -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D21SetNoiseTexParametersEP16vtkTextureObject' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D21SetNoiseTexParametersEP16vtkTextureObject' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::SetVectorTexParameters(vtkTextureObject*) -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D22SetVectorTexParametersEP16vtkTextureObject' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D22SetVectorTexParametersEP16vtkTextureObject' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::New() -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D3NewEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D3NewEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::Execute(vtkTextureObject*, vtkTextureObject*) -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D7ExecuteEP16vtkTextureObjectS1_' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D7ExecuteEP16vtkTextureObjectS1_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::Execute(int const*, vtkTextureObject*, vtkTextureObject*) -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D7ExecuteEPKiP16vtkTextureObjectS3_' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D7ExecuteEPKiP16vtkTextureObjectS3_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::Execute(vtkPixelExtent const&, std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> > const&, std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> > const&, vtkTextureObject*, vtkTextureObject*, vtkTextureObject*) -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D7ExecuteERK14vtkPixelExtentRKSt5dequeIS0_SaIS0_EES7_P16vtkTextureObjectS9_S9_' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D7ExecuteERK14vtkPixelExtentRKSt5dequeIS0_SaIS0_EES7_P16vtkTextureObjectS9_S9_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::PrintSelf(std::ostream&, vtkIndent) -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D9PrintSelfERSo9vtkIndent' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2D9PrintSelfERSo9vtkIndent' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::vtkLineIntegralConvolution2D() -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2DC1Ev' type='func-type' binding='global-binding' alias='_ZN28vtkLineIntegralConvolution2DC2Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2DC1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN28vtkLineIntegralConvolution2DC2Ev' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::vtkLineIntegralConvolution2D() -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2DC2Ev' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2DC2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::~vtkLineIntegralConvolution2D() -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2DD0Ev' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2DD0Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::~vtkLineIntegralConvolution2D() -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2DD1Ev' type='func-type' binding='global-binding' alias='_ZN28vtkLineIntegralConvolution2DD2Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2DD1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN28vtkLineIntegralConvolution2DD2Ev' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D::~vtkLineIntegralConvolution2D() -->
-    <elf-symbol name='_ZN28vtkLineIntegralConvolution2DD2Ev' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28vtkLineIntegralConvolution2DD2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkImageDataLIC2DExtentTranslator::GetAlgorithm() -->
-    <elf-symbol name='_ZN33vtkImageDataLIC2DExtentTranslator12GetAlgorithmEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN33vtkImageDataLIC2DExtentTranslator12GetAlgorithmEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkImageDataLIC2DExtentTranslator::SetAlgorithm(vtkImageDataLIC2D*) -->
-    <elf-symbol name='_ZN33vtkImageDataLIC2DExtentTranslator12SetAlgorithmEP17vtkImageDataLIC2D' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN33vtkImageDataLIC2DExtentTranslator12SetAlgorithmEP17vtkImageDataLIC2D' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkImageDataLIC2DExtentTranslator::PieceToExtentThreadSafe(int, int, int, int*, int*, int, int) -->
-    <elf-symbol name='_ZN33vtkImageDataLIC2DExtentTranslator23PieceToExtentThreadSafeEiiiPiS0_ii' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN33vtkImageDataLIC2DExtentTranslator23PieceToExtentThreadSafeEiiiPiS0_ii' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkImageDataLIC2DExtentTranslator::SetInputExtentTranslator(vtkExtentTranslator*) -->
-    <elf-symbol name='_ZN33vtkImageDataLIC2DExtentTranslator24SetInputExtentTranslatorEP19vtkExtentTranslator' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN33vtkImageDataLIC2DExtentTranslator24SetInputExtentTranslatorEP19vtkExtentTranslator' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkImageDataLIC2DExtentTranslator::New() -->
-    <elf-symbol name='_ZN33vtkImageDataLIC2DExtentTranslator3NewEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN33vtkImageDataLIC2DExtentTranslator3NewEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkImageDataLIC2DExtentTranslator::PrintSelf(std::ostream&, vtkIndent) -->
-    <elf-symbol name='_ZN33vtkImageDataLIC2DExtentTranslator9PrintSelfERSo9vtkIndent' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN33vtkImageDataLIC2DExtentTranslator9PrintSelfERSo9vtkIndent' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkImageDataLIC2DExtentTranslator::vtkImageDataLIC2DExtentTranslator() -->
-    <elf-symbol name='_ZN33vtkImageDataLIC2DExtentTranslatorC1Ev' type='func-type' binding='global-binding' alias='_ZN33vtkImageDataLIC2DExtentTranslatorC2Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN33vtkImageDataLIC2DExtentTranslatorC1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN33vtkImageDataLIC2DExtentTranslatorC2Ev' is-defined='yes'/>
     <!-- vtkImageDataLIC2DExtentTranslator::vtkImageDataLIC2DExtentTranslator() -->
-    <elf-symbol name='_ZN33vtkImageDataLIC2DExtentTranslatorC2Ev' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN33vtkImageDataLIC2DExtentTranslatorC2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkImageDataLIC2DExtentTranslator::~vtkImageDataLIC2DExtentTranslator() -->
-    <elf-symbol name='_ZN33vtkImageDataLIC2DExtentTranslatorD0Ev' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN33vtkImageDataLIC2DExtentTranslatorD0Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkImageDataLIC2DExtentTranslator::~vtkImageDataLIC2DExtentTranslator() -->
-    <elf-symbol name='_ZN33vtkImageDataLIC2DExtentTranslatorD1Ev' type='func-type' binding='global-binding' alias='_ZN33vtkImageDataLIC2DExtentTranslatorD2Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN33vtkImageDataLIC2DExtentTranslatorD1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN33vtkImageDataLIC2DExtentTranslatorD2Ev' is-defined='yes'/>
     <!-- vtkImageDataLIC2DExtentTranslator::~vtkImageDataLIC2DExtentTranslator() -->
-    <elf-symbol name='_ZN33vtkImageDataLIC2DExtentTranslatorD2Ev' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN33vtkImageDataLIC2DExtentTranslatorD2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- __gnu_cxx::new_allocator<vtkPixelExtent>::allocate(unsigned long, void const*) -->
-    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorI14vtkPixelExtentE8allocateEmPKv' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorI14vtkPixelExtentE8allocateEmPKv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>::operator+(long) const -->
-    <elf-symbol name='_ZNKSt15_Deque_iteratorI14vtkPixelExtentRS0_PS0_EplEl' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZNKSt15_Deque_iteratorI14vtkPixelExtentRS0_PS0_EplEl' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- std::_Deque_base<vtkPixelExtent, std::allocator<vtkPixelExtent> >::_M_initialize_map(unsigned long) -->
-    <elf-symbol name='_ZNSt11_Deque_baseI14vtkPixelExtentSaIS0_EE17_M_initialize_mapEm' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZNSt11_Deque_baseI14vtkPixelExtentSaIS0_EE17_M_initialize_mapEm' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- std::_Deque_base<vtkPixelExtent, std::allocator<vtkPixelExtent> >::~_Deque_base() -->
-    <elf-symbol name='_ZNSt11_Deque_baseI14vtkPixelExtentSaIS0_EED1Ev' type='func-type' binding='weak-binding' alias='_ZNSt11_Deque_baseI14vtkPixelExtentSaIS0_EED2Ev' is-defined='yes'/>
+    <elf-symbol name='_ZNSt11_Deque_baseI14vtkPixelExtentSaIS0_EED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt11_Deque_baseI14vtkPixelExtentSaIS0_EED2Ev' is-defined='yes'/>
     <!-- std::_Deque_base<vtkPixelExtent, std::allocator<vtkPixelExtent> >::~_Deque_base() -->
-    <elf-symbol name='_ZNSt11_Deque_baseI14vtkPixelExtentSaIS0_EED2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZNSt11_Deque_baseI14vtkPixelExtentSaIS0_EED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>::operator+=(long) -->
-    <elf-symbol name='_ZNSt15_Deque_iteratorI14vtkPixelExtentRS0_PS0_EpLEl' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZNSt15_Deque_iteratorI14vtkPixelExtentRS0_PS0_EpLEl' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- void std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> >::_M_insert_aux<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent const&, vtkPixelExtent const*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent const&, vtkPixelExtent const*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent const&, vtkPixelExtent const*>, unsigned long) -->
-    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EE13_M_insert_auxISt15_Deque_iteratorIS0_RKS0_PS5_EEEvS4_IS0_RS0_PS0_ET_SC_m' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EE13_M_insert_auxISt15_Deque_iteratorIS0_RKS0_PS5_EEEvS4_IS0_RS0_PS0_ET_SC_m' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- void std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> >::_M_insert_aux<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, unsigned long) -->
-    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EE13_M_insert_auxISt15_Deque_iteratorIS0_RS0_PS0_EEEvS7_T_S8_m' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EE13_M_insert_auxISt15_Deque_iteratorIS0_RS0_PS0_EEEvS7_T_S8_m' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> >::_M_reallocate_map(unsigned long, bool) -->
-    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EE17_M_reallocate_mapEmb' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EE17_M_reallocate_mapEmb' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- void std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> >::_M_range_insert_aux<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent const&, vtkPixelExtent const*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent const&, vtkPixelExtent const*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent const&, vtkPixelExtent const*>, std::forward_iterator_tag) -->
-    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EE19_M_range_insert_auxISt15_Deque_iteratorIS0_RKS0_PS5_EEEvS4_IS0_RS0_PS0_ET_SC_St20forward_iterator_tag' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EE19_M_range_insert_auxISt15_Deque_iteratorIS0_RKS0_PS5_EEEvS4_IS0_RS0_PS0_ET_SC_St20forward_iterator_tag' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- void std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> >::_M_range_insert_aux<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::forward_iterator_tag) -->
-    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EE19_M_range_insert_auxISt15_Deque_iteratorIS0_RS0_PS0_EEEvS7_T_S8_St20forward_iterator_tag' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EE19_M_range_insert_auxISt15_Deque_iteratorIS0_RS0_PS0_EEEvS7_T_S8_St20forward_iterator_tag' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> >::_M_reserve_map_at_back(unsigned long) -->
-    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EE22_M_reserve_map_at_backEm' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EE22_M_reserve_map_at_backEm' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> >::_M_new_elements_at_back(unsigned long) -->
-    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EE23_M_new_elements_at_backEm' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EE23_M_new_elements_at_backEm' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> >::_M_new_elements_at_front(unsigned long) -->
-    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EE24_M_new_elements_at_frontEm' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EE24_M_new_elements_at_frontEm' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> >::_M_reserve_elements_at_back(unsigned long) -->
-    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EE27_M_reserve_elements_at_backEm' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EE27_M_reserve_elements_at_backEm' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> >::_M_reserve_elements_at_front(unsigned long) -->
-    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EE28_M_reserve_elements_at_frontEm' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EE28_M_reserve_elements_at_frontEm' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> >::deque(std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> > const&) -->
-    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EEC1ERKS2_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EEC1ERKS2_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> >::deque(std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> > const&) -->
-    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EEC2ERKS2_' type='func-type' binding='weak-binding' alias='_ZNSt5dequeI14vtkPixelExtentSaIS0_EEC1ERKS2_' is-defined='yes'/>
+    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EEC2ERKS2_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt5dequeI14vtkPixelExtentSaIS0_EEC1ERKS2_' is-defined='yes'/>
     <!-- std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> >::operator=(std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> > const&) -->
-    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EEaSERKS2_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZNSt5dequeI14vtkPixelExtentSaIS0_EEaSERKS2_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- std::vector<float, std::allocator<float> >::_M_fill_insert(__gnu_cxx::__normal_iterator<float*, std::vector<float, std::allocator<float> > >, unsigned long, float const&) -->
-    <elf-symbol name='_ZNSt6vectorIfSaIfEE14_M_fill_insertEN9__gnu_cxx17__normal_iteratorIPfS1_EEmRKf' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZNSt6vectorIfSaIfEE14_M_fill_insertEN9__gnu_cxx17__normal_iteratorIPfS1_EEmRKf' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- void std::__push_heap<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, long, vtkPixelExtent>(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, long, long, vtkPixelExtent) -->
-    <elf-symbol name='_ZSt11__push_heapISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ElS1_EvT_T0_S6_T1_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZSt11__push_heapISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ElS1_EvT_T0_S6_T1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- void std::__adjust_heap<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, long, vtkPixelExtent>(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, long, long, vtkPixelExtent) -->
-    <elf-symbol name='_ZSt13__adjust_heapISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ElS1_EvT_T0_S6_T1_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZSt13__adjust_heapISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ElS1_EvT_T0_S6_T1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- void std::__insertion_sort<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
-    <elf-symbol name='_ZSt16__insertion_sortISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_EEvT_S5_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZSt16__insertion_sortISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_EEvT_S5_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- void std::__introsort_loop<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, long>(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, long) -->
-    <elf-symbol name='_ZSt16__introsort_loopISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ElEvT_S5_T0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZSt16__introsort_loopISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ElEvT_S5_T0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::__unguarded_partition<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, vtkPixelExtent>(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, vtkPixelExtent) -->
-    <elf-symbol name='_ZSt21__unguarded_partitionISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ES1_ET_S5_S5_T0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZSt21__unguarded_partitionISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ES1_ET_S5_S5_T0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- void std::__final_insertion_sort<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
-    <elf-symbol name='_ZSt22__final_insertion_sortISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_EEvT_S5_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZSt22__final_insertion_sortISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_EEvT_S5_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::__uninitialized_copy_a<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, vtkPixelExtent>(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::allocator<vtkPixelExtent>&) -->
-    <elf-symbol name='_ZSt22__uninitialized_copy_aISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ES4_S1_ET0_T_S6_S5_RSaIT1_E' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZSt22__uninitialized_copy_aISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ES4_S1_ET0_T_S6_S5_RSaIT1_E' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- float* std::__uninitialized_move_a<float*, float*, std::allocator<float> >(float*, float*, float*, std::allocator<float>&) -->
-    <elf-symbol name='_ZSt22__uninitialized_move_aIPfS0_SaIfEET0_T_S3_S2_RT1_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZSt22__uninitialized_move_aIPfS0_SaIfEET0_T_S3_S2_RT1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- void std::__unguarded_linear_insert<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, vtkPixelExtent>(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, vtkPixelExtent) -->
-    <elf-symbol name='_ZSt25__unguarded_linear_insertISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ES1_EvT_T0_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZSt25__unguarded_linear_insertISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ES1_EvT_T0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::copy<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
-    <elf-symbol name='_ZSt4copyISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ES4_ET0_T_S6_S5_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZSt4copyISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ES4_ET0_T_S6_S5_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- void std::make_heap<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
-    <elf-symbol name='_ZSt9make_heapISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_EEvT_S5_' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZSt9make_heapISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_EEvT_S5_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _fini -->
-    <elf-symbol name='_fini' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_fini' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _init -->
-    <elf-symbol name='_init' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_init' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
   <elf-variable-symbols>
     <!-- typeinfo for vtkImageDataLIC2D -->
-    <elf-symbol name='_ZTI17vtkImageDataLIC2D' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI17vtkImageDataLIC2D' size='24' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- typeinfo for vtkSurfaceLICPainter -->
-    <elf-symbol name='_ZTI20vtkSurfaceLICPainter' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI20vtkSurfaceLICPainter' size='24' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- typeinfo for vtkPainterCommunicator -->
-    <elf-symbol name='_ZTI22vtkPainterCommunicator' size='16' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI22vtkPainterCommunicator' size='16' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- typeinfo for vtkStructuredGridLIC2D -->
-    <elf-symbol name='_ZTI22vtkStructuredGridLIC2D' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI22vtkStructuredGridLIC2D' size='24' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- typeinfo for vtkSurfaceLICComposite -->
-    <elf-symbol name='_ZTI22vtkSurfaceLICComposite' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI22vtkSurfaceLICComposite' size='24' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- typeinfo for vtkSurfaceLICDefaultPainter -->
-    <elf-symbol name='_ZTI27vtkSurfaceLICDefaultPainter' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI27vtkSurfaceLICDefaultPainter' size='24' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- typeinfo for vtkLineIntegralConvolution2D -->
-    <elf-symbol name='_ZTI28vtkLineIntegralConvolution2D' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI28vtkLineIntegralConvolution2D' size='24' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- typeinfo for vtkImageDataLIC2DExtentTranslator -->
-    <elf-symbol name='_ZTI33vtkImageDataLIC2DExtentTranslator' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI33vtkImageDataLIC2DExtentTranslator' size='24' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- typeinfo name for vtkImageDataLIC2D -->
-    <elf-symbol name='_ZTS17vtkImageDataLIC2D' size='20' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS17vtkImageDataLIC2D' size='20' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- typeinfo name for vtkSurfaceLICPainter -->
-    <elf-symbol name='_ZTS20vtkSurfaceLICPainter' size='23' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS20vtkSurfaceLICPainter' size='23' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- typeinfo name for vtkPainterCommunicator -->
-    <elf-symbol name='_ZTS22vtkPainterCommunicator' size='25' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS22vtkPainterCommunicator' size='25' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- typeinfo name for vtkStructuredGridLIC2D -->
-    <elf-symbol name='_ZTS22vtkStructuredGridLIC2D' size='25' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS22vtkStructuredGridLIC2D' size='25' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- typeinfo name for vtkSurfaceLICComposite -->
-    <elf-symbol name='_ZTS22vtkSurfaceLICComposite' size='25' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS22vtkSurfaceLICComposite' size='25' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- typeinfo name for vtkSurfaceLICDefaultPainter -->
-    <elf-symbol name='_ZTS27vtkSurfaceLICDefaultPainter' size='30' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS27vtkSurfaceLICDefaultPainter' size='30' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- typeinfo name for vtkLineIntegralConvolution2D -->
-    <elf-symbol name='_ZTS28vtkLineIntegralConvolution2D' size='31' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS28vtkLineIntegralConvolution2D' size='31' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- typeinfo name for vtkImageDataLIC2DExtentTranslator -->
-    <elf-symbol name='_ZTS33vtkImageDataLIC2DExtentTranslator' size='36' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS33vtkImageDataLIC2DExtentTranslator' size='36' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtable for vtkImageDataLIC2D -->
-    <elf-symbol name='_ZTV17vtkImageDataLIC2D' size='720' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV17vtkImageDataLIC2D' size='720' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtable for vtkSurfaceLICPainter -->
-    <elf-symbol name='_ZTV20vtkSurfaceLICPainter' size='696' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV20vtkSurfaceLICPainter' size='696' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtable for vtkPainterCommunicator -->
-    <elf-symbol name='_ZTV22vtkPainterCommunicator' size='104' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV22vtkPainterCommunicator' size='104' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtable for vtkStructuredGridLIC2D -->
-    <elf-symbol name='_ZTV22vtkStructuredGridLIC2D' size='664' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV22vtkStructuredGridLIC2D' size='664' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtable for vtkSurfaceLICComposite -->
-    <elf-symbol name='_ZTV22vtkSurfaceLICComposite' size='232' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV22vtkSurfaceLICComposite' size='232' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtable for vtkSurfaceLICDefaultPainter -->
-    <elf-symbol name='_ZTV27vtkSurfaceLICDefaultPainter' size='408' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV27vtkSurfaceLICDefaultPainter' size='408' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtable for vtkLineIntegralConvolution2D -->
-    <elf-symbol name='_ZTV28vtkLineIntegralConvolution2D' size='600' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV28vtkLineIntegralConvolution2D' size='600' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtable for vtkImageDataLIC2DExtentTranslator -->
-    <elf-symbol name='_ZTV33vtkImageDataLIC2DExtentTranslator' size='384' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV33vtkImageDataLIC2DExtentTranslator' size='384' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D_AAH -->
-    <elf-symbol name='vtkLineIntegralConvolution2D_AAH' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkLineIntegralConvolution2D_AAH' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D_AAV -->
-    <elf-symbol name='vtkLineIntegralConvolution2D_AAV' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkLineIntegralConvolution2D_AAV' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D_CE -->
-    <elf-symbol name='vtkLineIntegralConvolution2D_CE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkLineIntegralConvolution2D_CE' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D_EE -->
-    <elf-symbol name='vtkLineIntegralConvolution2D_EE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkLineIntegralConvolution2D_EE' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D_LIC0 -->
-    <elf-symbol name='vtkLineIntegralConvolution2D_LIC0' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkLineIntegralConvolution2D_LIC0' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D_LICI -->
-    <elf-symbol name='vtkLineIntegralConvolution2D_LICI' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkLineIntegralConvolution2D_LICI' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D_LICN -->
-    <elf-symbol name='vtkLineIntegralConvolution2D_LICN' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkLineIntegralConvolution2D_LICN' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkLineIntegralConvolution2D_VT -->
-    <elf-symbol name='vtkLineIntegralConvolution2D_VT' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkLineIntegralConvolution2D_VT' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkStructuredGridLIC2D_fs -->
-    <elf-symbol name='vtkStructuredGridLIC2D_fs' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkStructuredGridLIC2D_fs' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter_CE -->
-    <elf-symbol name='vtkSurfaceLICPainter_CE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkSurfaceLICPainter_CE' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter_DCpy -->
-    <elf-symbol name='vtkSurfaceLICPainter_DCpy' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkSurfaceLICPainter_DCpy' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter_GeomFs -->
-    <elf-symbol name='vtkSurfaceLICPainter_GeomFs' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkSurfaceLICPainter_GeomFs' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter_GeomVs -->
-    <elf-symbol name='vtkSurfaceLICPainter_GeomVs' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkSurfaceLICPainter_GeomVs' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vtkSurfaceLICPainter_SC -->
-    <elf-symbol name='vtkSurfaceLICPainter_SC' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkSurfaceLICPainter_SC' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2D.cxx' language='LANG_C_plus_plus'>
     <!-- namespace std -->

@@ -1085,6 +1085,7 @@ struct elf_symbol::priv
   elf_symbol::type	type_;
   elf_symbol::binding	binding_;
   elf_symbol::version	version_;
+  elf_symbol::visibility visibility_;
   bool			is_defined_;
   // This flag below says if the symbol is a common elf symbol.  In
   // relocatable files, a common symbol is a symbol defined in a
@@ -1126,6 +1127,7 @@ struct elf_symbol::priv
       size_(),
       type_(elf_symbol::NOTYPE_TYPE),
       binding_(elf_symbol::GLOBAL_BINDING),
+      visibility_(elf_symbol::DEFAULT_VISIBILITY),
       is_defined_(false),
       is_common_(false)
   {}
@@ -1138,14 +1140,16 @@ struct elf_symbol::priv
        elf_symbol::binding		b,
        bool				d,
        bool				c,
-       const elf_symbol::version&	v)
+       const elf_symbol::version&	ve,
+       elf_symbol::visibility		vi)
     : env_(e),
       index_(i),
       size_(s),
       name_(n),
       type_(t),
       binding_(b),
-      version_(v),
+      version_(ve),
+      visibility_(vi),
       is_defined_(d),
       is_common_(c)
   {
@@ -1187,7 +1191,9 @@ elf_symbol::elf_symbol()
 ///
 /// @param c true if the symbol is a common symbol, false otherwise.
 ///
-/// @param v the version of the symbol.
+/// @param ve the version of the symbol.
+///
+/// @param vi the visibility of the symbol.
 elf_symbol::elf_symbol(const environment*	e,
 		       size_t			i,
 		       size_t			s,
@@ -1196,8 +1202,9 @@ elf_symbol::elf_symbol(const environment*	e,
 		       binding			b,
 		       bool			d,
 		       bool			c,
-		       const version&		v)
-  : priv_(new priv(e, i, s, n, t, b, d, c, v))
+		       const version&		ve,
+		       visibility		vi)
+  : priv_(new priv(e, i, s, n, t, b, d, c, ve, vi))
 {}
 
 /// Factory of instances of @ref elf_symbol.
@@ -1234,7 +1241,9 @@ elf_symbol::create()
 ///
 /// @param c true if the symbol is a common symbol.
 ///
-/// @param v the version of the symbol.
+/// @param ve the version of the symbol.
+///
+/// @param vi the visibility of the symbol.
 ///
 /// @return a (smart) pointer to a newly created instance of @ref
 /// elf_symbol.
@@ -1247,9 +1256,10 @@ elf_symbol::create(const environment*	e,
 		   binding		b,
 		   bool		d,
 		   bool		c,
-		   const version&	v)
+		   const version&	ve,
+		   visibility		vi)
 {
-  elf_symbol_sptr sym(new elf_symbol(e, i, s, n, t, b, d, c, v));
+  elf_symbol_sptr sym(new elf_symbol(e, i, s, n, t, b, d, c, ve, vi));
   sym->priv_->main_symbol_ = sym;
   return sym;
 }
@@ -1389,6 +1399,22 @@ elf_symbol::set_version(const version& v)
   priv_->id_string_.clear();
 }
 
+/// Setter of the visibility of the current instance of @ref
+/// elf_symbol.
+///
+/// @param v the new visibility of the elf symbol.
+void
+elf_symbol::set_visibility(visibility v)
+{priv_->visibility_ = v;}
+
+/// Getter of the visibility of the current instance of @ref
+/// elf_symbol.
+///
+/// @return the visibility of the elf symbol.
+elf_symbol::visibility
+elf_symbol::get_visibility() const
+{return priv_->visibility_;}
+
 /// Test if the current instance of @ref elf_symbol is defined or not.
 ///
 /// @return true if the current instance of @ref elf_symbol is
@@ -1407,7 +1433,8 @@ elf_symbol::is_defined(bool d)
 
 /// Test if the current instance of @ref elf_symbol is public or not.
 ///
-/// This tests if the symbol defined, and either
+/// This tests if the symbol is defined, has default or protected
+///visibility, and either:
 ///		- has global binding
 ///		- has weak binding
 ///		- or has a GNU_UNIQUE binding.
@@ -1420,7 +1447,9 @@ elf_symbol::is_public() const
   return (is_defined()
 	  && (get_binding() == GLOBAL_BINDING
 	      || get_binding() == WEAK_BINDING
-	      || get_binding() == GNU_UNIQUE_BINDING));
+	      || get_binding() == GNU_UNIQUE_BINDING)
+	  && (get_visibility() == DEFAULT_VISIBILITY
+	      || get_visibility() == PROTECTED_VISIBILITY));
 }
 
 /// Test if the current instance of @ref elf_symbol is a function
@@ -2020,7 +2049,7 @@ operator<<(std::ostream& o, elf_symbol::type t)
 ///
 /// @param o the output stream to serialize the symbole type to.
 ///
-/// @param t the symbol binding to serialize.
+/// @param b the symbol binding to serialize.
 std::ostream&
 operator<<(std::ostream& o, elf_symbol::binding b)
 {
@@ -2044,6 +2073,44 @@ operator<<(std::ostream& o, elf_symbol::binding b)
       {
 	std::ostringstream s;
 	s << "unknown binding (" << (unsigned char) b << ")";
+	repr = s.str();
+      }
+      break;
+    }
+
+  o << repr;
+  return o;
+}
+
+/// Serialize an instance of @ref elf_symbol::visibility and stream it
+/// to a given output stream.
+///
+/// @param o the output stream to serialize the symbole type to.
+///
+/// @param v the symbol visibility to serialize.
+std::ostream&
+operator<<(std::ostream& o, elf_symbol::visibility v)
+{
+  string repr;
+
+  switch (v)
+    {
+    case elf_symbol::DEFAULT_VISIBILITY:
+      repr = "default visibility";
+      break;
+    case elf_symbol::PROTECTED_VISIBILITY:
+      repr = "protected visibility";
+      break;
+    case elf_symbol::HIDDEN_VISIBILITY:
+      repr = "hidden visibility";
+      break;
+    case elf_symbol::INTERNAL_VISIBILITY:
+      repr = "internal visibility";
+      break;
+    default:
+      {
+	std::ostringstream s;
+	s << "unknown visibility (" << (unsigned char) v << ")";
 	repr = s.str();
       }
       break;
@@ -2109,6 +2176,31 @@ string_to_elf_symbol_binding(const string& s, elf_symbol::binding& b)
       return false;
 
     return true;
+}
+
+/// Convert a string representing a an elf symbol visibility into an
+/// elf_symbol::visibility.
+///
+/// @param s the string to convert.
+///
+/// @param b the resulting elf_symbol::visibility.
+///
+/// @return true iff the conversion completed successfully.
+bool
+string_to_elf_symbol_visibility(const string& s, elf_symbol::visibility& v)
+{
+  if (s == "default-visibility")
+    v = elf_symbol::DEFAULT_VISIBILITY;
+  else if (s == "protected-visibility")
+    v = elf_symbol::PROTECTED_VISIBILITY;
+  else if (s == "hidden-visibility")
+    v = elf_symbol::HIDDEN_VISIBILITY;
+  else if (s == "internal-visibility")
+    v = elf_symbol::INTERNAL_VISIBILITY;
+  else
+    return false;
+
+  return true;
 }
 
 // <elf_symbol::version stuff>

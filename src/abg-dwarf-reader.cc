@@ -542,6 +542,40 @@ stb_to_elf_symbol_binding(unsigned char stb)
 
 }
 
+/// Convert an ELF symbol visiblity given by the symbols ->st_other
+/// data member as returned by the GELF_ST_VISIBILITY macro into a
+/// elf_symbol::visiblity value.
+///
+/// @param stv the value of the ->st_other data member of the ELF
+/// symbol.
+///
+/// @return the converted elf_symbol::visiblity value.
+static elf_symbol::visibility
+stv_to_elf_symbol_visibility(unsigned char stv)
+{
+
+  elf_symbol::visibility v = elf_symbol::DEFAULT_VISIBILITY;
+
+  switch (stv)
+    {
+    case STV_DEFAULT:
+      v = elf_symbol::DEFAULT_VISIBILITY;
+      break;
+    case STV_INTERNAL:
+      v = elf_symbol::INTERNAL_VISIBILITY;
+      break;
+    case STV_HIDDEN:
+      v = elf_symbol::HIDDEN_VISIBILITY;
+      break;
+    case STV_PROTECTED:
+      v = elf_symbol::PROTECTED_VISIBILITY;
+    default:
+      ABG_ASSERT_NOT_REACHED;
+    }
+
+  return v;
+}
+
 /// Convert the value of the e_machine field of GElf_Ehdr into a
 /// string.  This is to get a string representing the architecture of
 /// the elf file at hand.
@@ -1531,6 +1565,7 @@ lookup_symbol_from_sysv_hash_tab(const environment*		env,
   size_t sym_size;
   elf_symbol::type sym_type;
   elf_symbol::binding sym_binding;
+  elf_symbol::visibility sym_visibility;
   bool found = false;
 
   do
@@ -1544,6 +1579,8 @@ lookup_symbol_from_sysv_hash_tab(const environment*		env,
 	{
 	  sym_type = stt_to_elf_symbol_type(GELF_ST_TYPE(symbol.st_info));
 	  sym_binding = stb_to_elf_symbol_binding(GELF_ST_BIND(symbol.st_info));
+	  sym_visibility =
+	    stv_to_elf_symbol_visibility(GELF_ST_VISIBILITY(symbol.st_other));
 	  sym_size = symbol.st_size;
 	  elf_symbol::version ver;
 	  if (get_version_for_symbol(elf_handle, symbol_index,
@@ -1558,7 +1595,7 @@ lookup_symbol_from_sysv_hash_tab(const environment*		env,
 			       sym_binding,
 			       symbol.st_shndx != SHN_UNDEF,
 			       symbol.st_shndx == SHN_COMMON,
-			       ver);
+			       ver, sym_visibility);
 	  syms_found.push_back(symbol_found);
 	  found = true;
 	}
@@ -1791,6 +1828,7 @@ lookup_symbol_from_gnu_hash_tab(const environment*		env,
 
   elf_symbol::type sym_type;
   elf_symbol::binding sym_binding;
+  elf_symbol::visibility sym_visibility;
 
   // Let's walk the hash table and record the versions of all the
   // symbols which name equal sym_name.
@@ -1820,6 +1858,8 @@ lookup_symbol_from_gnu_hash_tab(const environment*		env,
 	  // sym_name.  Now lets try to get its version and record it.
 	  sym_type = stt_to_elf_symbol_type(GELF_ST_TYPE(symbol.st_info));
 	  sym_binding = stb_to_elf_symbol_binding(GELF_ST_BIND(symbol.st_info));
+	 sym_visibility =
+	   stv_to_elf_symbol_visibility(GELF_ST_VISIBILITY(symbol.st_other));
 
 	  if (get_version_for_symbol(elf_handle, i,
 				     /*get_def_version=*/true,
@@ -1831,7 +1871,7 @@ lookup_symbol_from_gnu_hash_tab(const environment*		env,
 			       sym_type, sym_binding,
 			       symbol.st_shndx != SHN_UNDEF,
 			       symbol.st_shndx == SHN_COMMON,
-			       ver);
+			       ver, sym_visibility);
 	  syms_found.push_back(symbol_found);
 	  found = true;
 	}
@@ -1969,8 +2009,11 @@ lookup_symbol_from_symtab(const environment*		env,
 	    stt_to_elf_symbol_type(GELF_ST_TYPE(sym->st_info));
 	  elf_symbol::binding sym_binding =
 	    stb_to_elf_symbol_binding(GELF_ST_BIND(sym->st_info));
+	  elf_symbol::visibility sym_visibility =
+	    stv_to_elf_symbol_visibility(GELF_ST_VISIBILITY(sym->st_other));
 	  bool sym_is_defined = sym->st_shndx != SHN_UNDEF;
 	  bool sym_is_common = sym->st_shndx == SHN_COMMON;
+
 	  if (get_version_for_symbol(elf_handle, i,
 				     /*get_def_version=*/sym_is_defined,
 				     ver))
@@ -1979,7 +2022,7 @@ lookup_symbol_from_symtab(const environment*		env,
 	    elf_symbol::create(env, i, sym->st_size,
 			       name_str, sym_type,
 			       sym_binding, sym_is_defined,
-			       sym_is_common, ver);
+			       sym_is_common, ver, sym_visibility);
 	  syms_found.push_back(symbol_found);
 	  found = true;
 	}
@@ -5718,16 +5761,19 @@ public:
     if (name_str == 0)
       name_str = "";
 
-    elf_symbol::version v;
+    elf_symbol::version ver;
     get_version_for_symbol(symbol_index,
 			   sym_is_defined,
-			   v);
+			   ver);
+
+    elf_symbol::visibility vis =
+      stv_to_elf_symbol_visibility(GELF_ST_VISIBILITY(s->st_other));
 
     elf_symbol_sptr sym =
       elf_symbol::create(env(), symbol_index, s->st_size, name_str,
 			 stt_to_elf_symbol_type(GELF_ST_TYPE(s->st_info)),
 			 stb_to_elf_symbol_binding(GELF_ST_BIND(s->st_info)),
-			 sym_is_defined, sym_is_common, v);
+			 sym_is_defined, sym_is_common, ver, vis);
     return sym;
   }
 
@@ -14021,6 +14067,7 @@ static elf_symbol_sptr
 create_default_var_sym(const string& sym_name, const environment *env)
 {
   elf_symbol::version ver;
+  elf_symbol::visibility vis = elf_symbol::DEFAULT_VISIBILITY;
   elf_symbol_sptr result =
     elf_symbol::create(env,
 		       /*symbol index=*/ 0,
@@ -14030,7 +14077,8 @@ create_default_var_sym(const string& sym_name, const environment *env)
 		       /*symbol binding=*/ elf_symbol::GLOBAL_BINDING,
 		       /*symbol is defined=*/ true,
 		       /*symbol is common=*/ false,
-		       /*symbol version=*/ ver);
+		       /*symbol version=*/ ver,
+		       /*symbol_visibility=*/vis);
   return result;
 }
 
@@ -14346,7 +14394,8 @@ create_default_fn_sym(const string& sym_name, const environment *env)
 		       /*symbol binding=*/ elf_symbol::GLOBAL_BINDING,
 		       /*symbol is defined=*/ true,
 		       /*symbol is common=*/ false,
-		       /*symbol version=*/ ver);
+		       /*symbol version=*/ ver,
+		       /*symbol visibility=*/elf_symbol::DEFAULT_VISIBILITY);
   return result;
 }
 

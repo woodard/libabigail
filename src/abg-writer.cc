@@ -1341,6 +1341,39 @@ write_elf_symbol_binding(elf_symbol::binding b, ostream& o)
   o << " binding='" << repr << "'";
 }
 
+/// Serialize an elf_symbol::binding into an XML element attribute of
+/// name 'binding'.
+///
+/// @param b the elf_symbol::binding to serialize.
+///
+/// @param o the output stream to serialize the binding to.
+static void
+write_elf_symbol_visibility(elf_symbol::visibility v, ostream& o)
+{
+  string repr;
+
+  switch (v)
+    {
+    case elf_symbol::DEFAULT_VISIBILITY:
+      repr = "default-visibility";
+      break;
+    case elf_symbol::PROTECTED_VISIBILITY:
+      repr = "protected-visibility";
+      break;
+    case elf_symbol::HIDDEN_VISIBILITY:
+      repr = "hidden-visibility";
+      break;
+    case elf_symbol::INTERNAL_VISIBILITY:
+      repr = "internal-visibility";
+      break;
+    default:
+      repr = "default-visibility";
+      break;
+    }
+
+  o << " visibility='" << repr << "'";
+}
+
 /// Write alias attributes for the aliases of a given symbol.
 ///
 /// @param sym the symbol to write the attributes for.
@@ -2428,6 +2461,8 @@ write_elf_symbol(const elf_symbol_sptr&	sym,
   write_elf_symbol_type(sym->get_type(), o);
 
   write_elf_symbol_binding(sym->get_binding(), o);
+
+  write_elf_symbol_visibility(sym->get_visibility(), o);
 
   write_elf_symbol_aliases(*sym, o);
 

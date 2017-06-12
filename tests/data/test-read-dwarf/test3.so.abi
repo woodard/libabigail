@@ -3,12 +3,12 @@
     <dependency name='libc.so.6'/>
   </elf-needed>
   <elf-function-symbols>
-    <elf-symbol name='__foo' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='__foo__' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_fini' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_init' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='foo' type='func-type' binding='weak-binding' alias='foo__,__foo__,__foo' is-defined='yes'/>
-    <elf-symbol name='foo__' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='__foo' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='__foo__' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_fini' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_init' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='foo' type='func-type' binding='weak-binding' visibility='default-visibility' alias='foo__,__foo__,__foo' is-defined='yes'/>
+    <elf-symbol name='foo__' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
   <abi-instr version='1.0' address-size='64' path='test3.c' language='LANG_C89'>
     <type-decl name='void' id='type-id-1'/>

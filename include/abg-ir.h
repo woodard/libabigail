@@ -651,6 +651,15 @@ public:
     GNU_UNIQUE_BINDING
   };
 
+  /// The visibility of the symbol.
+  enum visibility
+  {
+    DEFAULT_VISIBILITY,
+    PROTECTED_VISIBILITY,
+    HIDDEN_VISIBILITY,
+    INTERNAL_VISIBILITY,
+  };
+
   /// Inject the elf_symbol::version here.
   class version;
 
@@ -668,7 +677,8 @@ private:
 	     binding		b,
 	     bool		d,
 	     bool		c,
-	     const version&	v);
+	     const version&	ve,
+	     visibility	vi);
 
   elf_symbol(const elf_symbol&);
 
@@ -689,7 +699,8 @@ public:
 	 binding		b,
 	 bool			d,
 	 bool			c,
-	 const version&	v);
+	 const version&	ve,
+	 visibility		vi);
 
   const environment*
   get_environment() const;
@@ -732,6 +743,12 @@ public:
 
   void
   set_version(const version& v);
+
+  void
+  set_visibility(visibility v);
+
+  visibility
+  get_visibility() const;
 
   bool
   is_defined() const;
@@ -820,6 +837,9 @@ string_to_elf_symbol_type(const string&, elf_symbol::type&);
 
 bool
 string_to_elf_symbol_binding(const string&, elf_symbol::binding&);
+
+bool
+string_to_elf_symbol_visibility(const string&, elf_symbol::visibility&);
 
 bool
 operator==(const elf_symbol_sptr& lhs, const elf_symbol_sptr& rhs);

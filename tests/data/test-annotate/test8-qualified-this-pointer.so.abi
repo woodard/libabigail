@@ -7,11 +7,11 @@
   </elf-needed>
   <elf-function-symbols>
     <!-- S::foo() const -->
-    <elf-symbol name='_ZNK1S3fooEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZNK1S3fooEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _fini -->
-    <elf-symbol name='_fini' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_fini' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _init -->
-    <elf-symbol name='_init' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_init' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
   <abi-instr version='1.0' address-size='64' path='test8-qualified-this-pointer.cc' language='LANG_C_plus_plus'>
     <!-- struct S -->

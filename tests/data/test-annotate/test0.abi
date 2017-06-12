@@ -7,37 +7,33 @@
   </elf-needed>
   <elf-function-symbols>
     <!-- ns0::bar(int, ...) -->
-    <elf-symbol name='_ZN3ns03barEiz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN3ns03barEiz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- ns0::baz(int&) -->
-    <elf-symbol name='_ZN3ns03bazERi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN3ns03bazERi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- ns0::foo(char*, long) -->
-    <elf-symbol name='_ZN3ns03fooEPcl' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN3ns03fooEPcl' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- ns0::bar2(ns0::E&) -->
-    <elf-symbol name='_ZN3ns04bar2ERNS_1EE' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN3ns04bar2ERNS_1EE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- ns0::baz2(int&) -->
-    <elf-symbol name='_ZN3ns04baz2ERi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN3ns04baz2ERi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- __libc_csu_fini -->
-    <elf-symbol name='__libc_csu_fini' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='__libc_csu_fini' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- __libc_csu_init -->
-    <elf-symbol name='__libc_csu_init' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='__libc_csu_init' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _fini -->
-    <elf-symbol name='_fini' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_fini' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _init -->
-    <elf-symbol name='_init' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_init' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _start -->
-    <elf-symbol name='_start' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_start' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- main -->
-    <elf-symbol name='main' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='main' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
   <elf-variable-symbols>
     <!-- _IO_stdin_used -->
-    <elf-symbol name='_IO_stdin_used' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
-    <!-- __TMC_END__ -->
-    <elf-symbol name='__TMC_END__' type='object-type' binding='global-binding' is-defined='yes'/>
-    <!-- __dso_handle -->
-    <elf-symbol name='__dso_handle' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_IO_stdin_used' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- global -->
-    <elf-symbol name='global' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='global' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='test0.cc' language='LANG_C_plus_plus'>
     <!-- namespace ns0 -->

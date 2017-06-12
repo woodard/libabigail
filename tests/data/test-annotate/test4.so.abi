@@ -4,7 +4,7 @@
   </elf-needed>
   <elf-function-symbols>
     <!-- cpy -->
-    <elf-symbol name='cpy' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='cpy' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
   <abi-instr version='1.0' address-size='64' path='test4.c' language='LANG_C89'>
     <!-- char -->

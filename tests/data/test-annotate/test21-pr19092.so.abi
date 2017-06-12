@@ -7,893 +7,887 @@
   </elf-needed>
   <elf-function-symbols>
     <!-- cpp_assert(cpp_reader*, char const*) -->
-    <elf-symbol name='_Z10cpp_assertP10cpp_readerPKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z10cpp_assertP10cpp_readerPKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_define(cpp_reader*, char const*) -->
-    <elf-symbol name='_Z10cpp_defineP10cpp_readerPKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z10cpp_defineP10cpp_readerPKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_finish(cpp_reader*, _IO_FILE*) -->
-    <elf-symbol name='_Z10cpp_finishP10cpp_readerP8_IO_FILE' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z10cpp_finishP10cpp_readerP8_IO_FILE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_lookup(cpp_reader*, unsigned char const*, unsigned int) -->
-    <elf-symbol name='_Z10cpp_lookupP10cpp_readerPKhj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z10cpp_lookupP10cpp_readerPKhj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- deps_write(deps const*, _IO_FILE*, unsigned int) -->
-    <elf-symbol name='_Z10deps_writePK4depsP8_IO_FILEj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z10deps_writePK4depsP8_IO_FILEj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- get_spaces(char const*) -->
-    <elf-symbol name='_Z10get_spacesPKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z10get_spacesPKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- ht_destroy(ht*) -->
-    <elf-symbol name='_Z10ht_destroyP2ht' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z10ht_destroyP2ht' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- seen_error() -->
-    <elf-symbol name='_Z10seen_errorv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z10seen_errorv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- warning_at(unsigned int, int, char const*, ...) -->
-    <elf-symbol name='_Z10warning_atjiPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z10warning_atjiPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_defined(cpp_reader*, unsigned char const*, int) -->
-    <elf-symbol name='_Z11cpp_definedP10cpp_readerPKhi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z11cpp_definedP10cpp_readerPKhi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_destroy(cpp_reader*) -->
-    <elf-symbol name='_Z11cpp_destroyP10cpp_reader' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z11cpp_destroyP10cpp_reader' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_get_dir(_cpp_file*) -->
-    <elf-symbol name='_Z11cpp_get_dirP9_cpp_file' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z11cpp_get_dirP9_cpp_file' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_warning(cpp_reader*, int, char const*, ...) -->
-    <elf-symbol name='_Z11cpp_warningP10cpp_readeriPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z11cpp_warningP10cpp_readeriPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- fancy_abort(char const*, int, char const*) -->
-    <elf-symbol name='_Z11fancy_abortPKciS0_' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z11fancy_abortPKciS0_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- fatal_error(char const*, ...) -->
-    <elf-symbol name='_Z11fatal_errorPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z11fatal_errorPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- file_exists(char const*) -->
-    <elf-symbol name='_Z11file_existsPKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z11file_existsPKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- linemap_add(line_maps*, lc_reason, unsigned int, char const*, unsigned int) -->
-    <elf-symbol name='_Z11linemap_addP9line_maps9lc_reasonjPKcj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z11linemap_addP9line_maps9lc_reasonjPKcj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pp_verbatim(pretty_print_info*, char const*, ...) -->
-    <elf-symbol name='_Z11pp_verbatimP17pretty_print_infoPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z11pp_verbatimP17pretty_print_infoPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- collect_wait(char const*, pex_obj*) -->
-    <elf-symbol name='_Z12collect_waitPKcP7pex_obj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z12collect_waitPKcP7pex_obj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_get_deps(cpp_reader*) -->
-    <elf-symbol name='_Z12cpp_get_depsP10cpp_reader' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z12cpp_get_depsP10cpp_reader' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_get_file(cpp_buffer*) -->
-    <elf-symbol name='_Z12cpp_get_fileP10cpp_buffer' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z12cpp_get_fileP10cpp_buffer' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_get_path(_cpp_file*) -->
-    <elf-symbol name='_Z12cpp_get_pathP9_cpp_file' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z12cpp_get_pathP9_cpp_file' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_get_prev(cpp_buffer*) -->
-    <elf-symbol name='_Z12cpp_get_prevP10cpp_buffer' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z12cpp_get_prevP10cpp_buffer' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_included(cpp_reader*, char const*) -->
-    <elf-symbol name='_Z12cpp_includedP10cpp_readerPKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z12cpp_includedP10cpp_readerPKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_set_lang(cpp_reader*, c_lang) -->
-    <elf-symbol name='_Z12cpp_set_langP10cpp_reader6c_lang' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z12cpp_set_langP10cpp_reader6c_lang' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_unassert(cpp_reader*, char const*) -->
-    <elf-symbol name='_Z12cpp_unassertP10cpp_readerPKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z12cpp_unassertP10cpp_readerPKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- deps_add_dep(deps*, char const*) -->
-    <elf-symbol name='_Z12deps_add_depP4depsPKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z12deps_add_depP4depsPKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- deps_restore(deps*, _IO_FILE*, char const*) -->
-    <elf-symbol name='_Z12deps_restoreP4depsP8_IO_FILEPKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z12deps_restoreP4depsP8_IO_FILEPKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- linemap_dump(_IO_FILE*, line_maps*, unsigned int, bool) -->
-    <elf-symbol name='_Z12linemap_dumpP8_IO_FILEP9line_mapsjb' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z12linemap_dumpP8_IO_FILEP9line_mapsjb' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- linemap_init(line_maps*) -->
-    <elf-symbol name='_Z12linemap_initP9line_maps' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z12linemap_initP9line_maps' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pp_construct(pretty_print_info*, char const*, int) -->
-    <elf-symbol name='_Z12pp_constructP17pretty_print_infoPKci' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z12pp_constructP17pretty_print_infoPKci' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_get_token(cpp_reader*) -->
-    <elf-symbol name='_Z13cpp_get_tokenP10cpp_reader' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z13cpp_get_tokenP10cpp_reader' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_token_len(cpp_token const*) -->
-    <elf-symbol name='_Z13cpp_token_lenPK9cpp_token' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z13cpp_token_lenPK9cpp_token' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_type2name(cpp_ttype, unsigned char) -->
-    <elf-symbol name='_Z13cpp_type2name9cpp_ttypeh' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z13cpp_type2name9cpp_ttypeh' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_undef_all(cpp_reader*) -->
-    <elf-symbol name='_Z13cpp_undef_allP10cpp_reader' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z13cpp_undef_allP10cpp_reader' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pp_base_flush(pretty_print_info*) -->
-    <elf-symbol name='_Z13pp_base_flushP17pretty_print_info' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z13pp_base_flushP17pretty_print_info' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- trim_filename(char const*) -->
-    <elf-symbol name='_Z13trim_filenamePKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z13trim_filenamePKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_get_buffer(cpp_reader*) -->
-    <elf-symbol name='_Z14cpp_get_bufferP10cpp_reader' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z14cpp_get_bufferP10cpp_reader' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_init_iconv(cpp_reader*) -->
-    <elf-symbol name='_Z14cpp_init_iconvP10cpp_reader' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z14cpp_init_iconvP10cpp_reader' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_pedwarning(cpp_reader*, int, char const*, ...) -->
-    <elf-symbol name='_Z14cpp_pedwarningP10cpp_readeriPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z14cpp_pedwarningP10cpp_readeriPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_peek_token(cpp_reader*, int) -->
-    <elf-symbol name='_Z14cpp_peek_tokenP10cpp_readeri' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z14cpp_peek_tokenP10cpp_readeri' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- deps_add_vpath(deps*, char const*) -->
-    <elf-symbol name='_Z14deps_add_vpathP4depsPKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z14deps_add_vpathP4depsPKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- internal_error(char const*, ...) -->
-    <elf-symbol name='_Z14internal_errorPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z14internal_errorPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- linemap_lookup(line_maps*, unsigned int) -->
-    <elf-symbol name='_Z14linemap_lookupP9line_mapsj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z14linemap_lookupP9line_mapsj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pp_base_format(pretty_print_info*, text_info*) -->
-    <elf-symbol name='_Z14pp_base_formatP17pretty_print_infoP9text_info' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z14pp_base_formatP17pretty_print_infoP9text_info' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pp_base_indent(pretty_print_info*) -->
-    <elf-symbol name='_Z14pp_base_indentP17pretty_print_info' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z14pp_base_indentP17pretty_print_info' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pp_base_string(pretty_print_info*, char const*) -->
-    <elf-symbol name='_Z14pp_base_stringP17pretty_print_infoPKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z14pp_base_stringP17pretty_print_infoPKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vec_stack_free(void*) -->
-    <elf-symbol name='_Z14vec_stack_freePv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z14vec_stack_freePv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- collect_execute(char const*, char**, char const*, char const*, int) -->
-    <elf-symbol name='_Z15collect_executePKcPPcS0_S0_i' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z15collect_executePKcPPcS0_S0_i' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_avoid_paste(cpp_reader*, cpp_token const*, cpp_token const*) -->
-    <elf-symbol name='_Z15cpp_avoid_pasteP10cpp_readerPK9cpp_tokenS3_' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z15cpp_avoid_pasteP10cpp_readerPK9cpp_tokenS3_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_change_file(cpp_reader*, lc_reason, char const*) -->
-    <elf-symbol name='_Z15cpp_change_fileP10cpp_reader9lc_reasonPKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z15cpp_change_fileP10cpp_reader9lc_reasonPKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_get_options(cpp_reader*) -->
-    <elf-symbol name='_Z15cpp_get_optionsP10cpp_reader' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z15cpp_get_optionsP10cpp_reader' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_output_line(cpp_reader*, _IO_FILE*) -->
-    <elf-symbol name='_Z15cpp_output_lineP10cpp_readerP8_IO_FILE' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z15cpp_output_lineP10cpp_readerP8_IO_FILE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_push_buffer(cpp_reader*, unsigned char const*, unsigned long, int) -->
-    <elf-symbol name='_Z15cpp_push_bufferP10cpp_readerPKhmi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z15cpp_push_bufferP10cpp_readerPKhmi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_spell_token(cpp_reader*, cpp_token const*, unsigned char*, bool) -->
-    <elf-symbol name='_Z15cpp_spell_tokenP10cpp_readerPK9cpp_tokenPhb' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z15cpp_spell_tokenP10cpp_readerPK9cpp_tokenPhb' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_sys_macro_p(cpp_reader*) -->
-    <elf-symbol name='_Z15cpp_sys_macro_pP10cpp_reader' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z15cpp_sys_macro_pP10cpp_reader' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- deps_add_target(deps*, char const*, int) -->
-    <elf-symbol name='_Z15deps_add_targetP4depsPKci' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z15deps_add_targetP4depsPKci' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- emit_diagnostic(diagnostic_t, unsigned int, int, char const*, ...) -->
-    <elf-symbol name='_Z15emit_diagnostic12diagnostic_tjiPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z15emit_diagnostic12diagnostic_tjiPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- expand_location(unsigned int) -->
-    <elf-symbol name='_Z15expand_locationj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z15expand_locationj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- line_table_dump(_IO_FILE*, line_maps*, unsigned int, unsigned int) -->
-    <elf-symbol name='_Z15line_table_dumpP8_IO_FILEP9line_mapsjj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z15line_table_dumpP8_IO_FILEP9line_mapsjj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pp_base_newline(pretty_print_info*) -->
-    <elf-symbol name='_Z15pp_base_newlineP17pretty_print_info' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z15pp_base_newlineP17pretty_print_info' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_get_comments(cpp_reader*) -->
-    <elf-symbol name='_Z16cpp_get_commentsP10cpp_reader' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z16cpp_get_commentsP10cpp_reader' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_output_token(cpp_token const*, _IO_FILE*) -->
-    <elf-symbol name='_Z16cpp_output_tokenPK9cpp_tokenP8_IO_FILE' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z16cpp_output_tokenPK9cpp_tokenP8_IO_FILE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_post_options(cpp_reader*) -->
-    <elf-symbol name='_Z16cpp_post_optionsP10cpp_reader' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z16cpp_post_optionsP10cpp_reader' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_push_include(cpp_reader*, char const*) -->
-    <elf-symbol name='_Z16cpp_push_includeP10cpp_readerPKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z16cpp_push_includeP10cpp_readerPKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_quote_string(unsigned char*, unsigned char const*, unsigned int) -->
-    <elf-symbol name='_Z16cpp_quote_stringPhPKhj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z16cpp_quote_stringPhPKhj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_set_line_map(cpp_reader*, line_maps*) -->
-    <elf-symbol name='_Z16cpp_set_line_mapP10cpp_readerP9line_maps' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z16cpp_set_line_mapP10cpp_readerP9line_maps' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- gcc_init_libintl() -->
-    <elf-symbol name='_Z16gcc_init_libintlv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z16gcc_init_libintlv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- ggc_realloc_stat(void*, unsigned long) -->
-    <elf-symbol name='_Z16ggc_realloc_statPvm' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z16ggc_realloc_statPvm' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vec_gc_o_reserve(void*, int, unsigned long, unsigned long) -->
-    <elf-symbol name='_Z16vec_gc_o_reservePvimm' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z16vec_gc_o_reservePvimm' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vec_gc_p_reserve(void*, int) -->
-    <elf-symbol name='_Z16vec_gc_p_reservePvi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z16vec_gc_p_reservePvi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_create_reader(c_lang, ht*, line_maps*) -->
-    <elf-symbol name='_Z17cpp_create_reader6c_langP2htP9line_maps' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z17cpp_create_reader6c_langP2htP9line_maps' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_get_callbacks(cpp_reader*) -->
-    <elf-symbol name='_Z17cpp_get_callbacksP10cpp_reader' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z17cpp_get_callbacksP10cpp_reader' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_init_builtins(cpp_reader*, int) -->
-    <elf-symbol name='_Z17cpp_init_builtinsP10cpp_readeri' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z17cpp_init_builtinsP10cpp_readeri' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_scan_nooutput(cpp_reader*) -->
-    <elf-symbol name='_Z17cpp_scan_nooutputP10cpp_reader' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z17cpp_scan_nooutputP10cpp_reader' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_set_callbacks(cpp_reader*, cpp_callbacks*) -->
-    <elf-symbol name='_Z17cpp_set_callbacksP10cpp_readerP13cpp_callbacks' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z17cpp_set_callbacksP10cpp_readerP13cpp_callbacks' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_token_as_text(cpp_reader*, cpp_token const*) -->
-    <elf-symbol name='_Z17cpp_token_as_textP10cpp_readerPK9cpp_token' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z17cpp_token_as_textP10cpp_readerPK9cpp_token' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- diagnostic_finish(diagnostic_context*) -->
-    <elf-symbol name='_Z17diagnostic_finishP18diagnostic_context' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z17diagnostic_finishP18diagnostic_context' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- gcc_gettext_width(char const*) -->
-    <elf-symbol name='_Z17gcc_gettext_widthPKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z17gcc_gettext_widthPKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- notice_translated(char const*, ...) -->
-    <elf-symbol name='_Z17notice_translatedPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z17notice_translatedPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pp_base_character(pretty_print_info*, int) -->
-    <elf-symbol name='_Z17pp_base_characterP17pretty_print_infoi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z17pp_base_characterP17pretty_print_infoi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_backup_tokens(cpp_reader*, unsigned int) -->
-    <elf-symbol name='_Z18_cpp_backup_tokensP10cpp_readerj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z18_cpp_backup_tokensP10cpp_readerj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_read_main_file(cpp_reader*, char const*) -->
-    <elf-symbol name='_Z18cpp_read_main_fileP10cpp_readerPKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z18cpp_read_main_fileP10cpp_readerPKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_userdef_char_p(cpp_ttype) -->
-    <elf-symbol name='_Z18cpp_userdef_char_p9cpp_ttype' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z18cpp_userdef_char_p9cpp_ttype' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_warning_syshdr(cpp_reader*, int, char const*, ...) -->
-    <elf-symbol name='_Z18cpp_warning_syshdrP10cpp_readeriPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z18cpp_warning_syshdrP10cpp_readeriPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- deps_phony_targets(deps const*, _IO_FILE*) -->
-    <elf-symbol name='_Z18deps_phony_targetsPK4depsP8_IO_FILE' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z18deps_phony_targetsPK4depsP8_IO_FILE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- ht_dump_statistics(ht*) -->
-    <elf-symbol name='_Z18ht_dump_statisticsP2ht' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z18ht_dump_statisticsP2ht' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- linemap_line_start(line_maps*, unsigned int, unsigned int) -->
-    <elf-symbol name='_Z18linemap_line_startP9line_mapsjj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z18linemap_line_startP9line_mapsjj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pp_base_set_prefix(pretty_print_info*, char const*) -->
-    <elf-symbol name='_Z18pp_base_set_prefixP17pretty_print_infoPKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z18pp_base_set_prefixP17pretty_print_infoPKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vec_heap_o_reserve(void*, int, unsigned long, unsigned long) -->
-    <elf-symbol name='_Z18vec_heap_o_reservePvimm' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z18vec_heap_o_reservePvimm' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vec_heap_p_reserve(void*, int) -->
-    <elf-symbol name='_Z18vec_heap_p_reservePvi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z18vec_heap_p_reservePvi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_classify_number(cpp_reader*, cpp_token const*, char const**) -->
-    <elf-symbol name='_Z19cpp_classify_numberP10cpp_readerPK9cpp_tokenPPKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z19cpp_classify_numberP10cpp_readerPK9cpp_tokenPPKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_error_with_line(cpp_reader*, int, unsigned int, unsigned int, char const*, ...) -->
-    <elf-symbol name='_Z19cpp_error_with_lineP10cpp_readerijjPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z19cpp_error_with_lineP10cpp_readerijjPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_included_before(cpp_reader*, char const*, unsigned int) -->
-    <elf-symbol name='_Z19cpp_included_beforeP10cpp_readerPKcj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z19cpp_included_beforeP10cpp_readerPKcj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_num_sign_extend(cpp_num, unsigned long) -->
-    <elf-symbol name='_Z19cpp_num_sign_extend7cpp_numm' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z19cpp_num_sign_extend7cpp_numm' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_register_pragma(cpp_reader*, char const*, char const*, void (*)(cpp_reader*), bool) -->
-    <elf-symbol name='_Z19cpp_register_pragmaP10cpp_readerPKcS2_PFvS0_Eb' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z19cpp_register_pragmaP10cpp_readerPKcS2_PFvS0_Eb' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_token_val_index(cpp_token*) -->
-    <elf-symbol name='_Z19cpp_token_val_indexP9cpp_token' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z19cpp_token_val_indexP9cpp_token' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- diagnostic_set_info(diagnostic_info*, char const*, __va_list_tag (*) [1], unsigned int, diagnostic_t) -->
-    <elf-symbol name='_Z19diagnostic_set_infoP15diagnostic_infoPKcPA1_13__va_list_tagj12diagnostic_t' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z19diagnostic_set_infoP15diagnostic_infoPKcPA1_13__va_list_tagj12diagnostic_t' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- file_name_as_prefix(char const*) -->
-    <elf-symbol name='_Z19file_name_as_prefixPKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z19file_name_as_prefixPKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- ht_lookup_with_hash(ht*, unsigned char const*, unsigned long, unsigned int, ht_lookup_option) -->
-    <elf-symbol name='_Z19ht_lookup_with_hashP2htPKhmj16ht_lookup_option' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z19ht_lookup_with_hashP2htPKhmj16ht_lookup_option' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pp_base_append_text(pretty_print_info*, char const*, char const*) -->
-    <elf-symbol name='_Z19pp_base_append_textP17pretty_print_infoPKcS2_' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z19pp_base_append_textP17pretty_print_infoPKcS2_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pp_base_emit_prefix(pretty_print_info*) -->
-    <elf-symbol name='_Z19pp_base_emit_prefixP17pretty_print_info' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z19pp_base_emit_prefixP17pretty_print_info' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pp_base_maybe_space(pretty_print_info*) -->
-    <elf-symbol name='_Z19pp_base_maybe_spaceP17pretty_print_info' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z19pp_base_maybe_spaceP17pretty_print_info' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vec_stack_o_reserve(void*, int, unsigned long, unsigned long) -->
-    <elf-symbol name='_Z19vec_stack_o_reservePvimm' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z19vec_stack_o_reservePvimm' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vec_stack_p_reserve(void*, int) -->
-    <elf-symbol name='_Z19vec_stack_p_reservePvi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z19vec_stack_p_reservePvi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_clear_file_cache(cpp_reader*) -->
-    <elf-symbol name='_Z20cpp_clear_file_cacheP10cpp_reader' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z20cpp_clear_file_cacheP10cpp_reader' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_define_formatted(cpp_reader*, char const*, ...) -->
-    <elf-symbol name='_Z20cpp_define_formattedP10cpp_readerPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z20cpp_define_formattedP10cpp_readerPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_interpret_string(cpp_reader*, cpp_string const*, unsigned long, cpp_string*, cpp_ttype) -->
-    <elf-symbol name='_Z20cpp_interpret_stringP10cpp_readerPK10cpp_stringmPS1_9cpp_ttype' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z20cpp_interpret_stringP10cpp_readerPK10cpp_stringmPS1_9cpp_ttype' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_macro_definition(cpp_reader*, cpp_hashnode*) -->
-    <elf-symbol name='_Z20cpp_macro_definitionP10cpp_readerP12cpp_hashnode' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z20cpp_macro_definitionP10cpp_readerP12cpp_hashnode' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_userdef_string_p(cpp_ttype) -->
-    <elf-symbol name='_Z20cpp_userdef_string_p9cpp_ttype' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z20cpp_userdef_string_p9cpp_ttype' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- ggc_alloc_typed_stat(gt_types_enum, unsigned long) -->
-    <elf-symbol name='_Z20ggc_alloc_typed_stat13gt_types_enumm' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z20ggc_alloc_typed_stat13gt_types_enumm' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- ggc_round_alloc_size(unsigned long) -->
-    <elf-symbol name='_Z20ggc_round_alloc_sizem' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z20ggc_round_alloc_sizem' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- identifier_to_locale(char const*) -->
-    <elf-symbol name='_Z20identifier_to_localePKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z20identifier_to_localePKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_interpret_integer(cpp_reader*, cpp_token const*, unsigned int) -->
-    <elf-symbol name='_Z21cpp_interpret_integerP10cpp_readerPK9cpp_tokenj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z21cpp_interpret_integerP10cpp_readerPK9cpp_tokenj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_warning_with_line(cpp_reader*, int, unsigned int, unsigned int, char const*, ...) -->
-    <elf-symbol name='_Z21cpp_warning_with_lineP10cpp_readerijjPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z21cpp_warning_with_lineP10cpp_readerijjPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- diagnostic_initialize(diagnostic_context*, int) -->
-    <elf-symbol name='_Z21diagnostic_initializeP18diagnostic_contexti' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z21diagnostic_initializeP18diagnostic_contexti' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- linemap_dump_location(line_maps*, unsigned int, _IO_FILE*) -->
-    <elf-symbol name='_Z21linemap_dump_locationP9line_mapsjP8_IO_FILE' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z21linemap_dump_locationP9line_mapsjP8_IO_FILE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_forall_identifiers(cpp_reader*, int (*)(cpp_reader*, cpp_hashnode*, void*), void*) -->
-    <elf-symbol name='_Z22cpp_forall_identifiersP10cpp_readerPFiS0_P12cpp_hashnodePvES3_' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z22cpp_forall_identifiersP10cpp_readerPFiS0_P12cpp_hashnodePvES3_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_get_userdef_suffix(cpp_token const*) -->
-    <elf-symbol name='_Z22cpp_get_userdef_suffixPK9cpp_token' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z22cpp_get_userdef_suffixPK9cpp_token' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_make_system_header(cpp_reader*, int, int) -->
-    <elf-symbol name='_Z22cpp_make_system_headerP10cpp_readerii' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z22cpp_make_system_headerP10cpp_readerii' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_set_include_chains(cpp_reader*, cpp_dir*, cpp_dir*, int) -->
-    <elf-symbol name='_Z22cpp_set_include_chainsP10cpp_readerP7cpp_dirS2_i' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z22cpp_set_include_chainsP10cpp_readerP7cpp_dirS2_i' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- linemap_get_statistics(line_maps*, linemap_stats*) -->
-    <elf-symbol name='_Z22linemap_get_statisticsP9line_mapsP13linemap_stats' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z22linemap_get_statisticsP9line_mapsP13linemap_stats' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pp_base_destroy_prefix(pretty_print_info*) -->
-    <elf-symbol name='_Z22pp_base_destroy_prefixP17pretty_print_info' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z22pp_base_destroy_prefixP17pretty_print_info' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pp_base_formatted_text(pretty_print_info*) -->
-    <elf-symbol name='_Z22pp_base_formatted_textP17pretty_print_info' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z22pp_base_formatted_textP17pretty_print_info' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vec_gc_o_reserve_exact(void*, int, unsigned long, unsigned long) -->
-    <elf-symbol name='_Z22vec_gc_o_reserve_exactPvimm' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z22vec_gc_o_reserve_exactPvimm' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vec_gc_p_reserve_exact(void*, int) -->
-    <elf-symbol name='_Z22vec_gc_p_reserve_exactPvi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z22vec_gc_p_reserve_exactPvi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_interpret_charconst(cpp_reader*, cpp_token const*, unsigned int*, int*) -->
-    <elf-symbol name='_Z23cpp_interpret_charconstP10cpp_readerPK9cpp_tokenPjPi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z23cpp_interpret_charconstP10cpp_readerPK9cpp_tokenPjPi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- deps_add_default_target(deps*, char const*) -->
-    <elf-symbol name='_Z23deps_add_default_targetP4depsPKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z23deps_add_default_targetP4depsPKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- diagnostic_build_prefix(diagnostic_context*, diagnostic_info*) -->
-    <elf-symbol name='_Z23diagnostic_build_prefixP18diagnostic_contextP15diagnostic_info' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z23diagnostic_build_prefixP18diagnostic_contextP15diagnostic_info' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- dump_vec_loc_statistics() -->
-    <elf-symbol name='_Z23dump_vec_loc_statisticsv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z23dump_vec_loc_statisticsv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- ggc_internal_alloc_stat(unsigned long) -->
-    <elf-symbol name='_Z23ggc_internal_alloc_statm' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z23ggc_internal_alloc_statm' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- linemap_expand_location(line_maps*, line_map const*, unsigned int) -->
-    <elf-symbol name='_Z23linemap_expand_locationP9line_mapsPK8line_mapj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z23linemap_expand_locationP9line_mapsPK8line_mapj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pp_base_format_verbatim(pretty_print_info*, text_info*) -->
-    <elf-symbol name='_Z23pp_base_format_verbatimP17pretty_print_infoP9text_info' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z23pp_base_format_verbatimP17pretty_print_infoP9text_info' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pp_write_text_to_stream(pretty_print_info*) -->
-    <elf-symbol name='_Z23pp_write_text_to_streamP17pretty_print_info' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z23pp_write_text_to_streamP17pretty_print_info' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_host_to_exec_charset(cpp_reader*, unsigned int) -->
-    <elf-symbol name='_Z24cpp_host_to_exec_charsetP10cpp_readerj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z24cpp_host_to_exec_charsetP10cpp_readerj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_interpret_int_suffix(char const*, unsigned long) -->
-    <elf-symbol name='_Z24cpp_interpret_int_suffixPKcm' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z24cpp_interpret_int_suffixPKcm' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_pedwarning_with_line(cpp_reader*, int, unsigned int, unsigned int, char const*, ...) -->
-    <elf-symbol name='_Z24cpp_pedwarning_with_lineP10cpp_readerijjPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z24cpp_pedwarning_with_lineP10cpp_readerijjPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- linemap_resolve_location(line_maps*, unsigned int, location_resolution_kind, line_map const**) -->
-    <elf-symbol name='_Z24linemap_resolve_locationP9line_mapsj24location_resolution_kindPPK8line_map' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z24linemap_resolve_locationP9line_mapsj24location_resolution_kindPPK8line_map' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vec_heap_o_reserve_exact(void*, int, unsigned long, unsigned long) -->
-    <elf-symbol name='_Z24vec_heap_o_reserve_exactPvimm' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z24vec_heap_o_reserve_exactPvimm' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vec_heap_p_reserve_exact(void*, int) -->
-    <elf-symbol name='_Z24vec_heap_p_reserve_exactPvi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z24vec_heap_p_reserve_exactPvi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_force_token_locations(cpp_reader*, unsigned int*) -->
-    <elf-symbol name='_Z25cpp_force_token_locationsP10cpp_readerPj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z25cpp_force_token_locationsP10cpp_readerPj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_init_special_builtins(cpp_reader*) -->
-    <elf-symbol name='_Z25cpp_init_special_builtinsP10cpp_reader' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z25cpp_init_special_builtinsP10cpp_reader' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_output_line_to_string(cpp_reader*, unsigned char const*) -->
-    <elf-symbol name='_Z25cpp_output_line_to_stringP10cpp_readerPKh' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z25cpp_output_line_to_stringP10cpp_readerPKh' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_userdef_char_add_type(cpp_ttype) -->
-    <elf-symbol name='_Z25cpp_userdef_char_add_type9cpp_ttype' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z25cpp_userdef_char_add_type9cpp_ttype' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- linemap_compare_locations(line_maps*, unsigned int, unsigned int) -->
-    <elf-symbol name='_Z25linemap_compare_locationsP9line_mapsjj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z25linemap_compare_locationsP9line_mapsjj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pp_base_clear_output_area(pretty_print_info*) -->
-    <elf-symbol name='_Z25pp_base_clear_output_areaP17pretty_print_info' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z25pp_base_clear_output_areaP17pretty_print_info' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vec_stack_o_reserve_exact(void*, int, unsigned long, unsigned long) -->
-    <elf-symbol name='_Z25vec_stack_o_reserve_exactPvimm' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z25vec_stack_o_reserve_exactPvimm' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vec_stack_p_reserve_exact(void*, int) -->
-    <elf-symbol name='_Z25vec_stack_p_reserve_exactPvi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z25vec_stack_p_reserve_exactPvi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_interpret_float_suffix(char const*, unsigned long) -->
-    <elf-symbol name='_Z26cpp_interpret_float_suffixPKcm' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z26cpp_interpret_float_suffixPKcm' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- default_diagnostic_starter(diagnostic_context*, diagnostic_info*) -->
-    <elf-symbol name='_Z26default_diagnostic_starterP18diagnostic_contextP15diagnostic_info' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z26default_diagnostic_starterP18diagnostic_contextP15diagnostic_info' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- diagnostic_pop_diagnostics(diagnostic_context*, unsigned int) -->
-    <elf-symbol name='_Z26diagnostic_pop_diagnosticsP18diagnostic_contextj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z26diagnostic_pop_diagnosticsP18diagnostic_contextj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- dump_line_table_statistics() -->
-    <elf-symbol name='_Z26dump_line_table_statisticsv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z26dump_line_table_statisticsv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- linemap_check_files_exited(line_maps*) -->
-    <elf-symbol name='_Z26linemap_check_files_exitedP9line_maps' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z26linemap_check_files_exitedP9line_maps' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- linemap_map_get_macro_name(line_map const*) -->
-    <elf-symbol name='_Z26linemap_map_get_macro_namePK8line_map' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z26linemap_map_get_macro_namePK8line_map' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_get_token_with_location(cpp_reader*, unsigned int*) -->
-    <elf-symbol name='_Z27cpp_get_token_with_locationP10cpp_readerPj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z27cpp_get_token_with_locationP10cpp_readerPj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_userdef_string_add_type(cpp_ttype) -->
-    <elf-symbol name='_Z27cpp_userdef_string_add_type9cpp_ttype' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z27cpp_userdef_string_add_type9cpp_ttype' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- diagnostic_push_diagnostics(diagnostic_context*, unsigned int) -->
-    <elf-symbol name='_Z27diagnostic_push_diagnosticsP18diagnostic_contextj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z27diagnostic_push_diagnosticsP18diagnostic_contextj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- linemap_position_for_column(line_maps*, unsigned int) -->
-    <elf-symbol name='_Z27linemap_position_for_columnP9line_mapsj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z27linemap_position_for_columnP9line_mapsj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vec_stack_p_reserve_exact_1(int, void*) -->
-    <elf-symbol name='_Z27vec_stack_p_reserve_exact_1iPv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z27vec_stack_p_reserve_exact_1iPv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_register_deferred_pragma(cpp_reader*, char const*, char const*, unsigned int, bool, bool) -->
-    <elf-symbol name='_Z28cpp_register_deferred_pragmaP10cpp_readerPKcS2_jbb' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z28cpp_register_deferred_pragmaP10cpp_readerPKcS2_jbb' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_userdef_char_remove_type(cpp_ttype) -->
-    <elf-symbol name='_Z28cpp_userdef_char_remove_type9cpp_ttype' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z28cpp_userdef_char_remove_type9cpp_ttype' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_warning_with_line_syshdr(cpp_reader*, int, unsigned int, unsigned int, char const*, ...) -->
-    <elf-symbol name='_Z28cpp_warning_with_line_syshdrP10cpp_readerijjPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z28cpp_warning_with_line_syshdrP10cpp_readerijjPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- default_diagnostic_finalizer(diagnostic_context*, diagnostic_info*) -->
-    <elf-symbol name='_Z28default_diagnostic_finalizerP18diagnostic_contextP15diagnostic_info' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z28default_diagnostic_finalizerP18diagnostic_contextP15diagnostic_info' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- diagnostic_report_diagnostic(diagnostic_context*, diagnostic_info*) -->
-    <elf-symbol name='_Z28diagnostic_report_diagnosticP18diagnostic_contextP15diagnostic_info' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z28diagnostic_report_diagnosticP18diagnostic_contextP15diagnostic_info' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- linemap_macro_expansion_map_p(line_map const*) -->
-    <elf-symbol name='_Z29linemap_macro_expansion_map_pPK8line_map' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z29linemap_macro_expansion_map_pPK8line_map' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pp_base_last_position_in_text(pretty_print_info const*) -->
-    <elf-symbol name='_Z29pp_base_last_position_in_textPK17pretty_print_info' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z29pp_base_last_position_in_textPK17pretty_print_info' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pp_base_output_formatted_text(pretty_print_info*) -->
-    <elf-symbol name='_Z29pp_base_output_formatted_textP17pretty_print_info' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z29pp_base_output_formatted_textP17pretty_print_info' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_userdef_string_remove_type(cpp_ttype) -->
-    <elf-symbol name='_Z30cpp_userdef_string_remove_type9cpp_ttype' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z30cpp_userdef_string_remove_type9cpp_ttype' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- diagnostic_classify_diagnostic(diagnostic_context*, int, diagnostic_t, unsigned int) -->
-    <elf-symbol name='_Z30diagnostic_classify_diagnosticP18diagnostic_contexti12diagnostic_tj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z30diagnostic_classify_diagnosticP18diagnostic_contexti12diagnostic_tj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- diagnostic_set_info_translated(diagnostic_info*, char const*, __va_list_tag (*) [1], unsigned int, diagnostic_t) -->
-    <elf-symbol name='_Z30diagnostic_set_info_translatedP15diagnostic_infoPKcPA1_13__va_list_tagj12diagnostic_t' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z30diagnostic_set_info_translatedP15diagnostic_infoPKcPA1_13__va_list_tagj12diagnostic_t' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- ggc_internal_cleared_alloc_stat(unsigned long) -->
-    <elf-symbol name='_Z31ggc_internal_cleared_alloc_statm' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z31ggc_internal_cleared_alloc_statm' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- linemap_unwind_toward_expansion(line_maps*, unsigned int, line_map const**) -->
-    <elf-symbol name='_Z31linemap_unwind_toward_expansionP9line_mapsjPPK8line_map' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z31linemap_unwind_toward_expansionP9line_mapsjPPK8line_map' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pp_base_set_line_maximum_length(pretty_print_info*, int) -->
-    <elf-symbol name='_Z31pp_base_set_line_maximum_lengthP17pretty_print_infoi' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z31pp_base_set_line_maximum_lengthP17pretty_print_infoi' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_interpret_string_notranslate(cpp_reader*, cpp_string const*, unsigned long, cpp_string*, cpp_ttype) -->
-    <elf-symbol name='_Z32cpp_interpret_string_notranslateP10cpp_readerPK10cpp_stringmPS1_9cpp_ttype' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z32cpp_interpret_string_notranslateP10cpp_readerPK10cpp_stringmPS1_9cpp_ttype' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_stop_forcing_token_locations(cpp_reader*) -->
-    <elf-symbol name='_Z32cpp_stop_forcing_token_locationsP10cpp_reader' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z32cpp_stop_forcing_token_locationsP10cpp_reader' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- diagnostic_report_current_module(diagnostic_context*, unsigned int) -->
-    <elf-symbol name='_Z32diagnostic_report_current_moduleP18diagnostic_contextj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z32diagnostic_report_current_moduleP18diagnostic_contextj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- linemap_location_in_system_header_p(line_maps*, unsigned int) -->
-    <elf-symbol name='_Z35linemap_location_in_system_header_pP9line_mapsj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z35linemap_location_in_system_header_pP9line_mapsj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- linemap_position_for_line_and_column(line_map*, unsigned int, unsigned int) -->
-    <elf-symbol name='_Z36linemap_position_for_line_and_columnP8line_mapjj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z36linemap_position_for_line_and_columnP8line_mapjj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- linemap_tracks_macro_expansion_locs_p(line_maps*) -->
-    <elf-symbol name='_Z37linemap_tracks_macro_expansion_locs_pP9line_maps' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z37linemap_tracks_macro_expansion_locs_pP9line_maps' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- linemap_location_from_macro_expansion_p(line_maps*, unsigned int) -->
-    <elf-symbol name='_Z39linemap_location_from_macro_expansion_pP9line_mapsj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z39linemap_location_from_macro_expansion_pP9line_mapsj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pp_base_remaining_character_count_for_line(pretty_print_info*) -->
-    <elf-symbol name='_Z42pp_base_remaining_character_count_for_lineP17pretty_print_info' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z42pp_base_remaining_character_count_for_lineP17pretty_print_info' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- error(char const*, ...) -->
-    <elf-symbol name='_Z5errorPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z5errorPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- sorry(char const*, ...) -->
-    <elf-symbol name='_Z5sorryPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z5sorryPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- inform(unsigned int, char const*, ...) -->
-    <elf-symbol name='_Z6informjPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z6informjPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- notice(char const*, ...) -->
-    <elf-symbol name='_Z6noticePKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z6noticePKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- error_n(unsigned int, int, char const*, char const*, ...) -->
-    <elf-symbol name='_Z7error_njiPKcS0_z' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z7error_njiPKcS0_z' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- fnotice(_IO_FILE*, char const*, ...) -->
-    <elf-symbol name='_Z7fnoticeP8_IO_FILEPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z7fnoticeP8_IO_FILEPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- ht_load(ht*, ht_identifier**, unsigned int, unsigned int, bool) -->
-    <elf-symbol name='_Z7ht_loadP2htPP13ht_identifierjjb' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z7ht_loadP2htPP13ht_identifierjjb' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pedwarn(unsigned int, int, char const*, ...) -->
-    <elf-symbol name='_Z7pedwarnjiPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z7pedwarnjiPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- warning(int, char const*, ...) -->
-    <elf-symbol name='_Z7warningiPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z7warningiPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_ideq(cpp_token const*, char const*) -->
-    <elf-symbol name='_Z8cpp_ideqPK9cpp_tokenPKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z8cpp_ideqPK9cpp_tokenPKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- do_tlink(char**, char**) -->
-    <elf-symbol name='_Z8do_tlinkPPcS0_' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z8do_tlinkPPcS0_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- error_at(unsigned int, char const*, ...) -->
-    <elf-symbol name='_Z8error_atjPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z8error_atjPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- ggc_free(void*) -->
-    <elf-symbol name='_Z8ggc_freePv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z8ggc_freePv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- ht_purge(ht*, int (*)(cpp_reader*, ht_identifier*, void const*), void const*) -->
-    <elf-symbol name='_Z8ht_purgeP2htPFiP10cpp_readerP13ht_identifierPKvES6_' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z8ht_purgeP2htPFiP10cpp_readerP13ht_identifierPKvES6_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- inform_n(unsigned int, int, char const*, char const*, ...) -->
-    <elf-symbol name='_Z8inform_njiPKcS0_z' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z8inform_njiPKcS0_z' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- verbatim(char const*, ...) -->
-    <elf-symbol name='_Z8verbatimPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z8verbatimPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_errno(cpp_reader*, int, char const*) -->
-    <elf-symbol name='_Z9cpp_errnoP10cpp_readeriPKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z9cpp_errnoP10cpp_readeriPKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_error(cpp_reader*, int, char const*, ...) -->
-    <elf-symbol name='_Z9cpp_errorP10cpp_readeriPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z9cpp_errorP10cpp_readeriPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_undef(cpp_reader*, char const*) -->
-    <elf-symbol name='_Z9cpp_undefP10cpp_readerPKc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z9cpp_undefP10cpp_readerPKc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- deps_free(deps*) -->
-    <elf-symbol name='_Z9deps_freeP4deps' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z9deps_freeP4deps' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- deps_init() -->
-    <elf-symbol name='_Z9deps_initv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z9deps_initv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- deps_save(deps*, _IO_FILE*) -->
-    <elf-symbol name='_Z9deps_saveP4depsP8_IO_FILE' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z9deps_saveP4depsP8_IO_FILE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- dump_file(char const*, _IO_FILE*) -->
-    <elf-symbol name='_Z9dump_filePKcP8_IO_FILE' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z9dump_filePKcP8_IO_FILE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- ht_create(unsigned int) -->
-    <elf-symbol name='_Z9ht_createj' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z9ht_createj' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- ht_forall(ht*, int (*)(cpp_reader*, ht_identifier*, void const*), void const*) -->
-    <elf-symbol name='_Z9ht_forallP2htPFiP10cpp_readerP13ht_identifierPKvES6_' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z9ht_forallP2htPFiP10cpp_readerP13ht_identifierPKvES6_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- ht_lookup(ht*, unsigned char const*, unsigned long, ht_lookup_option) -->
-    <elf-symbol name='_Z9ht_lookupP2htPKhm16ht_lookup_option' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z9ht_lookupP2htPKhm16ht_lookup_option' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- permerror(unsigned int, char const*, ...) -->
-    <elf-symbol name='_Z9permerrorjPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z9permerrorjPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pp_printf(pretty_print_info*, char const*, ...) -->
-    <elf-symbol name='_Z9pp_printfP17pretty_print_infoPKcz' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_Z9pp_printfP17pretty_print_infoPKcz' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- __libc_csu_fini -->
-    <elf-symbol name='__libc_csu_fini' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='__libc_csu_fini' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- __libc_csu_init -->
-    <elf-symbol name='__libc_csu_init' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='__libc_csu_init' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_aligned_alloc -->
-    <elf-symbol name='_cpp_aligned_alloc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_aligned_alloc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_append_extend_buff -->
-    <elf-symbol name='_cpp_append_extend_buff' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_append_extend_buff' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_arguments_ok -->
-    <elf-symbol name='_cpp_arguments_ok' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_arguments_ok' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_backup_tokens_direct -->
-    <elf-symbol name='_cpp_backup_tokens_direct' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_backup_tokens_direct' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_builtin_macro_text -->
-    <elf-symbol name='_cpp_builtin_macro_text' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_builtin_macro_text' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_clean_line -->
-    <elf-symbol name='_cpp_clean_line' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_clean_line' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_cleanup_files -->
-    <elf-symbol name='_cpp_cleanup_files' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_cleanup_files' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_compare_file_date -->
-    <elf-symbol name='_cpp_compare_file_date' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_compare_file_date' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_convert_input -->
-    <elf-symbol name='_cpp_convert_input' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_convert_input' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_copy_replacement_text -->
-    <elf-symbol name='_cpp_copy_replacement_text' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_copy_replacement_text' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_create_definition -->
-    <elf-symbol name='_cpp_create_definition' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_create_definition' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_create_trad_definition -->
-    <elf-symbol name='_cpp_create_trad_definition' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_create_trad_definition' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_default_encoding -->
-    <elf-symbol name='_cpp_default_encoding' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_default_encoding' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_define_builtin -->
-    <elf-symbol name='_cpp_define_builtin' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_define_builtin' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_destroy_hashtable -->
-    <elf-symbol name='_cpp_destroy_hashtable' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_destroy_hashtable' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_destroy_iconv -->
-    <elf-symbol name='_cpp_destroy_iconv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_destroy_iconv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_do__Pragma -->
-    <elf-symbol name='_cpp_do__Pragma' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_do__Pragma' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_do_file_change -->
-    <elf-symbol name='_cpp_do_file_change' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_do_file_change' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_equiv_tokens -->
-    <elf-symbol name='_cpp_equiv_tokens' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_equiv_tokens' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_expand_op_stack -->
-    <elf-symbol name='_cpp_expand_op_stack' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_expand_op_stack' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_expansions_different_trad -->
-    <elf-symbol name='_cpp_expansions_different_trad' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_expansions_different_trad' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_extend_buff -->
-    <elf-symbol name='_cpp_extend_buff' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_extend_buff' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_fake_include -->
-    <elf-symbol name='_cpp_fake_include' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_fake_include' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_find_failed -->
-    <elf-symbol name='_cpp_find_failed' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_find_failed' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_find_file -->
-    <elf-symbol name='_cpp_find_file' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_find_file' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_free_buff -->
-    <elf-symbol name='_cpp_free_buff' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_free_buff' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_free_definition -->
-    <elf-symbol name='_cpp_free_definition' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_free_definition' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_get_buff -->
-    <elf-symbol name='_cpp_get_buff' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_get_buff' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_get_file_name -->
-    <elf-symbol name='_cpp_get_file_name' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_get_file_name' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_get_file_stat -->
-    <elf-symbol name='_cpp_get_file_stat' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_get_file_stat' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_get_fresh_line -->
-    <elf-symbol name='_cpp_get_fresh_line' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_get_fresh_line' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_handle_directive -->
-    <elf-symbol name='_cpp_handle_directive' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_handle_directive' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_init_directives -->
-    <elf-symbol name='_cpp_init_directives' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_init_directives' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_init_files -->
-    <elf-symbol name='_cpp_init_files' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_init_files' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_init_hashtable -->
-    <elf-symbol name='_cpp_init_hashtable' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_init_hashtable' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_init_internal_pragmas -->
-    <elf-symbol name='_cpp_init_internal_pragmas' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_init_internal_pragmas' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_init_lexer -->
-    <elf-symbol name='_cpp_init_lexer' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_init_lexer' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_init_tokenrun -->
-    <elf-symbol name='_cpp_init_tokenrun' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_init_tokenrun' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_interpret_identifier -->
-    <elf-symbol name='_cpp_interpret_identifier' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_interpret_identifier' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_lex_direct -->
-    <elf-symbol name='_cpp_lex_direct' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_lex_direct' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_lex_identifier -->
-    <elf-symbol name='_cpp_lex_identifier' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_lex_identifier' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_lex_token -->
-    <elf-symbol name='_cpp_lex_token' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_lex_token' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_mark_file_once_only -->
-    <elf-symbol name='_cpp_mark_file_once_only' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_mark_file_once_only' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_overlay_buffer -->
-    <elf-symbol name='_cpp_overlay_buffer' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_overlay_buffer' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_parse_expr -->
-    <elf-symbol name='_cpp_parse_expr' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_parse_expr' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_pop_buffer -->
-    <elf-symbol name='_cpp_pop_buffer' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_pop_buffer' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_pop_context -->
-    <elf-symbol name='_cpp_pop_context' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_pop_context' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_pop_file_buffer -->
-    <elf-symbol name='_cpp_pop_file_buffer' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_pop_file_buffer' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_process_line_notes -->
-    <elf-symbol name='_cpp_process_line_notes' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_process_line_notes' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_push_text_context -->
-    <elf-symbol name='_cpp_push_text_context' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_push_text_context' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_push_token_context -->
-    <elf-symbol name='_cpp_push_token_context' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_push_token_context' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_read_file_entries -->
-    <elf-symbol name='_cpp_read_file_entries' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_read_file_entries' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_read_logical_line_trad -->
-    <elf-symbol name='_cpp_read_logical_line_trad' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_read_logical_line_trad' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_release_buff -->
-    <elf-symbol name='_cpp_release_buff' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_release_buff' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_remaining_tokens_num_in_context -->
-    <elf-symbol name='_cpp_remaining_tokens_num_in_context' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_remaining_tokens_num_in_context' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_remove_overlay -->
-    <elf-symbol name='_cpp_remove_overlay' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_remove_overlay' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_replacement_text_len -->
-    <elf-symbol name='_cpp_replacement_text_len' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_replacement_text_len' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_report_missing_guards -->
-    <elf-symbol name='_cpp_report_missing_guards' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_report_missing_guards' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_restore_pragma_names -->
-    <elf-symbol name='_cpp_restore_pragma_names' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_restore_pragma_names' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_save_file_entries -->
-    <elf-symbol name='_cpp_save_file_entries' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_save_file_entries' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_save_parameter -->
-    <elf-symbol name='_cpp_save_parameter' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_save_parameter' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_save_pragma_names -->
-    <elf-symbol name='_cpp_save_pragma_names' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_save_pragma_names' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_scan_out_logical_line -->
-    <elf-symbol name='_cpp_scan_out_logical_line' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_scan_out_logical_line' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_skip_block_comment -->
-    <elf-symbol name='_cpp_skip_block_comment' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_skip_block_comment' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_stack_file -->
-    <elf-symbol name='_cpp_stack_file' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_stack_file' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_stack_include -->
-    <elf-symbol name='_cpp_stack_include' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_stack_include' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_temp_token -->
-    <elf-symbol name='_cpp_temp_token' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_temp_token' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_test_assertion -->
-    <elf-symbol name='_cpp_test_assertion' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_test_assertion' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_unaligned_alloc -->
-    <elf-symbol name='_cpp_unaligned_alloc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_unaligned_alloc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_valid_ucn -->
-    <elf-symbol name='_cpp_valid_ucn' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_valid_ucn' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_warn_if_unused_macro -->
-    <elf-symbol name='_cpp_warn_if_unused_macro' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_warn_if_unused_macro' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _fini -->
-    <elf-symbol name='_fini' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_fini' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _init -->
-    <elf-symbol name='_init' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_init' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _start -->
-    <elf-symbol name='_start' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_start' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- ada_demangle -->
-    <elf-symbol name='ada_demangle' type='func-type' binding='global-binding' is-defined='yes'/>
-    <!-- atexit -->
-    <elf-symbol name='atexit' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='ada_demangle' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- buildargv -->
-    <elf-symbol name='buildargv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='buildargv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- choose_tmpdir -->
-    <elf-symbol name='choose_tmpdir' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='choose_tmpdir' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- concat -->
-    <elf-symbol name='concat' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='concat' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- concat_copy -->
-    <elf-symbol name='concat_copy' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='concat_copy' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- concat_copy2 -->
-    <elf-symbol name='concat_copy2' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='concat_copy2' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- concat_length -->
-    <elf-symbol name='concat_length' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='concat_length' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- countargv -->
-    <elf-symbol name='countargv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='countargv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cplus_demangle -->
-    <elf-symbol name='cplus_demangle' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='cplus_demangle' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cplus_demangle_fill_ctor -->
-    <elf-symbol name='cplus_demangle_fill_ctor' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='cplus_demangle_fill_ctor' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cplus_demangle_fill_dtor -->
-    <elf-symbol name='cplus_demangle_fill_dtor' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='cplus_demangle_fill_dtor' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cplus_demangle_fill_extended_operator -->
-    <elf-symbol name='cplus_demangle_fill_extended_operator' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='cplus_demangle_fill_extended_operator' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cplus_demangle_fill_name -->
-    <elf-symbol name='cplus_demangle_fill_name' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='cplus_demangle_fill_name' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cplus_demangle_init_info -->
-    <elf-symbol name='cplus_demangle_init_info' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='cplus_demangle_init_info' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cplus_demangle_mangled_name -->
-    <elf-symbol name='cplus_demangle_mangled_name' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='cplus_demangle_mangled_name' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cplus_demangle_name_to_style -->
-    <elf-symbol name='cplus_demangle_name_to_style' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='cplus_demangle_name_to_style' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cplus_demangle_opname -->
-    <elf-symbol name='cplus_demangle_opname' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='cplus_demangle_opname' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cplus_demangle_print -->
-    <elf-symbol name='cplus_demangle_print' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='cplus_demangle_print' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cplus_demangle_print_callback -->
-    <elf-symbol name='cplus_demangle_print_callback' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='cplus_demangle_print_callback' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cplus_demangle_set_style -->
-    <elf-symbol name='cplus_demangle_set_style' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='cplus_demangle_set_style' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cplus_demangle_type -->
-    <elf-symbol name='cplus_demangle_type' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='cplus_demangle_type' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cplus_demangle_v3 -->
-    <elf-symbol name='cplus_demangle_v3' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='cplus_demangle_v3' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cplus_demangle_v3_callback -->
-    <elf-symbol name='cplus_demangle_v3_callback' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='cplus_demangle_v3_callback' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cplus_mangle_opname -->
-    <elf-symbol name='cplus_mangle_opname' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='cplus_mangle_opname' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cpp_named_operator2name -->
-    <elf-symbol name='cpp_named_operator2name' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='cpp_named_operator2name' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- dos_lbasename -->
-    <elf-symbol name='dos_lbasename' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='dos_lbasename' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- dupargv -->
-    <elf-symbol name='dupargv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='dupargv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- expandargv -->
-    <elf-symbol name='expandargv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='expandargv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- fdopen_unlocked -->
-    <elf-symbol name='fdopen_unlocked' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='fdopen_unlocked' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- filename_cmp -->
-    <elf-symbol name='filename_cmp' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='filename_cmp' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- filename_ncmp -->
-    <elf-symbol name='filename_ncmp' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='filename_ncmp' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- fopen_unlocked -->
-    <elf-symbol name='fopen_unlocked' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='fopen_unlocked' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- freeargv -->
-    <elf-symbol name='freeargv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='freeargv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- freopen_unlocked -->
-    <elf-symbol name='freopen_unlocked' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='freopen_unlocked' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- getpwd -->
-    <elf-symbol name='getpwd' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='getpwd' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- hex_init -->
-    <elf-symbol name='hex_init' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='hex_init' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- htab_clear_slot -->
-    <elf-symbol name='htab_clear_slot' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_clear_slot' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- htab_collisions -->
-    <elf-symbol name='htab_collisions' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_collisions' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- htab_create -->
-    <elf-symbol name='htab_create' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_create' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- htab_create_alloc -->
-    <elf-symbol name='htab_create_alloc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_create_alloc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- htab_create_alloc_ex -->
-    <elf-symbol name='htab_create_alloc_ex' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_create_alloc_ex' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- htab_create_typed_alloc -->
-    <elf-symbol name='htab_create_typed_alloc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_create_typed_alloc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- htab_delete -->
-    <elf-symbol name='htab_delete' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_delete' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- htab_elements -->
-    <elf-symbol name='htab_elements' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_elements' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- htab_empty -->
-    <elf-symbol name='htab_empty' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_empty' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- htab_find -->
-    <elf-symbol name='htab_find' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_find' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- htab_find_slot -->
-    <elf-symbol name='htab_find_slot' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_find_slot' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- htab_find_slot_with_hash -->
-    <elf-symbol name='htab_find_slot_with_hash' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_find_slot_with_hash' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- htab_find_with_hash -->
-    <elf-symbol name='htab_find_with_hash' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_find_with_hash' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- htab_hash_string -->
-    <elf-symbol name='htab_hash_string' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_hash_string' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- htab_remove_elt -->
-    <elf-symbol name='htab_remove_elt' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_remove_elt' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- htab_remove_elt_with_hash -->
-    <elf-symbol name='htab_remove_elt_with_hash' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_remove_elt_with_hash' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- htab_set_functions_ex -->
-    <elf-symbol name='htab_set_functions_ex' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_set_functions_ex' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- htab_size -->
-    <elf-symbol name='htab_size' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_size' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- htab_traverse -->
-    <elf-symbol name='htab_traverse' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_traverse' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- htab_traverse_noresize -->
-    <elf-symbol name='htab_traverse_noresize' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_traverse_noresize' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- htab_try_create -->
-    <elf-symbol name='htab_try_create' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_try_create' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- is_gnu_v3_mangled_ctor -->
-    <elf-symbol name='is_gnu_v3_mangled_ctor' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='is_gnu_v3_mangled_ctor' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- is_gnu_v3_mangled_dtor -->
-    <elf-symbol name='is_gnu_v3_mangled_dtor' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='is_gnu_v3_mangled_dtor' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- iterative_hash -->
-    <elf-symbol name='iterative_hash' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='iterative_hash' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- java_demangle_v3 -->
-    <elf-symbol name='java_demangle_v3' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='java_demangle_v3' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- java_demangle_v3_callback -->
-    <elf-symbol name='java_demangle_v3_callback' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='java_demangle_v3_callback' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- lbasename -->
-    <elf-symbol name='lbasename' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='lbasename' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- linemap_add_macro_token -->
-    <elf-symbol name='linemap_add_macro_token' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='linemap_add_macro_token' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- linemap_enter_macro -->
-    <elf-symbol name='linemap_enter_macro' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='linemap_enter_macro' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- linemap_get_expansion_filename -->
-    <elf-symbol name='linemap_get_expansion_filename' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='linemap_get_expansion_filename' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- linemap_get_expansion_line -->
-    <elf-symbol name='linemap_get_expansion_line' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='linemap_get_expansion_line' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- main -->
-    <elf-symbol name='main' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='main' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- make_temp_file -->
-    <elf-symbol name='make_temp_file' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='make_temp_file' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- md5_buffer -->
-    <elf-symbol name='md5_buffer' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='md5_buffer' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- md5_finish_ctx -->
-    <elf-symbol name='md5_finish_ctx' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='md5_finish_ctx' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- md5_init_ctx -->
-    <elf-symbol name='md5_init_ctx' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='md5_init_ctx' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- md5_process_block -->
-    <elf-symbol name='md5_process_block' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='md5_process_block' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- md5_process_bytes -->
-    <elf-symbol name='md5_process_bytes' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='md5_process_bytes' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- md5_read_ctx -->
-    <elf-symbol name='md5_read_ctx' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='md5_read_ctx' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- md5_stream -->
-    <elf-symbol name='md5_stream' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='md5_stream' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pex_free -->
-    <elf-symbol name='pex_free' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='pex_free' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pex_get_status -->
-    <elf-symbol name='pex_get_status' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='pex_get_status' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pex_get_times -->
-    <elf-symbol name='pex_get_times' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='pex_get_times' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pex_init -->
-    <elf-symbol name='pex_init' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='pex_init' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pex_init_common -->
-    <elf-symbol name='pex_init_common' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='pex_init_common' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pex_input_file -->
-    <elf-symbol name='pex_input_file' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='pex_input_file' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pex_input_pipe -->
-    <elf-symbol name='pex_input_pipe' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='pex_input_pipe' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pex_read_err -->
-    <elf-symbol name='pex_read_err' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='pex_read_err' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pex_read_output -->
-    <elf-symbol name='pex_read_output' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='pex_read_output' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pex_run -->
-    <elf-symbol name='pex_run' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='pex_run' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pex_run_in_environment -->
-    <elf-symbol name='pex_run_in_environment' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='pex_run_in_environment' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- reconcat -->
-    <elf-symbol name='reconcat' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='reconcat' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- set_cplus_marker_for_demangling -->
-    <elf-symbol name='set_cplus_marker_for_demangling' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='set_cplus_marker_for_demangling' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- unix_lbasename -->
-    <elf-symbol name='unix_lbasename' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='unix_lbasename' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- unlink_if_ordinary -->
-    <elf-symbol name='unlink_if_ordinary' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='unlink_if_ordinary' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- unlock_std_streams -->
-    <elf-symbol name='unlock_std_streams' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='unlock_std_streams' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- unlock_stream -->
-    <elf-symbol name='unlock_stream' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='unlock_stream' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- writeargv -->
-    <elf-symbol name='writeargv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='writeargv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- xcalloc -->
-    <elf-symbol name='xcalloc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='xcalloc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- xexit -->
-    <elf-symbol name='xexit' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='xexit' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- xmalloc -->
-    <elf-symbol name='xmalloc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='xmalloc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- xmalloc_failed -->
-    <elf-symbol name='xmalloc_failed' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='xmalloc_failed' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- xmalloc_set_program_name -->
-    <elf-symbol name='xmalloc_set_program_name' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='xmalloc_set_program_name' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- xmemdup -->
-    <elf-symbol name='xmemdup' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='xmemdup' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- xrealloc -->
-    <elf-symbol name='xrealloc' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='xrealloc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- xstrdup -->
-    <elf-symbol name='xstrdup' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='xstrdup' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- xstrerror -->
-    <elf-symbol name='xstrerror' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='xstrerror' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
   <elf-variable-symbols>
     <!-- _IO_stdin_used -->
-    <elf-symbol name='_IO_stdin_used' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
-    <!-- __DTOR_END__ -->
-    <elf-symbol name='__DTOR_END__' type='object-type' binding='global-binding' is-defined='yes'/>
-    <!-- __TMC_END__ -->
-    <elf-symbol name='__TMC_END__' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_IO_stdin_used' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- __environ@@GLIBC_2.2.5 -->
-    <elf-symbol name='__environ@@GLIBC_2.2.5' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='__environ@@GLIBC_2.2.5' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _cpp_trigraph_map -->
-    <elf-symbol name='_cpp_trigraph_map' size='256' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_trigraph_map' size='256' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _hex_value -->
-    <elf-symbol name='_hex_value' size='256' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_hex_value' size='256' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _sch_istable -->
-    <elf-symbol name='_sch_istable' size='512' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_sch_istable' size='512' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _sch_tolower -->
-    <elf-symbol name='_sch_tolower' size='256' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_sch_tolower' size='256' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _sch_toupper -->
-    <elf-symbol name='_sch_toupper' size='256' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_sch_toupper' size='256' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- _xexit_cleanup -->
-    <elf-symbol name='_xexit_cleanup' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_xexit_cleanup' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- bug_report_url -->
-    <elf-symbol name='bug_report_url' size='31' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='bug_report_url' size='31' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- c_file_name -->
-    <elf-symbol name='c_file_name' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='c_file_name' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- close_quote -->
-    <elf-symbol name='close_quote' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='close_quote' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cplus_demangle_builtin_types -->
-    <elf-symbol name='cplus_demangle_builtin_types' size='1056' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='cplus_demangle_builtin_types' size='1056' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- cplus_demangle_operators -->
-    <elf-symbol name='cplus_demangle_operators' size='1392' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='cplus_demangle_operators' size='1392' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- current_demangling_style -->
-    <elf-symbol name='current_demangling_style' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='current_demangling_style' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- debug -->
-    <elf-symbol name='debug' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='debug' size='1' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- do_collecting -->
-    <elf-symbol name='do_collecting' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='do_collecting' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- environ@@GLIBC_2.2.5 -->
-    <elf-symbol name='environ@@GLIBC_2.2.5' size='8' type='object-type' binding='weak-binding' alias='__environ@@GLIBC_2.2.5' is-defined='yes'/>
+    <elf-symbol name='environ@@GLIBC_2.2.5' size='8' type='object-type' binding='weak-binding' visibility='default-visibility' alias='__environ@@GLIBC_2.2.5' is-defined='yes'/>
     <!-- file_stack -->
-    <elf-symbol name='file_stack' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='file_stack' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- file_stack_obstack -->
-    <elf-symbol name='file_stack_obstack' size='88' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='file_stack_obstack' size='88' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- funcs -->
-    <elf-symbol name='funcs' size='72' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='funcs' size='72' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- global_dc -->
-    <elf-symbol name='global_dc' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='global_dc' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- helpflag -->
-    <elf-symbol name='helpflag' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='helpflag' size='1' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- htab_eq_pointer -->
-    <elf-symbol name='htab_eq_pointer' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_eq_pointer' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- htab_hash_pointer -->
-    <elf-symbol name='htab_hash_pointer' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_hash_pointer' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- identifier_to_locale_alloc -->
-    <elf-symbol name='identifier_to_locale_alloc' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='identifier_to_locale_alloc' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- identifier_to_locale_free -->
-    <elf-symbol name='identifier_to_locale_free' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='identifier_to_locale_free' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- input_location -->
-    <elf-symbol name='input_location' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='input_location' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- lderrout -->
-    <elf-symbol name='lderrout' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='lderrout' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- ldout -->
-    <elf-symbol name='ldout' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='ldout' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- libiberty_concat_ptr -->
-    <elf-symbol name='libiberty_concat_ptr' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='libiberty_concat_ptr' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- libiberty_demanglers -->
-    <elf-symbol name='libiberty_demanglers' size='264' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='libiberty_demanglers' size='264' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- line_table -->
-    <elf-symbol name='line_table' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='line_table' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- locale_encoding -->
-    <elf-symbol name='locale_encoding' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='locale_encoding' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- locale_utf8 -->
-    <elf-symbol name='locale_utf8' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='locale_utf8' size='1' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- no_demangle -->
-    <elf-symbol name='no_demangle' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='no_demangle' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- num_expanded_macros_counter -->
-    <elf-symbol name='num_expanded_macros_counter' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='num_expanded_macros_counter' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- num_macro_tokens_counter -->
-    <elf-symbol name='num_macro_tokens_counter' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='num_macro_tokens_counter' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- open_quote -->
-    <elf-symbol name='open_quote' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='open_quote' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- pkgversion_string -->
-    <elf-symbol name='pkgversion_string' size='7' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='pkgversion_string' size='7' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- progname -->
-    <elf-symbol name='progname' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='progname' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- rtl_zone -->
-    <elf-symbol name='rtl_zone' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='rtl_zone' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- stderr@@GLIBC_2.2.5 -->
-    <elf-symbol name='stderr@@GLIBC_2.2.5' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='stderr@@GLIBC_2.2.5' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- stdin@@GLIBC_2.2.5 -->
-    <elf-symbol name='stdin@@GLIBC_2.2.5' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='stdin@@GLIBC_2.2.5' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- stdout@@GLIBC_2.2.5 -->
-    <elf-symbol name='stdout@@GLIBC_2.2.5' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='stdout@@GLIBC_2.2.5' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- symbol_stack -->
-    <elf-symbol name='symbol_stack' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='symbol_stack' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- symbol_stack_obstack -->
-    <elf-symbol name='symbol_stack_obstack' size='88' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='symbol_stack_obstack' size='88' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- temporary_firstobj -->
-    <elf-symbol name='temporary_firstobj' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='temporary_firstobj' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- temporary_obstack -->
-    <elf-symbol name='temporary_obstack' size='88' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='temporary_obstack' size='88' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- tree_id_zone -->
-    <elf-symbol name='tree_id_zone' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='tree_id_zone' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- tree_zone -->
-    <elf-symbol name='tree_zone' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='tree_zone' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- version_string -->
-    <elf-symbol name='version_string' size='6' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='version_string' size='6' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <!-- vflag -->
-    <elf-symbol name='vflag' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vflag' size='1' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='../.././gcc/collect2.c' language='LANG_C_plus_plus'>
 

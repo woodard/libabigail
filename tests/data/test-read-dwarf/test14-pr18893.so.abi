@@ -7,65 +7,65 @@
     <dependency name='libc.so.6'/>
   </elf-needed>
   <elf-function-symbols>
-    <elf-symbol name='gluBeginCurve' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluBeginPolygon' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluBeginSurface' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluBeginTrim' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluBuild1DMipmapLevels' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluBuild1DMipmaps' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluBuild2DMipmapLevels' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluBuild2DMipmaps' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluBuild3DMipmapLevels' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluBuild3DMipmaps' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluCheckExtension' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluCylinder' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluDeleteNurbsRenderer' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluDeleteQuadric' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluDeleteTess' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluDisk' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluEndCurve' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluEndPolygon' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluEndSurface' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluEndTrim' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluErrorString' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluGetNurbsProperty' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluGetString' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluGetTessProperty' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluLoadSamplingMatrices' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluLookAt' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluNewNurbsRenderer' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluNewQuadric' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluNewTess' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluNextContour' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluNurbsCallback' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluNurbsCallbackData' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluNurbsCallbackDataEXT' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluNurbsCurve' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluNurbsProperty' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluNurbsSurface' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluOrtho2D' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluPartialDisk' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluPerspective' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluPickMatrix' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluProject' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluPwlCurve' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluQuadricCallback' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluQuadricDrawStyle' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluQuadricNormals' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluQuadricOrientation' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluQuadricTexture' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluScaleImage' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluSphere' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluTessBeginContour' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluTessBeginPolygon' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluTessCallback' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluTessEndContour' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluTessEndPolygon' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluTessNormal' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluTessProperty' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluTessVertex' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluUnProject' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='gluUnProject4' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='gluBeginCurve' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluBeginPolygon' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluBeginSurface' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluBeginTrim' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluBuild1DMipmapLevels' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluBuild1DMipmaps' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluBuild2DMipmapLevels' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluBuild2DMipmaps' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluBuild3DMipmapLevels' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluBuild3DMipmaps' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluCheckExtension' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluCylinder' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluDeleteNurbsRenderer' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluDeleteQuadric' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluDeleteTess' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluDisk' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluEndCurve' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluEndPolygon' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluEndSurface' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluEndTrim' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluErrorString' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluGetNurbsProperty' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluGetString' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluGetTessProperty' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluLoadSamplingMatrices' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluLookAt' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluNewNurbsRenderer' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluNewQuadric' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluNewTess' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluNextContour' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluNurbsCallback' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluNurbsCallbackData' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluNurbsCallbackDataEXT' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluNurbsCurve' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluNurbsProperty' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluNurbsSurface' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluOrtho2D' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluPartialDisk' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluPerspective' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluPickMatrix' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluProject' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluPwlCurve' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluQuadricCallback' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluQuadricDrawStyle' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluQuadricNormals' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluQuadricOrientation' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluQuadricTexture' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluScaleImage' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluSphere' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluTessBeginContour' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluTessBeginPolygon' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluTessCallback' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluTessEndContour' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluTessEndPolygon' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluTessNormal' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluTessProperty' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluTessVertex' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluUnProject' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='gluUnProject4' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
   <abi-instr version='1.0' address-size='64' path='libutil/error.c' language='LANG_C99'>
     <type-decl name='unsigned char' size-in-bits='8' id='type-id-1'/>
