@@ -625,6 +625,9 @@ test-diff-filter/libtest40-v1.so \
 test-diff-filter/test40-report-0.txt \
 test-diff-filter/test40-v0.cc \
 test-diff-filter/test40-v1.cc \
+test-diff-filter/test41-PR21486-abg-writer.gcc.o \
+test-diff-filter/test41-PR21486-abg-writer.llvm.o \
+test-diff-filter/test41-report-0.txt \
 \
 test-diff-suppr/test0-type-suppr-v0.cc	\
 test-diff-suppr/test0-type-suppr-v1.cc	\

@@ -471,6 +471,13 @@ InOutSpec in_out_specs[] =
     "data/test-diff-filter/test40-report-0.txt",
     "output/test-diff-filter/test40-report-0.txt",
   },
+  {
+    "data/test-diff-filter/test41-PR21486-abg-writer.gcc.o",
+    "data/test-diff-filter/test41-PR21486-abg-writer.llvm.o",
+    "--no-default-suppression",
+    "data/test-diff-filter/test41-report-0.txt",
+    "output/test-diff-filter/test41-report-0.txt",
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };

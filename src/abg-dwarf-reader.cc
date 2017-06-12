@@ -6682,7 +6682,7 @@ public:
 		    fun_addr_sym_map_->find(sym->st_value);
 		  if (it == fun_addr_sym_map_->end())
 		    (*fun_addr_sym_map_)[sym->st_value] = symbol;
-		  else
+		  else  if (sym->st_value != 0)
 		    it->second->get_main_symbol()->add_alias(symbol);
 
 		  if (is_ppc64)
