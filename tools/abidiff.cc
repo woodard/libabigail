@@ -155,7 +155,7 @@ display_usage(const string& prog_name, ostream& out)
     "internal representation\n"
     << " --no-linux-kernel-mode  don't consider the input binaries as "
        "linux kernel binaries\n"
-    << " --linux-kernel-abi-whitelist|--lkaw  path to a "
+    << " --kmi-whitelist|-w  path to a "
        "linux kernel abi whitelist\n"
     << " --stat  only display the diff stats\n"
     << " --symtabs  only display the symbol tables of the corpora\n"
@@ -287,8 +287,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.headers_dir2 = argv[j];
 	  ++i;
 	}
-      else if (!strcmp(argv[i], "--linux-kernel-abi-whitelist")
-	       || !strcmp(argv[i], "--lkaw"))
+      else if (!strcmp(argv[i], "--kmi-whitelist")
+	       || !strcmp(argv[i], "-w"))
 	{
 	  int j = i + 1;
 	  if (j >= argc)

@@ -107,6 +107,24 @@ Options
     ELF binary.  It thus considers functions and variables which are
     defined and exported in the ELF sense.
 
+  * ``--kmi-whitelist | -kaw`` <*path-to-whitelist*>
+
+    When analyzing a Linux kernel binary, this option points to the
+    white list of names of ELF symbols of functions and variables
+    which ABI must be considered.  That white list is called a "Kernel
+    Module Interface white list".  This is because for the Kernel, we
+    don't talk about ``ABI``; we rather talk about the interface
+    between the Kernel and its module. Hence the term ``KMI`` rather
+    than ``ABI``.
+
+    Any other function or variable which ELF symbol are not present in
+    that white list will not be considered by this tool.
+
+    If this option is not provided -- thus if no white list is
+    provided -- then the entire KMI, that is, the set of all publicly
+    defined and exported functions and global variables by the Linux
+    Kernel binaries, is considered.
+
   * ``--drop-private-types``
 
     This option is to be used with the ``--headers-dir1`` and
