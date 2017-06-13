@@ -1602,6 +1602,26 @@ public:
   }
 }; // end struct comparison_done_notify
 
+/// Erase the temporary directories that might have been created while
+/// handling two packages, unless the user asked to keep the temporary
+/// directories around.
+///
+/// @param first_package the first package to consider.
+///
+/// @param second_package the second package to consider.
+///
+/// @param opts the options passed to the program.
+static void
+maybe_erase_temp_dirs(package& first_package, package& second_package,
+		      options& opts)
+{
+  if (opts.keep_tmp_files)
+    return;
+
+  erase_created_temporary_directories(first_package, second_package, opts);
+  erase_created_temporary_directories_parent(opts);
+}
+
 /// Compare the ABI of two packages
 ///
 /// @param first_package the first package to consider.
@@ -1626,7 +1646,10 @@ compare(package& first_package, package& second_package,
   //
   // Note that the package preparations happens in parallel.
   if (!prepare_packages(first_package, second_package, opts))
-    return abigail::tools_utils::ABIDIFF_ERROR;
+    {
+      maybe_erase_temp_dirs(first_package, second_package, opts);
+      return abigail::tools_utils::ABIDIFF_ERROR;
+    }
 
   // Setting debug-info path of libraries
   string debug_dir1, debug_dir2, relative_debug_path = "/usr/lib/debug/";
@@ -1682,7 +1705,10 @@ compare(package& first_package, package& second_package,
     }
 
   if (compare_tasks.empty())
-    return abigail::tools_utils::ABIDIFF_OK;
+    {
+      maybe_erase_temp_dirs(first_package, second_package, opts);
+      return abigail::tools_utils::ABIDIFF_OK;
+    }
 
   // Larger elfs are processed first, since it's usually safe to assume
   // their debug-info is larger as well, but the results are still
@@ -1761,11 +1787,7 @@ compare(package& first_package, package& second_package,
     }
 
   // Erase temporary directory tree we might have left behind.
-  if (!opts.keep_tmp_files)
-    {
-      erase_created_temporary_directories(first_package, second_package, opts);
-      erase_created_temporary_directories_parent(opts);
-    }
+  maybe_erase_temp_dirs(first_package, second_package, opts);
 
   status = notifier.status;
 
