@@ -1075,7 +1075,7 @@ def run_abipkgdiff(rpm_col1, rpm_col2):
     return_codes = [
         abipkgdiff(cmp_half1, cmp_half2) for cmp_half1, cmp_half2
         in generate_comparison_halves(rpm_col1, rpm_col2)]
-    return max(return_codes)
+    return max(return_codes) if return_codes else 0
 
 
 @log_call
