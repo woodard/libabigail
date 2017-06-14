@@ -172,6 +172,26 @@ def is_distro_valid(distro):
     return re.match(r'^(fc|el)\d{1,2}$', distro) is not None
 
 
+def get_distro_from_string(str):
+    """Get the part of a string that designates the Fedora distro version number
+
+    For instance, when passed the string '2.3.fc12', this function
+    returns the string 'fc12'.
+
+    :param str the string to consider
+    :return: The sub-string of the parameter that represents the
+    Fedora distro version number, or None if the parameter does not
+    contain such a sub-string.
+    """
+
+    m = re.match(r'(.*)((fc|el)\d{1,2})(.*)', str)
+    if not m:
+        return None
+
+    distro = m.group(2)
+    return distro
+
+
 def match_nvr(s):
     """Determine if a string is a N-V-R"""
     return re.match(r'^([^/]+)-(.+)-(.+)$', s) is not None
@@ -776,7 +796,7 @@ class Brew(object):
 
     @log_call
     def get_package_latest_build(self, package_name, distro):
-        """Get latest build from a package
+        """Get latest build from a package, for a particular distro.
 
         Example:
 
@@ -796,6 +816,27 @@ class Brew(object):
                                  selector=selector,
                                  order_by='nvr',
                                  reverse=True)
+        if not builds:
+            # So we found no build which distro string exactly matches
+            # the 'distro' parameter.
+            #
+            # Now lets try to get builds which distro string are less
+            # than the value of the 'distro' parameter.  This is for
+            # cases when, for instance, the build of package foo that
+            # is present in current Fedora 27 is foo-1.fc26.  That
+            # build originates from Fedora 26 but is being re-used in
+            # Fedora 27.  So we want this function to pick up that
+            # foo-1.fc26, even though we want the builds of foo that
+            # match the distro string fc27.
+
+            selector = lambda build: get_distro_from_string(build['release']) and \
+                       get_distro_from_string(build['release']) <= distro
+
+            builds = self.listBuilds(packageID=package['id'],
+                                 selector=selector,
+                                 order_by='nvr',
+                                 reverse=True);
+
         if not builds:
             raise NoCompleteBuilds(
                 'No complete builds of package {0}'.format(package_name))
