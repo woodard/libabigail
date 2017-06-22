@@ -4946,7 +4946,7 @@ public:
 	    if (klass->get_is_declaration_only())
 	      continue;
 
-	    string tu_path = klass->get_translation_unit()->get_path();
+	    string tu_path = klass->get_translation_unit()->get_absolute_path();
 	    if (tu_path.empty())
 	      continue;
 
@@ -4969,7 +4969,8 @@ public:
 		if ((*j)->get_is_declaration_only()
 		    && ((*j)->get_definition_of_declaration() == 0))
 		  {
-		    string tu_path = (*j)->get_translation_unit()->get_path();
+		    string tu_path =
+		      (*j)->get_translation_unit()->get_absolute_path();
 		    unordered_map<string, class_decl_sptr>::const_iterator e =
 		      per_tu_class_map.find(tu_path);
 		    if (e != per_tu_class_map.end())
@@ -12079,13 +12080,31 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
   ctxt.cur_tu_die(die);
 
   string path = die_string_attribute(die, DW_AT_name);
-  result.reset(new translation_unit(ctxt.env(),
-				    path,
-				    address_size));
+  string compilation_dir = die_string_attribute(die, DW_AT_comp_dir);
 
-  uint64_t l = 0;
-  die_unsigned_constant_attribute(die, DW_AT_language, l);
-  result->set_language(dwarf_language_to_tu_language(l));
+  // See if the same translation unit exits already in the current
+  // corpus.  Sometimes, the same translation unit can be present
+  // several times in the same debug info.  The content of the
+  // different instances of the translation unit are different.  So to
+  // represent that, we are going to re-use the same translation
+  // unit.  That is, it's going to be the union of all the translation
+  // units of the same path.
+  {
+    string abs_path = compilation_dir + "/" + path;
+    result = ctxt.current_corpus()->find_translation_unit(abs_path);
+  }
+
+  if (!result)
+    {
+      result.reset(new translation_unit(ctxt.env(),
+					path,
+					address_size));
+      result->set_compilation_dir_path(compilation_dir);
+      ctxt.current_corpus()->add(result);
+      uint64_t l = 0;
+      die_unsigned_constant_attribute(die, DW_AT_language, l);
+      result->set_language(dwarf_language_to_tu_language(l));
+    }
 
   ctxt.current_corpus()->add(result);
   ctxt.cur_transl_unit(result);
@@ -12094,6 +12113,8 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
   Dwarf_Die child;
   if (dwarf_child(die, &child) != 0)
     return result;
+
+  result->set_is_constructed(false);
 
   do
     build_ir_node_from_die(ctxt, &child,

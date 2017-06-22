@@ -450,7 +450,7 @@
     <elf-symbol name='vtkSurfaceLICPainter_GeomVs' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='vtkSurfaceLICPainter_SC' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2D.cxx' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2D.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
 
       <class-decl name='ios_base' visibility='default' is-declaration-only='yes' id='type-id-1'>
@@ -5172,7 +5172,7 @@
     <pointer-type-def type-id='type-id-262' size-in-bits='64' id='type-id-292'/>
     <qualified-type-def type-id='type-id-262' const='yes' id='type-id-302'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2DExtentTranslator.cxx' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2DExtentTranslator.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
 
       <class-decl name='ctype&lt;char&gt;' visibility='default' is-declaration-only='yes' id='type-id-303'>
@@ -5207,7 +5207,7 @@
 
 
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.cxx' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
 
       <function-decl name='operator-&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='319' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -9104,12 +9104,12 @@
     <qualified-type-def type-id='type-id-39' const='yes' id='type-id-446'/>
     <qualified-type-def type-id='type-id-85' const='yes' id='type-id-447'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.cxx' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
 
 
 
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkStructuredGridLIC2D.cxx' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkStructuredGridLIC2D.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
 
 
 
@@ -9521,7 +9521,7 @@
 
 
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICComposite.cxx' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICComposite.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
 
       <function-decl name='operator==&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='235' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -10352,7 +10352,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-418' size-in-bits='64' id='type-id-486'/>
     <reference-type-def kind='lvalue' type-id='type-id-487' size-in-bits='64' id='type-id-485'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICDefaultPainter.cxx' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICDefaultPainter.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
 
 
 
@@ -13325,7 +13325,7 @@
     <class-decl name='vtkOpenGLLightMonitor' visibility='default' is-declaration-only='yes' id='type-id-628'/>
     <qualified-type-def type-id='type-id-598' const='yes' id='type-id-627'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
 
       <function-decl name='uninitialized_copy&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='106' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -14566,7 +14566,7 @@
 
 
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkTextureIO.cxx' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkTextureIO.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
 
 
 

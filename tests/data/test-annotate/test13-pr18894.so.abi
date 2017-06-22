@@ -474,7 +474,7 @@
     <!-- dbus_watch_set_data -->
     <elf-symbol name='dbus_watch_set_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
-  <abi-instr version='1.0' address-size='64' path='dbus-address.c' language='LANG_C89'>
+  <abi-instr version='1.0' address-size='64' path='dbus-address.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- char -->
     <type-decl name='char' size-in-bits='8' id='type-id-1'/>
     <!-- const char -->
@@ -664,7 +664,7 @@
       <return type-id='type-id-16'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-bus.c' language='LANG_C89'>
+  <abi-instr version='1.0' address-size='64' path='dbus-bus.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- struct DBusConnection -->
     <class-decl name='DBusConnection' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-25'/>
     <!-- typedef DBusConnection DBusConnection -->
@@ -822,7 +822,7 @@
       <return type-id='type-id-27'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-connection.c' language='LANG_C89'>
+  <abi-instr version='1.0' address-size='64' path='dbus-connection.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- void dbus_connection_set_change_sigpipe(dbus_bool_t) -->
     <function-decl name='dbus_connection_set_change_sigpipe' mangled-name='dbus_connection_set_change_sigpipe' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='6043' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_connection_set_change_sigpipe'>
       <!-- parameter of type 'typedef dbus_bool_t' -->
@@ -2046,7 +2046,7 @@
       <return type-id='type-id-11'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-errors.c' language='LANG_C89'>
+  <abi-instr version='1.0' address-size='64' path='dbus-errors.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- const DBusError -->
     <qualified-type-def type-id='type-id-18' const='yes' id='type-id-138'/>
     <!-- const DBusError* -->
@@ -2114,7 +2114,7 @@
       <return type-id='type-id-22'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-message.c' language='LANG_C89'>
+  <abi-instr version='1.0' address-size='64' path='dbus-message.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- dbus_bool_t dbus_message_contains_unix_fds(DBusMessage*) -->
     <function-decl name='dbus_message_contains_unix_fds' mangled-name='dbus_message_contains_unix_fds' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message.c' line='3825' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_message_contains_unix_fds'>
       <!-- parameter of type 'DBusMessage*' -->
@@ -2848,7 +2848,7 @@
       <return type-id='type-id-11'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-misc.c' language='LANG_C89'>
+  <abi-instr version='1.0' address-size='64' path='dbus-misc.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- void dbus_get_version(int*, int*, int*) -->
     <function-decl name='dbus_get_version' mangled-name='dbus_get_version' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-misc.c' line='161' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_get_version'>
       <!-- parameter of type 'int*' -->
@@ -2866,7 +2866,7 @@
       <return type-id='type-id-16'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-pending-call.c' language='LANG_C89'>
+  <abi-instr version='1.0' address-size='64' path='dbus-pending-call.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- struct DBusPendingCall -->
     <class-decl name='DBusPendingCall' size-in-bits='576' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-pending-call.c' line='63' column='1' id='type-id-134'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -3015,7 +3015,7 @@
       <return type-id='type-id-11'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-server.c' language='LANG_C89'>
+  <abi-instr version='1.0' address-size='64' path='dbus-server.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- struct DBusServer -->
     <class-decl name='DBusServer' size-in-bits='1216' is-struct='yes' visibility='default' filepath='../dbus/dbus-server-protected.h' line='57' column='1' id='type-id-150'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -3299,7 +3299,7 @@
       <return type-id='type-id-11'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-uuidgen.c' language='LANG_C89'>
+  <abi-instr version='1.0' address-size='64' path='dbus-uuidgen.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- dbus_bool_t dbus_internal_do_not_use_create_uuid(char**) -->
     <function-decl name='dbus_internal_do_not_use_create_uuid' mangled-name='dbus_internal_do_not_use_create_uuid' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-uuidgen.c' line='122' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_internal_do_not_use_create_uuid'>
       <!-- parameter of type 'char**' -->
@@ -3321,7 +3321,7 @@
       <return type-id='type-id-22'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-signature.c' language='LANG_C89'>
+  <abi-instr version='1.0' address-size='64' path='dbus-signature.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- struct __anonymous_struct__ -->
     <class-decl name='__anonymous_struct__' size-in-bits='256' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-167' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.h' line='45' column='1' id='type-id-168'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -3446,7 +3446,7 @@
       <return type-id='type-id-16'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-syntax.c' language='LANG_C89'>
+  <abi-instr version='1.0' address-size='64' path='dbus-syntax.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- dbus_bool_t dbus_validate_utf8(const char*, DBusError*) -->
     <function-decl name='dbus_validate_utf8' mangled-name='dbus_validate_utf8' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='289' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_validate_utf8'>
       <!-- parameter of type 'const char*' -->
@@ -3502,7 +3502,7 @@
       <return type-id='type-id-22'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-timeout.c' language='LANG_C89'>
+  <abi-instr version='1.0' address-size='64' path='dbus-timeout.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- struct DBusTimeout -->
     <class-decl name='DBusTimeout' size-in-bits='448' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-timeout.c' line='41' column='1' id='type-id-111'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -3589,7 +3589,7 @@
       <return type-id='type-id-22'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-threads.c' language='LANG_C89'>
+  <abi-instr version='1.0' address-size='64' path='dbus-threads.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- struct __anonymous_struct__ -->
     <class-decl name='__anonymous_struct__' size-in-bits='1216' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-175' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='153' column='1' id='type-id-176'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -3794,7 +3794,7 @@
       <return type-id='type-id-11'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-watch.c' language='LANG_C89'>
+  <abi-instr version='1.0' address-size='64' path='dbus-watch.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- struct DBusWatch -->
     <class-decl name='DBusWatch' size-in-bits='512' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-watch.c' line='41' column='1' id='type-id-121'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -3916,7 +3916,7 @@
       <return type-id='type-id-22'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-memory.c' language='LANG_C89'>
+  <abi-instr version='1.0' address-size='64' path='dbus-memory.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- void dbus_free(void*) -->
     <function-decl name='dbus_free' mangled-name='dbus_free' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-memory.c' line='701' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_free'>
       <!-- parameter of type 'void*' -->
@@ -3962,7 +3962,7 @@
       <return type-id='type-id-8'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-sysdeps.c' language='LANG_C89'>
+  <abi-instr version='1.0' address-size='64' path='dbus-sysdeps.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- dbus_bool_t dbus_setenv(const char*, const char*) -->
     <function-decl name='dbus_setenv' mangled-name='dbus_setenv' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-sysdeps.c' line='114' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_setenv'>
       <!-- parameter of type 'const char*' -->

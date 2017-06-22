@@ -493,6 +493,15 @@ public:
   void
   set_path(const string&);
 
+  const std::string&
+  get_compilation_dir_path() const;
+
+  void
+  set_compilation_dir_path(const std::string&);
+
+  const std::string&
+  get_absolute_path() const;
+
   void
   set_corpus(corpus*);
 

@@ -1719,7 +1719,7 @@
     <elf-symbol name='_ZTVSt23_Sp_counted_ptr_inplaceIN5mongo4repl19ReplicationExecutor5EventESaIS3_ELN9__gnu_cxx12_Lock_policyE2EE' size='56' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZZN5mongo7BSONObjC1EvE21kEmptyObjectPrototype' size='5' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
-  <abi-instr version='1.0' address-size='64' path='src/mongo/db/repl/replication_executor.cpp' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='src/mongo/db/repl/replication_executor.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
       <namespace-decl name='chrono'>
         <namespace-decl name='_V2'>
@@ -39187,7 +39187,7 @@
       </class-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/mongo/db/repl/scatter_gather_algorithm.cpp' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='src/mongo/db/repl/scatter_gather_algorithm.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
 
 
@@ -39208,7 +39208,7 @@
 
 
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/mongo/db/repl/scatter_gather_runner.cpp' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='src/mongo/db/repl/scatter_gather_runner.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
 
 

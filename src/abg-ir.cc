@@ -703,8 +703,15 @@ void
 translation_unit::set_language(language l)
 {priv_->language_ = l;}
 
-/// @return the path of the compilation unit associated to the current
-/// instance of translation_unit.
+
+/// Get the path of the current translation unit.
+///
+/// This path is relative to the build directory of the translation
+/// unit as returned by translation_unit::get_compilation_dir_path.
+///
+/// @return the relative path of the compilation unit associated to
+/// the current instance of translation_unit.
+//
 const std::string&
 translation_unit::get_path() const
 {return priv_->path_;}
@@ -712,10 +719,62 @@ translation_unit::get_path() const
 /// Set the path associated to the current instance of
 /// translation_unit.
 ///
-/// @param a_path the new path to set.
+/// This path is relative to the build directory of the translation
+/// unit as returned by translation_unit::get_compilation_dir_path.
+///
+/// @param a_path the new relative path to set.
 void
 translation_unit::set_path(const string& a_path)
 {priv_->path_ = a_path;}
+
+
+/// Get the path of the directory that was 'current' when the
+/// translation unit was compiled.
+///
+/// Note that the path returned by translation_unit::get_path is
+/// relative to the path returned by this function.
+///
+/// @return the compilation directory for the current translation
+/// unit.
+const std::string&
+translation_unit::get_compilation_dir_path() const
+{return priv_->comp_dir_path_;}
+
+/// Set the path of the directory that was 'current' when the
+/// translation unit was compiled.
+///
+/// Note that the path returned by translation_unit::get_path is
+/// relative to the path returned by this function.
+///
+/// @param the compilation directory for the current translation unit.
+void
+translation_unit::set_compilation_dir_path(const std::string& d)
+{priv_->comp_dir_path_ = d;}
+
+/// Get the concatenation of the build directory and the relative path
+/// of the translation unit.
+///
+/// @return the absolute path of the translation unit.
+const std::string&
+translation_unit::get_absolute_path() const
+{
+  if (priv_->abs_path_.empty())
+    {
+      string path;
+      if (!priv_->path_.empty())
+	{
+	  if (!priv_->comp_dir_path_.empty())
+	    {
+	      path = priv_->comp_dir_path_;
+	      path += "/";
+	    }
+	  path += priv_->path_;
+	}
+      priv_->abs_path_ = path;
+    }
+
+  return priv_->abs_path_;
+}
 
 /// Set the corpus this translation unit is a member of.
 ///

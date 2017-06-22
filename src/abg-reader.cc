@@ -1387,6 +1387,12 @@ read_translation_unit(read_context& ctxt, translation_unit& tu, xmlNodePtr node)
   if (path_str)
     tu.set_path(reinterpret_cast<char*>(path_str.get()));
 
+  xml::xml_char_sptr comp_dir_path_str =
+    XML_NODE_GET_ATTRIBUTE(node, "comp-dir-path");
+  if (comp_dir_path_str)
+    tu.set_compilation_dir_path(reinterpret_cast<char*>
+				(comp_dir_path_str.get()));
+
   xml::xml_char_sptr language_str = XML_NODE_GET_ATTRIBUTE(node, "language");
   if (language_str)
     tu.set_language(string_to_translation_unit_language

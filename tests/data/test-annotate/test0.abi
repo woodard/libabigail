@@ -35,7 +35,7 @@
     <!-- global -->
     <elf-symbol name='global' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
-  <abi-instr version='1.0' address-size='64' path='test0.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='test0.cc' comp-dir-path='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf' language='LANG_C_plus_plus'>
     <!-- namespace ns0 -->
     <namespace-decl name='ns0'>
       <!-- void ns0::bar(int, ...) -->

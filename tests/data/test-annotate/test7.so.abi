@@ -3,7 +3,7 @@
     <!-- foo(S&) -->
     <elf-symbol name='_Z3fooR1S' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
-  <abi-instr version='1.0' address-size='64' path='test7.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='test7.cc' comp-dir-path='/home/ooprala/rh/u/libabigail/tests/data/test-read-dwarf' language='LANG_C_plus_plus'>
     <!-- int -->
     <type-decl name='int' size-in-bits='32' id='type-id-1'/>
     <!-- struct S -->

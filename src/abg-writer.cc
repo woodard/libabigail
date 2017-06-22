@@ -1713,6 +1713,10 @@ write_translation_unit(const translation_unit&	tu,
   if (!tu.get_path().empty())
     o << " path='" << xml::escape_xml_string(tu.get_path()) << "'";
 
+  if (!tu.get_compilation_dir_path().empty())
+    o << " comp-dir-path='"
+      << xml::escape_xml_string(tu.get_compilation_dir_path()) << "'";
+
   if (tu.get_language() != translation_unit::LANG_UNKNOWN)
     o << " language='"
       << translation_unit_language_to_string(tu.get_language())

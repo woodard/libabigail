@@ -67,7 +67,7 @@
     <elf-symbol name='gluUnProject' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='gluUnProject4' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
-  <abi-instr version='1.0' address-size='64' path='libutil/error.c' language='LANG_C99'>
+  <abi-instr version='1.0' address-size='64' path='libutil/error.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C99'>
     <type-decl name='unsigned char' size-in-bits='8' id='type-id-1'/>
     <typedef-decl name='GLubyte' type-id='type-id-1' filepath='../../../include/GL/gl.h' line='156' column='1' id='type-id-2'/>
     <qualified-type-def type-id='type-id-2' const='yes' id='type-id-3'/>
@@ -79,7 +79,7 @@
       <return type-id='type-id-4'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libutil/mipmap.c' language='LANG_C99'>
+  <abi-instr version='1.0' address-size='64' path='libutil/mipmap.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C99'>
     <type-decl name='int' size-in-bits='32' id='type-id-7'/>
     <typedef-decl name='GLint' type-id='type-id-7' filepath='../../../include/GL/gl.h' line='155' column='1' id='type-id-8'/>
     <typedef-decl name='GLsizei' type-id='type-id-7' filepath='../../../include/GL/gl.h' line='159' column='1' id='type-id-9'/>
@@ -167,7 +167,7 @@
       <return type-id='type-id-8'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libutil/project.c' language='LANG_C99'>
+  <abi-instr version='1.0' address-size='64' path='libutil/project.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C99'>
     <type-decl name='double' size-in-bits='64' id='type-id-12'/>
     <typedef-decl name='GLdouble' type-id='type-id-12' filepath='../../../include/GL/gl.h' line='162' column='1' id='type-id-13'/>
     <qualified-type-def type-id='type-id-13' const='yes' id='type-id-14'/>
@@ -252,7 +252,7 @@
       <return type-id='type-id-10'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libutil/quad.c' language='LANG_C99'>
+  <abi-instr version='1.0' address-size='64' path='libutil/quad.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C99'>
     <class-decl name='GLUquadric' size-in-bits='192' is-struct='yes' visibility='default' filepath='libutil/quad.c' line='45' column='1' id='type-id-21'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='normals' type-id='type-id-8' visibility='default' filepath='libutil/quad.c' line='46' column='1'/>
@@ -351,7 +351,7 @@
       <return type-id='type-id-10'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libutil/registry.c' language='LANG_C99'>
+  <abi-instr version='1.0' address-size='64' path='libutil/registry.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C99'>
     <function-decl name='gluGetString' mangled-name='gluGetString' filepath='libutil/registry.c' line='44' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluGetString'>
       <parameter type-id='type-id-6' name='name' filepath='libutil/registry.c' line='44' column='1'/>
       <return type-id='type-id-4'/>
@@ -362,7 +362,7 @@
       <return type-id='type-id-22'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libtess/tess.c' language='LANG_C99'>
+  <abi-instr version='1.0' address-size='64' path='libtess/tess.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C99'>
     <class-decl name='GLUtesselator' size-in-bits='29376' is-struct='yes' visibility='default' filepath='libtess/tess.h' line='59' column='1' id='type-id-30'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='state' type-id='type-id-31' visibility='default' filepath='libtess/tess.h' line='63' column='1'/>
@@ -887,7 +887,7 @@
       <return type-id='type-id-10'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/interface/glcurveval.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/interface/glcurveval.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
     <class-decl name='CachingEvaluator' visibility='default' filepath='libnurbs/internals/cachingeval.h' line='39' column='1' is-declaration-only='yes' id='type-id-117'>
       <member-type access='private'>
         <enum-decl name='ServiceMode' filepath='libnurbs/internals/cachingeval.h' line='42' column='1' id='type-id-118'>
@@ -1425,7 +1425,7 @@
       <return type-id='type-id-10'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/interface/glinterface.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/interface/glinterface.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
     <class-decl name='OpenGLSurfaceEvaluator' size-in-bits='1074048' is-struct='yes' visibility='default' filepath='libnurbs/interface/glsurfeval.h' line='100' column='1' id='type-id-139'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-140'/>
       <data-member access='private' layout-offset-in-bits='64'>
@@ -8719,17 +8719,17 @@
       <subrange length='2'/>
     </array-type-def>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/interface/glrenderer.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/interface/glrenderer.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/interface/glsurfeval.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/interface/glsurfeval.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
     <typedef-decl name='bezierPatch' type-id='type-id-248' filepath='libnurbs/interface/bezierPatch.h' line='65' column='1' id='type-id-358'/>
     <typedef-decl name='bezierPatchMesh' type-id='type-id-161' filepath='libnurbs/interface/bezierPatchMesh.h' line='66' column='1' id='type-id-359'/>
     <class-decl name='SurfaceMap' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-160'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/arc.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/arc.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
     <class-decl name='BezierArc' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-277'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/arcsorter.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/arcsorter.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
     <class-decl name='ArcSorter' size-in-bits='192' visibility='default' filepath='libnurbs/internals/arcsorter.h' line='44' column='1' id='type-id-360'>
       <base-class access='private' layout-offset-in-bits='0' type-id='type-id-285'/>
       <data-member access='protected' layout-offset-in-bits='128'>
@@ -8819,29 +8819,29 @@
     </class-decl>
     <pointer-type-def type-id='type-id-367' size-in-bits='64' id='type-id-368'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/backend.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/backend.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/cachingeval.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/cachingeval.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/coveandtiler.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/coveandtiler.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/curve.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/curve.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/curvelist.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/curvelist.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/displaylist.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/displaylist.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/flist.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/flist.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/hull.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/hull.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/knotvector.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/knotvector.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/maplist.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/maplist.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/mesher.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/mesher.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/monoTriangulationBackend.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/monoTriangulationBackend.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
     <class-decl name='vertexArray' size-in-bits='128' visibility='default' filepath='libnurbs/nurbtess/monoTriangulation.h' line='77' column='1' id='type-id-369'>
       <data-member access='private' layout-offset-in-bits='0'>
         <var-decl name='array' type-id='type-id-370' visibility='default' filepath='libnurbs/nurbtess/monoTriangulation.h' line='78' column='1'/>
@@ -9054,17 +9054,17 @@
     </class-decl>
     <pointer-type-def type-id='type-id-373' size-in-bits='64' id='type-id-374'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/monotonizer.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/monotonizer.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/nurbsinterfac.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/nurbsinterfac.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/patch.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/patch.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/patchlist.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/patchlist.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/slicer.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/slicer.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/tobezier.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/tobezier.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
     <class-decl name='Knotspec' size-in-bits='1152' is-struct='yes' visibility='default' filepath='libnurbs/internals/tobezier.cc' line='54' column='1' id='type-id-375'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='order' type-id='type-id-55' visibility='default' filepath='libnurbs/internals/tobezier.cc' line='55' column='1'/>
@@ -9322,7 +9322,7 @@
     <pointer-type-def type-id='type-id-380' size-in-bits='64' id='type-id-381'/>
     <typedef-decl name='Quilt_ptr' type-id='type-id-216' filepath='libnurbs/internals/quilt.h' line='90' column='1' id='type-id-382'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/varray.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/internals/varray.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
     <class-decl name='Varray' size-in-bits='96192' visibility='default' filepath='libnurbs/internals/varray.h' line='43' column='1' id='type-id-383'>
       <data-member access='private' layout-offset-in-bits='0'>
         <var-decl name='varray' type-id='type-id-123' visibility='default' filepath='libnurbs/internals/varray.h' line='48' column='1'/>
@@ -9394,7 +9394,7 @@
     <pointer-type-def type-id='type-id-383' size-in-bits='64' id='type-id-386'/>
     <pointer-type-def type-id='type-id-55' size-in-bits='64' id='type-id-387'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/directedLine.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/directedLine.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
     <class-decl name='sampledLine' size-in-bits='192' visibility='default' filepath='libnurbs/nurbtess/sampledLine.h' line='38' column='1' id='type-id-388'>
       <data-member access='private' layout-offset-in-bits='0'>
         <var-decl name='npoints' type-id='type-id-325' visibility='default' filepath='libnurbs/nurbtess/sampledLine.h' line='39' column='1'/>
@@ -9878,7 +9878,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-325' size-in-bits='64' id='type-id-395'/>
     <pointer-type-def type-id='type-id-389' size-in-bits='64' id='type-id-396'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/monoChain.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/monoChain.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
     <class-decl name='monoChain' size-in-bits='640' visibility='default' filepath='libnurbs/nurbtess/monoChain.h' line='41' column='1' id='type-id-397'>
       <data-member access='private' layout-offset-in-bits='0'>
         <var-decl name='chainHead' type-id='type-id-392' visibility='default' filepath='libnurbs/nurbtess/monoChain.h' line='42' column='1'/>

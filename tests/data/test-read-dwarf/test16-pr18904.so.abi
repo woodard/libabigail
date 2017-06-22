@@ -1615,12 +1615,12 @@
     <elf-symbol name='__offload_myo_var_tables' size='48' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='__offload_myo_vtable_tables' size='48' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/dv_util.cpp' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/dv_util.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
 
 
 
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_common.cpp' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_common.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
 
 
 
@@ -1725,7 +1725,7 @@
     <typedef-decl name='int64_t' type-id='type-id-14' filepath='/usr/include/sys/types.h' line='197' column='1' id='type-id-10'/>
     <pointer-type-def type-id='type-id-2' size-in-bits='64' id='type-id-11'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_table.cpp' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_table.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
 
 
 
@@ -2538,7 +2538,7 @@
       <return type-id='type-id-1'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_trace.cpp' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_trace.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
       <namespace-decl name='__cxx11'>
         <class-decl name='basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' size-in-bits='256' visibility='default' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/basic_string.h' line='72' column='1' id='type-id-99'>
@@ -5901,12 +5901,12 @@
     <pointer-type-def type-id='type-id-146' size-in-bits='64' id='type-id-148'/>
     <typedef-decl name='_Atomic_word' type-id='type-id-31' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/x86_64-pc-linux-gnu/bits/atomic_word.h' line='32' column='1' id='type-id-147'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/cean_util.cpp' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/cean_util.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
 
 
 
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/coi/coi_client.cpp' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/coi/coi_client.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <namespace-decl name='COI'>
       <function-decl name='fini' mangled-name='_ZN3COI4finiEv' filepath='../../../gcc/liboffloadmic/runtime/coi/coi_client.cpp' line='482' column='1' visibility='default' binding='global' size-in-bits='64'>
         <return type-id='type-id-1'/>
@@ -6459,7 +6459,7 @@
       <return type-id='type-id-1'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/compiler_if_host.cpp' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/compiler_if_host.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
       <namespace-decl name='__cxx11'>
         <class-decl name='_List_base&lt;coibuffer*, std::allocator&lt;coibuffer*&gt; &gt;' size-in-bits='192' visibility='default' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/stl_list.h' line='300' column='1' id='type-id-468'>
@@ -25961,7 +25961,7 @@
       <class-decl name='__uses_alloc_base' size-in-bits='8' is-struct='yes' visibility='default' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/uses_allocator.h' line='59' column='1' id='type-id-2113'/>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_engine.cpp' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_engine.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
 
 
@@ -29093,7 +29093,7 @@
       <return type-id='type-id-59'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_env.cpp' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_env.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
       <namespace-decl name='__cxx11'>
         <class-decl name='list&lt;MicEnvVar::VarValue*, std::allocator&lt;MicEnvVar::VarValue*&gt; &gt;' size-in-bits='192' visibility='default' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/stl_list.h' line='503' column='1' id='type-id-2393'>
@@ -34251,7 +34251,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-2505' size-in-bits='64' id='type-id-2518'/>
     <pointer-type-def type-id='type-id-2508' size-in-bits='64' id='type-id-2519'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_host.cpp' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_host.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
 
 
@@ -35709,7 +35709,7 @@
     </enum-decl>
     <pointer-type-def type-id='type-id-3001' size-in-bits='64' id='type-id-3003'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
       <namespace-decl name='__cxx11'>
         <class-decl name='list&lt;MyoTable, std::allocator&lt;MyoTable&gt; &gt;' size-in-bits='192' visibility='default' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/stl_list.h' line='503' column='1' id='type-id-3004'>
@@ -37888,7 +37888,7 @@
       <return type-id='type-id-2'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
 
 
 
@@ -38055,7 +38055,7 @@
       <return type-id='type-id-1'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_orsl.cpp' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_orsl.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
 
 
 
@@ -38079,7 +38079,7 @@
       </function-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_timer_host.cpp' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_timer_host.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
 
 
@@ -38155,7 +38155,7 @@
     <var-decl name='offload_report_level' type-id='type-id-31' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_timer.h' line='76' column='1'/>
     <var-decl name='offload_report_enabled' type-id='type-id-31' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_timer.h' line='77' column='1'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' language='LANG_C99'>
+  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C99'>
     <class-decl name='ORSLBusySet' size-in-bits='1088' is-struct='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='52' column='1' id='type-id-3235'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='type' type-id='type-id-3236' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='53' column='1'/>

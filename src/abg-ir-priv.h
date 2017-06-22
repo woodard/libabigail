@@ -141,6 +141,8 @@ struct translation_unit::priv
   char						address_size_;
   language					language_;
   std::string					path_;
+  std::string					comp_dir_path_;
+  std::string					abs_path_;
   location_manager				loc_mgr_;
   mutable global_scope_sptr			global_scope_;
   mutable vector<type_base_sptr>		synthesized_types_;

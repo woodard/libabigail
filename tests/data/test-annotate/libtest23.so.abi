@@ -15,7 +15,7 @@
     <!-- _init -->
     <elf-symbol name='_init' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
-  <abi-instr version='1.0' address-size='64' path='test23-first-tu.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='test23-first-tu.cc' comp-dir-path='/home/dodji/git/libabigail/PR20369/tests/data/test-read-dwarf' language='LANG_C_plus_plus'>
     <!-- namespace std -->
     <namespace-decl name='std'>
 
@@ -2883,7 +2883,7 @@
 
 
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='test23-second-tu.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='test23-second-tu.cc' comp-dir-path='/home/dodji/git/libabigail/PR20369/tests/data/test-read-dwarf' language='LANG_C_plus_plus'>
 
 
 

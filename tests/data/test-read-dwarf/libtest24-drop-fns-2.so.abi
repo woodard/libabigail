@@ -11,7 +11,7 @@
     <elf-symbol name='_fini' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_init' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
-  <abi-instr version='1.0' address-size='64' path='test24-drop-fns.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='test24-drop-fns.cc' comp-dir-path='/home/dodji/git/libabigail.git/suppr/tests/data/test-read-dwarf' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
 
       <class-decl name='basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' size-in-bits='64' visibility='default' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2510' column='1' id='type-id-1'>

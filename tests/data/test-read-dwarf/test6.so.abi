@@ -16,7 +16,7 @@
     <elf-symbol name='_ZN1CIiE3barE' size='4' type='object-type' binding='gnu-unique-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZZN1B3fooEvE1a' size='4' type='object-type' binding='gnu-unique-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
-  <abi-instr version='1.0' address-size='64' path='test6.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='test6.cc' comp-dir-path='/home/skumari/Tasks/source_repo/dodji/libabigail/tests/data/test-read-dwarf' language='LANG_C_plus_plus'>
     <class-decl name='B' size-in-bits='8' is-struct='yes' visibility='default' filepath='/home/skumari/Tasks/source_repo/dodji/libabigail/tests/data/test-read-dwarf/test6.cc' line='9' column='1' id='type-id-1'>
       <member-function access='public'>
         <function-decl name='foo' mangled-name='_ZN1B3fooEv' filepath='/home/skumari/Tasks/source_repo/dodji/libabigail/tests/data/test-read-dwarf/test6.cc' line='11' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN1B3fooEv'>

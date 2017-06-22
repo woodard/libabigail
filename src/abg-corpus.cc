@@ -539,13 +539,13 @@ corpus::add(const translation_unit_sptr tu)
   assert(tu->get_environment() == get_environment());
 
   priv_->members.push_back(tu);
-  if (!tu->get_path().empty())
+  if (!tu->get_absolute_path().empty())
     {
       // Update the path -> translation_unit map.
       string_tu_map_type::const_iterator i =
-	priv_->path_tu_map.find(tu->get_path());
+	priv_->path_tu_map.find(tu->get_absolute_path());
       assert(i == priv_->path_tu_map.end());
-      priv_->path_tu_map[tu->get_path()] = tu;
+      priv_->path_tu_map[tu->get_absolute_path()] = tu;
     }
 
   tu->set_corpus(this);

@@ -13,7 +13,7 @@
     <!-- _init -->
     <elf-symbol name='_init' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
-  <abi-instr version='1.0' address-size='64' path='test8-qualified-this-pointer.cc' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='test8-qualified-this-pointer.cc' comp-dir-path='/home/dodji/git/libabigail/master/tests/data/test-read-dwarf' language='LANG_C_plus_plus'>
     <!-- struct S -->
     <class-decl name='S' size-in-bits='32' is-struct='yes' visibility='default' filepath='/home/dodji/git/libabigail/master/tests/data/test-read-dwarf/test8-qualified-this-pointer.cc' line='1' column='1' id='type-id-1'>
       <data-member access='public' layout-offset-in-bits='0'>

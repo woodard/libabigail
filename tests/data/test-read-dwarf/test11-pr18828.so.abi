@@ -633,7 +633,7 @@
     <elf-symbol name='_ZTVN5mongo23ExportedServerParameterIiEE' size='80' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZTVN5mongo36ExportedScramIterationCountParameterE' size='80' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
-  <abi-instr version='1.0' address-size='64' path='src/mongo/db/auth/sasl_options.cpp' language='LANG_C_plus_plus'>
+  <abi-instr version='1.0' address-size='64' path='src/mongo/db/auth/sasl_options.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
 
 
