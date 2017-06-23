@@ -11411,7 +11411,14 @@ compare_dies(const read_context& ctxt, Dwarf_Die *l, Dwarf_Die *r,
       //
       // In case 'r' has no canonical DIE, then compute it, and then
       // propagate that canonical DIE to 'r'.
-      if (!l_has_canonical_die_offset)
+      die_source l_source = NO_DEBUG_INFO_DIE_SOURCE,
+	r_source = NO_DEBUG_INFO_DIE_SOURCE;
+      assert(ctxt.get_die_source(l, l_source));
+      assert(ctxt.get_die_source(r, r_source));
+      if (!l_has_canonical_die_offset
+	  // A DIE can be equivalent only to another DIE of the same
+	  // source.
+	  && l_source == r_source)
 	{
 	  if (!r_has_canonical_die_offset)
 	    ctxt.compute_canonical_die_offset(r, r_canonical_die_offset,
