@@ -8714,12 +8714,14 @@ static bool
 die_this_pointer_is_const(Dwarf_Die* die)
 {
   assert(die);
-  assert(dwarf_tag(die) == DW_TAG_pointer_type);
 
-  Dwarf_Die pointed_to_type_die;
-  if (die_die_attribute(die, DW_AT_type, pointed_to_type_die))
-    if (dwarf_tag(&pointed_to_type_die) == DW_TAG_const_type)
-      return true;
+  if (dwarf_tag(die) == DW_TAG_pointer_type)
+    {
+      Dwarf_Die pointed_to_type_die;
+      if (die_die_attribute(die, DW_AT_type, pointed_to_type_die))
+	if (dwarf_tag(&pointed_to_type_die) == DW_TAG_const_type)
+	  return true;
+    }
 
   return false;
 }
