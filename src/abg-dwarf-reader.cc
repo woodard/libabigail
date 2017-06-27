@@ -569,6 +569,7 @@ stv_to_elf_symbol_visibility(unsigned char stv)
       break;
     case STV_PROTECTED:
       v = elf_symbol::PROTECTED_VISIBILITY;
+      break;
     default:
       ABG_ASSERT_NOT_REACHED;
     }
