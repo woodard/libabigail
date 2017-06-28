@@ -12116,7 +12116,6 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
       result->set_language(dwarf_language_to_tu_language(l));
     }
 
-  ctxt.current_corpus()->add(result);
   ctxt.cur_transl_unit(result);
   ctxt.die_tu_map()[dwarf_dieoffset(die)] = result;
 
