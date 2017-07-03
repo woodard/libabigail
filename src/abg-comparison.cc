@@ -3155,7 +3155,7 @@ report_size_and_alignment_changes(type_or_decl_base_sptr	first,
     second_class = is_class_or_union_type(second);
 
   if (filtering::has_class_decl_only_def_change(first_class, second_class)
-      && !ctxt->get_allowed_category() & CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY)
+      && !(ctxt->get_allowed_category() & CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY))
     // So these two classes differ only by the fact that one is the
     // declaration-only form of the second.  And the user asked that
     // this kind of change be filtered out, so do not report any size
