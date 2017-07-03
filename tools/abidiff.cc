@@ -954,7 +954,8 @@ main(int argc, char* argv[])
 	      if (c1_status
 		  & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
 		{
-		  emit_prefix(argv[0], cerr) << "could not find the debug info";
+		  emit_prefix(argv[0], cerr) <<
+		    "could not find the debug info\n";
 		  if (di_dir1 == 0)
 		    emit_prefix(argv[0], cerr)
 		      << " Maybe you should consider using the "
@@ -985,7 +986,8 @@ main(int argc, char* argv[])
 	      if (c2_status
 		  & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
 		{
-		  emit_prefix(argv[0], cerr) << "could not find the debug info";
+		  emit_prefix(argv[0], cerr) <<
+		    "could not find the debug info\n";
 		  if (di_dir2 == 0)
 		    emit_prefix(argv[0], cerr)
 		      << " Maybe you should consider using the "
