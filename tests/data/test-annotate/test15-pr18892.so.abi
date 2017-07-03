@@ -40091,7 +40091,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
     <!-- struct backtrace_state -->
-    <class-decl name='backtrace_state' size-in-bits='576' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='127' column='1' id='type-id-1670'>
+    <class-decl name='backtrace_state' size-in-bits='576' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='127' column='1' id='type-id-1682'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- const char* backtrace_state::filename -->
         <var-decl name='filename' type-id='type-id-30' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='130' column='1'/>
@@ -40106,7 +40106,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
         <!-- fileline backtrace_state::fileline_fn -->
-        <var-decl name='fileline_fn' type-id='type-id-1682' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='138' column='1'/>
+        <var-decl name='fileline_fn' type-id='type-id-1683' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='138' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
         <!-- void* backtrace_state::fileline_data -->
@@ -40114,7 +40114,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
         <!-- syminfo backtrace_state::syminfo_fn -->
-        <var-decl name='syminfo_fn' type-id='type-id-1683' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='142' column='1'/>
+        <var-decl name='syminfo_fn' type-id='type-id-1684' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='142' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
         <!-- void* backtrace_state::syminfo_data -->
@@ -40130,51 +40130,53 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='512'>
         <!-- backtrace_freelist_struct* backtrace_state::freelist -->
-        <var-decl name='freelist' type-id='type-id-1684' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='150' column='1'/>
+        <var-decl name='freelist' type-id='type-id-1685' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='150' column='1'/>
       </data-member>
     </class-decl>
+    <!-- backtrace_state* -->
+    <pointer-type-def type-id='type-id-1682' size-in-bits='64' id='type-id-1686'/>
     <!-- int (backtrace_state*, typedef uintptr_t, typedef backtrace_full_callback, typedef backtrace_error_callback, void*)* -->
-    <pointer-type-def type-id='type-id-1685' size-in-bits='64' id='type-id-1686'/>
-    <!-- typedef int (backtrace_state*, typedef uintptr_t, typedef backtrace_full_callback, typedef backtrace_error_callback, void*)* fileline -->
-    <typedef-decl name='fileline' type-id='type-id-1686' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='114' column='1' id='type-id-1682'/>
-    <!-- void (backtrace_state*, typedef uintptr_t, typedef backtrace_syminfo_callback, typedef backtrace_error_callback, void*)* -->
     <pointer-type-def type-id='type-id-1687' size-in-bits='64' id='type-id-1688'/>
+    <!-- typedef int (backtrace_state*, typedef uintptr_t, typedef backtrace_full_callback, typedef backtrace_error_callback, void*)* fileline -->
+    <typedef-decl name='fileline' type-id='type-id-1688' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='114' column='1' id='type-id-1683'/>
+    <!-- void (backtrace_state*, typedef uintptr_t, typedef backtrace_syminfo_callback, typedef backtrace_error_callback, void*)* -->
+    <pointer-type-def type-id='type-id-1689' size-in-bits='64' id='type-id-1690'/>
     <!-- typedef void (backtrace_state*, typedef uintptr_t, typedef backtrace_syminfo_callback, typedef backtrace_error_callback, void*)* syminfo -->
-    <typedef-decl name='syminfo' type-id='type-id-1688' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='121' column='1' id='type-id-1683'/>
+    <typedef-decl name='syminfo' type-id='type-id-1690' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='121' column='1' id='type-id-1684'/>
     <!-- struct backtrace_freelist_struct -->
-    <class-decl name='backtrace_freelist_struct' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1689'/>
+    <class-decl name='backtrace_freelist_struct' size-in-bits='128' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1691'/>
     <!-- backtrace_freelist_struct* -->
-    <pointer-type-def type-id='type-id-1689' size-in-bits='64' id='type-id-1684'/>
+    <pointer-type-def type-id='type-id-1691' size-in-bits='64' id='type-id-1685'/>
     <!-- const unsigned char -->
-    <qualified-type-def type-id='type-id-63' const='yes' id='type-id-1690'/>
+    <qualified-type-def type-id='type-id-63' const='yes' id='type-id-1692'/>
     <!-- const unsigned char* -->
-    <pointer-type-def type-id='type-id-1690' size-in-bits='64' id='type-id-1691'/>
+    <pointer-type-def type-id='type-id-1692' size-in-bits='64' id='type-id-1693'/>
     <!-- fileline* -->
-    <pointer-type-def type-id='type-id-1682' size-in-bits='64' id='type-id-1692'/>
+    <pointer-type-def type-id='type-id-1683' size-in-bits='64' id='type-id-1694'/>
     <!-- int __asan_backtrace_dwarf_add(backtrace_state*, uintptr_t, const unsigned char*, size_t, const unsigned char*, size_t, const unsigned char*, size_t, const unsigned char*, size_t, const unsigned char*, size_t, int, backtrace_error_callback, void*, fileline*) -->
     <function-decl name='__asan_backtrace_dwarf_add' mangled-name='__asan_backtrace_dwarf_add' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2958' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_dwarf_add'>
       <!-- parameter of type 'backtrace_state*' -->
-      <parameter type-id='type-id-1671' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2958' column='1'/>
+      <parameter type-id='type-id-1686' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2958' column='1'/>
       <!-- parameter of type 'typedef uintptr_t' -->
       <parameter type-id='type-id-1675' name='base_address' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2959' column='1'/>
       <!-- parameter of type 'const unsigned char*' -->
-      <parameter type-id='type-id-1691' name='dwarf_info' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2960' column='1'/>
+      <parameter type-id='type-id-1693' name='dwarf_info' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2960' column='1'/>
       <!-- parameter of type 'typedef size_t' -->
       <parameter type-id='type-id-1512' name='dwarf_info_size' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2961' column='1'/>
       <!-- parameter of type 'const unsigned char*' -->
-      <parameter type-id='type-id-1691' name='dwarf_line' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2962' column='1'/>
+      <parameter type-id='type-id-1693' name='dwarf_line' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2962' column='1'/>
       <!-- parameter of type 'typedef size_t' -->
       <parameter type-id='type-id-1512' name='dwarf_line_size' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2963' column='1'/>
       <!-- parameter of type 'const unsigned char*' -->
-      <parameter type-id='type-id-1691' name='dwarf_abbrev' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2964' column='1'/>
+      <parameter type-id='type-id-1693' name='dwarf_abbrev' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2964' column='1'/>
       <!-- parameter of type 'typedef size_t' -->
       <parameter type-id='type-id-1512' name='dwarf_abbrev_size' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2965' column='1'/>
       <!-- parameter of type 'const unsigned char*' -->
-      <parameter type-id='type-id-1691' name='dwarf_ranges' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2966' column='1'/>
+      <parameter type-id='type-id-1693' name='dwarf_ranges' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2966' column='1'/>
       <!-- parameter of type 'typedef size_t' -->
       <parameter type-id='type-id-1512' name='dwarf_ranges_size' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2967' column='1'/>
       <!-- parameter of type 'const unsigned char*' -->
-      <parameter type-id='type-id-1691' name='dwarf_str' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2968' column='1'/>
+      <parameter type-id='type-id-1693' name='dwarf_str' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2968' column='1'/>
       <!-- parameter of type 'typedef size_t' -->
       <parameter type-id='type-id-1512' name='dwarf_str_size' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2969' column='1'/>
       <!-- parameter of type 'int' -->
@@ -40184,12 +40186,12 @@
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-3' name='data' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2972' column='1'/>
       <!-- parameter of type 'fileline*' -->
-      <parameter type-id='type-id-1692' name='fileline_fn' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2972' column='1'/>
+      <parameter type-id='type-id-1694' name='fileline_fn' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2972' column='1'/>
       <!-- int -->
       <return type-id='type-id-13'/>
     </function-decl>
     <!-- struct backtrace_vector -->
-    <class-decl name='backtrace_vector' size-in-bits='192' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='221' column='1' id='type-id-1693'>
+    <class-decl name='backtrace_vector' size-in-bits='192' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='221' column='1' id='type-id-1695'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- void* backtrace_vector::base -->
         <var-decl name='base' type-id='type-id-3' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='224' column='1'/>
@@ -40204,11 +40206,11 @@
       </data-member>
     </class-decl>
     <!-- backtrace_vector* -->
-    <pointer-type-def type-id='type-id-1693' size-in-bits='64' id='type-id-1694'/>
+    <pointer-type-def type-id='type-id-1695' size-in-bits='64' id='type-id-1696'/>
     <!-- void* __asan_backtrace_vector_grow(backtrace_state*, size_t, backtrace_error_callback, void*, backtrace_vector*) -->
     <function-decl name='__asan_backtrace_vector_grow' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='235' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'backtrace_state*' -->
-      <parameter type-id='type-id-1671'/>
+      <parameter type-id='type-id-1686'/>
       <!-- parameter of type 'typedef size_t' -->
       <parameter type-id='type-id-1512'/>
       <!-- parameter of type 'typedef backtrace_error_callback' -->
@@ -40216,7 +40218,7 @@
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-3'/>
       <!-- parameter of type 'backtrace_vector*' -->
-      <parameter type-id='type-id-1694'/>
+      <parameter type-id='type-id-1696'/>
       <!-- void* -->
       <return type-id='type-id-3'/>
     </function-decl>
@@ -40235,7 +40237,7 @@
     <!-- void __asan_backtrace_free(backtrace_state*, void*, size_t, backtrace_error_callback, void*) -->
     <function-decl name='__asan_backtrace_free' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='212' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'backtrace_state*' -->
-      <parameter type-id='type-id-1671'/>
+      <parameter type-id='type-id-1686'/>
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-3'/>
       <!-- parameter of type 'typedef size_t' -->
@@ -40259,7 +40261,7 @@
       <return type-id='type-id-3'/>
     </function-decl>
     <!-- typedef int (void*, void*)* __compar_fn_t -->
-    <typedef-decl name='__compar_fn_t' type-id='type-id-1063' filepath='/usr/include/stdlib.h' line='742' column='1' id='type-id-1695'/>
+    <typedef-decl name='__compar_fn_t' type-id='type-id-1063' filepath='/usr/include/stdlib.h' line='742' column='1' id='type-id-1697'/>
     <!-- void* bsearch(void*, void*, size_t, size_t, __compar_fn_t) -->
     <function-decl name='bsearch' filepath='/usr/include/stdlib.h' line='755' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'void*' -->
@@ -40271,7 +40273,7 @@
       <!-- parameter of type 'typedef size_t' -->
       <parameter type-id='type-id-1512'/>
       <!-- parameter of type 'typedef __compar_fn_t' -->
-      <parameter type-id='type-id-1695'/>
+      <parameter type-id='type-id-1697'/>
       <!-- void* -->
       <return type-id='type-id-3'/>
     </function-decl>
@@ -40296,7 +40298,7 @@
     <!-- void* __asan_backtrace_alloc(backtrace_state*, size_t, backtrace_error_callback, void*) -->
     <function-decl name='__asan_backtrace_alloc' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='206' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'backtrace_state*' -->
-      <parameter type-id='type-id-1671'/>
+      <parameter type-id='type-id-1686'/>
       <!-- parameter of type 'typedef size_t' -->
       <parameter type-id='type-id-1512'/>
       <!-- parameter of type 'typedef backtrace_error_callback' -->
@@ -40322,9 +40324,9 @@
     <!-- int __asan_backtrace_vector_release(backtrace_state*, backtrace_vector*, backtrace_error_callback, void*) -->
     <function-decl name='__asan_backtrace_vector_release' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='253' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'backtrace_state*' -->
-      <parameter type-id='type-id-1671'/>
+      <parameter type-id='type-id-1686'/>
       <!-- parameter of type 'backtrace_vector*' -->
-      <parameter type-id='type-id-1694'/>
+      <parameter type-id='type-id-1696'/>
       <!-- parameter of type 'typedef backtrace_error_callback' -->
       <parameter type-id='type-id-1674'/>
       <!-- parameter of type 'void*' -->
@@ -40333,9 +40335,9 @@
       <return type-id='type-id-13'/>
     </function-decl>
     <!-- int (backtrace_state*, uintptr_t, backtrace_full_callback, backtrace_error_callback, void*) -->
-    <function-type size-in-bits='64' id='type-id-1685'>
+    <function-type size-in-bits='64' id='type-id-1687'>
       <!-- parameter of type 'backtrace_state*' -->
-      <parameter type-id='type-id-1671'/>
+      <parameter type-id='type-id-1686'/>
       <!-- parameter of type 'typedef uintptr_t' -->
       <parameter type-id='type-id-1675'/>
       <!-- parameter of type 'typedef backtrace_full_callback' -->
@@ -40348,9 +40350,9 @@
       <return type-id='type-id-13'/>
     </function-type>
     <!-- void (backtrace_state*, uintptr_t, backtrace_syminfo_callback, backtrace_error_callback, void*) -->
-    <function-type size-in-bits='64' id='type-id-1687'>
+    <function-type size-in-bits='64' id='type-id-1689'>
       <!-- parameter of type 'backtrace_state*' -->
-      <parameter type-id='type-id-1671'/>
+      <parameter type-id='type-id-1686'/>
       <!-- parameter of type 'typedef uintptr_t' -->
       <parameter type-id='type-id-1675'/>
       <!-- parameter of type 'typedef backtrace_syminfo_callback' -->
@@ -40380,7 +40382,7 @@
     <!-- int __asan_backtrace_initialize(backtrace_state*, int, backtrace_error_callback, void*, fileline*) -->
     <function-decl name='__asan_backtrace_initialize' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='268' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'backtrace_state*' -->
-      <parameter type-id='type-id-1671'/>
+      <parameter type-id='type-id-1686'/>
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-13'/>
       <!-- parameter of type 'typedef backtrace_error_callback' -->
@@ -40388,7 +40390,7 @@
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-3'/>
       <!-- parameter of type 'fileline*' -->
-      <parameter type-id='type-id-1692'/>
+      <parameter type-id='type-id-1694'/>
       <!-- int -->
       <return type-id='type-id-13'/>
     </function-decl>
@@ -40439,18 +40441,18 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
     <!-- struct demangle_component -->
-    <class-decl name='demangle_component' size-in-bits='192' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='453' column='1' id='type-id-1696'>
+    <class-decl name='demangle_component' size-in-bits='192' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='453' column='1' id='type-id-1698'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- demangle_component_type demangle_component::type -->
-        <var-decl name='type' type-id='type-id-1697' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='456' column='1'/>
+        <var-decl name='type' type-id='type-id-1699' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='456' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- __anonymous_union__ demangle_component::u -->
-        <var-decl name='u' type-id='type-id-1698' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='560' column='1'/>
+        <var-decl name='u' type-id='type-id-1700' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='560' column='1'/>
       </data-member>
     </class-decl>
     <!-- enum demangle_component_type -->
-    <enum-decl name='demangle_component_type' filepath='../../.././libsanitizer/../include/demangle.h' line='223' column='1' id='type-id-1697'>
+    <enum-decl name='demangle_component_type' filepath='../../.././libsanitizer/../include/demangle.h' line='223' column='1' id='type-id-1699'>
       <underlying-type type-id='type-id-8'/>
       <enumerator name='DEMANGLE_COMPONENT_NAME' value='0'/>
       <enumerator name='DEMANGLE_COMPONENT_QUAL_NAME' value='1'/>
@@ -40530,58 +40532,58 @@
       <enumerator name='DEMANGLE_COMPONENT_CLONE' value='75'/>
     </enum-decl>
     <!-- union __anonymous_union__ -->
-    <union-decl name='__anonymous_union__' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='458' column='1' id='type-id-1698'>
+    <union-decl name='__anonymous_union__' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='458' column='1' id='type-id-1700'>
       <data-member access='private'>
         <!-- __anonymous_struct__ __anonymous_union__::s_name -->
-        <var-decl name='s_name' type-id='type-id-1699' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='467' column='1'/>
+        <var-decl name='s_name' type-id='type-id-1701' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='467' column='1'/>
       </data-member>
       <data-member access='private'>
         <!-- __anonymous_struct__ __anonymous_union__::s_operator -->
-        <var-decl name='s_operator' type-id='type-id-1700' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='474' column='1'/>
+        <var-decl name='s_operator' type-id='type-id-1702' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='474' column='1'/>
       </data-member>
       <data-member access='private'>
         <!-- __anonymous_struct__ __anonymous_union__::s_extended_operator -->
-        <var-decl name='s_extended_operator' type-id='type-id-1701' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='483' column='1'/>
+        <var-decl name='s_extended_operator' type-id='type-id-1703' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='483' column='1'/>
       </data-member>
       <data-member access='private'>
         <!-- __anonymous_struct__ __anonymous_union__::s_fixed -->
-        <var-decl name='s_fixed' type-id='type-id-1702' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='494' column='1'/>
+        <var-decl name='s_fixed' type-id='type-id-1704' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='494' column='1'/>
       </data-member>
       <data-member access='private'>
         <!-- __anonymous_struct__ __anonymous_union__::s_ctor -->
-        <var-decl name='s_ctor' type-id='type-id-1703' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='503' column='1'/>
+        <var-decl name='s_ctor' type-id='type-id-1705' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='503' column='1'/>
       </data-member>
       <data-member access='private'>
         <!-- __anonymous_struct__ __anonymous_union__::s_dtor -->
-        <var-decl name='s_dtor' type-id='type-id-1704' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='512' column='1'/>
+        <var-decl name='s_dtor' type-id='type-id-1706' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='512' column='1'/>
       </data-member>
       <data-member access='private'>
         <!-- __anonymous_struct__ __anonymous_union__::s_builtin -->
-        <var-decl name='s_builtin' type-id='type-id-1705' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='519' column='1'/>
+        <var-decl name='s_builtin' type-id='type-id-1707' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='519' column='1'/>
       </data-member>
       <data-member access='private'>
         <!-- __anonymous_struct__ __anonymous_union__::s_string -->
-        <var-decl name='s_string' type-id='type-id-1706' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='528' column='1'/>
+        <var-decl name='s_string' type-id='type-id-1708' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='528' column='1'/>
       </data-member>
       <data-member access='private'>
         <!-- __anonymous_struct__ __anonymous_union__::s_number -->
-        <var-decl name='s_number' type-id='type-id-1707' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='535' column='1'/>
+        <var-decl name='s_number' type-id='type-id-1709' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='535' column='1'/>
       </data-member>
       <data-member access='private'>
         <!-- __anonymous_struct__ __anonymous_union__::s_character -->
-        <var-decl name='s_character' type-id='type-id-1708' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='541' column='1'/>
+        <var-decl name='s_character' type-id='type-id-1710' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='541' column='1'/>
       </data-member>
       <data-member access='private'>
         <!-- __anonymous_struct__ __anonymous_union__::s_binary -->
-        <var-decl name='s_binary' type-id='type-id-1709' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='550' column='1'/>
+        <var-decl name='s_binary' type-id='type-id-1711' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='550' column='1'/>
       </data-member>
       <data-member access='private'>
         <!-- __anonymous_struct__ __anonymous_union__::s_unary_num -->
-        <var-decl name='s_unary_num' type-id='type-id-1710' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='558' column='1'/>
+        <var-decl name='s_unary_num' type-id='type-id-1712' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='558' column='1'/>
       </data-member>
     </union-decl>
     <!-- struct __anonymous_struct__ -->
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='461' column='1' id='type-id-1699'>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='461' column='1' id='type-id-1701'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- const char* __anonymous_struct__::s -->
         <var-decl name='s' type-id='type-id-30' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='465' column='1'/>
@@ -40592,14 +40594,14 @@
       </data-member>
     </class-decl>
     <!-- struct __anonymous_struct__ -->
-    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='470' column='1' id='type-id-1700'>
+    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='470' column='1' id='type-id-1702'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- const demangle_operator_info* __anonymous_struct__::op -->
-        <var-decl name='op' type-id='type-id-1711' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='473' column='1'/>
+        <var-decl name='op' type-id='type-id-1713' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='473' column='1'/>
       </data-member>
     </class-decl>
     <!-- struct demangle_operator_info -->
-    <class-decl name='demangle_operator_info' size-in-bits='192' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.h' line='37' column='1' id='type-id-1712'>
+    <class-decl name='demangle_operator_info' size-in-bits='192' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.h' line='37' column='1' id='type-id-1714'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- const char* demangle_operator_info::code -->
         <var-decl name='code' type-id='type-id-30' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.h' line='40' column='1'/>
@@ -40618,27 +40620,27 @@
       </data-member>
     </class-decl>
     <!-- const demangle_operator_info -->
-    <qualified-type-def type-id='type-id-1712' const='yes' id='type-id-1713'/>
+    <qualified-type-def type-id='type-id-1714' const='yes' id='type-id-1715'/>
     <!-- const demangle_operator_info* -->
-    <pointer-type-def type-id='type-id-1713' size-in-bits='64' id='type-id-1711'/>
+    <pointer-type-def type-id='type-id-1715' size-in-bits='64' id='type-id-1713'/>
     <!-- struct __anonymous_struct__ -->
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='477' column='1' id='type-id-1701'>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='477' column='1' id='type-id-1703'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- int __anonymous_struct__::args -->
         <var-decl name='args' type-id='type-id-13' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='480' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- demangle_component* __anonymous_struct__::name -->
-        <var-decl name='name' type-id='type-id-1714' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='482' column='1'/>
+        <var-decl name='name' type-id='type-id-1716' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='482' column='1'/>
       </data-member>
     </class-decl>
     <!-- demangle_component* -->
-    <pointer-type-def type-id='type-id-1696' size-in-bits='64' id='type-id-1714'/>
+    <pointer-type-def type-id='type-id-1698' size-in-bits='64' id='type-id-1716'/>
     <!-- struct __anonymous_struct__ -->
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='486' column='1' id='type-id-1702'>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='486' column='1' id='type-id-1704'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- demangle_component* __anonymous_struct__::length -->
-        <var-decl name='length' type-id='type-id-1714' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='489' column='1'/>
+        <var-decl name='length' type-id='type-id-1716' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='489' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- short int __anonymous_struct__::accum -->
@@ -40650,18 +40652,18 @@
       </data-member>
     </class-decl>
     <!-- struct __anonymous_struct__ -->
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='497' column='1' id='type-id-1703'>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='497' column='1' id='type-id-1705'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- gnu_v3_ctor_kinds __anonymous_struct__::kind -->
-        <var-decl name='kind' type-id='type-id-1715' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='500' column='1'/>
+        <var-decl name='kind' type-id='type-id-1717' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='500' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- demangle_component* __anonymous_struct__::name -->
-        <var-decl name='name' type-id='type-id-1714' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='502' column='1'/>
+        <var-decl name='name' type-id='type-id-1716' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='502' column='1'/>
       </data-member>
     </class-decl>
     <!-- enum gnu_v3_ctor_kinds -->
-    <enum-decl name='gnu_v3_ctor_kinds' filepath='../../.././libsanitizer/../include/demangle.h' line='172' column='1' id='type-id-1715'>
+    <enum-decl name='gnu_v3_ctor_kinds' filepath='../../.././libsanitizer/../include/demangle.h' line='172' column='1' id='type-id-1717'>
       <underlying-type type-id='type-id-8'/>
       <enumerator name='gnu_v3_complete_object_ctor' value='1'/>
       <enumerator name='gnu_v3_base_object_ctor' value='2'/>
@@ -40670,18 +40672,18 @@
       <enumerator name='gnu_v3_object_ctor_group' value='5'/>
     </enum-decl>
     <!-- struct __anonymous_struct__ -->
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='506' column='1' id='type-id-1704'>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='506' column='1' id='type-id-1706'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- gnu_v3_dtor_kinds __anonymous_struct__::kind -->
-        <var-decl name='kind' type-id='type-id-1716' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='509' column='1'/>
+        <var-decl name='kind' type-id='type-id-1718' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='509' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- demangle_component* __anonymous_struct__::name -->
-        <var-decl name='name' type-id='type-id-1714' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='511' column='1'/>
+        <var-decl name='name' type-id='type-id-1716' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='511' column='1'/>
       </data-member>
     </class-decl>
     <!-- enum gnu_v3_dtor_kinds -->
-    <enum-decl name='gnu_v3_dtor_kinds' filepath='../../.././libsanitizer/../include/demangle.h' line='191' column='1' id='type-id-1716'>
+    <enum-decl name='gnu_v3_dtor_kinds' filepath='../../.././libsanitizer/../include/demangle.h' line='191' column='1' id='type-id-1718'>
       <underlying-type type-id='type-id-8'/>
       <enumerator name='gnu_v3_deleting_dtor' value='1'/>
       <enumerator name='gnu_v3_complete_object_dtor' value='2'/>
@@ -40690,14 +40692,14 @@
       <enumerator name='gnu_v3_object_dtor_group' value='5'/>
     </enum-decl>
     <!-- struct __anonymous_struct__ -->
-    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='515' column='1' id='type-id-1705'>
+    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='515' column='1' id='type-id-1707'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- const demangle_builtin_type_info* __anonymous_struct__::type -->
-        <var-decl name='type' type-id='type-id-1717' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='518' column='1'/>
+        <var-decl name='type' type-id='type-id-1719' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='518' column='1'/>
       </data-member>
     </class-decl>
     <!-- struct demangle_builtin_type_info -->
-    <class-decl name='demangle_builtin_type_info' size-in-bits='256' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.h' line='77' column='1' id='type-id-1718'>
+    <class-decl name='demangle_builtin_type_info' size-in-bits='256' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.h' line='77' column='1' id='type-id-1720'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- const char* demangle_builtin_type_info::name -->
         <var-decl name='name' type-id='type-id-30' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.h' line='80' column='1'/>
@@ -40716,11 +40718,11 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='224'>
         <!-- d_builtin_type_print demangle_builtin_type_info::print -->
-        <var-decl name='print' type-id='type-id-1719' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.h' line='88' column='1'/>
+        <var-decl name='print' type-id='type-id-1721' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.h' line='88' column='1'/>
       </data-member>
     </class-decl>
     <!-- enum d_builtin_type_print -->
-    <enum-decl name='d_builtin_type_print' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.h' line='51' column='1' id='type-id-1719'>
+    <enum-decl name='d_builtin_type_print' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.h' line='51' column='1' id='type-id-1721'>
       <underlying-type type-id='type-id-8'/>
       <enumerator name='D_PRINT_DEFAULT' value='0'/>
       <enumerator name='D_PRINT_INT' value='1'/>
@@ -40734,11 +40736,11 @@
       <enumerator name='D_PRINT_VOID' value='9'/>
     </enum-decl>
     <!-- const demangle_builtin_type_info -->
-    <qualified-type-def type-id='type-id-1718' const='yes' id='type-id-1720'/>
+    <qualified-type-def type-id='type-id-1720' const='yes' id='type-id-1722'/>
     <!-- const demangle_builtin_type_info* -->
-    <pointer-type-def type-id='type-id-1720' size-in-bits='64' id='type-id-1717'/>
+    <pointer-type-def type-id='type-id-1722' size-in-bits='64' id='type-id-1719'/>
     <!-- struct __anonymous_struct__ -->
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='522' column='1' id='type-id-1706'>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='522' column='1' id='type-id-1708'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- const char* __anonymous_struct__::string -->
         <var-decl name='string' type-id='type-id-30' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='525' column='1'/>
@@ -40749,35 +40751,35 @@
       </data-member>
     </class-decl>
     <!-- struct __anonymous_struct__ -->
-    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='531' column='1' id='type-id-1707'>
+    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='531' column='1' id='type-id-1709'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- long int __anonymous_struct__::number -->
         <var-decl name='number' type-id='type-id-277' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='534' column='1'/>
       </data-member>
     </class-decl>
     <!-- struct __anonymous_struct__ -->
-    <class-decl name='__anonymous_struct__' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='538' column='1' id='type-id-1708'>
+    <class-decl name='__anonymous_struct__' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='538' column='1' id='type-id-1710'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- int __anonymous_struct__::character -->
         <var-decl name='character' type-id='type-id-13' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='540' column='1'/>
       </data-member>
     </class-decl>
     <!-- struct __anonymous_struct__ -->
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='544' column='1' id='type-id-1709'>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='544' column='1' id='type-id-1711'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- demangle_component* __anonymous_struct__::left -->
-        <var-decl name='left' type-id='type-id-1714' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='547' column='1'/>
+        <var-decl name='left' type-id='type-id-1716' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='547' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- demangle_component* __anonymous_struct__::right -->
-        <var-decl name='right' type-id='type-id-1714' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='549' column='1'/>
+        <var-decl name='right' type-id='type-id-1716' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='549' column='1'/>
       </data-member>
     </class-decl>
     <!-- struct __anonymous_struct__ -->
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='552' column='1' id='type-id-1710'>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='552' column='1' id='type-id-1712'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- demangle_component* __anonymous_struct__::sub -->
-        <var-decl name='sub' type-id='type-id-1714' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='555' column='1'/>
+        <var-decl name='sub' type-id='type-id-1716' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='555' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- int __anonymous_struct__::num -->
@@ -40787,7 +40789,7 @@
     <!-- int __asan_cplus_demangle_fill_name(demangle_component*, const char*, int) -->
     <function-decl name='__asan_cplus_demangle_fill_name' mangled-name='__asan_cplus_demangle_fill_name' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='783' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_cplus_demangle_fill_name'>
       <!-- parameter of type 'demangle_component*' -->
-      <parameter type-id='type-id-1714' name='p' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='783' column='1'/>
+      <parameter type-id='type-id-1716' name='p' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='783' column='1'/>
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-30' name='s' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='783' column='1'/>
       <!-- parameter of type 'int' -->
@@ -40798,38 +40800,38 @@
     <!-- int __asan_cplus_demangle_fill_extended_operator(demangle_component*, int, demangle_component*) -->
     <function-decl name='__asan_cplus_demangle_fill_extended_operator' mangled-name='__asan_cplus_demangle_fill_extended_operator' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='797' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_cplus_demangle_fill_extended_operator'>
       <!-- parameter of type 'demangle_component*' -->
-      <parameter type-id='type-id-1714' name='p' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='797' column='1'/>
+      <parameter type-id='type-id-1716' name='p' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='797' column='1'/>
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-13' name='args' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='797' column='1'/>
       <!-- parameter of type 'demangle_component*' -->
-      <parameter type-id='type-id-1714' name='name' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='798' column='1'/>
+      <parameter type-id='type-id-1716' name='name' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='798' column='1'/>
       <!-- int -->
       <return type-id='type-id-13'/>
     </function-decl>
     <!-- int __asan_cplus_demangle_fill_ctor(demangle_component*, gnu_v3_ctor_kinds, demangle_component*) -->
     <function-decl name='__asan_cplus_demangle_fill_ctor' mangled-name='__asan_cplus_demangle_fill_ctor' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='812' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_cplus_demangle_fill_ctor'>
       <!-- parameter of type 'demangle_component*' -->
-      <parameter type-id='type-id-1714' name='p' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='812' column='1'/>
+      <parameter type-id='type-id-1716' name='p' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='812' column='1'/>
       <!-- parameter of type 'enum gnu_v3_ctor_kinds' -->
-      <parameter type-id='type-id-1715' name='kind' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='813' column='1'/>
+      <parameter type-id='type-id-1717' name='kind' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='813' column='1'/>
       <!-- parameter of type 'demangle_component*' -->
-      <parameter type-id='type-id-1714' name='name' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='814' column='1'/>
+      <parameter type-id='type-id-1716' name='name' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='814' column='1'/>
       <!-- int -->
       <return type-id='type-id-13'/>
     </function-decl>
     <!-- int __asan_cplus_demangle_fill_dtor(demangle_component*, gnu_v3_dtor_kinds, demangle_component*) -->
     <function-decl name='__asan_cplus_demangle_fill_dtor' mangled-name='__asan_cplus_demangle_fill_dtor' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='831' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_cplus_demangle_fill_dtor'>
       <!-- parameter of type 'demangle_component*' -->
-      <parameter type-id='type-id-1714' name='p' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='831' column='1'/>
+      <parameter type-id='type-id-1716' name='p' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='831' column='1'/>
       <!-- parameter of type 'enum gnu_v3_dtor_kinds' -->
-      <parameter type-id='type-id-1716' name='kind' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='832' column='1'/>
+      <parameter type-id='type-id-1718' name='kind' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='832' column='1'/>
       <!-- parameter of type 'demangle_component*' -->
-      <parameter type-id='type-id-1714' name='name' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='833' column='1'/>
+      <parameter type-id='type-id-1716' name='name' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='833' column='1'/>
       <!-- int -->
       <return type-id='type-id-13'/>
     </function-decl>
     <!-- struct d_info -->
-    <class-decl name='d_info' size-in-bits='768' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.h' line='93' column='1' id='type-id-1721'>
+    <class-decl name='d_info' size-in-bits='768' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.h' line='93' column='1' id='type-id-1723'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- const char* d_info::s -->
         <var-decl name='s' type-id='type-id-30' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.h' line='96' column='1'/>
@@ -40848,7 +40850,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
         <!-- demangle_component* d_info::comps -->
-        <var-decl name='comps' type-id='type-id-1714' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.h' line='104' column='1'/>
+        <var-decl name='comps' type-id='type-id-1716' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.h' line='104' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
         <!-- int d_info::next_comp -->
@@ -40860,7 +40862,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
         <!-- demangle_component** d_info::subs -->
-        <var-decl name='subs' type-id='type-id-1722' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.h' line='110' column='1'/>
+        <var-decl name='subs' type-id='type-id-1724' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.h' line='110' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='448'>
         <!-- int d_info::next_sub -->
@@ -40876,7 +40878,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='576'>
         <!-- demangle_component* d_info::last_name -->
-        <var-decl name='last_name' type-id='type-id-1714' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.h' line='120' column='1'/>
+        <var-decl name='last_name' type-id='type-id-1716' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.h' line='120' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='640'>
         <!-- int d_info::expansion -->
@@ -40892,35 +40894,35 @@
       </data-member>
     </class-decl>
     <!-- demangle_component** -->
-    <pointer-type-def type-id='type-id-1714' size-in-bits='64' id='type-id-1722'/>
+    <pointer-type-def type-id='type-id-1716' size-in-bits='64' id='type-id-1724'/>
     <!-- d_info* -->
-    <pointer-type-def type-id='type-id-1721' size-in-bits='64' id='type-id-1723'/>
+    <pointer-type-def type-id='type-id-1723' size-in-bits='64' id='type-id-1725'/>
     <!-- demangle_component* __asan_cplus_demangle_type(d_info*) -->
     <function-decl name='__asan_cplus_demangle_type' mangled-name='__asan_cplus_demangle_type' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='2230' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_cplus_demangle_type'>
       <!-- parameter of type 'd_info*' -->
-      <parameter type-id='type-id-1723' name='di' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='2230' column='1'/>
+      <parameter type-id='type-id-1725' name='di' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='2230' column='1'/>
       <!-- demangle_component* -->
-      <return type-id='type-id-1714'/>
+      <return type-id='type-id-1716'/>
     </function-decl>
     <!-- demangle_component* __asan_cplus_demangle_mangled_name(d_info*, int) -->
     <function-decl name='__asan_cplus_demangle_mangled_name' mangled-name='__asan_cplus_demangle_mangled_name' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='1140' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_cplus_demangle_mangled_name'>
       <!-- parameter of type 'd_info*' -->
-      <parameter type-id='type-id-1723' name='di' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='1140' column='1'/>
+      <parameter type-id='type-id-1725' name='di' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='1140' column='1'/>
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-13' name='top_level' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='1140' column='1'/>
       <!-- demangle_component* -->
-      <return type-id='type-id-1714'/>
+      <return type-id='type-id-1716'/>
     </function-decl>
     <!-- const demangle_component -->
-    <qualified-type-def type-id='type-id-1696' const='yes' id='type-id-1724'/>
+    <qualified-type-def type-id='type-id-1698' const='yes' id='type-id-1726'/>
     <!-- const demangle_component* -->
-    <pointer-type-def type-id='type-id-1724' size-in-bits='64' id='type-id-1725'/>
+    <pointer-type-def type-id='type-id-1726' size-in-bits='64' id='type-id-1727'/>
     <!-- int __asan_cplus_demangle_print_callback(int, const demangle_component*, demangle_callbackref, void*) -->
     <function-decl name='__asan_cplus_demangle_print_callback' mangled-name='__asan_cplus_demangle_print_callback' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='4029' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_cplus_demangle_print_callback'>
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-13' name='options' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='4029' column='1'/>
       <!-- parameter of type 'const demangle_component*' -->
-      <parameter type-id='type-id-1725' name='dc' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='4030' column='1'/>
+      <parameter type-id='type-id-1727' name='dc' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='4030' column='1'/>
       <!-- parameter of type 'typedef demangle_callbackref' -->
       <parameter type-id='type-id-1669' name='callback' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='4031' column='1'/>
       <!-- parameter of type 'void*' -->
@@ -40933,7 +40935,7 @@
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-13' name='options' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='4069' column='1'/>
       <!-- parameter of type 'const demangle_component*' -->
-      <parameter type-id='type-id-1725' name='dc' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='4069' column='1'/>
+      <parameter type-id='type-id-1727' name='dc' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='4069' column='1'/>
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-13' name='estimate' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='4070' column='1'/>
       <!-- parameter of type 'size_t*' -->
@@ -40950,7 +40952,7 @@
       <!-- parameter of type 'typedef size_t' -->
       <parameter type-id='type-id-1512' name='len' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='5731' column='1'/>
       <!-- parameter of type 'd_info*' -->
-      <parameter type-id='type-id-1723' name='di' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='5732' column='1'/>
+      <parameter type-id='type-id-1725' name='di' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='5732' column='1'/>
       <!-- void -->
       <return type-id='type-id-6'/>
     </function-decl>
@@ -40986,31 +40988,31 @@
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-30' name='name' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='6137' column='1'/>
       <!-- enum gnu_v3_ctor_kinds -->
-      <return type-id='type-id-1715'/>
+      <return type-id='type-id-1717'/>
     </function-decl>
     <!-- gnu_v3_dtor_kinds __asan_is_gnu_v3_mangled_dtor(const char*) -->
     <function-decl name='__asan_is_gnu_v3_mangled_dtor' mangled-name='__asan_is_gnu_v3_mangled_dtor' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='6152' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_is_gnu_v3_mangled_dtor'>
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-30' name='name' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='6152' column='1'/>
       <!-- enum gnu_v3_dtor_kinds -->
-      <return type-id='type-id-1716'/>
+      <return type-id='type-id-1718'/>
     </function-decl>
     <!-- demangle_operator_info[62] -->
-    <array-type-def dimensions='1' type-id='type-id-1712' size-in-bits='11904' id='type-id-1726'>
+    <array-type-def dimensions='1' type-id='type-id-1714' size-in-bits='11904' id='type-id-1728'>
       <subrange length='62'/>
     </array-type-def>
     <!-- demangle_operator_info[62] const -->
-    <qualified-type-def type-id='type-id-1726' const='yes' id='type-id-1727'/>
+    <qualified-type-def type-id='type-id-1728' const='yes' id='type-id-1729'/>
     <!-- demangle_operator_info[62] const __asan_cplus_demangle_operators -->
-    <var-decl name='__asan_cplus_demangle_operators' type-id='type-id-1727' mangled-name='__asan_cplus_demangle_operators' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='1688' column='1' elf-symbol-id='__asan_cplus_demangle_operators'/>
+    <var-decl name='__asan_cplus_demangle_operators' type-id='type-id-1729' mangled-name='__asan_cplus_demangle_operators' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='1688' column='1' elf-symbol-id='__asan_cplus_demangle_operators'/>
     <!-- demangle_builtin_type_info[33] -->
-    <array-type-def dimensions='1' type-id='type-id-1718' size-in-bits='8448' id='type-id-1728'>
+    <array-type-def dimensions='1' type-id='type-id-1720' size-in-bits='8448' id='type-id-1730'>
       <subrange length='33'/>
     </array-type-def>
     <!-- demangle_builtin_type_info[33] const -->
-    <qualified-type-def type-id='type-id-1728' const='yes' id='type-id-1729'/>
+    <qualified-type-def type-id='type-id-1730' const='yes' id='type-id-1731'/>
     <!-- demangle_builtin_type_info[33] const __asan_cplus_demangle_builtin_types -->
-    <var-decl name='__asan_cplus_demangle_builtin_types' type-id='type-id-1729' mangled-name='__asan_cplus_demangle_builtin_types' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='2188' column='1' elf-symbol-id='__asan_cplus_demangle_builtin_types'/>
+    <var-decl name='__asan_cplus_demangle_builtin_types' type-id='type-id-1731' mangled-name='__asan_cplus_demangle_builtin_types' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='2188' column='1' elf-symbol-id='__asan_cplus_demangle_builtin_types'/>
     <!-- void free(void*) -->
     <function-decl name='free' filepath='/usr/include/stdlib.h' line='488' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'void*' -->
@@ -41085,11 +41087,11 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
     <!-- typedef long int __off_t -->
-    <typedef-decl name='__off_t' type-id='type-id-277' filepath='/usr/include/bits/types.h' line='141' column='1' id='type-id-1730'/>
+    <typedef-decl name='__off_t' type-id='type-id-277' filepath='/usr/include/bits/types.h' line='141' column='1' id='type-id-1732'/>
     <!-- typedef __off_t off_t -->
-    <typedef-decl name='off_t' type-id='type-id-1730' filepath='/usr/include/sys/types.h' line='87' column='1' id='type-id-1731'/>
+    <typedef-decl name='off_t' type-id='type-id-1732' filepath='/usr/include/sys/types.h' line='87' column='1' id='type-id-1733'/>
     <!-- struct backtrace_view -->
-    <class-decl name='backtrace_view' size-in-bits='192' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='169' column='1' id='type-id-1732'>
+    <class-decl name='backtrace_view' size-in-bits='192' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='169' column='1' id='type-id-1734'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- void* backtrace_view::data -->
         <var-decl name='data' type-id='type-id-3' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='172' column='1'/>
@@ -41104,15 +41106,15 @@
       </data-member>
     </class-decl>
     <!-- backtrace_view* -->
-    <pointer-type-def type-id='type-id-1732' size-in-bits='64' id='type-id-1733'/>
+    <pointer-type-def type-id='type-id-1734' size-in-bits='64' id='type-id-1735'/>
     <!-- int __asan_backtrace_get_view(backtrace_state*, int, off_t, size_t, backtrace_error_callback, void*, backtrace_view*) -->
     <function-decl name='__asan_backtrace_get_view' mangled-name='__asan_backtrace_get_view' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='53' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_get_view'>
       <!-- parameter of type 'backtrace_state*' -->
-      <parameter type-id='type-id-1671' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='53' column='1'/>
+      <parameter type-id='type-id-1686' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='53' column='1'/>
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-13' name='descriptor' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='54' column='1'/>
       <!-- parameter of type 'typedef off_t' -->
-      <parameter type-id='type-id-1731' name='offset' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='54' column='1'/>
+      <parameter type-id='type-id-1733' name='offset' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='54' column='1'/>
       <!-- parameter of type 'typedef size_t' -->
       <parameter type-id='type-id-1512' name='size' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='54' column='1'/>
       <!-- parameter of type 'typedef backtrace_error_callback' -->
@@ -41120,16 +41122,16 @@
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-3' name='data' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='56' column='1'/>
       <!-- parameter of type 'backtrace_view*' -->
-      <parameter type-id='type-id-1733' name='view' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='56' column='1'/>
+      <parameter type-id='type-id-1735' name='view' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='56' column='1'/>
       <!-- int -->
       <return type-id='type-id-13'/>
     </function-decl>
     <!-- void __asan_backtrace_release_view(backtrace_state*, backtrace_view*, backtrace_error_callback, void*) -->
     <function-decl name='__asan_backtrace_release_view' mangled-name='__asan_backtrace_release_view' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='87' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_release_view'>
       <!-- parameter of type 'backtrace_state*' -->
-      <parameter type-id='type-id-1671' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='87' column='1'/>
+      <parameter type-id='type-id-1686' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='87' column='1'/>
       <!-- parameter of type 'backtrace_view*' -->
-      <parameter type-id='type-id-1733' name='view' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='88' column='1'/>
+      <parameter type-id='type-id-1735' name='view' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='88' column='1'/>
       <!-- parameter of type 'typedef backtrace_error_callback' -->
       <parameter type-id='type-id-1674' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='89' column='1'/>
       <!-- parameter of type 'void*' -->
@@ -41155,7 +41157,7 @@
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-13'/>
       <!-- parameter of type 'typedef __off_t' -->
-      <parameter type-id='type-id-1730'/>
+      <parameter type-id='type-id-1732'/>
       <!-- void* -->
       <return type-id='type-id-3'/>
     </function-decl>
@@ -41171,10 +41173,10 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
     <!-- struct backtrace_freelist_struct -->
-    <class-decl name='backtrace_freelist_struct' size-in-bits='128' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='55' column='1' id='type-id-1689'>
+    <class-decl name='backtrace_freelist_struct' size-in-bits='128' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='55' column='1' id='type-id-1691'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- backtrace_freelist_struct* backtrace_freelist_struct::next -->
-        <var-decl name='next' type-id='type-id-1684' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='58' column='1'/>
+        <var-decl name='next' type-id='type-id-1685' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='58' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- size_t backtrace_freelist_struct::size -->
@@ -41184,9 +41186,9 @@
     <!-- void* __asan_backtrace_vector_finish(backtrace_state*, backtrace_vector*, backtrace_error_callback, void*) -->
     <function-decl name='__asan_backtrace_vector_finish' mangled-name='__asan_backtrace_vector_finish' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='258' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_vector_finish'>
       <!-- parameter of type 'backtrace_state*' -->
-      <parameter type-id='type-id-1671' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='259' column='1'/>
+      <parameter type-id='type-id-1686' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='259' column='1'/>
       <!-- parameter of type 'backtrace_vector*' -->
-      <parameter type-id='type-id-1694' name='vec' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='260' column='1'/>
+      <parameter type-id='type-id-1696' name='vec' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='260' column='1'/>
       <!-- parameter of type 'typedef backtrace_error_callback' -->
       <parameter type-id='type-id-1674' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='261' column='1'/>
       <!-- parameter of type 'void*' -->

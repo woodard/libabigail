@@ -9202,8 +9202,12 @@ function_decl_diff::report(ostream& out, const string& indent) const
 
       // Detect if the virtual member function changes above
       // introduced a vtable change or not.
-      bool vtable_added = !fc->has_vtable() && sc->has_vtable();
-      bool vtable_removed = fc->has_vtable() && !sc->has_vtable();
+      bool vtable_added = false, vtable_removed = false;
+      if (!fc->get_is_declaration_only() && !sc->get_is_declaration_only())
+	{
+	  vtable_added = !fc->has_vtable() && sc->has_vtable();
+	  vtable_removed = fc->has_vtable() && !sc->has_vtable();
+	}
       bool vtable_changed = ((ff_is_virtual != sf_is_virtual)
 			    || (ff_vtable_offset != sf_vtable_offset));
       bool incompatible_change = (ff_vtable_offset != sf_vtable_offset);

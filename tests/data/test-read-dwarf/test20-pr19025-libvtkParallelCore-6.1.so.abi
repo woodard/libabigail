@@ -791,7 +791,7 @@
         <parameter type-id='type-id-50'/>
         <return type-id='type-id-6'/>
       </function-decl>
-      <class-decl name='__miter_base&lt;const vtkCommunicator::ReduceVoidArray::VTK_TT*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-51'>
+      <class-decl name='__miter_base&lt;const vtkCommunicator::ReduceVoidArray::VTK_TT*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-51'>
         <member-type access='public'>
           <typedef-decl name='VTK_TT' type-id='type-id-53' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkCommunicator.cxx' line='1342' column='1' id='type-id-52'/>
         </member-type>
@@ -2586,7 +2586,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='_Destroy_aux&lt;true&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='106' column='1' is-declaration-only='yes' id='type-id-124'>
+      <class-decl name='_Destroy_aux&lt;true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='106' column='1' is-declaration-only='yes' id='type-id-124'>
         <member-function access='public' static='yes'>
           <function-decl name='__destroy&lt;long long int*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='109' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-44'/>
@@ -2744,7 +2744,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;vtkCommunicator::ReduceVoidArray::VTK_TT*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-135'>
+      <class-decl name='__niter_base&lt;vtkCommunicator::ReduceVoidArray::VTK_TT*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-135'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIPaLb0EE3__bES0_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-55'/>
@@ -2752,7 +2752,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__uninitialized_fill_n&lt;true&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='198' column='1' is-declaration-only='yes' id='type-id-136'>
+      <class-decl name='__uninitialized_fill_n&lt;true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='198' column='1' is-declaration-only='yes' id='type-id-136'>
         <member-function access='public' static='yes'>
           <function-decl name='uninitialized_fill_n&lt;long long int*, long unsigned int, long long int&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='201' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-44'/>
@@ -2895,7 +2895,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__copy_move_backward&lt;false, true, std::random_access_iterator_tag&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='511' column='1' is-declaration-only='yes' id='type-id-146'>
+      <class-decl name='__copy_move_backward&lt;false, true, std::random_access_iterator_tag&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='511' column='1' is-declaration-only='yes' id='type-id-146'>
         <member-function access='public' static='yes'>
           <function-decl name='__copy_move_b&lt;vtkCommunicator::ReduceVoidArray::VTK_TT&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='572' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-54'/>
@@ -2969,7 +2969,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;unsigned char*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-154'>
+      <class-decl name='__miter_base&lt;unsigned char*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-154'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIPhLb0EE3__bES0_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-45'/>
@@ -2977,7 +2977,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__copy_move&lt;false, true, std::random_access_iterator_tag&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='307' column='1' is-declaration-only='yes' id='type-id-155'>
+      <class-decl name='__copy_move&lt;false, true, std::random_access_iterator_tag&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='307' column='1' is-declaration-only='yes' id='type-id-155'>
         <member-function access='public' static='yes'>
           <function-decl name='__copy_m&lt;vtkCommunicator::ReduceVoidArray::VTK_TT&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='376' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-54'/>
@@ -3059,7 +3059,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__uninitialized_copy&lt;true&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='87' column='1' is-declaration-only='yes' id='type-id-157'>
+      <class-decl name='__uninitialized_copy&lt;true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='87' column='1' is-declaration-only='yes' id='type-id-157'>
         <member-function access='public' static='yes'>
           <function-decl name='uninitialized_copy&lt;unsigned char*, unsigned char*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='90' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-45'/>
@@ -3149,7 +3149,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;const vtkCommunicator::ReduceVoidArray::VTK_TT*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-161'>
+      <class-decl name='__niter_base&lt;const vtkCommunicator::ReduceVoidArray::VTK_TT*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-161'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIPKaLb0EE3__bES1_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-54'/>
@@ -3157,7 +3157,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;std::_Bit_type*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-162'>
+      <class-decl name='__niter_base&lt;std::_Bit_type*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-162'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIPmLb0EE3__bES0_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-64'/>
@@ -3487,7 +3487,7 @@
       </class-decl>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;long long int*, std::vector&lt;long long int, std::allocator&lt;long long int&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-170'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;const long long int*, std::vector&lt;long long int, std::allocator&lt;long long int&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-171'/>
-      <class-decl name='char_traits&lt;char&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='238' column='1' is-declaration-only='yes' id='type-id-174'>
+      <class-decl name='char_traits&lt;char&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='238' column='1' is-declaration-only='yes' id='type-id-174'>
         <member-type access='public'>
           <typedef-decl name='char_type' type-id='type-id-20' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='239' column='1' id='type-id-175'/>
         </member-type>
@@ -3898,7 +3898,7 @@
         <parameter type-id='type-id-205'/>
         <return type-id='type-id-39'/>
       </function-decl>
-      <class-decl name='new_allocator&lt;unsigned char&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-47'>
+      <class-decl name='new_allocator&lt;unsigned char&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-47'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-206' is-artificial='yes'/>
@@ -3971,7 +3971,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='new_allocator&lt;long long int&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-59'>
+      <class-decl name='new_allocator&lt;long long int&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-59'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-209' is-artificial='yes'/>
@@ -4044,7 +4044,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='new_allocator&lt;char&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-108'>
+      <class-decl name='new_allocator&lt;char&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-108'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-212' is-artificial='yes'/>
@@ -5465,7 +5465,7 @@
         </enum-decl>
       </member-type>
       <member-type access='private'>
-        <class-decl name='Operation' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkCommunicator.h' line='94' column='1' is-declaration-only='yes' id='type-id-297'>
+        <class-decl name='Operation' size-in-bits='64' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkCommunicator.h' line='94' column='1' is-declaration-only='yes' id='type-id-297'>
           <member-function access='private' destructor='yes' vtable-offset='-1'>
             <function-decl name='~Operation' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkCommunicator.h' line='113' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-298' is-artificial='yes'/>
@@ -9595,7 +9595,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-330' size-in-bits='64' id='type-id-457'/>
     <pointer-type-def type-id='type-id-330' size-in-bits='64' id='type-id-455'/>
     <namespace-decl name='std'>
-      <class-decl name='__false_type' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/cpp_type_traits.h' line='79' column='1' is-declaration-only='yes' id='type-id-461'/>
+      <class-decl name='__false_type' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/cpp_type_traits.h' line='79' column='1' is-declaration-only='yes' id='type-id-461'/>
     </namespace-decl>
     <namespace-decl name='std'>
       <class-decl name='forward_iterator_tag' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='83' column='1' id='type-id-462'>
@@ -9651,7 +9651,7 @@
     <pointer-type-def type-id='type-id-454' size-in-bits='64' id='type-id-486'/>
     <pointer-type-def type-id='type-id-483' size-in-bits='64' id='type-id-484'/>
     <namespace-decl name='std'>
-      <class-decl name='input_iterator_tag' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='79' column='1' is-declaration-only='yes' id='type-id-498'/>
+      <class-decl name='input_iterator_tag' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='79' column='1' is-declaration-only='yes' id='type-id-498'/>
     </namespace-decl>
     <namespace-decl name='vtksys'>
       <class-decl name='_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-499'/>
@@ -9664,7 +9664,7 @@
     </namespace-decl>
     <typedef-decl name='vtkRMIFunctionType' type-id='type-id-506' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessController.h' line='58' column='1' id='type-id-490'/>
     <namespace-decl name='__gnu_cxx'>
-      <class-decl name='new_allocator&lt;unsigned char*&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-502'>
+      <class-decl name='new_allocator&lt;unsigned char*&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-502'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-507' is-artificial='yes'/>
@@ -14021,7 +14021,7 @@
       <class-decl name='_Hashtable_iterator&lt;std::pair&lt;const int, void*&gt;, int, vtksys::hash&lt;int&gt;, vtksys::hash_select1st&lt;const int, void*&gt;, std::equal_to&lt;int&gt;, std::allocator&lt;char&gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-577'/>
     </namespace-decl>
     <namespace-decl name='vtksys'>
-      <class-decl name='hash&lt;int&gt;' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Utilities/KWSys/vtksys/hash_fun.hxx' line='106' column='1' is-declaration-only='yes' id='type-id-543'>
+      <class-decl name='hash&lt;int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Utilities/KWSys/vtksys/hash_fun.hxx' line='106' column='1' is-declaration-only='yes' id='type-id-543'>
         <member-function access='public'>
           <function-decl name='operator()' mangled-name='_ZNK6vtksys4hashIiEclEi' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Utilities/KWSys/vtksys/hash_fun.hxx' line='107' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-654' is-artificial='yes'/>
@@ -14040,7 +14040,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-524' size-in-bits='64' id='type-id-576'/>
     <pointer-type-def type-id='type-id-524' size-in-bits='64' id='type-id-574'/>
     <namespace-decl name='__gnu_cxx'>
-      <class-decl name='new_allocator&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-588'>
+      <class-decl name='new_allocator&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-588'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-656' is-artificial='yes'/>
@@ -14115,7 +14115,7 @@
       </class-decl>
     </namespace-decl>
     <namespace-decl name='__gnu_cxx'>
-      <class-decl name='new_allocator&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-590'>
+      <class-decl name='new_allocator&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-590'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-660' is-artificial='yes'/>
@@ -14190,7 +14190,7 @@
       </class-decl>
     </namespace-decl>
     <namespace-decl name='__gnu_cxx'>
-      <class-decl name='new_allocator&lt;std::pair&lt;const int, void*&gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-592'>
+      <class-decl name='new_allocator&lt;std::pair&lt;const int, void*&gt; &gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-592'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-664' is-artificial='yes'/>
@@ -15716,7 +15716,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-721' size-in-bits='64' id='type-id-630'/>
     <pointer-type-def type-id='type-id-721' size-in-bits='64' id='type-id-633'/>
     <namespace-decl name='std'>
-      <class-decl name='binary_function&lt;int, int, bool&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='113' column='1' is-declaration-only='yes' id='type-id-646'/>
+      <class-decl name='binary_function&lt;int, int, bool&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='113' column='1' is-declaration-only='yes' id='type-id-646'/>
     </namespace-decl>
     <namespace-decl name='vtksys'>
       <class-decl name='hash_select1st&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Utilities/KWSys/vtksys/hash_map.hxx' line='62' column='1' id='type-id-599'>
@@ -16173,7 +16173,7 @@
       </class-decl>
     </namespace-decl>
     <namespace-decl name='__gnu_cxx'>
-      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-668'>
+      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt; &gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-668'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-758' is-artificial='yes'/>
@@ -16248,7 +16248,7 @@
       </class-decl>
     </namespace-decl>
     <namespace-decl name='__gnu_cxx'>
-      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-671'>
+      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt; &gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-671'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-764' is-artificial='yes'/>
@@ -16323,7 +16323,7 @@
       </class-decl>
     </namespace-decl>
     <namespace-decl name='__gnu_cxx'>
-      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-674'>
+      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt; &gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-674'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-770' is-artificial='yes'/>
@@ -16925,13 +16925,13 @@
       </class-decl>
     </namespace-decl>
     <namespace-decl name='std'>
-      <class-decl name='unary_function&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt;, const int&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' is-declaration-only='yes' id='type-id-736'/>
+      <class-decl name='unary_function&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt;, const int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' is-declaration-only='yes' id='type-id-736'/>
     </namespace-decl>
     <namespace-decl name='std'>
-      <class-decl name='unary_function&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt;, const int&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' is-declaration-only='yes' id='type-id-738'/>
+      <class-decl name='unary_function&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt;, const int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' is-declaration-only='yes' id='type-id-738'/>
     </namespace-decl>
     <namespace-decl name='std'>
-      <class-decl name='unary_function&lt;std::pair&lt;const int, void*&gt;, const int&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' is-declaration-only='yes' id='type-id-740'/>
+      <class-decl name='unary_function&lt;std::pair&lt;const int, void*&gt;, const int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' is-declaration-only='yes' id='type-id-740'/>
     </namespace-decl>
     <reference-type-def kind='lvalue' type-id='type-id-475' size-in-bits='64' id='type-id-685'/>
     <reference-type-def kind='lvalue' type-id='type-id-477' size-in-bits='64' id='type-id-696'/>
@@ -17125,7 +17125,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-501' size-in-bits='64' id='type-id-773'/>
     <reference-type-def kind='lvalue' type-id='type-id-843' size-in-bits='64' id='type-id-755'/>
     <namespace-decl name='__gnu_cxx'>
-      <class-decl name='new_allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-816'>
+      <class-decl name='new_allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-816'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-844' is-artificial='yes'/>
@@ -17200,7 +17200,7 @@
       </class-decl>
     </namespace-decl>
     <namespace-decl name='__gnu_cxx'>
-      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;*&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-818'>
+      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;*&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-818'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-847' is-artificial='yes'/>
@@ -17275,7 +17275,7 @@
       </class-decl>
     </namespace-decl>
     <namespace-decl name='__gnu_cxx'>
-      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;*&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-820'>
+      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;*&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-820'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-850' is-artificial='yes'/>
@@ -17350,7 +17350,7 @@
       </class-decl>
     </namespace-decl>
     <namespace-decl name='__gnu_cxx'>
-      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt;*&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-822'>
+      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt;*&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-822'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-853' is-artificial='yes'/>
@@ -17651,7 +17651,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='iterator&lt;std::random_access_iterator_tag, bool, long int, bool*, bool&amp;&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='105' column='1' is-declaration-only='yes' id='type-id-870'/>
+      <class-decl name='iterator&lt;std::random_access_iterator_tag, bool, long int, bool*, bool&amp;&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='105' column='1' is-declaration-only='yes' id='type-id-870'/>
       <class-decl name='_Bit_reference' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_bvector.h' line='68' column='1' id='type-id-863'>
         <data-member access='public' layout-offset-in-bits='0'>
           <var-decl name='_M_p' type-id='type-id-64' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_bvector.h' line='69' column='1'/>
@@ -17726,7 +17726,7 @@
       <class-decl name='bidirectional_iterator_tag' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='86' column='1' id='type-id-878'>
         <base-class access='public' layout-offset-in-bits='0' type-id='type-id-462'/>
       </class-decl>
-      <class-decl name='input_iterator_tag' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='79' column='1' is-declaration-only='yes' id='type-id-498'/>
+      <class-decl name='input_iterator_tag' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='79' column='1' is-declaration-only='yes' id='type-id-498'/>
       <function-decl name='__iterator_category&lt;const long unsigned int*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='160' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-879'/>
         <return type-id='type-id-877'/>
@@ -17769,20 +17769,20 @@
         <parameter type-id='type-id-873'/>
         <return type-id='type-id-39'/>
       </function-decl>
-      <class-decl name='binary_function&lt;int, int, bool&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='113' column='1' is-declaration-only='yes' id='type-id-646'/>
-      <class-decl name='unary_function&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt;, const int&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' is-declaration-only='yes' id='type-id-738'/>
+      <class-decl name='binary_function&lt;int, int, bool&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='113' column='1' is-declaration-only='yes' id='type-id-646'/>
+      <class-decl name='unary_function&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt;, const int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' is-declaration-only='yes' id='type-id-738'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;**, std::vector&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;*, std::allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;*&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-705'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;* const*, std::vector&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;*, std::allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;*&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-706'/>
       <class-decl name='pair&lt;vtksys::_Hashtable_iterator&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt;, int, vtksys::hash&lt;int&gt;, vtksys::hash_select1st&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt;, std::equal_to&lt;int&gt;, std::allocator&lt;char&gt; &gt;, bool&gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-567'/>
       <class-decl name='pair&lt;vtksys::_Hashtable_iterator&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt;, int, vtksys::hash&lt;int&gt;, vtksys::hash_select1st&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt;, std::equal_to&lt;int&gt;, std::allocator&lt;char&gt; &gt;, vtksys::_Hashtable_iterator&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt;, int, vtksys::hash&lt;int&gt;, vtksys::hash_select1st&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt;, std::equal_to&lt;int&gt;, std::allocator&lt;char&gt; &gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-569'/>
       <class-decl name='pair&lt;vtksys::_Hashtable_const_iterator&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt;, int, vtksys::hash&lt;int&gt;, vtksys::hash_select1st&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt;, std::equal_to&lt;int&gt;, std::allocator&lt;char&gt; &gt;, vtksys::_Hashtable_const_iterator&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt;, int, vtksys::hash&lt;int&gt;, vtksys::hash_select1st&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt;, std::equal_to&lt;int&gt;, std::allocator&lt;char&gt; &gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-570'/>
-      <class-decl name='unary_function&lt;std::pair&lt;const int, void*&gt;, const int&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' is-declaration-only='yes' id='type-id-740'/>
+      <class-decl name='unary_function&lt;std::pair&lt;const int, void*&gt;, const int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' is-declaration-only='yes' id='type-id-740'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt;**, std::vector&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt;*, std::allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt;*&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-716'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt;* const*, std::vector&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt;*, std::allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt;*&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-717'/>
       <class-decl name='pair&lt;vtksys::_Hashtable_iterator&lt;std::pair&lt;const int, void*&gt;, int, vtksys::hash&lt;int&gt;, vtksys::hash_select1st&lt;const int, void*&gt;, std::equal_to&lt;int&gt;, std::allocator&lt;char&gt; &gt;, bool&gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-580'/>
       <class-decl name='pair&lt;vtksys::_Hashtable_iterator&lt;std::pair&lt;const int, void*&gt;, int, vtksys::hash&lt;int&gt;, vtksys::hash_select1st&lt;const int, void*&gt;, std::equal_to&lt;int&gt;, std::allocator&lt;char&gt; &gt;, vtksys::_Hashtable_iterator&lt;std::pair&lt;const int, void*&gt;, int, vtksys::hash&lt;int&gt;, vtksys::hash_select1st&lt;const int, void*&gt;, std::equal_to&lt;int&gt;, std::allocator&lt;char&gt; &gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-581'/>
       <class-decl name='pair&lt;vtksys::_Hashtable_const_iterator&lt;std::pair&lt;const int, void*&gt;, int, vtksys::hash&lt;int&gt;, vtksys::hash_select1st&lt;const int, void*&gt;, std::equal_to&lt;int&gt;, std::allocator&lt;char&gt; &gt;, vtksys::_Hashtable_const_iterator&lt;std::pair&lt;const int, void*&gt;, int, vtksys::hash&lt;int&gt;, vtksys::hash_select1st&lt;const int, void*&gt;, std::equal_to&lt;int&gt;, std::allocator&lt;char&gt; &gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-582'/>
-      <class-decl name='unary_function&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt;, const int&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' is-declaration-only='yes' id='type-id-736'/>
+      <class-decl name='unary_function&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt;, const int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' is-declaration-only='yes' id='type-id-736'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;**, std::vector&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;*, std::allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;*&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-694'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;* const*, std::vector&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;*, std::allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;*&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-695'/>
       <class-decl name='pair&lt;vtksys::_Hashtable_iterator&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt;, int, vtksys::hash&lt;int&gt;, vtksys::hash_select1st&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt;, std::equal_to&lt;int&gt;, std::allocator&lt;char&gt; &gt;, bool&gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-554'/>
@@ -19176,7 +19176,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='iterator&lt;std::random_access_iterator_tag, bool, long int, std::_Bit_reference*, std::_Bit_reference&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='105' column='1' is-declaration-only='yes' id='type-id-934'/>
+      <class-decl name='iterator&lt;std::random_access_iterator_tag, bool, long int, std::_Bit_reference*, std::_Bit_reference&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='105' column='1' is-declaration-only='yes' id='type-id-934'/>
       <class-decl name='reverse_iterator&lt;std::_Bit_const_iterator&gt;' size-in-bits='128' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator.h' line='96' column='1' id='type-id-922'>
         <base-class access='public' layout-offset-in-bits='0' type-id='type-id-939'/>
         <data-member access='protected' layout-offset-in-bits='0'>
@@ -19282,8 +19282,8 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='iterator&lt;std::random_access_iterator_tag, bool, long int, const bool*, bool&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='105' column='1' is-declaration-only='yes' id='type-id-939'/>
-      <class-decl name='__alloc_swap&lt;std::allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;*&gt;, true&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/allocator.h' line='148' column='1' is-declaration-only='yes' id='type-id-944'>
+      <class-decl name='iterator&lt;std::random_access_iterator_tag, bool, long int, const bool*, bool&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='105' column='1' is-declaration-only='yes' id='type-id-939'/>
+      <class-decl name='__alloc_swap&lt;std::allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;*&gt;, true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/allocator.h' line='148' column='1' is-declaration-only='yes' id='type-id-944'>
         <member-function access='public' static='yes'>
           <function-decl name='_S_do_it' mangled-name='_ZNSt12__alloc_swapISaIPN6vtksys15_Hashtable_nodeISt4pairIKiPFvP25vtkMultiProcessControllerPvEEEEELb1EE8_S_do_itERSC_SE_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/allocator.h' line='148' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-806'/>
@@ -19292,7 +19292,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__alloc_swap&lt;std::allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt;*&gt;, true&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/allocator.h' line='148' column='1' is-declaration-only='yes' id='type-id-945'>
+      <class-decl name='__alloc_swap&lt;std::allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt;*&gt;, true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/allocator.h' line='148' column='1' is-declaration-only='yes' id='type-id-945'>
         <member-function access='public' static='yes'>
           <function-decl name='_S_do_it' mangled-name='_ZNSt12__alloc_swapISaIPN6vtksys15_Hashtable_nodeISt4pairIKiPvEEEELb1EE8_S_do_itERS8_SA_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/allocator.h' line='148' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-812'/>
@@ -19301,7 +19301,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__alloc_swap&lt;std::allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;*&gt;, true&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/allocator.h' line='148' column='1' is-declaration-only='yes' id='type-id-946'>
+      <class-decl name='__alloc_swap&lt;std::allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;*&gt;, true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/allocator.h' line='148' column='1' is-declaration-only='yes' id='type-id-946'>
         <member-function access='public' static='yes'>
           <function-decl name='_S_do_it' mangled-name='_ZNSt12__alloc_swapISaIPN6vtksys15_Hashtable_nodeISt4pairIKiSt6vectorIN25vtkMultiProcessController11vtkInternal14vtkRMICallbackESaIS7_EEEEEELb1EE8_S_do_itERSD_SF_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/allocator.h' line='148' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-800'/>
@@ -19310,7 +19310,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;**, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-947'>
+      <class-decl name='__niter_base&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;**, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-947'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIPPN6vtksys15_Hashtable_nodeISt4pairIKiPFvP25vtkMultiProcessControllerPvEEEELb0EE3__bESC_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-127'/>
@@ -19318,7 +19318,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt;**, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-948'>
+      <class-decl name='__niter_base&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt;**, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-948'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIPPN6vtksys15_Hashtable_nodeISt4pairIKiPvEEELb0EE3__bES8_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-128'/>
@@ -19326,7 +19326,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;**, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-949'>
+      <class-decl name='__niter_base&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;**, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-949'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIPPN6vtksys15_Hashtable_nodeISt4pairIKiSt6vectorIN25vtkMultiProcessController11vtkInternal14vtkRMICallbackESaIS7_EEEEELb0EE3__bESD_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-129'/>
@@ -19334,7 +19334,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;int*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-950'>
+      <class-decl name='__niter_base&lt;int*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-950'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIPiLb0EE3__bES0_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-125'/>
@@ -19435,7 +19435,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__copy_move_backward&lt;false, false, std::random_access_iterator_tag&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='539' column='1' is-declaration-only='yes' id='type-id-956'>
+      <class-decl name='__copy_move_backward&lt;false, false, std::random_access_iterator_tag&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='539' column='1' is-declaration-only='yes' id='type-id-956'>
         <member-function access='public' static='yes'>
           <function-decl name='__copy_move_b&lt;std::_Bit_iterator, std::_Bit_iterator&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='542' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-860'/>
@@ -19453,7 +19453,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;std::_Bit_iterator, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-957'>
+      <class-decl name='__niter_base&lt;std::_Bit_iterator, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-957'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseISt13_Bit_iteratorLb0EE3__bES0_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-860'/>
@@ -19461,7 +19461,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;std::_Bit_iterator, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-958'>
+      <class-decl name='__miter_base&lt;std::_Bit_iterator, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-958'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseISt13_Bit_iteratorLb0EE3__bES0_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-860'/>
@@ -19469,7 +19469,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__copy_move&lt;false, false, std::random_access_iterator_tag&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='335' column='1' is-declaration-only='yes' id='type-id-959'>
+      <class-decl name='__copy_move&lt;false, false, std::random_access_iterator_tag&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='335' column='1' is-declaration-only='yes' id='type-id-959'>
         <member-function access='public' static='yes'>
           <function-decl name='__copy_m&lt;std::_Bit_iterator, std::_Bit_iterator&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='338' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-860'/>
@@ -19519,7 +19519,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;std::_Bit_const_iterator, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-960'>
+      <class-decl name='__niter_base&lt;std::_Bit_const_iterator, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-960'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseISt19_Bit_const_iteratorLb0EE3__bES0_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-894'/>
@@ -19527,7 +19527,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;std::_Bit_const_iterator, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-961'>
+      <class-decl name='__miter_base&lt;std::_Bit_const_iterator, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-961'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseISt19_Bit_const_iteratorLb0EE3__bES0_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-894'/>
@@ -19630,7 +19630,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-969'>
+      <class-decl name='__niter_base&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-969'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIPN25vtkMultiProcessController11vtkInternal14vtkRMICallbackELb0EE3__bES3_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-126'/>
@@ -19638,7 +19638,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-970'>
+      <class-decl name='__miter_base&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-970'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIPN25vtkMultiProcessController11vtkInternal14vtkRMICallbackELb0EE3__bES3_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-126'/>
@@ -19646,7 +19646,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;__gnu_cxx::__normal_iterator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback*, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt;, true&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-971'>
+      <class-decl name='__niter_base&lt;__gnu_cxx::__normal_iterator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback*, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt;, true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-971'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIN9__gnu_cxx17__normal_iteratorIPN25vtkMultiProcessController11vtkInternal14vtkRMICallbackESt6vectorIS4_SaIS4_EEEELb1EE3__bES9_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='277' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-681'/>
@@ -19654,7 +19654,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;__gnu_cxx::__normal_iterator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback*, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt;, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-972'>
+      <class-decl name='__miter_base&lt;__gnu_cxx::__normal_iterator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback*, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt;, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-972'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIN9__gnu_cxx17__normal_iteratorIPN25vtkMultiProcessController11vtkInternal14vtkRMICallbackESt6vectorIS4_SaIS4_EEEELb0EE3__bES9_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-681'/>
@@ -19664,7 +19664,7 @@
       </class-decl>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback*, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-683'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;const vtkMultiProcessController::vtkInternal::vtkRMICallback*, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-684'/>
-      <class-decl name='__niter_base&lt;__gnu_cxx::__normal_iterator&lt;const vtkMultiProcessController::vtkInternal::vtkRMICallback*, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt;, true&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-973'>
+      <class-decl name='__niter_base&lt;__gnu_cxx::__normal_iterator&lt;const vtkMultiProcessController::vtkInternal::vtkRMICallback*, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt;, true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-973'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIN9__gnu_cxx17__normal_iteratorIPKN25vtkMultiProcessController11vtkInternal14vtkRMICallbackESt6vectorIS4_SaIS4_EEEELb1EE3__bESA_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='277' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-158'/>
@@ -19672,7 +19672,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;__gnu_cxx::__normal_iterator&lt;const vtkMultiProcessController::vtkInternal::vtkRMICallback*, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt;, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-974'>
+      <class-decl name='__miter_base&lt;__gnu_cxx::__normal_iterator&lt;const vtkMultiProcessController::vtkInternal::vtkRMICallback*, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt;, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-974'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIN9__gnu_cxx17__normal_iteratorIPKN25vtkMultiProcessController11vtkInternal14vtkRMICallbackESt6vectorIS4_SaIS4_EEEELb0EE3__bESA_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-158'/>
@@ -19680,7 +19680,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;std::_Bit_type*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-975'>
+      <class-decl name='__miter_base&lt;std::_Bit_type*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-975'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIPmLb0EE3__bES0_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-64'/>
@@ -19688,7 +19688,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;**, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-976'>
+      <class-decl name='__miter_base&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;**, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-976'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIPPN6vtksys15_Hashtable_nodeISt4pairIKiPFvP25vtkMultiProcessControllerPvEEEELb0EE3__bESC_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-127'/>
@@ -19696,7 +19696,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt;**, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-977'>
+      <class-decl name='__miter_base&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt;**, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-977'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIPPN6vtksys15_Hashtable_nodeISt4pairIKiPvEEELb0EE3__bES8_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-128'/>
@@ -19704,7 +19704,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;**, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-978'>
+      <class-decl name='__miter_base&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;**, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-978'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIPPN6vtksys15_Hashtable_nodeISt4pairIKiSt6vectorIN25vtkMultiProcessController11vtkInternal14vtkRMICallbackESaIS7_EEEEELb0EE3__bESD_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-129'/>
@@ -20398,7 +20398,7 @@
       <class-decl name='_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-499'/>
       <class-decl name='_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-500'/>
       <class-decl name='_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-501'/>
-      <class-decl name='hash&lt;int&gt;' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Utilities/KWSys/vtksys/hash_fun.hxx' line='106' column='1' is-declaration-only='yes' id='type-id-543'>
+      <class-decl name='hash&lt;int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Utilities/KWSys/vtksys/hash_fun.hxx' line='106' column='1' is-declaration-only='yes' id='type-id-543'>
         <member-function access='public'>
           <function-decl name='operator()' mangled-name='_ZNK6vtksys4hashIiEclEi' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Utilities/KWSys/vtksys/hash_fun.hxx' line='107' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-654' is-artificial='yes'/>
@@ -20438,7 +20438,7 @@
         <parameter type-id='type-id-1003'/>
         <return type-id='type-id-39'/>
       </function-decl>
-      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-671'>
+      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt; &gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-671'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-764' is-artificial='yes'/>
@@ -20511,7 +20511,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;*&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-820'>
+      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;*&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-820'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-850' is-artificial='yes'/>
@@ -20585,7 +20585,7 @@
         </member-function>
       </class-decl>
       <class-decl name='__normal_iterator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;* const*, std::vector&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;*, std::allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;*&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-704'/>
-      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-674'>
+      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt; &gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-674'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-770' is-artificial='yes'/>
@@ -20658,7 +20658,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt;*&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-822'>
+      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt;*&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-822'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-853' is-artificial='yes'/>
@@ -20732,7 +20732,7 @@
         </member-function>
       </class-decl>
       <class-decl name='__normal_iterator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt;* const*, std::vector&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt;*, std::allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt;*&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-715'/>
-      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-668'>
+      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt; &gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-668'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-758' is-artificial='yes'/>
@@ -20805,7 +20805,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;*&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-818'>
+      <class-decl name='new_allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;*&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-818'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-847' is-artificial='yes'/>
@@ -20879,7 +20879,7 @@
         </member-function>
       </class-decl>
       <class-decl name='__normal_iterator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;* const*, std::vector&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;*, std::allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;*&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-693'/>
-      <class-decl name='new_allocator&lt;int&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-885'>
+      <class-decl name='new_allocator&lt;int&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-885'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1004' is-artificial='yes'/>
@@ -20952,7 +20952,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='new_allocator&lt;std::_List_node&lt;int&gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-890'>
+      <class-decl name='new_allocator&lt;std::_List_node&lt;int&gt; &gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-890'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1007' is-artificial='yes'/>
@@ -21025,7 +21025,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='new_allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-816'>
+      <class-decl name='new_allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-816'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-844' is-artificial='yes'/>
@@ -21098,7 +21098,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='new_allocator&lt;long unsigned int&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-930'>
+      <class-decl name='new_allocator&lt;long unsigned int&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-930'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1013' is-artificial='yes'/>
@@ -21171,7 +21171,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='new_allocator&lt;bool&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-932'>
+      <class-decl name='new_allocator&lt;bool&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-932'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1018' is-artificial='yes'/>
@@ -21244,7 +21244,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='new_allocator&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-590'>
+      <class-decl name='new_allocator&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-590'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-660' is-artificial='yes'/>
@@ -21317,7 +21317,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='new_allocator&lt;std::pair&lt;const int, void*&gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-592'>
+      <class-decl name='new_allocator&lt;std::pair&lt;const int, void*&gt; &gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-592'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-664' is-artificial='yes'/>
@@ -21390,7 +21390,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='new_allocator&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-588'>
+      <class-decl name='new_allocator&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-588'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-656' is-artificial='yes'/>
@@ -22267,8 +22267,8 @@
       </function-decl>
       <class-decl name='reverse_iterator&lt;std::_Deque_iterator&lt;unsigned char, unsigned char&amp;, unsigned char*&gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-459'/>
       <class-decl name='reverse_iterator&lt;std::_Deque_iterator&lt;unsigned char, const unsigned char&amp;, const unsigned char*&gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-460'/>
-      <class-decl name='__false_type' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/cpp_type_traits.h' line='79' column='1' is-declaration-only='yes' id='type-id-461'/>
-      <class-decl name='__niter_base&lt;std::_Deque_iterator&lt;unsigned char, unsigned char&amp;, unsigned char*&gt;, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1071'>
+      <class-decl name='__false_type' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/cpp_type_traits.h' line='79' column='1' is-declaration-only='yes' id='type-id-461'/>
+      <class-decl name='__niter_base&lt;std::_Deque_iterator&lt;unsigned char, unsigned char&amp;, unsigned char*&gt;, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1071'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseISt15_Deque_iteratorIhRhPhELb0EE3__bES3_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-130'/>
@@ -22276,7 +22276,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;std::_Deque_iterator&lt;unsigned char, const unsigned char&amp;, const unsigned char*&gt;, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1072'>
+      <class-decl name='__niter_base&lt;std::_Deque_iterator&lt;unsigned char, const unsigned char&amp;, const unsigned char*&gt;, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1072'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseISt15_Deque_iteratorIhRKhPS1_ELb0EE3__bES4_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-159'/>
@@ -22284,7 +22284,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;std::_Deque_iterator&lt;unsigned char, const unsigned char&amp;, const unsigned char*&gt;, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-1073'>
+      <class-decl name='__miter_base&lt;std::_Deque_iterator&lt;unsigned char, const unsigned char&amp;, const unsigned char*&gt;, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-1073'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseISt15_Deque_iteratorIhRKhPS1_ELb0EE3__bES4_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-159'/>
@@ -22292,7 +22292,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;std::_Deque_iterator&lt;unsigned char, unsigned char&amp;, unsigned char*&gt;, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-1074'>
+      <class-decl name='__miter_base&lt;std::_Deque_iterator&lt;unsigned char, unsigned char&amp;, unsigned char*&gt;, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-1074'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseISt15_Deque_iteratorIhRhPhELb0EE3__bES3_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-130'/>
@@ -22300,7 +22300,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__uninitialized_fill&lt;true&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='144' column='1' is-declaration-only='yes' id='type-id-1075'>
+      <class-decl name='__uninitialized_fill&lt;true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='144' column='1' is-declaration-only='yes' id='type-id-1075'>
         <member-function access='public' static='yes'>
           <function-decl name='uninitialized_fill&lt;std::_Deque_iterator&lt;unsigned char, unsigned char&amp;, unsigned char*&gt;, unsigned char&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='147' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-130'/>
@@ -22310,7 +22310,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;unsigned char**, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1076'>
+      <class-decl name='__niter_base&lt;unsigned char**, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1076'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIPPhLb0EE3__bES1_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-152'/>
@@ -22318,7 +22318,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;unsigned char**, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-1077'>
+      <class-decl name='__miter_base&lt;unsigned char**, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-1077'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIPPhLb0EE3__bES1_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-152'/>
@@ -22326,7 +22326,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;unsigned char*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1078'>
+      <class-decl name='__niter_base&lt;unsigned char*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1078'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIPhLb0EE3__bES0_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-45'/>
@@ -22342,7 +22342,7 @@
         <parameter type-id='type-id-1079'/>
         <return type-id='type-id-4'/>
       </function-decl>
-      <class-decl name='new_allocator&lt;unsigned char*&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-502'>
+      <class-decl name='new_allocator&lt;unsigned char*&gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-502'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-507' is-artificial='yes'/>
@@ -22447,7 +22447,7 @@
         <parameter type-id='type-id-125'/>
         <return type-id='type-id-125'/>
       </function-decl>
-      <class-decl name='__miter_base&lt;int*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-1080'>
+      <class-decl name='__miter_base&lt;int*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-1080'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIPiLb0EE3__bES0_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-125'/>
@@ -24891,8 +24891,8 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='unary_function&lt;std::pair&lt;const int, std::list&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;, const int&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' is-declaration-only='yes' id='type-id-1187'/>
-      <class-decl name='__niter_base&lt;__gnu_cxx::__normal_iterator&lt;int*, std::vector&lt;int, std::allocator&lt;int&gt; &gt; &gt;, true&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1189'>
+      <class-decl name='unary_function&lt;std::pair&lt;const int, std::list&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;, const int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' is-declaration-only='yes' id='type-id-1187'/>
+      <class-decl name='__niter_base&lt;__gnu_cxx::__normal_iterator&lt;int*, std::vector&lt;int, std::allocator&lt;int&gt; &gt; &gt;, true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1189'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIN9__gnu_cxx17__normal_iteratorIPiSt6vectorIiSaIiEEEELb1EE3__bES6_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='277' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-983'/>
@@ -24900,7 +24900,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;const vtkIdType*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1190'>
+      <class-decl name='__niter_base&lt;const vtkIdType*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1190'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIPKxLb0EE3__bES1_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-306'/>
@@ -24908,7 +24908,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;const vtkIdType*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-1191'>
+      <class-decl name='__miter_base&lt;const vtkIdType*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-1191'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIPKxLb0EE3__bES1_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-306'/>
@@ -24916,7 +24916,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;vtkIdType*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1192'>
+      <class-decl name='__niter_base&lt;vtkIdType*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1192'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIPxLb0EE3__bES0_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-311'/>
@@ -24924,7 +24924,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;__gnu_cxx::__normal_iterator&lt;int*, std::vector&lt;int, std::allocator&lt;int&gt; &gt; &gt;, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-1193'>
+      <class-decl name='__miter_base&lt;__gnu_cxx::__normal_iterator&lt;int*, std::vector&lt;int, std::allocator&lt;int&gt; &gt; &gt;, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-1193'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIN9__gnu_cxx17__normal_iteratorIPiSt6vectorIiSaIiEEEELb0EE3__bES6_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-983'/>
@@ -25025,7 +25025,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;char*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1198'>
+      <class-decl name='__niter_base&lt;char*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1198'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIPcLb0EE3__bES0_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='269' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-33'/>
@@ -25033,7 +25033,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;__gnu_cxx::__normal_iterator&lt;const char*, std::vector&lt;char, std::allocator&lt;char&gt; &gt; &gt;, true&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1199'>
+      <class-decl name='__niter_base&lt;__gnu_cxx::__normal_iterator&lt;const char*, std::vector&lt;char, std::allocator&lt;char&gt; &gt; &gt;, true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1199'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIN9__gnu_cxx17__normal_iteratorIPKcSt6vectorIcSaIcEEEELb1EE3__bES7_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='277' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-160'/>
@@ -25041,7 +25041,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;__gnu_cxx::__normal_iterator&lt;const char*, std::vector&lt;char, std::allocator&lt;char&gt; &gt; &gt;, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-1200'>
+      <class-decl name='__miter_base&lt;__gnu_cxx::__normal_iterator&lt;const char*, std::vector&lt;char, std::allocator&lt;char&gt; &gt; &gt;, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-1200'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIN9__gnu_cxx17__normal_iteratorIPKcSt6vectorIcSaIcEEEELb0EE3__bES7_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-160'/>
@@ -25049,7 +25049,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__niter_base&lt;__gnu_cxx::__normal_iterator&lt;char*, std::vector&lt;char, std::allocator&lt;char&gt; &gt; &gt;, true&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1201'>
+      <class-decl name='__niter_base&lt;__gnu_cxx::__normal_iterator&lt;char*, std::vector&lt;char, std::allocator&lt;char&gt; &gt; &gt;, true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='267' column='1' is-declaration-only='yes' id='type-id-1201'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__niter_baseIN9__gnu_cxx17__normal_iteratorIPcSt6vectorIcSaIcEEEELb1EE3__bES6_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='277' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1098'/>
@@ -25057,7 +25057,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__miter_base&lt;char*, false&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-1202'>
+      <class-decl name='__miter_base&lt;char*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-1202'>
         <member-function access='public' static='yes'>
           <function-decl name='__b' mangled-name='_ZNSt12__miter_baseIPcLb0EE3__bES0_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-33'/>
@@ -25188,7 +25188,7 @@
         <parameter type-id='type-id-1211'/>
         <return type-id='type-id-39'/>
       </function-decl>
-      <class-decl name='new_allocator&lt;std::_Rb_tree_node&lt;std::pair&lt;const int, std::list&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt; &gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-1131'>
+      <class-decl name='new_allocator&lt;std::_Rb_tree_node&lt;std::pair&lt;const int, std::list&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt; &gt; &gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-1131'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1212' is-artificial='yes'/>
@@ -25261,7 +25261,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='new_allocator&lt;std::pair&lt;const int, std::list&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-1138'>
+      <class-decl name='new_allocator&lt;std::pair&lt;const int, std::list&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt; &gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-1138'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1217' is-artificial='yes'/>
@@ -25334,7 +25334,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='new_allocator&lt;std::_List_node&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-1181'>
+      <class-decl name='new_allocator&lt;std::_List_node&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt; &gt; &gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-1181'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1220' is-artificial='yes'/>
@@ -25407,7 +25407,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='new_allocator&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-1184'>
+      <class-decl name='new_allocator&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt; &gt;' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='52' column='1' is-declaration-only='yes' id='type-id-1184'>
         <member-function access='private'>
           <function-decl name='new_allocator' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/new_allocator.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1226' is-artificial='yes'/>
@@ -26748,7 +26748,7 @@
         <parameter type-id='type-id-125'/>
         <return type-id='type-id-6'/>
       </function-decl>
-      <class-decl name='__iter_swap&lt;true&gt;' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='96' column='1' is-declaration-only='yes' id='type-id-1302'>
+      <class-decl name='__iter_swap&lt;true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='96' column='1' is-declaration-only='yes' id='type-id-1302'>
         <member-function access='public' static='yes'>
           <function-decl name='iter_swap&lt;int*, int*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='99' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-125'/>

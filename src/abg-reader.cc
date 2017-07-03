@@ -4192,7 +4192,11 @@ build_class_decl(read_context&		ctxt,
   else
     {
       if (is_decl_only)
-	decl.reset(new class_decl(env, name, is_struct));
+	{
+	  decl.reset(new class_decl(env, name, is_struct));
+	  if (size_in_bits)
+	    decl->set_size_in_bits(size_in_bits);
+	}
       else
 	decl.reset(new class_decl(env, name, size_in_bits, alignment_in_bits,
 				  is_struct, loc, vis, bases, mbrs,

@@ -1467,7 +1467,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libnurbs/interface/glcurveval.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
     <!-- class CachingEvaluator -->
-    <class-decl name='CachingEvaluator' visibility='default' filepath='libnurbs/internals/cachingeval.h' line='39' column='1' is-declaration-only='yes' id='type-id-117'>
+    <class-decl name='CachingEvaluator' size-in-bits='64' visibility='default' filepath='libnurbs/internals/cachingeval.h' line='39' column='1' is-declaration-only='yes' id='type-id-117'>
       <member-type access='private'>
         <!-- enum CachingEvaluator::ServiceMode -->
         <enum-decl name='ServiceMode' filepath='libnurbs/internals/cachingeval.h' line='42' column='1' id='type-id-118'>

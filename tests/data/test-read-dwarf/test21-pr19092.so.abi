@@ -627,7 +627,7 @@
       <parameter type-id='type-id-22' name='to' filepath='../.././gcc/collect2.c' line='513' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <class-decl name='pex_obj' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-23'/>
+    <class-decl name='pex_obj' size-in-bits='1152' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-23'/>
     <pointer-type-def type-id='type-id-23' size-in-bits='64' id='type-id-24'/>
     <function-decl name='collect_wait' mangled-name='_Z12collect_waitPKcP7pex_obj' filepath='../.././gcc/collect2.c' line='1958' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z12collect_waitPKcP7pex_obj'>
       <parameter type-id='type-id-8' name='prog' filepath='../.././gcc/collect2.c' line='1958' column='1'/>

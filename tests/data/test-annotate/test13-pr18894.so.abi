@@ -666,7 +666,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='dbus-bus.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- struct DBusConnection -->
-    <class-decl name='DBusConnection' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-25'/>
+    <class-decl name='DBusConnection' size-in-bits='2112' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-25'/>
     <!-- typedef DBusConnection DBusConnection -->
     <typedef-decl name='DBusConnection' type-id='type-id-25' filepath='../dbus/dbus-connection.h' line='51' column='1' id='type-id-26'/>
     <!-- DBusConnection* -->
@@ -1635,7 +1635,7 @@
       <return type-id='type-id-11'/>
     </function-decl>
     <!-- struct DBusTimeout -->
-    <class-decl name='DBusTimeout' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-111'/>
+    <class-decl name='DBusTimeout' size-in-bits='448' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-111'/>
     <!-- typedef DBusTimeout DBusTimeout -->
     <typedef-decl name='DBusTimeout' type-id='type-id-111' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.h' line='45' column='1' id='type-id-112'/>
     <!-- DBusTimeout* -->
@@ -1668,7 +1668,7 @@
       <return type-id='type-id-22'/>
     </function-decl>
     <!-- struct DBusWatch -->
-    <class-decl name='DBusWatch' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-121'/>
+    <class-decl name='DBusWatch' size-in-bits='512' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-121'/>
     <!-- typedef DBusWatch DBusWatch -->
     <typedef-decl name='DBusWatch' type-id='type-id-121' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.h' line='43' column='1' id='type-id-122'/>
     <!-- DBusWatch* -->
@@ -1891,7 +1891,7 @@
       <return type-id='type-id-27'/>
     </function-decl>
     <!-- struct DBusPendingCall -->
-    <class-decl name='DBusPendingCall' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-134'/>
+    <class-decl name='DBusPendingCall' size-in-bits='576' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-134'/>
     <!-- typedef DBusPendingCall DBusPendingCall -->
     <typedef-decl name='DBusPendingCall' type-id='type-id-134' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.h' line='49' column='1' id='type-id-135'/>
     <!-- DBusPendingCall* -->

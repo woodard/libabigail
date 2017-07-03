@@ -1163,7 +1163,7 @@
       <return type-id='type-id-1'/>
     </function-decl>
     <!-- struct pex_obj -->
-    <class-decl name='pex_obj' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-23'/>
+    <class-decl name='pex_obj' size-in-bits='1152' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-23'/>
     <!-- pex_obj* -->
     <pointer-type-def type-id='type-id-23' size-in-bits='64' id='type-id-24'/>
     <!-- int collect_wait(const char*, pex_obj*) -->

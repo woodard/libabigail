@@ -9861,7 +9861,7 @@ type_base::get_canonical_type_for(type_base_sptr t)
   assert(env);
 
   bool decl_only_class_equals_definition =
-    (odr_is_relevant(*t) && env->decl_only_class_equals_definition());
+    (odr_is_relevant(*t) || env->decl_only_class_equals_definition());
 
   // Look through declaration-only classes
   if (decl_only_class_equals_definition)
@@ -10005,8 +10005,9 @@ type_base::get_canonical_type_for(type_base_sptr t)
 	  bool saved_decl_only_class_equals_definition =
 	    env->decl_only_class_equals_definition();
 	  env->do_on_the_fly_canonicalization(true);
-	  if (!decl_only_class_equals_definition)
-	    env->decl_only_class_equals_definition(false);
+	  // Compare types by considering that decl-only classes don't
+	  // equal their definition.
+	  env->decl_only_class_equals_definition(false);
 	  if (*it == t)
 	    {
 	      // Restore the state of the on-the-fly-canonicalization
@@ -10014,16 +10015,14 @@ type_base::get_canonical_type_for(type_base_sptr t)
 	      // decl-only-class-being-equal-to-a-matching-definition
 	      // flags, as we are getting out of the loop.
 	      env->do_on_the_fly_canonicalization(false);
-	      if (!decl_only_class_equals_definition)
-		env->decl_only_class_equals_definition
-		  (saved_decl_only_class_equals_definition);
+	      env->decl_only_class_equals_definition
+		(saved_decl_only_class_equals_definition);
 	      result = *it;
 	      break;
 	    }
 	  env->do_on_the_fly_canonicalization(false);
-	  if (!decl_only_class_equals_definition)
-	    env->decl_only_class_equals_definition
-	      (saved_decl_only_class_equals_definition);
+	  env->decl_only_class_equals_definition
+	    (saved_decl_only_class_equals_definition);
 	}
       if (!result)
 	{
@@ -16210,8 +16209,7 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 
       if (!def1 || !def2)
 	{
-	  if (odr_is_relevant(l)
-	      || l.get_environment()->decl_only_class_equals_definition())
+	  if (l.get_environment()->decl_only_class_equals_definition())
 	    {
 	      const interned_string& q1 = l.get_qualified_name();
 	      const interned_string& q2 = r.get_qualified_name();

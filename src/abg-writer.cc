@@ -2893,8 +2893,7 @@ write_class_decl_opening_tag(const class_decl_sptr&	decl,
 
   o << "<class-decl name='" << xml::escape_xml_string(decl->get_name()) << "'";
 
-  if (!decl->get_is_declaration_only())
-    write_size_and_alignment(decl, o);
+  write_size_and_alignment(decl, o);
 
   write_is_struct(decl, o);
 
