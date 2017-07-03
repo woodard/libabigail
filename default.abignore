@@ -135,3 +135,14 @@
 # End of suppression specification for C++ libraries
 # that are not Boost.
 ########################################################
+
+###########################################################
+# Do not compare the kernel.img file from the grub2 package
+###########################################################
+
+[suppress_file]
+  file_name_regexp = kernel\\.img
+
+#####################################################################
+# End of "Do not compare the kernel.img file from the grub2 package"
+#####################################################################
