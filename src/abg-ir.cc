@@ -9937,7 +9937,7 @@ type_base::get_canonical_type_for(type_base_sptr t)
 	  //
 	  // Note how we walk the vector of canonical types by
 	  // starting from the end; that is because since canonical
-	  // types of a given corpus are added at the end of the this
+	  // types of a given corpus are added at the end of this
 	  // vector, when two ABI corpora have been loaded and their
 	  // canonical types are present in this vector (e.g, when
 	  // comparing two ABI corpora), the canonical types of the
