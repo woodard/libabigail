@@ -10137,10 +10137,9 @@ die_qualified_type_name(const read_context& ctxt,
 	      // keep the qualified-ness of the type.  So we introduce
 	      // a 'no-op' qualifier here.  Please remember that this
 	      // has to be kept in sync with what is done in
-	      // abigail::ir::qualified_type_def::build_name.  So if
-	      // you change this here, you have to change that code
-	      // there too.
-	      repr = "noop-qual";
+	      // get_name_of_qualified_type.  So if you change this
+	      // here, you have to change that code there too.
+	      repr = "";
 	    else if (!has_underlying_type_die
 		     || die_is_void_type(&underlying_type_die))
 	      {

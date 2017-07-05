@@ -5549,7 +5549,7 @@ get_name_of_qualified_type(const type_base_sptr& underlying_type,
     // Please remember that this has to be kept in sync with what is
     // done in die_qualified_name, in abg-dwarf-reader.cc.  So if you
     // change this code here, please change that code there too.
-    quals_repr = "noop-qual";
+    quals_repr = "";
 
   if (!quals_repr.empty())
     {
