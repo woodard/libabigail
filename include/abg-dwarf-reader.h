@@ -60,6 +60,9 @@ enum status
   STATUS_NO_SYMBOLS_FOUND = 1 << 2,
 };
 
+string
+status_to_diagnostic_string(status s);
+
 status
 operator|(status, status);
 

@@ -1017,6 +1017,11 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
 ///
 /// @param diff the shared pointer to be set to the result of the comparison.
 ///
+/// @param detailed_error_status is this pointer is non-null and if
+/// the function returns ABIDIFF_ERROR, then the function sets the
+/// pointed-to parameter to the abigail::dwarf_reader::status value
+/// that gives details about the rror.
+///
 /// @return the status of the comparison.
 static abidiff_status
 compare(const elf_file& elf1,
@@ -1028,7 +1033,8 @@ compare(const elf_file& elf1,
 	const options&	opts,
 	abigail::ir::environment_sptr	&env,
 	corpus_diff_sptr	&diff,
-	diff_context_sptr	&ctxt)
+	diff_context_sptr	&ctxt,
+	abigail::dwarf_reader::status *detailed_error_status = 0)
 {
   char *di_dir1 = (char*) debug_dir1.c_str(),
 	*di_dir2 = (char*) debug_dir2.c_str();
@@ -1098,6 +1104,10 @@ compare(const elf_file& elf1,
 	    << "Could not read file '"
 	    << elf1.path
 	    << "' properly\n";
+
+      if (detailed_error_status)
+	*detailed_error_status = c1_status;
+
 	return abigail::tools_utils::ABIDIFF_ERROR;
       }
   }
@@ -1110,6 +1120,9 @@ compare(const elf_file& elf1,
 	emit_prefix("abipkgdiff", cerr) << " under " << di_dir1 << "\n";
       else
 	emit_prefix("abipkgdiff", cerr) << "\n";
+
+      if (detailed_error_status)
+	*detailed_error_status = c1_status;
 
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
@@ -1144,6 +1157,10 @@ compare(const elf_file& elf1,
 	    << "Could not find the read file '"
 	    << elf2.path
 	    << "' properly\n";
+
+	if (detailed_error_status)
+	  *detailed_error_status = c2_status;
+
 	return abigail::tools_utils::ABIDIFF_ERROR;
       }
   }
@@ -1158,6 +1175,9 @@ compare(const elf_file& elf1,
 	  << " under " << di_dir2 << "\n";
       else
 	emit_prefix("abipkgdiff", cerr) << "\n";
+
+      if (detailed_error_status)
+	*detailed_error_status = c2_status;
 
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
@@ -1459,29 +1479,51 @@ public:
     diff_context_sptr ctxt;
     corpus_diff_sptr diff;
 
+    abigail::dwarf_reader::status detailed_status =
+      abigail::dwarf_reader::STATUS_UNKNOWN;
+
     status |= compare(args->elf1, args->debug_dir1, args->private_types_suppr1,
 		      args->elf2, args->debug_dir2, args->private_types_suppr2,
-		      args->opts, env, diff, ctxt);
+		      args->opts, env, diff, ctxt, &detailed_status);
 
+    // If there is an ABI change, tell the user about it.
     if ((status & abigail::tools_utils::ABIDIFF_ABI_CHANGE)
-	|| (args->opts.verbose && diff->has_changes()))
+	||( diff && diff->has_net_changes()))
+      {
 	diff->report(out, /*prefix=*/"  ");
+	string name = args->elf1.name;
+
+	pretty_output +=
+	  string("================ changes of '") + name + "'===============\n"
+	  + out.str()
+	  + "================ end of changes of '"
+	  + name + "'===============\n\n";
+      }
     else
       {
 	if (args->opts.show_identical_binaries)
 	  out << "No ABI change detected\n";
       }
 
-    if (status != abigail::tools_utils::ABIDIFF_OK)
+    // If an error happened while comparing the twobinaries, tell the
+    // user about it.
+    if (status & abigail::tools_utils::ABIDIFF_ERROR)
       {
-	string name = args->elf1.name;
+	string diagnostic =
+	  abigail::dwarf_reader::status_to_diagnostic_string(detailed_status);
 
-	pretty_output =
-	  string("================ changes of '") + name + "'===============\n"
-	  + out.str()
+	if (!diagnostic.empty())
+	  {
+	    string name = args->elf1.name;
 
-	  + "================ end of changes of '"
-	  + name + "'===============\n\n";
+	    pretty_output +=
+	      "==== Error happened during processing of " + name + ": ====\n";
+
+	    pretty_output += diagnostic;
+
+	    pretty_output +=
+	      "==== End of error for " + name + " ====\n";
+	  }
       }
   }
 }; // end class compare_task

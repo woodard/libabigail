@@ -15475,6 +15475,29 @@ operator&=(status& l, status r)
   return l;
 }
 
+/// Emit a diagnostic status with english sentences to describe the
+/// problems encoded in a given abigail::dwarf_reader::status, if
+/// there is an error.
+///
+/// @param status the status to diagnose
+///
+/// @return a string containing sentences that describe the possible
+/// errors encoded in @p s.  If there is no error to encode, then the
+/// empty string is returned.
+string
+status_to_diagnostic_string(status s)
+{
+  string str;
+
+  if (s & STATUS_DEBUG_INFO_NOT_FOUND)
+    str += "could not find debug info\n";
+
+  if (s & STATUS_NO_SYMBOLS_FOUND)
+    str += "could not load ELF symbols\n";
+
+  return str;
+}
+
 /// Create a dwarf_reader::read_context.
 ///
 /// @param elf_path the path to the elf file the context is to be used for.
