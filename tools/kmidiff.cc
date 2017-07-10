@@ -279,7 +279,8 @@ print_kernel_dist_binary_paths_under(const string& root, const options &opts)
   vector<string> modules;
 
   if (opts.verbose)
-    if (get_binary_paths_from_kernel_dist(root, vmlinux, modules))
+    if (get_binary_paths_from_kernel_dist(root, /*debug_info_root_path*/"",
+					  vmlinux, modules))
        {
 	 cout << "Found kernel binaries under: '" << root << "'\n";
 	 if (!vmlinux.empty())
@@ -346,6 +347,7 @@ main(int argc, char* argv[])
 	{
 	  group1 =
 	    build_corpus_group_from_kernel_dist_under(opts.kernel_dist_root1,
+						      /*debug_info_root=*/"",
 						      opts.vmlinux1,
 						      opts.suppression_paths,
 						      opts.kabi_whitelist_paths,
@@ -368,6 +370,7 @@ main(int argc, char* argv[])
 	{
 	  group2 =
 	    build_corpus_group_from_kernel_dist_under(opts.kernel_dist_root2,
+						      /*debug_info_root=*/"",
 						      opts.vmlinux2,
 						      opts.suppression_paths,
 						      opts.kabi_whitelist_paths,

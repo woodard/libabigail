@@ -511,6 +511,7 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
   suppressions_type supprs;
   corpus_group_sptr group =
     build_corpus_group_from_kernel_dist_under(opts.in_file_path,
+					      /*debug_info_root=*/"",
 					      opts.vmlinux,
 					      opts.suppression_paths,
 					      opts.kabi_whitelist_paths,

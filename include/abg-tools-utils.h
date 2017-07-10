@@ -69,10 +69,14 @@ gen_suppr_spec_from_kernel_abi_whitelist(const string& abi_whitelist_path,
 					 suppr::suppressions_type& s);
 
 bool
+get_vmlinux_path_from_kernel_dist(const string&	from,
+				  string&		vmlinux_path);
+
+bool
 get_binary_paths_from_kernel_dist(const string&	dist_root,
+				  const string&	debug_info_root_path,
 				  string&		vmlinux_path,
-				  vector<string>&	module_paths,
-				  string&		debug_info_root_path);
+				  vector<string>&	module_paths);
 
 bool
 get_binary_paths_from_kernel_dist(const string&	dist_root,
@@ -240,11 +244,11 @@ bool
 get_deb_name(const string& str, string& name);
 
 bool
-file_is_kernel_package(string& file_path,
+file_is_kernel_package(const string& file_path,
 		       file_type file_type);
 
 bool
-file_is_kernel_debuginfo_package(string& file_path,
+file_is_kernel_debuginfo_package(const string& file_path,
 				 file_type file_type);
 
 std::tr1::shared_ptr<char>
@@ -252,6 +256,7 @@ make_path_absolute(const char*p);
 
 corpus_group_sptr
 build_corpus_group_from_kernel_dist_under(const string&	root,
+					  const string		debug_info_root,
 					  const string&	vmlinux_path,
 					  vector<string>&	suppr_paths,
 					  vector<string>&	kabi_wl_paths,

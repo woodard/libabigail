@@ -1013,7 +1013,7 @@ get_rpm_arch(const string& str, string& arch)
 /// @return true iff @p file_name of kind @p file_type designates a
 /// kernel package.
 bool
-file_is_kernel_package(string& file_name, file_type file_type)
+file_is_kernel_package(const string& file_name, file_type file_type)
 {
   bool result = false;
   string package_name;
@@ -1043,7 +1043,7 @@ file_is_kernel_package(string& file_name, file_type file_type)
 /// @return true iff @p file_name of kind @p file_type designates a
 /// kernel debuginfo package.
 bool
-file_is_kernel_debuginfo_package(string& file_name, file_type file_type)
+file_is_kernel_debuginfo_package(const string& file_name, file_type file_type)
 {
   bool result = false;
   string package_name;
@@ -1501,10 +1501,54 @@ find_vmlinux_and_module_paths(const string&	from,
   return found_vmlinux;
 }
 
+/// Find a vmlinux binary in a given directory tree.
+///
+/// @param from the directory tree to start looking from.
+///
+/// @param vmlinux_path output parameter
+///
+/// return true iff the vmlinux binary was found
+static bool
+find_vmlinux_path(const string&	from,
+		  string		&vmlinux_path)
+{
+  char* path[] = {const_cast<char*>(from.c_str()), 0};
+
+  FTS *file_hierarchy = fts_open(path, FTS_PHYSICAL|FTS_NOCHDIR|FTS_XDEV, 0);
+  if (!file_hierarchy)
+    return false;
+
+  bool found_vmlinux = false;
+  FTSENT *entry;
+  while ((entry = fts_read(file_hierarchy)))
+    {
+      // Skip descendents of symbolic links.
+      if (entry->fts_info == FTS_SL || entry->fts_info == FTS_SLNONE)
+	{
+	  fts_set(file_hierarchy, entry, FTS_SKIP);
+	  continue;
+	}
+
+      if (!found_vmlinux && is_vmlinux(entry))
+	{
+	  vmlinux_path = entry->fts_path;
+	  found_vmlinux = true;
+	  break;
+	}
+    }
+
+  fts_close(file_hierarchy);
+
+  return found_vmlinux;
+}
+
 /// Get the paths of the vmlinux and kernel module binaries under
 /// given directory.
 ///
 /// @param dist_root the directory under which to look for.
+///
+/// @param debug_info_root_path the path to the directory under which
+/// debug info is going to be found for binaries under @p dist_root.
 ///
 /// @param vmlinux_path output parameter.  The path of the vmlinux
 /// binary that was found.
@@ -1512,18 +1556,60 @@ find_vmlinux_and_module_paths(const string&	from,
 /// @param module_paths output parameter.  The paths of the kernel
 /// module binaries that were found.
 ///
-/// @param debug_info_root_path output parameter. If a debug info
-/// sub-directory is found under @p dist_root, it's set to this
-/// parameter.
-///
 /// @return true if at least the path to the vmlinux binary was found.
 bool
 get_binary_paths_from_kernel_dist(const string&	dist_root,
+				  const string&	debug_info_root_path,
 				  string&		vmlinux_path,
-				  vector<string>&	module_paths,
-				  string&		debug_info_root_path)
+				  vector<string>&	module_paths)
 {
   if (!dir_exists(dist_root))
+    return false;
+
+  // For now, we assume either an Enterprise Linux or a Fedora kernel
+  // distribution directory.
+  //
+  // We also take into account split debug info package for these.  In
+  // this case, the content split debug info package is installed
+  // under the 'debug_info_root_path' directory and its content is
+  // accessible from <debug_info_root_path>/usr/lib/debug directory.
+
+  string kernel_modules_root;
+  string debug_info_root;
+  if (dir_exists(dist_root + "/lib/modules"))
+    {
+      dist_root + "/lib/modules";
+      debug_info_root = debug_info_root_path.empty()
+	? dist_root
+	: debug_info_root_path;
+      debug_info_root += "/usr/lib/debug";
+    }
+
+  if (dir_is_empty(debug_info_root))
+    debug_info_root.clear();
+
+  bool found = false;
+  string from = dist_root;
+  if (find_vmlinux_and_module_paths(from, vmlinux_path, module_paths))
+    found = true;
+
+  return found;
+}
+
+/// Get the path of the vmlinux binary under the given directory, that
+/// must have been generated either from extracting a package.
+///
+/// @param from the directory under which to look for.
+///
+/// @param vmlinux_path output parameter.  The path of the vmlinux
+/// binary that was found.
+///
+/// @return true if the path to the vmlinux binary was found.
+bool
+get_vmlinux_path_from_kernel_dist(const string&	from,
+				  string&		vmlinux_path)
+{
+    if (!dir_exists(from))
     return false;
 
   // For now, we assume either an Enterprise Linux or a Fedora kernel
@@ -1534,23 +1620,13 @@ get_binary_paths_from_kernel_dist(const string&	dist_root,
   // under the 'dist_root' directory as well, and its content is
   // accessible from <dist_root>/usr/lib/debug directory.
 
-  string kernel_modules_root;
-  string debug_info_root;
+    string dist_root = from;
   if (dir_exists(dist_root + "/lib/modules"))
-    {
-      dist_root + "/lib/modules";
-      debug_info_root = dist_root + "/usr/lib/debug";
-    }
-
-  if (dir_is_empty(debug_info_root))
-    debug_info_root.clear();
+    dist_root + "/lib/modules";
 
   bool found = false;
-  string from = !debug_info_root.empty() ? debug_info_root : dist_root;
-  if (find_vmlinux_and_module_paths(from, vmlinux_path, module_paths))
+  if (find_vmlinux_path(dist_root, vmlinux_path))
     found = true;
-
-  debug_info_root_path = debug_info_root;
 
   return found;
 }
@@ -1574,9 +1650,9 @@ get_binary_paths_from_kernel_dist(const string&	dist_root,
 {
   string debug_info_root_path;
   return get_binary_paths_from_kernel_dist(dist_root,
+					   debug_info_root_path,
 					   vmlinux_path,
-					   module_paths,
-					   debug_info_root_path);
+					   module_paths);
 }
 
 /// Walk a given directory and build an instance of @ref corpus_group
@@ -1590,6 +1666,9 @@ get_binary_paths_from_kernel_dist(const string&	dist_root,
 /// kernel modules are to be found.  The vmlinux can also be found
 /// somewhere under that directory, but if it's not in there, its path
 /// can be set to the @p vmlinux_path parameter.
+///
+/// @param debug_info_root the directory under which debug info is to
+/// be found for binaries under director @p root.
 ///
 /// @param vmlinux_path the path to the vmlinux binary, if that binary
 /// is not under the @p root directory.  If this is empty, then it
@@ -1612,6 +1691,7 @@ get_binary_paths_from_kernel_dist(const string&	dist_root,
 /// @param env the environment to create the corpus_group in.
 corpus_group_sptr
 build_corpus_group_from_kernel_dist_under(const string&	root,
+					  const string		debug_info_root,
 					  const string&	vmlinux_path,
 					  vector<string>&	suppr_paths,
 					  vector<string>&	kabi_wl_paths,
@@ -1622,15 +1702,13 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
   string vmlinux = vmlinux_path;
   corpus_group_sptr result;
   vector<string> modules;
-  string debug_info_root_path;
 
   if (verbose)
     std::cout << "Analysing kernel dist root '"
 	      << root << "' ... " << std::flush;
 
   bool got_binary_paths =
-    get_binary_paths_from_kernel_dist(root, vmlinux, modules,
-				      debug_info_root_path);
+    get_binary_paths_from_kernel_dist(root, debug_info_root, vmlinux, modules);
 
   if (verbose)
     std::cout << "DONE\n";
@@ -1639,7 +1717,7 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
   if (got_binary_paths)
     {
       shared_ptr<char> di_root =
-	make_path_absolute(debug_info_root_path.c_str());
+	make_path_absolute(debug_info_root.c_str());
       char *di_root_ptr = di_root.get();
       abigail::dwarf_reader::status status = abigail::dwarf_reader::STATUS_OK;
       corpus_group_sptr group;

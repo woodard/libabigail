@@ -109,10 +109,13 @@ using abigail::tools_utils::gen_suppr_spec_from_headers;
 using abigail::tools_utils::gen_suppr_spec_from_kernel_abi_whitelist;
 using abigail::tools_utils::get_default_system_suppression_file_path;
 using abigail::tools_utils::get_default_user_suppression_file_path;
+using abigail::tools_utils::get_vmlinux_path_from_kernel_dist;
+using abigail::tools_utils::build_corpus_group_from_kernel_dist_under;
 using abigail::tools_utils::load_default_system_suppressions;
 using abigail::tools_utils::load_default_user_suppressions;
 using abigail::tools_utils::abidiff_status;
 using abigail::ir::corpus_sptr;
+using abigail::ir::corpus_group_sptr;
 using abigail::comparison::diff_context;
 using abigail::comparison::diff_context_sptr;
 using abigail::comparison::compute_diff;
@@ -1657,10 +1660,16 @@ create_maps_of_package_content(package& package, options& opts)
   bool is_linux_kernel_package = file_is_kernel_package(pkg_name,
 							package.type());
   if (is_linux_kernel_package)
-    if (package_sptr debuginfo_pkg = package.debug_info_package())
-      is_ok =
-	get_interesting_files_under_dir(debuginfo_pkg->extracted_dir_path(),
-					"vmlinux", opts, elf_file_paths);
+    {
+      // For a linux kernel package, no analysis is done.  It'll be
+      // done later at comparison time by
+      // compare_prepared_linux_kernel_packages
+      is_ok = true;
+      if (opts.verbose)
+	emit_prefix("abipkgdiff", cerr)
+	  << " Analysis of " << package.path() << " DONE\n";
+      return is_ok;
+    }
 
   is_ok &= get_interesting_files_under_dir(package.extracted_dir_path(),
 					   /*file_name_to_look_for=*/"",
@@ -1930,7 +1939,11 @@ maybe_erase_temp_dirs(package& first_package, package& second_package,
   erase_created_temporary_directories_parent(opts);
 }
 
-/// Compare the ABI of two packages
+/// Compare the ABI of two prepared packages that contain userspace
+/// binaries.
+///
+/// A prepared package is a package which content has been extracted
+/// and mapped.
 ///
 /// @param first_package the first package to consider.
 ///
@@ -1946,23 +1959,13 @@ maybe_erase_temp_dirs(package& first_package, package& second_package,
 ///
 /// @return the status of the comparison.
 static abidiff_status
-compare(package& first_package, package& second_package,
-	abi_diff& diff, options& opts)
+compare_prepared_userspace_packages(package& first_package,
+				    package& second_package,
+				    abi_diff& diff, options& opts)
 {
-  // Prepare (extract and analyze the contents) the packages and their
-  // ancillary packages.
-  //
-  // Note that the package preparations happens in parallel.
-  if (!prepare_packages(first_package, second_package, opts))
-    {
-      maybe_erase_temp_dirs(first_package, second_package, opts);
-      return abigail::tools_utils::ABIDIFF_ERROR;
-    }
-
+  abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
+  abigail::workers::queue::tasks_type compare_tasks;
   string pkg_name = first_package.base_name();
-  bool is_linux_kernel_package =
-    abigail::tools_utils::file_is_kernel_package(pkg_name,
-						 first_package.type());
 
   // Setting debug-info path of libraries
   string debug_dir1, debug_dir2, relative_debug_path = "/usr/lib/debug/";
@@ -1978,20 +1981,6 @@ compare(package& first_package, package& second_package,
 	  relative_debug_path;
     }
 
-  abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
-
-  abigail::workers::queue::tasks_type compare_tasks;
-
-  if (is_linux_kernel_package)
-    {
-      opts.show_symbols_not_referenced_by_debug_info = false;
-      for (vector<string>::const_iterator i =
-	     opts.kabi_whitelist_paths.begin();
-	   i != opts.kabi_whitelist_paths.end();
-	   ++i)
-	gen_suppr_spec_from_kernel_abi_whitelist(*i, opts.kabi_suppressions);
-    }
-
   for (map<string, elf_file_sptr>::iterator it =
 	 first_package.path_elf_file_sptr_map().begin();
        it != first_package.path_elf_file_sptr_map().end();
@@ -2004,14 +1993,9 @@ compare(package& first_package, package& second_package,
 	  && (iter->second->type == abigail::dwarf_reader::ELF_TYPE_DSO
 	      || iter->second->type == abigail::dwarf_reader::ELF_TYPE_EXEC
               || iter->second->type == abigail::dwarf_reader::ELF_TYPE_PI_EXEC
-	      || iter->second->type
-	      == abigail::dwarf_reader::ELF_TYPE_RELOCATABLE))
+	      || iter->second->type == abigail::dwarf_reader::ELF_TYPE_RELOCATABLE))
 	{
-	  if ((((iter->second->type
-		 == abigail::dwarf_reader::ELF_TYPE_RELOCATABLE)
-		&& is_linux_kernel_package)
-	       || (iter->second->type
-		   != abigail::dwarf_reader::ELF_TYPE_RELOCATABLE)))
+	  if (iter->second->type != abigail::dwarf_reader::ELF_TYPE_RELOCATABLE)
 	    {
 	      compare_args_sptr args
 		(new compare_args(*it->second,
@@ -2021,7 +2005,6 @@ compare(package& first_package, package& second_package,
 				  debug_dir2,
 				  second_package.private_types_suppressions(),
 				  opts));
-
 	      compare_task_sptr t(new compare_task(args));
 	      compare_tasks.push_back(t);
 	    }
@@ -2123,6 +2106,182 @@ compare(package& first_package, package& second_package,
   status = notifier.status;
 
   return status;
+}
+
+/// Compare the ABI of two prepared packages that contain linux kernel
+/// binaries.
+///
+/// A prepared package is a package which content has been extracted
+/// and mapped.
+///
+/// @param first_package the first package to consider.
+///
+/// @param second_package the second package to consider.
+///
+/// @param options the options the current program has been called
+/// with.
+///
+/// @param diff out parameter.  If this function returns true, then
+/// this parameter is set to the result of the comparison.
+///
+/// @param opts the options of the current program.
+///
+/// @return the status of the comparison.
+static abidiff_status
+compare_prepared_linux_kernel_packages(package& first_package,
+				       package& second_package,
+				       options& opts)
+{
+  abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
+  string pkg_name = first_package.base_name();
+
+  // Setting debug-info path of binaries
+  string debug_dir1, debug_dir2, relative_debug_path = "/usr/lib/debug/";
+  if (first_package.debug_info_package()
+      && second_package.debug_info_package())
+    {
+      debug_dir1 =
+	first_package.debug_info_package()->extracted_dir_path() +
+	relative_debug_path;
+      if (second_package.debug_info_package())
+	debug_dir2 =
+	  second_package.debug_info_package()->extracted_dir_path() +
+	  relative_debug_path;
+    }
+
+  string vmlinux_path1, vmlinux_path2;
+
+  if (!get_vmlinux_path_from_kernel_dist(debug_dir1, vmlinux_path1))
+    return abigail::tools_utils::ABIDIFF_ERROR;
+
+  if (!get_vmlinux_path_from_kernel_dist(debug_dir2, vmlinux_path2))
+    return abigail::tools_utils::ABIDIFF_ERROR;
+
+  string dist_root1 = first_package.extracted_dir_path();
+  string dist_root2 = second_package.extracted_dir_path();
+
+  abigail::ir::environment_sptr env(new abigail::ir::environment);
+  suppressions_type supprs;
+  corpus_group_sptr corpus1, corpus2;
+  corpus1 = build_corpus_group_from_kernel_dist_under(dist_root1,
+						      debug_dir1,
+						      vmlinux_path1,
+						      opts.suppression_paths,
+						      opts.kabi_whitelist_paths,
+						      supprs,
+						      opts.verbose,
+						      env);
+
+  if (!corpus1)
+    return abigail::tools_utils::ABIDIFF_ERROR;
+
+  corpus2 = build_corpus_group_from_kernel_dist_under(dist_root2,
+						      debug_dir2,
+						      vmlinux_path2,
+						      opts.suppression_paths,
+						      opts.kabi_whitelist_paths,
+						      supprs,
+						      opts.verbose,
+						      env);
+
+  if (!corpus2)
+    return abigail::tools_utils::ABIDIFF_ERROR;
+
+  diff_context_sptr diff_ctxt(new diff_context);
+  set_diff_context_from_opts(diff_ctxt, opts);
+
+  corpus_diff_sptr diff = compute_diff(corpus1, corpus2, diff_ctxt);
+
+  if (diff->has_net_changes())
+    status |= abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+  if (diff->has_incompatible_changes())
+    status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
+
+  if (status & abigail::tools_utils::ABIDIFF_ABI_CHANGE)
+    {
+      cout << "== Kernel ABI changes between packages '"
+	   << first_package.path() << "' and '"
+	   << second_package.path() << "' are: ===\n";
+      diff->report(cout);
+      cout << "== End of kernel ABI changes between packages '"
+	   << first_package.path()
+	   << "' and '"
+	   << second_package.path() << "' ===\n\n";
+    }
+
+  return status;
+}
+
+/// Compare the ABI of two prepared packages.
+///
+/// A prepared package is a package which content has been extracted
+/// and mapped.
+///
+/// @param first_package the first package to consider.
+///
+/// @param second_package the second package to consider.
+///
+/// @param options the options the current program has been called
+/// with.
+///
+/// @param diff out parameter.  If this function returns true, then
+/// this parameter is set to the result of the comparison.
+///
+/// @param opts the options of the current program.
+///
+/// @return the status of the comparison.
+static abidiff_status
+compare_prepared_package(package& first_package, package& second_package,
+			 abi_diff& diff, options& opts)
+{
+  abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
+
+  if (abigail::tools_utils::file_is_kernel_package(first_package.base_name(),
+						   first_package.type()))
+    {
+      opts.show_symbols_not_referenced_by_debug_info = false;
+      status = compare_prepared_linux_kernel_packages(first_package,
+						      second_package,
+						      opts);
+    }
+  else
+    status = compare_prepared_userspace_packages(first_package,
+						 second_package,
+						 diff, opts);
+
+  return status;
+}
+
+/// Compare the ABI of two packages
+///
+/// @param first_package the first package to consider.
+///
+/// @param second_package the second package to consider.
+///
+/// @param options the options the current program has been called
+/// with.
+///
+/// @param diff out parameter.  If this function returns true, then
+/// this parameter is set to the result of the comparison.
+///
+/// @param opts the options of the current program.
+///
+/// @return the status of the comparison.
+static abidiff_status
+compare(package& first_package, package& second_package,
+	abi_diff& diff, options& opts)
+{
+  // Prepare (extract and analyze the contents) the packages and their
+  // ancillary packages.
+  //
+  // Note that the package preparations happens in parallel.
+  if (!prepare_packages(first_package, second_package, opts))
+    {
+      maybe_erase_temp_dirs(first_package, second_package, opts);
+      return abigail::tools_utils::ABIDIFF_ERROR;
+    }
+
+  return compare_prepared_package(first_package, second_package, diff, opts);
 }
 
 /// Compare the ABI of two packages.
@@ -2475,6 +2634,35 @@ main(int argc, char* argv[])
 	  return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 		  | abigail::tools_utils::ABIDIFF_ERROR);
 	}
+
+      if (file_is_kernel_package(first_package->base_name(),
+				 abigail::tools_utils::FILE_TYPE_RPM)
+	  || file_is_kernel_package(second_package->base_name(),
+				    abigail::tools_utils::FILE_TYPE_RPM))
+	{
+	  if (file_is_kernel_package(first_package->base_name(),
+				     abigail::tools_utils::FILE_TYPE_RPM)
+	      != file_is_kernel_package(second_package->base_name(),
+					abigail::tools_utils::FILE_TYPE_RPM))
+	    {
+	      emit_prefix("abipkgdiff", cerr)
+		<< "a Linux kernel package can only be compared to another "
+		"Linux kernel package\n";
+	      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+		      | abigail::tools_utils::ABIDIFF_ERROR);
+	    }
+
+	  if (!first_package->debug_info_package()
+	      || !second_package->debug_info_package())
+	    {
+	      emit_prefix("abipkgdiff", cerr)
+		<< "a Linux Kernel package must be accompanied with its "
+		"debug info package\n";
+	      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+		      | abigail::tools_utils::ABIDIFF_ERROR);
+	    }
+	}
+
       break;
 
     case abigail::tools_utils::FILE_TYPE_DEB:
