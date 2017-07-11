@@ -2161,12 +2161,12 @@ parse_command_line(int argc, char* argv[], options& opts)
         {
           if (opts.package1.empty())
             {
-              opts.package1 = abigail::tools_utils::make_path_absolute(argv[i]).get();
+              opts.package1 = make_path_absolute(argv[i]).get();
               opts.nonexistent_file = !file_exists(opts.package1);
             }
           else if (opts.package2.empty())
             {
-              opts.package2 = abigail::tools_utils::make_path_absolute(argv[i]).get();
+              opts.package2 = make_path_absolute(argv[i]).get();
               opts.nonexistent_file = !file_exists(opts.package2);
             }
           else
