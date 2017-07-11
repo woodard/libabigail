@@ -149,7 +149,6 @@ public:
   string	debug_package2;
   string	devel_package1;
   string	devel_package2;
-  string	kabi_whitelist_package;
   size_t	num_workers;
   bool		verbose;
   bool		drop_private_types;
@@ -166,6 +165,7 @@ public:
   bool		show_added_binaries;
   bool		fail_if_no_debug_info;
   bool		show_identical_binaries;
+  vector<string> kabi_whitelist_packages;
   vector<string> suppression_paths;
   vector<string> kabi_whitelist_paths;
   suppressions_type kabi_suppressions;
@@ -513,6 +513,8 @@ public:
       debug_info_package()->erase_extraction_directory(opts);
     if (devel_package())
       devel_package()->erase_extraction_directory(opts);
+    if (kabi_whitelist_package())
+      kabi_whitelist_package()->erase_extraction_directory(opts);
   }
 }; // end class package.
 
@@ -1346,7 +1348,7 @@ get_kabi_whitelists_from_arch_under_dir(const string& dir,
 static bool
 maybe_handle_kabi_whitelist_pkg(const package& pkg, options &opts)
 {
-  if (opts.kabi_whitelist_package.empty()
+  if (opts.kabi_whitelist_packages.empty()
       || !opts.kabi_whitelist_paths.empty()
       || !pkg.kabi_whitelist_package())
     return false;
@@ -2302,7 +2304,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	      opts.wrong_option = argv[i];
 	      return true;
 	    }
-	  opts.kabi_whitelist_package = make_path_absolute(argv[j]).get();
+	  opts.kabi_whitelist_packages.push_back
+	    (make_path_absolute(argv[j]).get());
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--help")
@@ -2363,6 +2366,14 @@ main(int argc, char* argv[])
       emit_prefix("abipkgdiff", cerr)
 	<< "The input file " << input_file << " doesn't exist\n"
 	"try the --help option for more information\n";
+      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+	      | abigail::tools_utils::ABIDIFF_ERROR);
+    }
+
+  if (opts.kabi_whitelist_packages.size() > 2)
+    {
+      emit_prefix("abipkgdiff", cerr)
+	<< "no more than 2 Linux kernel white list packages can be provided\n";
       return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
@@ -2437,12 +2448,20 @@ main(int argc, char* argv[])
 				"devel_package2",
 				/*pkg_kind=*/package::KIND_DEVEL)));
 
-  if (!opts.kabi_whitelist_package.empty())
-    first_package->kabi_whitelist_package
-      (package_sptr(new package
-		    (opts.kabi_whitelist_package,
-		     "kabi_whitelist_package",
-		     /*pkg_kind=*/package::KIND_KABI_WHITELISTS)));
+  if (!opts.kabi_whitelist_packages.empty())
+    {
+      first_package->kabi_whitelist_package
+	(package_sptr(new package
+		      (opts.kabi_whitelist_packages[0],
+		       "kabi_whitelist_package1",
+		       /*pkg_kind=*/package::KIND_KABI_WHITELISTS)));
+      if (opts.kabi_whitelist_packages.size() >= 2)
+	second_package->kabi_whitelist_package
+	  (package_sptr(new package
+			(opts.kabi_whitelist_packages[1],
+			 "kabi_whitelist_package2",
+			 /*pkg_kind=*/package::KIND_KABI_WHITELISTS)));
+    }
 
   string package_name;
   switch (first_package->type())

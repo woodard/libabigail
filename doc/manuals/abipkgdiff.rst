@@ -221,6 +221,10 @@ Options
     that white list will not be considered by the ABI comparison
     process.
 
+    Note that this option can be provided twice (not mor than twice),
+    specifying one white list package for each Linux Kernel package
+    that is provided on the command line.
+
     If this option is not provided -- thus if no white list is
     provided -- then the ABI of all publicly defined and exported
     functions and global variables by the Linux Kernel binaries are
