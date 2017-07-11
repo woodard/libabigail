@@ -7899,30 +7899,6 @@ lookup_enum_type_through_translation_units(const interned_string& type_name,
   return result;
 }
 
-/// Lookup a class type definition in all the translation units of a
-/// given ABI corpus.
-///
-/// @param @param qn the fully qualified name of the class type to lookup.
-///
-/// @param abi_corpus the ABI corpus which to look the type up in.
-///
-/// @return the type definition if any was found, or a NULL pointer.
-static const class_decl_sptr
-lookup_class_type_through_translation_units(const string& qn,
-					    const corpus& abi_corpus)
-{
-  class_decl_sptr result;
-
-  for (translation_units::const_iterator tu =
-	 abi_corpus.get_translation_units().begin();
-       tu != abi_corpus.get_translation_units().end();
-       ++tu)
-    if ((result = lookup_class_type(qn, **tu)))
-      break;
-
-  return result;
-}
-
 /// Lookup a typedef type definition in all the translation units of a
 /// given ABI corpus.
 ///
@@ -8303,8 +8279,6 @@ lookup_class_type(const interned_string& qualified_name, const corpus& corp)
   const istring_type_base_wptrs_map_type& m = corp.get_types().class_types();
 
   class_decl_sptr result = lookup_type_in_map<class_decl>(qualified_name, m);
-  if (!result)
-    result = lookup_class_type_through_translation_units(qualified_name, corp);
 
   return result;
 }
@@ -9018,12 +8992,6 @@ lookup_type(const type_base_sptr&t, const corpus& corp)
 /// @param types_map the map to update.  It's a map that assciates a
 /// fully qualified name of a type to the type itself.
 ///
-/// @param erase_if_exists_already if true and if a type with a given
-/// name already exists in the map @p types_map, then erase the type
-/// that exists already.  Otherwise, if this parameter is false, if a
-/// type with the same name already exists in the map, then, do
-/// nothing; do not even update the map in that case.
-///
 /// @param use_type_name_as_key if true, use the name of the type as
 /// the key to look it up later.  If false, then use the location of
 /// the type as a key to look it up later.
@@ -9033,7 +9001,6 @@ template<typename TypeKind>
 bool
 maybe_update_types_lookup_map(const shared_ptr<TypeKind>& type,
 			      istring_type_base_wptrs_map_type& types_map,
-			      bool erase_if_exists_already = false,
 			      bool use_type_name_as_key = true)
 {
   interned_string s;
@@ -9054,8 +9021,6 @@ maybe_update_types_lookup_map(const shared_ptr<TypeKind>& type,
       types_map[s].push_back(type);
       result = true;
     }
-  else if (erase_if_exists_already)
-    types_map.erase(i);
   else
     i->second.push_back(type);
 
@@ -9073,18 +9038,11 @@ maybe_update_types_lookup_map(const shared_ptr<TypeKind>& type,
 ///
 /// @param types_map the type map to update.
 ///
-/// @param erase_if_exists_already if true and if a type with a given
-/// name already exists in the map @p types_map, then erase the type
-/// that exists already.  Otherwise, if this parameter is false, if a
-/// type with the same name already exists in the map, then, do
-/// nothing; do not even update the map in that case.
-///
 /// @return true iff the type was added to the map.
 template<>
 bool
 maybe_update_types_lookup_map<class_decl>(const class_decl_sptr& class_type,
 					  istring_type_base_wptrs_map_type& map,
-					  bool erase_if_exists_already,
 					  bool use_type_name_as_key)
 {
   class_decl_sptr type = class_type;
@@ -9120,8 +9078,6 @@ maybe_update_types_lookup_map<class_decl>(const class_decl_sptr& class_type,
       map[s].push_back(type);
       result = true;
     }
-  else if (erase_if_exists_already)
-    map.erase(i);
   else
     i->second.push_back(type);
 
@@ -9141,19 +9097,12 @@ maybe_update_types_lookup_map<class_decl>(const class_decl_sptr& class_type,
 ///
 /// @param types_map the type map to update.
 ///
-/// @param erase_if_exists_already if true and if a type with a given
-/// name already exists in the map @p types_map, then erase the type
-/// that exists already.  Otherwise, if this parameter is false, if a
-/// type with the same name already exists in the map, then, do
-/// nothing; do not even update the map in that case.
-///
 /// @return true iff the type was added to the map.
 template<>
 bool
 maybe_update_types_lookup_map<function_type>
 (const function_type_sptr& type,
  istring_type_base_wptrs_map_type& types_map,
- bool erase_if_exists_already,
  bool /*use_type_name_as_key*/)
 {
   bool result = false;
@@ -9164,8 +9113,6 @@ maybe_update_types_lookup_map<function_type>
       types_map[s].push_back(type);
       result = true;
     }
-  else if (erase_if_exists_already)
-    types_map.erase(i);
   else
     i->second.push_back(type);
 
@@ -9194,13 +9141,11 @@ maybe_update_types_lookup_map(const type_decl_sptr& basic_type)
     {
       maybe_update_types_lookup_map<type_decl>
 	(basic_type,
-	 type_corpus->priv_->get_types().basic_types(),
-	 /*erase_if_exists_already=*/false);
+	 type_corpus->priv_->get_types().basic_types());
 
       maybe_update_types_lookup_map<type_decl>
 	(basic_type,
 	 type_corpus->get_type_per_loc_map().basic_types(),
-	 /*erase_if_exists_already=*/false,
 	 /*use_type_name_as_key*/false);
     }
 }
@@ -9227,13 +9172,11 @@ maybe_update_types_lookup_map(const class_decl_sptr& class_type)
     {
       maybe_update_types_lookup_map<class_decl>
 	(class_type,
-	 type_corpus->priv_->get_types().class_types(),
-	 /*erase_if_exists_already=*/false);
+	 type_corpus->priv_->get_types().class_types());
 
       maybe_update_types_lookup_map<class_decl>
 	(class_type,
 	 type_corpus->get_type_per_loc_map().class_types(),
-	 /*erase_if_exists_already=*/false,
 	 /*use_type_name_as_key*/false);
     }
 }
@@ -9260,13 +9203,11 @@ maybe_update_types_lookup_map(const union_decl_sptr& union_type)
     {
       maybe_update_types_lookup_map<union_decl>
 	(union_type,
-	 type_corpus->priv_->get_types().union_types(),
-	 /*erase_if_exists_already=*/false);
+	 type_corpus->priv_->get_types().union_types());
 
       maybe_update_types_lookup_map<union_decl>
 	(union_type,
 	 type_corpus->get_type_per_loc_map().union_types(),
-	 /*erase_if_exists_already=*/false,
 	 /*use_type_name_as_key*/false);
     }
 }
@@ -9293,13 +9234,11 @@ maybe_update_types_lookup_map(const enum_type_decl_sptr& enum_type)
     {
       maybe_update_types_lookup_map<enum_type_decl>
 	(enum_type,
-	 type_corpus->priv_->get_types().enum_types(),
-	 /*erase_if_exists_already=*/false);
+	 type_corpus->priv_->get_types().enum_types());
 
       maybe_update_types_lookup_map<enum_type_decl>
 	(enum_type,
 	 type_corpus->get_type_per_loc_map().enum_types(),
-	 /*erase_if_exists_already=*/false,
 	 /*use_type_name_as_key*/false);
     }
 }
@@ -9326,13 +9265,11 @@ maybe_update_types_lookup_map(const typedef_decl_sptr& typedef_type)
     {
       maybe_update_types_lookup_map<typedef_decl>
 	(typedef_type,
-	 type_corpus->priv_->get_types().typedef_types(),
-	 /*erase_if_exists_already=*/false);
+	 type_corpus->priv_->get_types().typedef_types());
 
       maybe_update_types_lookup_map<typedef_decl>
 	(typedef_type,
 	 type_corpus->get_type_per_loc_map().typedef_types(),
-	 /*erase_if_exists_already=*/false,
 	 /*use_type_name_as_key*/false);
     }
 }
@@ -9358,8 +9295,7 @@ maybe_update_types_lookup_map(const qualified_type_def_sptr& qualified_type)
   if (corpus *type_corpus = qualified_type->get_corpus())
     maybe_update_types_lookup_map<qualified_type_def>
       (qualified_type,
-       type_corpus->priv_->get_types().qualified_types(),
-       /*erase_if_exists_already=*/false);
+       type_corpus->priv_->get_types().qualified_types());
 }
 
 /// Update the map that associates the fully qualified name of a
@@ -9383,8 +9319,7 @@ maybe_update_types_lookup_map(const pointer_type_def_sptr& pointer_type)
   if (corpus *type_corpus = pointer_type->get_corpus())
     maybe_update_types_lookup_map<pointer_type_def>
       (pointer_type,
-       type_corpus->priv_->get_types().pointer_types(),
-       /*erase_if_exists_already=*/false);
+       type_corpus->priv_->get_types().pointer_types());
 }
 
 /// Update the map that associates the fully qualified name of a
@@ -9408,8 +9343,7 @@ maybe_update_types_lookup_map(const reference_type_def_sptr& reference_type)
   if (corpus *type_corpus = reference_type->get_corpus())
     maybe_update_types_lookup_map<reference_type_def>
       (reference_type,
-       type_corpus->priv_->get_types().reference_types(),
-       /*erase_if_exists_already=*/false);
+       type_corpus->priv_->get_types().reference_types());
 }
 
 /// Update the map that associates the fully qualified name of a type
@@ -9434,13 +9368,11 @@ maybe_update_types_lookup_map(const array_type_def_sptr& array_type)
     {
       maybe_update_types_lookup_map<array_type_def>
 	(array_type,
-	 type_corpus->priv_->get_types().array_types(),
-	 /*erase_if_exists_already=*/false);
+	 type_corpus->priv_->get_types().array_types());
 
       maybe_update_types_lookup_map<array_type_def>
 	(array_type,
 	 type_corpus->get_type_per_loc_map().array_types(),
-	 /*erase_if_exists_already=*/false,
 	 /*use_type_name_as_key*/false);
     }
 }
@@ -9467,8 +9399,7 @@ maybe_update_types_lookup_map(const function_type_sptr& fn_type)
   if (corpus *type_corpus = fn_type->get_corpus())
     maybe_update_types_lookup_map<function_type>
       (fn_type,
-       type_corpus->priv_->get_types().function_types(),
-       /*erase_if_exists_already=*/false);
+       type_corpus->priv_->get_types().function_types());
 }
 
 /// Update the map that associates the fully qualified name of a type
