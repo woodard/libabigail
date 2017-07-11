@@ -2302,7 +2302,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	      opts.wrong_option = argv[i];
 	      return true;
 	    }
-	  opts.kabi_whitelist_package = argv[j];
+	  opts.kabi_whitelist_package = make_path_absolute(argv[j]).get();
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--help")
