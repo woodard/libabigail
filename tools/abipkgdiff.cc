@@ -879,7 +879,7 @@ extract_package(const package& package,
       if (!extract_rpm(package.path(), package.extracted_dir_path(), opts))
         {
           emit_prefix("abipkgdiff", cerr)
-	    << "Error while extracting package" << package.path() << "\n";
+	    << "Error while extracting package " << package.path() << "\n";
           return false;
         }
       return true;
