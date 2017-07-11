@@ -184,7 +184,7 @@ Options
     the :ref:`default suppression specification files
     <abipkgdiff_default_supprs_label>` are loaded .
 
-  * ``--linux-kernel-abi-whitelist | --lkaw`` <*path-to-whitelist*>
+  * ``--linux-kernel-abi-whitelist | -w`` <*path-to-whitelist*>
 
     When comparing two Linux kernel RPM packages, this option points
     to the white list of names of ELF symbols of functions and
@@ -200,7 +200,7 @@ Options
     functions and global variables by the Linux Kernel binaries are
     compared.
 
-  * ``--lkaw-pkg`` <*path-to-whitelist-package*>
+  * ``--wp`` <*path-to-whitelist-package*>
 
     When comparing two Linux kernel RPM packages, this option points
     an RPM package containining several white lists of names of ELF

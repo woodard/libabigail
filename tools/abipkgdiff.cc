@@ -636,9 +636,9 @@ display_usage(const string& prog_name, ostream& out)
     << " --no-default-suppression       don't load any default "
        "suppression specifications\n"
     << " --suppressions|--suppr <path>  specify supression specification path\n"
-    << " --linux-kernel-abi-whitelist|--lkaw path to a "
+    << " --linux-kernel-abi-whitelist|-w path to a "
     "linux kernel abi whitelist\n"
-    << " --lkaw-pkg <path>  path to a linux kernel abi whitelist package\n"
+    << " --wp <path>                    path to a linux kernel abi whitelist package\n"
     << " --keep-tmp-files               don't erase created temporary files\n"
     << " --dso-only                     compare shared libraries only\n"
     << " --no-linkage-name		do not display linkage names of "
@@ -2281,7 +2281,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--linux-kernel-abi-whitelist")
-	       || !strcmp(argv[i], "--lkaw"))
+	       || !strcmp(argv[i], "-w"))
 	{
 	  int j = i + 1;
 	  if (j >= argc)
@@ -2293,7 +2293,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.kabi_whitelist_paths.push_back(argv[j]);
 	  ++i;
 	}
-      else if (!strcmp(argv[i], "--lkaw-pkg"))
+      else if (!strcmp(argv[i], "--wp"))
 	{
 	  int j = i + 1;
 	  if (j >= argc)
