@@ -6547,7 +6547,7 @@ public:
     GElf_Ehdr eh_mem;
     GElf_Ehdr* elf_header = gelf_getehdr(elf_handle(), &eh_mem);
 
-    return (elf_header->e_machine == EM_PPC64);
+    return (elf_header && elf_header->e_machine == EM_PPC64);
   }
 
   /// Test if the endianness of the current binary is Big Endian.
