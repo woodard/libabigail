@@ -7,6 +7,7 @@ abg-reader.h		\
 abg-dwarf-reader.h	\
 abg-writer.h		\
 abg-comparison.h	\
+abg-reporter.h		\
 abg-suppression.h	\
 abg-comp-filter.h	\
 abg-diff-utils.h	\

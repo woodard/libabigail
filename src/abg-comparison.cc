@@ -30,26 +30,14 @@
 #include <algorithm>
 #include <sstream>
 
-#include "abg-internal.h"
-// <headers defining libabigail's API go under here>
-ABG_BEGIN_EXPORT_DECLARATIONS
-
-#include "abg-hash.h"
-#include "abg-suppression.h"
-#include "abg-comp-filter.h"
-#include "abg-sptr-utils.h"
-#include "abg-tools-utils.h"
-
-ABG_END_EXPORT_DECLARATIONS
-// </headers defining libabigail's API>
+#include "abg-comparison-priv.h"
+#include "abg-reporter-priv.h"
 
 namespace abigail
 {
 
 namespace comparison
 {
-using std::tr1::unordered_set;
-using namespace abigail::suppr;
 
 ///
 ///
@@ -125,41 +113,365 @@ using namespace abigail::suppr;
 /// @}
 ///
 
-// Inject types from outside in here.
-using std::vector;
-using std::tr1::dynamic_pointer_cast;
-using std::tr1::static_pointer_cast;
-using abigail::sptr_utils::noop_deleter;
-
-/// Convenience typedef for a pair of decls or types.
-typedef std::pair<const type_or_decl_base_sptr,
-		  const type_or_decl_base_sptr> types_or_decls_type;
-
-/// A hashing functor for @ref types_or_decls_type.
-struct types_or_decls_hash
+// -----------------------------------------
+// <private functions re-usable elsewhere>
+// -----------------------------------------
+/// Sort a map of enumerators by their value.
+///
+/// @param enumerators_map the map to sort.
+///
+/// @param sorted the resulting vector of sorted enumerators.
+void
+sort_enumerators(const string_enumerator_map& enumerators_map,
+		 enum_type_decl::enumerators& sorted)
 {
-  size_t
-  operator()(const types_or_decls_type& d) const
-  {
-    size_t h1 = hash_type_or_decl(d.first);
-    size_t h2 = hash_type_or_decl(d.second);
-    return hashing::combine_hashes(h1, h2);
-  }
-};
+  for (string_enumerator_map::const_iterator i = enumerators_map.begin();
+       i != enumerators_map.end();
+       ++i)
+    sorted.push_back(i->second);
+  enumerator_value_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
 
-/// An equality functor for @ref types_or_decls_type.
-struct types_or_decls_equal
+/// Sort a map of changed enumerators.
+///
+/// @param enumerators_map the map to sort.
+///
+///@param output parameter.  The resulting sorted enumerators.
+void
+sort_changed_enumerators(const string_changed_enumerator_map& enumerators_map,
+			 changed_enumerators_type& sorted)
 {
-  bool
-  operator()(const types_or_decls_type &d1, const types_or_decls_type &d2) const
-  {return d1.first == d2.first && d1.second == d2.second;}
-};
+  for (string_changed_enumerator_map::const_iterator i =
+	 enumerators_map.begin();
+       i != enumerators_map.end();
+       ++i)
+    sorted.push_back(i->second);
 
-/// A convenience typedef for a map of @ref types_or_decls_type and
-/// diff_sptr.
-typedef unordered_map<types_or_decls_type, diff_sptr,
-		      types_or_decls_hash, types_or_decls_equal>
-types_or_decls_diff_map_type;
+  changed_enumerator_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// Sort a map of data members by the offset of their initial value.
+///
+/// @param data_members the map of changed data members to sort.
+///
+/// @param sorted the resulting vector of sorted changed data members.
+void
+sort_data_members(const string_decl_base_sptr_map &data_members,
+		  vector<decl_base_sptr>& sorted)
+{
+  sorted.reserve(data_members.size());
+  for (string_decl_base_sptr_map::const_iterator i = data_members.begin();
+       i != data_members.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  data_member_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// Sort a an instance of @ref string_function_ptr_map map and stuff
+/// a resulting sorted vector of pointers to function_decl.
+///
+/// @param map the map to sort.
+///
+/// @param sorted the resulting sorted vector.
+void
+sort_string_function_ptr_map(const string_function_ptr_map& map,
+			     vector<function_decl*>& sorted)
+{
+  sorted.reserve(map.size());
+  for (string_function_ptr_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  function_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// Sort the values of a @ref string_function_decl_diff_sptr_map map
+/// and store the result in a vector of @ref function_decl_diff_sptr
+/// objects.
+///
+/// @param map the map whose values to store.
+///
+/// @param sorted the vector of function_decl_diff_sptr to store the
+/// result of the sort into.
+void
+sort_string_function_decl_diff_sptr_map
+(const string_function_decl_diff_sptr_map& map,
+ function_decl_diff_sptrs_type& sorted)
+{
+  sorted.reserve(map.size());
+  for (string_function_decl_diff_sptr_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+  function_decl_diff_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// Sort of an instance of @ref string_var_diff_sptr_map map.
+///
+/// @param map the input map to sort.
+///
+/// @param sorted the ouptut sorted vector of @ref var_diff_sptr.
+/// It's populated with the sorted content.
+void
+sort_string_var_diff_sptr_map(const string_var_diff_sptr_map& map,
+			      var_diff_sptrs_type& sorted)
+{
+  sorted.reserve(map.size());
+  for (string_var_diff_sptr_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  var_diff_sptr_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// Sort a map of string -> pointer to @ref elf_symbol.
+///
+/// The result is a vector of @ref elf_symbol_sptr sorted by the
+/// name of the symbol.
+///
+/// @param map the map to sort.
+///
+/// @param sorted out parameter; the sorted vector of @ref
+/// elf_symbol_sptr.
+void
+sort_string_elf_symbol_map(const string_elf_symbol_map& map,
+			   vector<elf_symbol_sptr>& sorted)
+{
+  for (string_elf_symbol_map::const_iterator i = map.begin();
+       i!= map.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  elf_symbol_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// Sort a map of string -> pointer to @ref var_decl.
+///
+/// The result is a vector of var_decl* sorted by the qualified name
+/// of the variables.
+///
+/// @param map the map to sort.
+///
+/// @param sorted out parameter; the sorted vector of @ref var_decl.
+void
+sort_string_var_ptr_map(const string_var_ptr_map& map,
+			vector<var_decl*>& sorted)
+{
+  for (string_var_ptr_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  var_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// Sort the values of a string_var_diff_sptr_map and store the result
+/// in a vector of var_diff_sptr.
+///
+/// @param map the map of changed data members to sort.
+///
+/// @param sorted the resulting vector of var_diff_sptr.
+void
+sort_string_data_member_diff_sptr_map(const string_var_diff_sptr_map& map,
+				      var_diff_sptrs_type& sorted)
+{
+  sorted.reserve(map.size());
+  for (string_var_diff_sptr_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+  data_member_diff_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// Sort the values of a unsigned_var_diff_sptr_map map and store the
+/// result into a vector of var_diff_sptr.
+///
+/// @param map the map of changed data members to sort.
+///
+/// @param sorted the resulting vector of sorted var_diff_sptr.
+void
+sort_unsigned_data_member_diff_sptr_map(const unsigned_var_diff_sptr_map map,
+					var_diff_sptrs_type& sorted)
+{
+  sorted.reserve(map.size());
+  for (unsigned_var_diff_sptr_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+  data_member_diff_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// Sort an map of string -> virtual member function into a vector of
+/// virtual member functions.  The virtual member functions are sorted
+/// by increasing order of their virtual index.
+///
+/// @param map the input map.
+///
+/// @param sorted the resulting sorted vector of virtual function
+/// member.
+void
+sort_string_virtual_member_function_diff_sptr_map
+(const string_function_decl_diff_sptr_map& map,
+ function_decl_diff_sptrs_type& sorted)
+{
+  sorted.reserve(map.size());
+  for (string_function_decl_diff_sptr_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  virtual_member_function_diff_comp comp;
+  sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// Sort a map ofg string -> @ref diff_sptr into a vector of @ref
+/// diff_sptr.  The diff_sptr are sorted lexicographically wrt
+/// qualified names of their first subjects.
+void
+sort_string_diff_sptr_map(const string_diff_sptr_map& map,
+			  diff_sptrs_type& sorted)
+{
+  sorted.reserve(map.size());
+  for (string_diff_sptr_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  diff_comp comp;
+  sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// Sort a map of string -> base_diff_sptr into a sorted vector of
+/// base_diff_sptr.  The base_diff_sptr are sorted by increasing value
+/// of their offset in their containing type.
+///
+/// @param map the input map to sort.
+///
+/// @param sorted the resulting sorted vector.
+void
+sort_string_base_diff_sptr_map(const string_base_diff_sptr_map& map,
+			       base_diff_sptrs_type& sorted)
+{
+  for (string_base_diff_sptr_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+  base_diff_comp comp;
+  sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// Lexicographically sort base specifications found
+/// in instances of string_base_sptr_map.
+void
+sort_string_base_sptr_map(const string_base_sptr_map& m,
+			  class_decl::base_specs& sorted)
+{
+  for (string_base_sptr_map::const_iterator i = m.begin();
+       i != m.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  base_spec_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// Sort a map of @ref fn_parm_diff by the indexes of the function
+/// parameters.
+///
+/// @param map the map to sort.
+///
+/// @param sorted the resulting sorted vector of changed function
+/// parms.
+void
+sort_string_fn_parm_diff_sptr_map(const unsigned_fn_parm_diff_sptr_map& map,
+				  vector<fn_parm_diff_sptr>&		sorted)
+{
+  sorted.reserve(map.size());
+  for (unsigned_fn_parm_diff_sptr_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  fn_parm_diff_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// Sort a map of changed function parameters by the indexes of the
+/// function parameters.
+///
+/// @param map the map to sort.
+///
+/// @param sorted the resulting sorted vector of instances of @ref
+/// fn_parm_diff_sptr
+void
+sort_string_fn_parm_diff_sptr_map(const string_fn_parm_diff_sptr_map&	map,
+				  vector<fn_parm_diff_sptr>&		sorted)
+{
+  sorted.reserve(map.size());
+  for (string_fn_parm_diff_sptr_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  fn_parm_diff_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// Sort a map of string -> function parameters.
+///
+/// @param map the map to sort.
+///
+/// @param sorted the resulting sorted vector of
+/// @ref vector<function_decl::parameter_sptr>
+void
+sort_string_parm_map(const string_parm_map& map,
+		     vector<function_decl::parameter_sptr>& sorted)
+{
+  for (string_parm_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  // TODO: finish this.
+  parm_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// Return the first underlying type that is not a qualified type.
+/// @param t the qualified type to consider.
+///
+/// @return the first underlying type that is not a qualified type, or
+/// NULL if t is NULL.
+type_base_sptr
+get_leaf_type(qualified_type_def_sptr t)
+{
+  if (!t)
+    return type_base_sptr();
+
+  type_base_sptr ut = t->get_underlying_type();
+  qualified_type_def_sptr qut = dynamic_pointer_cast<qualified_type_def>(ut);
+
+  if (!qut)
+    return ut;
+  return get_leaf_type(qut);
+}
+
+// -----------------------------------------
+// </private functions re-usable elsewhere>
+// -----------------------------------------
 
 /// The overloaded or operator for @ref visiting_kind.
 visiting_kind
@@ -179,139 +491,6 @@ operator&(visiting_kind l, visiting_kind r)
 visiting_kind
 operator~(visiting_kind l)
 {return static_cast<visiting_kind>(~static_cast<unsigned>(l));}
-
-/// This is a subroutine of a *::report() function.
-///
-/// If the diff about two subjects S1 and S2 was reported earlier or
-/// is being reported, emit a diagnostic message about this and return
-/// from the current diff reporting function.
-///
-/// @param S1 the first diff subject to take in account.
-///
-/// @param S2 the second diff subject to take in account.
-#define RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER(S1, S2) \
-  do {									\
-    if (diff_context_sptr ctxt = context())				\
-      if (diff_sptr _diff_ = ctxt->get_canonical_diff_for(S1, S2))	\
-	if (_diff_->currently_reporting() || _diff_->reported_once())	\
-	  {								\
-	    if (_diff_->currently_reporting())				\
-	      out << indent << "details are being reported\n";		\
-	    else							\
-	      out << indent << "details were reported earlier\n";	\
-	    return ;							\
-	  }								\
-  } while (false)
-
-/// This is a subroutine of a *::report() function.
-///
-/// If a given diff was reported earlier or is being reported, emit a
-/// diagnostic message about this and return from the current diff
-/// reporting function.
-///
-/// @param S1 the first diff subject to take in account.
-///
-/// @param S2 the second diff subject to take in account.
-///
-/// @param INTRO_TEXT the introductory text that precedes the
-/// diagnostic.
-#define RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(D, INTRO_TEXT) \
-  do {									\
-    if (diff_sptr _diff_ = context()->get_canonical_diff_for(D))	\
-      if (_diff_->currently_reporting() || _diff_->reported_once())	\
-	{								\
-	  string _name_ = _diff_->first_subject()->get_pretty_representation(); \
-	  if (_diff_->currently_reporting())				\
-	    out << indent << INTRO_TEXT << " '" << _name_ << "' changed; " \
-	      "details are being reported\n";				\
-	  else								\
-	    out << indent << INTRO_TEXT << " '" << _name_ << "' changed, " \
-	      "as reported earlier\n";					\
-	  return ;							\
-	}								\
-} while (false)
-
-/// This is a subroutine of a *::report() function.
-///
-/// If the diff about two subjects S1 and S2 was reported earlier or
-/// is being reported, emit a diagnostic message about this and return
-/// from the current diff reporting function.
-///
-///
-/// @param INTRO_TEXT the introductory text that precedes the
-/// diagnostic.
-#define RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER3(S1, S2, INTRO_TEXT) \
-    do {								\
-      if (diff_sptr _diff_ = context()->get_canonical_diff_for(S1, S2)) \
-	if (_diff_->currently_reporting() || _diff_->reported_once())	\
-	  {								\
-	    string _name_ = _diff_->first_subject()->get_pretty_representation(); \
-	    if (_diff_->currently_reporting())				\
-	      out << indent << INTRO_TEXT << " '" << _name_ << "' changed; " \
-		"details are being reported\n";				\
-	    else							\
-	      out << indent << INTRO_TEXT << " '" << _name_ << "' changed, " \
-		"as reported earlier\n";				\
-	    return ;							\
-	  } \
-    } while (false)
-
-static void
-sort_string_function_decl_diff_sptr_map
-(const string_function_decl_diff_sptr_map& map,
- function_decl_diff_sptrs_type& sorted);
-
-static void
-sort_string_var_diff_sptr_map(const string_var_diff_sptr_map& map,
-			      var_diff_sptrs_type& sorted);
-
-static void
-sort_unsigned_data_member_diff_sptr_map(const unsigned_var_diff_sptr_map map,
-					var_diff_sptrs_type& sorted);
-
-static void
-sort_string_data_member_diff_sptr_map(const string_var_diff_sptr_map& map,
-				      var_diff_sptrs_type& sorted);
-
-static void
-sort_string_virtual_member_function_diff_sptr_map
-(const string_function_decl_diff_sptr_map& map,
- function_decl_diff_sptrs_type& sorted);
-
-static void
-sort_string_diff_sptr_map(const string_diff_sptr_map& map,
-			  diff_sptrs_type& sorted);
-
-static void
-sort_string_base_diff_sptr_map(const string_base_diff_sptr_map& map,
-			       base_diff_sptrs_type& sorted);
-
-static void
-sort_string_base_sptr_map(const string_base_sptr_map& m,
-			  class_decl::base_specs& sorted);
-
-static void
-sort_string_fn_parm_diff_sptr_map(const unsigned_fn_parm_diff_sptr_map& map,
-				  vector<fn_parm_diff_sptr>&		sorted);
-
-static void
-sort_string_fn_parm_diff_sptr_map(const string_fn_parm_diff_sptr_map&	map,
-				  vector<fn_parm_diff_sptr>&		sorted);
-
-static void
-sort_string_parm_map(const string_parm_map& map,
-		     vector<function_decl::parameter_sptr>& sorted);
-
-static void
-sort_string_var_ptr_map(const string_var_ptr_map& map,
-			vector<var_decl*>& sorted);
-
-static void
-sort_string_elf_symbol_map(const string_elf_symbol_map& map,
-			   vector<elf_symbol_sptr>& sorted);
-
-static type_base_sptr
-get_leaf_type(qualified_type_def_sptr t);
 
 /// Test if a diff node is about differences between types.
 ///
@@ -516,65 +695,6 @@ bool
 diff_traversable_base::traverse(diff_node_visitor&)
 {return true;}
 
-/// The private member (pimpl) for @ref diff_context.
-struct diff_context::priv
-{
-  diff_category			allowed_category_;
-  types_or_decls_diff_map_type		types_or_decls_diff_map;
-  unordered_diff_sptr_set		live_diffs_;
-  vector<diff_sptr>			canonical_diffs;
-  vector<filtering::filter_base_sptr>	filters_;
-  suppressions_type			suppressions_;
-  pointer_map				visited_diff_nodes_;
-  // This is the last visited diff node, per class of equivalence.
-  // It's set during the redundant diff node marking process.
-  pointer_map				last_visited_diff_node_;
-  corpus_sptr				first_corpus_;
-  corpus_sptr				second_corpus_;
-  ostream*				default_output_stream_;
-  ostream*				error_output_stream_;
-  bool					forbid_visiting_a_node_twice_;
-  bool					show_relative_offset_changes_;
-  bool					show_stats_only_;
-  bool					show_soname_change_;
-  bool					show_architecture_change_;
-  bool					show_deleted_fns_;
-  bool					show_changed_fns_;
-  bool					show_added_fns_;
-  bool					show_deleted_vars_;
-  bool					show_changed_vars_;
-  bool					show_added_vars_;
-  bool					show_linkage_names_;
-  bool					show_locs_;
-  bool					show_redundant_changes_;
-  bool					show_syms_unreferenced_by_di_;
-  bool					show_added_syms_unreferenced_by_di_;
-  bool					dump_diff_tree_;
-
-  priv()
-    : allowed_category_(EVERYTHING_CATEGORY),
-      default_output_stream_(),
-      error_output_stream_(),
-      forbid_visiting_a_node_twice_(true),
-      show_relative_offset_changes_(true),
-      show_stats_only_(false),
-      show_soname_change_(true),
-      show_architecture_change_(true),
-      show_deleted_fns_(true),
-      show_changed_fns_(true),
-      show_added_fns_(true),
-      show_deleted_vars_(true),
-      show_changed_vars_(true),
-      show_added_vars_(true),
-      show_linkage_names_(false),
-      show_locs_(true),
-      show_redundant_changes_(true),
-      show_syms_unreferenced_by_di_(true),
-      show_added_syms_unreferenced_by_di_(true),
-      dump_diff_tree_()
-   {}
-};// end struct diff_context::priv
-
 diff_context::diff_context()
   : priv_(new diff_context::priv)
 {
@@ -620,6 +740,20 @@ diff_context::get_first_corpus() const
 const corpus_sptr
 diff_context::get_second_corpus() const
 {return priv_->second_corpus_;}
+
+/// Getter of the reporter to be used in this context.
+///
+/// @return the reporter to be used in this context.
+reporter_base_sptr
+diff_context::get_reporter() const
+{return priv_->reporter_;}
+
+/// Setter of the reporter to be used in this context.
+///
+/// @param r the reporter to be used in this context.
+void
+diff_context::set_reporter(reporter_base_sptr& r)
+{priv_->reporter_ = r;}
 
 /// Tests if the current diff context already has a diff for two decls.
 ///
@@ -1375,129 +1509,6 @@ diff_context::do_dump_diff_tree(const corpus_diff_sptr d) const
 
 // <diff stuff>
 
-/// Private data for the @ref diff type.
-struct diff::priv
-{
-  bool				finished_;
-  bool				traversing_;
-  type_or_decl_base_sptr	first_subject_;
-  type_or_decl_base_sptr	second_subject_;
-  vector<diff*>		children_;
-  diff*			parent_;
-  diff*			canonical_diff_;
-  diff_context_wptr		ctxt_;
-  diff_category		local_category_;
-  diff_category		category_;
-  mutable bool			reported_once_;
-  mutable bool			currently_reporting_;
-  mutable string		pretty_representation_;
-
-  priv();
-
-public:
-
-  priv(type_or_decl_base_sptr first_subject,
-       type_or_decl_base_sptr second_subject,
-       diff_context_sptr ctxt,
-       diff_category category,
-       bool reported_once,
-       bool currently_reporting)
-    : finished_(),
-      traversing_(),
-      first_subject_(first_subject),
-      second_subject_(second_subject),
-      parent_(),
-      canonical_diff_(),
-      ctxt_(ctxt),
-      local_category_(category),
-      category_(category),
-      reported_once_(reported_once),
-      currently_reporting_(currently_reporting)
-  {}
-
-  /// Getter of the diff context associated with this diff.
-  ///
-  /// @returnt a smart pointer to the diff context.
-  diff_context_sptr
-  get_context() const
-  {
-    if (ctxt_.expired())
-      return diff_context_sptr();
-    return diff_context_sptr(ctxt_);
-  }
-
-  /// Check if a given categorization of a diff node should make it be
-  /// filtered out.
-  ///
-  /// @param category the categorization to take into account.
-  bool
-  is_filtered_out(diff_category category)
-  {
-    diff_context_sptr ctxt = get_context();
-    if (!ctxt)
-      return false;
-
-    if (ctxt->get_allowed_category() == EVERYTHING_CATEGORY)
-      return false;
-
-  /// We don't want to display nodes suppressed by a user-provided
-  /// suppression specification.
-  if (category & SUPPRESSED_CATEGORY)
-    return true;
-
-  // We don't want to display redundant diff nodes, when the user
-  // asked to avoid seeing redundant diff nodes.
-  if (!ctxt->show_redundant_changes()
-      && (category & REDUNDANT_CATEGORY))
-    return true;
-
-  if (category == NO_CHANGE_CATEGORY)
-    return false;
-
-  // Ignore the REDUNDANT_CATEGORY bit when comparing allowed
-  // categories and the current set of categories.
-  return !((category & ~REDUNDANT_CATEGORY)
-	   & (ctxt->get_allowed_category()
-	      & ~REDUNDANT_CATEGORY));
-  }
-};// end class diff::priv
-
-/// A functor to compare two instances of @ref diff_sptr.
-struct diff_less_than_functor
-{
-  /// An operator that takes two instances of @ref diff_sptr returns
-  /// true if its first operand compares less than its second operand.
-  ///
-  /// @param l the first operand to consider.
-  ///
-  /// @param r the second operand to consider.
-  ///
-  /// @return true if @p l compares less than @p r.
-  bool
-  operator()(const diff* l, const diff* r) const
-  {
-    if (!l || !r || !l->first_subject() || !r->first_subject())
-      return false;
-
-    string l_qn = get_name(l->first_subject());
-    string r_qn = get_name(r->first_subject());
-
-    return l_qn < r_qn;
-  }
-
-  /// An operator that takes two instances of @ref diff_sptr returns
-  /// true if its first operand compares less than its second operand.
-  ///
-  /// @param l the first operand to consider.
-  ///
-  /// @param r the second operand to consider.
-  ///
-  /// @return true if @p l compares less than @p r.
-  bool
-  operator()(const diff_sptr& l, const diff_sptr& r) const
-  {return operator()(l.get(), r.get());}
-};
-
 /// Constructor for the @ref diff type.
 ///
 /// This constructs a diff between two subjects that are actually
@@ -2087,25 +2098,7 @@ diff::chain_into_hierarchy()
 
 // </diff stuff>
 
-static bool
-report_size_and_alignment_changes(type_or_decl_base_sptr	first,
-				  type_or_decl_base_sptr	second,
-				  diff_context_sptr		ctxt,
-				  ostream&			out,
-				  const string&		indent,
-				  bool				nl);
-
-static bool
-report_loc_info(const type_or_decl_base_sptr& tod,
-		const diff_context& ctxt,
-		ostream &out);
-
 // <type_diff_base stuff>
-class type_diff_base::priv
-{
-public:
-  friend class type_diff_base;
-}; // end class type_diff_base
 
 type_diff_base::type_diff_base(type_base_sptr	first_subject,
 			       type_base_sptr	second_subject,
@@ -2119,11 +2112,6 @@ type_diff_base::~type_diff_base()
 // </type_diff_base stuff>
 
 // <decl_diff_base stuff>
-class decl_diff_base::priv
-{
-public:
-  friend class decl_diff_base;
-};//end class priv
 
 /// Constructor of @ref decl_diff_base.
 ///
@@ -2145,13 +2133,8 @@ decl_diff_base::~decl_diff_base()
 {}
 
 // </decl_diff_base stuff>
-// <distinct_diff stuff>
 
-/// The private data structure for @ref distinct_diff.
-struct distinct_diff::priv
-{
-  diff_sptr compatible_child_diff;
-};// end struct distinct_diff
+// <distinct_diff stuff>
 
 /// @return a pretty representation for the @ref distinct_diff node.
 const string&
@@ -2314,32 +2297,7 @@ distinct_diff::has_local_changes() const
 void
 distinct_diff::report(ostream& out, const string& indent) const
 {
-  if (!to_be_reported())
-    return;
-
-  type_or_decl_base_sptr f = first(), s = second();
-
-  string f_repr = f ? f->get_pretty_representation() : "'void'";
-  string s_repr = s ? s->get_pretty_representation() : "'void'";
-
-  diff_sptr diff = compatible_child_diff();
-
-  string compatible = diff ? " to compatible type '": " to '";
-
-  out << indent << "entity changed from '" << f_repr << "'"
-      << compatible << s_repr << "'";
-  report_loc_info(s, *context(), out);
-  out << "\n";
-
-  type_base_sptr fs = strip_typedef(is_type(f)),
-    ss = strip_typedef(is_type(s));
-
-  if (diff_sptr diff = compatible_child_diff())
-    diff->report(out, indent + "  ");
-  else
-    if (report_size_and_alignment_changes(f, s, context(), out, indent,
-					  /*start_with_new_line=*/false))
-      out << "\n";
+  context()->get_reporter()->report(*this, out, indent);
 }
 
 /// Try to diff entities that are of distinct kinds.
@@ -2809,622 +2767,7 @@ get_pretty_representation(diff* d)
   return prefix + get_pretty_representation(d->first_subject());
 }
 
-static bool
-maybe_report_diff_for_member(const decl_base_sptr&	decl1,
-			     const decl_base_sptr&	decl2,
-			     const diff_context_sptr&	ctxt,
-			     ostream&			out,
-			     const string&		indent);
-
-static bool
-maybe_report_diff_for_symbol(const elf_symbol_sptr&	symbol1,
-			     const elf_symbol_sptr&	symbol2,
-			     ostream&			out,
-			     const string&		indent);
-
-/// Stream a string representation for a member function.
-///
-/// @param ctxt the current diff context.
-///
-/// @param mem_fn the member function to stream
-///
-/// @param out the output stream to send the representation to
-static void
-represent(const diff_context& ctxt,
-	  method_decl_sptr mem_fn,
-	  ostream& out)
-{
-  if (!mem_fn || !is_member_function(mem_fn))
-    return;
-
-  method_decl_sptr meth =
-    dynamic_pointer_cast<method_decl>(mem_fn);
-  assert(meth);
-
-  out << "'" << mem_fn->get_pretty_representation() << "'";
-  report_loc_info(meth, ctxt, out);
-  if (get_member_function_is_virtual(mem_fn))
-    {
-
-      ssize_t voffset = get_member_function_vtable_offset(mem_fn);
-      ssize_t biggest_voffset =
-	is_class_type(meth->get_type()->get_class_type())->
-	get_biggest_vtable_offset();
-      if (voffset > -1)
-	out << ", virtual at voffset "
-	    << get_member_function_vtable_offset(mem_fn)
-	    << "/"
-	    << biggest_voffset;
-    }
-
-  if (ctxt.show_linkage_names()
-      && (mem_fn->get_symbol()))
-    {
-      out << "    {"
-	  << mem_fn->get_symbol()->get_id_string()
-	  << "}";
-    }
-  out << "\n";
-}
-
-/// Stream a string representation for a data member.
-///
-/// @param d the data member to stream
-///
-/// @param ctxt the current diff context.
-///
-/// @param out the output stream to send the representation to
-static void
-represent_data_member(var_decl_sptr d,
-		      const diff_context_sptr& ctxt,
-		      ostream& out)
-{
-  if (!is_data_member(d)
-      || (!get_member_is_static(d) && !get_data_member_is_laid_out(d)))
-    return;
-
-  out << "'" << d->get_pretty_representation() << "'";
-  if (!get_member_is_static(d))
-    {
-      // Do not emit offset information for data member of a union
-      // type because all data members of a union are supposed to be
-      // at offset 0.
-      if (!is_union_type(d->get_scope()))
-	out << ", at offset "
-	    << get_data_member_offset(d)
-	    << " (in bits)";
-
-      report_loc_info(d, *ctxt, out);
-      out << "\n";
-    }
-}
-
-/// If a given @ref var_diff node carries a data member change in
-/// which the offset of the data member actually changed, then emit a
-/// string (to an output stream) that represents that offset change.
-///
-/// For instance, if the offset of the data member increased by 32
-/// bits then the string emitted is going to be "by +32 bits".
-///
-/// If, on the other hand, the offset of the data member decreased by
-/// 64 bits then the string emitted is going to be "by -64 bits".
-///
-/// This function is a sub-routine used by the reporting system.
-///
-/// @param diff the diff node that potentially carries the data member
-/// change.
-///
-/// @param ctxt the context in which the diff is being reported.
-///
-/// @param out the output stream to emit the string to.
-static void
-maybe_show_relative_offset_change(var_diff_sptr diff,
-				  diff_context& ctxt,
-				  ostream&	out)
-{
-  if (!ctxt.show_relative_offset_changes())
-    return;
-
-  var_decl_sptr o = diff->first_var();
-  var_decl_sptr n = diff->second_var();
-
-  uint64_t first_offset = get_data_member_offset(o),
-    second_offset = get_data_member_offset(n);
-
-  string sign;
-  uint64_t change = 0;
-  if (first_offset < second_offset)
-    {
-      sign = "+";
-      change = second_offset - first_offset;
-    }
-  else if (first_offset > second_offset)
-    {
-      sign = "-";
-      change = first_offset - second_offset;
-    }
-  else
-    return;
-
-  out << " (by " << sign << change << " bits)";
-}
-
-/// Represent the changes carried by an instance of @ref var_diff that
-/// represent a difference between two class data members.
-///
-/// @param diff diff the diff node to represent.
-///
-/// @param ctxt the diff context to use.
-///
-/// @param out the output stream to send the representation to.
-///
-/// @param indent the indentation string to use for the change report.
-static void
-represent(var_diff_sptr	diff,
-	  diff_context_sptr	ctxt,
-	  ostream&		out,
-	  const string&	indent = "")
-{
-  if (!diff->to_be_reported())
-    return;
-
-  var_decl_sptr o = diff->first_var();
-  var_decl_sptr n = diff->second_var();
-
-  bool emitted = false;
-  bool begin_with_and = false;
-  string name1 = o->get_qualified_name();
-  string name2 = n->get_qualified_name();
-  string pretty_representation = o->get_pretty_representation();
-
-  if (diff_sptr d = diff->type_diff())
-    {
-      if (d->to_be_reported())
-	{
-	  out << indent
-	      << "type of '" << pretty_representation << "' changed:\n";
-	  if (d->currently_reporting())
-	    out << indent << "  details are being reported\n";
-	  else if (d->reported_once())
-	    out << indent << "  details were reported earlier\n";
-	  else
-	    d->report(out, indent + "  ");
-	  begin_with_and = true;
-	}
-    }
-
-  if (name1 != name2)
-    {
-      if (filtering::has_harmless_name_change(o, n)
-	  && !(ctxt->get_allowed_category()
-	       & HARMLESS_DECL_NAME_CHANGE_CATEGORY))
-	;
-      else
-	{
-	  out << indent;
-	  if (begin_with_and)
-	    {
-	      out << "and ";
-	      begin_with_and = false;
-	    }
-	  out << "name of '" << name1 << "' changed to '" << name2 << "'";
-	  report_loc_info(n, *ctxt, out);
-	  emitted = true;
-	}
-    }
-
-  if (get_data_member_is_laid_out(o)
-      != get_data_member_is_laid_out(n))
-    {
-      if (begin_with_and)
-	{
-	  out << indent << "and ";
-	  begin_with_and = false;
-	}
-      else if (!emitted)
-	out << indent << "'" << pretty_representation << "' ";
-      else
-	out << ", ";
-      if (get_data_member_is_laid_out(o))
-	out << "is no more laid out";
-      else
-	out << "now becomes laid out";
-      emitted = true;
-    }
-  if ((ctxt->get_allowed_category() & SIZE_OR_OFFSET_CHANGE_CATEGORY)
-      && (get_data_member_offset(o)
-	  != get_data_member_offset(n)))
-    {
-      if (begin_with_and)
-	{
-	  out << indent << "and ";
-	  begin_with_and = false;
-	}
-      else if (!emitted)
-	out << indent << "'" << pretty_representation << "' ";
-      else
-	out << ", ";
-      out << "offset changed from "
-	  << get_data_member_offset(o)
-	  << " to " << get_data_member_offset(n)
-	  << " (in bits)";
-
-      maybe_show_relative_offset_change(diff, *ctxt, out);
-
-      emitted = true;
-    }
-  if (o->get_binding() != n->get_binding())
-    {
-      if (begin_with_and)
-	{
-	  out << indent << "and ";
-	  begin_with_and = false;
-	}
-      else if (!emitted)
-	out << indent << "'" << pretty_representation << "' ";
-      else
-	out << ", ";
-      out << "elf binding changed from " << o->get_binding()
-	  << " to " << n->get_binding();
-      emitted = true;
-    }
-  if (o->get_visibility() != n->get_visibility())
-    {
-      if (begin_with_and)
-	{
-	  out << indent << "and ";
-	  begin_with_and = false;
-	}
-      else if (!emitted)
-	out << indent << "'" << pretty_representation << "' ";
-      else
-	out << ", ";
-      out << "visibility changed from " << o->get_visibility()
-	  << " to " << n->get_visibility();
-    }
-  if ((ctxt->get_allowed_category() & ACCESS_CHANGE_CATEGORY)
-      && (get_member_access_specifier(o)
-	  != get_member_access_specifier(n)))
-    {
-      if (begin_with_and)
-	{
-	  out << indent << "and ";
-	  begin_with_and = false;
-	}
-      else if (!emitted)
-	out << indent << "'" << pretty_representation << "' ";
-      else
-	out << ", ";
-
-      out << "access changed from '"
-	  << get_member_access_specifier(o)
-	  << "' to '"
-	  << get_member_access_specifier(n) << "'";
-      emitted = true;
-    }
-  if (get_member_is_static(o)
-      != get_member_is_static(n))
-    {
-      if (begin_with_and)
-	{
-	  out << indent << "and ";
-	  begin_with_and = false;
-	}
-      else if (!emitted)
-	out << indent << "'" << pretty_representation << "' ";
-      else
-	out << ", ";
-
-      if (get_member_is_static(o))
-	out << "is no more static";
-      else
-	out << "now becomes static";
-    }
-}
-
-/// Report the size and alignment changes of a type.
-///
-/// @param first the first type to consider.
-///
-/// @param second the second type to consider.
-///
-/// @param ctxt the content of the current diff.
-///
-/// @param out the output stream to report the change to.
-///
-/// @param indent the string to use for indentation.
-///
-/// @param nl whether to start the first report line with a new line.
-///
-/// @return true iff something was reported.
-static bool
-report_size_and_alignment_changes(type_or_decl_base_sptr	first,
-				  type_or_decl_base_sptr	second,
-				  diff_context_sptr		ctxt,
-				  ostream&			out,
-				  const string&		indent,
-				  bool				nl)
-{
-  type_base_sptr f = dynamic_pointer_cast<type_base>(first),
-    s = dynamic_pointer_cast<type_base>(second);
-
-  if (!s || !f)
-    return false;
-
-  class_or_union_sptr first_class = is_class_or_union_type(first),
-    second_class = is_class_or_union_type(second);
-
-  if (filtering::has_class_decl_only_def_change(first_class, second_class)
-      && !(ctxt->get_allowed_category() & CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY))
-    // So these two classes differ only by the fact that one is the
-    // declaration-only form of the second.  And the user asked that
-    // this kind of change be filtered out, so do not report any size
-    // change due to this.
-    return false;
-
-  bool n = false;
-  unsigned fs = f->get_size_in_bits(), ss = s->get_size_in_bits(),
-    fa = f->get_alignment_in_bits(), sa = s->get_alignment_in_bits();
-  array_type_def_sptr first_array = is_array_type(is_type(first)),
-    second_array = is_array_type(is_type(second));
-  unsigned fdc = first_array ? first_array->get_dimension_count(): 0,
-    sdc = second_array ? second_array->get_dimension_count(): 0;
-
-  if (nl)
-    out << "\n";
-
-  if (ctxt->get_allowed_category() & SIZE_OR_OFFSET_CHANGE_CATEGORY)
-    {
-      if (fs != ss || fdc != sdc)
-	{
-	  if (first_array && second_array)
-	    {
-	      // We are looking at size or alignment changes between two
-	      // arrays ...
-	      out << indent << "array type size changed from ";
-	      if (first_array->is_infinite())
-		out << "infinity";
-	      else
-		out << first_array->get_size_in_bits();
-	      out << " to ";
-	      if (second_array->is_infinite())
-		out << "infinity";
-	      else
-		out << second_array->get_size_in_bits();
-	      out << " bits:\n";
-
-	      if (sdc != fdc)
-		{
-		  out << indent + "  "
-		      << "number of dimensions changed from "
-		      << fdc
-		      << " to "
-		      << sdc
-		      << "\n";
-		}
-	      array_type_def::subranges_type::const_iterator i, j;
-	      for (i = first_array->get_subranges().begin(),
-		     j = second_array->get_subranges().begin();
-		   (i != first_array->get_subranges().end()
-		    && j != second_array->get_subranges().end());
-		   ++i, ++j)
-		{
-		  if ((*i)->get_length() != (*j)->get_length())
-		    {
-		      out << indent
-			  << "array type subrange "
-			  << i - first_array->get_subranges().begin() + 1
-			  << " changed length from ";
-
-		      if ((*i)->is_infinite())
-			out << "infinity";
-		      else
-			out << (*i)->get_length();
-
-		      out << " to ";
-
-		      if ((*j)->is_infinite())
-			out << "infinity";
-		      else
-			out << (*j)->get_length();
-		      out << "\n";
-		    }
-		}
-	    } // end if (first_array && second_array)
-	  else if (fs != ss)
-	    {
-	      out << indent
-		  << "type size changed from " << fs << " to " << ss << " bits";
-	      n = true;
-	    }
-	} // end if (fs != ss || fdc != sdc)
-      else
-	if (ctxt->show_relative_offset_changes())
-	  out << indent << "type size hasn't changed\n";
-    }
-  if ((ctxt->get_allowed_category() & SIZE_OR_OFFSET_CHANGE_CATEGORY)
-      && (fa != sa))
-    {
-      if (n)
-	out << "\n";
-      out << indent
-	  << "type alignment changed from " << fa << " to " << sa << " bits";
-      n = true;
-    }
-
-  if (n)
-    return true;
-  return false;
-}
-
-/// @param tod the type or declaration to emit loc info about
-///
-/// @param ctxt the content of the current diff.
-///
-/// @param out the output stream to report the change to.
-///
-/// @return true iff something was reported.
-static bool
-report_loc_info(const type_or_decl_base_sptr& tod,
-		const diff_context& ctxt,
-		ostream &out)
-{
-  if (!ctxt.show_locs())
-    return false;
-
-  decl_base_sptr decl = is_decl(tod);
-
-  if (!decl)
-    return false;
-
-  location loc;
-  translation_unit* tu = get_translation_unit(decl);
-
-  if (tu && (loc = decl->get_location()))
-  {
-    string path;
-    unsigned line, column;
-
-    loc.expand(path, line, column);
-    //tu->get_loc_mgr().expand_location(loc, path, line, column);
-    path = basename(const_cast<char*>(path.c_str()));
-
-    out  << " at " << path << ":" << line << ":" << column;
-
-    return true;
-  }
-  return false;
-}
-
-/// Report the name, size and alignment changes of a type.
-///
-/// @param first the first type to consider.
-///
-/// @param second the second type to consider.
-///
-/// @param ctxt the content of the current diff.
-///
-/// @param out the output stream to report the change to.
-///
-/// @param indent the string to use for indentation.
-///
-/// @param nl whether to start the first report line with a new line.
-///
-/// @return true iff something was reported.
-static bool
-report_name_size_and_alignment_changes(decl_base_sptr		first,
-				       decl_base_sptr		second,
-				       diff_context_sptr	ctxt,
-				       ostream&		out,
-				       const string&		indent,
-				       bool			nl)
-{
-  string fn = first->get_qualified_name(),
-    sn = second->get_qualified_name();
-
-  if (fn != sn)
-    {
-      if (!(ctxt->get_allowed_category() & HARMLESS_DECL_NAME_CHANGE_CATEGORY)
-	  && filtering::has_harmless_name_change(first, second))
-	// This is a harmless name change.  but then
-	// HARMLESS_DECL_NAME_CHANGE_CATEGORY doesn't seem allowed.
-	;
-      else
-	{
-	  if (nl)
-	    out << "\n";
-	  out << indent;
-	  if (is_type(first))
-	    out << "type";
-	  else
-	    out << "declaration";
-	  out << " name changed from '" << fn << "' to '" << sn << "'";
-	  nl = true;
-	}
-    }
-
-  nl |= report_size_and_alignment_changes(first, second, ctxt,
-					  out, indent, nl);
-  return nl;
-}
-
-/// Represent the kind of difference we want report_mem_header() to
-/// report.
-enum diff_kind
-{
-  del_kind,
-  ins_kind,
-  subtype_change_kind,
-  change_kind
-};
-
-/// Output the header preceding the the report for
-/// insertion/deletion/change of a part of a class.  This is a
-/// subroutine of class_diff::report.
-///
-/// @param out the output stream to output the report to.
-///
-/// @param number the number of insertion/deletion to refer to in the
-/// header.
-///
-/// @param k the kind of diff (insertion/deletion/change) we want the
-/// head to introduce.
-///
-/// @param section_name the name of the sub-part of the class to
-/// report about.
-///
-/// @param indent the string to use as indentation prefix in the
-/// header.
-static void
-report_mem_header(ostream& out,
-		  size_t number,
-		  size_t num_filtered,
-		  diff_kind k,
-		  const string& section_name,
-		  const string& indent)
-{
-  size_t net_number = number - num_filtered;
-  string change;
-  char colon_or_semi_colon = ':';
-
-  switch (k)
-    {
-    case del_kind:
-      change = (number > 1) ? "deletions" : "deletion";
-      break;
-    case ins_kind:
-      change = (number > 1) ? "insertions" : "insertion";
-      break;
-    case subtype_change_kind:
-    case change_kind:
-      change = (number > 1) ? "changes" : "change";
-      break;
-    }
-
-  if (net_number == 0)
-    {
-      out << indent << "no " << section_name << " " << change;
-      colon_or_semi_colon = ';';
-    }
-  else if (net_number == 1)
-    out << indent << "1 " << section_name << " " << change;
-  else
-    out << indent << net_number << " " << section_name
-	<< " " << change;
-
-  if (num_filtered)
-    out << " (" << num_filtered << " filtered)";
-  out << colon_or_semi_colon << '\n';
-}
-
 // <var_diff stuff>
-
-/// The internal type for the impl idiom implementation of @ref
-/// var_diff.
-struct var_diff::priv
-{
-  diff_wptr type_diff_;
-};//end struct var_diff
 
 /// Populate the vector of children node of the @ref diff base type
 /// sub-object of this instance of @ref var_diff.
@@ -3540,33 +2883,7 @@ var_diff::has_local_changes() const
 void
 var_diff::report(ostream& out, const string& indent) const
 {
-  if (!to_be_reported())
-    return;
-
-  decl_base_sptr first = first_var(), second = second_var();
-  string n = first->get_pretty_representation();
-
-  if (report_name_size_and_alignment_changes(first, second,
-					     context(),
-					     out, indent,
-					     /*start_with_new_line=*/false))
-    out << "\n";
-
-  maybe_report_diff_for_symbol(first_var()->get_symbol(),
-			       second_var()->get_symbol(),
-			       out, indent);
-
-  maybe_report_diff_for_member(first, second, context(), out, indent);
-
-  if (diff_sptr d = type_diff())
-    {
-      if (d->to_be_reported())
-	{
-	  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(d, "type");
-	  out << indent << "type of variable changed:\n";
-	  d->report(out, indent + " ");
-	}
-    }
+  context()->get_reporter()->report(*this, out, indent);
 }
 
 /// Compute the diff between two instances of @ref var_decl.
@@ -3596,187 +2913,7 @@ compute_diff(const var_decl_sptr	first,
 
 // </var_diff stuff>
 
-/// Report the differences in access specifiers and static-ness for
-/// class members.
-///
-/// @param decl1 the first class member to consider.
-///
-/// @param decl2 the second class member to consider.
-///
-/// @param out the output stream to send the report to.
-///
-/// @param indent the indentation string to use for the report.
-///
-/// @return true if something was reported, false otherwise.
-static bool
-maybe_report_diff_for_member(const decl_base_sptr&	decl1,
-			     const decl_base_sptr&	decl2,
-			     const diff_context_sptr&	ctxt,
-			     ostream&			out,
-			     const string&		indent)
-
-{
-  bool reported = false;
-  if (!is_member_decl(decl1) || !is_member_decl(decl2))
-    return reported;
-
-  string decl1_repr = decl1->get_pretty_representation(),
-    decl2_repr = decl2->get_pretty_representation();
-
-  if (get_member_is_static(decl1) != get_member_is_static(decl2))
-    {
-      bool lost = get_member_is_static(decl1);
-      out << indent << "'" << decl1_repr << "' ";
-      if (report_loc_info(decl2, *ctxt, out))
-	out << " ";
-      if (lost)
-	out << "became non-static";
-      else
-	out << "became static";
-      out << "\n";
-      reported = true;
-    }
-  if ((ctxt->get_allowed_category() & ACCESS_CHANGE_CATEGORY)
-      && (get_member_access_specifier(decl1)
-	  != get_member_access_specifier(decl2)))
-    {
-      out << indent << "'" << decl1_repr << "' access changed from '"
-	  << get_member_access_specifier(decl1)
-	  << "' to '"
-	  << get_member_access_specifier(decl2)
-	  << "'\n";
-      reported = true;
-    }
-  return reported;
-}
-
-/// Report the difference between two ELF symbols, if there is any.
-///
-/// @param symbol1 the first symbol to consider.
-///
-/// @param symbol2 the second symbol to consider.
-///
-/// @param the output stream to emit the report to.
-///
-/// @param indent the indentation string to use.
-///
-/// @return true if a report was emitted to the output stream @p out,
-/// false otherwise.
-static bool
-maybe_report_diff_for_symbol(const elf_symbol_sptr&	symbol1,
-			     const elf_symbol_sptr&	symbol2,
-			     ostream&			out,
-			     const string&		indent)
-{
-  bool reported = false;
-
-  if (!symbol1 ||!symbol2 || symbol1 == symbol2)
-    return reported;
-
-  if (symbol1->get_size() != symbol2->get_size())
-    {
-      out << indent << "size of symbol (in bytes) changed from "
-	  << symbol1->get_size()
-	  << " to "
-	  << symbol2->get_size();
-
-      reported = true;
-    }
-
-  if (symbol1->get_name() != symbol2->get_name())
-    {
-      if (reported)
-	out << ",\n" << indent
-	    << "its name ";
-      else
-	out << "\n" << indent << "name of symbol ";
-
-      out << "changed from "
-	  << symbol1->get_name()
-	  << " to "
-	  << symbol2->get_name();
-
-      reported = true;
-    }
-
-  if (symbol1->get_type() != symbol2->get_type())
-    {
-      if (reported)
-	out << ",\n" << indent
-	    << "its type ";
-      else
-	out << "\n" << indent << "type of symbol ";
-
-      out << "changed from '"
-	  << symbol1->get_type()
-	  << "' to '"
-	  << symbol2->get_type()
-	  << "'";
-
-      reported = true;
-    }
-
-  if (symbol1->is_public() != symbol2->is_public())
-    {
-      if (reported)
-	out << ",\n" << indent
-	    << "it became ";
-	else
-	  out << "\n" << indent << "symbol became ";
-
-      if (symbol2->is_public())
-	out << "exported";
-      else
-	out << "non-exported";
-
-      reported = true;
-    }
-
-  if (symbol1->is_defined() != symbol2->is_defined())
-    {
-      if (reported)
-	out << ",\n" << indent
-	    << "it became ";
-      else
-	out << "\n" << indent << "symbol became ";
-
-      if (symbol2->is_defined())
-	out << "defined";
-      else
-	out << "undefined";
-
-      reported = true;
-    }
-
-  if (symbol1->get_version() != symbol2->get_version())
-    {
-      if (reported)
-	out << ",\n" << indent
-	    << "its version changed from ";
-      else
-	out << "\n" << indent << "symbol version changed from ";
-
-      out << symbol1->get_version().str()
-	  << " to "
-	  << symbol2->get_version().str();
-    }
-
-  if (reported)
-    out << "\n";
-
-  return reported;
-}
-
 // <pointer_type_def stuff>
-struct pointer_diff::priv
-{
-  diff_sptr underlying_type_diff_;
-
-  priv(diff_sptr ud)
-    : underlying_type_diff_(ud)
-  {}
-};//end struct pointer_diff::priv
-
 
 /// Populate the vector of children node of the @ref diff base type
 /// sub-object of this instance of @ref pointer_diff.
@@ -3887,22 +3024,7 @@ pointer_diff::underlying_type_diff(const diff_sptr d)
 void
 pointer_diff::report(ostream& out, const string& indent) const
 {
-  if (!to_be_reported())
-    return;
-
-  if (diff_sptr d = underlying_type_diff())
-    {
-      RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(d, "pointed to type");
-      string repr = d->first_subject()
-	? d->first_subject()->get_pretty_representation()
-	: string("void");
-
-      out << indent
-	  << "in pointed to type '" <<  repr << "'";
-	  report_loc_info(d->second_subject(), *context(), out);
-      out << ":\n";
-      d->report(out, indent + "  ");
-    }
+  context()->get_reporter()->report(*this, out, indent);
 }
 
 /// Compute the diff between between two pointers.
@@ -3937,15 +3059,6 @@ compute_diff(pointer_type_def_sptr	first,
 // </pointer_type_def>
 
 // <array_type_def>
-struct array_diff::priv
-{
-  /// The diff between the two array element types.
-  diff_sptr element_type_diff_;
-
-  priv(diff_sptr element_type_diff)
-    : element_type_diff_(element_type_diff)
-  {}
-};//end struct array_diff::priv
 
 /// Populate the vector of children node of the @ref diff base type
 /// sub-object of this instance of @ref array_diff.
@@ -4076,30 +3189,7 @@ array_diff::has_local_changes() const
 void
 array_diff::report(ostream& out, const string& indent) const
 {
-  if (!to_be_reported())
-    return;
-
-  string name = first_array()->get_pretty_representation();
-  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER3(first_array(),
-						    second_array(),
-						    "array type");
-
-  diff_sptr d = element_type_diff();
-  if (d->to_be_reported())
-    {
-      string fn = ir::get_pretty_representation(is_type(d->first_subject()));
-	// report array element type changes
-      out << indent << "array element type '"
-	  << fn << "' changed: \n";
-      d->report(out, indent + "  ");
-    }
-
-  report_name_size_and_alignment_changes(first_array(),
-					 second_array(),
-					 context(),
-					 out, indent,
-					 /*new line=*/false);
-  report_loc_info(second_array(), *context(), out);
+  context()->get_reporter()->report(*this, out, indent);
 }
 
 /// Compute the diff between two arrays.
@@ -4130,13 +3220,6 @@ compute_diff(array_type_def_sptr	first,
 // </array_type_def>
 
 // <reference_type_def>
-struct reference_diff::priv
-{
-  diff_sptr underlying_type_diff_;
-  priv(diff_sptr underlying)
-    : underlying_type_diff_(underlying)
-  {}
-};//end struct reference_diff::priv
 
 /// Populate the vector of children node of the @ref diff base type
 /// sub-object of this instance of @ref reference_diff.
@@ -4249,42 +3332,7 @@ reference_diff::has_local_changes() const
 void
 reference_diff::report(ostream& out, const string& indent) const
 {
-  if (!to_be_reported())
-    return;
-
-  reference_type_def_sptr f = first_reference(), s = second_reference();
-  assert(f && s);
-
-
-  if (f->is_lvalue() != s->is_lvalue())
-    {
-      string f_repr = f->get_pretty_representation(),
-	s_repr = s->get_pretty_representation();
-
-      out << indent;
-      if (f->is_lvalue())
-	out << "lvalue reference type '" << f_repr
-	    << " became an rvalue reference type: '"
-	    << s_repr
-	    << "'";
-      else
-	out << "rvalue reference type '" << f_repr
-	    << " became an lvalue reference type: '"
-	    << s_repr
-	    << "'\n";
-    }
-
-  if (diff_sptr d = underlying_type_diff())
-    {
-      RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(d, "referenced type");
-
-      out << indent
-	  << "in referenced type '"
-	  << d->first_subject()->get_pretty_representation() << "'";
-      report_loc_info(d->second_subject(), *context(), out);
-      out << ":\n";
-      d->report(out, indent + "  ");
-    }
+  context()->get_reporter()->report(*this, out, indent);
 }
 
 /// Compute the diff between two references.
@@ -4315,16 +3363,6 @@ compute_diff(reference_type_def_sptr	first,
 // </reference_type_def>
 
 // <qualified_type_diff stuff>
-
-struct qualified_type_diff::priv
-{
-  diff_sptr underlying_type_diff;
-  mutable diff_sptr leaf_underlying_type_diff;
-
-  priv(diff_sptr underlying)
-    : underlying_type_diff(underlying)
-  {}
-};// end struct qualified_type_diff::priv
 
 /// Populate the vector of children node of the @ref diff base type
 /// sub-object of this instance of @ref qualified_type_diff.
@@ -4444,25 +3482,6 @@ qualified_type_diff::has_local_changes() const
   return false;
 }
 
-/// Return the first underlying type that is not a qualified type.
-/// @param t the qualified type to consider.
-///
-/// @return the first underlying type that is not a qualified type, or
-/// NULL if t is NULL.
-static type_base_sptr
-get_leaf_type(qualified_type_def_sptr t)
-{
-  if (!t)
-    return type_base_sptr();
-
-  type_base_sptr ut = t->get_underlying_type();
-  qualified_type_def_sptr qut = dynamic_pointer_cast<qualified_type_def>(ut);
-
-  if (!qut)
-    return ut;
-  return get_leaf_type(qut);
-}
-
 /// Report the diff in a serialized form.
 ///
 /// @param out the output stream to serialize to.
@@ -4471,33 +3490,7 @@ get_leaf_type(qualified_type_def_sptr t)
 void
 qualified_type_diff::report(ostream& out, const string& indent) const
 {
-  if (!to_be_reported())
-    return;
-
-  string fname = first_qualified_type()->get_pretty_representation(),
-    sname = second_qualified_type()->get_pretty_representation();
-
-  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER(first_qualified_type(),
-						   second_qualified_type());
-
-  if (fname != sname)
-    {
-      out << indent << "'" << fname << "' changed to '" << sname << "'\n";
-      return;
-    }
-
-  diff_sptr d = leaf_underlying_type_diff();
-  assert(d);
-  assert(d->to_be_reported());
-  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(d,
-						    "unqualified "
-						    "underlying type");
-
-  string fltname = d->first_subject()->get_pretty_representation();
-  out << indent << "in unqualified underlying type '" << fltname << "'";
-  report_loc_info(d->second_subject(), *context(), out);
-  out << ":\n";
-  d->report(out, indent + "  ");
+  context()->get_reporter()->report(*this, out, indent);
 }
 
 /// Compute the diff between two qualified types.
@@ -4530,18 +3523,6 @@ compute_diff(const qualified_type_def_sptr	first,
 // </qualified_type_diff stuff>
 
 // <enum_diff stuff>
-struct enum_diff::priv
-{
-  diff_sptr underlying_type_diff_;
-  edit_script enumerators_changes_;
-  string_enumerator_map deleted_enumerators_;
-  string_enumerator_map inserted_enumerators_;
-  string_changed_enumerator_map changed_enumerators_;
-
-  priv(diff_sptr underlying)
-    : underlying_type_diff_(underlying)
-  {}
-};//end struct enum_diff::priv
 
 /// Clear the lookup tables useful for reporting an enum_diff.
 ///
@@ -4723,62 +3704,6 @@ enum_diff::has_local_changes() const
   return false;
 }
 
-/// A functor to compare two enumerators based on their value.  This
-/// implements the "less than" operator.
-struct enumerator_value_comp
-{
-  bool
-  operator()(const enum_type_decl::enumerator& f,
-	     const enum_type_decl::enumerator& s) const
-  {return f.get_value() < s.get_value();}
-};//end struct enumerator_value_comp
-
-/// Sort a map of enumerators by their value.
-///
-/// @param enumerators_map the map to sort.
-///
-/// @param sorted the resulting vector of sorted enumerators.
-static void
-sort_enumerators(const string_enumerator_map& enumerators_map,
-		 enum_type_decl::enumerators& sorted)
-{
-  for (string_enumerator_map::const_iterator i = enumerators_map.begin();
-       i != enumerators_map.end();
-       ++i)
-    sorted.push_back(i->second);
-  enumerator_value_comp comp;
-  std::sort(sorted.begin(), sorted.end(), comp);
-}
-
-/// A functor to compare two changed enumerators, based on their
-/// initial value.
-struct changed_enumerator_comp
-{
-  bool
-  operator()(const changed_enumerator& f,
-	     const changed_enumerator& s) const
-  {return f.first.get_value() < s.first.get_value();}
-};// end struct changed_enumerator_comp.
-
-/// Sort a map of changed enumerators.
-///
-/// @param enumerators_map the map to sort.
-///
-///@param output parameter.  The resulting sorted enumerators.
-void
-sort_changed_enumerators(const string_changed_enumerator_map& enumerators_map,
-			 changed_enumerators_type& sorted)
-{
-  for (string_changed_enumerator_map::const_iterator i =
-	 enumerators_map.begin();
-       i != enumerators_map.end();
-       ++i)
-    sorted.push_back(i->second);
-
-  changed_enumerator_comp comp;
-  std::sort(sorted.begin(), sorted.end(), comp);
-}
-
 /// Report the differences between the two enums.
 ///
 /// @param out the output stream to send the report to.
@@ -4787,92 +3712,7 @@ sort_changed_enumerators(const string_changed_enumerator_map& enumerators_map,
 void
 enum_diff::report(ostream& out, const string& indent) const
 {
-  if (!to_be_reported())
-    return;
-
-  string name = first_enum()->get_pretty_representation();
-
-  enum_type_decl_sptr first = first_enum(), second = second_enum();
-
-  if (report_name_size_and_alignment_changes(first, second, context(),
-					     out, indent,
-					     /*start_with_num_line=*/false))
-    out << "\n";
-  maybe_report_diff_for_member(first, second, context(), out, indent);
-
-  //underlying type
-  underlying_type_diff()->report(out, indent);
-
-  //report deletions/insertions/change of enumerators
-  unsigned numdels = deleted_enumerators().size();
-  unsigned numins = inserted_enumerators().size();
-  unsigned numchanges = changed_enumerators().size();
-
-  if (numdels)
-    {
-      report_mem_header(out, numdels, 0, del_kind, "enumerator", indent);
-      enum_type_decl::enumerators sorted_deleted_enumerators;
-      sort_enumerators(deleted_enumerators(), sorted_deleted_enumerators);
-      for (enum_type_decl::enumerators::const_iterator i =
-	     sorted_deleted_enumerators.begin();
-	   i != sorted_deleted_enumerators.end();
-	   ++i)
-	{
-	  if (i != sorted_deleted_enumerators.begin())
-	    out << "\n";
-	  out << indent
-	      << "  '"
-	      << i->get_qualified_name()
-	      << "' value '"
-	      << i->get_value()
-	      << "'";
-	}
-      out << "\n\n";
-    }
-  if (numins)
-    {
-      report_mem_header(out, numins, 0, ins_kind, "enumerator", indent);
-      enum_type_decl::enumerators sorted_inserted_enumerators;
-      sort_enumerators(inserted_enumerators(), sorted_inserted_enumerators);
-      for (enum_type_decl::enumerators::const_iterator i =
-	     sorted_inserted_enumerators.begin();
-	   i != sorted_inserted_enumerators.end();
-	   ++i)
-	{
-	  if (i != sorted_inserted_enumerators.begin())
-	    out << "\n";
-	  out << indent
-	      << "  '"
-	      << i->get_qualified_name()
-	      << "' value '"
-	      << i->get_value()
-	      << "'";
-	}
-      out << "\n\n";
-    }
-  if (numchanges)
-    {
-      report_mem_header(out, numchanges, 0, change_kind, "enumerator", indent);
-      changed_enumerators_type sorted_changed_enumerators;
-      sort_changed_enumerators(changed_enumerators(),
-			       sorted_changed_enumerators);
-      for (changed_enumerators_type::const_iterator i =
-	     sorted_changed_enumerators.begin();
-	   i != sorted_changed_enumerators.end();
-	   ++i)
-	{
-	  if (i != sorted_changed_enumerators.begin())
-	    out << "\n";
-	  out << indent
-	      << "  '"
-	      << i->first.get_qualified_name()
-	      << "' from value '"
-	      << i->first.get_value() << "' to '"
-	      << i->second.get_value() << "'";
-	  report_loc_info(second, *context(), out);
-	}
-      out << "\n\n";
-    }
+  context()->get_reporter()->report(*this, out, indent);
 }
 
 /// Compute the set of changes between two instances of @ref
@@ -4917,76 +3757,6 @@ compute_diff(const enum_type_decl_sptr first,
 // </enum_diff stuff>
 
 // <class_or_union_diff stuff>
-
-/// The type of private data of @ref class_or_union_diff.
-struct class_or_union_diff::priv
-{
-  edit_script member_types_changes_;
-  edit_script data_members_changes_;
-  edit_script member_fns_changes_;
-  edit_script member_fn_tmpls_changes_;
-  edit_script member_class_tmpls_changes_;
-
-  string_decl_base_sptr_map deleted_member_types_;
-  string_decl_base_sptr_map inserted_member_types_;
-  string_diff_sptr_map changed_member_types_;
-  diff_sptrs_type sorted_changed_member_types_;
-  string_decl_base_sptr_map deleted_data_members_;
-  unsigned_decl_base_sptr_map deleted_dm_by_offset_;
-  string_decl_base_sptr_map inserted_data_members_;
-  unsigned_decl_base_sptr_map inserted_dm_by_offset_;
-  // This map contains the data member which sub-type changed.
-  string_var_diff_sptr_map subtype_changed_dm_;
-  var_diff_sptrs_type sorted_subtype_changed_dm_;
-  // This one contains the list of data members changes that can be
-  // represented as a data member foo that got removed from offset N,
-  // and a data member bar that got inserted at offset N; IOW, this
-  // can be translated as data member foo that got changed into data
-  // member bar at offset N.
-  unsigned_var_diff_sptr_map changed_dm_;
-  var_diff_sptrs_type sorted_changed_dm_;
-  string_member_function_sptr_map deleted_member_functions_;
-  string_member_function_sptr_map inserted_member_functions_;
-  string_function_decl_diff_sptr_map changed_member_functions_;
-  function_decl_diff_sptrs_type sorted_changed_member_functions_;
-  string_decl_base_sptr_map deleted_member_class_tmpls_;
-  string_decl_base_sptr_map inserted_member_class_tmpls_;
-  string_diff_sptr_map changed_member_class_tmpls_;
-  diff_sptrs_type sorted_changed_member_class_tmpls_;
-
-  type_or_decl_base_sptr
-  member_type_has_changed(decl_base_sptr) const;
-
-  decl_base_sptr
-  subtype_changed_dm(decl_base_sptr) const;
-
-  decl_base_sptr
-  member_class_tmpl_has_changed(decl_base_sptr) const;
-
-  size_t
-  get_deleted_non_static_data_members_number() const;
-
-  size_t
-  get_inserted_non_static_data_members_number() const;
-
-  size_t
-  count_filtered_subtype_changed_dm();
-
-  size_t
-  count_filtered_changed_dm();
-
-  size_t
-  count_filtered_changed_mem_fns(const diff_context_sptr&);
-
-  size_t
-  count_filtered_inserted_mem_fns(const diff_context_sptr&);
-
-  size_t
-  count_filtered_deleted_mem_fns(const diff_context_sptr&);
-
-  priv()
-  {}
-}; // end struct class_or_union_diff::priv
 
 /// Test if the current diff node carries a member type change for a
 /// member type which name is the same as the name of a given type
@@ -5696,59 +4466,6 @@ class_or_union_diff::has_local_changes() const
   return false;
 }
 
-/// A comparison functor to compare two data members based on their
-/// offset.
-struct data_member_comp
-{
-  /// @param f the first data member to take into account.
-  ///
-  /// @param s the second data member to take into account.
-  ///
-  /// @return true iff f is before s.
-  bool
-  operator()(const decl_base_sptr& f,
-	     const decl_base_sptr& s) const
-  {
-    var_decl_sptr first_dm = is_data_member(f);
-    var_decl_sptr second_dm = is_data_member(s);
-
-    assert(first_dm);
-    assert(second_dm);
-
-    size_t first_offset = get_data_member_offset(first_dm);
-    size_t second_offset = get_data_member_offset(second_dm);
-
-    // The data member at the smallest offset comes first.
-    if (first_offset != second_offset)
-      return first_offset < second_offset;
-
-    string first_dm_name = first_dm->get_name();
-    string second_dm_name = second_dm->get_name();
-
-    // But in case the two data members are at the same offset, then
-    // sort them lexicographically.
-    return first_dm_name < second_dm_name;
-  }
-};//end struct data_member_comp
-
-/// Sort a map of data members by the offset of their initial value.
-///
-/// @param data_members the map of changed data members to sort.
-///
-/// @param sorted the resulting vector of sorted changed data members.
-static void
-sort_data_members(const string_decl_base_sptr_map &data_members,
-		  vector<decl_base_sptr>& sorted)
-{
-  sorted.reserve(data_members.size());
-  for (string_decl_base_sptr_map::const_iterator i = data_members.begin();
-       i != data_members.end();
-       ++i)
-    sorted.push_back(i->second);
-
-  data_member_comp comp;
-  std::sort(sorted.begin(), sorted.end(), comp);
-}
 
 /// Report the changes carried by the current @ref class_or_union_diff
 /// node in a textual format.
@@ -5759,425 +4476,7 @@ sort_data_members(const string_decl_base_sptr_map &data_members,
 void
 class_or_union_diff::report(ostream& out, const string& indent) const
 {
-  if (!to_be_reported())
-    return;
-
-  class_or_union_sptr first = first_class_or_union(),
-    second = second_class_or_union();
-
-  // Report class decl-only -> definition change.
-  if (context()->get_allowed_category() & CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY)
-    if (filtering::has_class_decl_only_def_change(first, second))
-      {
-	string was =
-	  first->get_is_declaration_only()
-	  ? " was a declaration-only type"
-	  : " was a defined type";
-
-	string is_now =
-	  second->get_is_declaration_only()
-	  ? " and is now a declaration-only type"
-	  : " and is now a defined type";
-
-	out << indent << "type " << first->get_pretty_representation()
-	    << was << is_now;
-	return;
-      }
-
-  // member functions
-  if (member_fns_changes())
-    {
-      // report deletions
-      int numdels = get_priv()->deleted_member_functions_.size();
-      size_t num_filtered = get_priv()->count_filtered_deleted_mem_fns(context());
-      if (numdels)
-	report_mem_header(out, numdels, num_filtered, del_kind,
-			  "member function", indent);
-      bool emitted = false;
-      for (string_member_function_sptr_map::const_iterator i =
-	     get_priv()->deleted_member_functions_.begin();
-	   i != get_priv()->deleted_member_functions_.end();
-	   ++i)
-	{
-	  if (!(context()->get_allowed_category()
-		& NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
-	      && !get_member_function_is_virtual(i->second))
-	    continue;
-
-	  if (emitted
-	      && i != get_priv()->deleted_member_functions_.begin())
-	    out << "\n";
-	  method_decl_sptr mem_fun = i->second;
-	  out << indent << "  ";
-	  represent(*context(), mem_fun, out);
-	  emitted = true;
-	}
-      if (emitted)
-	out << "\n";
-
-      // report insertions;
-      int numins = get_priv()->inserted_member_functions_.size();
-      num_filtered = get_priv()->count_filtered_inserted_mem_fns(context());
-      if (numins)
-	report_mem_header(out, numins, num_filtered, ins_kind,
-			  "member function", indent);
-      emitted = false;
-      for (string_member_function_sptr_map::const_iterator i =
-	     get_priv()->inserted_member_functions_.begin();
-	   i != get_priv()->inserted_member_functions_.end();
-	   ++i)
-	{
-	  if (!(context()->get_allowed_category()
-		& NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
-	      && !get_member_function_is_virtual(i->second))
-	    continue;
-
-	  if (emitted
-	      && i != get_priv()->inserted_member_functions_.begin())
-	    out << "\n";
-	  method_decl_sptr mem_fun = i->second;
-	  out << indent << "  ";
-	  represent(*context(), mem_fun, out);
-	  emitted = true;
-	}
-      if (emitted)
-	out << "\n";
-
-      // report member function with sub-types changes
-      int numchanges = get_priv()->sorted_changed_member_functions_.size();
-      num_filtered = get_priv()->count_filtered_changed_mem_fns(context());
-      if (numchanges)
-	report_mem_header(out, numchanges, num_filtered, change_kind,
-			  "member function", indent);
-      emitted = false;
-      for (function_decl_diff_sptrs_type::const_iterator i =
-	     get_priv()->sorted_changed_member_functions_.begin();
-	   i != get_priv()->sorted_changed_member_functions_.end();
-	   ++i)
-	{
-	  if (!(context()->get_allowed_category()
-		& NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
-	      && !(get_member_function_is_virtual
-		   ((*i)->first_function_decl()))
-	      && !(get_member_function_is_virtual
-		   ((*i)->second_function_decl())))
-	    continue;
-
-	  diff_sptr diff = *i;
-	  if (!diff || !diff->to_be_reported())
-	    continue;
-
-	  string repr =
-	    (*i)->first_function_decl()->get_pretty_representation();
-	  if (emitted
-	      && i != get_priv()->sorted_changed_member_functions_.begin())
-	    out << "\n";
-	  out << indent << "  '" << repr << "' has some sub-type changes:\n";
-	  diff->report(out, indent + "    ");
-	  emitted = true;
-	}
-      if (numchanges)
-	out << "\n";
-    }
-
-  // data members
-  if (data_members_changes())
-    {
-      // report deletions
-      int numdels = class_or_union_diff::
-	get_priv()->get_deleted_non_static_data_members_number();
-      if (numdels)
-	{
-	  report_mem_header(out, numdels, 0, del_kind,
-			    "data member", indent);
-	  vector<decl_base_sptr> sorted_dms;
-	  sort_data_members
-	    (class_or_union_diff::get_priv()->deleted_data_members_,
-	     sorted_dms);
-	  bool emitted = false;
-	  for (vector<decl_base_sptr>::const_iterator i = sorted_dms.begin();
-	       i != sorted_dms.end();
-	       ++i)
-	    {
-	      var_decl_sptr data_mem =
-		dynamic_pointer_cast<var_decl>(*i);
-	      assert(data_mem);
-	      if (get_member_is_static(data_mem))
-		continue;
-	      if (emitted)
-		out << "\n";
-	      out << indent << "  ";
-	      represent_data_member(data_mem, context(), out);
-	      emitted = true;
-	    }
-	  if (emitted)
-	    out << "\n";
-	}
-
-      //report insertions
-      int numins =
-	class_or_union_diff::get_priv()->inserted_data_members_.size();
-      if (numins)
-	{
-	  report_mem_header(out, numins, 0, ins_kind,
-			    "data member", indent);
-	  vector<decl_base_sptr> sorted_dms;
-	  sort_data_members
-	    (class_or_union_diff::get_priv()->inserted_data_members_,
-	     sorted_dms);
-	  for (vector<decl_base_sptr>::const_iterator i = sorted_dms.begin();
-	       i != sorted_dms.end();
-	       ++i)
-	    {
-	      var_decl_sptr data_mem =
-		dynamic_pointer_cast<var_decl>(*i);
-	      assert(data_mem);
-	      out << indent << "  ";
-	      represent_data_member(data_mem, context(), out);
-	    }
-	}
-
-      // report change
-      size_t numchanges =
-	class_or_union_diff::get_priv()->sorted_subtype_changed_dm_.size();
-      size_t num_filtered =
-	class_or_union_diff::get_priv()->count_filtered_subtype_changed_dm();
-      if (numchanges)
-	{
-	  report_mem_header(out, numchanges, num_filtered,
-			    subtype_change_kind, "data member", indent);
-	  for (var_diff_sptrs_type::const_iterator it =
-		 class_or_union_diff::get_priv()->sorted_subtype_changed_dm_.begin();
-	       it != class_or_union_diff::get_priv()->sorted_subtype_changed_dm_.end();
-	       ++it)
-	    {
-	      if ((*it)->to_be_reported())
-		{
-		  represent(*it, context(), out, indent + " ");
-		  out << "\n";
-		}
-	    }
-	}
-
-      numchanges = class_or_union_diff::get_priv()->sorted_changed_dm_.size();
-      num_filtered =
-	class_or_union_diff::get_priv()->count_filtered_changed_dm();
-      if (numchanges)
-	{
-	  report_mem_header(out, numchanges, num_filtered,
-			    change_kind, "data member", indent);
-	  for (var_diff_sptrs_type::const_iterator it =
-		 class_or_union_diff::get_priv()->sorted_changed_dm_.begin();
-	       it != class_or_union_diff::get_priv()->sorted_changed_dm_.end();
-	       ++it)
-	    {
-	      if ((*it)->to_be_reported())
-		{
-		  represent(*it, context(), out, indent + " ");
-		  out << "\n";
-		}
-	    }
-	}
-    }
-
-  // member types
-  if (const edit_script& e = member_types_changes())
-    {
-      int numchanges =
-	class_or_union_diff::get_priv()->sorted_changed_member_types_.size();
-      int numdels =
-	class_or_union_diff::get_priv()->deleted_member_types_.size();
-
-      // report deletions
-      if (numdels)
-	{
-	  report_mem_header(out, numdels, 0, del_kind,
-			    "member type", indent);
-
-	  for (string_decl_base_sptr_map::const_iterator i =
-		 class_or_union_diff::get_priv()->deleted_member_types_.begin();
-	       i != class_or_union_diff::get_priv()->deleted_member_types_.end();
-	       ++i)
-	    {
-	      if (i != class_or_union_diff::get_priv()->deleted_member_types_.begin())
-		out << "\n";
-	      decl_base_sptr mem_type = i->second;
-	      out << indent << "  '"
-		  << mem_type->get_pretty_representation()
-		  << "'";
-	    }
-	  out << "\n\n";
-	}
-      // report changes
-      if (numchanges)
-	{
-	  report_mem_header(out, numchanges, 0, change_kind,
-			    "member type", indent);
-
-	  for (diff_sptrs_type::const_iterator it =
-		 class_or_union_diff::get_priv()->sorted_changed_member_types_.begin();
-	       it != class_or_union_diff::get_priv()->sorted_changed_member_types_.end();
-	       ++it)
-	    {
-	      if (!(*it)->to_be_reported())
-		continue;
-
-	      type_or_decl_base_sptr o = (*it)->first_subject();
-	      type_or_decl_base_sptr n = (*it)->second_subject();
-	      out << indent << "  '"
-		  << o->get_pretty_representation()
-		  << "' changed ";
-	      report_loc_info(n, *context(), out);
-	      out << ":\n";
-	      (*it)->report(out, indent + "    ");
-	    }
-	  out << "\n";
-	}
-
-      // report insertions
-      int numins = e.num_insertions();
-      assert(numchanges <= numins);
-      numins -= numchanges;
-
-      if (numins)
-	{
-	  report_mem_header(out, numins, 0, ins_kind,
-			    "member type", indent);
-
-	  bool emitted = false;
-	  for (vector<insertion>::const_iterator i = e.insertions().begin();
-	       i != e.insertions().end();
-	       ++i)
-	    {
-	      type_base_sptr mem_type;
-	      for (vector<unsigned>::const_iterator j =
-		     i->inserted_indexes().begin();
-		   j != i->inserted_indexes().end();
-		   ++j)
-		{
-		  if (emitted)
-		    out << "\n";
-		  mem_type = second->get_member_types()[*j];
-		  if (!class_or_union_diff::get_priv()->
-		      member_type_has_changed(get_type_declaration(mem_type)))
-		    {
-		      out << indent << "  '"
-			  << get_type_declaration(mem_type)->
-			get_pretty_representation()
-			  << "'";
-		      emitted = true;
-		    }
-		}
-	    }
-	  out << "\n\n";
-	}
-    }
-
-  // member function templates
-  if (const edit_script& e = member_fn_tmpls_changes())
-    {
-      // report deletions
-      int numdels = e.num_deletions();
-      if (numdels)
-	report_mem_header(out, numdels, 0, del_kind,
-			  "member function template", indent);
-      for (vector<deletion>::const_iterator i = e.deletions().begin();
-	   i != e.deletions().end();
-	   ++i)
-	{
-	  if (i != e.deletions().begin())
-	    out << "\n";
-	  member_function_template_sptr mem_fn_tmpl =
-	    first->get_member_function_templates()[i->index()];
-	  out << indent << "  '"
-	      << mem_fn_tmpl->as_function_tdecl()->get_pretty_representation()
-	      << "'";
-	}
-      if (numdels)
-	out << "\n\n";
-
-      // report insertions
-      int numins = e.num_insertions();
-      if (numins)
-	report_mem_header(out, numins, 0, ins_kind,
-			  "member function template", indent);
-      bool emitted = false;
-      for (vector<insertion>::const_iterator i = e.insertions().begin();
-	   i != e.insertions().end();
-	   ++i)
-	{
-	  member_function_template_sptr mem_fn_tmpl;
-	  for (vector<unsigned>::const_iterator j =
-		 i->inserted_indexes().begin();
-	       j != i->inserted_indexes().end();
-	       ++j)
-	    {
-	      if (emitted)
-		out << "\n";
-	      mem_fn_tmpl = second->get_member_function_templates()[*j];
-	      out << indent << "  '"
-		  << mem_fn_tmpl->as_function_tdecl()->
-		get_pretty_representation()
-		  << "'";
-	      emitted = true;
-	    }
-	}
-      if (numins)
-	out << "\n\n";
-    }
-
-  // member class templates.
-  if (const edit_script& e = member_class_tmpls_changes())
-    {
-      // report deletions
-      int numdels = e.num_deletions();
-      if (numdels)
-	report_mem_header(out, numdels, 0, del_kind,
-			  "member class template", indent);
-      for (vector<deletion>::const_iterator i = e.deletions().begin();
-	   i != e.deletions().end();
-	   ++i)
-	{
-	  if (i != e.deletions().begin())
-	    out << "\n";
-	  member_class_template_sptr mem_cls_tmpl =
-	    first->get_member_class_templates()[i->index()];
-	  out << indent << "  '"
-	      << mem_cls_tmpl->as_class_tdecl()->get_pretty_representation()
-	      << "'";
-	}
-      if (numdels)
-	out << "\n\n";
-
-      // report insertions
-      int numins = e.num_insertions();
-      if (numins)
-	report_mem_header(out, numins, 0, ins_kind,
-			  "member class template", indent);
-      bool emitted = false;
-      for (vector<insertion>::const_iterator i = e.insertions().begin();
-	   i != e.insertions().end();
-	   ++i)
-	{
-	  member_class_template_sptr mem_cls_tmpl;
-	  for (vector<unsigned>::const_iterator j =
-		 i->inserted_indexes().begin();
-	       j != i->inserted_indexes().end();
-	       ++j)
-	    {
-	      if (emitted)
-		out << "\n";
-	      mem_cls_tmpl = second->get_member_class_templates()[*j];
-	      out << indent << "  '"
-		  << mem_cls_tmpl->as_class_tdecl()
-		->get_pretty_representation()
-		  << "'";
-	      emitted = true;
-	    }
-	}
-      if (numins)
-	out << "\n\n";
-    }
+  context()->get_reporter()->report(*this, out, indent);
 }
 
 /// Populate the vector of children node of the @ref diff base type
@@ -6223,28 +4522,6 @@ class_or_union_diff::chain_into_hierarchy()
 // </class_or_union_diff stuff>
 
 //<class_diff stuff>
-
-/// The type of the private data (pimpl sub-object) of the @ref
-/// class_diff type.
-struct class_diff::priv
-{
-  edit_script base_changes_;
-  string_base_sptr_map deleted_bases_;
-  class_decl::base_specs sorted_deleted_bases_;
-  string_base_sptr_map inserted_bases_;
-  class_decl::base_specs sorted_inserted_bases_;
-  string_base_diff_sptr_map changed_bases_;
-  base_diff_sptrs_type sorted_changed_bases_;
-
-  class_decl::base_spec_sptr
-  base_has_changed(class_decl::base_spec_sptr) const;
-
-  size_t
-  count_filtered_bases();
-
-  priv()
-  {}
-};//end struct class_diff::priv
 
 /// Clear the lookup tables useful for reporting.
 ///
@@ -6654,231 +4931,6 @@ edit_script&
 class_diff::base_changes()
 {return get_priv()->base_changes_;}
 
-/// A functor to compare instances of @ref class_decl::base_spec.
-struct base_spec_comp
-{
-  bool
-  operator()(const class_decl::base_spec&l,
-	     const class_decl::base_spec&r)
-  {
-    string str1 = l.get_pretty_representation();
-    string str2 = r.get_pretty_representation();
-    return str1 < str2;
-  }
-  bool
-  operator()(const class_decl::base_spec_sptr&l,
-	     const class_decl::base_spec_sptr&r)
-  {return operator()(*l, *r);}
-}; // end base_spec_comp
-
-/// Lexicographically sort base specifications found
-/// in instances of string_base_sptr_map.
-static void
-sort_string_base_sptr_map(const string_base_sptr_map& m,
-			  class_decl::base_specs& sorted)
-{
-  for (string_base_sptr_map::const_iterator i = m.begin();
-       i != m.end();
-       ++i)
-    sorted.push_back(i->second);
-
-  base_spec_comp comp;
-  std::sort(sorted.begin(), sorted.end(), comp);
-}
-
-/// A comparison function for instances of @ref base_diff.
-struct base_diff_comp
-{
-  bool
-  operator()(const base_diff& l, const base_diff& r) const
-  {
-    class_decl::base_spec_sptr f = l.first_base(), s = r.first_base();
-    if (f->get_offset_in_bits() >= 0
-	&& s->get_offset_in_bits() >= 0)
-      return f->get_offset_in_bits() < s->get_offset_in_bits();
-    else
-      return (f->get_base_class()->get_pretty_representation()
-	      < s->get_base_class()->get_pretty_representation());
-  }
-
-  bool
-  operator()(const base_diff* l, const base_diff* r) const
-  {return operator()(*l, *r);}
-
-  bool
-  operator()(const base_diff_sptr l, const base_diff_sptr r) const
-  {return operator()(l.get(), r.get());}
-}; // end struct base_diff_comp
-
-/// Sort a map of string -> base_diff_sptr into a sorted vector of
-/// base_diff_sptr.  The base_diff_sptr are sorted by increasing value
-/// of their offset in their containing type.
-///
-/// @param map the input map to sort.
-///
-/// @param sorted the resulting sorted vector.
-static void
-sort_string_base_diff_sptr_map(const string_base_diff_sptr_map& map,
-			       base_diff_sptrs_type& sorted)
-{
-  for (string_base_diff_sptr_map::const_iterator i = map.begin();
-       i != map.end();
-       ++i)
-    sorted.push_back(i->second);
-  base_diff_comp comp;
-  sort(sorted.begin(), sorted.end(), comp);
-}
-
-/// A comparison functor to compare two instances of @ref var_diff
-/// that represent changed data members based on the offset of the
-/// initial data members, or if equal, based on their qualified name.
-/// If equal again, then the offset and qualified name of the new data
-/// members are considered.
-struct data_member_diff_comp
-{
-  /// @param f the first change to data member to take into account
-  ///
-  /// @param s the second change to data member to take into account.
-  ///
-  /// @return true iff f is before s.
-  bool
-  operator()(const var_diff_sptr f,
-	     const var_diff_sptr s) const
-  {
-    var_decl_sptr first_dm = f->first_var();
-    var_decl_sptr second_dm = s->first_var();
-
-    assert(is_data_member(first_dm));
-    assert(is_data_member(second_dm));
-
-    size_t off1 = get_data_member_offset(first_dm);
-    size_t off2 = get_data_member_offset(second_dm);
-
-    if (off1 != off2)
-      return off1 < off2;
-
-    // The two offsets of the initial data members are the same.  So
-    // lets compare the qualified name of these initial data members.
-
-    string name1 = first_dm->get_qualified_name();
-    string name2 = second_dm->get_qualified_name();
-
-    if (name1 != name2)
-      return name1 < name2;
-
-    // The offsets and the qualified names of the initial data members
-    // are the same.  Let's now compare the offsets of the *new* data
-    // members.
-
-    first_dm = f->second_var();
-    second_dm = s->second_var();
-
-    assert(is_data_member(first_dm));
-    assert(is_data_member(second_dm));
-
-    off1 = get_data_member_offset(first_dm);
-    off2 = get_data_member_offset(second_dm);
-
-    if (off1 != off2)
-      return off1 < off2;
-
-    // The offsets of the new data members are the same, dang!  Let's
-    // compare the qualified names of these new data members then.
-
-    name1 = first_dm->get_qualified_name();
-    name2 = second_dm->get_qualified_name();
-
-    return name1 < name2;
-  }
-}; // end struct var_diff_comp
-
-/// Sort the values of a unsigned_var_diff_sptr_map map and store the
-/// result into a vector of var_diff_sptr.
-///
-/// @param map the map of changed data members to sort.
-///
-/// @param sorted the resulting vector of sorted var_diff_sptr.
-static void
-sort_unsigned_data_member_diff_sptr_map(const unsigned_var_diff_sptr_map map,
-					var_diff_sptrs_type& sorted)
-{
-  sorted.reserve(map.size());
-  for (unsigned_var_diff_sptr_map::const_iterator i = map.begin();
-       i != map.end();
-       ++i)
-    sorted.push_back(i->second);
-  data_member_diff_comp comp;
-  std::sort(sorted.begin(), sorted.end(), comp);
-}
-
-/// Sort the values of a string_var_diff_sptr_map and store the result
-/// in a vector of var_diff_sptr.
-///
-/// @param map the map of changed data members to sort.
-///
-/// @param sorted the resulting vector of var_diff_sptr.
-static void
-sort_string_data_member_diff_sptr_map(const string_var_diff_sptr_map& map,
-				      var_diff_sptrs_type& sorted)
-{
-  sorted.reserve(map.size());
-  for (string_var_diff_sptr_map::const_iterator i = map.begin();
-       i != map.end();
-       ++i)
-    sorted.push_back(i->second);
-  data_member_diff_comp comp;
-  std::sort(sorted.begin(), sorted.end(), comp);
-}
-
-/// A comparison functor for instances of @ref function_decl_diff that
-/// represent changes between two virtual member functions.
-struct virtual_member_function_diff_comp
-{
-  bool
-  operator()(const function_decl_diff& l,
-	     const function_decl_diff& r) const
-  {
-    assert(get_member_function_is_virtual(l.first_function_decl()));
-    assert(get_member_function_is_virtual(r.first_function_decl()));
-
-    return (get_member_function_vtable_offset(l.first_function_decl())
-	    < get_member_function_vtable_offset(r.first_function_decl()));
-  }
-
-  bool
-  operator()(const function_decl_diff* l,
-	     const function_decl_diff* r)
-  {return operator()(*l, *r);}
-
-  bool
-  operator()(const function_decl_diff_sptr l,
-	     const function_decl_diff_sptr r)
-  {return operator()(l.get(), r.get());}
-}; // end struct virtual_member_function_diff_comp
-
-/// Sort an map of string -> virtual member function into a vector of
-/// virtual member functions.  The virtual member functions are sorted
-/// by increasing order of their virtual index.
-///
-/// @param map the input map.
-///
-/// @param sorted the resulting sorted vector of virtual function
-/// member.
-static void
-sort_string_virtual_member_function_diff_sptr_map
-(const string_function_decl_diff_sptr_map& map,
- function_decl_diff_sptrs_type& sorted)
-{
-  sorted.reserve(map.size());
-  for (string_function_decl_diff_sptr_map::const_iterator i = map.begin();
-       i != map.end();
-       ++i)
-    sorted.push_back(i->second);
-
-  virtual_member_function_diff_comp comp;
-  sort(sorted.begin(), sorted.end(), comp);
-}
-
 /// Produce a basic report about the changes between two class_decl.
 ///
 /// @param out the output stream to report the changes to.
@@ -6888,115 +4940,7 @@ sort_string_virtual_member_function_diff_sptr_map
 void
 class_diff::report(ostream& out, const string& indent) const
 {
-  if (!to_be_reported())
-    return;
-
-  string name = first_subject()->get_pretty_representation();
-
-  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER(first_subject(),
-						   second_subject());
-
-  currently_reporting(true);
-
-  // Now report the changes about the differents parts of the type.
-  class_decl_sptr first = first_class_decl(),
-    second = second_class_decl();
-
-  if (report_name_size_and_alignment_changes(first, second, context(),
-					     out, indent,
-					     /*start_with_new_line=*/false))
-    out << "\n";
-
-  maybe_report_diff_for_member(first, second, context(), out, indent);
-
-  // bases classes
-  if (base_changes())
-    {
-      // Report deletions.
-      int numdels = get_priv()->deleted_bases_.size();
-      size_t numchanges = get_priv()->sorted_changed_bases_.size();
-
-      if (numdels)
-	{
-	  report_mem_header(out, numdels, 0, del_kind,
-			    "base class", indent);
-
-	  for (class_decl::base_specs::const_iterator i
-		 = get_priv()->sorted_deleted_bases_.begin();
-	       i != get_priv()->sorted_deleted_bases_.end();
-	       ++i)
-	    {
-	      if (i != get_priv()->sorted_deleted_bases_.begin())
-		out << "\n";
-
-	      class_decl::base_spec_sptr base = *i;
-
-	      if (get_priv()->base_has_changed(base))
-		continue;
-	      out << indent << "  "
-		  << base->get_base_class()->get_pretty_representation();
-	      report_loc_info(base->get_base_class(), *context(), out);
-	    }
-	  out << "\n";
-	}
-
-      // Report changes.
-      bool emitted = false;
-      size_t num_filtered = get_priv()->count_filtered_bases();
-      if (numchanges)
-	{
-	  report_mem_header(out, numchanges, num_filtered, change_kind,
-			    "base class", indent);
-	  for (base_diff_sptrs_type::const_iterator it =
-		 get_priv()->sorted_changed_bases_.begin();
-	       it != get_priv()->sorted_changed_bases_.end();
-	       ++it)
-	    {
-	      base_diff_sptr diff = *it;
-	      if (!diff || !diff->to_be_reported())
-		continue;
-
-	      class_decl::base_spec_sptr o = diff->first_base();
-	      out << indent << "  '"
-		  << o->get_base_class()->get_pretty_representation() << "'";
-	      report_loc_info(o->get_base_class(), *context(), out);
-	      out << " changed:\n";
-	      diff->report(out, indent + "    ");
-	      emitted = true;
-	    }
-	  if (emitted)
-	    out << "\n";
-	}
-
-      //Report insertions.
-      int numins = get_priv()->inserted_bases_.size();
-      if (numins)
-	{
-	  report_mem_header(out, numins, 0, ins_kind,
-			    "base class", indent);
-
-	  bool emitted = false;
-	  for (class_decl::base_specs::const_iterator i =
-		 get_priv()->sorted_inserted_bases_.begin();
-	       i != get_priv()->sorted_inserted_bases_.end();
-	       ++i)
-	    {
-	      class_decl_sptr b = (*i)->get_base_class();
-	      if (emitted)
-		out << "\n";
-	      out << indent << "  " << b->get_pretty_representation();
-	      report_loc_info(b, *context(), out);
-	      emitted = true;
-	    }
-	  out << "\n";
-	}
-    }
-
-  class_or_union_diff::report(out, indent);
-
-  currently_reporting(false);
-
-  reported_once(true);
+  context()->get_reporter()->report(*this, out, indent);
 }
 
 /// Compute the set of changes between two instances of class_decl.
@@ -7117,14 +5061,6 @@ compute_diff(const class_decl_sptr	first,
 //</class_diff stuff>
 
 // <base_diff stuff>
-struct base_diff::priv
-{
-  class_diff_sptr underlying_class_diff_;
-
-  priv(class_diff_sptr underlying)
-    : underlying_class_diff_(underlying)
-  {}
-}; // end struct base_diff::priv
 
 /// Populate the vector of children node of the @ref diff base type
 /// sub-object of this instance of @ref base_diff.
@@ -7237,46 +5173,7 @@ base_diff::has_local_changes() const
 void
 base_diff::report(ostream& out, const string& indent) const
 {
-  if (!to_be_reported())
-    return;
-
-  class_decl::base_spec_sptr f = first_base(), s = second_base();
-  string repr = f->get_base_class()->get_pretty_representation();
-  bool emitted = false;
-
-  if (f->get_is_static() != s->get_is_static())
-    {
-      if (f->get_is_static())
-	out << indent << "is no more static";
-      else
-	out << indent << "now becomes static";
-      emitted = true;
-    }
-
-  if ((context()->get_allowed_category() & ACCESS_CHANGE_CATEGORY)
-      && (f->get_access_specifier() != s->get_access_specifier()))
-    {
-      if (emitted)
-	out << ", ";
-
-      out << "has access changed from '"
-	  << f->get_access_specifier()
-	  << "' to '"
-	  << s->get_access_specifier()
-	  << "'";
-
-      emitted = true;
-    }
-
-  if (class_diff_sptr d = get_underlying_class_diff())
-    {
-      if (d->to_be_reported())
-	{
-	  if (emitted)
-	    out << "\n";
-	  d->report(out, indent);
-	}
-    }
+  context()->get_reporter()->report(*this, out, indent);
 }
 
 /// Constructs the diff object representing a diff between two base
@@ -7408,27 +5305,7 @@ union_diff::get_pretty_representation() const
 void
 union_diff::report(ostream& out, const string& indent) const
 {
-  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER(first_subject(),
-						   second_subject());
-
-  currently_reporting(true);
-
-  // Now report the changes about the differents parts of the type.
-  union_decl_sptr first = first_union_decl(),
-    second = second_union_decl();
-
-  if (report_name_size_and_alignment_changes(first, second, context(),
-					     out, indent,
-					     /*start_with_new_line=*/false))
-    out << "\n";
-
-  maybe_report_diff_for_member(first, second, context(), out, indent);
-
-  class_or_union_diff::report(out, indent);
-
- currently_reporting(false);
-
-  reported_once(true);
+  context()->get_reporter()->report(*this, out, indent);
 }
 
 /// Compute the difference between two @ref union_decl types.
@@ -7511,55 +5388,6 @@ compute_diff(const union_decl_sptr	first,
 // </union_diff stuff>
 
 //<scope_diff stuff>
-struct scope_diff::priv
-{
-  // The edit script built by the function compute_diff.
-  edit_script member_changes_;
-
-  // Below are the useful lookup tables.
-  //
-  // If you add a new lookup table, please update member functions
-  // clear_lookup_tables, lookup_tables_empty and
-  // ensure_lookup_tables_built.
-
-  // The deleted/inserted types/decls.  These basically map what is
-  // inside the member_changes_ data member.  Note that for instance,
-  // a given type T might be deleted from the first scope and added to
-  // the second scope again; this means that the type was *changed*.
-  string_decl_base_sptr_map deleted_types_;
-  string_decl_base_sptr_map deleted_decls_;
-  string_decl_base_sptr_map inserted_types_;
-  string_decl_base_sptr_map inserted_decls_;
-
-  // The changed types/decls lookup tables.
-  //
-  // These lookup tables are populated from the lookup tables above.
-  //
-  // Note that the value stored in each of these tables is a pair
-  // containing the old decl/type and the new one.  That way it is
-  // easy to run a diff between the old decl/type and the new one.
-  //
-  // A changed type/decl is one that has been deleted from the first
-  // scope and that has been inserted into the second scope.
-  string_diff_sptr_map changed_types_;
-  diff_sptrs_type sorted_changed_types_;
-  string_diff_sptr_map changed_decls_;
-  diff_sptrs_type sorted_changed_decls_;
-
-  // The removed types/decls lookup tables.
-  //
-  // A removed type/decl is one that has been deleted from the first
-  // scope and that has *NOT* been inserted into it again.
-  string_decl_base_sptr_map removed_types_;
-  string_decl_base_sptr_map removed_decls_;
-
-  // The added types/decls lookup tables.
-  //
-  // An added type/decl is one that has been inserted to the first
-  // scope but that has not been deleted from it.
-  string_decl_base_sptr_map added_types_;
-  string_decl_base_sptr_map added_decls_;
-};//end struct scope_diff::priv
 
 /// Clear the lookup tables that are useful for reporting.
 ///
@@ -7971,41 +5799,6 @@ scope_diff::has_local_changes() const
   return false;
 }
 
-/// A comparison functor for instances of @ref diff.
-struct diff_comp
-{
-  bool
-  operator()(const diff& l, diff& r) const
-  {
-    return (get_name(l.first_subject()) < get_name(r.first_subject()));
-  }
-
-  bool
-  operator()(const diff* l, diff* r) const
-  {return operator()(*l, *r);}
-
-  bool
-  operator()(const diff_sptr l, diff_sptr r) const
-  {return operator()(l.get(), r.get());}
-}; // end struct diff_comp;
-
-/// Sort a map ofg string -> @ref diff_sptr into a vector of @ref
-/// diff_sptr.  The diff_sptr are sorted lexicographically wrt
-/// qualified names of their first subjects.
-static void
-sort_string_diff_sptr_map(const string_diff_sptr_map& map,
-			  diff_sptrs_type& sorted)
-{
-  sorted.reserve(map.size());
-  for (string_diff_sptr_map::const_iterator i = map.begin();
-       i != map.end();
-       ++i)
-    sorted.push_back(i->second);
-
-  diff_comp comp;
-  sort(sorted.begin(), sorted.end(), comp);
-}
-
 /// Report the changes of one scope against another.
 ///
 /// @param out the out stream to report the changes to.
@@ -8014,118 +5807,7 @@ sort_string_diff_sptr_map(const string_diff_sptr_map& map,
 void
 scope_diff::report(ostream& out, const string& indent) const
 {
-  if (!to_be_reported())
-    return;
-
-  // Report changed types.
-  unsigned num_changed_types = changed_types().size();
-  if (num_changed_types == 0)
-    ;
-  else if (num_changed_types == 1)
-    out << indent << "1 changed type:\n";
-  else
-    out << indent << num_changed_types << " changed types:\n";
-
-  for (diff_sptrs_type::const_iterator d = changed_types().begin();
-       d != changed_types().end();
-       ++d)
-    {
-      if (!*d)
-	continue;
-
-      out << indent << "  '"
-	  << (*d)->first_subject()->get_pretty_representation()
-	  << "' changed:\n";
-      (*d)->report(out, indent + "    ");
-    }
-
-  // Report changed decls
-  unsigned num_changed_decls = changed_decls().size();
-  if (num_changed_decls == 0)
-    ;
-  else if (num_changed_decls == 1)
-    out << indent << "1 changed declaration:\n";
-  else
-    out << indent << num_changed_decls << " changed declarations:\n";
-
-  for (diff_sptrs_type::const_iterator d= changed_decls().begin();
-       d != changed_decls().end ();
-       ++d)
-    {
-      if (!*d)
-	continue;
-
-      out << indent << "  '"
-	  << (*d)->first_subject()->get_pretty_representation()
-          << "' was changed to '"
-          << (*d)->second_subject()->get_pretty_representation() << "'";
-      report_loc_info((*d)->second_subject(), *context(), out);
-      out << ":\n";
-
-      (*d)->report(out, indent + "    ");
-    }
-
-  // Report removed types/decls
-  for (string_decl_base_sptr_map::const_iterator i =
-	 priv_->deleted_types_.begin();
-       i != priv_->deleted_types_.end();
-       ++i)
-    out << indent
-	<< "  '"
-	<< i->second->get_pretty_representation()
-	<< "' was removed\n";
-  if (priv_->deleted_types_.size())
-    out << "\n";
-
-  for (string_decl_base_sptr_map::const_iterator i =
-	 priv_->deleted_decls_.begin();
-       i != priv_->deleted_decls_.end();
-       ++i)
-    out << indent
-	<< "  '"
-	<< i->second->get_pretty_representation()
-	<< "' was removed\n";
-  if (priv_->deleted_decls_.size())
-    out << "\n";
-
-  // Report added types/decls
-  bool emitted = false;
-  for (string_decl_base_sptr_map::const_iterator i =
-	 priv_->inserted_types_.begin();
-       i != priv_->inserted_types_.end();
-       ++i)
-    {
-      // Do not report about type_decl as these are usually built-in
-      // types.
-      if (dynamic_pointer_cast<type_decl>(i->second))
-	continue;
-      out << indent
-	  << "  '"
-	  << i->second->get_pretty_representation()
-	  << "' was added\n";
-      emitted = true;
-    }
-  if (emitted)
-    out << "\n";
-
-  emitted = false;
-  for (string_decl_base_sptr_map::const_iterator i =
-	 priv_->inserted_decls_.begin();
-       i != priv_->inserted_decls_.end();
-       ++i)
-    {
-      // Do not report about type_decl as these are usually built-in
-      // types.
-      if (dynamic_pointer_cast<type_decl>(i->second))
-	continue;
-      out << indent
-	  << "  '"
-	  << i->second->get_pretty_representation()
-	  << "' was added\n";
-      emitted = true;
-    }
-  if (emitted)
-    out << "\n";
+  context()->get_reporter()->report(*this, out, indent);
 }
 
 /// Compute the diff between two scopes.
@@ -8199,10 +5881,6 @@ compute_diff(const scope_decl_sptr	first_scope,
 //</scope_diff stuff>
 
 // <fn_parm_diff stuff>
-struct fn_parm_diff::priv
-{
-  mutable diff_sptr type_diff;
-}; // end struct fn_parm_diff::priv
 
 /// Constructor for the fn_parm_diff type.
 ///
@@ -8311,32 +5989,7 @@ fn_parm_diff::has_local_changes() const
 void
 fn_parm_diff::report(ostream& out, const string& indent) const
 {
-  function_decl::parameter_sptr f = first_parameter(), s = second_parameter();
-
-  // either the parameter has a sub-type change (if its type name
-  // hasn't changed) or it has a "grey" change (that is, a change that
-  // changes his type name w/o changing the signature of the
-  // function).
-  bool has_sub_type_change =
-    type_has_sub_type_changes(first_parameter()->get_type(),
-			      second_parameter()->get_type());
-
-  if (to_be_reported())
-    {
-      assert(type_diff() && type_diff()->to_be_reported());
-      out << indent
-	  << "parameter " << f->get_index();
-      report_loc_info(f, *context(), out);
-      out << " of type '"
-	  << f->get_type_pretty_representation();
-
-      if (has_sub_type_change)
-	out << "' has sub-type changes:\n";
-      else
-	out << "' changed:\n";
-
-      type_diff()->report(out, indent + "  ");
-    }
+  context()->get_reporter()->report(*this, out, indent);
 }
 
 /// Populate the vector of children nodes of the @ref diff base type
@@ -8383,32 +6036,6 @@ compute_diff(const function_decl::parameter_sptr	first,
 // </fn_parm_diff stuff>
 
 // <function_type_diff stuff>
-struct function_type_diff::priv
-{
-  diff_sptr	return_type_diff_;
-  edit_script	parm_changes_;
-
-  // useful lookup tables.
-  string_parm_map			deleted_parms_;
-  vector<function_decl::parameter_sptr> sorted_deleted_parms_;
-  string_parm_map			added_parms_;
-  vector<function_decl::parameter_sptr> sorted_added_parms_;
-  // This map contains parameters sub-type changes that don't change
-  // the name of the type of the parameter.
-  string_fn_parm_diff_sptr_map		subtype_changed_parms_;
-  vector<fn_parm_diff_sptr>		sorted_subtype_changed_parms_;
-  // This map contains parameter type changes that actually change the
-  // name of the type of the parameter, but in a compatible way;
-  // otherwise, the mangling of the function would have changed (in
-  // c++ at least).
-  unsigned_fn_parm_diff_sptr_map	changed_parms_by_id_;
-  vector<fn_parm_diff_sptr>		sorted_changed_parms_by_id_;
-  unsigned_parm_map			deleted_parms_by_id_;
-  unsigned_parm_map			added_parms_by_id_;
-
-  priv()
-  {}
-}; // end struct function_type_diff::priv
 
 void
 function_type_diff::ensure_lookup_tables_populated()
@@ -8630,7 +6257,8 @@ function_type_diff::has_local_changes() const
   return false;
 }
 
-/// Build and emit a textual report about the current
+/// Build and emit a textual report about the current @ref
+/// function_type_diff instance.
 ///
 /// @param out the output stream.
 ///
@@ -8638,112 +6266,7 @@ function_type_diff::has_local_changes() const
 void
 function_type_diff::report(ostream& out, const string& indent) const
 {
-  if (!to_be_reported())
-    return;
-
-  function_type_sptr fft = first_function_type();
-  function_type_sptr sft = second_function_type();
-
-  diff_context_sptr ctxt = context();
-  corpus_sptr fc = ctxt->get_first_corpus();
-  corpus_sptr sc = ctxt->get_second_corpus();
-
-#if 0
-  string qn1 = get_function_type_name(fft), qn2 = get_function_type_name(sft);
-
-  if (qn1 != qn2)
-    {
-      string frep1 = ir::get_pretty_representation(fft),
-	frep2 = ir::get_pretty_representation(sft);
-      out << indent << "'" << frep1 << "' now becomes '" << frep2 << "'\n";
-      return;
-    }
-#endif
-
-  // Report about the size of the function address
-  if (fft->get_size_in_bits() != sft->get_size_in_bits())
-    {
-      out << indent << "address size of function changed from "
-	  << fft->get_size_in_bits()
-	  << " bits to "
-	  << sft->get_size_in_bits()
-	  << " bits\n";
-    }
-
-  // Report about the alignment of the function address
-  if (fft->get_alignment_in_bits()
-      != sft->get_alignment_in_bits())
-    {
-      out << indent << "address alignment of function changed from "
-	  << fft->get_alignment_in_bits()
-	  << " bits to "
-	  << sft->get_alignment_in_bits()
-	  << " bits\n";
-    }
-
-  // Report about return type differences.
-  if (priv_->return_type_diff_ && priv_->return_type_diff_->to_be_reported())
-    {
-      out << indent << "return type changed:\n";
-      priv_->return_type_diff_->report(out, indent + "  ");
-    }
-
-  // Hmmh, the above was quick.  Now report about function parameters;
-  // this shouldn't be as straightforward.
-  //
-  // Report about the parameter types that have changed sub-types.
-  for (vector<fn_parm_diff_sptr>::const_iterator i =
-	 priv_->sorted_subtype_changed_parms_.begin();
-       i != priv_->sorted_subtype_changed_parms_.end();
-       ++i)
-    {
-      diff_sptr d = *i;
-      if (d && d->to_be_reported())
-	d->report(out, indent);
-    }
-  // Report about parameters that have changed, while staying
-  // compatible -- otherwise they would have changed the mangled name
-  // of the function and the function would have been reported as
-  // removed.
-  for (vector<fn_parm_diff_sptr>::const_iterator i =
-	 priv_->sorted_changed_parms_by_id_.begin();
-       i != priv_->sorted_changed_parms_by_id_.end();
-       ++i)
-    {
-      diff_sptr d = *i;
-      if (d && d->to_be_reported())
-	d->report(out, indent);
-    }
-
-  // Report about the parameters that got removed.
-  bool emitted = false;
-  for (vector<function_decl::parameter_sptr>::const_iterator i =
-	 priv_->sorted_deleted_parms_.begin();
-       i != priv_->sorted_deleted_parms_.end();
-       ++i)
-    {
-      out << indent << "parameter " << (*i)->get_index()
-	  << " of type '" << (*i)->get_type_pretty_representation()
-	  << "' was removed\n";
-      emitted = true;
-    }
-  if (emitted)
-    out << "\n";
-
-  // Report about the parameters that got added
-  emitted = false;
-  for (vector<function_decl::parameter_sptr>::const_iterator i =
-	 priv_->sorted_added_parms_.begin();
-       i != priv_->sorted_added_parms_.end();
-       ++i)
-    {
-      out << indent << "parameter " << (*i)->get_index()
-	  << " of type '" << (*i)->get_type_pretty_representation()
-	  << "' was added\n";
-      emitted = true;
-    }
-  if (emitted)
-    out << "\n";
+  context()->get_reporter()->report(*this, out, indent);
 }
 
 /// Populate the vector of children node of the @ref diff base type
@@ -8814,13 +6337,6 @@ compute_diff(const function_type_sptr	first,
 // </function_type_diff stuff>
 
 // <function_decl_diff stuff>
-struct function_decl_diff::priv
-{
-  function_type_diff_sptr type_diff_;
-
-  priv()
-  {}
-};// end struct function_decl_diff::priv
 
 /// Build the lookup tables of the diff, if necessary.
 void
@@ -8917,201 +6433,8 @@ function_decl_diff::has_local_changes() const
   return false;
 }
 
-/// A comparison functor to compare two instances of @ref fn_parm_diff
-/// based on their indexes.
-struct fn_parm_diff_comp
-{
-  /// @param f the first diff
-  ///
-  /// @param s the second diff
-  ///
-  /// @return true if the index of @p f is less than the index of @p
-  /// s.
-  bool
-  operator()(const fn_parm_diff& f, const fn_parm_diff& s)
-  {return f.first_parameter()->get_index() < s.first_parameter()->get_index();}
-
-  bool
-  operator()(const fn_parm_diff_sptr& f, const fn_parm_diff_sptr& s)
-  {return operator()(*f, *s);}
-}; // end struct fn_parm_diff_comp
-
-/// Sort a map of @ref fn_parm_diff by the indexes of the function
-/// parameters.
-///
-/// @param map the map to sort.
-///
-/// @param sorted the resulting sorted vector of changed function
-/// parms.
-static void
-sort_string_fn_parm_diff_sptr_map(const unsigned_fn_parm_diff_sptr_map& map,
-				  vector<fn_parm_diff_sptr>&		sorted)
-{
-  sorted.reserve(map.size());
-  for (unsigned_fn_parm_diff_sptr_map::const_iterator i = map.begin();
-       i != map.end();
-       ++i)
-    sorted.push_back(i->second);
-
-  fn_parm_diff_comp comp;
-  std::sort(sorted.begin(), sorted.end(), comp);
-}
-
-/// Sort a map of changed function parameters by the indexes of the
-/// function parameters.
-///
-/// @param map the map to sort.
-///
-/// @param sorted the resulting sorted vector of instances of @ref
-/// fn_parm_diff_sptr
-static void
-sort_string_fn_parm_diff_sptr_map(const string_fn_parm_diff_sptr_map&	map,
-				  vector<fn_parm_diff_sptr>&		sorted)
-{
-  sorted.reserve(map.size());
-  for (string_fn_parm_diff_sptr_map::const_iterator i = map.begin();
-       i != map.end();
-       ++i)
-    sorted.push_back(i->second);
-
-  fn_parm_diff_comp comp;
-  std::sort(sorted.begin(), sorted.end(), comp);
-}
-
-/// Functor that compares two function parameters for the purpose of
-/// sorting them.
-struct parm_comp
-{
-  /// Returns true iff the index of the first parameter is smaller
-  /// than the of the second parameter.
-  ///
-  /// @param l the first parameter to compare.
-  ///
-  /// @param r the second parameter to compare.
-  ///
-  /// @return true iff the index of the first parameter is smaller
-  /// than the of the second parameter.
-  bool
-  operator()(const function_decl::parameter& l,
-	     const function_decl::parameter& r)
-  {return l.get_index() < r.get_index();}
-
-  /// Returns true iff the index of the first parameter is smaller
-  /// than the of the second parameter.
-  ///
-  /// @param l the first parameter to compare.
-  ///
-  /// @param r the second parameter to compare.
-  ///
-  /// @return true iff the index of the first parameter is smaller
-  /// than the of the second parameter.
-  bool
-  operator()(const function_decl::parameter_sptr& l,
-	     const function_decl::parameter_sptr& r)
-  {return operator()(*l, *r);}
-}; // end struct parm_comp
-
-/// Sort a map of string -> function parameters.
-///
-/// @param map the map to sort.
-///
-/// @param sorted the resulting sorted vector of
-/// @ref vector<function_decl::parameter_sptr>
-static void
-sort_string_parm_map(const string_parm_map& map,
-		     vector<function_decl::parameter_sptr>& sorted)
-{
-  for (string_parm_map::const_iterator i = map.begin();
-       i != map.end();
-       ++i)
-    sorted.push_back(i->second);
-
-  // TODO: finish this.
-  parm_comp comp;
-  std::sort(sorted.begin(), sorted.end(), comp);
-}
-
-/// A functor to compare instances of @ref var_decl base on their
-/// qualified names.
-struct var_comp
-{
-  bool
-  operator() (const var_decl& l, const var_decl& r) const
-  {
-    string name1 = l.get_qualified_name(), name2 = r.get_qualified_name();
-    return name1 < name2;
-  }
-
-  bool
-  operator() (const var_decl* l, const var_decl* r) const
-  {return operator()(*l, *r);}
-};// end struct var_comp
-
-/// Sort a map of string -> pointer to @ref var_decl.
-///
-/// The result is a vector of var_decl* sorted by the qualified name
-/// of the variables.
-///
-/// @param map the map to sort.
-///
-/// @param sorted out parameter; the sorted vector of @ref var_decl.
-static void
-sort_string_var_ptr_map(const string_var_ptr_map& map,
-			vector<var_decl*>& sorted)
-{
-  for (string_var_ptr_map::const_iterator i = map.begin();
-       i != map.end();
-       ++i)
-    sorted.push_back(i->second);
-
-  var_comp comp;
-  std::sort(sorted.begin(), sorted.end(), comp);
-}
-
-/// A functor to compare instances of @ref elf_symbol base on their
-/// names.
-struct elf_symbol_comp
-{
-  bool
-  operator()(const elf_symbol& l, const elf_symbol& r)
-  {
-    string name1 = l.get_id_string(), name2 = r.get_id_string();
-    return name1 < name2;
-  }
-
-  bool
-  operator()(const elf_symbol* l, const elf_symbol* r)
-  {return operator()(*l, *r);}
-
-  bool
-  operator()(const elf_symbol_sptr& l, const elf_symbol_sptr& r)
-  {return operator()(l.get(), r.get());}
-}; //end struct elf_symbol_comp
-
-/// Sort a map of string -> pointer to @ref elf_symbol.
-///
-/// The result is a vector of @ref elf_symbol_sptr sorted by the
-/// name of the symbol.
-///
-/// @param map the map to sort.
-///
-/// @param sorted out parameter; the sorted vector of @ref
-/// elf_symbol_sptr.
-static void
-sort_string_elf_symbol_map(const string_elf_symbol_map& map,
-			   vector<elf_symbol_sptr>& sorted)
-{
-  for (string_elf_symbol_map::const_iterator i = map.begin();
-       i!= map.end();
-       ++i)
-    sorted.push_back(i->second);
-
-  elf_symbol_comp comp;
-  std::sort(sorted.begin(), sorted.end(), comp);
-}
-
 /// Serialize a report of the changes encapsulated in the current
-/// instance of function_decl_diff over to an output stream.
+/// instance of @ref function_decl_diff over to an output stream.
 ///
 /// @param out the output stream to serialize the report to.
 ///
@@ -9119,165 +6442,7 @@ sort_string_elf_symbol_map(const string_elf_symbol_map& map,
 void
 function_decl_diff::report(ostream& out, const string& indent) const
 {
-  if (!to_be_reported())
-    return;
-
-  maybe_report_diff_for_member(first_function_decl(),
-			       second_function_decl(),
-			       context(), out, indent);
-
-  function_decl_sptr ff = first_function_decl();
-  function_decl_sptr sf = second_function_decl();
-
-  diff_context_sptr ctxt = context();
-  corpus_sptr fc = ctxt->get_first_corpus();
-  corpus_sptr sc = ctxt->get_second_corpus();
-
-  string qn1 = ff->get_qualified_name(), qn2 = sf->get_qualified_name(),
-    linkage_names1, linkage_names2;
-  elf_symbol_sptr s1 = ff->get_symbol(), s2 = sf->get_symbol();
-
-  if (s1)
-    linkage_names1 = s1->get_id_string();
-  if (s2)
-    linkage_names2 = s2->get_id_string();
-
-  // If the symbols for ff and sf have aliases, get all the names of
-  // the aliases;
-  if (fc && s1)
-    linkage_names1 =
-      s1->get_aliases_id_string(fc->get_fun_symbol_map());
-  if (sc && s2)
-    linkage_names2 =
-      s2->get_aliases_id_string(sc->get_fun_symbol_map());
-
-  /// If the set of linkage names of the function have changed, report
-  /// it.
-  if (linkage_names1 != linkage_names2)
-    {
-      if (linkage_names1.empty())
-	{
-	  out << indent << ff->get_pretty_representation()
-	      << " didn't have any linkage name, and it now has: '"
-	      << linkage_names2 << "'\n";
-	}
-      else if (linkage_names2.empty())
-	{
-	  out << indent << ff->get_pretty_representation()
-	      << " did have linkage names '" << linkage_names1
-	      << "'\n"
-	      << indent << "but it doesn't have any linkage name anymore\n";
-	}
-      else
-	out << indent << "linkage names of "
-	    << ff->get_pretty_representation()
-	    << "\n" << indent << "changed from '"
-	    << linkage_names1 << "' to '" << linkage_names2 << "'\n";
-    }
-
-  if (qn1 != qn2
-      && type_diff()
-      && type_diff()->to_be_reported())
-    {
-      // So the function has sub-type changes that are to be
-      // reported.  Let's see if the function name changed too; if it
-      // did, then we'd report that change right before reporting the
-      // sub-type changes.
-      string frep1 = first_function_decl()->get_pretty_representation(),
-	frep2 = second_function_decl()->get_pretty_representation();
-      out << indent << "'" << frep1 << " {" << linkage_names1<< "}"
-	  << "' now becomes '"
-	  << frep2 << " {" << linkage_names2 << "}" << "'\n";
-    }
-
-  maybe_report_diff_for_symbol(ff->get_symbol(),
-			       sf->get_symbol(),
-			       out, indent);
-
-  // Now report about inline-ness changes
-  if (ff->is_declared_inline() != sf->is_declared_inline())
-    {
-      out << indent;
-      if (ff->is_declared_inline())
-	out << sf->get_pretty_representation()
-	    << " is not declared inline anymore\n";
-      else
-	out << sf->get_pretty_representation()
-	    << " is now declared inline\n";
-    }
-
-  // Report about vtable offset changes.
-  if (is_member_function(ff) && is_member_function(sf))
-    {
-      bool ff_is_virtual = get_member_function_is_virtual(ff),
-	sf_is_virtual = get_member_function_is_virtual(sf);
-      if (ff_is_virtual != sf_is_virtual)
-	{
-	  out << indent;
-	  if (ff_is_virtual)
-	    out << ff->get_pretty_representation()
-		<< " is no more declared virtual\n";
-	  else
-	    out << ff->get_pretty_representation()
-		<< " is now declared virtual\n";
-	}
-
-      size_t ff_vtable_offset = get_member_function_vtable_offset(ff),
-	sf_vtable_offset = get_member_function_vtable_offset(sf);
-      if (ff_is_virtual && sf_is_virtual
-	  && (ff_vtable_offset != sf_vtable_offset))
-	{
-	  out << indent
-	      << "the vtable offset of "  << ff->get_pretty_representation()
-	      << " changed from " << ff_vtable_offset
-	      << " to " << sf_vtable_offset << "\n";
-	}
-
-      // the classes of the two member functions.
-      class_decl_sptr fc =
-	is_class_type(is_method_type(ff->get_type())->get_class_type());
-      class_decl_sptr sc =
-	is_class_type(is_method_type(sf->get_type())->get_class_type());
-
-      // Detect if the virtual member function changes above
-      // introduced a vtable change or not.
-      bool vtable_added = false, vtable_removed = false;
-      if (!fc->get_is_declaration_only() && !sc->get_is_declaration_only())
-	{
-	  vtable_added = !fc->has_vtable() && sc->has_vtable();
-	  vtable_removed = fc->has_vtable() && !sc->has_vtable();
-	}
-      bool vtable_changed = ((ff_is_virtual != sf_is_virtual)
-			    || (ff_vtable_offset != sf_vtable_offset));
-      bool incompatible_change = (ff_vtable_offset != sf_vtable_offset);
-
-      if (vtable_added)
-	out << indent
-	    << "  note that a vtable was added to "
-	    << fc->get_pretty_representation()
-	    << "\n";
-      else if (vtable_removed)
-	out << indent
-	    << "  note that the vtable was removed from "
-	    << fc->get_pretty_representation()
-	    << "\n";
-      else if (vtable_changed)
-	{
-	  out << indent;
-	  if (incompatible_change)
-	    out << "  note that this is an ABI incompatible "
-	      "change to the vtable of ";
-	  else
-	    out << "  note that this induces a change to the vtable of ";
-	  out << fc->get_pretty_representation()
-	      << "\n";
-	}
-
-    }
-
-  // Report about function type differences.
-  if (type_diff() && type_diff()->to_be_reported())
-    type_diff()->report(out, indent);
+  context()->get_reporter()->report(*this, out, indent);
 }
 
 /// Compute the diff between two function_decl.
@@ -9405,40 +6570,7 @@ type_decl_diff::has_local_changes() const
 void
 type_decl_diff::report(ostream& out, const string& indent) const
 {
-  if (!to_be_reported())
-    return;
-
-  type_decl_sptr f = first_type_decl(), s = second_type_decl();
-
-  string name = f->get_pretty_representation();
-
-  bool n = report_name_size_and_alignment_changes(f, s, context(),
-						  out, indent,
-						  /*new line=*/false);
-
-  if (f->get_visibility() != s->get_visibility())
-    {
-      if (n)
-	out << "\n";
-      out << indent
-	  << "visibility changed from '"
-	  << f->get_visibility() << "' to '" << s->get_visibility();
-      n = true;
-    }
-
-  if (f->get_linkage_name() != s->get_linkage_name())
-    {
-      if (n)
-	out << "\n";
-      out << indent
-	  << "mangled name changed from '"
-	  << f->get_linkage_name() << "' to "
-	  << s->get_linkage_name();
-      n = true;
-    }
-
-  if (n)
-    out << "\n";
+  context()->get_reporter()->report(*this, out, indent);
 }
 
 /// Compute a diff between two type_decl.
@@ -9487,15 +6619,6 @@ compute_diff(const type_decl_sptr	first,
 // </type_decl_diff stuff>
 
 // <typedef_diff stuff>
-
-struct typedef_diff::priv
-{
-  diff_sptr underlying_type_diff_;
-
-  priv(const diff_sptr underlying_type_diff)
-    : underlying_type_diff_(underlying_type_diff)
-  {}
-};//end struct typedef_diff::priv
 
 /// Populate the vector of children node of the @ref diff base type
 /// sub-object of this instance of @ref typedef_diff.
@@ -9617,43 +6740,7 @@ typedef_diff::has_local_changes() const
 void
 typedef_diff::report(ostream& out, const string& indent) const
 {
-  if (!to_be_reported())
-    return;
-
-  bool emit_nl = false;
-  typedef_decl_sptr f = first_typedef_decl(), s = second_typedef_decl();
-
-  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER(f, s);
-
-  maybe_report_diff_for_member(f, s, context(), out, indent);
-
-  if (filtering::has_harmless_name_change(f, s)
-      && context()->get_allowed_category() & HARMLESS_DECL_NAME_CHANGE_CATEGORY)
-    {
-      out << indent << "typedef name changed from "
-	  << f->get_qualified_name()
-          << " to "
-	  << s->get_qualified_name();
-	  report_loc_info(s, *context(), out);
-      out << "\n";
-      emit_nl = true;
-    }
-
-  diff_sptr d = underlying_type_diff();
-  if (d && d->to_be_reported())
-    {
-      RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(d, "underlying type");
-      out << indent
-	  << "underlying type '"
-	  << d->first_subject()->get_pretty_representation() << "'";
-      report_loc_info(d->second_subject(), *context(), out);
-      out << " changed:\n";
-      d->report(out, indent + "  ");
-      emit_nl = false;
-    }
-
-  if (emit_nl)
-    out << "\n";
+  context()->get_reporter()->report(*this, out, indent);
 }
 
 /// Compute a diff between two typedef_decl.
@@ -9718,16 +6805,6 @@ get_typedef_diff_underlying_type_diff(const diff* diff)
 // </typedef_diff stuff>
 
 // <translation_unit_diff stuff>
-
-struct translation_unit_diff::priv
-{
-  translation_unit_sptr first_;
-  translation_unit_sptr second_;
-
-  priv(translation_unit_sptr f, translation_unit_sptr s)
-    : first_(f), second_(s)
-  {}
-};//end struct translation_unit_diff::priv
 
 /// Constructor for translation_unit_diff.
 ///
@@ -9823,64 +6900,6 @@ compute_diff(const translation_unit_sptr	first,
 }
 
 // </translation_unit_diff stuff>
-
-/// The type of the private data of corpus_diff::diff_stats.
-class corpus_diff::diff_stats::priv
-{
-  friend class corpus_diff::diff_stats;
-
-  diff_context_wptr	ctxt_;
-  size_t		num_func_removed;
-  size_t		num_removed_func_filtered_out;
-  size_t		num_func_added;
-  size_t		num_added_func_filtered_out;
-  size_t		num_func_changed;
-  size_t		num_changed_func_filtered_out;
-  size_t		num_func_with_virt_offset_changes;
-  size_t		num_vars_removed;
-  size_t		num_removed_vars_filtered_out;
-  size_t		num_vars_added;
-  size_t		num_added_vars_filtered_out;
-  size_t		num_vars_changed;
-  size_t		num_changed_vars_filtered_out;
-  size_t		num_func_syms_removed;
-  size_t		num_removed_func_syms_filtered_out;
-  size_t		num_func_syms_added;
-  size_t		num_added_func_syms_filtered_out;
-  size_t		num_var_syms_removed;
-  size_t		num_removed_var_syms_filtered_out;
-  size_t		num_var_syms_added;
-  size_t		num_added_var_syms_filtered_out;
-
-  priv(diff_context_sptr ctxt)
-    : ctxt_(ctxt),
-      num_func_removed(),
-      num_removed_func_filtered_out(),
-      num_func_added(),
-      num_added_func_filtered_out(),
-      num_func_changed(),
-      num_changed_func_filtered_out(),
-      num_func_with_virt_offset_changes(),
-      num_vars_removed(),
-      num_removed_vars_filtered_out(),
-      num_vars_added(),
-      num_added_vars_filtered_out(),
-      num_vars_changed(),
-      num_changed_vars_filtered_out(),
-      num_func_syms_removed(),
-      num_removed_func_syms_filtered_out(),
-      num_func_syms_added(),
-      num_added_func_syms_filtered_out(),
-      num_var_syms_removed(),
-      num_removed_var_syms_filtered_out(),
-      num_var_syms_added(),
-      num_added_var_syms_filtered_out()
-  {}
-
-  diff_context_sptr
-  ctxt()
-  {return ctxt_.expired() ? diff_context_sptr() : diff_context_sptr(ctxt_);}
-}; // end class corpus_diff::diff_stats::priv
 
 /// Constructor for the @ref diff_stat type.
 ///
@@ -10429,123 +7448,6 @@ corpus_diff::diff_stats::net_num_added_var_syms() const
 }
 
 // <corpus stuff>
-struct corpus_diff::priv
-{
-  bool					finished_;
-  string				pretty_representation_;
-  vector<diff*>			children_;
-  corpus_sptr				first_;
-  corpus_sptr				second_;
-  diff_context_wptr			ctxt_;
-  corpus_diff::diff_stats_sptr		diff_stats_;
-  bool					sonames_equal_;
-  bool					architectures_equal_;
-  edit_script				fns_edit_script_;
-  edit_script				vars_edit_script_;
-  edit_script				unrefed_fn_syms_edit_script_;
-  edit_script				unrefed_var_syms_edit_script_;
-  string_function_ptr_map		deleted_fns_;
-  string_function_ptr_map		suppressed_deleted_fns_;
-  string_function_ptr_map		added_fns_;
-  string_function_ptr_map		suppressed_added_fns_;
-  string_function_decl_diff_sptr_map	changed_fns_map_;
-  function_decl_diff_sptrs_type	changed_fns_;
-  string_var_ptr_map			deleted_vars_;
-  string_var_ptr_map			suppressed_deleted_vars_;
-  string_var_ptr_map			added_vars_;
-  string_var_ptr_map			suppressed_added_vars_;
-  string_var_diff_sptr_map		changed_vars_map_;
-  var_diff_sptrs_type			sorted_changed_vars_;
-  string_elf_symbol_map		added_unrefed_fn_syms_;
-  string_elf_symbol_map		suppressed_added_unrefed_fn_syms_;
-  string_elf_symbol_map		deleted_unrefed_fn_syms_;
-  string_elf_symbol_map		suppressed_deleted_unrefed_fn_syms_;
-  string_elf_symbol_map		added_unrefed_var_syms_;
-  string_elf_symbol_map		suppressed_added_unrefed_var_syms_;
-  string_elf_symbol_map		deleted_unrefed_var_syms_;
-  string_elf_symbol_map		suppressed_deleted_unrefed_var_syms_;
-
-  /// Default constructor of corpus_diff::priv.
-  priv()
-    : finished_(false),
-      sonames_equal_(false),
-      architectures_equal_(false)
-  {}
-
-  /// Constructor of corpus_diff::priv.
-  ///
-  /// @param first the first corpus of this diff.
-  ///
-  /// @param second the second corpus of this diff.
-  ///
-  /// @param ctxt the context of the diff.
-  priv(corpus_sptr first,
-       corpus_sptr second,
-       diff_context_sptr ctxt)
-    : finished_(false),
-      first_(first),
-      second_(second),
-      ctxt_(ctxt),
-      sonames_equal_(false),
-      architectures_equal_(false)
-  {}
-
-  diff_context_sptr
-  get_context();
-
-  bool
-  lookup_tables_empty() const;
-
-  void
-  clear_lookup_tables();
-
-  void
-  ensure_lookup_tables_populated();
-
-  void
-  apply_suppressions_to_added_removed_fns_vars();
-
-  bool
-  deleted_function_is_suppressed(const function_decl* fn) const;
-
-  bool
-  added_function_is_suppressed(const function_decl* fn) const;
-
-  bool
-  deleted_variable_is_suppressed(const var_decl* var) const;
-
-  bool
-  added_variable_is_suppressed(const var_decl* var) const;
-
-  bool
-  deleted_unrefed_fn_sym_is_suppressed(const elf_symbol*) const;
-
-  bool
-  added_unrefed_fn_sym_is_suppressed(const elf_symbol*) const;
-
-  bool
-  deleted_unrefed_var_sym_is_suppressed(const elf_symbol*) const;
-
-  bool
-  added_unrefed_var_sym_is_suppressed(const elf_symbol*) const;
-
-  void
-  apply_filters_and_compute_diff_stats(corpus_diff::diff_stats&);
-
-  void
-  emit_diff_stats(const diff_stats&	stats,
-		  ostream&		out,
-		  const string&	indent);
-
-  void
-  categorize_redundant_changed_sub_nodes();
-
-  void
-  clear_redundancy_categorization();
-
-  void
-  maybe_dump_diff_tree();
-}; // end corpus::priv
 
 /// Getter of the context associated with this corpus.
 ///
@@ -11926,241 +8828,6 @@ corpus_diff::has_net_changes() const
 	    || stats.net_num_removed_var_syms());
 }
 
-/// "Less than" functor to compare instances of @ref function_decl.
-struct function_comp
-{
-  /// The actual "less than" operator for instances of @ref
-  /// function_decl.  It returns true if the first @ref function_decl
-  /// is lest than the second one.
-  ///
-  /// @param f the first @ref function_decl to take in account.
-  ///
-  /// @param s the second @ref function_decl to take in account.
-  ///
-  /// @return true iff @p f is less than @p s.
-  bool
-  operator()(const function_decl& f, const function_decl& s)
-  {
-    string fr = f.get_pretty_representation_of_declarator(),
-      sr = s.get_pretty_representation_of_declarator();
-
-    if (fr != sr)
-      return fr < sr;
-
-    fr = f.get_pretty_representation(),
-      sr = s.get_pretty_representation();
-
-    if (fr != sr)
-      return fr < sr;
-
-    if (f.get_symbol())
-      fr = f.get_symbol()->get_id_string();
-    else if (!f.get_linkage_name().empty())
-      fr = f.get_linkage_name();
-
-    if (s.get_symbol())
-      sr = s.get_symbol()->get_id_string();
-    else if (!s.get_linkage_name().empty())
-      sr = s.get_linkage_name();
-
-    return fr < sr;
-  }
-
-  /// The actual "less than" operator for instances of @ref
-  /// function_decl.  It returns true if the first @ref function_decl
-  /// is lest than the second one.
-  ///
-  /// @param f the first @ref function_decl to take in account.
-  ///
-  /// @param s the second @ref function_decl to take in account.
-  ///
-  /// @return true iff @p f is less than @p s.
-  bool
-  operator()(const function_decl* f, const function_decl* s)
-  {return operator()(*f, *s);}
-
-  /// The actual "less than" operator for instances of @ref
-  /// function_decl.  It returns true if the first @ref function_decl
-  /// is lest than the second one.
-  ///
-  /// @param f the first @ref function_decl to take in account.
-  ///
-  /// @param s the second @ref function_decl to take in account.
-  ///
-  /// @return true iff @p f is less than @p s.
-  bool
-  operator()(const function_decl_sptr f, const function_decl_sptr s)
-  {return operator()(f.get(), s.get());}
-}; // end function_comp
-
-/// Sort a an instance of @ref string_function_ptr_map map and stuff
-/// a resulting sorted vector of pointers to function_decl.
-///
-/// @param map the map to sort.
-///
-/// @param sorted the resulting sorted vector.
-static void
-sort_string_function_ptr_map(const string_function_ptr_map& map,
-			     vector<function_decl*>& sorted)
-{
-  sorted.reserve(map.size());
-  for (string_function_ptr_map::const_iterator i = map.begin();
-       i != map.end();
-       ++i)
-    sorted.push_back(i->second);
-
-  function_comp comp;
-  std::sort(sorted.begin(), sorted.end(), comp);
-}
-
-/// A "Less Than" functor to compare instance of @ref
-/// function_decl_diff.
-struct function_decl_diff_comp
-{
-  /// The actual less than operator.
-  ///
-  /// It returns true if the first @ref function_decl_diff is less
-  /// than the second one.
-  ///
-  /// param first the first @ref function_decl_diff to consider.
-  ///
-  /// @param second the second @ref function_decl_diff to consider.
-  ///
-  /// @return true iff @p first is less than @p second.
-  bool
-  operator()(const function_decl_diff& first,
-	     const function_decl_diff& second)
-  {
-    function_decl_sptr f = first.first_function_decl(),
-      s = second.first_function_decl();
-
-    string fr = f->get_qualified_name(),
-      sr = s->get_qualified_name();
-
-    if (fr == sr)
-      {
-	if (f->get_symbol())
-	  fr = f->get_symbol()->get_id_string();
-	else if (!f->get_linkage_name().empty())
-	  fr = f->get_linkage_name();
-	else
-	  fr = f->get_pretty_representation();
-
-	if (s->get_symbol())
-	  sr = s->get_symbol()->get_id_string();
-	else if (!s->get_linkage_name().empty())
-	  sr = s->get_linkage_name();
-	else
-	  sr = s->get_pretty_representation();
-      }
-
-    return (fr.compare(sr) < 0);
-  }
-
-  /// The actual less than operator.
-  ///
-  /// It returns true if the first @ref function_decl_diff_sptr is
-  /// less than the second one.
-  ///
-  /// param first the first @ref function_decl_diff_sptr to consider.
-  ///
-  /// @param second the second @ref function_decl_diff_sptr to
-  /// consider.
-  ///
-  /// @return true iff @p first is less than @p second.
-  bool
-  operator()(const function_decl_diff_sptr first,
-	     const function_decl_diff_sptr second)
-  {return operator()(*first, *second);}
-}; // end struct function_decl_diff_comp
-
-/// Sort the values of a @ref string_function_decl_diff_sptr_map map
-/// and store the result in a vector of @ref function_decl_diff_sptr
-/// objects.
-///
-/// @param map the map whose values to store.
-///
-/// @param sorted the vector of function_decl_diff_sptr to store the
-/// result of the sort into.
-static void
-sort_string_function_decl_diff_sptr_map
-(const string_function_decl_diff_sptr_map& map,
- function_decl_diff_sptrs_type& sorted)
-{
-  sorted.reserve(map.size());
-  for (string_function_decl_diff_sptr_map::const_iterator i = map.begin();
-       i != map.end();
-       ++i)
-    sorted.push_back(i->second);
-  function_decl_diff_comp comp;
-  std::sort(sorted.begin(), sorted.end(), comp);
-}
-
-/// Functor to sort instances of @ref var_diff_sptr
-struct var_diff_sptr_comp
-{
-  /// Return true if the first argument is less than the second one.
-  ///
-  /// @param f the first argument to consider.
-  ///
-  /// @param s the second argument to consider.
-  ///
-  /// @return true if @p f is less than @p s.
-  bool
-  operator()(const var_diff_sptr f,
-	     const var_diff_sptr s)
-  {
-    return (f->first_var()->get_qualified_name()
-	    < s->first_var()->get_qualified_name());
-  }
-}; // end struct var_diff_sptr_comp
-
-/// Sort of an instance of @ref string_var_diff_sptr_map map.
-///
-/// @param map the input map to sort.
-///
-/// @param sorted the ouptut sorted vector of @ref var_diff_sptr.
-/// It's populated with the sorted content.
-static void
-sort_string_var_diff_sptr_map(const string_var_diff_sptr_map& map,
-			      var_diff_sptrs_type& sorted)
-{
-  sorted.reserve(map.size());
-  for (string_var_diff_sptr_map::const_iterator i = map.begin();
-       i != map.end();
-       ++i)
-    sorted.push_back(i->second);
-
-  var_diff_sptr_comp comp;
-  std::sort(sorted.begin(), sorted.end(), comp);
-}
-
-/// For a given symbol, emit a string made of its name and version.
-/// The string also contains the list of symbols that alias this one.
-///
-/// @param out the output string to emit the resulting string to.
-///
-/// @param indent the indentation string to use before emitting the
-/// resulting string.
-///
-/// @param symbol the symbol to emit the representation string for.
-///
-/// @param sym_map the symbol map to consider to look for aliases of
-/// @p symbol.
-static void
-show_linkage_name_and_aliases(ostream& out,
-			      const string& indent,
-			      const elf_symbol& symbol,
-			      const string_elf_symbols_map_type& sym_map)
-{
-  out << indent << symbol.get_id_string();
-  string aliases =
-    symbol.get_aliases_id_string(sym_map,
-				 /*include_symbol_itself=*/false);
-  if (!aliases.empty())
-    out << ", aliases " << aliases;
-}
-
 /// Apply the different filters that are registered to be applied to
 /// the diff tree; that includes the categorization filters.  Also,
 /// apply the suppression interpretation filters.
@@ -12202,472 +8869,7 @@ corpus_diff::apply_filters_and_suppressions_before_reporting()
 void
 corpus_diff::report(ostream& out, const string& indent) const
 {
-  size_t total = 0, removed = 0, added = 0;
-  const diff_stats &s =
-    const_cast<corpus_diff*>(this)->apply_filters_and_suppressions_before_reporting();
-
-  /// Report removed/added/changed functions.
-  total = s.net_num_func_removed() + s.net_num_func_added() +
-    s.net_num_func_changed();
-  const unsigned large_num = 100;
-
-  priv_->emit_diff_stats(s, out, indent);
-  if (context()->show_stats_only())
-    return;
-  out << "\n";
-
-  if (context()->show_soname_change()
-      && !priv_->sonames_equal_)
-    out << indent << "SONAME changed from '"
-	<< first_corpus()->get_soname() << "' to '"
-	<< second_corpus()->get_soname() << "'\n\n";
-
-  if (context()->show_architecture_change()
-      && !priv_->architectures_equal_)
-    out << indent << "architecture changed from '"
-	<< first_corpus()->get_architecture_name() << "' to '"
-	<< second_corpus()->get_architecture_name() << "'\n\n";
-
-  if (context()->show_deleted_fns())
-    {
-      if (s.net_num_func_removed() == 1)
-	out << indent << "1 Removed function:\n\n";
-      else if (s.net_num_func_removed() > 1)
-	out << indent << s.net_num_func_removed() << " Removed functions:\n\n";
-
-      vector<function_decl*>sorted_deleted_fns;
-      sort_string_function_ptr_map(priv_->deleted_fns_, sorted_deleted_fns);
-      for (vector<function_decl*>::const_iterator i =
-	     sorted_deleted_fns.begin();
-	   i != sorted_deleted_fns.end();
-	   ++i)
-	{
-	  if (priv_->deleted_function_is_suppressed(*i))
-	    continue;
-
-	  out << indent
-	      << "  ";
-	  if (total > large_num)
-	    out << "[D] ";
-	  out << "'" << (*i)->get_pretty_representation() << "'";
-	  if (context()->show_linkage_names())
-	    {
-	      out << "    {";
-	      show_linkage_name_and_aliases(out, "", *(*i)->get_symbol(),
-					    first_corpus()->get_fun_symbol_map());
-	      out << "}";
-	    }
-	  out << "\n";
-	  if (is_member_function(*i) && get_member_function_is_virtual(*i))
-	    {
-	      class_decl_sptr c =
-		is_class_type(is_method_type((*i)->get_type())->get_class_type());
-	      out << indent
-		  << "    "
-		  << "note that this removes an entry from the vtable of "
-		  << c->get_pretty_representation()
-		  << "\n";
-	    }
-	  ++removed;
-	}
-      if (removed)
-	out << "\n";
-    }
-
-  if (context()->show_added_fns())
-    {
-      if (s.net_num_func_added() == 1)
-	out << indent << "1 Added function:\n\n";
-      else if (s.net_num_func_added() > 1)
-	out << indent << s.net_num_func_added()
-	    << " Added functions:\n\n";
-      vector<function_decl*> sorted_added_fns;
-      sort_string_function_ptr_map(priv_->added_fns_, sorted_added_fns);
-      for (vector<function_decl*>::const_iterator i = sorted_added_fns.begin();
-	   i != sorted_added_fns.end();
-	   ++i)
-	{
-	  if (priv_->added_function_is_suppressed(*i))
-	    continue;
-
-	  out
-	    << indent
-	    << "  ";
-	  if (total > large_num)
-	    out << "[A] ";
-	  out << "'"
-	      << (*i)->get_pretty_representation()
-	      << "'";
-	  if (context()->show_linkage_names())
-	    {
-	      out << "    {";
-	      show_linkage_name_and_aliases
-		(out, "", *(*i)->get_symbol(),
-		 second_corpus()->get_fun_symbol_map());
-	      out << "}";
-	    }
-	  out << "\n";
-	  if (is_member_function(*i) && get_member_function_is_virtual(*i))
-	    {
-	      class_decl_sptr c =
-		is_class_type(is_method_type((*i)->get_type())->get_class_type());
-	      out << indent
-		  << "    "
-		  << "note that this adds a new entry to the vtable of "
-		  << c->get_pretty_representation()
-		  << "\n";
-	    }
-	  ++added;
-	}
-      if (added)
-	{
-	  out << "\n";
-	  added = false;
-	}
-    }
-
-  if (context()->show_changed_fns())
-    {
-      size_t num_changed = s.num_func_changed() - s.num_changed_func_filtered_out();
-      if (num_changed == 1)
-	out << indent << "1 function with some indirect sub-type change:\n\n";
-      else if (num_changed > 1)
-	out << indent << num_changed
-	    << " functions with some indirect sub-type change:\n\n";
-
-      bool emitted = false;
-      vector<function_decl_diff_sptr> sorted_changed_fns;
-      sort_string_function_decl_diff_sptr_map(priv_->changed_fns_map_,
-					      sorted_changed_fns);
-      for (vector<function_decl_diff_sptr>::const_iterator i =
-	     sorted_changed_fns.begin();
-	   i != sorted_changed_fns.end();
-	   ++i)
-	{
-	  diff_sptr diff = *i;
-	  if (!diff)
-	    continue;
-
-	  if (diff->to_be_reported())
-	    {
-	      function_decl_sptr fn = (*i)->first_function_decl();
-	      out << indent << "  [C]'"
-		  << fn->get_pretty_representation() << "'";
-	      report_loc_info((*i)->second_function_decl(), *context(), out);
-	      out << " has some indirect sub-type changes:\n";
-	      if ((fn->get_symbol()->has_aliases()
-		   && !(is_member_function(fn)
-			&& get_member_function_is_ctor(fn))
-		   && !(is_member_function(fn)
-			&& get_member_function_is_dtor(fn)))
-		  || (is_c_language(get_translation_unit(fn)->get_language())
-		      && fn->get_name() != fn->get_linkage_name()))
-		{
-		  int number_of_aliases =
-		    fn->get_symbol()->get_number_of_aliases();
-		  if (number_of_aliases == 0)
-		    {
-		      out << indent << "    "
-			  << "Please note that the exported symbol of "
-			     "this function is "
-			  << fn->get_symbol()->get_id_string()
-			  << "\n";
-		    }
-		  else
-		    {
-		      out << indent << "    "
-			  << "Please note that the symbol of this function is "
-			  << fn->get_symbol()->get_id_string()
-			  << "\n     and it aliases symbol";
-		      if (number_of_aliases > 1)
-			out << "s";
-		      out << ": "
-			  << fn->get_symbol()->get_aliases_id_string(false)
-			  << "\n";
-		    }
-		}
-	      diff->report(out, indent + "    ");
-	      out << "\n";
-	      emitted |= true;
-	    }
-	  }
-      if (emitted)
-	{
-	  out << "\n";
-	  emitted = false;
-	}
-    }
-
- // Report added/removed/changed variables.
-  total = s.num_vars_removed() + s.num_vars_added() +
-    s.num_vars_changed() - s.num_changed_vars_filtered_out();
-
-  if (context()->show_deleted_vars())
-    {
-      if (s.net_num_vars_removed() == 1)
-	out << indent << "1 Removed variable:\n\n";
-      else if (s.net_num_vars_removed() > 1)
-	out << indent << s.net_num_vars_removed()
-	    << " Removed variables:\n\n";
-      string n;
-      vector<var_decl*> sorted_deleted_vars;
-      sort_string_var_ptr_map(priv_->deleted_vars_, sorted_deleted_vars);
-      for (vector<var_decl*>::const_iterator i =
-	     sorted_deleted_vars.begin();
-	   i != sorted_deleted_vars.end();
-	   ++i)
-	{
-	  if (priv_->deleted_variable_is_suppressed(*i))
-	    continue;
-
-	  n = (*i)->get_pretty_representation();
-
-	  out << indent
-	      << "  ";
-	  if (total > large_num)
-	    out << "[D] ";
-	  out << "'"
-	      << n
-	      << "'";
-	  if (context()->show_linkage_names())
-	    {
-	      out << "    {";
-	      show_linkage_name_and_aliases(out, "", *(*i)->get_symbol(),
-					    first_corpus()->get_var_symbol_map());
-	      out << "}";
-	    }
-	  out << "\n";
-	  ++removed;
-	}
-      if (removed)
-	{
-	  out << "\n";
-	  removed = 0;
-	}
-    }
-
-  if (context()->show_added_vars())
-    {
-      if (s.net_num_vars_added() == 1)
-	out << indent << "1 Added variable:\n\n";
-      else if (s.net_num_vars_added() > 1)
-	out << indent << s.net_num_vars_added()
-	    << " Added variables:\n\n";
-      string n;
-      vector<var_decl*> sorted_added_vars;
-      sort_string_var_ptr_map(priv_->added_vars_, sorted_added_vars);
-      for (vector<var_decl*>::const_iterator i =
-	     sorted_added_vars.begin();
-	   i != sorted_added_vars.end();
-	   ++i)
-	{
-	  if (priv_->added_variable_is_suppressed(*i))
-	    continue;
-
-	  n = (*i)->get_pretty_representation();
-
-	  out << indent
-	      << "  ";
-	  if (total > large_num)
-	    out << "[A] ";
-	  out << "'" << n << "'";
-	  if (context()->show_linkage_names())
-	    {
-	      out << "    {";
-	      show_linkage_name_and_aliases(out, "", *(*i)->get_symbol(),
-					    second_corpus()->get_var_symbol_map());
-	      out << "}";
-	    }
-	  out << "\n";
-	  ++added;
-	}
-      if (added)
-	{
-	  out << "\n";
-	  added = 0;
-	}
-    }
-
-  if (context()->show_changed_vars())
-    {
-      size_t num_changed = s.num_vars_changed() - s.num_changed_vars_filtered_out();
-      if (num_changed == 1)
-	out << indent << "1 Changed variable:\n\n";
-      else if (num_changed > 1)
-	out << indent << num_changed
-	    << " Changed variables:\n\n";
-      string n1, n2;
-
-      for (var_diff_sptrs_type::const_iterator i =
-	     priv_->sorted_changed_vars_.begin();
-	   i != priv_->sorted_changed_vars_.end();
-	   ++i)
-	{
-	  diff_sptr diff = *i;
-
-	  if (!diff)
-	    continue;
-
-	  if (!diff->to_be_reported())
-	    continue;
-
-	  n1 = diff->first_subject()->get_pretty_representation();
-	  n2 = diff->second_subject()->get_pretty_representation();
-
-	  out << indent << "  [C]'" << n1 << "' was changed";
-	  if (n1 != n2)
-	    out << " to '" << n2 << "'";
-	  report_loc_info(diff->second_subject(), *context(), out);
-	  out << ":\n";
-	  diff->report(out, indent + "    ");
-	  out << "\n";
-	}
-      if (num_changed)
-	out << "\n";
-    }
-
-  // Report removed function symbols not referenced by any debug info.
-  if (context()->show_symbols_unreferenced_by_debug_info()
-      && priv_->deleted_unrefed_fn_syms_.size())
-    {
-      if (s.net_num_removed_func_syms() == 1)
-	out << indent
-	    << "1 Removed function symbol not referenced by debug info:\n\n";
-      else if (s.net_num_removed_func_syms() > 0)
-	out << indent
-	    << s.net_num_removed_func_syms()
-	    << " Removed function symbols not referenced by debug info:\n\n";
-
-      vector<elf_symbol_sptr> sorted_deleted_unrefed_fn_syms;
-      sort_string_elf_symbol_map(priv_->deleted_unrefed_fn_syms_,
-				 sorted_deleted_unrefed_fn_syms);
-      for (vector<elf_symbol_sptr>::const_iterator i =
-	     sorted_deleted_unrefed_fn_syms.begin();
-	   i != sorted_deleted_unrefed_fn_syms.end();
-	   ++i)
-	{
-	  if (priv_->deleted_unrefed_fn_sym_is_suppressed((*i).get()))
-	    continue;
-
-	  out << indent << "  ";
-	  if (s.net_num_removed_func_syms() > large_num)
-	    out << "[D] ";
-
-	  show_linkage_name_and_aliases(out, "", **i,
-					first_corpus()->get_fun_symbol_map());
-	  out << "\n";
-	}
-      if (sorted_deleted_unrefed_fn_syms.size())
-	out << '\n';
-    }
-
-  // Report added function symbols not referenced by any debug info.
-  if (context()->show_symbols_unreferenced_by_debug_info()
-      && context()->show_added_symbols_unreferenced_by_debug_info()
-      && priv_->added_unrefed_fn_syms_.size())
-    {
-      if (s.net_num_added_func_syms() == 1)
-	out << indent
-	    << "1 Added function symbol not referenced by debug info:\n\n";
-      else if (s.net_num_added_func_syms() > 0)
-	out << indent
-	    << s.net_num_added_func_syms()
-	    << " Added function symbols not referenced by debug info:\n\n";
-
-      vector<elf_symbol_sptr> sorted_added_unrefed_fn_syms;
-      sort_string_elf_symbol_map(priv_->added_unrefed_fn_syms_,
-				 sorted_added_unrefed_fn_syms);
-      for (vector<elf_symbol_sptr>::const_iterator i =
-	     sorted_added_unrefed_fn_syms.begin();
-	   i != sorted_added_unrefed_fn_syms.end();
-	   ++i)
-	{
-	  if (priv_->added_unrefed_fn_sym_is_suppressed((*i).get()))
-	    continue;
-
-	  out << indent << "  ";
-	  if (s.net_num_added_func_syms() > large_num)
-	    out << "[A] ";
-	  show_linkage_name_and_aliases(out, "",
-					**i,
-					second_corpus()->get_fun_symbol_map());
-	  out << "\n";
-	}
-      if (sorted_added_unrefed_fn_syms.size())
-	out << '\n';
-    }
-
-  // Report removed variable symbols not referenced by any debug info.
-  if (context()->show_symbols_unreferenced_by_debug_info()
-      && priv_->deleted_unrefed_var_syms_.size())
-    {
-      if (s.net_num_removed_var_syms() == 1)
-	out << indent
-	    << "1 Removed variable symbol not referenced by debug info:\n\n";
-      else if (s.net_num_removed_var_syms() > 0)
-	out << indent
-	    << s.net_num_removed_var_syms()
-	    << " Removed variable symbols not referenced by debug info:\n\n";
-
-      vector<elf_symbol_sptr> sorted_deleted_unrefed_var_syms;
-      sort_string_elf_symbol_map(priv_->deleted_unrefed_var_syms_,
-				 sorted_deleted_unrefed_var_syms);
-      for (vector<elf_symbol_sptr>::const_iterator i =
-	     sorted_deleted_unrefed_var_syms.begin();
-	   i != sorted_deleted_unrefed_var_syms.end();
-	   ++i)
-	{
-	  if (priv_->deleted_unrefed_var_sym_is_suppressed((*i).get()))
-	    continue;
-
-	  out << indent << "  ";
-	  if (s.num_var_syms_removed() > large_num)
-	    out << "[D] ";
-
-	  show_linkage_name_and_aliases(out, "", **i,
-					first_corpus()->get_fun_symbol_map());
-	  out << "\n";
-	}
-      if (sorted_deleted_unrefed_var_syms.size())
-	out << '\n';
-    }
-
-  // Report added variable symbols not referenced by any debug info.
-  if (context()->show_symbols_unreferenced_by_debug_info()
-      && context()->show_added_symbols_unreferenced_by_debug_info()
-      && priv_->added_unrefed_var_syms_.size())
-    {
-      if (s.net_num_added_var_syms() == 1)
-	out << indent
-	    << "1 Added variable symbol not referenced by debug info:\n\n";
-      else if (s.net_num_added_var_syms() > 0)
-	out << indent
-	    << s.net_num_added_var_syms()
-	    << " Added variable symbols not referenced by debug info:\n\n";
-
-      vector<elf_symbol_sptr> sorted_added_unrefed_var_syms;
-      sort_string_elf_symbol_map(priv_->added_unrefed_var_syms_,
-				 sorted_added_unrefed_var_syms);
-      for (vector<elf_symbol_sptr>::const_iterator i =
-	     sorted_added_unrefed_var_syms.begin();
-	   i != sorted_added_unrefed_var_syms.end();
-	   ++i)
-	{
-	  if (priv_->added_unrefed_var_sym_is_suppressed((*i).get()))
-	    continue;
-
-	  out << indent << "  ";
-	  if (s.net_num_added_var_syms() > large_num)
-	    out << "[A] ";
-	  show_linkage_name_and_aliases(out, "", **i,
-					second_corpus()->get_fun_symbol_map());
-	  out << "\n";
-	}
-      if (sorted_added_unrefed_var_syms.size())
-	out << '\n';
-    }
-
-  priv_->maybe_dump_diff_tree();
+  context()->get_reporter()->report(*this, out, indent);
 }
 
 /// Traverse the diff sub-tree under the current instance corpus_diff.

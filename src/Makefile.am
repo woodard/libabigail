@@ -22,6 +22,10 @@ abg-corpus-priv.h			\
 abg-corpus.cc				\
 abg-diff-utils.cc			\
 abg-comparison.cc			\
+abg-comparison-priv.h			\
+abg-reporter-priv.h			\
+abg-reporter-priv.cc			\
+abg-default-reporter.cc			\
 abg-suppression-priv.h			\
 abg-suppression.cc			\
 abg-comp-filter.cc			\

@@ -30,6 +30,7 @@
 #include <ostream>
 #include "abg-corpus.h"
 #include "abg-diff-utils.h"
+#include "abg-reporter.h"
 
 namespace abigail
 {
@@ -481,6 +482,12 @@ public:
   const corpus_sptr
   get_second_corpus() const;
 
+  reporter_base_sptr
+  get_reporter() const;
+
+  void
+  set_reporter(reporter_base_sptr&);
+
   diff_sptr
   get_canonical_diff_for(const type_or_decl_base_sptr first,
 			 const type_or_decl_base_sptr second) const;
@@ -850,7 +857,7 @@ compute_diff(const type_base_sptr,
 /// The base class of diff between types.
 class type_diff_base : public diff
 {
-  class priv;
+  struct priv;
   typedef shared_ptr<priv> priv_sptr;
 
   priv_sptr priv_;
@@ -873,7 +880,7 @@ public:
 /// The base class of diff between decls.
 class decl_diff_base : public diff
 {
-  class priv;
+  struct priv;
   typedef shared_ptr<priv> priv_sptr;
 
   priv_sptr priv_;
@@ -1418,6 +1425,8 @@ public:
 
   virtual void
   chain_into_hierarchy();
+
+  friend class default_reporter;
 }; // end class_or_union_diff;
 
 /// This type abstracts changes for a class_decl.
@@ -1494,6 +1503,8 @@ public:
   compute_diff(const class_decl_sptr	first,
 	       const class_decl_sptr	second,
 	       diff_context_sptr	ctxt);
+
+  friend class default_reporter;
 };// end class_diff
 
 class_diff_sptr
@@ -1704,6 +1715,8 @@ public:
 
   virtual void
   chain_into_hierarchy();
+
+  friend class default_reporter;
 };// end class scope_diff
 
 scope_diff_sptr
@@ -1836,6 +1849,8 @@ public:
 
   virtual void
   chain_into_hierarchy();
+
+  friend class default_reporter;
 };// end class function_type_diff
 
 function_type_diff_sptr
@@ -2175,6 +2190,8 @@ public:
 
   friend void
   apply_suppressions(const corpus_diff* diff_tree);
+
+  friend class default_reporter;
 }; // end class corpus_diff
 
 corpus_diff_sptr
@@ -2194,7 +2211,7 @@ compute_diff(const corpus_group_sptr&,
 /// corpus_diff::apply_filters_and_suppressions_before_reporting()
 class corpus_diff::diff_stats
 {
-  class priv;
+  struct priv;
   typedef shared_ptr<priv> priv_sptr;
 
   priv_sptr priv_;
