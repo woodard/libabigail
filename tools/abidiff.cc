@@ -85,6 +85,7 @@ struct options
   bool			no_default_supprs;
   bool			no_arch;
   bool			no_corpus;
+  bool			leaf_changes_only;
   bool			show_relative_offset_changes;
   bool			show_stats_only;
   bool			show_symtabs;
@@ -103,6 +104,7 @@ struct options
   bool			show_harmless_changes;
   bool			show_redundant_changes;
   bool			show_symbols_not_referenced_by_debug_info;
+  bool			show_impacted_interfaces;
   bool			dump_diff_tree;
   bool			show_stats;
   bool			do_log;
@@ -118,6 +120,7 @@ struct options
       no_default_supprs(),
       no_arch(),
       no_corpus(),
+      leaf_changes_only(),
       show_relative_offset_changes(true),
       show_stats_only(),
       show_symtabs(),
@@ -136,6 +139,7 @@ struct options
       show_harmless_changes(),
       show_redundant_changes(),
       show_symbols_not_referenced_by_debug_info(true),
+      show_impacted_interfaces(),
       dump_diff_tree(),
       show_stats(),
       do_log()
@@ -166,6 +170,8 @@ display_usage(const string& prog_name, ostream& out)
        "default suppression specification\n"
     << " --no-architecture  do not take architecture in account\n"
     << " --no-corpus-path  do not take the path to the corpora into account\n"
+    << " --leaf-changes-only|-l  only show leaf changes, "
+    "so no change impact analysis\n"
     << " --deleted-fns  display deleted public functions\n"
     << " --changed-fns  display changed public functions\n"
     << " --added-fns  display added public functions\n"
@@ -192,6 +198,8 @@ display_usage(const string& prog_name, ostream& out)
     << " --redundant  display redundant changes\n"
     << " --no-redundant  do not display redundant changes "
     "(this is the default)\n"
+    << " --impacted-interfaces  do not display interfaces impacted"
+    " by leaf changes\n"
     << " --dump-diff-tree  emit a debug dump of the internal diff tree to "
     "the error output stream\n"
     <<  " --stats  show statistics about various internal stuff\n"
@@ -321,6 +329,9 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.no_arch = true;
       else if (!strcmp(argv[i], "--no-corpus-path"))
 	opts.no_corpus = true;
+      else if (!strcmp(argv[i], "--leaf-changes-only")
+	       ||!strcmp(argv[i], "-l"))
+	opts.leaf_changes_only = true;
       else if (!strcmp(argv[i], "--deleted-fns"))
 	{
 	  opts.show_deleted_fns = true;
@@ -484,6 +495,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.show_redundant_changes = true;
       else if (!strcmp(argv[i], "--no-redundant"))
 	opts.show_redundant_changes = false;
+      else if (!strcmp(argv[i], "--impacted-interfaces"))
+	opts.show_impacted_interfaces = true;
       else if (!strcmp(argv[i], "--dump-diff-tree"))
 	opts.dump_diff_tree = true;
       else if (!strcmp(argv[i], "--stats"))
@@ -577,6 +590,7 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
 {
   ctxt->default_output_stream(&cout);
   ctxt->error_output_stream(&cerr);
+  ctxt->show_leaf_changes_only(opts.leaf_changes_only);
   ctxt->show_relative_offset_changes(opts.show_relative_offset_changes);
   ctxt->show_stats_only(opts.show_stats_only);
   ctxt->show_deleted_fns(opts.show_all_fns || opts.show_deleted_fns);
@@ -592,6 +606,7 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
     (opts.show_symbols_not_referenced_by_debug_info);
   ctxt->show_added_symbols_unreferenced_by_debug_info
     (opts.show_symbols_not_referenced_by_debug_info && opts.show_added_syms);
+  ctxt->show_impacted_interfaces(opts.show_impacted_interfaces);
 
   if (!opts.show_harmless_changes)
       ctxt->switch_categories_off(get_default_harmless_categories_bitmap());

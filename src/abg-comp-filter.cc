@@ -362,9 +362,17 @@ is_compatible_change(const decl_base_sptr& d1, const decl_base_sptr& d2)
 ///
 /// @return true if d1 and d2 have different names.
 static bool
-decl_name_changed(const decl_base_sptr& d1, const decl_base_sptr& d2)
+decl_name_changed(const type_or_decl_base* a1, const type_or_decl_base *a2)
 {
   string d1_name, d2_name;
+
+  const decl_base *d1 = dynamic_cast<const decl_base*>(a1);
+  if (d1 == 0)
+    return false;
+
+  const decl_base *d2 = dynamic_cast<const decl_base*>(a2);
+  if (d2 == 0)
+    return false;
 
   if (d1)
     d1_name = d1->get_qualified_name();
@@ -373,6 +381,29 @@ decl_name_changed(const decl_base_sptr& d1, const decl_base_sptr& d2)
 
   return d1_name != d2_name;
 }
+
+/// Test if two decls have different names.
+///
+/// @param d1 the first declaration to consider.
+///
+/// @param d2 the second declaration to consider.
+///
+/// @return true if d1 and d2 have different names.
+static bool
+decl_name_changed(const type_or_decl_base_sptr& d1,
+		  const type_or_decl_base_sptr& d2)
+{return decl_name_changed(d1.get(), d2.get());}
+
+/// Test if a diff nodes carries a changes in which two decls have
+/// different names.
+///
+/// @param d the diff node to consider.
+///
+/// @return true iff d carries a changes in which two decls have
+/// different names.
+static bool
+decl_name_changed(const diff *d)
+{return decl_name_changed(d->first_subject(), d->second_subject());}
 
 /// Test if two decls represents a harmless name change.
 ///
@@ -776,6 +807,20 @@ has_class_decl_only_def_change(const diff *diff)
   return has_class_decl_only_def_change(f, s);
 }
 
+/// Test if a diff node carries a basic type name change.
+///
+/// @param d the diff node to consider.
+///
+/// @return true iff the diff node carries a basic type name change.
+bool
+has_basic_type_name_change(const diff *d)
+{
+  if (const type_decl_diff *dif = is_diff_of_basic_type(d))
+    if (decl_name_changed(dif))
+      return true;
+
+  return false;
+}
 
 /// Test if an enum_diff carries an enumerator insertion.
 ///

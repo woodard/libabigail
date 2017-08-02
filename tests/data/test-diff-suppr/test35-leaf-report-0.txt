@@ -1,0 +1,11 @@
+Leaf changes summary: 1 artifact changed (1 filtered out)
+Added/removed functions summary: 0 Removed, 0 Added function
+Added/removed variables summary: 0 Removed, 0 Added variable
+
+'struct leaf' changed:
+  type size changed from 32 to 64 bits
+  1 data member insertion:
+    'char leaf::m1', at offset 32 (in bits) at test35-leaf-v1.cc:8:1
+
+  one impacted interface:
+    function void fn(C&)

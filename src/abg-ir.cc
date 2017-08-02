@@ -3800,6 +3800,20 @@ uint64_t
 get_data_member_offset(const decl_base_sptr d)
 {return get_data_member_offset(dynamic_pointer_cast<var_decl>(d));}
 
+/// Get the size of a given variable.
+///
+/// @param v the variable to consider.
+///
+/// @return the size of variable @p v.
+uint64_t
+get_var_size_in_bits(const var_decl_sptr& v)
+{
+  type_base_sptr t = v->get_type();
+  assert(t);
+
+  return t->get_size_in_bits();
+}
+
 /// Set a flag saying if a data member is laid out.
 ///
 /// @param m the data member to consider.
@@ -5278,13 +5292,15 @@ get_string_representation_of_cv_quals(const qualified_type_def::CV cv_quals)
 ///
 /// @return the name of @p tod.
 string
-get_name(const type_or_decl_base_sptr& tod, bool qualified)
+get_name(const type_or_decl_base *tod, bool qualified)
 {
   string result;
 
-  if (type_base_sptr t = dynamic_pointer_cast<type_base>(tod))
+  type_or_decl_base* a = const_cast<type_or_decl_base*>(tod);
+
+  if (type_base* t = dynamic_cast<type_base*>(a))
     result = get_type_name(t, qualified);
-  else if (decl_base_sptr d = dynamic_pointer_cast<decl_base>(tod))
+  else if (decl_base *d = dynamic_cast<decl_base*>(a))
     {
       if (qualified)
 	result = d->get_qualified_name();
@@ -5297,6 +5313,19 @@ get_name(const type_or_decl_base_sptr& tod, bool qualified)
 
   return result;
 }
+
+/// Build and return a copy of the name of an ABI artifact that is
+/// either a type of a decl.
+///
+/// @param tod the ABI artifact to get the name for.
+///
+/// @param qualified if yes, return the qualified name of @p tod;
+/// otherwise, return the non-qualified name;
+///
+/// @return the name of @p tod.
+string
+get_name(const type_or_decl_base_sptr& tod, bool qualified)
+{return get_name(tod.get(), qualified);}
 
 /// Build and return a qualified name from a name and its scope.
 ///
@@ -19583,6 +19612,44 @@ hash_type_or_decl(const type_or_decl_base *tod)
 size_t
 hash_type_or_decl(const type_or_decl_base_sptr& tod)
 {return hash_type_or_decl(tod.get());}
+
+/// Test if the pretty representation of a given @ref function_decl is
+/// lexicographically less then the pretty representation of another
+/// @ref function_decl.
+///
+/// @param f the first @ref function_decl to consider for comparison.
+///
+/// @param s the second @ref function_decl to consider for comparison.
+///
+/// @return true iff the pretty representation of @p f is
+/// lexicographically less than the pretty representation of @p s.
+bool
+function_decl_is_less_than(const function_decl &f, const function_decl &s)
+{
+  string fr = f.get_pretty_representation_of_declarator(),
+    sr = s.get_pretty_representation_of_declarator();
+
+  if (fr != sr)
+    return fr < sr;
+
+  fr = f.get_pretty_representation(),
+		sr = s.get_pretty_representation();
+
+  if (fr != sr)
+    return fr < sr;
+
+  if (f.get_symbol())
+    fr = f.get_symbol()->get_id_string();
+  else if (!f.get_linkage_name().empty())
+    fr = f.get_linkage_name();
+
+  if (s.get_symbol())
+    sr = s.get_symbol()->get_id_string();
+  else if (!s.get_linkage_name().empty())
+    sr = s.get_linkage_name();
+
+  return fr < sr;
+}
 
 bool
 ir_traversable_base::traverse(ir_node_visitor&)

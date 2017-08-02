@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2016 Red Hat, Inc.
+// Copyright (C) 2013-2017 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -1677,6 +1677,26 @@ InOutSpec in_out_specs[] =
     "--no-default-suppression",
     "data/test-diff-suppr/test34-report-0.txt",
     "output/test-diff-suppr/test34-report-0.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest35-leaf-v0.so",
+    "data/test-diff-suppr/libtest35-leaf-v1.so",
+    "",
+    "",
+    "data/test-diff-suppr/test35-leaf.suppr",
+    "--no-default-suppression --leaf-changes-only --impacted-interfaces",
+    "data/test-diff-suppr/test35-leaf-report-0.txt",
+    "output/test-diff-suppr/test35-leaf-report-0.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest36-leaf-v0.so",
+    "data/test-diff-suppr/libtest36-leaf-v1.so",
+    "",
+    "",
+    "",
+    "--no-default-suppression --leaf-changes-only --impacted-interfaces",
+    "data/test-diff-suppr/test36-leaf-report-0.txt",
+    "output/test-diff-suppr/test36-leaf-report-0.txt"
   },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}

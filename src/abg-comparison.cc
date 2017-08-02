@@ -450,6 +450,27 @@ sort_string_parm_map(const string_parm_map& map,
   std::sort(sorted.begin(), sorted.end(), comp);
 }
 
+/// Sort the set of ABI artifacts contained in a @ref
+/// artifact_sptr_set_type.
+///
+/// @param set the set of ABI artifacts to sort.
+///
+/// @param output parameter the vector containing the sorted ABI
+/// artifacts.
+void
+sort_artifacts_set(const artifact_sptr_set_type& set,
+		   vector<type_or_decl_base_sptr>& sorted)
+{
+
+  for (artifact_sptr_set_type::const_iterator it = set.begin();
+       it != set.end();
+       ++it)
+    sorted.push_back(*it);
+
+  type_or_decl_base_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
 /// Return the first underlying type that is not a qualified type.
 /// @param t the qualified type to consider.
 ///
@@ -467,6 +488,36 @@ get_leaf_type(qualified_type_def_sptr t)
   if (!qut)
     return ut;
   return get_leaf_type(qut);
+}
+
+/// Tests if a given diff node is to represent the changes between two
+/// gobal decls.
+///
+/// @param d the diff node to consider.
+///
+/// @return true iff @p d represents the changes between two global
+/// decls.
+bool
+is_diff_of_global_decls(const diff* d)
+{
+  assert(d != 0);
+
+  if (d == 0)
+    return false;
+
+  type_or_decl_base_sptr first = d->first_subject();
+  assert(first);
+
+  type_or_decl_base_sptr second = d->first_subject();
+  assert(second);
+
+  if (decl_base_sptr decl = is_decl(first))
+    if (is_at_global_scope(decl))
+      if ((decl = is_decl(second)))
+	if (is_at_global_scope(decl))
+	  return true;
+
+  return false;
 }
 
 // -----------------------------------------
@@ -522,15 +573,55 @@ const class_diff*
 is_class_diff(const diff* diff)
 {return dynamic_cast<const class_diff*>(diff);}
 
+/// Test if a diff node is a @ref enum_diff node.
+///
+/// @param diff the diff node to consider.
+///
+/// @return a non-nil pointer to ad @ref enum_diff node iff @p diff is
+/// a @ref enum_diff node.
+const enum_diff*
+is_enum_diff(const diff *diff)
+{return dynamic_cast<const enum_diff*>(diff);}
+
 /// Test if a diff node is a @ref union_diff node.
 ///
 /// @param diff the diff node to consider.
 ///
 /// @return a non-nil pointer to a @ref union_diff iff @p diff is a
-/// @ref class_diff node.
+/// @ref union_diff node.
 const union_diff*
 is_union_diff(const diff* diff)
 {return dynamic_cast<const union_diff*>(diff);}
+
+/// Test if a diff node is a @ref typedef_diff node.
+///
+/// @param diff the diff node to consider.
+///
+/// @return a non-nil pointer to a @ref typedef_diff iff @p diff is a
+/// @ref typedef_diff node.
+const typedef_diff*
+is_typedef_diff(const diff *diff)
+{return dynamic_cast<const typedef_diff*>(diff);}
+
+/// Test if a diff node is a @ref array_diff node.
+///
+/// @param diff the diff node to consider.
+///
+/// @return a non-nil pointer to a @ref array_diff iff @p diff is a
+/// @ref array_diff node.
+const array_diff*
+is_array_diff(const diff* diff)
+{return dynamic_cast<const array_diff*>(diff);}
+
+/// Test if a diff node is a @ref function_type_diff node.
+///
+/// @param diff the diff node to consider.
+///
+/// @return a non-nil pointer to a @ref function_type_diff iff @p diff is a
+/// @ref function_type_diff node.
+const function_type_diff*
+is_function_type_diff(const diff* diff)
+{return dynamic_cast<const function_type_diff*>(diff);}
 
 /// Test if a diff node is about differences between variables.
 ///
@@ -618,6 +709,28 @@ is_fn_parm_diff(const diff* diff)
 const base_diff*
 is_base_diff(const diff* diff)
 {return dynamic_cast<const base_diff*>(diff);}
+
+/// Test if a diff node is about differences between two diff nodes of
+/// different kinds.
+///
+/// @param diff the diff node to consider.
+///
+/// @return the @p diff converted into an instance of @ref
+/// distintc_diff iff @p diff is about differences between two diff
+/// nodes of different kinds.
+const distinct_diff*
+is_distinct_diff(const diff *diff)
+{return dynamic_cast<const distinct_diff*>(diff);}
+
+/// Test if a diff node is a @ref corpus_diff node.
+///
+/// @param diff the diff node to consider.
+///
+/// @return a non-nil pointer to a @ref corpus_diff iff @p diff is a
+/// @ref corpus_diff node.
+const corpus_diff*
+is_corpus_diff(const diff* diff)
+{return dynamic_cast<const corpus_diff*>(diff);}
 
 /// Test if a diff node is a child node of a function parameter diff node.
 ///
@@ -711,42 +824,61 @@ diff_context::diff_context()
   // add_diff_filter(f);
 }
 
-/// Set the corpora that are being compared into the context, so that
-/// some lower-level routines can have a chance to have access to
-/// them.
+/// Set the corpus diff relevant to this context.
 ///
-/// @param corp1 the first corpus involved in the comparison.
-///
-/// @param corp2 the second corpus involved in the comparison.
+/// @param d the corpus_diff we are interested in.
 void
-diff_context::set_corpora(const corpus_sptr corp1,
-			  const corpus_sptr corp2)
+diff_context::set_corpus_diff(const corpus_diff_sptr& d)
+{priv_->corpus_diff_ = d;}
+
+/// Get the corpus diff for the current context.
+///
+/// @return the corpus diff of this context.
+const corpus_diff_sptr&
+diff_context::get_corpus_diff() const
+{return priv_->corpus_diff_;}
+
+/// Getter for the first corpus of the corpus diff of the current context.
+///
+/// @return the first corpus of the corpus diff of the current
+/// context, if no corpus diff is associated to the context.
+corpus_sptr
+diff_context::get_first_corpus() const
 {
-  priv_->first_corpus_ = corp1;
-  priv_->second_corpus_ = corp2;
+  if (priv_->corpus_diff_)
+    return priv_->corpus_diff_->first_corpus();
+  return corpus_sptr();
 }
 
-/// Get the first corpus of the comparison, from the current context.
-///
-/// @return the first corpus of the comparison.
-const corpus_sptr
-diff_context::get_first_corpus() const
-{return priv_->first_corpus_;}
-
-/// Get the second corpus of the comparison, from the current context.
-///
-/// @return the second corpus of the comparison, from the current
+/// Getter for the second corpus of the corpus diff of the current
 /// context.
-const corpus_sptr
+///
+/// @return the second corpus of the corpus diff of the current
+/// context, if no corpus diff is associated to the context.
+corpus_sptr
 diff_context::get_second_corpus() const
-{return priv_->second_corpus_;}
+{
+  if (priv_->corpus_diff_)
+    return priv_->corpus_diff_->second_corpus();
+  return corpus_sptr();
+}
 
 /// Getter of the reporter to be used in this context.
 ///
 /// @return the reporter to be used in this context.
 reporter_base_sptr
 diff_context::get_reporter() const
-{return priv_->reporter_;}
+{
+  if (!priv_->reporter_)
+    {
+      if (show_leaf_changes_only())
+	priv_->reporter_.reset(new leaf_reporter);
+      else
+	priv_->reporter_.reset(new default_reporter);
+    }
+  assert(priv_->reporter_);
+  return priv_->reporter_;
+}
 
 /// Setter of the reporter to be used in this context.
 ///
@@ -1103,9 +1235,20 @@ diff_context::get_last_visited_diff_of_class_of_equivalence(const diff* d)
 ///
 /// @param f if true then during the traversing of a diff nodes tree
 /// each node is visited at most once.
+///
 void
 diff_context::forbid_visiting_a_node_twice(bool f)
 {priv_->forbid_visiting_a_node_twice_ = f;}
+
+/// This function sets a flag os that if @ref
+///  forbid_visiting_a_node_twice() returns true, then each time the
+///  node visitor starts visiting a new interface, it resets the
+///  memory the systems has about already visited node.
+///
+///  @param f the flag to set.
+void
+diff_context::forbid_visiting_a_node_twice_per_interface(bool f)
+{priv_->reset_visited_diffs_for_each_interface_ = f;}
 
 /// Return a flag that, if true, then during the traversing of a diff
 /// nodes tree each node is visited at most once.
@@ -1114,6 +1257,22 @@ diff_context::forbid_visiting_a_node_twice(bool f)
 bool
 diff_context::visiting_a_node_twice_is_forbidden() const
 {return priv_->forbid_visiting_a_node_twice_;}
+
+/// Return a flag that, if true, then during the traversing of a diff
+/// nodes tree each node is visited at most once, while visiting the
+/// diff tree underneath a given interface (public function or
+/// variable).  Each time a new interface is visited, the nodes
+/// visited while visiting previous interfaces can be visited again.
+///
+/// @return the boolean flag.
+///
+/// @return the boolean flag.
+bool
+diff_context::visiting_a_node_twice_is_forbidden_per_interface() const
+{
+  return (priv_->forbid_visiting_a_node_twice_
+	  && priv_->reset_visited_diffs_for_each_interface_);
+}
 
 /// Getter for the diff tree nodes filters to apply to diff sub-trees.
 ///
@@ -1211,6 +1370,31 @@ diff_context::add_suppressions(const suppressions_type& supprs)
   priv_->suppressions_.insert(priv_->suppressions_.end(),
 			      supprs.begin(), supprs.end());
 }
+
+/// Set the flag that indicates if the diff using this context should
+/// show only leaf changes or not.
+///
+/// @param f the new value of the flag that indicates if the diff
+/// using this context should show only leaf changes or not.
+void
+diff_context::show_leaf_changes_only(bool f)
+{
+  // This function can be called only if the reporter hasn't yet been
+  // created.  Once it's been created, we are supposed to live with
+  // it.
+  assert(priv_->reporter_ == 0);
+
+  priv_->leaf_changes_only_ = f;
+}
+
+/// Get the flag that indicates if the diff using this context should
+/// show only leaf changes or not.
+///
+/// @return the value of the flag that indicates if the diff using
+/// this context should show only leaf changes or not.
+bool
+diff_context::show_leaf_changes_only() const
+{return priv_->leaf_changes_only_;}
 
 /// Set a flag saying if offset changes should be reported in a
 /// relative way.  That is, if the report should say how of many bits
@@ -1429,6 +1613,28 @@ diff_context::show_added_symbols_unreferenced_by_debug_info() const
 void
 diff_context::show_added_symbols_unreferenced_by_debug_info(bool f)
 {priv_->show_added_syms_unreferenced_by_di_ = f;}
+
+/// Getter of the flag that indicates if the leaf reporter should
+/// display a summary of the interfaces impacted by a given leaf
+/// change or not.
+///
+/// @return the flag that indicates if the leaf reporter should
+/// display a summary of the interfaces impacted by a given leaf
+/// change or not.
+bool
+diff_context::show_impacted_interfaces() const
+{return priv_->show_impacted_interfaces_;}
+
+/// Setter of the flag that indicates if the leaf reporter should
+/// display a summary of the interfaces impacted by a given leaf
+/// change or not.
+///
+/// @param f the new value of the flag that indicates if the leaf
+/// reporter should display a summary of the interfaces impacted by a
+/// given leaf change or not.
+void
+diff_context::show_impacted_interfaces(bool f)
+{priv_->show_impacted_interfaces_ = f;}
 
 /// Setter for the default output stream used by code of the
 /// comparison engine.  By default the default output stream is a NULL
@@ -2908,6 +3114,7 @@ compute_diff(const var_decl_sptr	first,
 
   var_diff_sptr d(new var_diff(first, second, diff_sptr(), ctxt));
   ctxt->initialize_canonical_diff(d);
+
   return d;
 }
 
@@ -4992,7 +5199,7 @@ compute_diff(const class_decl_sptr	first,
   // memory in cases where the equivalence class of 'changes' is huge.
   //
   // But if changes is its own canonical instance, then we initialize
-  // its private data properly.
+  // its private data properly
   if (is_class_diff(changes->get_canonical_diff()) == changes.get())
     // changes is its own canonical instance, so it gets a brand new
     // private data.
@@ -5344,7 +5551,7 @@ compute_diff(const union_decl_sptr	first,
   //
   // But if changes is its own canonical instance, then we initialize
   // its private data properly.
-  if (is_union_diff(changes->get_canonical_diff()) == changes.get())
+  if (is_union_diff(changes->get_canonical_diff()) ==  changes.get())
     // changes is its own canonical instance, so it gets a brand new
     // private data.
     changes->allocate_priv_data();
@@ -6901,6 +7108,279 @@ compute_diff(const translation_unit_sptr	first,
 
 // </translation_unit_diff stuff>
 
+// <diff_maps stuff>
+
+/// The private data of the @ref diff_maps type.
+struct diff_maps::priv
+{
+  string_diff_ptr_map type_decl_diff_map_;
+  string_diff_ptr_map enum_diff_map_;
+  string_diff_ptr_map class_diff_map_;
+  string_diff_ptr_map union_diff_map_;
+  string_diff_ptr_map typedef_diff_map_;
+  string_diff_ptr_map array_diff_map_;
+  string_diff_ptr_map reference_diff_map_;
+  string_diff_ptr_map function_type_diff_map_;
+  string_diff_ptr_map function_decl_diff_map_;
+  string_diff_ptr_map var_decl_diff_map_;
+  string_diff_ptr_map distinct_diff_map_;
+  string_diff_ptr_map fn_parm_diff_map_;
+  diff_artifact_set_map_type impacted_artifacts_map_;
+}; // end struct diff_maps::priv
+
+/// Default constructor of the @ref diff_maps type.
+diff_maps::diff_maps()
+  : priv_(new diff_maps::priv())
+{}
+
+/// Getter of the map that contains basic type diffs.
+///
+/// @return the map that contains basic type diffs.
+const string_diff_ptr_map&
+diff_maps::get_type_decl_diff_map() const
+{return priv_->type_decl_diff_map_;}
+
+/// Getter of the map that contains basic type diffs.
+///
+/// @return the map that contains basic type diffs.
+string_diff_ptr_map&
+diff_maps::get_type_decl_diff_map()
+{return priv_->type_decl_diff_map_;}
+
+/// Getter of the map that contains enum type diffs.
+///
+/// @return the map that contains enum type diffs.
+const string_diff_ptr_map&
+diff_maps::get_enum_diff_map() const
+{return priv_->enum_diff_map_;}
+
+/// Getter of the map that contains enum type diffs.
+///
+/// @return the map that contains enum type diffs.
+string_diff_ptr_map&
+diff_maps::get_enum_diff_map()
+{return priv_->enum_diff_map_;}
+
+/// Getter of the map that contains class type diffs.
+///
+/// @return the map that contains class type diffs.
+const string_diff_ptr_map&
+diff_maps::get_class_diff_map() const
+{return priv_->class_diff_map_;}
+
+/// Getter of the map that contains class type diffs.
+///
+/// @return the map that contains class type diffs.
+string_diff_ptr_map&
+diff_maps::get_class_diff_map()
+{return priv_->class_diff_map_;}
+
+/// Getter of the map that contains union type diffs.
+///
+/// @return the map that contains union type diffs.
+const string_diff_ptr_map&
+diff_maps::get_union_diff_map() const
+{return priv_->union_diff_map_;}
+
+/// Getter of the map that contains union type diffs.
+///
+/// @return the map that contains union type diffs.
+string_diff_ptr_map&
+diff_maps::get_union_diff_map()
+{return priv_->union_diff_map_;}
+
+/// Getter of the map that contains typedef type diffs.
+///
+/// @return the map that contains typedef type diffs.
+const string_diff_ptr_map&
+diff_maps::get_typedef_diff_map() const
+{return priv_->typedef_diff_map_;}
+
+/// Getter of the map that contains typedef type diffs.
+///
+/// @return the map that contains typedef type diffs.
+string_diff_ptr_map&
+diff_maps::get_typedef_diff_map()
+{return priv_->typedef_diff_map_;}
+
+/// Getter of the map that contains array type diffs.
+///
+/// @return the map that contains array type diffs.
+const string_diff_ptr_map&
+diff_maps::get_array_diff_map() const
+{return priv_->array_diff_map_;}
+
+/// Getter of the map that contains array type diffs.
+///
+/// @return the map that contains array type diffs.
+string_diff_ptr_map&
+diff_maps::get_array_diff_map()
+{return priv_->array_diff_map_;}
+
+/// Getter of the map that contains reference type diffs.
+///
+/// @return the map that contains reference type diffs.
+const string_diff_ptr_map&
+diff_maps::get_reference_diff_map() const
+{return priv_->reference_diff_map_;}
+
+/// Getter of the map that contains reference type diffs.
+///
+/// @return the map that contains reference type diffs.
+string_diff_ptr_map&
+diff_maps::get_reference_diff_map()
+{{return priv_->reference_diff_map_;}}
+
+/// Getter of the map that contains function parameter diffs.
+///
+/// @return the map that contains function parameter diffs.
+const string_diff_ptr_map&
+diff_maps::get_fn_parm_diff_map() const
+{return priv_->fn_parm_diff_map_;}
+
+/// Getter of the map that contains function parameter diffs.
+///
+/// @return the map that contains function parameter diffs.
+string_diff_ptr_map&
+diff_maps::get_fn_parm_diff_map()
+{return priv_->fn_parm_diff_map_;}
+
+/// Getter of the map that contains function type diffs.
+///
+/// @return the map that contains function type diffs.
+const string_diff_ptr_map&
+diff_maps::get_function_type_diff_map() const
+{return priv_->function_type_diff_map_;}
+
+/// Getter of the map that contains function type diffs.
+///
+/// @return the map that contains function type diffs.
+string_diff_ptr_map&
+diff_maps::get_function_type_diff_map()
+{return priv_->function_type_diff_map_;}
+
+/// Getter of the map that contains function decl diffs.
+///
+/// @return the map that contains function decl diffs.
+const string_diff_ptr_map&
+diff_maps::get_function_decl_diff_map() const
+{return priv_->function_decl_diff_map_;}
+
+/// Getter of the map that contains function decl diffs.
+///
+/// @return the map that contains function decl diffs.
+string_diff_ptr_map&
+diff_maps::get_function_decl_diff_map()
+{return priv_->function_decl_diff_map_;}
+
+/// Getter of the map that contains var decl diffs.
+///
+/// @return the map that contains var decl diffs.
+const string_diff_ptr_map&
+diff_maps::get_var_decl_diff_map() const
+{return priv_->var_decl_diff_map_;}
+
+/// Getter of the map that contains var decl diffs.
+///
+/// @return the map that contains var decl diffs.
+string_diff_ptr_map&
+diff_maps::get_var_decl_diff_map()
+{return priv_->var_decl_diff_map_;}
+
+/// Getter of the map that contains distinct diffs.
+///
+/// @return the map that contains distinct diffs.
+const string_diff_ptr_map&
+diff_maps::get_distinct_diff_map() const
+{return priv_->distinct_diff_map_;}
+
+/// Getter of the map that contains distinct diffs.
+///
+/// @return the map that contains distinct diffs.
+string_diff_ptr_map&
+diff_maps::get_distinct_diff_map()
+{return priv_->distinct_diff_map_;}
+
+/// Insert a new diff node into the current instance of @ref diff_maps.
+///
+/// @param dif the new diff node to insert into the @ref diff_maps.
+///
+/// @return true iff the diff node could be added to the current
+/// instance of @ref diff_maps.
+bool
+diff_maps::insert_diff_node(const diff *dif,
+			    const type_or_decl_base_sptr& impacted_iface)
+{
+  string n = get_pretty_representation(dif->first_subject(),
+				       /*internal=*/true);
+  if (const type_decl_diff *d = is_diff_of_basic_type(dif))
+    get_type_decl_diff_map()[n] = const_cast<type_decl_diff*>(d);
+  else if (const enum_diff *d = is_enum_diff(dif))
+    get_enum_diff_map()[n] = const_cast<enum_diff*>(d);
+  else if (const class_diff *d = is_class_diff(dif))
+      get_class_diff_map()[n] = const_cast<class_diff*>(d);
+  else if (const union_diff *d = is_union_diff(dif))
+    get_union_diff_map()[n] = const_cast<union_diff*>(d);
+  else if (const typedef_diff *d = is_typedef_diff(dif))
+    get_typedef_diff_map()[n] = const_cast<typedef_diff*>(d);
+  else if (const array_diff *d = is_array_diff(dif))
+      get_array_diff_map()[n] = const_cast<array_diff*>(d);
+  else if (const reference_diff *d = is_reference_diff(dif))
+    get_reference_diff_map()[n] = const_cast<reference_diff*>(d);
+  else if (const fn_parm_diff *d = is_fn_parm_diff(dif))
+    get_fn_parm_diff_map()[n] = const_cast<fn_parm_diff*>(d);
+  else if (const function_type_diff *d = is_function_type_diff(dif))
+    get_function_type_diff_map()[n] = const_cast<function_type_diff*>(d);
+  else if (const var_diff *d = is_var_diff(dif))
+    get_var_decl_diff_map()[n] = const_cast<var_diff*>(d);
+  else if (const function_decl_diff *d = is_function_decl_diff(dif))
+    get_function_decl_diff_map()[n] = const_cast<function_decl_diff*>(d);
+  else if (const distinct_diff *d = is_distinct_diff(dif))
+    get_distinct_diff_map()[n] = const_cast<distinct_diff*>(d);
+  else if (is_base_diff(dif))
+    // we silently drop this case.
+    return true;
+  else
+      ABG_ASSERT_NOT_REACHED;
+
+  // Update the map that associate the interface that is impacted by
+  // this diff, to this diff node.
+
+  diff_artifact_set_map_type::iterator i =
+    priv_->impacted_artifacts_map_.find(dif);
+
+  if (i == priv_->impacted_artifacts_map_.end())
+    {
+      artifact_sptr_set_type set;
+      set.insert(impacted_iface);
+      priv_->impacted_artifacts_map_[dif] = set;
+    }
+  else
+    i->second.insert(impacted_iface);
+
+  return true;
+}
+
+/// Lookup the interfaces that are impacted by a given leaf diff node.
+///
+/// @param d the diff node to consider.
+///
+/// @return the set of artifacts impacted by @p d.
+artifact_sptr_set_type*
+diff_maps::lookup_impacted_interfaces(const diff *d) const
+{
+  diff_artifact_set_map_type::iterator i =
+    priv_->impacted_artifacts_map_.find(d);
+
+  if (i == priv_->impacted_artifacts_map_.end())
+    return 0;
+
+  return &i->second;
+}
+
+//
+// </diff_maps stuff>
+
 /// Constructor for the @ref diff_stat type.
 ///
 /// @param ctxt the context of the corpus diff.  Note that this
@@ -7445,6 +7925,49 @@ corpus_diff::diff_stats::net_num_added_var_syms() const
 {
   assert(num_var_syms_added() >= num_added_var_syms_filtered_out());
   return num_var_syms_added() - num_added_var_syms_filtered_out();
+}
+
+/// Getter of the number of leaf type change diff nodes.
+///
+/// @return the number of leaf type change diff nodes.
+size_t
+corpus_diff::diff_stats::num_leaf_changes() const
+{return priv_->num_leaf_changes;}
+
+/// Setter of the number of leaf type change diff nodes.
+///
+/// @param n the new number of leaf type change diff nodes.
+void
+corpus_diff::diff_stats::num_leaf_changes(size_t n)
+{priv_->num_leaf_changes = n;}
+
+/// Getter of the number of leaf type change diff nodes that have been
+/// filtered out.
+///
+/// @return the number of leaf type change diff nodes that have been
+size_t
+corpus_diff::diff_stats::num_leaf_changes_filtered_out() const
+{return priv_->num_leaf_changes_filtered_out;}
+
+/// Setter of the number of leaf type change diff nodes that have been
+/// filtered out.
+///
+/// @param n the new number of leaf type change diff nodes that have
+/// been filtered out.
+void
+corpus_diff::diff_stats::num_leaf_changes_filtered_out(size_t n)
+{priv_->num_leaf_changes_filtered_out = n;}
+
+/// Getter of the net number of leaf type change diff nodes.
+///
+/// This is the difference between the total number of leaf type
+/// change diff nodes, and the number of the leaf type change diff
+/// nodes that have been filtered out.
+size_t
+corpus_diff::diff_stats::net_num_leaf_changes() const
+{
+  assert(num_leaf_changes() >= num_leaf_changes_filtered_out());
+  return num_leaf_changes() - num_leaf_changes_filtered_out();
 }
 
 // <corpus stuff>
@@ -8159,6 +8682,59 @@ corpus_diff::priv::added_unrefed_var_sym_is_suppressed(const elf_symbol* s) cons
   return (i != suppressed_added_unrefed_var_syms_.end());
 }
 
+/// Count the number of leaf changes as well as the number of the
+/// changes that have been filtered out.
+///
+/// @param num_changes out parameter.  This is set to the total number
+/// of leaf changes.
+///
+/// @param num_filtered out parameter.  This is set to the number of
+/// leaf changes that have been filtered out.
+void
+corpus_diff::priv::count_leaf_changes(size_t &num_changes, size_t &num_filtered)
+{
+#define do_count_diff_map_changes(diff_map, n_changes, n_filtered)	\
+  {									\
+    string_diff_ptr_map::const_iterator i;				\
+    for (i = diff_map.begin();						\
+	 i != diff_map.end();						\
+	 ++i)								\
+      { \
+	if (const var_diff* d = is_var_diff(i->second))		\
+	  if (is_data_member(d->first_var()))				\
+	    continue;							\
+									\
+	if (i->second->has_local_changes())				\
+	  ++n_changes;							\
+	if (!i->second->get_canonical_diff()->to_be_reported())		\
+	  ++n_filtered;						\
+      }								\
+  }
+
+  do_count_diff_map_changes(leaf_diffs_.get_type_decl_diff_map(),
+    num_changes, num_filtered);
+  do_count_diff_map_changes(leaf_diffs_.get_enum_diff_map(),
+    num_changes, num_filtered);
+  do_count_diff_map_changes(leaf_diffs_.get_class_diff_map(),
+    num_changes, num_filtered);
+  do_count_diff_map_changes(leaf_diffs_.get_union_diff_map(),
+    num_changes, num_filtered);
+  do_count_diff_map_changes(leaf_diffs_.get_typedef_diff_map(),
+    num_changes, num_filtered);
+  do_count_diff_map_changes(leaf_diffs_.get_array_diff_map(),
+    num_changes, num_filtered);
+  do_count_diff_map_changes(leaf_diffs_.get_function_type_diff_map(),
+    num_changes, num_filtered);
+  do_count_diff_map_changes(leaf_diffs_.get_function_decl_diff_map(),
+    num_changes, num_filtered);
+  do_count_diff_map_changes(leaf_diffs_.get_var_decl_diff_map(),
+    num_changes, num_filtered);
+  do_count_diff_map_changes(leaf_diffs_.get_distinct_diff_map(),
+    num_changes, num_filtered);
+  do_count_diff_map_changes(leaf_diffs_.get_fn_parm_diff_map(),
+    num_changes, num_filtered);
+}
+
 /// Compute the diff stats.
 ///
 /// To know the number of functions that got filtered out, this
@@ -8250,6 +8826,15 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
   stat.num_added_var_syms_filtered_out(suppressed_added_unrefed_var_syms_.size());
   stat.num_var_syms_removed(deleted_unrefed_var_syms_.size());
   stat.num_removed_var_syms_filtered_out(suppressed_deleted_unrefed_var_syms_.size());
+
+  // Walk the leaf type diff nodes to count them
+  {
+    size_t num_changes = 0, num_filtered = 0;
+    count_leaf_changes(num_changes, num_filtered);
+
+    stat.num_leaf_changes(num_changes);
+    stat.num_leaf_changes_filtered_out(num_filtered);
+  }
 }
 
 /// Emit the summary of the functions & variables that got
@@ -8273,18 +8858,42 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
   if (!architectures_equal_)
     out << indent << "ELF architecture changed\n";
 
+  diff_context_sptr ctxt = get_context();
+
+  if (ctxt->show_leaf_changes_only())
+    {
+      out << "Leaf changes summary: ";
+      out << s.net_num_leaf_changes() << " artifact";
+      if (s.net_num_leaf_changes() > 1)
+	out << "s";
+      out << " changed";
+
+      if (size_t num_filtered = s.num_leaf_changes_filtered_out())
+	out << " (" << num_filtered << " filtered out)";
+      out << "\n";
+    }
+
   // function changes summary
-  out << indent << "Functions changes summary: ";
+  if (ctxt->show_leaf_changes_only())
+    out << indent << "Added/removed functions summary: ";
+  else
+    out << indent << "Functions changes summary: ";
+
   out << s.net_num_func_removed() << " Removed";
   if (s.num_removed_func_filtered_out())
     out << " ("
 	<< s.num_removed_func_filtered_out()
 	<< " filtered out)";
   out << ", ";
-  out << s.net_num_func_changed() << " Changed";
-  if (s.num_changed_func_filtered_out())
-    out << " (" << s.num_changed_func_filtered_out() << " filtered out)";
-  out << ", ";
+
+  if (!ctxt->show_leaf_changes_only())
+    {
+      out << s.net_num_func_changed() << " Changed";
+      if (s.num_changed_func_filtered_out())
+	out << " (" << s.num_changed_func_filtered_out() << " filtered out)";
+      out << ", ";
+    }
+
   out << s.net_num_func_added() << " Added ";
   if (total <= 1)
     out << "function";
@@ -8298,16 +8907,25 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
     s.net_num_vars_changed();
 
   // variables changes summary
-  out << indent << "Variables changes summary: ";
+  if (ctxt->show_leaf_changes_only())
+    out << indent << "Added/removed variables summary: ";
+  else
+    out << indent << "Variables changes summary: ";
+
   out << s.net_num_vars_removed() << " Removed";
   if (s.num_removed_vars_filtered_out())
     out << " (" << s.num_removed_vars_filtered_out()
 	<< " filtered out)";
   out << ", ";
-  out << s.num_vars_changed() - s.num_changed_vars_filtered_out() << " Changed";
-  if (s.num_changed_vars_filtered_out())
-    out << " (" << s.num_changed_vars_filtered_out() << " filtered out)";
-  out << ", ";
+
+  if (!ctxt->show_leaf_changes_only())
+    {
+      out << s.num_vars_changed() - s.num_changed_vars_filtered_out() << " Changed";
+      if (s.num_changed_vars_filtered_out())
+	out << " (" << s.num_changed_vars_filtered_out() << " filtered out)";
+      out << ", ";
+    }
+
   out << s.net_num_vars_added() << " Added ";
   if (total <= 1)
     out << "variable";
@@ -8317,8 +8935,6 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
     out << " (" << s.num_added_vars_filtered_out()
 	<< " filtered out)";
   out << "\n";
-
-  diff_context_sptr ctxt = get_context();
 
   if (ctxt->show_symbols_unreferenced_by_debug_info()
       && (s.num_func_syms_removed()
@@ -8370,7 +8986,7 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
 	      << s.net_num_removed_var_syms() << " Removed";
 	  if (s.num_removed_var_syms_filtered_out())
 	    out << " (" << s.num_removed_var_syms_filtered_out()
-		  << " filtered out)";
+		<< " filtered out)";
 	  out << ", ";
 	  out << s.net_num_added_var_syms() << " Added";
 	  if (s.num_added_var_syms_filtered_out())
@@ -8856,9 +9472,96 @@ corpus_diff::apply_filters_and_suppressions_before_reporting()
 
   apply_suppressions(this);
   priv_->diff_stats_.reset(new diff_stats(context()));
+  mark_leaf_diff_nodes();
   priv_->apply_filters_and_compute_diff_stats(*priv_->diff_stats_);
   return *priv_->diff_stats_;
 }
+
+/// A visitor that marks leaf diff nodes by storing them in the
+/// instance of @ref diff_maps returned by
+/// corpus_diff::get_leaf_diffs() invoked on the current instance of
+/// corpus_diff.
+struct leaf_diff_node_marker_visitor : public diff_node_visitor
+{
+  /// This is called when the visitor visits a diff node.
+  ///
+  /// It basically tests if the diff node being visited is a leaf diff
+  /// node - that is, if contains local changes.  If it does, then the
+  /// node is added to the set of maps that hold leaf diffs in the
+  /// current corpus_diff.
+  ///
+  /// @param d the diff node being visited.
+  virtual void
+  visit_begin(diff *d)
+  {
+    if (d->has_local_changes()
+	// A leaf basic type name change makes no sense when showing
+	// just leaf changes.  It only makes sense when it can explain
+	// the details about a non-leaf change.  In other words, it
+	// doesn't make sense to say that an "int" became "unsigned
+	// int".  But it does make sense to says that a typedef
+	// changed because its underlying type was 'int' and is now an
+	// "unsigned int".
+	&& !filtering::has_basic_type_name_change(d)
+	// Similarly, a *local* change describing a type that changed
+	// its nature doesn't make sense.
+	&& !is_distinct_diff(d))
+      {
+	diff_context_sptr ctxt = d->context();
+	const corpus_diff *corpus_diff_node = ctxt->get_corpus_diff().get();
+	assert(corpus_diff_node);
+	type_or_decl_base_sptr iface =
+	  get_current_topmost_iface_diff()->first_subject();
+	// So this is diff node carries a leaf change.  Let's add it
+	// to the set of of leaf diffs of corpus_diff_node.
+	const_cast<corpus_diff*>(corpus_diff_node)->
+	  get_leaf_diffs().insert_diff_node(d, iface);
+      }
+  }
+}; // end struct leaf_diff_node_marker_visitor
+
+/// Walks the diff nodes associated to the current corpus diff and
+/// mark those that carry local changes.  They are said to be leaf
+/// diff nodes.
+///
+/// The marked nodes are available from the
+/// corpus_diff::get_leaf_diffs() function.
+void
+corpus_diff::mark_leaf_diff_nodes()
+{
+  if (!has_changes())
+    return;
+
+  if (!context()->show_leaf_changes_only())
+    return;
+
+  leaf_diff_node_marker_visitor v;
+  context()->forget_visited_diffs();
+  bool s = context()->visiting_a_node_twice_is_forbidden();
+  context()->forbid_visiting_a_node_twice(true);
+  context()->forbid_visiting_a_node_twice_per_interface(true);
+  traverse(v);
+  context()->forbid_visiting_a_node_twice(s);
+  context()->forbid_visiting_a_node_twice_per_interface(false);
+}
+
+/// Get the set of maps that contain leaf nodes.  A leaf node being a
+/// node with a local change.
+///
+/// @return the set of maps that contain leaf nodes.  A leaf node
+/// being a node with a local change.
+diff_maps&
+corpus_diff::get_leaf_diffs()
+{return priv_->leaf_diffs_;}
+
+/// Get the set of maps that contain leaf nodes.  A leaf node being a
+/// node with a local change.
+///
+/// @return the set of maps that contain leaf nodes.  A leaf node
+/// being a node with a local change.
+const diff_maps&
+corpus_diff::get_leaf_diffs() const
+{return priv_->leaf_diffs_;}
 
 /// Report the diff in a serialized form.
 ///
@@ -8897,9 +9600,16 @@ corpus_diff::traverse(diff_node_visitor& v)
     {
       if (diff_sptr d = *i)
 	{
+	  const diff_context_sptr &ctxt = context();
+	  if (ctxt->visiting_a_node_twice_is_forbidden_per_interface())
+	    ctxt->forget_visited_diffs();
+
+	  v.set_current_topmost_iface_diff(d.get());
+
 	  if (!d->traverse(v))
 	    {
 	      v.visit_end(this);
+	      v.set_current_topmost_iface_diff(0);
 	      return false;
 	    }
 	}
@@ -8912,13 +9622,22 @@ corpus_diff::traverse(diff_node_visitor& v)
     {
       if (diff_sptr d = *i)
 	{
+	  const diff_context_sptr &ctxt = context();
+	  if (ctxt->visiting_a_node_twice_is_forbidden_per_interface())
+	    ctxt->forget_visited_diffs();
+
+	  v.set_current_topmost_iface_diff(d.get());
+
 	  if (!d->traverse(v))
 	    {
 	      v.visit_end(this);
+	      v.set_current_topmost_iface_diff(0);
 	      return false;
 	    }
 	}
     }
+
+  v.set_current_topmost_iface_diff(0);
 
   v.visit_end(this);
   return true;
@@ -8955,9 +9674,9 @@ compute_diff(const corpus_sptr	f,
   if (!ctxt)
     ctxt.reset(new diff_context);
 
-  ctxt->set_corpora(f, s);
-
   corpus_diff_sptr r(new corpus_diff(f, s, ctxt));
+
+  ctxt->set_corpus_diff(r);
 
   r->priv_->sonames_equal_ = f->get_soname() == s->get_soname();
 
@@ -9024,6 +9743,80 @@ compute_diff(const corpus_group_sptr&	f,
 
 // </corpus_group stuff>
 // <diff_node_visitor stuff>
+
+/// The private data of the @diff_node_visitor type.
+struct diff_node_visitor::priv
+{
+  diff*	topmost_interface_diff;
+  visiting_kind kind;
+
+  priv()
+    : topmost_interface_diff(),
+      kind()
+  {}
+
+  priv(visiting_kind k)
+    : topmost_interface_diff(),
+      kind(k)
+  {}
+}; // end struct diff_node_visitor
+
+/// Default constructor of the @ref diff_node_visitor type.
+diff_node_visitor::diff_node_visitor()
+  : priv_(new priv)
+{}
+
+/// Constructor of the @ref diff_node_visitor type.
+///
+/// @param k how the visiting has to be performed.
+diff_node_visitor::diff_node_visitor(visiting_kind k)
+  : priv_(new priv(k))
+{}
+
+/// Getter for the visiting policy of the traversing code while
+/// invoking this visitor.
+///
+/// @return the visiting policy used by the traversing code when
+/// invoking this visitor.
+visiting_kind
+diff_node_visitor::get_visiting_kind() const
+{return priv_->kind;}
+
+/// Setter for the visiting policy of the traversing code while
+/// invoking this visitor.
+///
+/// @param v a bit map representing the new visiting policy used by
+/// the traversing code when invoking this visitor.
+void
+diff_node_visitor::set_visiting_kind(visiting_kind v)
+{priv_->kind = v;}
+
+/// Setter for the visiting policy of the traversing code while
+/// invoking this visitor.  This one makes a logical or between the
+/// current policy and the bitmap given in argument and assigns the
+/// current policy to the result.
+///
+/// @param v a bitmap representing the visiting policy to or with
+/// the current policy.
+void
+diff_node_visitor::or_visiting_kind(visiting_kind v)
+{priv_->kind = priv_->kind | v;}
+
+/// Setter of the diff current topmost interface which is impacted by
+/// the current diff node being visited.
+///
+/// @param d the current topmost interface diff impacted.
+void
+diff_node_visitor::set_current_topmost_iface_diff(diff* d)
+{priv_->topmost_interface_diff = d;}
+
+/// Getter of the diff current topmost interface which is impacted by
+/// the current diff node being visited.
+///
+/// @return the current topmost interface diff impacted.
+diff*
+diff_node_visitor::get_current_topmost_iface_diff() const
+{return priv_->topmost_interface_diff;}
 
 /// This is called by the traversing code on a @ref diff node just
 /// before visiting it.  That is, before visiting it and its children
@@ -10044,7 +10837,7 @@ is_diff_of_variadic_parameter(const diff_sptr& d)
 /// @param d the diff node to consider.
 ///
 /// @return true iff @p d is a diff between two basic types.
-bool
+const type_decl_diff*
 is_diff_of_basic_type(const diff *d)
 {return dynamic_cast<const type_decl_diff*>(d);}
 

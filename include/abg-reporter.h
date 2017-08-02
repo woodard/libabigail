@@ -52,7 +52,7 @@ class function_decl_diff;
 class var_diff;
 class translation_unit_diff;
 class corpus_diff;
-
+class diff_maps;
 class reporter_base;
 
 /// A convenience typedef for a shared pointer to a @ref
@@ -63,6 +63,8 @@ typedef shared_ptr<reporter_base> reporter_base_sptr;
 class reporter_base
 {
 public:
+
+  virtual bool diff_to_be_reported(const diff *d) const;
 
   virtual void
   report(const type_decl_diff& d, ostream& out,
@@ -159,9 +161,19 @@ public:
   report(const enum_diff& d, ostream& out,
 	 const string& indent = "") const;
 
+  bool
+  report_local_typedef_changes(const typedef_diff &d,
+			       ostream& out,
+			       const string& indent) const;
+
   virtual void
   report(const typedef_diff& d, ostream& out,
 	 const string& indent = "") const;
+
+  bool
+  report_local_qualified_type_changes(const qualified_type_diff& d,
+				      ostream& out,
+				      const string& indent) const;
 
   virtual void
   report(const qualified_type_diff& d, ostream& out,
@@ -170,6 +182,11 @@ public:
   virtual void
   report(const pointer_diff& d, ostream& out, const string& indent = "") const;
 
+  void
+  report_local_reference_type_changes(const reference_diff& d,
+				      ostream& out,
+				      const string& indent) const;
+
   virtual void
   report(const reference_diff& d, ostream& out,
 	 const string& indent = "") const;
@@ -177,6 +194,11 @@ public:
   virtual void
   report(const fn_parm_diff& d, ostream& out,
 	 const string& indent = "") const;
+
+  void
+  report_local_function_type_changes(const function_type_diff& d,
+				     ostream& out,
+				     const string& indent) const;
 
   virtual void
   report(const function_type_diff& d, ostream& out,
@@ -219,6 +241,77 @@ public:
   report(const corpus_diff& d, ostream& out,
 	 const string& indent = "") const;
 }; // end class default_reporter
+
+/// A reporter that only reports leaf changes
+class leaf_reporter : public default_reporter
+{
+public:
+
+  virtual bool diff_to_be_reported(const diff *d) const;
+
+  void
+  report_changes_from_diff_maps(const diff_maps&,
+				ostream& out,
+				const string& indent) const;
+
+  virtual void
+  report(const typedef_diff& d, ostream& out,
+	 const string& indent = "") const;
+
+  virtual void
+  report(const qualified_type_diff& d, ostream& out,
+	 const string& indent = "") const;
+
+  virtual void
+  report(const pointer_diff& d, ostream& out,
+	 const string& indent = "") const;
+
+  virtual void
+  report(const reference_diff& d, ostream& out,
+	 const string& indent = "") const;
+
+  virtual void
+  report(const fn_parm_diff& d, ostream& out,
+	 const string& indent = "") const;
+
+  virtual void
+  report(const function_type_diff& d, ostream& out,
+	 const string& indent = "") const;
+
+  virtual void
+  report(const array_diff& d, ostream& out, const string& indent = "") const;
+
+  virtual void
+  report(const scope_diff& d, ostream& out, const string& indent = "") const;
+
+  virtual void
+  report(const class_or_union_diff& d, ostream& out,
+	 const string& indent = "") const;
+
+  virtual void
+  report(const class_diff& d, ostream& out, const string& indent = "") const;
+
+  virtual void
+  report(const union_diff& d, ostream& out, const string& indent = "") const;
+
+  virtual void
+  report(const distinct_diff& d, ostream& out, const string& indent = "") const;
+
+  virtual void
+  report(const function_decl_diff& d, ostream& out,
+	 const string& indent = "") const;
+
+  virtual void
+  report(const var_diff& d, ostream& out, const string& indent = "") const;
+
+  virtual void
+  report(const translation_unit_diff& d, ostream& out,
+	 const string& indent = "") const;
+
+  virtual void
+  report(const corpus_diff& d, ostream& out,
+	 const string& indent = "") const;
+}; // end class leaf_reporter
 
 } // end namespace comparison
 } // end namespace abigail

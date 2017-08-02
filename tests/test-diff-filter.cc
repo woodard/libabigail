@@ -478,6 +478,13 @@ InOutSpec in_out_specs[] =
     "data/test-diff-filter/test41-report-0.txt",
     "output/test-diff-filter/test41-report-0.txt",
   },
+  {
+    "data/test-diff-filter/libtest42-leaf-report-v0.so",
+    "data/test-diff-filter/libtest42-leaf-report-v1.so",
+    "--no-default-suppression --leaf-changes-only --impacted-interfaces",
+    "data/test-diff-filter/test42-leaf-report-output-0.txt",
+    "output/test-diff-filter/test42-leaf-report-output-0.txt",
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };

@@ -604,6 +604,9 @@ get_data_member_offset(const var_decl_sptr);
 uint64_t
 get_data_member_offset(const decl_base_sptr);
 
+uint64_t
+get_var_size_in_bits(const var_decl_sptr&);
+
 void
 set_data_member_is_laid_out(var_decl_sptr, bool);
 
@@ -728,6 +731,9 @@ peel_typedef_pointer_or_reference_type(const type_base_sptr);
 
 type_base*
 peel_typedef_pointer_or_reference_type(const type_base*);
+
+string
+get_name(const type_or_decl_base*, bool qualified = true);
 
 string
 get_name(const type_or_decl_base_sptr&,
@@ -1173,6 +1179,10 @@ hash_type_or_decl(const type_or_decl_base *);
 
 size_t
 hash_type_or_decl(const type_or_decl_base_sptr &);
+
+bool
+function_decl_is_less_than(const function_decl&f, const function_decl &s);
+
 } // end namespace ir
 
 using namespace abigail::ir;

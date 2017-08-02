@@ -35,7 +35,7 @@
 /// @param S1 the first diff subject to take in account.
 ///
 /// @param S2 the second diff subject to take in account.
-#define RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER(S1, S2) \
+#define RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER(S1, S2)	\
   do {									\
     if (diff_context_sptr ctxt = d.context())				\
       if (diff_sptr _diff_ = ctxt->get_canonical_diff_for(S1, S2))	\
@@ -45,7 +45,7 @@
 	      out << indent << "details are being reported\n";		\
 	    else							\
 	      out << indent << "details were reported earlier\n";	\
-	    return ;							\
+	    return;							\
 	  }								\
   } while (false)
 
@@ -119,15 +119,21 @@ represent_data_member(var_decl_sptr d,
 		      ostream& out);
 
 void
-maybe_show_relative_offset_change(var_diff_sptr diff,
+maybe_show_relative_offset_change(const var_diff_sptr &diff,
 				  diff_context& ctxt,
 				  ostream&	out);
 
 void
-represent(var_diff_sptr	diff,
+maybe_show_relative_size_change(const var_diff_sptr	&diff,
+				diff_context&		ctxt,
+				ostream&		out);
+
+void
+represent(const var_diff_sptr	&diff,
 	  diff_context_sptr	ctxt,
 	  ostream&		out,
-	  const string&	indent = "");
+	  const string&	indent = "",
+	  bool			local_only = false);
 
 bool
 report_size_and_alignment_changes(type_or_decl_base_sptr	first,
@@ -162,6 +168,12 @@ enum diff_kind
 
 void
 report_mem_header(ostream& out,
+		  diff_kind k,
+		  const string& section_name,
+		  const string& indent);
+
+void
+report_mem_header(ostream& out,
 		  size_t number,
 		  size_t num_filtered,
 		  diff_kind k,
@@ -186,6 +198,18 @@ show_linkage_name_and_aliases(ostream& out,
 			      const string& indent,
 			      const elf_symbol& symbol,
 			      const string_elf_symbols_map_type& sym_map);
+
+void
+maybe_report_interfaces_impacted_by_diff(const diff		*d,
+					 ostream		&out,
+					 const string		&indent,
+					 bool new_line_prefix = true);
+
+void
+maybe_report_interfaces_impacted_by_diff(const diff_sptr	&d,
+					 ostream		&out,
+					 const string		&indent,
+					 bool new_line_prefix = false);
 
 } // end namespace comparison
 } // end namespace abigail

@@ -26,6 +26,7 @@ abg-comparison-priv.h			\
 abg-reporter-priv.h			\
 abg-reporter-priv.cc			\
 abg-default-reporter.cc			\
+abg-leaf-reporter.cc			\
 abg-suppression-priv.h			\
 abg-suppression.cc			\
 abg-comp-filter.cc			\

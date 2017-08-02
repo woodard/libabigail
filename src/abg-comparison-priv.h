@@ -91,6 +91,94 @@ typedef unordered_map<types_or_decls_type, diff_sptr,
 		      types_or_decls_hash, types_or_decls_equal>
   types_or_decls_diff_map_type;
 
+/// A hashing functor for using @ref diff_sptr and @ref diff* in a
+/// hash map or set.
+struct diff_hash
+{
+  /// The function-call operator to hash a @ref diff node.
+  ///
+  /// @param d the @ref diff node to hash.
+  ///
+  /// @return the hash value of @p d.
+  size_t
+  operator()(const diff_sptr& d) const
+  {return operator()(*d);}
+
+  /// The function-call operator to hash a @ref diff node.
+  ///
+  /// @param d the @ref diff node to hash.
+  ///
+  /// @return the hash value of @p d.
+  size_t
+  operator()(const diff *d) const
+  {return operator()(*d);}
+
+  /// The function-call operator to hash a @ref diff node.
+  ///
+  /// @param d the @ref diff node to hash.
+  ///
+  /// @return the hash value of @p d.
+  size_t
+  operator()(const diff& d) const
+  {
+    diff* canonical_diff = d.get_canonical_diff();
+    assert(canonical_diff);
+    return reinterpret_cast<size_t>(canonical_diff);
+  }
+}; // end struct diff_hash
+
+/// A comparison functor for using @ref diff_sptr and @ref diff* in a
+/// hash map or set.
+struct diff_equal
+{
+  /// The function-call operator to compare two @ref diff nodes.
+  ///
+  /// @param d1 the first diff node involved in the comparison.
+  ///
+  /// @param d2 the second diff node involved in the comparison.
+  ///
+  /// @return true iff @p d1 equals @p d2.
+  bool
+  operator()(const diff* d1, const diff* d2) const
+  {return operator()(*d1, *d2);}
+
+  /// The function-call operator to compare two @ref diff nodes.
+  ///
+  /// @param d1 the first diff node involved in the comparison.
+  ///
+  /// @param d2 the second diff node involved in the comparison.
+  ///
+  /// @return true iff @p d1 equals @p d2.
+  bool
+  operator()(const diff_sptr& d1, const diff_sptr& d2) const
+  {return operator()(*d1, *d2);}
+
+  /// The function-call operator to compare two @ref diff nodes.
+  ///
+  /// @param d1 the first diff node involved in the comparison.
+  ///
+  /// @param d2 the second diff node involved in the comparison.
+  ///
+  /// @return true iff @p d1 equals @p d2.
+  bool
+  operator()(const diff& d1, const diff& d2) const
+  {
+    diff* canonical_diff1 = d1.get_canonical_diff();
+    assert(canonical_diff1);
+
+    diff *canonical_diff2 = d2.get_canonical_diff();
+    assert(canonical_diff2);
+
+    return canonical_diff1 == canonical_diff2;
+  }
+}; // end struct diff_equal
+
+/// A convenience typedef for an unordered_map which key is a @ref
+/// diff* and which value is a @ref artifact_sptr_set_type.
+typedef unordered_map<const diff*, artifact_sptr_set_type,
+		      diff_hash, diff_equal>
+diff_artifact_set_map_type;
+
 /// The private member (pimpl) for @ref diff_context.
 struct diff_context::priv
 {
@@ -105,11 +193,12 @@ struct diff_context::priv
   // This is the last visited diff node, per class of equivalence.
   // It's set during the redundant diff node marking process.
   pointer_map				last_visited_diff_node_;
-  corpus_sptr				first_corpus_;
-  corpus_sptr				second_corpus_;
+  corpus_diff_sptr			corpus_diff_;
   ostream*				default_output_stream_;
   ostream*				error_output_stream_;
+  bool					leaf_changes_only_;
   bool					forbid_visiting_a_node_twice_;
+  bool					reset_visited_diffs_for_each_interface_;
   bool					show_relative_offset_changes_;
   bool					show_stats_only_;
   bool					show_soname_change_;
@@ -125,14 +214,17 @@ struct diff_context::priv
   bool					show_redundant_changes_;
   bool					show_syms_unreferenced_by_di_;
   bool					show_added_syms_unreferenced_by_di_;
+  bool					show_impacted_interfaces_;
   bool					dump_diff_tree_;
 
   priv()
     : allowed_category_(EVERYTHING_CATEGORY),
-      reporter_(new default_reporter),
+      reporter_(),
       default_output_stream_(),
       error_output_stream_(),
+      leaf_changes_only_(),
       forbid_visiting_a_node_twice_(true),
+      reset_visited_diffs_for_each_interface_(),
       show_relative_offset_changes_(true),
       show_stats_only_(false),
       show_soname_change_(true),
@@ -148,6 +240,7 @@ struct diff_context::priv
       show_redundant_changes_(true),
       show_syms_unreferenced_by_di_(true),
       show_added_syms_unreferenced_by_di_(true),
+      show_impacted_interfaces_(true),
       dump_diff_tree_()
    {}
 };// end struct diff_context::priv
@@ -167,6 +260,7 @@ struct diff::priv
   type_or_decl_base_sptr	second_subject_;
   vector<diff*>		children_;
   diff*			parent_;
+  diff*			parent_interface_;
   diff*			canonical_diff_;
   diff_context_wptr		ctxt_;
   diff_category		local_category_;
@@ -190,6 +284,7 @@ public:
       first_subject_(first_subject),
       second_subject_(second_subject),
       parent_(),
+      parent_interface_(),
       canonical_diff_(),
       ctxt_(ctxt),
       local_category_(category),
@@ -888,6 +983,7 @@ struct corpus_diff::priv
   string_elf_symbol_map		suppressed_added_unrefed_var_syms_;
   string_elf_symbol_map		deleted_unrefed_var_syms_;
   string_elf_symbol_map		suppressed_deleted_unrefed_var_syms_;
+  diff_maps				leaf_diffs_;
 
   /// Default constructor of corpus_diff::priv.
   priv()
@@ -953,6 +1049,8 @@ struct corpus_diff::priv
   bool
   added_unrefed_var_sym_is_suppressed(const elf_symbol*) const;
 
+  void count_leaf_changes(size_t &, size_t&);
+
   void
   apply_filters_and_compute_diff_stats(corpus_diff::diff_stats&);
 
@@ -985,31 +1083,7 @@ struct function_comp
   /// @return true iff @p f is less than @p s.
   bool
   operator()(const function_decl& f, const function_decl& s)
-  {
-    string fr = f.get_pretty_representation_of_declarator(),
-      sr = s.get_pretty_representation_of_declarator();
-
-    if (fr != sr)
-      return fr < sr;
-
-    fr = f.get_pretty_representation(),
-      sr = s.get_pretty_representation();
-
-    if (fr != sr)
-      return fr < sr;
-
-    if (f.get_symbol())
-      fr = f.get_symbol()->get_id_string();
-    else if (!f.get_linkage_name().empty())
-      fr = f.get_linkage_name();
-
-    if (s.get_symbol())
-      sr = s.get_symbol()->get_id_string();
-    else if (!s.get_linkage_name().empty())
-      sr = s.get_linkage_name();
-
-    return fr < sr;
-  }
+  {return abigail::ir::function_decl_is_less_than(f, s);}
 
   /// The actual "less than" operator for instances of @ref
   /// function_decl.  It returns true if the first @ref function_decl
@@ -1145,6 +1219,8 @@ struct corpus_diff::diff_stats::priv
   size_t		num_removed_var_syms_filtered_out;
   size_t		num_var_syms_added;
   size_t		num_added_var_syms_filtered_out;
+  size_t		num_leaf_changes;
+  size_t		num_leaf_changes_filtered_out;
 
   priv(diff_context_sptr ctxt)
     : ctxt_(ctxt),
@@ -1244,8 +1320,18 @@ void
 sort_string_parm_map(const string_parm_map& map,
 		     vector<function_decl::parameter_sptr>& sorted);
 
+void
+sort_artifacts_set(const artifact_sptr_set_type& set,
+		   vector<type_or_decl_base_sptr>& sorted);
+
 type_base_sptr
 get_leaf_type(qualified_type_def_sptr t);
+
+diff*
+get_fn_decl_or_var_decl_diff_ancestor(const diff *);
+
+bool
+is_diff_of_global_decls(const diff*);
 
 } // end namespace comparison
 

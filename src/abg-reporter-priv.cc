@@ -127,7 +127,7 @@ represent_data_member(var_decl_sptr d,
 ///
 /// @param out the output stream to emit the string to.
 void
-maybe_show_relative_offset_change(var_diff_sptr diff,
+maybe_show_relative_offset_change(const var_diff_sptr &diff,
 				  diff_context& ctxt,
 				  ostream&	out)
 {
@@ -158,6 +158,56 @@ maybe_show_relative_offset_change(var_diff_sptr diff,
   out << " (by " << sign << change << " bits)";
 }
 
+/// If a given @ref var_diff node carries a hange in which the size of
+/// the variable actually changed, then emit a string (to an output
+/// stream) that represents that size change.
+///
+/// For instance, if the size of the variable increased by 32 bits
+/// then the string emitted is going to be "by +32 bits".
+///
+/// If, on the other hand, the size of the variable decreased by 64
+/// bits then the string emitted is going to be "by -64 bits".
+///
+/// This function is a sub-routine used by the reporting system.
+///
+/// @param diff the diff node that potentially carries the variable
+/// change.
+///
+/// @param ctxt the context in which the diff is being reported.
+///
+/// @param out the output stream to emit the string to.
+void
+maybe_show_relative_size_change(const var_diff_sptr	&diff,
+				diff_context&		ctxt,
+				ostream&		out)
+{
+  if (!ctxt.show_relative_offset_changes())
+    return;
+
+  var_decl_sptr o = diff->first_var();
+  var_decl_sptr n = diff->second_var();
+
+  uint64_t first_size = get_var_size_in_bits(o),
+    second_size = get_var_size_in_bits(n);
+
+  string sign;
+  uint64_t change = 0;
+  if (first_size < second_size)
+    {
+      sign = "+";
+      change = second_size - first_size;
+    }
+  else if (first_size > second_size)
+    {
+      sign = "-";
+      change = first_size - second_size;
+    }
+  else
+    return;
+
+  out << " (by " << sign << change << " bits)";
+}
+
 /// Represent the changes carried by an instance of @ref var_diff that
 /// represent a difference between two class data members.
 ///
@@ -165,16 +215,19 @@ maybe_show_relative_offset_change(var_diff_sptr diff,
 ///
 /// @param ctxt the diff context to use.
 ///
+/// @param local_only if true, only display local changes.
+///
 /// @param out the output stream to send the representation to.
 ///
 /// @param indent the indentation string to use for the change report.
 void
-represent(var_diff_sptr	diff,
+represent(const var_diff_sptr	&diff,
 	  diff_context_sptr	ctxt,
 	  ostream&		out,
-	  const string&	indent)
+	  const string&	indent,
+	  bool			local_only)
 {
-  if (!diff->to_be_reported())
+  if (!ctxt->get_reporter()->diff_to_be_reported(diff.get()))
     return;
 
   var_decl_sptr o = diff->first_var();
@@ -186,21 +239,22 @@ represent(var_diff_sptr	diff,
   string name2 = n->get_qualified_name();
   string pretty_representation = o->get_pretty_representation();
 
-  if (diff_sptr d = diff->type_diff())
-    {
-      if (d->to_be_reported())
-	{
-	  out << indent
-	      << "type of '" << pretty_representation << "' changed:\n";
-	  if (d->currently_reporting())
-	    out << indent << "  details are being reported\n";
-	  else if (d->reported_once())
-	    out << indent << "  details were reported earlier\n";
-	  else
-	    d->report(out, indent + "  ");
-	  begin_with_and = true;
-	}
-    }
+  if (!local_only)
+    if (diff_sptr d = diff->type_diff())
+      {
+	if (ctxt->get_reporter()->diff_to_be_reported(d.get()))
+	  {
+	    out << indent
+		<< "type of '" << pretty_representation << "' changed:\n";
+	    if (d->currently_reporting())
+	      out << indent << "  details are being reported\n";
+	    else if (d->reported_once())
+	      out << indent << "  details were reported earlier\n";
+	    else
+	      d->report(out, indent + "  ");
+	    begin_with_and = true;
+	  }
+      }
 
   if (name1 != name2)
     {
@@ -240,27 +294,50 @@ represent(var_diff_sptr	diff,
 	out << "now becomes laid out";
       emitted = true;
     }
-  if ((ctxt->get_allowed_category() & SIZE_OR_OFFSET_CHANGE_CATEGORY)
-      && (get_data_member_offset(o)
-	  != get_data_member_offset(n)))
+  if ((ctxt->get_allowed_category() & SIZE_OR_OFFSET_CHANGE_CATEGORY))
     {
-      if (begin_with_and)
+      if (get_data_member_offset(o) != get_data_member_offset(n))
 	{
-	  out << indent << "and ";
-	  begin_with_and = false;
+	  if (begin_with_and)
+	    {
+	      out << indent << "and ";
+	      begin_with_and = false;
+	    }
+	  else if (!emitted)
+	    out << indent << "'" << pretty_representation << "' ";
+	  else
+	    out << ", ";
+	  out << "offset changed from "
+	      << get_data_member_offset(o)
+	      << " to " << get_data_member_offset(n)
+	      << " (in bits)";
+
+	  maybe_show_relative_offset_change(diff, *ctxt, out);
+
+	  emitted = true;
 	}
-      else if (!emitted)
-	out << indent << "'" << pretty_representation << "' ";
-      else
-	out << ", ";
-      out << "offset changed from "
-	  << get_data_member_offset(o)
-	  << " to " << get_data_member_offset(n)
-	  << " (in bits)";
+      if (// If we are not displaying only local changes, we must
+	  // have indicated the type size change already.
+	  local_only
+	  && (get_var_size_in_bits(o) != get_var_size_in_bits(n)))
+	{
+	  if (begin_with_and)
+	    {
+	      out << indent << "and ";
+	      begin_with_and = false;
+	    }
+	  else if (!emitted)
+	    out << indent << "'" << pretty_representation << "' ";
+	  else
+	    out << ", ";
 
-      maybe_show_relative_offset_change(diff, *ctxt, out);
-
-      emitted = true;
+	  out << "size changed from "
+	      << get_var_size_in_bits(o)
+	      << " to " << get_var_size_in_bits(n)
+	      << " (in bits)";
+	  maybe_show_relative_size_change(diff, *ctxt, out);
+	  emitted = true;
+	}
     }
   if (o->get_binding() != n->get_binding())
     {
@@ -566,6 +643,8 @@ report_name_size_and_alignment_changes(decl_base_sptr		first,
 /// @param number the number of insertion/deletion to refer to in the
 /// header.
 ///
+/// @param num_filtered the number of filtered changes.
+///
 /// @param k the kind of diff (insertion/deletion/change) we want the
 /// head to introduce.
 ///
@@ -614,6 +693,45 @@ report_mem_header(ostream& out,
   if (num_filtered)
     out << " (" << num_filtered << " filtered)";
   out << colon_or_semi_colon << '\n';
+}
+
+/// Output the header preceding the the report for
+/// insertion/deletion/change of a part of a class.  This is a
+/// subroutine of class_diff::report.
+///
+/// @param out the output stream to output the report to.
+///
+/// @param k the kind of diff (insertion/deletion/change) we want the
+/// head to introduce.
+///
+/// @param section_name the name of the sub-part of the class to
+/// report about.
+///
+/// @param indent the string to use as indentation prefix in the
+/// header.
+void
+report_mem_header(ostream& out,
+		  diff_kind k,
+		  const string& section_name,
+		  const string& indent)
+{
+  string change;
+
+  switch (k)
+    {
+    case del_kind:
+      change = "deletions";
+      break;
+    case ins_kind:
+      change = "insertions";
+      break;
+    case subtype_change_kind:
+    case change_kind:
+      change = "changes";
+      break;
+    }
+
+  out << indent << "there are " << section_name << " " << change << ":\n";
 }
 
 /// Report the differences in access specifiers and static-ness for
@@ -812,6 +930,90 @@ show_linkage_name_and_aliases(ostream& out,
   if (!aliases.empty())
     out << ", aliases " << aliases;
 }
+
+/// If a given diff node impacts some public interfaces, then report
+/// about those impacted interfaces on standard output.
+///
+/// @param d the diff node to get the impacted interfaces for.
+///
+/// @param out the output stream to report to.
+///
+/// @param indent the white space string to use for indentation.
+///
+/// @param new_line_prefix if set to true, it means there is going to
+/// be a new line emitted before the report.
+void
+maybe_report_interfaces_impacted_by_diff(const diff	*d,
+					 ostream	&out,
+					 const string	&indent,
+					 bool		new_line_prefix)
+{
+  const diff_context_sptr &ctxt = d->context();
+  const corpus_diff_sptr &corp_diff = ctxt->get_corpus_diff();
+  if (!corp_diff)
+    return;
+
+  if (!ctxt->show_impacted_interfaces())
+    return;
+
+  const diff_maps &maps = corp_diff->get_leaf_diffs();
+  artifact_sptr_set_type* impacted_artifacts =
+    maps.lookup_impacted_interfaces(d);
+  if (impacted_artifacts == 0)
+    return;
+
+  if (impacted_artifacts->empty())
+    return;
+
+  vector<type_or_decl_base_sptr> sorted_impacted_interfaces;
+  sort_artifacts_set(*impacted_artifacts, sorted_impacted_interfaces);
+
+  if (new_line_prefix)
+    out << '\n';
+
+  size_t num_impacted_interfaces = impacted_artifacts->size();
+  if (num_impacted_interfaces == 1)
+    out << indent << "one impacted interface:\n";
+  else
+    out << indent << num_impacted_interfaces << " impacted interfaces:\n";
+
+  string cur_indent = indent + "  ";
+  vector<type_or_decl_base_sptr>::const_iterator it;
+  for (it = sorted_impacted_interfaces.begin();
+       it != sorted_impacted_interfaces.end();
+       ++it)
+    {
+      if (it != sorted_impacted_interfaces.begin())
+	out << '\n';
+      out << cur_indent << get_pretty_representation(*it);
+    }
+}
+
+/// If a given diff node impacts some public interfaces, then report
+/// about those impacted interfaces on standard output.
+///
+/// @param d the diff node to get the impacted interfaces for.
+///
+/// @param out the output stream to report to.
+///
+/// @param indent the white space string to use for indentation.
+///
+/// @param new_line_prefix if set to true, it means there is going to
+/// be a new line emitted before the report.
+void
+maybe_report_interfaces_impacted_by_diff(const diff_sptr	&d,
+					 ostream		&out,
+					 const string		&indent)
+{return maybe_report_interfaces_impacted_by_diff(d.get(), out, indent);}
+
+/// Tests if the diff node is to be reported.
+///
+/// @param p the diff to consider.
+///
+/// @return true iff the diff is to be reported.
+bool
+reporter_base::diff_to_be_reported(const diff *d) const
+{return d && d->to_be_reported();}
 
 } // namespace comparison
 } // end namespace abigail

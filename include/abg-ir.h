@@ -321,6 +321,90 @@ struct ir_traversable_base : public traversable_base
   traverse(ir_node_visitor& v);
 }; // end class ir_traversable_base
 
+/// The hashing functor for using instances of @ref type_or_decl_base
+/// as values in a hash map or set.
+struct type_or_decl_hash
+{
+
+  /// Function-call Operator to hash the string representation of an
+  /// ABI artifact.
+  ///
+  /// @param artifact the ABI artifact to hash.
+  ///
+  /// @return the hash value of the string representation of @p
+  /// artifact.
+  size_t
+  operator()(const type_or_decl_base *artifact) const
+  {
+    string repr =  get_pretty_representation(artifact);
+    std::tr1::hash<string> do_hash;
+    return do_hash(repr);
+  }
+
+  /// Function-call Operator to hash the string representation of an
+  /// ABI artifact.
+  ///
+  /// @param artifact the ABI artifact to hash.
+  ///
+  /// @return the hash value of the string representation of @p
+  /// artifact.
+  size_t
+  operator()(const type_or_decl_base_sptr& artifact) const
+  {return operator()(artifact.get());}
+}; // end struct type_or_decl_hash
+
+/// The comparison functor for using instances of @ref
+/// type_or_decl_base as values in a hash map or set.
+struct type_or_decl_equal
+{
+
+  /// The function-call operator to compare the string representations
+  /// of two ABI artifacts.
+  ///
+  /// @param l the left hand side ABI artifact operand of the
+  /// comparison.
+  ///
+  /// @param r the right hand side ABI artifact operand of the
+  /// comparison.
+  ///
+  /// @return true iff the string representation of @p l equals the one
+  /// of @p r.
+  bool
+  operator()(const type_or_decl_base *l, const type_or_decl_base *r) const
+  {
+    string repr1 = get_pretty_representation(l);
+    string repr2 = get_pretty_representation(r);
+
+    return repr1 == repr2;
+  }
+
+  /// The function-call operator to compare the string representations
+  /// of two ABI artifacts.
+  ///
+  /// @param l the left hand side ABI artifact operand of the
+  /// comparison.
+  ///
+  /// @param r the right hand side ABI artifact operand of the
+  /// comparison.
+  ///
+  /// @return true iff the string representation of @p l equals the one
+  /// of @p r.
+  bool
+  operator()(const type_or_decl_base_sptr &l,
+	     const type_or_decl_base_sptr &r) const
+  {return operator()(l.get(), r.get());}
+}; // end type_or_decl_equal
+
+/// A convenience typedef for a hash set of type_or_decl_base_sptr
+typedef unordered_set<type_or_decl_base_sptr,
+		      type_or_decl_hash,
+		      type_or_decl_equal> artifact_sptr_set_type;
+
+/// A convenience typedef for a hash set of const type_or_decl_base*
+typedef unordered_set<const type_or_decl_base*,
+		      type_or_decl_hash,
+		      type_or_decl_equal> artifact_ptr_set_type;
+
 /// A convenience typedef for a map which key is a string and which
 /// value is a @ref type_base_wptr.
 typedef unordered_map<string, type_base_wptr> string_type_base_wptr_map_type;
@@ -2491,6 +2575,48 @@ bool
 equals(const function_decl::parameter&,
        const function_decl::parameter&,
        change_kind*);
+
+/// A comparison functor to compare pointer to instances of @ref
+/// type_or_decl_base.
+struct type_or_decl_base_comp
+{
+  /// Comparison operator for ABI artifacts.
+  ///
+  /// @param f the first ABI artifact to consider for the comparison.
+  ///
+  /// @param s the second  ABI artifact to consider for the comparison.
+  ///
+  /// @return true iff @p f is lexicographically less than than @p s.
+  bool
+  operator()(const type_or_decl_base *f,
+	     const type_or_decl_base *s)
+  {
+    function_decl *f_fn = is_function_decl(f), *s_fn = is_function_decl(s);
+    if (f_fn && s_fn)
+      return function_decl_is_less_than(*f_fn, *s_fn);
+
+    var_decl *f_var = is_var_decl(f), *s_var = is_var_decl(s);
+    if (f_var && s_var)
+      return get_name(f_var) < get_name(s_var);
+
+    string l_repr = get_pretty_representation(f),
+      r_repr = get_pretty_representation(s);
+
+    return l_repr < r_repr;
+  }
+
+  /// Comparison operator for ABI artifacts.
+  ///
+  /// @param f the first ABI artifact to consider for the comparison.
+  ///
+  /// @param s the second  ABI artifact to consider for the comparison.
+  ///
+  /// @return true iff @p f is lexicographically less than than @p s.
+  bool
+  operator()(const type_or_decl_base_sptr& f,
+	     const type_or_decl_base_sptr& s)
+  {return operator()(f.get(), s.get());}
+}; // end struct type_or_decl_base_comp
 
 /// Abstraction of a function parameter.
 class function_decl::parameter : public decl_base

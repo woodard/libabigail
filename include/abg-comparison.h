@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2016 Red Hat, Inc.
+// Copyright (C) 2013-2017 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -181,6 +181,10 @@ typedef unordered_map<string,
 /// Convenience typedef for a map which value is a diff_sptr.  The key
 /// of the map is the qualified name of the changed type.
 typedef unordered_map<string, diff_sptr> string_diff_sptr_map;
+
+/// Convenience typedef for a map which value is a diff*.  The key of
+/// the map is the qualified name of the changed type.
+typedef unordered_map<string, diff*> string_diff_ptr_map;
 
 /// Convenience typedef for a map whose key is a string and whose
 /// value is a changed variable of type @ref var_diff_sptr.
@@ -423,6 +427,99 @@ operator<<(ostream& o, diff_category);
 
 class corpus_diff;
 
+/// This type contains maps.  Each map associates a type name to a
+/// diff of that type. Not all kinds of diffs are present; only those
+/// that carry leaf changes are, for now.
+class diff_maps
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
+
+public:
+
+  diff_maps();
+
+  const string_diff_ptr_map&
+  get_type_decl_diff_map() const;
+
+  string_diff_ptr_map&
+  get_type_decl_diff_map();
+
+  const string_diff_ptr_map&
+  get_enum_diff_map() const;
+
+  string_diff_ptr_map&
+  get_enum_diff_map();
+
+  const string_diff_ptr_map&
+  get_class_diff_map() const;
+
+  string_diff_ptr_map&
+  get_class_diff_map();
+
+  const string_diff_ptr_map&
+  get_union_diff_map() const;
+
+  string_diff_ptr_map&
+  get_union_diff_map();
+
+  const string_diff_ptr_map&
+  get_typedef_diff_map() const;
+
+  string_diff_ptr_map&
+  get_typedef_diff_map();
+
+  const string_diff_ptr_map&
+  get_array_diff_map() const;
+
+  string_diff_ptr_map&
+  get_array_diff_map();
+
+  const string_diff_ptr_map&
+  get_reference_diff_map() const;
+
+  string_diff_ptr_map&
+  get_reference_diff_map();
+
+  const string_diff_ptr_map&
+  get_fn_parm_diff_map() const;
+
+  string_diff_ptr_map&
+  get_fn_parm_diff_map();
+
+  const string_diff_ptr_map&
+  get_function_type_diff_map() const;
+
+  string_diff_ptr_map&
+  get_function_type_diff_map();
+
+  const string_diff_ptr_map&
+  get_function_decl_diff_map() const;
+
+  string_diff_ptr_map&
+  get_function_decl_diff_map();
+
+  const string_diff_ptr_map&
+  get_var_decl_diff_map() const;
+
+  string_diff_ptr_map&
+  get_var_decl_diff_map();
+
+  const string_diff_ptr_map&
+  get_distinct_diff_map() const;
+
+  string_diff_ptr_map&
+  get_distinct_diff_map();
+
+  bool
+  insert_diff_node(const diff *d,
+		   const type_or_decl_base_sptr& impacted_iface);
+
+  artifact_sptr_set_type*
+  lookup_impacted_interfaces(const diff *d) const;
+}; // end class diff_maps
+
 /// A convenience typedef for a shared pointer to @ref corpus_diff.
 typedef shared_ptr<corpus_diff> corpus_diff_sptr;
 
@@ -473,13 +570,15 @@ public:
   diff_context();
 
   void
-  set_corpora(const corpus_sptr corp1,
-	      const corpus_sptr corp2);
+  set_corpus_diff(const corpus_diff_sptr&);
 
-  const corpus_sptr
+  const corpus_diff_sptr&
+  get_corpus_diff() const;
+
+  corpus_sptr
   get_first_corpus() const;
 
-  const corpus_sptr
+  corpus_sptr
   get_second_corpus() const;
 
   reporter_base_sptr
@@ -528,6 +627,12 @@ public:
   bool
   visiting_a_node_twice_is_forbidden() const;
 
+  void
+  forbid_visiting_a_node_twice_per_interface(bool);
+
+  bool
+  visiting_a_node_twice_is_forbidden_per_interface() const;
+
   diff_category
   get_allowed_category() const;
 
@@ -560,6 +665,12 @@ public:
 
   void
   add_suppressions(const suppr::suppressions_type& supprs);
+
+  void
+  show_leaf_changes_only(bool f);
+
+  bool
+  show_leaf_changes_only() const;
 
   void
   show_relative_offset_changes(bool f);
@@ -650,6 +761,12 @@ public:
 
   void
   show_added_symbols_unreferenced_by_debug_info(bool f);
+
+  bool
+  show_impacted_interfaces() const;
+
+  void
+  show_impacted_interfaces(bool f);
 
   void
   default_output_stream(ostream*);
@@ -1717,6 +1834,7 @@ public:
   chain_into_hierarchy();
 
   friend class default_reporter;
+  friend class leaf_reporter;
 };// end class scope_diff
 
 scope_diff_sptr
@@ -1851,6 +1969,7 @@ public:
   chain_into_hierarchy();
 
   friend class default_reporter;
+  friend class leaf_reporter;
 };// end class function_type_diff
 
 function_type_diff_sptr
@@ -2174,6 +2293,15 @@ public:
   const diff_stats&
   apply_filters_and_suppressions_before_reporting();
 
+  void
+  mark_leaf_diff_nodes();
+
+  diff_maps&
+  get_leaf_diffs();
+
+  const diff_maps&
+  get_leaf_diffs() const;
+
   virtual void
   report(ostream& out, const string& indent = "") const;
 
@@ -2192,6 +2320,7 @@ public:
   apply_suppressions(const corpus_diff* diff_tree);
 
   friend class default_reporter;
+  friend class leaf_reporter;
 }; // end class corpus_diff
 
 corpus_diff_sptr
@@ -2302,6 +2431,14 @@ public:
 
   size_t net_num_removed_var_syms() const;
   size_t net_num_added_var_syms() const;
+
+  size_t num_leaf_changes() const;
+  void num_leaf_changes(size_t);
+
+  size_t num_leaf_changes_filtered_out() const;
+  void num_leaf_changes_filtered_out(size_t);
+
+  size_t net_num_leaf_changes() const;
 }; // end class corpus_diff::diff_stats
 
 /// The base class for the node visitors.  These are the types used to
@@ -2309,50 +2446,30 @@ public:
 class diff_node_visitor : public node_visitor_base
 {
 protected:
-  visiting_kind visiting_kind_;
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
 
 public:
 
-  /// Default constructor of the @ref diff_node_visitor type.
-  diff_node_visitor()
-    : visiting_kind_()
-  {}
+  diff_node_visitor();
 
-  /// Constructor of the @ref diff_node_visitor type.
-  ///
-  /// @param k how the visiting has to be performed.
-  diff_node_visitor(visiting_kind k)
-    : visiting_kind_(k)
-  {}
+  diff_node_visitor(visiting_kind k);
 
-  /// Getter for the visiting policy of the traversing code while
-  /// invoking this visitor.
-  ///
-  /// @return the visiting policy used by the traversing code when
-  /// invoking this visitor.
   visiting_kind
-  get_visiting_kind() const
-  {return visiting_kind_;}
+  get_visiting_kind() const;
 
-  /// Setter for the visiting policy of the traversing code while
-  /// invoking this visitor.
-  ///
-  /// @param v a bit map representing the new visiting policy used by
-  /// the traversing code when invoking this visitor.
   void
-  set_visiting_kind(visiting_kind v)
-  {visiting_kind_ = v;}
+  set_visiting_kind(visiting_kind v);
 
-  /// Setter for the visiting policy of the traversing code while
-  /// invoking this visitor.  This one makes a logical or between the
-  /// current policy and the bitmap given in argument and assigns the
-  /// current policy to the result.
-  ///
-  /// @param v a bitmap representing the visiting policy to or with
-  /// the current policy.
   void
-  or_visiting_kind(visiting_kind v)
-  {visiting_kind_ = visiting_kind_ | v;}
+  or_visiting_kind(visiting_kind v);
+
+  void
+  set_current_topmost_iface_diff(diff*);
+
+  diff*
+  get_current_topmost_iface_diff() const;
 
   virtual void
   visit_begin(diff*);
@@ -2496,17 +2613,29 @@ is_type_diff(const diff* diff);
 const decl_diff_base*
 is_decl_diff(const diff* diff);
 
-bool
+const type_decl_diff*
 is_diff_of_basic_type(const diff* diff);
 
 bool
 has_basic_type_change_only(const diff* diff);
+
+const enum_diff*
+is_enum_diff(const diff *diff);
 
 const class_diff*
 is_class_diff(const diff* diff);
 
 const union_diff*
 is_union_diff(const diff* diff);
+
+const array_diff*
+is_array_diff(const diff* diff);
+
+const function_type_diff*
+is_function_type_diff(const diff* diff);
+
+const typedef_diff*
+is_typedef_diff(const diff *diff);
 
 const var_diff*
 is_var_diff(const diff* diff);
@@ -2529,11 +2658,17 @@ is_fn_parm_diff(const diff* diff);
 const base_diff*
 is_base_diff(const diff* diff);
 
+const distinct_diff*
+is_distinct_diff(const diff *diff);
+
 bool
 is_child_node_of_function_parm_diff(const diff* diff);
 
 bool
 is_child_node_of_base_diff(const diff* diff);
+
+const corpus_diff*
+is_corpus_diff(const diff* diff);
 
 }// end namespace comparison
 

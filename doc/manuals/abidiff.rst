@@ -330,6 +330,68 @@ Options
 
     Do not emit the path attribute for the ABI corpus.
 
+  * ``--leaf-changes-only|-l`` only show leaf changes, so don't show
+    impact analysis report.
+
+    The typical output of abidiff when comparing two binaries looks
+    like this ::
+
+	$ abidiff libtest-v0.so libtest-v1.so
+	Functions changes summary: 0 Removed, 1 Changed, 0 Added function
+	Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+
+	1 function with some indirect sub-type change:
+
+	  [C]'function void fn(C&)' at test-v1.cc:13:1 has some indirect sub-type changes:
+	    parameter 1 of type 'C&' has sub-type changes:
+	      in referenced type 'struct C' at test-v1.cc:7:1:
+		type size hasn't changed
+		1 data member change:
+		 type of 'leaf* C::m0' changed:
+		   in pointed to type 'struct leaf' at test-v1.cc:1:1:
+		     type size changed from 32 to 64 bits
+		     1 data member insertion:
+		       'char leaf::m1', at offset 32 (in bits) at test-v1.cc:4:1
+
+	$
+
+    So in that example the report emits information about how the data
+    member insertion change of "struct leaf" is reachable from
+    function "void fn(C&)".  In other words, the report not only shows
+    the data member change on "struct leaf", but it also shows the
+    impact of that change on the function "void fn(C&)".
+
+    In abidiff parlance, the change on "struct leaf" is called a leaf
+    change.  So the ``--leaf-changes-only --impacted-interfaces``
+    options show, well, only the leaf change.  And it goes like this:
+    ::
+
+	$ abidiff -l libtest-v0.so libtest-v1.so
+	'struct leaf' changed:
+	  type size changed from 32 to 64 bits
+	  1 data member insertion:
+	    'char leaf::m1', at offset 32 (in bits) at test-v1.cc:4:1
+
+	  one impacted interface:
+	    function void fn(C&)
+	$
+
+    Note how the report ends by showing the list of interfaces
+    impacted by the leaf change.
+
+    Now if you don't want to see that list of impacted interfaces,
+    then you can just avoid using the ``--impacted-interface`` option.
+    You can learn about that option below, in any case.
+
+
+  * ``--impacted-interfaces``
+
+    When showing leaf changes, this option instructs abidiff to show
+    the list of impacted interfaces.  This option is thus to be used
+    in addition the ``--leaf-changes-only`` option, otherwise, it's
+    ignored.
+
+
   *  ``--dump-diff-tree``
 
     After the diff report, emit a textual representation of the diff

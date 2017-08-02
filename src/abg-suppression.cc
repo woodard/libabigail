@@ -248,8 +248,8 @@ sonames_of_binaries_match(const suppression_base& suppr,
 			  const diff_context& ctxt)
 {
   // Check if the sonames of the binaries match
-  string first_soname = ctxt.get_first_corpus()->get_soname(),
-    second_soname = ctxt.get_second_corpus()->get_soname();
+  string first_soname = ctxt.get_corpus_diff()->first_corpus()->get_soname(),
+    second_soname = ctxt.get_corpus_diff()->second_corpus()->get_soname();
 
   if (!suppr.priv_->matches_soname(first_soname)
       && !suppr.priv_->matches_soname(second_soname))
@@ -275,8 +275,8 @@ names_of_binaries_match(const suppression_base& suppr,
 			const diff_context &ctxt)
 {
    // Check if the file names of the binaries match
-  string first_binary_path = ctxt.get_first_corpus()->get_path(),
-    second_binary_path = ctxt.get_second_corpus()->get_path();
+  string first_binary_path = ctxt.get_corpus_diff()->first_corpus()->get_path(),
+    second_binary_path = ctxt.get_corpus_diff()->second_corpus()->get_path();
 
   if (!suppr.priv_->matches_binary_name(first_binary_path)
       && !suppr.priv_->matches_binary_name(second_binary_path))

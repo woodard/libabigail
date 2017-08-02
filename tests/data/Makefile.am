@@ -635,6 +635,11 @@ test-diff-filter/test40-v1.cc \
 test-diff-filter/test41-PR21486-abg-writer.gcc.o \
 test-diff-filter/test41-PR21486-abg-writer.llvm.o \
 test-diff-filter/test41-report-0.txt \
+test-diff-filter/libtest42-leaf-report-v0.so \
+test-diff-filter/libtest42-leaf-report-v1.so \
+test-diff-filter/test42-leaf-report-output-0.txt \
+test-diff-filter/test42-leaf-report-v0.cc \
+test-diff-filter/test42-leaf-report-v1.cc \
 \
 test-diff-suppr/test0-type-suppr-v0.cc	\
 test-diff-suppr/test0-type-suppr-v1.cc	\
@@ -1086,6 +1091,17 @@ test-diff-suppr/test34-pub-include-dir-v1/test34-pub-include-v1.h \
 test-diff-suppr/test34-report-0.txt \
 test-diff-suppr/test34-v0.c \
 test-diff-suppr/test34-v1.c \
+test-diff-suppr/libtest35-leaf-v0.so \
+test-diff-suppr/libtest35-leaf-v1.so \
+test-diff-suppr/test35-leaf-report-0.txt \
+test-diff-suppr/test35-leaf-v0.cc \
+test-diff-suppr/test35-leaf-v1.cc \
+test-diff-suppr/test35-leaf.suppr \
+test-diff-suppr/libtest36-leaf-v0.so \
+test-diff-suppr/libtest36-leaf-v1.so \
+test-diff-suppr/test36-leaf-report-0.txt \
+test-diff-suppr/test36-leaf-v0.cc \
+test-diff-suppr/test36-leaf-v1.cc \
 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1.abi \

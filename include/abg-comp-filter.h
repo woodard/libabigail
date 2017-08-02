@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2016 Red Hat, Inc.
+// Copyright (C) 2013-2017 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -48,6 +48,9 @@ has_virtual_mem_fn_change(const function_decl_diff* diff);
 bool
 has_class_decl_only_def_change(const class_or_union_sptr& first,
 			       const class_or_union_sptr& second);
+
+bool
+has_basic_type_name_change(const diff *);
 
 struct filter_base;
 /// Convenience typedef for a shared pointer to filter_base

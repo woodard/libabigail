@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2017 Red Hat, Inc.
+// Copyright (C) 2017 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -181,6 +181,51 @@ default_reporter::report(const enum_diff& d, ostream& out,
 	}
       out << "\n\n";
     }
+
+  if (d.context()->show_leaf_changes_only())
+    maybe_report_interfaces_impacted_by_diff(&d, out, indent,
+					     /*new_line_prefix=*/false);
+}
+
+/// For a @ref typedef_diff node, report the changes that are local.
+///
+/// @param d the @ref typedef_diff node to consider.
+///
+/// @param out the output stream to report to.
+///
+/// @param indent the white space string to use for indentation.
+///
+/// @return true iff the caller needs to emit a newline to the output
+/// stream before emitting anything else.
+bool
+default_reporter::report_local_typedef_changes(const typedef_diff &d,
+					       ostream& out,
+					       const string& indent) const
+{
+  if (!d.to_be_reported())
+    return false;
+
+  bool emit_nl = false;
+  typedef_decl_sptr f = d.first_typedef_decl(), s = d.second_typedef_decl();
+
+  maybe_report_diff_for_member(f, s, d.context(), out, indent);
+
+  if (filtering::has_harmless_name_change(f, s)
+      && ((d.context()->get_allowed_category()
+	   & HARMLESS_DECL_NAME_CHANGE_CATEGORY)
+	  ||
+	  d.context()->show_leaf_changes_only()))
+    {
+      out << indent << "typedef name changed from "
+	  << f->get_qualified_name()
+          << " to "
+	  << s->get_qualified_name();
+      report_loc_info(s, *d.context(), out);
+      out << "\n";
+      emit_nl = true;
+    }
+
+  return emit_nl;
 }
 
 /// Reports the difference between the two subjects of the diff in a
@@ -192,31 +237,17 @@ default_reporter::report(const enum_diff& d, ostream& out,
 ///
 /// @param indent the indentation string to use.
 void
-default_reporter::report(const typedef_diff& d, ostream& out,
+default_reporter::report(const typedef_diff& d,
+			 ostream& out,
 			 const string& indent) const
 {
   if (!d.to_be_reported())
     return;
 
-  bool emit_nl = false;
   typedef_decl_sptr f = d.first_typedef_decl(), s = d.second_typedef_decl();
-
   RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER(f, s);
 
-  maybe_report_diff_for_member(f, s, d.context(), out, indent);
-
-  if (filtering::has_harmless_name_change(f, s)
-      && (d.context()->get_allowed_category()
-	  & HARMLESS_DECL_NAME_CHANGE_CATEGORY))
-    {
-      out << indent << "typedef name changed from "
-	  << f->get_qualified_name()
-          << " to "
-	  << s->get_qualified_name();
-      report_loc_info(s, *d.context(), out);
-      out << "\n";
-      emit_nl = true;
-    }
+  bool emit_nl = report_local_typedef_changes(d, out, indent);
 
   diff_sptr dif = d.underlying_type_diff();
   if (dif && dif->to_be_reported())
@@ -235,6 +266,36 @@ default_reporter::report(const typedef_diff& d, ostream& out,
     out << "\n";
 }
 
+/// For a @ref qualified_type_diff node, report the changes that are
+/// local.
+///
+/// @param d the @ref qualified_type_diff node to consider.
+///
+/// @param out the output stream to emit the report to.
+///
+/// @param indent the white string to use for indentation.
+///
+/// @return true iff a local change has been emitted.  In this case,
+/// the local change is a name change.
+bool
+default_reporter::report_local_qualified_type_changes(const qualified_type_diff& d,
+						      ostream& out,
+						      const string& indent) const
+{
+  if (!d.to_be_reported())
+    return false;
+
+  string fname = d.first_qualified_type()->get_pretty_representation(),
+    sname = d.second_qualified_type()->get_pretty_representation();
+
+  if (fname != sname)
+    {
+      out << indent << "'" << fname << "' changed to '" << sname << "'\n";
+      return true;
+    }
+  return false;
+}
+
 /// Report a @ref qualified_type_diff in a serialized form.
 ///
 /// @param d the @ref qualified_type_diff node to consider.
@@ -249,17 +310,14 @@ default_reporter::report(const qualified_type_diff& d, ostream& out,
   if (!d.to_be_reported())
     return;
 
-  string fname = d.first_qualified_type()->get_pretty_representation(),
-    sname = d.second_qualified_type()->get_pretty_representation();
-
   RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER(d.first_qualified_type(),
 						   d.second_qualified_type());
 
-  if (fname != sname)
-    {
-      out << indent << "'" << fname << "' changed to '" << sname << "'\n";
-      return;
-    }
+  if (report_local_qualified_type_changes(d, out, indent))
+    // The local change was emitted and it's a name change.  If the
+    // type name changed, the it means the type changed altogether.
+    // It makes a little sense to detail the changes in extenso here.
+    return;
 
   diff_sptr dif = d.leaf_underlying_type_diff();
   assert(dif);
@@ -305,16 +363,18 @@ default_reporter::report(const pointer_diff& d, ostream& out,
     }
 }
 
-/// Report a @ref reference_diff in a serialized form.
+/// For a @reference_diff node, report the local changes carried by
+/// the diff node.
 ///
-/// @param d the @ref reference_diff node to consider.
+/// @param d the @reference_diff node to consider.
 ///
-/// @param out the output stream to serialize the dif to.
+/// @param out the output stream to report to.
 ///
-/// @param indent the string to use for indenting the report.
+/// @param indent the white space indentation to use in the report.
 void
-default_reporter::report(const reference_diff& d, ostream& out,
-			 const string& indent) const
+default_reporter::report_local_reference_type_changes(const reference_diff& d,
+						      ostream& out,
+						      const string& indent) const
 {
   if (!d.to_be_reported())
     return;
@@ -340,6 +400,23 @@ default_reporter::report(const reference_diff& d, ostream& out,
 	    << s_repr
 	    << "'\n";
     }
+}
+
+/// Report a @ref reference_diff in a serialized form.
+///
+/// @param d the @ref reference_diff node to consider.
+///
+/// @param out the output stream to serialize the dif to.
+///
+/// @param indent the string to use for indenting the report.
+void
+default_reporter::report(const reference_diff& d, ostream& out,
+			 const string& indent) const
+{
+  if (!d.to_be_reported())
+    return;
+
+  report_local_reference_type_changes(d, out, indent);
 
   if (diff_sptr dif = d.underlying_type_diff())
     {
@@ -394,16 +471,19 @@ default_reporter::report(const fn_parm_diff& d, ostream& out,
     }
 }
 
-/// Build and emit a textual report about a @ref function_type_diff.
+/// For a @ref function_type_diff node, report the local changes
+/// carried by the diff node.
 ///
-/// @param d the @ref function_type_diff to consider.
+/// @param d the @ref function_type_diff node to consider.
 ///
-/// @param out the output stream.
+/// @param out the output stream to report to.
 ///
-/// @param indent the indentation string to use.
+/// @param indent the white space indentation string to use.
 void
-default_reporter::report(const function_type_diff& d, ostream& out,
-			 const string& indent) const
+default_reporter::report_local_function_type_changes(const function_type_diff& d,
+						     ostream& out,
+						     const string& indent) const
+
 {
   if (!d.to_be_reported())
     return;
@@ -412,8 +492,6 @@ default_reporter::report(const function_type_diff& d, ostream& out,
   function_type_sptr sft = d.second_function_type();
 
   diff_context_sptr ctxt = d.context();
-  corpus_sptr fc = ctxt->get_first_corpus();
-  corpus_sptr sc = ctxt->get_second_corpus();
 
   // Report about the size of the function address
   if (fft->get_size_in_bits() != sft->get_size_in_bits())
@@ -436,41 +514,9 @@ default_reporter::report(const function_type_diff& d, ostream& out,
 	  << " bits\n";
     }
 
-  // Report about return type differences.
-  if (d.priv_->return_type_diff_
-      && d.priv_->return_type_diff_->to_be_reported())
-    {
-      out << indent << "return type changed:\n";
-      d.priv_->return_type_diff_->report(out, indent + "  ");
-    }
-
   // Hmmh, the above was quick.  Now report about function parameters;
   // this shouldn't be as straightforward.
-  //
-  // Report about the parameter types that have changed sub-types.
-  for (vector<fn_parm_diff_sptr>::const_iterator i =
-	 d.priv_->sorted_subtype_changed_parms_.begin();
-       i != d.priv_->sorted_subtype_changed_parms_.end();
-       ++i)
-    {
-      diff_sptr dif = *i;
-      if (dif && dif->to_be_reported())
-	dif->report(out, indent);
-    }
 
-  // Report about parameters that have changed, while staying
-  // compatible -- otherwise they would have changed the mangled name
-  // of the function and the function would have been reported as
-  // removed.
-  for (vector<fn_parm_diff_sptr>::const_iterator i =
-	 d.priv_->sorted_changed_parms_by_id_.begin();
-       i != d.priv_->sorted_changed_parms_by_id_.end();
-       ++i)
-    {
-      diff_sptr dif = *i;
-      if (dif && dif->to_be_reported())
-	dif->report(out, indent);
-    }
 
   // Report about the parameters that got removed.
   bool emitted = false;
@@ -502,6 +548,50 @@ default_reporter::report(const function_type_diff& d, ostream& out,
 
   if (emitted)
     out << "\n";
+}
+
+/// Build and emit a textual report about a @ref function_type_diff.
+///
+/// @param d the @ref function_type_diff to consider.
+///
+/// @param out the output stream.
+///
+/// @param indent the indentation string to use.
+void
+default_reporter::report(const function_type_diff& d, ostream& out,
+			 const string& indent) const
+{
+  if (!d.to_be_reported())
+    return;
+
+  function_type_sptr fft = d.first_function_type();
+  function_type_sptr sft = d.second_function_type();
+
+  diff_context_sptr ctxt = d.context();
+  corpus_sptr fc = ctxt->get_first_corpus();
+  corpus_sptr sc = ctxt->get_second_corpus();
+
+  // Report about return type differences.
+  if (d.priv_->return_type_diff_
+      && d.priv_->return_type_diff_->to_be_reported())
+    {
+      out << indent << "return type changed:\n";
+      d.priv_->return_type_diff_->report(out, indent + "  ");
+    }
+
+  // Report about the parameter types that have changed sub-types.
+  for (vector<fn_parm_diff_sptr>::const_iterator i =
+	 d.priv_->sorted_subtype_changed_parms_.begin();
+       i != d.priv_->sorted_subtype_changed_parms_.end();
+       ++i)
+    {
+      diff_sptr dif = *i;
+      if (dif && dif->to_be_reported())
+	dif->report(out, indent);
+    }
+
+  report_local_function_type_changes(d, out, indent);
+
 }
 
 /// Report a @ref array_diff in a serialized form.
@@ -1352,7 +1442,7 @@ default_reporter::report(const distinct_diff& d, ostream& out,
   type_base_sptr fs = strip_typedef(is_type(f)),
     ss = strip_typedef(is_type(s));
 
-  if (diff_sptr diff = d.compatible_child_diff())
+  if (diff)
     diff->report(out, indent + "  ");
   else
     if (report_size_and_alignment_changes(f, s, d.context(), out, indent,
@@ -1385,6 +1475,7 @@ default_reporter::report(const function_decl_diff& d, ostream& out,
   diff_context_sptr ctxt = d.context();
   corpus_sptr fc = ctxt->get_first_corpus();
   corpus_sptr sc = ctxt->get_second_corpus();
+
 
   string qn1 = ff->get_qualified_name(), qn2 = sf->get_qualified_name(),
     linkage_names1, linkage_names2;
