@@ -374,6 +374,8 @@ test-read-dwarf/libtest24-drop-fns.so \
 test-read-dwarf/libtest24-drop-fns.so.abi \
 test-read-dwarf/test24-drop-fns-0.suppr \
 test-read-dwarf/test24-drop-fns.cc \
+test-read-dwarf/PR22015-libboost_iostreams.so \
+test-read-dwarf/PR22015-libboost_iostreams.so.abi \
 \
 test-annotate/test0.abi			\
 test-annotate/test1.abi			\

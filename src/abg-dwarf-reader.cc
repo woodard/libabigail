@@ -11835,11 +11835,14 @@ get_scope_for_die(read_context& ctxt,
       // For top level DIEs like DW_TAG_compile_unit, we just want to
       // return the global scope for the corresponding translation
       // unit.  This must have been set by
-      // build_translation_unit_and_add_to_ir.
+      // build_translation_unit_and_add_to_ir if we already started to
+      // build the translation unit of parent_die.  Otherwise, just
+      // return the global scope of the current translation unit.
       die_tu_map_type::const_iterator i =
 	ctxt.die_tu_map().find(dwarf_dieoffset(&parent_die));
-      assert(i != ctxt.die_tu_map().end());
-      return i->second->get_global_scope();
+      if (i != ctxt.die_tu_map().end())
+	return i->second->get_global_scope();
+      return ctxt.cur_transl_unit()->get_global_scope();
     }
 
   scope_decl_sptr s;

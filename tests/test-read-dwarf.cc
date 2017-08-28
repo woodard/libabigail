@@ -216,6 +216,12 @@ InOutSpec in_out_specs[] =
     "data/test-read-dwarf/libtest24-drop-fns-2.so.abi",
     "output/test-read-dwarf/libtest24-drop-fns-2.so.abi",
   },
+  {
+    "data/test-read-dwarf/PR22015-libboost_iostreams.so",
+    "",
+    "data/test-read-dwarf/PR22015-libboost_iostreams.so.abi",
+    "output/test-read-dwarf/PR22015-libboost_iostreams.so.abi",
+  },
   // This should be the last entry.
   {NULL, NULL, NULL, NULL}
 };
