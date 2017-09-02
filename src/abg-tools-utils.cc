@@ -29,6 +29,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctype.h>
+#include <errno.h>
 #include <libgen.h>
 #include <ext/stdio_filebuf.h> // For __gnu_cxx::stdio_filebuf
 #include <fstream>
@@ -209,13 +210,14 @@ dir_is_empty(const string &path)
   if (!dir)
     return false;
 
-  dirent entry, *result = 0;
-  if (readdir_r(dir, &entry, &result))
+  errno = 0;
+  dirent *result = readdir(dir);
+  if (result == NULL && errno != 0)
     return false;
 
   closedir(dir);
 
-  return result == 0;
+  return result == NULL;
 }
 
 /// Test if path is a path to a regular file or a symbolic link to a
