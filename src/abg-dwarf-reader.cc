@@ -356,8 +356,8 @@ die_is_at_class_scope(const read_context& ctxt,
 		      Dwarf_Die& class_scope_die);
 static bool
 eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
-				  size_t	expr_len,
-				  ssize_t&	value,
+				  uint64_t	expr_len,
+				  int64_t&	value,
 				  bool&	is_tls_address);
 
 static translation_unit::language
