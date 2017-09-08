@@ -13211,7 +13211,12 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
     {
       result = false;
       if (k)
-	*k |= SUBTYPE_CHANGE_KIND;
+	{
+	  if (!equals(*l.get_naked_type(), *r.get_naked_type(), 0))
+	    *k |= LOCAL_CHANGE_KIND;
+	  else
+	    *k |= SUBTYPE_CHANGE_KIND;
+	}
       else
 	return false;
     }
