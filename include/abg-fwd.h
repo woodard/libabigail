@@ -804,7 +804,7 @@ string
 get_pretty_representation(const type_base*, bool internal = false);
 
 string
-get_pretty_representation(const type_or_decl_base*,bool internal = false);
+get_pretty_representation(const type_or_decl_base*, bool internal = false);
 
 string
 get_pretty_representation(const type_or_decl_base_sptr&,

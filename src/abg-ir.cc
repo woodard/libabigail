@@ -5269,7 +5269,7 @@ get_string_representation_of_cv_quals(const qualified_type_def::CV cv_quals)
 }
 
 /// Build and return a copy of the name of an ABI artifact that is
-/// either a type of a decl.
+/// either a type or a decl.
 ///
 /// @param tod the ABI artifact to get the name for.
 ///
