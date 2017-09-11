@@ -6730,8 +6730,10 @@ sort_string_base_diff_sptr_map(const string_base_diff_sptr_map& map,
 }
 
 /// A comparison functor to compare two instances of @ref var_diff
-/// that represent changed data members based on the offset of their
-/// initial value.
+/// that represent changed data members based on the offset of the
+/// initial data members, or if equal, based on their qualified name.
+/// If equal again, then the offset and qualified name of the new data
+/// members are considered.
 struct data_member_diff_comp
 {
   /// @param f the first change to data member to take into account
@@ -6749,7 +6751,44 @@ struct data_member_diff_comp
     assert(is_data_member(first_dm));
     assert(is_data_member(second_dm));
 
-    return get_data_member_offset(first_dm) < get_data_member_offset(second_dm);
+    size_t off1 = get_data_member_offset(first_dm);
+    size_t off2 = get_data_member_offset(second_dm);
+
+    if (off1 != off2)
+      return off1 < off2;
+
+    // The two offsets of the initial data members are the same.  So
+    // lets compare the qualified name of these initial data members.
+
+    string name1 = first_dm->get_qualified_name();
+    string name2 = second_dm->get_qualified_name();
+
+    if (name1 != name2)
+      return name1 < name2;
+
+    // The offsets and the qualified names of the initial data members
+    // are the same.  Let's now compare the offsets of the *new* data
+    // members.
+
+    first_dm = f->second_var();
+    second_dm = s->second_var();
+
+    assert(is_data_member(first_dm));
+    assert(is_data_member(second_dm));
+
+    off1 = get_data_member_offset(first_dm);
+    off2 = get_data_member_offset(second_dm);
+
+    if (off1 != off2)
+      return off1 < off2;
+
+    // The offsets of the new data members are the same, dang!  Let's
+    // compare the qualified names of these new data members then.
+
+    name1 = first_dm->get_qualified_name();
+    name2 = second_dm->get_qualified_name();
+
+    return name1 < name2;
   }
 }; // end struct var_diff_comp
 
