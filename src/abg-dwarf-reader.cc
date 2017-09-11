@@ -8629,14 +8629,34 @@ die_is_reference_type(Dwarf_Die* die)
   return false;
 }
 
-/// Test if a DIE represents a pointer or reference type.
+/// Test if a DIE represents an array type.
+///
+/// @param die the die to consider.
+///
+/// @return true iff @p die represents an array type.
+static bool
+die_is_array_type(Dwarf_Die* die)
+{
+  if (!die)
+    return false;
+
+  int tag = dwarf_tag(die);
+  if (tag == DW_TAG_array_type)
+    return true;
+
+  return false;
+}
+
+/// Test if a DIE represents a pointer, reference or array type.
 ///
 /// @param die the die to consider.
 ///
 /// @return true iff @p die represents a pointer or reference type.
 static bool
 die_is_pointer_or_reference_type(Dwarf_Die* die)
-{return (die_is_pointer_type(die) || die_is_reference_type(die));}
+{return (die_is_pointer_type(die)
+	 || die_is_reference_type(die)
+	 || die_is_array_type(die));}
 
 /// Test if a DIE represents a class type.
 ///
