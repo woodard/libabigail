@@ -123,6 +123,101 @@ Options
     Compare ELF files that are shared libraries, only.  Do not compare
     executable files, for instance.
 
+  * ``--leaf-changes-only|-l`` only show leaf changes, so don't show
+    impact analysis report.
+
+    The typical output of ``abipkgdiff`` and ``abidiff`` when
+    comparing two binaries, that we shall call ``full impact report``,
+    looks like this ::
+
+	$ abidiff libtest-v0.so libtest-v1.so
+	Functions changes summary: 0 Removed, 1 Changed, 0 Added function
+	Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+
+	1 function with some indirect sub-type change:
+
+	  [C]'function void fn(C&)' at test-v1.cc:13:1 has some indirect sub-type changes:
+	    parameter 1 of type 'C&' has sub-type changes:
+	      in referenced type 'struct C' at test-v1.cc:7:1:
+		type size hasn't changed
+		1 data member change:
+		 type of 'leaf* C::m0' changed:
+		   in pointed to type 'struct leaf' at test-v1.cc:1:1:
+		     type size changed from 32 to 64 bits
+		     1 data member insertion:
+		       'char leaf::m1', at offset 32 (in bits) at test-v1.cc:4:1
+
+	$
+
+    So in that example the report emits information about how the data
+    member insertion change of "struct leaf" is reachable from
+    function "void fn(C&)".  In other words, the report not only shows
+    the data member change on "struct leaf", but it also shows the
+    impact of that change on the function "void fn(C&)".
+
+    In abidiff (and abipkgdiff) parlance, the change on "struct leaf"
+    is called a leaf change.  So the ``--leaf-changes-only
+    --impacted-interfaces`` options show, well, only the leaf change.
+    And it goes like this: ::
+
+	$ abidiff -l libtest-v0.so libtest-v1.so
+	'struct leaf' changed:
+	  type size changed from 32 to 64 bits
+	  1 data member insertion:
+	    'char leaf::m1', at offset 32 (in bits) at test-v1.cc:4:1
+
+	  one impacted interface:
+	    function void fn(C&)
+	$
+
+    Note how the report ends up by showing the list of interfaces
+    impacted by the leaf change.  That's the effect of the additional
+    ``--impacted-interfaces`` option.
+
+    Now if you don't want to see that list of impacted interfaces,
+    then you can just avoid using the ``--impacted-interface`` option.
+    You can learn about that option below, in any case.
+
+    Please note that when comparing two Linux Kernel packages, it's
+    this ``leaf changes report`` that is emitted, by default.  The
+    normal so-called ``full impact report`` can be emitted with the
+    option ``--full-impact`` which is documented later below.
+
+
+  * ``--impacted-interfaces``
+
+    When showing leaf changes, this option instructs abipkgdiff to
+    show the list of impacted interfaces.  This option is thus to be
+    used in addition to the ``--leaf-changes-only`` option, or, when
+    comparing two Linux Kernel packages.  Otherwise, it's simply
+    ignored.
+
+  * ``--full-impact|-f``
+
+    When comparing two Linux Kernel packages, this function instructs
+    ``abipkgdiff`` to emit the so-called ``full impact report``, which
+    is the default report kind emitted by the ``abidiff`` tool: ::
+
+	$ abidiff libtest-v0.so libtest-v1.so
+	Functions changes summary: 0 Removed, 1 Changed, 0 Added function
+	Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+
+	1 function with some indirect sub-type change:
+
+	  [C]'function void fn(C&)' at test-v1.cc:13:1 has some indirect sub-type changes:
+	    parameter 1 of type 'C&' has sub-type changes:
+	      in referenced type 'struct C' at test-v1.cc:7:1:
+		type size hasn't changed
+		1 data member change:
+		 type of 'leaf* C::m0' changed:
+		   in pointed to type 'struct leaf' at test-v1.cc:1:1:
+		     type size changed from 32 to 64 bits
+		     1 data member insertion:
+		       'char leaf::m1', at offset 32 (in bits) at test-v1.cc:4:1
+
+	$
+
+
   *  ``--redundant``
 
     In the diff reports, do display redundant changes.  A redundant
@@ -199,6 +294,10 @@ Options
     provided -- then the ABI of all publicly defined and exported
     functions and global variables by the Linux Kernel binaries are
     compared.
+
+    Please note that if a white list package is given in parameter,
+    this option handles it just fine, like if the --wp option was
+    used.
 
   * ``--wp`` <*path-to-whitelist-package*>
 

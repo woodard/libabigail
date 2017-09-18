@@ -1339,6 +1339,7 @@ test-diff-pkg/spice-server-devel-0.12.8-1.el7.x86_64.rpm \
 test-diff-pkg/spice-server-0.12.4-19.el7.x86_64-0.12.8-1.el7.x86_64-report-0.txt \
 test-diff-pkg/spice-server-0.12.4-19.el7.x86_64-0.12.8-1.el7.x86_64-report-1.txt \
 test-diff-pkg/spice-server-0.12.4-19.el7.x86_64-0.12.8-1.el7.x86_64-report-2.txt \
+test-diff-pkg/spice-server-0.12.4-19.el7.x86_64-0.12.8-1.el7.x86_64-report-3.txt \
 test-diff-pkg/libcdio-0.94-1.fc26.x86_64--libcdio-0.94-2.fc26.x86_64-report.1.txt \
 test-diff-pkg/libcdio-0.94-1.fc26.x86_64.rpm \
 test-diff-pkg/libcdio-0.94-2.fc26.x86_64.rpm \

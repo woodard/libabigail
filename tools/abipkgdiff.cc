@@ -159,6 +159,9 @@ public:
   bool		no_default_suppression;
   bool		keep_tmp_files;
   bool		compare_dso_only;
+  bool		leaf_changes_only;
+  bool		show_impacted_interfaces;
+  bool		show_full_impact_report;
   bool		show_linkage_names;
   bool		show_redundant_changes;
   bool		show_harmless_changes;
@@ -187,6 +190,9 @@ public:
       no_default_suppression(),
       keep_tmp_files(),
       compare_dso_only(),
+      leaf_changes_only(),
+      show_impacted_interfaces(),
+      show_full_impact_report(),
       show_linkage_names(true),
       show_redundant_changes(),
       show_harmless_changes(),
@@ -646,6 +652,12 @@ display_usage(const string& prog_name, ostream& out)
     << " --wp <path>                    path to a linux kernel abi whitelist package\n"
     << " --keep-tmp-files               don't erase created temporary files\n"
     << " --dso-only                     compare shared libraries only\n"
+    << " --leaf-changes-only|-l  only show leaf changes, "
+    "so no change impact analysis\n"
+    << "  --impacted-interfaces|-i when in leaf mode, show "
+    "interfaces impacted by ABI changes\n"
+    << "  --full-impact|-f  when comparing kernel packages, show the "
+    "full impact analysis report rather than the default leaf changes reports\n"
     << " --no-linkage-name		do not display linkage names of "
     "added/removed/changed\n"
     << " --redundant                    display redundant changes\n"
@@ -978,6 +990,8 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
 {
   ctxt->default_output_stream(&cout);
   ctxt->error_output_stream(&cerr);
+  ctxt->show_leaf_changes_only(opts.leaf_changes_only);
+  ctxt->show_impacted_interfaces(opts.show_impacted_interfaces);
   ctxt->show_relative_offset_changes(opts.show_relative_offset_changes);
   ctxt->show_redundant_changes(opts.show_redundant_changes);
   ctxt->show_locs(opts.show_locs);
@@ -2406,6 +2420,15 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.keep_tmp_files = true;
       else if (!strcmp(argv[i], "--dso-only"))
 	opts.compare_dso_only = true;
+      else if (!strcmp(argv[i], "--leaf-changes-only")
+	       ||!strcmp(argv[i], "-l"))
+	opts.leaf_changes_only = true;
+      else if (!strcmp(argv[i], "--impacted-interfaces")
+	       ||!strcmp(argv[i], "-i"))
+	opts.show_impacted_interfaces = true;
+      else if (!strcmp(argv[i], "--full-impact")
+	       ||!strcmp(argv[i], "-f"))
+	opts.show_full_impact_report = true;
       else if (!strcmp(argv[i], "--no-linkage-name"))
 	opts.show_linkage_names = false;
       else if (!strcmp(argv[i], "--redundant"))
@@ -2451,7 +2474,15 @@ parse_command_line(int argc, char* argv[], options& opts)
 	      opts.wrong_option = argv[i];
 	      return true;
 	    }
-	  opts.kabi_whitelist_paths.push_back(argv[j]);
+	  if (guess_file_type(argv[j]) == abigail::tools_utils::FILE_TYPE_RPM)
+	    // The kernel abi whitelist is actually a whitelist
+	    // *package*.  Take that into account.
+	    opts.kabi_whitelist_packages.push_back
+	      (make_path_absolute(argv[j]).get());
+	  else
+	    // We assume the kernel abi whitelist is a white list
+	    // file.
+	    opts.kabi_whitelist_paths.push_back(argv[j]);
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--wp"))
@@ -2661,6 +2692,16 @@ main(int argc, char* argv[])
 	      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 		      | abigail::tools_utils::ABIDIFF_ERROR);
 	    }
+	  // We are looking at kernel packages.  If the user provided
+	  // the --full-impact option then it means we want to display
+	  // the default libabigail report format where a full impact
+	  // analysis is done for each ABI change.
+	  //
+	  // Otherwise, let's just emit the leaf change report.
+	  if (opts.show_full_impact_report)
+	    opts.leaf_changes_only = false;
+	  else
+	    opts.leaf_changes_only = true;
 	}
 
       break;
