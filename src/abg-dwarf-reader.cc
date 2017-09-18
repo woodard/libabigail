@@ -13041,6 +13041,13 @@ add_or_update_class_type(read_context&	 ctxt,
 	      if (!t)
 		continue;
 
+	      // The call to build_ir_node_from_die above could have
+	      // triggered the adding of a data member named 'n' into
+	      // result.  So let's check again if the variable is
+	      // already a member of this class.
+	      if (lookup_var_decl_in_scope(n, result))
+		continue;
+
 	      if (!is_static)
 		// We have a non-static data member.  So this class
 		// cannot be a declaration-only class anymore, even if
