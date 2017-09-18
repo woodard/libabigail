@@ -17653,8 +17653,7 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	    result = false;
 	    if (k)
 	      *k |= SUBTYPE_CHANGE_KIND;
-	    else
-	      RETURN(result);
+	    RETURN(result);
 	  }
 
 	const class_decl::member_functions& second_vfns =
