@@ -116,6 +116,7 @@ struct options
       noout(),
       show_locs(true),
       abidiff(),
+      annotate(),
       do_log()
   {}
 };
