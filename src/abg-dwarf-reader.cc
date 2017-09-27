@@ -183,7 +183,7 @@ typedef stack<scope_decl*> scope_stack_type;
 
 /// Convenience typedef for a map which key is a dwarf offset.  The
 /// value is also a dwarf offset.
-typedef unordered_map<Dwarf_Off, Dwarf_Off> offset_offset_map;
+typedef unordered_map<Dwarf_Off, Dwarf_Off> offset_offset_map_type;
 
 /// Convenience typedef for a map which key is a string and which
 /// value is a vector of smart pointer to a class.
@@ -2881,7 +2881,7 @@ public:
   translation_unit_sptr	cur_tu_;
   scope_decl_sptr		nil_scope_;
   scope_stack_type		scope_stack_;
-  offset_offset_map		primary_die_parent_map_;
+  offset_offset_map_type	primary_die_parent_map_;
   // A map that associates each tu die to a vector of unit import
   // points, in the main debug info
   tu_die_imported_unit_points_map_type tu_die_imported_unit_points_map_;
@@ -2891,8 +2891,8 @@ public:
   tu_die_imported_unit_points_map_type type_units_tu_die_imported_unit_points_map_;
   // A DIE -> parent map for DIEs coming from the alternate debug info
   // file.
-  offset_offset_map		alternate_die_parent_map_;
-  offset_offset_map		type_section_die_parent_map_;
+  offset_offset_map_type	alternate_die_parent_map_;
+  offset_offset_map_type	type_section_die_parent_map_;
   list<var_decl_sptr>		var_decls_to_add_;
   addr_elf_symbol_sptr_map_sptr fun_addr_sym_map_;
   // On PPC64, the function entry point address is different from the
@@ -5432,7 +5432,7 @@ public:
   /// @param source where the DIEs in the map come from.
   ///
   /// @return the DIE -> parent map.
-  const offset_offset_map&
+  const offset_offset_map_type&
   die_parent_map(die_source source) const
   {return const_cast<read_context*>(this)->die_parent_map(source);}
 
@@ -5442,7 +5442,7 @@ public:
   /// @param source where the DIEs in the map come from.
   ///
   /// @return the DIE -> parent map.
-  offset_offset_map&
+  offset_offset_map_type&
   die_parent_map(die_source source)
   {
     switch (source)
@@ -5460,11 +5460,11 @@ public:
     return primary_die_parent_map_;
   }
 
-  const offset_offset_map&
+  const offset_offset_map_type&
   type_section_die_parent_map() const
   {return type_section_die_parent_map_;}
 
-  offset_offset_map&
+  offset_offset_map_type&
   type_section_die_parent_map()
   {return type_section_die_parent_map_;}
 
@@ -7714,7 +7714,7 @@ public:
     if (!die)
       return;
 
-    offset_offset_map& parent_of = die_parent_map(source);
+    offset_offset_map_type& parent_of = die_parent_map(source);
 
     Dwarf_Die child;
     if (dwarf_child(die, &child) != 0)
@@ -11690,8 +11690,8 @@ get_parent_die(const read_context&	ctxt,
   die_source source = NO_DEBUG_INFO_DIE_SOURCE;
   assert(ctxt.get_die_source(die, source));
 
-  const offset_offset_map& m = ctxt.die_parent_map(source);
-  offset_offset_map::const_iterator i = m.find(dwarf_dieoffset(die));
+  const offset_offset_map_type& m = ctxt.die_parent_map(source);
+  offset_offset_map_type::const_iterator i = m.find(dwarf_dieoffset(die));
 
   if (i == m.end())
     return false;
