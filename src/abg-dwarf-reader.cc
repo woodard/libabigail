@@ -150,9 +150,6 @@ typedef unordered_map<Dwarf_Off, translation_unit_sptr> die_tu_map_type;
 /// the value is the corresponding qualified name of the DIE.
 typedef unordered_map<Dwarf_Off, interned_string> die_istring_map_type;
 
-/// Convenience typedef for a vector of Dwarf_Offset.
-typedef vector<Dwarf_Off> dwarf_offsets_type;
-
 /// Convenience typedef for a map which is an interned_string and
 /// which value is a vector of offsets.
 typedef unordered_map<interned_string,
