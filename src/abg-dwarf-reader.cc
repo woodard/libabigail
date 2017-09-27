@@ -3877,12 +3877,13 @@ public:
 	return true;
       }
 
-    Dwarf_Off die_offset;
-    for (dwarf_offsets_type::const_iterator o = i->second.begin();
-	 o != i->second.end();
-	 ++o)
+    // walk i->second without any iterator (using a while loop rather
+    // than a for loop) because compare_dies might add new content to
+    // the end of the i->second vector during the walking.
+    dwarf_offsets_type::size_type n = 0, s = i->second.size();
+    while (n < s)
       {
-	die_offset = *o;
+	Dwarf_Off die_offset = i->second[n];
 	get_die_from_offset(source, die_offset, &canonical_die);
 	// compare die and canonical_die.
 	if (compare_dies(*this, die, &canonical_die,
@@ -3893,6 +3894,7 @@ public:
 				     die_offset);
 	    return true;
 	  }
+	++n;
       }
 
     // We didn't find a canonical DIE for 'die'.  So let's consider
