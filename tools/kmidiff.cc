@@ -104,8 +104,8 @@ display_usage(const string& prog_name, ostream& out)
     << " --help|-h  display this message\n"
     << " --version|-v  display program version information and exit\n"
     << " --verbose  display verbose messages\n"
-    << " --vmlinux1|--l1 <path>  the path to the first vmlinux"
-    << " --vmlinux2|--l2 <path>  the path to the second vmlinux"
+    << " --vmlinux1|--l1 <path>  the path to the first vmlinux\n"
+    << " --vmlinux2|--l2 <path>  the path to the second vmlinux\n"
     << " --suppressions|--suppr <path>  specify a suppression file\n"
     << " --kmi-whitelist|-w <path>  path to a kernel module interface "
     "whitelist\n";
