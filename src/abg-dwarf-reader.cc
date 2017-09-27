@@ -2855,12 +2855,12 @@ public:
   type_die_artefact_maps_;
   /// A set of vectors (one per kind of die source) that associates
   /// the offset of a type DIE to the offset of its canonical DIE.
-  mutable die_source_dependant_container_set<dwarf_offsets_type>
-  canonical_type_die_vecs_;
+  mutable die_source_dependant_container_set<offset_offset_map_type>
+  canonical_type_die_offsets_;
   /// A set of vectors (one per kind of die source) that associates
   /// the offset of a decl DIE to the offset of its canonical DIE.
-  mutable die_source_dependant_container_set<dwarf_offsets_type>
-  canonical_decl_die_vecs_;
+  mutable die_source_dependant_container_set<offset_offset_map_type>
+  canonical_decl_die_offsets_;
   die_class_or_union_map_type	die_wip_classes_map_;
   die_class_or_union_map_type	alternate_die_wip_classes_map_;
   die_class_or_union_map_type	type_unit_die_wip_classes_map_;
@@ -3026,8 +3026,8 @@ public:
     die_pretty_type_repr_maps_.clear();
     decl_die_artefact_maps_.clear();
     type_die_artefact_maps_.clear();
-    canonical_type_die_vecs_.clear();
-    canonical_decl_die_vecs_.clear();
+    canonical_type_die_offsets_.clear();
+    canonical_decl_die_offsets_.clear();
     die_wip_classes_map_.clear();
     alternate_die_wip_classes_map_.clear();
     type_unit_die_wip_classes_map_.clear();
@@ -3536,11 +3536,11 @@ public:
 			       Dwarf_Off &canonical_die_offset,
 			       bool die_as_type) const
   {
-    dwarf_offsets_type &canonical_dies =
+    offset_offset_map_type &canonical_dies =
       die_as_type
-      ? const_cast<read_context*>(this)->canonical_type_die_vecs_.
+      ? const_cast<read_context*>(this)->canonical_type_die_offsets_.
       get_container(*this, die)
-      : const_cast<read_context*>(this)->canonical_decl_die_vecs_.
+      : const_cast<read_context*>(this)->canonical_decl_die_offsets_.
       get_container(*this, die);
 
     Dwarf_Die canonical_die;
@@ -3565,7 +3565,7 @@ public:
   /// as a type.
   void
   compute_canonical_die(Dwarf_Die *die,
-			dwarf_offsets_type& canonical_dies,
+			offset_offset_map_type& canonical_dies,
 			Dwarf_Die &canonical_die,
 			bool die_as_type) const
   {
@@ -3598,7 +3598,7 @@ public:
   void
   compute_canonical_die(Dwarf_Off die_offset,
 			die_source source,
-			dwarf_offsets_type& canonical_dies,
+			offset_offset_map_type& canonical_dies,
 			Dwarf_Die &canonical_die,
 			bool die_as_type) const
   {
@@ -3701,11 +3701,11 @@ public:
     die_source source;
     assert(get_die_source(die, source));
 
-    dwarf_offsets_type &canonical_dies =
+    offset_offset_map_type &canonical_dies =
       die_as_type
-      ? const_cast<read_context*>(this)->canonical_type_die_vecs_.
+      ? const_cast<read_context*>(this)->canonical_type_die_offsets_.
       get_container(source)
-      : const_cast<read_context*>(this)->canonical_decl_die_vecs_.
+      : const_cast<read_context*>(this)->canonical_decl_die_offsets_.
       get_container(source);
 
     Dwarf_Off die_offset = dwarf_dieoffset(die);
@@ -3810,11 +3810,11 @@ public:
     die_source source;
     assert(get_die_source(die, source));
 
-    dwarf_offsets_type &canonical_dies =
+    offset_offset_map_type &canonical_dies =
       die_as_type
-      ? const_cast<read_context*>(this)->canonical_type_die_vecs_.
+      ? const_cast<read_context*>(this)->canonical_type_die_offsets_.
       get_container(source)
-      : const_cast<read_context*>(this)->canonical_decl_die_vecs_.
+      : const_cast<read_context*>(this)->canonical_decl_die_offsets_.
       get_container(source);
 
     Dwarf_Off initial_die_offset = dwarf_dieoffset(die);
@@ -4488,15 +4488,11 @@ public:
   /// @param canonical_die_offset the canonical DIE offset to
   /// associate to @p die_offset.
   void
-  set_canonical_die_offset(dwarf_offsets_type &canonical_dies,
+  set_canonical_die_offset(offset_offset_map_type &canonical_dies,
 			   Dwarf_Off die_offset,
 			   Dwarf_Off canonical_die_offset) const
   {
-    if (canonical_dies.size() <= die_offset)
-      canonical_dies.resize(2 * die_offset);
-
-    canonical_dies[die_offset] = canonical_die_offset;
-  }
+    canonical_dies[die_offset] = canonical_die_offset;}
 
   /// Set the canonical DIE offset of a given DIE.
   ///
@@ -4517,11 +4513,11 @@ public:
 			   Dwarf_Off canonical_die_offset,
 			   bool die_as_type) const
   {
-    dwarf_offsets_type &canonical_dies =
+    offset_offset_map_type &canonical_dies =
       die_as_type
-      ? const_cast<read_context*>(this)->canonical_type_die_vecs_.
+      ? const_cast<read_context*>(this)->canonical_type_die_offsets_.
       get_container(source)
-      : const_cast<read_context*>(this)->canonical_decl_die_vecs_.
+      : const_cast<read_context*>(this)->canonical_decl_die_offsets_.
       get_container(source);
 
     set_canonical_die_offset(canonical_dies,
@@ -4563,13 +4559,13 @@ public:
   /// @return the canonical of the DIE denoted by @p die_offset, or
   /// zero if no canonical DIE was found.
   Dwarf_Off
-  get_canonical_die_offset(dwarf_offsets_type &canonical_dies,
+  get_canonical_die_offset(offset_offset_map_type &canonical_dies,
 			   Dwarf_Off die_offset) const
   {
-    if (canonical_dies.size() <= die_offset)
+    offset_offset_map_type::const_iterator it = canonical_dies.find(die_offset);
+    if (it == canonical_dies.end())
       return 0;
-
-    return canonical_dies[die_offset];
+    return it->second;
   }
 
   /// Get the canonical DIE offset of a given DIE.
@@ -4588,11 +4584,11 @@ public:
 			   die_source source,
 			   bool die_as_type) const
   {
-    dwarf_offsets_type &canonical_dies =
+    offset_offset_map_type &canonical_dies =
       die_as_type
-      ? const_cast<read_context*>(this)->canonical_type_die_vecs_.
+      ? const_cast<read_context*>(this)->canonical_type_die_offsets_.
       get_container(source)
-      : const_cast<read_context*>(this)->canonical_decl_die_vecs_.
+      : const_cast<read_context*>(this)->canonical_decl_die_offsets_.
       get_container(source);
 
     return get_canonical_die_offset(canonical_dies, die_offset);
