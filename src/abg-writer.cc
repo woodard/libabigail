@@ -144,6 +144,11 @@ typedef unordered_map<type_base*,
 		      type_hasher,
 		      abigail::diff_utils::deep_ptr_eq_functor> type_ptr_map;
 
+// A convenience typedef for a set of type_base*.
+typedef unordered_set<const type_base*, type_hasher,
+		      abigail::diff_utils::deep_ptr_eq_functor>
+type_ptr_set_type;
+
 typedef unordered_map<shared_ptr<function_tdecl>,
 		      string,
 		      function_tdecl::shared_ptr_hash> fn_tmpl_shared_ptr_map;
@@ -160,9 +165,8 @@ class write_context
   ostream&				m_ostream;
   bool					m_annotate;
   mutable type_ptr_map			m_type_id_map;
-  mutable unordered_map<interned_string,
-			bool, hash_interned_string> m_emitted_type_id_map;
   type_ptr_map				m_emitted_decl_only_map;
+  mutable type_ptr_set_type		m_emitted_type_set;
   // A map of types that are referenced by emitted pointers,
   // references or typedefs
   type_ptr_map				m_referenced_types_map;
@@ -297,17 +301,6 @@ public:
   clear_type_id_map()
   {m_type_id_map.clear();}
 
-  /// Record a given type id as belonging to a type that as been
-  /// written out to the XML output.
-  ///
-  /// @param id the ID of the type.
-  void
-  record_type_id_as_emitted(const string& id)
-  {
-    const environment* env = get_environment();
-    assert(env);
-    m_emitted_type_id_map[env->intern(id)] = true;
-  }
 
   /// Getter of the map of types that were referenced by a pointer,
   /// reference or typedef.
@@ -480,22 +473,25 @@ public:
   ///
   /// @param t the type to flag.
   void
-  record_type_as_emitted(const type_base_sptr& t)
-  {
-    string id = get_id_for_type(t);
-    record_type_id_as_emitted(id);
-  }
+  record_type_as_emitted(const type_base_sptr &t)
+  {record_type_as_emitted(t.get());}
 
-  /// Test if a given type ID belongs to a type that has been written
-  /// out to the XML output.
+  /// Flag a type as having been written out to the XML output.
   ///
-  /// @param id the ID of the type to test.
+  /// @param t the type to flag.
+  void
+  record_type_as_emitted(const type_base *t)
+  {m_emitted_type_set.insert(t);}
+
+  /// Test if a given type has been written out to the XML output.
+  ///
+  /// @param the type to test for.
   ///
   /// @return true if the type has already been emitted, false
   /// otherwise.
   bool
-  type_id_is_emitted(const interned_string& id)
-  {return m_emitted_type_id_map.find(id) != m_emitted_type_id_map.end();}
+  type_is_emitted(const type_base *t)
+  {return m_emitted_type_set.find(t) != m_emitted_type_set.end();}
 
   /// Test if a given type has been written out to the XML output.
   ///
@@ -505,12 +501,7 @@ public:
   /// otherwise.
   bool
   type_is_emitted(const type_base_sptr& t)
-  {
-    if (!type_has_existing_id(t))
-      return false;
-    const interned_string& id = get_id_for_type(t);
-    return type_id_is_emitted(id);
-  }
+  {return type_is_emitted(t.get());}
 
   /// Test if the name of a given decl has been written out to the XML
   /// output.
@@ -589,12 +580,6 @@ public:
   bool
   decl_only_type_is_emitted(const type_base_sptr& t)
   {return decl_only_type_is_emitted(t.get());}
-
-  /// Clear the map that contains the IDs of the types that has been
-  /// recorded as having been written out to the XML output.
-  void
-  clear_emitted_types_map()
-  {m_emitted_type_id_map.clear();}
 
   /// Record a declaration as emitted in the abixml output.
   ///
