@@ -147,3 +147,10 @@ Options
     Please note that, by default, if this option is not provided, then
     the :ref:`default suppression specification files
     <abidiff_default_supprs_label>` are loaded .
+
+
+  * ``--full-impact | -f``
+
+    Emit a change report that shows the full impact of each change on
+    exported interfaces.  This is the default kind of report emitted
+    by tools like ``abidiff`` or ``abipkgdiff``.

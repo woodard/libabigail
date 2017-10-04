@@ -72,6 +72,7 @@ struct options
   bool		display_version;
   bool		verbose;
   bool		missing_operand;
+  bool		leaf_changes_only;
   string	wrong_option;
   string	kernel_dist_root1;
   string	kernel_dist_root2;
@@ -86,7 +87,8 @@ struct options
     : display_usage(),
       display_version(),
       verbose(),
-      missing_operand()
+      missing_operand(),
+      leaf_changes_only(true)
   {}
 }; // end struct options.
 
@@ -108,7 +110,9 @@ display_usage(const string& prog_name, ostream& out)
     << " --vmlinux2|--l2 <path>  the path to the second vmlinux\n"
     << " --suppressions|--suppr <path>  specify a suppression file\n"
     << " --kmi-whitelist|-w <path>  path to a kernel module interface "
-    "whitelist\n";
+    "whitelist\n"
+    << " --full-impact|-f  show the full impact of changes on top-most "
+	 "interfaces\n";
 }
 
 /// Parse the command line of the program.
@@ -205,6 +209,9 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.suppression_paths.push_back(argv[j]);
 	  ++i;
 	}
+      else if (!strcmp(argv[i], "--full-impact")
+	       || !strcmp(argv[i], "-f"))
+	opts.leaf_changes_only = false;
     }
 
   return true;
@@ -256,6 +263,7 @@ set_diff_context(diff_context_sptr ctxt, const options& opts)
     (false);
   ctxt->show_symbols_unreferenced_by_debug_info
     (true);
+  ctxt->show_leaf_changes_only(opts.leaf_changes_only);
 
   ctxt->switch_categories_off(get_default_harmless_categories_bitmap());
 
