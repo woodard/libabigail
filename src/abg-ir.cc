@@ -9707,7 +9707,7 @@ struct type_base::priv
   priv()
     : size_in_bits(),
       alignment_in_bits(),
-      canonical_type()
+      naked_canonical_type()
   {}
 
   priv(size_t s,
