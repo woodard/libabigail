@@ -74,7 +74,7 @@ struct diff_sptr_hasher
   size_t
   operator()(const diff_sptr& t) const
   {return reinterpret_cast<size_t>(t.get());}
-};
+}; // end struct diff_sptr_hasher
 
 /// Convenience typedef for a vector of @ref diff_sptr.
 typedef vector<diff_sptr> diff_sptrs_type;
