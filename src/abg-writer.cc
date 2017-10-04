@@ -165,8 +165,8 @@ class write_context
   ostream&				m_ostream;
   bool					m_annotate;
   mutable type_ptr_map			m_type_id_map;
-  type_ptr_map				m_emitted_decl_only_map;
   mutable type_ptr_set_type		m_emitted_type_set;
+  type_ptr_set_type			m_emitted_decl_only_set;
   // A map of types that are referenced by emitted pointers,
   // references or typedefs
   type_ptr_map				m_referenced_types_map;
@@ -543,7 +543,7 @@ public:
   {
     class_or_union* cl = is_class_or_union_type(t);
     assert(cl && cl->get_is_declaration_only());
-    m_emitted_decl_only_map[t] = interned_string();
+    m_emitted_decl_only_set.insert(t);
   }
 
   /// Record a declaration-only class as being emitted.
@@ -565,8 +565,8 @@ public:
   bool
   decl_only_type_is_emitted(type_base* t)
   {
-    type_ptr_map::const_iterator i = m_emitted_decl_only_map.find(t);
-    if (i == m_emitted_decl_only_map.end())
+    type_ptr_set_type::const_iterator i = m_emitted_decl_only_set.find(t);
+    if (i == m_emitted_decl_only_set.end())
       return false;
     return true;
   }
