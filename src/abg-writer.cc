@@ -135,7 +135,7 @@ struct type_hasher
   size_t
   operator()(const type_base* t) const
   {return hash_type_or_decl(t);}
-};
+}; // end struct type_hasher
 
 /// A convenience typedef for a map that associates a pointer to type
 /// to a string.  The pointer to type is hashed as fast as possible.
@@ -587,7 +587,6 @@ public:
   void
   record_decl_as_emitted(const decl_base_sptr &decl)const
   {
-
     string repr = get_pretty_representation(decl, true);
     interned_string irepr = decl->get_environment()->intern(repr);
     m_emitted_decls_map[irepr] = true;
