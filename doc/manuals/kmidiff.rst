@@ -151,6 +151,10 @@ Options
 
   * ``--full-impact | -f``
 
+    Tell what interfaces got impacted by each individual ABI change.
+
+  * ``--full-impact | -f``
+
     Emit a change report that shows the full impact of each change on
     exported interfaces.  This is the default kind of report emitted
     by tools like ``abidiff`` or ``abipkgdiff``.

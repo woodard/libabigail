@@ -73,6 +73,7 @@ struct options
   bool		verbose;
   bool		missing_operand;
   bool		leaf_changes_only;
+  bool		show_impacted_interfaces;
   string	wrong_option;
   string	kernel_dist_root1;
   string	kernel_dist_root2;
@@ -88,7 +89,8 @@ struct options
       display_version(),
       verbose(),
       missing_operand(),
-      leaf_changes_only(true)
+      leaf_changes_only(true),
+      show_impacted_interfaces(false)
   {}
 }; // end struct options.
 
@@ -111,6 +113,7 @@ display_usage(const string& prog_name, ostream& out)
     << " --suppressions|--suppr <path>  specify a suppression file\n"
     << " --kmi-whitelist|-w <path>  path to a kernel module interface "
     "whitelist\n"
+    << " --impacted-interfaces|-i  show interfaces impacted by ABI changes\n"
     << " --full-impact|-f  show the full impact of changes on top-most "
 	 "interfaces\n";
 }
@@ -209,6 +212,9 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.suppression_paths.push_back(argv[j]);
 	  ++i;
 	}
+      else if (!strcmp(argv[i], "--impacted-interfaces")
+	       || !strcmp(argv[i], "-i"))
+	opts.show_impacted_interfaces = true;
       else if (!strcmp(argv[i], "--full-impact")
 	       || !strcmp(argv[i], "-f"))
 	opts.leaf_changes_only = false;
@@ -264,6 +270,7 @@ set_diff_context(diff_context_sptr ctxt, const options& opts)
   ctxt->show_symbols_unreferenced_by_debug_info
     (true);
   ctxt->show_leaf_changes_only(opts.leaf_changes_only);
+  ctxt->show_impacted_interfaces(opts.show_impacted_interfaces);
 
   ctxt->switch_categories_off(get_default_harmless_categories_bitmap());
 
