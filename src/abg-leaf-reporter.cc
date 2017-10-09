@@ -158,7 +158,7 @@ leaf_reporter::report(const qualified_type_diff& d, ostream& out,
   if (!diff_to_be_reported(&d))
     return;
 
-    report_local_qualified_type_changes(d, out, indent);
+  report_local_qualified_type_changes(d, out, indent);
 }
 
 /// Report the changes carried by a @ref pointer_diff node.
