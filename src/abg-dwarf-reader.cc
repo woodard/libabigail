@@ -10102,22 +10102,26 @@ die_qualified_type_name(const read_context& ctxt,
       break;
 
     case DW_TAG_typedef:
-      {
-	Dwarf_Die underlying_type_die;
-	if (die_die_attribute(die, DW_AT_type, underlying_type_die))
-	  {
-	    string n = die_qualified_type_name(ctxt, &underlying_type_die,
-					       where_offset);
-	    if (die_is_unspecified(&underlying_type_die)
-		|| n.empty())
-	      break;
-	  }
-      }
     case DW_TAG_enumeration_type:
     case DW_TAG_structure_type:
     case DW_TAG_class_type:
     case DW_TAG_union_type:
       {
+	if (tag == DW_TAG_typedef)
+	  {
+	    // If the underlying type of the typedef is unspecified,
+	    // bail out as we don't support that yet.
+	    Dwarf_Die underlying_type_die;
+	    if (die_die_attribute(die, DW_AT_type, underlying_type_die))
+	      {
+		string n = die_qualified_type_name(ctxt, &underlying_type_die,
+						   where_offset);
+		if (die_is_unspecified(&underlying_type_die)
+		    || n.empty())
+		  break;
+	      }
+	  }
+
 	if (name.empty())
 	  {
 	    if (tag == DW_TAG_structure_type || tag == DW_TAG_class_type)
