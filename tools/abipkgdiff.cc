@@ -1127,7 +1127,7 @@ compare(const elf_file& elf1,
       if (detailed_error_status)
 	*detailed_error_status = c1_status;
 
-	return abigail::tools_utils::ABIDIFF_ERROR;
+      return abigail::tools_utils::ABIDIFF_ERROR;
       }
   }
 
