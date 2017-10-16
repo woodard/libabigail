@@ -116,6 +116,12 @@ Options
     provided, the tool compares the ABI of all ELF binaries found in
     the packages.
 
+  * ``--suppressions`` <*path-to-suppresions*>
+
+    Use a :ref:`suppression specification <suppr_spec_label>` file
+    located at *path-to-suppressions*.
+
+
   * ``--no-default-suppression``
 
     Do not load the :ref:`default suppression specification files
