@@ -1490,6 +1490,8 @@ if __name__ == '__main__':
     try:
         sys.exit(main())
     except KeyboardInterrupt:
+        if global_config is None:
+            raise
         if global_config.debug:
             logger.debug('Terminate by user')
         else:
@@ -1499,6 +1501,8 @@ if __name__ == '__main__':
         else:
             sys.exit(2)
     except Exception as e:
+        if global_config is None:
+            raise
         if global_config.debug:
             logger.debug(str(e))
         else:
