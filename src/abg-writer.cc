@@ -606,7 +606,6 @@ public:
   get_fun_symbol_map()
   {return m_fun_symbol_map;}
 
-
 };//end write_context
 
 static bool write_translation_unit(const translation_unit&,
