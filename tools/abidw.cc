@@ -136,7 +136,7 @@ display_usage(const string& prog_name, ostream& out)
     << "  --suppressions|--suppr <path> specify a suppression file\n"
     << "  --no-architecture  do not emit architecture info in the output\n"
     << "  --no-corpus-path  do not take the path to the corpora into account\n"
-    << "  --no-show-locs  do now show location information\n"
+    << "  --no-show-locs  do not show location information\n"
     << "  --check-alternate-debug-info <elf-path>  check alternate debug info "
     "of <elf-path>\n"
     << "  --check-alternate-debug-info-base-name <elf-path>  check alternate "
@@ -474,6 +474,7 @@ load_corpus_and_write_abixml(char* argv[],
 	  abigail::xml_writer::write_context_sptr write_ctxt =
 	    abigail::xml_writer::create_write_context(corp->get_environment(),
 						      of);
+	  abigail::xml_writer::set_show_locs(*write_ctxt, opts.show_locs);
 	  abigail::xml_writer::set_annotate(*write_ctxt, opts.annotate);
 	  abigail::xml_writer::write_corpus(corp, 0, *write_ctxt);
 	  of.close();
@@ -484,6 +485,7 @@ load_corpus_and_write_abixml(char* argv[],
 	  abigail::xml_writer::write_context_sptr write_ctxt =
 	    abigail::xml_writer::create_write_context(corp->get_environment(),
 						      cout);
+	  abigail::xml_writer::set_show_locs(*write_ctxt, opts.show_locs);
 	  abigail::xml_writer::set_annotate(*write_ctxt, opts.annotate);
 	  exit_code = !abigail::xml_writer::write_corpus(corp, 0, *write_ctxt);
 	}

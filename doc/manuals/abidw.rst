@@ -146,8 +146,8 @@ Options
 
   * ``--no-show-locs``
 
-   Do not show information about where in the *second shared library*
-   the respective type was changed.
+   In the emitted ABI representation, do not show file, line or column
+   where ABI artifacts are defined.
 
   * ``--check-alternate-debug-info-base-name`` <*elf-path*>
 
