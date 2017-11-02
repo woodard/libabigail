@@ -41,6 +41,16 @@ class write_context;
 /// A convenience typedef for a shared pointer to write_context.
 typedef shared_ptr<write_context> write_context_sptr;
 
+write_context_sptr
+create_write_context(const environment *env,
+		     ostream& output_stream);
+
+void
+set_show_locs(write_context& ctxt, bool flag);
+
+void
+set_annotate(write_context& ctxt, bool flag);
+
 bool
 write_translation_unit(const translation_unit&	tu,
 		       unsigned		indent,
@@ -69,9 +79,7 @@ write_corpus_to_archive(const corpus_sptr corp,
 bool
 write_corpus(const corpus_sptr	corpus,
 	     unsigned		indent,
-	     write_context&	ctxt,
-	     std::ostream&	out,
-	     const bool	annotate = false);
+	     write_context&	ctxt);
 
 bool
 write_corpus(const corpus_sptr	corpus,
@@ -88,9 +96,7 @@ write_corpus(const corpus_sptr	corpus,
 bool
 write_corpus_group(const corpus_group_sptr&	group,
 		   unsigned			indent,
-		   write_context&		ctxt,
-		   std::ostream&		out,
-		   const bool			annotate = false);
+		   write_context&		ctxt);
 
 bool
 write_corpus_group(const corpus_group_sptr&	group,

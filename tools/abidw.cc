@@ -471,13 +471,22 @@ load_corpus_and_write_abixml(char* argv[],
 		<< opts.out_file_path << "'\n";
 	      return 1;
 	    }
-	  abigail::xml_writer::write_corpus(corp, 0, of, opts.annotate);
+	  abigail::xml_writer::write_context_sptr write_ctxt =
+	    abigail::xml_writer::create_write_context(corp->get_environment(),
+						      of);
+	  abigail::xml_writer::set_annotate(*write_ctxt, opts.annotate);
+	  abigail::xml_writer::write_corpus(corp, 0, *write_ctxt);
 	  of.close();
 	  return 0;
 	}
       else
-	exit_code = !abigail::xml_writer::write_corpus(corp, 0, cout,
-						       opts.annotate);
+	{
+	  abigail::xml_writer::write_context_sptr write_ctxt =
+	    abigail::xml_writer::create_write_context(corp->get_environment(),
+						      cout);
+	  abigail::xml_writer::set_annotate(*write_ctxt, opts.annotate);
+	  exit_code = !abigail::xml_writer::write_corpus(corp, 0, *write_ctxt);
+	}
     }
 
   return exit_code;

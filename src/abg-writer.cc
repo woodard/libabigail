@@ -164,6 +164,7 @@ class write_context
   config				m_config;
   ostream&				m_ostream;
   bool					m_annotate;
+  bool					m_show_locs;
   mutable type_ptr_map			m_type_id_map;
   mutable type_ptr_set_type		m_emitted_type_set;
   type_ptr_set_type			m_emitted_decl_only_set;
@@ -191,7 +192,8 @@ public:
     : m_env(env),
       m_id_manager(env),
       m_ostream(os),
-      m_annotate(annotate)
+      m_annotate(annotate),
+      m_show_locs(true)
   {}
 
   /// Getter of the environment we are operating from.
@@ -222,6 +224,26 @@ public:
   void
   set_annotate(bool f)
   {m_annotate = f;}
+
+  /// Getter of the "show-locs" option.
+  ///
+  /// When this option is true then the XML writer emits location
+  /// information for emitted ABI artifacts.
+  ///
+  /// @return the value of the "show-locs" option.
+  bool
+  get_show_locs() const
+  {return m_show_locs;}
+
+  /// Setter of the "show-locs" option.
+  ///
+  /// When this option is true then the XML writer emits location
+  /// information for emitted ABI artifacts.
+  ///
+  /// @param f the new value of the "show-locs" option.
+  void
+  set_show_locs(bool f)
+  {m_show_locs = f;}
 
   /// Getter of the @ref id_manager.
   ///
@@ -610,8 +632,8 @@ public:
 
 static bool write_translation_unit(const translation_unit&,
 				   write_context&, unsigned);
-static void write_location(const location&, ostream&);
-static void write_location(const decl_base_sptr&, ostream&);
+static void write_location(const location&, write_context&);
+static void write_location(const decl_base_sptr&, write_context&);
 static bool write_visibility(const decl_base_sptr&, ostream&);
 static bool write_binding(const decl_base_sptr&, ostream&);
 static void write_array_size_and_alignment(const array_type_def_sptr,
@@ -993,17 +1015,22 @@ annotate(const function_decl::parameter_sptr&	parm,
 ///
 /// @param tu the translation unit the location belongs to.
 ///
-/// @param o the output stream to write to.
+/// @param ctxt the writer context to use.
 static void
-write_location(const location& loc, ostream& o)
+write_location(const location& loc, write_context& ctxt)
 {
   if (!loc)
+    return;
+
+  if (!ctxt.get_show_locs())
     return;
 
   string filepath;
   unsigned line = 0, column = 0;
 
   loc.expand(filepath, line, column);
+
+  ostream &o = ctxt.get_ostream();
 
   o << " filepath='" << xml::escape_xml_string(filepath) << "'"
     << " line='"     << line     << "'"
@@ -1016,10 +1043,10 @@ write_location(const location& loc, ostream& o)
 ///
 /// @param decl the decl to consider.
 ///
-/// @param o the output stream to write to.
+/// @param ctxt the @ref writer_context to use.
 static void
 write_location(const decl_base_sptr&	decl,
-	       ostream&		o)
+	       write_context&		ctxt)
 {
   if (!decl)
     return;
@@ -1028,14 +1055,7 @@ write_location(const decl_base_sptr&	decl,
   if (!loc)
     return;
 
-  string filepath;
-  unsigned line = 0, column = 0;
-
-  loc.expand(filepath, line, column);
-
-  o << " filepath='" << xml::escape_xml_string(filepath) << "'"
-    << " line='"     << line     << "'"
-    << " column='"   << column   << "'";
+  write_location(loc, ctxt);
 }
 
 /// Serialize the visibility property of the current decl as the
@@ -1664,6 +1684,48 @@ write_decl_in_scope(const decl_base_sptr&	decl,
     }
 }
 
+/// Create a @ref write_context object that can be used to emit abixml
+/// files.
+///
+/// @param env the environment for the @ref write_context object to use.
+///
+/// @param default_output_stream the default output stream to use.
+///
+/// @return the new @ref write_context object.
+write_context_sptr
+create_write_context(const environment *env,
+		     ostream& default_output_stream)
+{
+  write_context_sptr ctxt(new write_context(env, default_output_stream,
+					    /*annotate=*/false));
+  return ctxt;
+}
+
+/// Set the "show-locs" flag.
+///
+/// When this flag is set then the XML writer emits location (///
+/// information (file name, line and column) for the ABI artifacts
+/// that it emits.
+///
+/// @param ctxt the @ref write_context to set the option for.
+///
+/// @param flag the new value of the option.
+void
+set_show_locs(write_context& ctxt, bool flag)
+{ctxt.set_show_locs(flag);}
+
+/// Set the 'annotate' flag.
+///
+/// When this flag is set then the XML writer annotates ABI artifacts
+/// with a human readable description.
+///
+/// @param ctxt the context to set this flag on to.
+///
+/// @param flag the new value of the 'annotate' flag.
+void
+set_annotate(write_context& ctxt, bool flag)
+{ctxt.set_annotate(flag);}
+
 /// Serialize a translation unit to an output stream.
 ///
 /// @param tu the translation unit to serialize.
@@ -1936,7 +1998,7 @@ write_type_decl(const type_decl_sptr& d, write_context& ctxt, unsigned indent)
 
   write_size_and_alignment(d, o);
 
-  write_location(d, o);
+  write_location(d, ctxt);
 
   o << " id='" << ctxt.get_id_for_type(d) << "'" <<  "/>";
 
@@ -2044,7 +2106,7 @@ write_qualified_type_def(const qualified_type_def_sptr&	decl,
   if (decl->get_cv_quals() & qualified_type_def::CV_RESTRICT)
     o << " restrict='yes'";
 
-  write_location(static_pointer_cast<decl_base>(decl), o);
+  write_location(static_pointer_cast<decl_base>(decl), ctxt);
 
   string i = id;
   if (i.empty())
@@ -2121,7 +2183,7 @@ write_pointer_type_def(const pointer_type_def_sptr&	decl,
 
   o << " id='" << i << "'";
 
-  write_location(static_pointer_cast<decl_base>(decl), o);
+  write_location(static_pointer_cast<decl_base>(decl), ctxt);
   o << "/>";
 
   ctxt.record_type_as_emitted(decl);
@@ -2198,7 +2260,7 @@ write_reference_type_def(const reference_type_def_sptr&	decl,
     i = ctxt.get_id_for_type(decl);
   o << " id='" << i << "'";
 
-  write_location(static_pointer_cast<decl_base>(decl), o);
+  write_location(static_pointer_cast<decl_base>(decl), ctxt);
 
   o << "/>";
 
@@ -2269,7 +2331,7 @@ write_array_type_def(const array_type_def_sptr&	decl,
     i = ctxt.get_id_for_type(decl);
   o << " id='" << i << "'";
 
-  write_location(static_pointer_cast<decl_base>(decl), o);
+  write_location(static_pointer_cast<decl_base>(decl), ctxt);
 
   if (!decl->get_dimension_count())
     o << "/>";
@@ -2293,7 +2355,7 @@ write_array_type_def(const array_type_def_sptr&	decl,
             }
           o << "'";
 
-          write_location((*si)->get_location(), o);
+          write_location((*si)->get_location(), ctxt);
 
           o << "/>\n";
         }
@@ -2360,7 +2422,7 @@ write_enum_type_decl(const enum_type_decl_sptr& decl,
   if (!decl->get_linkage_name().empty())
     o << " linkage-name='" << decl->get_linkage_name() << "'";
 
-  write_location(decl, o);
+  write_location(decl, ctxt);
 
   string i = id;
   if (i.empty())
@@ -2571,7 +2633,7 @@ write_typedef_decl(const typedef_decl_sptr&	decl,
   o << " type-id='" <<  type_id << "'";
   ctxt.record_type_as_referenced(underlying_type);
 
-  write_location(decl, o);
+  write_location(decl, ctxt);
 
   string i = id;
   if (i.empty())
@@ -2640,7 +2702,7 @@ write_var_decl(const var_decl_sptr& decl, write_context& ctxt,
 
   write_binding(decl, o);
 
-  write_location(decl, o);
+  write_location(decl, ctxt);
 
   write_elf_symbol_reference(decl->get_symbol(), o);
 
@@ -2684,7 +2746,7 @@ write_function_decl(const function_decl_sptr& decl, write_context& ctxt,
     o << " mangled-name='"
       << xml::escape_xml_string(decl->get_linkage_name()) << "'";
 
-  write_location(decl, o);
+  write_location(decl, ctxt);
 
   if (decl->is_declared_inline())
     o << " declared-inline='yes'";
@@ -2729,7 +2791,7 @@ write_function_decl(const function_decl_sptr& decl, write_context& ctxt,
 	}
       if ((*pi)->get_artificial())
 	  o << " is-artificial='yes'";
-      write_location((*pi)->get_location(), o);
+      write_location((*pi)->get_location(), ctxt);
       o << "/>\n";
     }
 
@@ -2886,7 +2948,7 @@ write_class_decl_opening_tag(const class_decl_sptr&	decl,
 
   write_visibility(decl, o);
 
-  write_location(decl, o);
+  write_location(decl, ctxt);
 
   write_class_or_union_is_declaration_only(decl, o);
 
@@ -2956,7 +3018,7 @@ write_union_decl_opening_tag(const union_decl_sptr&	decl,
 
   write_visibility(decl, o);
 
-  write_location(decl, o);
+  write_location(decl, ctxt);
 
   write_class_or_union_is_declaration_only(decl, o);
 
@@ -3458,7 +3520,7 @@ write_type_tparameter(const type_tparameter_sptr	decl,
   if (!name.empty())
     o << " name='" << name << "'";
 
-  write_location(decl, o);
+  write_location(decl, ctxt);
 
   o << "/>";
 
@@ -3495,7 +3557,7 @@ write_non_type_tparameter(
   if (!name.empty())
     o << " name='" << name << "'";
 
-  write_location(decl, o);
+  write_location(decl, ctxt);
 
   o << "/>";
 
@@ -3671,7 +3733,7 @@ write_function_tdecl(const shared_ptr<function_tdecl> decl,
 
   o << "<function-template-decl id='" << ctxt.get_id_for_fn_tmpl(decl) << "'";
 
-  write_location(decl, o);
+  write_location(decl, ctxt);
 
   write_visibility(decl, o);
 
@@ -3717,7 +3779,7 @@ write_class_tdecl(const shared_ptr<class_tdecl> decl,
 
   o << "<class-template-decl id='" << ctxt.get_id_for_class_tmpl(decl) << "'";
 
-  write_location(decl, o);
+  write_location(decl, ctxt);
 
   write_visibility(decl, o);
 
@@ -3936,22 +3998,19 @@ write_corpus_to_archive(const corpus_sptr corp, const bool annotate)
 ///
 /// @param ctxt the write context to use.
 ///
-/// @param out the output stream to serialize the ABI corpus to.
-///
-/// @param annotate whether ABIXML output should be annotated.
-///
 /// @return true upon successful completion, false otherwise.
 bool
 write_corpus(const corpus_sptr	corpus,
 	     unsigned		indent,
-	     write_context&	ctxt,
-	     std::ostream&	out,
-	     const bool	annotate)
+	     write_context&	ctxt)
 {
   if (!corpus)
     return false;
 
   do_indent_to_level(ctxt, indent, 0);
+
+  std::ostream& out = ctxt.get_ostream();
+
   out << "<abi-corpus";
   if (!corpus->get_path().empty())
     out << " path='" << xml::escape_xml_string(corpus->get_path()) << "'";
@@ -3971,9 +4030,6 @@ write_corpus(const corpus_sptr	corpus,
   out << ">\n";
 
   // Write the list of needed corpora.
-
-  bool saved_annotate = ctxt.get_annotate();
-  ctxt.set_annotate(annotate);
 
   if (!corpus->get_needed().empty())
     {
@@ -4026,8 +4082,6 @@ write_corpus(const corpus_sptr	corpus,
   do_indent_to_level(ctxt, indent, 0);
   out << "</abi-corpus>\n";
 
-  ctxt.set_annotate(saved_annotate);
-
   return true;
 }
 
@@ -4054,7 +4108,7 @@ write_corpus(const corpus_sptr	corpus,
 
   write_context ctxt(corpus->get_environment(), out, annotate);
 
-  return write_corpus(corpus, indent, ctxt, out, annotate);
+  return write_corpus(corpus, indent, ctxt);
 }
 
 /// Serialize an ABI corpus group to a single native xml document.
@@ -4066,23 +4120,20 @@ write_corpus(const corpus_sptr	corpus,
 ///
 /// @param ctxt the write context to use.
 ///
-/// @param out the output stream to serialize the ABI corpus to.
-///
-/// @param annotate whether ABIXML output should be annotated.
-///
 /// @return true upon successful completion, false otherwise.
 bool
 write_corpus_group(const corpus_group_sptr&	group,
 		   unsigned			indent,
-		   write_context&		ctxt,
-		   std::ostream&		out,
-		   const bool			annotate)
+		   write_context&		ctxt)
 
 {
   if (!group)
     return false;
 
   do_indent_to_level(ctxt, indent, 0);
+
+std::ostream& out = ctxt.get_ostream();
+
   out << "<abi-corpus-group";
 
   if (!group->get_path().empty())
@@ -4104,7 +4155,7 @@ write_corpus_group(const corpus_group_sptr&	group,
 	 group->get_corpora().begin();
        c != group->get_corpora().end();
        ++c)
-    write_corpus(*c, get_indent_to_level(ctxt, indent, 1), ctxt, out, annotate);
+    write_corpus(*c, get_indent_to_level(ctxt, indent, 1), ctxt);
 
   do_indent_to_level(ctxt, indent, 0);
   out << "</abi-corpus-group>\n";
@@ -4136,7 +4187,7 @@ write_corpus_group(const corpus_group_sptr&	group,
 
   write_context ctxt(group->get_environment(), out, annotate);
 
-  return write_corpus_group(group, indent, ctxt, out, annotate);
+  return write_corpus_group(group, indent, ctxt);
 }
 
 /// Serialize an ABI corpus to a single native xml document.  The root
