@@ -1,9 +1,8 @@
 m4_define([version_major],   [1])
 m4_define([version_minor],   [0])
-m4_define([version_revision],[rc7])
 
 AC_INIT([libabigail],
-	[version_major.version_minor.version_revision],
+	[version_major.version_minor],
 	[http://sourceware.org/bugzilla],
 	[libabigail],
 	[http://sourceware.org/libabigail])
