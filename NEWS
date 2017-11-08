@@ -205,13 +205,13 @@ Dodji Seketeli:
       Bug 22122 - Fail to represent 'const array'
       Bug 22190 - crash in read_context::get_or_compute_canonical_die
 
-Mark Wielaard (4):
+Mark Wielaard:
       Declare eval_last_constant_dwarf_sub_expr with [u]int64_t not [s]size_t.
       readdir_r() is deprecated, use readdir().
       Fix -Wmisleading-indentation warning in abg-leaf-reporter.cc.
       Bug 22075 - data_member_diff_comp forgets data members names
 
-Ondrej Oprala (11):
+Ondrej Oprala:
       Fix a few remarks made by cppcheck
       abipkgdiff doesn't mention --no-default-suppression in help
       Check --enable-rpm dependencies more rigorously
