@@ -56,9 +56,6 @@
 /// 4/ the reports are then emitted to standard output, always in the same
 /// order.
 
-// For package configuration macros.
-#include "config.h"
-
 #include <iostream>
 #include <string>
 #include <cstring>
@@ -73,6 +70,8 @@
 #include <elf.h>
 #include <elfutils/libdw.h>
 
+// For package configuration macros.
+#include "config.h"
 #include "abg-workers.h"
 #include "abg-config.h"
 #include "abg-tools-utils.h"
