@@ -20,21 +20,46 @@
 
 ///@file
 
+// In case we have a bad fts we include this before config.h because
+// it can't handle _FILE_OFFSET_BITS.  Everything we need here is fine
+// if its declarations just come first.  Also, include sys/types.h
+// before fts. On some systems fts.h is not self contained.
+#ifdef BAD_FTS
+  #include <sys/types.h>
+  #include <fts.h>
+#endif
+
+// For package configuration macros.
+#include "config.h"
+
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
 #include <time.h>
-#include <fts.h>
 #include <cstdlib>
 #include <cstring>
 #include <ctype.h>
 #include <errno.h>
 #include <libgen.h>
 #include <ext/stdio_filebuf.h> // For __gnu_cxx::stdio_filebuf
+// If fts.h is included before config.h, its indirect inclusions may
+// not give us the right LFS aliases of these functions, so map them
+// manually.
+#ifdef BAD_FTS
+  #ifdef _FILE_OFFSET_BITS
+    #define open open64
+    #define fopen fopen64
+  #endif
+#else
+  #include <sys/types.h>
+  #include <fts.h>
+#endif
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
+
 
 #include "abg-dwarf-reader.h"
 #include "abg-internal.h"

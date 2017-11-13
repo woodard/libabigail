@@ -56,22 +56,46 @@
 /// 4/ the reports are then emitted to standard output, always in the same
 /// order.
 
-#include <iostream>
-#include <string>
-#include <cstring>
-#include <cstdlib>
-#include <vector>
-#include <fts.h>
-#include <algorithm>
-#include <map>
+
+// In case we have a bad fts we include this before config.h because
+// it can't handle _FILE_OFFSET_BITS.  Everything we need here is fine
+// if its declarations just come first.  Also, include sys/types.h
+// before fts. On some systems fts.h is not self contained.
+#ifdef BAD_FTS
+  #include <sys/types.h>
+  #include <fts.h>
+#endif
+
+// For package configuration macros.
+#include "config.h"
+
 #include <assert.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <elf.h>
 #include <elfutils/libdw.h>
 
-// For package configuration macros.
-#include "config.h"
+// If fts.h is included before config.h, its indirect inclusions may
+// not give us the right LFS aliases of these functions, so map them
+// manually.
+#ifdef BAD_FTS
+  #ifdef _FILE_OFFSET_BITS
+    #define open open64
+    #define fopen fopen64
+  #endif
+#else
+  #include <sys/types.h>
+  #include <fts.h>
+#endif
+
+#include <iostream>
+#include <string>
+#include <cstring>
+#include <cstdlib>
+#include <vector>
+#include <algorithm>
+#include <map>
+
 #include "abg-workers.h"
 #include "abg-config.h"
 #include "abg-tools-utils.h"

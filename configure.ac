@@ -141,6 +141,20 @@ fi
 
 AC_SUBST(VISIBILITY_FLAGS)
 
+dnl Older glibc had a broken fts that didn't work with Large File Systems.
+dnl We want the version that can handler LFS, but include workaround if we
+dnl get a bad one. Add define to CFLAGS (not AC_DEFINE it) since we need to
+dnl check it before including config.h (which might define _FILE_OFFSET_BITS).
+AC_CACHE_CHECK([whether including fts.h with _FILE_OFFSET_BITS set breaks], ac_cv_bad_fts,
+  [AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+	#define _FILE_OFFSET_BITS 64
+	#include <fts.h>
+	]])],
+		     ac_cv_bad_fts=no, ac_cv_bad_fts=yes)])
+AS_IF([test "x$ac_cv_bad_fts" = "xyes"],
+      [CFLAGS="$CFLAGS -DBAD_FTS=1",
+       CXXFLAGS="$CXXFLAGS -DBAD_FTS=1"])
+
 dnl Check for dependency: libelf, libdw, libebl (elfutils)
 dnl Note that we need to use at least elfutils 0.159 but
 dnl at that time elfutils didnt have pkgconfig capabilities
