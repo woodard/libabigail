@@ -1,3 +1,47 @@
+2017-11-21  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 22438 - Emit a clear message when debug info is not found
+	* include/abg-dwarf-reader.h (enum abigail::dwarf_reader::status):
+	Add a new STATUS_ALT_DEBUG_INFO_NOT_FOUND enumerator there.
+	(refers_to_alt_debug_info): Declare new function.
+	* src/abg-dwarf-reader.cc (read_corpus_from_elf): Detect when the
+	referred-to alternate debug info file is not found and flip the
+	STATUS_ALT_DEBUG_INFO_NOT_FOUND bit of the status accordingly.  If
+	the debug info was found but not the alternate debug info, then do
+	not try to read the debug info at all.
+	(refers_to_alt_debug_info): Define new function.
+	* tools/abidiff.cc (handle_error): Define new static function.
+	(main): Use it, rather than handling errors preventing libabigail
+	from reading the corpus on a case by case basis.
+	tools/abipkgdiff.cc (compare): Handle the case where no alternate
+	debug info was found.
+	* tests/data/test-diff-pkg/libxfce4ui-devel-4.12.1-8.fc27.ppc64-self-report-0.txt:
+	New test output reference.
+	* tests/data/test-diff-pkg/libxfce4ui-devel-4.12.1-8.fc27.ppc64.rpm:
+	New test input RPM.
+	* tests/data/test-diff-pkg/libxfce4ui-devel-debuginfo-4.12.1-8.fc27.ppc64.rpm:
+	Likewise.
+	* tests/data/Makefile.am: Add the new test files above to source
+	distribution.
+	* tests/test-diff-pkg.cc (in_out_specs): Add a new test case from
+	the new input files above.
+
+2017-11-13  Dodji Seketeli <dodji@redhat.com>
+
+	Support systems where fts.h can't be used with _FILE_OFFSET_BITS set
+	* configure.ac: Detect if we are on a system where fts.h cannot be
+	included with _FILE_OFFSET_BITS defined.  If that is the case,
+	then define the BAD_FTS macro.
+	* src/abg-tools-utils.cc: If BAD_FTS is defined then include fts.h
+	with _FILE_OFFSET_BITS not defined (that is, before config.h) but
+	then make sure that open and fopen are 64 bits aware.
+	* tools/abipkgdiff.cc: Likewise.
+
+2017-11-08  Dodji Seketeli <dodji@redhat.com>
+
+	Edit the NEWS file a tiny little bit for 1.0
+	* NEWS: Cleanup.
+
 2017-11-06  Dodji Seketeli <dodji@redhat.com>
 
 	Automatically Update ChangeLog for 1.0
