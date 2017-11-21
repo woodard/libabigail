@@ -15684,6 +15684,12 @@ read_corpus_from_elf(read_context& ctxt, status& status)
   if (!ctxt.load_debug_info())
     status |= STATUS_DEBUG_INFO_NOT_FOUND;
 
+  {
+    string alt_di_path;
+    if (refers_to_alt_debug_info(ctxt, alt_di_path) && !ctxt.alt_dwarf())
+      status |= STATUS_ALT_DEBUG_INFO_NOT_FOUND;
+  }
+
   if (!get_ignore_symbol_table(ctxt))
     {
       ctxt.load_elf_properties();
@@ -15692,7 +15698,13 @@ read_corpus_from_elf(read_context& ctxt, status& status)
 	status |= STATUS_NO_SYMBOLS_FOUND;
     }
 
-  if (status & STATUS_NO_SYMBOLS_FOUND)
+  if (// If no elf symbol was found ...
+      status & STATUS_NO_SYMBOLS_FOUND
+      // ... or if debug info was found but not the required alternate
+      // debug info ...
+      || ((status & STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+	  && !(status & STATUS_DEBUG_INFO_NOT_FOUND)))
+    // ... then we cannot handle the binary.
     return corpus_sptr();
 
   // Read the variable and function descriptions from the debug info
@@ -15862,6 +15874,32 @@ lookup_public_function_symbol_from_elf(const environment*		env,
   close(fd);
 
   return value;
+}
+
+/// Check if the underlying elf file refers to an alternate debug info
+/// file associated to it.
+///
+/// Note that "alternate debug info sections" is a GNU extension as
+/// of DWARF4 and is described at
+/// http://www.dwarfstd.org/ShowIssue.php?issue=120604.1.
+///
+/// @param ctxt the context used to read the elf file.
+///
+/// @param alt_di the path to the alternate debug info file.  This is
+/// set iff the function returns true.
+///
+/// @return true if the ELF file refers to an alternate debug info
+/// file.
+bool
+refers_to_alt_debug_info(const read_context&	ctxt,
+			 string&		alt_di_path)
+{
+  if (!ctxt.alt_debug_info_path().empty())
+    {
+      alt_di_path = ctxt.alt_debug_info_path();
+      return true;
+    }
+  return false;
 }
 
 /// Check if the underlying elf file has an alternate debug info file

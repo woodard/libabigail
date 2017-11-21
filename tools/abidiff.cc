@@ -776,6 +776,108 @@ adjust_diff_context_for_kmidiff(diff_context_sptr &ctxt)
     (false);
 }
 
+/// Emit an appropriate error message if necessary, given an error
+/// code.
+///
+/// To emit the appropriate error message the function might need to
+/// access the context in which the (ELF) input file was being loaded,
+/// if it's present.
+///
+/// @param status_code the status code returned after trying to load
+/// the input file.
+///
+/// @param ctxt the context used to load the ELF file, if we still
+/// have it.  If this is nil, then it's ignored.
+///
+/// @param prog_name the name of the current program.  This is
+/// important as it's used in the error message.
+///
+/// @param input_file_name the name of the input file that we are
+/// tryin to load.
+///
+/// @param debug_info_dir1 if non nil, then this points to the path of
+/// the root debug info directory of the first binary that we are
+/// trying to load..  If nil, then it's ignored.
+///
+/// @param debug_info_dir2 if non nil, then this points to the path of
+/// the root debug info directory of the second binary that we are
+/// trying to load..  If nil, then it's ignored.
+///
+/// @return abigail::tools_utils::ABIDIFF_ERROR if an error was
+/// detected, abigail::tools_utils::ABIDIFF_OK otherwise.
+static abigail::tools_utils::abidiff_status
+handle_error(abigail::dwarf_reader::status status_code,
+	     const abigail::dwarf_reader::read_context* ctxt,
+	     const string& prog_name,
+	     const string& input_file_name,
+	     char** debug_info_dir1,
+	     char** debug_info_dir2)
+{
+  if (!(status_code & abigail::dwarf_reader::STATUS_OK))
+    {
+      emit_prefix(prog_name, cerr)
+	<< "failed to read input file " << input_file_name << "\n";
+
+      if (status_code & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
+	{
+	  emit_prefix(prog_name, cerr) <<
+	    "could not find the debug info\n";
+	  if (debug_info_dir1)
+	    {
+	      if (*debug_info_dir1 == 0)
+		emit_prefix(prog_name, cerr)
+		  << "Maybe you should consider using the "
+		  "--debug-info-dir1 option to tell me about the "
+		  "root directory of the debuginfo? "
+		  "(e.g, --debug-info-dir1 /usr/lib/debug)\n";
+	      else
+		emit_prefix(prog_name, cerr)
+		  << "Maybe the root path to the debug information '"
+		  << *debug_info_dir1 << "' is wrong?\n";
+	    }
+
+	  if (debug_info_dir2)
+	    {
+	      if (*debug_info_dir2 == 0)
+		emit_prefix(prog_name, cerr)
+		  << "Maybe you should consider using the "
+		  "--debug-info-dir2 option to tell me about the "
+		  "root directory of the debuginfo? "
+		  "(e.g, --debug-info-dir2 /usr/lib/debug)\n";
+	      else
+		emit_prefix(prog_name, cerr)
+		  << "Maybe the root path to the debug information '"
+		  << *debug_info_dir2 << "' is wrong?\n";
+	    }
+	}
+
+      if (status_code & abigail::dwarf_reader::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+	{
+	  emit_prefix(prog_name, cerr)
+	    << "could not find the alternate debug info file";
+	  if (ctxt)
+	    {
+	      string alt_di_path;
+	      abigail::dwarf_reader::refers_to_alt_debug_info(*ctxt,
+							      alt_di_path);
+	      if (!alt_di_path.empty())
+		cerr << " at: " << alt_di_path;
+	    }
+	  cerr << "\n";
+	}
+
+      if (status_code & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
+	emit_prefix(prog_name, cerr)
+	  << "could not find the ELF symbols in the file '"
+	  << input_file_name
+	  << "'\n";
+
+      return abigail::tools_utils::ABIDIFF_ERROR;
+    }
+
+  return abigail::tools_utils::ABIDIFF_OK;
+}
+
 int
 main(int argc, char* argv[])
 {
@@ -894,6 +996,11 @@ main(int argc, char* argv[])
 	    set_suppressions(*ctxt, opts);
 	    abigail::dwarf_reader::set_do_log(*ctxt, opts.do_log);
 	    c1 = abigail::dwarf_reader::read_corpus_from_elf(*ctxt, c1_status);
+	    if (!c1)
+	      return handle_error(c1_status, ctxt.get(),
+				  argv[0], opts.file1,
+				  &di_dir1,
+				  /*debug_info_dir2=*/0);
 	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
@@ -904,6 +1011,11 @@ main(int argc, char* argv[])
 	    assert(ctxt);
 	    set_suppressions(*ctxt, opts);
 	    c1 = abigail::xml_reader::read_corpus_from_input(*ctxt);
+	    if (!c1)
+	      return handle_error(c1_status, /*ctxt=*/0,
+				  argv[0], opts.file1,
+				  /*debug_info_dir1=*/0,
+				  /*debug_info_dir2=*/0);
 	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP:
@@ -914,11 +1026,21 @@ main(int argc, char* argv[])
 	    assert(ctxt);
 	    set_suppressions(*ctxt, opts);
 	    g1 = abigail::xml_reader::read_corpus_group_from_input(*ctxt);
+	    if (!g1)
+	      return handle_error(c1_status, /*ctxt=*/0,
+				  argv[0], opts.file1,
+				  /*debug_info_dir1=*/0,
+				  /*debug_info_dir2=*/0);
 	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_ZIP_CORPUS:
 #ifdef WITH_ZIP_ARCHIVE
 	  c1 = abigail::xml_reader::read_corpus_from_file(opts.file1);
+	  if (!c1)
+	    return handle_error(c1_status, /*ctxt=*/0,
+				argv[0], opts.file1,
+				/*debug_info_dir1=*/0,
+				/*debug_info_dir2=*/0);
 #endif //WITH_ZIP_ARCHIVE
 	  break;
 	case abigail::tools_utils::FILE_TYPE_RPM:
@@ -955,6 +1077,11 @@ main(int argc, char* argv[])
 	    set_suppressions(*ctxt, opts);
 
 	    c2 = abigail::dwarf_reader::read_corpus_from_elf(*ctxt, c2_status);
+	    if (!c2)
+	      return handle_error(c2_status, ctxt.get(),
+				  argv[0], opts.file2,
+				  /*debug_info_dir1=*/0,
+				  /*debug_info_dir2=*/&di_dir2);
 	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
@@ -965,6 +1092,11 @@ main(int argc, char* argv[])
 	    assert(ctxt);
 	    set_suppressions(*ctxt, opts);
 	    c2 = abigail::xml_reader::read_corpus_from_input(*ctxt);
+	    if (!c2)
+	      return handle_error(c2_status, /*ctxt=*/0,
+				  argv[0], opts.file2,
+				  /*debug_info_dir1=*/0,
+				  /*debug_info_dir2=*/0);
 	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP:
@@ -975,11 +1107,21 @@ main(int argc, char* argv[])
 	    assert(ctxt);
 	    set_suppressions(*ctxt, opts);
 	    g2 = abigail::xml_reader::read_corpus_group_from_input(*ctxt);
+	    if (!g2)
+	      return handle_error(c2_status, /*ctxt=*/0,
+				  argv[0], opts.file2,
+				  /*debug_info_dir1=*/0,
+				  /*debug_info_dir2=*/0);
 	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_ZIP_CORPUS:
 #ifdef WITH_ZIP_ARCHIVE
 	  c2 = abigail::xml_reader::read_corpus_from_file(opts.file2);
+	  if (!c2)
+	    return handle_error(c2_status, /*ctxt=*/0,
+				argv[0], opts.file2,
+				/*debug_info_dir1=*/0,
+				/*debug_info_dir2=*/0);
 #endif //WITH_ZIP_ARCHIVE
 	  break;
 	case abigail::tools_utils::FILE_TYPE_RPM:
@@ -988,70 +1130,6 @@ main(int argc, char* argv[])
 	case abigail::tools_utils::FILE_TYPE_DIR:
 	case abigail::tools_utils::FILE_TYPE_TAR:
 	  break;
-	}
-
-      if (!t1 && !c1 && !g1)
-	{
-	  emit_prefix(argv[0], cerr)
-	    << "failed to read input file " << opts.file1 << "\n";
-	  if (!(c1_status & abigail::dwarf_reader::STATUS_OK))
-	    {
-	      if (c1_status
-		  & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
-		{
-		  emit_prefix(argv[0], cerr) <<
-		    "could not find the debug info\n";
-		  if (di_dir1 == 0)
-		    emit_prefix(argv[0], cerr)
-		      << " Maybe you should consider using the "
-		      "--debug-info-dir1 option to tell me about the "
-		      "root directory of the debuginfo? "
-		      "(e.g, --debug-info-dir1 /usr/lib/debug)\n";
-		  else
-		    emit_prefix(argv[0], cerr)
-		      << "Maybe the root path to the debug information '"
-		      << di_dir1 << "' is wrong?\n";
-		}
-	      if (c1_status
-		  & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
-		emit_prefix(argv[0], cerr)
-		  << "could not find the ELF symbols in the file '"
-		  << opts.file1
-		  << "'\n";
-	      return abigail::tools_utils::ABIDIFF_ERROR;
-	    }
-	}
-
-      if (!t2 && !c2 && !g2)
-	{
-	  emit_prefix(argv[0],  cerr)
-	    << "failed to read input file " << opts.file2 << "\n";
-	  if (!(c2_status & abigail::dwarf_reader::STATUS_OK))
-	    {
-	      if (c2_status
-		  & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
-		{
-		  emit_prefix(argv[0], cerr) <<
-		    "could not find the debug info\n";
-		  if (di_dir2 == 0)
-		    emit_prefix(argv[0], cerr)
-		      << " Maybe you should consider using the "
-		      "--debug-info-dir1 option to tell me about the "
-		      "root directory of the debuginfo? "
-		      "(e.g, --debug-info-dir1 /usr/lib/debug)\n";
-		  else
-		    emit_prefix(argv[0], cerr)
-		      << "Maybe the root path to the debug information '"
-		      << di_dir2 << "' is wrong?\n";
-		}
-	      if (c2_status
-		  & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
-		emit_prefix(argv[0], cerr)
-		  << "could not find the ELF symbols in the file '"
-		  << opts.file2
-		  << "'\n";
-	      return abigail::tools_utils::ABIDIFF_ERROR;
-	    }
 	}
 
       if (!!c1 != !!c2

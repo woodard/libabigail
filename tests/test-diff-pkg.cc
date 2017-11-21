@@ -510,6 +510,18 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/spice-server-0.12.4-19.el7.x86_64-0.12.8-1.el7.x86_64-report-3.txt",
     "output/test-diff-pkg/spice-server-0.12.4-19.el7.x86_64-0.12.8-1.el7.x86_64-report-3.txt"
   },
+  {
+    "data/test-diff-pkg/libxfce4ui-devel-4.12.1-8.fc27.ppc64.rpm",
+    "data/test-diff-pkg/libxfce4ui-devel-4.12.1-8.fc27.ppc64.rpm",
+    "--fail-no-dbg",
+    "",
+    "data/test-diff-pkg/libxfce4ui-devel-debuginfo-4.12.1-8.fc27.ppc64.rpm",
+    "data/test-diff-pkg/libxfce4ui-devel-debuginfo-4.12.1-8.fc27.ppc64.rpm",
+    "",
+    "",
+    "data/test-diff-pkg/libxfce4ui-devel-4.12.1-8.fc27.ppc64-self-report-0.txt",
+    "output/test-diff-pkg/libxfce4ui-devel-4.12.1-8.fc27.ppc64-self-report-0.txt"
+  },
 #endif //WITH_RPM
 
 #ifdef WITH_DEB

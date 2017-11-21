@@ -1139,6 +1139,7 @@ compare(const elf_file& elf1,
 
     corpus1 = read_corpus_from_elf(*c, c1_status);
 
+    bool bail_out = false;
     if (!(c1_status & abigail::dwarf_reader::STATUS_OK))
       {
 	if (opts.verbose)
@@ -1147,27 +1148,59 @@ compare(const elf_file& elf1,
 	    << elf1.path
 	    << "' properly\n";
 
-      if (detailed_error_status)
-	*detailed_error_status = c1_status;
+	if (detailed_error_status)
+	  *detailed_error_status = c1_status;
 
-      return abigail::tools_utils::ABIDIFF_ERROR;
+	bail_out = true;
       }
-  }
 
-  if (opts.fail_if_no_debug_info
-      && (c1_status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND))
-    {
-      emit_prefix("abipkgdiff", cerr) << "Could not find debug info file";
-      if (di_dir1 && strcmp(di_dir1, ""))
-	emit_prefix("abipkgdiff", cerr) << " under " << di_dir1 << "\n";
-      else
-	emit_prefix("abipkgdiff", cerr) << "\n";
+    if (opts.fail_if_no_debug_info || opts.verbose)
+      {
+	bool debug_info_error = false;
+	if (c1_status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
+	  {
+	    if (opts.verbose)
+	      emit_prefix("abipkgdiff", cerr)
+		<< "while reading file" << elf1.path << "\n";
 
-      if (detailed_error_status)
-	*detailed_error_status = c1_status;
+	    emit_prefix("abipkgdiff", cerr) << "Could not find debug info file";
+	    if (di_dir1 && strcmp(di_dir1, ""))
+	      cerr << " under " << di_dir1 << "\n";
+	    else
+	       cerr << "\n";
 
+	    if (detailed_error_status)
+	      *detailed_error_status = c1_status;
+	    debug_info_error = true;
+	  }
+
+	if (c1_status & abigail::dwarf_reader::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+	  {
+	    if (opts.verbose)
+	      emit_prefix("abipkgdiff", cerr)
+		<< "while reading file" << elf1.path << "\n";
+
+	    emit_prefix("abipkgdiff", cerr)
+	      << "Could not find alternate debug info file";
+	    string alt_di_path;
+	    abigail::dwarf_reader::refers_to_alt_debug_info(*c, alt_di_path);
+	    if (!alt_di_path.empty())
+	      cerr << ": " << alt_di_path << "\n";
+	    else
+	      cerr << "\n";
+
+	    if (detailed_error_status)
+	      *detailed_error_status = c1_status;
+	    debug_info_error = true;
+	  }
+
+	if (debug_info_error)
+	  bail_out = true;
+      }
+
+    if (bail_out)
       return abigail::tools_utils::ABIDIFF_ERROR;
-    }
+  }
 
   if (opts.verbose)
     emit_prefix("abipkgdiff", cerr)
@@ -1192,6 +1225,7 @@ compare(const elf_file& elf1,
 
     corpus2 = read_corpus_from_elf(*c, c2_status);
 
+    bool bail_out = false;
     if (!(c2_status & abigail::dwarf_reader::STATUS_OK))
       {
 	if (opts.verbose)
@@ -1203,26 +1237,56 @@ compare(const elf_file& elf1,
 	if (detailed_error_status)
 	  *detailed_error_status = c2_status;
 
-	return abigail::tools_utils::ABIDIFF_ERROR;
+	bail_out = true;
       }
-  }
 
-  if (opts.fail_if_no_debug_info
-      && (c2_status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND))
-    {
-      emit_prefix("abipkgdiff", cerr)
-	<< "Could not find debug info file";
-      if (di_dir1 && strcmp(di_dir2, ""))
-	emit_prefix("abipkgdiff", cerr)
-	  << " under " << di_dir2 << "\n";
-      else
-	emit_prefix("abipkgdiff", cerr) << "\n";
+    if (opts.fail_if_no_debug_info || opts.verbose)
+      {
+	bool debug_info_error = false;
+	if (c2_status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
+	  {
+	    if (opts.verbose)
+	      emit_prefix("abipkgdiff", cerr)
+		<< "while reading file" << elf2.path << "\n";
 
-      if (detailed_error_status)
-	*detailed_error_status = c2_status;
+	    emit_prefix("abipkgdiff", cerr) << "Could not find debug info file";
+	    if (di_dir2 && strcmp(di_dir2, ""))
+	      cerr << " under " << di_dir2 << "\n";
+	    else
+	      cerr << "\n";
 
+	    if (detailed_error_status)
+	      *detailed_error_status = c2_status;
+	    debug_info_error = true;
+	  }
+
+	if (c2_status & abigail::dwarf_reader::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+	  {
+	    if (opts.verbose)
+	      emit_prefix("abipkgdiff", cerr)
+		<< "while reading file" << elf2.path << "\n";
+
+	    emit_prefix("abipkgdiff", cerr)
+	      << "Could not find alternate debug info file";
+	    string alt_di_path;
+	    abigail::dwarf_reader::refers_to_alt_debug_info(*c, alt_di_path);
+	    if (!alt_di_path.empty())
+	      cerr << ": " << alt_di_path << "\n";
+	    else
+	      cerr << "\n";
+
+	    if (detailed_error_status)
+	      *detailed_error_status = c2_status;
+	    debug_info_error = true;
+	  }
+
+	if (debug_info_error)
+	  bail_out = true;
+      }
+
+    if (bail_out)
       return abigail::tools_utils::ABIDIFF_ERROR;
-    }
+  }
 
   if (opts.verbose)
     emit_prefix("abipkgdiff", cerr)

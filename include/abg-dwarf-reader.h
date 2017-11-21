@@ -52,12 +52,16 @@ enum status
   /// This status is for when the call went OK.
   STATUS_OK = 1,
 
-  /// This satus is for when the debug info could not be read.
+  /// This status is for when the debug info could not be read.
   STATUS_DEBUG_INFO_NOT_FOUND = 1 << 1,
+
+  /// This status is for when the alternate debug info could not be
+  /// found.
+  STATUS_ALT_DEBUG_INFO_NOT_FOUND = 1 << 2,
 
   /// This status is for when the symbols of the ELF binaries could
   /// not be read.
-  STATUS_NO_SYMBOLS_FOUND = 1 << 2,
+  STATUS_NO_SYMBOLS_FOUND = 1 << 3,
 };
 
 string
@@ -144,8 +148,12 @@ lookup_public_function_symbol_from_elf(const environment*		env,
 				       const string&			symname,
 				       vector<elf_symbol_sptr>&	func_syms);
 
+bool
+refers_to_alt_debug_info(const read_context&	ctxt,
+			 string&		alt_di_path);
+
 status
-has_alt_debug_info(read_context&	elf_path,
+has_alt_debug_info(read_context&	ctxt,
 		   bool&		has_alt_di,
 		   string&		alt_debug_info_path);
 
