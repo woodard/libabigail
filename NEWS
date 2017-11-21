@@ -186,6 +186,7 @@ Dodji Seketeli:
       Remove useless vertical space from src/abg-writer.cc
       Allow setting options to instances of xml_writer::write_context
       Wire the --no-show-locs option to abidw
+      Support systems where fts.h can't be used with _FILE_OFFSET_BITS set
       Bug 20670 - abipkgdiff aborts if $XDG_CACHE_HOME does not exist
       Bug 20887 - Show relative change of offsets
       Bug 20927 - Segfault when $HOME is not set
@@ -204,6 +205,7 @@ Dodji Seketeli:
       Bug 22015 - Failing to return global scope of a DIE in certain cases
       Bug 22122 - Fail to represent 'const array'
       Bug 22190 - crash in read_context::get_or_compute_canonical_die
+      Bug 22438 - Emit a clear message when debug info is not found
 
 Mark Wielaard:
       Declare eval_last_constant_dwarf_sub_expr with [u]int64_t not [s]size_t.
