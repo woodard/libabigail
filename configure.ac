@@ -369,6 +369,27 @@ if test x$CHECK_DEPS_FOR_FEDABIPKGDIFF = xyes; then
        fi
        ENABLE_FEDABIPKGDIFF=no
     else
+	# On some old platforms, the koji client object doesn't have
+	# the required .read_config method.  Alas, that module doesn't
+	# have any __version__ string either.  So we do as well as we
+	# can to try and detect that case and disable fedabipkgdiff if
+	# necessary.
+        AC_MSG_CHECKING([checking if koji client is recent enough ...])
+	python -c "
+import koji
+koji.read_config('koji')"
+	if test $? -eq 0; then
+	   koji_version_check_ok=yes
+	else
+	   koji_version_check_ok=no
+	fi
+
+	if test x$koji_version_check_ok = xno; then
+	  AC_MSG_RESULT([no, disabling fedpkgdiff])
+	  MISSING_FEDABIPKGDIFF_DEP=yes
+	else
+          AC_MSG_RESULT(yes)
+       fi
        if test x$MISSING_FEDABIPKGDIFF_DEP = xno; then
          ENABLE_FEDABIPKGDIFF=yes
        fi
