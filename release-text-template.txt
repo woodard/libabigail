@@ -7,11 +7,14 @@ You can download it at http://mirrors.kernel.org/sourceware/libabigail/libabigai
 Libabigail is a library which aims at constructing, manipulating,
 serializing and de-serializing ABI-relevant artifacts.
 
-It also comes with a set of associated command line tools to compare the
-ABI of ELF binaries resulting from the compilation of C or C++ programs.
+It also comes with a set of associated command line tools to compare
+the interfaces of ELF binaries resulting from the compilation of C or
+C++ programs.
 
-Typical use cases of libabigail tools include detecting ABI incompatible
-changes across several releases of shared libraries, for instance.
+Typical use cases of libabigail tools include detecting ABI
+incompatible changes across several releases of shared libraries or
+incompatible changes in the interface between a Linux kernel and its
+modules, for instance.
 
 Users can of course write their own tools using the library.
 
