@@ -39,13 +39,16 @@
 #include <string>
 #include <cstdlib>
 #include <iostream>
+#include <vector>
 #include "abg-workers.h"
 #include "test-utils.h"
 #include "abg-tools-utils.h"
 
 using std::string;
+using std::vector;
 using std::cerr;
 using abigail::tests::get_src_dir;
+using abigail::tools_utils::split_string;
 
 struct InOutSpec
 {
@@ -522,6 +525,20 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/libxfce4ui-devel-4.12.1-8.fc27.ppc64-self-report-0.txt",
     "output/test-diff-pkg/libxfce4ui-devel-4.12.1-8.fc27.ppc64-self-report-0.txt"
   },
+  {
+    "data/test-diff-pkg/libxfce4ui-devel-4.12.1-8.fc27.ppc64.rpm",
+    "data/test-diff-pkg/libxfce4ui-devel-4.12.1-8.fc27.ppc64.rpm",
+    "--fail-no-dbg",
+    "",
+    "data/test-diff-pkg/libxfce4ui-debuginfo-4.12.1-8.fc27.ppc64.rpm "
+    "data/test-diff-pkg/libxfce4ui-devel-debuginfo-4.12.1-8.fc27.ppc64.rpm",
+    "data/test-diff-pkg/libxfce4ui-debuginfo-4.12.1-8.fc27.ppc64.rpm "
+    "data/test-diff-pkg/libxfce4ui-devel-debuginfo-4.12.1-8.fc27.ppc64.rpm",
+    "",
+    "",
+    "data/test-diff-pkg/libxfce4ui-devel-4.12.1-8.fc27.ppc64-self-report-ok-0.txt",
+    "output/test-diff-pkg/libxfce4ui-devel-4.12.1-8.fc27.ppc64-self-report-ok-0.txt"
+  },
 #endif //WITH_RPM
 
 #ifdef WITH_DEB
@@ -575,9 +592,9 @@ struct test_task : public abigail::workers::task
     string first_in_package_path, second_in_package_path,
       prog_options,
       ref_abi_diff_report_path, out_abi_diff_report_path, cmd, abipkgdiff,
-      first_in_debug_package_path, second_in_debug_package_path,
       first_in_devel_package_path, second_in_devel_package_path,
       suppression_path;
+    vector<string> first_in_debug_package_paths, second_in_debug_package_paths;
 
     first_in_package_path =
       string(get_src_dir()) + "/tests/" + spec.first_in_package_path;
@@ -588,17 +605,36 @@ struct test_task : public abigail::workers::task
 
     if (spec.first_in_debug_package_path
 	&& strcmp(spec.first_in_debug_package_path, ""))
-      first_in_debug_package_path =
-	string(get_src_dir()) + "/tests/" + spec.first_in_debug_package_path;
+      {
+	vector<string> debug_info_pkg_paths;
+	split_string(spec.first_in_debug_package_path, ", ",
+		     debug_info_pkg_paths);
+	assert(!debug_info_pkg_paths.empty());
+	for (vector<string>::const_iterator s = debug_info_pkg_paths.begin();
+	     s != debug_info_pkg_paths.end();
+	     ++s)
+	  first_in_debug_package_paths.push_back(string(get_src_dir()) +
+						 "/tests/" + *s);
+      }
     else
-      first_in_debug_package_path.clear();
+      first_in_debug_package_paths.clear();
 
     if (spec.second_in_debug_package_path
 	&& strcmp(spec.second_in_debug_package_path, ""))
-      second_in_debug_package_path =
-	string(get_src_dir()) + "/tests/" + spec.second_in_debug_package_path;
+      {
+	vector<string> debug_info_pkg_paths;
+	split_string(spec.second_in_debug_package_path,
+		     ", ",
+		     debug_info_pkg_paths);
+	assert(!debug_info_pkg_paths.empty());
+	for (vector<string>::const_iterator s = debug_info_pkg_paths.begin();
+	     s != debug_info_pkg_paths.end();
+	     ++s)
+	  second_in_debug_package_paths.push_back(string(get_src_dir()) +
+						  "/tests/" + *s);
+      }
     else
-      second_in_debug_package_path.clear();
+      second_in_debug_package_paths.clear();
 
     if (spec.first_in_devel_package_path
 	&& strcmp(spec.first_in_devel_package_path, ""))
@@ -635,10 +671,17 @@ struct test_task : public abigail::workers::task
     if (!prog_options.empty())
       abipkgdiff +=  " " + prog_options;
 
-    if (!first_in_debug_package_path.empty())
-      abipkgdiff += " --d1 " + first_in_debug_package_path;
-    if (!second_in_debug_package_path.empty())
-      abipkgdiff += " --d2 " + second_in_debug_package_path;
+    for (vector<string>::const_iterator p =
+	   first_in_debug_package_paths.begin();
+	 p != first_in_debug_package_paths.end();
+	 ++p)
+      abipkgdiff += " --d1 " + *p;
+
+    for (vector<string>::const_iterator p =
+	   second_in_debug_package_paths.begin();
+	 p != second_in_debug_package_paths.end();
+	 ++p)
+      abipkgdiff += " --d2 " + *p;
 
     if (!first_in_devel_package_path.empty())
       abipkgdiff += " --devel1 " + first_in_devel_package_path;

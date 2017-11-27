@@ -74,11 +74,21 @@ Options
     into a separate file, tells ``abipkgdiff`` where to find that
     separate debug information package.
 
+    Note that the debug info for *package1* can have been split into
+    several different debug info packages.  In that case, several
+    instances of this options can be provided, along with those
+    several different debug info packages.
+
   * ``--debug-info-pkg2 | --d2`` <path>
 
     For cases where the debug information for *package2* is split out
     into a separate file, tells ``abipkgdiff`` where to find that
     separate debug information package.
+
+    Note that the debug info for *package2* can have been split into
+    several different debug info packages.  In that case, several
+    instances of this options can be provided, along with those
+    several different debug info packages.
 
   * ``--devel-pkg1 | --devel1`` <path>
 

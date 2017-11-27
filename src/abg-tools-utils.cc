@@ -586,6 +586,56 @@ string_is_ascii_identifier(const string& str)
   return true;
 }
 
+/// Split a given string into substrings, given some delimiters.
+///
+/// @param input_string the input string to split.
+///
+/// @param delims a string containing the delimiters to consider.
+///
+/// @param result a vector of strings containing the splitted result.
+///
+/// @return true iff the function found delimiters in the input string
+/// and did split it as a result.  Note that if no delimiter was found
+/// in the input string, then the input string is added at the end of
+/// the output vector of strings.
+bool
+split_string(const string& input_string,
+	     const string& delims,
+	     vector<string>& result)
+{
+  size_t current = 0, next;
+  bool did_split = false;
+
+  do
+    {
+      // Trim leading white spaces
+      while (current < input_string.size() && isspace(input_string[current]))
+	++current;
+
+      if (current >= input_string.size())
+	break;
+
+      next = input_string.find_first_of(delims, current);
+      if (next == string::npos)
+	{
+	  string s = input_string.substr(current);
+	  if (!s.empty())
+	    result.push_back(input_string.substr(current));
+	  did_split = (current != 0);
+	  break;
+	}
+      string s = input_string.substr(current, next - current);
+      if (!s.empty())
+	{
+	  result.push_back(input_string.substr(current, next - current));
+	  did_split = true;
+	}
+      current = next + 1;
+    }
+  while (next != string::npos);
+
+  return did_split;
+}
 
 /// The private data of the @ref temp_file type.
 struct temp_file::priv

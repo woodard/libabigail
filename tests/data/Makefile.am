@@ -1347,7 +1347,9 @@ test-diff-pkg/libcdio-debuginfo-0.94-1.fc26.x86_64.rpm \
 test-diff-pkg/libcdio-debuginfo-0.94-2.fc26.x86_64.rpm \
 test-diff-pkg/libxfce4ui-devel-4.12.1-8.fc27.ppc64.rpm \
 test-diff-pkg/libxfce4ui-devel-debuginfo-4.12.1-8.fc27.ppc64.rpm \
+test-diff-pkg/libxfce4ui-debuginfo-4.12.1-8.fc27.ppc64.rpm \
 test-diff-pkg/libxfce4ui-devel-4.12.1-8.fc27.ppc64-self-report-0.txt \
+test-diff-pkg/libxfce4ui-devel-4.12.1-8.fc27.ppc64-self-report-ok-0.txt \
 \
 test-fedabipkgdiff/dbus-glib-0.104-3.fc23.x86_64.rpm \
 test-fedabipkgdiff/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm \

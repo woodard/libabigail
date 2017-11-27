@@ -60,6 +60,7 @@ bool string_ends_with(const string&, const string&);
 bool string_begins_with(const string&, const string&);
 bool string_is_ascii(const string&);
 bool string_is_ascii_identifier(const string&);
+bool split_string(const string&, const string&, vector<string>&);
 
 suppr::type_suppression_sptr
 gen_suppr_spec_from_headers(const string& hdrs_root_dir);

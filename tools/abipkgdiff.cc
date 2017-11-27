@@ -171,8 +171,8 @@ public:
   bool		parallel;
   string	package1;
   string	package2;
-  string	debug_package1;
-  string	debug_package2;
+  vector<string> debug_packages1;
+  vector<string> debug_packages2;
   string	devel_package1;
   string	devel_package2;
   size_t	num_workers;
@@ -321,7 +321,7 @@ private:
   abigail::tools_utils::file_type	type_;
   kind					kind_;
   map<string, elf_file_sptr>		path_elf_file_sptr_map_;
-  package_sptr				debug_info_package_;
+  vector<package_sptr>			debug_info_packages_;
   package_sptr				devel_package_;
   package_sptr				kabi_whitelist_package_;
   suppressions_type			private_types_suppressions_;
@@ -439,22 +439,44 @@ public:
   path_elf_file_sptr_map()
   {return path_elf_file_sptr_map_;}
 
-  /// Getter for the debug info package associated to the current
+  /// Getter for the debug info packages associated to the current
   /// package.
   ///
-  /// @return the debug info package associated to the current
+  /// There can indeed be several debug info packages needed for one
+  /// input package, as the debug info for that input package can be
+  /// split across several debuginfo packages.
+  ///
+  /// @return the debug info packages associated to the current
   /// package.
-  const shared_ptr<package>&
-  debug_info_package() const
-  {return debug_info_package_;}
+  const vector<package_sptr>&
+  debug_info_packages() const
+  {return debug_info_packages_;}
 
-  /// Setter for the debug info package associated to the current
+
+  /// Getter for the debug info packages associated to the current
   /// package.
+  ///
+  /// There can indeed be several debug info packages needed for one
+  /// input package, as the debug info for that input package can be
+  /// split across several debuginfo packages.
+  ///
+  /// @return the debug info packages associated to the current
+  /// package.
+  vector<package_sptr>&
+  debug_info_packages()
+  {return debug_info_packages_;}
+
+  /// Setter for the debug info packages associated to the current
+  /// package.
+  ///
+  /// There can indeed be several debug info packages needed for one
+  /// input package, as the debug info for that input package can be
+  /// split across several debuginfo packages.
   ///
   /// @param p the new debug info package.
   void
-  debug_info_package(const shared_ptr<package> p)
-  {debug_info_package_ = p;}
+  debug_info_packages(const vector<package_sptr> &p)
+  {debug_info_packages_ = p;}
 
   /// Getter for the devel package associated to the current package.
   ///
@@ -541,8 +563,8 @@ public:
   erase_extraction_directories(const options &opts) const
   {
     erase_extraction_directory(opts);
-    if (debug_info_package())
-      debug_info_package()->erase_extraction_directory(opts);
+    if (!debug_info_packages().empty())
+      debug_info_packages().front()->erase_extraction_directory(opts);
     if (devel_package())
       devel_package()->erase_extraction_directory(opts);
     if (kabi_whitelist_package())
@@ -591,7 +613,7 @@ struct compare_args
 /// A convenience typedef for arguments passed to the comparison workers.
 typedef shared_ptr<compare_args> compare_args_sptr;
 
-static bool extract_package_and_map_its_content(package &pkg,
+static bool extract_package_and_map_its_content(const package_sptr &pkg,
 						options &opts);
 
 /// Getter for the path to the parent directory under which packages
@@ -727,17 +749,8 @@ extract_rpm(const string& package_path,
       << extracted_package_dir_path
       << " ...";
 
-  string cmd = "test -d " +
-    extracted_package_dir_path +
-    " && rm -rf " + extracted_package_dir_path;
-
-  if (system(cmd.c_str()))
-    {
-      if (opts.verbose)
-	emit_prefix("abipkgdiff", cerr) << "command " << cmd << " FAILED\n";
-    }
-
-  cmd = "mkdir -p " + extracted_package_dir_path + " && cd " +
+  string cmd = "test -d " + extracted_package_dir_path
+    + " || mkdir -p " + extracted_package_dir_path + " ; cd " +
     extracted_package_dir_path + " && rpm2cpio " + package_path +
     " | cpio -dium --quiet";
 
@@ -781,17 +794,7 @@ extract_deb(const string& package_path,
       << extracted_package_dir_path
       << " ...";
 
-  string cmd = "test -d " +
-    extracted_package_dir_path +
-    " && rm -rf " + extracted_package_dir_path;
-
-  if (system(cmd.c_str()))
-    {
-      if (opts.verbose)
-	emit_prefix("abipkgdiff", cerr) << "command "  << cmd <<  " FAILED\n";
-    }
-
-  cmd = "mkdir -p " + extracted_package_dir_path + " && dpkg -x " +
+  string cmd = "mkdir -p " + extracted_package_dir_path + " && dpkg -x " +
     package_path + " " + extracted_package_dir_path;
 
   if (system(cmd.c_str()))
@@ -1493,30 +1496,41 @@ maybe_handle_kabi_whitelist_pkg(const package& pkg, options &opts)
   return true;
 }
 
-/// The task that performs the extraction of the content of a package
-/// into a temporary directory.
+/// The task that performs the extraction of the content of several
+/// packages into a temporary directory.
 ///
-/// Note that several instanaces of tasks can perform their jobs in
-/// parallel.
+/// If this task has several packages to extract, then it extracts
+/// them in sequence.
+///
+/// Note that several instances of tasks can perform their jobs (i.e
+/// extract packages in sequence) in parallel.
 class pkg_extraction_task : public task
 {
   pkg_extraction_task();
 
 public:
-  package &pkg;
+  vector<package_sptr> pkgs;
   const options &opts;
   bool is_ok;
 
-  pkg_extraction_task(package &p, const options &o)
-    : pkg(p), opts(o), is_ok(false)
+  pkg_extraction_task(const package_sptr &p, const options &o)
+    : opts(o), is_ok(true)
+  {pkgs.push_back(p);}
+
+  pkg_extraction_task(const vector<package_sptr> &packages, const options &o)
+    : pkgs(packages), opts(o), is_ok(true)
   {}
 
-  /// The job performed by the current task.  It's to be performed in
-  /// parallel with other jobs.
+  /// The job performed by the current task, which is to extract its
+  /// packages in sequence.  This is job is to be performed in
+  /// parallel with other jobs of other tasks.
   virtual void
   perform()
   {
-    is_ok = extract_package(pkg, opts);
+    for (vector<package_sptr>::const_iterator p = pkgs.begin();
+	 p != pkgs.end();
+	 ++p)
+      is_ok &= extract_package(**p, opts);
   }
 }; //end class pkg_extraction_task
 
@@ -1536,11 +1550,11 @@ class pkg_prepare_task : public abigail::workers::task
   pkg_prepare_task();
 
 public:
-  package &pkg;
+  package_sptr pkg;
   options &opts;
   bool is_ok;
 
-  pkg_prepare_task(package &p, options &o)
+  pkg_prepare_task(package_sptr &p, options &o)
     : pkg(p), opts(o), is_ok(false)
   {}
 
@@ -1548,7 +1562,7 @@ public:
   virtual void
   perform()
   {
-    is_ok = extract_package_and_map_its_content(pkg, opts);
+    is_ok = pkg && extract_package_and_map_its_content(pkg, opts);
   }
 }; //end class pkg_prepare_task
 
@@ -1851,8 +1865,9 @@ create_maps_of_package_content(package& package, options& opts)
 ///
 /// @return true iff the extraction and analyzing went well.
 static bool
-extract_package_and_map_its_content(package &pkg, options &opts)
+extract_package_and_map_its_content(const package_sptr &pkg, options &opts)
 {
+  assert(pkg);
 
   pkg_extraction_task_sptr main_pkg_extraction;
   pkg_extraction_task_sptr dbg_extraction;
@@ -1863,21 +1878,22 @@ extract_package_and_map_its_content(package &pkg, options &opts)
 
   main_pkg_extraction.reset(new pkg_extraction_task(pkg, opts));
 
-  if (package_sptr dbg_pkg = pkg.debug_info_package())
+  if (!pkg->debug_info_packages().empty())
     {
-      dbg_extraction.reset(new pkg_extraction_task(*dbg_pkg, opts));
+      dbg_extraction.reset(new pkg_extraction_task(pkg->debug_info_packages(),
+						   opts));
       ++NUM_EXTRACTIONS;
     }
 
-  if (package_sptr devel_pkg = pkg.devel_package())
+  if (package_sptr devel_pkg = pkg->devel_package())
     {
-      devel_extraction.reset(new pkg_extraction_task(*devel_pkg, opts));
+      devel_extraction.reset(new pkg_extraction_task(devel_pkg, opts));
       ++NUM_EXTRACTIONS;
     }
 
-  if (package_sptr kabi_wl_pkg = pkg.kabi_whitelist_package())
+  if (package_sptr kabi_wl_pkg = pkg->kabi_whitelist_package())
     {
-      kabi_whitelist_extraction.reset(new pkg_extraction_task(*kabi_wl_pkg,
+      kabi_whitelist_extraction.reset(new pkg_extraction_task(kabi_wl_pkg,
 							      opts));
       ++NUM_EXTRACTIONS;
     }
@@ -1899,12 +1915,12 @@ extract_package_and_map_its_content(package &pkg, options &opts)
   // Analyze and map the content of the extracted package.
   bool is_ok = false;
   if (main_pkg_extraction->is_ok)
-    is_ok = create_maps_of_package_content(pkg, opts);
+    is_ok = create_maps_of_package_content(*pkg, opts);
 
   if (is_ok)
     {
-      maybe_create_private_types_suppressions(pkg, opts);
-      maybe_handle_kabi_whitelist_pkg(pkg, opts);
+      maybe_create_private_types_suppressions(*pkg, opts);
+      maybe_handle_kabi_whitelist_pkg(*pkg, opts);
     }
 
   return is_ok;
@@ -1928,7 +1944,9 @@ extract_package_and_map_its_content(package &pkg, options &opts)
 ///
 /// @return true iff the preparation went well.
 static bool
-prepare_packages(package &first_package, package &second_package, options &opts)
+prepare_packages(package_sptr &first_package,
+		 package_sptr &second_package,
+		 options &opts)
 {
   pkg_prepare_task_sptr first_pkg_prepare;
   pkg_prepare_task_sptr second_pkg_prepare;
@@ -2070,16 +2088,15 @@ compare_prepared_userspace_packages(package& first_package,
 
   // Setting debug-info path of libraries
   string debug_dir1, debug_dir2, relative_debug_path = "/usr/lib/debug/";
-  if (first_package.debug_info_package()
-      && second_package.debug_info_package())
+  if (!first_package.debug_info_packages().empty()
+      && !second_package.debug_info_packages().empty())
     {
       debug_dir1 =
-	first_package.debug_info_package()->extracted_dir_path() +
+	first_package.debug_info_packages().front()->extracted_dir_path() +
 	relative_debug_path;
-      if (second_package.debug_info_package())
-	debug_dir2 =
-	  second_package.debug_info_package()->extracted_dir_path() +
-	  relative_debug_path;
+      debug_dir2 =
+	second_package.debug_info_packages().front()->extracted_dir_path() +
+	relative_debug_path;
     }
 
   for (map<string, elf_file_sptr>::iterator it =
@@ -2238,16 +2255,15 @@ compare_prepared_linux_kernel_packages(package& first_package,
 
   // Setting debug-info path of binaries
   string debug_dir1, debug_dir2, relative_debug_path = "/usr/lib/debug/";
-  if (first_package.debug_info_package()
-      && second_package.debug_info_package())
+  if (!first_package.debug_info_packages().empty()
+      && !second_package.debug_info_packages().empty())
     {
       debug_dir1 =
-	first_package.debug_info_package()->extracted_dir_path() +
+	first_package.debug_info_packages().front()->extracted_dir_path() +
 	relative_debug_path;
-      if (second_package.debug_info_package())
-	debug_dir2 =
-	  second_package.debug_info_package()->extracted_dir_path() +
-	  relative_debug_path;
+      debug_dir2 =
+	second_package.debug_info_packages().front()->extracted_dir_path() +
+	relative_debug_path;
     }
 
   string vmlinux_path1, vmlinux_path2;
@@ -2369,7 +2385,7 @@ compare_prepared_package(package& first_package, package& second_package,
 ///
 /// @return the status of the comparison.
 static abidiff_status
-compare(package& first_package, package& second_package,
+compare(package_sptr& first_package, package_sptr& second_package,
 	abi_diff& diff, options& opts)
 {
   // Prepare (extract and analyze the contents) the packages and their
@@ -2378,11 +2394,11 @@ compare(package& first_package, package& second_package,
   // Note that the package preparations happens in parallel.
   if (!prepare_packages(first_package, second_package, opts))
     {
-      maybe_erase_temp_dirs(first_package, second_package, opts);
+      maybe_erase_temp_dirs(*first_package, *second_package, opts);
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
-  return compare_prepared_package(first_package, second_package, diff, opts);
+  return compare_prepared_package(*first_package, *second_package, diff, opts);
 }
 
 /// Compare the ABI of two packages.
@@ -2395,7 +2411,9 @@ compare(package& first_package, package& second_package,
 ///
 /// @return the status of the comparison.
 static abidiff_status
-compare(package& first_package, package& second_package, options& opts)
+compare(package_sptr& first_package,
+	package_sptr& second_package,
+	options& opts)
 {
   abi_diff diff;
   return compare(first_package, second_package, diff, opts);
@@ -2453,8 +2471,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	      opts.wrong_option = argv[i];
 	      return true;
             }
-          opts.debug_package1 =
-	    abigail::tools_utils::make_path_absolute(argv[j]).get();
+          opts.debug_packages1.push_back
+	    (abigail::tools_utils::make_path_absolute(argv[j]).get());
           ++i;
         }
       else if (!strcmp(argv[i], "--debug-info-pkg2")
@@ -2467,8 +2485,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	      opts.wrong_option = argv[i];
 	      return true;
             }
-          opts.debug_package2 =
-	    abigail::tools_utils::make_path_absolute(argv[j]).get();
+          opts.debug_packages2.push_back
+	    (abigail::tools_utils::make_path_absolute(argv[j]).get());
           ++i;
         }
       else if (!strcmp(argv[i], "--devel-pkg1")
@@ -2700,15 +2718,19 @@ main(int argc, char* argv[])
 
   package_sptr second_package(new package(opts.package2, "package2"));
 
-  if (!opts.debug_package1.empty())
-    first_package->debug_info_package
-      (package_sptr(new package(opts.debug_package1,
+  for (vector<string>::const_iterator p = opts.debug_packages1.begin();
+       p != opts.debug_packages1.end();
+       ++p)
+    first_package->debug_info_packages().push_back
+      (package_sptr(new package(*p,
 				"debug_package1",
 				/*pkg_kind=*/package::KIND_DEBUG_INFO)));
 
-  if (!opts.debug_package2.empty())
-    second_package->debug_info_package
-      (package_sptr(new package(opts.debug_package2,
+  for (vector<string>::const_iterator p = opts.debug_packages2.begin();
+       p != opts.debug_packages2.end();
+       ++p)
+    second_package->debug_info_packages().push_back
+      (package_sptr(new package(*p,
 				"debug_package2",
 				/*pkg_kind=*/package::KIND_DEBUG_INFO)));
 
@@ -2770,8 +2792,8 @@ main(int argc, char* argv[])
 		      | abigail::tools_utils::ABIDIFF_ERROR);
 	    }
 
-	  if (!first_package->debug_info_package()
-	      || !second_package->debug_info_package())
+	  if (first_package->debug_info_packages().empty()
+	      || second_package->debug_info_packages().empty())
 	    {
 	      emit_prefix("abipkgdiff", cerr)
 		<< "a Linux Kernel package must be accompanied with its "
@@ -2834,5 +2856,5 @@ main(int argc, char* argv[])
 	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
 
-  return compare(*first_package, *second_package, opts);
+  return compare(first_package, second_package, opts);
 }
