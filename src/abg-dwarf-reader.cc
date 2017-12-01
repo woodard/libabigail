@@ -15521,6 +15521,9 @@ status_to_diagnostic_string(status s)
   if (s & STATUS_DEBUG_INFO_NOT_FOUND)
     str += "could not find debug info\n";
 
+  if (s & STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+    str += "could not find alternate debug info\n";
+
   if (s & STATUS_NO_SYMBOLS_FOUND)
     str += "could not load ELF symbols\n";
 
