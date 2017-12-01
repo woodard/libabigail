@@ -1,12 +1,3 @@
-================ changes of 'libdbus-glib-1.so.2.3.2'===============
-  ELF architecture changed
-  Functions changes summary: 0 Removed, 0 Changed, 0 Added function
-  Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
-
-  architecture changed from 'elf-amd-x86_64' to 'elf-arm'
-
-================ end of changes of 'libdbus-glib-1.so.2.3.2'===============
-
 ================ changes of 'dbus-binding-tool'===============
   ELF architecture changed
   Functions changes summary: 0 Removed, 0 Changed, 0 Added function
@@ -31,3 +22,7 @@
 
 ================ end of changes of 'dbus-binding-tool'===============
 
+Removed binaries:
+  /usr/lib64/libdbus-glib-1.so.2.3.2, SONAME: libdbus-glib-1.so.2
+Added binaries:
+  /usr/lib/libdbus-glib-1.so.2.3.2, SONAME: libdbus-glib-1.so.2

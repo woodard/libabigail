@@ -123,6 +123,9 @@ using abigail::tools_utils::check_file;
 using abigail::tools_utils::ensure_dir_path_created;
 using abigail::tools_utils::guess_file_type;
 using abigail::tools_utils::string_ends_with;
+using abigail::tools_utils::dir_name;
+using abigail::tools_utils::string_suffix;
+using abigail::tools_utils::sorted_strings_common_prefix;
 using abigail::tools_utils::file_type;
 using abigail::tools_utils::make_path_absolute;
 using abigail::tools_utils::base_name;
@@ -233,6 +236,12 @@ public:
   }
 };
 
+static bool
+get_interesting_files_under_dir(const string	dir,
+				const string&	file_name_to_look_for,
+				options&	opts,
+				vector<string>& interesting_files);
+
 /// Abstract ELF files from the packages which ABIs ought to be
 /// compared
 class elf_file
@@ -318,6 +327,7 @@ public:
 private:
   string				path_;
   string				extracted_dir_path_;
+  string				common_paths_prefix_;
   abigail::tools_utils::file_type	type_;
   kind					kind_;
   map<string, elf_file_sptr>		path_elf_file_sptr_map_;
@@ -325,6 +335,7 @@ private:
   package_sptr				devel_package_;
   package_sptr				kabi_whitelist_package_;
   suppressions_type			private_types_suppressions_;
+  vector<string>			elf_file_paths_;
 
 public:
   /// Constructor for the @ref package type.
@@ -398,6 +409,31 @@ public:
   extracted_dir_path(const string& p)
   {extracted_dir_path_ = p;}
 
+  /// Getter of the the prefix that is common to all the paths of all
+  /// the elements of the package.
+  ///
+  /// @return the common path prefix of package elements.
+  const string&
+  common_paths_prefix() const
+  {return common_paths_prefix_;}
+
+  /// Getter of the the prefix that is common to all the paths of all
+  /// the elements of the package.
+  ///
+  /// @return the common path prefix of package elements.
+  string&
+  common_paths_prefix()
+  {return common_paths_prefix_;}
+
+  /// Setter of the the prefix that is common to all the paths of all
+  /// the elements of the package.
+  ///
+  ///
+  ///@param p the new prefix. 
+  void
+  common_paths_prefix(const string& p)
+  {common_paths_prefix_ = p;}
+
   /// Getter for the file type of the current package.
   ///
   /// @return the file type of the current package.
@@ -451,7 +487,6 @@ public:
   const vector<package_sptr>&
   debug_info_packages() const
   {return debug_info_packages_;}
-
 
   /// Getter for the debug info packages associated to the current
   /// package.
@@ -523,6 +558,80 @@ public:
   suppressions_type&
   private_types_suppressions()
   {return private_types_suppressions_;}
+
+  /// Getter of the path to the elf files of the package.
+  ///
+  /// @return the path tothe elf files of the package.
+  const vector<string>&
+  elf_file_paths() const
+  {return elf_file_paths_;}
+
+  /// Getter of the path to the elf files of the package.
+  ///
+  /// @return the path tothe elf files of the package.
+  vector<string>&
+  elf_file_paths()
+  {return elf_file_paths_;}
+
+  /// Convert the absolute path of an element of this package into a
+  /// path relative to the root path pointing to this package.
+  ///
+  /// That is, suppose the content of a package named 'pkg' is located
+  /// at /root/path/pkg.  Suppose an element of that package is named
+  /// is at '/root/path/pkg/somewhere/inside/element'.
+  ///
+  /// This function will return the path:
+  /// /pkg/somewhere/inside/element.
+  ///
+  /// @param path the path to consider.
+  ///
+  /// @param converted_path the resulting converted path.  This is set
+  /// iff the function returns true.
+  ///
+  /// @return true if the path could be converted to being relative to
+  /// the extracted directory.
+  bool
+  convert_path_to_relative(const string& path, string& converted_path) const
+  {return string_suffix(path, extracted_dir_path(), converted_path);}
+
+  // Convert the absolute path of an element of this package into a
+  // path relative to the prefix common to the paths of all elements
+  // of the package.
+  //
+  // @param path the path to conver.
+  //
+  // @param converted_path the resulting converted path.  This is set
+  // iff the function returns true.
+  //
+  // @return true iff the function could successfully convert @p path
+  // and put the result into @p converted_path.
+  bool
+  convert_path_to_unique_suffix(const string& path,
+				string& converted_path) const
+  {return string_suffix(path, common_paths_prefix(), converted_path);}
+
+  /// Retrieve the set of "interesting" package element paths by
+  /// walking the package.
+  ///
+  /// And then compute the path prefix that is common to all the
+  /// collected elements.
+  ///
+  /// @param the options of this application.
+  void
+  load_elf_file_paths(options& opts)
+  {
+    if (!common_paths_prefix().empty()
+	|| !elf_file_paths().empty())
+      // We have already loaded the elf file paths, don't do it again.
+      return;
+
+    get_interesting_files_under_dir(extracted_dir_path(),
+				    /*file_name_to_look_for=*/"",
+				    opts, elf_file_paths());
+    std::sort(elf_file_paths().begin(), elf_file_paths().end());
+    string common_prefix;
+    sorted_strings_common_prefix(elf_file_paths(), common_paths_prefix());
+  }
 
   /// Erase the content of the temporary extraction directory that has
   /// been populated by the @ref extract_package() function;
@@ -1703,8 +1812,8 @@ maybe_update_vector_of_package_content(const FTSENT *entry,
 }
 
 /// Walk a given directory to collect files that are "interesting" to
-/// analyze.  By default, "interesting" means interesting from a
-/// kernel package analysis point of view.
+/// analyze.  By default, "interesting" means interesting from either
+/// a kernel package or a userspace binary analysis point of view.
 ///
 /// @param dir the directory to walk.
 ///
@@ -1795,6 +1904,11 @@ create_maps_of_package_content(package& package, options& opts)
       << "Found " << elf_file_paths.size() << " files in "
       << package.extracted_dir_path() << "\n";
 
+  // determine if all files have the same prefix.  Compute that prefix
+  // and stick it into the package!  That prefix is going to be used
+  // later by the package::convert_path_to_unique_suffix method.
+  package.load_elf_file_paths(opts);
+
   for (vector<string>::const_iterator file = elf_file_paths.begin();
        file != elf_file_paths.end();
        ++file)
@@ -1836,9 +1950,36 @@ create_maps_of_package_content(package& package, options& opts)
 	}
 
       if (e->soname.empty())
-	package.path_elf_file_sptr_map()[e->name] = e;
+	{
+	  // Several binaries at different paths can have the same
+	  // base name.  So let's consider the full path of the binary
+	  // inside the extracted directory.
+	  string key = e->name;
+	  package.convert_path_to_unique_suffix(e->path, key);
+	  package.path_elf_file_sptr_map()[key] = e;
+	  if (opts.verbose)
+	    emit_prefix("abipkgdiff", cerr)
+	      << "mapped binary with key '" << key << "'"
+	      << "\n";
+	}
       else
-	package.path_elf_file_sptr_map()[e->soname] = e;
+	{
+	  // Several binaries at different paths can have the same
+	  // soname.  So let's *also* consider the full path of the
+	  // binary inside the extracted directory, not just the
+	  // soname.
+	  string key = e->soname;
+	  if (package.convert_path_to_unique_suffix(e->path, key))
+	    {
+	      dir_name(key, key);
+	      key += string("/@soname:") + e->soname;
+	    }
+	  package.path_elf_file_sptr_map()[key] = e;
+	  if (opts.verbose)
+	    emit_prefix("abipkgdiff", cerr)
+	      << "mapped binary with key '" << key << "'"
+	      << "\n";
+	}
     }
 
   if (opts.verbose)
@@ -2189,7 +2330,9 @@ compare_prepared_userspace_packages(package& first_package,
       for (vector<elf_file_sptr>::iterator it = diff.removed_binaries.begin();
 	   it != diff.removed_binaries.end(); ++it)
 	{
-	  cout << "  " << (*it)->name << ", ";
+	  string relative_path;
+	  first_package.convert_path_to_relative((*it)->path, relative_path);
+	  cout << "  " << relative_path << ", ";
 	  string soname;
 	  get_soname_of_elf_file((*it)->path, soname);
 	  if (!soname.empty())
@@ -2207,7 +2350,9 @@ compare_prepared_userspace_packages(package& first_package,
       for (vector<elf_file_sptr>::iterator it = diff.added_binaries.begin();
 	   it != diff.added_binaries.end(); ++it)
 	{
-	  cout << "  " << (*it)->name << ", ";
+	  string relative_path;
+	  second_package.convert_path_to_relative((*it)->path, relative_path);
+	  cout << "  " << relative_path << ", ";
 	  string soname;
 	  get_soname_of_elf_file((*it)->path, soname);
 	  if (!soname.empty())

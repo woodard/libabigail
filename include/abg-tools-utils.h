@@ -50,7 +50,8 @@ bool maybe_get_symlink_target_file_path(const string& file_path,
 bool base_name(string const& path,
 	       string& file_name);
 bool dir_name(string const &path,
-	      string& path_dir_name);
+	      string& path_dir_name,
+	      bool keep_separator_at_end=false);
 bool ensure_dir_path_created(const string&);
 bool ensure_parent_dir_created(const string&);
 ostream& emit_prefix(const string& prog_name, ostream& out);
@@ -61,6 +62,8 @@ bool string_begins_with(const string&, const string&);
 bool string_is_ascii(const string&);
 bool string_is_ascii_identifier(const string&);
 bool split_string(const string&, const string&, vector<string>&);
+bool string_suffix(const string&, const string&, string&);
+bool sorted_strings_common_prefix(vector<string>&, string&);
 
 suppr::type_suppression_sptr
 gen_suppr_spec_from_headers(const string& hdrs_root_dir);

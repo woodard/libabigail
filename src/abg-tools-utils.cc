@@ -334,11 +334,15 @@ maybe_get_symlink_target_file_path(const string& file_path,
 /// figure out anything better (for now; maybe we should do something
 /// better than this later ...).
 ///
+/// @param keep_separator_at_end if true, then keep the separator at
+/// the end of the resulting dir name.
+///
 /// @return true upon successful completion, false otherwise (okay,
 /// for now it always return true, but that might change in the future).
 bool
 dir_name(string const& path,
-	 string& dir_name)
+	 string& dir_name,
+	 bool keep_separator_at_end)
 {
   if (path.empty())
     {
@@ -350,6 +354,9 @@ dir_name(string const& path,
   char *r = ::dirname(p);
   dir_name = r;
   free(p);
+  if (keep_separator_at_end
+      && dir_name.length() < path.length())
+    dir_name += "/";
   return true;
 }
 
@@ -635,6 +642,118 @@ split_string(const string& input_string,
   while (next != string::npos);
 
   return did_split;
+}
+
+/// Get the suffix of a string, given a prefix to consider.
+///
+/// @param input_string the input string to consider.
+///
+/// @param prefix the prefix of the input string to consider.
+///
+/// @param suffix output parameter. This is set by the function to the
+/// the computed suffix iff a suffix was found for prefix @p prefix.
+///
+/// @return true iff the function could find a prefix for the suffix
+/// @p suffix in the input string @p input_string.
+bool
+string_suffix(const string& input_string,
+	      const string& prefix,
+	      string& suffix)
+{
+  // Some basic sanity check before we start hostilities.
+  if (prefix.length() >= input_string.length())
+    return false;
+
+  if (input_string.compare(0, prefix.length(), prefix) != 0)
+    // The input string does not start with the string contained in
+    // the prefix parameter.
+    return false;
+
+  suffix = input_string.substr(prefix.length());
+  return true;
+}
+
+/// Return the prefix that is common to two strings.
+///
+/// @param s1 the first input string to consider.
+///
+/// @param s2 the second input string to consider.
+///
+/// @param result output parameter.  The resulting common prefix found
+/// between @p s1 and @p s2.  This is set iff the function returns
+/// true.
+///
+/// @return true iff @p result was set by this function with the
+/// common prefix of @p s1 and @p s2.
+static bool
+common_prefix(const string& s1, const string& s2, string &result)
+{
+  if (s1.length() == 0 || s2.length() == 0)
+    return false;
+
+  result.clear();
+  for (size_t i = 0; i < s1.length() && i< s2.length(); ++i)
+    if (s1[i] == s2[i])
+      result += s1[i];
+
+  return !result.empty();
+}
+
+/// Find the prefix common to a *SORTED* vector of strings.
+///
+/// @param input_strings a lexycographically sorted vector of
+/// strings.  Please note that this vector absolutely needs to be
+/// sorted for the function to work correctly.  Otherwise the results
+/// are going to be wrong.
+///
+/// @param prefix output parameter.  This is set by this function with
+/// the prefix common to the strings found in @p input_strings, iff
+/// the function returns true.
+///
+/// @return true iff the function could find a common prefix to the
+/// strings in @p input_strings.
+bool
+sorted_strings_common_prefix(vector<string>& input_strings, string& prefix)
+{
+  string prefix_candidate;
+  bool found_prefix = false;
+
+  if (input_strings.size() == 1)
+    {
+      if (dir_name(input_strings.front(), prefix,
+		   /*keep_separator_at_end=*/true))
+	return true;
+      return false;
+    }
+
+  string cur_str;
+  for (vector<string>::const_iterator i = input_strings.begin();
+       i != input_strings.end();
+       ++i)
+    {
+      dir_name(*i, cur_str, /*keep_separator_at_end=*/true);
+      if (prefix_candidate.empty())
+	{
+	  prefix_candidate = cur_str;
+	  continue;
+	}
+
+      string s;
+      if (common_prefix(prefix_candidate, cur_str, s))
+	{
+	  assert(!s.empty());
+	  prefix_candidate = s;
+	  found_prefix = true;
+	}
+    }
+
+  if (found_prefix)
+    {
+      prefix = prefix_candidate;
+      return true;
+    }
+
+  return false;
 }
 
 /// The private data of the @ref temp_file type.
