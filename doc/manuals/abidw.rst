@@ -1,4 +1,7 @@
-====== abidw ======
+
+======
+abidw
+======
 
 abidw reads a shared library in `ELF`_ format and emits an XML
 representation of its ABI to standard output.  The emitted

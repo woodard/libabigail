@@ -9,7 +9,7 @@ Kernel trees.  The binary KMI is the interface that the Linux Kernel
 exposes to its modules.  The trees we are interested in here are the
 result of the build of the Linux Kernel source tree.
 
-=================
+
 General approach
 =================
 

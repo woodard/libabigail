@@ -17,7 +17,8 @@ Tools manuals
 
    abidiff
    abipkgdiff
-   abicompat
+   kmidiff
    abidw
+   abicompat
    abilint
    fedabipkgdiff
