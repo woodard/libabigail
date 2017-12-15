@@ -92,18 +92,23 @@ ABIDIFF_ABI_CHANGE = 1 << 2
 #
 # ComparisonHalf is a three-elements tuple in format
 #
-#   (/path/to/package1.rpm, /path/to/package1-debuginfo.rpm /path/to/package1-devel.rpm)
+#   (package1.rpm, [package1-debuginfo.rpm..] package1-devel.rpm)
 #
-# - the first element is the subject representing the package to compare.
-# - the rest are ancillary packages used for the comparison. So, the second one
-#   is the debuginfo package, and the last one is the package containing API of
-#   the ELF shared libraries carried by subject.
+# - the first element is the subject representing the package to
+#   compare.  It's a dict representing the RPM we are interested in.
+#   That dict was retrieved from Koji XMLRPC API.
+# - the rest are ancillary packages used for the comparison. So, the
+#   second one is a vector containing the needed debuginfo packages
+#   (yes there can be more than one), and the last one is the package
+#   containing API of the ELF shared libraries carried by subject.
+#   All the packages are dicts representing RPMs and those dicts were
+#   retrieved fromt he KOji XMLRPC API.
 #
 # So, before calling abipkgdiff, fedabipkgdiff must prepare and pass
 # the following information
 #
-#   (/path/to/package1.rpm, /path/to/package1-debuginfo.rpm /path/to/package1-devel.rpm)
-#   (/path/to/package2.rpm, /path/to/package2-debuginfo.rpm /path/to/package1-devel.rpm)
+#   (/path/to/package1.rpm, [/paths/to/package1-debuginfo.rpm ..] /path/to/package1-devel.rpm)
+#   (/path/to/package2.rpm, [/paths/to/package2-debuginfo.rpm ..] /path/to/package1-devel.rpm)
 #
 ComparisonHalf = namedtuple('ComparisonHalf',
                             ['subject', 'ancillary_debug', 'ancillary_devel'])
@@ -540,6 +545,23 @@ class RPMCollection(object):
                 return _rpm
         return None
 
+    def get_all_debuginfo_rpms(self, rpm_info):
+        """Return a list of descriptors of all the debuginfo RPMs associated
+        to a given RPM.
+
+        :param: dict rpm_info a dict representing an RPM.  This was
+        received from the Koji API, either from listRPMs or getRPM.
+        :return: a list of dicts containing RPM descriptors (dicts)
+        for the debuginfo RPMs associated to rpm_info
+        :retype: dict
+        """
+        rpm_infos = self.rpms[rpm_info.arch]
+        result = []
+        for r in rpm_infos:
+            if r.is_debuginfo:
+                result.append(r)
+        return result
+    
 
 def generate_comparison_halves(rpm_col1, rpm_col2):
     """Iterate RPM collection and peer's to generate comparison halves"""
@@ -557,21 +579,36 @@ def generate_comparison_halves(rpm_col1, rpm_col2):
                 logger.warning('Peer RPM of {0} is not found.'.format(_rpm.filename))
                 continue
 
-        debuginfo1 = rpm_col1.get_sibling_debuginfo(_rpm)
+        debuginfo_list1 = []
+        debuginfo_list2 = []
+
+        # If this is a *devel* package we are looking at, then get all
+        # the debug info packages associated to with the main package
+        # and stick them into the resulting comparison half.
+
+        if _rpm.is_devel:
+            debuginfo_list1 = rpm_col1.get_all_debuginfo_rpms(_rpm)
+        else:
+            debuginfo_list1.append(rpm_col1.get_sibling_debuginfo(_rpm))
+
+
         devel1 = rpm_col1.get_sibling_devel(_rpm)
 
         if global_config.self_compare:
-            debuginfo2 = debuginfo1
+            debuginfo_list2 = debuginfo_list1
             devel2 = devel1
         else:
-            debuginfo2 = rpm_col2.get_sibling_debuginfo(rpm2)
+            if rpm2.is_devel:
+                debuginfo_list2 = rpm_col2.get_all_debuginfo_rpms(rpm2)
+            else:
+                debuginfo_list2.append(rpm_col2.get_sibling_debuginfo(rpm2))
             devel2 = rpm_col2.get_sibling_devel(rpm2)
 
         yield (ComparisonHalf(subject=_rpm,
-                              ancillary_debug=debuginfo1,
+                              ancillary_debug=debuginfo_list1,
                               ancillary_devel=devel1),
                ComparisonHalf(subject=rpm2,
-                              ancillary_debug=debuginfo2,
+                              ancillary_debug=debuginfo_list2,
                               ancillary_devel=devel2))
 
 
@@ -971,13 +1008,35 @@ def build_path_to_abipkgdiff():
     --abipkgdiff command line option, or the path to 'abipkgdiff' as
     found in the $PATH environment variable.
 
-    :return: a string representing the path to the 'abipkgdiff'
+    :return: str a string representing the path to the 'abipkgdiff'
     command.
     """
     if global_config.abipkgdiff:
         return global_config.abipkgdiff
     return DEFAULT_ABIPKGDIFF
 
+
+def format_debug_info_pkg_options(option, debuginfo_list):
+    """Given a list of debug info package descriptors return an option
+    string that looks like:
+    
+       option dbg.rpm1 option dbgrpm2 ...
+
+    :param: list debuginfo_list a list of instances of the RPM class
+    representing the debug info rpms to use to construct the option
+    string.
+
+    :return: str a string representing the option string that
+    concatenate the 'option' parameter before the path to each RPM
+    contained in 'debuginfo_list'.
+    """
+    options = []
+
+    for dbg_pkg in debuginfo_list:
+        if dbg_pkg and dbg_pkg.downloaded_file:
+            options.append(' {0} {1}'.format(option, dbg_pkg.downloaded_file))
+
+    return ' '.join(options) if options else ''
 
 @log_call
 def abipkgdiff(cmp_half1, cmp_half2):
@@ -1037,7 +1096,7 @@ def abipkgdiff(cmp_half1, cmp_half2):
             debuginfo_pkg1 = ''
             logger.warning('{0} Ignored.'.format(msg))
     else:
-        debuginfo_pkg1 = '--d1 {0}'.format(cmp_half1.ancillary_debug.downloaded_file)
+        debuginfo_pkg1 = format_debug_info_pkg_options("--d1", cmp_half1.ancillary_debug)
 
     if cmp_half2.ancillary_debug is None:
         msg = 'Debuginfo package for {0} does not exist.'.format(cmp_half2.subject.filename)
@@ -1047,7 +1106,7 @@ def abipkgdiff(cmp_half1, cmp_half2):
             debuginfo_pkg2 = ''
             logger.warning('{0} Ignored.'.format(msg))
     else:
-        debuginfo_pkg2 = '--d2 {0}'.format(cmp_half2.ancillary_debug.downloaded_file)
+        debuginfo_pkg2 = format_debug_info_pkg_options("--d2", cmp_half2.ancillary_debug);
 
     cmd = [
         abipkgdiff_tool,
