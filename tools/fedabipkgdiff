@@ -263,17 +263,18 @@ def delete_download_cache():
 
 
 class RPM(object):
-    """Wrapper of RPM representing a RPM got from Koji
+    """Wrapper around an RPM descriptor received from Koji
 
-    A RPM is returned from Koji XMLRPC API is in dict type. This wrapper makes
-    it eaiser to access all these properties in the way of object.property.
+    The RPM descriptor that is returned from Koji XMLRPC API is a
+    dict. This wrapper class makes it eaiser to access all these
+    properties in the way of object.property.
     """
 
     def __init__(self, rpm_info):
         """Initialize a RPM object
 
-        :param dict rpm_info: a dict representing a RPM information got from
-        koji API, either listRPMs or getRPM
+        :param dict rpm_info: a dict representing an RPM descriptor
+        received from the Koji API, either listRPMs or getRPM
         """
         self.rpm_info = rpm_info
 
