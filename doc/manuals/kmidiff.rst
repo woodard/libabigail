@@ -110,6 +110,23 @@ Options
 
     Display some verbose messages while executing.
 
+  * ``--debug-info-dir1 | --d1`` <*di-path1*>
+
+    For cases where the debug information for the binaries of the
+    first Linux kernel is split out into separate files, tells
+    ``kmidiff`` where to find those separate debug information files.
+
+    Note that *di-path* must point to the root directory under which
+    the debug information is arranged in a tree-like manner.  Under
+    Red Hat based systems, that directory is usually
+    ``<root>/usr/lib/debug``.
+
+  * ``--debug-info-dir2 | --d2`` <*di-path2*>
+
+    Like ``--debug-info-dir1``, this options tells ``kmidiff`` where
+    to find the split debug information for the binaries of the second
+    Linux kernel.
+
   * ``--vmlinux1 | --l1`` <*path-to-first-vmlinux*>
 
     Sets the path to the first ``vmlinux`` binary to consider.  This

@@ -68,21 +68,23 @@ using abigail::xml_reader::read_corpus_group_from_native_xml_file;
 /// The options of this program.
 struct options
 {
-  bool		display_usage;
-  bool		display_version;
-  bool		verbose;
-  bool		missing_operand;
-  bool		leaf_changes_only;
-  bool		show_impacted_interfaces;
-  string	wrong_option;
-  string	kernel_dist_root1;
-  string	kernel_dist_root2;
-  string	vmlinux1;
-  string	vmlinux2;
-  vector<string> kabi_whitelist_paths;
-  vector<string> suppression_paths;
-  suppressions_type read_time_supprs;
-  suppressions_type diff_time_supprs;
+  bool			display_usage;
+  bool			display_version;
+  bool			verbose;
+  bool			missing_operand;
+  bool			leaf_changes_only;
+  bool			show_impacted_interfaces;
+  string		wrong_option;
+  string		kernel_dist_root1;
+  string		kernel_dist_root2;
+  string		vmlinux1;
+  string		vmlinux2;
+  vector<string>	kabi_whitelist_paths;
+  vector<string>	suppression_paths;
+  suppressions_type	read_time_supprs;
+  suppressions_type	diff_time_supprs;
+  shared_ptr<char>	di_root_path1;
+  shared_ptr<char>	di_root_path2;
 
   options()
     : display_usage(),
@@ -108,6 +110,10 @@ display_usage(const string& prog_name, ostream& out)
     << " --help|-h  display this message\n"
     << " --version|-v  display program version information and exit\n"
     << " --verbose  display verbose messages\n"
+    << " --debug-info-dir1|--d1 <path> the root for the debug info of "
+    "the first kernel"
+    << " --debug-info-dir2|--d2 <path> the root for the debug info of "
+    "the second kernel"
     << " --vmlinux1|--l1 <path>  the path to the first vmlinux\n"
     << " --vmlinux2|--l2 <path>  the path to the second vmlinux\n"
     << " --suppressions|--suppr <path>  specify a suppression file\n"
@@ -159,6 +165,38 @@ parse_command_line(int argc, char* argv[], options& opts)
 	{
 	  opts.display_usage = true;
 	  return true;
+	}
+      else if (!strcmp(argv[i], "--debug-info-dir1")
+	       || !strcmp(argv[i], "--d1"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    {
+	      opts.missing_operand = true;
+	      opts.wrong_option = argv[i];
+	      return true;
+	    }
+	  // elfutils wants the root path to the debug info to be
+	  // absolute.
+	  opts.di_root_path1 =
+	    abigail::tools_utils::make_path_absolute(argv[j]);
+	  ++i;
+	}
+      else if (!strcmp(argv[i], "--debug-info-dir2")
+	       || !strcmp(argv[i], "--d2"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    {
+	      opts.missing_operand = true;
+	      opts.wrong_option = argv[i];
+	      return true;
+	    }
+	  // elfutils wants the root path to the debug info to be
+	  // absolute.
+	  opts.di_root_path2 =
+	    abigail::tools_utils::make_path_absolute(argv[j]);
+	  ++i;
 	}
       else if (!strcmp(argv[i], "--vmlinux1")
 	       || !strcmp(argv[i], "--l1"))
@@ -355,14 +393,16 @@ main(int argc, char* argv[])
   environment_sptr env(new environment);
 
   corpus_group_sptr group1, group2;
+  char *di_dir1 = 0, *di_dir2 = 0;
   if (!opts.kernel_dist_root1.empty())
     {
       file_type ftype = guess_file_type(opts.kernel_dist_root1);
       if (ftype == FILE_TYPE_DIR)
 	{
+	  di_dir1 = opts.di_root_path1.get();
 	  group1 =
 	    build_corpus_group_from_kernel_dist_under(opts.kernel_dist_root1,
-						      /*debug_info_root=*/"",
+						      di_dir1,
 						      opts.vmlinux1,
 						      opts.suppression_paths,
 						      opts.kabi_whitelist_paths,
@@ -383,9 +423,10 @@ main(int argc, char* argv[])
       file_type ftype = guess_file_type(opts.kernel_dist_root2);
       if (ftype == FILE_TYPE_DIR)
 	{
+	  di_dir2 = opts.di_root_path2.get();
 	  group2 =
 	    build_corpus_group_from_kernel_dist_under(opts.kernel_dist_root2,
-						      /*debug_info_root=*/"",
+						      di_dir2,
 						      opts.vmlinux2,
 						      opts.suppression_paths,
 						      opts.kabi_whitelist_paths,
