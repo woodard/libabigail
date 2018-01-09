@@ -32,6 +32,7 @@
 #include "abg-config.h"
 #include "abg-dwarf-reader.h"
 #include "abg-ir.h"
+#include "abg-tools-utils.h"
 
 using std::cout;
 using std::cerr;
@@ -134,9 +135,8 @@ main(int argc, char* argv[])
 
   if (opts.display_version)
     {
-      string major, minor, revision;
-      abigail::abigail_get_library_version(major, minor, revision);
-      cout << major << "." << minor << "." << revision << "\n";
+      abigail::tools_utils::emit_prefix(argv[0], cout)
+	<< abigail::tools_utils::get_library_version_string();
       return 0;
     }
 

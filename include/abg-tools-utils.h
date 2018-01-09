@@ -64,6 +64,7 @@ bool string_is_ascii_identifier(const string&);
 bool split_string(const string&, const string&, vector<string>&);
 bool string_suffix(const string&, const string&, string&);
 bool sorted_strings_common_prefix(vector<string>&, string&);
+string get_library_version_string();
 
 suppr::type_suppression_sptr
 gen_suppr_spec_from_headers(const string& hdrs_root_dir);

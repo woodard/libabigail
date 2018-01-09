@@ -67,6 +67,7 @@
 ABG_BEGIN_EXPORT_DECLARATIONS
 
 #include <abg-ir.h>
+#include "abg-config.h"
 #include "abg-tools-utils.h"
 
 ABG_END_EXPORT_DECLARATIONS
@@ -756,6 +757,18 @@ sorted_strings_common_prefix(vector<string>& input_strings, string& prefix)
   return false;
 }
 
+/// Return the version string of the library.
+///
+/// @return the version string of the library.
+string
+get_library_version_string()
+{
+  string major, minor, revision, version_string;
+  abigail::abigail_get_library_version(major, minor, revision);
+  version_string = major + "." + minor + "." + revision;
+  return version_string;
+}
+
 /// The private data of the @ref temp_file type.
 struct temp_file::priv
 {
@@ -1411,14 +1424,15 @@ bool
 gen_suppr_spec_from_kernel_abi_whitelist(const string& abi_whitelist_path,
 					 suppressions_type& supprs)
 {
-  config whitelist;
+  abigail::ini::config whitelist;
   if (!read_config(abi_whitelist_path, whitelist))
     return false;
 
   bool created_a_suppr = false;
 
-  const config::sections_type &whitelist_sections = whitelist.get_sections();
-  for (config::sections_type::const_iterator s =
+  const ini::config::sections_type &whitelist_sections =
+    whitelist.get_sections();
+  for (ini::config::sections_type::const_iterator s =
 	 whitelist_sections.begin();
        s != whitelist_sections.end();
        ++s)
@@ -1430,7 +1444,7 @@ gen_suppr_spec_from_kernel_abi_whitelist(const string& abi_whitelist_path,
       function_suppression_sptr fn_suppr;
       variable_suppression_sptr var_suppr;
       string function_names_regexp, variable_names_regexp;
-      for (config::properties_type::const_iterator p =
+      for (ini::config::properties_type::const_iterator p =
 	     (*s)->get_properties().begin();
 	   p != (*s)->get_properties().end();
 	   ++p)

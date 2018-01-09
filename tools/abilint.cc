@@ -260,9 +260,8 @@ main(int argc, char* argv[])
 
   if (opts.display_version)
     {
-      string major, minor, revision;
-      abigail::abigail_get_library_version(major, minor, revision);
-      cout << major << "." << minor << "." << revision << "\n";
+      emit_prefix(argv[0], cout)
+	<< abigail::tools_utils::get_library_version_string();
       return 0;
     }
 

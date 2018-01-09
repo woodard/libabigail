@@ -385,8 +385,7 @@ main(int argc, char* argv[])
     {
       string major, minor, revision;
       abigail::abigail_get_library_version(major, minor, revision);
-      emit_prefix(argv[0], cout)
-	<< major << "." << minor << "." << revision << "\n";
+      cout << major << "." << minor << "." << revision << "\n";
       return 0;
     }
 
