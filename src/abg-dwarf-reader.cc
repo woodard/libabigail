@@ -4407,10 +4407,10 @@ public:
   /// [1]: https://en.wikipedia.org/wiki/One_Definition_Rule
   ///
   /// At the moment this returns true if the language considered
-  /// is C++.
+  /// is C++ or Java.
   bool
   odr_is_relevant(translation_unit::language l) const
-  {return is_cplus_plus_language(l);}
+  {return is_cplus_plus_language(l) || is_java_language(l);}
 
   /// Check if we can assume the One Definition Rule to be relevant
   /// for a given DIE.

@@ -669,6 +669,9 @@ bool
 is_cplus_plus_language(translation_unit::language l);
 
 bool
+is_java_language(translation_unit::language l);
+
+bool
 operator==(const translation_unit_sptr&, const translation_unit_sptr&);
 
 bool

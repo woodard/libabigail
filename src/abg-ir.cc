@@ -1102,6 +1102,15 @@ is_cplus_plus_language(translation_unit::language l)
 	  || l == translation_unit::LANG_C_plus_plus);
 }
 
+/// Test if a language enumerator designates the Java language.
+///
+/// @param l the language enumerator to consider.
+///
+/// @return true iff @p l designates the Java language.
+bool
+is_java_language(translation_unit::language l)
+{return l == translation_unit::LANG_Java;}
+
 /// A deep comparison operator for pointers to translation units.
 ///
 /// @param l the first translation unit to consider for the comparison.
@@ -5982,7 +5991,9 @@ get_pretty_representation(const method_type_sptr method, bool internal)
 bool
 odr_is_relevant(const type_or_decl_base& artifact)
 {
-  if (is_cplus_plus_language(artifact.get_translation_unit()->get_language()))
+  translation_unit::language l =
+    artifact.get_translation_unit()->get_language();
+  if (is_cplus_plus_language(l) || is_java_language(l))
     return true;
   return false;
 }
