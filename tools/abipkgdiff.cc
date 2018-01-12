@@ -1266,7 +1266,7 @@ compare(const elf_file& elf1,
 	bail_out = true;
       }
 
-    if (opts.fail_if_no_debug_info || opts.verbose)
+    if (opts.fail_if_no_debug_info)
       {
 	bool debug_info_error = false;
 	if (c1_status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
@@ -1352,7 +1352,7 @@ compare(const elf_file& elf1,
 	bail_out = true;
       }
 
-    if (opts.fail_if_no_debug_info || opts.verbose)
+    if (opts.fail_if_no_debug_info)
       {
 	bool debug_info_error = false;
 	if (c2_status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
