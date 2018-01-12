@@ -386,6 +386,28 @@ base_name(string const &path,
   return true;
 }
 
+/// Return the real path of a given path.
+///
+/// The real path of path 'foo_path' is the same path as foo_path, but
+/// with symlinks and relative paths resolved.
+///
+/// @param path the path to consider.
+///
+/// @param result the computed real_path;
+void
+real_path(const string&path, string& result)
+{
+  if (path.empty())
+    {
+      result.clear();
+      return;
+    }
+
+  char *realp = realpath(path.c_str(), NULL);
+  if (realp)
+    result = realp;
+}
+
 /// Ensures #dir_path is a directory and is created.  If #dir_path is
 /// not created, this function creates it.
 ///

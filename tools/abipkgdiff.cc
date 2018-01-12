@@ -124,6 +124,7 @@ using abigail::tools_utils::ensure_dir_path_created;
 using abigail::tools_utils::guess_file_type;
 using abigail::tools_utils::string_ends_with;
 using abigail::tools_utils::dir_name;
+using abigail::tools_utils::real_path;
 using abigail::tools_utils::string_suffix;
 using abigail::tools_utils::sorted_strings_common_prefix;
 using abigail::tools_utils::file_type;
@@ -592,7 +593,13 @@ public:
   /// the extracted directory.
   bool
   convert_path_to_relative(const string& path, string& converted_path) const
-  {return string_suffix(path, extracted_dir_path(), converted_path);}
+  {
+    string root = extracted_dir_path_;
+    real_path(root, root);
+    string p = path;
+    real_path(p, p);
+    return string_suffix(p, root, converted_path);
+  }
 
   // Convert the absolute path of an element of this package into a
   // path relative to the prefix common to the paths of all elements
@@ -1832,7 +1839,12 @@ get_interesting_files_under_dir(const string dir,
 				vector<string>& interesting_files)
 {
   bool is_ok = false;
-  char* paths[] = {const_cast<char*>(dir.c_str()), 0};
+  string root;
+  real_path(dir, root);
+  if (root.empty())
+    root = dir;
+
+  char* paths[] = {const_cast<char*>(root.c_str()), 0};
 
   FTS *file_hierarchy = fts_open(paths, FTS_LOGICAL|FTS_NOCHDIR, NULL);
   if (!file_hierarchy)

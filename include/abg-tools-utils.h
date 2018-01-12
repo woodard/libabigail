@@ -52,6 +52,7 @@ bool base_name(string const& path,
 bool dir_name(string const &path,
 	      string& path_dir_name,
 	      bool keep_separator_at_end=false);
+void real_path(const string&path, string& realpath);
 bool ensure_dir_path_created(const string&);
 bool ensure_parent_dir_created(const string&);
 ostream& emit_prefix(const string& prog_name, ostream& out);
