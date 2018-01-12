@@ -1743,7 +1743,7 @@ public:
 	  out << "No ABI change detected\n";
       }
 
-    // If an error happened while comparing the twobinaries, tell the
+    // If an error happened while comparing the two binaries, tell the
     // user about it.
     if (status & abigail::tools_utils::ABIDIFF_ERROR)
       {
