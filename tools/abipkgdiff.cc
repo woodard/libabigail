@@ -95,6 +95,7 @@
 #include <vector>
 #include <algorithm>
 #include <map>
+#include <tr1/unordered_set>
 
 #include "abg-workers.h"
 #include "abg-config.h"
@@ -109,6 +110,7 @@ using std::string;
 using std::ostream;
 using std::vector;
 using std::map;
+using std::tr1::unordered_set;
 using std::ostringstream;
 using std::tr1::shared_ptr;
 using std::tr1::dynamic_pointer_cast;
@@ -1789,10 +1791,10 @@ typedef shared_ptr<compare_task> compare_task_sptr;
 /// of the current directory tree being analyzed.  These paths are
 /// those that are going to be involved in ABI comparison.
 static void
-maybe_update_vector_of_package_content(const FTSENT *entry,
-				       options &opts,
-				       const string& file_name_to_look_for,
-				       vector<string>& paths)
+maybe_update_package_content(const FTSENT *entry,
+			     options &opts,
+			     const string& file_name_to_look_for,
+			     unordered_set<string>& paths)
 {
   if (entry == NULL
       || (entry->fts_info != FTS_F && entry->fts_info != FTS_SL)
@@ -1808,12 +1810,12 @@ maybe_update_vector_of_package_content(const FTSENT *entry,
       string name;
       abigail::tools_utils::base_name(path, name);
       if (name == file_name_to_look_for)
-	paths.push_back(path);
+	paths.insert(path);
       return;
     }
 
   if (guess_file_type(path) == abigail::tools_utils::FILE_TYPE_ELF)
-    paths.push_back(path);
+    paths.insert(path);
   else if (opts.abignore && string_ends_with(path, ".abignore"))
     opts.suppression_paths.push_back(path);
 }
@@ -1851,10 +1853,14 @@ get_interesting_files_under_dir(const string dir,
     return is_ok;
 
   FTSENT *entry;
+  unordered_set<string> files;
   while ((entry = fts_read(file_hierarchy)))
-    maybe_update_vector_of_package_content(entry, opts,
-					   file_name_to_look_for,
-					   interesting_files);
+    maybe_update_package_content(entry, opts, file_name_to_look_for, files);
+
+  for (unordered_set<string>::const_iterator i = files.begin();
+       i != files.end();
+       ++i)
+    interesting_files.push_back(*i);
 
   fts_close(file_hierarchy);
 
