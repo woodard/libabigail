@@ -696,6 +696,8 @@ common_prefix(const string& s1, const string& s2, string &result)
   for (size_t i = 0; i < s1.length() && i< s2.length(); ++i)
     if (s1[i] == s2[i])
       result += s1[i];
+    else
+      break;
 
   return !result.empty();
 }
