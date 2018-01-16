@@ -519,10 +519,10 @@ struct class_or_union_diff::priv
   get_inserted_non_static_data_members_number() const;
 
   size_t
-  count_filtered_subtype_changed_dm();
+  count_filtered_subtype_changed_dm(bool local_only = false);
 
   size_t
-  count_filtered_changed_dm();
+  count_filtered_changed_dm(bool local_only = false);
 
   size_t
   count_filtered_changed_mem_fns(const diff_context_sptr&);

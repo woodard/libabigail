@@ -4076,10 +4076,13 @@ class_or_union_diff::priv::get_inserted_non_static_data_members_number() const
 /// Get the number of data member sub-type changes carried by the
 /// current diff node that were filtered out.
 ///
+/// @param local_only if true, it means that only (filtered) local
+/// changes are considered.
+///
 /// @return the number of data member sub-type changes carried by the
 /// current diff node that were filtered out.
 size_t
-class_or_union_diff::priv::count_filtered_subtype_changed_dm()
+class_or_union_diff::priv::count_filtered_subtype_changed_dm(bool local_only)
 {
   size_t num_filtered= 0;
   for (var_diff_sptrs_type::const_iterator i =
@@ -4087,8 +4090,17 @@ class_or_union_diff::priv::count_filtered_subtype_changed_dm()
        i != sorted_subtype_changed_dm_.end();
        ++i)
     {
-      if ((*i)->is_filtered_out())
-	++num_filtered;
+      if (local_only)
+	{
+	  if ((*i)->has_changes()
+	      && !(*i)->has_local_changes_to_be_reported())
+	    ++num_filtered;
+	}
+      else
+	{
+	  if ((*i)->is_filtered_out())
+	    ++num_filtered;
+	}
     }
   return num_filtered;
 }
@@ -4096,10 +4108,13 @@ class_or_union_diff::priv::count_filtered_subtype_changed_dm()
 /// Get the number of data member changes carried by the current diff
 /// node that were filtered out.
 ///
+/// @param local_only if true, it means that only (filtered) local
+/// changes are considered.
+///
 /// @return the number of data member changes carried by the current
 /// diff node that were filtered out.
 size_t
-class_or_union_diff::priv::count_filtered_changed_dm()
+class_or_union_diff::priv::count_filtered_changed_dm(bool local_only)
 {
   size_t num_filtered= 0;
 
@@ -4108,8 +4123,17 @@ class_or_union_diff::priv::count_filtered_changed_dm()
        ++i)
     {
       diff_sptr diff = i->second;
-      if (diff->is_filtered_out())
-	++num_filtered;
+      if (local_only)
+	{
+	  if (diff->has_changes()
+	      && !diff->has_local_changes_to_be_reported())
+	    ++num_filtered;
+	}
+      else
+	{
+	  if (diff->is_filtered_out())
+	    ++num_filtered;
+	}
     }
   return num_filtered;
 }
