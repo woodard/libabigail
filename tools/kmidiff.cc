@@ -256,6 +256,11 @@ parse_command_line(int argc, char* argv[], options& opts)
       else if (!strcmp(argv[i], "--full-impact")
 	       || !strcmp(argv[i], "-f"))
 	opts.leaf_changes_only = false;
+      else
+	{
+	  opts.wrong_option = argv[i];
+	  return false;
+	}
     }
 
   return true;
