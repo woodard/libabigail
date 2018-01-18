@@ -1,5 +1,5 @@
 ================ changes of 'libspice-server.so.1.8.0'===============
-Leaf changes summary: 2 artifacts changed (8 filtered out)
+Leaf changes summary: 2 artifacts changed (7 filtered out)
   Added/removed functions summary: 1 Removed, 8 Added functions
   Added/removed variables summary: 0 Removed, 0 Added variable
 

@@ -822,6 +822,35 @@ has_basic_type_name_change(const diff *d)
   return false;
 }
 
+/// Test if a diff node carries a class or union type name change.
+///
+/// @param d the diff node to consider.
+///
+/// @return true iff the diff node carries a class or union type name
+/// change.
+bool
+has_class_or_union_type_name_change(const diff *d)
+{
+  if (const class_or_union_diff *dif = is_diff_of_class_or_union_type(d))
+    if (decl_name_changed(dif))
+      return true;
+
+  return false;
+}
+
+/// Test if a diff node carries a basic or class type name change.
+///
+/// @param d the diff node to consider.
+///
+/// @return true iff the diff node carries a basic or class type name
+/// change.
+bool
+has_basic_or_class_type_name_change(const diff *d)
+{
+  return (has_basic_type_name_change(d)
+	  || has_class_or_union_type_name_change(d));
+}
+
 /// Test if an enum_diff carries an enumerator insertion.
 ///
 /// @param diff the enum_diff to consider.

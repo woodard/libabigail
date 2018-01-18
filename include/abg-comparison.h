@@ -2616,6 +2616,9 @@ is_decl_diff(const diff* diff);
 const type_decl_diff*
 is_diff_of_basic_type(const diff* diff);
 
+const class_or_union_diff*
+is_diff_of_class_or_union_type(const diff *d);
+
 bool
 has_basic_type_change_only(const diff* diff);
 

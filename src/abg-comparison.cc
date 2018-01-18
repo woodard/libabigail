@@ -9519,14 +9519,14 @@ struct leaf_diff_node_marker_visitor : public diff_node_visitor
   visit_begin(diff *d)
   {
     if (d->has_local_changes()
-	// A leaf basic type name change makes no sense when showing
-	// just leaf changes.  It only makes sense when it can explain
-	// the details about a non-leaf change.  In other words, it
-	// doesn't make sense to say that an "int" became "unsigned
-	// int".  But it does make sense to says that a typedef
-	// changed because its underlying type was 'int' and is now an
-	// "unsigned int".
-	&& !filtering::has_basic_type_name_change(d)
+	// A leaf basic (or class/union) type name change makes no
+	// sense when showing just leaf changes.  It only makes sense
+	// when it can explain the details about a non-leaf change.
+	// In other words, it doesn't make sense to say that an "int"
+	// became "unsigned int".  But it does make sense to say that
+	// a typedef changed because its underlying type was 'int' and
+	// is now an "unsigned int".
+	&& !filtering::has_basic_or_class_type_name_change(d)
 	// Similarly, a *local* change describing a type that changed
 	// its nature doesn't make sense.
 	&& !is_distinct_diff(d))
@@ -10864,6 +10864,18 @@ is_diff_of_variadic_parameter(const diff_sptr& d)
 const type_decl_diff*
 is_diff_of_basic_type(const diff *d)
 {return dynamic_cast<const type_decl_diff*>(d);}
+
+/// Test if a diff node represents a diff between two class or union
+/// types.
+///
+/// @param d the diff node to consider.
+///
+/// @return iff @p is a diff between two class or union types then
+/// return the instance of @ref class_or_union_diff that @p derives
+/// from.  Otherwise, return nil.
+const class_or_union_diff*
+is_diff_of_class_or_union_type(const diff *d)
+{return dynamic_cast<const class_or_union_diff*>(d);}
 
 /// Test if a diff node is a decl diff that only carries a basic type
 /// change on its type diff sub-node.

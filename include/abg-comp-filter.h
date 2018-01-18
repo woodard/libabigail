@@ -52,6 +52,12 @@ has_class_decl_only_def_change(const class_or_union_sptr& first,
 bool
 has_basic_type_name_change(const diff *);
 
+bool
+has_class_or_union_type_name_change(const diff *d);
+
+bool
+has_basic_or_class_type_name_change(const diff *d);
+
 struct filter_base;
 /// Convenience typedef for a shared pointer to filter_base
 typedef shared_ptr<filter_base> filter_base_sptr;
