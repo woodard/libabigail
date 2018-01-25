@@ -1,3 +1,372 @@
+2018-01-25  Dodji Seketeli <dodji@redhat.com>
+
+	Update website for 1.1
+	* doc/website/mainpage.txt: Update for 1.1.
+
+2018-01-25  Dodji Seketeli <dodji@redhat.com>
+
+	Update ChangeLog for 1.1
+	* ChangeLog: Automatically update using 'make update-changelog'.
+
+2018-01-25  Dodji Seketeli <dodji@redhat.com>
+
+	Update NEWS file for 1.1
+	* NEWS: Update for 1.1
+
+2018-01-29  Dodji Seketeli <dodji@redhat.com>
+
+	Correctly link with pthread
+	* src/Makefile.am: use -lpthread, not -pthread.
+
+2018-01-18  Dodji Seketeli <dodji@redhat.com>
+
+	Skip class types with changed names in leaf reports
+	* include/abg-comp-filter.h (has_class_or_union_type_name_change)
+	(has_basic_or_class_type_name_change): Declare new functions.
+	* include/abg-comparison.h (is_diff_of_class_or_union_type):
+	Likewise.
+	* src/abg-comp-filter.cc (has_class_or_union_type_name_change)
+	(has_basic_or_class_type_name_change):
+	* src/abg-comparison.cc
+	(leaf_diff_node_marker_visitor::visit_begin): Use the new
+	filtering::has_basic_or_class_type_name_change to test if a basic
+	or class/union diff type carries a name change.  Update comment.
+	* tests/data/test-diff-pkg/spice-server-0.12.4-19.el7.x86_64-0.12.8-1.el7.x86_64-report-3.txt:
+	Adjust.
+
+2018-01-16  Dodji Seketeli <dodji@redhat.com>
+
+	Only consider local changes when filtering subtype changes
+	* src/abg-comparison-priv.h
+	(class_or_union_diff::priv::{count_filtered_subtype_changed_dm,
+	count_filtered_changed_dm}): Take an additional flag.
+	* src/abg-comparison.cc
+	(class_or_union_diff::priv::{count_filtered_subtype_changed_dm,
+	count_filtered_changed_dm}): Likewise.  When asked, only consider
+	local changes.
+	* src/abg-leaf-reporter.cc (leaf_reporter::report): Consider
+	reporting only the *net local* data member changes.
+
+2018-01-16  Dodji Seketeli <dodji@redhat.com>
+
+	Make kmidiff show the wrong option when it complains about it
+	* tools/kmidiff.cc (parse_command_line): Don't forget to record
+	the wrong option in options::wrong_option.
+
+2018-01-12  Dodji Seketeli <dodji@redhat.com>
+
+	Fix typo in abipkgdiff.cc
+	* tools/abipkgdiff.cc (compare_task::perform): Fix a typo in a
+	comment.
+
+2018-01-12  Dodji Seketeli <dodji@redhat.com>
+
+	Suppress duplicates when listing package content
+	* tools/abipkgdiff.cc (maybe_update_package_content): Rename
+	maybe_update_vector_of_package_content into this.  Take a set of
+	strings, rather than a vector of strings.
+	(get_interesting_files_under_dir): Adjust.
+
+2018-01-12  Dodji Seketeli <dodji@redhat.com>
+
+	Fix symlinks paths handling in abipkgdiff
+	* include/abg-tools-utils.h (real_path): Declare new function.
+	* src/abg-tools-utils.cc (real_path): Define it.
+	* tools/abipkgdiff.cc (package::convert_path_to_relative): Use the
+	new real_path function to consider real path (where symlinks are
+	resolved) of the extraction directory of the package.
+	(get_interesting_files_under_dir): Similarly, use the new
+	real_path function to consider the real path of the directory we
+	are exploring.
+
+2018-01-12  Dodji Seketeli <dodji@redhat.com>
+
+	Fix logic in common_prefix
+	* src/abg-tools-utils.cc (common_prefix): Fix logic error.
+
+2018-01-12  Dodji Seketeli <dodji@redhat.com>
+
+	abipkgdiff --verbose shouldn't trigger --fail-no-dbg
+	* tools/abipkgdiff.cc (compare): In the overload for elf_files,
+	separate the effect of --verbose from the one of --fail-no-dbg.
+
+2018-01-10  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 22692 - Consider Java as a language that supports the ODR
+	* include/abg-ir.h (is_java_language): Declare new function.
+	* src/abg-dwarf-reader.cc (odr_is_relevant): Adjust to consider
+	that Java also respects the ODR.
+	* src/abg-ir.cc (is_java_language): Define new function.
+	(odr_is_relevant): Adjust to consider that Java also respects the
+	ODR.
+
+2018-01-09  Dodji Seketeli <dodji@redhat.com>
+
+	Fix version revision number printing in tools --help option
+	* configure.ac: Properly set the VERSION_REVISION macro.
+	* include/abg-tools-utils.h (get_library_version_string): Declare
+	new function.
+	* src/abg-tools-utils.cc (get_library_version_string): Define the
+	new function.
+	(gen_suppr_spec_from_kernel_abi_whitelist): Dis-ambiguate the use
+	of the 'config' type.
+	* tools/abicompat.cc (main): Use the new
+	abigail::tools_utils::get_library_version_string function.
+	* tools/abidiff.cc (main): Likewise.
+	* tools/abidw.cc (main): Likewise.
+	* tools/abilint.cc (main): Likewise.
+	* tools/abipkgdiff.cc (main): Likewise.
+	* tools/abisym.cc (main): Likewise.
+	* tools/kmidiff.cc (main): Likewise.
+
+2018-01-09  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 22684 - Add --d{1,2} options to kmidiff
+	* doc/manuals/kmidiff.rst: Add documentation for the new options.
+	* tools/kmidiff.cc (options::{di_root_path{1,2}): New data
+	members.
+	(display_usage): Add help strings for the new options.
+	(parse_command_line): Parse the new options.
+	(main): Pass the debug info root directory to
+	build_corpus_group_from_kernel_dist_under.
+
+2018-01-08  Dodji Seketeli <dodji@redhat.com>
+
+	Update copyright notice for all source files
+	* update-copyright.sh: New sed-based script to update the year
+	in the copyright notice.
+	* include/abg-comp-filter.h: Updated the year in the copyright
+	notice.
+	* include/abg-comparison.h: Likewise.
+	* include/abg-config.h: Likewise.
+	* include/abg-corpus.h: Likewise.
+	* include/abg-diff-utils.h: Likewise.
+	* include/abg-dwarf-reader.h: Likewise.
+	* include/abg-fwd.h: Likewise.
+	* include/abg-hash.h: Likewise.
+	* include/abg-ini.h: Likewise.
+	* include/abg-interned-str.h: Likewise.
+	* include/abg-ir.h: Likewise.
+	* include/abg-libxml-utils.h: Likewise.
+	* include/abg-libzip-utils.h: Likewise.
+	* include/abg-reader.h: Likewise.
+	* include/abg-reporter.h: Likewise.
+	* include/abg-sptr-utils.h: Likewise.
+	* include/abg-suppression.h: Likewise.
+	* include/abg-tools-utils.h: Likewise.
+	* include/abg-traverse.h: Likewise.
+	* include/abg-viz-common.h: Likewise.
+	* include/abg-viz-dot.h: Likewise.
+	* include/abg-viz-svg.h: Likewise.
+	* include/abg-workers.h: Likewise.
+	* include/abg-writer.h: Likewise.
+	* src/abg-comp-filter.cc: Likewise.
+	* src/abg-comparison-priv.h: Likewise.
+	* src/abg-comparison.cc: Likewise.
+	* src/abg-config.cc: Likewise.
+	* src/abg-corpus-priv.h: Likewise.
+	* src/abg-corpus.cc: Likewise.
+	* src/abg-default-reporter.cc: Likewise.
+	* src/abg-diff-utils.cc: Likewise.
+	* src/abg-dwarf-reader.cc: Likewise.
+	* src/abg-hash.cc: Likewise.
+	* src/abg-ini.cc: Likewise.
+	* src/abg-internal.h: Likewise.
+	* src/abg-ir-priv.h: Likewise.
+	* src/abg-ir.cc: Likewise.
+	* src/abg-leaf-reporter.cc: Likewise.
+	* src/abg-libxml-utils.cc: Likewise.
+	* src/abg-libzip-utils.cc: Likewise.
+	* src/abg-reader.cc: Likewise.
+	* src/abg-reporter-priv.cc: Likewise.
+	* src/abg-reporter-priv.h: Likewise.
+	* src/abg-sptr-utils.cc: Likewise.
+	* src/abg-suppression-priv.h: Likewise.
+	* src/abg-suppression.cc: Likewise.
+	* src/abg-tools-utils.cc: Likewise.
+	* src/abg-traverse.cc: Likewise.
+	* src/abg-viz-common.cc: Likewise.
+	* src/abg-viz-dot.cc: Likewise.
+	* src/abg-viz-svg.cc: Likewise.
+	* src/abg-workers.cc: Likewise.
+	* src/abg-writer.cc: Likewise.
+	* tests/print-diff-tree.cc: Likewise.
+	* tests/test-abicompat.cc: Likewise.
+	* tests/test-abidiff-exit.cc: Likewise.
+	* tests/test-abidiff.cc: Likewise.
+	* tests/test-alt-dwarf-file.cc: Likewise.
+	* tests/test-core-diff.cc: Likewise.
+	* tests/test-diff-dwarf-abixml.cc: Likewise.
+	* tests/test-diff-dwarf.cc: Likewise.
+	* tests/test-diff-filter.cc: Likewise.
+	* tests/test-diff-pkg.cc: Likewise.
+	* tests/test-diff-suppr.cc: Likewise.
+	* tests/test-diff2.cc: Likewise.
+	* tests/test-ir-walker.cc: Likewise.
+	* tests/test-lookup-syms.cc: Likewise.
+	* tests/test-read-dwarf.cc: Likewise.
+	* tests/test-read-write.cc: Likewise.
+	* tests/test-types-stability.cc: Likewise.
+	* tests/test-utils.cc: Likewise.
+	* tests/test-utils.h: Likewise.
+	* tests/test-write-read-archive.cc: Likewise.
+	* tools/abiar.cc: Likewise.
+	* tools/abicompat.cc: Likewise.
+	* tools/abidiff.cc: Likewise.
+	* tools/abidw.cc: Likewise.
+	* tools/abilint.cc: Likewise.
+	* tools/abipkgdiff.cc: Likewise.
+	* tools/abisym.cc: Likewise.
+	* tools/binilint.cc: Likewise.
+	* tools/kmidiff.cc: Likewise.
+
+2017-12-15  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 22437 - Make fedabipkgdiff use all debug info RPMs of a sub-RPM
+	* tools/fedabipkgdiff (RPM::get_all_debuginfo_rpms): Define new
+	member function.
+	(RPM::generate_comparison_halves): The ancillary debuginfo RPM of
+	a given RPM now has a list type; there can be more than one
+	debuginfo RPM associated to a given RPM, especially if the RPM is
+	a devel one.
+	(format_debug_info_pkg_options): Define new function.
+	(abipkgdiff): Use the new function above.
+
+2017-12-15  Dodji Seketeli <dodji@redhat.com>
+
+	Improve comments wording in fedabipkgdiff
+	* tools/fedabipkgdiff (class RPM): Fix wording.
+	(RPM::__init__): Likewise.
+
+2017-12-11  Dodji Seketeli <dodji@redhat.com>
+
+	Update & cleanup the tools manuals summary
+	* doc/manuals/abidw.rst: Use the same header structure as or the
+	other tools manual.
+	* doc/manuals/kmidiff.rst: Likewise.
+	* doc/manuals/libabigail-tools.rst: Add the new kmidiff tool to
+	the summary.
+
+2017-12-01  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 22488 - Make abipkgdiff handle different binaries with same basename
+	* include/abg-tools-utils.h (string_suffix)
+	(sorted_strings_common_prefix): Declare new functions.
+	(dir_name): Take a new keep_separator_at_end parameter at the end.
+	* src/abg-tools-utils.cc (dir_name): Take a new
+	keep_separator_at_end parameter at the end.  Add a comment for it
+	and update.
+	(string_suffix, sorted_strings_common_prefix): Define new
+	functions.
+	(common_prefix): Define new static function.
+	* tools/abipkgdiff.cc (get_interesting_files_under_dir): Forward
+	declare this pre-existing static function.
+	(package::{common_paths_prefix_, elf_file_paths_}): New data
+	members.
+	(package::{common_paths_prefix, elf_file_paths,
+	convert_path_to_relative, convert_path_to_unique_suffix,
+	load_elf_file_paths}): New member functions.
+	(create_maps_of_package_content): Use the new
+	package::{load_elf_file_paths, convert_path_to_unique_suffix}
+	functions.
+	(compare_prepared_userspace_packages): Show relative paths of
+	package elements in reported.
+	* tests/data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64--dbus-glib-0.104-3.fc23.armv7hl-report-0.txt:
+	Update test ouptut.
+	* tests/data/test-diff-pkg/libxfce4ui-devel-4.12.1-8.fc27.ppc64-self-report-0.txt:
+	Likewise.
+
+2017-12-01  Dodji Seketeli <dodji@redhat.com>
+
+	Fully report diagnostic about alternate debug info file not found
+	* src/abg-dwarf-reader.cc (status_to_diagnostic_string): Report
+	textual diagnostic for the STATUS_ALT_DEBUG_INFO_NOT_FOUND case
+	too.
+
+2017-11-27  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 22436 - make abipkgdiff accept several debuginfo packages
+	* doc/manuals/abipkgdiff.rst: Document the fact that --d{1,2} can
+	be provided several times on the command line.
+	* tools/abipkgdiff.cc (options::debug_packages{1,2}): Rename the
+	debug_package{1,2} data members into this, and make them be vector
+	of strings, rather than just strings.
+	(package::debug_info_packages_): Renamed
+	package::debug_info_package_ into this and make it be a vector of
+	package_sptr, rather than just a package_sptr.
+	(package::debug_info_packages): Renamed the method
+	package::debug_info_package into this and -- for the getter
+	overload -- make it return a vector of package_sptr, rather than
+	just a package_sptr.  Likewise for the setter overload.  Add a
+	non-const getter overload.
+	(package::erase_extraction_directories)
+	(extract_package_and_map_its_content): Adjust.
+	(extract_rpm, extract_deb): Do not erase the content of the
+	extraction directory (if it was pre-existing) prior to extracting
+	the RPM/deb into it.
+	(pkg_extraction::pkgs): Renamed pkg_extraction::pkg into this and
+	make it be a vector of packages, rather than just a package.
+	(pkg_extraction::pkg_extraction): Adjust to take a package_sptr
+	rather than just a package.  Add an overload to take a vector of
+	packages_sptr.
+	(pkg_extraction::perform): Extract the vector of package that the
+	task is not responsible for, not just one random package.
+	(extract_package_and_map_its_content): Adjust.
+	(prepare_packages): Take smart pointers to package rather than
+	just packages.  Adjust accordingly.
+	(compare_prepared_package): Make the overload that takes two
+	packages to take two smart pointers of packages.
+	(compare): Make the overload that takes two package take two
+	package_sptr.
+	(parse_command_line): Parse having --d{1,2} several times for a
+	given input package.
+	(main): Take several debug info packages for one input file.
+	* include/abg-tools-utils.h (split_string): Declare ...
+	* src/abg-tools-utils.cc (split_string): ... new function.
+	* tests/data/test-diff-pkg/libxfce4ui-debuginfo-4.12.1-8.fc27.ppc64.rpm:
+	Add a new RPM test input file.
+	* tests/data/test-diff-pkg/libxfce4ui-devel-4.12.1-8.fc27.ppc64-self-report-ok-0.txt:
+	new reference output file.
+	* tests/data/Makefile.am: Add the new test input files above to source
+	distribution.
+	* tests/test-diff-pkg.cc (in_out_spec): Add new test entry to
+	specify two debug info packages for one input package.
+	(test_task::perform): Support having several debug info package
+	paths in the IntOutSpec::{first,second}_in_debug_package_path data
+	member.  The debug info packages paths are separated by either a
+	white space or commas.
+
+2017-11-22  Dodji Seketeli <dodji@redhat.com>
+
+	Update version number to 1.1
+	* configure.ac: Update version number to 1.1
+
+2017-11-22  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 22076 - Disable fedabipkgdiff for old koji clients
+	* configure.ac: Try to invoke the koji.read_config method.  If it
+	fails then disable the fedabipkgdiff feature.
+
+2017-11-22  Dodji Seketeli <dodji@redhat.com>
+
+	Update the release text template after 1.0
+	* release-text-template.txt: Update some wording.
+
+2017-11-22  Dodji Seketeli <dodji@redhat.com>
+
+	Update website for 1.0
+	* doc/website/mainpage.txt: Update after 1.0 release.
+
+2017-11-21  Dodji Seketeli <dodji@redhat.com>
+
+	Update NEWS file for 1.0
+	* NEWS: Update for 1.0
+
+2017-11-21  Dodji Seketeli <dodji@redhat.com>
+
+	Automatically Update ChangeLog for 1.0
+	* ChangeLog: Automatically update for 1.0
+
 2017-11-21  Dodji Seketeli <dodji@redhat.com>
 
 	Bug 22438 - Emit a clear message when debug info is not found
