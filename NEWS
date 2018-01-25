@@ -1,3 +1,26 @@
+1.1
+===
+Dodji Seketeli:
+      Bug 22076 - Disable fedabipkgdiff for old koji clients
+      Bug 22436 - make abipkgdiff accept several debuginfo packages
+      Bug 22488 - Make abipkgdiff handle different binaries with same basename
+      Bug 22437 - Make fedabipkgdiff use all debug info RPMs of a sub-RPM
+      Bug 22684 - Add --d{1,2} options to kmidiff
+      Bug 22692 - Consider Java as a language that supports the ODR
+      Fully report diagnostic about alternate debug info file not found
+      Update & cleanup the tools manuals summary
+      Improve comments wording in fedabipkgdiff
+      Update copyright notice for all source files
+      Fix version revision number printing in tools --help option
+      abipkgdiff --verbose shouldn't trigger --fail-no-dbg
+      Fix logic in common_prefix
+      Fix symlinks paths handling in abipkgdiff
+      Suppress duplicates when listing package content
+      Make kmidiff show the wrong option when it complains about it
+      Only consider local changes when filtering subtype changes
+      Skip class types with changed names in leaf reports
+      Correctly link with pthread
+
 1.0
 =====
 Ben Woodard:
