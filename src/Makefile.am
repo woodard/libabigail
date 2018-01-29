@@ -43,7 +43,7 @@ abg-tools-utils.cc			\
 $(CXX11_SOURCES)
 
 libabigail_la_LIBADD = $(DEPS_LIBS)
-libabigail_la_LDFLAGS = -pthread -Wl,--as-needed -no-undefined
+libabigail_la_LDFLAGS = -lpthread -Wl,--as-needed -no-undefined
 
 CUSTOM_MACROS = -DABIGAIL_ROOT_SYSTEM_LIBDIR=\"${libdir}\"
 
