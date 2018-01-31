@@ -55,6 +55,15 @@ change reports that might be considered as false positives to users.
   $HOME/.abignore.  If that file is not present, then no default user
   suppression specification is loaded.
 
+In addition to those default suppression specification files,
+abipkgdiff will also look inside the packages being compared and if it
+sees a file that ends with the extension ``.abignore``, then it will
+consider it as a suppression specification and it will combine it to the
+default suppression specification that might be already loaded.
+
+The user might as well use the ``--suppressions`` option (that is
+documented further below) to provide an suppression specification.
+
 .. _abipkgdiff_options_label:
 
 Options
@@ -264,8 +273,7 @@ Options
 
   * ``--no-abignore``
 
-    Do not search the *package2* for the presence of suppression
-    files.
+    Do not search the package for the presence of suppression files.
 
   * ``--no-parallel``
 
