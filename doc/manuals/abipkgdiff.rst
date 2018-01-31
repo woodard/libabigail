@@ -62,7 +62,7 @@ consider it as a suppression specification and it will combine it to the
 default suppression specification that might be already loaded.
 
 The user might as well use the ``--suppressions`` option (that is
-documented further below) to provide an suppression specification.
+documented further below) to provide a suppression specification.
 
 .. _abipkgdiff_options_label:
 
