@@ -494,6 +494,12 @@ public:
   const istring_type_base_wptrs_map_type&
   array_types() const;
 
+  const istring_type_base_wptrs_map_type&
+  subrange_types() const;
+
+  istring_type_base_wptrs_map_type&
+  subrange_types();
+
   istring_type_base_wptrs_map_type&
   function_types();
 
@@ -670,6 +676,9 @@ is_cplus_plus_language(translation_unit::language l);
 
 bool
 is_java_language(translation_unit::language l);
+
+bool
+is_ada_language(translation_unit::language l);
 
 bool
 operator==(const translation_unit_sptr&, const translation_unit_sptr&);
@@ -2012,8 +2021,9 @@ public:
   /// Convenience typedef for a vector of @ref subrange_sptr
   typedef std::vector<subrange_sptr> subranges_type;
 
-  /// Abstraction for an array dimension
-  class subrange_type
+  /// Abstraction for an array range type, like in Ada, or just for an
+  /// array dimension like in C or C++.
+  class subrange_type : public virtual type_base,  public virtual decl_base
   {
     struct priv;
     typedef shared_ptr<priv> priv_sptr;
@@ -2026,11 +2036,32 @@ public:
     /// Hasher for an instance of array::subrange
     struct hash;
 
-    subrange_type(size_t lower_bound,
-		  size_t upper_bound,
-		  const location& loc);
+    subrange_type(const environment*	env,
+		  const string&	name,
+		  size_t		lower_bound,
+		  size_t		upper_bound,
+		  type_base_sptr&	underlying_type,
+		  const location&	loc,
+		  translation_unit::language l = translation_unit::LANG_C11);
 
-    subrange_type(size_t upper_bound, const location& loc);
+    subrange_type(const environment* env,
+		  const string& name,
+		  size_t lower_bound,
+		  size_t upper_bound,
+		  const location& loc,
+		  translation_unit::language l = translation_unit::LANG_C11);
+
+    subrange_type(const environment* env,
+		  const string& name,
+		  size_t upper_bound,
+		  const location& loc,
+		  translation_unit::language l = translation_unit::LANG_C11);
+
+    type_base_sptr
+    get_underlying_type() const;
+
+    void
+    set_underlying_type(const type_base_sptr &);
 
     size_t
     get_upper_bound() const;
@@ -2050,25 +2081,40 @@ public:
     bool
     is_infinite() const;
 
+    translation_unit::language
+    get_language() const;
+
+    virtual bool
+    operator==(const decl_base&) const;
+
+    virtual bool
+    operator==(const type_base&) const;
+
     bool
     operator==(const subrange_type& o) const;
 
     bool
     operator!=(const subrange_type& o) const;
 
-    const location&
-    get_location() const;
-
     string
     as_string() const;
 
     static string
     vector_as_string(const vector<subrange_sptr>&);
-  };
+
+    virtual string
+    get_pretty_representation(bool internal = false) const;
+
+    virtual bool
+    traverse(ir_node_visitor&);
+  }; // end class subrange_type
 
   array_type_def(const type_base_sptr type,
 		 const std::vector<subrange_sptr>& subs,
 		 const location& locus);
+
+  translation_unit::language
+  get_language() const;
 
   virtual bool
   operator==(const decl_base&) const;
@@ -2116,6 +2162,12 @@ public:
   virtual ~array_type_def();
 
 }; // end class array_type_def
+
+array_type_def::subrange_type*
+is_subrange_type(const type_or_decl_base *type);
+
+array_type_def::subrange_sptr
+is_subrange_type(const type_or_decl_base_sptr &type);
 
 bool
 equals(const enum_type_decl&, const enum_type_decl&, change_kind*);
@@ -4296,6 +4348,9 @@ struct ir_node_visitor : public node_visitor_base
 
   virtual bool visit_begin(array_type_def*);
   virtual bool visit_end(array_type_def*);
+
+  virtual bool visit_begin(array_type_def::subrange_type*);
+  virtual bool visit_end(array_type_def::subrange_type*);
 
   virtual bool visit_begin(enum_type_decl*);
   virtual bool visit_end(enum_type_decl*);

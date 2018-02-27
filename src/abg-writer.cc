@@ -2284,6 +2284,60 @@ write_reference_type_def(const reference_type_def_sptr&	decl,
 			 unsigned				indent)
 {return write_reference_type_def(decl, "", ctxt, indent);}
 
+/// Serialize an instance of @ref array_type_def::subrange_type.
+///
+/// @param decl the array_type_def::subrange_type to serialize.
+///
+/// @param ctxt the context of the serialization.
+///
+/// @param indent the number of indentation white spaces to use.
+///
+/// return true upon successful completion, false otherwise.
+static bool
+write_array_subrange_type(const array_type_def::subrange_sptr&	decl,
+			  write_context&			ctxt,
+			  unsigned				indent)
+{
+  if (!decl)
+    return false;
+
+  annotate(decl, ctxt, indent);
+
+  ostream& o = ctxt.get_ostream();
+
+  do_indent(o, indent);
+
+  o << "<subrange";
+
+  if (!decl->get_name().empty())
+    o << " name='" << decl->get_name() << "'";
+
+  o << " length='";
+  if (decl->is_infinite())
+    o << "infinite";
+  else
+    o << decl->get_length();
+
+  o << "'";
+
+  type_base_sptr underlying_type = decl->get_underlying_type();
+  if (underlying_type)
+    {
+      o << " type-id='"
+	<< ctxt.get_id_for_type(underlying_type)
+	<< "'";
+      ctxt.record_type_as_referenced(underlying_type);
+    }
+
+  o << " id='" << ctxt.get_id_for_type(decl) << "'";
+
+  write_location(decl->get_location(), ctxt);
+
+  o << "/>\n";
+
+  return true;
+}
+
 /// Serialize a pointer to an instance of array_type_def.
 ///
 /// @param decl the array_type_def to serialize.
@@ -2344,21 +2398,11 @@ write_array_type_def(const array_type_def_sptr&	decl,
       for (si = decl->get_subranges().begin();
            si != decl->get_subranges().end(); ++si)
         {
-          do_indent(o, indent + ctxt.get_config().get_xml_element_indent());
-
-          o << "<subrange length='";
-          if ((*si)->is_infinite())
-          o << "infinite";
-          else
-            {
-              o << (*si)->get_length();
-            }
-          o << "'";
-
-          write_location((*si)->get_location(), ctxt);
-
-          o << "/>\n";
-        }
+	  unsigned local_indent =
+	    indent + ctxt.get_config().get_xml_element_indent();
+	  write_array_subrange_type(*si, ctxt, local_indent);
+	  o << "\n";
+	}
 
       do_indent(o, indent);
       o << "</array-type-def>";

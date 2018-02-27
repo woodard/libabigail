@@ -3659,17 +3659,16 @@ build_function_type(read_context&	ctxt,
   return fn_type;
 }
 
-/// Build a array_type_def from a 'array-type-def' xml node.
+/// Build a array_type_def::subrange_type from a 'subrange' xml node.
 ///
 /// @param ctxt the context of the parsing.
 ///
-/// @param node the xml node to build the array_type_def from.
+/// @param node the xml node to build the
+/// array_type_def::subrange_type from.
 ///
-/// @param add_to_current_scope if set to yes, the resulting of
-/// this function is added to its current scope.
 ///
-/// @return a pointer to a newly built array_type_def upon
-/// successful completion, a null pointer otherwise.
+/// @return a pointer to a newly built array_type_def::subrange_type
+/// upon successful completion, a null pointer otherwise.
 static array_type_def::subrange_sptr
 build_subrange_type(read_context&	ctxt,
 		    const xmlNodePtr	node)
@@ -3679,11 +3678,49 @@ build_subrange_type(read_context&	ctxt,
   if (!node || !xmlStrEqual(node->name, BAD_CAST("subrange")))
     return nil;
 
+  if (decl_base_sptr d = ctxt.get_decl_for_xml_node(node))
+    {
+      array_type_def::subrange_sptr result =
+	dynamic_pointer_cast<array_type_def::subrange_type>(d);
+      assert(result);
+      return result;
+    }
+
+  string id;
+  // Note that in early implementations, the subrange didn't carry its
+  // own ID as the subrange was just a detail of an array.  So we
+  // still need to support the abixml emitted by those early
+  // implementations.
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
+    id = CHAR_STR(s);
+
+  if (!id.empty())
+    if (type_base_sptr d = ctxt.get_type_decl(id))
+      {
+	array_type_def::subrange_sptr ty = is_subrange_type(d);
+	assert(ty);
+	return ty;
+      }
+
+  string name;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
+    name = CHAR_STR(s);
+
   size_t length = 0;
   string length_str;
-  if (xml_char_sptr s =
-      xml::build_sptr(xmlGetProp(node, BAD_CAST("length"))))
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "length"))
     length = atoi(CHAR_STR(s));
+
+  string underlying_type_id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
+    underlying_type_id = CHAR_STR(s);
+
+  type_base_sptr underlying_type;
+  if (!underlying_type_id.empty())
+    {
+      underlying_type = ctxt.build_or_get_type_decl(underlying_type_id, true);
+      assert(underlying_type);
+    }
 
   location loc;
   read_location(ctxt, node, loc);
@@ -3691,12 +3728,13 @@ build_subrange_type(read_context&	ctxt,
   // Note that DWARF would actually have a lower_bound of -1 for an
   // array of length 0
   array_type_def::subrange_sptr p
-    (new array_type_def::subrange_type(0,
-				       length - 1,
-				       loc));
+    (new array_type_def::subrange_type(ctxt.get_environment(),
+				       name, 0, length - 1,
+				       underlying_type, loc));
 
   return p;
 }
+
 /// Build a array_type_def from a 'array-type-def' xml node.
 ///
 /// @param ctxt the context of the parsing.

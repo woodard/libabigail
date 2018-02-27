@@ -426,6 +426,7 @@ struct type_maps::priv
   mutable istring_type_base_wptrs_map_type	pointer_types_;
   mutable istring_type_base_wptrs_map_type	reference_types_;
   mutable istring_type_base_wptrs_map_type	array_types_;
+  mutable istring_type_base_wptrs_map_type	subrange_types_;
   mutable istring_type_base_wptrs_map_type	function_types_;
 }; // end struct type_maps::priv
 
@@ -448,6 +449,7 @@ type_maps::empty() const
 	  && pointer_types().empty()
 	  && reference_types().empty()
 	  && array_types().empty()
+	  && subrange_types().empty()
 	  && function_types().empty());
 }
 
@@ -573,6 +575,20 @@ type_maps::array_types()
 const istring_type_base_wptrs_map_type&
 type_maps::array_types() const
 {return priv_->array_types_;}
+
+/// Getter for the map that associates the name of a subrange type to
+/// the vector of instances of @ref array_type_def::subrange_sptr that
+/// represents that type.
+istring_type_base_wptrs_map_type&
+type_maps::subrange_types()
+{return priv_->subrange_types_;}
+
+/// Getter for the map that associates the name of a subrange type to
+/// the vector of instances of @ref array_type_def::subrange_sptr that
+/// represents that type.
+const istring_type_base_wptrs_map_type&
+type_maps::subrange_types() const
+{return priv_->subrange_types_;}
 
 /// Getter for the map that associates the name of a function type to
 /// the vector of instances of @ref function_type_sptr that represents
@@ -1110,6 +1126,18 @@ is_cplus_plus_language(translation_unit::language l)
 bool
 is_java_language(translation_unit::language l)
 {return l == translation_unit::LANG_Java;}
+
+/// Test if a language enumerator designates the Ada language.
+///
+/// @param l the language enumerator to consider.
+///
+/// @return true iff @p l designates the Ada language.
+bool
+is_ada_language(translation_unit::language l)
+{
+  return (l == translation_unit::LANG_Ada83
+	 || l == translation_unit::LANG_Ada95);
+}
 
 /// A deep comparison operator for pointers to translation units.
 ///
@@ -5985,6 +6013,8 @@ get_pretty_representation(const method_type_sptr method, bool internal)
 /// By looking at the language of the TU a given ABI artifact belongs
 /// to, test if the ONE Definition Rule should apply.
 ///
+/// To date, it applies to c++, java and ada.
+///
 /// @param artifact the ABI artifact to consider.
 ///
 /// @return true iff the One Definition Rule should apply.
@@ -5993,8 +6023,12 @@ odr_is_relevant(const type_or_decl_base& artifact)
 {
   translation_unit::language l =
     artifact.get_translation_unit()->get_language();
-  if (is_cplus_plus_language(l) || is_java_language(l))
+
+  if (is_cplus_plus_language(l)
+      || is_java_language(l)
+      || is_ada_language(l))
     return true;
+
   return false;
 }
 
@@ -6791,6 +6825,29 @@ is_array_type(const type_or_decl_base* type)
 array_type_def_sptr
 is_array_type(const type_or_decl_base_sptr& type)
 {return dynamic_pointer_cast<array_type_def>(type);}
+
+/// Test if a type is an array_type_def::subrange_type.
+///
+/// @param type the type to consider.
+///
+/// @return the array_type_def::subrange_type which @p type is a type
+/// of, or nil if it's not of that type.
+array_type_def::subrange_type*
+is_subrange_type(const type_or_decl_base *type)
+{
+  return dynamic_cast<array_type_def::subrange_type*>
+    (const_cast<type_or_decl_base*>(type));
+}
+
+/// Test if a type is an array_type_def::subrange_type.
+///
+/// @param type the type to consider.
+///
+/// @return the array_type_def::subrange_type which @p type is a type
+/// of, or nil if it's not of that type.
+array_type_def::subrange_sptr
+is_subrange_type(const type_or_decl_base_sptr &type)
+{return dynamic_pointer_cast<array_type_def::subrange_type>(type);}
 
 /// Tests whether a decl is a template.
 ///
@@ -9417,6 +9474,38 @@ maybe_update_types_lookup_map(const array_type_def_sptr& array_type)
     }
 }
 
+/// Update the map that associates the fully qualified name of a type
+/// with the type itself.
+///
+/// The per-translation unit type map is updated if no type with this
+/// name was already existing in that map.
+///
+/// If no type with this name did already exist in the per-corpus type
+/// map, then that per-corpus type map is updated. Otherwise, that
+/// type is erased from that per-corpus map.
+///
+/// @param subrange_type the type to consider.
+void
+maybe_update_types_lookup_map
+(const array_type_def::subrange_sptr& subrange_type)
+{
+  if (translation_unit *tu = subrange_type->get_translation_unit())
+    maybe_update_types_lookup_map<array_type_def::subrange_type>
+      (subrange_type, tu->get_types().subrange_types());
+
+  if (corpus *type_corpus = subrange_type->get_corpus())
+    {
+      maybe_update_types_lookup_map<array_type_def::subrange_type>
+	(subrange_type,
+	 type_corpus->priv_->get_types().subrange_types());
+
+      maybe_update_types_lookup_map<array_type_def::subrange_type>
+	(subrange_type,
+	 type_corpus->get_type_per_loc_map().subrange_types(),
+	 /*use_type_name_as_key*/false);
+    }
+}
+
 /// Update the map that associates the fully qualified name of a
 /// function type with the type itself.
 ///
@@ -9477,6 +9566,8 @@ maybe_update_types_lookup_map(const decl_base_sptr& decl)
     maybe_update_types_lookup_map(reference_type);
   else if (array_type_def_sptr array_type = is_array_type(decl))
     maybe_update_types_lookup_map(array_type);
+  else if (array_type_def::subrange_sptr subrange_type = is_subrange_type(decl))
+    maybe_update_types_lookup_map(subrange_type);
   else
     ABG_ASSERT_NOT_REACHED;
 }
@@ -12000,17 +12091,59 @@ operator!=(const reference_type_def_sptr& l, const reference_type_def_sptr& r)
 // <array_type_def::subrange_type>
 struct array_type_def::subrange_type::priv
 {
-  size_t	lower_bound_;
-  size_t	upper_bound_;
-  location	location_;
-  priv(size_t ub, const location& loc)
-    : lower_bound_(0), upper_bound_(ub), location_(loc) {}
+  size_t		lower_bound_;
+  size_t		upper_bound_;
+  type_base_wptr	underlying_type_;
+  translation_unit::language language_;
 
-  priv(size_t lb, size_t ub, const location& loc)
-    : lower_bound_(lb), upper_bound_(ub), location_(loc) {}
+  priv(size_t ub,
+       translation_unit::language l = translation_unit::LANG_C11)
+    : lower_bound_(0), upper_bound_(ub), language_(l)
+  {}
+
+  priv(size_t lb, size_t ub,
+       translation_unit::language l = translation_unit::LANG_C11)
+    : lower_bound_(lb), upper_bound_(ub), language_(l)
+  {}
+
+  priv(size_t lb, size_t ub, const type_base_sptr &u,
+       translation_unit::language l = translation_unit::LANG_C11)
+    : lower_bound_(lb), upper_bound_(ub), underlying_type_(u), language_(l)
+  {}
 };
 
-/// Constructor.
+/// Constructor of an array_type_def::subrange_type type.
+///
+/// @param env the environment this type was created from.
+///
+/// @param name the name of the subrange type.
+///
+/// @param lower_bound the lower bound of the array.  This is
+/// generally zero (at least for C and C++).
+///
+/// @param upper_bound the upper bound of the array.
+///
+/// @param underlying_type the underlying type of the subrange type.
+///
+/// @param loc the source location where the type is defined.
+array_type_def::subrange_type::subrange_type(const environment* env,
+					     const string&	name,
+					     size_t		lower_bound,
+					     size_t		upper_bound,
+					     type_base_sptr&	underlying_type,
+					     const location&	loc,
+					     translation_unit::language l)
+  : type_or_decl_base(env),
+    type_base(env, upper_bound - lower_bound, 0),
+    decl_base(env, name, loc, ""),
+    priv_(new priv(lower_bound, upper_bound, underlying_type, l))
+{}
+
+/// Constructor of the array_type_def::subrange_type type.
+///
+/// @param env the environment this type is being created in.
+///
+/// @param name the name of the subrange type.
 ///
 /// @param lower_bound the lower bound of the array.  This is
 /// generally zero (at least for C and C++).
@@ -12018,22 +12151,65 @@ struct array_type_def::subrange_type::priv
 /// @param upper_bound the upper bound of the array.
 ///
 /// @param loc the source location where the type is defined.
-array_type_def::subrange_type::subrange_type(size_t		lower_bound,
+///
+/// @param l the language that generated this subrange.
+array_type_def::subrange_type::subrange_type(const environment* env,
+					     const string&	name,
+					     size_t		lower_bound,
 					     size_t		upper_bound,
-					     const location&	loc)
-  : priv_(new priv(lower_bound, upper_bound, loc))
+					     const location&	loc,
+					     translation_unit::language l)
+  : type_or_decl_base(env),
+    type_base(env, upper_bound - lower_bound, 0),
+    decl_base(env, name, loc, ""),
+    priv_(new priv(lower_bound, upper_bound, l))
 {}
 
-/// Constructor
+/// Constructor of the array_type_def::subrange_type type.
+///
+/// @param env the environment this type is being created from.
+///
+/// @param name of the name of type.
 ///
 /// @param upper_bound the upper bound of the array.  The lower bound
 /// is considered to be zero.
 ///
 /// @param loc the source location of the type.
-array_type_def::subrange_type::subrange_type(size_t		upper_bound,
-					     const location&	loc)
-  : priv_(new priv(upper_bound, loc))
+///
+/// @param the language that generated this type.
+array_type_def::subrange_type::subrange_type(const environment* env,
+					     const string&	name,
+					     size_t		upper_bound,
+					     const location&	loc,
+					     translation_unit::language l)
+  : type_or_decl_base(env),
+    type_base(env, upper_bound, 0),
+    decl_base(env, name, loc, ""),
+    priv_(new priv(upper_bound, l))
 {}
+
+/// Getter of the underlying type of the subrange, that is, the type
+/// that defines the range.
+///
+/// @return the underlying type.
+type_base_sptr
+array_type_def::subrange_type::get_underlying_type() const
+{
+  if (priv_->underlying_type_.expired())
+    return type_base_sptr();
+  return type_base_sptr(priv_->underlying_type_);
+}
+
+/// Setter of the underlying type of the subrange, that is, the type
+/// that defines the range.
+///
+/// @param u the new underlying type.
+void
+array_type_def::subrange_type::set_underlying_type(const type_base_sptr &u)
+{
+  assert(priv_->underlying_type_.expired());
+  priv_->underlying_type_ = u;
+}
 
 /// Getter of the upper bound of the subrange type.
 ///
@@ -12048,7 +12224,6 @@ array_type_def::subrange_type::get_upper_bound() const
 size_t
 array_type_def::subrange_type::get_lower_bound() const
 {return priv_->lower_bound_;}
-
 
 /// Setter of the upper bound of the subrange type.
 ///
@@ -12078,32 +12253,12 @@ bool
 array_type_def::subrange_type::is_infinite() const
 {return get_length() == 0;}
 
-/// Equality operator.
+/// Getter of the language that generated this type.
 ///
-/// @param o the other instance of subrange_type to compare against.
-bool
-array_type_def::subrange_type::operator==(const subrange_type& o) const
-{
-  return (get_lower_bound() == o.get_lower_bound()
-	  && get_upper_bound() == o.get_upper_bound());
-}
-
-/// Inequality operator.
-///
-/// @param o the other @ref subrange_type to compare against.
-///
-/// @return true iff @p o is different from the current instance of
-/// @ref subrange_type.
-bool
-array_type_def::subrange_type::operator!=(const subrange_type& o) const
-{return !operator==(o);}
-
-/// Getter for the source location of a subrange type.
-///
-/// @return the location of the subrange type.
-const location&
-array_type_def::subrange_type::get_location() const
-{return priv_->location_;}
+/// @return the language of this type.
+translation_unit::language
+array_type_def::subrange_type::get_language() const
+{return priv_->language_;}
 
 /// Return a string representation of the sub range.
 ///
@@ -12111,9 +12266,18 @@ array_type_def::subrange_type::get_location() const
 string
 array_type_def::subrange_type::as_string() const
 {
-  string r;
   std::ostringstream o;
-  o << "["  << get_length() << "]";
+
+  if (is_ada_language(get_language()))
+    {
+      type_base_sptr underlying_type = get_underlying_type();
+      if (underlying_type)
+	o << ir::get_pretty_representation(underlying_type, false) << " ";
+      o << "range "<< get_lower_bound() << " .. " << get_upper_bound();
+    }
+  else
+    o << "["  << get_length() << "]";
+
   return o.str();
 }
 
@@ -12133,6 +12297,162 @@ array_type_def::subrange_type::vector_as_string(const vector<subrange_sptr>& v)
     r += (*i)->as_string();
 
   return r;
+}
+
+/// Compares two isntances of @ref array_type_def::subrange_type.
+///
+/// If the two intances are different, set a bitfield to give some
+/// insight about the kind of differences there are.
+///
+/// @param l the first artifact of the comparison.
+///
+/// @param r the second artifact of the comparison.
+///
+/// @param k a pointer to a bitfield that gives information about the
+/// kind of changes there are between @p l and @p r.  This one is set
+/// iff @p k is non-null and the function returns false.
+///
+/// Please note that setting k to a non-null value does have a
+/// negative performance impact because even if @p l and @p r are not
+/// equal, the function keeps up the comparison in order to determine
+/// the different kinds of ways in which they are different.
+///
+/// @return true if @p l equals @p r, false otherwise.
+bool
+equals(const array_type_def::subrange_type& l,
+       const array_type_def::subrange_type& r,
+       change_kind* k)
+{
+  bool result = true;
+
+  if (l.get_lower_bound() != r.get_lower_bound()
+      || l.get_upper_bound() != r.get_upper_bound()
+      || l.get_name() != r.get_name())
+    {
+      result = false;
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      else
+	return result;
+    }
+
+#if 0
+  // If we enable this, we need to update the reporting code too, to
+  // report changes about range underlying types too.
+  if (l.get_underlying_type() != r.get_underlying_type())
+    {
+      result = false;
+      if (k)
+	*k |= SUBTYPE_CHANGE_KIND;
+      else
+	return result;
+    }
+#endif
+  return result;
+}
+
+/// Equality operator.
+///
+/// @param o the other subrange to test against.
+///
+/// @return true iff @p o equals the current instance of
+/// array_type_def::subrange_type.
+bool
+array_type_def::subrange_type::operator==(const decl_base& o) const
+{
+  const subrange_type* other =
+    dynamic_cast<const subrange_type*>(&o);
+  if (!other)
+    return false;
+
+  if (get_naked_canonical_type() && other->get_naked_canonical_type())
+    return get_naked_canonical_type() == other->get_naked_canonical_type();
+
+  return equals(*this, *other, 0);
+}
+
+/// Equality operator.
+///
+/// @param o the other subrange to test against.
+///
+/// @return true iff @p o equals the current instance of
+/// array_type_def::subrange_type.
+bool
+array_type_def::subrange_type::operator==(const type_base& o) const
+{
+  const decl_base* other = dynamic_cast<const decl_base*>(&o);
+  if (!other)
+    return false;
+  return *this == *other;
+}
+
+/// Equality operator.
+///
+/// @param o the other subrange to test against.
+///
+/// @return true iff @p o equals the current instance of
+/// array_type_def::subrange_type.
+bool
+array_type_def::subrange_type::operator==(const subrange_type& o) const
+{
+  const type_base &t = o;
+  return operator==(t);
+}
+
+/// Inequality operator.
+///
+/// @param o the other subrange to test against.
+///
+/// @return true iff @p o is different from the current instance of
+/// array_type_def::subrange_type.
+bool
+array_type_def::subrange_type::operator!=(const subrange_type& o) const
+{return !operator==(o);}
+
+/// Build a pretty representation for an
+/// array_type_def::subrange_type.
+///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
+/// @return a copy of the pretty representation of the current
+/// instance of typedef_decl.
+string
+array_type_def::subrange_type::get_pretty_representation(bool) const
+{
+  string name = get_name();
+  string repr;
+
+  if (name.empty())
+    repr += "<anonymous range>";
+  else
+    repr += "<range " + get_name() + ">";
+  repr += as_string();
+
+  return repr;
+}
+
+/// This implements the ir_traversable_base::traverse pure virtual
+/// function.
+///
+/// @param v the visitor used on the current instance.
+///
+/// @return true if the entire IR node tree got traversed, false
+/// otherwise.
+bool
+array_type_def::subrange_type::traverse(ir_node_visitor& v)
+{
+  if (v.visit_begin(this))
+    {
+      visiting(true);
+      if (type_base_sptr u = get_underlying_type())
+	u->traverse(v);
+      visiting(false);
+    }
+
+  return v.visit_end(this);
 }
 
 // </array_type_def::subrange_type>
@@ -12194,12 +12514,23 @@ get_type_representation(const array_type_def& a, bool internal)
   decl_base_sptr d = get_type_declaration(e_type);
   string r;
 
-  if (internal)
-    r = get_type_name(e_type, /*qualified=*/true, /*internal=*/true)
-      + a.get_subrange_representation();
+  if (is_ada_language(a.get_language()))
+    {
+      std::ostringstream o;
+      o << "array ("
+	<< a.get_subrange_representation()
+	<< ") of "
+	<<  e_type->get_pretty_representation(internal);
+    }
   else
-    r = get_type_name(e_type, /*qualified=*/false, /*internal=*/false)
-      + a.get_subrange_representation();
+    {
+      if (internal)
+	r = get_type_name(e_type, /*qualified=*/true, /*internal=*/true)
+	  + a.get_subrange_representation();
+      else
+	r = get_type_name(e_type, /*qualified=*/false, /*internal=*/false)
+	  + a.get_subrange_representation();
+    }
 
   return r;
 }
@@ -12276,6 +12607,20 @@ equals(const array_type_def& l, const array_type_def& r, change_kind* k)
     }
 
   return result;
+}
+
+/// Get the language of the array.
+///
+/// @return the language of the array.
+translation_unit::language
+array_type_def::get_language() const
+{
+  const std::vector<subrange_sptr>& subranges =
+    get_subranges();
+
+  if (subranges.empty())
+    return translation_unit::LANG_C11;
+  return subranges.front()->get_language();
 }
 
 bool
@@ -12643,7 +12988,7 @@ equals(const enum_type_decl& l, const enum_type_decl& r, change_kind* k)
 ///
 /// @param o the other enum to test against.
 ///
-/// @return true iff @p o is equals the current instance of enum type
+/// @return true iff @p o equals the current instance of enum type
 /// decl.
 bool
 enum_type_decl::operator==(const decl_base& o) const
@@ -19744,6 +20089,14 @@ ir_node_visitor::visit_begin(array_type_def* t)
 
 bool
 ir_node_visitor::visit_end(array_type_def* t)
+{return visit_end(static_cast<type_base*>(t));}
+
+bool
+ir_node_visitor::visit_begin(array_type_def::subrange_type* t)
+{return visit_begin(static_cast<type_base*>(t));}
+
+bool
+ir_node_visitor::visit_end(array_type_def::subrange_type* t)
 {return visit_end(static_cast<type_base*>(t));}
 
 bool

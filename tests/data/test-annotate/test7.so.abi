@@ -33,53 +33,79 @@
         <var-decl name='f' type-id='type-id-8' visibility='default' filepath='/home/ooprala/rh/u/libabigail/tests/data/test-read-dwarf/test7.cc' line='8' column='1'/>
       </data-member>
     </class-decl>
+    <!-- sizetype -->
+    <type-decl name='sizetype' size-in-bits='64' id='type-id-9'/>
+
     <!-- int[5] -->
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='160' id='type-id-3'>
-      <subrange length='5'/>
+      <!-- <anonymous range>[5] -->
+      <subrange length='5' type-id='type-id-9' id='type-id-10'/>
+
     </array-type-def>
     <!-- char -->
-    <type-decl name='char' size-in-bits='8' id='type-id-9'/>
+    <type-decl name='char' size-in-bits='8' id='type-id-11'/>
     <!-- char* -->
-    <pointer-type-def type-id='type-id-9' size-in-bits='64' id='type-id-10'/>
+    <pointer-type-def type-id='type-id-11' size-in-bits='64' id='type-id-12'/>
+
     <!-- char*[7] -->
-    <array-type-def dimensions='1' type-id='type-id-10' size-in-bits='448' id='type-id-4'>
-      <subrange length='7'/>
+    <array-type-def dimensions='1' type-id='type-id-12' size-in-bits='448' id='type-id-4'>
+      <!-- <anonymous range>[7] -->
+      <subrange length='7' type-id='type-id-9' id='type-id-13'/>
+
     </array-type-def>
     <!-- double -->
-    <type-decl name='double' size-in-bits='64' id='type-id-11'/>
+    <type-decl name='double' size-in-bits='64' id='type-id-14'/>
+
+
     <!-- double[5][3] -->
-    <array-type-def dimensions='2' type-id='type-id-11' size-in-bits='512' id='type-id-5'>
-      <subrange length='5'/>
-      <subrange length='3'/>
+    <array-type-def dimensions='2' type-id='type-id-14' size-in-bits='512' id='type-id-5'>
+      <!-- <anonymous range>[5] -->
+      <subrange length='5' type-id='type-id-9' id='type-id-10'/>
+
+      <!-- <anonymous range>[3] -->
+      <subrange length='3' type-id='type-id-9' id='type-id-15'/>
+
     </array-type-def>
     <!-- int* -->
-    <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-12'/>
+    <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-16'/>
+
     <!-- int*[4] -->
-    <array-type-def dimensions='1' type-id='type-id-12' size-in-bits='256' id='type-id-13'>
-      <subrange length='4'/>
+    <array-type-def dimensions='1' type-id='type-id-16' size-in-bits='256' id='type-id-17'>
+      <!-- <anonymous range>[4] -->
+      <subrange length='4' type-id='type-id-9' id='type-id-18'/>
+
     </array-type-def>
     <!-- int*[4]* -->
-    <pointer-type-def type-id='type-id-13' size-in-bits='64' id='type-id-14'/>
+    <pointer-type-def type-id='type-id-17' size-in-bits='64' id='type-id-19'/>
+
     <!-- int*[4]*[10] -->
-    <array-type-def dimensions='1' type-id='type-id-14' size-in-bits='640' id='type-id-6'>
-      <subrange length='10'/>
+    <array-type-def dimensions='1' type-id='type-id-19' size-in-bits='640' id='type-id-6'>
+      <!-- <anonymous range>[10] -->
+      <subrange length='10' type-id='type-id-9' id='type-id-20'/>
+
     </array-type-def>
+
     <!-- char[1] -->
-    <array-type-def dimensions='1' type-id='type-id-9' size-in-bits='8' id='type-id-7'>
-      <subrange length='1'/>
+    <array-type-def dimensions='1' type-id='type-id-11' size-in-bits='8' id='type-id-7'>
+      <!-- <anonymous range>[1] -->
+      <subrange length='1' type-id='type-id-9' id='type-id-21'/>
+
     </array-type-def>
+
     <!-- char[0] -->
-    <array-type-def dimensions='1' type-id='type-id-9' size-in-bits='infinite' id='type-id-8'>
-      <subrange length='infinite'/>
+    <array-type-def dimensions='1' type-id='type-id-11' size-in-bits='infinite' id='type-id-8'>
+      <!-- <anonymous range>[0] -->
+      <subrange length='infinite' type-id='type-id-9' id='type-id-22'/>
+
     </array-type-def>
     <!-- S& -->
-    <reference-type-def kind='lvalue' type-id='type-id-2' size-in-bits='64' id='type-id-15'/>
+    <reference-type-def kind='lvalue' type-id='type-id-2' size-in-bits='64' id='type-id-23'/>
     <!-- S& -->
-    <qualified-type-def type-id='type-id-15' id='type-id-16'/>
+    <qualified-type-def type-id='type-id-23' id='type-id-24'/>
     <!-- int foo(S&) -->
     <function-decl name='foo' mangled-name='_Z3fooR1S' filepath='/home/ooprala/rh/u/libabigail/tests/data/test-read-dwarf/test7.cc' line='11' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z3fooR1S'>
       <!-- parameter of type 'S&' -->
-      <parameter type-id='type-id-16'/>
+      <parameter type-id='type-id-24'/>
       <!-- int -->
       <return type-id='type-id-1'/>
     </function-decl>

@@ -6776,44 +6776,51 @@
     <qualified-type-def type-id='type-id-22' const='yes' id='type-id-174'/>
     <pointer-type-def type-id='type-id-174' size-in-bits='64' id='type-id-112'/>
     <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' id='type-id-8'/>
+    <type-decl name='sizetype' size-in-bits='64' id='type-id-244'/>
     <reference-type-def kind='lvalue' type-id='type-id-22' size-in-bits='64' id='type-id-104'/>
-    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='200' id='type-id-244'>
-      <subrange length='25'/>
+
+    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='200' id='type-id-245'>
+      <subrange length='25' type-id='type-id-244' id='type-id-246'/>
+
     </array-type-def>
-    <qualified-type-def type-id='type-id-244' const='yes' id='type-id-245'/>
-    <reference-type-def kind='lvalue' type-id='type-id-245' size-in-bits='64' id='type-id-115'/>
-    <qualified-type-def type-id='type-id-122' const='yes' id='type-id-246'/>
-    <reference-type-def kind='lvalue' type-id='type-id-246' size-in-bits='64' id='type-id-116'/>
-    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='168' id='type-id-247'>
-      <subrange length='21'/>
+    <qualified-type-def type-id='type-id-245' const='yes' id='type-id-247'/>
+    <reference-type-def kind='lvalue' type-id='type-id-247' size-in-bits='64' id='type-id-115'/>
+    <qualified-type-def type-id='type-id-122' const='yes' id='type-id-248'/>
+    <reference-type-def kind='lvalue' type-id='type-id-248' size-in-bits='64' id='type-id-116'/>
+
+    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='168' id='type-id-249'>
+      <subrange length='21' type-id='type-id-244' id='type-id-250'/>
+
     </array-type-def>
-    <qualified-type-def type-id='type-id-247' const='yes' id='type-id-248'/>
-    <reference-type-def kind='lvalue' type-id='type-id-248' size-in-bits='64' id='type-id-117'/>
-    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='192' id='type-id-249'>
-      <subrange length='24'/>
+    <qualified-type-def type-id='type-id-249' const='yes' id='type-id-251'/>
+    <reference-type-def kind='lvalue' type-id='type-id-251' size-in-bits='64' id='type-id-117'/>
+
+    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='192' id='type-id-252'>
+      <subrange length='24' type-id='type-id-244' id='type-id-253'/>
+
     </array-type-def>
-    <qualified-type-def type-id='type-id-249' const='yes' id='type-id-250'/>
-    <reference-type-def kind='lvalue' type-id='type-id-250' size-in-bits='64' id='type-id-118'/>
+    <qualified-type-def type-id='type-id-252' const='yes' id='type-id-254'/>
+    <reference-type-def kind='lvalue' type-id='type-id-254' size-in-bits='64' id='type-id-118'/>
     <reference-type-def kind='lvalue' type-id='type-id-174' size-in-bits='64' id='type-id-107'/>
     <typedef-decl name='size_type' type-id='type-id-29' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_vector.h' line='236' column='1' id='type-id-119'/>
-    <type-decl name='unsigned char' size-in-bits='8' id='type-id-251'/>
-    <pointer-type-def type-id='type-id-251' size-in-bits='64' id='type-id-49'/>
+    <type-decl name='unsigned char' size-in-bits='8' id='type-id-255'/>
+    <pointer-type-def type-id='type-id-255' size-in-bits='64' id='type-id-49'/>
     <reference-type-def kind='lvalue' type-id='type-id-50' size-in-bits='64' id='type-id-120'/>
     <reference-type-def kind='rvalue' type-id='type-id-22' size-in-bits='64' id='type-id-59'/>
     <type-decl name='bool' size-in-bits='8' id='type-id-17'/>
-    <qualified-type-def type-id='type-id-251' const='yes' id='type-id-252'/>
-    <pointer-type-def type-id='type-id-252' size-in-bits='64' id='type-id-123'/>
-    <qualified-type-def type-id='type-id-3' const='yes' id='type-id-253'/>
-    <pointer-type-def type-id='type-id-253' size-in-bits='64' id='type-id-15'/>
+    <qualified-type-def type-id='type-id-255' const='yes' id='type-id-256'/>
+    <pointer-type-def type-id='type-id-256' size-in-bits='64' id='type-id-123'/>
+    <qualified-type-def type-id='type-id-3' const='yes' id='type-id-257'/>
+    <pointer-type-def type-id='type-id-257' size-in-bits='64' id='type-id-15'/>
     <pointer-type-def type-id='type-id-3' size-in-bits='64' id='type-id-18'/>
-    <qualified-type-def type-id='type-id-1' const='yes' id='type-id-254'/>
-    <pointer-type-def type-id='type-id-254' size-in-bits='64' id='type-id-4'/>
+    <qualified-type-def type-id='type-id-1' const='yes' id='type-id-258'/>
+    <pointer-type-def type-id='type-id-258' size-in-bits='64' id='type-id-4'/>
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-5'/>
     <pointer-type-def type-id='type-id-32' size-in-bits='64' id='type-id-33'/>
     <pointer-type-def type-id='type-id-34' size-in-bits='64' id='type-id-37'/>
     <pointer-type-def type-id='type-id-38' size-in-bits='64' id='type-id-39'/>
     <pointer-type-def type-id='type-id-40' size-in-bits='64' id='type-id-43'/>
-    <reference-type-def kind='lvalue' type-id='type-id-255' size-in-bits='64' id='type-id-124'/>
+    <reference-type-def kind='lvalue' type-id='type-id-259' size-in-bits='64' id='type-id-124'/>
     <reference-type-def kind='rvalue' type-id='type-id-114' size-in-bits='64' id='type-id-144'/>
     <pointer-type-def type-id='type-id-86' size-in-bits='64' id='type-id-145'/>
     <reference-type-def kind='rvalue' type-id='type-id-46' size-in-bits='64' id='type-id-134'/>
@@ -6825,35 +6832,35 @@
     <reference-type-def kind='lvalue' type-id='type-id-72' size-in-bits='64' id='type-id-74'/>
     <reference-type-def kind='lvalue' type-id='type-id-17' size-in-bits='64' id='type-id-69'/>
     <reference-type-def kind='rvalue' type-id='type-id-17' size-in-bits='64' id='type-id-168'/>
-    <reference-type-def kind='lvalue' type-id='type-id-256' size-in-bits='64' id='type-id-140'/>
-    <reference-type-def kind='lvalue' type-id='type-id-257' size-in-bits='64' id='type-id-163'/>
-    <reference-type-def kind='lvalue' type-id='type-id-258' size-in-bits='64' id='type-id-164'/>
-    <reference-type-def kind='lvalue' type-id='type-id-259' size-in-bits='64' id='type-id-156'/>
-    <reference-type-def kind='lvalue' type-id='type-id-260' size-in-bits='64' id='type-id-162'/>
-    <reference-type-def kind='lvalue' type-id='type-id-261' size-in-bits='64' id='type-id-141'/>
-    <reference-type-def kind='lvalue' type-id='type-id-262' size-in-bits='64' id='type-id-165'/>
-    <reference-type-def kind='lvalue' type-id='type-id-263' size-in-bits='64' id='type-id-180'/>
-    <reference-type-def kind='lvalue' type-id='type-id-264' size-in-bits='64' id='type-id-179'/>
+    <reference-type-def kind='lvalue' type-id='type-id-260' size-in-bits='64' id='type-id-140'/>
+    <reference-type-def kind='lvalue' type-id='type-id-261' size-in-bits='64' id='type-id-163'/>
+    <reference-type-def kind='lvalue' type-id='type-id-262' size-in-bits='64' id='type-id-164'/>
+    <reference-type-def kind='lvalue' type-id='type-id-263' size-in-bits='64' id='type-id-156'/>
+    <reference-type-def kind='lvalue' type-id='type-id-264' size-in-bits='64' id='type-id-162'/>
+    <reference-type-def kind='lvalue' type-id='type-id-265' size-in-bits='64' id='type-id-141'/>
+    <reference-type-def kind='lvalue' type-id='type-id-266' size-in-bits='64' id='type-id-165'/>
+    <reference-type-def kind='lvalue' type-id='type-id-267' size-in-bits='64' id='type-id-180'/>
+    <reference-type-def kind='lvalue' type-id='type-id-268' size-in-bits='64' id='type-id-179'/>
     <namespace-decl name='std'>
       <class-decl name='allocator&lt;char&gt;' size-in-bits='8' visibility='default' is-declaration-only='yes' id='type-id-93'/>
     </namespace-decl>
-    <reference-type-def kind='lvalue' type-id='type-id-265' size-in-bits='64' id='type-id-147'/>
-    <reference-type-def kind='lvalue' type-id='type-id-266' size-in-bits='64' id='type-id-151'/>
-    <pointer-type-def type-id='type-id-266' size-in-bits='64' id='type-id-153'/>
-    <reference-type-def kind='lvalue' type-id='type-id-267' size-in-bits='64' id='type-id-149'/>
-    <reference-type-def kind='lvalue' type-id='type-id-268' size-in-bits='64' id='type-id-110'/>
-    <pointer-type-def type-id='type-id-269' size-in-bits='64' id='type-id-161'/>
-    <reference-type-def kind='lvalue' type-id='type-id-270' size-in-bits='64' id='type-id-181'/>
+    <reference-type-def kind='lvalue' type-id='type-id-269' size-in-bits='64' id='type-id-147'/>
+    <reference-type-def kind='lvalue' type-id='type-id-270' size-in-bits='64' id='type-id-151'/>
+    <pointer-type-def type-id='type-id-270' size-in-bits='64' id='type-id-153'/>
+    <reference-type-def kind='lvalue' type-id='type-id-271' size-in-bits='64' id='type-id-149'/>
+    <reference-type-def kind='lvalue' type-id='type-id-272' size-in-bits='64' id='type-id-110'/>
+    <pointer-type-def type-id='type-id-273' size-in-bits='64' id='type-id-161'/>
+    <reference-type-def kind='lvalue' type-id='type-id-274' size-in-bits='64' id='type-id-181'/>
     <reference-type-def kind='lvalue' type-id='type-id-185' size-in-bits='64' id='type-id-129'/>
-    <reference-type-def kind='lvalue' type-id='type-id-271' size-in-bits='64' id='type-id-170'/>
-    <reference-type-def kind='lvalue' type-id='type-id-253' size-in-bits='64' id='type-id-19'/>
-    <reference-type-def kind='lvalue' type-id='type-id-272' size-in-bits='64' id='type-id-127'/>
-    <reference-type-def kind='lvalue' type-id='type-id-273' size-in-bits='64' id='type-id-24'/>
-    <pointer-type-def type-id='type-id-274' size-in-bits='64' id='type-id-41'/>
-    <pointer-type-def type-id='type-id-275' size-in-bits='64' id='type-id-35'/>
-    <reference-type-def kind='lvalue' type-id='type-id-276' size-in-bits='64' id='type-id-182'/>
-    <reference-type-def kind='lvalue' type-id='type-id-277' size-in-bits='64' id='type-id-135'/>
-    <pointer-type-def type-id='type-id-278' size-in-bits='64' id='type-id-138'/>
+    <reference-type-def kind='lvalue' type-id='type-id-275' size-in-bits='64' id='type-id-170'/>
+    <reference-type-def kind='lvalue' type-id='type-id-257' size-in-bits='64' id='type-id-19'/>
+    <reference-type-def kind='lvalue' type-id='type-id-276' size-in-bits='64' id='type-id-127'/>
+    <reference-type-def kind='lvalue' type-id='type-id-277' size-in-bits='64' id='type-id-24'/>
+    <pointer-type-def type-id='type-id-278' size-in-bits='64' id='type-id-41'/>
+    <pointer-type-def type-id='type-id-279' size-in-bits='64' id='type-id-35'/>
+    <reference-type-def kind='lvalue' type-id='type-id-280' size-in-bits='64' id='type-id-182'/>
+    <reference-type-def kind='lvalue' type-id='type-id-281' size-in-bits='64' id='type-id-135'/>
+    <pointer-type-def type-id='type-id-282' size-in-bits='64' id='type-id-138'/>
     <namespace-decl name='mongo'>
       <namespace-decl name='FTDCBSONUtil'>
         <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-178'>
@@ -6878,21 +6885,21 @@
     <reference-type-def kind='rvalue' type-id='type-id-44' size-in-bits='64' id='type-id-167'/>
     <pointer-type-def type-id='type-id-44' size-in-bits='64' id='type-id-169'/>
     <pointer-type-def type-id='type-id-215' size-in-bits='64' id='type-id-171'/>
-    <reference-type-def kind='lvalue' type-id='type-id-279' size-in-bits='64' id='type-id-128'/>
-    <pointer-type-def type-id='type-id-280' size-in-bits='64' id='type-id-154'/>
+    <reference-type-def kind='lvalue' type-id='type-id-283' size-in-bits='64' id='type-id-128'/>
+    <pointer-type-def type-id='type-id-284' size-in-bits='64' id='type-id-154'/>
     <reference-type-def kind='lvalue' type-id='type-id-178' size-in-bits='64' id='type-id-159'/>
     <reference-type-def kind='rvalue' type-id='type-id-178' size-in-bits='64' id='type-id-160'/>
-    <pointer-type-def type-id='type-id-281' size-in-bits='64' id='type-id-64'/>
+    <pointer-type-def type-id='type-id-285' size-in-bits='64' id='type-id-64'/>
     <reference-type-def kind='rvalue' type-id='type-id-64' size-in-bits='64' id='type-id-125'/>
-    <pointer-type-def type-id='type-id-282' size-in-bits='64' id='type-id-126'/>
+    <pointer-type-def type-id='type-id-286' size-in-bits='64' id='type-id-126'/>
     <type-decl name='signed char' size-in-bits='8' id='type-id-173'/>
     <pointer-type-def type-id='type-id-173' size-in-bits='64' id='type-id-172'/>
     <pointer-type-def type-id='type-id-113' size-in-bits='64' id='type-id-130'/>
-    <reference-type-def kind='lvalue' type-id='type-id-283' size-in-bits='64' id='type-id-79'/>
+    <reference-type-def kind='lvalue' type-id='type-id-287' size-in-bits='64' id='type-id-79'/>
     <reference-type-def kind='lvalue' type-id='type-id-3' size-in-bits='64' id='type-id-20'/>
     <reference-type-def kind='rvalue' type-id='type-id-3' size-in-bits='64' id='type-id-23'/>
-    <reference-type-def kind='lvalue' type-id='type-id-284' size-in-bits='64' id='type-id-143'/>
-    <typedef-decl name='is_not_reference_tag' type-id='type-id-285' filepath='src/third_party/boost-1.60.0/boost/optional/optional.hpp' line='219' column='1' id='type-id-132'/>
+    <reference-type-def kind='lvalue' type-id='type-id-288' size-in-bits='64' id='type-id-143'/>
+    <typedef-decl name='is_not_reference_tag' type-id='type-id-289' filepath='src/third_party/boost-1.60.0/boost/optional/optional.hpp' line='219' column='1' id='type-id-132'/>
     <namespace-decl name='mongo'>
       <typedef-decl name='Milliseconds' type-id='type-id-22' filepath='src/mongo/util/duration.h' line='52' column='1' id='type-id-142'/>
     </namespace-decl>
@@ -6908,7 +6915,7 @@
       </namespace-decl>
     </namespace-decl>
     <namespace-decl name='std'>
-      <class-decl name='ios_base' size-in-bits='1728' visibility='default' is-declaration-only='yes' id='type-id-286'>
+      <class-decl name='ios_base' size-in-bits='1728' visibility='default' is-declaration-only='yes' id='type-id-290'>
         <member-type access='private'>
           <typedef-decl name='iostate' type-id='type-id-30' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/ios_base.h' line='398' column='1' id='type-id-42'/>
         </member-type>
@@ -6922,99 +6929,108 @@
     <reference-type-def kind='rvalue' type-id='type-id-55' size-in-bits='64' id='type-id-166'/>
     <pointer-type-def type-id='type-id-55' size-in-bits='64' id='type-id-146'/>
     <pointer-type-def type-id='type-id-28' size-in-bits='64' id='type-id-137'/>
-    <qualified-type-def type-id='type-id-114' const='yes' id='type-id-255'/>
-    <qualified-type-def type-id='type-id-287' const='yes' id='type-id-256'/>
-    <qualified-type-def type-id='type-id-288' const='yes' id='type-id-257'/>
-    <qualified-type-def type-id='type-id-289' const='yes' id='type-id-258'/>
-    <qualified-type-def type-id='type-id-290' const='yes' id='type-id-259'/>
+    <qualified-type-def type-id='type-id-114' const='yes' id='type-id-259'/>
     <qualified-type-def type-id='type-id-291' const='yes' id='type-id-260'/>
     <qualified-type-def type-id='type-id-292' const='yes' id='type-id-261'/>
     <qualified-type-def type-id='type-id-293' const='yes' id='type-id-262'/>
     <qualified-type-def type-id='type-id-294' const='yes' id='type-id-263'/>
     <qualified-type-def type-id='type-id-295' const='yes' id='type-id-264'/>
+    <qualified-type-def type-id='type-id-296' const='yes' id='type-id-265'/>
+    <qualified-type-def type-id='type-id-297' const='yes' id='type-id-266'/>
+    <qualified-type-def type-id='type-id-298' const='yes' id='type-id-267'/>
+    <qualified-type-def type-id='type-id-299' const='yes' id='type-id-268'/>
     <namespace-decl name='mongo'>
-      <class-decl name='Client' size-in-bits='960' visibility='default' is-declaration-only='yes' id='type-id-280'/>
+      <class-decl name='Client' size-in-bits='960' visibility='default' is-declaration-only='yes' id='type-id-284'/>
     </namespace-decl>
     <namespace-decl name='mongo'>
-      <class-decl name='FTDCCollectorInterface' size-in-bits='64' visibility='default' is-declaration-only='yes' id='type-id-281'/>
+      <class-decl name='FTDCCollectorInterface' size-in-bits='64' visibility='default' is-declaration-only='yes' id='type-id-285'/>
     </namespace-decl>
     <namespace-decl name='mongo'>
-      <class-decl name='ServiceContext' size-in-bits='2432' visibility='default' is-declaration-only='yes' id='type-id-282'/>
+      <class-decl name='ServiceContext' size-in-bits='2432' visibility='default' is-declaration-only='yes' id='type-id-286'/>
     </namespace-decl>
     <namespace-decl name='std'>
       <namespace-decl name='__cxx11'>
-        <class-decl name='basic_ostringstream&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' size-in-bits='3008' visibility='default' is-declaration-only='yes' id='type-id-283'/>
+        <class-decl name='basic_ostringstream&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' size-in-bits='3008' visibility='default' is-declaration-only='yes' id='type-id-287'/>
       </namespace-decl>
     </namespace-decl>
-    <qualified-type-def type-id='type-id-50' const='yes' id='type-id-265'/>
-    <qualified-type-def type-id='type-id-95' const='yes' id='type-id-266'/>
-    <qualified-type-def type-id='type-id-94' const='yes' id='type-id-267'/>
-    <qualified-type-def type-id='type-id-72' const='yes' id='type-id-268'/>
-    <qualified-type-def type-id='type-id-105' const='yes' id='type-id-269'/>
-    <qualified-type-def type-id='type-id-296' const='yes' id='type-id-270'/>
-    <qualified-type-def type-id='type-id-44' const='yes' id='type-id-271'/>
-    <qualified-type-def type-id='type-id-155' const='yes' id='type-id-272'/>
-    <qualified-type-def type-id='type-id-93' const='yes' id='type-id-273'/>
-    <qualified-type-def type-id='type-id-40' const='yes' id='type-id-274'/>
-    <qualified-type-def type-id='type-id-34' const='yes' id='type-id-275'/>
-    <qualified-type-def type-id='type-id-297' const='yes' id='type-id-276'/>
-    <qualified-type-def type-id='type-id-55' const='yes' id='type-id-277'/>
-    <qualified-type-def type-id='type-id-28' const='yes' id='type-id-278'/>
+    <qualified-type-def type-id='type-id-50' const='yes' id='type-id-269'/>
+    <qualified-type-def type-id='type-id-95' const='yes' id='type-id-270'/>
+    <qualified-type-def type-id='type-id-94' const='yes' id='type-id-271'/>
+    <qualified-type-def type-id='type-id-72' const='yes' id='type-id-272'/>
+    <qualified-type-def type-id='type-id-105' const='yes' id='type-id-273'/>
+    <qualified-type-def type-id='type-id-300' const='yes' id='type-id-274'/>
+    <qualified-type-def type-id='type-id-44' const='yes' id='type-id-275'/>
+    <qualified-type-def type-id='type-id-155' const='yes' id='type-id-276'/>
+    <qualified-type-def type-id='type-id-93' const='yes' id='type-id-277'/>
+    <qualified-type-def type-id='type-id-40' const='yes' id='type-id-278'/>
+    <qualified-type-def type-id='type-id-34' const='yes' id='type-id-279'/>
+    <qualified-type-def type-id='type-id-301' const='yes' id='type-id-280'/>
+    <qualified-type-def type-id='type-id-55' const='yes' id='type-id-281'/>
+    <qualified-type-def type-id='type-id-28' const='yes' id='type-id-282'/>
     <namespace-decl name='mongo'>
-      <typedef-decl name='BufBuilder' type-id='type-id-22' filepath='src/mongo/bson/util/builder.h' line='365' column='1' id='type-id-279'/>
+      <typedef-decl name='BufBuilder' type-id='type-id-22' filepath='src/mongo/bson/util/builder.h' line='365' column='1' id='type-id-283'/>
     </namespace-decl>
     <namespace-decl name='mpl_'>
-      <typedef-decl name='false_' type-id='type-id-22' filepath='src/third_party/boost-1.60.0/boost/mpl/bool_fwd.hpp' line='25' column='1' id='type-id-285'/>
+      <typedef-decl name='false_' type-id='type-id-22' filepath='src/third_party/boost-1.60.0/boost/mpl/bool_fwd.hpp' line='25' column='1' id='type-id-289'/>
     </namespace-decl>
     <namespace-decl name='std'>
-      <typedef-decl name='ostream' type-id='type-id-298' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/iosfwd' line='141' column='1' id='type-id-284'/>
+      <typedef-decl name='ostream' type-id='type-id-302' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/iosfwd' line='141' column='1' id='type-id-288'/>
     </namespace-decl>
-    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='832' id='type-id-287'>
-      <subrange length='104'/>
+    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='832' id='type-id-291'>
+      <subrange length='104' type-id='type-id-244' id='type-id-303'/>
+
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='128' id='type-id-288'>
-      <subrange length='16'/>
+    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='128' id='type-id-292'>
+      <subrange length='16' type-id='type-id-244' id='type-id-304'/>
+
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='152' id='type-id-289'>
-      <subrange length='19'/>
+    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='152' id='type-id-293'>
+      <subrange length='19' type-id='type-id-244' id='type-id-305'/>
+
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='16' id='type-id-290'>
-      <subrange length='2'/>
+    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='16' id='type-id-294'>
+      <subrange length='2' type-id='type-id-244' id='type-id-306'/>
+
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='280' id='type-id-291'>
-      <subrange length='35'/>
+    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='280' id='type-id-295'>
+      <subrange length='35' type-id='type-id-244' id='type-id-307'/>
+
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='288' id='type-id-292'>
-      <subrange length='36'/>
+    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='288' id='type-id-296'>
+      <subrange length='36' type-id='type-id-244' id='type-id-308'/>
+
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='632' id='type-id-293'>
-      <subrange length='79'/>
+    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='632' id='type-id-297'>
+      <subrange length='79' type-id='type-id-244' id='type-id-309'/>
+
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='56' id='type-id-294'>
-      <subrange length='7'/>
+    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='56' id='type-id-298'>
+      <subrange length='7' type-id='type-id-244' id='type-id-310'/>
+
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='64' id='type-id-295'>
-      <subrange length='8'/>
+    <array-type-def dimensions='1' type-id='type-id-96' size-in-bits='64' id='type-id-299'>
+      <subrange length='8' type-id='type-id-244' id='type-id-311'/>
+
     </array-type-def>
     <namespace-decl name='std'>
-      <class-decl name='basic_ostream&lt;char, std::char_traits&lt;char&gt; &gt;' size-in-bits='2176' visibility='default' is-declaration-only='yes' id='type-id-298'>
+      <class-decl name='basic_ostream&lt;char, std::char_traits&lt;char&gt; &gt;' size-in-bits='2176' visibility='default' is-declaration-only='yes' id='type-id-302'>
         <member-type access='private'>
-          <typedef-decl name='__ostream_type' type-id='type-id-298' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/ostream' line='71' column='1' id='type-id-299'/>
+          <typedef-decl name='__ostream_type' type-id='type-id-302' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/ostream' line='71' column='1' id='type-id-312'/>
         </member-type>
         <member-function access='public'>
           <function-decl name='operator&lt;&lt;' mangled-name='_ZNSolsEm' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/ostream' line='170' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-300' is-artificial='yes'/>
+            <parameter type-id='type-id-313' is-artificial='yes'/>
             <parameter type-id='type-id-28'/>
-            <return type-id='type-id-301'/>
+            <return type-id='type-id-314'/>
           </function-decl>
         </member-function>
       </class-decl>
     </namespace-decl>
     <namespace-decl name='std'>
-      <class-decl name='type_info' visibility='default' is-declaration-only='yes' id='type-id-297'>
+      <class-decl name='type_info' visibility='default' is-declaration-only='yes' id='type-id-301'>
         <member-function access='public'>
           <function-decl name='operator==' mangled-name='_ZNKSt9type_infoeqERKS_' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/typeinfo' line='120' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-302' is-artificial='yes'/>
+            <parameter type-id='type-id-315' is-artificial='yes'/>
             <parameter type-id='type-id-182'/>
             <return type-id='type-id-17'/>
           </function-decl>
@@ -7023,15 +7039,15 @@
     </namespace-decl>
     <namespace-decl name='boost'>
       <namespace-decl name='detail'>
-        <typedef-decl name='sp_typeinfo' type-id='type-id-303' filepath='src/third_party/boost-1.60.0/boost/detail/sp_typeinfo.hpp' line='28' column='1' id='type-id-296'/>
+        <typedef-decl name='sp_typeinfo' type-id='type-id-316' filepath='src/third_party/boost-1.60.0/boost/detail/sp_typeinfo.hpp' line='28' column='1' id='type-id-300'/>
       </namespace-decl>
     </namespace-decl>
-    <pointer-type-def type-id='type-id-276' size-in-bits='64' id='type-id-302'/>
-    <pointer-type-def type-id='type-id-298' size-in-bits='64' id='type-id-300'/>
-    <reference-type-def kind='lvalue' type-id='type-id-299' size-in-bits='64' id='type-id-301'/>
+    <pointer-type-def type-id='type-id-280' size-in-bits='64' id='type-id-315'/>
+    <pointer-type-def type-id='type-id-302' size-in-bits='64' id='type-id-313'/>
+    <reference-type-def kind='lvalue' type-id='type-id-312' size-in-bits='64' id='type-id-314'/>
     <namespace-decl name='boost'>
       <namespace-decl name='core'>
-        <typedef-decl name='typeinfo' type-id='type-id-297' filepath='src/third_party/boost-1.60.0/boost/core/typeinfo.hpp' line='134' column='1' id='type-id-303'/>
+        <typedef-decl name='typeinfo' type-id='type-id-301' filepath='src/third_party/boost-1.60.0/boost/core/typeinfo.hpp' line='134' column='1' id='type-id-316'/>
       </namespace-decl>
     </namespace-decl>
   </abi-instr>
@@ -7056,20 +7072,20 @@
     </namespace-decl>
     <namespace-decl name='mongo'>
 
-      <class-decl name='FTDCCollectorInterface' size-in-bits='64' visibility='default' is-declaration-only='yes' id='type-id-281'/>
-      <class-decl name='ServiceContext' size-in-bits='2432' visibility='default' is-declaration-only='yes' id='type-id-282'/>
-      <class-decl name='OperationContext' size-in-bits='2176' visibility='default' is-declaration-only='yes' id='type-id-304'>
+      <class-decl name='FTDCCollectorInterface' size-in-bits='64' visibility='default' is-declaration-only='yes' id='type-id-285'/>
+      <class-decl name='ServiceContext' size-in-bits='2432' visibility='default' is-declaration-only='yes' id='type-id-286'/>
+      <class-decl name='OperationContext' size-in-bits='2176' visibility='default' is-declaration-only='yes' id='type-id-317'>
         <member-function access='public'>
           <function-decl name='lockState' mangled-name='_ZNK5mongo16OperationContext9lockStateEv' filepath='src/mongo/db/operation_context.h' line='123' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-305' is-artificial='yes'/>
-            <return type-id='type-id-306'/>
+            <parameter type-id='type-id-318' is-artificial='yes'/>
+            <return type-id='type-id-319'/>
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='Locker' size-in-bits='128' visibility='default' is-declaration-only='yes' id='type-id-307'>
+      <class-decl name='Locker' size-in-bits='128' visibility='default' is-declaration-only='yes' id='type-id-320'>
         <member-function access='public'>
           <function-decl name='setShouldConflictWithSecondaryBatchApplication' mangled-name='_ZN5mongo6Locker46setShouldConflictWithSecondaryBatchApplicationEb' filepath='src/mongo/db/concurrency/locker.h' line='323' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-306' is-artificial='yes'/>
+            <parameter type-id='type-id-319' is-artificial='yes'/>
             <parameter type-id='type-id-17'/>
             <return type-id='type-id-6'/>
           </function-decl>
@@ -7078,61 +7094,61 @@
     </namespace-decl>
 
 
-    <qualified-type-def type-id='type-id-112' restrict='yes' id='type-id-308'/>
+    <qualified-type-def type-id='type-id-112' restrict='yes' id='type-id-321'/>
     <function-decl name='wcsftime' filepath='/usr/include/wchar.h' line='858' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-192'/>
       <parameter type-id='type-id-113'/>
       <parameter type-id='type-id-196'/>
-      <parameter type-id='type-id-308'/>
+      <parameter type-id='type-id-321'/>
       <return type-id='type-id-113'/>
     </function-decl>
 
 
 
-    <typedef-decl name='__clock_t' type-id='type-id-26' filepath='/usr/include/x86_64-linux-gnu/bits/types.h' line='135' column='1' id='type-id-309'/>
-    <typedef-decl name='clock_t' type-id='type-id-309' filepath='/usr/include/time.h' line='59' column='1' id='type-id-310'/>
+    <typedef-decl name='__clock_t' type-id='type-id-26' filepath='/usr/include/x86_64-linux-gnu/bits/types.h' line='135' column='1' id='type-id-322'/>
+    <typedef-decl name='clock_t' type-id='type-id-322' filepath='/usr/include/time.h' line='59' column='1' id='type-id-323'/>
     <function-decl name='clock' filepath='/usr/include/time.h' line='189' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <return type-id='type-id-310'/>
+      <return type-id='type-id-323'/>
     </function-decl>
-    <typedef-decl name='__time_t' type-id='type-id-26' filepath='/usr/include/x86_64-linux-gnu/bits/types.h' line='139' column='1' id='type-id-311'/>
-    <typedef-decl name='time_t' type-id='type-id-311' filepath='/usr/include/time.h' line='75' column='1' id='type-id-312'/>
+    <typedef-decl name='__time_t' type-id='type-id-26' filepath='/usr/include/x86_64-linux-gnu/bits/types.h' line='139' column='1' id='type-id-324'/>
+    <typedef-decl name='time_t' type-id='type-id-324' filepath='/usr/include/time.h' line='75' column='1' id='type-id-325'/>
     <function-decl name='difftime' filepath='/usr/include/time.h' line='195' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-312'/>
-      <parameter type-id='type-id-312'/>
+      <parameter type-id='type-id-325'/>
+      <parameter type-id='type-id-325'/>
       <return type-id='type-id-177'/>
     </function-decl>
     <function-decl name='mktime' filepath='/usr/include/time.h' line='199' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-114'/>
-      <return type-id='type-id-312'/>
+      <return type-id='type-id-325'/>
     </function-decl>
-    <pointer-type-def type-id='type-id-312' size-in-bits='64' id='type-id-313'/>
+    <pointer-type-def type-id='type-id-325' size-in-bits='64' id='type-id-326'/>
     <function-decl name='time' filepath='/usr/include/time.h' line='192' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-313'/>
-      <return type-id='type-id-312'/>
+      <parameter type-id='type-id-326'/>
+      <return type-id='type-id-325'/>
     </function-decl>
     <function-decl name='asctime' filepath='/usr/include/time.h' line='261' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-112'/>
       <return type-id='type-id-21'/>
     </function-decl>
-    <qualified-type-def type-id='type-id-312' const='yes' id='type-id-314'/>
-    <pointer-type-def type-id='type-id-314' size-in-bits='64' id='type-id-315'/>
+    <qualified-type-def type-id='type-id-325' const='yes' id='type-id-327'/>
+    <pointer-type-def type-id='type-id-327' size-in-bits='64' id='type-id-328'/>
     <function-decl name='ctime' filepath='/usr/include/time.h' line='264' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-315'/>
+      <parameter type-id='type-id-328'/>
       <return type-id='type-id-21'/>
     </function-decl>
     <function-decl name='gmtime' filepath='/usr/include/time.h' line='239' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-315'/>
+      <parameter type-id='type-id-328'/>
       <return type-id='type-id-114'/>
     </function-decl>
     <function-decl name='localtime' filepath='/usr/include/time.h' line='243' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-315'/>
+      <parameter type-id='type-id-328'/>
       <return type-id='type-id-114'/>
     </function-decl>
     <function-decl name='strftime' filepath='/usr/include/time.h' line='205' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-184'/>
       <parameter type-id='type-id-113'/>
       <parameter type-id='type-id-186'/>
-      <parameter type-id='type-id-308'/>
+      <parameter type-id='type-id-321'/>
       <return type-id='type-id-113'/>
     </function-decl>
     <function-decl name='strnlen' filepath='/usr/include/string.h' line='401' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -7140,9 +7156,9 @@
       <parameter type-id='type-id-113'/>
       <return type-id='type-id-113'/>
     </function-decl>
-    <pointer-type-def type-id='type-id-307' size-in-bits='64' id='type-id-306'/>
-    <qualified-type-def type-id='type-id-304' const='yes' id='type-id-316'/>
-    <pointer-type-def type-id='type-id-316' size-in-bits='64' id='type-id-305'/>
+    <pointer-type-def type-id='type-id-320' size-in-bits='64' id='type-id-319'/>
+    <qualified-type-def type-id='type-id-317' const='yes' id='type-id-329'/>
+    <pointer-type-def type-id='type-id-329' size-in-bits='64' id='type-id-318'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/mongo/db/ftdc/compressor.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
 
@@ -7160,7 +7176,7 @@
 
     <namespace-decl name='std'>
       <namespace-decl name='__cxx11'>
-        <class-decl name='basic_ostringstream&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' size-in-bits='3008' visibility='default' is-declaration-only='yes' id='type-id-283'/>
+        <class-decl name='basic_ostringstream&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' size-in-bits='3008' visibility='default' is-declaration-only='yes' id='type-id-287'/>
       </namespace-decl>
 
 
@@ -7173,22 +7189,22 @@
         <parameter is-variadic='yes'/>
         <return type-id='type-id-6'/>
       </function-decl>
-      <class-decl name='basic_ostream&lt;char, std::char_traits&lt;char&gt; &gt;' size-in-bits='2176' visibility='default' is-declaration-only='yes' id='type-id-298'>
+      <class-decl name='basic_ostream&lt;char, std::char_traits&lt;char&gt; &gt;' size-in-bits='2176' visibility='default' is-declaration-only='yes' id='type-id-302'>
         <member-type access='private'>
-          <typedef-decl name='__ostream_type' type-id='type-id-298' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/ostream' line='71' column='1' id='type-id-299'/>
+          <typedef-decl name='__ostream_type' type-id='type-id-302' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/ostream' line='71' column='1' id='type-id-312'/>
         </member-type>
         <member-function access='public'>
           <function-decl name='operator&lt;&lt;' mangled-name='_ZNSolsEm' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/ostream' line='170' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-300' is-artificial='yes'/>
+            <parameter type-id='type-id-313' is-artificial='yes'/>
             <parameter type-id='type-id-28'/>
-            <return type-id='type-id-301'/>
+            <return type-id='type-id-314'/>
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='type_info' visibility='default' is-declaration-only='yes' id='type-id-297'>
+      <class-decl name='type_info' visibility='default' is-declaration-only='yes' id='type-id-301'>
         <member-function access='public'>
           <function-decl name='operator==' mangled-name='_ZNKSt9type_infoeqERKS_' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/typeinfo' line='120' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-302' is-artificial='yes'/>
+            <parameter type-id='type-id-315' is-artificial='yes'/>
             <parameter type-id='type-id-182'/>
             <return type-id='type-id-17'/>
           </function-decl>
@@ -7200,6 +7216,8 @@
 
 
     </namespace-decl>
+
+
 
 
 
@@ -7298,30 +7316,30 @@
         <return type-id='type-id-6'/>
       </function-decl>
       <class-decl name='allocator&lt;char&gt;' size-in-bits='8' visibility='default' is-declaration-only='yes' id='type-id-93'/>
-      <class-decl name='basic_ofstream&lt;char, std::char_traits&lt;char&gt; &gt;' size-in-bits='4096' visibility='default' is-declaration-only='yes' id='type-id-317'>
+      <class-decl name='basic_ofstream&lt;char, std::char_traits&lt;char&gt; &gt;' size-in-bits='4096' visibility='default' is-declaration-only='yes' id='type-id-330'>
         <member-function access='public'>
           <function-decl name='is_open' mangled-name='_ZNSt14basic_ofstreamIcSt11char_traitsIcEE7is_openEv' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/fstream' line='778' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-318' is-artificial='yes'/>
+            <parameter type-id='type-id-331' is-artificial='yes'/>
             <return type-id='type-id-17'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='close' mangled-name='_ZNSt14basic_ofstreamIcSt11char_traitsIcEE5closeEv' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/fstream' line='839' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-318' is-artificial='yes'/>
+            <parameter type-id='type-id-331' is-artificial='yes'/>
             <return type-id='type-id-6'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='open' mangled-name='_ZNSt14basic_ofstreamIcSt11char_traitsIcEE4openEPKcSt13_Ios_Openmode' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/fstream' line='799' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-318' is-artificial='yes'/>
+            <parameter type-id='type-id-331' is-artificial='yes'/>
             <parameter type-id='type-id-16'/>
-            <parameter type-id='type-id-319'/>
+            <parameter type-id='type-id-332'/>
             <return type-id='type-id-6'/>
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes' vtable-offset='0'>
           <function-decl name='~basic_ofstream' mangled-name='_ZNSt14basic_ofstreamIcSt11char_traitsIcEED1Ev' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/fstream' line='737' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-318' is-artificial='yes'/>
+            <parameter type-id='type-id-331' is-artificial='yes'/>
             <return type-id='type-id-6'/>
           </function-decl>
         </member-function>
@@ -7334,7 +7352,7 @@
       </namespace-decl>
 
 
-      <class-decl name='Client' size-in-bits='960' visibility='default' is-declaration-only='yes' id='type-id-280'/>
+      <class-decl name='Client' size-in-bits='960' visibility='default' is-declaration-only='yes' id='type-id-284'/>
     </namespace-decl>
     <namespace-decl name='mpl_'>
 
@@ -7342,11 +7360,12 @@
 
 
 
-    <pointer-type-def type-id='type-id-317' size-in-bits='64' id='type-id-318'/>
+    <pointer-type-def type-id='type-id-330' size-in-bits='64' id='type-id-331'/>
+
     <namespace-decl name='std'>
-      <class-decl name='ios_base' size-in-bits='1728' visibility='default' is-declaration-only='yes' id='type-id-286'>
+      <class-decl name='ios_base' size-in-bits='1728' visibility='default' is-declaration-only='yes' id='type-id-290'>
         <member-type access='private'>
-          <typedef-decl name='openmode' type-id='type-id-30' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/ios_base.h' line='429' column='1' id='type-id-319'/>
+          <typedef-decl name='openmode' type-id='type-id-30' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/ios_base.h' line='429' column='1' id='type-id-332'/>
         </member-type>
       </class-decl>
     </namespace-decl>
@@ -7366,46 +7385,46 @@
         <parameter type-id='type-id-19' name='__rhs' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/basic_string.tcc' line='1152' column='1'/>
         <return type-id='type-id-3'/>
       </function-decl>
-      <class-decl name='basic_ifstream&lt;char, std::char_traits&lt;char&gt; &gt;' size-in-bits='4160' visibility='default' is-declaration-only='yes' id='type-id-320'>
+      <class-decl name='basic_ifstream&lt;char, std::char_traits&lt;char&gt; &gt;' size-in-bits='4160' visibility='default' is-declaration-only='yes' id='type-id-333'>
         <member-function access='public'>
           <function-decl name='close' mangled-name='_ZNSt14basic_ifstreamIcSt11char_traitsIcEE5closeEv' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/fstream' line='633' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-321' is-artificial='yes'/>
+            <parameter type-id='type-id-334' is-artificial='yes'/>
             <return type-id='type-id-6'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='is_open' mangled-name='_ZNSt14basic_ifstreamIcSt11char_traitsIcEE7is_openEv' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/fstream' line='574' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-321' is-artificial='yes'/>
+            <parameter type-id='type-id-334' is-artificial='yes'/>
             <return type-id='type-id-17'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='open' mangled-name='_ZNSt14basic_ifstreamIcSt11char_traitsIcEE4openEPKcSt13_Ios_Openmode' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/fstream' line='595' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-321' is-artificial='yes'/>
+            <parameter type-id='type-id-334' is-artificial='yes'/>
             <parameter type-id='type-id-16'/>
-            <parameter type-id='type-id-319'/>
+            <parameter type-id='type-id-332'/>
             <return type-id='type-id-6'/>
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes' vtable-offset='0'>
           <function-decl name='~basic_ifstream' mangled-name='_ZNSt14basic_ifstreamIcSt11char_traitsIcEED1Ev' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/fstream' line='533' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-321' is-artificial='yes'/>
+            <parameter type-id='type-id-334' is-artificial='yes'/>
             <return type-id='type-id-6'/>
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='ios_base' size-in-bits='1728' visibility='default' is-declaration-only='yes' id='type-id-286'>
+      <class-decl name='ios_base' size-in-bits='1728' visibility='default' is-declaration-only='yes' id='type-id-290'>
         <member-type access='private'>
           <typedef-decl name='iostate' type-id='type-id-30' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/ios_base.h' line='398' column='1' id='type-id-42'/>
         </member-type>
         <member-type access='private'>
-          <typedef-decl name='openmode' type-id='type-id-30' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/ios_base.h' line='429' column='1' id='type-id-319'/>
+          <typedef-decl name='openmode' type-id='type-id-30' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/ios_base.h' line='429' column='1' id='type-id-332'/>
         </member-type>
       </class-decl>
-      <class-decl name='basic_filebuf&lt;char, std::char_traits&lt;char&gt; &gt;' size-in-bits='1920' visibility='default' is-declaration-only='yes' id='type-id-322'>
+      <class-decl name='basic_filebuf&lt;char, std::char_traits&lt;char&gt; &gt;' size-in-bits='1920' visibility='default' is-declaration-only='yes' id='type-id-335'>
         <member-function access='public'>
           <function-decl name='is_open' mangled-name='_ZNKSt13basic_filebufIcSt11char_traitsIcEE7is_openEv' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/fstream' line='252' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-323' is-artificial='yes'/>
+            <parameter type-id='type-id-336' is-artificial='yes'/>
             <return type-id='type-id-17'/>
           </function-decl>
         </member-function>
@@ -7421,9 +7440,12 @@
 
 
 
-    <pointer-type-def type-id='type-id-320' size-in-bits='64' id='type-id-321'/>
-    <qualified-type-def type-id='type-id-322' const='yes' id='type-id-324'/>
-    <pointer-type-def type-id='type-id-324' size-in-bits='64' id='type-id-323'/>
+    <pointer-type-def type-id='type-id-333' size-in-bits='64' id='type-id-334'/>
+    <qualified-type-def type-id='type-id-335' const='yes' id='type-id-337'/>
+    <pointer-type-def type-id='type-id-337' size-in-bits='64' id='type-id-336'/>
+
+
+
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/mongo/db/ftdc/file_writer.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
 
@@ -7440,21 +7462,22 @@
 
 
 
+
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/mongo/db/ftdc/util.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
 
 
     <namespace-decl name='mongo'>
 
-      <var-decl name='kFTDCInterimFile' type-id='type-id-325' mangled-name='_ZN5mongo16kFTDCInterimFileE' visibility='default' filepath='src/mongo/db/ftdc/util.cpp' line='51' column='1' elf-symbol-id='_ZN5mongo16kFTDCInterimFileE'/>
-      <var-decl name='kFTDCArchiveFile' type-id='type-id-326' mangled-name='_ZN5mongo16kFTDCArchiveFileE' visibility='default' filepath='src/mongo/db/ftdc/util.cpp' line='53' column='1' elf-symbol-id='_ZN5mongo16kFTDCArchiveFileE'/>
-      <var-decl name='kFTDCIdField' type-id='type-id-327' mangled-name='_ZN5mongo12kFTDCIdFieldE' visibility='default' filepath='src/mongo/db/ftdc/util.cpp' line='55' column='1' elf-symbol-id='_ZN5mongo12kFTDCIdFieldE'/>
-      <var-decl name='kFTDCTypeField' type-id='type-id-328' mangled-name='_ZN5mongo14kFTDCTypeFieldE' visibility='default' filepath='src/mongo/db/ftdc/util.cpp' line='56' column='1' elf-symbol-id='_ZN5mongo14kFTDCTypeFieldE'/>
-      <var-decl name='kFTDCDataField' type-id='type-id-328' mangled-name='_ZN5mongo14kFTDCDataFieldE' visibility='default' filepath='src/mongo/db/ftdc/util.cpp' line='58' column='1' elf-symbol-id='_ZN5mongo14kFTDCDataFieldE'/>
-      <var-decl name='kFTDCDocField' type-id='type-id-327' mangled-name='_ZN5mongo13kFTDCDocFieldE' visibility='default' filepath='src/mongo/db/ftdc/util.cpp' line='59' column='1' elf-symbol-id='_ZN5mongo13kFTDCDocFieldE'/>
-      <var-decl name='kFTDCDocsField' type-id='type-id-328' mangled-name='_ZN5mongo14kFTDCDocsFieldE' visibility='default' filepath='src/mongo/db/ftdc/util.cpp' line='61' column='1' elf-symbol-id='_ZN5mongo14kFTDCDocsFieldE'/>
-      <var-decl name='kFTDCCollectStartField' type-id='type-id-329' mangled-name='_ZN5mongo22kFTDCCollectStartFieldE' visibility='default' filepath='src/mongo/db/ftdc/util.cpp' line='63' column='1' elf-symbol-id='_ZN5mongo22kFTDCCollectStartFieldE'/>
-      <var-decl name='kFTDCCollectEndField' type-id='type-id-327' mangled-name='_ZN5mongo20kFTDCCollectEndFieldE' visibility='default' filepath='src/mongo/db/ftdc/util.cpp' line='64' column='1' elf-symbol-id='_ZN5mongo20kFTDCCollectEndFieldE'/>
+      <var-decl name='kFTDCInterimFile' type-id='type-id-338' mangled-name='_ZN5mongo16kFTDCInterimFileE' visibility='default' filepath='src/mongo/db/ftdc/util.cpp' line='51' column='1' elf-symbol-id='_ZN5mongo16kFTDCInterimFileE'/>
+      <var-decl name='kFTDCArchiveFile' type-id='type-id-339' mangled-name='_ZN5mongo16kFTDCArchiveFileE' visibility='default' filepath='src/mongo/db/ftdc/util.cpp' line='53' column='1' elf-symbol-id='_ZN5mongo16kFTDCArchiveFileE'/>
+      <var-decl name='kFTDCIdField' type-id='type-id-340' mangled-name='_ZN5mongo12kFTDCIdFieldE' visibility='default' filepath='src/mongo/db/ftdc/util.cpp' line='55' column='1' elf-symbol-id='_ZN5mongo12kFTDCIdFieldE'/>
+      <var-decl name='kFTDCTypeField' type-id='type-id-341' mangled-name='_ZN5mongo14kFTDCTypeFieldE' visibility='default' filepath='src/mongo/db/ftdc/util.cpp' line='56' column='1' elf-symbol-id='_ZN5mongo14kFTDCTypeFieldE'/>
+      <var-decl name='kFTDCDataField' type-id='type-id-341' mangled-name='_ZN5mongo14kFTDCDataFieldE' visibility='default' filepath='src/mongo/db/ftdc/util.cpp' line='58' column='1' elf-symbol-id='_ZN5mongo14kFTDCDataFieldE'/>
+      <var-decl name='kFTDCDocField' type-id='type-id-340' mangled-name='_ZN5mongo13kFTDCDocFieldE' visibility='default' filepath='src/mongo/db/ftdc/util.cpp' line='59' column='1' elf-symbol-id='_ZN5mongo13kFTDCDocFieldE'/>
+      <var-decl name='kFTDCDocsField' type-id='type-id-341' mangled-name='_ZN5mongo14kFTDCDocsFieldE' visibility='default' filepath='src/mongo/db/ftdc/util.cpp' line='61' column='1' elf-symbol-id='_ZN5mongo14kFTDCDocsFieldE'/>
+      <var-decl name='kFTDCCollectStartField' type-id='type-id-342' mangled-name='_ZN5mongo22kFTDCCollectStartFieldE' visibility='default' filepath='src/mongo/db/ftdc/util.cpp' line='63' column='1' elf-symbol-id='_ZN5mongo22kFTDCCollectStartFieldE'/>
+      <var-decl name='kFTDCCollectEndField' type-id='type-id-340' mangled-name='_ZN5mongo20kFTDCCollectEndFieldE' visibility='default' filepath='src/mongo/db/ftdc/util.cpp' line='64' column='1' elf-symbol-id='_ZN5mongo20kFTDCCollectEndFieldE'/>
       <namespace-decl name='FTDCBSONUtil'>
         <function-decl name='extractMetricsFromDocument' mangled-name='_ZN5mongo12FTDCBSONUtil26extractMetricsFromDocumentERKNS_7BSONObjES3_PSt6vectorImSaImEE' filepath='src/mongo/db/ftdc/util.cpp' line='233' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo12FTDCBSONUtil26extractMetricsFromDocumentERKNS_7BSONObjES3_PSt6vectorImSaImEE'>
           <parameter type-id='type-id-107' name='referenceDoc' filepath='src/mongo/db/ftdc/util.cpp' line='233' column='1'/>
@@ -7519,21 +7542,33 @@
         </function-decl>
       </namespace-decl>
     </namespace-decl>
-    <array-type-def dimensions='1' type-id='type-id-185' size-in-bits='128' id='type-id-325'>
-      <subrange length='16'/>
+
+    <array-type-def dimensions='1' type-id='type-id-185' size-in-bits='128' id='type-id-338'>
+      <subrange length='16' type-id='type-id-244' id='type-id-304'/>
+
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-185' size-in-bits='64' id='type-id-326'>
-      <subrange length='8'/>
+
+    <array-type-def dimensions='1' type-id='type-id-185' size-in-bits='64' id='type-id-339'>
+      <subrange length='8' type-id='type-id-244' id='type-id-311'/>
+
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-185' size-in-bits='32' id='type-id-327'>
-      <subrange length='4'/>
+
+    <array-type-def dimensions='1' type-id='type-id-185' size-in-bits='32' id='type-id-340'>
+      <subrange length='4' type-id='type-id-244' id='type-id-343'/>
+
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-185' size-in-bits='40' id='type-id-328'>
-      <subrange length='5'/>
+
+    <array-type-def dimensions='1' type-id='type-id-185' size-in-bits='40' id='type-id-341'>
+      <subrange length='5' type-id='type-id-244' id='type-id-344'/>
+
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-185' size-in-bits='48' id='type-id-329'>
-      <subrange length='6'/>
+
+    <array-type-def dimensions='1' type-id='type-id-185' size-in-bits='48' id='type-id-342'>
+      <subrange length='6' type-id='type-id-244' id='type-id-345'/>
+
     </array-type-def>
+
+
 
 
 

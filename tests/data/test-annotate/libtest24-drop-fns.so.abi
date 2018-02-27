@@ -110,7 +110,7 @@
               <var-decl name='_S_terminal' type-id='type-id-27' visibility='default' filepath='/usr/include/c++/5.3.1/bits/basic_string.tcc' line='499' column='1'/>
             </data-member>
             <data-member access='public' static='yes'>
-              <!-- static unsigned long int std::basic_string<char, std::char_traits<char>, std::allocator<char> >::_Rep::_S_empty_rep_storage[] -->
+              <!-- static unsigned long int std::basic_string<char, std::char_traits<char>, std::allocator<char> >::_Rep::_S_empty_rep_storage[1] -->
               <var-decl name='_S_empty_rep_storage' type-id='type-id-28' visibility='default' filepath='/usr/include/c++/5.3.1/bits/basic_string.tcc' line='510' column='1'/>
             </data-member>
             <member-function access='public' static='yes'>
@@ -2425,93 +2425,98 @@
     <qualified-type-def type-id='type-id-8' const='yes' id='type-id-26'/>
     <!-- typedef int _Atomic_word -->
     <typedef-decl name='_Atomic_word' type-id='type-id-37' filepath='/usr/include/c++/5.3.1/x86_64-redhat-linux/bits/atomic_word.h' line='32' column='1' id='type-id-24'/>
-    <!-- unsigned long int[] -->
-    <array-type-def dimensions='0' type-id='type-id-45' size-in-bits='infinite' id='type-id-28'/>
+
+    <!-- unsigned long int[1] -->
+    <array-type-def dimensions='1' type-id='type-id-45' size-in-bits='64' id='type-id-28'>
+      <!-- <anonymous range>[1] -->
+      <subrange length='1' id='type-id-78'/>
+
+    </array-type-def>
     <!-- std::basic_string<char, std::char_traits<char>, std::allocator<char> >::_Rep& -->
     <reference-type-def kind='lvalue' type-id='type-id-25' size-in-bits='64' id='type-id-29'/>
     <!-- bool -->
     <type-decl name='bool' size-in-bits='8' id='type-id-31'/>
     <!-- const std::basic_string<char, std::char_traits<char>, std::allocator<char> >::_Rep -->
-    <qualified-type-def type-id='type-id-25' const='yes' id='type-id-78'/>
+    <qualified-type-def type-id='type-id-25' const='yes' id='type-id-79'/>
     <!-- const std::basic_string<char, std::char_traits<char>, std::allocator<char> >::_Rep* -->
-    <pointer-type-def type-id='type-id-78' size-in-bits='64' id='type-id-30'/>
+    <pointer-type-def type-id='type-id-79' size-in-bits='64' id='type-id-30'/>
     <!-- std::basic_string<char, std::char_traits<char>, std::allocator<char> >::_Rep* -->
     <pointer-type-def type-id='type-id-25' size-in-bits='64' id='type-id-32'/>
     <!-- const std::basic_string<char, std::char_traits<char>, std::allocator<char> > -->
-    <qualified-type-def type-id='type-id-1' const='yes' id='type-id-79'/>
+    <qualified-type-def type-id='type-id-1' const='yes' id='type-id-80'/>
     <!-- const std::basic_string<char, std::char_traits<char>, std::allocator<char> >* -->
-    <pointer-type-def type-id='type-id-79' size-in-bits='64' id='type-id-33'/>
+    <pointer-type-def type-id='type-id-80' size-in-bits='64' id='type-id-33'/>
     <!-- std::basic_string<char, std::char_traits<char>, std::allocator<char> >* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-34'/>
     <!-- const std::basic_string<char, std::char_traits<char>, std::allocator<char> >& -->
-    <reference-type-def kind='lvalue' type-id='type-id-79' size-in-bits='64' id='type-id-38'/>
+    <reference-type-def kind='lvalue' type-id='type-id-80' size-in-bits='64' id='type-id-38'/>
     <!-- std::basic_string<char, std::char_traits<char>, std::allocator<char> >& -->
     <reference-type-def kind='lvalue' type-id='type-id-1' size-in-bits='64' id='type-id-39'/>
     <!-- unsigned int -->
-    <type-decl name='unsigned int' size-in-bits='32' id='type-id-80'/>
+    <type-decl name='unsigned int' size-in-bits='32' id='type-id-81'/>
     <!-- typedef unsigned int wint_t -->
-    <typedef-decl name='wint_t' type-id='type-id-80' filepath='/usr/lib/gcc/x86_64-redhat-linux/5.3.1/include/stddef.h' line='357' column='1' id='type-id-81'/>
+    <typedef-decl name='wint_t' type-id='type-id-81' filepath='/usr/lib/gcc/x86_64-redhat-linux/5.3.1/include/stddef.h' line='357' column='1' id='type-id-82'/>
     <!-- wint_t btowc(int) -->
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='353' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-37'/>
       <!-- typedef wint_t -->
-      <return type-id='type-id-81'/>
+      <return type-id='type-id-82'/>
     </function-decl>
     <!-- struct _IO_FILE -->
-    <class-decl name='_IO_FILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-82'/>
+    <class-decl name='_IO_FILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-83'/>
     <!-- typedef _IO_FILE __FILE -->
-    <typedef-decl name='__FILE' type-id='type-id-82' filepath='/usr/include/stdio.h' line='64' column='1' id='type-id-83'/>
+    <typedef-decl name='__FILE' type-id='type-id-83' filepath='/usr/include/stdio.h' line='64' column='1' id='type-id-84'/>
     <!-- __FILE* -->
-    <pointer-type-def type-id='type-id-83' size-in-bits='64' id='type-id-84'/>
+    <pointer-type-def type-id='type-id-84' size-in-bits='64' id='type-id-85'/>
     <!-- wint_t fgetwc(__FILE*) -->
     <function-decl name='fgetwc' filepath='/usr/include/wchar.h' line='745' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type '__FILE*' -->
-      <parameter type-id='type-id-84'/>
+      <parameter type-id='type-id-85'/>
       <!-- typedef wint_t -->
-      <return type-id='type-id-81'/>
+      <return type-id='type-id-82'/>
     </function-decl>
     <!-- wchar_t -->
-    <type-decl name='wchar_t' size-in-bits='32' id='type-id-85'/>
+    <type-decl name='wchar_t' size-in-bits='32' id='type-id-86'/>
     <!-- wchar_t* -->
-    <pointer-type-def type-id='type-id-85' size-in-bits='64' id='type-id-86'/>
+    <pointer-type-def type-id='type-id-86' size-in-bits='64' id='type-id-87'/>
     <!-- wchar_t* fgetws(wchar_t*, int, __FILE*) -->
     <function-decl name='fgetws' filepath='/usr/include/wchar.h' line='774' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'wchar_t*' -->
-      <parameter type-id='type-id-86'/>
+      <parameter type-id='type-id-87'/>
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-37'/>
       <!-- parameter of type '__FILE*' -->
-      <parameter type-id='type-id-84'/>
+      <parameter type-id='type-id-85'/>
       <!-- wchar_t* -->
-      <return type-id='type-id-86'/>
+      <return type-id='type-id-87'/>
     </function-decl>
     <!-- wint_t fputwc(wchar_t, __FILE*) -->
     <function-decl name='fputwc' filepath='/usr/include/wchar.h' line='759' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'wchar_t' -->
-      <parameter type-id='type-id-85'/>
+      <parameter type-id='type-id-86'/>
       <!-- parameter of type '__FILE*' -->
-      <parameter type-id='type-id-84'/>
+      <parameter type-id='type-id-85'/>
       <!-- typedef wint_t -->
-      <return type-id='type-id-81'/>
+      <return type-id='type-id-82'/>
     </function-decl>
     <!-- const wchar_t -->
-    <qualified-type-def type-id='type-id-85' const='yes' id='type-id-87'/>
+    <qualified-type-def type-id='type-id-86' const='yes' id='type-id-88'/>
     <!-- const wchar_t* -->
-    <pointer-type-def type-id='type-id-87' size-in-bits='64' id='type-id-88'/>
+    <pointer-type-def type-id='type-id-88' size-in-bits='64' id='type-id-89'/>
     <!-- int fputws(const wchar_t*, __FILE*) -->
     <function-decl name='fputws' filepath='/usr/include/wchar.h' line='781' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type '__FILE*' -->
-      <parameter type-id='type-id-84'/>
+      <parameter type-id='type-id-85'/>
       <!-- int -->
       <return type-id='type-id-37'/>
     </function-decl>
     <!-- int fwide(__FILE*, int) -->
     <function-decl name='fwide' filepath='/usr/include/wchar.h' line='587' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type '__FILE*' -->
-      <parameter type-id='type-id-84'/>
+      <parameter type-id='type-id-85'/>
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-37'/>
       <!-- int -->
@@ -2520,9 +2525,9 @@
     <!-- int fwprintf(__FILE*, const wchar_t*, ...) -->
     <function-decl name='fwprintf' filepath='/usr/include/wchar.h' line='594' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type '__FILE*' -->
-      <parameter type-id='type-id-84'/>
+      <parameter type-id='type-id-85'/>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <parameter is-variadic='yes'/>
       <!-- int -->
       <return type-id='type-id-37'/>
@@ -2530,9 +2535,9 @@
     <!-- int fwscanf(__FILE*, const wchar_t*, ...) -->
     <function-decl name='fwscanf' filepath='/usr/include/wchar.h' line='635' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type '__FILE*' -->
-      <parameter type-id='type-id-84'/>
+      <parameter type-id='type-id-85'/>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <parameter is-variadic='yes'/>
       <!-- int -->
       <return type-id='type-id-37'/>
@@ -2540,29 +2545,29 @@
     <!-- wint_t getwc(__FILE*) -->
     <function-decl name='getwc' filepath='/usr/include/wchar.h' line='746' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type '__FILE*' -->
-      <parameter type-id='type-id-84'/>
+      <parameter type-id='type-id-85'/>
       <!-- typedef wint_t -->
-      <return type-id='type-id-81'/>
+      <return type-id='type-id-82'/>
     </function-decl>
     <!-- wint_t getwchar() -->
     <function-decl name='getwchar' filepath='/usr/include/wchar.h' line='752' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- typedef wint_t -->
-      <return type-id='type-id-81'/>
+      <return type-id='type-id-82'/>
     </function-decl>
     <!-- typedef unsigned long int size_t -->
-    <typedef-decl name='size_t' type-id='type-id-45' filepath='/usr/lib/gcc/x86_64-redhat-linux/5.3.1/include/stddef.h' line='216' column='1' id='type-id-89'/>
+    <typedef-decl name='size_t' type-id='type-id-45' filepath='/usr/lib/gcc/x86_64-redhat-linux/5.3.1/include/stddef.h' line='216' column='1' id='type-id-90'/>
     <!-- struct __anonymous_struct__ -->
-    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-90' visibility='default' filepath='/usr/include/wchar.h' line='83' column='1' id='type-id-91'>
+    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-91' visibility='default' filepath='/usr/include/wchar.h' line='83' column='1' id='type-id-92'>
       <member-type access='public'>
         <!-- union __anonymous_struct__::__anonymous_union__ -->
-        <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='86' column='1' id='type-id-92'>
+        <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='86' column='1' id='type-id-93'>
           <data-member access='private'>
             <!-- unsigned int __anonymous_struct__::__anonymous_union__::__wch -->
-            <var-decl name='__wch' type-id='type-id-80' visibility='default' filepath='/usr/include/wchar.h' line='88' column='1'/>
+            <var-decl name='__wch' type-id='type-id-81' visibility='default' filepath='/usr/include/wchar.h' line='88' column='1'/>
           </data-member>
           <data-member access='private'>
             <!-- char __anonymous_struct__::__anonymous_union__::__wchb[4] -->
-            <var-decl name='__wchb' type-id='type-id-93' visibility='default' filepath='/usr/include/wchar.h' line='92' column='1'/>
+            <var-decl name='__wchb' type-id='type-id-94' visibility='default' filepath='/usr/include/wchar.h' line='92' column='1'/>
           </data-member>
         </union-decl>
       </member-type>
@@ -2572,93 +2577,98 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='32'>
         <!-- __anonymous_struct__::__anonymous_union__ __anonymous_struct__::__value -->
-        <var-decl name='__value' type-id='type-id-92' visibility='default' filepath='/usr/include/wchar.h' line='93' column='1'/>
+        <var-decl name='__value' type-id='type-id-93' visibility='default' filepath='/usr/include/wchar.h' line='93' column='1'/>
       </data-member>
     </class-decl>
+    <!-- sizetype -->
+    <type-decl name='sizetype' size-in-bits='64' id='type-id-95'/>
+
     <!-- char[4] -->
-    <array-type-def dimensions='1' type-id='type-id-36' size-in-bits='32' id='type-id-93'>
-      <subrange length='4'/>
+    <array-type-def dimensions='1' type-id='type-id-36' size-in-bits='32' id='type-id-94'>
+      <!-- <anonymous range>[4] -->
+      <subrange length='4' type-id='type-id-95' id='type-id-96'/>
+
     </array-type-def>
     <!-- typedef __anonymous_struct__ __mbstate_t -->
-    <typedef-decl name='__mbstate_t' type-id='type-id-91' filepath='/usr/include/wchar.h' line='94' column='1' id='type-id-90'/>
+    <typedef-decl name='__mbstate_t' type-id='type-id-92' filepath='/usr/include/wchar.h' line='94' column='1' id='type-id-91'/>
     <!-- typedef __mbstate_t mbstate_t -->
-    <typedef-decl name='mbstate_t' type-id='type-id-90' filepath='/usr/include/wchar.h' line='106' column='1' id='type-id-94'/>
+    <typedef-decl name='mbstate_t' type-id='type-id-91' filepath='/usr/include/wchar.h' line='106' column='1' id='type-id-97'/>
     <!-- mbstate_t* -->
-    <pointer-type-def type-id='type-id-94' size-in-bits='64' id='type-id-95'/>
+    <pointer-type-def type-id='type-id-97' size-in-bits='64' id='type-id-98'/>
     <!-- size_t mbrlen(const char*, size_t, mbstate_t*) -->
     <function-decl name='mbrlen' filepath='/usr/include/wchar.h' line='376' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-35'/>
       <!-- parameter of type 'typedef size_t' -->
-      <parameter type-id='type-id-89'/>
+      <parameter type-id='type-id-90'/>
       <!-- parameter of type 'mbstate_t*' -->
-      <parameter type-id='type-id-95'/>
+      <parameter type-id='type-id-98'/>
       <!-- typedef size_t -->
-      <return type-id='type-id-89'/>
+      <return type-id='type-id-90'/>
     </function-decl>
     <!-- size_t mbrtowc(wchar_t*, const char*, size_t, mbstate_t*) -->
     <function-decl name='mbrtowc' filepath='/usr/include/wchar.h' line='365' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'wchar_t*' -->
-      <parameter type-id='type-id-86'/>
+      <parameter type-id='type-id-87'/>
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-35'/>
       <!-- parameter of type 'typedef size_t' -->
-      <parameter type-id='type-id-89'/>
+      <parameter type-id='type-id-90'/>
       <!-- parameter of type 'mbstate_t*' -->
-      <parameter type-id='type-id-95'/>
+      <parameter type-id='type-id-98'/>
       <!-- typedef size_t -->
-      <return type-id='type-id-89'/>
+      <return type-id='type-id-90'/>
     </function-decl>
     <!-- const mbstate_t -->
-    <qualified-type-def type-id='type-id-94' const='yes' id='type-id-96'/>
+    <qualified-type-def type-id='type-id-97' const='yes' id='type-id-99'/>
     <!-- const mbstate_t* -->
-    <pointer-type-def type-id='type-id-96' size-in-bits='64' id='type-id-97'/>
+    <pointer-type-def type-id='type-id-99' size-in-bits='64' id='type-id-100'/>
     <!-- int mbsinit(const mbstate_t*) -->
     <function-decl name='mbsinit' filepath='/usr/include/wchar.h' line='361' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const mbstate_t*' -->
-      <parameter type-id='type-id-97'/>
+      <parameter type-id='type-id-100'/>
       <!-- int -->
       <return type-id='type-id-37'/>
     </function-decl>
     <!-- const char** -->
-    <pointer-type-def type-id='type-id-35' size-in-bits='64' id='type-id-98'/>
+    <pointer-type-def type-id='type-id-35' size-in-bits='64' id='type-id-101'/>
     <!-- size_t mbsrtowcs(wchar_t*, const char**, size_t, mbstate_t*) -->
     <function-decl name='mbsrtowcs' filepath='/usr/include/wchar.h' line='408' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'wchar_t*' -->
-      <parameter type-id='type-id-86'/>
+      <parameter type-id='type-id-87'/>
       <!-- parameter of type 'const char**' -->
-      <parameter type-id='type-id-98'/>
+      <parameter type-id='type-id-101'/>
       <!-- parameter of type 'typedef size_t' -->
-      <parameter type-id='type-id-89'/>
+      <parameter type-id='type-id-90'/>
       <!-- parameter of type 'mbstate_t*' -->
-      <parameter type-id='type-id-95'/>
+      <parameter type-id='type-id-98'/>
       <!-- typedef size_t -->
-      <return type-id='type-id-89'/>
+      <return type-id='type-id-90'/>
     </function-decl>
     <!-- wint_t putwc(wchar_t, __FILE*) -->
     <function-decl name='putwc' filepath='/usr/include/wchar.h' line='760' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'wchar_t' -->
-      <parameter type-id='type-id-85'/>
+      <parameter type-id='type-id-86'/>
       <!-- parameter of type '__FILE*' -->
-      <parameter type-id='type-id-84'/>
+      <parameter type-id='type-id-85'/>
       <!-- typedef wint_t -->
-      <return type-id='type-id-81'/>
+      <return type-id='type-id-82'/>
     </function-decl>
     <!-- wint_t putwchar(wchar_t) -->
     <function-decl name='putwchar' filepath='/usr/include/wchar.h' line='766' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'wchar_t' -->
-      <parameter type-id='type-id-85'/>
+      <parameter type-id='type-id-86'/>
       <!-- typedef wint_t -->
-      <return type-id='type-id-81'/>
+      <return type-id='type-id-82'/>
     </function-decl>
     <!-- int swprintf(wchar_t*, size_t, const wchar_t*, ...) -->
     <function-decl name='swprintf' filepath='/usr/include/wchar.h' line='604' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'wchar_t*' -->
-      <parameter type-id='type-id-86'/>
+      <parameter type-id='type-id-87'/>
       <!-- parameter of type 'typedef size_t' -->
-      <parameter type-id='type-id-89'/>
+      <parameter type-id='type-id-90'/>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <parameter is-variadic='yes'/>
       <!-- int -->
       <return type-id='type-id-37'/>
@@ -2666,9 +2676,9 @@
     <!-- int swscanf(const wchar_t*, const wchar_t*, ...) -->
     <function-decl name='swscanf' filepath='/usr/include/wchar.h' line='645' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <parameter is-variadic='yes'/>
       <!-- int -->
       <return type-id='type-id-37'/>
@@ -2676,21 +2686,21 @@
     <!-- wint_t ungetwc(wint_t, __FILE*) -->
     <function-decl name='ungetwc' filepath='/usr/include/wchar.h' line='789' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'typedef wint_t' -->
-      <parameter type-id='type-id-81'/>
+      <parameter type-id='type-id-82'/>
       <!-- parameter of type '__FILE*' -->
-      <parameter type-id='type-id-84'/>
+      <parameter type-id='type-id-85'/>
       <!-- typedef wint_t -->
-      <return type-id='type-id-81'/>
+      <return type-id='type-id-82'/>
     </function-decl>
     <!-- struct typedef __va_list_tag __va_list_tag -->
-    <class-decl name='typedef __va_list_tag __va_list_tag' size-in-bits='192' is-struct='yes' visibility='default' id='type-id-99'>
+    <class-decl name='typedef __va_list_tag __va_list_tag' size-in-bits='192' is-struct='yes' visibility='default' id='type-id-102'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- unsigned int typedef __va_list_tag __va_list_tag::gp_offset -->
-        <var-decl name='gp_offset' type-id='type-id-80' visibility='default'/>
+        <var-decl name='gp_offset' type-id='type-id-81' visibility='default'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='32'>
         <!-- unsigned int typedef __va_list_tag __va_list_tag::fp_offset -->
-        <var-decl name='fp_offset' type-id='type-id-80' visibility='default'/>
+        <var-decl name='fp_offset' type-id='type-id-81' visibility='default'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- void* typedef __va_list_tag __va_list_tag::overflow_arg_area -->
@@ -2702,68 +2712,68 @@
       </data-member>
     </class-decl>
     <!-- typedef __va_list_tag __va_list_tag* -->
-    <pointer-type-def type-id='type-id-99' size-in-bits='64' id='type-id-100'/>
+    <pointer-type-def type-id='type-id-102' size-in-bits='64' id='type-id-103'/>
     <!-- int vfwprintf(__FILE*, const wchar_t*, typedef __va_list_tag __va_list_tag*) -->
     <function-decl name='vfwprintf' filepath='/usr/include/wchar.h' line='612' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type '__FILE*' -->
-      <parameter type-id='type-id-84'/>
+      <parameter type-id='type-id-85'/>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'typedef __va_list_tag __va_list_tag*' -->
-      <parameter type-id='type-id-100'/>
+      <parameter type-id='type-id-103'/>
       <!-- int -->
       <return type-id='type-id-37'/>
     </function-decl>
     <!-- int vfwscanf(__FILE*, const wchar_t*, typedef __va_list_tag __va_list_tag*) -->
     <function-decl name='vfwscanf' filepath='/usr/include/wchar.h' line='689' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type '__FILE*' -->
-      <parameter type-id='type-id-84'/>
+      <parameter type-id='type-id-85'/>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'typedef __va_list_tag __va_list_tag*' -->
-      <parameter type-id='type-id-100'/>
+      <parameter type-id='type-id-103'/>
       <!-- int -->
       <return type-id='type-id-37'/>
     </function-decl>
     <!-- int vswprintf(wchar_t*, size_t, const wchar_t*, typedef __va_list_tag __va_list_tag*) -->
     <function-decl name='vswprintf' filepath='/usr/include/wchar.h' line='625' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'wchar_t*' -->
-      <parameter type-id='type-id-86'/>
+      <parameter type-id='type-id-87'/>
       <!-- parameter of type 'typedef size_t' -->
-      <parameter type-id='type-id-89'/>
+      <parameter type-id='type-id-90'/>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'typedef __va_list_tag __va_list_tag*' -->
-      <parameter type-id='type-id-100'/>
+      <parameter type-id='type-id-103'/>
       <!-- int -->
       <return type-id='type-id-37'/>
     </function-decl>
     <!-- int vswscanf(const wchar_t*, const wchar_t*, typedef __va_list_tag __va_list_tag*) -->
     <function-decl name='vswscanf' filepath='/usr/include/wchar.h' line='701' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'typedef __va_list_tag __va_list_tag*' -->
-      <parameter type-id='type-id-100'/>
+      <parameter type-id='type-id-103'/>
       <!-- int -->
       <return type-id='type-id-37'/>
     </function-decl>
     <!-- int vwprintf(const wchar_t*, typedef __va_list_tag __va_list_tag*) -->
     <function-decl name='vwprintf' filepath='/usr/include/wchar.h' line='620' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'typedef __va_list_tag __va_list_tag*' -->
-      <parameter type-id='type-id-100'/>
+      <parameter type-id='type-id-103'/>
       <!-- int -->
       <return type-id='type-id-37'/>
     </function-decl>
     <!-- int vwscanf(const wchar_t*, typedef __va_list_tag __va_list_tag*) -->
     <function-decl name='vwscanf' filepath='/usr/include/wchar.h' line='697' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'typedef __va_list_tag __va_list_tag*' -->
-      <parameter type-id='type-id-100'/>
+      <parameter type-id='type-id-103'/>
       <!-- int -->
       <return type-id='type-id-37'/>
     </function-decl>
@@ -2772,59 +2782,59 @@
       <!-- parameter of type 'char*' -->
       <parameter type-id='type-id-4'/>
       <!-- parameter of type 'wchar_t' -->
-      <parameter type-id='type-id-85'/>
+      <parameter type-id='type-id-86'/>
       <!-- parameter of type 'mbstate_t*' -->
-      <parameter type-id='type-id-95'/>
+      <parameter type-id='type-id-98'/>
       <!-- typedef size_t -->
-      <return type-id='type-id-89'/>
+      <return type-id='type-id-90'/>
     </function-decl>
     <!-- wchar_t* wcscat(wchar_t*, const wchar_t*) -->
     <function-decl name='wcscat' filepath='/usr/include/wchar.h' line='155' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'wchar_t*' -->
-      <parameter type-id='type-id-86'/>
+      <parameter type-id='type-id-87'/>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- wchar_t* -->
-      <return type-id='type-id-86'/>
+      <return type-id='type-id-87'/>
     </function-decl>
     <!-- int wcscmp(const wchar_t*, const wchar_t*) -->
     <function-decl name='wcscmp' filepath='/usr/include/wchar.h' line='163' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- int -->
       <return type-id='type-id-37'/>
     </function-decl>
     <!-- int wcscoll(const wchar_t*, const wchar_t*) -->
     <function-decl name='wcscoll' filepath='/usr/include/wchar.h' line='192' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- int -->
       <return type-id='type-id-37'/>
     </function-decl>
     <!-- wchar_t* wcscpy(wchar_t*, const wchar_t*) -->
     <function-decl name='wcscpy' filepath='/usr/include/wchar.h' line='147' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'wchar_t*' -->
-      <parameter type-id='type-id-86'/>
+      <parameter type-id='type-id-87'/>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- wchar_t* -->
-      <return type-id='type-id-86'/>
+      <return type-id='type-id-87'/>
     </function-decl>
     <!-- size_t wcscspn(const wchar_t*, const wchar_t*) -->
     <function-decl name='wcscspn' filepath='/usr/include/wchar.h' line='252' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- typedef size_t -->
-      <return type-id='type-id-89'/>
+      <return type-id='type-id-90'/>
     </function-decl>
     <!-- struct tm -->
-    <class-decl name='tm' size-in-bits='448' is-struct='yes' visibility='default' filepath='/usr/include/time.h' line='133' column='1' id='type-id-101'>
+    <class-decl name='tm' size-in-bits='448' is-struct='yes' visibility='default' filepath='/usr/include/time.h' line='133' column='1' id='type-id-104'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- int tm::tm_sec -->
         <var-decl name='tm_sec' type-id='type-id-37' visibility='default' filepath='/usr/include/time.h' line='135' column='1'/>
@@ -2863,7 +2873,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
         <!-- long int tm::tm_gmtoff -->
-        <var-decl name='tm_gmtoff' type-id='type-id-102' visibility='default' filepath='/usr/include/time.h' line='146' column='1'/>
+        <var-decl name='tm_gmtoff' type-id='type-id-105' visibility='default' filepath='/usr/include/time.h' line='146' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
         <!-- const char* tm::tm_zone -->
@@ -2871,140 +2881,140 @@
       </data-member>
     </class-decl>
     <!-- long int -->
-    <type-decl name='long int' size-in-bits='64' id='type-id-102'/>
+    <type-decl name='long int' size-in-bits='64' id='type-id-105'/>
     <!-- const tm -->
-    <qualified-type-def type-id='type-id-101' const='yes' id='type-id-103'/>
+    <qualified-type-def type-id='type-id-104' const='yes' id='type-id-106'/>
     <!-- const tm* -->
-    <pointer-type-def type-id='type-id-103' size-in-bits='64' id='type-id-104'/>
+    <pointer-type-def type-id='type-id-106' size-in-bits='64' id='type-id-107'/>
     <!-- size_t wcsftime(wchar_t*, size_t, const wchar_t*, const tm*) -->
     <function-decl name='wcsftime' filepath='/usr/include/wchar.h' line='855' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'wchar_t*' -->
-      <parameter type-id='type-id-86'/>
+      <parameter type-id='type-id-87'/>
       <!-- parameter of type 'typedef size_t' -->
-      <parameter type-id='type-id-89'/>
+      <parameter type-id='type-id-90'/>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'const tm*' -->
-      <parameter type-id='type-id-104'/>
+      <parameter type-id='type-id-107'/>
       <!-- typedef size_t -->
-      <return type-id='type-id-89'/>
+      <return type-id='type-id-90'/>
     </function-decl>
     <!-- size_t wcslen(const wchar_t*) -->
     <function-decl name='wcslen' filepath='/usr/include/wchar.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- typedef size_t -->
-      <return type-id='type-id-89'/>
+      <return type-id='type-id-90'/>
     </function-decl>
     <!-- wchar_t* wcsncat(wchar_t*, const wchar_t*, size_t) -->
     <function-decl name='wcsncat' filepath='/usr/include/wchar.h' line='158' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'wchar_t*' -->
-      <parameter type-id='type-id-86'/>
+      <parameter type-id='type-id-87'/>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
-      <!-- parameter of type 'typedef size_t' -->
       <parameter type-id='type-id-89'/>
+      <!-- parameter of type 'typedef size_t' -->
+      <parameter type-id='type-id-90'/>
       <!-- wchar_t* -->
-      <return type-id='type-id-86'/>
+      <return type-id='type-id-87'/>
     </function-decl>
     <!-- int wcsncmp(const wchar_t*, const wchar_t*, size_t) -->
     <function-decl name='wcsncmp' filepath='/usr/include/wchar.h' line='166' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
-      <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
-      <!-- parameter of type 'typedef size_t' -->
       <parameter type-id='type-id-89'/>
+      <!-- parameter of type 'const wchar_t*' -->
+      <parameter type-id='type-id-89'/>
+      <!-- parameter of type 'typedef size_t' -->
+      <parameter type-id='type-id-90'/>
       <!-- int -->
       <return type-id='type-id-37'/>
     </function-decl>
     <!-- wchar_t* wcsncpy(wchar_t*, const wchar_t*, size_t) -->
     <function-decl name='wcsncpy' filepath='/usr/include/wchar.h' line='150' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'wchar_t*' -->
-      <parameter type-id='type-id-86'/>
+      <parameter type-id='type-id-87'/>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
-      <!-- parameter of type 'typedef size_t' -->
       <parameter type-id='type-id-89'/>
+      <!-- parameter of type 'typedef size_t' -->
+      <parameter type-id='type-id-90'/>
       <!-- wchar_t* -->
-      <return type-id='type-id-86'/>
+      <return type-id='type-id-87'/>
     </function-decl>
     <!-- const wchar_t** -->
-    <pointer-type-def type-id='type-id-88' size-in-bits='64' id='type-id-105'/>
+    <pointer-type-def type-id='type-id-89' size-in-bits='64' id='type-id-108'/>
     <!-- size_t wcsrtombs(char*, const wchar_t**, size_t, mbstate_t*) -->
     <function-decl name='wcsrtombs' filepath='/usr/include/wchar.h' line='414' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'char*' -->
       <parameter type-id='type-id-4'/>
       <!-- parameter of type 'const wchar_t**' -->
-      <parameter type-id='type-id-105'/>
+      <parameter type-id='type-id-108'/>
       <!-- parameter of type 'typedef size_t' -->
-      <parameter type-id='type-id-89'/>
+      <parameter type-id='type-id-90'/>
       <!-- parameter of type 'mbstate_t*' -->
-      <parameter type-id='type-id-95'/>
+      <parameter type-id='type-id-98'/>
       <!-- typedef size_t -->
-      <return type-id='type-id-89'/>
+      <return type-id='type-id-90'/>
     </function-decl>
     <!-- size_t wcsspn(const wchar_t*, const wchar_t*) -->
     <function-decl name='wcsspn' filepath='/usr/include/wchar.h' line='256' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- typedef size_t -->
-      <return type-id='type-id-89'/>
+      <return type-id='type-id-90'/>
     </function-decl>
     <!-- double -->
-    <type-decl name='double' size-in-bits='64' id='type-id-106'/>
+    <type-decl name='double' size-in-bits='64' id='type-id-109'/>
     <!-- wchar_t** -->
-    <pointer-type-def type-id='type-id-86' size-in-bits='64' id='type-id-107'/>
+    <pointer-type-def type-id='type-id-87' size-in-bits='64' id='type-id-110'/>
     <!-- double wcstod(const wchar_t*, wchar_t**) -->
     <function-decl name='wcstod' filepath='/usr/include/wchar.h' line='450' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'wchar_t**' -->
-      <parameter type-id='type-id-107'/>
+      <parameter type-id='type-id-110'/>
       <!-- double -->
-      <return type-id='type-id-106'/>
+      <return type-id='type-id-109'/>
     </function-decl>
     <!-- float -->
-    <type-decl name='float' size-in-bits='32' id='type-id-108'/>
+    <type-decl name='float' size-in-bits='32' id='type-id-111'/>
     <!-- float wcstof(const wchar_t*, wchar_t**) -->
     <function-decl name='wcstof' filepath='/usr/include/wchar.h' line='457' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'wchar_t**' -->
-      <parameter type-id='type-id-107'/>
+      <parameter type-id='type-id-110'/>
       <!-- float -->
-      <return type-id='type-id-108'/>
+      <return type-id='type-id-111'/>
     </function-decl>
     <!-- wchar_t* wcstok(wchar_t*, const wchar_t*, wchar_t**) -->
     <function-decl name='wcstok' filepath='/usr/include/wchar.h' line='282' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'wchar_t*' -->
-      <parameter type-id='type-id-86'/>
+      <parameter type-id='type-id-87'/>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'wchar_t**' -->
-      <parameter type-id='type-id-107'/>
+      <parameter type-id='type-id-110'/>
       <!-- wchar_t* -->
-      <return type-id='type-id-86'/>
+      <return type-id='type-id-87'/>
     </function-decl>
     <!-- long int wcstol(const wchar_t*, wchar_t**, int) -->
     <function-decl name='wcstol' filepath='/usr/include/wchar.h' line='468' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'wchar_t**' -->
-      <parameter type-id='type-id-107'/>
+      <parameter type-id='type-id-110'/>
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-37'/>
       <!-- long int -->
-      <return type-id='type-id-102'/>
+      <return type-id='type-id-105'/>
     </function-decl>
     <!-- unsigned long int wcstoul(const wchar_t*, wchar_t**, int) -->
     <function-decl name='wcstoul' filepath='/usr/include/wchar.h' line='473' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'wchar_t**' -->
-      <parameter type-id='type-id-107'/>
+      <parameter type-id='type-id-110'/>
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-37'/>
       <!-- unsigned long int -->
@@ -3013,69 +3023,69 @@
     <!-- size_t wcsxfrm(wchar_t*, const wchar_t*, size_t) -->
     <function-decl name='wcsxfrm' filepath='/usr/include/wchar.h' line='196' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'wchar_t*' -->
-      <parameter type-id='type-id-86'/>
+      <parameter type-id='type-id-87'/>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
-      <!-- parameter of type 'typedef size_t' -->
       <parameter type-id='type-id-89'/>
+      <!-- parameter of type 'typedef size_t' -->
+      <parameter type-id='type-id-90'/>
       <!-- typedef size_t -->
-      <return type-id='type-id-89'/>
+      <return type-id='type-id-90'/>
     </function-decl>
     <!-- int wctob(wint_t) -->
     <function-decl name='wctob' filepath='/usr/include/wchar.h' line='357' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'typedef wint_t' -->
-      <parameter type-id='type-id-81'/>
+      <parameter type-id='type-id-82'/>
       <!-- int -->
       <return type-id='type-id-37'/>
     </function-decl>
     <!-- int wmemcmp(const wchar_t*, const wchar_t*, size_t) -->
     <function-decl name='wmemcmp' filepath='/usr/include/wchar.h' line='325' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
-      <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
-      <!-- parameter of type 'typedef size_t' -->
       <parameter type-id='type-id-89'/>
+      <!-- parameter of type 'const wchar_t*' -->
+      <parameter type-id='type-id-89'/>
+      <!-- parameter of type 'typedef size_t' -->
+      <parameter type-id='type-id-90'/>
       <!-- int -->
       <return type-id='type-id-37'/>
     </function-decl>
     <!-- wchar_t* wmemcpy(wchar_t*, const wchar_t*, size_t) -->
     <function-decl name='wmemcpy' filepath='/usr/include/wchar.h' line='329' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'wchar_t*' -->
-      <parameter type-id='type-id-86'/>
+      <parameter type-id='type-id-87'/>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
-      <!-- parameter of type 'typedef size_t' -->
       <parameter type-id='type-id-89'/>
+      <!-- parameter of type 'typedef size_t' -->
+      <parameter type-id='type-id-90'/>
       <!-- wchar_t* -->
-      <return type-id='type-id-86'/>
+      <return type-id='type-id-87'/>
     </function-decl>
     <!-- wchar_t* wmemmove(wchar_t*, const wchar_t*, size_t) -->
     <function-decl name='wmemmove' filepath='/usr/include/wchar.h' line='334' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'wchar_t*' -->
-      <parameter type-id='type-id-86'/>
+      <parameter type-id='type-id-87'/>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
-      <!-- parameter of type 'typedef size_t' -->
       <parameter type-id='type-id-89'/>
+      <!-- parameter of type 'typedef size_t' -->
+      <parameter type-id='type-id-90'/>
       <!-- wchar_t* -->
-      <return type-id='type-id-86'/>
+      <return type-id='type-id-87'/>
     </function-decl>
     <!-- wchar_t* wmemset(wchar_t*, wchar_t, size_t) -->
     <function-decl name='wmemset' filepath='/usr/include/wchar.h' line='338' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'wchar_t*' -->
-      <parameter type-id='type-id-86'/>
+      <parameter type-id='type-id-87'/>
       <!-- parameter of type 'wchar_t' -->
-      <parameter type-id='type-id-85'/>
+      <parameter type-id='type-id-86'/>
       <!-- parameter of type 'typedef size_t' -->
-      <parameter type-id='type-id-89'/>
+      <parameter type-id='type-id-90'/>
       <!-- wchar_t* -->
-      <return type-id='type-id-86'/>
+      <return type-id='type-id-87'/>
     </function-decl>
     <!-- int wprintf(const wchar_t*, ...) -->
     <function-decl name='wprintf' filepath='/usr/include/wchar.h' line='601' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <parameter is-variadic='yes'/>
       <!-- int -->
       <return type-id='type-id-37'/>
@@ -3083,7 +3093,7 @@
     <!-- int wscanf(const wchar_t*, ...) -->
     <function-decl name='wscanf' filepath='/usr/include/wchar.h' line='642' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <parameter is-variadic='yes'/>
       <!-- int -->
       <return type-id='type-id-37'/>
@@ -3091,86 +3101,86 @@
     <!-- const wchar_t* wcschr(const wchar_t*, wchar_t) -->
     <function-decl name='wcschr' mangled-name='wcschr' filepath='/usr/include/wchar.h' line='224' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'wchar_t' -->
-      <parameter type-id='type-id-85'/>
+      <parameter type-id='type-id-86'/>
       <!-- const wchar_t* -->
-      <return type-id='type-id-88'/>
+      <return type-id='type-id-89'/>
     </function-decl>
     <!-- const wchar_t* wcspbrk(const wchar_t*, const wchar_t*) -->
     <function-decl name='wcspbrk' mangled-name='wcspbrk' filepath='/usr/include/wchar.h' line='262' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- const wchar_t* -->
-      <return type-id='type-id-88'/>
+      <return type-id='type-id-89'/>
     </function-decl>
     <!-- const wchar_t* wcsrchr(const wchar_t*, wchar_t) -->
     <function-decl name='wcsrchr' mangled-name='wcsrchr' filepath='/usr/include/wchar.h' line='234' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'wchar_t' -->
-      <parameter type-id='type-id-85'/>
+      <parameter type-id='type-id-86'/>
       <!-- const wchar_t* -->
-      <return type-id='type-id-88'/>
+      <return type-id='type-id-89'/>
     </function-decl>
     <!-- const wchar_t* wcsstr(const wchar_t*, const wchar_t*) -->
     <function-decl name='wcsstr' mangled-name='wcsstr' filepath='/usr/include/wchar.h' line='273' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- const wchar_t* -->
-      <return type-id='type-id-88'/>
+      <return type-id='type-id-89'/>
     </function-decl>
     <!-- const wchar_t* wmemchr(const wchar_t*, wchar_t, size_t) -->
     <function-decl name='wmemchr' mangled-name='wmemchr' filepath='/usr/include/wchar.h' line='316' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
-      <!-- parameter of type 'wchar_t' -->
-      <parameter type-id='type-id-85'/>
-      <!-- parameter of type 'typedef size_t' -->
       <parameter type-id='type-id-89'/>
+      <!-- parameter of type 'wchar_t' -->
+      <parameter type-id='type-id-86'/>
+      <!-- parameter of type 'typedef size_t' -->
+      <parameter type-id='type-id-90'/>
       <!-- const wchar_t* -->
-      <return type-id='type-id-88'/>
+      <return type-id='type-id-89'/>
     </function-decl>
     <!-- long double -->
-    <type-decl name='long double' size-in-bits='128' id='type-id-109'/>
+    <type-decl name='long double' size-in-bits='128' id='type-id-112'/>
     <!-- long double wcstold(const wchar_t*, wchar_t**) -->
     <function-decl name='wcstold' filepath='/usr/include/wchar.h' line='459' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'wchar_t**' -->
-      <parameter type-id='type-id-107'/>
+      <parameter type-id='type-id-110'/>
       <!-- long double -->
-      <return type-id='type-id-109'/>
+      <return type-id='type-id-112'/>
     </function-decl>
     <!-- long long int -->
-    <type-decl name='long long int' size-in-bits='64' id='type-id-110'/>
+    <type-decl name='long long int' size-in-bits='64' id='type-id-113'/>
     <!-- long long int wcstoll(const wchar_t*, wchar_t**, int) -->
     <function-decl name='wcstoll' filepath='/usr/include/wchar.h' line='483' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'wchar_t**' -->
-      <parameter type-id='type-id-107'/>
+      <parameter type-id='type-id-110'/>
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-37'/>
       <!-- long long int -->
-      <return type-id='type-id-110'/>
+      <return type-id='type-id-113'/>
     </function-decl>
     <!-- long long unsigned int -->
-    <type-decl name='long long unsigned int' size-in-bits='64' id='type-id-111'/>
+    <type-decl name='long long unsigned int' size-in-bits='64' id='type-id-114'/>
     <!-- long long unsigned int wcstoull(const wchar_t*, wchar_t**, int) -->
     <function-decl name='wcstoull' filepath='/usr/include/wchar.h' line='490' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const wchar_t*' -->
-      <parameter type-id='type-id-88'/>
+      <parameter type-id='type-id-89'/>
       <!-- parameter of type 'wchar_t**' -->
-      <parameter type-id='type-id-107'/>
+      <parameter type-id='type-id-110'/>
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-37'/>
       <!-- long long unsigned int -->
-      <return type-id='type-id-111'/>
+      <return type-id='type-id-114'/>
     </function-decl>
 
     <!-- char* setlocale(int, const char*) -->
@@ -3183,7 +3193,7 @@
       <return type-id='type-id-4'/>
     </function-decl>
     <!-- struct lconv -->
-    <class-decl name='lconv' size-in-bits='768' is-struct='yes' visibility='default' filepath='/usr/include/locale.h' line='53' column='1' id='type-id-112'>
+    <class-decl name='lconv' size-in-bits='768' is-struct='yes' visibility='default' filepath='/usr/include/locale.h' line='53' column='1' id='type-id-115'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- char* lconv::decimal_point -->
         <var-decl name='decimal_point' type-id='type-id-4' visibility='default' filepath='/usr/include/locale.h' line='57' column='1'/>
@@ -3282,89 +3292,89 @@
       </data-member>
     </class-decl>
     <!-- lconv* -->
-    <pointer-type-def type-id='type-id-112' size-in-bits='64' id='type-id-113'/>
+    <pointer-type-def type-id='type-id-115' size-in-bits='64' id='type-id-116'/>
     <!-- lconv* localeconv() -->
     <function-decl name='localeconv' filepath='/usr/include/locale.h' line='127' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- lconv* -->
-      <return type-id='type-id-113'/>
+      <return type-id='type-id-116'/>
     </function-decl>
     <!-- typedef unsigned long int wctype_t -->
-    <typedef-decl name='wctype_t' type-id='type-id-45' filepath='/usr/include/wctype.h' line='52' column='1' id='type-id-114'/>
+    <typedef-decl name='wctype_t' type-id='type-id-45' filepath='/usr/include/wctype.h' line='52' column='1' id='type-id-117'/>
     <!-- int iswctype(wint_t, wctype_t) -->
     <function-decl name='iswctype' filepath='/usr/include/wctype.h' line='175' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'typedef wint_t' -->
-      <parameter type-id='type-id-81'/>
+      <parameter type-id='type-id-82'/>
       <!-- parameter of type 'typedef wctype_t' -->
-      <parameter type-id='type-id-114'/>
+      <parameter type-id='type-id-117'/>
       <!-- int -->
       <return type-id='type-id-37'/>
     </function-decl>
     <!-- typedef int __int32_t -->
-    <typedef-decl name='__int32_t' type-id='type-id-37' filepath='/usr/include/bits/types.h' line='40' column='1' id='type-id-115'/>
+    <typedef-decl name='__int32_t' type-id='type-id-37' filepath='/usr/include/bits/types.h' line='40' column='1' id='type-id-118'/>
     <!-- const __int32_t -->
-    <qualified-type-def type-id='type-id-115' const='yes' id='type-id-116'/>
+    <qualified-type-def type-id='type-id-118' const='yes' id='type-id-119'/>
     <!-- const __int32_t* -->
-    <pointer-type-def type-id='type-id-116' size-in-bits='64' id='type-id-117'/>
+    <pointer-type-def type-id='type-id-119' size-in-bits='64' id='type-id-120'/>
     <!-- typedef const __int32_t* wctrans_t -->
-    <typedef-decl name='wctrans_t' type-id='type-id-117' filepath='/usr/include/wctype.h' line='186' column='1' id='type-id-118'/>
+    <typedef-decl name='wctrans_t' type-id='type-id-120' filepath='/usr/include/wctype.h' line='186' column='1' id='type-id-121'/>
     <!-- wint_t towctrans(wint_t, wctrans_t) -->
     <function-decl name='towctrans' filepath='/usr/include/wctype.h' line='221' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'typedef wint_t' -->
-      <parameter type-id='type-id-81'/>
+      <parameter type-id='type-id-82'/>
       <!-- parameter of type 'typedef wctrans_t' -->
-      <parameter type-id='type-id-118'/>
+      <parameter type-id='type-id-121'/>
       <!-- typedef wint_t -->
-      <return type-id='type-id-81'/>
+      <return type-id='type-id-82'/>
     </function-decl>
     <!-- wctrans_t wctrans(const char*) -->
     <function-decl name='wctrans' filepath='/usr/include/wctype.h' line='218' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-35'/>
       <!-- typedef wctrans_t -->
-      <return type-id='type-id-118'/>
+      <return type-id='type-id-121'/>
     </function-decl>
     <!-- wctype_t wctype(const char*) -->
     <function-decl name='wctype' filepath='/usr/include/wctype.h' line='171' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-35'/>
       <!-- typedef wctype_t -->
-      <return type-id='type-id-114'/>
+      <return type-id='type-id-117'/>
     </function-decl>
     <!-- std::char_traits<char>::char_type& -->
     <reference-type-def kind='lvalue' type-id='type-id-47' size-in-bits='64' id='type-id-49'/>
     <!-- const std::char_traits<char>::char_type -->
-    <qualified-type-def type-id='type-id-47' const='yes' id='type-id-119'/>
+    <qualified-type-def type-id='type-id-47' const='yes' id='type-id-122'/>
     <!-- const std::char_traits<char>::char_type& -->
-    <reference-type-def kind='lvalue' type-id='type-id-119' size-in-bits='64' id='type-id-50'/>
+    <reference-type-def kind='lvalue' type-id='type-id-122' size-in-bits='64' id='type-id-50'/>
     <!-- const std::char_traits<char>::char_type* -->
-    <pointer-type-def type-id='type-id-119' size-in-bits='64' id='type-id-51'/>
+    <pointer-type-def type-id='type-id-122' size-in-bits='64' id='type-id-51'/>
     <!-- std::char_traits<char>::char_type* -->
     <pointer-type-def type-id='type-id-47' size-in-bits='64' id='type-id-52'/>
     <!-- const std::char_traits<char>::int_type -->
-    <qualified-type-def type-id='type-id-48' const='yes' id='type-id-120'/>
+    <qualified-type-def type-id='type-id-48' const='yes' id='type-id-123'/>
     <!-- const std::char_traits<char>::int_type& -->
-    <reference-type-def kind='lvalue' type-id='type-id-120' size-in-bits='64' id='type-id-53'/>
+    <reference-type-def kind='lvalue' type-id='type-id-123' size-in-bits='64' id='type-id-53'/>
     <!-- const std::string -->
-    <qualified-type-def type-id='type-id-54' const='yes' id='type-id-121'/>
+    <qualified-type-def type-id='type-id-54' const='yes' id='type-id-124'/>
     <!-- const std::string& -->
-    <reference-type-def kind='lvalue' type-id='type-id-121' size-in-bits='64' id='type-id-122'/>
+    <reference-type-def kind='lvalue' type-id='type-id-124' size-in-bits='64' id='type-id-125'/>
     <!-- const std::string& -->
-    <qualified-type-def type-id='type-id-122' id='type-id-123'/>
+    <qualified-type-def type-id='type-id-125' id='type-id-126'/>
     <!-- std::string foo(const std::string&) -->
     <function-decl name='foo' mangled-name='_Z3fooRKSs' filepath='/home/dodji/git/libabigail.git/suppr/tests/data/test-read-dwarf/test24-drop-fns.cc' line='14' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z3fooRKSs'>
       <!-- parameter of type 'const std::string&' -->
-      <parameter type-id='type-id-123' name='s' filepath='/home/dodji/git/libabigail.git/suppr/tests/data/test-read-dwarf/test24-drop-fns.cc' line='14' column='1'/>
+      <parameter type-id='type-id-126' name='s' filepath='/home/dodji/git/libabigail.git/suppr/tests/data/test-read-dwarf/test24-drop-fns.cc' line='14' column='1'/>
       <!-- typedef std::string -->
       <return type-id='type-id-54'/>
     </function-decl>
     <!-- std::ostream* -->
-    <pointer-type-def type-id='type-id-56' size-in-bits='64' id='type-id-124'/>
+    <pointer-type-def type-id='type-id-56' size-in-bits='64' id='type-id-127'/>
     <!-- std::ostream* bar(const std::string&) -->
     <function-decl name='bar' mangled-name='_Z3barRKSs' filepath='/home/dodji/git/libabigail.git/suppr/tests/data/test-read-dwarf/test24-drop-fns.cc' line='21' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z3barRKSs'>
       <!-- parameter of type 'const std::string&' -->
-      <parameter type-id='type-id-123' name='str' filepath='/home/dodji/git/libabigail.git/suppr/tests/data/test-read-dwarf/test24-drop-fns.cc' line='21' column='1'/>
+      <parameter type-id='type-id-126' name='str' filepath='/home/dodji/git/libabigail.git/suppr/tests/data/test-read-dwarf/test24-drop-fns.cc' line='21' column='1'/>
       <!-- std::ostream* -->
-      <return type-id='type-id-124'/>
+      <return type-id='type-id-127'/>
     </function-decl>
     <!-- const int -->
     <qualified-type-def type-id='type-id-37' const='yes' id='type-id-67'/>
@@ -3373,10 +3383,10 @@
     <!-- const unsigned long int -->
     <qualified-type-def type-id='type-id-45' const='yes' id='type-id-70'/>
     <!-- short int -->
-    <type-decl name='short int' size-in-bits='16' id='type-id-125'/>
+    <type-decl name='short int' size-in-bits='16' id='type-id-128'/>
     <!-- const short int -->
-    <qualified-type-def type-id='type-id-125' const='yes' id='type-id-73'/>
+    <qualified-type-def type-id='type-id-128' const='yes' id='type-id-73'/>
     <!-- const long int -->
-    <qualified-type-def type-id='type-id-102' const='yes' id='type-id-75'/>
+    <qualified-type-def type-id='type-id-105' const='yes' id='type-id-75'/>
   </abi-instr>
 </abi-corpus>
