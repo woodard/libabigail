@@ -326,6 +326,12 @@ InOutSpec in_out_specs[] =
     "data/test-diff-dwarf/test42-PR21296-clanggcc-report0.txt",
     "output/test-diff-dwarf/test42-PR21296-clanggcc-report0.txt"
   },
+  {
+    "data/test-diff-dwarf/libtest43-PR22913-v0.so",
+    "data/test-diff-dwarf/libtest43-PR22913-v1.so",
+    "data/test-diff-dwarf/test43-PR22913-report-0.txt",
+    "output/test-diff-dwarf/test43-PR22913-report-0.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL}
 };

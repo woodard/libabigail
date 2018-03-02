@@ -324,6 +324,9 @@ static bool
 die_is_pointer_type(Dwarf_Die* die);
 
 static bool
+pointer_or_qual_die_of_anonymous_class_type(Dwarf_Die* die);
+
+static bool
 die_is_reference_type(Dwarf_Die* die);
 
 static bool
@@ -331,6 +334,9 @@ die_is_pointer_or_reference_type(Dwarf_Die* die);
 
 static bool
 die_is_class_type(Dwarf_Die* die);
+
+static bool
+die_is_qualified_type(Dwarf_Die* die);
 
 static bool
 die_has_object_pointer(Dwarf_Die* die,
@@ -8618,6 +8624,32 @@ die_is_pointer_type(Dwarf_Die* die)
   return false;
 }
 
+/// Test if a DIE is for a pointer, reference or qualified type to
+/// anonymous class or struct.
+///
+/// @param die the DIE to consider.
+///
+/// @return true iff @p is for a pointer, reference or qualified type
+/// to anonymous class or struct.
+static bool
+pointer_or_qual_die_of_anonymous_class_type(Dwarf_Die* die)
+{
+  if (!die_is_pointer_or_reference_type(die)
+      && !die_is_qualified_type(die))
+    return false;
+
+  Dwarf_Die underlying_type_die;
+  if (!die_die_attribute(die, DW_AT_type, underlying_type_die))
+    return false;
+
+  if (!die_is_class_type(&underlying_type_die))
+    return false;
+
+  string name = die_name(&underlying_type_die);
+
+  return name.empty();
+}
+
 /// Test if a DIE represents a reference type.
 ///
 /// @param die the die to consider.
@@ -8679,6 +8711,23 @@ die_is_class_type(Dwarf_Die* die)
     return true;
 
   return false;
+}
+
+/// Test if a DIE is for a qualified type.
+///
+/// @param die the DIE to consider.
+///
+/// @return true iff @p die is for a qualified type.
+static bool
+die_is_qualified_type(Dwarf_Die* die)
+{
+    int tag = dwarf_tag(die);
+    if (tag == DW_TAG_const_type
+	|| tag == DW_TAG_volatile_type
+	|| tag == DW_TAG_restrict_type)
+      return true;
+
+    return false;
 }
 
 /// Test if a DIE for a function pointer or member function has an
@@ -11096,14 +11145,21 @@ compare_dies(const read_context& ctxt, Dwarf_Die *l, Dwarf_Die *r,
 	bool from_the_same_tu = false;
 	if (!compare_as_type_dies(l, r))
 	  result = false;
-	else if (compare_dies_cu_decl_file(l, r, from_the_same_tu)
+	else if (!pointer_or_qual_die_of_anonymous_class_type(l)
+		 && compare_dies_cu_decl_file(l, r, from_the_same_tu)
 		 && from_the_same_tu)
 	  // These two typedefs, pointer, reference, or qualified
 	  // types have the same name and are defined in the same TU.
 	  // They thus ought to be the same.
+	  //
+	  // Note that pointers, reference or qualified types to
+	  // anonymous types are not taking into account here because
+	  // those always need to be structurally compared.
 	  result = true;
 	else
 	  {
+	    // No fancy optimization in this case.  We need to
+	    // structurally compare the two DIEs.
 	    Dwarf_Die lu_type_die, ru_type_die;
 	    bool lu_is_void, ru_is_void;
 

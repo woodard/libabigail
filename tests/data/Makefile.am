@@ -308,6 +308,11 @@ test-diff-dwarf/test41-PR20476-hidden-report-0.txt \
 test-diff-dwarf/test42-PR21296-libgcc.so \
 test-diff-dwarf/test42-PR21296-libclang.so \
 test-diff-dwarf/test42-PR21296-clanggcc-report0.txt \
+test-diff-dwarf/libtest43-PR22913-v0.so \
+test-diff-dwarf/libtest43-PR22913-v1.so \
+test-diff-dwarf/test43-PR22913-report-0.txt \
+test-diff-dwarf/test43-PR22913-v0.c \
+test-diff-dwarf/test43-PR22913-v1.c \
 \
 test-read-dwarf/test0			\
 test-read-dwarf/test0.abi			\
