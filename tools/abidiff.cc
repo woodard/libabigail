@@ -158,7 +158,7 @@ display_usage(const string& prog_name, ostream& out)
     << " --debug-info-dir2|--d2 <path> the root for the debug info of file2\n"
     << " --headers-dir1|--hd1 <path>  the path to headers of file1\n"
     << " --headers-dir2|--hd2 <path>  the path to headers of file2\n"
-    << "  --drop-private-types\n  drop private types from "
+    << " --drop-private-types  drop private types from "
     "internal representation\n"
     << " --no-linux-kernel-mode  don't consider the input binaries as "
        "linux kernel binaries\n"
