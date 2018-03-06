@@ -1,3 +1,14 @@
+1.2
+===
+Dodji Seketeli:
+      Add newline at end of version string display
+      Initial support for Ada ranges
+      Bug 22913 - Correctly de-dup pointers to anonymous structs inside a TU
+      Fix the output indentation of abidiff --help
+      Fix indentation in the DWARF reader
+      Update abipkgdiff documentation wrt suppression specifications
+      Fix typo in abipkgdiff documentation
+
 1.1
 ===
 Dodji Seketeli:
