@@ -14038,7 +14038,7 @@ build_subrange_type(read_context&	ctxt,
   if (associate_type_to_die)
     ctxt.associate_die_to_type(die, result, where_offset);
 
-    return result;
+  return result;
 }
 
 /// Build the sub-ranges of an array type.
