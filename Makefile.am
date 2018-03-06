@@ -69,7 +69,16 @@ upload-release-only:
 
 tarball: $(TARBALL)
 
-upload-release: tag-release
-	$(MAKE) tarball upload-release-only
+upload-release: tarball tag-release upload-release-only
 
 release: upload-release
+
+upload-release: tarball-and-tag-and-upload
+
+tarball-and-tag-and-upload: tarball-and-all
+
+tarball-and-all: tag-and-all
+	$(MAKE) tarball
+
+tag-and-all: distcheck
+	$(MAKE) tag-release-only
