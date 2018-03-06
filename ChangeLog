@@ -1,3 +1,166 @@
+2018-03-06  Dodji Seketeli <dodji@redhat.com>
+
+	Update ChangeLog for 1.2
+	* ChangeLog: Updated automatically by running make update-changelog.
+
+2018-03-06  Dodji Seketeli <dodji@redhat.com>
+
+	Update NEWS file for 1.2
+	* NEWS: Update for 1.2
+
+2018-01-31  Dodji Seketeli <dodji@redhat.com>
+
+	Fix typo in abipkgdiff documenation
+	* doc/manuals/abipkgdiff.rst: Fix a typo
+
+2018-01-31  Dodji Seketeli <dodji@redhat.com>
+
+	Update abipkgdiff documentation wrt suppression specifications
+	* doc/manuals/abipkgdiff.rst: Mention the .abignore file that is
+	read by the tool and considered as a suppression specification
+	file.
+
+2018-03-06  Dodji Seketeli <dodji@redhat.com>
+
+	Fix indentation in the DWARF reader
+	* src/abg-dwarf-reader.cc (build_subrange_type): Fix indentation.
+
+2018-03-02  Dodji Seketeli <dodji@redhat.com>
+
+	Fix the output indentation of abidiff --help
+	* tools/abidiff.cc (display_usage): Fix indentation of the help
+	string for the --drop-private-types option.
+
+2018-03-02  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 22913 - Correctly de-duplicate pointers to anonymous structs inside a given
+	* src/abg-dwarf-reader.cc
+	(pointer_or_qual_die_of_anonymous_class_type)
+	(die_is_qualified_type): Define new functions.
+	(compare_dies): If pointers, reference or qualified type have an
+	anonymous struct as their underlying type, then we need to
+	structurally compare the underlying anonymous struct.
+	* tests/data/test-diff-dwarf/libtest43-PR22913-v{0,1}.so: New
+	binary test input files.
+	* tests/data/test-diff-dwarf/test43-PR22913-report-0.txt: New
+	reference output of the comparison of the two binaries above.
+	* tests/data/test-diff-dwarf/test43-PR22913-v{0,1}.c: Source code
+	of the binaries above.
+	* tests/test-diff-dwarf.cc (in_out_specs): Make the test harness
+	compare the two binaries above.
+	* tests/data/Makefile.am: Add the new test files above to the
+	source distribution.
+
+2018-02-27  Dodji Seketeli <dodji@redhat.com>
+
+	Initial support for Ada ranges
+	* include/abg-ir.h (type_maps::subrange_types): Declare new
+	accessors.
+	(is_ada_language, is_subrange_type): Declare new functions.
+	(class array_type_def::subrange_type): Make this extend type_base
+	and decl_base.
+	(array_type_def::subrange_type::{get_language, operator==,
+	get_pretty_representation, traverse}): Declare new member
+	functions.
+	(ir_node_visitor::visit_begin): Add new overloads for
+	array_type::def::subrange_type.
+	* src/abg-dwarf-reader.cc (build_subrange_type): Define new static
+	function.
+	(build_subranges_from_array_type_die): Cleanup the parameters of
+	this function.
+	(build_array_type): Adjust.
+	(build_ir_node_from_die): Support free-form DW_TAG_subrange_type.
+	(read_context::odr_is_relevant): Handle Ada.
+	(die_qualified_type_name): Support DW_TAG_subrange_type.
+	(die_pretty_print_type): Likewise.  Make the handling of
+	DW_TAG_subrange_type use die_qualified_type_name.  Adjust the use
+	of build_subranges_from_array_type_die.
+	(get_scope_die): a DW_TAG_array_type cannot be a scope.  Rather,
+	it's its scope that can be a scope.
+	* src/abg-ir.cc (type_maps::priv::subrange_types_): New data
+	member.
+	(type_maps::empty): Adjust.
+	(type_maps::subrange_types): Define new accessors.
+	(is_ada_language, is_subrange_type): Define new functions.
+	(odr_is_relevant): Support Ada.
+	(maybe_update_types_lookup_map): Add an overload for
+	array_type_def::subrange_type.  In the decl_base_sptr overload,
+	add support for the array_type_def::subrange_type type.
+	(struct array_type_def::subrange_type::priv::location_): Remove
+	this as it's now carried by the parent decl_base type.
+	(array_type_def::subrange_type::subrange_type): Adjust.  Take an
+	environement pointer, a name, an underlying type and a language.
+	(array_type_def::subrange_type::{g,s}et_underlying_type): Define
+	new accessors.
+	(array_type_def::subrange_type::{get_language,
+	get_pretty_representation, traverse}): Define new member
+	functions.
+	(array_type_def::subrange_type::as_string): Add a representation
+	for Ada.
+	(equals): Define new overload for array_type_def::subrange_type.
+	(array_type_def::subrange_type::operator==): Define three new
+	overloads for decl_base, type_base and subrange_type.
+	(array_type_def::subrange_type::operator!=): Define new operator.
+	(get_type_representation): In the overload for array_type_def,
+	support Ada.
+	(array_type_def::get_language): Define new member function.
+	(ir_node_visitor::visit_{begin,end}): Define new overloads for
+	array_type_def::subrange_type.
+	* src/abg-reader.cc (build_subrange_type): Adjust documentation.
+	Support the new 'id', 'name', and 'type-id' properties.
+	* src/abg-writer.cc (write_array_subrange_type): Define new static
+	function.
+	(write_array_type_def): Use the new write_array_subrange_type
+	function.
+	* tests/data/test-abidiff/test-PR18166-libtirpc.so.abi: Adjust.
+	* tests/data/test-annotate/libtest23.so.abi: Likewise.
+	* tests/data/test-annotate/libtest24-drop-fns-2.so.abi: Likewise.
+	* tests/data/test-annotate/libtest24-drop-fns.so.abi: Likewise.
+	* tests/data/test-annotate/test13-pr18894.so.abi: Likewise.
+	* tests/data/test-annotate/test14-pr18893.so.abi: Likewise.
+	* tests/data/test-annotate/test15-pr18892.so.abi: Likewise.
+	* tests/data/test-annotate/test17-pr19027.so.abi: Likewise.
+	* tests/data/test-annotate/test18-pr19037-libvtkRenderingLIC-6.1.so.abi: Likewise.
+	* tests/data/test-annotate/test19-pr19023-libtcmalloc_and_profiler.so.abi: Likewise.
+	* tests/data/test-annotate/test20-pr19025-libvtkParallelCore-6.1.so.abi: Likewise.
+	* tests/data/test-annotate/test21-pr19092.so.abi: Likewise.
+	* tests/data/test-annotate/test7.so.abi: Likewise.
+	* tests/data/test-read-dwarf/PR22015-libboost_iostreams.so.abi: Likewise.
+	* tests/data/test-read-dwarf/PR22122-libftdc.so.abi: Likewise.
+	* tests/data/test-read-dwarf/libtest23.so.abi: Likewise.
+	* tests/data/test-read-dwarf/libtest24-drop-fns-2.so.abi: Likewise.
+	* tests/data/test-read-dwarf/libtest24-drop-fns.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test10-pr18818-gcc.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test11-pr18828.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test12-pr18844.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test13-pr18894.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test14-pr18893.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test15-pr18892.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test16-pr18904.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test17-pr19027.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test18-pr19037-libvtkRenderingLIC-6.1.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test19-pr19023-libtcmalloc_and_profiler.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test21-pr19092.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test7.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test9-pr18818-clang.so.abi: Likewise.
+	* tests/data/test-read-write/test25.xml: Likewise.
+
+2018-02-06  Dodji Seketeli <dodji@redhat.com>
+
+	Add newline at end of version string display
+	* tools/abidiff.cc (main): Add a newline at the end of the version
+	string line.
+	* tools/abidw.cc (main): Likewise.
+	* tools/abipkgdiff.cc (main): Likewise.
+	* tools/kmidiff.cc (main): Likewise.
+
+2018-01-31  Dodji Seketeli <dodji@redhat.com>
+
+	Bump version number to 1.2
+	* configure.ac: Bump version number to 1.2
+
 2018-01-25  Dodji Seketeli <dodji@redhat.com>
 
 	Update website for 1.1
