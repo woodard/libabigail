@@ -18,7 +18,7 @@ Leaf changes summary: 2 artifacts changed (7 filtered out)
     [A] 'function void spice_server_set_playback_rate(SpicePlaybackInstance*, uint32_t)'    {spice_server_set_playback_rate@@SPICE_SERVER_0.12.5}
     [A] 'function void spice_server_set_record_rate(SpiceRecordInstance*, uint32_t)'    {spice_server_set_record_rate@@SPICE_SERVER_0.12.5}
 
-  'enum __anonymous_enum__' changed:
+  'enum __anonymous_enum__ at spice.h:471:1' changed:
     type size hasn't changed
     7 enumerator deletions:
       '__anonymous_enum__::SPICE_IMAGE_COMPRESS_INVALID' value '0'
@@ -43,7 +43,7 @@ Leaf changes summary: 2 artifacts changed (7 filtered out)
     2 impacted interfaces:
       function spice_image_compression_t spice_server_get_image_compression(SpiceServer*)
       function int spice_server_set_image_compression(SpiceServer*, spice_image_compression_t)
-  'typedef spice_image_compression_t' changed:
+  'typedef spice_image_compression_t at spice.h:479:1' changed:
     typedef name changed from spice_image_compression_t to SpiceImageCompression at enums.h:197:1
 
     2 impacted interfaces:

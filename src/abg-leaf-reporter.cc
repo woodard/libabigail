@@ -74,7 +74,14 @@ report_diffs(const reporter_base& r,
 	    out << "\n\n";
 
 	  string n = i->second->first_subject()->get_pretty_representation();
-	  out << indent << "'" << n << "' changed:\n";
+
+	  out << indent << "'" << n ;
+
+	  report_loc_info(i->second->first_subject(),
+			  *i->second->context(), out);
+
+	  out << "' changed:\n";
+
 	  i->second->get_canonical_diff()->report(out, indent + "  ");
 	  out << "\n";
 	  started_to_emit = true;

@@ -2,7 +2,7 @@ Leaf changes summary: 1 artifact changed
 Added/removed functions summary: 0 Removed, 0 Added function
 Added/removed variables summary: 0 Removed, 0 Added variable
 
-'struct leaf' changed:
+'struct leaf at test42-leaf-report-v0.cc:4:1' changed:
   type size changed from 32 to 64 bits
   1 data member insertion:
     'char leaf::m1', at offset 32 (in bits) at test42-leaf-report-v1.cc:7:1
