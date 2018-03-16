@@ -119,8 +119,8 @@ leaf_reporter::report_changes_from_diff_maps(const diff_maps& maps,
   // arrays
   report_diffs(*this, maps.get_array_diff_map(), out, indent);
 
-  // function types
-  report_diffs(*this, maps.get_function_type_diff_map(), out, indent);
+  // It doesn't make sense to report function type changes, does it?
+  // report_diffs(*this, maps.get_function_type_diff_map(), out, indent);
 
   // function decls
   report_diffs(*this, maps.get_function_decl_diff_map(), out, indent);
