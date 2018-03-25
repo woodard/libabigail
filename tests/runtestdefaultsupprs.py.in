@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 '''Runs tests for the default suppression specifications of libabigail.
 
@@ -125,19 +125,18 @@ def run_abidiff_tests():
             if suppressions:
                 env_vars[env_name] = suppressions
 
-	    with open(output_path, 'w') as out_file:
-		subprocess.call(cmd, env=env_vars, stdout=out_file)
+            with open(output_path, 'w') as out_file:
+                subprocess.call(cmd, env=env_vars, stdout=out_file)
 
-	    diffcmd = ['diff', '-u', reference_report_path,
-	    output_path]
+            diffcmd = ['diff', '-u', reference_report_path, output_path]
 
-	    return_code = subprocess.call(diffcmd)
+            return_code = subprocess.call(diffcmd)
             if return_code:
                 result = return_code
                 sys.stderr.write("failed abidiff test "
                                  "for env var '" + e + "'\n");
 
-	    del env_vars[env_name];
+            del env_vars[env_name];
 
         try:
             os.remove(default_suppression)
@@ -202,19 +201,18 @@ def run_abipkgdiff_tests():
             if suppressions:
                 env_vars[env_name] = suppressions
 
-	    with open(output_path, 'w') as out_file:
-		subprocess.call(cmd, env=env_vars, stdout=out_file)
+            with open(output_path, 'w') as out_file:
+                subprocess.call(cmd, env=env_vars, stdout=out_file)
 
-	    diffcmd = ['diff', '-u', reference_report_path,
-	    output_path]
+            diffcmd = ['diff', '-u', reference_report_path, output_path]
 
-	    return_code = subprocess.call(diffcmd)
+            return_code = subprocess.call(diffcmd)
             if return_code:
                 result = return_code
                 sys.stderr.write("failed abipkgdiff test "
                                  "for env var '" + e + "'\n");
 
-	    del env_vars[env_name];
+            del env_vars[env_name];
 
         try:
             os.remove(default_suppression)

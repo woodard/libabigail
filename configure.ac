@@ -97,6 +97,12 @@ AC_ARG_ENABLE([fedabipkgdiff],
 	      ENABLE_FEDABIPKGDIFF=$enableval,
 	      ENABLE_FEDABIPKGDIFF=auto)
 
+AC_ARG_ENABLE([python3],
+	      AS_HELP_STRING([--enable-python3=yes|no|auto],
+			     [enable running abigail tools with python3 (default is auto)]),
+	      ENABLE_PYTHON3=$enableval,
+	      ENABLE_PYTHON3=auto)
+
 dnl *************************************************
 dnl check for dependencies
 dnl *************************************************
@@ -334,29 +340,84 @@ if test x$CHECK_DEPS_FOR_FEDABIPKGDIFF = xyes; then
     fi
   fi
 
-  # The minimal python version we want to support is 2.6.6 because EL6
+  # The minimal python 2 version we want to support is 2.6.6 because EL6
   # distributions have that version installed.
-  MINIMAL_PYTHON_VERSION="2.6.6"
+  MINIMAL_PYTHON2_VERSION="2.6.6"
 
   AC_PATH_PROG(PYTHON, python, no)
-  AX_PROG_PYTHON_VERSION($MINIMAL_PYTHON_VERSION,
+  AX_PROG_PYTHON_VERSION($MINIMAL_PYTHON2_VERSION,
 			 [MINIMAL_PYTHON_VERSION_FOUND=yes],
 			 [MINIMAL_PYTHON_VERSION_FOUND=no])
+
+  # The minimal python 3 version we want to support is 3.5, which is
+  # available in Fedora releases and in EL7.
+  if test x$ENABLE_PYTHON3 != xno; then
+    AC_CHECK_PROGS(PYTHON3_INTERPRETER, [python3 python3.5 python3.6 python3.7], no)
+  else
+    PYTHON3_INTERPRETER=no
+  fi
+
+  if test x$ENABLE_PYTHON3 = xauto; then
+      if test x$PYTHON3_INTERPRETER != xno; then
+        ENABLE_PYTHON3=yes
+      else
+        # When enabling python3 is auto, tests only run if the
+        # python3 interpreter was found on the system. Otherwise,
+        # just ignore it.
+	ENABLE_PYTHON3=no
+        AC_MSG_NOTICE([Python 3 was not found. Skip running tests with Python 3.])
+      fi
+  fi
+
+  if test x$ENABLE_PYTHON3 = xyes; then
+      if  test x$PYTHON3_INTERPRETER != xno; then
+        # We were asked to enable python3 implicitely (auto and
+        # python3 was found) or explicitly.  So enable running tests
+        # using python3 then.
+        RUN_TESTS_WITH_PY3=yes
+      else
+         AC_MSG_ERROR([Python 3 was not found])
+      fi
+  fi
+
+  if test x$PYTHON3_INTERPRETER = xyes; then
+     MINIMAL_PYTHON_VERSION_FOUND=yes
+  fi
 
   if test x$MINIMAL_PYTHON_VERSION_FOUND = xno; then
     MISSING_FEDABIPKGDIFF_DEP=yes
     if test x$MISSING_FEDABIPKGDIFF_DEP_FATAL = xyes; then
-      AC_MSG_ERROR([could not find a python program of version at least $MINIMAL_PYTHON_VERSION])
+      AC_MSG_ERROR([could not find a python program of version at least $MINIMAL_PYTHON2_VERSION])
+    fi
+  else
+    if test x$PYTHON3_INTERPRETER != xno; then
+     # We were instructed to use python3 and it's present on the
+     # system.  Let's update the PYTHON variable that points to the
+     # actual python interpreter we are going to be using
+     PYTHON=$PYTHON3_INTERPRETER
     fi
   fi
 
+  ###################################################################
+  # Now we are going to check the presence of the required python
+  # modules using either python2 or python3 as required until now.
+  ###################################################################
+
+  # Grrr, the urlparse python2 module got renamed in python3 as
+  # urllib.parse.  Oh well.
+  if test x$PYTHON = xpython3; then
+     URLPARSE_MODULE=urllib.parse
+  else
+     URLPARSE_MODULE=urlparse
+  fi
+
   REQUIRED_PYTHON_MODULES_FOR_FEDABIPKGDIFF="\
-   argparse logging os re subprocess sys urlparse \
-   xdg koji mock rpm imp tempfile mimetypes shutil"
+   argparse logging os re subprocess sys $URLPARSE_MODULE \
+   xdg koji mock rpm imp tempfile mimetypes shutil six"
 
   if test x$ENABLE_FEDABIPKGDIFF != xno; then
     AX_CHECK_PYTHON_MODULES([$REQUIRED_PYTHON_MODULES_FOR_FEDABIPKGDIFF],
-			    [python2],
+			    [$PYTHON],
 			    [FOUND_ALL_PYTHON_MODULES=yes],
 			    [FOUND_ALL_PYTHON_MODULES=no])
 
@@ -399,6 +460,9 @@ koji.read_config('koji')"
 fi
 
 AM_CONDITIONAL(ENABLE_FEDABIPKGDIFF, test x$ENABLE_FEDABIPKGDIFF = xyes)
+AM_CONDITIONAL(ENABLE_RUNNING_TESTS_WITH_PY3, test x$RUN_TESTS_WITH_PY3 = xyes)
+AM_CONDITIONAL(ENABLE_PYTHON3_INTERPRETER, test x$PYTHON3_INTERPRETER != xno)
+
 
 dnl Check for dependency: libzip
 LIBZIP_VERSION=0.10.1
@@ -557,8 +621,12 @@ AC_CONFIG_FILES([tests/mockfedabipkgdiff],
 		[chmod +x tests/mockfedabipkgdiff])
 AC_CONFIG_FILES([tests/runtestfedabipkgdiff.py],
 		[chmod +x tests/runtestfedabipkgdiff.py])
+AC_CONFIG_FILES([tests/runtestfedabipkgdiffpy3.sh],
+		[chmod +x tests/runtestfedabipkgdiffpy3.sh])
 AC_CONFIG_FILES([tests/runtestdefaultsupprs.py],
 		[chmod +x tests/runtestdefaultsupprs.py])
+AC_CONFIG_FILES([tests/runtestdefaultsupprspy3.sh],
+		[chmod +x tests/runtestdefaultsupprspy3.sh])
 
 AC_OUTPUT
 
@@ -574,6 +642,7 @@ AC_MSG_NOTICE([
     C Compiler                                     : ${CC}
     C++ Compiler		                   : ${CXX}
     GCC visibility attribute supported             : ${SUPPORTS_GCC_VISIBILITY_ATTRIBUTE}
+    Python					   : ${PYTHON}
 
  OPTIONAL FEATURES:
     Enable zip archives                            : ${ENABLE_ZIP_ARCHIVE}
@@ -584,6 +653,7 @@ AC_MSG_NOTICE([
     Enable GNU tar archive support in abipkgdiff   : ${ENABLE_TAR}
     Enable bash completion	                   : ${ENABLE_BASH_COMPLETION}
     Enable fedabipkgdiff                           : ${ENABLE_FEDABIPKGDIFF}
+    Enable python 3				   : ${ENABLE_PYTHON3}
     Enable running tests under Valgrind            : ${enable_valgrind}
     Generate html apidoc	                   : ${ENABLE_APIDOC}
     Generate html manual	                   : ${ENABLE_MANUAL}

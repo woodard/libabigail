@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # -*- Mode: Python
 #
@@ -55,13 +55,14 @@ variables.
 import os
 import tempfile
 import imp
+import six
 
 try:
     from mock import patch
 except ImportError:
     import sys
-    print >>sys.stderr, \
-        'mock is required to run tests. Please install before running tests.'
+    six.print_('mock is required to run tests. Please install before running'
+               ' tests.', file=sys.stderr)
     sys.exit(1)
 
 ABIPKGDIFF = '@abs_top_builddir@/tools/abipkgdiff'
@@ -307,12 +308,12 @@ class MockClientSession(object):
         :return: the found package
         :rtype: dict
         """
-        assert isinstance(name, basestring)
+        assert isinstance(name, six.string_types)
 
         def selector(package):
             return package['name'] == name
 
-        return filter(selector, packages)[0]
+        return [p for p in packages if selector(p)][0]
 
     def getBuild(self, build_id):
         """Mock kojihub.getBuild
@@ -326,7 +327,7 @@ class MockClientSession(object):
         def selector(build):
             return build['build_id'] == build_id
 
-        return filter(selector, builds)[0]
+        return [b for b in builds if selector(b)][0]
 
     def listBuilds(self, packageID, state=None):
         """Mock kojihub.listBuilds
@@ -362,7 +363,7 @@ class MockClientSession(object):
                 rpm['release'] == rpminfo['release'] and \
                 rpm['arch'] == rpminfo['arch']
 
-        return filter(selector, rpms)[0]
+        return [rpm for rpm in rpms if selector(rpm)][0]
 
     def listRPMs(self, buildID, arches=None):
         """Mock kojihub.listRPMs
@@ -376,9 +377,9 @@ class MockClientSession(object):
         """
         assert isinstance(buildID, int)
         if arches is not None:
-            assert isinstance(arches, (tuple, list, basestring))
+            assert isinstance(arches, (tuple, list, six.string_types))
 
-        if arches is not None and isinstance(arches, basestring):
+        if arches is not None and isinstance(arches, six.string_types):
             arches = [arches]
 
         def selector(rpm):
@@ -387,7 +388,7 @@ class MockClientSession(object):
                 selected = selected and rpm['arch'] in arches
             return selected
 
-        return filter(selector, rpms)
+        return [rpm for rpm in rpms if selector(rpm)]
 
 
 @patch('koji.ClientSession', new=MockClientSession)

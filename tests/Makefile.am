@@ -17,8 +17,12 @@ AM_CXXFLAGS += "-std=gnu++11"
 endif
 
 FEDABIPKGDIFF_TEST =
+if ENABLE_RUNNING_TESTS_WITH_PY3
+FEDABIPKGDIFF_TEST += runtestfedabipkgdiffpy3.sh
+else
 if ENABLE_FEDABIPKGDIFF
 FEDABIPKGDIFF_TEST += runtestfedabipkgdiff.py
+endif
 endif
 
 TESTS=				\
@@ -43,12 +47,21 @@ runtestabidiffexit		\
 runtestdefaultsupprs.py		\
 $(CXX11_TESTS)
 
+if ENABLE_RUNNING_TESTS_WITH_PY3
+TESTS += runtestdefaultsupprspy3.sh
+endif
 
 EXTRA_DIST = \
 runtestcanonicalizetypes.sh.in \
 runtestfedabipkgdiff.py.in \
 mockfedabipkgdiff.in \
 test-valgrind-suppressions.supp
+
+if ENABLE_RUNNING_TESTS_WITH_PY3
+EXTRA_DIST += \
+runtestfedabipkgdiffpy3.sh.in 	\
+runtestdefaultsupprspy3.sh.in
+endif
 
 CLEANFILES = \
 runtestcanonicalizetypes.output.txt \
@@ -138,6 +151,12 @@ runtestfedabipkgdiff.py$(EXEEXT):
 
 runtestdefaultsupprs_py_SOURCES =
 runtestdefaultsupprs.py$(EXEEXT):
+
+runtestfedabipkgdiffpy3_sh_SOURCES =
+runtestfedabipkgdiffpy3.sh$(EXEEXT):
+
+runtestdefaultsupprspy3_sh_SOURCES =
+runtestdefaultsupprspy3.sh$(EXEEXT):
 
 AM_CPPFLAGS=-I${abs_top_srcdir}/include \
 -I${abs_top_builddir}/include -I${abs_top_srcdir}/tools -fPIC

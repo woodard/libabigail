@@ -22,13 +22,17 @@
 #
 # Author: Chenxiong Qi
 
+from __future__ import print_function
+
 import argparse
+import functools
 import glob
 import logging
 import mimetypes
 import os
 import re
 import shutil
+import six
 import subprocess
 import sys
 
@@ -226,8 +230,8 @@ def cmp_nvr(left, right):
     equal to, or larger than the right individually.
     :rtype: int
     """
-    left_nvr = koji.parse_NVR(left)
-    right_nvr = koji.parse_NVR(right)
+    left_nvr = koji.parse_NVR(left['nvr'])
+    right_nvr = koji.parse_NVR(right['nvr'])
     return rpm.labelCompare(
         (left_nvr['epoch'], left_nvr['version'], left_nvr['release']),
         (right_nvr['epoch'], right_nvr['version'], right_nvr['release']))
@@ -461,7 +465,8 @@ class RPMCollection(object):
         self.ancillary_rpms = {}
 
         if rpms:
-            map(self.add, rpms)
+            for rpm in rpms:
+                self.add(rpm)
 
     @classmethod
     def gather_from_dir(cls, rpm_file, all_rpms=None):
@@ -517,8 +522,7 @@ class RPMCollection(object):
 
     def rpms_iter(self, arches=None, default_behavior=True):
         """Iterator of RPMs to go through RPMs with specific arches"""
-        arches = self.rpms.keys()
-        arches.sort()
+        arches = sorted(self.rpms.keys())
 
         for arch in arches:
             for _rpm in self.rpms[arch]:
@@ -561,7 +565,7 @@ class RPMCollection(object):
             if r.is_debuginfo:
                 result.append(r)
         return result
-    
+
 
 def generate_comparison_halves(rpm_col1, rpm_col2):
     """Iterate RPM collection and peer's to generate comparison halves"""
@@ -739,7 +743,7 @@ class Brew(object):
             raise TypeError(
                 '{0} is not a callable object.'.format(str(selector)))
 
-        if order_by is not None and not isinstance(order_by, basestring):
+        if order_by is not None and not isinstance(order_by, six.string_types):
             raise TypeError('order_by {0} is invalid.'.format(order_by))
 
         builds = self.session.listBuilds(packageID=packageID, state=state)
@@ -748,11 +752,16 @@ class Brew(object):
         if order_by is not None:
             # FIXME: is it possible to sort builds by using opts parameter of
             # listBuilds
-            cmp_func = cmp_nvr if order_by == 'nvr' else None
-            builds = sorted(builds,
-                            key=lambda item: item[order_by],
-                            cmp=cmp_func,
-                            reverse=reverse)
+            if order_by == 'nvr':
+                if six.PY2:
+                    builds = sorted(builds, cmp=cmp_nvr, reverse=reverse)
+                else:
+                    builds = sorted(builds,
+                                    key=functools.cmp_to_key(cmp_nvr),
+                                    reverse=reverse)
+            else:
+                builds = sorted(
+                    builds, key=lambda b: b[order_by], reverse=reverse)
         if topone:
             builds = builds[0:1]
 
@@ -974,7 +983,7 @@ def download_rpm(url):
         url, os.path.join(get_download_dir(),
                           os.path.basename(url)))
     if global_config.dry_run:
-        print 'DRY-RUN:', cmd
+        print('DRY-RUN: {0}'.format(cmd))
         return
 
     return_code = subprocess.call(cmd, shell=True)
@@ -997,7 +1006,8 @@ def download_rpms(rpms):
             logger.debug('Download %s', rpm.download_url)
             download_rpm(rpm.download_url)
 
-    map(_download, rpms)
+    for rpm in rpms:
+        _download(rpm)
 
 
 @log_call
@@ -1019,7 +1029,7 @@ def build_path_to_abipkgdiff():
 def format_debug_info_pkg_options(option, debuginfo_list):
     """Given a list of debug info package descriptors return an option
     string that looks like:
-    
+
        option dbg.rpm1 option dbgrpm2 ...
 
     :param: list debuginfo_list a list of instances of the RPM class
@@ -1121,20 +1131,21 @@ def abipkgdiff(cmp_half1, cmp_half2):
         cmp_half1.subject.downloaded_file,
         cmp_half2.subject.downloaded_file,
     ]
-    cmd = filter(lambda s: s != '', cmd)
+    cmd = [s for s in cmd if s != '']
 
     if global_config.dry_run:
-        print 'DRY-RUN:', ' '.join(cmd)
+        print('DRY-RUN: {0}'.format(' '.join(cmd)))
         return
 
     logger.debug('Run: %s', ' '.join(cmd))
 
-    print 'Comparing the ABI of binaries between {0} and {1}:'.format(
-        cmp_half1.subject.filename, cmp_half2.subject.filename)
-    print
+    print('Comparing the ABI of binaries between {0} and {1}:'.format(
+        cmp_half1.subject.filename, cmp_half2.subject.filename))
+    print()
 
     proc = subprocess.Popen(' '.join(cmd), shell=True,
-                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                            universal_newlines=True)
     # So we could have done: stdout, stderr = proc.communicate()
     # But then the documentatin of proc.communicate says:
     #
@@ -1160,9 +1171,9 @@ def abipkgdiff(cmp_half1, cmp_half2):
     has_abi_change = proc.returncode & ABIDIFF_ABI_CHANGE
 
     if is_internal_error:
-        print >>sys.stderr, stderr
+        six.print_(stderr, file=sys.stderr)
     elif is_ok or has_abi_change:
-        print stdout
+        print(stdout)
 
     return proc.returncode
 
@@ -1555,7 +1566,7 @@ def main():
             if both_nvr or both_nvra:
                 return diff_two_nvras_from_koji()
 
-    print >>sys.stderr, 'Unknown arguments. Please refer to --help.'
+    six.print_('Unknown arguments. Please refer to --help.', file=sys.stderr)
     return 1
 
 
@@ -1568,7 +1579,7 @@ if __name__ == '__main__':
         if global_config.debug:
             logger.debug('Terminate by user')
         else:
-            print >>sys.stderr, 'Terminate by user'
+            six.print_('Terminate by user', file=sys.stderr)
         if global_config.show_traceback:
             raise
         else:
@@ -1579,7 +1590,7 @@ if __name__ == '__main__':
         if global_config.debug:
             logger.debug(str(e))
         else:
-            print >>sys.stderr, str(e)
+            six.print_(str(e), file=sys.stderr)
         if global_config.show_traceback:
             raise
         else:
