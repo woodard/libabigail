@@ -22,6 +22,7 @@
 
 #include <tr1/memory>
 #include <string>
+#include <set>
 #include <ostream>
 #include <istream>
 #include <iostream>
@@ -37,6 +38,7 @@ using std::ostream;
 using std::istream;
 using std::ifstream;
 using std::string;
+using std::set;
 using std::tr1::shared_ptr;
 
 const char* get_system_libdir();
@@ -66,7 +68,10 @@ bool split_string(const string&, const string&, vector<string>&);
 bool string_suffix(const string&, const string&, string&);
 bool sorted_strings_common_prefix(vector<string>&, string&);
 string get_library_version_string();
-
+bool execute_command_and_get_output(const string&, vector<string>&);
+bool get_dsos_provided_by_rpm(const string& rpm_path,
+			      set<string>& provided_dsos);
+string remove_trailing_white_spaces(const string&);
 suppr::type_suppression_sptr
 gen_suppr_spec_from_headers(const string& hdrs_root_dir);
 

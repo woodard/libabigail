@@ -793,6 +793,125 @@ get_library_version_string()
   return version_string;
 }
 
+/// Execute a shell command and returns its output.
+///
+/// @param cmd the shell command to execute.
+///
+/// @param lines output parameter.  This is set with the lines that
+/// constitute the output of the process that executed the command @p
+/// cmd.
+///
+/// @return true iff the command was executed properly and no error
+/// was encountered.
+bool
+execute_command_and_get_output(const string& cmd, vector<string>& lines)
+{
+  if (cmd.empty())
+    return false;
+
+  FILE *stream=
+    popen(cmd.c_str(),
+	  /*open 'stream' in
+	    read-only mode: type=*/"r");
+
+  if (stream == NULL)
+    return false;
+
+  string result;
+
+#define TMP_BUF_LEN 1024 + 1
+  char tmp_buf[TMP_BUF_LEN];
+  memset(tmp_buf, 0, TMP_BUF_LEN);
+
+  while (fgets(tmp_buf, TMP_BUF_LEN, stream))
+    {
+      lines.push_back(tmp_buf);
+      memset(tmp_buf, 0, TMP_BUF_LEN);
+    }
+
+  if (pclose(stream) == -1)
+    return false;
+
+  return true;
+}
+
+/// Get the SONAMEs of the DSOs advertised as being "provided" by a
+/// given RPM.  That set can be considered as being the set of
+/// "public" DSOs of the RPM.
+///
+/// This runs the command "rpm -qp --provides <rpm> | grep .so" and
+/// filters its result.
+///
+/// @param rpm_path the path to the RPM to consider.
+///
+/// @param provided_dsos output parameter.  This is set to the set of
+/// SONAMEs of the DSOs advertised as being provided by the RPM
+/// designated by @p rpm_path.
+///
+/// @return true iff we could successfully query the RPM to see what
+/// DSOs it provides.
+bool
+get_dsos_provided_by_rpm(const string& rpm_path, set<string>& provided_dsos)
+{
+  vector<string> query_output;
+  if (!execute_command_and_get_output("rpm -qp --provides "
+				      + rpm_path + " | grep .so",
+				      query_output))
+    return false;
+
+  set<string> dsos;
+  for (vector<string>::const_iterator line = query_output.begin();
+       line != query_output.end();
+       ++line)
+    {
+      vector<string> splitted;
+      string dso;
+      if (!line->empty())
+	{
+	  if (line->find("(") != string::npos)
+	    {
+	      assert(split_string(*line, "(", splitted));
+	      dso = splitted.front();
+	    }
+	  else
+	    dso = *line;
+	}
+
+      if (!dso.empty())
+	{
+	  dso = remove_trailing_white_spaces(dso);
+	  provided_dsos.insert(dso);
+	}
+    }
+  return true;
+}
+
+/// Remove spaces at the beginning and at the end of a given string.
+///
+/// @param str the input string to consider.
+///
+/// @return the @p str string from which trailing white spaces have
+/// been removed.
+string
+remove_trailing_white_spaces(const string& str)
+{
+  if (str.empty())
+    return "";
+
+  string result;
+  string::size_type start, end;
+  for (start = 0; start < str.length(); ++start)
+    if (!isspace(str[start]))
+      break;
+
+  for (end = str.length() - 1; end > 0; --end)
+    if (!isspace(str[end]))
+      break;
+
+  result = str.substr(start, end - start + 1);
+  return result;
+}
+
 /// The private data of the @ref temp_file type.
 struct temp_file::priv
 {

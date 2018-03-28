@@ -111,6 +111,7 @@ using std::ostream;
 using std::vector;
 using std::map;
 using std::tr1::unordered_set;
+using std::set;
 using std::ostringstream;
 using std::tr1::shared_ptr;
 using std::tr1::dynamic_pointer_cast;
@@ -139,6 +140,7 @@ using abigail::tools_utils::gen_suppr_spec_from_kernel_abi_whitelist;
 using abigail::tools_utils::get_default_system_suppression_file_path;
 using abigail::tools_utils::get_default_user_suppression_file_path;
 using abigail::tools_utils::get_vmlinux_path_from_kernel_dist;
+using abigail::tools_utils::get_dsos_provided_by_rpm;
 using abigail::tools_utils::build_corpus_group_from_kernel_dist_under;
 using abigail::tools_utils::load_default_system_suppressions;
 using abigail::tools_utils::load_default_user_suppressions;
@@ -188,6 +190,7 @@ public:
   bool		no_default_suppression;
   bool		keep_tmp_files;
   bool		compare_dso_only;
+  bool		compare_private_dsos;
   bool		leaf_changes_only;
   bool		show_impacted_interfaces;
   bool		show_full_impact_report;
@@ -219,6 +222,7 @@ public:
       no_default_suppression(),
       keep_tmp_files(),
       compare_dso_only(),
+      compare_private_dsos(),
       leaf_changes_only(),
       show_impacted_interfaces(),
       show_full_impact_report(),
@@ -256,7 +260,7 @@ public:
   string				path;
   string				name;
   string				soname;
-  off_t 				size;
+  off_t				size;
   abigail::dwarf_reader::elf_type	type;
 
   /// The path to the elf file.
@@ -339,6 +343,7 @@ private:
   package_sptr				kabi_whitelist_package_;
   suppressions_type			private_types_suppressions_;
   vector<string>			elf_file_paths_;
+  set<string>				public_dso_sonames_;
 
 public:
   /// Constructor for the @ref package type.
@@ -575,6 +580,28 @@ public:
   vector<string>&
   elf_file_paths()
   {return elf_file_paths_;}
+
+  /// Getter of the SONAMEs of the public DSOs carried by this
+  /// package.
+  ///
+  /// This is relevant only if the --private-dso option was *NOT*
+  /// provided.
+  ///
+  /// @return the SONAMEs of the public DSOs carried by this package.
+  const set<string>&
+  public_dso_sonames() const
+  {return public_dso_sonames_;}
+
+  /// Getter of the SONAMEs of the public DSOs carried by this
+  /// package.
+  ///
+  /// This is relevant only if the --private-dso option was *NOT*
+  /// provided.
+  ///
+  /// @return the SONAMEs of the public DSOs carried by this package.
+  set<string>&
+  public_dso_sonames()
+  {return public_dso_sonames_;}
 
   /// Convert the absolute path of an element of this package into a
   /// path relative to the root path pointing to this package.
@@ -815,6 +842,8 @@ display_usage(const string& prog_name, ostream& out)
     << " --wp <path>                    path to a linux kernel abi whitelist package\n"
     << " --keep-tmp-files               don't erase created temporary files\n"
     << " --dso-only                     compare shared libraries only\n"
+    << " --private-dso                  compare DSOs that are private "
+    "to the package as well\n"
     << " --leaf-changes-only|-l  only show leaf changes, "
     "so no change impact analysis\n"
     << "  --impacted-interfaces|-i when in leaf mode, show "
@@ -1493,6 +1522,49 @@ maybe_create_private_types_suppressions(package& pkg, const options &opts)
   return suppr;
 }
 
+/// If the user wants to avoid comparing DSOs that are private to this
+/// package, then we build the set of public DSOs as advertised in the
+/// package's "provides" property.
+///
+/// Note that at the moment this function only works for RPMs.  It
+/// doesn't yet support other packaging formats.
+///
+/// @param pkg the package to consider.
+///
+/// @param opts the options of this program.
+///
+/// @return true iff the set of public DSOs was built.
+static bool
+maybe_create_public_dso_sonames_set(package& pkg, const options &opts)
+{
+  if (opts.compare_private_dsos || !pkg.public_dso_sonames().empty())
+    return false;
+
+  if (pkg.type() == abigail::tools_utils::FILE_TYPE_RPM)
+    {
+      set<string> public_dsos;
+      return get_dsos_provided_by_rpm(pkg.path(), pkg.public_dso_sonames());
+    }
+
+  // We don't support this yet for non-RPM packages.
+  return false;
+}
+
+/// Test if we should only compare the public DSOs of a given package.
+///
+/// @param pkg the package to consider.
+///
+/// @param opts the options of this program
+static bool
+must_compare_public_dso_only(package& pkg, options& opts)
+{
+  if (pkg.type() == abigail::tools_utils::FILE_TYPE_RPM
+      && !opts.compare_private_dsos)
+    return true;
+
+  return false;
+}
+
 /// While walking a file directory, check if a directory entry is a
 /// kabi whitelist of a particular architecture.
 ///
@@ -1927,6 +1999,8 @@ create_maps_of_package_content(package& package, options& opts)
   // later by the package::convert_path_to_unique_suffix method.
   package.load_elf_file_paths(opts);
 
+  maybe_create_public_dso_sonames_set(package, opts);
+
   for (vector<string>::const_iterator file = elf_file_paths.begin();
        file != elf_file_paths.end();
        ++file)
@@ -1969,6 +2043,19 @@ create_maps_of_package_content(package& package, options& opts)
 
       if (e->soname.empty())
 	{
+	  if (e->type == abigail::dwarf_reader::ELF_TYPE_DSO
+	      && must_compare_public_dso_only(package, opts))
+	    {
+	      // We are instructed to compare public DSOs only.  Yet
+	      // this DSO does not have a soname.  so it can not be a
+	      // public DSO.  Let's skip it.
+	      if (opts.verbose)
+		emit_prefix("abipkgdiff", cerr)
+		  << "DSO " << e->path
+		  << " does not have a soname so it's private.  Skipping it\n";
+	      continue;
+	    }
+
 	  // Several binaries at different paths can have the same
 	  // base name.  So let's consider the full path of the binary
 	  // inside the extracted directory.
@@ -1987,6 +2074,22 @@ create_maps_of_package_content(package& package, options& opts)
 	  // binary inside the extracted directory, not just the
 	  // soname.
 	  string key = e->soname;
+
+	  if (must_compare_public_dso_only(package, opts))
+	    {
+	      if (package.public_dso_sonames().find(key)
+		  == package.public_dso_sonames().end())
+		{
+		  // We are instructed to compare public DSOs only and
+		  // this one seems to be private.  So skip it.
+		  if (opts.verbose)
+		    emit_prefix("abipkgdiff", cerr)
+		      << "DSO " << e->path << " of soname " << key
+		      << " seems to be private.  Skipping it\n";
+		  continue;
+		}
+	    }
+
 	  if (package.convert_path_to_unique_suffix(e->path, key))
 	    {
 	      dir_name(key, key);
@@ -2688,6 +2791,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.keep_tmp_files = true;
       else if (!strcmp(argv[i], "--dso-only"))
 	opts.compare_dso_only = true;
+      else if (!strcmp(argv[i], "--private-dso"))
+	opts.compare_private_dsos = true;
       else if (!strcmp(argv[i], "--leaf-changes-only")
 	       ||!strcmp(argv[i], "-l"))
 	opts.leaf_changes_only = true;

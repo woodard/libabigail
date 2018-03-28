@@ -243,7 +243,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
-    "--no-default-suppression --no-show-locs",
+    "--no-default-suppression --private-dso --no-show-locs",
     "",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm",
@@ -256,7 +256,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
-    "--no-default-suppression --no-show-locs",
+    "--no-default-suppression --private-dso --no-show-locs",
     "",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
     "",
@@ -270,7 +270,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
-    "--no-default-suppression --no-show-locs",
+    "--no-default-suppression --private-dso --no-show-locs",
     "",
     "",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm",
@@ -444,7 +444,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/nonexistent-0.rpm",
     "data/test-diff-pkg/nonexistent-1.rpm",
-    "--no-default-suppression",
+    "--no-default-suppression --private-dso",
     "",
     "",
     "",

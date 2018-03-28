@@ -142,6 +142,20 @@ Options
     Compare ELF files that are shared libraries, only.  Do not compare
     executable files, for instance.
 
+  * ``--private-dso``
+
+    By default, ``abipkgdiff`` does not compare DSOs that are private
+    to the RPM package.  A private DSO is a DSO which SONAME is *NOT*
+    advertised in the "provides" property of the RPM.
+
+    This option instructs ``abipkgdiff`` to *also* compare DSOs that
+    are *NOT* advertised in the "provides" property of the RPM.
+
+    Please note that the fact that (by default) ``abipkgdiff`` skips
+    private DSO is a feature that is available only for RPMs, at the
+    moment.  We would happily accept patches adding that feature for
+    other package formats.
+
   * ``--leaf-changes-only|-l`` only show leaf changes, so don't show
     impact analysis report.
 
