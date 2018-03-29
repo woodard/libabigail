@@ -214,12 +214,13 @@ dnl Check for the rpm2cpio and cpio programs
 if test x$ENABLE_RPM = xyes -o x$ENABLE_RPM = xauto; then
   AC_CHECK_PROG(HAS_RPM2CPIO, rpm2cpio, yes, no)
   AC_CHECK_PROG(HAS_CPIO, cpio, yes, no)
+  AC_CHECK_PROG(HAS_RPM, rpm, yes, no)
 
-  if test x$HAS_RPM2CPIO = xyes -a x$HAS_CPIO = xyes; then
+  if test x$HAS_RPM2CPIO = xyes -a x$HAS_CPIO = xyes -a x$HAS_RPM = xyes; then
      ENABLE_RPM=yes
   else
     if test x$ENABLE_RPM = xyes; then
-      AC_MSG_ERROR([rpm support in abipkgdiff needs both 'rpm2cpio' and 'cpio' programs to be installed])
+      AC_MSG_ERROR([rpm support in abipkgdiff needs 'rpm2cpio', 'cpio' and 'rpm' programs to be installed])
     fi
     ENABLE_RPM=no
   fi
