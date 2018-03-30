@@ -17,10 +17,10 @@ AM_CXXFLAGS += "-std=gnu++11"
 endif
 
 FEDABIPKGDIFF_TEST =
+if ENABLE_FEDABIPKGDIFF
 if ENABLE_RUNNING_TESTS_WITH_PY3
 FEDABIPKGDIFF_TEST += runtestfedabipkgdiffpy3.sh
 else
-if ENABLE_FEDABIPKGDIFF
 FEDABIPKGDIFF_TEST += runtestfedabipkgdiff.py
 endif
 endif
