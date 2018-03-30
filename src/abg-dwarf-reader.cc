@@ -12978,11 +12978,23 @@ add_or_update_class_type(read_context&	 ctxt,
 	    // TODO: if there is just one class for that name defined,
 	    // then re-use it.  Otherwise, don't.
 	    result = lookup_class_type(name, *corp);
-	  if (result)
+	  if (result
+	      // If we are seeing a declaration of a definition we
+	      // already had, or if we are seing a type with the same
+	      // declaration-only-ness that we had before, then keep
+	      // the one we already had.
+	      && (result->get_is_declaration_only() == is_declaration_only
+		  || (!result->get_is_declaration_only()
+		      && is_declaration_only)))
 	    {
 	      ctxt.associate_die_to_type(die, result, where_offset);
 	      return result;
 	    }
+	  else
+	    // We might be seeing the definition of a declaration we
+	    // already had.  In that case, keep the definition and
+	    // drop the declaration.
+	    result.reset();
 	}
     }
 
