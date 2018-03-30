@@ -397,16 +397,19 @@ main(int argc, char* argv[])
   environment_sptr env(new environment);
 
   corpus_group_sptr group1, group2;
-  char *di_dir1 = 0, *di_dir2 = 0;
+  string debug_info_root_dir;
   if (!opts.kernel_dist_root1.empty())
     {
       file_type ftype = guess_file_type(opts.kernel_dist_root1);
       if (ftype == FILE_TYPE_DIR)
 	{
-	  di_dir1 = opts.di_root_path1.get();
+	  debug_info_root_dir = opts.di_root_path1.get()
+	    ? opts.di_root_path1.get()
+	    : "";
+
 	  group1 =
 	    build_corpus_group_from_kernel_dist_under(opts.kernel_dist_root1,
-						      di_dir1,
+						      debug_info_root_dir,
 						      opts.vmlinux1,
 						      opts.suppression_paths,
 						      opts.kabi_whitelist_paths,
@@ -427,10 +430,12 @@ main(int argc, char* argv[])
       file_type ftype = guess_file_type(opts.kernel_dist_root2);
       if (ftype == FILE_TYPE_DIR)
 	{
-	  di_dir2 = opts.di_root_path2.get();
+	  debug_info_root_dir = opts.di_root_path2.get()
+	    ? opts.di_root_path2.get()
+	    : "";
 	  group2 =
 	    build_corpus_group_from_kernel_dist_under(opts.kernel_dist_root2,
-						      di_dir2,
+						      debug_info_root_dir,
 						      opts.vmlinux2,
 						      opts.suppression_paths,
 						      opts.kabi_whitelist_paths,
