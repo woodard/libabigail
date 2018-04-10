@@ -168,15 +168,13 @@ static bool
 char_is_white_space(int b)
 {return b == ' ' || b == '\t' || b == '\n';}
 
-/// Remove the trailing spaces at the begining and at the end of a
-/// given string.
+/// Remove the spaces at the begining and at the end of a given string.
 ///
-/// @param str the string to remove trailing white spaces from.
+/// @param str the string to remove leading and trailing white spaces from.
 ///
-/// @return the string resulting from the removal of trailing white
-/// space from @p str.
+/// @return the string resulting from the removal of white space from @p str.
 static string
-remove_trailing_white_spaces(const string& str)
+trim_white_space(const string& str)
 {
   string result;
 
@@ -1401,8 +1399,7 @@ public:
 	assert(read_next_char(c));
 	v += c;
       }
-    string result = remove_trailing_white_spaces(v);
-    return result;
+    return trim_white_space(v);
   }
 
   /// Read a string property value.

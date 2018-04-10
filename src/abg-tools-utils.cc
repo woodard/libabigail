@@ -864,7 +864,7 @@ get_dsos_provided_by_rpm(const string& rpm_path, set<string>& provided_dsos)
        ++line)
     {
       string dso = line->substr(0, line->find('('));
-      dso = remove_trailing_white_spaces(dso);
+      dso = trim_white_space(dso);
       if (!dso.empty())
 	provided_dsos.insert(dso);
     }
@@ -875,10 +875,9 @@ get_dsos_provided_by_rpm(const string& rpm_path, set<string>& provided_dsos)
 ///
 /// @param str the input string to consider.
 ///
-/// @return the @p str string from which trailing white spaces have
-/// been removed.
+/// @return the @p str string with leading and trailing white spaces removed.
 string
-remove_trailing_white_spaces(const string& str)
+trim_white_space(const string& str)
 {
   if (str.empty())
     return "";

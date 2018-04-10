@@ -71,7 +71,7 @@ string get_library_version_string();
 bool execute_command_and_get_output(const string&, vector<string>&);
 bool get_dsos_provided_by_rpm(const string& rpm_path,
 			      set<string>& provided_dsos);
-string remove_trailing_white_spaces(const string&);
+string trim_white_space(const string&);
 suppr::type_suppression_sptr
 gen_suppr_spec_from_headers(const string& hdrs_root_dir);
 
