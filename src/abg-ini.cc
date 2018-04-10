@@ -176,8 +176,6 @@ char_is_white_space(int b)
 static string
 trim_white_space(const string& str)
 {
-  string result;
-
   if (str.empty())
     return str;
 
@@ -191,10 +189,7 @@ trim_white_space(const string& str)
     if (!char_is_white_space(str[e]))
       break;
 
-  for (unsigned i = s; i <= e; ++i)
-    result += str[i];
-
-  return result;
+  return str.substr(s, e - s + 1);
 }
 
 // <property stuff>
