@@ -864,24 +864,10 @@ get_dsos_provided_by_rpm(const string& rpm_path, set<string>& provided_dsos)
        line != query_output.end();
        ++line)
     {
-      vector<string> splitted;
-      string dso;
-      if (!line->empty())
-	{
-	  if (line->find("(") != string::npos)
-	    {
-	      assert(split_string(*line, "(", splitted));
-	      dso = splitted.front();
-	    }
-	  else
-	    dso = *line;
-	}
-
+      string dso = line->substr(0, line->find('('));
+      dso = remove_trailing_white_spaces(dso);
       if (!dso.empty())
-	{
-	  dso = remove_trailing_white_spaces(dso);
-	  provided_dsos.insert(dso);
-	}
+	provided_dsos.insert(dso);
     }
   return true;
 }
