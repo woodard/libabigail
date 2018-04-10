@@ -792,7 +792,7 @@ has_class_decl_only_def_change(const class_or_union_sptr& first,
 //// @return true if the class_or_union_diff carries a change in which
 /// the two classes are different by the fact that one is a decl-only
 /// and the other one is defined.
-static bool
+bool
 has_class_decl_only_def_change(const diff *diff)
 {
   const class_or_union_diff *d = dynamic_cast<const class_or_union_diff*>(diff);

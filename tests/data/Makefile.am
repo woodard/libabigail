@@ -645,6 +645,11 @@ test-diff-filter/libtest42-leaf-report-v1.so \
 test-diff-filter/test42-leaf-report-output-0.txt \
 test-diff-filter/test42-leaf-report-v0.cc \
 test-diff-filter/test42-leaf-report-v1.cc \
+test-diff-filter/libtest43-decl-only-def-change-leaf-report-v0.so \
+test-diff-filter/libtest43-decl-only-def-change-leaf-report-v1.so \
+test-diff-filter/test43-decl-only-def-change-leaf-report-0.txt \
+test-diff-filter/test43-decl-only-def-change-leaf-report-v0.cc \
+test-diff-filter/test43-decl-only-def-change-leaf-report-v1.cc \
 \
 test-diff-suppr/test0-type-suppr-v0.cc	\
 test-diff-suppr/test0-type-suppr-v1.cc	\

@@ -9529,7 +9529,9 @@ struct leaf_diff_node_marker_visitor : public diff_node_visitor
 	&& !filtering::has_basic_or_class_type_name_change(d)
 	// Similarly, a *local* change describing a type that changed
 	// its nature doesn't make sense.
-	&& !is_distinct_diff(d))
+	&& !is_distinct_diff(d)
+	// Don't show decl-only-ness changes of classes either.
+	&& !filtering::has_class_decl_only_def_change(d))
       {
 	diff_context_sptr ctxt = d->context();
 	const corpus_diff *corpus_diff_node = ctxt->get_corpus_diff().get();
