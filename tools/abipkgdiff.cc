@@ -1541,10 +1541,7 @@ maybe_create_public_dso_sonames_set(package& pkg, const options &opts)
     return false;
 
   if (pkg.type() == abigail::tools_utils::FILE_TYPE_RPM)
-    {
-      set<string> public_dsos;
-      return get_dsos_provided_by_rpm(pkg.path(), pkg.public_dso_sonames());
-    }
+    return get_dsos_provided_by_rpm(pkg.path(), pkg.public_dso_sonames());
 
   // We don't support this yet for non-RPM packages.
   return false;

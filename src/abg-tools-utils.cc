@@ -859,7 +859,6 @@ get_dsos_provided_by_rpm(const string& rpm_path, set<string>& provided_dsos)
 				      query_output))
     return false;
 
-  set<string> dsos;
   for (vector<string>::const_iterator line = query_output.begin();
        line != query_output.end();
        ++line)
