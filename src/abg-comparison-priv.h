@@ -1049,7 +1049,10 @@ struct corpus_diff::priv
   bool
   added_unrefed_var_sym_is_suppressed(const elf_symbol*) const;
 
-  void count_leaf_changes(size_t &, size_t&);
+  void count_leaf_changes(size_t &num_changes, size_t &num_filtered);
+
+  void count_leaf_type_changes(size_t &num_type_changes,
+			       size_t &num_type_changes_filtered);
 
   void
   apply_filters_and_compute_diff_stats(corpus_diff::diff_stats&);
@@ -1221,6 +1224,12 @@ struct corpus_diff::diff_stats::priv
   size_t		num_added_var_syms_filtered_out;
   size_t		num_leaf_changes;
   size_t		num_leaf_changes_filtered_out;
+  size_t		num_leaf_type_changes;
+  size_t		num_leaf_type_changes_filtered_out;
+  size_t		num_leaf_func_changes;
+  size_t		num_leaf_func_changes_filtered_out;
+  size_t		num_leaf_var_changes;
+  size_t		num_leaf_var_changes_filtered_out;
 
   priv(diff_context_sptr ctxt)
     : ctxt_(ctxt),
@@ -1244,7 +1253,15 @@ struct corpus_diff::diff_stats::priv
       num_var_syms_removed(),
       num_removed_var_syms_filtered_out(),
       num_var_syms_added(),
-      num_added_var_syms_filtered_out()
+      num_added_var_syms_filtered_out(),
+      num_leaf_changes(),
+      num_leaf_changes_filtered_out(),
+      num_leaf_type_changes(),
+      num_leaf_type_changes_filtered_out(),
+      num_leaf_func_changes(),
+      num_leaf_func_changes_filtered_out(),
+      num_leaf_var_changes(),
+      num_leaf_var_changes_filtered_out()
   {}
 
   diff_context_sptr

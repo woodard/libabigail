@@ -7982,11 +7982,14 @@ void
 corpus_diff::diff_stats::num_leaf_changes_filtered_out(size_t n)
 {priv_->num_leaf_changes_filtered_out = n;}
 
-/// Getter of the net number of leaf type change diff nodes.
+/// Getter of the net number of leaf change diff nodes.
 ///
-/// This is the difference between the total number of leaf type
-/// change diff nodes, and the number of the leaf type change diff
-/// nodes that have been filtered out.
+/// This is the difference between the total number of leaf change
+/// diff nodes, and the number of the leaf change diff nodes that have
+/// been filtered out.
+///
+/// A leaf change is either a type change, a function change or a
+/// variable change.
 size_t
 corpus_diff::diff_stats::net_num_leaf_changes() const
 {
@@ -7994,6 +7997,128 @@ corpus_diff::diff_stats::net_num_leaf_changes() const
   return num_leaf_changes() - num_leaf_changes_filtered_out();
 }
 
+/// Getter for the number of leaf type change diff nodes.
+///
+/// @return the number of leaf type changes diff nodes.
+size_t
+corpus_diff::diff_stats::num_leaf_type_changes() const
+{return priv_->num_leaf_type_changes;}
+
+/// Setter for the number of leaf type change diff nodes.
+///
+/// @param n the new number of leaf type change diff nodes.
+void
+corpus_diff::diff_stats::num_leaf_type_changes(size_t n)
+{priv_->num_leaf_type_changes = n;}
+
+/// Getter for the number of filtered out leaf type change diff nodes.
+///
+/// @return the number of filtered out leaf type change diff nodes.
+size_t
+corpus_diff::diff_stats::num_leaf_type_changes_filtered_out() const
+{return priv_->num_leaf_type_changes_filtered_out;}
+
+/// Setter for the number of filtered out leaf type change diff nodes.
+/// @param n the new number of filtered out leaf type change diff nodes.
+void
+corpus_diff::diff_stats::num_leaf_type_changes_filtered_out(size_t n)
+{priv_->num_leaf_type_changes_filtered_out = n;}
+
+/// Getter for the net number of leaf type change diff nodes.
+///
+/// This is the difference between the number of leaf type changes and
+/// the number of filtered out leaf type changes.
+///
+/// @return the net number of leaf type change diff nodes.
+size_t
+corpus_diff::diff_stats::net_num_leaf_type_changes() const
+{return num_leaf_type_changes() - num_leaf_type_changes_filtered_out();}
+
+/// Getter for the number of leaf function change diff nodes.
+///
+/// @return the number of leaf function change diff nodes.
+size_t
+corpus_diff::diff_stats::num_leaf_func_changes() const
+{return priv_->num_leaf_func_changes;}
+
+/// Setter for the number of leaf function change diff nodes.
+///
+/// @param n the new number of leaf function change diff nodes.
+void
+corpus_diff::diff_stats::num_leaf_func_changes(size_t n)
+{priv_->num_leaf_func_changes = n;}
+
+/// Getter for the number of leaf function change diff nodes that were
+/// filtered out.
+///
+/// @return the number of leaf function change diff nodes that were
+/// filtered out.
+size_t
+corpus_diff::diff_stats::num_leaf_func_changes_filtered_out() const
+{return priv_->num_leaf_func_changes_filtered_out;}
+
+/// Setter for the number of leaf function change diff nodes that were
+/// filtered out.
+///
+/// @param n the new number of leaf function change diff nodes that
+/// were filtered out.
+void
+corpus_diff::diff_stats::num_leaf_func_changes_filtered_out(size_t n)
+{priv_->num_leaf_func_changes_filtered_out = n;}
+
+/// Getter for the net number of leaf function change diff nodes.
+///
+/// This is the difference between the number of leaf function change
+/// diff nodes and the number of filtered out leaf function change
+/// diff nodes.
+///
+/// @return the net number of leaf function change diff nodes.
+size_t
+corpus_diff::diff_stats::net_num_leaf_func_changes() const
+{return num_leaf_func_changes() - num_leaf_func_changes_filtered_out();}
+
+/// Getter for the number of leaf variable change diff nodes.
+///
+/// @return the number of leaf variable change diff nodes.
+size_t
+corpus_diff::diff_stats::num_leaf_var_changes() const
+{return priv_->num_leaf_var_changes;}
+
+/// Setter for the number of leaf variable change diff nodes.
+///
+/// @param n the number of leaf variable change diff nodes.
+void
+corpus_diff::diff_stats::num_leaf_var_changes(size_t n)
+{priv_->num_leaf_var_changes = n;}
+
+/// Getter for the number of leaf variable changes diff nodes that
+/// have been filtered out.
+///
+/// @return the number of leaf variable changes diff nodes that have
+/// been filtered out.
+size_t
+corpus_diff::diff_stats::num_leaf_var_changes_filtered_out() const
+{return priv_->num_leaf_var_changes_filtered_out;}
+
+/// Setter for the number of leaf variable changes diff nodes that
+/// have been filtered out.
+///
+/// @param n the number of leaf variable changes diff nodes that have
+/// been filtered out.
+void
+corpus_diff::diff_stats::num_leaf_var_changes_filtered_out(size_t n)
+{priv_->num_leaf_var_changes_filtered_out = n;}
+
+/// Getter for the net number of leaf variable change diff nodes.
+///
+/// This the difference between the number of leaf variable change
+/// diff nodes and the number of filtered out leaf variable change
+/// diff nodes.
+///
+/// @return the net number of leaf variable change diff nodes.
+size_t
+corpus_diff::diff_stats::net_num_leaf_var_changes() const
+{return num_leaf_var_changes() - num_leaf_var_changes_filtered_out();}
 // <corpus stuff>
 
 /// Getter of the context associated with this corpus.
@@ -8706,17 +8831,9 @@ corpus_diff::priv::added_unrefed_var_sym_is_suppressed(const elf_symbol* s) cons
   return (i != suppressed_added_unrefed_var_syms_.end());
 }
 
-/// Count the number of leaf changes as well as the number of the
-/// changes that have been filtered out.
-///
-/// @param num_changes out parameter.  This is set to the total number
-/// of leaf changes.
-///
-/// @param num_filtered out parameter.  This is set to the number of
-/// leaf changes that have been filtered out.
-void
-corpus_diff::priv::count_leaf_changes(size_t &num_changes, size_t &num_filtered)
-{
+#ifdef do_count_diff_map_changes
+#undef do_count_diff_map_changes
+#endif
 #define do_count_diff_map_changes(diff_map, n_changes, n_filtered)	\
   {									\
     string_diff_ptr_map::const_iterator i;				\
@@ -8735,6 +8852,38 @@ corpus_diff::priv::count_leaf_changes(size_t &num_changes, size_t &num_filtered)
       }								\
   }
 
+/// Count the number of leaf changes as well as the number of the
+/// changes that have been filtered out.
+///
+/// @param num_changes out parameter.  This is set to the total number
+/// of leaf changes.
+///
+/// @param num_filtered out parameter.  This is set to the number of
+/// leaf changes that have been filtered out.
+void
+corpus_diff::priv::count_leaf_changes(size_t &num_changes, size_t &num_filtered)
+{
+  count_leaf_type_changes(num_changes, num_filtered);
+
+  // Now count the non-type changes.
+  do_count_diff_map_changes(leaf_diffs_.get_function_decl_diff_map(),
+    num_changes, num_filtered);
+  do_count_diff_map_changes(leaf_diffs_.get_var_decl_diff_map(),
+    num_changes, num_filtered);
+}
+
+/// Count the number of leaf *type* changes as well as the number of
+/// the leaf type changes that have been filtered out.
+///
+/// @param num_changes out parameter.  This is set to the total number
+/// of leaf type changes.
+///
+/// @param num_filtered out parameter.  This is set to the number of
+/// leaf type changes that have been filtered out.
+void
+corpus_diff::priv::count_leaf_type_changes(size_t &num_changes,
+					   size_t &num_filtered)
+{
   do_count_diff_map_changes(leaf_diffs_.get_type_decl_diff_map(),
     num_changes, num_filtered);
   do_count_diff_map_changes(leaf_diffs_.get_enum_diff_map(),
@@ -8747,16 +8896,10 @@ corpus_diff::priv::count_leaf_changes(size_t &num_changes, size_t &num_filtered)
     num_changes, num_filtered);
   do_count_diff_map_changes(leaf_diffs_.get_array_diff_map(),
     num_changes, num_filtered);
-  do_count_diff_map_changes(leaf_diffs_.get_function_type_diff_map(),
-    num_changes, num_filtered);
-  do_count_diff_map_changes(leaf_diffs_.get_function_decl_diff_map(),
-    num_changes, num_filtered);
-  do_count_diff_map_changes(leaf_diffs_.get_var_decl_diff_map(),
-    num_changes, num_filtered);
   do_count_diff_map_changes(leaf_diffs_.get_distinct_diff_map(),
     num_changes, num_filtered);
   do_count_diff_map_changes(leaf_diffs_.get_fn_parm_diff_map(),
-    num_changes, num_filtered);
+			    num_changes, num_filtered);
 }
 
 /// Compute the diff stats.
@@ -8824,12 +8967,24 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
        ++i)
     {
       if ((*i)->is_filtered_out())
-	stat.num_changed_func_filtered_out
-	  (stat.num_changed_func_filtered_out() + 1);
+	{
+	  stat.num_changed_func_filtered_out
+	    (stat.num_changed_func_filtered_out() + 1);
+
+	  if ((*i)->has_local_changes())
+	    stat.num_leaf_func_changes_filtered_out
+	      (stat.num_leaf_func_changes_filtered_out() + 1);
+	}
       else
-	if ((*i)->get_category() & VIRTUAL_MEMBER_CHANGE_CATEGORY)
-	  stat.num_func_with_virtual_offset_changes
-	    (stat.num_func_with_virtual_offset_changes() + 1);
+	{
+	  if ((*i)->get_category() & VIRTUAL_MEMBER_CHANGE_CATEGORY)
+	    stat.num_func_with_virtual_offset_changes
+	      (stat.num_func_with_virtual_offset_changes() + 1);
+	}
+
+      if ((*i)->has_local_changes())
+	stat.num_leaf_func_changes
+	  (stat.num_leaf_func_changes() + 1);
     }
 
   // Walk the changed variables diff nodes to count the number of
@@ -8839,7 +8994,17 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
        ++i)
     {
       if ((*i)->is_filtered_out())
-	stat.num_changed_vars_filtered_out(stat.num_changed_vars_filtered_out() + 1);
+	{
+	  stat.num_changed_vars_filtered_out
+	    (stat.num_changed_vars_filtered_out() + 1);
+
+	  if ((*i)->has_local_changes())
+	    stat.num_leaf_var_changes_filtered_out
+	      (stat.num_leaf_var_changes_filtered_out() + 1);
+	}
+      if ((*i)->has_local_changes())
+	stat.num_leaf_func_changes
+	  (stat.num_leaf_func_changes() + 1);
     }
 
   stat.num_func_syms_added(added_unrefed_fn_syms_.size());
@@ -8851,7 +9016,16 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
   stat.num_var_syms_removed(deleted_unrefed_var_syms_.size());
   stat.num_removed_var_syms_filtered_out(suppressed_deleted_unrefed_var_syms_.size());
 
-  // Walk the leaf type diff nodes to count them
+  // Walk the general leaf type diff nodes to count them
+  {
+    size_t num_type_changes = 0, num_type_filtered = 0;
+    count_leaf_type_changes(num_type_changes, num_type_filtered);
+
+    stat.num_leaf_type_changes(num_type_changes);
+    stat.num_leaf_type_changes_filtered_out(num_type_filtered);
+  }
+
+  // Walk the general leaf artefacts diff nodes to count them
   {
     size_t num_changes = 0, num_filtered = 0;
     count_leaf_changes(num_changes, num_filtered);
@@ -8873,8 +9047,14 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
 				   const string&	indent)
 {
   /// Report added/removed/changed functions.
-  size_t total = s.net_num_func_removed() + s.net_num_func_added() +
-    s.net_num_func_changed();
+  size_t net_num_leaf_changes =
+    s.net_num_func_removed() +
+    s.net_num_func_added() +
+    s.net_num_leaf_func_changes() +
+    s.net_num_vars_removed() +
+    s.net_num_vars_added() +
+    s.net_num_vars_changed() +
+    s.net_num_leaf_type_changes();
 
   if (!sonames_equal_)
     out << indent << "ELF SONAME changed\n";
@@ -8887,78 +9067,132 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
   if (ctxt->show_leaf_changes_only())
     {
       out << "Leaf changes summary: ";
-      out << s.net_num_leaf_changes() << " artifact";
-      if (s.net_num_leaf_changes() > 1)
+      out << net_num_leaf_changes << " artifact";
+      if (net_num_leaf_changes > 1)
 	out << "s";
       out << " changed";
 
       if (size_t num_filtered = s.num_leaf_changes_filtered_out())
 	out << " (" << num_filtered << " filtered out)";
       out << "\n";
+
+
+      out << indent << "Changed leaf types summary: "
+	  << s.net_num_leaf_type_changes();
+      if (s.num_leaf_type_changes_filtered_out())
+	out << " (" << s.num_leaf_type_changes_filtered_out()
+	    << " filtered out)";
+      out << " leaf type";
+      if (s.num_leaf_type_changes() > 1)
+	out << "s";
+      out << " changed\n";
+
+      // function changes summary
+      out << indent << "Removed/Changed/Added functions summary: ";
+      out << s.net_num_func_removed() << " Removed";
+     if (s.num_removed_func_filtered_out())
+	out << " ("
+	    << s.num_removed_func_filtered_out()
+	    << " filtered out)";
+      out << ", ";
+
+      out << s.net_num_leaf_func_changes() << " Changed";
+      if (s.num_leaf_func_changes_filtered_out())
+	    out << " ("
+		<< s.num_leaf_func_changes_filtered_out()
+		<< " filtered out)";
+      out << ", ";
+
+      out << s.net_num_func_added()<< " Added ";
+      if (s.net_num_func_added() <= 1)
+	out << "function";
+      else
+	out << "functions";
+      if (s.num_added_func_filtered_out())
+	out << " (" << s.num_added_func_filtered_out() << " filtered out)";
+      out << "\n";
+
+      // variables changes summary
+      out << indent << "Removed/Changed/Added variables summary: ";
+
+      out << s.net_num_vars_removed() << " Removed";
+      if (s.num_removed_vars_filtered_out())
+	out << " (" << s.num_removed_vars_filtered_out()
+	    << " filtered out)";
+      out << ", ";
+
+      out << s.net_num_leaf_var_changes() << " Changed";
+      if (s.num_leaf_var_changes_filtered_out())
+	out << " ("
+	    << s.num_leaf_var_changes_filtered_out()
+	    << " filtered out)";
+      out << ", ";
+
+      out << s.net_num_vars_added() << " Added ";
+      if (s.net_num_vars_added() <= 1)
+	out << "variable";
+      else
+	out << "variables";
+      if (s.num_added_vars_filtered_out())
+	out << " (" << s.num_added_vars_filtered_out()
+	    << " filtered out)";
+      out << "\n";
     }
-
-  // function changes summary
-  if (ctxt->show_leaf_changes_only())
-    out << indent << "Added/removed functions summary: ";
-  else
-    out << indent << "Functions changes summary: ";
-
-  out << s.net_num_func_removed() << " Removed";
-  if (s.num_removed_func_filtered_out())
-    out << " ("
-	<< s.num_removed_func_filtered_out()
-	<< " filtered out)";
-  out << ", ";
-
-  if (!ctxt->show_leaf_changes_only())
+  else // if (ctxt->show_leaf_changes_only())
     {
+      size_t total_nb_function_changes = s.num_func_removed()
+	+ s.num_func_changed() +  s.num_func_added();
+
+      // function changes summary
+      out << indent << "Functions changes summary: ";
+      out << s.net_num_func_removed() << " Removed";
+      if (s.num_removed_func_filtered_out())
+	out << " ("
+	    << s.num_removed_func_filtered_out()
+	    << " filtered out)";
+      out << ", ";
+
       out << s.net_num_func_changed() << " Changed";
       if (s.num_changed_func_filtered_out())
 	out << " (" << s.num_changed_func_filtered_out() << " filtered out)";
       out << ", ";
-    }
 
-  out << s.net_num_func_added() << " Added ";
-  if (total <= 1)
-    out << "function";
-  else
-    out << "functions";
-  if (s.num_added_func_filtered_out())
-    out << " (" << s.num_added_func_filtered_out() << " filtered out)";
-  out << "\n";
+      out << s.net_num_func_added()<< " Added";
+      if (s.num_added_func_filtered_out())
+	out << " (" << s.num_added_func_filtered_out() << " filtered out)";
+      if (total_nb_function_changes <= 1)
+	out << " function";
+      else
+	out << " functions";
+      out << "\n";
 
-  total = s.num_vars_removed() + s.num_vars_added() +
-    s.net_num_vars_changed();
+      // variables changes summary
+      size_t total_nb_variable_changes = s.num_vars_removed()
+	+ s.num_vars_changed() + s.num_vars_added();
 
-  // variables changes summary
-  if (ctxt->show_leaf_changes_only())
-    out << indent << "Added/removed variables summary: ";
-  else
-    out << indent << "Variables changes summary: ";
+      out << indent << "Variables changes summary: ";
 
-  out << s.net_num_vars_removed() << " Removed";
-  if (s.num_removed_vars_filtered_out())
-    out << " (" << s.num_removed_vars_filtered_out()
-	<< " filtered out)";
-  out << ", ";
+      out << s.net_num_vars_removed() << " Removed";
+      if (s.num_removed_vars_filtered_out())
+	out << " (" << s.num_removed_vars_filtered_out()
+	    << " filtered out)";
+      out << ", ";
 
-  if (!ctxt->show_leaf_changes_only())
-    {
       out << s.num_vars_changed() - s.num_changed_vars_filtered_out() << " Changed";
       if (s.num_changed_vars_filtered_out())
 	out << " (" << s.num_changed_vars_filtered_out() << " filtered out)";
       out << ", ";
-    }
 
-  out << s.net_num_vars_added() << " Added ";
-  if (total <= 1)
-    out << "variable";
-  else
-    out << "variables";
-  if (s.num_added_vars_filtered_out())
-    out << " (" << s.num_added_vars_filtered_out()
-	<< " filtered out)";
-  out << "\n";
+      out << s.net_num_vars_added() << " Added";
+      if (s.num_added_vars_filtered_out())
+	out << " (" << s.num_added_vars_filtered_out()
+	    << " filtered out)";
+      if (total_nb_variable_changes <= 1)
+	out << " variable";
+      else
+	out << " variables";
+      out << "\n";
+    }
 
   if (ctxt->show_symbols_unreferenced_by_debug_info()
       && (s.num_func_syms_removed()

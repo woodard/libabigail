@@ -2439,6 +2439,27 @@ public:
   void num_leaf_changes_filtered_out(size_t);
 
   size_t net_num_leaf_changes() const;
+
+  size_t num_leaf_type_changes() const;
+  void num_leaf_type_changes(size_t);
+
+  size_t num_leaf_type_changes_filtered_out() const;
+  void num_leaf_type_changes_filtered_out(size_t);
+  size_t net_num_leaf_type_changes() const;
+
+  size_t num_leaf_func_changes() const;
+  void num_leaf_func_changes(size_t);
+
+  size_t num_leaf_func_changes_filtered_out() const;
+  void num_leaf_func_changes_filtered_out(size_t);
+  size_t net_num_leaf_func_changes() const;
+
+  size_t num_leaf_var_changes() const;
+  void num_leaf_var_changes(size_t);
+
+  size_t num_leaf_var_changes_filtered_out() const;
+  void num_leaf_var_changes_filtered_out(size_t);
+  size_t net_num_leaf_var_changes() const;
 }; // end class corpus_diff::diff_stats
 
 /// The base class for the node visitors.  These are the types used to
