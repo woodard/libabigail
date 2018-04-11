@@ -727,10 +727,12 @@ const type_base_sptr
 peel_qualified_type(const type_base_sptr&);
 
 type_base_sptr
-peel_typedef_pointer_or_reference_type(const type_base_sptr);
+peel_typedef_pointer_or_reference_type(const type_base_sptr,
+				       bool peel_qualified_type = true);
 
 type_base*
-peel_typedef_pointer_or_reference_type(const type_base*);
+peel_typedef_pointer_or_reference_type(const type_base* type,
+				       bool peel_qualified_type = true);
 
 string
 get_name(const type_or_decl_base*, bool qualified = true);

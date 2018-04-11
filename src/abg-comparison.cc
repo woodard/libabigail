@@ -10779,6 +10779,8 @@ struct redundancy_marking_visitor : public diff_node_visitor
 		// type is changed into a char type in both a struct A
 		// and a struct B, we want to see both changes.
 		&& !has_basic_type_change_only(d)
+		// The same goes for distinct type changes
+		&& !filtering::is_mostly_distinct_diff(d)
 		// Functions with similar *local* changes are never marked
 		// redundant because otherwise one could miss important
 		// similar local changes that are applied to different

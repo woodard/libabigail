@@ -4634,15 +4634,20 @@ peel_qualified_type(const type_base_sptr& type)
 /// typedef_decl, @ref pointer_type_def, @ref reference_type_def or
 /// @ref qualified_type_def node.
 ///
+/// @param type the type to peel.
+///
+/// @param peel_qualified_type if true, also peel qualified types.
+///
 /// @return the leaf underlying or pointed-to type node of @p type.
 type_base_sptr
-peel_typedef_pointer_or_reference_type(const type_base_sptr type)
+peel_typedef_pointer_or_reference_type(const type_base_sptr type,
+				       bool peel_qual_type)
 {
   type_base_sptr typ  = type;
   while (is_typedef(typ)
 	 || is_pointer_type(typ)
 	 || is_reference_type(typ)
-	 || is_qualified_type(typ))
+	 || (peel_qual_type && is_qualified_type(typ)))
     {
       if (typedef_decl_sptr t = is_typedef(typ))
 	typ = peel_typedef_type(t);
@@ -4656,8 +4661,9 @@ peel_typedef_pointer_or_reference_type(const type_base_sptr type)
       if (array_type_def_sptr t = is_array_type(typ))
 	typ = peel_array_type(t);
 
-      if (qualified_type_def_sptr t = is_qualified_type(typ))
-	typ = peel_qualified_type(t);
+      if (peel_qual_type)
+	if (qualified_type_def_sptr t = is_qualified_type(typ))
+	  typ = peel_qualified_type(t);
     }
 
   return typ;
@@ -4667,14 +4673,19 @@ peel_typedef_pointer_or_reference_type(const type_base_sptr type)
 /// typedef_decl, @ref pointer_type_def, @ref reference_type_def or
 /// @ref qualified_type_def type node.
 ///
+/// @param type the type to peel.
+///
+/// @param peel_qualified_type if true, also peel qualified types.
+///
 /// @return the leaf underlying or pointed-to type node of @p type.
 type_base*
-peel_typedef_pointer_or_reference_type(const type_base* type)
+peel_typedef_pointer_or_reference_type(const type_base* type,
+				       bool peel_qual_type)
 {
   while (is_typedef(type)
 	 || is_pointer_type(type)
 	 || is_reference_type(type)
-	 || is_qualified_type(type))
+	 || (peel_qual_type && is_qualified_type(type)))
     {
       if (const typedef_decl* t = is_typedef(type))
 	type = peel_typedef_type(t);
@@ -4688,8 +4699,9 @@ peel_typedef_pointer_or_reference_type(const type_base* type)
       if (const array_type_def* t = is_array_type(type))
 	type = peel_array_type(t);
 
-      if (const qualified_type_def* t = is_qualified_type(type))
-	type = peel_qualified_type(t);
+      if (peel_qual_type)
+	if (const qualified_type_def* t = is_qualified_type(type))
+	  type = peel_qualified_type(t);
     }
 
   return const_cast<type_base*>(type);

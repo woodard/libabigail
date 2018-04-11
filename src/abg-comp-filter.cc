@@ -851,6 +851,51 @@ has_basic_or_class_type_name_change(const diff *d)
 	  || has_class_or_union_type_name_change(d));
 }
 
+/// Test if a diff node carries a distinct type change or a
+/// pointer/reference/typedef to distinct type change.
+///
+/// Note that a distinct type change is a change where the two
+/// subjects of the change are not of the same kind, e.g, a basic type
+/// that got changed into a qualified type.
+///
+/// @param d the diff node to consider.
+///
+/// @return true iff @p d is mostly a distinct diff.
+bool
+is_mostly_distinct_diff(const diff *d)
+{
+  if (is_distinct_diff(d))
+    return true;
+
+  // Let's consider that 'd' is a type diff ...
+  type_diff_base* td = const_cast<type_diff_base*>(is_type_diff(d));
+  if (!td)
+    {
+      // ... or a function parameter diff.  In which case, let's get
+      // its child type diff.
+      fn_parm_diff *pd = const_cast<fn_parm_diff*>(is_fn_parm_diff(d));
+      if (pd)
+	td = const_cast<type_diff_base*>(is_type_diff(pd->type_diff().get()));
+      else
+	return false;
+    }
+
+  // At this point, if we are not looking at a type diff we must have
+  // bailed out already.
+  assert(td);
+
+  type_base_sptr first = is_type(td->first_subject());
+  type_base_sptr second = is_type(td->second_subject());
+
+  first = peel_typedef_pointer_or_reference_type(first,
+						 /*peel_qualified_type=*/false);
+  second = peel_typedef_pointer_or_reference_type(second,
+						  /*peel_qual_type=*/false);
+  assert(first && second);
+
+  return distinct_diff::entities_are_of_distinct_kinds(first, second);
+}
+
 /// Test if an enum_diff carries an enumerator insertion.
 ///
 /// @param diff the enum_diff to consider.
