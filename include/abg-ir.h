@@ -2241,6 +2241,11 @@ public:
   traverse(ir_node_visitor& v);
 
   virtual ~enum_type_decl();
+
+  friend bool
+  enum_has_non_name_change(const enum_type_decl& l,
+			   const enum_type_decl& r,
+			   change_kind* k);
 }; // end class enum_type_decl
 
 bool
@@ -2248,6 +2253,11 @@ operator==(const enum_type_decl_sptr& l, const enum_type_decl_sptr& r);
 
 bool
 operator!=(const enum_type_decl_sptr& l, const enum_type_decl_sptr& r);
+
+bool
+enum_has_non_name_change(const enum_type_decl& l,
+			 const enum_type_decl& r,
+			 change_kind* k);
 
 /// The abstraction of an enumerator
 class enum_type_decl::enumerator

@@ -407,8 +407,8 @@ decl_name_changed(const diff *d)
 
 /// Test if two decls represents a harmless name change.
 ///
-/// For now, a harmless name change is a name change for a typedef,
-/// enum or data member.
+/// For now, a harmless name change is considered only for a typedef,
+/// enum or a data member.
 ///
 /// @param f the first decl to consider in the comparison.
 ///
@@ -418,10 +418,27 @@ decl_name_changed(const diff *d)
 bool
 has_harmless_name_change(const decl_base_sptr& f, const decl_base_sptr& s)
 {
+  // So, a harmless name change is either ...
   return (decl_name_changed(f, s)
-	  && ((is_typedef(f) && is_typedef(s))
-	      || (is_data_member(f) && is_data_member(s))
-	      || (is_enum_type(f) && is_enum_type(s))));
+	  && (// ... a typedef name change, without having the
+	      // underlying type changed ...
+	      (is_typedef(f)
+	       && is_typedef(s)
+	       && (is_typedef(f)->get_underlying_type()
+		   == is_typedef(s)->get_underlying_type()))
+	      // .. or a data member name change, without having the
+	      // its type changed ...
+	      || (is_data_member(f)
+		  && is_data_member(s)
+		  && (is_var_decl(f)->get_type()
+		      == is_var_decl(s)->get_type()))
+	      // .. an enum name change without having any other part
+	      // of the enum to change.
+	      || (is_enum_type(f)
+		  && is_enum_type(s)
+		  && !enum_has_non_name_change(*is_enum_type(f),
+					       *is_enum_type(s),
+					       0))));
 }
 
 /// Test if a class_diff node has non-static members added or

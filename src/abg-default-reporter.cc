@@ -210,11 +210,11 @@ default_reporter::report_local_typedef_changes(const typedef_diff &d,
 
   maybe_report_diff_for_member(f, s, d.context(), out, indent);
 
-  if (filtering::has_harmless_name_change(f, s)
-      && ((d.context()->get_allowed_category()
-	   & HARMLESS_DECL_NAME_CHANGE_CATEGORY)
-	  ||
-	  d.context()->show_leaf_changes_only()))
+  if ((filtering::has_harmless_name_change(f, s)
+       && ((d.context()->get_allowed_category()
+	    & HARMLESS_DECL_NAME_CHANGE_CATEGORY)
+	   || d.context()->show_leaf_changes_only()))
+      || f->get_qualified_name() != s->get_qualified_name())
     {
       out << indent << "typedef name changed from "
 	  << f->get_qualified_name()

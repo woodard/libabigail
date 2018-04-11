@@ -12927,6 +12927,80 @@ enum_type_decl::traverse(ir_node_visitor &v)
 enum_type_decl::~enum_type_decl()
 {}
 
+/// Test if two enums differ, but not by a name change.
+///
+/// @param l the first enum to consider.
+///
+/// @param r the second enum to consider.
+///
+/// @return true iff @p l differs from @p r by anything but a name
+/// change.
+bool
+enum_has_non_name_change(const enum_type_decl& l,
+			 const enum_type_decl& r,
+			 change_kind* k)
+{
+  bool result = false;
+  if (*l.get_underlying_type() != *r.get_underlying_type())
+    {
+      result = true;
+      if (k)
+	*k |= SUBTYPE_CHANGE_KIND;
+      else
+	return true;
+    }
+
+  enum_type_decl::enumerators::const_iterator i, j;
+  for (i = l.get_enumerators().begin(), j = r.get_enumerators().begin();
+       i != l.get_enumerators().end() && j != r.get_enumerators().end();
+       ++i, ++j)
+    if (*i != *j)
+      {
+	result = true;
+	if (k)
+	  {
+	    *k |= LOCAL_CHANGE_KIND;
+	    break;
+	  }
+	else
+	  return true;
+      }
+
+  if (i != l.get_enumerators().end() || j != r.get_enumerators().end())
+    {
+      result = true;
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      else
+	return true;
+    }
+
+  enum_type_decl &local_r = const_cast<enum_type_decl&>(r);
+  interned_string qn_r = l.get_environment()->intern(r.get_qualified_name());
+  interned_string qn_l = l.get_environment()->intern(l.get_qualified_name());
+  string n_l = l.get_name();
+  string n_r = r.get_name();
+  local_r.set_qualified_name(qn_l);
+  local_r.set_name(n_l);
+
+  if (!(l.decl_base::operator==(r) && l.type_base::operator==(r)))
+    {
+      result = true;
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      else
+	{
+	  local_r.set_name(n_r);
+	  local_r.set_qualified_name(qn_r);
+	  return true;
+	}
+    }
+  local_r.set_qualified_name(qn_r);
+  local_r.set_name(n_r);
+
+  return result;
+}
+
 /// Compares two instances of @ref enum_type_decl.
 ///
 /// If the two intances are different, set a bitfield to give some
