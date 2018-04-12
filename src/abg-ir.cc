@@ -14234,7 +14234,12 @@ equals(const function_type& lhs,
 	{
 	  result = false;
 	  if (k)
-	    *k |= SUBTYPE_CHANGE_KIND;
+	    {
+	      if (lhs.get_return_type()->get_pretty_representation()
+		  != rhs.get_return_type()->get_pretty_representation())
+		*k |= LOCAL_CHANGE_KIND;
+	      *k |= SUBTYPE_CHANGE_KIND;
+	    }
 	  else
 	    RETURN(result);
 	}
@@ -14271,7 +14276,12 @@ equals(const function_type& lhs,
 	{
 	  result = false;
 	  if (k)
-	    *k |= SUBTYPE_CHANGE_KIND;
+	    {
+	      if ((*i)->get_pretty_representation()
+		  != (*j)->get_pretty_representation())
+		*k |= LOCAL_CHANGE_KIND;
+	      *k |= SUBTYPE_CHANGE_KIND;
+	    }
 	  else
 	    RETURN(result);
 	}
@@ -15003,7 +15013,11 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
     {
       result = false;
       if (k)
-	*k |= SUBTYPE_CHANGE_KIND;
+	{
+	  if (l.get_pretty_representation() != r.get_pretty_representation())
+	    *k |= LOCAL_CHANGE_KIND;
+	  *k |= SUBTYPE_CHANGE_KIND;
+	}
       else
 	return false;
     }
@@ -15467,7 +15481,12 @@ equals(const function_decl::parameter& l,
     {
       result = false;
       if (k)
-	*k |= SUBTYPE_CHANGE_KIND;
+	{
+	  *k |= SUBTYPE_CHANGE_KIND;
+	  if (get_pretty_representation(l_type)
+	      != get_pretty_representation(r_type))
+	    *k |= LOCAL_CHANGE_KIND;
+	}
       else
 	return false;
     }

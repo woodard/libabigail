@@ -1078,6 +1078,79 @@ leaf_reporter::report(const corpus_diff& d,
 	out << "\n";
     }
 
+  if (ctxt->show_changed_fns())
+    {
+      // Show changed functions.
+      size_t num_changed = s.net_num_leaf_func_changes();
+      if (num_changed == 1)
+	out << indent << "1 function with some sub-type change:\n\n";
+      else if (num_changed > 1)
+	out << indent << num_changed
+	    << " functions with some sub-type change:\n\n";
+
+      bool changed = false;
+      vector<function_decl_diff_sptr> sorted_changed_fns;
+      sort_string_function_decl_diff_sptr_map(d.priv_->changed_fns_map_,
+					      sorted_changed_fns);
+      for (vector<function_decl_diff_sptr>::const_iterator i =
+	     sorted_changed_fns.begin();
+	   i != sorted_changed_fns.end();
+	   ++i)
+	{
+	  diff_sptr diff = *i;
+	  if (!diff)
+	    continue;
+
+	  if (diff_to_be_reported(diff.get()))
+	    {
+	      function_decl_sptr fn = (*i)->first_function_decl();
+	      out << indent << "  [C]'"
+		  << fn->get_pretty_representation() << "'";
+	      report_loc_info((*i)->second_function_decl(), *ctxt, out);
+	      out << " has some sub-type changes:\n";
+	      if ((fn->get_symbol()->has_aliases()
+		   && !(is_member_function(fn)
+			&& get_member_function_is_ctor(fn))
+		   && !(is_member_function(fn)
+			&& get_member_function_is_dtor(fn)))
+		  || (is_c_language(get_translation_unit(fn)->get_language())
+		      && fn->get_name() != fn->get_linkage_name()))
+		{
+		  int number_of_aliases =
+		    fn->get_symbol()->get_number_of_aliases();
+		  if (number_of_aliases == 0)
+		    {
+		      out << indent << "    "
+			  << "Please note that the exported symbol of "
+			"this function is "
+			  << fn->get_symbol()->get_id_string()
+			  << "\n";
+		    }
+		  else
+		    {
+		      out << indent << "    "
+			  << "Please note that the symbol of this function is "
+			  << fn->get_symbol()->get_id_string()
+			  << "\n     and it aliases symbol";
+		      if (number_of_aliases > 1)
+			out << "s";
+		      out << ": "
+			  << fn->get_symbol()->get_aliases_id_string(false)
+			  << "\n";
+		    }
+		}
+	      diff->report(out, indent + "    ");
+	      out << "\n";
+	      changed |= true;
+	    }
+	}
+      if (changed)
+	{
+	  out << "\n";
+	  changed = false;
+	}
+    }
+
   if (ctxt->show_added_fns())
     {
       if (s.net_num_func_added() == 1)

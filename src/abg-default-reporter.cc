@@ -455,7 +455,11 @@ default_reporter::report(const fn_parm_diff& d, ostream& out,
 
   if (d.to_be_reported())
     {
-      assert(d.type_diff() && d.type_diff()->to_be_reported());
+      diff_sptr type_diff = d.type_diff();
+      assert(type_diff->has_changes());
+      diff_category saved_category = type_diff->get_category();
+      // Parameter type changes are never redundants.
+      type_diff->set_category(saved_category & ~REDUNDANT_CATEGORY);
       out << indent
 	  << "parameter " << f->get_index();
       report_loc_info(f, *d.context(), out);
@@ -467,7 +471,8 @@ default_reporter::report(const fn_parm_diff& d, ostream& out,
       else
 	out << "' changed:\n";
 
-      d.type_diff()->report(out, indent + "  ");
+      type_diff->report(out, indent + "  ");
+      type_diff->set_category(saved_category);
     }
 }
 
