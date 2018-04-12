@@ -245,25 +245,55 @@ default_reporter::report(const typedef_diff& d,
     return;
 
   typedef_decl_sptr f = d.first_typedef_decl(), s = d.second_typedef_decl();
-  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER(f, s);
 
   bool emit_nl = report_local_typedef_changes(d, out, indent);
 
   diff_sptr dif = d.underlying_type_diff();
-  if (dif && dif->to_be_reported())
+  if (dif && dif->has_changes())
     {
-      RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(dif, "underlying type");
-      out << indent
-	  << "underlying type '"
-	  << dif->first_subject()->get_pretty_representation() << "'";
-      report_loc_info(dif->second_subject(), *d.context(), out);
-      out << " changed:\n";
-      dif->report(out, indent + "  ");
-      emit_nl = false;
+      if (dif->to_be_reported())
+	{
+	  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(dif,
+							    "underlying type");
+	  out << indent
+	      << "underlying type '"
+	      << dif->first_subject()->get_pretty_representation() << "'";
+	  report_loc_info(dif->first_subject(), *d.context(), out);
+	  out << " changed:\n";
+	  dif->report(out, indent + "  ");
+	  emit_nl = false;
+	}
+      else
+	{
+	  // The typedef change is to be reported, so we'll report its
+	  // underlying type change too (even if its redundant),
+	  // unless it's suppressed.  It makes sense in this
+	  // particular case to emit the underlying type change
+	  // because of the informative value underneath.  We don't
+	  // want to just know about the local changes of the typedef,
+	  // but also about the changes on the underlying type.
+	  diff_category c = dif->get_category();
+	  if (!(c & SUPPRESSED_CATEGORY))
+	    {
+	      out << indent
+		  << "underlying type '"
+		  << dif->first_subject()->get_pretty_representation() << "'";
+	      report_loc_info(dif->first_subject(), *d.context(), out);
+	      out << " changed:\n";
+	      if (c & REDUNDANT_CATEGORY)
+		dif->set_category(c & ~REDUNDANT_CATEGORY);
+	      dif->report(out, indent + "  ");
+	      if (c & REDUNDANT_CATEGORY)
+		dif->set_category(c | REDUNDANT_CATEGORY);
+	      emit_nl = false;
+	    }
+	}
     }
 
   if (emit_nl)
     out << "\n";
+
+  d.reported_once(true);
 }
 
 /// For a @ref qualified_type_diff node, report the changes that are
