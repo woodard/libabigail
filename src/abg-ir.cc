@@ -16744,6 +16744,8 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 	  if (k)
 	    {
 	      *k |= SUBTYPE_CHANGE_KIND;
+	      // TODO: continue this by reporting any representation
+	      // change as being local.
 	      break;
 	    }
 	  else

@@ -632,7 +632,7 @@ leaf_reporter::report(const class_or_union_diff& d,
 	    }
 	}
 
-      // report change
+      // report changes
       size_t numchanges =
 	d.class_or_union_diff::get_priv()->sorted_subtype_changed_dm_.size();
       size_t num_filtered =
@@ -641,12 +641,15 @@ leaf_reporter::report(const class_or_union_diff& d,
       assert(numchanges >= num_filtered);
       size_t net_numchanges = numchanges - num_filtered;
 
+      bool emitted_data_members_changes = false;
       if (net_numchanges)
 	{
 	  report_mem_header(out, subtype_change_kind, "data member", indent);
 	  for (var_diff_sptrs_type::const_iterator it =
-		 d.class_or_union_diff::get_priv()->sorted_subtype_changed_dm_.begin();
-	       it != d.class_or_union_diff::get_priv()->sorted_subtype_changed_dm_.end();
+		 d.class_or_union_diff::get_priv()->
+		 sorted_subtype_changed_dm_.begin();
+	       it != d.class_or_union_diff::get_priv()->
+		 sorted_subtype_changed_dm_.end();
 	       ++it)
 	    {
 	      if (diff_to_be_reported((*it).get()))
@@ -654,6 +657,7 @@ leaf_reporter::report(const class_or_union_diff& d,
 		  represent(*it, ctxt, out, indent + " ",
 			    /*local_only=*/true);
 		  out << "\n";
+		  emitted_data_members_changes = true;
 		}
 	    }
 	}
@@ -667,7 +671,8 @@ leaf_reporter::report(const class_or_union_diff& d,
 
       if (net_numchanges)
 	{
-	  report_mem_header(out, change_kind, "data member", indent);
+	  if (!emitted_data_members_changes)
+	    report_mem_header(out, change_kind, "data member", indent);
 	  for (var_diff_sptrs_type::const_iterator it =
 		 d.class_or_union_diff::get_priv()->sorted_changed_dm_.begin();
 	       it != d.class_or_union_diff::get_priv()->sorted_changed_dm_.end();
@@ -678,6 +683,7 @@ leaf_reporter::report(const class_or_union_diff& d,
 		  represent(*it, ctxt, out, indent + " ",
 			    /*local_only=*/true);
 		  out << "\n";
+		  emitted_data_members_changes = true;
 		}
 	    }
 	}

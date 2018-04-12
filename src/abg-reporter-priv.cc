@@ -239,20 +239,34 @@ represent(const var_diff_sptr	&diff,
   string name2 = n->get_qualified_name();
   string pretty_representation = o->get_pretty_representation();
 
-  if (!local_only)
     if (diff_sptr d = diff->type_diff())
       {
-	if (ctxt->get_reporter()->diff_to_be_reported(d.get()))
+	if (local_only)
 	  {
-	    out << indent
-		<< "type of '" << pretty_representation << "' changed:\n";
-	    if (d->currently_reporting())
-	      out << indent << "  details are being reported\n";
-	    else if (d->reported_once())
-	      out << indent << "  details were reported earlier\n";
-	    else
-	      d->report(out, indent + "  ");
-	    begin_with_and = true;
+	    string tr1 = get_pretty_representation(o->get_type());
+	    string tr2 = get_pretty_representation(n->get_type());
+	    if (tr1 != tr2)
+	      {
+		out << indent << "type of "
+		    << pretty_representation
+		    << " changed from '" << tr1
+		    << "' to '" << tr2 << "'\n";
+	      }
+	  }
+	else
+	  {
+	    if (ctxt->get_reporter()->diff_to_be_reported(d.get()))
+	      {
+		out << indent
+		    << "type of '" << pretty_representation << "' changed:\n";
+		if (d->currently_reporting())
+		  out << indent << "  details are being reported\n";
+		else if (d->reported_once())
+		  out << indent << "  details were reported earlier\n";
+		else
+		  d->report(out, indent + "  ");
+		begin_with_and = true;
+	      }
 	  }
       }
 
