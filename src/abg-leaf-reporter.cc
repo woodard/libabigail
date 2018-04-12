@@ -89,6 +89,47 @@ report_diffs(const reporter_base& r,
     }
 }
 
+/// Report the type changes carried by an instance of @ref diff_maps.
+///
+/// @param maps the set of diffs to report.
+///
+/// @param out the output stream to report the diffs to.
+///
+/// @param indent the string to use for indentation.
+static void
+report_type_changes_from_diff_maps(const leaf_reporter& reporter,
+				   const diff_maps& maps,
+				   ostream& out,
+				   const string& indent)
+{
+  // basic types
+  report_diffs(reporter, maps.get_type_decl_diff_map(), out, indent);
+
+  // enums
+  report_diffs(reporter, maps.get_enum_diff_map(), out, indent);
+
+  // classes
+  report_diffs(reporter, maps.get_class_diff_map(), out, indent);
+
+  // unions
+  report_diffs(reporter, maps.get_union_diff_map(), out, indent);
+
+  // typedefs
+  report_diffs(reporter, maps.get_typedef_diff_map(), out, indent);
+
+  // arrays
+  report_diffs(reporter, maps.get_array_diff_map(), out, indent);
+
+  // It doesn't make sense to report function type changes, does it?
+  // report_diffs(reporter, maps.get_function_type_diff_map(), out, indent);
+
+  // distinct diffs
+  report_diffs(reporter, maps.get_distinct_diff_map(), out, indent);
+
+  // function parameter diffs
+  report_diffs(reporter, maps.get_fn_parm_diff_map(), out, indent);
+}
+
 /// Report the changes carried by an instance of @ref diff_maps.
 ///
 /// @param maps the set of diffs to report.
@@ -101,38 +142,13 @@ leaf_reporter::report_changes_from_diff_maps(const diff_maps& maps,
 					     ostream& out,
 					     const string& indent) const
 {
-  // basic types
-  report_diffs(*this, maps.get_type_decl_diff_map(), out, indent);
-
-  // enums
-  report_diffs(*this, maps.get_enum_diff_map(), out, indent);
-
-  // classes
-  report_diffs(*this, maps.get_class_diff_map(), out, indent);
-
-  // unions
-  report_diffs(*this, maps.get_union_diff_map(), out, indent);
-
-  // typedefs
-  report_diffs(*this, maps.get_typedef_diff_map(), out, indent);
-
-  // arrays
-  report_diffs(*this, maps.get_array_diff_map(), out, indent);
-
-  // It doesn't make sense to report function type changes, does it?
-  // report_diffs(*this, maps.get_function_type_diff_map(), out, indent);
+  report_type_changes_from_diff_maps(*this, maps, out, indent);
 
   // function decls
   report_diffs(*this, maps.get_function_decl_diff_map(), out, indent);
 
   // var decl
   report_diffs(*this, maps.get_var_decl_diff_map(), out, indent);
-
-  // distinct diffs
-  report_diffs(*this, maps.get_distinct_diff_map(), out, indent);
-
-  // function parameter diffs
-  report_diffs(*this, maps.get_fn_parm_diff_map(), out, indent);
 }
 
 /// Report the changes carried by a @ref typedef_diff node.
@@ -1204,7 +1220,7 @@ leaf_reporter::report(const corpus_diff& d,
 
   // Now show the changed types.
   const diff_maps& leaf_diffs = d.get_leaf_diffs();
-  report_changes_from_diff_maps(leaf_diffs, out, indent);
+  report_type_changes_from_diff_maps(*this, leaf_diffs, out, indent);
 }
 } // end namespace comparison
 } // end namespace abigail
