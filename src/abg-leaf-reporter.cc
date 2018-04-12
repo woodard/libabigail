@@ -173,10 +173,21 @@ leaf_reporter::report(const qualified_type_diff& d, ostream& out,
 /// Note that this function does nothing because a @ref pointer_diff
 /// node never carries local changes.
 void
-leaf_reporter::report(const pointer_diff&, ostream&, const string&) const
+leaf_reporter::report(const pointer_diff &d,
+		      ostream& out,
+		      const string& indent) const
 {
-  // A pointer_diff does not carry local changes.
-  return;
+  // Changes that modify the representation of a pointed-to type is
+  // considered local to the pointer type.
+  if (!diff_to_be_reported(&d))
+    return;
+
+  out << indent
+      << "pointer type changed from: '"
+      << d.first_pointer()->get_pretty_representation()
+      << "' to: '"
+      << d.second_pointer()->get_pretty_representation()
+      << "'";
 }
 
 /// Report the changes carried by a @ref reference_diff node.

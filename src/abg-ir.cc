@@ -11640,7 +11640,12 @@ equals(const pointer_type_def& l, const pointer_type_def& r, change_kind* k)
   bool result = (l.get_pointed_to_type() == r.get_pointed_to_type());
   if (!result)
     if (k)
-      *k |= SUBTYPE_CHANGE_KIND;
+      {
+	*k |= SUBTYPE_CHANGE_KIND;
+	if (l.get_pointed_to_type()->get_pretty_representation()
+	    != r.get_pointed_to_type()->get_pretty_representation())
+	  *k |= LOCAL_CHANGE_KIND;
+      }
 
   return result;
 }

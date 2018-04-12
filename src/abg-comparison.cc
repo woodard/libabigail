@@ -9764,6 +9764,11 @@ struct leaf_diff_node_marker_visitor : public diff_node_visitor
 	// Similarly, a *local* change describing a type that changed
 	// its nature doesn't make sense.
 	&& !is_distinct_diff(d)
+	// Similarly, a pointer change in itself doesn't make sense.
+	// It's would rather make sense to show that pointer change as
+	// part of the variable change whose pointer type changed, for
+	// instance.
+	&& !is_pointer_diff(d)
 	// Don't show decl-only-ness changes of classes either.
 	&& !filtering::has_class_decl_only_def_change(d))
       {
@@ -10439,8 +10444,19 @@ struct suppression_categorization_visitor : public diff_node_visitor
     bool has_non_empty_child = false;
     bool has_suppressed_child = false;
 
-    if (!(d->get_category() & SUPPRESSED_CATEGORY)
-	&& !d->has_local_changes())
+    if (// A node to which we can propagate the "SUPPRESSED_CATEGORY"
+	// category from its children is a node which:
+	//
+	//  1/ hasn't been suppressed already
+	//  2/ and has no local change (unless it's pointer diff
+	//     node).
+	//
+	// Note that all pointer diff node changes are potentially
+	// considered local, i.e, local changes of the pointed-to-type
+	// are considered local to the pointer itself.
+	!(d->get_category() & SUPPRESSED_CATEGORY)
+	&& (!d->has_local_changes()
+	    || is_pointer_diff(d)))
       {
 	for (vector<diff*>::const_iterator i = d->children_nodes().begin();
 	     i != d->children_nodes().end();
@@ -10857,7 +10873,8 @@ struct redundancy_marking_visitor : public diff_node_visitor
 	// to this node.  But if this node has local changes, then it
 	// doesn't inherit redundancy from its children nodes.
 	if (!(d->get_category() & REDUNDANT_CATEGORY)
-	    && !d->has_local_changes_to_be_reported())
+	    && (!d->has_local_changes_to_be_reported()
+		|| is_pointer_diff(d)))
 	  {
 	    bool has_non_redundant_child = false;
 	    bool has_non_empty_child = false;
