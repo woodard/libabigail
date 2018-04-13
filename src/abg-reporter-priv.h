@@ -71,11 +71,15 @@
 	    out << indent << INTRO_TEXT << " '" << _name_ << "' changed; " \
 	      "details are being reported\n";				\
 	  else								\
-	    out << indent << INTRO_TEXT << " '" << _name_ << "' changed, " \
-	      "as reported earlier\n";					\
+	    {								\
+	      out << indent << INTRO_TEXT << " '"			\
+	      << _name_ << "' changed";				\
+	      report_loc_info(D->first_subject(), *d.context(), out);	\
+	      out << ", as reported earlier\n";			\
+	    }								\
 	  return ;							\
 	}								\
-} while (false)
+  } while (false)
 
 /// This is a subroutine of a *::report() function.
 ///
@@ -96,8 +100,11 @@
 	      out << indent << INTRO_TEXT << " '" << _name_ << "' changed; " \
 		"details are being reported\n";				\
 	    else							\
-	      out << indent << INTRO_TEXT << " '" << _name_ << "' changed, " \
-		"as reported earlier\n";				\
+	      {								\
+		out << indent << INTRO_TEXT << " '" << _name_ << "' changed"; \
+		report_loc_info(S1, *d.context(), out);			\
+		out << ", as reported earlier\n";			\
+	      }								\
 	    return ;							\
 	  } \
     } while (false)
