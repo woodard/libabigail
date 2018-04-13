@@ -1163,10 +1163,10 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
 {
   ctxt->default_output_stream(&cout);
   ctxt->error_output_stream(&cerr);
+  ctxt->show_redundant_changes(opts.show_redundant_changes);
   ctxt->show_leaf_changes_only(opts.leaf_changes_only);
   ctxt->show_impacted_interfaces(opts.show_impacted_interfaces);
   ctxt->show_relative_offset_changes(opts.show_relative_offset_changes);
-  ctxt->show_redundant_changes(opts.show_redundant_changes);
   ctxt->show_locs(opts.show_locs);
   ctxt->show_linkage_names(opts.show_linkage_names);
   ctxt->show_added_fns(opts.show_added_syms);
