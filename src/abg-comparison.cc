@@ -10311,8 +10311,9 @@ diff_node_visitor::visit(corpus_diff*, bool)
 // <diff tree category propagation>
 
 /// A visitor to propagate the category of a node up to its parent
-/// nodes.  This visitor doesn't touch the REDUNDANT_CATEGORY because
-/// that one is propagated using another specific visitor.
+/// nodes.  This visitor doesn't touch the REDUNDANT_CATEGORY or the
+/// SUPPRESSED_CATEGORY because those are propagated using other
+/// specific visitors.
 struct category_propagation_visitor : public diff_node_visitor
 {
   virtual void

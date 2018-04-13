@@ -558,7 +558,6 @@ default_reporter::report_local_function_type_changes(const function_type_diff& d
   // Hmmh, the above was quick.  Now report about function parameters;
   // this shouldn't be as straightforward.
 
-
   // Report about the parameters that got removed.
   bool emitted = false;
   for (vector<function_decl::parameter_sptr>::const_iterator i =
