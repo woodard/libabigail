@@ -1,8 +1,8 @@
 ================ changes of 'libcdio.so.16.0.0'===============
-  Functions changes summary: 0 Removed, 2 Changed, 0 Added functions
+  Functions changes summary: 0 Removed, 1 Changed (1 filtered out), 0 Added functions
   Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
-  2 functions with some indirect sub-type change:
+  1 function with some indirect sub-type change:
 
     [C]'function discmode_t mmc_get_dvd_struct_physical(const CdIo_t*, cdio_dvd_struct_t*)' at mmc.c:949:1 has some indirect sub-type changes:
       parameter 2 of type 'cdio_dvd_struct_t*' has sub-type changes:
@@ -36,11 +36,6 @@
                     type size hasn't changed
 
 
-
-    [C]'function discmode_t mmc_get_dvd_struct_physical_private(void*, mmc_run_cmd_fn_t, cdio_dvd_struct_t*)' at mmc.c:450:1 has some indirect sub-type changes:
-      parameter 3 of type 'cdio_dvd_struct_t*' has sub-type changes:
-        in pointed to type 'typedef cdio_dvd_struct_t' at dvd.h:130:1:
-          underlying type 'union __anonymous_union__' changed, as reported earlier
 
 
 ================ end of changes of 'libcdio.so.16.0.0'===============

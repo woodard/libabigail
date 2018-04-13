@@ -30,7 +30,7 @@
       parameter 1 of type 'const tbb::internal::concurrent_queue_base&' has sub-type changes:
         in referenced type 'const tbb::internal::concurrent_queue_base':
           in unqualified underlying type 'typedef tbb::internal::concurrent_queue_base' at concurrent_queue.cpp:57:1:
-            underlying type 'class tbb::internal::concurrent_queue_base_v3' at _concurrent_queue_impl.h:834:1 changed:
+            underlying type 'class tbb::internal::concurrent_queue_base_v3' at _concurrent_queue_impl.h:816:1 changed:
               type size hasn't changed
               1 data member change:
                type of 'tbb::internal::concurrent_queue_rep* tbb::internal::concurrent_queue_base_v3::my_rep' changed:
@@ -152,19 +152,22 @@
                       'bool tbb::internal::market::join_workers', at offset 384 (in bits) at market.h:88:1
                     7 data member changes:
                      type of 'tbb::internal::market::arenas_list_mutex_type tbb::internal::market::my_arenas_list_mutex' changed:
-                       underlying type 'typedef tbb::internal::scheduler_mutex_type' at spin_rw_mutex.h:38:1 changed:
-                         underlying type 'class tbb::spin_mutex' at spin_rw_mutex.h:42:1 changed:
+                       underlying type 'typedef tbb::internal::scheduler_mutex_type' at scheduler_common.h:123:1 changed:
+                         typedef name changed from tbb::internal::scheduler_mutex_type to tbb::spin_rw_mutex at spin_rw_mutex.h:38:1
+                         underlying type 'class tbb::spin_mutex' at spin_mutex.h:47:1 changed:
                            type name changed from 'tbb::spin_mutex' to 'tbb::spin_rw_mutex_v3'
                            type size changed from 8 to 64 bits
                            1 base class insertion:
                              class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
                            1 data member change:
                             type of '__TBB_atomic_flag tbb::spin_mutex::flag' changed:
-                              underlying type 'typedef __TBB_Flag' at stdint.h:119:1 changed:
+                              typedef name changed from __TBB_atomic_flag to tbb::spin_rw_mutex_v3::state_t at spin_rw_mutex.h:214:1
+                              underlying type 'typedef __TBB_Flag' at tbb_machine.h:875:1 changed:
+                                typedef name changed from __TBB_Flag to intptr_t at stdint.h:119:1
                                 underlying type 'unsigned char' changed:
                                   type name changed from 'unsigned char' to 'long int'
                                   type size changed from 8 to 64 bits
-
+                            and name of 'tbb::spin_mutex::flag' changed to 'tbb::spin_rw_mutex_v3::state' at spin_rw_mutex.h:224:1
 
                      'intptr_t tbb::internal::market::my_global_top_priority' offset changed from 384 to 448 (in bits) (by +64 bits)
                      'intptr_t tbb::internal::market::my_global_bottom_priority' offset changed from 448 to 512 (in bits) (by +64 bits)
@@ -223,7 +226,7 @@
 
     [C]'method bool tbb::spin_mutex::scoped_lock::internal_try_acquire(tbb::spin_mutex&)' at spin_mutex.h:69:1 has some indirect sub-type changes:
       parameter 1 of type 'tbb::spin_mutex&' has sub-type changes:
-        referenced type 'class tbb::spin_mutex' changed, as reported earlier
+        referenced type 'class tbb::spin_mutex' changed at spin_mutex.h:47:1, as reported earlier
 
 
   3 Removed variable symbols not referenced by debug info:

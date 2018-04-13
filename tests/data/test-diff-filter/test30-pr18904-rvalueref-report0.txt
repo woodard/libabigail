@@ -1,4 +1,4 @@
-Functions changes summary: 82 Removed, 5 Changed (15 filtered out), 1081 Added functions
+Functions changes summary: 82 Removed, 6 Changed (14 filtered out), 1081 Added functions
 Variables changes summary: 47 Removed, 1 Changed, 11 Added variables
 Function symbols changes summary: 7 Removed, 76 Added function symbols not referenced by debug info
 Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referenced by debug info
@@ -1172,7 +1172,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method void std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::vector<Iterator, void>(Iterator, Iterator, const std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::allocator_type&)'
   [A] 'method std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::~vector(int)'
 
-5 functions with some indirect sub-type change:
+6 functions with some indirect sub-type change:
 
   [C]'method void OffloadDescriptor::report_coi_error(error_types, COIRESULT)' has some indirect sub-type changes:
     parameter 1 of type 'typedef error_types' has sub-type changes:
@@ -1322,6 +1322,20 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
            no data member change (1 filtered);
 
 
+  [C]'function void __offload_myoRegisterTables(InitTableEntry*, SharedTableEntry*, FptrTableEntry*)' has some indirect sub-type changes:
+    parameter 1 of type 'InitTableEntry*' changed:
+      in pointed to type 'struct InitTableEntry':
+        entity changed from 'struct InitTableEntry' to compatible type 'typedef InitTableEntry'
+          type name changed from 'InitTableEntry' to '__anonymous_struct__'
+          type size hasn't changed
+
+          1 data member change:
+           type of 'void ()* InitTableEntry::func' changed:
+             in pointed to type 'function type void ()':
+               parameter 1 of type 'typedef MyoArena' was added
+
+           and name of 'InitTableEntry::func' changed to '__anonymous_struct__::func'
+
   [C]'function int __offload_offload(OFFLOAD, const char*, int, int, VarDesc*, VarDesc2*, int, void**, void*, int, void*)' has some indirect sub-type changes:
     parameter 1 of type 'typedef OFFLOAD' has sub-type changes:
       underlying type 'OffloadDescriptor*' changed:
@@ -1361,6 +1375,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
                       'mutex_t PtrDataTable::m_ptr_lock', at offset 384 (in bits)
                     1 data member change:
                      type of 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_Rep_type std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_M_t' changed:
+                       typedef name changed from std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_Rep_type to PtrDataTable::PtrSet
                        underlying type 'class std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >' changed:
                          type name changed from 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >' to 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >'
                          type size hasn't changed
@@ -1390,9 +1405,9 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
                                    'std::less<PtrData> std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_key_compare', at offset 0 (in bits)
                                    'std::_Rb_tree_node_base std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_header', at offset 64 (in bits)
                                    'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::size_type std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_node_count', at offset 320 (in bits)
-
-
-
+                               and name of 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_key_compare' changed to 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_M_impl'
+                          and name of 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_M_impl' changed to 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_M_t'
+                     and name of 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_M_t' changed to 'PtrDataTable::list'
 
                 'Engine::SignalMap Engine::m_signal_map' offset changed from 1664 to 2368 (in bits) (by +704 bits)
                 'mutex_t Engine::m_signal_lock' offset changed from 2048 to 2752 (in bits) (by +704 bits)

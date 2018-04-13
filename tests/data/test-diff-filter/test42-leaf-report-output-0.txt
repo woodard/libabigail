@@ -1,6 +1,7 @@
 Leaf changes summary: 1 artifact changed
-Added/removed functions summary: 0 Removed, 0 Added function
-Added/removed variables summary: 0 Removed, 0 Added variable
+Changed leaf types summary: 1 leaf type changed
+Removed/Changed/Added functions summary: 0 Removed, 0 Changed, 0 Added function
+Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
 
 'struct leaf at test42-leaf-report-v0.cc:4:1' changed:
   type size changed from 32 to 64 bits
