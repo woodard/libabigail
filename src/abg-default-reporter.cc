@@ -98,6 +98,10 @@ default_reporter::report(const enum_diff& d, ostream& out,
   if (!d.to_be_reported())
     return;
 
+  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER3(d.first_subject(),
+						   d.second_subject(),
+						   "enum type");
+
   string name = d.first_enum()->get_pretty_representation();
 
   enum_type_decl_sptr first = d.first_enum(), second = d.second_enum();
@@ -185,6 +189,8 @@ default_reporter::report(const enum_diff& d, ostream& out,
   if (d.context()->show_leaf_changes_only())
     maybe_report_interfaces_impacted_by_diff(&d, out, indent,
 					     /*new_line_prefix=*/false);
+
+  d.reported_once(true);
 }
 
 /// For a @ref typedef_diff node, report the changes that are local.
