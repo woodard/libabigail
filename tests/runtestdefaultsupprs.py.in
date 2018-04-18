@@ -20,12 +20,12 @@ import os
 import subprocess
 
 
-abidiff = '@top_builddir@/tools/abidiff'
-abipkgdiff = '@top_builddir@/tools/abipkgdiff'
+abidiff = '@abs_top_builddir@/tools/abidiff'
+abipkgdiff = '@abs_top_builddir@/tools/abipkgdiff'
 test_src_dir = '@top_srcdir@/tests'
-test_build_dir = '@top_builddir@/tests'
+test_build_dir = '@abs_top_builddir@/tests'
 input_dir = '@top_srcdir@/tests/data/test-default-supprs'
-output_dir = '@top_builddir@/tests/output/test-default-supprs'
+output_dir = '@abs_top_builddir@/tests/output/test-default-supprs'
 
 # This variable named is a list of 5-uples.  Here is the meaning of
 # the elements of each 5-uples:
