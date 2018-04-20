@@ -192,6 +192,8 @@ public:
   bool		compare_dso_only;
   bool		compare_private_dsos;
   bool		leaf_changes_only;
+  bool		show_hexadecimal_values;
+  bool		show_offsets_sizes_in_bits;
   bool		show_impacted_interfaces;
   bool		show_full_impact_report;
   bool		show_linkage_names;
@@ -224,6 +226,8 @@ public:
       compare_dso_only(),
       compare_private_dsos(),
       leaf_changes_only(),
+      show_hexadecimal_values(),
+      show_offsets_sizes_in_bits(true),
       show_impacted_interfaces(),
       show_full_impact_report(),
       show_linkage_names(true),
@@ -855,6 +859,10 @@ display_usage(const string& prog_name, ostream& out)
     << " --redundant                    display redundant changes\n"
     << " --harmless                     display the harmless changes\n"
     << " --no-show-locs                 do not show location information\n"
+    << " --show-bytes  show size and offsets in bytes\n"
+    << " --show-bits  show size and offsets in bits\n"
+    << " --show-hex  show size and offset in hexadecimal\n"
+    << " --show-dec  show size and offset in decimal\n"
     << " --no-show-relative-offset-changes  do not show relative"
     " offset changes\n"
     << " --no-added-syms                do not display added functions or variables\n"
@@ -1166,6 +1174,8 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
   ctxt->show_redundant_changes(opts.show_redundant_changes);
   ctxt->show_leaf_changes_only(opts.leaf_changes_only);
   ctxt->show_impacted_interfaces(opts.show_impacted_interfaces);
+  ctxt->show_hex_values(opts.show_hexadecimal_values);
+  ctxt->show_offsets_sizes_in_bits(opts.show_offsets_sizes_in_bits);
   ctxt->show_relative_offset_changes(opts.show_relative_offset_changes);
   ctxt->show_locs(opts.show_locs);
   ctxt->show_linkage_names(opts.show_linkage_names);
@@ -2807,6 +2817,14 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.show_harmless_changes = true;
       else if (!strcmp(argv[i], "--no-show-locs"))
 	opts.show_locs = false;
+      else if (!strcmp(argv[i], "--show-bytes"))
+	opts.show_offsets_sizes_in_bits = false;
+      else if (!strcmp(argv[i], "--show-bits"))
+	opts.show_offsets_sizes_in_bits = true;
+      else if (!strcmp(argv[i], "--show-hex"))
+	opts.show_hexadecimal_values = true;
+      else if (!strcmp(argv[i], "--show-dec"))
+	opts.show_hexadecimal_values = false;
       else if (!strcmp(argv[i], "--no-show-relative-offset-changes"))
 	opts.show_relative_offset_changes = false;
       else if (!strcmp(argv[i], "--no-added-syms"))

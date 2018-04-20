@@ -7,7 +7,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
     parameter 1 of type 'Type*' has sub-type changes:
       in pointed to type 'typedef Type':
         underlying type 'struct PrivateType0' changed:
-          type size changed from 32 to 64 bits
+          type size changed from 32 to 64 (in bits)
           1 data member insertion:
             'char PrivateType0::m1', at offset 32 (in bits)
 
@@ -15,7 +15,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
     parameter 1 of type 'typedef TypePtr' has sub-type changes:
       underlying type 'PrivateType1*' changed:
         in pointed to type 'struct PrivateType1':
-          type size changed from 32 to 64 bits
+          type size changed from 32 to 64 (in bits)
           1 data member insertion:
             'char PrivateType1::m1', at offset 32 (in bits)
 

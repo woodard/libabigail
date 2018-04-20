@@ -219,6 +219,25 @@ Options
    Do not show information about where in the *second shared library*
    the respective type was changed.
 
+  * ``--show-bytes``
+
+    Show sizes and offsets in bytes, not bits.  By default, sizes and
+    offsets are shown in bits.
+
+  * ``--show-bits``
+
+    Show sizes and offsets in bits, not bytes.  This option is
+    activated by default.
+
+  * ``--show-hex``
+
+    Show sizes and offsets in hexadecimal base.
+
+  * ``--show-dec``
+
+    Show sizes and offsets in decimal base.  This option is activated
+    by default.
+
   *  ``--no-show-relative-offset-changes``
 
      Without this option, when the offset of a data member changes,

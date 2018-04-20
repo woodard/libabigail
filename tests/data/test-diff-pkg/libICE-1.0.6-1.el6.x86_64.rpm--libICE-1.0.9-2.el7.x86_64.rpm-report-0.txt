@@ -23,7 +23,7 @@
                    1 data member change:
                     type of '_XtransConnInfo* _IceListenObj::trans_conn' changed:
                       in pointed to type 'struct _XtransConnInfo' at Xtransint.h:136:1:
-                        type size changed from 640 to 768 bits
+                        type size changed from 640 to 768 (in bits)
                         2 data member insertions:
                           '_XtransConnFd* _XtransConnInfo::recv_fds', at offset 640 (in bits) at Xtransint.h:148:1
                           '_XtransConnFd* _XtransConnInfo::send_fds', at offset 704 (in bits) at Xtransint.h:149:1

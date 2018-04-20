@@ -6,6 +6,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
   [C]'function void pub::bar()' has some indirect sub-type changes:
     return type changed:
       type name changed from 'void' to 'char'
-      type size changed from 0 to 8 bits
+      type size changed from 0 to 8 (in bits)
 
 

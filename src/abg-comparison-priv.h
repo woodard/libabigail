@@ -199,6 +199,8 @@ struct diff_context::priv
   bool					leaf_changes_only_;
   bool					forbid_visiting_a_node_twice_;
   bool					reset_visited_diffs_for_each_interface_;
+  bool					hex_values_;
+  bool					show_offsets_sizes_in_bits_;
   bool					show_relative_offset_changes_;
   bool					show_stats_only_;
   bool					show_soname_change_;
@@ -225,6 +227,8 @@ struct diff_context::priv
       leaf_changes_only_(),
       forbid_visiting_a_node_twice_(true),
       reset_visited_diffs_for_each_interface_(),
+      hex_values_(),
+      show_offsets_sizes_in_bits_(true),
       show_relative_offset_changes_(true),
       show_stats_only_(false),
       show_soname_change_(true),

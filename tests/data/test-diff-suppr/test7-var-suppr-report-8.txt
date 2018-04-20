@@ -6,7 +6,7 @@ Variables changes summary: 0 Removed, 2 Changed, 0 Added variables
   [C]'S0* var0' was changed:
     type of variable changed:
      in pointed to type 'struct S0':
-       type size changed from 32 to 64 bits
+       type size changed from 32 to 64 (in bits)
        1 data member insertion:
          'char S0::inserted_member', at offset 0 (in bits)
        1 data member change:
@@ -15,7 +15,7 @@ Variables changes summary: 0 Removed, 2 Changed, 0 Added variables
   [C]'S1* var1' was changed:
     type of variable changed:
      in pointed to type 'struct S1':
-       type size changed from 32 to 64 bits
+       type size changed from 32 to 64 (in bits)
        1 data member insertion:
          'char S1::inserted_member', at offset 0 (in bits)
        1 data member change:

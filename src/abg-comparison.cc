@@ -1408,6 +1408,44 @@ bool
 diff_context::show_leaf_changes_only() const
 {return priv_->leaf_changes_only_;}
 
+/// Get the flag that indicates if the diff reports using this context
+/// should show sizes and offsets in an hexadecimal base or not.  If
+/// not, then they are to be shown in a decimal base.
+///
+/// @return true iff sizes and offsets are to be shown in an
+/// hexadecimal base.
+bool
+diff_context::show_hex_values() const
+{return priv_->hex_values_;}
+
+/// Set the flag that indicates if diff reports using this context
+/// should show sizes and offsets in an hexadecimal base or not.  If
+/// not, then they are to be shown in a decimal base.
+///
+/// @param f if true then sizes and offsets are to be shown in an
+/// hexadecimal base.
+void
+diff_context::show_hex_values(bool f)
+{priv_->hex_values_ = f;}
+
+/// Get the flag that indicates if diff reports using this context
+/// should show sizes and offsets in bits, rather than bytes.
+///
+/// @return true iff sizes and offsets are to be shown in bits.
+/// Otherwise they are to be shown in bytes.
+bool
+diff_context::show_offsets_sizes_in_bits() const
+{return priv_->show_offsets_sizes_in_bits_;}
+
+/// Set the flag that indicates if diff reports using this context
+/// should show sizes and offsets in bits, rather than bytes.
+///
+/// @param f if true then sizes and offsets are to be shown in bits.
+/// Otherwise they are to be shown in bytes.
+void
+diff_context::show_offsets_sizes_in_bits(bool f)
+{priv_->show_offsets_sizes_in_bits_ = f;}
+
 /// Set a flag saying if offset changes should be reported in a
 /// relative way.  That is, if the report should say how of many bits
 /// a class/struct data member did move.

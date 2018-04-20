@@ -10,14 +10,14 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
   [C]'function void bar(C1&)' has some indirect sub-type changes:
     parameter 1 of type 'C1&' has sub-type changes:
       in referenced type 'class C1':
-        type size changed from 8 to 64 bits
+        type size changed from 8 to 64 (in bits)
         1 data member insertion:
           'int C1::m1', at offset 32 (in bits)
 
   [C]'function void foo(C0&)' has some indirect sub-type changes:
     parameter 1 of type 'C0&' has sub-type changes:
       in referenced type 'struct C0':
-        type size changed from 16 to 24 bits
+        type size changed from 16 to 24 (in bits)
         1 data member insertion:
           'char C0::m2', at offset 0 (in bits)
         2 data member changes:

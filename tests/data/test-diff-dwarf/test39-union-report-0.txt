@@ -6,10 +6,10 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
   [C]'function void foo(some_union_type*)' has some indirect sub-type changes:
     parameter 1 of type 'some_union_type*' has sub-type changes:
       in pointed to type 'union some_union_type':
-        type size changed from 64 to 96 bits
+        type size changed from 64 to 96 (in bits)
         1 data member change:
          type of 'S some_union_type::m2' changed:
-           type size changed from 64 to 96 bits
+           type size changed from 64 to 96 (in bits)
            1 data member insertion:
              'char S::S_member2', at offset 64 (in bits)
 

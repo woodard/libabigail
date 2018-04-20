@@ -6,7 +6,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
   [C]'function void bar(int, S&)' has some indirect sub-type changes:
     parameter 2 of type 'S&' has sub-type changes:
       in referenced type 'struct S':
-        type size changed from 8 to 64 bits
+        type size changed from 8 to 64 (in bits)
         1 data member insertion:
           'int S::m0', at offset 0 (in bits)
         1 data member change:

@@ -59,7 +59,7 @@ Variable symbols changes summary: 0 Removed, 6 Added variable symbols not refere
             type of 'FILE* std::random_device::__anonymous_union__::_M_file' changed:
               in pointed to type 'typedef FILE':
                 entity changed from 'typedef FILE' to 'void'
-                type size changed from 1216 to 0 bits
+                type size changed from 1216 to 0 (in bits)
 
 
 

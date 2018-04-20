@@ -672,6 +672,18 @@ public:
   bool
   show_leaf_changes_only() const;
 
+  bool
+  show_hex_values() const;
+
+  void
+  show_hex_values(bool f);
+
+  bool
+  show_offsets_sizes_in_bits() const;
+
+  void
+  show_offsets_sizes_in_bits(bool f);
+
   void
   show_relative_offset_changes(bool f);
 

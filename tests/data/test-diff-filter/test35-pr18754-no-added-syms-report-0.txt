@@ -256,7 +256,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
     parameter 1 of type 'typedef OFFLOAD' has sub-type changes:
       underlying type 'OffloadDescriptor*' changed:
         in pointed to type 'struct OffloadDescriptor':
-          type size changed from 2240 to 2368 bits
+          type size changed from 2240 to 2368 (in bits)
           9 data member insertions:
             'bool OffloadDescriptor::m_wait_all_devices', at offset 320 (in bits)
             'uint32_t OffloadDescriptor::m_in_deps_allocated', at offset 1824 (in bits)
@@ -270,7 +270,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
           8 data member changes (2 filtered):
            type of 'Engine& OffloadDescriptor::m_device' changed:
              in referenced type 'struct Engine':
-               type size changed from 2752 to 5504 bits
+               type size changed from 2752 to 5504 (in bits)
                1 data member deletion:
                  'mutex_t Engine::m_ptr_lock', at offset 1344 (in bits)
 
@@ -286,7 +286,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
                 type of 'Engine::PtrSet Engine::m_ptr_set' changed:
                   entity changed from 'typedef Engine::PtrSet' to compatible type 'class PtrDataTable'
                     type name changed from 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >' to 'PtrDataTable'
-                    type size changed from 384 to 704 bits
+                    type size changed from 384 to 704 (in bits)
                     1 data member insertion:
                       'mutex_t PtrDataTable::m_ptr_lock', at offset 384 (in bits)
                     1 data member change:
@@ -312,7 +312,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
                               1 data member change:
                                type of 'std::less<PtrData> std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_key_compare' changed:
                                  type name changed from 'std::less<PtrData>' to 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>'
-                                 type size changed from 8 to 384 bits
+                                 type size changed from 8 to 384 (in bits)
                                  1 base class deletion:
                                    struct std::binary_function<PtrData, PtrData, bool>
                                  1 base class insertion:
@@ -329,7 +329,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
                 'mutex_t Engine::m_signal_lock' offset changed from 2048 to 2752 (in bits) (by +704 bits)
                 type of 'coifunction* Engine::m_funcs[6]' changed:
                   type name changed from 'coifunction*[6]' to 'coifunction*[7]'
-                  array type size changed from 384 to 448 bits:
+                  array type size changed from 384 to 448
                   array type subrange 1 changed length from 6 to 7
                 and offset changed from 2368 to 5056 (in bits) (by +2688 bits)
 
@@ -337,7 +337,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
            'const bool OffloadDescriptor::m_is_openmp' offset changed from 328 to 336 (in bits) (by +8 bits)
            type of 'OffloadDescriptor::VarExtra* OffloadDescriptor::m_vars_extra' changed:
              in pointed to type 'struct OffloadDescriptor::VarExtra':
-               type size changed from 576 to 640 bits
+               type size changed from 576 to 640 (in bits)
                2 data member insertions:
                  'void* OffloadDescriptor::VarExtra::alloc', at offset 320 (in bits)
                  'OffloadDescriptor::OmpAsyncLastEventType OffloadDescriptor::VarExtra::omp_last_event_type', at offset 608 (in bits)
@@ -345,7 +345,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
                 'CeanReadRanges* OffloadDescriptor::VarExtra::read_rng_src' offset changed from 320 to 384 (in bits) (by +64 bits)
                 type of 'CeanReadRanges* OffloadDescriptor::VarExtra::read_rng_dst' changed:
                   in pointed to type 'struct CeanReadRanges':
-                    type size changed from 512 to 576 bits
+                    type size changed from 512 to 576 (in bits)
                     1 data member insertion:
                       'Arr_Desc* CeanReadRanges::arr_desc', at offset 0 (in bits)
                     7 data member changes:
@@ -368,7 +368,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [C]'function void __offload_register_image(void*)' has some indirect sub-type changes:
     return type changed:
       type name changed from 'void' to 'bool'
-      type size changed from 0 to 8 bits
+      type size changed from 0 to 8 (in bits)
 
   [C]'method void std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::_M_emplace_back_aux<const VarTable::Entry*>(const VarTable::Entry*&&)' has some indirect sub-type changes:
     Please note that the symbol of this function is _ZNSt6vectorIPKN8VarTable5EntryESaIS3_EE19_M_emplace_back_auxIJS3_EEEvDpOT_
@@ -431,10 +431,10 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
 1 Changed variable:
 
   [C]'static const char* Engine::m_func_names[6]' was changed to 'static const char* Engine::m_func_names[7]':
-    size of symbol (in bytes) changed from 48 to 56
+    size of symbol changed from 48 to 56
     type of variable changed:
      type name changed from 'const char*[6]' to 'const char*[7]'
-     array type size changed from 384 to 448 bits:
+     array type size changed from 384 to 448
      array type subrange 1 changed length from 6 to 7
 
 

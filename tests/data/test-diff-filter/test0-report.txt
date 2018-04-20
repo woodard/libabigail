@@ -10,10 +10,10 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
   [C]'function void foo(S0&, S1*)' has some indirect sub-type changes:
     parameter 1 of type 'S0&' has sub-type changes:
       in referenced type 'class S0':
-        type size changed from 96 to 128 bits
+        type size changed from 96 to 128 (in bits)
         1 base class change:
           'class B0S0' changed:
-            type size changed from 64 to 96 bits
+            type size changed from 64 to 96 (in bits)
             1 data member insertion:
               'unsigned int B0S0::m2', at offset 32 (in bits)
             1 data member change:

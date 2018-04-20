@@ -52,7 +52,7 @@
           1 data member changes (2 filtered):
            type of 'char tbb::task_group_context::_leading_padding[80]' changed:
              type name changed from 'char[80]' to 'char[72]'
-             array type size changed from 640 to 576 bits:
+             array type size changed from 640 to 576
              array type subrange 1 changed length from 80 to 72
 
 

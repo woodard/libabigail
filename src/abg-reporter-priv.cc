@@ -31,6 +31,162 @@ namespace abigail
 namespace comparison
 {
 
+/// Convert a number in bits into a number in bytes.
+///
+/// @param bits the number in bits to convert.
+///
+/// @return the number @p bits converted into bytes.
+uint64_t
+convert_bits_to_bytes(size_t bits)
+{return bits / 8;}
+
+/// Emit a numerical value to an output stream.
+///
+/// Depending on the current @ref diff_context, the number is going to
+/// be emitted either in decimal or hexadecimal base.
+///
+/// @param value the value to emit.
+///
+/// @param ctxt the current diff context.
+///
+/// @param out the output stream to emit the numerical value to.
+void
+emit_num_value(uint64_t value, const diff_context& ctxt, ostream& out)
+{
+  if (ctxt.show_hex_values())
+    out << std::hex << std::showbase ;
+  else
+    out << std::dec;
+  out << value;
+  out << std::dec << std::noshowbase;
+}
+
+/// Convert a bits value into a byte value if the current diff context
+/// instructs us to do so.
+///
+/// @param bits the bits value to convert.
+///
+/// @param ctxt the current diff context to consider.
+///
+/// @return the resulting bits or bytes value, depending on what the
+/// diff context instructs us to do.
+uint64_t
+maybe_convert_bits_to_bytes(uint64_t bits, const diff_context& ctxt)
+{
+  if (ctxt.show_offsets_sizes_in_bits())
+    return bits;
+  return convert_bits_to_bytes(bits);
+}
+
+/// Emit a message showing the numerical change between two values, to
+/// a given output stream.
+///
+/// The function emits a message like
+///
+///      "XXX changes from old_bits to new_bits (in bits)"
+///
+/// or
+///
+///      "XXX changes from old_bits to new_bits (in bytes)"
+///
+/// Depending on if the current diff context instructs us to emit the
+/// change in bits or bytes.  XXX is the string content of the @p what
+/// parameter.
+///
+/// @param what the string that tells us what the change represents.
+/// This is the "XXX" we refer to in the explanation above.
+///
+/// @param old_bits the initial value (which changed) in bits.
+///
+/// @param new_bits the final value (resulting from the change or @p
+/// old_bits) in bits.
+///
+/// @param ctxt the current diff context to consider.
+///
+/// @param out the output stream to send the change message to.
+///
+/// @param show_bits_or_byte if this is true, then the message is
+/// going to precise if the changed value is in bits or bytes.
+/// Otherwise, no mention of that is made.
+void
+show_numerical_change(const string&	what,
+		      uint64_t		old_bits,
+		      uint64_t		new_bits,
+		      const diff_context& ctxt,
+		      ostream&		out,
+		      bool show_bits_or_byte)
+{
+  bool can_convert_bits_to_bytes = (old_bits % 8 == 0 && new_bits % 8 == 0);
+  uint64_t o = can_convert_bits_to_bytes
+    ? maybe_convert_bits_to_bytes(old_bits, ctxt)
+    : old_bits;
+  uint64_t n = can_convert_bits_to_bytes
+    ? maybe_convert_bits_to_bytes(new_bits, ctxt)
+    : new_bits;
+  string bits_or_bytes =
+    (!can_convert_bits_to_bytes || ctxt.show_offsets_sizes_in_bits ())
+    ? "bits"
+    : "bytes";
+
+  out << what << " changed from ";
+  emit_num_value(o, ctxt, out);
+  out << " to ";
+  emit_num_value(n, ctxt, out);
+  if (show_bits_or_byte)
+    {
+      out << " (in ";
+      out << bits_or_bytes;
+      out << ")";
+    }
+}
+
+/// Emit a message showing the value of a numerical value representing
+/// a size or an offset, preceded by a string.  The message is ended
+/// by a part which says if the value is in bits or bytes.
+///
+/// @param what the string prefix of the message to emit.
+///
+/// @param value the numerical value to emit.
+///
+/// @param ctxt the diff context to take into account.
+///
+/// @param out the output stream to emit the message to.
+void
+show_offset_or_size(const string&	what,
+		    uint64_t		value,
+		    const diff_context& ctxt,
+		    ostream&		out)
+{
+  uint64_t v = value;
+  bool can_convert_bits_to_bytes = (value % 8 == 0);
+  if (can_convert_bits_to_bytes)
+    v = maybe_convert_bits_to_bytes(v, ctxt);
+  string bits_or_bytes =
+    (!can_convert_bits_to_bytes || ctxt.show_offsets_sizes_in_bits())
+    ? "bits"
+    : "bytes";
+
+  if (!what.empty())
+    out << what << " ";
+  emit_num_value(v, ctxt, out);
+  out << " (in " << bits_or_bytes << ")";
+}
+
+/// Emit a message showing the value of a numerical value representing
+/// a size or an offset.  The message is ended by a part which says if
+/// the value is in bits or bytes.
+///
+/// @param value the numerical value to emit.
+///
+/// @param ctxt the diff context to take into account.
+///
+/// @param out the output stream to emit the message to.
+void
+show_offset_or_size(uint64_t		value,
+		    const diff_context& ctxt,
+		    ostream&		out)
+{show_offset_or_size("", value, ctxt, out);}
+
 /// Stream a string representation for a member function.
 ///
 /// @param ctxt the current diff context.
@@ -60,10 +216,13 @@ represent(const diff_context& ctxt,
 	is_class_type(meth->get_type()->get_class_type())->
 	get_biggest_vtable_offset();
       if (voffset > -1)
-	out << ", virtual at voffset "
-	    << get_member_function_vtable_offset(mem_fn)
-	    << "/"
-	    << biggest_voffset;
+	{
+	  out << ", virtual at voffset ";
+	  emit_num_value(get_member_function_vtable_offset(mem_fn),
+			 ctxt, out);
+	  out << "/";
+	  emit_num_value(biggest_voffset, ctxt, out);
+	}
     }
 
   if (ctxt.show_linkage_names()
@@ -99,10 +258,9 @@ represent_data_member(var_decl_sptr d,
       // type because all data members of a union are supposed to be
       // at offset 0.
       if (!is_union_type(d->get_scope()))
-	out << ", at offset "
-	    << get_data_member_offset(d)
-	    << " (in bits)";
-
+	show_offset_or_size(", at offset",
+			    get_data_member_offset(d),
+			    *ctxt, out);
       report_loc_info(d, *ctxt, out);
       out << "\n";
     }
@@ -155,7 +313,16 @@ maybe_show_relative_offset_change(const var_diff_sptr &diff,
   else
     return;
 
-  out << " (by " << sign << change << " bits)";
+  if (!ctxt.show_offsets_sizes_in_bits())
+    change = convert_bits_to_bytes(change);
+
+  string bits_or_bytes = ctxt.show_offsets_sizes_in_bits()
+    ? "bits"
+    : "bytes";
+
+  out << " (by " << sign;
+  emit_num_value(change, ctxt, out);
+  out << " " << bits_or_bytes << ")";
 }
 
 /// If a given @ref var_diff node carries a hange in which the size of
@@ -205,7 +372,16 @@ maybe_show_relative_size_change(const var_diff_sptr	&diff,
   else
     return;
 
-  out << " (by " << sign << change << " bits)";
+  if (!ctxt.show_offsets_sizes_in_bits())
+    change = convert_bits_to_bytes(change);
+
+  string bits_or_bytes = ctxt.show_offsets_sizes_in_bits()
+    ? "bits"
+    : "bytes";
+
+  out << " (by " << sign;
+  emit_num_value(change, ctxt, out);
+  out << " " << bits_or_bytes << ")";
 }
 
 /// Represent the changes carried by an instance of @ref var_diff that
@@ -321,11 +497,11 @@ represent(const var_diff_sptr	&diff,
 	    out << indent << "'" << pretty_representation << "' ";
 	  else
 	    out << ", ";
-	  out << "offset changed from "
-	      << get_data_member_offset(o)
-	      << " to " << get_data_member_offset(n)
-	      << " (in bits)";
 
+	  show_numerical_change("offset",
+				get_data_member_offset(o),
+				get_data_member_offset(n),
+				*ctxt, out);
 	  maybe_show_relative_offset_change(diff, *ctxt, out);
 
 	  emitted = true;
@@ -345,10 +521,10 @@ represent(const var_diff_sptr	&diff,
 	  else
 	    out << ", ";
 
-	  out << "size changed from "
-	      << get_var_size_in_bits(o)
-	      << " to " << get_var_size_in_bits(n)
-	      << " (in bits)";
+	  show_numerical_change("size",
+				get_var_size_in_bits(o),
+				get_var_size_in_bits(n),
+				*ctxt, out);
 	  maybe_show_relative_size_change(diff, *ctxt, out);
 	  emitted = true;
 	}
@@ -485,13 +661,13 @@ report_size_and_alignment_changes(type_or_decl_base_sptr	first,
 	      if (first_array->is_infinite())
 		out << "infinity";
 	      else
-		out << first_array->get_size_in_bits();
+		emit_num_value(first_array->get_size_in_bits(), *ctxt, out);
 	      out << " to ";
 	      if (second_array->is_infinite())
 		out << "infinity";
 	      else
-		out << second_array->get_size_in_bits();
-	      out << " bits:\n";
+		emit_num_value(second_array->get_size_in_bits(), *ctxt, out);
+	      out << "\n";
 
 	      if (sdc != fdc)
 		{
@@ -533,8 +709,8 @@ report_size_and_alignment_changes(type_or_decl_base_sptr	first,
 	    } // end if (first_array && second_array)
 	  else if (fs != ss)
 	    {
-	      out << indent
-		  << "type size changed from " << fs << " to " << ss << " bits";
+	      out << indent;
+	      show_numerical_change("type size", fs, ss, *ctxt, out);
 	      n = true;
 	    }
 	} // end if (fs != ss || fdc != sdc)
@@ -547,8 +723,9 @@ report_size_and_alignment_changes(type_or_decl_base_sptr	first,
     {
       if (n)
 	out << "\n";
-      out << indent
-	  << "type alignment changed from " << fa << " to " << sa << " bits";
+      out << indent;
+      show_numerical_change("type alignement", fa, sa, *ctxt, out,
+			    /*show_bits_or_bytes=*/false);
       n = true;
     }
 
@@ -808,6 +985,8 @@ maybe_report_diff_for_member(const decl_base_sptr&	decl1,
 ///
 /// @param symbol2 the second symbol to consider.
 ///
+/// @param ctxt the diff context.
+///
 /// @param the output stream to emit the report to.
 ///
 /// @param indent the indentation string to use.
@@ -817,6 +996,7 @@ maybe_report_diff_for_member(const decl_base_sptr&	decl1,
 bool
 maybe_report_diff_for_symbol(const elf_symbol_sptr&	symbol1,
 			     const elf_symbol_sptr&	symbol2,
+			     const diff_context_sptr&	ctxt,
 			     ostream&			out,
 			     const string&		indent)
 {
@@ -827,11 +1007,12 @@ maybe_report_diff_for_symbol(const elf_symbol_sptr&	symbol1,
 
   if (symbol1->get_size() != symbol2->get_size())
     {
-      out << indent << "size of symbol (in bytes) changed from "
-	  << symbol1->get_size()
-	  << " to "
-	  << symbol2->get_size();
-
+      out << indent;
+      show_numerical_change("size of symbol",
+			    symbol1->get_size(),
+			    symbol2->get_size(),
+			    *ctxt, out,
+			    /*show_bits_or_bytes=*/false);
       reported = true;
     }
 

@@ -6,7 +6,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
   [C]'function void bar(b_type*)' has some indirect sub-type changes:
     parameter 1 of type 'b_type*' has sub-type changes:
       in pointed to type 'struct b_type':
-        type size changed from 32 to 64 bits
+        type size changed from 32 to 64 (in bits)
         1 data member insertion:
           'char b_type::m_char', at offset 0 (in bits)
         1 data member change:
@@ -16,7 +16,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
     parameter 1 of type 'a_type*' has sub-type changes:
       in pointed to type 'typedef a_type':
         underlying type 'struct a_type' changed:
-          type size changed from 32 to 64 bits
+          type size changed from 32 to 64 (in bits)
           1 data member insertion:
             'char a_type::m_char', at offset 0 (in bits)
           1 data member change:

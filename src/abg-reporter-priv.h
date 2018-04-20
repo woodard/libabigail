@@ -115,6 +115,34 @@ namespace abigail
 namespace comparison
 {
 
+uint64_t
+convert_bits_to_bytes(size_t bits);
+
+uint64_t
+maybe_convert_bits_to_bytes(uint64_t bits, const diff_context& ctxt);
+
+void
+emit_num_value(uint64_t value, const diff_context& ctxt, ostream& out);
+
+void
+show_offset_or_size(const string&	what,
+		    uint64_t		value,
+		    const diff_context& ctxt,
+		    ostream&		out);
+
+void
+show_offset_or_size(uint64_t		value,
+		    const diff_context& ctxt,
+		    ostream&		out);
+
+void
+show_numerical_change(const string&		what,
+		      uint64_t			old_bits,
+		      uint64_t			new_bits,
+		      const diff_context&	ctxt,
+		      ostream&			out,
+		      bool show_bits_or_bytes = true);
+
 void
 represent(const diff_context& ctxt,
 	  method_decl_sptr mem_fn,
@@ -197,6 +225,7 @@ maybe_report_diff_for_member(const decl_base_sptr&	decl1,
 bool
 maybe_report_diff_for_symbol(const elf_symbol_sptr&	symbol1,
 			     const elf_symbol_sptr&	symbol2,
+			     const diff_context_sptr&	ctxt,
 			     ostream&			out,
 			     const string&		indent);
 

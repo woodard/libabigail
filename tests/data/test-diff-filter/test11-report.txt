@@ -6,7 +6,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
   [C]'method int S1::member_fn0(S0&)' has some indirect sub-type changes:
     parameter 1 of type 'S0&' has sub-type changes:
       in referenced type 'struct S0':
-        type size changed from 64 to 96 bits
+        type size changed from 64 to 96 (in bits)
         1 data member insertion:
           'unsigned int S0::m2', at offset 64 (in bits)
 

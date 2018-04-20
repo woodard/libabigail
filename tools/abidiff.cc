@@ -86,6 +86,8 @@ struct options
   bool			no_arch;
   bool			no_corpus;
   bool			leaf_changes_only;
+  bool			show_hexadecimal_values;
+  bool			show_offsets_sizes_in_bits;
   bool			show_relative_offset_changes;
   bool			show_stats_only;
   bool			show_symtabs;
@@ -121,6 +123,8 @@ struct options
       no_arch(),
       no_corpus(),
       leaf_changes_only(),
+      show_hexadecimal_values(),
+      show_offsets_sizes_in_bits(true),
       show_relative_offset_changes(true),
       show_stats_only(),
       show_symtabs(),
@@ -184,6 +188,10 @@ display_usage(const string& prog_name, ostream& out)
     << " --no-unreferenced-symbols  do not display changes "
     "about symbols not referenced by debug info\n"
     << " --no-show-locs  do now show location information\n"
+    << " --show-bytes  show size and offsets in bytes\n"
+    << " --show-bits  show size and offsets in bits\n"
+    << " --show-hex  show size and offset in hexadecimal\n"
+    << " --show-dec  show size and offset in decimal\n"
     << " --no-show-relative-offset-changes  do not show relative"
     " offset changes\n"
     << " --suppressions|--suppr <path> specify a suppression file\n"
@@ -400,6 +408,14 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.show_symbols_not_referenced_by_debug_info = false;
       else if (!strcmp(argv[i], "--no-show-locs"))
 	opts.show_locs = false;
+      else if (!strcmp(argv[i], "--show-bytes"))
+	opts.show_offsets_sizes_in_bits = false;
+      else if (!strcmp(argv[i], "--show-bits"))
+	opts.show_offsets_sizes_in_bits = true;
+      else if (!strcmp(argv[i], "--show-hex"))
+	opts.show_hexadecimal_values = true;
+      else if (!strcmp(argv[i], "--show-dec"))
+	opts.show_hexadecimal_values = false;
       else if (!strcmp(argv[i], "--no-show-relative-offset-changes"))
 	opts.show_relative_offset_changes = false;
       else if (!strcmp(argv[i], "--suppressions")
@@ -591,6 +607,8 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
   ctxt->default_output_stream(&cout);
   ctxt->error_output_stream(&cerr);
   ctxt->show_leaf_changes_only(opts.leaf_changes_only);
+  ctxt->show_hex_values(opts.show_hexadecimal_values);
+  ctxt->show_offsets_sizes_in_bits(opts.show_offsets_sizes_in_bits);
   ctxt->show_relative_offset_changes(opts.show_relative_offset_changes);
   ctxt->show_stats_only(opts.show_stats_only);
   ctxt->show_deleted_fns(opts.show_all_fns || opts.show_deleted_fns);

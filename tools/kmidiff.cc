@@ -73,6 +73,8 @@ struct options
   bool			verbose;
   bool			missing_operand;
   bool			leaf_changes_only;
+  bool			show_hexadecimal_values;
+  bool			show_offsets_sizes_in_bits;
   bool			show_impacted_interfaces;
   string		wrong_option;
   string		kernel_dist_root1;
@@ -92,6 +94,8 @@ struct options
       verbose(),
       missing_operand(),
       leaf_changes_only(true),
+      show_hexadecimal_values(true),
+      show_offsets_sizes_in_bits(false),
       show_impacted_interfaces(false)
   {}
 }; // end struct options.
@@ -121,7 +125,11 @@ display_usage(const string& prog_name, ostream& out)
     "whitelist\n"
     << " --impacted-interfaces|-i  show interfaces impacted by ABI changes\n"
     << " --full-impact|-f  show the full impact of changes on top-most "
-	 "interfaces\n";
+	 "interfaces\n"
+    << " --show-bytes  show size and offsets in bytes\n"
+    << " --show-bits  show size and offsets in bits\n"
+    << " --show-hex  show size and offset in hexadecimal\n"
+    << " --show-dec  show size and offset in decimal\n";
 }
 
 /// Parse the command line of the program.
@@ -256,6 +264,14 @@ parse_command_line(int argc, char* argv[], options& opts)
       else if (!strcmp(argv[i], "--full-impact")
 	       || !strcmp(argv[i], "-f"))
 	opts.leaf_changes_only = false;
+      else if (!strcmp(argv[i], "--show-bytes"))
+	opts.show_offsets_sizes_in_bits = false;
+      else if (!strcmp(argv[i], "--show-bits"))
+	opts.show_offsets_sizes_in_bits = true;
+      else if (!strcmp(argv[i], "--show-hex"))
+	opts.show_hexadecimal_values = true;
+      else if (!strcmp(argv[i], "--show-dec"))
+	opts.show_hexadecimal_values = false;
       else
 	{
 	  opts.wrong_option = argv[i];
@@ -314,6 +330,8 @@ set_diff_context(diff_context_sptr ctxt, const options& opts)
     (true);
   ctxt->show_leaf_changes_only(opts.leaf_changes_only);
   ctxt->show_impacted_interfaces(opts.show_impacted_interfaces);
+  ctxt->show_hex_values(opts.show_hexadecimal_values);
+  ctxt->show_offsets_sizes_in_bits(opts.show_offsets_sizes_in_bits);
 
   ctxt->switch_categories_off(get_default_harmless_categories_bitmap());
 

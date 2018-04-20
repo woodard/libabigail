@@ -175,3 +175,22 @@ Options
     Emit a change report that shows the full impact of each change on
     exported interfaces.  This is the default kind of report emitted
     by tools like ``abidiff`` or ``abipkgdiff``.
+
+  * ``--show-bytes``
+
+    Show sizes and offsets in bytes, not bits.  This option is
+    activated by default.
+
+  * ``--show-bits``
+
+    Show sizes and offsets in bits, not bytes.  By default, sizes and
+    offsets are shown in bytes.
+
+  * ``--show-hex``
+
+    Show sizes and offsets in hexadecimal base.  This option is
+    activated by default.
+
+  * ``--show-dec``
+
+    Show sizes and offsets in decimal base.

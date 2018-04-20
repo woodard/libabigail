@@ -33,11 +33,11 @@
                     type of 'RedDispatcher* QXLState::dispatcher' changed:
                       in pointed to type 'typedef RedDispatcher' at red_worker.h:87:1:
                         underlying type 'struct RedDispatcher' at red_dispatcher.c:53:1 changed:
-                          type size changed from 3264 to 3328 bits
+                          type size changed from 3264 to 3328 (in bits)
                           12 data member changes (1 filtered):
                            type of 'Dispatcher RedDispatcher::dispatcher' changed:
                              underlying type 'struct Dispatcher' at dispatcher.h:22:1 changed:
-                               type size changed from 960 to 1024 bits
+                               type size changed from 960 to 1024 (in bits)
                                1 data member insertion:
                                  'dispatcher_handle_any_message Dispatcher::any_handler', at offset 960 (in bits) at dispatcher.h:56:1
 
@@ -68,7 +68,7 @@
                   type of 'SpiceCharDeviceState* VDIPortState::base' changed:
                     in pointed to type 'typedef SpiceCharDeviceState' at spice-char.h:34:1:
                       underlying type 'struct SpiceCharDeviceState' at char_device.c:47:1 changed:
-                        type size changed from 1536 to 1600 bits
+                        type size changed from 1536 to 1600 (in bits)
                         1 data member insertion:
                           'uint64_t SpiceCharDeviceState::cur_pool_size', at offset 384 (in bits) at char_device.c:57:1
                         12 data member changes:
@@ -116,7 +116,7 @@
                                            type of 'RedsStream* RedChannelClient::stream' changed:
                                              in pointed to type 'typedef RedsStream' at reds_stream.h:31:1:
                                                underlying type 'struct RedsStream' at reds.h:68:1 changed:
-                                                 type size changed from 1280 to 256 bits
+                                                 type size changed from 1280 to 256 (in bits)
                                                  5 data member deletions:
                                                    'RedsSASL RedsStream::sasl', at offset 256 (in bits) at reds.h:78:1
 
@@ -134,7 +134,7 @@
                                                       typedef name changed from SSL to RedsStreamPrivate at reds_stream.h:32:1
                                                       underlying type 'struct ssl_st' at ssl.h:1065:1 changed:
                                                         type name changed from 'ssl_st' to 'RedsStreamPrivate'
-                                                        type size changed from 5504 to 0 bits
+                                                        type size changed from 5504 to 0 (in bits)
                                                         94 data member deletions:
                                                           'int ssl_st::version', at offset 0 (in bits) at ssl.h:1070:1
 
@@ -369,7 +369,7 @@
              type of 'SpicePlaybackState* SpicePlaybackInstance::st' changed:
                in pointed to type 'typedef SpicePlaybackState' at spice-audio.h:34:1:
                  underlying type 'struct SpicePlaybackState' at snd_worker.c:165:1 changed:
-                   type size changed from 512 to 576 bits
+                   type size changed from 512 to 576 (in bits)
                    1 data member insertion:
                      'uint32_t SpicePlaybackState::frequency', at offset 512 (in bits) at snd_worker.c:159:1
                    no data member changes (2 filtered);
@@ -384,7 +384,7 @@
              type of 'SpiceRecordState* SpiceRecordInstance::st' changed:
                in pointed to type 'typedef SpiceRecordState' at spice-audio.h:68:1:
                  underlying type 'struct SpiceRecordState' at snd_worker.c:171:1 changed:
-                   type size changed from 512 to 576 bits
+                   type size changed from 512 to 576 (in bits)
                    1 data member insertion:
                      'uint32_t SpiceRecordState::frequency', at offset 512 (in bits) at snd_worker.c:166:1
                    no data member changes (2 filtered);

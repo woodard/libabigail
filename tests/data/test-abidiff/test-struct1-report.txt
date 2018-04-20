@@ -1,7 +1,7 @@
 5 changed types:
   'const s0' changed:
     in unqualified underlying type 'class s0':
-      type size changed from 192 to 256 bits
+      type size changed from 192 to 256 (in bits)
       1 member function insertion:
         'method virtual int s0::foo(int, char) const', virtual at voffset 2/2
 
@@ -13,8 +13,8 @@
       2 data member changes:
        type of 'int s0::m0' changed:
          type name changed from 'int' to 'char'
-         type size changed from 32 to 8 bits
-         type alignment changed from 32 to 8 bits
+         type size changed from 32 to 8 (in bits)
+         type alignement changed from 32 to 8
 
        'unsigned int s0::m2' offset changed from 128 to 192 (in bits) (by +64 bits)
   'const s0*' changed:

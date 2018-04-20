@@ -81,15 +81,15 @@
           2 data member changes (1 filtered):
            type of 'char tbb::task_group_context::_leading_padding[80]' changed:
              type name changed from 'char[80]' to 'char[72]'
-             array type size changed from 640 to 576 bits:
+             array type size changed from 640 to 576
              array type subrange 1 changed length from 80 to 72
 
            type of 'tbb::internal::generic_scheduler* tbb::task_group_context::my_owner' changed:
              in pointed to type 'class tbb::internal::generic_scheduler' at scheduler.h:110:1:
-               type size changed from 3136 to 3072 bits
+               type size changed from 3136 to 3072 (in bits)
                1 base class change:
                  'struct tbb::internal::scheduler_state' at scheduler.h:73:1 changed:
-                   type size changed from 576 to 704 bits
+                   type size changed from 576 to 704 (in bits)
                    2 data member insertions:
                      'volatile intptr_t* tbb::internal::scheduler_state::my_ref_top_priority', at offset 576 (in bits) at scheduler.h:96:1
                      'volatile uintptr_t* tbb::internal::scheduler_state::my_ref_reload_epoch', at offset 640 (in bits) at scheduler.h:99:1
@@ -147,7 +147,7 @@
                 'uintptr_t tbb::internal::generic_scheduler::my_stealing_threshold' offset changed from 704 to 832 (in bits) (by +128 bits)
                 type of 'tbb::internal::market* tbb::internal::generic_scheduler::my_market' changed:
                   in pointed to type 'class tbb::internal::market' at market.h:49:1:
-                    type size changed from 1664 to 1728 bits
+                    type size changed from 1664 to 1728 (in bits)
                     1 data member insertion:
                       'bool tbb::internal::market::join_workers', at offset 384 (in bits) at market.h:88:1
                     7 data member changes:
@@ -156,7 +156,7 @@
                          typedef name changed from tbb::internal::scheduler_mutex_type to tbb::spin_rw_mutex at spin_rw_mutex.h:38:1
                          underlying type 'class tbb::spin_mutex' at spin_mutex.h:47:1 changed:
                            type name changed from 'tbb::spin_mutex' to 'tbb::spin_rw_mutex_v3'
-                           type size changed from 8 to 64 bits
+                           type size changed from 8 to 64 (in bits)
                            1 base class insertion:
                              class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
                            1 data member change:
@@ -166,7 +166,7 @@
                                 typedef name changed from __TBB_Flag to intptr_t at stdint.h:119:1
                                 underlying type 'unsigned char' changed:
                                   type name changed from 'unsigned char' to 'long int'
-                                  type size changed from 8 to 64 bits
+                                  type size changed from 8 to 64 (in bits)
                             and name of 'tbb::spin_mutex::flag' changed to 'tbb::spin_rw_mutex_v3::state' at spin_rw_mutex.h:224:1
 
                      'intptr_t tbb::internal::market::my_global_top_priority' offset changed from 384 to 448 (in bits) (by +64 bits)

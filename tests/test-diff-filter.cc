@@ -387,6 +387,14 @@ InOutSpec in_out_specs[] =
     "data/test-diff-filter/test30-pr18904-rvalueref-report1.txt",
     "output/test-diff-filter/test30-pr18904-rvalueref-report1.txt",
   },
+  { // Just like the previous test, but emit sizes in hex and bytes
+    "data/test-diff-filter/test30-pr18904-rvalueref-liba.so",
+    "data/test-diff-filter/test30-pr18904-rvalueref-libb.so",
+    "--no-default-suppression --no-linkage-name --no-redundant "
+    "--show-hex --show-bytes",
+    "data/test-diff-filter/test30-pr18904-rvalueref-report2.txt",
+    "output/test-diff-filter/test30-pr18904-rvalueref-report2.txt",
+  },
   {
     "data/test-diff-filter/test31-pr18535-libstdc++-4.8.3.so",
     "data/test-diff-filter/test31-pr18535-libstdc++-4.9.2.so",

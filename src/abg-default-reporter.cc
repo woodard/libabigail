@@ -1576,7 +1576,7 @@ default_reporter::report(const function_decl_diff& d, ostream& out,
 
   maybe_report_diff_for_symbol(ff->get_symbol(),
 			       sf->get_symbol(),
-			       out, indent);
+			       d.context(), out, indent);
 
   // Now report about inline-ness changes
   if (ff->is_declared_inline() != sf->is_declared_inline())
@@ -1691,7 +1691,7 @@ default_reporter::report(const var_diff& d, ostream& out,
 
   maybe_report_diff_for_symbol(d.first_var()->get_symbol(),
 			       d.second_var()->get_symbol(),
-			       out, indent);
+			       d.context(), out, indent);
 
   maybe_report_diff_for_member(first, second, d.context(), out, indent);
 
