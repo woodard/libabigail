@@ -500,6 +500,20 @@ InOutSpec in_out_specs[] =
     "data/test-diff-filter/test43-decl-only-def-change-leaf-report-0.txt",
     "output/test-diff-filter/test43-decl-only-def-change-leaf-report-0.txt",
   },
+  {
+    "data/test-diff-filter/libtest44-anonymous-data-member-v0.so",
+    "data/test-diff-filter/libtest44-anonymous-data-member-v1.so",
+    "--no-default-suppression",
+    "data/test-diff-filter/test44-anonymous-data-member-report-0.txt",
+    "output/test-diff-filter/test44-anonymous-data-member-report-0.txt",
+  },
+  {
+    "data/test-diff-filter/libtest44-anonymous-data-member-v0.so",
+    "data/test-diff-filter/libtest44-anonymous-data-member-v1.so",
+    "--no-default-suppression --leaf-changes-only",
+    "data/test-diff-filter/test44-anonymous-data-member-report-1.txt",
+    "output/test-diff-filter/test44-anonymous-data-member-report-1.txt",
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };

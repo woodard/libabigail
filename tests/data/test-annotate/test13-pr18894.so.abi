@@ -3334,23 +3334,23 @@
     <!-- struct __anonymous_struct__ -->
     <class-decl name='__anonymous_struct__' size-in-bits='256' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-170' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.h' line='45' column='1' id='type-id-171'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <!-- void* __anonymous_struct__::dummy1 -->
+        <!-- void* dummy1 -->
         <var-decl name='dummy1' type-id='type-id-8' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.h' line='46' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <!-- void* __anonymous_struct__::dummy2 -->
+        <!-- void* dummy2 -->
         <var-decl name='dummy2' type-id='type-id-8' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.h' line='47' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <!-- dbus_uint32_t __anonymous_struct__::dummy8 -->
+        <!-- dbus_uint32_t dummy8 -->
         <var-decl name='dummy8' type-id='type-id-21' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.h' line='48' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='160'>
-        <!-- int __anonymous_struct__::dummy12 -->
+        <!-- int dummy12 -->
         <var-decl name='dummy12' type-id='type-id-9' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.h' line='49' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
-        <!-- int __anonymous_struct__::dummy17 -->
+        <!-- int dummy17 -->
         <var-decl name='dummy17' type-id='type-id-9' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.h' line='50' column='1'/>
       </data-member>
     </class-decl>
@@ -3602,79 +3602,79 @@
     <!-- struct __anonymous_struct__ -->
     <class-decl name='__anonymous_struct__' size-in-bits='1216' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-178' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='153' column='1' id='type-id-179'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <!-- unsigned int __anonymous_struct__::mask -->
+        <!-- unsigned int mask -->
         <var-decl name='mask' type-id='type-id-10' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='154' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <!-- DBusMutexNewFunction __anonymous_struct__::mutex_new -->
+        <!-- DBusMutexNewFunction mutex_new -->
         <var-decl name='mutex_new' type-id='type-id-180' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='156' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <!-- DBusMutexFreeFunction __anonymous_struct__::mutex_free -->
+        <!-- DBusMutexFreeFunction mutex_free -->
         <var-decl name='mutex_free' type-id='type-id-181' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='157' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
-        <!-- DBusMutexLockFunction __anonymous_struct__::mutex_lock -->
+        <!-- DBusMutexLockFunction mutex_lock -->
         <var-decl name='mutex_lock' type-id='type-id-182' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='158' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
-        <!-- DBusMutexUnlockFunction __anonymous_struct__::mutex_unlock -->
+        <!-- DBusMutexUnlockFunction mutex_unlock -->
         <var-decl name='mutex_unlock' type-id='type-id-183' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='159' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
-        <!-- DBusCondVarNewFunction __anonymous_struct__::condvar_new -->
+        <!-- DBusCondVarNewFunction condvar_new -->
         <var-decl name='condvar_new' type-id='type-id-184' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='161' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
-        <!-- DBusCondVarFreeFunction __anonymous_struct__::condvar_free -->
+        <!-- DBusCondVarFreeFunction condvar_free -->
         <var-decl name='condvar_free' type-id='type-id-185' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='162' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='448'>
-        <!-- DBusCondVarWaitFunction __anonymous_struct__::condvar_wait -->
+        <!-- DBusCondVarWaitFunction condvar_wait -->
         <var-decl name='condvar_wait' type-id='type-id-186' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='163' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='512'>
-        <!-- DBusCondVarWaitTimeoutFunction __anonymous_struct__::condvar_wait_timeout -->
+        <!-- DBusCondVarWaitTimeoutFunction condvar_wait_timeout -->
         <var-decl name='condvar_wait_timeout' type-id='type-id-187' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='164' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='576'>
-        <!-- DBusCondVarWakeOneFunction __anonymous_struct__::condvar_wake_one -->
+        <!-- DBusCondVarWakeOneFunction condvar_wake_one -->
         <var-decl name='condvar_wake_one' type-id='type-id-188' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='165' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='640'>
-        <!-- DBusCondVarWakeAllFunction __anonymous_struct__::condvar_wake_all -->
+        <!-- DBusCondVarWakeAllFunction condvar_wake_all -->
         <var-decl name='condvar_wake_all' type-id='type-id-189' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='166' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='704'>
-        <!-- DBusRecursiveMutexNewFunction __anonymous_struct__::recursive_mutex_new -->
+        <!-- DBusRecursiveMutexNewFunction recursive_mutex_new -->
         <var-decl name='recursive_mutex_new' type-id='type-id-190' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='168' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='768'>
-        <!-- DBusRecursiveMutexFreeFunction __anonymous_struct__::recursive_mutex_free -->
+        <!-- DBusRecursiveMutexFreeFunction recursive_mutex_free -->
         <var-decl name='recursive_mutex_free' type-id='type-id-191' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='169' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='832'>
-        <!-- DBusRecursiveMutexLockFunction __anonymous_struct__::recursive_mutex_lock -->
+        <!-- DBusRecursiveMutexLockFunction recursive_mutex_lock -->
         <var-decl name='recursive_mutex_lock' type-id='type-id-192' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='170' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='896'>
-        <!-- DBusRecursiveMutexUnlockFunction __anonymous_struct__::recursive_mutex_unlock -->
+        <!-- DBusRecursiveMutexUnlockFunction recursive_mutex_unlock -->
         <var-decl name='recursive_mutex_unlock' type-id='type-id-193' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='171' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='960'>
-        <!-- void ()* __anonymous_struct__::padding1 -->
+        <!-- void ()* padding1 -->
         <var-decl name='padding1' type-id='type-id-194' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='173' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1024'>
-        <!-- void ()* __anonymous_struct__::padding2 -->
+        <!-- void ()* padding2 -->
         <var-decl name='padding2' type-id='type-id-194' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='174' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1088'>
-        <!-- void ()* __anonymous_struct__::padding3 -->
+        <!-- void ()* padding3 -->
         <var-decl name='padding3' type-id='type-id-194' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='175' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1152'>
-        <!-- void ()* __anonymous_struct__::padding4 -->
+        <!-- void ()* padding4 -->
         <var-decl name='padding4' type-id='type-id-194' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='176' column='1'/>
       </data-member>
     </class-decl>

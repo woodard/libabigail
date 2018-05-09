@@ -362,13 +362,13 @@ is_at_global_scope(const decl_base&);
 bool
 is_at_global_scope(const decl_base_sptr);
 
-bool
+class_or_union*
 is_at_class_scope(const decl_base_sptr);
 
-bool
+class_or_union*
 is_at_class_scope(const decl_base*);
 
-bool
+class_or_union*
 is_at_class_scope(const decl_base&);
 
 bool
@@ -428,6 +428,9 @@ is_typedef(type_base*);
 enum_type_decl_sptr
 is_enum_type(const type_or_decl_base_sptr&);
 
+bool
+is_class_type(const type_or_decl_base&);
+
 class_decl*
 is_class_type(const type_or_decl_base*);
 
@@ -439,6 +442,9 @@ is_class_or_union_type(const type_or_decl_base*);
 
 class_or_union_sptr
 is_class_or_union_type(const type_or_decl_base_sptr&);
+
+bool
+is_union_type(const type_or_decl_base&);
 
 union_decl*
 is_union_type(const type_or_decl_base*);
@@ -585,6 +591,42 @@ is_data_member(const var_decl_sptr);
 
 var_decl_sptr
 is_data_member(const decl_base_sptr&);
+
+var_decl*
+is_data_member(const decl_base *);
+
+bool
+is_anonymous_data_member(const decl_base&);
+
+const var_decl*
+is_anonymous_data_member(const decl_base*);
+
+var_decl_sptr
+is_anonymous_data_member(const decl_base_sptr&);
+
+var_decl_sptr
+is_anonymous_data_member(const var_decl_sptr&);
+
+const var_decl*
+is_anonymous_data_member(const var_decl*);
+
+bool
+is_anonymous_data_member(const var_decl&);
+
+const class_or_union*
+anonymous_data_member_to_class_or_union(const var_decl*);
+
+class_or_union_sptr
+anonymous_data_member_to_class_or_union(const var_decl_sptr&);
+
+const class_or_union_sptr
+data_member_has_anonymous_type(const var_decl& d);
+
+const class_or_union_sptr
+data_member_has_anonymous_type(const var_decl* d);
+
+const class_or_union_sptr
+data_member_has_anonymous_type(const var_decl_sptr& d);
 
 array_type_def*
 is_array_type(const type_or_decl_base* decl);
@@ -843,6 +885,21 @@ get_pretty_representation(const method_type*, bool internal = false);
 string
 get_pretty_representation(const method_type_sptr&,
 			  bool internal = false);
+
+string
+get_class_or_union_flat_representation(const class_or_union& cou,
+				       const string& indent,
+				       bool one_line);
+
+string
+get_class_or_union_flat_representation(const class_or_union* cou,
+				       const string& indent,
+				       bool one_line);
+
+string
+get_class_or_union_flat_representation(const class_or_union_sptr& cou,
+				       const string& indent,
+				       bool one_line);
 
 bool
 odr_is_relevant(const type_or_decl_base&);

@@ -2664,6 +2664,12 @@ is_class_diff(const diff* diff);
 const union_diff*
 is_union_diff(const diff* diff);
 
+const class_or_union_diff*
+is_class_or_union_diff(const diff* d);
+
+const class_or_union_diff*
+is_anonymous_class_or_union_diff(const diff* d);
+
 const array_diff*
 is_array_diff(const diff* diff);
 

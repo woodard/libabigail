@@ -2562,21 +2562,21 @@
         <!-- union __anonymous_struct__::__anonymous_union__ -->
         <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='86' column='1' id='type-id-93'>
           <data-member access='private'>
-            <!-- unsigned int __anonymous_struct__::__anonymous_union__::__wch -->
+            <!-- unsigned int __wch -->
             <var-decl name='__wch' type-id='type-id-81' visibility='default' filepath='/usr/include/wchar.h' line='88' column='1'/>
           </data-member>
           <data-member access='private'>
-            <!-- char __anonymous_struct__::__anonymous_union__::__wchb[4] -->
+            <!-- char __wchb[4] -->
             <var-decl name='__wchb' type-id='type-id-94' visibility='default' filepath='/usr/include/wchar.h' line='92' column='1'/>
           </data-member>
         </union-decl>
       </member-type>
       <data-member access='public' layout-offset-in-bits='0'>
-        <!-- int __anonymous_struct__::__count -->
+        <!-- int __count -->
         <var-decl name='__count' type-id='type-id-37' visibility='default' filepath='/usr/include/wchar.h' line='84' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='32'>
-        <!-- __anonymous_struct__::__anonymous_union__ __anonymous_struct__::__value -->
+        <!-- union {unsigned int __wch; char __wchb[4];} __value -->
         <var-decl name='__value' type-id='type-id-93' visibility='default' filepath='/usr/include/wchar.h' line='93' column='1'/>
       </data-member>
     </class-decl>

@@ -10,13 +10,13 @@
           underlying type 'union __anonymous_union__' at dvd.h:122:1 changed:
             type size hasn't changed
             2 data member changes:
-             type of 'cdio_dvd_disckey_t __anonymous_union__::disckey' changed:
+             type of 'cdio_dvd_disckey_t disckey' changed:
                underlying type 'struct cdio_dvd_disckey' at dvd.h:100:1 changed:
                  type size hasn't changed
                  1 data member change:
                   'unsigned int cdio_dvd_disckey::agid' offset changed from 30 to 22 (in bits) (by -8 bits)
 
-             type of 'cdio_dvd_physical_t __anonymous_union__::physical' changed:
+             type of 'cdio_dvd_physical_t physical' changed:
                underlying type 'struct cdio_dvd_physical' at dvd.h:86:1 changed:
                  type size hasn't changed
                  1 data member change:

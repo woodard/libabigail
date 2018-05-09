@@ -1101,7 +1101,7 @@
     <!-- struct __anonymous_struct__ -->
     <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-85' visibility='default' filepath='libtess/priorityq-heap.h' line='83' column='1' id='type-id-86'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <!-- PQHeapHandle __anonymous_struct__::handle -->
+        <!-- PQHeapHandle handle -->
         <var-decl name='handle' type-id='type-id-83' visibility='default' filepath='libtess/priorityq-heap.h' line='83' column='1'/>
       </data-member>
     </class-decl>
@@ -1114,11 +1114,11 @@
     <!-- struct __anonymous_struct__ -->
     <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-87' visibility='default' filepath='libtess/priorityq-heap.h' line='84' column='1' id='type-id-88'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <!-- PQHeapKey __anonymous_struct__::key -->
+        <!-- PQHeapKey key -->
         <var-decl name='key' type-id='type-id-89' visibility='default' filepath='libtess/priorityq-heap.h' line='84' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <!-- PQHeapHandle __anonymous_struct__::node -->
+        <!-- PQHeapHandle node -->
         <var-decl name='node' type-id='type-id-83' visibility='default' filepath='libtess/priorityq-heap.h' line='84' column='1'/>
       </data-member>
     </class-decl>
@@ -1219,7 +1219,7 @@
     <!-- struct __anonymous_struct__ -->
     <class-decl name='__anonymous_struct__' size-in-bits='1024' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-112' visibility='default' filepath='/usr/include/bits/sigset.h' line='30' column='1' id='type-id-115'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <!-- unsigned long int __anonymous_struct__::__val[16] -->
+        <!-- unsigned long int __val[16] -->
         <var-decl name='__val' type-id='type-id-116' visibility='default' filepath='/usr/include/bits/sigset.h' line='31' column='1'/>
       </data-member>
     </class-decl>
@@ -8585,17 +8585,17 @@
         <!-- union O_curve::__anonymous_union__ -->
         <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='libnurbs/internals/reader.h' line='56' column='1' id='type-id-284'>
           <data-member access='private'>
-            <!-- O_nurbscurve* O_curve::__anonymous_union__::o_nurbscurve -->
+            <!-- O_nurbscurve* o_nurbscurve -->
             <var-decl name='o_nurbscurve' type-id='type-id-194' visibility='default' filepath='libnurbs/internals/reader.h' line='57' column='1'/>
           </data-member>
           <data-member access='private'>
-            <!-- O_pwlcurve* O_curve::__anonymous_union__::o_pwlcurve -->
+            <!-- O_pwlcurve* o_pwlcurve -->
             <var-decl name='o_pwlcurve' type-id='type-id-193' visibility='default' filepath='libnurbs/internals/reader.h' line='58' column='1'/>
           </data-member>
         </union-decl>
       </member-type>
       <data-member access='public' layout-offset-in-bits='0'>
-        <!-- O_curve::__anonymous_union__ O_curve::curve -->
+        <!-- union {O_nurbscurve* o_nurbscurve; O_pwlcurve* o_pwlcurve;} O_curve::curve -->
         <var-decl name='curve' type-id='type-id-284' visibility='default' filepath='libnurbs/internals/reader.h' line='59' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
@@ -12492,11 +12492,11 @@
     <!-- struct __anonymous_struct__ -->
     <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-270' visibility='default' filepath='libnurbs/internals/displaylist.h' line='46' column='1' id='type-id-323'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <!-- void (NurbsTessellator*, void*)* __anonymous_struct__::__pfn -->
+        <!-- void (NurbsTessellator*, void*)* __pfn -->
         <var-decl name='__pfn' type-id='type-id-348' visibility='default' filepath='libnurbs/internals/displaylist.h' line='46' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <!-- long int __anonymous_struct__::__delta -->
+        <!-- long int __delta -->
         <var-decl name='__delta' type-id='type-id-55' visibility='default' filepath='libnurbs/internals/displaylist.h' line='46' column='1'/>
       </data-member>
     </class-decl>

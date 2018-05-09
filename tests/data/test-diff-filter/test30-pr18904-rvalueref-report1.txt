@@ -1301,25 +1301,20 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
       in pointed to type 'struct VarDesc' at offload_common.h:254:1:
         type size hasn't changed
         1 data member change:
-         type of 'VarDesc::__anonymous_union__ VarDesc::flags' changed:
+         type of 'union {struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst;}; uint32_t bits;} VarDesc::flags' changed:
            type name changed from 'VarDesc::__anonymous_union__' to 'varDescFlags'
            type size hasn't changed
 
+           1 data member deletion:
+             'uint32_t bits' at offload_common.h:252:1
+
+           1 data member insertion:
+             'struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t targetptr; uint32_t preallocated; uint32_t is_pointer; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst; uint32_t always_copy; uint32_t always_delete; uint32_t pin;}'
            1 data member change:
-            type of 'VarDesc::__anonymous_union__::__anonymous_struct__ ' changed:
-              type name changed from 'VarDesc::__anonymous_union__::__anonymous_struct__' to 'varDescFlags::__anonymous_struct__'
+            type of 'struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst;}' changed:
+              entity changed from 'struct VarDesc::__anonymous_union__::__anonymous_struct__' to 'typedef uint32_t' at stdint.h:51:1
               type size hasn't changed
-
-              6 data member insertions:
-                'uint32_t varDescFlags::__anonymous_struct__::pin', at offset 18 (in bits) at offload_common.h:248:1
-                'uint32_t varDescFlags::__anonymous_struct__::always_delete', at offset 19 (in bits) at offload_common.h:246:1
-                'uint32_t varDescFlags::__anonymous_struct__::always_copy', at offset 20 (in bits) at offload_common.h:244:1
-                'uint32_t varDescFlags::__anonymous_struct__::is_noncont_dst', at offset 21 (in bits) at offload_common.h:241:1
-                'uint32_t varDescFlags::__anonymous_struct__::is_noncont_src', at offset 22 (in bits) at offload_common.h:239:1
-                'uint32_t varDescFlags::__anonymous_struct__::alloc_disp', at offset 23 (in bits) at offload_common.h:237:1
-              no data member changes (8 filtered);
-
-           no data member change (1 filtered);
+            and name of 'struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst;}' changed to 'varDescFlags::bits' at offload_common.h:250:1
 
 
   [C]'function void __offload_myoRegisterTables(InitTableEntry*, SharedTableEntry*, FptrTableEntry*)' at offload_myo_host.cpp:691:1 has some indirect sub-type changes:

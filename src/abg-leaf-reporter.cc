@@ -634,10 +634,10 @@ leaf_reporter::report(const class_or_union_diff& d,
 
       // report changes
       size_t numchanges =
-	d.class_or_union_diff::get_priv()->sorted_subtype_changed_dm_.size();
+	d.class_or_union_diff::get_priv()->sorted_changed_dm_.size();
       size_t num_filtered =
 	d.class_or_union_diff::get_priv()->
-	count_filtered_subtype_changed_dm(/*local_only =*/ true);
+	count_filtered_changed_dm(/*local_only =*/ true);
       assert(numchanges >= num_filtered);
       size_t net_numchanges = numchanges - num_filtered;
 
@@ -647,9 +647,9 @@ leaf_reporter::report(const class_or_union_diff& d,
 	  report_mem_header(out, subtype_change_kind, "data member", indent);
 	  for (var_diff_sptrs_type::const_iterator it =
 		 d.class_or_union_diff::get_priv()->
-		 sorted_subtype_changed_dm_.begin();
+		 sorted_changed_dm_.begin();
 	       it != d.class_or_union_diff::get_priv()->
-		 sorted_subtype_changed_dm_.end();
+		 sorted_changed_dm_.end();
 	       ++it)
 	    {
 	      if (diff_to_be_reported((*it).get()))
@@ -662,10 +662,11 @@ leaf_reporter::report(const class_or_union_diff& d,
 	    }
 	}
 
-      numchanges = d.class_or_union_diff::get_priv()->sorted_changed_dm_.size();
+      numchanges =
+	d.class_or_union_diff::get_priv()->sorted_subtype_changed_dm_.size();
       num_filtered =
 	d.class_or_union_diff::get_priv()->
-	count_filtered_changed_dm(/*local_only =*/ true);
+	count_filtered_subtype_changed_dm(/*local_only =*/ true);
       assert(numchanges >= num_filtered);
       net_numchanges = numchanges - num_filtered;
 
@@ -674,8 +675,8 @@ leaf_reporter::report(const class_or_union_diff& d,
 	  if (!emitted_data_members_changes)
 	    report_mem_header(out, change_kind, "data member", indent);
 	  for (var_diff_sptrs_type::const_iterator it =
-		 d.class_or_union_diff::get_priv()->sorted_changed_dm_.begin();
-	       it != d.class_or_union_diff::get_priv()->sorted_changed_dm_.end();
+		 d.class_or_union_diff::get_priv()->sorted_subtype_changed_dm_.begin();
+	       it != d.class_or_union_diff::get_priv()->sorted_subtype_changed_dm_.end();
 	       ++it)
 	    {
 	      if (diff_to_be_reported((*it).get()))

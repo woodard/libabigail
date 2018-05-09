@@ -593,6 +593,33 @@ const union_diff*
 is_union_diff(const diff* diff)
 {return dynamic_cast<const union_diff*>(diff);}
 
+/// Test if a diff node is a @ref class_or_union_diff node.
+///
+/// @param d the diff node to consider.
+///
+/// @return a non-nil pointer to the @ref class_or_union_diff denoted
+/// by @p d iff @p d is a @ref class_or_union_diff.
+const class_or_union_diff*
+is_class_or_union_diff(const diff* d)
+{return dynamic_cast<const class_or_union_diff*>(d);}
+
+/// Test if a diff node is a @ref class_or_union_diff between two
+/// anonymous classes or unions.
+///
+/// @param d the diff node to consider.
+///
+/// @return a non-nil pointer to the @ref class_or_union_diff iff @p
+/// denoted by @p d iff @p is pointer to an anonymous class or union
+/// diff.
+const class_or_union_diff*
+is_anonymous_class_or_union_diff(const diff* d)
+{
+  if (const class_or_union_diff *dif = is_class_or_union_diff(d))
+    if (dif->first_class_or_union()->get_is_anonymous())
+      return dif;
+  return 0;
+}
+
 /// Test if a diff node is a @ref typedef_diff node.
 ///
 /// @param diff the diff node to consider.
@@ -9819,6 +9846,13 @@ struct leaf_diff_node_marker_visitor : public diff_node_visitor
 	// part of the variable change whose pointer type changed, for
 	// instance.
 	&& !is_pointer_diff(d)
+	// An anonymous class or union diff doesn't make sense on its
+	// own.  It must have been described already by the diff of
+	// the enclosing struct or union if 'd' is from an anonymous
+	// data member, or from a typedef change if 'd' is from a
+	// typedef change which underlying type is an anonymous
+	// struct/union.
+	&& !is_anonymous_class_or_union_diff(d)
 	// Don't show decl-only-ness changes of classes either.
 	&& !filtering::has_class_decl_only_def_change(d))
       {

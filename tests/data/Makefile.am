@@ -651,6 +651,12 @@ test-diff-filter/libtest43-decl-only-def-change-leaf-report-v1.so \
 test-diff-filter/test43-decl-only-def-change-leaf-report-0.txt \
 test-diff-filter/test43-decl-only-def-change-leaf-report-v0.cc \
 test-diff-filter/test43-decl-only-def-change-leaf-report-v1.cc \
+test-diff-filter/libtest44-anonymous-data-member-v0.so \
+test-diff-filter/libtest44-anonymous-data-member-v1.so \
+test-diff-filter/test44-anonymous-data-member-report-0.txt \
+test-diff-filter/test44-anonymous-data-member-report-1.txt \
+test-diff-filter/test44-anonymous-data-member-v0.c \
+test-diff-filter/test44-anonymous-data-member-v1.c \
 \
 test-diff-suppr/test0-type-suppr-v0.cc	\
 test-diff-suppr/test0-type-suppr-v1.cc	\

@@ -3787,6 +3787,171 @@ is_data_member(const decl_base_sptr& d)
   return var_decl_sptr();
 }
 
+/// Test if a decl is a data member.
+///
+/// @param d the decl to consider.
+///
+/// @return a pointer to the data member iff @p d is a data member, or
+/// a null pointer.
+var_decl*
+is_data_member(const decl_base *d)
+{
+  if (var_decl *v = is_var_decl(d))
+    if (is_data_member(v))
+      return v;
+  return 0;
+}
+
+/// Test if a decl is an anonymous data member.
+///
+/// @param d the decl to consider.
+///
+/// @return true iff @p d is an anonymous data member.
+bool
+is_anonymous_data_member(const decl_base& d)
+{return is_anonymous_data_member(&d);}
+
+/// Test if a decl is an anonymous data member.
+///
+/// @param d the decl to consider.
+///
+/// @return a non-nil pointer to the @ref var_decl denoted by @p d if
+/// it's an anonymous data member.  Otherwise returns a nil pointer.
+const var_decl*
+is_anonymous_data_member(const decl_base* d)
+{
+  if (const var_decl* v = is_data_member(d))
+    {
+      if (is_anonymous_data_member(v))
+	return v;
+    }
+  return 0;
+}
+
+/// Test if a decl is an anonymous data member.
+///
+/// @param d the decl to consider.
+///
+/// @return a non-nil pointer to the @ref var_decl denoted by @p d if
+/// it's an anonymous data member.  Otherwise returns a nil pointer.
+var_decl_sptr
+is_anonymous_data_member(const decl_base_sptr& d)
+{
+  if (var_decl_sptr v = is_data_member(d))
+    return is_anonymous_data_member(v);
+  return var_decl_sptr();
+}
+
+/// Test if a @ref var_decl is an anonymous data member.
+///
+/// @param d the @ref var_decl to consider.
+///
+/// @return a non-nil pointer to the @ref var_decl denoted by @p d if
+/// it's an anonymous data member.  Otherwise returns a nil pointer.
+var_decl_sptr
+is_anonymous_data_member(const var_decl_sptr& d)
+{
+  if (is_anonymous_data_member(d.get()))
+    return d;
+  return var_decl_sptr();
+}
+
+/// Test if a @ref var_decl is an anonymous data member.
+///
+/// @param d the @ref var_decl to consider.
+///
+/// @return a non-nil pointer to the @ref var_decl denoted by @p d if
+/// it's an anonymous data member.  Otherwise returns a nil pointer.
+const var_decl*
+is_anonymous_data_member(const var_decl* d)
+{
+  if (d && is_anonymous_data_member(*d))
+    return d;
+  return 0;
+}
+
+/// Test if a @ref var_decl is an anonymous data member.
+///
+/// @param d the @ref var_decl to consider.
+///
+/// @return true iff @p d is an anonymous data member.
+bool
+is_anonymous_data_member(const var_decl& d)
+{
+  return (is_data_member(d)
+	  && d.get_name().empty()
+	  && is_class_or_union_type(d.get_type()));
+}
+
+/// Get the @ref class_or_union type of a given anonymous data member.
+///
+/// @param d the anonymous data member to consider.
+///
+/// @return the @ref class_or_union type of the anonymous data member
+/// @p d.
+const class_or_union*
+anonymous_data_member_to_class_or_union(const var_decl* d)
+{
+  if ((d = is_anonymous_data_member(d)))
+    return is_class_or_union_type(d->get_type().get());
+  return 0;
+}
+
+/// Test if a data member has annonymous type or not.
+///
+/// @param d the data member to consider.
+///
+/// @return the anonymous class or union type iff @p turns out to have
+/// an anonymous type.  Otherwise, returns nil.
+const class_or_union_sptr
+data_member_has_anonymous_type(const var_decl& d)
+{
+  if (is_data_member(d))
+    if (const class_or_union_sptr cou = is_class_or_union_type(d.get_type()))
+      if (cou->get_is_anonymous())
+	return cou;
+
+  return class_or_union_sptr();
+}
+
+/// Test if a data member has annonymous type or not.
+///
+/// @param d the data member to consider.
+///
+/// @return the anonymous class or union type iff @p turns out to have
+/// an anonymous type.  Otherwise, returns nil.
+const class_or_union_sptr
+data_member_has_anonymous_type(const var_decl* d)
+{
+  if (d)
+    return data_member_has_anonymous_type(*d);
+  return class_or_union_sptr();
+}
+
+/// Test if a data member has annonymous type or not.
+///
+/// @param d the data member to consider.
+///
+/// @return the anonymous class or union type iff @p turns out to have
+/// an anonymous type.  Otherwise, returns nil.
+const class_or_union_sptr
+data_member_has_anonymous_type(const var_decl_sptr& d)
+{return data_member_has_anonymous_type(d.get());}
+
+/// Get the @ref class_or_union type of a given anonymous data member.
+///
+/// @param d the anonymous data member to consider.
+///
+/// @return the @ref class_or_union type of the anonymous data member
+/// @p d.
+class_or_union_sptr
+anonymous_data_member_to_class_or_union(const var_decl_sptr &d)
+{
+  if (var_decl_sptr v = is_anonymous_data_member(d))
+    return is_class_or_union_type(v->get_type());
+  return class_or_union_sptr();
+}
+
 /// Set the offset of a data member into its containing class.
 ///
 /// @param m the data member to consider.
@@ -6022,6 +6187,141 @@ string
 get_pretty_representation(const method_type_sptr method, bool internal)
 {return get_pretty_representation(method.get(), internal);}
 
+/// Get the flat representation of an instance of @ref class_or_union
+/// type.
+///
+/// The flat representation of a given @ref class_or_union type is the
+/// actual definition of the type, for instance:
+///
+///   struct foo {int a; char b;}
+///
+///@param cou the instance of @ref class_or_union to consider.
+///
+///@param indent the identation spaces to use in the representation.
+///
+///@param one_line if true, then the flat representation stands on one
+///line.  Otherwise, it stands on multiple lines.
+///
+///@return the resulting flat representation.
+string
+get_class_or_union_flat_representation(const class_or_union& cou,
+				       const string& indent,
+				       bool one_line)
+{
+  string repr;
+  string local_indent = "  ";
+
+  if (class_decl* clazz = is_class_type(&cou))
+    {
+      repr = indent;
+      if (clazz->is_struct())
+	repr += "struct";
+      else
+	repr += "class";
+    }
+  else if (is_union_type(cou))
+    repr = indent + "union";
+  else
+    return "";
+
+  repr += " ";
+
+  string name = cou.get_qualified_name();
+
+  if (!cou.get_is_anonymous())
+    repr += name;
+
+  repr += "{";
+
+  if (!one_line)
+    repr += "\n";
+
+  string real_indent;
+  const class_or_union::data_members &dmems = cou.get_data_members();
+  for (class_or_union::data_members::const_iterator dm = dmems.begin();
+       dm != dmems.end();
+       ++dm)
+    {
+      if (dm != dmems.begin())
+	{
+	  if (one_line)
+	    real_indent = " ";
+	  else
+	    real_indent = "\n" + indent + local_indent;
+	}
+
+      if (var_decl_sptr v = is_anonymous_data_member(*dm))
+	repr +=
+	  get_class_or_union_flat_representation
+	  (anonymous_data_member_to_class_or_union(*dm),
+	   real_indent, one_line);
+      else
+	{
+	  if (one_line)
+	    {
+	      if (dm != dmems.begin())
+		repr += real_indent;
+	      repr += (*dm)->get_pretty_representation();
+	    }
+	  else
+	    repr +=  real_indent+ (*dm)->get_pretty_representation();
+	}
+      repr += ";";
+    }
+
+  repr += indent + "}";
+
+  return repr;
+}
+
+/// Get the flat representation of an instance of @ref class_or_union
+/// type.
+///
+/// The flat representation of a given @ref class_or_union type is the
+/// actual definition of the type, for instance:
+///
+///   struct foo {int a; char b;}
+///
+///@param cou the instance of @ref class_or_union to consider.
+///
+///@param indent the identation spaces to use in the representation.
+///
+///@param one_line if true, then the flat representation stands on one
+///line.  Otherwise, it stands on multiple lines.
+///
+///@return the resulting flat representation.
+string
+get_class_or_union_flat_representation(class_or_union* cou,
+				       const string& indent,
+				       bool one_line)
+{
+  if (cou)
+    return get_class_or_union_flat_representation(*cou, indent, one_line);
+  return "";
+}
+
+/// Get the flat representation of an instance of @ref class_or_union
+/// type.
+///
+/// The flat representation of a given @ref class_or_union type is the
+/// actual definition of the type, for instance:
+///
+///   struct foo {int a; char b;}
+///
+///@param cou the instance of @ref class_or_union to consider.
+///
+///@param indent the identation spaces to use in the representation.
+///
+///@param one_line if true, then the flat representation stands on one
+///line.  Otherwise, it stands on multiple lines.
+///
+///@return the resulting flat representation.
+string
+get_class_or_union_flat_representation(const class_or_union_sptr& cou,
+				       const string& indent,
+				       bool one_line)
+{return get_class_or_union_flat_representation(cou.get(), indent, one_line);}
+
 /// By looking at the language of the TU a given ABI artifact belongs
 /// to, test if the ONE Definition Rule should apply.
 ///
@@ -6207,7 +6507,7 @@ is_at_global_scope(const decl_base_sptr decl)
 /// @param decl the decl to consider.
 ///
 /// @return true iff decl is at class scope.
-bool
+class_or_union*
 is_at_class_scope(const decl_base_sptr decl)
 {return is_at_class_scope(decl.get());}
 
@@ -6216,11 +6516,11 @@ is_at_class_scope(const decl_base_sptr decl)
 /// @param decl the decl to consider.
 ///
 /// @return true iff decl is at class scope.
-bool
+class_or_union*
 is_at_class_scope(const decl_base* decl)
 {
   if (!decl)
-    return false;
+    return 0;
 
   return is_at_class_scope(*decl);
 }
@@ -6230,11 +6530,15 @@ is_at_class_scope(const decl_base* decl)
 /// @param decl the decl to consider.
 ///
 /// @return true iff decl is at class scope.
-bool
+class_or_union*
 is_at_class_scope(const decl_base& decl)
 {
   scope_decl* scope = decl.get_scope();
-  return (is_class_type(scope) || is_union_type(scope));
+  if (class_or_union* cl = is_class_type(scope))
+    return cl;
+  if (class_or_union* cl = is_union_type(scope))
+    return cl;
+  return 0;
 }
 
 /// Tests whether a given decl is at template scope.
@@ -6514,6 +6818,15 @@ is_compatible_with_class_type(const decl_base_sptr& t)
 ///
 /// @parm t the type to consider.
 ///
+/// @return true iff @p t is a class_decl.
+bool
+is_class_type(const type_or_decl_base& t)
+{return is_class_type(&t);}
+
+/// Test whether a type is a class.
+///
+/// @parm t the type to consider.
+///
 /// @return the class_decl if @p t is a class_decl or null otherwise.
 class_decl*
 is_class_type(const type_or_decl_base* t)
@@ -6552,8 +6865,17 @@ is_class_or_union_type(const shared_ptr<type_or_decl_base>& t)
 ///
 /// @param t the type to consider.
 ///
+/// @return true iff @p t is a union_decl.
+bool
+is_union_type(const type_or_decl_base& t)
+{return is_union_type(&t);}
+
+/// Test if a type is a @ref union_decl.
+///
+/// @param t the type to consider.
+///
 /// @return the @ref union_decl is @p is a @ref union_decl, or nil
-/// otherwise.n
+/// otherwise.
 union_decl*
 is_union_type(const type_or_decl_base* t)
 {return dynamic_cast<union_decl*>(const_cast<type_or_decl_base*>(t));}
@@ -13821,6 +14143,46 @@ var_decl::get_hash() const
   return hash_var(this);
 }
 
+/// Get the qualified name of a given variable or data member.
+///
+///
+/// Note that if the current instance of @ref var_decl is an anonymous
+/// data member, then the qualified name is actually the flat
+/// representation (the definition) of the type of the anonymous data
+/// member.  We chose the flat representation because otherwise, the
+/// name an *anonymous* data member is empty, by construction, e.g:
+///
+///   struct foo {
+///     int a;
+///     union {
+///       char b;
+///       char c;
+///     }; // <---- this data member is anonymous.
+///     int d;
+///   }
+///
+///   The string returned for the anonymous member here is going to be:
+///
+///     "union {char b; char c}"
+///
+/// @param internal if true then this is for a purpose to the library,
+/// otherwise, it's for being displayed to users.
+///
+/// @return the resulting qualified name.
+const interned_string&
+var_decl::get_qualified_name(bool internal) const
+{
+  if (is_anonymous_data_member(this)
+      && decl_base::get_qualified_name().empty())
+    {
+      // Display the anonymous data member in a way that makes sense.
+      string r = get_pretty_representation(internal);
+      set_qualified_name(get_environment()->intern(r));
+    }
+
+    return decl_base::get_qualified_name(internal);
+}
+
 /// Build and return the pretty representation of this variable.
 ///
 /// @param internal set to true if the call is intended for an
@@ -13836,13 +14198,68 @@ var_decl::get_pretty_representation(bool internal) const
 
   if (is_member_decl(this) && get_member_is_static(this))
     result = "static ";
+
+  // Detect if the current instance of var_decl is a member of
+  // an anonymous class or union.
+  bool member_of_anonymous_class = false;
+  if (class_or_union* scope = is_at_class_scope(this))
+    if (scope->get_is_anonymous())
+      member_of_anonymous_class = true;
+
   if (array_type_def_sptr t = is_array_type(get_type()))
-    result +=
-      get_type_declaration(t->get_element_type())->get_qualified_name(internal)
-      + " " + get_qualified_name(internal) + t->get_subrange_representation();
+    {
+      string name;
+      if (member_of_anonymous_class)
+	name = get_name();
+      else
+	name = get_qualified_name(internal);
+
+      result +=
+	get_type_declaration(t->get_element_type())->get_qualified_name(internal)
+	+ " " + name + t->get_subrange_representation();
+    }
   else
-    result += get_type_declaration(get_type())->get_qualified_name(internal)
-      + " " + get_qualified_name(internal);
+    {
+      if (is_anonymous_data_member(this))
+	{
+	  // Display the anonymous data member in a way that
+	  // makes sense.
+	  result +=
+	    get_class_or_union_flat_representation
+	    (is_class_or_union_type(get_type()),
+	     "", /*one_line=*/true);
+	}
+      else if (data_member_has_anonymous_type(this))
+	{
+	  result += get_class_or_union_flat_representation
+	    (is_class_or_union_type(get_type()),
+	     "", /*one_line=*/true);
+	  result += " ";
+	  if (member_of_anonymous_class)
+	    // It doesn't make sense to name the member of an
+	    // anonymous class or union like:
+	    // "__anonymous__::data_member_name".  So let's just use
+	    // its non-qualified name.
+	    result += get_name();
+	  else
+	    result += get_qualified_name(internal);
+	}
+      else
+	{
+	  result +=
+	    get_type_declaration(get_type())->get_qualified_name(internal)
+	    + " ";
+
+	  if (member_of_anonymous_class)
+	    // It doesn't make sense to name the member of an
+	    // anonymous class or union like:
+	    // "__anonymous__::data_member_name".  So let's just use
+	    // its non-qualified name.
+	    result += get_name();
+	  else
+	    result += get_qualified_name(internal);
+	}
+    }
   return result;
 }
 
@@ -16744,8 +17161,11 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 	  if (k)
 	    {
 	      *k |= SUBTYPE_CHANGE_KIND;
-	      // TODO: continue this by reporting any representation
-	      // change as being local.
+	      // Report any representation change as being local.
+	      string repr1 = (*d0)->get_pretty_representation();
+	      string repr2 = (*d1)->get_pretty_representation();
+	      if (repr1 != repr2)
+		*k |= LOCAL_CHANGE_KIND;
 	      break;
 	    }
 	  else

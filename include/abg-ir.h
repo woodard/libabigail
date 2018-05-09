@@ -2479,6 +2479,9 @@ public:
   interned_string
   get_id() const;
 
+  virtual const interned_string&
+  get_qualified_name(bool internal = false) const;
+
   virtual size_t
   get_hash() const;
 

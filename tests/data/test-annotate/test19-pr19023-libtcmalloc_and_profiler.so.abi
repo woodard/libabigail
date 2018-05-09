@@ -6071,11 +6071,11 @@
         <!-- union __mbstate_t::__anonymous_union__ -->
         <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='87' column='1' id='type-id-153'>
           <data-member access='private'>
-            <!-- unsigned int __mbstate_t::__anonymous_union__::__wch -->
+            <!-- unsigned int __wch -->
             <var-decl name='__wch' type-id='type-id-130' visibility='default' filepath='/usr/include/wchar.h' line='89' column='1'/>
           </data-member>
           <data-member access='private'>
-            <!-- char __mbstate_t::__anonymous_union__::__wchb[4] -->
+            <!-- char __wchb[4] -->
             <var-decl name='__wchb' type-id='type-id-154' visibility='default' filepath='/usr/include/wchar.h' line='93' column='1'/>
           </data-member>
         </union-decl>
@@ -6085,7 +6085,7 @@
         <var-decl name='__count' type-id='type-id-7' visibility='default' filepath='/usr/include/wchar.h' line='85' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='32'>
-        <!-- __mbstate_t::__anonymous_union__ __mbstate_t::__value -->
+        <!-- union {unsigned int __wch; char __wchb[4];} __mbstate_t::__value -->
         <var-decl name='__value' type-id='type-id-153' visibility='default' filepath='/usr/include/wchar.h' line='94' column='1'/>
       </data-member>
     </class-decl>
@@ -7099,19 +7099,19 @@
           <!-- union tcmalloc::LogItem::__anonymous_union__ -->
           <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='src/internal_logging.h' line='91' column='1' id='type-id-198'>
             <data-member access='private'>
-              <!-- const char* tcmalloc::LogItem::__anonymous_union__::str -->
+              <!-- const char* str -->
               <var-decl name='str' type-id='type-id-33' visibility='default' filepath='src/internal_logging.h' line='92' column='1'/>
             </data-member>
             <data-member access='private'>
-              <!-- void* tcmalloc::LogItem::__anonymous_union__::ptr -->
+              <!-- void* ptr -->
               <var-decl name='ptr' type-id='type-id-91' visibility='default' filepath='src/internal_logging.h' line='93' column='1'/>
             </data-member>
             <data-member access='private'>
-              <!-- int64_t tcmalloc::LogItem::__anonymous_union__::snum -->
+              <!-- int64_t snum -->
               <var-decl name='snum' type-id='type-id-184' visibility='default' filepath='src/internal_logging.h' line='94' column='1'/>
             </data-member>
             <data-member access='private'>
-              <!-- uint64_t tcmalloc::LogItem::__anonymous_union__::unum -->
+              <!-- uint64_t unum -->
               <var-decl name='unum' type-id='type-id-199' visibility='default' filepath='src/internal_logging.h' line='95' column='1'/>
             </data-member>
           </union-decl>
@@ -7121,7 +7121,7 @@
           <var-decl name='tag_' type-id='type-id-197' visibility='default' filepath='src/internal_logging.h' line='90' column='1'/>
         </data-member>
         <data-member access='private' layout-offset-in-bits='64'>
-          <!-- tcmalloc::LogItem::__anonymous_union__ tcmalloc::LogItem::u_ -->
+          <!-- union {const char* str; void* ptr; int64_t snum; uint64_t unum;} tcmalloc::LogItem::u_ -->
           <var-decl name='u_' type-id='type-id-198' visibility='default' filepath='src/internal_logging.h' line='96' column='1'/>
         </data-member>
         <member-function access='private' constructor='yes'>
@@ -33627,11 +33627,11 @@
             <!-- struct siginfo::__anonymous_union__::__anonymous_struct__ -->
             <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='64' column='1' id='type-id-1182'>
               <data-member access='public' layout-offset-in-bits='0'>
-                <!-- __pid_t siginfo::__anonymous_union__::__anonymous_struct__::si_pid -->
+                <!-- __pid_t si_pid -->
                 <var-decl name='si_pid' type-id='type-id-412' visibility='default' filepath='/usr/include/bits/siginfo.h' line='65' column='1'/>
               </data-member>
               <data-member access='public' layout-offset-in-bits='32'>
-                <!-- __uid_t siginfo::__anonymous_union__::__anonymous_struct__::si_uid -->
+                <!-- __uid_t si_uid -->
                 <var-decl name='si_uid' type-id='type-id-1183' visibility='default' filepath='/usr/include/bits/siginfo.h' line='66' column='1'/>
               </data-member>
             </class-decl>
@@ -33640,15 +33640,15 @@
             <!-- struct siginfo::__anonymous_union__::__anonymous_struct__ -->
             <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='71' column='1' id='type-id-1184'>
               <data-member access='public' layout-offset-in-bits='0'>
-                <!-- int siginfo::__anonymous_union__::__anonymous_struct__::si_tid -->
+                <!-- int si_tid -->
                 <var-decl name='si_tid' type-id='type-id-7' visibility='default' filepath='/usr/include/bits/siginfo.h' line='72' column='1'/>
               </data-member>
               <data-member access='public' layout-offset-in-bits='32'>
-                <!-- int siginfo::__anonymous_union__::__anonymous_struct__::si_overrun -->
+                <!-- int si_overrun -->
                 <var-decl name='si_overrun' type-id='type-id-7' visibility='default' filepath='/usr/include/bits/siginfo.h' line='73' column='1'/>
               </data-member>
               <data-member access='public' layout-offset-in-bits='64'>
-                <!-- sigval_t siginfo::__anonymous_union__::__anonymous_struct__::si_sigval -->
+                <!-- sigval_t si_sigval -->
                 <var-decl name='si_sigval' type-id='type-id-1185' visibility='default' filepath='/usr/include/bits/siginfo.h' line='74' column='1'/>
               </data-member>
             </class-decl>
@@ -33657,15 +33657,15 @@
             <!-- struct siginfo::__anonymous_union__::__anonymous_struct__ -->
             <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='79' column='1' id='type-id-1186'>
               <data-member access='public' layout-offset-in-bits='0'>
-                <!-- __pid_t siginfo::__anonymous_union__::__anonymous_struct__::si_pid -->
+                <!-- __pid_t si_pid -->
                 <var-decl name='si_pid' type-id='type-id-412' visibility='default' filepath='/usr/include/bits/siginfo.h' line='80' column='1'/>
               </data-member>
               <data-member access='public' layout-offset-in-bits='32'>
-                <!-- __uid_t siginfo::__anonymous_union__::__anonymous_struct__::si_uid -->
+                <!-- __uid_t si_uid -->
                 <var-decl name='si_uid' type-id='type-id-1183' visibility='default' filepath='/usr/include/bits/siginfo.h' line='81' column='1'/>
               </data-member>
               <data-member access='public' layout-offset-in-bits='64'>
-                <!-- sigval_t siginfo::__anonymous_union__::__anonymous_struct__::si_sigval -->
+                <!-- sigval_t si_sigval -->
                 <var-decl name='si_sigval' type-id='type-id-1185' visibility='default' filepath='/usr/include/bits/siginfo.h' line='82' column='1'/>
               </data-member>
             </class-decl>
@@ -33674,23 +33674,23 @@
             <!-- struct siginfo::__anonymous_union__::__anonymous_struct__ -->
             <class-decl name='__anonymous_struct__' size-in-bits='256' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='87' column='1' id='type-id-1187'>
               <data-member access='public' layout-offset-in-bits='0'>
-                <!-- __pid_t siginfo::__anonymous_union__::__anonymous_struct__::si_pid -->
+                <!-- __pid_t si_pid -->
                 <var-decl name='si_pid' type-id='type-id-412' visibility='default' filepath='/usr/include/bits/siginfo.h' line='88' column='1'/>
               </data-member>
               <data-member access='public' layout-offset-in-bits='32'>
-                <!-- __uid_t siginfo::__anonymous_union__::__anonymous_struct__::si_uid -->
+                <!-- __uid_t si_uid -->
                 <var-decl name='si_uid' type-id='type-id-1183' visibility='default' filepath='/usr/include/bits/siginfo.h' line='89' column='1'/>
               </data-member>
               <data-member access='public' layout-offset-in-bits='64'>
-                <!-- int siginfo::__anonymous_union__::__anonymous_struct__::si_status -->
+                <!-- int si_status -->
                 <var-decl name='si_status' type-id='type-id-7' visibility='default' filepath='/usr/include/bits/siginfo.h' line='90' column='1'/>
               </data-member>
               <data-member access='public' layout-offset-in-bits='128'>
-                <!-- __clock_t siginfo::__anonymous_union__::__anonymous_struct__::si_utime -->
+                <!-- __clock_t si_utime -->
                 <var-decl name='si_utime' type-id='type-id-1188' visibility='default' filepath='/usr/include/bits/siginfo.h' line='91' column='1'/>
               </data-member>
               <data-member access='public' layout-offset-in-bits='192'>
-                <!-- __clock_t siginfo::__anonymous_union__::__anonymous_struct__::si_stime -->
+                <!-- __clock_t si_stime -->
                 <var-decl name='si_stime' type-id='type-id-1188' visibility='default' filepath='/usr/include/bits/siginfo.h' line='92' column='1'/>
               </data-member>
             </class-decl>
@@ -33699,7 +33699,7 @@
             <!-- struct siginfo::__anonymous_union__::__anonymous_struct__ -->
             <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='97' column='1' id='type-id-1189'>
               <data-member access='public' layout-offset-in-bits='0'>
-                <!-- void* siginfo::__anonymous_union__::__anonymous_struct__::si_addr -->
+                <!-- void* si_addr -->
                 <var-decl name='si_addr' type-id='type-id-91' visibility='default' filepath='/usr/include/bits/siginfo.h' line='98' column='1'/>
               </data-member>
             </class-decl>
@@ -33708,41 +33708,41 @@
             <!-- struct siginfo::__anonymous_union__::__anonymous_struct__ -->
             <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='103' column='1' id='type-id-1190'>
               <data-member access='public' layout-offset-in-bits='0'>
-                <!-- long int siginfo::__anonymous_union__::__anonymous_struct__::si_band -->
+                <!-- long int si_band -->
                 <var-decl name='si_band' type-id='type-id-113' visibility='default' filepath='/usr/include/bits/siginfo.h' line='104' column='1'/>
               </data-member>
               <data-member access='public' layout-offset-in-bits='64'>
-                <!-- int siginfo::__anonymous_union__::__anonymous_struct__::si_fd -->
+                <!-- int si_fd -->
                 <var-decl name='si_fd' type-id='type-id-7' visibility='default' filepath='/usr/include/bits/siginfo.h' line='105' column='1'/>
               </data-member>
             </class-decl>
           </member-type>
           <data-member access='private'>
-            <!-- int siginfo::__anonymous_union__::_pad[28] -->
+            <!-- int _pad[28] -->
             <var-decl name='_pad' type-id='type-id-1191' visibility='default' filepath='/usr/include/bits/siginfo.h' line='60' column='1'/>
           </data-member>
           <data-member access='private'>
-            <!-- siginfo::__anonymous_union__::__anonymous_struct__ siginfo::__anonymous_union__::_kill -->
+            <!-- struct {__pid_t si_pid; __uid_t si_uid;} _kill -->
             <var-decl name='_kill' type-id='type-id-1182' visibility='default' filepath='/usr/include/bits/siginfo.h' line='67' column='1'/>
           </data-member>
           <data-member access='private'>
-            <!-- siginfo::__anonymous_union__::__anonymous_struct__ siginfo::__anonymous_union__::_timer -->
+            <!-- struct {int si_tid; int si_overrun; sigval_t si_sigval;} _timer -->
             <var-decl name='_timer' type-id='type-id-1184' visibility='default' filepath='/usr/include/bits/siginfo.h' line='75' column='1'/>
           </data-member>
           <data-member access='private'>
-            <!-- siginfo::__anonymous_union__::__anonymous_struct__ siginfo::__anonymous_union__::_rt -->
+            <!-- struct {__pid_t si_pid; __uid_t si_uid; sigval_t si_sigval;} _rt -->
             <var-decl name='_rt' type-id='type-id-1186' visibility='default' filepath='/usr/include/bits/siginfo.h' line='83' column='1'/>
           </data-member>
           <data-member access='private'>
-            <!-- siginfo::__anonymous_union__::__anonymous_struct__ siginfo::__anonymous_union__::_sigchld -->
+            <!-- struct {__pid_t si_pid; __uid_t si_uid; int si_status; __clock_t si_utime; __clock_t si_stime;} _sigchld -->
             <var-decl name='_sigchld' type-id='type-id-1187' visibility='default' filepath='/usr/include/bits/siginfo.h' line='93' column='1'/>
           </data-member>
           <data-member access='private'>
-            <!-- siginfo::__anonymous_union__::__anonymous_struct__ siginfo::__anonymous_union__::_sigfault -->
+            <!-- struct {void* si_addr;} _sigfault -->
             <var-decl name='_sigfault' type-id='type-id-1189' visibility='default' filepath='/usr/include/bits/siginfo.h' line='99' column='1'/>
           </data-member>
           <data-member access='private'>
-            <!-- siginfo::__anonymous_union__::__anonymous_struct__ siginfo::__anonymous_union__::_sigpoll -->
+            <!-- struct {long int si_band; int si_fd;} _sigpoll -->
             <var-decl name='_sigpoll' type-id='type-id-1190' visibility='default' filepath='/usr/include/bits/siginfo.h' line='106' column='1'/>
           </data-member>
         </union-decl>
@@ -33760,7 +33760,7 @@
         <var-decl name='si_code' type-id='type-id-7' visibility='default' filepath='/usr/include/bits/siginfo.h' line='56' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <!-- siginfo::__anonymous_union__ siginfo::_sifields -->
+        <!-- union {int _pad[28]; struct {__pid_t si_pid; __uid_t si_uid;} _kill; struct {int si_tid; int si_overrun; sigval_t si_sigval;} _timer; struct {__pid_t si_pid; __uid_t si_uid; sigval_t si_sigval;} _rt; struct {__pid_t si_pid; __uid_t si_uid; int si_status; __clock_t si_utime; __clock_t si_stime;} _sigchld; struct {void* si_addr;} _sigfault; struct {long int si_band; int si_fd;} _sigpoll;} siginfo::_sifields -->
         <var-decl name='_sifields' type-id='type-id-1181' visibility='default' filepath='/usr/include/bits/siginfo.h' line='107' column='1'/>
       </data-member>
     </class-decl>

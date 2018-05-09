@@ -9,7 +9,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         in pointed to type 'struct __anonymous_struct__':
           type size changed from 16 to 8 (in bits)
           1 data member deletion:
-            'char __anonymous_struct__::m2', at offset 8 (in bits)
+            'char m2', at offset 8 (in bits)
 
 
 

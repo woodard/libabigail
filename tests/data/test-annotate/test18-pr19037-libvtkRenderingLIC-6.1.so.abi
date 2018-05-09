@@ -4778,11 +4778,11 @@
         <!-- union __mbstate_t::__anonymous_union__ -->
         <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='87' column='1' id='type-id-164'>
           <data-member access='private'>
-            <!-- unsigned int __mbstate_t::__anonymous_union__::__wch -->
+            <!-- unsigned int __wch -->
             <var-decl name='__wch' type-id='type-id-80' visibility='default' filepath='/usr/include/wchar.h' line='89' column='1'/>
           </data-member>
           <data-member access='private'>
-            <!-- char __mbstate_t::__anonymous_union__::__wchb[4] -->
+            <!-- char __wchb[4] -->
             <var-decl name='__wchb' type-id='type-id-165' visibility='default' filepath='/usr/include/wchar.h' line='93' column='1'/>
           </data-member>
         </union-decl>
@@ -4792,7 +4792,7 @@
         <var-decl name='__count' type-id='type-id-7' visibility='default' filepath='/usr/include/wchar.h' line='85' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='32'>
-        <!-- __mbstate_t::__anonymous_union__ __mbstate_t::__value -->
+        <!-- union {unsigned int __wch; char __wchb[4];} __mbstate_t::__value -->
         <var-decl name='__value' type-id='type-id-164' visibility='default' filepath='/usr/include/wchar.h' line='94' column='1'/>
       </data-member>
     </class-decl>

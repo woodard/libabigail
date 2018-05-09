@@ -105,7 +105,7 @@
                            underlying type 'struct __anonymous_struct__' at red_channel.h:195:1 changed:
                              type size hasn't changed
                              1 data member changes (9 filtered):
-                              type of 'channel_alloc_msg_recv_buf_proc __anonymous_struct__::alloc_recv_buf' changed:
+                              type of 'channel_alloc_msg_recv_buf_proc alloc_recv_buf' changed:
                                 underlying type 'uint8_t* (RedChannelClient*, typedef uint16_t, typedef uint32_t)*' changed:
                                   in pointed to type 'function type uint8_t* (RedChannelClient*, typedef uint16_t, typedef uint32_t)':
                                     parameter 1 of type 'RedChannelClient*' has sub-type changes:

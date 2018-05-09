@@ -242,11 +242,11 @@
         <union-decl name='__anonymous_union__' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-30'/>
       </member-type>
       <data-member access='public' layout-offset-in-bits='0'>
-        <!-- int __anonymous_struct__::__count -->
+        <!-- int __count -->
         <var-decl name='__count' type-id='type-id-16' visibility='default' filepath='/usr/include/wchar.h' line='84' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='32'>
-        <!-- __anonymous_struct__::__anonymous_union__ __anonymous_struct__::__value -->
+        <!-- union {} __value -->
         <var-decl name='__value' type-id='type-id-30' visibility='default' filepath='/usr/include/wchar.h' line='93' column='1'/>
       </data-member>
     </class-decl>

@@ -414,39 +414,55 @@ represent(const var_diff_sptr	&diff,
   string name1 = o->get_qualified_name();
   string name2 = n->get_qualified_name();
   string pretty_representation = o->get_pretty_representation();
+  bool is_anonymous_data_member_change = false;
 
-    if (diff_sptr d = diff->type_diff())
-      {
-	if (local_only)
-	  {
-	    string tr1 = get_pretty_representation(o->get_type());
-	    string tr2 = get_pretty_representation(n->get_type());
-	    if (tr1 != tr2)
-	      {
-		out << indent << "type of "
-		    << pretty_representation
-		    << " changed from '" << tr1
-		    << "' to '" << tr2 << "'\n";
-	      }
-	  }
-	else
-	  {
-	    if (ctxt->get_reporter()->diff_to_be_reported(d.get()))
-	      {
-		out << indent
-		    << "type of '" << pretty_representation << "' changed:\n";
-		if (d->currently_reporting())
-		  out << indent << "  details are being reported\n";
-		else if (d->reported_once())
-		  out << indent << "  details were reported earlier\n";
-		else
-		  d->report(out, indent + "  ");
-		begin_with_and = true;
-	      }
-	  }
-      }
+  if (is_anonymous_data_member(o) && is_anonymous_data_member(n))
+    {
+      is_anonymous_data_member_change = true;
+      string tr1 = o->get_pretty_representation();
+      string tr2 = n->get_pretty_representation();
+      if (tr1 != tr2)
+	{
+	  out << indent << "anonymous data member at offset ";
+	  emit_num_value(get_data_member_offset(o), *ctxt, out);
+	  out << " changed from:\n"
+	      << indent << "  " << tr1 << "\n"
+	      << indent << "to:\n"
+	      << indent << "  " << tr2 << "\n";
+	}
+    }
+  else if (diff_sptr d = diff->type_diff())
+    {
+      if (local_only)
+	{
+	  string tr1 = get_pretty_representation(o->get_type());
+	  string tr2 = get_pretty_representation(n->get_type());
+	  if (tr1 != tr2)
+	    {
+	      out << indent << "type of "
+		  << pretty_representation
+		  << " changed from '" << tr1
+		  << "' to '" << tr2 << "'\n";
+	    }
+	}
+      else
+	{
+	  if (ctxt->get_reporter()->diff_to_be_reported(d.get()))
+	    {
+	      out << indent
+		  << "type of '" << pretty_representation << "' changed:\n";
+	      if (d->currently_reporting())
+		out << indent << "  details are being reported\n";
+	      else if (d->reported_once())
+		out << indent << "  details were reported earlier\n";
+	      else
+		d->report(out, indent + "  ");
+	      begin_with_and = true;
+	    }
+	}
+    }
 
-  if (name1 != name2)
+  if (!is_anonymous_data_member_change && name1 != name2)
     {
       if (filtering::has_harmless_name_change(o, n)
 	  && !(ctxt->get_allowed_category()
@@ -494,7 +510,12 @@ represent(const var_diff_sptr	&diff,
 	      begin_with_and = false;
 	    }
 	  else if (!emitted)
-	    out << indent << "'" << pretty_representation << "' ";
+	    {
+	      if (is_anonymous_data_member_change)
+		out << indent;
+	      else
+		out << indent << "'" << pretty_representation << "' ";
+	    }
 	  else
 	    out << ", ";
 
@@ -517,7 +538,12 @@ represent(const var_diff_sptr	&diff,
 	      begin_with_and = false;
 	    }
 	  else if (!emitted)
-	    out << indent << "'" << pretty_representation << "' ";
+	    {
+	      if (is_anonymous_data_member_change)
+		out << indent;
+	      else
+		out << indent << "'" << pretty_representation << "' ";
+	    }
 	  else
 	    out << ", ";
 
