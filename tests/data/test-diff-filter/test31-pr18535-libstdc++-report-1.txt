@@ -53,7 +53,7 @@ Variable symbols changes summary: 0 Removed, 6 Added variable symbols not refere
       in pointed to type 'class std::random_device' at random.h:1577:1:
         type size hasn't changed
         1 data member change:
-         anonymous data member at offset 0 changed from:
+         anonymous data member at offset 0 (in bits) changed from:
            union {FILE* _M_file; std::mt19937 _M_mt;}
          to:
            union {void* _M_file; std::mt19937 _M_mt;}

@@ -423,8 +423,10 @@ represent(const var_diff_sptr	&diff,
       string tr2 = n->get_pretty_representation();
       if (tr1 != tr2)
 	{
-	  out << indent << "anonymous data member at offset ";
-	  emit_num_value(get_data_member_offset(o), *ctxt, out);
+	  show_offset_or_size(indent + "anonymous data member at offset",
+			      get_data_member_offset(o),
+			      *ctxt, out);
+
 	  out << " changed from:\n"
 	      << indent << "  " << tr1 << "\n"
 	      << indent << "to:\n"
