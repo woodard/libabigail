@@ -59,30 +59,33 @@ report_diffs(const reporter_base& r,
 	     ostream& out,
 	     const string& indent)
 {
+  diff_ptrs_type sorted_diffs;
+  sort_string_diff_ptr_map(mapp, sorted_diffs);
+
   bool started_to_emit = false;
-  for (string_diff_ptr_map::const_iterator i = mapp.begin();
-       i != mapp.end();
+  for (diff_ptrs_type::const_iterator i = sorted_diffs.begin();
+       i != sorted_diffs.end();
        ++i)
     {
-      if (const var_diff *d = is_var_diff(i->second))
+      if (const var_diff *d = is_var_diff(*i))
 	if (is_data_member(d->first_var()))
 	  continue;
 
-      if (r.diff_to_be_reported(i->second->get_canonical_diff()))
+      if (r.diff_to_be_reported((*i)->get_canonical_diff()))
 	{
 	  if (started_to_emit)
 	    out << "\n\n";
 
-	  string n = i->second->first_subject()->get_pretty_representation();
+	  string n = (*i)->first_subject()->get_pretty_representation();
 
 	  out << indent << "'" << n ;
 
-	  report_loc_info(i->second->first_subject(),
-			  *i->second->context(), out);
+	  report_loc_info((*i)->first_subject(),
+			  *(*i)->context(), out);
 
 	  out << "' changed:\n";
 
-	  i->second->get_canonical_diff()->report(out, indent + "  ");
+	  (*i)->get_canonical_diff()->report(out, indent + "  ");
 	  out << "\n";
 	  started_to_emit = true;
 	}

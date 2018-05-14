@@ -80,6 +80,9 @@ struct diff_sptr_hasher
 /// Convenience typedef for a vector of @ref diff_sptr.
 typedef vector<diff_sptr> diff_sptrs_type;
 
+/// Convenience typedef for a vector of @ref diff*.
+typedef vector<diff*> diff_ptrs_type;
+
 /// Convenience typedef for an unoredered set of @ref diff_sptr
 typedef unordered_set<diff_sptr, diff_sptr_hasher> unordered_diff_sptr_set;
 

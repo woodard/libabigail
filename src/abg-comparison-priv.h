@@ -1324,6 +1324,10 @@ sort_string_diff_sptr_map(const string_diff_sptr_map& map,
 			  diff_sptrs_type& sorted);
 
 void
+sort_string_diff_ptr_map(const string_diff_ptr_map& map,
+			 diff_ptrs_type& sorted);
+
+void
 sort_string_base_diff_sptr_map(const string_base_diff_sptr_map& map,
 			       base_diff_sptrs_type& sorted);
 

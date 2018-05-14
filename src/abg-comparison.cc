@@ -340,12 +340,37 @@ sort_string_virtual_member_function_diff_sptr_map
 /// Sort a map ofg string -> @ref diff_sptr into a vector of @ref
 /// diff_sptr.  The diff_sptr are sorted lexicographically wrt
 /// qualified names of their first subjects.
+///
+/// @param map the map to sort.
+///
+/// @param sorted the resulting sorted vector.
 void
 sort_string_diff_sptr_map(const string_diff_sptr_map& map,
 			  diff_sptrs_type& sorted)
 {
   sorted.reserve(map.size());
   for (string_diff_sptr_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  diff_comp comp;
+  sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// Sort a map ofg string -> @ref diff* into a vector of @ref
+/// diff_ptr.  The diff_ptr are sorted lexicographically wrt
+/// qualified names of their first subjects.
+///
+/// @param map the map to sort.
+///
+/// @param sorted the resulting sorted vector.
+void
+sort_string_diff_ptr_map(const string_diff_ptr_map& map,
+			  diff_ptrs_type& sorted)
+{
+  sorted.reserve(map.size());
+  for (string_diff_ptr_map::const_iterator i = map.begin();
        i != map.end();
        ++i)
     sorted.push_back(i->second);
