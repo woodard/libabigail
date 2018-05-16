@@ -437,7 +437,7 @@ if test x$CHECK_DEPS_FOR_FEDABIPKGDIFF = xyes; then
 	# can to try and detect that case and disable fedabipkgdiff if
 	# necessary.
         AC_MSG_CHECKING([checking if koji client is recent enough ...])
-	python -c "
+	$PYTHON -c "
 import koji
 koji.read_config('koji')"
 	if test $? -eq 0; then
