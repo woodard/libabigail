@@ -385,15 +385,27 @@ if test x$CHECK_DEPS_FOR_FEDABIPKGDIFF = xyes; then
   fi
 
   if test x$MINIMAL_PYTHON_VERSION_FOUND = xno; then
+    AC_MSG_NOTICE([no minimal version of python found])
     MISSING_FEDABIPKGDIFF_DEP=yes
     if test x$MISSING_FEDABIPKGDIFF_DEP_FATAL = xyes; then
       AC_MSG_ERROR([could not find a python program of version at least $MINIMAL_PYTHON2_VERSION])
     fi
+    if test x$PYTHON = xno; then
+       AC_MSG_NOTICE([python binary wasn't found])
+       if test x$PYTHON3_INTERPRETER != xno; then
+       	  AC_MSG_NOTICE([using $PYTHON3_INTERPRETER instead])
+       	  PYTHON=$PYTHON3_INTERPRETER
+	  MINIMAL_PYTHON_VERSION_FOUND=yes
+	  MISSING_FEDABIPKGDIFF_DEP=no
+       fi
+    fi
   else
+    AC_MSG_NOTICE([a minimal version of python was found ...])
     if test x$PYTHON3_INTERPRETER != xno; then
      # We were instructed to use python3 and it's present on the
      # system.  Let's update the PYTHON variable that points to the
      # actual python interpreter we are going to be using
+     AC_MSG_NOTICE([... and it was $PYTHON3_INTERPRETER])
      PYTHON=$PYTHON3_INTERPRETER
     fi
   fi
