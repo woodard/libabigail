@@ -9866,11 +9866,17 @@ struct leaf_diff_node_marker_visitor : public diff_node_visitor
 	// Similarly, a *local* change describing a type that changed
 	// its nature doesn't make sense.
 	&& !is_distinct_diff(d)
-	// Similarly, a pointer change in itself doesn't make sense.
-	// It's would rather make sense to show that pointer change as
-	// part of the variable change whose pointer type changed, for
-	// instance.
+	// Similarly, a pointer (or reference or array) change in
+	// itself doesn't make sense.  It's would rather make sense to
+	// show that pointer change as part of the variable change
+	// whose pointer type changed, for instance.
 	&& !is_pointer_diff(d)
+	&& !is_reference_diff(d)
+	&& !is_array_diff(d)
+	// Similarly a parameter chagne in itself doesn't make sense.
+	// It should have already been reported as part of the change
+	// of the function it belongs to.
+	&& !is_fn_parm_diff(d)
 	// An anonymous class or union diff doesn't make sense on its
 	// own.  It must have been described already by the diff of
 	// the enclosing struct or union if 'd' is from an anonymous
