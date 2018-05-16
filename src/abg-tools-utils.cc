@@ -854,10 +854,13 @@ bool
 get_dsos_provided_by_rpm(const string& rpm_path, set<string>& provided_dsos)
 {
   vector<string> query_output;
-  if (!execute_command_and_get_output("rpm -qp --provides "
-				      + rpm_path + " | grep .so",
-				      query_output))
-    return false;
+  // We don't check the return value of this command because on some
+  // system, the command can issue errors but still emit a valid
+  // output.  We'll rather rely on the fact that the command emits a
+  // valid output or not.
+  execute_command_and_get_output("rpm -qp --provides "
+				 + rpm_path + " 2> /dev/null | grep .so",
+				 query_output);
 
   for (vector<string>::const_iterator line = query_output.begin();
        line != query_output.end();
