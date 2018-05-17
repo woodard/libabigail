@@ -1,3 +1,766 @@
+2018-05-17  Dodji Seketeli <dodji@redhat.com>
+
+	Update NEWS file for 1.3 release
+	* NEWS: Update for 1.3.
+
+2018-05-16  Dodji Seketeli <dodji@redhat.com>
+
+	Don't bail because "rpm" issued an error
+	* src/abg-tools-utils.cc (get_dsos_provided_by_rpm): Do not fail
+	when the rpm command issues an error.  Rather rely on the presence
+	of a valid output or not.  Also, make sure to filter out error
+	outputs so that they don't appear in the general output of tools
+	using this function.
+
+2018-05-16  Dodji Seketeli <dodji@redhat.com>
+
+	Handle cases where no python2 interpreter is found
+	* configure.ac: When no python2 is found and only python3 is
+	found, then use python3.
+
+2018-05-16  Dodji Seketeli <dodji@redhat.com>
+
+	Use the correct python interpreter in runtestdefaultsupprs.py
+	* configure.ac: Make the PYTHON environemnt variable usable in
+	auto-generated files.
+	* tests/runtestdefaultsupprs.py.in: Use the python interpreter
+	detected by configure.
+
+2018-05-16  Dodji Seketeli <dodji@redhat.com>
+
+	Use the dynamically selected python for Koji configure tests
+	* configure.ac: Use the python interpreter that was selected by
+	the configure script for the Koji version test.
+
+2018-05-14  Dodji Seketeli <dodji@redhat.com>
+
+	Sort the output of the leaf reporter
+	* include/abg-comparison.h (diff_ptrs_type): Define new typedef.
+	* src/abg-comparison-priv.h (sort_string_diff_ptr_map): Declare
+	new function.
+	* src/abg-comparison.cc (sort_string_diff_sptr_map): Update
+	comment.
+	(sort_string_diff_ptr_map): Define new function.
+	* src/abg-leaf-reporter.cc (report_diffs): Sort the diff nodes
+	before reporting about them.
+	* tests/data/test-diff-suppr/test36-leaf-report-0.txt: Adjust.
+
+2018-05-14  Dodji Seketeli <dodji@redhat.com>
+
+	Show data member offsets in bytes too
+	* src/abg-reporter-priv.cc (represent): In the overload for
+	var_diff_sptr, use the function show_offset_or_size, rather than
+	emit_num_value.
+	* tests/data/test-diff-filter/test31-pr18535-libstdc++-report-0.txt: Adjust.
+	* tests/data/test-diff-filter/test31-pr18535-libstdc++-report-1.txt: Adjust.
+	* tests/data/test-diff-filter/test44-anonymous-data-member-report-0.txt: Adjust.
+	* tests/data/test-diff-filter/test44-anonymous-data-member-report-1.txt: Adjust.
+
+2018-05-09  Dodji Seketeli <dodji@redhat.com>
+
+	Initial support of anonymous data members
+	* include/abg-comparison.h (is_class_or_union_diff)
+	(is_anonymous_class_or_union_diff): Declare new functions.
+	* include/abg-fwd.h (is_class_type): Declare new overload for
+	type_or_decl_base&.
+	(is_data_member): Declare new overload for decl_base*.
+	(is_anonymous_data_member)
+	(anonymous_data_member_to_class_or_union)
+	(get_class_or_union_flat_representation)
+	(data_member_has_anonymous_type): Declare new functions.
+	(is_at_class_scope): Return the class or union scope.
+	* include/abg-ir.h (var_decl::get_qualified_name): New virtual
+	data member which overloads decl_base::get_qualified_name.
+	* src/abg-comparison.cc (is_class_or_union_diff)
+	(is_anonymous_class_or_union_diff): Define new functions
+	(leaf_diff_node_marker_visitor::visit_begin): Don't mark anonymous
+	class or union diff nodes as diff nodes.
+	* src/abg-ir.cc (is_data_member): Define new overload for
+	decl_base*.
+	(is_class_type, is_union_type): Define new overload for type_or_decl_base&.
+	(is_anonymous_data_member)
+	(anonymous_data_member_to_class_or_union)
+	(get_class_or_union_flat_representation)
+	(data_member_has_anonymous_type): Define new function overloads.
+	(var_decl::get_qualified_name): Define new virtual member
+	function.
+	(is_at_class_scope): Return the class or union scope.
+	(var_decl::get_pretty_representation): Support anonymous data
+	members.
+	(equals): In the overload for class_or_union_diff, mark data
+	member textual representation changes as local changes.
+	* src/abg-reporter-priv.cc (represent): In the overload for
+	var_diff, support changes to anonymous data members.
+	* src/abg-leaf-reporter.cc (leaf_reporter::report): Report sorted
+	-- by offset -- data member changes before the ones that are
+	sorted by other things.
+	* tests/data/test-diff-filter/libtest44-anonymous-data-member-v{0,1}.so:
+	New binary test input
+	* tests/data/test-diff-filter/test44-anonymous-data-member-report-{0,1}.txt:
+	New reference test outputs.
+	* tests/data/test-diff-filter/test44-anonymous-data-member-v{0,1}.c:
+	Source code of the new binary test output above.
+	* tests/data/Makefile.am: Add the new test files above to the
+	source distribution.
+	* tests/data/test-annotate/libtest23.so.abi: Adjust test reference
+	output.
+	* tests/data/test-annotate/libtest24-drop-fns-2.so.abi: Likewise.
+	* tests/data/test-annotate/libtest24-drop-fns.so.abi: Likewise.
+	* tests/data/test-annotate/test13-pr18894.so.abi: Likewise.
+	* tests/data/test-annotate/test14-pr18893.so.abi: Likewise.
+	* tests/data/test-annotate/test15-pr18892.so.abi: Likewise.
+	* tests/data/test-annotate/test17-pr19027.so.abi: Likewise.
+	* tests/data/test-annotate/test18-pr19037-libvtkRenderingLIC-6.1.so.abi: Likewise.
+	* tests/data/test-annotate/test19-pr19023-libtcmalloc_and_profiler.so.abi: Likewise.
+	* tests/data/test-annotate/test20-pr19025-libvtkParallelCore-6.1.so.abi: Likewise.
+	* tests/data/test-annotate/test21-pr19092.so.abi: Likewise.
+	* tests/data/test-diff-dwarf/test43-PR22913-report-0.txt: Likewise.
+	* tests/data/test-diff-filter/test30-pr18904-rvalueref-report0.txt: Likewise.
+	* tests/data/test-diff-filter/test30-pr18904-rvalueref-report1.txt: Likewise.
+	* tests/data/test-diff-filter/test30-pr18904-rvalueref-report2.txt: Likewise.
+	* tests/data/test-diff-filter/test31-pr18535-libstdc++-report-0.txt: Likewise.
+	* tests/data/test-diff-filter/test31-pr18535-libstdc++-report-1.txt: Likewise.
+	* tests/data/test-diff-filter/test35-pr18754-no-added-syms-report-0.txt: Likewise.
+	* tests/data/test-diff-pkg/libcdio-0.94-1.fc26.x86_64--libcdio-0.94-2.fc26.x86_64-report.1.txt: Likewise.
+	* tests/data/test-diff-pkg/spice-server-0.12.4-19.el7.x86_64-0.12.8-1.el7.x86_64-report-2.txt: Likewise.
+
+2018-04-20  Dodji Seketeli <dodji@redhat.com>
+
+	Represent sizes and offsets in bytes and hexadecimal values
+	* doc/manuals/abidiff.rst: Add documentation for the new
+	--show-bits, --show-bytes, --show-hex and --show-dec options.
+	* doc/manuals/abipkgdiff.rst: Likewise.
+	* doc/manuals/kmidiff.rst: Likewise.
+	* include/abg-comparison.h (diff_context::{show_hex_values,
+	show_offsets_sizes_in_bits}): Declare new member functions.
+	* src/abg-comparison-priv.h (diff_context::priv::{hex_values_,
+	show_offsets_sizes_in_bits_}): Declare new data members.
+	(diff_context::priv::priv): Initialize them.
+	* src/abg-comparison.cc (diff_context::{show_hex_values,
+	show_offsets_sizes_in_bits}): Define new member functions.
+	* src/abg-default-reporter.cc (default_reporter::report): Adjust
+	the call to maybe_report_diff_for_symbol.
+	* src/abg-leaf-reporter.cc (leaf_reporter::report): Likewise.
+	* src/abg-reporter-priv.h (convert_bits_to_bytes)
+	(maybe_convert_bits_to_bytes, emit_num_value, show_offset_or_size)
+	(show_numerical_change): Declare new functions.
+	(maybe_report_diff_for_symbol): Take a diff_context in parameter.
+	* src/abg-reporter-priv.cc (convert_bits_to_bytes, emit_num_value)
+	(maybe_convert_bits_to_bytes, show_numerical_change)
+	(show_offset_or_size): Define new functions.
+	(represent): In the overload for method_decl, var_decl, use the
+	new emit_num_value function.
+	(represent_data_member): Use the new show_offset_or_size function.
+	(maybe_show_relative_offset_change): Use the new
+	convert_bits_to_bytes, diff_context::show_offsets_sizes_in_bits,
+	emit_num_value functions.
+	(maybe_show_relative_offset_change): Likewise.
+	(report_size_and_alignment_changes): Use the new emit_num_value
+	and show_numerical_change functions.
+	(maybe_report_diff_for_symbol): Tak a diff_context in argument.
+	Use the new show_numerical_change function.
+	* tests/test-diff-filter.cc (in_out_spec): Add a new entry to test
+	hexa and bytes output.
+	* tools/abidiff.cc (options::{show_hexadecimal_values,
+	show_offsets_sizes_in_bits}): New data members.
+	(options::options): Initialize them.
+	(display_usage): New help strings for the new
+	--show{bytes,bits,hex,dec} options.
+	(parse_command_line): Parse the new --show{bytes,bits,hex,dec} options.
+	(set_diff_context_from_opts) Set the diff context wrt hex and
+	bytes values.
+	* tools/abipkgdiff.cc (options::{show_hexadecimal_values,
+	show_offsets_sizes_in_bits}): New data members.
+	(options::options): Initialize them.
+	(display_usage): New help strings for the new
+	--show{bytes,bits,hex,dec} options.
+	(set_diff_context_from_opts): Set the diff context wrt hex and
+	bytes values.
+	(parse_command_line): Parse the new --show{bytes,bits,hex,dec}
+	options.
+	* tools/kmidiff.cc (options::{show_hexadecimal_values,
+	show_offsets_sizes_in_bits}): New data members.
+	(options::options): Initialize them.
+	(display_usage):New help strings for the new
+	--show{bytes,bits,hex,dec} options.
+	(parse_command_line): Parse the new --show{bytes,bits,hex,dec}
+	options.
+	(set_diff_context): Set the diff context wrt hex and bytes values.
+	* tests/data/test-diff-filter/test30-pr18904-rvalueref-report2.txt:
+	New reference test output.
+	* tests/data/Makefile.am: Add the new reference test output above
+	to source distribution.
+	* tests/data/test-abicompat/test0-fn-changed-report-0.txt: Adjust.
+	* tests/data/test-abicompat/test0-fn-changed-report-2.txt: Likewise.
+	* tests/data/test-abicompat/test5-fn-changed-report-0.txt: Likewise.
+	* tests/data/test-abicompat/test5-fn-changed-report-1.txt: Likewise.
+	* tests/data/test-abicompat/test6-var-changed-report-0.txt: Likewise.
+	* tests/data/test-abicompat/test6-var-changed-report-1.txt: Likewise.
+	* tests/data/test-abicompat/test7-fn-changed-report-0.txt: Likewise.
+	* tests/data/test-abicompat/test7-fn-changed-report-1.txt: Likewise.
+	* tests/data/test-abicompat/test7-fn-changed-report-2.txt: Likewise.
+	* tests/data/test-abicompat/test8-fn-changed-report-0.txt: Likewise.
+	* tests/data/test-abicompat/test9-fn-changed-report-0.txt: Likewise.
+	* tests/data/test-abidiff/test-PR18791-report0.txt: Likewise.
+	* tests/data/test-abidiff/test-qual-type0-report.txt: Likewise.
+	* tests/data/test-abidiff/test-struct0-report.txt: Likewise.
+	* tests/data/test-abidiff/test-struct1-report.txt: Likewise.
+	* tests/data/test-abidiff/test-var0-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test0-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test1-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test10-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test11-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test13-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test21-redundant-fn-report-0.txt: Likewise.
+	* tests/data/test-diff-dwarf/test22-changed-parm-c-report-0.txt: Likewise.
+	* tests/data/test-diff-dwarf/test26-added-parms-before-variadic-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test27-local-base-diff-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test3-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test32-fnptr-changes-report-0.txt: Likewise.
+	* tests/data/test-diff-dwarf/test33-fnref-changes-report-0.txt: Likewise.
+	* tests/data/test-diff-dwarf/test34-pr19173-libfoo-report-0.txt: Likewise.
+	* tests/data/test-diff-dwarf/test35-pr19173-libfoo-long-clang-report-0.txt: Likewise.
+	* tests/data/test-diff-dwarf/test35-pr19173-libfoo-long-gcc-report-0.txt: Likewise.
+	* tests/data/test-diff-dwarf/test36-ppc64-aliases-report-0.txt: Likewise.
+	* tests/data/test-diff-dwarf/test37-union-report-0.txt: Likewise.
+	* tests/data/test-diff-dwarf/test39-union-report-0.txt: Likewise.
+	* tests/data/test-diff-dwarf/test40-report-0.txt: Likewise.
+	* tests/data/test-diff-dwarf/test43-PR22913-report-0.txt: Likewise.
+	* tests/data/test-diff-dwarf/test8-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test9-report.txt: Likewise.
+	* tests/data/test-diff-filter/test0-report.txt: Likewise.
+	* tests/data/test-diff-filter/test01-report.txt: Likewise.
+	* tests/data/test-diff-filter/test1-report.txt: Likewise.
+	* tests/data/test-diff-filter/test10-report.txt: Likewise.
+	* tests/data/test-diff-filter/test11-report.txt: Likewise.
+	* tests/data/test-diff-filter/test13-report.txt: Likewise.
+	* tests/data/test-diff-filter/test14-0-report.txt: Likewise.
+	* tests/data/test-diff-filter/test14-1-report.txt: Likewise.
+	* tests/data/test-diff-filter/test15-0-report.txt: Likewise.
+	* tests/data/test-diff-filter/test15-1-report.txt: Likewise.
+	* tests/data/test-diff-filter/test16-report-2.txt: Likewise.
+	* tests/data/test-diff-filter/test16-report.txt: Likewise.
+	* tests/data/test-diff-filter/test17-0-report.txt: Likewise.
+	* tests/data/test-diff-filter/test17-1-report.txt: Likewise.
+	* tests/data/test-diff-filter/test2-report.txt: Likewise.
+	* tests/data/test-diff-filter/test27-redundant-and-filtered-children-nodes-report-0.txt: Likewise.
+	* tests/data/test-diff-filter/test27-redundant-and-filtered-children-nodes-report-1.txt: Likewise.
+	* tests/data/test-diff-filter/test27-redundant-and-filtered-children-nodes-report-2.txt: Likewise.
+	* tests/data/test-diff-filter/test28-redundant-and-filtered-children-nodes-report-0.txt: Likewise.
+	* tests/data/test-diff-filter/test28-redundant-and-filtered-children-nodes-report-1.txt: Likewise.
+	* tests/data/test-diff-filter/test29-finer-redundancy-marking-report-0.txt: Likewise.
+	* tests/data/test-diff-filter/test3-report.txt: Likewise.
+	* tests/data/test-diff-filter/test30-pr18904-rvalueref-report0.txt: Likewise.
+	* tests/data/test-diff-filter/test30-pr18904-rvalueref-report1.txt: Likewise.
+	* tests/data/test-diff-filter/test31-pr18535-libstdc++-report-0.txt: Likewise.
+	* tests/data/test-diff-filter/test31-pr18535-libstdc++-report-1.txt: Likewise.
+	* tests/data/test-diff-filter/test32-ppc64le-struct-change-report0.txt: Likewise.
+	* tests/data/test-diff-filter/test35-pr18754-no-added-syms-report-0.txt: Likewise.
+	* tests/data/test-diff-filter/test35-pr18754-no-added-syms-report-1.txt: Likewise.
+	* tests/data/test-diff-filter/test37-report-0.txt: Likewise.
+	* tests/data/test-diff-filter/test39/test39-report-0.txt: Likewise.
+	* tests/data/test-diff-filter/test42-leaf-report-output-0.txt: Likewise.
+	* tests/data/test-diff-filter/test6-report.txt: Likewise.
+	* tests/data/test-diff-filter/test9-report.txt: Likewise.
+	* tests/data/test-diff-pkg/dirpkg-1-report-1.txt: Likewise.
+	* tests/data/test-diff-pkg/dirpkg-3-report-1.txt: Likewise.
+	* tests/data/test-diff-pkg/dirpkg-3-report-2.txt: Likewise.
+	* tests/data/test-diff-pkg/libICE-1.0.6-1.el6.x86_64.rpm--libICE-1.0.9-2.el7.x86_64.rpm-report-0.txt: Likewise.
+	* tests/data/test-diff-pkg/libsigc++-2.0-0c2a_2.4.0-1_amd64--libsigc++-2.0-0v5_2.4.1-1ubuntu2_amd64-report-0.txt: Likewise.
+	* tests/data/test-diff-pkg/spice-server-0.12.4-19.el7.x86_64-0.12.8-1.el7.x86_64-report-2.txt: Likewise.
+	* tests/data/test-diff-pkg/symlink-dir-test1-report0.txt: Likewise.
+	* tests/data/test-diff-pkg/tarpkg-0-report-0.txt: Likewise.
+	* tests/data/test-diff-pkg/tarpkg-1-report-0.txt: Likewise.
+	* tests/data/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64--tbb-4.3-3.20141204.fc23.x86_64-report-0.txt: Likewise.
+	* tests/data/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64--tbb-4.3-3.20141204.fc23.x86_64-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test0-type-suppr-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test0-type-suppr-report-3.txt: Likewise.
+	* tests/data/test-diff-suppr/test0-type-suppr-report-5.txt: Likewise.
+	* tests/data/test-diff-suppr/test0-type-suppr-report-7.txt: Likewise.
+	* tests/data/test-diff-suppr/test1-typedef-suppr-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test1-typedef-suppr-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test11-add-data-member-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test12-add-data-member-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test12-add-data-member-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test13-suppr-through-pointer-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test13-suppr-through-pointer-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test14-suppr-non-redundant-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test14-suppr-non-redundant-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test15-suppr-added-fn-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test15-suppr-added-fn-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test15-suppr-added-fn-report-5.txt: Likewise.
+	* tests/data/test-diff-suppr/test16-suppr-removed-fn-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test16-suppr-removed-fn-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test17-suppr-added-var-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test17-suppr-added-var-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test17-suppr-added-var-report-5.txt: Likewise.
+	* tests/data/test-diff-suppr/test18-suppr-removed-var-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test18-suppr-removed-var-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test18-suppr-removed-var-report-5.txt: Likewise.
+	* tests/data/test-diff-suppr/test2-struct-suppr-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test23-alias-filter-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test23-alias-filter-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-report-10.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-report-12.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-report-14.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-report-16.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-report-4.txt: Likewise.
+	* tests/data/test-diff-suppr/test25-typedef-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test26-loc-suppr-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test26-loc-suppr-report-3.txt: Likewise.
+	* tests/data/test-diff-suppr/test29-soname-report-3.txt: Likewise.
+	* tests/data/test-diff-suppr/test29-soname-report-6.txt: Likewise.
+	* tests/data/test-diff-suppr/test29-soname-report-8.txt: Likewise.
+	* tests/data/test-diff-suppr/test3-struct-suppr-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test3-struct-suppr-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test3-struct-suppr-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test30-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test31-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test32-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test32-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test33-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test35-leaf-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test36-leaf-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test4-local-suppr-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test4-local-suppr-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-3.txt: Likewise.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-4.txt: Likewise.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-5.txt: Likewise.
+	* tests/data/test-diff-suppr/test6-fn-suppr-report-0-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test6-fn-suppr-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test6-fn-suppr-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test6-fn-suppr-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test6-fn-suppr-report-3.txt: Likewise.
+	* tests/data/test-diff-suppr/test7-var-suppr-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test7-var-suppr-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test7-var-suppr-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test7-var-suppr-report-3.txt: Likewise.
+	* tests/data/test-diff-suppr/test7-var-suppr-report-4.txt: Likewise.
+	* tests/data/test-diff-suppr/test7-var-suppr-report-7.txt: Likewise.
+	* tests/data/test-diff-suppr/test7-var-suppr-report-8.txt: Likewise.
+	* tests/data/test-diff-suppr/test8-redundant-fn-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test8-redundant-fn-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test9-changed-parm-c-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test9-changed-parm-c-report-1.txt: Likewise.
+
+2018-04-18  Dodji Seketeli <dodji@redhat.com>
+
+	Use absolute builddir paths in automake test files
+	* tests/runtestdefaultsupprs.py.in: Use abs_top_builddir rather
+	than top_builddir.
+
+2018-04-10  Jonathan Wakely <jwakely@redhat.com>
+
+	Use std::string::substr instead of appending single chars
+	* src/abg-ini.cc (trim_white_space): Use std::string::substr
+	instead of appending single chars.
+
+2018-04-10  Jonathan Wakely <jwakely@redhat.com>
+
+	Rename misleading remove_trailing_white_spaces functions
+	* include/abg-tools-utils.h (trim_white_space): Renamed
+	remove_trailing_white_spaces into this.
+	* src/abg-ini.cc (trim_white_space): Likewise.
+	* src/abg-tools-utils.cc (get_dsos_provided_by_rpm): Adjust.
+
+2018-04-10  Jonathan Wakely <jwakely@redhat.com>
+
+	Remove unused local set<string> variables
+	* src/abg-tools-utils.cc (get_dsos_provided_by_rpm): Remove unsed
+	set<string> variable.
+	* tools/abipkgdiff.cc (maybe_create_public_dso_sonames_set):
+	Likewise.
+
+2018-04-10  Jonathan Wakely <jwakely@redhat.com>
+
+	Remove assertion with side-effects
+	* src/abg-tools-utils.cc (get_dsos_provided_by_rpm): Fix
+	std::string::sbustr and remove assert with side effect.
+
+2018-04-13  Dodji Seketeli <dodji@redhat.com>
+
+	Misc style changes
+	* src/abg-comparison.cc (category_propagation_visitor): Adjust comment.
+	* src/abg-default-reporter.cc
+	(default_reporter::report_local_function_type_changes): Remove
+	useless new line.
+
+2018-04-13  Dodji Seketeli <dodji@redhat.com>
+
+	Update tests for the "better leaf mode redundancy management" patchset
+	* tests/data/test-abidiff-exit/test1-voffset-change-report1.txt: Adjust.
+	* tests/data/test-abidiff/test-PR18791-report0.txt: Likewise.
+	* tests/data/test-abidiff/test-enum0-report.txt: Likewise.
+	* tests/data/test-abidiff/test-enum1-report.txt: Likewise.
+	* tests/data/test-diff-filter/test1-report.txt: Likewise.
+	* tests/data/test-diff-filter/test14-0-report.txt: Likewise.
+	* tests/data/test-diff-filter/test15-0-report.txt: Likewise.
+	* tests/data/test-diff-filter/test17-0-report.txt: Likewise.
+	* tests/data/test-diff-filter/test27-redundant-and-filtered-children-nodes-report-0.txt: Likewise.
+	* tests/data/test-diff-filter/test28-redundant-and-filtered-children-nodes-report-0.txt: Likewise.
+	* tests/data/test-diff-filter/test3-report.txt: Likewise.
+	* tests/data/test-diff-filter/test30-pr18904-rvalueref-report0.txt: Likewise.
+	* tests/data/test-diff-filter/test30-pr18904-rvalueref-report1.txt: Likewise.
+	* tests/data/test-diff-filter/test32-ppc64le-struct-change-report0.txt: Likewise.
+	* tests/data/test-diff-filter/test35-pr18754-no-added-syms-report-0.txt: Likewise.
+	* tests/data/test-diff-filter/test35-pr18754-no-added-syms-report-1.txt: Likewise.
+	* tests/data/test-diff-filter/test4-report.txt: Likewise.
+	* tests/data/test-diff-filter/test41-report-0.txt: Likewise.
+	* tests/data/test-diff-filter/test42-leaf-report-output-0.txt: Likewise.
+	* tests/data/test-diff-pkg/dirpkg-3-report-1.txt: Likewise.
+	* tests/data/test-diff-pkg/dirpkg-3-report-2.txt: Likewise.
+	* tests/data/test-diff-pkg/libICE-1.0.6-1.el6.x86_64.rpm--libICE-1.0.9-2.el7.x86_64.rpm-report-0.txt: Likewise.
+	* tests/data/test-diff-pkg/libcdio-0.94-1.fc26.x86_64--libcdio-0.94-2.fc26.x86_64-report.1.txt: Likewise.
+	* tests/data/test-diff-pkg/spice-server-0.12.4-19.el7.x86_64-0.12.8-1.el7.x86_64-report-0.txt: Likewise.
+	* tests/data/test-diff-pkg/spice-server-0.12.4-19.el7.x86_64-0.12.8-1.el7.x86_64-report-1.txt: Likewise.
+	* tests/data/test-diff-pkg/spice-server-0.12.4-19.el7.x86_64-0.12.8-1.el7.x86_64-report-2.txt: Likewise.
+	* tests/data/test-diff-pkg/spice-server-0.12.4-19.el7.x86_64-0.12.8-1.el7.x86_64-report-3.txt: Likewise.
+	* tests/data/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64--tbb-4.3-3.20141204.fc23.x86_64-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test1-typedef-suppr-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test1-typedef-suppr-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test13-suppr-through-pointer-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test14-suppr-non-redundant-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test14-suppr-non-redundant-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test15-suppr-added-fn-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test15-suppr-added-fn-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test15-suppr-added-fn-report-3.txt: Likewise.
+	* tests/data/test-diff-suppr/test15-suppr-added-fn-report-4.txt: Likewise.
+	* tests/data/test-diff-suppr/test16-suppr-removed-fn-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test16-suppr-removed-fn-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test16-suppr-removed-fn-report-3.txt: Likewise.
+	* tests/data/test-diff-suppr/test16-suppr-removed-fn-report-4.txt: Likewise.
+	* tests/data/test-diff-suppr/test17-suppr-added-var-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test17-suppr-added-var-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test17-suppr-added-var-report-3.txt: Likewise.
+	* tests/data/test-diff-suppr/test17-suppr-added-var-report-4.txt: Likewise.
+	* tests/data/test-diff-suppr/test18-suppr-removed-var-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test18-suppr-removed-var-report-3.txt: Likewise.
+	* tests/data/test-diff-suppr/test18-suppr-removed-var-report-4.txt: Likewise.
+	* tests/data/test-diff-suppr/test2-struct-suppr-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test2-struct-suppr-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test25-typedef-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test27-add-aliased-function-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test27-add-aliased-function-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test27-add-aliased-function-report-5.txt: Likewise.
+	* tests/data/test-diff-suppr/test28-add-aliased-function-report-3.txt: Likewise.
+	* tests/data/test-diff-suppr/test28-add-aliased-function-report-6.txt: Likewise.
+	* tests/data/test-diff-suppr/test30-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test34-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test35-leaf-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test36-leaf-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-3.txt: Likewise.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-4.txt: Likewise.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-5.txt: Likewise.
+	* tests/data/test-diff-suppr/test7-var-suppr-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test7-var-suppr-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test7-var-suppr-report-3.txt: Likewise.
+	* tests/data/test-diff-suppr/test7-var-suppr-report-4.txt: Likewise.
+	* tests/data/test-diff-suppr/test7-var-suppr-report-5.txt: Likewise.
+	* tests/data/test-diff-suppr/test7-var-suppr-report-6.txt: Likewise.
+	* tests/data/test-diff-suppr/test7-var-suppr-report-7.txt: Likewise.
+	* tests/data/test-diff-suppr/test7-var-suppr-report-9.txt: Likewise.
+	* tests/data/test-diff-suppr/test8-redundant-fn-report-0.txt: Likewise.
+
+2018-04-13  Dodji Seketeli <dodji@redhat.com>
+
+	[abipkgdiff]: in leaf mode we always show redundant changes
+	* tools/abipkgdiff.cc (set_diff_context_from_opts):
+	diff_context::show_leaf_changes_only automatically makes us show
+	redundant changes.  So do not try to show redundant changes in
+	that case.
+
+2018-04-13  Dodji Seketeli <dodji@redhat.com>
+
+	When we say an a change was reported earlier give its source location
+	* src/abg-reporter-priv.h
+	(RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2)
+	(RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER3): Report the
+	location of the artifact.
+
+2018-04-13  Dodji Seketeli <dodji@redhat.com>
+
+	Avoid reporting an enum change if it has already been reported
+	* src/abg-default-reporter.cc (default_reporter::report): In the
+	enum_diff overload, do not report a node if it's always been
+	reported; rather, say that it has been reported earlier.
+
+2018-04-13  Dodji Seketeli <dodji@redhat.com>
+
+	Always show redundant changes in leaf mode
+	* src/abg-comparison.cc (diff_context::show_leaf_changes_only):
+	Show redundant changes when in leaf mode.
+
+2018-04-12  Dodji Seketeli <dodji@redhat.com>
+
+	Fix leaf report of class data member changes
+	* src/abg-leaf-reporter.cc (leaf_reporter::report): In the
+	class_or_uion_diff overload, do not emit the data member changes
+	header twice.
+	* src/abg-reporter-priv.cc (represent): In the var_diff_sptr
+	overload, show data member changes when its textual representation
+	changed.
+
+2018-04-12  Dodji Seketeli <dodji@redhat.com>
+
+	Only show leaf type changes in the leaf type changes section
+	* src/abg-leaf-reporter.cc (report_type_changes_from_diff_maps):
+	Split this out from leaf_reporter::report_changes_from_diff_maps
+	and make it report only about leaf *type* changes.
+	(leaf_reporter::report_changes_from_diff_maps): Use the new
+	report_type_changes_from_diff_maps function.
+	(leaf_reporter::report): In the overload for corpus_diff, use the
+	new report_type_changes_from_diff_maps function, instead of the
+	report_changes_from_diff_maps function.
+
+2018-04-12  Dodji Seketeli <dodji@redhat.com>
+
+	Don't filter out typedef changes with redundant underlying type changes
+	* src/abg-default-reporter.cc (default_reporter::report): In the
+	overload for typedef, report underlying type changes een when they
+	are redundant, if the whole typedef change needs to be repoted.
+
+2018-04-12  Dodji Seketeli <dodji@redhat.com>
+
+	Improve function changes reporting in leaf and default mode
+	* src/abg-default-reporter.cc (default_reporter::report): In the
+	overload for fn_parm_diff, consider that parameter type changes are
+	never redundant.
+	* src/abg-ir.cc (equals): In the overload for function_type,
+	consider that if the textual representation of the function return
+	type or a function parameter changed, then that's a local change
+	for the current instance of function_type.  Likewise, in the
+	overload for  function_decl, consider that a change in the textual
+	representation of the function_decl is a local change.  Likewise,
+	in the overload of function_decl::parameter, consider that a
+	change in the textual representation of the parameter type is a
+	local change.
+	* src/abg-leaf-reporter.cc (leaf_reporter::report): Report leaf
+	changes to functions.
+
+2018-04-12  Dodji Seketeli <dodji@redhat.com>
+
+	Better handle category propagation of pointer changes
+	* src/abg-comparison.cc
+	(leaf_diff_node_marker_visitor::visit_begin): Do not consider
+	local pointer changes as being leaf changes.
+	(suppression_categorization_visitor::visit_end):
+	Allow propagation of the SUPPRESSED_CATEGORY category to pointer
+	diff nodes.
+	(redundancy_marking_visitor::visit_end): Allow propagation of the
+	REDUNDANT_CATEGORY category to pointer diff nodes.
+	* src/abg-ir.cc (equals): In the pointer_type_def overload,
+	consider changes where the textual representation of the
+	pointed-to changed as being local to the pointer type.
+	* src/abg-leaf-reporter.cc (leaf_reporter::report): In the
+	pointer_diff overload, report the change in the textual
+	representation of the pointer.
+
+2018-04-11  Dodji Seketeli <dodji@redhat.com>
+
+	Fix meaning of "harmless name change" to avoid overfiltering
+	* include/abg-ir.h (enum_has_non_name_change): Declare new
+	* function.  Make it a friend of class enum_type_decl.
+	* src/abg-comp-filter.cc (has_harmless_name_change): A typedef
+	name change cannot be harmless if the textual representation of
+	the underlying type changes too.  Also, use the new
+	enum_has_non_name_change to tighten the harmless name change
+	definition for an enum.
+	* src/abg-default-reporter.cc
+	(default_reporter::report_local_typedef_changes): If the name of
+	the typedef changed, report it no matter what.
+	* src/abg-ir.cc (enum_has_non_name_change): Define new function.
+
+2018-04-11  Dodji Seketeli <dodji@redhat.com>
+
+	Do not mark "distinct" diff nodes as being redundant
+	* include/abg-comp-filter.h (is_mostly_distinct_diff): Declare new
+	function.
+	* include/abg-fwd.h (peel_typedef_pointer_or_reference_type): Take
+	a boolean to decide to peel qualified types or not.
+	* src/abg-comp-filter.cc (is_mostly_distinct_diff): Define this function.
+	* src/abg-comparison.cc (redundancy_marking_visitor::visit_begin):
+	Do not mark distinct_diff nodes as being redundant.
+	* src/abg-ir.cc (peel_typedef_pointer_or_reference_type):
+	Implement taking a boolean to decide to peel qualified types or
+	not.
+
+2018-04-11  Dodji Seketeli <dodji@redhat.com>
+
+	Overhaul of the report diff stats summary
+	* include/abg-comparison.h
+	(corpus_diff::diff_stats::{num_leaf_type_changes,
+	num_leaf_type_changes_filtered_out, net_num_leaf_type_changes,
+	num_leaf_func_changes, num_leaf_func_changes_filtered_out,
+	net_num_leaf_func_changes, num_leaf_var_changes,
+	num_leaf_var_changes_filtered_out, net_num_leaf_var_changes}):
+	Declare new member functions.
+	* src/abg-comparison-priv.h
+	(corpus_diff::priv::count_leaf_type_changes): Declare new member
+	function.
+	* src/abg-comparison.cc
+	(corpus_diff::diff_stats::net_num_leaf_changes): Fix comment.
+	(corpus_diff::diff_stats::{num_leaf_type_changes,
+	num_leaf_type_changes_filtered_out, net_num_leaf_type_changes,
+	num_leaf_func_changes, num_leaf_func_changes_filtered_out,
+	net_num_leaf_func_changes, num_leaf_var_changes,
+	num_leaf_var_changes_filtered_out, net_num_leaf_var_changes}):
+	Define these member functions.
+	(do_count_diff_map_changes): Move this macro out of ...
+	(corpus_diff::priv::count_leaf_changes): ... this.  Also, use
+	the new function corpus_diff::priv::count_leaf_type_changes.
+	(corpus_diff::priv::count_leaf_type_changes): Splitted this out of
+	the previous corpus_diff::priv::count_leaf_changes function.
+	(corpus_diff::priv::apply_filters_and_compute_diff_stats): Account
+	for (filtered) types, functions and variables, in a leaf change
+	manner.
+	(corpus_diff::priv::emit_diff_stats): Emit a better stat summary
+	that takes into account leaf-changed types, functions and
+	variables.
+
+2018-04-10  Dodji Seketeli <dodji@redhat.com>
+
+	Do not show decl-only-to-def changes in the leaf reporter
+	* include/abg-comp-filter.h (has_class_decl_only_def_change):
+	Declare this function.
+	* src/abg-comp-filter.cc (has_class_decl_only_def_change): Make
+	this function be non-static.
+	* src/abg-comparison.cc
+	(leaf_diff_node_marker_visitor::visit_begin): Use it to avoid
+	marking class-decl-only-def changes as being leaf changes.
+	* libtest43-decl-only-def-change-leaf-report-v0.so: New test input file.
+	* libtest43-decl-only-def-change-leaf-report-v1.so: Likewise.
+	* test43-decl-only-def-change-leaf-report-0.txt: Likewise.
+	* test43-decl-only-def-change-leaf-report-v0.cc: Likewise.
+	* test43-decl-only-def-change-leaf-report-v1.cc: Likewise.
+	* tests/test-diff-filter.cc (in_out_specs): Run the test over the
+	new test input.
+	* tests/data/Makefile.am: Add the new test materials to source
+	distribution.
+
+2018-03-30  Dodji Seketeli <dodji@redhat.com>
+
+	Don't possibly forget type definition when reading a CorpusGroup
+	* src/abg-dwarf-reader.cc (add_or_update_class_type): Look for
+	declaration-only-ness to determine if we've already seen the same
+	type from the main corpus of the group.
+
+2018-03-30  Dodji Seketeli <dodji@redhat.com>
+
+	Don't crash when invoking kmidiff with no debug info root dir
+	* tools/kmidiff.cc (main): Do not crash on empty debug info root
+	dir.
+
+2018-03-30  Dodji Seketeli <dodji@redhat.com>
+
+	Do not enable fedabipkgdiff tests if fedabipkgdiff itself is disabled
+	* tests/Makefile.am: Run runtestfedabipkgdiff{py3?}.py only if
+	fedabipkgdiff itself is enabled.
+
+2018-03-25  Chenxiong Qi <cqi@redhat.com>
+
+	Bug 22722 - Make fedabipkgdiff and its tests support both python 3 and 2
+	* configure.ac: Add new option --enable-python3. Add new
+	test runner file tests/runtestdefaultsupprs-py3 and
+	tests/runtestfedabipkgdiffpy3.sh. Add required six Python module.
+	* tests/Makefile.am: Add new test files
+	tests/runtestdefaultsupprspy3.sh and
+	tests/runtestfedabipkgdiffpy3.sh accordingly.
+	* tests/mockfedabipkgdiff.in: Convert print statement to
+	six.print_. Replace call to function filter with list
+	comprehension. Replace basestring with six.string_types.
+	* tests/runtestdefaultsupprspy3.sh.in: New shell script to run
+	test runtestdefaultsupprs with Python 3.
+	* tests/runtestdefaultsupprs.py.in: Repalce a few tabs with
+	proper number of spaces which is detected by Python 3
+	interpreter.
+	* tests/runtestfedabipkgdiffpy3.sh.in: New shell script to run
+	test runtestfedabipkgdiff with Python 3.
+	* tests/runtestfedabipkgdiff.py.in: Use python from env in
+	shebang instead of a fixed path to a Python interpreter.
+	* tools/fedabipkgdiff: Globally replace print statement with a
+	function call to print which is available by importing
+	print_function from __future__ module. Use six.print_ to output
+	string to stderr instead. Convert function call to map to
+	for-loop. (cmp_nvr): Change argument to handle a Koji build
+	mapping instead of only the nvr. (Brew.listBuilds): use the new
+	cmp_nvr to sort builds.
+
+2018-03-29  Dodji Seketeli <dodji@redhat.com>
+
+	Detect the presence of 'rpm' as it's now needed by abipkgdiff
+	* configure.ac: Detect that the 'rpm' is present. Otherwise,
+	disable rpm support.
+
+2018-03-28  Dodji Seketeli <dodji@redhat.com>
+
+	Make abipkgdiff avoid comparing private DSOs from RPMs
+	* doc/manuals/abipkgdiff.rst: Add documentation for the new
+	--private-dso option.
+	* include/abg-tools-utils.h (execute_command_and_get_output)
+	(execute_command_and_get_output, remove_trailing_white_spaces):
+	Declare new functions.
+	* src/abg-tools-utils.cc (execute_command_and_get_output)
+	(get_dsos_provided_by_rpm, remove_trailing_white_spaces): Define
+	new functions.
+	* tests/test-diff-pkg.cc (in_out_specs): Add the new --private-dso
+	option where it makes sense.
+	* tools/abipkgdiff.cc (options::compare_private_dsos): Add new
+	data member.
+	(options::options): Initialize it.
+	(package::public_dso_sonames_): Add new data member.
+	(package::public_dso_sonames): Add new accessors pair.
+	(display_usage): Add a help string for the new --private-dso
+	option.
+	(maybe_create_public_dso_sonames_set)
+	(must_compare_public_dso_only): Define new static functions.
+	(create_maps_of_package_content): Call the new
+	maybe_create_public_dso_sonames_set.  Skip packages which SONAME
+	is not in the set of public SONAMES.
+	(parse_command_line): Parse the new --private-dso option.
+
+2018-03-16  Dodji Seketeli <dodji@redhat.com>
+
+	Skip changes to function *types* in the leaf reporter
+	* src/abg-leaf-reporter.cc
+	(leaf_reporter::report_changes_from_diff_maps): Don't report
+	function type changes.
+
+2018-03-16  Dodji Seketeli <dodji@redhat.com>
+
+	Report change locations in leaf reports
+	* src/abg-leaf-reporter.cc (report_diffs): Report the source
+	location of the diff.
+	* tests/data/test-diff-filter/test42-leaf-report-output-0.txt:
+	Update test reference output.
+	* tests/data/test-diff-pkg/spice-server-0.12.4-19.el7.x86_64-0.12.8-1.el7.x86_64-report-3.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test35-leaf-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test36-leaf-report-0.txt: Likewise.
+
+2018-03-06  Dodji Seketeli <dodji@redhat.com>
+
+	Make the "upload-release" target be usable in parallel
+	* Makefile.am: Re-arrange the upload-release target to make it
+	usable with 'make upload-release -jN'.
+
+2018-03-06  Dodji Seketeli <dodji@redhat.com>
+
+	Bump version number to 1.3
+	* configure.ac: Now that 1.2 is out of the door, bump version
+	number to 1.3
+
+2018-03-06  Dodji Seketeli <dodji@redhat.com>
+
+	Update website for 1.2
+	* doc/website/mainpage.txt: Update link to download the tarball,
+	for 1.2.
+
 2018-03-06  Dodji Seketeli <dodji@redhat.com>
 
 	Update ChangeLog for 1.2
