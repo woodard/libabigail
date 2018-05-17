@@ -1,3 +1,46 @@
+1.3
+===
+Chenxiong Qi:
+      Bug 22722 - Make fedabipkgdiff and its tests support both python 3 and 2
+
+Dodji Seketeli:
+      Report change locations in leaf reports
+      Skip changes to function *types* in the leaf reporter
+      Make abipkgdiff avoid comparing private DSOs from RPMs
+      Detect the presence of 'rpm' as it's now needed by abipkgdiff
+      Do not enable fedabipkgdiff tests if fedabipkgdiff itself is disabled
+      Don't crash when invoking kmidiff with no debug info root dir
+      Don't possibly forget type definition when reading a CorpusGroup
+      Do not show decl-only-to-def changes in the leaf reporter
+      Overhaul of the report diff stats summary
+      Do not mark "distinct" diff nodes as being redundant
+      Fix meaning of "harmless name change" to avoid overfiltering
+      Better handle category propagation of pointer changes
+      Improve function changes reporting in leaf and default mode
+      Don't filter out typedef changes with redundant underlying type changes
+      Only show leaf type changes in the leaf type changes section
+      Fix leaf report of class data member changes
+      Always show redundant changes in leaf mode
+      Avoid reporting an enum change if it has already been reported
+      When we say a change was reported earlier give its source location
+      [abipkgdiff]: in leaf mode we always show redundant changes
+      Update tests for the "better leaf mode redundancy management" patchset
+      Use absolute builddir paths in automake test files
+      Represent sizes and offsets in bytes and hexadecimal values
+      Initial support of anonymous data members
+      Show data member offsets in bytes too
+      Sort the output of the leaf reporter
+      Use the dynamically selected python for Koji configure tests
+      Use the correct python interpreter in runtestdefaultsupprs.py
+      Handle cases where no python2 interpreter is found
+      Don't bail because "rpm" issued an error
+
+Jonathan Wakely:
+      Remove assertion with side-effects
+      Remove unused local set<string> variables
+      Rename misleading remove_trailing_white_spaces functions
+      Use std::string::substr instead of appending single chars
+
 1.2
 ===
 Dodji Seketeli:
