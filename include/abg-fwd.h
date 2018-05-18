@@ -407,6 +407,9 @@ is_anonymous_type(type_base*);
 bool
 is_anonymous_type(const type_base_sptr&);
 
+const type_decl*
+is_type_decl(const type_base*);
+
 type_decl_sptr
 is_type_decl(const type_base_sptr&);
 
@@ -1241,6 +1244,14 @@ hash_type_or_decl(const type_or_decl_base_sptr &);
 
 bool
 function_decl_is_less_than(const function_decl&f, const function_decl &s);
+
+bool
+types_have_similar_structure(const type_base_sptr& first,
+			     const type_base_sptr& second);
+
+bool
+types_have_similar_structure(const type_base* first,
+			     const type_base* second);
 
 } // end namespace ir
 

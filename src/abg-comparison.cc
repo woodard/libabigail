@@ -4227,8 +4227,8 @@ class_or_union_diff::priv::count_filtered_changed_dm(bool local_only)
       diff_sptr diff = i->second;
       if (local_only)
 	{
-	  if (diff->has_changes()
-	      && !diff->has_local_changes_to_be_reported())
+	  if ((diff->has_changes() && !diff->has_local_changes_to_be_reported())
+	      || diff->is_filtered_out())
 	    ++num_filtered;
 	}
       else

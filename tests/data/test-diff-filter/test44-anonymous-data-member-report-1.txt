@@ -1,18 +1,7 @@
-Leaf changes summary: 2 artifacts changed
-Changed leaf types summary: 2 leaf types changed
+Leaf changes summary: 1 artifact changed
+Changed leaf types summary: 1 leaf type changed
 Removed/Changed/Added functions summary: 0 Removed, 0 Changed, 0 Added function
 Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
-
-'struct S1 at test-44-anonymous-data-member-v0.c:1:1' changed:
-  type size hasn't changed
-  there are data member changes:
-   anonymous data member at offset 32 (in bits) changed from:
-     union {int b; float c;}
-   to:
-     union {int b; float c; char e;}
-
-
-
 
 'struct S2 at test-44-anonymous-data-member-v0.c:10:1' changed:
   type size changed from 128 to 160 (in bits)

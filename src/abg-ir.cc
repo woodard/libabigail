@@ -6719,6 +6719,14 @@ is_anonymous_type(const type_base_sptr& t)
 
 /// Test whether a type is a type_decl (a builtin type).
 ///
+/// @return the type_decl* for @t if it's type_decl, otherwise, return
+/// nil.
+const type_decl*
+is_type_decl(const type_base* t)
+{return dynamic_cast<const type_decl*>(t);}
+
+/// Test whether a type is a type_decl (a builtin type).
+///
 /// @return the type_decl_sptr for @t if it's type_decl, otherwise,
 /// return nil.
 type_decl_sptr
@@ -6772,6 +6780,15 @@ is_typedef(const type_base* t)
 typedef_decl*
 is_typedef(type_base* t)
 {return dynamic_cast<typedef_decl*>(t);}
+
+/// Test if a decl is an enum_type_decl
+///
+/// @param d the decl to test for.
+///
+/// @return the enum_type_decl* if @p d is an enum, nil otherwise.
+const enum_type_decl*
+is_enum_type(const type_or_decl_base* d)
+{return dynamic_cast<const enum_type_decl*>(d);}
 
 /// Test if a decl is an enum_type_decl
 ///
@@ -14010,7 +14027,10 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
       result = false;
       if (k)
 	{
-	  if (!equals(*l.get_naked_type(), *r.get_naked_type(), 0))
+	  if (!types_have_similar_structure(l.get_naked_type(),
+					   r.get_naked_type()))
+	    // TODO: add new kinds of change_kind so that callers can
+	    // analyse the type of change that happened in a finer fashion.
 	    *k |= LOCAL_CHANGE_KIND;
 	  else
 	    *k |= SUBTYPE_CHANGE_KIND;
@@ -17162,11 +17182,9 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 	    {
 	      *k |= SUBTYPE_CHANGE_KIND;
 	      // Report any representation change as being local.
-	      string repr1 = (*d0)->get_pretty_representation();
-	      string repr2 = (*d1)->get_pretty_representation();
-	      if (repr1 != repr2)
+	      if (!types_have_similar_structure((*d0)->get_type(),
+						(*d1)->get_type()))
 		*k |= LOCAL_CHANGE_KIND;
-	      break;
 	    }
 	  else
 	    RETURN(result);
@@ -20537,6 +20555,199 @@ function_decl_is_less_than(const function_decl &f, const function_decl &s)
     sr = s.get_linkage_name();
 
   return fr < sr;
+}
+
+/// Test if two types have similar structures, even though they are
+/// (or can be) different.
+///
+/// Two indirect types (pointers, references, qualified, typedefs)
+/// have similar structure if their underlying types are of the same
+/// kind and have the same name.  In this indirect types case, the
+/// size of the underlying type does not matter.
+///
+/// Two direct types (i.e, non indirect) have a similar structure if
+/// they have the same kind, name and size.  Two class types have
+/// similar structure if they have the same name, size, and if their
+/// data members have similar types.
+///
+/// @param first the first type to consider.
+///
+/// @param second the second type to consider.
+///
+/// @return true iff @p first and @p second have similar structures.
+bool
+types_have_similar_structure(const type_base_sptr& first,
+			     const type_base_sptr& second)
+{return types_have_similar_structure(first.get(), second.get());}
+
+/// Test if two types have similar structures, even though they are
+/// (or can be) different.
+///
+/// Two indirect types (pointers, references, qualified, typedefs)
+/// have similar structure if their underlying types are of the same
+/// kind and have the same name.  In this indirect types case, the
+/// size of the underlying type does not matter.
+///
+/// Two direct types (i.e, non indirect) have a similar structure if
+/// they have the same kind, name and size.  Two class types have
+/// similar structure if they have the same name, size, and if the
+/// types of their data members have similar types.
+///
+/// @param first the first type to consider.
+///
+/// @param second the second type to consider.
+///
+/// @return true iff @p first and @p second have similar structures.
+bool
+types_have_similar_structure(const type_base* first, const type_base* second)
+{
+  if (!!first != !!second)
+    return false;
+
+  if (!first)
+    return false;
+
+  bool was_indirect_type = (is_pointer_type(first)
+			    || is_pointer_type(second)
+			    || is_reference_type(first)
+			    || is_reference_type(second));
+
+  bool peel_type_off = (was_indirect_type
+			|| is_typedef(first)
+			|| is_typedef(second)
+			|| is_qualified_type(first)
+			|| is_qualified_type(second));
+
+  if (peel_type_off)
+    {
+      first = peel_typedef_pointer_or_reference_type(first);
+      second = peel_typedef_pointer_or_reference_type(second);
+    }
+
+  if (typeid(*first) != typeid(*second))
+    return false;
+
+  if (const type_decl* ty1 = is_type_decl(first))
+    {
+      const type_decl* ty2 = is_type_decl(second);
+      if (ty2 == 0)
+	return false;
+
+      if (!was_indirect_type)
+	if (ty1->get_size_in_bits() != ty2->get_size_in_bits())
+	  return false;
+
+      return ty1->get_name() == ty2->get_name();
+    }
+
+  if (const enum_type_decl* ty1 = is_enum_type(first))
+    {
+      const enum_type_decl* ty2 = is_enum_type(second);
+      if (ty2 == 0)
+	return false;
+
+      if (!was_indirect_type)
+	if (ty1->get_size_in_bits() != ty2->get_size_in_bits())
+	  return false;
+
+      return (get_name(ty1->get_underlying_type())
+	      == get_name(ty2->get_underlying_type()));
+    }
+
+  if (const class_decl* ty1 = is_class_type(first))
+    {
+      const class_decl* ty2 = is_class_type(second);
+      if (ty2 == 0)
+	return false;
+
+      if (ty1->get_name() != ty2->get_name())
+	return false;
+
+      if (!was_indirect_type)
+	{
+	  if (!was_indirect_type)
+	    if ((ty1->get_size_in_bits() != ty2->get_size_in_bits())
+		|| (ty1->get_non_static_data_members().size()
+		    != ty2->get_non_static_data_members().size()))
+	      return false;
+
+	  for (class_or_union::data_members::const_iterator
+		 i = ty1->get_non_static_data_members().begin(),
+		 j = ty2->get_non_static_data_members().begin();
+	       (i != ty1->get_non_static_data_members().end()
+		&& j != ty2->get_non_static_data_members().end());
+	       ++i, ++j)
+	    {
+	      var_decl_sptr dm1 = *i;
+	      var_decl_sptr dm2 = *j;
+	      if (!types_have_similar_structure(dm1->get_type().get(),
+						dm2->get_type().get()))
+		return false;
+	    }
+	}
+
+      return true;
+    }
+
+  if (const union_decl* ty1 = is_union_type(first))
+    {
+      const union_decl* ty2 = is_union_type(second);
+      if (ty2 == 0)
+	return false;
+
+      if (ty1->get_name() != ty2->get_name())
+	return false;
+
+      if (!was_indirect_type)
+	return ty1->get_size_in_bits() == ty2->get_size_in_bits();
+
+      return true;
+    }
+
+  if (const array_type_def* ty1 = is_array_type(first))
+    {
+      const array_type_def* ty2 = is_array_type(second);
+
+      if (!was_indirect_type)
+	if (ty1->get_size_in_bits() != ty2->get_size_in_bits()
+	    || ty1->get_dimension_count() != ty2->get_dimension_count()
+	    || !types_have_similar_structure(ty1->get_element_type(),
+					     ty2->get_element_type()))
+	  return false;
+
+      return true;
+    }
+
+  if (const function_type* ty1 = is_function_type(first))
+    {
+      const function_type* ty2 = is_function_type(second);
+      if (!was_indirect_type)
+	{
+	  if (!types_have_similar_structure(ty1->get_return_type(),
+					    ty2->get_return_type()))
+	    return false;
+
+	  if (ty1->get_parameters().size() != ty2->get_parameters().size())
+	    return false;
+
+	  for (function_type::parameters::const_iterator
+		 i = ty1->get_parameters().begin(),
+		 j = ty2->get_parameters().begin();
+	       (i != ty1->get_parameters().end()
+		&& j != ty2->get_parameters().end());
+	       ++i, ++j)
+	    if (!types_have_similar_structure((*i)->get_type(),
+					      (*j)->get_type()))
+	      return false;
+	}
+
+      return true;
+    }
+
+  // All kinds of type should have been handled at this point.
+  ABG_ASSERT_NOT_REACHED;
+
+  return false;
 }
 
 bool
