@@ -134,7 +134,7 @@ def run_abidiff_tests():
             if return_code:
                 result = return_code
                 sys.stderr.write("failed abidiff test "
-                                 "for env var '" + e + "'\n");
+                                 "for env var '" + env_name + "'\n");
 
             del env_vars[env_name];
 
