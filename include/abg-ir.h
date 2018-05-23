@@ -1094,15 +1094,33 @@ enum change_kind
 
   /// This means that a given IR artifact has local differences, with
   /// respect to the other artifact it was compared against.  A local
-  /// change is a change that is carried by the artifact itself,
-  /// rather than by one off its sub-types.
+  /// change is a change that is carried by the artifact itself (or
+  /// its type), rather than by one off its sub-types.
+  ///
+  /// Note that if this bit is set, then either one of the @ref
+  /// LOCAL_TYPE_CHANGE_KIND or LOCAL_NON_TYPE_CHANGE_KIND bit must be
+  /// set to, detailing what the kind of local change we have.
   LOCAL_CHANGE_KIND = 1,
+
+  /// This means that a given IR artifact has a local type change.  If
+  /// this bit is set, then the LOCAL_CHANGE_KIND bit must be set too.
+  LOCAL_TYPE_CHANGE_KIND = 1 << 1,
+
+  /// This means that a given IR artifact has a local non-type change.
+  /// That is a change that is carried by the artifact itself, not by
+  /// its type.  If this bit is set, then the LOCAL_CHANGE_KIND bit
+  /// must be set too.
+  LOCAL_NON_TYPE_CHANGE_KIND = 1 << 2,
 
   /// This means that a given IR artifact has changes in some of its
   /// sub-types, with respect to the other artifact it was compared
   /// against.
-  SUBTYPE_CHANGE_KIND = 1 << 1
-};// end enum change_kink
+  SUBTYPE_CHANGE_KIND = 1 << 3,
+
+  /// The masks below must always be the last enumerators.
+  ALL_LOCAL_CHANGES_MASK =
+  LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND
+};// end enum change_kind
 
 change_kind
 operator|(change_kind, change_kind);

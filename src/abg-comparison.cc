@@ -727,6 +727,18 @@ const reference_diff*
 is_reference_diff(const diff* diff)
 {return dynamic_cast<const reference_diff*>(diff);}
 
+/// Test if a diff node is about differences between two qualified
+/// types.
+///
+/// @param diff the diff node to consider.
+///
+/// @return @p diff converted into an instance of @ref
+/// qualified_type_diff iff @p diff is about differences between two
+/// qualified types.
+const qualified_type_diff*
+is_qualified_type_diff(const diff* diff)
+{return dynamic_cast<const qualified_type_diff*>(diff);}
+
 /// Test if a diff node is either a reference diff node or a pointer
 /// diff node.
 ///
@@ -2587,14 +2599,16 @@ bool
 distinct_diff::has_changes() const
 {return first() != second();}
 
-/// @return true iff the current diff node carries local changes.
-bool
+/// @return the kind of local change carried by the current diff node.
+/// The value returned is zero if the current node carries no local
+/// change.
+enum change_kind
 distinct_diff::has_local_changes() const
 {
-  // The changes on a distinct_diff are all local.
+  // Changes on a distinct_diff are all local.
   if (has_changes())
-    return true;
-  return false;
+    return (LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND);
+  return NO_CHANGE_KIND;
 }
 
 /// Emit a report about the current diff instance.
@@ -3172,14 +3186,16 @@ bool
 var_diff::has_changes() const
 {return *first_var() != *second_var();}
 
-/// @return true iff the current diff node carries local changes.
-bool
+/// @return the kind of local change carried by the current diff node.
+/// The value returned is zero if the current node carries no local
+/// change.
+enum change_kind
 var_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
   if (!equals(*first_var(), *second_var(), &k))
-    return k & LOCAL_CHANGE_KIND;
-  return false;
+    return k & ir::ALL_LOCAL_CHANGES_MASK;
+  return ir::NO_CHANGE_KIND;
 }
 
 /// Report the diff in a serialized form.
@@ -3297,14 +3313,16 @@ bool
 pointer_diff::has_changes() const
 {return first_pointer() != second_pointer();}
 
-/// @return true iff the current diff node carries local changes.
-bool
+/// @return the kind of local change carried by the current diff node.
+/// The value returned is zero if the current node carries no local
+/// change.
+enum change_kind
 pointer_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
   if (!equals(*first_pointer(), *second_pointer(), &k))
-    return k & LOCAL_CHANGE_KIND;
-  return false;
+    return k & ir::ALL_LOCAL_CHANGES_MASK;
+  return ir::NO_CHANGE_KIND;
 }
 
 /// Getter for the diff between the pointed-to types of the pointers
@@ -3480,14 +3498,17 @@ array_diff::has_changes() const
   return l;
 }
 
-/// @return true iff the current diff node carries local changes.
-bool
+
+/// @return the kind of local change carried by the current diff node.
+/// The value returned is zero if the current node carries no local
+/// change.
+enum change_kind
 array_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
   if (!equals(*first_array(), *second_array(), &k))
-    return k & LOCAL_CHANGE_KIND;
-  return false;
+    return k & ir::ALL_LOCAL_CHANGES_MASK;
+  return ir::NO_CHANGE_KIND;;
 }
 
 /// Report the diff in a serialized form.
@@ -3623,14 +3644,16 @@ reference_diff::has_changes() const
   return first_reference() != second_reference();
 }
 
-/// @return true iff the current diff node carries local changes.
-bool
+/// @return the kind of local change carried by the current diff node.
+/// The value returned is zero if the current node carries no local
+/// change.
+enum change_kind
 reference_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
   if (!equals(*first_reference(), *second_reference(), &k))
-    return k & LOCAL_CHANGE_KIND;
-  return false;
+    return k & ir::ALL_LOCAL_CHANGES_MASK;
+  return ir::NO_CHANGE_KIND;
 }
 
 /// Report the diff in a serialized form.
@@ -3781,14 +3804,16 @@ bool
 qualified_type_diff::has_changes() const
 {return first_qualified_type() != second_qualified_type();}
 
-/// @return true iff the current diff node carries local changes.
-bool
+/// @return the kind of local change carried by the current diff node.
+/// The value returned is zero if the current node carries no local
+/// change.
+enum change_kind
 qualified_type_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
   if (!equals(*first_qualified_type(), *second_qualified_type(), &k))
-    return k & LOCAL_CHANGE_KIND;
-  return false;
+    return k & ir::ALL_LOCAL_CHANGES_MASK;
+  return ir::NO_CHANGE_KIND;
 }
 
 /// Report the diff in a serialized form.
@@ -4003,14 +4028,16 @@ bool
 enum_diff::has_changes() const
 {return first_enum() != second_enum();}
 
-/// @return true iff the current diff node carries local changes.
-bool
+/// @return the kind of local change carried by the current diff node.
+/// The value returned is zero if the current node carries no local
+/// change.
+enum change_kind
 enum_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
   if (!equals(*first_enum(), *second_enum(), &k))
-    return k & LOCAL_CHANGE_KIND;
-  return false;
+    return k & ir::ALL_LOCAL_CHANGES_MASK;
+  return ir::NO_CHANGE_KIND;
 }
 
 /// Report the differences between the two enums.
@@ -4789,14 +4816,16 @@ bool
 class_or_union_diff::has_changes() const
 {return first_class_or_union() != second_class_or_union();}
 
-/// Test if the current diff node carries a local change.
-bool
+/// @return the kind of local change carried by the current diff node.
+/// The value returned is zero if the current node carries no local
+/// change.
+enum change_kind
 class_or_union_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
   if (!equals(*first_class_or_union(), *second_class_or_union(), &k))
-    return k & LOCAL_CHANGE_KIND;
-  return false;
+    return k & ir::ALL_LOCAL_CHANGES_MASK;
+  return ir::NO_CHANGE_KIND;
 }
 
 
@@ -5209,14 +5238,16 @@ bool
 class_diff::has_changes() const
 {return (first_class_decl() != second_class_decl());}
 
-/// @return true iff the current diff node carries local changes.
-bool
+/// @return the kind of local change carried by the current diff node.
+/// The value returned is zero if the current node carries no local
+/// change.
+enum change_kind
 class_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
   if (!equals(*first_class_decl(), *second_class_decl(), &k))
-    return k & LOCAL_CHANGE_KIND;
-  return false;
+    return k & ir::ALL_LOCAL_CHANGES_MASK;
+  return ir::NO_CHANGE_KIND;
 }
 
 /// @return the first class invoveld in the diff.
@@ -5488,14 +5519,16 @@ bool
 base_diff::has_changes() const
 {return first_base() != second_base();}
 
-/// @return true iff the current diff node carries local changes.
-bool
+/// @return the kind of local change carried by the current diff node.
+/// The value returned is zero if the current node carries no local
+/// change.
+enum change_kind
 base_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
   if (!equals(*first_base(), *second_base(), &k))
-    return k & LOCAL_CHANGE_KIND;
-  return false;
+    return k & ir::ALL_LOCAL_CHANGES_MASK;
+  return ir::NO_CHANGE_KIND;
 }
 
 /// Generates a report for the current instance of base_diff.
@@ -6122,14 +6155,16 @@ scope_diff::has_changes() const
   return changed_types().size() + changed_decls().size();
 }
 
-/// @return true iff the current diff node carries local changes.
-bool
+/// @return the kind of local change carried by the current diff node.
+/// The value returned is zero if the current node carries no local
+/// change.
+enum change_kind
 scope_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
   if (!equals(*first_scope(), *second_scope(), &k))
-    return k & LOCAL_CHANGE_KIND;
-  return false;
+    return k & ir::ALL_LOCAL_CHANGES_MASK;
+  return ir::NO_CHANGE_KIND;
 }
 
 /// Report the changes of one scope against another.
@@ -6302,16 +6337,18 @@ bool
 fn_parm_diff::has_changes() const
 {return *first_parameter() != *second_parameter();}
 
-/// Check if the the current diff node carries a local change.
+/// Check if the current diff node carries a local change.
 ///
-/// @return true iff the current diff node carries a local change.
-bool
+/// @return the kind of local change carried by the current diff node.
+/// The value returned is zero if the current node carries no local
+/// change.
+enum change_kind
 fn_parm_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
   if (!equals(*first_parameter(), *second_parameter(), &k))
-    return k & LOCAL_CHANGE_KIND;
-  return false;
+    return k & ir::ALL_LOCAL_CHANGES_MASK;
+  return ir::NO_CHANGE_KIND;
 }
 
 /// Emit a textual report about the current fn_parm_diff instance.
@@ -6580,14 +6617,16 @@ function_type_diff::has_changes() const
 /// A local change is a change that is carried by this diff node, not
 /// by any of its children nodes.
 ///
-/// @return true iff the current diff node has local changes.
-bool
+/// @return the kind of local change carried by the current diff node.
+/// The value returned is zero if the current node carries no local
+/// change.
+enum change_kind
 function_type_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
   if (!equals(*first_function_type(), *second_function_type(), &k))
-    return k & LOCAL_CHANGE_KIND;
-  return false;
+    return k & ir::ALL_LOCAL_CHANGES_MASK;
+  return ir::NO_CHANGE_KIND;
 }
 
 /// Build and emit a textual report about the current @ref
@@ -6756,14 +6795,16 @@ bool
 function_decl_diff::has_changes() const
 {return *first_function_decl() != *second_function_decl();}
 
-/// @return true iff the current diff node carries local changes.
-bool
+/// @return the kind of local change carried by the current diff node.
+/// The value returned is zero if the current node carries no local
+/// change.
+enum change_kind
 function_decl_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
   if (!equals(*first_function_decl(), *second_function_decl(), &k))
-    return k & LOCAL_CHANGE_KIND;
-  return false;
+    return k & ir::ALL_LOCAL_CHANGES_MASK;
+  return ir::NO_CHANGE_KIND;
 }
 
 /// Serialize a report of the changes encapsulated in the current
@@ -6885,14 +6926,16 @@ bool
 type_decl_diff::has_changes() const
 {return first_type_decl() != second_type_decl();}
 
-/// @return true iff the current diff node carries local changes.
-bool
+/// @return the kind of local change carried by the current diff node.
+/// The value returned is zero if the current node carries no local
+/// change.
+enum change_kind
 type_decl_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
   if (!equals(*first_type_decl(), *second_type_decl(), &k))
-    return k & LOCAL_CHANGE_KIND;
-  return false;
+    return k & ir::ALL_LOCAL_CHANGES_MASK;
+  return ir::NO_CHANGE_KIND;
 }
 /// Ouputs a report of the differences between of the two type_decl
 /// involved in the type_decl_diff.
@@ -7054,14 +7097,16 @@ typedef_diff::has_changes() const
   return !(*first_typedef_decl() == *second);
 }
 
-/// @return true iff the current diff node carries local changes.
-bool
+/// @return the kind of local change carried by the current diff node.
+/// The value returned is zero if the current node carries no local
+/// change.
+enum change_kind
 typedef_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
   if (!equals(*first_typedef_decl(), *second_typedef_decl(), &k))
-    return k & LOCAL_CHANGE_KIND;
-  return false;
+    return k & ir::ALL_LOCAL_CHANGES_MASK;
+  return ir::NO_CHANGE_KIND;
 }
 
 /// Reports the difference between the two subjects of the diff in a
@@ -7178,10 +7223,12 @@ bool
 translation_unit_diff::has_changes() const
 {return scope_diff::has_changes();}
 
-/// @return true iff the current diff node carries local changes.
-bool
+/// @return the kind of local change carried by the current diff node.
+/// The value returned is zero if the current node carries no local
+/// change.
+enum change_kind
 translation_unit_diff::has_local_changes() const
-{return false;}
+{return ir::NO_CHANGE_KIND;}
 
 /// Report the diff in a serialized form.
 ///
@@ -11236,6 +11283,112 @@ const type_decl_diff*
 is_diff_of_basic_type(const diff *d)
 {return dynamic_cast<const type_decl_diff*>(d);}
 
+/// Test if a diff node represents a diff between two basic types, or
+/// between pointers, references or qualified type to basic types.
+///
+/// @param diff the diff node to consider.
+///
+/// @param allow_indirect_type if true, then this function looks into
+/// pointer, reference or qualified diff types to see if they "point
+/// to" basic types.
+///
+/// @return true iff @p d is a diff between two basic types.
+const type_decl_diff*
+is_diff_of_basic_type(const diff* diff, bool allow_indirect_type)
+{
+  if (allow_indirect_type)
+      diff = peel_pointer_or_qualified_type(diff);
+  return is_diff_of_basic_type(diff);
+}
+
+/// If a diff node is about changes between two pointer types, get the
+/// diff node about changes between the underlying (pointed-to) types.
+///
+/// Note that this function walks the tree of underlying diff nodes
+/// returns the first diff node about types that are not pointers.
+///
+/// @param dif the dif node to consider.
+///
+/// @return the underlying diff node of @p dif, or just return @p dif
+/// if it's not a pointer diff node.
+const diff*
+peel_pointer_diff(const diff* dif)
+{
+  const pointer_diff *d = 0;
+  while ((d = is_pointer_diff(dif)))
+    dif = d->underlying_type_diff().get();
+  return dif;
+}
+
+/// If a diff node is about changes between two reference types, get
+/// the diff node about changes between the underlying (pointed-to)
+/// types.
+///
+/// Note that this function walks the tree of underlying diff nodes
+/// returns the first diff node about types that are not references.
+///
+/// @param dif the dif node to consider.
+///
+/// @return the underlying diff node of @p dif, or just return @p dif
+/// if it's not a reference diff node.
+const diff*
+peel_reference_diff(const diff* dif)
+{
+  const reference_diff *d = 0;
+  while ((d = is_reference_diff(dif)))
+    dif = d->underlying_type_diff().get();
+  return dif;
+}
+
+/// If a diff node is about changes between two qualified types, get
+/// the diff node about changes between the underlying (non-qualified)
+/// types.
+///
+/// Note that this function walks the tree of underlying diff nodes
+/// returns the first diff node about types that are not qualified.
+///
+/// @param dif the dif node to consider.
+///
+/// @return the underlying diff node of @p dif, or just return @p dif
+/// if it's not a qualified diff node.
+const diff*
+peel_qualified_diff(const diff* dif)
+{
+  const qualified_type_diff *d = 0;
+  while ((d = is_qualified_type_diff(dif)))
+    dif = d->underlying_type_diff().get();
+  return dif;
+}
+
+/// If a diff node is about changes between two pointer, reference or
+/// qualified types, get the diff node about changes between the
+/// underlying types.
+///
+/// Note that this function walks the tree of underlying diff nodes
+/// returns the first diff node about types that are not pointer,
+/// reference or qualified.
+///
+/// @param dif the dif node to consider.
+///
+/// @return the underlying diff node of @p dif, or just return @p dif
+/// if it's not a pointer, reference or qualified diff node.
+const diff*
+peel_pointer_or_qualified_type(const diff*dif)
+{
+  while (true)
+    {
+      if (const pointer_diff *d = is_pointer_diff(dif))
+	dif = peel_pointer_diff(d);
+      else if (const reference_diff *d = is_reference_diff(dif))
+	dif = peel_reference_diff(d);
+      else if (const qualified_type_diff *d = is_qualified_type_diff(dif))
+	dif = peel_qualified_diff(d);
+      else
+	break;
+    }
+  return dif;
+}
+
 /// Test if a diff node represents a diff between two class or union
 /// types.
 ///
@@ -11248,8 +11401,28 @@ const class_or_union_diff*
 is_diff_of_class_or_union_type(const diff *d)
 {return dynamic_cast<const class_or_union_diff*>(d);}
 
+/// Test if a given diff node carries *only* a local type change.
+///
+/// @param d the diff node to consider.
+///
+/// @return true iff @p has a change and that change is a local type
+/// change.
+static bool
+has_local_type_change_only(const diff *d)
+{
+  if (enum change_kind k = d->has_local_changes())
+    if ((k & LOCAL_NON_TYPE_CHANGE_KIND) == 0
+	&& (k & LOCAL_TYPE_CHANGE_KIND) != 0)
+      return true;
+
+  return false;
+}
+
 /// Test if a diff node is a decl diff that only carries a basic type
 /// change on its type diff sub-node.
+///
+///Note that that pointers/references/qualified types diffs to basic
+/// type diffs are considered as having basic type change only.
 ///
 /// @param d the diff node to consider.
 ///
@@ -11258,19 +11431,20 @@ is_diff_of_class_or_union_type(const diff *d)
 bool
 has_basic_type_change_only(const diff *d)
 {
-  if (is_diff_of_basic_type(d) && d->has_changes())
+  if (is_diff_of_basic_type(d, true) && d->has_changes())
     return true;
   else if (const var_diff * v = dynamic_cast<const var_diff*>(d))
-    return (!v->has_local_changes()
-	    && is_diff_of_basic_type(v->type_diff().get()));
+    return (has_local_type_change_only(v)
+	    && is_diff_of_basic_type(v->type_diff().get(), true));
   else if (const fn_parm_diff * p = dynamic_cast<const fn_parm_diff*>(d))
-    return (!p->has_local_changes()
-	    && is_diff_of_basic_type(p->type_diff().get()));
+    return (has_local_type_change_only(p)
+	    && is_diff_of_basic_type(p->type_diff().get(), true));
   else if (const function_decl_diff* f =
 	   dynamic_cast<const function_decl_diff*>(d))
-    return (!f->has_local_changes()
+    return (has_local_type_change_only(f)
 	    && f->type_diff()
-	    && is_diff_of_basic_type(f->type_diff()->return_type_diff().get()));
+	    && is_diff_of_basic_type(f->type_diff()->return_type_diff().get(),
+				     true));
   return false;
 }
 }// end namespace comparison

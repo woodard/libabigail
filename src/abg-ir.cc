@@ -3326,7 +3326,7 @@ equals(const decl_base& l, const decl_base& r, change_kind* k)
 	    {
 	      result = false;
 	      if (k)
-		*k |= LOCAL_CHANGE_KIND;
+		*k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
 	      else
 		return false;
 	    }
@@ -3337,7 +3337,7 @@ equals(const decl_base& l, const decl_base& r, change_kind* k)
     {
       result = false;
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	*k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
       else
 	return false;
     }
@@ -3380,7 +3380,7 @@ equals(const decl_base& l, const decl_base& r, change_kind* k)
 	{
 	  result = false;
 	  if (k)
-	    *k |= LOCAL_CHANGE_KIND;
+	    *k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
 	  else
 	    return false;
 	}
@@ -4795,6 +4795,34 @@ peel_qualified_type(const type_base_sptr& type)
   return peel_qualified_type(t->get_underlying_type());
 }
 
+/// Return the leaf underlying type of a qualified or typedef type.
+///
+/// If the underlying type is itself a qualified or typedef type, then
+/// recursively return the first underlying type of that qualified or
+/// typedef type to return the first underlying type that is not a
+/// qualified or typedef type.
+///
+/// If the underlying type is NOT a qualified nor a typedef type, then
+/// just return that underlying type.
+///
+/// @param type the qualified or typedef type to consider.
+///
+/// @return the leaf underlying type.
+type_base*
+peel_qualified_or_typedef_type(const type_base* type)
+{
+  while (is_typedef(type) || is_qualified_type(type))
+    {
+      if (const typedef_decl* t = is_typedef(type))
+	type = peel_typedef_type(t);
+
+      if (const qualified_type_def* t = is_qualified_type(type))
+	type = peel_qualified_type(t);
+    }
+
+  return const_cast<type_base*>(type);
+}
+
 /// Return the leaf underlying or pointed-to type node of a @ref
 /// typedef_decl, @ref pointer_type_def, @ref reference_type_def or
 /// @ref qualified_type_def node.
@@ -5121,7 +5149,7 @@ equals(const scope_decl& l, const scope_decl& r, change_kind* k)
     {
       result = false;
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	*k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
       else
 	return false;
     }
@@ -5148,7 +5176,7 @@ equals(const scope_decl& l, const scope_decl& r, change_kind* k)
     {
       result = false;
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	*k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
       else
 	return false;
     }
@@ -10667,7 +10695,7 @@ equals(const type_base& l, const type_base& r, change_kind* k)
 		 && l.get_alignment_in_bits() == r.get_alignment_in_bits());
   if (!result)
     if (k)
-      *k |= LOCAL_CHANGE_KIND;
+      *k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
   return result;
 }
 
@@ -11610,7 +11638,7 @@ equals(const qualified_type_def& l, const qualified_type_def& r, change_kind* k)
     {
       result = false;
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	*k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
       else
 	return false;
     }
@@ -11980,10 +12008,10 @@ equals(const pointer_type_def& l, const pointer_type_def& r, change_kind* k)
   if (!result)
     if (k)
       {
-	*k |= SUBTYPE_CHANGE_KIND;
-	if (l.get_pointed_to_type()->get_pretty_representation()
-	    != r.get_pointed_to_type()->get_pretty_representation())
-	  *k |= LOCAL_CHANGE_KIND;
+	if (!types_have_similar_structure(&l, &r))
+	  *k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
+	else
+	  *k |= SUBTYPE_CHANGE_KIND;
       }
 
   return result;
@@ -12264,7 +12292,7 @@ equals(const reference_type_def& l, const reference_type_def& r, change_kind* k)
   if (l.is_lvalue() != r.is_lvalue())
     {
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	*k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
       return false;
     }
 
@@ -12687,7 +12715,7 @@ equals(const array_type_def::subrange_type& l,
     {
       result = false;
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	*k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
       else
 	return result;
     }
@@ -12699,7 +12727,13 @@ equals(const array_type_def::subrange_type& l,
     {
       result = false;
       if (k)
-	*k |= SUBTYPE_CHANGE_KIND;
+	{
+	  if (!types_have_similar_structure(l.get_underlying_type().get(),
+					    r.get_underlying_type().get()))
+	    *k |= LOCAL_CHANGE_KIND;
+	  else
+	    *k |= SUBTYPE_CHANGE_KIND;
+	}
       else
 	return result;
     }
@@ -12932,7 +12966,7 @@ equals(const array_type_def& l, const array_type_def& r, change_kind* k)
     {
       result = false;
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	*k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
       else
 	return false;
     }
@@ -12946,7 +12980,7 @@ equals(const array_type_def& l, const array_type_def& r, change_kind* k)
 	result = false;
 	if (k)
 	  {
-	    *k |= LOCAL_CHANGE_KIND;
+	    *k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
 	    break;
 	  }
 	else
@@ -13303,7 +13337,7 @@ enum_has_non_name_change(const enum_type_decl& l,
 	result = true;
 	if (k)
 	  {
-	    *k |= LOCAL_CHANGE_KIND;
+	    *k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
 	    break;
 	  }
 	else
@@ -13314,7 +13348,7 @@ enum_has_non_name_change(const enum_type_decl& l,
     {
       result = true;
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	*k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
       else
 	return true;
     }
@@ -13331,7 +13365,13 @@ enum_has_non_name_change(const enum_type_decl& l,
     {
       result = true;
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	{
+	  if (!l.decl_base::operator==(r))
+	    *k |= LOCAL_NON_TYPE_CHANGE_KIND;
+	  if (!l.type_base::operator==(r))
+	    *k |=  LOCAL_TYPE_CHANGE_KIND;
+	  *k |= LOCAL_CHANGE_KIND;
+	}
       else
 	{
 	  local_r.set_name(n_r);
@@ -13386,7 +13426,7 @@ equals(const enum_type_decl& l, const enum_type_decl& r, change_kind* k)
 	result = false;
 	if (k)
 	  {
-	    *k |= LOCAL_CHANGE_KIND;
+	    *k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
 	    break;
 	  }
 	else
@@ -13397,7 +13437,7 @@ equals(const enum_type_decl& l, const enum_type_decl& r, change_kind* k)
     {
       result = false;
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	*k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
       else
 	return false;
     }
@@ -13406,7 +13446,13 @@ equals(const enum_type_decl& l, const enum_type_decl& r, change_kind* k)
     {
       result = false;
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	{
+	  if (!l.decl_base::operator==(r))
+	    *k |= LOCAL_NON_TYPE_CHANGE_KIND;
+	  if (!l.type_base::operator==(r))
+	    *k |= LOCAL_TYPE_CHANGE_KIND;
+	  *k |= LOCAL_CHANGE_KIND;
+	}
       else
 	return false;
     }
@@ -13737,7 +13783,7 @@ equals(const typedef_decl& l, const typedef_decl& r, change_kind* k)
     {
       result = false;
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	*k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
       else
 	return false;
     }
@@ -14029,9 +14075,7 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
 	{
 	  if (!types_have_similar_structure(l.get_naked_type(),
 					   r.get_naked_type()))
-	    // TODO: add new kinds of change_kind so that callers can
-	    // analyse the type of change that happened in a finer fashion.
-	    *k |= LOCAL_CHANGE_KIND;
+	    *k |= (LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND);
 	  else
 	    *k |= SUBTYPE_CHANGE_KIND;
 	}
@@ -14046,7 +14090,7 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
     {
       result = false;
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	*k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
       else
 	return false;
     }
@@ -14054,7 +14098,7 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
     {
       result = false;
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	*k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
       else
 	return false;
     }
@@ -14076,7 +14120,7 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
 	{
 	  result = false;
 	  if (k)
-	    *k |= LOCAL_CHANGE_KIND;
+	    *k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
 	  else
 	    return false;
 	}
@@ -14086,7 +14130,7 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
       {
 	result = false;
 	if (k)
-	  *k |= LOCAL_CHANGE_KIND;
+	  *k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
 	else
 	  return false;
       }
@@ -14101,7 +14145,7 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
     {
       result = false;
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	*k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
       else
 	return false;
     }
@@ -14611,7 +14655,7 @@ equals(const function_type& lhs,
     {
       result = false;
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	*k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
       else
 	RETURN(result);
     }
@@ -14629,7 +14673,7 @@ equals(const function_type& lhs,
     {
       result = false;
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	*k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
       else
 	RETURN(result);
     }
@@ -14639,7 +14683,7 @@ equals(const function_type& lhs,
     {
       result = false;
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	*k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
       else
 	RETURN(result);
     }
@@ -14672,10 +14716,11 @@ equals(const function_type& lhs,
 	  result = false;
 	  if (k)
 	    {
-	      if (lhs.get_return_type()->get_pretty_representation()
-		  != rhs.get_return_type()->get_pretty_representation())
-		*k |= LOCAL_CHANGE_KIND;
-	      *k |= SUBTYPE_CHANGE_KIND;
+	      if (!types_have_similar_structure(lhs.get_return_type(),
+						rhs.get_return_type()))
+		*k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
+	      else
+		*k |= SUBTYPE_CHANGE_KIND;
 	    }
 	  else
 	    RETURN(result);
@@ -14714,10 +14759,11 @@ equals(const function_type& lhs,
 	  result = false;
 	  if (k)
 	    {
-	      if ((*i)->get_pretty_representation()
-		  != (*j)->get_pretty_representation())
-		*k |= LOCAL_CHANGE_KIND;
-	      *k |= SUBTYPE_CHANGE_KIND;
+	      if (!types_have_similar_structure((*i)->get_type(),
+						(*j)->get_type()))
+		*k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
+	      else
+		*k |= SUBTYPE_CHANGE_KIND;
 	    }
 	  else
 	    RETURN(result);
@@ -14729,7 +14775,7 @@ equals(const function_type& lhs,
     {
       result = false;
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	*k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
       else
 	RETURN(result);
     }
@@ -15451,9 +15497,10 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
       result = false;
       if (k)
 	{
-	  if (l.get_pretty_representation() != r.get_pretty_representation())
-	    *k |= LOCAL_CHANGE_KIND;
-	  *k |= SUBTYPE_CHANGE_KIND;
+	  if (!types_have_similar_structure(t0, t1))
+	    *k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
+	  else
+	    *k |= SUBTYPE_CHANGE_KIND;
 	}
       else
 	return false;
@@ -15464,7 +15511,7 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
     {
       result = false;
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	*k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
       else
 	return false;
     }
@@ -15474,7 +15521,7 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
 	{
 	  result = false;
 	  if (k)
-	    *k |= LOCAL_CHANGE_KIND;
+	    *k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
 	  else
 	    return false;
 	}
@@ -15504,7 +15551,7 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
 	{
 	  result = false;
 	  if (k)
-	    *k |= LOCAL_CHANGE_KIND;
+	    *k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
 	  else
 	    return false;
 	}
@@ -15514,7 +15561,7 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
       {
 	result = false;
 	if (k)
-	  *k |= LOCAL_CHANGE_KIND;
+	  *k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
 	else
 	  return false;
       }
@@ -15525,7 +15572,7 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
     {
       result = false;
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	*k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
       else
 	return false;
     }
@@ -15534,7 +15581,7 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
     {
       result = false;
       if (k)
-	  *k |= LOCAL_CHANGE_KIND;
+	  *k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
       else
 	return false;
     }
@@ -15556,7 +15603,7 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
 	{
 	  result = false;
 	  if (k)
-	    *k |= LOCAL_CHANGE_KIND;
+	    *k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
 	  else
 	    return false;
 	}
@@ -15905,10 +15952,18 @@ equals(const function_decl::parameter& l,
     {
       result = false;
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	{
+	  if (l.get_index() != r.get_index())
+	    *k |= LOCAL_NON_TYPE_CHANGE_KIND;
+	  if (l.get_variadic_marker() != r.get_variadic_marker()
+	      || !!l.get_type() != !!r.get_type())
+	    *k |= LOCAL_TYPE_CHANGE_KIND;
+	  *k |= LOCAL_CHANGE_KIND;
+	}
       else
 	return false;
     }
+
 
   // Sometimes, function parameters can be wrapped into a no-op
   // qualifier.  Let's strip that qualifier out.
@@ -15919,10 +15974,10 @@ equals(const function_decl::parameter& l,
       result = false;
       if (k)
 	{
-	  *k |= SUBTYPE_CHANGE_KIND;
-	  if (get_pretty_representation(l_type)
-	      != get_pretty_representation(r_type))
-	    *k |= LOCAL_CHANGE_KIND;
+	  if (!types_have_similar_structure(l_type, r_type))
+	    *k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
+	  else
+	    *k |= SUBTYPE_CHANGE_KIND;
 	}
       else
 	return false;
@@ -17092,7 +17147,7 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 	      else
 		{
 		  if (k)
-		    *k |= LOCAL_CHANGE_KIND;
+		    *k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
 		  // Not using RETURN(true) here, because that causes
 		  // performance issues.  We don't need to do
 		  // l.priv_->unmark_as_being_compared({l,r}) here because
@@ -17108,7 +17163,7 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 	      if (!!def1 != !!def2)
 		{
 		  if (k)
-		    *k |= LOCAL_CHANGE_KIND;
+		    *k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
 		  return false;
 		}
 
@@ -17117,7 +17172,7 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 		       && l.type_base::operator==(r)))
 		{
 		  if (k)
-		    *k |= LOCAL_CHANGE_KIND;
+		    *k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
 		  return false;
 		}
 
@@ -17135,7 +17190,7 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
       bool val = *def1 == *def2;
       if (!val)
 	if (k)
-	  *k |= LOCAL_CHANGE_KIND;
+	  *k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
       RETURN(val);
     }
 
@@ -17144,7 +17199,7 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
   if (!(l.decl_base::operator==(r) && l.type_base::operator==(r)))
     {
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	*k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
       RETURN(false);
     }
 
@@ -17164,7 +17219,7 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
       {
 	result = false;
 	if (k)
-	  *k |= LOCAL_CHANGE_KIND;
+	  *k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
 	else
 	  RETURN(result);
       }
@@ -17180,11 +17235,12 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 	  result = false;
 	  if (k)
 	    {
-	      *k |= SUBTYPE_CHANGE_KIND;
 	      // Report any representation change as being local.
 	      if (!types_have_similar_structure((*d0)->get_type(),
 						(*d1)->get_type()))
-		*k |= LOCAL_CHANGE_KIND;
+		*k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
+	      else
+		*k |= SUBTYPE_CHANGE_KIND;
 	    }
 	  else
 	    RETURN(result);
@@ -17203,7 +17259,7 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
       {
 	result = false;
 	if (k)
-	  *k |= LOCAL_CHANGE_KIND;
+	  *k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
 	else
 	  RETURN(result);
       }
@@ -17219,7 +17275,7 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 	  result = false;
 	  if (k)
 	    {
-	      *k |= LOCAL_CHANGE_KIND;
+	      *k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
 	      break;
 	    }
 	  else
@@ -17234,7 +17290,7 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
       {
 	result = false;
 	if (k)
-	  *k |= LOCAL_CHANGE_KIND;
+	  *k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
 	else
 	  RETURN(result);
       }
@@ -17250,7 +17306,7 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 	  result = false;
 	  if (k)
 	    {
-	      *k |= LOCAL_CHANGE_KIND;
+	      *k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
 	      break;
 	    }
 	  else
@@ -17864,7 +17920,7 @@ equals(const class_decl::base_spec& l,
   if (!l.member_base::operator==(r))
     {
       if (k)
-	*k |= LOCAL_CHANGE_KIND;
+	*k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
       return false;
     }
 
@@ -18512,7 +18568,7 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
       {
 	result = false;
 	if (k)
-	  *k |= LOCAL_CHANGE_KIND;
+	  *k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
 	else
 	  RETURN(result);
       }
@@ -18528,7 +18584,11 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	  result = false;
 	  if (k)
 	    {
-	      *k |= SUBTYPE_CHANGE_KIND;
+	      if (!types_have_similar_structure((*b0)->get_base_class().get(),
+						(*b1)->get_base_class().get()))
+		*k |= LOCAL_CHANGE_KIND;
+	      else
+		*k |= SUBTYPE_CHANGE_KIND;
 	      break;
 	    }
 	  RETURN(result);
@@ -18557,7 +18617,7 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
       {
 	result = false;
 	if (k)
-	  *k |= SUBTYPE_CHANGE_KIND;
+	  *k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
 	else
 	  RETURN(result);
       }
@@ -18587,7 +18647,7 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	  {
 	    result = false;
 	    if (k)
-	      *k |= SUBTYPE_CHANGE_KIND;
+	      *k |= LOCAL_NON_TYPE_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
 	    RETURN(result);
 	  }
 
@@ -20607,18 +20667,18 @@ types_have_similar_structure(const type_base* first, const type_base* second)
   if (!first)
     return false;
 
+  if (is_typedef(first) || is_qualified_type(first))
+    first = peel_qualified_or_typedef_type(first);
+
+  if (is_typedef(second) || is_qualified_type(second))
+    second = peel_qualified_or_typedef_type(second);
+
   bool was_indirect_type = (is_pointer_type(first)
 			    || is_pointer_type(second)
 			    || is_reference_type(first)
 			    || is_reference_type(second));
 
-  bool peel_type_off = (was_indirect_type
-			|| is_typedef(first)
-			|| is_typedef(second)
-			|| is_qualified_type(first)
-			|| is_qualified_type(second));
-
-  if (peel_type_off)
+  if (was_indirect_type)
     {
       first = peel_typedef_pointer_or_reference_type(first);
       second = peel_typedef_pointer_or_reference_type(second);

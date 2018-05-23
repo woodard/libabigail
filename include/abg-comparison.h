@@ -957,7 +957,7 @@ public:
   /// some of its children nodes.
   ///
   /// This is to be implemented by all descendants of this type.
-  virtual bool
+  virtual enum change_kind
   has_local_changes() const = 0;
 
   /// Pure interface to report the diff in a serialized form that is
@@ -1003,7 +1003,7 @@ protected:
 
 public:
 
-  virtual bool
+  virtual enum change_kind
   has_local_changes() const = 0;
 
   virtual ~type_diff_base();
@@ -1024,7 +1024,7 @@ protected:
 
 public:
 
-  virtual bool
+  virtual enum change_kind
   has_local_changes() const = 0;
 
   virtual ~decl_diff_base();
@@ -1071,7 +1071,7 @@ public:
   virtual bool
   has_changes() const;
 
-  virtual bool
+  virtual enum change_kind
   has_local_changes() const;
 
   virtual void
@@ -1127,7 +1127,7 @@ public:
   virtual bool
   has_changes() const;
 
-  virtual bool
+  virtual enum change_kind
   has_local_changes() const;
 
   virtual void
@@ -1184,7 +1184,7 @@ public:
   virtual bool
   has_changes() const;
 
-  virtual bool
+  virtual enum change_kind
   has_local_changes() const;
 
   virtual void
@@ -1244,7 +1244,7 @@ public:
   virtual bool
   has_changes() const;
 
-  virtual bool
+  virtual enum change_kind
   has_local_changes() const;
 
   virtual void
@@ -1304,7 +1304,7 @@ public:
   virtual bool
   has_changes() const;
 
-  virtual bool
+  virtual enum change_kind
   has_local_changes() const;
 
   virtual void
@@ -1365,7 +1365,7 @@ public:
   virtual bool
   has_changes() const;
 
-  virtual bool
+  virtual enum change_kind
   has_local_changes() const;
 
   virtual void
@@ -1438,7 +1438,7 @@ public:
   virtual bool
   has_changes() const;
 
-  virtual bool
+  virtual enum change_kind
   has_local_changes() const;
 
   virtual void
@@ -1549,7 +1549,7 @@ public:
   virtual bool
   has_changes() const;
 
-  virtual bool
+  virtual enum change_kind
   has_local_changes() const;
 
   virtual void
@@ -1619,7 +1619,7 @@ public:
   virtual bool
   has_changes() const;
 
-  virtual bool
+  virtual enum change_kind
   has_local_changes() const;
 
   virtual const string&
@@ -1730,7 +1730,7 @@ public:
   virtual bool
   has_changes() const;
 
-  virtual bool
+  virtual enum change_kind
   has_local_changes() const;
 
   virtual void
@@ -1839,7 +1839,7 @@ public:
   virtual bool
   has_changes() const;
 
-  virtual bool
+  virtual enum change_kind
   has_local_changes() const;
 
   virtual void
@@ -1899,7 +1899,7 @@ public:
   virtual bool
   has_changes() const;
 
-  virtual bool
+  virtual enum change_kind
   has_local_changes() const;
 
   virtual void
@@ -1974,7 +1974,7 @@ public:
   virtual bool
   has_changes() const;
 
-  virtual bool
+  virtual enum change_kind
   has_local_changes() const;
 
   virtual void
@@ -2032,7 +2032,7 @@ compute_diff(const function_decl_sptr	first,
   virtual bool
   has_changes() const;
 
-  virtual bool
+  virtual enum change_kind
   has_local_changes() const;
 
   virtual void
@@ -2083,7 +2083,7 @@ public:
   virtual bool
   has_changes() const;
 
-  virtual bool
+  virtual enum change_kind
   has_local_changes() const;
 
   virtual void
@@ -2141,7 +2141,7 @@ public:
   virtual bool
   has_changes() const;
 
-  virtual bool
+  virtual enum change_kind
   has_local_changes() const;
 
   virtual void
@@ -2193,7 +2193,7 @@ public:
   virtual bool
   has_changes() const;
 
-  virtual bool
+  virtual enum change_kind
   has_local_changes() const;
 
   virtual void
@@ -2652,6 +2652,9 @@ is_decl_diff(const diff* diff);
 const type_decl_diff*
 is_diff_of_basic_type(const diff* diff);
 
+const type_decl_diff*
+is_diff_of_basic_type(const diff* diff, bool);
+
 const class_or_union_diff*
 is_diff_of_class_or_union_type(const diff *d);
 
@@ -2694,6 +2697,8 @@ is_pointer_diff(const diff* diff);
 const reference_diff*
 is_reference_diff(const diff* diff);
 
+const qualified_type_diff*
+is_qualified_type_diff(const diff* diff);
 bool
 is_reference_or_pointer_diff(const diff* diff);
 
@@ -2715,6 +2720,17 @@ is_child_node_of_base_diff(const diff* diff);
 const corpus_diff*
 is_corpus_diff(const diff* diff);
 
+const diff*
+peel_pointer_diff(const diff* dif);
+
+const diff*
+peel_reference_diff(const diff* dif);
+
+const diff*
+peel_qualified_diff(const diff* dif);
+
+const diff*
+peel_pointer_or_qualified_type(const diff*dif);
 }// end namespace comparison
 
 }// end namespace abigail

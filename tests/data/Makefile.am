@@ -657,6 +657,12 @@ test-diff-filter/test44-anonymous-data-member-report-0.txt \
 test-diff-filter/test44-anonymous-data-member-report-1.txt \
 test-diff-filter/test44-anonymous-data-member-v0.c \
 test-diff-filter/test44-anonymous-data-member-v1.c \
+test-diff-filter/libtest45-basic-type-change-report-0.txt \
+test-diff-filter/libtest45-basic-type-change-report-1.txt \
+test-diff-filter/libtest45-basic-type-change-v0.so \
+test-diff-filter/libtest45-basic-type-change-v1.so \
+test-diff-filter/test45-basic-type-change-v0.cc \
+test-diff-filter/test45-basic-type-change-v1.cc \
 \
 test-diff-suppr/test0-type-suppr-v0.cc	\
 test-diff-suppr/test0-type-suppr-v1.cc	\

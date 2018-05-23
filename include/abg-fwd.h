@@ -771,6 +771,9 @@ peel_qualified_type(const type_base*);
 const type_base_sptr
 peel_qualified_type(const type_base_sptr&);
 
+type_base*
+peel_qualified_or_typedef_type(const type_base* type);
+
 type_base_sptr
 peel_typedef_pointer_or_reference_type(const type_base_sptr,
 				       bool peel_qualified_type = true);

@@ -1,29 +1,12 @@
 ================ changes of 'libspice-server.so.1.8.0'===============
-Leaf changes summary: 13 artifacts changed (7 filtered out)
+Leaf changes summary: 11 artifacts changed (7 filtered out)
   Changed leaf types summary: 2 (7 filtered out) leaf types changed
-  Removed/Changed/Added functions summary: 1 Removed, 2 Changed, 8 Added functions
+  Removed/Changed/Added functions summary: 1 Removed, 0 Changed, 8 Added functions
   Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
 
   1 Removed function:
 
     [D] 'function int spice_server_migrate_client_state(SpiceServer*)'    {spice_server_migrate_client_state@@SPICE_SERVER_0.6.0}
-
-  2 functions with some sub-type change:
-
-    [C]'function spice_image_compression_t spice_server_get_image_compression(SpiceServer*)' at reds.c:3618:1 has some sub-type changes:
-      return type changed:
-        typedef name changed from spice_image_compression_t to SpiceImageCompression at enums.h:197:1
-
-        2 impacted interfaces:
-          function spice_image_compression_t spice_server_get_image_compression(SpiceServer*)
-          function int spice_server_set_image_compression(SpiceServer*, spice_image_compression_t)
-    [C]'function int spice_server_set_image_compression(SpiceServer*, spice_image_compression_t)' at reds.c:3602:1 has some sub-type changes:
-      parameter 2 of type 'typedef spice_image_compression_t' changed:
-      typedef name changed from spice_image_compression_t to SpiceImageCompression at enums.h:197:1
-
-      2 impacted interfaces:
-        function spice_image_compression_t spice_server_get_image_compression(SpiceServer*)
-        function int spice_server_set_image_compression(SpiceServer*, spice_image_compression_t)
 
   8 Added functions:
 
