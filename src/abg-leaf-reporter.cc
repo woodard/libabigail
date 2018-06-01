@@ -206,7 +206,7 @@ leaf_reporter::report(const pointer_diff &d,
       << d.first_pointer()->get_pretty_representation()
       << "' to: '"
       << d.second_pointer()->get_pretty_representation()
-      << "'";
+      << "'\n";
 }
 
 /// Report the changes carried by a @ref reference_diff node.

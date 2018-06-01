@@ -9913,12 +9913,14 @@ struct leaf_diff_node_marker_visitor : public diff_node_visitor
 	// Similarly, a *local* change describing a type that changed
 	// its nature doesn't make sense.
 	&& !is_distinct_diff(d)
-	// Similarly, a pointer (or reference or array) change in
-	// itself doesn't make sense.  It's would rather make sense to
-	// show that pointer change as part of the variable change
-	// whose pointer type changed, for instance.
+	// Similarly, a pointer (or reference or array) or qualified
+	// type change in itself doesn't make sense.  It's would
+	// rather make sense to show that pointer change as part of
+	// the variable change whose pointer type changed, for
+	// instance.
 	&& !is_pointer_diff(d)
 	&& !is_reference_diff(d)
+	&& !is_qualified_type_diff(d)
 	&& !is_array_diff(d)
 	// Similarly a parameter chagne in itself doesn't make sense.
 	// It should have already been reported as part of the change
@@ -11037,7 +11039,16 @@ struct redundancy_marking_visitor : public diff_node_visitor
 	// doesn't inherit redundancy from its children nodes.
 	if (!(d->get_category() & REDUNDANT_CATEGORY)
 	    && (!d->has_local_changes_to_be_reported()
-		|| is_pointer_diff(d)))
+		// By default, pointer, reference and qualified types
+		// consider that a local changes to their underlying
+		// type is always a local change for themselves.
+		//
+		// This is as if those types don't have local changes
+		// in the same sense as other types.  So we always
+		// propagate redundancy to them, regardless of if they
+		// have local changes or not.
+		|| is_pointer_diff(d)
+		|| is_qualified_type_diff(d)))
 	  {
 	    bool has_non_redundant_child = false;
 	    bool has_non_empty_child = false;

@@ -418,24 +418,28 @@ default_reporter::report_local_reference_type_changes(const reference_diff& d,
   reference_type_def_sptr f = d.first_reference(), s = d.second_reference();
   assert(f && s);
 
+  string f_repr = f->get_pretty_representation(),
+    s_repr = s->get_pretty_representation();
 
   if (f->is_lvalue() != s->is_lvalue())
     {
-      string f_repr = f->get_pretty_representation(),
-	s_repr = s->get_pretty_representation();
-
       out << indent;
       if (f->is_lvalue())
 	out << "lvalue reference type '" << f_repr
 	    << " became an rvalue reference type: '"
 	    << s_repr
-	    << "'";
+	    << "'\n";
       else
 	out << "rvalue reference type '" << f_repr
 	    << " became an lvalue reference type: '"
 	    << s_repr
 	    << "'\n";
     }
+  else if (!types_have_similar_structure(f->get_pointed_to_type().get(),
+					 s->get_pointed_to_type().get()))
+    out << indent
+	<< "reference type changed from: '"
+	<< f_repr << "' to: '" << s_repr << "'\n";
 }
 
 /// Report a @ref reference_diff in a serialized form.
@@ -452,19 +456,25 @@ default_reporter::report(const reference_diff& d, ostream& out,
   if (!d.to_be_reported())
     return;
 
-  report_local_reference_type_changes(d, out, indent);
+  enum change_kind k = ir::NO_CHANGE_KIND;
+  equals(*d.first_reference(), *d.second_reference(), &k);
 
-  if (diff_sptr dif = d.underlying_type_diff())
-    {
-      RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(dif, "referenced type");
+  if ((k & LOCAL_CHANGE_KIND) && !(k & SUBTYPE_CHANGE_KIND))
+    report_local_reference_type_changes(d, out, indent);
 
-      out << indent
-	  << "in referenced type '"
-	  << dif->first_subject()->get_pretty_representation() << "'";
-      report_loc_info(dif->second_subject(), *d.context(), out);
-      out << ":\n";
-      dif->report(out, indent + "  ");
-    }
+  if (k & SUBTYPE_CHANGE_KIND)
+    if (diff_sptr dif = d.underlying_type_diff())
+      {
+	RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(dif,
+							  "referenced type");
+
+	out << indent
+	    << "in referenced type '"
+	    << dif->first_subject()->get_pretty_representation() << "'";
+	report_loc_info(dif->second_subject(), *d.context(), out);
+	out << ":\n";
+	dif->report(out, indent + "  ");
+      }
 }
 
 /// Emit a textual report about the a @ref fn_parm_diff instance.

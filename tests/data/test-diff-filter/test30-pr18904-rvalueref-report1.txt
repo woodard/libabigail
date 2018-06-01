@@ -1454,7 +1454,6 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
      and it aliases symbol: _ZNSt6vectorIPKN8VarTable5EntryESaIS3_EE19_M_emplace_back_auxIIS3_EEEvDpOT_
     parameter 1 of type 'const VarTable::Entry*&&' changed:
       rvalue reference type 'const VarTable::Entry*&& became an lvalue reference type: 'const VarTable::Entry*&'
-      in referenced type 'const VarTable::Entry*':
 
 
 47 Removed variables:

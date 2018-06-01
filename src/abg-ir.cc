@@ -11647,7 +11647,16 @@ equals(const qualified_type_def& l, const qualified_type_def& r, change_kind* k)
     {
       result = false;
       if (k)
-	*k |= SUBTYPE_CHANGE_KIND;
+	{
+	  if (!types_have_similar_structure(l.get_underlying_type().get(),
+					    r.get_underlying_type().get()))
+	    // Underlying type changes in which the structure of the
+	    // type changed are considered local changes to the
+	    // qualified type.
+	    *k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
+	  else
+	    *k |= SUBTYPE_CHANGE_KIND;
+	}
       else
 	// okay strictly speaking this is not necessary, but I am
 	// putting it here to maintenance; that is, so that adding
@@ -12009,9 +12018,11 @@ equals(const pointer_type_def& l, const pointer_type_def& r, change_kind* k)
     if (k)
       {
 	if (!types_have_similar_structure(&l, &r))
+	  // pointed-to type changes in which the structure of the
+	  // type changed are considered local changes to the pointer
+	  // type.
 	  *k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
-	else
-	  *k |= SUBTYPE_CHANGE_KIND;
+	*k |= SUBTYPE_CHANGE_KIND;
       }
 
   return result;
@@ -12299,7 +12310,11 @@ equals(const reference_type_def& l, const reference_type_def& r, change_kind* k)
   bool result = (l.get_pointed_to_type() == r.get_pointed_to_type());
   if (!result)
     if (k)
-      *k |= SUBTYPE_CHANGE_KIND;
+      {
+	if (!types_have_similar_structure(&l, &r))
+	  *k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
+	*k |= SUBTYPE_CHANGE_KIND;
+      }
   return result;
 }
 
