@@ -313,6 +313,9 @@ test-diff-dwarf/libtest43-PR22913-v1.so \
 test-diff-dwarf/test43-PR22913-report-0.txt \
 test-diff-dwarf/test43-PR22913-v0.c \
 test-diff-dwarf/test43-PR22913-v1.c \
+test-diff-dwarf/test44-anon-struct-union-report-0.txt \
+test-diff-dwarf/test44-anon-struct-union-v0.cc \
+test-diff-dwarf/test44-anon-struct-union-v1.cc \
 \
 test-read-dwarf/test0			\
 test-read-dwarf/test0.abi			\

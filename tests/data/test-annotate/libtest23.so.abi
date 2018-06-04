@@ -235,10 +235,10 @@
     <qualified-type-def type-id='type-id-26' const='yes' id='type-id-9'/>
     <!-- const char* -->
     <pointer-type-def type-id='type-id-9' size-in-bits='64' id='type-id-27'/>
-    <!-- struct __anonymous_struct__ -->
+    <!-- struct {int __count; union {} __value;} -->
     <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-28' visibility='default' filepath='/usr/include/wchar.h' line='83' column='1' id='type-id-29'>
       <member-type access='public'>
-        <!-- union __anonymous_struct__::__anonymous_union__ -->
+        <!-- union {} -->
         <union-decl name='__anonymous_union__' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-30'/>
       </member-type>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -858,7 +858,7 @@
       <!-- char* -->
       <return type-id='type-id-40'/>
     </function-decl>
-    <!-- struct __anonymous_struct__ -->
+    <!-- struct {} -->
     <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' id='type-id-52'/>
     <!-- __anonymous_struct__* -->
     <pointer-type-def type-id='type-id-52' size-in-bits='64' id='type-id-53'/>

@@ -6319,7 +6319,7 @@ get_class_or_union_flat_representation(const class_or_union& cou,
 ///
 ///@return the resulting flat representation.
 string
-get_class_or_union_flat_representation(class_or_union* cou,
+get_class_or_union_flat_representation(const class_or_union* cou,
 				       const string& indent,
 				       bool one_line)
 {
@@ -17745,13 +17745,21 @@ class_decl::get_pretty_representation(bool internal) const
   // When computing the pretty representation for internal purposes,
   // if an anonymous class is named by a typedef, then consider that
   // it has a name, which is the typedef name.
-  if (internal && get_is_anonymous())
-    if (typedef_decl_sptr d = get_naming_typedef())
-      {
-	string qualified_name =
-	  decl_base::priv_->qualified_parent_name_ + "::" + d->get_name();
-	return cl + qualified_name;
-      }
+  if (get_is_anonymous())
+    {
+      if (internal)
+	{
+	  if (typedef_decl_sptr d = get_naming_typedef())
+	    {
+	      string qualified_name =
+		decl_base::priv_->qualified_parent_name_ + "::" + d->get_name();
+	      return cl + qualified_name;
+	    }
+	}
+      else
+	return get_class_or_union_flat_representation(this, "",
+						      /*one_line=*/true);
+    }
 
   return cl + get_qualified_name(internal);
 }
@@ -19357,8 +19365,14 @@ union_decl::union_decl(const environment* env,
 string
 union_decl::get_pretty_representation(bool internal) const
 {
-  string repr = "union ";
-  return repr + get_qualified_name(internal);
+  string repr;
+  if (get_is_anonymous())
+    repr = get_class_or_union_flat_representation(this, "",
+						  /*one_line=*/true);
+  else
+    repr = "union " + get_qualified_name(internal);
+
+  return repr;
 }
 
 /// Comparison operator for @ref union_decl.

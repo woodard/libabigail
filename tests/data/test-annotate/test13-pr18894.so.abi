@@ -3331,7 +3331,7 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='dbus-signature.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
-    <!-- struct __anonymous_struct__ -->
+    <!-- struct {void* dummy1; void* dummy2; dbus_uint32_t dummy8; int dummy12; int dummy17;} -->
     <class-decl name='__anonymous_struct__' size-in-bits='256' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-170' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.h' line='45' column='1' id='type-id-171'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- void* dummy1 -->
@@ -3599,7 +3599,7 @@
     </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='dbus-threads.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
-    <!-- struct __anonymous_struct__ -->
+    <!-- struct {unsigned int mask; DBusMutexNewFunction mutex_new; DBusMutexFreeFunction mutex_free; DBusMutexLockFunction mutex_lock; DBusMutexUnlockFunction mutex_unlock; DBusCondVarNewFunction condvar_new; DBusCondVarFreeFunction condvar_free; DBusCondVarWaitFunction condvar_wait; DBusCondVarWaitTimeoutFunction condvar_wait_timeout; DBusCondVarWakeOneFunction condvar_wake_one; DBusCondVarWakeAllFunction condvar_wake_all; DBusRecursiveMutexNewFunction recursive_mutex_new; DBusRecursiveMutexFreeFunction recursive_mutex_free; DBusRecursiveMutexLockFunction recursive_mutex_lock; DBusRecursiveMutexUnlockFunction recursive_mutex_unlock; void ()* padding1; void ()* padding2; void ()* padding3; void ()* padding4;} -->
     <class-decl name='__anonymous_struct__' size-in-bits='1216' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-178' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='153' column='1' id='type-id-179'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- unsigned int mask -->

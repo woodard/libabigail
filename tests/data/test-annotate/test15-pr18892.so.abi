@@ -16728,7 +16728,7 @@
           <var-decl name='revents' type-id='type-id-282' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.h' line='482' column='1'/>
         </data-member>
       </class-decl>
-      <!-- struct __sanitizer::__anonymous_struct__ -->
+      <!-- struct {unsigned long int fds_bits[16];} -->
       <class-decl name='__anonymous_struct__' size-in-bits='1024' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-620' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.h' line='379' column='1' id='type-id-621'>
         <data-member access='public' layout-offset-in-bits='0'>
           <!-- unsigned long int fds_bits[16] -->
@@ -26257,7 +26257,7 @@
     <!-- struct sigaction_t -->
     <class-decl name='sigaction_t' size-in-bits='1216' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='91' column='1' id='type-id-753'>
       <member-type access='public'>
-        <!-- union sigaction_t::__anonymous_union__ -->
+        <!-- union {sighandler_t sa_handler; void (int, my_siginfo_t*, void*)* sa_sigaction;} -->
         <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='92' column='1' id='type-id-754'>
           <data-member access='private'>
             <!-- sighandler_t sa_handler -->
@@ -32401,7 +32401,7 @@
 
     <!-- namespace __tsan -->
     <namespace-decl name='__tsan'>
-      <!-- struct __tsan::__anonymous_struct__ -->
+      <!-- struct {__tsan::MD5_u32plus lo; __tsan::MD5_u32plus hi; __tsan::MD5_u32plus a; __tsan::MD5_u32plus b; __tsan::MD5_u32plus c; __tsan::MD5_u32plus d; unsigned char buffer[64]; unsigned int block[16];} -->
       <class-decl name='__anonymous_struct__' size-in-bits='1216' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/tsan/tsan_md5.cc' line='33' column='1' id='type-id-1456'>
         <data-member access='public' layout-offset-in-bits='0'>
           <!-- __tsan::MD5_u32plus lo -->
@@ -35358,7 +35358,7 @@
     <typedef-decl name='uint64_t' type-id='type-id-1' filepath='/usr/include/stdint.h' line='56' column='1' id='type-id-1538'/>
     <!-- typedef uint64_t Elf64_Addr -->
     <typedef-decl name='Elf64_Addr' type-id='type-id-1538' filepath='/usr/include/elf.h' line='50' column='1' id='type-id-1534'/>
-    <!-- struct __anonymous_struct__ -->
+    <!-- struct {Elf64_Word p_type; Elf64_Word p_flags; Elf64_Off p_offset; Elf64_Addr p_vaddr; Elf64_Addr p_paddr; Elf64_Xword p_filesz; Elf64_Xword p_memsz; Elf64_Xword p_align;} -->
     <class-decl name='__anonymous_struct__' size-in-bits='448' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-1539' visibility='default' filepath='/usr/include/elf.h' line='551' column='1' id='type-id-1540'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- Elf64_Word p_type -->
@@ -36811,7 +36811,7 @@
       <!-- struct __sanitizer::__sanitizer_kernel_sigaction_t -->
       <class-decl name='__sanitizer_kernel_sigaction_t' size-in-bits='256' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.h' line='423' column='1' id='type-id-1598'>
         <member-type access='public'>
-          <!-- union __sanitizer::__sanitizer_kernel_sigaction_t::__anonymous_union__ -->
+          <!-- union {void (int, void*, void*)* sigaction; void (int)* handler;} -->
           <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.h' line='424' column='1' id='type-id-1599'>
             <data-member access='private'>
               <!-- void (int, void*, void*)* sigaction -->
@@ -37344,10 +37344,10 @@
         <var-decl name='l_prev' type-id='type-id-1603' visibility='default' filepath='/usr/include/link.h' line='93' column='1'/>
       </data-member>
     </class-decl>
-    <!-- struct __anonymous_struct__ -->
+    <!-- struct {Elf64_Sxword d_tag; union {Elf64_Xword d_val; Elf64_Addr d_ptr;} d_un;} -->
     <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-1617' visibility='default' filepath='/usr/include/elf.h' line='643' column='1' id='type-id-1618'>
       <member-type access='public'>
-        <!-- union __anonymous_struct__::__anonymous_union__ -->
+        <!-- union {Elf64_Xword d_val; Elf64_Addr d_ptr;} -->
         <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/usr/include/elf.h' line='646' column='1' id='type-id-1619'>
           <data-member access='private'>
             <!-- Elf64_Xword d_val -->
@@ -37546,7 +37546,7 @@
       <!-- typedef _Unwind_Ptr -->
       <return type-id='type-id-1630'/>
     </function-decl>
-    <!-- union __anonymous_union__ -->
+    <!-- union {char __size[56]; long int __align;} -->
     <union-decl name='__anonymous_union__' size-in-bits='448' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='54' column='1' id='type-id-1631'>
       <data-member access='private'>
         <!-- char __size[56] -->
@@ -40680,7 +40680,7 @@
       <enumerator name='DEMANGLE_COMPONENT_TAGGED_NAME' value='74'/>
       <enumerator name='DEMANGLE_COMPONENT_CLONE' value='75'/>
     </enum-decl>
-    <!-- union __anonymous_union__ -->
+    <!-- union {struct {const char* s; int len;} s_name; struct {const demangle_operator_info* op;} s_operator; struct {int args; demangle_component* name;} s_extended_operator; struct {demangle_component* length; short int accum; short int sat;} s_fixed; struct {gnu_v3_ctor_kinds kind; demangle_component* name;} s_ctor; struct {gnu_v3_dtor_kinds kind; demangle_component* name;} s_dtor; struct {const demangle_builtin_type_info* type;} s_builtin; struct {const char* string; int len;} s_string; struct {long int number;} s_number; struct {int character;} s_character; struct {demangle_component* left; demangle_component* right;} s_binary; struct {demangle_component* sub; int num;} s_unary_num;} -->
     <union-decl name='__anonymous_union__' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='458' column='1' id='type-id-1728'>
       <data-member access='private'>
         <!-- struct {const char* s; int len;} s_name -->
@@ -40731,7 +40731,7 @@
         <var-decl name='s_unary_num' type-id='type-id-1740' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='558' column='1'/>
       </data-member>
     </union-decl>
-    <!-- struct __anonymous_struct__ -->
+    <!-- struct {const char* s; int len;} -->
     <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='461' column='1' id='type-id-1729'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- const char* s -->
@@ -40742,7 +40742,7 @@
         <var-decl name='len' type-id='type-id-13' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='466' column='1'/>
       </data-member>
     </class-decl>
-    <!-- struct __anonymous_struct__ -->
+    <!-- struct {const demangle_operator_info* op;} -->
     <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='470' column='1' id='type-id-1730'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- const demangle_operator_info* op -->
@@ -40772,7 +40772,7 @@
     <qualified-type-def type-id='type-id-1742' const='yes' id='type-id-1743'/>
     <!-- const demangle_operator_info* -->
     <pointer-type-def type-id='type-id-1743' size-in-bits='64' id='type-id-1741'/>
-    <!-- struct __anonymous_struct__ -->
+    <!-- struct {int args; demangle_component* name;} -->
     <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='477' column='1' id='type-id-1731'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- int args -->
@@ -40785,7 +40785,7 @@
     </class-decl>
     <!-- demangle_component* -->
     <pointer-type-def type-id='type-id-1726' size-in-bits='64' id='type-id-1744'/>
-    <!-- struct __anonymous_struct__ -->
+    <!-- struct {demangle_component* length; short int accum; short int sat;} -->
     <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='486' column='1' id='type-id-1732'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- demangle_component* length -->
@@ -40800,7 +40800,7 @@
         <var-decl name='sat' type-id='type-id-282' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='493' column='1'/>
       </data-member>
     </class-decl>
-    <!-- struct __anonymous_struct__ -->
+    <!-- struct {gnu_v3_ctor_kinds kind; demangle_component* name;} -->
     <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='497' column='1' id='type-id-1733'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- gnu_v3_ctor_kinds kind -->
@@ -40820,7 +40820,7 @@
       <enumerator name='gnu_v3_unified_ctor' value='4'/>
       <enumerator name='gnu_v3_object_ctor_group' value='5'/>
     </enum-decl>
-    <!-- struct __anonymous_struct__ -->
+    <!-- struct {gnu_v3_dtor_kinds kind; demangle_component* name;} -->
     <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='506' column='1' id='type-id-1734'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- gnu_v3_dtor_kinds kind -->
@@ -40840,7 +40840,7 @@
       <enumerator name='gnu_v3_unified_dtor' value='4'/>
       <enumerator name='gnu_v3_object_dtor_group' value='5'/>
     </enum-decl>
-    <!-- struct __anonymous_struct__ -->
+    <!-- struct {const demangle_builtin_type_info* type;} -->
     <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='515' column='1' id='type-id-1735'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- const demangle_builtin_type_info* type -->
@@ -40888,7 +40888,7 @@
     <qualified-type-def type-id='type-id-1748' const='yes' id='type-id-1750'/>
     <!-- const demangle_builtin_type_info* -->
     <pointer-type-def type-id='type-id-1750' size-in-bits='64' id='type-id-1747'/>
-    <!-- struct __anonymous_struct__ -->
+    <!-- struct {const char* string; int len;} -->
     <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='522' column='1' id='type-id-1736'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- const char* string -->
@@ -40899,21 +40899,21 @@
         <var-decl name='len' type-id='type-id-13' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='527' column='1'/>
       </data-member>
     </class-decl>
-    <!-- struct __anonymous_struct__ -->
+    <!-- struct {long int number;} -->
     <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='531' column='1' id='type-id-1737'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- long int number -->
         <var-decl name='number' type-id='type-id-293' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='534' column='1'/>
       </data-member>
     </class-decl>
-    <!-- struct __anonymous_struct__ -->
+    <!-- struct {int character;} -->
     <class-decl name='__anonymous_struct__' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='538' column='1' id='type-id-1738'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- int character -->
         <var-decl name='character' type-id='type-id-13' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='540' column='1'/>
       </data-member>
     </class-decl>
-    <!-- struct __anonymous_struct__ -->
+    <!-- struct {demangle_component* left; demangle_component* right;} -->
     <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='544' column='1' id='type-id-1739'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- demangle_component* left -->
@@ -40924,7 +40924,7 @@
         <var-decl name='right' type-id='type-id-1744' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='549' column='1'/>
       </data-member>
     </class-decl>
-    <!-- struct __anonymous_struct__ -->
+    <!-- struct {demangle_component* sub; int num;} -->
     <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='552' column='1' id='type-id-1740'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- demangle_component* sub -->

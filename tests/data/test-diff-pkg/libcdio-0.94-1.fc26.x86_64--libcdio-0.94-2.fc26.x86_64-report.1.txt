@@ -7,7 +7,7 @@
     [C]'function discmode_t mmc_get_dvd_struct_physical(const CdIo_t*, cdio_dvd_struct_t*)' at mmc.c:949:1 has some indirect sub-type changes:
       parameter 2 of type 'cdio_dvd_struct_t*' has sub-type changes:
         in pointed to type 'typedef cdio_dvd_struct_t' at dvd.h:130:1:
-          underlying type 'union __anonymous_union__' at dvd.h:122:1 changed:
+          underlying type 'union {uint8_t type; cdio_dvd_physical_t physical; cdio_dvd_copyright_t copyright; cdio_dvd_disckey_t disckey; cdio_dvd_bca_t bca; cdio_dvd_manufact_t manufact;}' at dvd.h:122:1 changed:
             type size hasn't changed
             2 data member changes:
              type of 'cdio_dvd_disckey_t disckey' changed:

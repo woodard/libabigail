@@ -332,6 +332,12 @@ InOutSpec in_out_specs[] =
     "data/test-diff-dwarf/test43-PR22913-report-0.txt",
     "output/test-diff-dwarf/test43-PR22913-report-0.txt"
   },
+  {
+    "data/test-diff-dwarf/test44-anon-struct-union-v0.o",
+    "data/test-diff-dwarf/test44-anon-struct-union-v1.o",
+    "data/test-diff-dwarf/test44-anon-struct-union-report-0.txt",
+    "output/test-diff-dwarf/test44-anon-struct-union-report-0.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL}
 };
