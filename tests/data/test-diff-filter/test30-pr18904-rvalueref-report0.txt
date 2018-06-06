@@ -1311,10 +1311,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
            1 data member insertion:
              'struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t targetptr; uint32_t preallocated; uint32_t is_pointer; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst; uint32_t always_copy; uint32_t always_delete; uint32_t pin;}'
            1 data member change:
-            type of 'struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst;}' changed:
-              entity changed from 'struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst;}' to 'typedef uint32_t'
-              type size hasn't changed
-            and name of 'struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst;}' changed to 'varDescFlags::bits'
+            anonymous data member struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst;} at offset 0 (in bits) became data member 'uint32_t varDescFlags::bits'
 
 
   [C]'function void __offload_myoRegisterTables(InitTableEntry*, SharedTableEntry*, FptrTableEntry*)' has some indirect sub-type changes:

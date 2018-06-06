@@ -414,11 +414,11 @@ represent(const var_diff_sptr	&diff,
   string name1 = o->get_qualified_name();
   string name2 = n->get_qualified_name();
   string pretty_representation = o->get_pretty_representation();
-  bool is_anonymous_data_member_change = false;
+  bool is_strict_anonymous_data_member_change = false;
 
   if (is_anonymous_data_member(o) && is_anonymous_data_member(n))
     {
-      is_anonymous_data_member_change = true;
+      is_strict_anonymous_data_member_change = true;
       string tr1 = o->get_pretty_representation();
       string tr2 = n->get_pretty_representation();
       if (tr1 != tr2)
@@ -431,6 +431,38 @@ represent(const var_diff_sptr	&diff,
 	      << indent << "  " << tr1 << "\n"
 	      << indent << "to:\n"
 	      << indent << "  " << tr2 << "\n";
+	}
+    }
+  else if (filtering::has_anonymous_data_member_change(diff))
+    {
+      // So we are looking at a non-anonymous data member change from
+      // or to anonymous data member.
+      if (is_anonymous_data_member(o))
+	{
+	  string repr = "anonymous data member "
+	    + o->get_pretty_representation()
+	    + " at offset";
+
+	  show_offset_or_size(indent + repr,
+			      get_data_member_offset(o),
+			      *ctxt, out);
+	  out << " became data member '"
+	      << n->get_pretty_representation()
+	      << "'";
+	}
+      else
+	{
+	  assert(is_anonymous_data_member(n));
+	  string repr = "data member "
+	    + o->get_pretty_representation()
+	    + " at offset";
+
+	  show_offset_or_size(indent + repr,
+			      get_data_member_offset(o),
+			      *ctxt, out);
+	  out << " became anonymous data member '"
+	      << n->get_pretty_representation()
+	      << "'";
 	}
     }
   else if (diff_sptr d = diff->type_diff())
@@ -480,7 +512,7 @@ represent(const var_diff_sptr	&diff,
 	}
     }
 
-  if (!is_anonymous_data_member_change && name1 != name2)
+  if (!filtering::has_anonymous_data_member_change(diff) && name1 != name2)
     {
       if (filtering::has_harmless_name_change(o, n)
 	  && !(ctxt->get_allowed_category()
@@ -529,7 +561,7 @@ represent(const var_diff_sptr	&diff,
 	    }
 	  else if (!emitted)
 	    {
-	      if (is_anonymous_data_member_change)
+	      if (is_strict_anonymous_data_member_change)
 		out << indent;
 	      else
 		out << indent << "'" << pretty_representation << "' ";
@@ -557,7 +589,7 @@ represent(const var_diff_sptr	&diff,
 	    }
 	  else if (!emitted)
 	    {
-	      if (is_anonymous_data_member_change)
+	      if (is_strict_anonymous_data_member_change)
 		out << indent;
 	      else
 		out << indent << "'" << pretty_representation << "' ";

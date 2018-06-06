@@ -3793,6 +3793,38 @@ is_data_member(const decl_base_sptr& d)
 ///
 /// @return a pointer to the data member iff @p d is a data member, or
 /// a null pointer.
+var_decl_sptr
+is_data_member(const type_or_decl_base_sptr& d)
+{
+  if (var_decl_sptr v = is_var_decl(d))
+    {
+      if (is_data_member(v))
+	return v;
+    }
+  return var_decl_sptr();
+}
+
+/// Test if a decl is a data member.
+///
+/// @param d the decl to consider.
+///
+/// @return a pointer to the data member iff @p d is a data member, or
+/// a null pointer.
+var_decl*
+is_data_member(const type_or_decl_base* d)
+{
+ if (var_decl *v = is_var_decl(d))
+    if (is_data_member(v))
+      return v;
+  return 0;
+}
+
+/// Test if a decl is a data member.
+///
+/// @param d the decl to consider.
+///
+/// @return a pointer to the data member iff @p d is a data member, or
+/// a null pointer.
 var_decl*
 is_data_member(const decl_base *d)
 {
@@ -3815,6 +3847,23 @@ is_anonymous_data_member(const decl_base& d)
 ///
 /// @param d the decl to consider.
 ///
+/// @return the var_decl representing the data member iff @p d is an
+/// anonymous data member.
+const var_decl*
+is_anonymous_data_member(const type_or_decl_base* d)
+{
+  if (const var_decl* v = is_data_member(d))
+    {
+      if (is_anonymous_data_member(v))
+	return v;
+    }
+  return 0;
+}
+
+/// Test if a decl is an anonymous data member.
+///
+/// @param d the decl to consider.
+///
 /// @return a non-nil pointer to the @ref var_decl denoted by @p d if
 /// it's an anonymous data member.  Otherwise returns a nil pointer.
 const var_decl*
@@ -3826,6 +3875,23 @@ is_anonymous_data_member(const decl_base* d)
 	return v;
     }
   return 0;
+}
+
+/// Test if a decl is an anonymous data member.
+///
+/// @param d the decl to consider.
+///
+/// @return a non-nil pointer to the @ref var_decl denoted by @p d if
+/// it's an anonymous data member.  Otherwise returns a nil pointer.
+var_decl_sptr
+is_anonymous_data_member(const type_or_decl_base_sptr& d)
+{
+  if (var_decl_sptr v = is_data_member(d))
+    {
+      if (is_anonymous_data_member(v))
+	return v;
+    }
+  return var_decl_sptr();
 }
 
 /// Test if a decl is an anonymous data member.

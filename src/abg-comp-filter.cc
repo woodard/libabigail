@@ -913,6 +913,33 @@ is_mostly_distinct_diff(const diff *d)
   return distinct_diff::entities_are_of_distinct_kinds(first, second);
 }
 
+/// Test if a diff node carries a non-anonymous data member to
+/// anonymous data member change, or vice-versa.
+///
+/// @param d the diff node to consider.
+///
+/// @return true iff @p d carries a non-anonymous to anonymous data
+/// member change, or vice-versa.
+bool
+has_anonymous_data_member_change(const diff *d)
+{
+  if (is_anonymous_data_member(d->first_subject())
+      || is_anonymous_data_member(d->second_subject()))
+    return true;
+  return false;
+}
+
+/// Test if a diff node carries a non-anonymous data member to
+/// anonymous data member change, or vice-versa.
+///
+/// @param d the diff node to consider.
+///
+/// @return true iff @p d carries a non-anonymous to anonymous data
+/// member change, or vice-versa.
+bool
+has_anonymous_data_member_change(const diff_sptr &d)
+{return has_anonymous_data_member_change(d.get());}
+
 /// Test if an enum_diff carries an enumerator insertion.
 ///
 /// @param diff the enum_diff to consider.

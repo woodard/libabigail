@@ -63,6 +63,12 @@ has_basic_or_class_type_name_change(const diff *d);
 bool
 is_mostly_distinct_diff(const diff *d);
 
+bool
+has_anonymous_data_member_change(const diff *d);
+
+bool
+has_anonymous_data_member_change(const diff_sptr &d);
+
 struct filter_base;
 /// Convenience typedef for a shared pointer to filter_base
 typedef shared_ptr<filter_base> filter_base_sptr;

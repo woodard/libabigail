@@ -586,8 +586,14 @@ set_member_is_static(const decl_base_sptr&, bool);
 bool
 is_data_member(const var_decl&);
 
+var_decl*
+is_data_member(const type_or_decl_base*);
+
 bool
 is_data_member(const var_decl*);
+
+var_decl_sptr
+is_data_member(const type_or_decl_base_sptr&);
 
 bool
 is_data_member(const var_decl_sptr);
@@ -598,11 +604,20 @@ is_data_member(const decl_base_sptr&);
 var_decl*
 is_data_member(const decl_base *);
 
+var_decl*
+is_data_member(const decl_base *);
+
 bool
 is_anonymous_data_member(const decl_base&);
 
 const var_decl*
+is_anonymous_data_member(const type_or_decl_base*);
+
+const var_decl*
 is_anonymous_data_member(const decl_base*);
+
+var_decl_sptr
+is_anonymous_data_member(const type_or_decl_base_sptr&);
 
 var_decl_sptr
 is_anonymous_data_member(const decl_base_sptr&);

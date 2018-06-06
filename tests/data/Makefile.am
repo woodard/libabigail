@@ -318,6 +318,11 @@ test-diff-dwarf/test44-anon-struct-union-v0.cc \
 test-diff-dwarf/test44-anon-struct-union-v1.cc \
 test-diff-dwarf/test44-anon-struct-union-v0.o \
 test-diff-dwarf/test44-anon-struct-union-v1.o \
+test-diff-dwarf/test45-anon-dm-change-report-0.txt \
+test-diff-dwarf/test45-anon-dm-change-v0.cc \
+test-diff-dwarf/test45-anon-dm-change-v0.o \
+test-diff-dwarf/test45-anon-dm-change-v1.cc \
+test-diff-dwarf/test45-anon-dm-change-v1.o \
 \
 test-read-dwarf/test0			\
 test-read-dwarf/test0.abi			\
