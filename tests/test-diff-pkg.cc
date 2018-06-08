@@ -539,6 +539,18 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/libxfce4ui-devel-4.12.1-8.fc27.ppc64-self-report-ok-0.txt",
     "output/test-diff-pkg/libxfce4ui-devel-4.12.1-8.fc27.ppc64-self-report-ok-0.txt"
   },
+  {
+    "data/test-diff-pkg/elfutils-libs-0.170-4.el7.x86_64.rpm",
+    "data/test-diff-pkg/elfutils-libs-0.171-1.el7.x86_64.rpm",
+    "--fail-no-dbg",
+    "",
+    "data/test-diff-pkg/elfutils-debuginfo-0.170-4.el7.x86_64.rpm",
+    "data/test-diff-pkg/elfutils-debuginfo-0.171-1.el7.x86_64.rpm",
+    "data/test-diff-pkg/elfutils-devel-0.170-4.el7.x86_64.rpm",
+    "data/test-diff-pkg/elfutils-devel-0.171-1.el7.x86_64.rpm",
+    "data/test-diff-pkg/elfutils-libs-0.170-4.el7.x86_64-multiple-sym-vers-report-0.txt",
+    "output/test-diff-pkg/elfutils-libs-0.170-4.el7.x86_64-multiple-sym-vers-report-0.txt"
+  },
 #endif //WITH_RPM
 
 #ifdef WITH_DEB

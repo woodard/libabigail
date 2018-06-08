@@ -15748,10 +15748,18 @@ function_decl::get_id() const
   if (priv_->id_.empty())
     {
       const environment* env = get_type()->get_environment();
-      if (!get_linkage_name().empty())
+      if (elf_symbol_sptr s = get_symbol())
+	{
+	  if (s->has_aliases())
+	    // The symbol has several aliases, so let's use the
+	    // linkage name of the function as its ID.
+	    priv_->id_ = env->intern(get_linkage_name());
+	  else
+	    // Let's use the full symbol name with its version as ID.
+	    priv_->id_ = env->intern(s->get_id_string());
+	}
+      else if (!get_linkage_name().empty())
 	priv_->id_= env->intern(get_linkage_name());
-      else if (elf_symbol_sptr s = get_symbol())
-	priv_->id_ = env->intern(s->get_id_string());
       else
 	priv_->id_ = env->intern(get_pretty_representation());
     }

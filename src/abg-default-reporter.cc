@@ -1900,14 +1900,27 @@ default_reporter::report(const corpus_diff& d, ostream& out,
 		  << fn->get_pretty_representation() << "'";
 	      report_loc_info((*i)->second_function_decl(), *ctxt, out);
 	      out << " has some indirect sub-type changes:\n";
-	      if ((fn->get_symbol()->has_aliases()
+	      if (// The symbol of the function has aliases and the
+		  // function is not a cdtor (yeah because c++ cdtors
+		  // usually have several aliases).
+		  (fn->get_symbol()->has_aliases()
 		   && !(is_member_function(fn)
 			&& get_member_function_is_ctor(fn))
 		   && !(is_member_function(fn)
 			&& get_member_function_is_dtor(fn)))
-		  || (is_c_language(get_translation_unit(fn)->get_language())
-		      && fn->get_name() != fn->get_linkage_name()))
+		  || // We are in C and the name of the function is
+		     // different from the symbol name -- without
+		     // taking the possible symbol version into
+		     // account (this usually means the programmers
+		     // was playing tricks with symbol names and
+		     // versions).
+		  (is_c_language(get_translation_unit(fn)->get_language())
+		      && fn->get_name() != fn->get_symbol()->get_name()))
 		{
+		  // As the name of the symbol of the function doesn't
+		  // seem to be obvious here, make sure to tell the
+		  // user about the name of the (function) symbol she
+		  // is looking at here.
 		  int number_of_aliases =
 		    fn->get_symbol()->get_number_of_aliases();
 		  if (number_of_aliases == 0)
