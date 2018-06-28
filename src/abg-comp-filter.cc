@@ -990,7 +990,7 @@ has_harmful_enum_change(const diff* diff)
 /// @return true iff @p diff is a @ref fn_parm_diff node that has a
 /// top cv qualifier change on the type of the function parameter.
 static bool
-has_fn_parm_type_cv_qual_change(const diff* diff)
+has_fn_parm_type_top_cv_qual_change(const diff* diff)
 {
   // is diff a "function parameter diff node?
   const fn_parm_diff* parm_diff = is_fn_parm_diff(diff);
@@ -1039,7 +1039,58 @@ has_fn_parm_type_cv_qual_change(const diff* diff)
     return true;
 
   return false;
+}
 
+/// Test if an @ref fn_parm_diff node has a cv qualifier change on the
+/// type of the function parameter. That is, we are looking for
+/// changes like 'const char*' to 'char*'.
+///
+/// @param diff the diff node to consider.  It should be a @ref
+/// fn_parm_diff, otherwise the function returns 'false' directly.
+///
+/// @return true iff @p diff is a @ref fn_parm_diff node that has a
+/// cv qualifier change on the type of the function parameter.
+static bool
+has_fn_parm_type_cv_qual_change(const diff* dif)
+{
+  // is diff a "function parameter diff node?
+  const fn_parm_diff* parm_diff = is_fn_parm_diff(dif);
+
+  if (!parm_diff || !parm_diff->has_changes())
+    // diff either carries no change or is not a function parameter
+    // diff node.  So bail out.
+    return false;
+
+  const diff *type_dif = parm_diff->type_diff().get();
+  if (is_pointer_diff(type_dif))
+    type_dif = peel_pointer_diff(type_dif);
+  else if (is_reference_diff(type_dif))
+    type_dif = peel_reference_diff(type_dif);
+
+  const type_base *f = 0;
+  const type_base *s = 0;
+  if (const distinct_diff *d = is_distinct_diff(type_dif))
+    {
+      if (is_qualified_type(d->first()) != is_qualified_type(d->second()))
+	{
+	  f = is_type(d->first()).get();
+	  s = is_type(d->second()).get();
+	}
+      else
+	return false;
+    }
+  else if (const qualified_type_diff *d = is_qualified_type_diff(type_dif))
+    {
+      f = is_type(d->first_qualified_type()).get();
+      s = is_type(d->second_qualified_type()).get();
+    }
+  else
+    return false;
+
+  f = peel_qualified_type(f);
+  s = peel_qualified_type(s);
+
+  return *f == *s;
 }
 
 /// Detect if the changes carried by a given diff node are deemed
@@ -1092,8 +1143,11 @@ categorize_harmless_diff_node(diff *d, bool pre)
       if (function_name_changed_but_not_symbol(d))
 	category |= HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY;
 
-      if (has_fn_parm_type_cv_qual_change(d))
+      if (has_fn_parm_type_top_cv_qual_change(d))
 	category |= FN_PARM_TYPE_TOP_CV_CHANGE_CATEGORY;
+
+      if (has_fn_parm_type_cv_qual_change(d))
+	category |= FN_PARM_TYPE_CV_CHANGE_CATEGORY;
 
       if (category)
 	{

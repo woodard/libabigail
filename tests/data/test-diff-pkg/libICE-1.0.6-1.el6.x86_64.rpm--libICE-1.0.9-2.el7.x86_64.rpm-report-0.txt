@@ -1,5 +1,5 @@
 ================ changes of 'libICE.so.6.3.0'===============
-  Functions changes summary: 0 Removed, 24 Changed (77 filtered out), 3 Added functions
+  Functions changes summary: 0 Removed, 1 Changed (100 filtered out), 3 Added functions
   Variables changes summary: 1 Removed, 2 Changed (12 filtered out), 0 Added variables
 
   3 Added functions:
@@ -8,7 +8,7 @@
     'function int _IceTransListen(const char*)'    {_IceTransListen}
     'function int _IceTransReceived(const char*)'    {_IceTransReceived}
 
-  24 functions with some indirect sub-type change:
+  1 function with some indirect sub-type change:
 
     [C]'function IceConn IceAcceptConnection(IceListenObj, IceAcceptStatus*)' at accept.c:38:1 has some indirect sub-type changes:
       return type changed:
@@ -37,13 +37,7 @@
                                   entity changed from 'char' to 'const char'
                                   type size hasn't changed
 
-                              type of 'char** _Xtransport::nolisten' changed:
-                                in pointed to type 'char*':
-                                  in pointed to type 'char':
-                                    entity changed from 'char' to 'const char'
-                                    type size hasn't changed
-
-                              type of 'typedef XtransConnInfo (_Xtransport*, char*, char*, char*)* _Xtransport::OpenCLTSClient' changed:
+                              type of 'typedef XtransConnInfo (_Xtransport*, char*, char*, char*)* _Xtransport::OpenCOTSClient' changed:
                                 in pointed to type 'function type typedef XtransConnInfo (_Xtransport*, char*, char*, char*)':
                                   parameter 2 of type 'char*' changed:
                                     in pointed to type 'char':
@@ -58,20 +52,38 @@
                                       entity changed from 'char' to 'const char'
                                       type size hasn't changed
 
-                              type of 'int (typedef XtransConnInfo, char*, unsigned int)* _Xtransport::CreateListener' changed:
-                                in pointed to type 'function type int (typedef XtransConnInfo, char*, unsigned int)':
-                                  parameter 2 of type 'char*' changed:
-                                    in pointed to type 'char':
-                                      entity changed from 'char' to 'const char'
-                                      type size hasn't changed
+                              type of 'char** _Xtransport::nolisten' changed:
+                                in pointed to type 'char*':
+                                  in pointed to type 'char':
+                                    entity changed from 'char' to 'const char'
+                                    type size hasn't changed
 
-                              type of 'int (typedef XtransConnInfo, char*, char*)* _Xtransport::Connect' changed:
-                                in pointed to type 'function type int (typedef XtransConnInfo, char*, char*)':
+                              type of 'typedef XtransConnInfo (_Xtransport*, char*, char*, char*)* _Xtransport::OpenCOTSServer' changed:
+                                in pointed to type 'function type typedef XtransConnInfo (_Xtransport*, char*, char*, char*)':
                                   parameter 2 of type 'char*' changed:
                                     in pointed to type 'char':
                                       entity changed from 'char' to 'const char'
                                       type size hasn't changed
                                   parameter 3 of type 'char*' changed:
+                                    in pointed to type 'char':
+                                      entity changed from 'char' to 'const char'
+                                      type size hasn't changed
+                                  parameter 4 of type 'char*' changed:
+                                    in pointed to type 'char':
+                                      entity changed from 'char' to 'const char'
+                                      type size hasn't changed
+
+                              type of 'typedef XtransConnInfo (_Xtransport*, char*, char*, char*)* _Xtransport::OpenCLTSServer' changed:
+                                in pointed to type 'function type typedef XtransConnInfo (_Xtransport*, char*, char*, char*)':
+                                  parameter 2 of type 'char*' changed:
+                                    in pointed to type 'char':
+                                      entity changed from 'char' to 'const char'
+                                      type size hasn't changed
+                                  parameter 3 of type 'char*' changed:
+                                    in pointed to type 'char':
+                                      entity changed from 'char' to 'const char'
+                                      type size hasn't changed
+                                  parameter 4 of type 'char*' changed:
                                     in pointed to type 'char':
                                       entity changed from 'char' to 'const char'
                                       type size hasn't changed
@@ -82,212 +94,7 @@
              type of '_IcePingWait* _IceConn::ping_waits' changed:
                in pointed to type 'struct _IcePingWait' at ICEconn.h:48:1:
                  entity changed from 'struct _IcePingWait' to compatible type 'typedef _IcePingWait' at ICEconn.h:48:1
-                   type size hasn't changed
-                   1 data member changes (1 filtered):
-                    type of 'IcePingReplyProc _IcePingWait::ping_reply_proc' changed:
-                      underlying type 'void (typedef IceConn, typedef IcePointer)*' changed:
-                        in pointed to type 'function type void (typedef IceConn, typedef IcePointer)':
-                          parameter 1 of type 'typedef IceConn' has sub-type changes:
-                            underlying type '_IceConn*' changed:
-                              pointed to type 'struct _IceConn' changed; details are being reported
 
-
-
-    [C]'function IceAuthFileEntry* IceGetAuthFileEntry(char*, char*, char*)' at authutil.c:325:1 has some indirect sub-type changes:
-      parameter 1 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-      parameter 2 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-      parameter 3 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-
-    [C]'function int IceLockAuthFile(char*, int, int, long int)' at authutil.c:131:1 has some indirect sub-type changes:
-      parameter 1 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-
-    [C]'function int IceRegisterForProtocolReply(char*, char*, char*, int, IcePaVersionRec*, int, const char**, IcePaAuthProc*, IceHostBasedAuthProc, IceProtocolSetupProc, IceProtocolActivateProc, IceIOErrorProc)' at register.c:127:1 has some indirect sub-type changes:
-      parameter 1 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-      parameter 2 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-      parameter 3 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-
-    [C]'function int IceRegisterForProtocolSetup(char*, char*, char*, int, IcePoVersionRec*, int, const char**, IcePoAuthProc*, IceIOErrorProc)' at register.c:36:1 has some indirect sub-type changes:
-      parameter 1 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-      parameter 2 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-      parameter 3 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-
-    [C]'function void IceUnlockAuthFile(char*)' at authutil.c:205:1 has some indirect sub-type changes:
-      parameter 1 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-
-    [C]'function void _IceErrorAuthenticationFailed(IceConn, int, char*)' at error.c:225:1 has some indirect sub-type changes:
-      parameter 3 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-
-    [C]'function void _IceErrorAuthenticationRejected(IceConn, int, char*)' at error.c:196:1 has some indirect sub-type changes:
-      parameter 3 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-
-    [C]'function void _IceErrorProtocolDuplicate(IceConn, char*)' at error.c:254:1 has some indirect sub-type changes:
-      parameter 2 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-
-    [C]'function void _IceErrorSetupFailed(IceConn, int, char*)' at error.c:165:1 has some indirect sub-type changes:
-      parameter 3 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-
-    [C]'function void _IceErrorUnknownProtocol(IceConn, char*)' at error.c:302:1 has some indirect sub-type changes:
-      parameter 2 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-
-    [C]'function void _IceGetPaAuthData(char*, char*, char*, unsigned short int*, char**)' at getauth.c:88:1 has some indirect sub-type changes:
-      parameter 1 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-      parameter 2 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-      parameter 3 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-
-    [C]'function void _IceGetPaValidAuthIndices(char*, char*, int, char**, int*, int*)' at getauth.c:186:1 has some indirect sub-type changes:
-      parameter 1 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-      parameter 2 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-      parameter 4 of type 'char**' changed:
-        in pointed to type 'char*':
-          in pointed to type 'char':
-            entity changed from 'char' to 'const char'
-            type size hasn't changed
-
-    [C]'function void _IceGetPoAuthData(char*, char*, char*, unsigned short int*, char**)' at getauth.c:57:1 has some indirect sub-type changes:
-      parameter 1 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-      parameter 2 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-      parameter 3 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-
-    [C]'function void _IceGetPoValidAuthIndices(char*, char*, int, char**, int*, int*)' at getauth.c:127:1 has some indirect sub-type changes:
-      parameter 1 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-      parameter 2 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-      parameter 4 of type 'char**' changed:
-        in pointed to type 'char*':
-          in pointed to type 'char':
-            entity changed from 'char' to 'const char'
-            type size hasn't changed
-
-    [C]'function int _IceTransConnect(XtransConnInfo, char*)' at Xtrans.c:880:1 has some indirect sub-type changes:
-      parameter 2 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-
-    [C]'function int _IceTransCreateListener(XtransConnInfo, char*, unsigned int)' at Xtrans.c:746:1 has some indirect sub-type changes:
-      parameter 2 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-
-    [C]'function int _IceTransMakeAllCLTSServerListeners(char*, int*, int*, XtransConnInfo**)' at Xtrans.c:1311:1 has some indirect sub-type changes:
-      parameter 1 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-
-    [C]'function int _IceTransMakeAllCOTSServerListeners(char*, int*, int*, XtransConnInfo**)' at Xtrans.c:1180:1 has some indirect sub-type changes:
-      parameter 1 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-
-    [C]'function int _IceTransNoListen(char*)' at Xtrans.c:781:1 has some indirect sub-type changes:
-      parameter 1 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-
-    [C]'function XtransConnInfo _IceTransOpenCLTSClient(char*)' at Xtrans.c:593:1 has some indirect sub-type changes:
-      parameter 1 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-
-    [C]'function XtransConnInfo _IceTransOpenCLTSServer(char*)' at Xtrans.c:606:1 has some indirect sub-type changes:
-      parameter 1 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-
-    [C]'function XtransConnInfo _IceTransOpenCOTSClient(char*)' at Xtrans.c:567:1 has some indirect sub-type changes:
-      parameter 1 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
-
-    [C]'function XtransConnInfo _IceTransOpenCOTSServer(char*)' at Xtrans.c:580:1 has some indirect sub-type changes:
-      parameter 1 of type 'char*' changed:
-        in pointed to type 'char':
-          entity changed from 'char' to 'const char'
-          type size hasn't changed
 
 
   1 Removed variable:
