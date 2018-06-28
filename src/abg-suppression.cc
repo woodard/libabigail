@@ -813,9 +813,9 @@ suppression_matches_type_no_name(const type_suppression&	 s,
 	  }
 	  break;
 	case type_suppression::UNION_TYPE_KIND:
-	  // We do not support unions yet.  When we do, we should
-	  // replace the abort here by a "break;" statement.
-	  abort();
+	  if (!is_union_type(type))
+	    matches = false;
+	  break;
 	case type_suppression::ENUM_TYPE_KIND:
 	  if (!is_enum_type(type))
 	    matches = false;
