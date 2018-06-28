@@ -675,6 +675,23 @@ const function_type_diff*
 is_function_type_diff(const diff* diff)
 {return dynamic_cast<const function_type_diff*>(diff);}
 
+/// Test if a given diff node carries a function type change with
+/// local changes.
+///
+/// @param diff the diff node to consider.
+///
+/// @return a non-nil pointer to a @ref function_type_diff iff @p diff
+/// is a function_type_diff node that carries a local change.
+const function_type_diff*
+is_function_type_diff_with_local_changes(const diff* diff)
+{
+  if (const function_type_diff* d = is_function_type_diff(diff))
+    if (d->has_local_changes())
+      return d;
+
+  return 0;
+}
+
 /// Test if a diff node is about differences between variables.
 ///
 /// @param diff the diff node to test.
@@ -740,7 +757,8 @@ is_qualified_type_diff(const diff* diff)
 {return dynamic_cast<const qualified_type_diff*>(diff);}
 
 /// Test if a diff node is either a reference diff node or a pointer
-/// diff node.
+/// diff node.  Note that this function also works on diffs of
+/// typedefs of reference or pointer.
 ///
 /// @param diff the diff node to test.
 ///
@@ -748,7 +766,42 @@ is_qualified_type_diff(const diff* diff)
 /// pointer diff node.
 bool
 is_reference_or_pointer_diff(const diff* diff)
-{return is_reference_diff(diff) || is_pointer_diff(diff);}
+{
+  diff = peel_typedef_diff(diff);
+  return is_reference_diff(diff) || is_pointer_diff(diff);
+}
+
+/// Test if a diff node is a reference or pointer diff node to a
+/// change that is neither basic type change nor distinct type change.
+///
+/// Note that this function also works on diffs of typedefs of
+/// reference or pointer.
+///
+/// @param diff the diff node to consider.
+///
+/// @return true iff @p diff is a eference or pointer diff node to a
+/// change that is neither basic type change nor distinct type change.
+bool
+is_reference_or_ptr_diff_to_non_basic_nor_distinct_types(const diff* diff)
+{
+  diff = peel_typedef_diff(diff);
+  if (const reference_diff* d = is_reference_diff(diff))
+    {
+      diff = peel_reference_diff(d);
+      if (is_diff_of_basic_type(diff) || is_distinct_diff(diff))
+	return false;
+      return true;
+    }
+  else if (const pointer_diff *d = is_pointer_diff(diff))
+    {
+      diff = peel_pointer_diff(d);
+      if (is_diff_of_basic_type(diff) || is_distinct_diff(diff))
+	return false;
+      return true;
+    }
+
+  return false;
+}
 
 /// Test if a diff node is about differences between two function
 /// parameters.
@@ -10913,9 +10966,10 @@ struct redundancy_marking_visitor : public diff_node_visitor
 	     || d->get_canonical_diff()->is_traversing())
 	    && d->has_changes())
 	  {
-	    // But if two diff nodes are redundant sibbling, do not
-	    // mark them as being redundant.  This is to avoid marking
-	    // nodes as redundant in this case:
+	    // But if two diff nodes are redundant sibbling that carry
+	    // changes of base types, do not mark them as being
+	    // redundant.  This is to avoid marking nodes as redundant
+	    // in this case:
 	    //
 	    //     int foo(int a, int b);
 	    // compared with:
@@ -10948,7 +11002,10 @@ struct redundancy_marking_visitor : public diff_node_visitor
 		    sib = f->type_diff().get();
 		  if (sib == d)
 		    continue;
-		  if (sib->get_canonical_diff() == d->get_canonical_diff())
+		  if (sib->get_canonical_diff() == d->get_canonical_diff()
+		      // Sibbling diff nodes that carry base type
+		      // changes ar to be marked as redundant.
+		      && (is_base_diff(sib) || is_distinct_diff(sib)))
 		    {
 		      redundant_with_sibling_node = true;
 		      break;
@@ -10966,7 +11023,7 @@ struct redundancy_marking_visitor : public diff_node_visitor
 		// redundant because otherwise one could miss important
 		// similar local changes that are applied to different
 		// functions.
-		&& !dynamic_cast<function_type_diff*>(d)
+		&& !is_function_type_diff_with_local_changes(d)
 		// Changes involving variadic parameters of functions
 		// should never be marked redundant because we want to see
 		// them all.
@@ -10985,9 +11042,13 @@ struct redundancy_marking_visitor : public diff_node_visitor
 		// that must be marked redundant.
 		&& d->context()->diff_has_been_visited(d) != d
 		// If the diff node is a function parameter and is not
-		// a reference/pointer then do not mark it as
+		// a reference/pointer (to a non basic or a non
+		// distinct type diff) then do not mark it as
 		// redundant.
-		&& (is_reference_or_pointer_diff(d)
+		//
+		// Children nodes of base class diff nodes are never
+		// redundant either, we want to see them all.
+		&& (is_reference_or_ptr_diff_to_non_basic_nor_distinct_types(d)
 		    || (!is_child_node_of_function_parm_diff(d)
 			&& !is_child_node_of_base_diff(d))))
 	      {
@@ -11310,6 +11371,25 @@ is_diff_of_basic_type(const diff* diff, bool allow_indirect_type)
   if (allow_indirect_type)
       diff = peel_pointer_or_qualified_type(diff);
   return is_diff_of_basic_type(diff);
+}
+
+/// If a diff node is about changes between two typedef types, get the
+/// diff node about changes between the underlying types.
+///
+/// Note that this function walks the tree of underlying diff nodes
+/// returns the first diff node about types that are not typedefs.
+///
+/// @param dif the dif node to consider.
+///
+/// @return the underlying diff node of @p dif, or just return @p dif
+/// if it's not a typedef diff node.
+const diff*
+peel_typedef_diff(const diff* dif)
+{
+  const typedef_diff *d = 0;
+  while ((d = is_typedef_diff(dif)))
+    dif = d->underlying_type_diff().get();
+  return dif;
 }
 
 /// If a diff node is about changes between two pointer types, get the

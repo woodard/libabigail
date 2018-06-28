@@ -1698,6 +1698,16 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test36-leaf-report-0.txt",
     "output/test-diff-suppr/test36-leaf-report-0.txt"
   },
+  {
+    "data/test-diff-suppr/test37-opaque-type-v0.o",
+    "data/test-diff-suppr/test37-opaque-type-v1.o",
+    "data/test-diff-suppr/test37-opaque-type-header-dir",
+    "data/test-diff-suppr/test37-opaque-type-header-dir",
+    "",
+    "--no-default-suppression",
+    "data/test-diff-suppr/test37-opaque-type-report-0.txt",
+    "output/test-diff-suppr/test37-opaque-type-report-0.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}
 };

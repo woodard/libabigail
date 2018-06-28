@@ -1135,6 +1135,13 @@ test-diff-suppr/libtest36-leaf-v1.so \
 test-diff-suppr/test36-leaf-report-0.txt \
 test-diff-suppr/test36-leaf-v0.cc \
 test-diff-suppr/test36-leaf-v1.cc \
+test-diff-suppr/test37-opaque-type-header-dir/test37-opaque-type-header-v0.h \
+test-diff-suppr/test37-opaque-type-header-dir/test37-opaque-type-header-v1.h \
+test-diff-suppr/test37-opaque-type-report-0.txt \
+test-diff-suppr/test37-opaque-type-v0.c \
+test-diff-suppr/test37-opaque-type-v0.o \
+test-diff-suppr/test37-opaque-type-v1.c \
+test-diff-suppr/test37-opaque-type-v1.o \
 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1.abi \

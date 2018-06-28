@@ -2682,6 +2682,9 @@ is_array_diff(const diff* diff);
 const function_type_diff*
 is_function_type_diff(const diff* diff);
 
+const function_type_diff*
+is_function_type_diff_with_local_changes(const diff* diff);
+
 const typedef_diff*
 is_typedef_diff(const diff *diff);
 
@@ -2702,6 +2705,9 @@ is_qualified_type_diff(const diff* diff);
 bool
 is_reference_or_pointer_diff(const diff* diff);
 
+bool
+is_reference_or_pointer_diff_to_non_basic_distinct_types(const diff* diff);
+
 const fn_parm_diff*
 is_fn_parm_diff(const diff* diff);
 
@@ -2719,6 +2725,9 @@ is_child_node_of_base_diff(const diff* diff);
 
 const corpus_diff*
 is_corpus_diff(const diff* diff);
+
+const diff*
+peel_typedef_diff(const diff* dif);
 
 const diff*
 peel_pointer_diff(const diff* dif);
