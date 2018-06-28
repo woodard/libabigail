@@ -419,8 +419,7 @@ public:
     UNDEFINED_CHANGE_KIND,
     /// A change in a sub-type of the function.
     FUNCTION_SUBTYPE_CHANGE_KIND = 1,
-    /// The function was added to the second second subject of the
-    /// diff.
+    /// The function was added to the second subject of the diff.
     ADDED_FUNCTION_CHANGE_KIND = 1 << 1,
     /// The function was deleted from the second subject of the diff.
     DELETED_FUNCTION_CHANGE_KIND = 1 << 2,
@@ -724,12 +723,12 @@ public:
   suppresses_diff(const diff* d) const;
 
   bool
-  suppresses_variable(const var_decl* fn,
+  suppresses_variable(const var_decl* var,
 		      change_kind k,
 		      const diff_context_sptr cxt) const;
 
   bool
-  suppresses_variable(const var_decl_sptr fn,
+  suppresses_variable(const var_decl_sptr var,
 		      change_kind k,
 		      const diff_context_sptr cxt) const;
 

@@ -868,7 +868,6 @@ bool
 is_child_node_of_base_diff(const diff* diff)
 {return diff && is_base_diff(diff->parent_node());}
 
-
 /// Test if the current diff node has an ancestor node that has been
 /// filtered out.
 ///

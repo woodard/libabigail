@@ -3535,7 +3535,7 @@ variable_suppression::suppresses_variable(const var_decl* var,
 	return false;
     }
 
-  // Check for the "type_name" and tye_name_regex properties match.
+  // Check for the "type_name" and type_name_regex properties match.
   string var_type_name =
     get_type_declaration(var->get_type())->get_qualified_name();
 
