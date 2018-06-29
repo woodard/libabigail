@@ -8901,6 +8901,41 @@ die_peel_qual_ptr(Dwarf_Die *die, Dwarf_Die& peeled_die)
   return true;
 }
 
+/// Return the leaf object under a typedef type DIE.
+///
+/// @param die the DIE of the type to consider.
+///
+/// @param peeled_die out parameter.  Set to the DIE of the leaf
+/// object iff the function actually peeled anything.
+///
+/// @return true upon successful completion.
+static bool
+die_peel_typedef(Dwarf_Die *die, Dwarf_Die& peeled_die)
+{
+  if (!die)
+    return false;
+
+  int tag = dwarf_tag(die);
+
+  if (tag == DW_TAG_typedef)
+    {
+      if (!die_die_attribute(die, DW_AT_type, peeled_die))
+	return false;
+    }
+  else
+    return false;
+
+  while (tag == DW_TAG_typedef)
+    {
+      if (!die_die_attribute(&peeled_die, DW_AT_type, peeled_die))
+	break;
+      tag = dwarf_tag(&peeled_die);
+    }
+
+  return true;
+
+}
+
 /// Test if a DIE for a function type represents a method type.
 ///
 /// @param ctxt the read context.
@@ -8994,6 +9029,10 @@ die_function_type_is_method_type(const read_context& ctxt,
       // parameter.
       if (!die_peel_qual_ptr(&this_type_die, class_die))
 	return false;
+
+      // And make we return a class type, rather than a typedef to a
+      // class.
+      die_peel_typedef(&class_die, class_die);
     }
 
   return true;
