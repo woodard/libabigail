@@ -44,11 +44,12 @@ runtestlookupsyms		\
 runtestaltdwarf			\
 runtestcorediff			\
 runtestabidiffexit		\
-runtestdefaultsupprs.py		\
 $(CXX11_TESTS)
 
 if ENABLE_RUNNING_TESTS_WITH_PY3
 TESTS += runtestdefaultsupprspy3.sh
+else
+TESTS += runtestdefaultsupprs.py
 endif
 
 EXTRA_DIST = \
