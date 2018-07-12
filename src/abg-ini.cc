@@ -63,18 +63,22 @@ char_is_comment_start(int b);
 ///@param include_white_space if true, consider white spaces as a
 ///delimiter.
 ///
+///@param include_square_bracket if true, consider square brackets as
+/// delimiters
+///
 /// @return true iff @p b is a delimiter.
 static bool
-char_is_delimiter(int b, bool include_white_space = true)
+char_is_delimiter(int b, bool include_white_space = true,
+		  bool include_square_bracket = true)
 {
-  return (b == '['
-	    || b == ']'
-	    || b == '{'
-	    || b == '}'
-	    || b == '='
-	    || b == ','
-	    || (include_white_space && char_is_white_space(b))
-	    || char_is_comment_start(b));
+  return ((include_square_bracket && (b == '['))
+	  || (include_square_bracket && (b == ']'))
+	  || b == '{'
+	  || b == '}'
+	  || b == '='
+	  || b == ','
+	  || (include_white_space && char_is_white_space(b))
+	  || char_is_comment_start(b));
 }
 
 /// Return true iff a given character can be part of a property
@@ -87,8 +91,9 @@ char_is_delimiter(int b, bool include_white_space = true)
 static bool
 char_is_property_value_char(int b)
 {
-  if (char_is_delimiter(b, /*include_white_space=*/false)
-	|| b == '\n')
+  if (char_is_delimiter(b, /*include_white_space=*/false,
+			/*include_square_bracket=*/false)
+      || b == '\n')
     return false;
   return true;
 }
