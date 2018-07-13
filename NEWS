@@ -1,3 +1,24 @@
+1.4
+===
+Dodji Seketeli:
+      Fix typo in tests/runtestdefaultsupprs.py
+      Remove references, arrays and fn parms from leaf diff nodes
+      Improve detection of local *type* changes
+      Better detect when diff nodes only carry local type changes
+      Better detect when pointer and qualified types carry local changes
+      Use the flat representation for anonymous struct/unions
+      Add test44-anon-struct-union-v{0,1}.o to source distribution
+      Explicitely detect anonymous data member changes
+      Identify a function using its symbol name and version
+      Fix indentation of help string in abipkgdiff
+      Fix redundancy detection through fn ptr and typedef paths
+      Filter out changes like type to const type
+      Initial basic support of union type in suppression specifications
+      Ensure die_function_type_is_method_type returns a class type die
+      Fix race between runtestdefaultsupprs{py3.sh,.py}
+      Allow square brackets in ini property values
+      Properly add test materials for test-diff-suppr/test38-char-class-in-ini*
+
 1.3
 ===
 Chenxiong Qi:
