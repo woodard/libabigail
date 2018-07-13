@@ -1,3 +1,350 @@
+2018-07-13  Dodji Seketeli <dodji@redhat.com>
+
+	Update NEWS file for 1.4 release
+	* NEWS: Added 1.4 entries
+
+2018-07-13  Dodji Seketeli <dodji@redhat.com>
+
+	Properly add test materials for test-diff-suppr/test38-char-class-in-ini*
+	* tests/data/Makefile.am: Add proper path for
+	test-diff-suppr/test38-char-class-in-ini*.
+
+2018-07-12  Dodji Seketeli <dodji@redhat.com>
+
+	Allow square brackets in ini property values
+	* src/abg-ini.cc (char_is_delimiter): Possibly disallow square
+	bracket characters into the set of delimiters.
+	* tests/data/test-diff-suppr/test38-char-class-in-ini-report-0.txt:
+	New reference output.
+	* tests/data/test-diff-suppr/test38-char-class-in-ini-v{0,1}.c:
+	Source code new test binaries.
+	* tests/data/test-diff-suppr/test38-char-class-in-ini-v{0,1}.o:
+	New test binaries.
+	* tests/data/test-diff-suppr/test38-char-class-in-ini.abignore:
+	New test abi suppression file.
+	* tests/data/Makefile.am: Add the new test materials above to
+	source distribution.
+	* tests/test-diff-suppr.cc: Add the test materials above to the
+	set of tests to run.
+
+2018-07-10  Dodji Seketeli <dodji@redhat.com>
+
+	Fix race between runtestdefaultsupprs{py3.sh,.py}
+	* tests/Makefile.am: Run runtestdefaultsupprspy3.sh if we are in
+	python3 mode otherwise run runtestdefaultsupprs.py.
+
+2018-06-29  Dodji Seketeli <dodji@redhat.com>
+
+	Ensure die_function_type_is_method_type returns a class type die
+	* src/abg-dwarf-reader.cc (die_peel_typedef): Define new static
+	function.
+	(die_function_type_is_method_type): Use the function above to peel
+	the class die from potential typedefs wrapping it.
+
+2018-06-28  Dodji Seketeli <dodji@redhat.com>
+
+	Misc style adjustements
+	* include/abg-suppression.h
+	(function_suppression::ADDED_FUNCTION_CHANGE_KIND): Fix the
+	comment of this enumerator.
+	(suppresses_variable): Cleanup parameter name.
+	* src/abg-comparison.cc: Remove useless horizontal space.
+	* src/abg-suppression.cc
+	(variable_suppression::suppresses_variable): Fix typo.
+
+2018-06-28  Dodji Seketeli <dodji@redhat.com>
+
+	Initial basic support of union type in suppression specifications
+	* src/abg-suppression.cc (suppression_matches_type_no_name):
+	Support union types.
+
+2018-06-28  Dodji Seketeli <dodji@redhat.com>
+
+	Filter out changes like type to const type
+	* include/abg-comparison.h (FN_PARM_TYPE_CV_CHANGE_CATEGORY): Add
+	this new enumerator to the diff_category enum.  Also, OR this to
+	the value of the EVERYTHING_CATEGORY enumerator.
+	* src/abg-comp-filter.cc (has_fn_parm_type_top_cv_qual_change):
+	Rename has_fn_parm_type_cv_qual_change into this.
+	(has_fn_parm_type_cv_qual_change): New function.
+	(categorize_harmless_diff_node): Categorize cv qual changes as
+	being of category FN_PARM_TYPE_CV_CHANGE_CATEGORY.
+	* src/abg-comparison.cc (get_default_harmless_categories_bitmap):
+	Add FN_PARM_TYPE_CV_CHANGE_CATEGORY to the default harmless
+	categories.
+	* tests/data/test-diff-pkg/libICE-1.0.6-1.el6.x86_64.rpm--libICE-1.0.9-2.el7.x86_64.rpm-report-0.txt: Adjust.
+
+2018-06-28  Dodji Seketeli <dodji@redhat.com>
+
+	Fix redundancy detection through fn ptr and typedef paths
+	* include/abg-comparison.h
+	(is_function_type_diff_with_local_changes)
+	(is_reference_or_pointer_diff_to_non_basic_distinct_types)
+	(peel_typedef_diff): Declare new functions.
+	* src/abg-comparison.cc
+	(is_function_type_diff_with_local_changes)
+	(is_reference_or_ptr_diff_to_non_basic_nor_distinct_types)
+	(peel_typedef_diff): Define new functions.
+	(is_reference_or_pointer_diff): Peel typedefs before operating.
+	(redundancy_marking_visitor::visit_begin): Only sibbling parameter
+	diff node that carry basic type changes (or distinct type changes)
+	are *not* marked as redundant.  All other kinds of sibbling
+	parameter diff nodes are markes redundant.  Also, rather than
+	never marking function type diffs as redundant by fear of missing
+	local changes on these, just avoid marking function type diff
+	nodes with local changes.  It's possible to be that precise now
+	that we can detect that a diff node carries local changes.
+	* tests/data/test-diff-suppr/test37-opaque-type-v{0,1}.o: New
+	binary tests input.
+	* tests/data/test-diff-suppr/test37-opaque-type-v{0,1}.c: Source
+	code of the binary tests input above.
+	* tests/data/test-diff-suppr/test37-opaque-type-header-dir/test37-opaque-type-header-v{0,1}.h:
+	Headers of the binary tests input above.
+	* tests/data/test-diff-suppr/test37-opaque-type-report-0.txt:
+	Reference output for this new test.
+	* tests/data/Makefile.am: Add the new test material above to
+	source distribution.
+	* tests/test-diff-suppr.cc (in_out_specs): Add the new test input
+	above to the test harness.
+
+2018-06-08  Dodji Seketeli <dodji@redhat.com>
+
+	Fix indentation of help string in abipkgdiff
+	* tools/abipkgdiff.cc (display_usage): Fix indentation of help
+	string.
+
+2018-06-08  Dodji Seketeli <dodji@redhat.com>
+
+	Identify a function using its symbol name and version
+	* src/abg-default-reporter.cc (default_reporter::report): In C,
+	tell the user about the underlying function symbol name only if
+	said symbol name is different from the name of the function.
+	* src/abg-ir.cc (function_decl::get_id): If the function has an
+	underlying symbol, use the symbol name and version as the function
+	ID.  But if the function symbol has an alias then use the linkage
+	name as the ID.
+	* tests/data/test-diff-pkg/elfutils-debuginfo-0.170-4.el7.x86_64.rpm:
+	New binary test input.
+	* tests/data/test-diff-pkg/elfutils-debuginfo-0.171-1.el7.x86_64.rpm: Likewise.
+	* tests/data/test-diff-pkg/elfutils-devel-0.170-4.el7.x86_64.rpm: Likewise.
+	* tests/data/test-diff-pkg/elfutils-devel-0.171-1.el7.x86_64.rpm: Likewise.
+	* tests/data/test-diff-pkg/elfutils-libs-0.170-4.el7.x86_64.rpm: Likewise.
+	* tests/data/test-diff-pkg/elfutils-libs-0.171-1.el7.x86_64.rpm: Likewise.
+	* tests/data/test-diff-pkg/elfutils-libs-0.170-4.el7.x86_64-multiple-sym-vers-report-0.txt:
+	New reference test output.
+	* tests/data/Makefile.am: Add the new test material above to
+	source distribution.
+	* tests/test-diff-pkg.cc (in_out_specs): Integrate the new test
+	inputs above into the harness.
+
+2018-06-06  Dodji Seketeli <dodji@redhat.com>
+
+	Bump version to 1.4
+	* configure.ac: Bump version to 1.4
+
+2018-06-06  Dodji Seketeli <dodji@redhat.com>
+
+	Explicitely detect anonymous data member changes
+	* include/abg-comp-filter.h (has_anonymous_data_member_change):
+	Add new function declaration.
+	* include/abg-fwd.h (is_data_member, is_anonymous_data_member):
+	declare new overloads.
+	* src/abg-comp-filter.cc (has_anonymous_data_member_change):
+	Define new overloads.
+	* src/abg-ir.cc (is_data_member, is_anonymous_data_member): Define
+	new overloads.
+	* src/abg-reporter-priv.cc (represent): In the var_diff overload,
+	detect when we have anonymous data member changes and emit
+	explicit error messages then.
+	* tests/data/test-diff-dwarf/test45-anon-dm-change-report-0.txt:
+	New test material.
+	* tests/data/test-diff-dwarf/test45-anon-dm-change-v0.cc: Likewise.
+	* tests/data/test-diff-dwarf/test45-anon-dm-change-v0.o: Likewise.
+	* tests/data/test-diff-dwarf/test45-anon-dm-change-v1.cc: Likewise.
+	* tests/data/test-diff-dwarf/test45-anon-dm-change-v1.o: Likewise.
+	* tests/data/Makefile.am: Add the new test material above to source
+	distribution.
+	* tests/test-diff-dwarf.cc (in_out_specs): Add the new test
+	material above to the test harness.
+	* tests/data/test-diff-filter/test30-pr18904-rvalueref-report0.txt: Adjust.
+	* tests/data/test-diff-filter/test30-pr18904-rvalueref-report1.txt: Likewise.
+	* tests/data/test-diff-filter/test30-pr18904-rvalueref-report2.txt: Likewise.
+	* tests/data/test-diff-filter/test35-pr18754-no-added-syms-report-0.txt: Likewise.
+
+2018-06-05  Dodji Seketeli <dodji@redhat.com>
+
+	Add test44-anon-struct-union-v{0,1}.o to source distribution
+	* tests/data/Makefile.am: Add
+	test-diff-dwarf/test44-anon-struct-union-v{0,1}.o files to source
+	distribution.
+
+2018-06-04  Dodji Seketeli <dodji@redhat.com>
+
+	Use the flat representation for anonymous struct/unions
+	* src/abg-ir.cc (get_class_or_union_flat_representation): Take a
+	const class_or_union* (like what the declaration in the header
+	file says), rather than just a class_or_union*.
+	({class,union}_decl::get_pretty_representation): For anonymous
+	classes and unions, use the flat representation.
+	* tests/data/test-annotate/libtest23.so.abi: Adjust.
+	* tests/data/test-annotate/libtest24-drop-fns-2.so.abi: Likewise.
+	* tests/data/test-annotate/libtest24-drop-fns.so.abi: Likewise.
+	* tests/data/test-annotate/test13-pr18894.so.abi: Likewise.
+	* tests/data/test-annotate/test14-pr18893.so.abi: Likewise.
+	* tests/data/test-annotate/test15-pr18892.so.abi: Likewise.
+	* tests/data/test-annotate/test17-pr19027.so.abi: Likewise.
+	* tests/data/test-annotate/test18-pr19037-libvtkRenderingLIC-6.1.so.abi: Likewise.
+	* tests/data/test-annotate/test19-pr19023-libtcmalloc_and_profiler.so.abi: Likewise.
+	* tests/data/test-annotate/test20-pr19025-libvtkParallelCore-6.1.so.abi: Likewise.
+	* tests/data/test-annotate/test21-pr19092.so.abi: Likewise.
+	* tests/data/test-diff-dwarf/test43-PR22913-report-0.txt: Likewise.
+	* tests/data/test-diff-dwarf/test44-anon-struct-union-report-0.txt:
+	New test reference output.
+	* tests/data/test-diff-dwarf/test44-anon-struct-union-v{0,1}.cc:
+	Source code of new test binary outputs.
+	* tests/data/test-diff-dwarf/test44-anon-struct-union-v{0,1}.o:
+	New test binary outputs.
+	* tests/data/Makefile.am: Add the new test materials above to
+	source districution.
+	* tests/test-diff-dwarf.cc (in_out_specs): Add the new test
+	material above to the test harness here.
+	* tests/data/test-diff-filter/test30-pr18904-rvalueref-report0.txt: Adjust.
+	* tests/data/test-diff-filter/test30-pr18904-rvalueref-report1.txt: Likewise.
+	* tests/data/test-diff-filter/test30-pr18904-rvalueref-report2.txt: Likewise.
+	* tests/data/test-diff-filter/test35-pr18754-no-added-syms-report-0.txt: Likewise.
+	* tests/data/test-diff-pkg/libcdio-0.94-1.fc26.x86_64--libcdio-0.94-2.fc26.x86_64-report.1.txt: Likewise.
+	* tests/data/test-diff-pkg/spice-server-0.12.4-19.el7.x86_64-0.12.8-1.el7.x86_64-report-2.txt: Likewise.
+	* tests/data/test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so.abi: Likewise.
+
+2018-06-01  Dodji Seketeli <dodji@redhat.com>
+
+	Better detect when pointer and qualified types carry local changes
+	* src/abg-comparison.cc
+	(leaf_diff_node_marker_visitor::visit_begin): Do not mark
+	qualified types as leaf diff nodes.
+	(redundancy_marking_visitor::visit_end): Changes to qualified type
+	are never considered local.  This is just as for pointer and
+	reference types.
+	* src/abg-default-reporter.cc
+	(default_reporter::report_local_reference_type_changes): Display
+	structural changes of the pointed-to type.
+	(default_reporter::report): In the overload for reference_diff,
+	better detect and handle when we have local changes, or not.
+	* src/abg-ir.cc (equals): In the overload for qualified_type_def
+	and reference_type_de, report local type changes of the underlying
+	type as local changes.  Add comments in the overload for pointer
+	type, and make it look like the the overload for reference_type.
+	* src/abg-leaf-reporter.cc (leaf_reporter::report): In the
+	overload for pointer_diff, remove end of line.
+	* tests/data/test-diff-filter/libtest45-basic-type-change-report-1.txt: Adjust.
+	* tests/data/test-diff-filter/test30-pr18904-rvalueref-report0.txt: Likewise.
+	* tests/data/test-diff-filter/test30-pr18904-rvalueref-report1.txt: Likewise.
+	* tests/data/test-diff-filter/test30-pr18904-rvalueref-report2.txt: Likewise.
+	* tests/data/test-diff-filter/test35-pr18754-no-added-syms-report-0.txt: Likewise.
+
+2018-05-23  Dodji Seketeli <dodji@redhat.com>
+
+	Better detect when diff nodes only carry local type changes
+	* include/abg-comparison.h ({diff, type_diff_base, decl_diff_base,
+	distinct_diff, var_diff, pointer_diff, reference_diff, array_diff,
+	qualified_type, enum_diff, class_or_union_diff, class_diff,
+	base_diff, scope_diff, fn_parm_diff, function_type_diff,
+	function_decl_diff, typedef_diff,
+	translation_unit_diff}::has_local_changes): Return an enum
+	change_kind, rather than just a bool.
+	(is_diff_of_basic_type): Declare an overload that takes a boolean
+	flag.
+	(is_qualified_type_diff, peel_pointer_diff, peel_reference_diff)
+	(peel_qualified_type, peel_pointer_or_qualified_type): Declare new
+	functions
+	* include/abg-fwd.h (peel_qualified_type):
+	* include/abg-ir.h (enum change_kind::{LOCAL_TYPE_CHANGE_KIND,
+	LOCAL_NON_TYPE_CHANGE_KIND, ALL_LOCAL_CHANGES_MASK}): Add these
+	three new enumerators.
+	* src/abg-comparison.cc ({distinct_diff, var_diff, pointer_diff,
+	array_diff, reference_diff, qualified_type_diff, enum_diff,
+	class_or_union_diff, class_diff, base_diff, scope_diff,
+	fn_parm_diff, function_type_diff, function_decl_diff,
+	type_decl_diff, typedef_diff,
+	translation_unit_diff}::has_local_changes): Adjust to return an
+	enum change_kind, rather than just a bool.
+	(has_local_type_change_only): Define new functions.
+	(has_basic_type_change_only): Use the new
+	has_local_type_change_only function and the new overload for
+	is_diff_of_basic_type.
+	(is_diff_of_basic_type): Define an overload that takes a boolean
+	flag.
+	(is_qualified_type_diff, peel_pointer_diff, peel_reference_diff)
+	(peel_qualified_type, peel_pointer_or_qualified_type): Define new
+	functions.
+	* src/abg-ir.cc (equals): In the overloads for decl_base,
+	scope_decl, type_base, qualified_type_diff, pointer_type_def,
+	reference_type_def, array_type_def, enum_type_decl, typedef_decl,
+	var_decl, function_type, function_decl, function_decl::parameter,
+	class_or_union, class_decl::base_spec and class_decl, properly set
+	the new abigail::ir::{LOCAL_CHANGE_KIND,
+	LOCAL_NON_TYPE_CHANGE_KIND, LOCAL_TYPE_CHANGE_KIND} bits.
+	(types_have_similar_structure): Peel qualified types and typedefs
+	off, first thing.
+	(peel_qualified_or_typedef_type): Define new function.
+	* tests/data/test-diff-pkg/spice-server-0.12.4-19.el7.x86_64-0.12.8-1.el7.x86_64-report-3.txt:
+	Adjust.
+	* tests/data/test-diff-filter/libtest45-basic-type-change-report-{0,1}.txt:
+	New reference test reports.
+	* tests/data/test-diff-filter/libtest45-basic-type-change-v{0,1}.so:
+	New input test binaries.
+	* tests/data/test-diff-filter/test45-basic-type-change-v{0,1}.cc:
+	Source code of the input test binaries above.
+	* tests/data/Makefile.am: Add the new test file above to source
+	distribution.
+	* tests/test-diff-filter.cc: Add the test input above to the test
+	harness.
+
+2018-05-18  Dodji Seketeli <dodji@redhat.com>
+
+	Improve detection of local *type* changes
+	* include/abg-fwd.h (is_type_decl): Declare new overload for
+	type_base*.
+	(types_have_similar_structure): Declare new function.
+	* src/abg-comparison.cc
+	(class_or_union_diff::priv::count_filtered_changed_dm): Even when
+	looking at local changes only, do not forget to count nodes that
+	were filtered out.
+	* src/abg-ir.cc (types_have_similar_structure): Define new
+	function.
+	(is_type_decl): Define new overload for
+	type_base*.
+	(is_enum_type):
+	(equals): In the overload for var_decl, use the new
+	types_have_similar_structure function to detect local (type)
+	changes.
+	* src/abg-reporter-priv.cc (represent): In the overload for
+	var_decl, use the diff::has_local_changes function to detect local
+	changes, now that we can better detect local changes.
+	* tests/data/test-diff-filter/test44-anonymous-data-member-report-1.txt:
+	Adjust.
+	* tests/data/test-diff-suppr/test36-leaf-report-0.txt: Likewise.
+
+2018-05-16  Dodji Seketeli <dodji@redhat.com>
+
+	Remove references, arrays and fn parms from leaf diff nodes
+	* src/abg-comparison.cc
+	(leaf_diff_node_marker_visitor::visit_begin): Do not mark
+	references, array and fn parms diff nodes as leaf nodes.
+	* tests/data/test-diff-pkg/spice-server-0.12.4-19.el7.x86_64-0.12.8-1.el7.x86_64-report-3.txt:
+	Adjust.
+
+2018-05-23  Dodji Seketeli <dodji@redhat.com>
+
+	Fix typo in tests/runtestdefaultsupprs.py
+	* tests/runtestdefaultsupprs.py.in: Fix typo.
+
+2018-05-17  Dodji Seketeli <dodji@redhat.com>
+
+	Update ChangeLog
+	* ChangeLog: Update this file automatically by running the "make
+	update-changelog" command.
+
 2018-05-17  Dodji Seketeli <dodji@redhat.com>
 
 	Update NEWS file for 1.3 release
