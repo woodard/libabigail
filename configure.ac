@@ -304,6 +304,72 @@ fi
 
 AM_CONDITIONAL(ENABLE_BASH_COMPLETION, test x$ENABLE_BASH_COMPLETION = xyes)
 
+# The minimal python 2 version we want to support is 2.6.6 because EL6
+# distributions have that version installed.
+MINIMAL_PYTHON2_VERSION="2.6.6"
+
+AC_PATH_PROG(PYTHON, python, no)
+AX_PROG_PYTHON_VERSION($MINIMAL_PYTHON2_VERSION,
+			 [MINIMAL_PYTHON_VERSION_FOUND=yes],
+			 [MINIMAL_PYTHON_VERSION_FOUND=no])
+
+# The minimal python 3 version we want to support is 3.5, which is
+# available in Fedora releases and in EL7.
+if test x$ENABLE_PYTHON3 != xno; then
+  AC_CHECK_PROGS(PYTHON3_INTERPRETER, [python3 python3.5 python3.6 python3.7], no)
+else
+  PYTHON3_INTERPRETER=no
+fi
+
+if test x$ENABLE_PYTHON3 = xauto; then
+    if test x$PYTHON3_INTERPRETER != xno; then
+      ENABLE_PYTHON3=yes
+    else
+      # When enabling python3 is auto, tests only run if the
+      # python3 interpreter was found on the system. Otherwise,
+      # just ignore it.
+	ENABLE_PYTHON3=no
+      AC_MSG_NOTICE([Python 3 was not found. Skip running tests with Python 3.])
+    fi
+fi
+
+if test x$ENABLE_PYTHON3 = xyes; then
+    if  test x$PYTHON3_INTERPRETER != xno; then
+      # We were asked to enable python3 implicitely (auto and
+      # python3 was found) or explicitly.  So enable running tests
+      # using python3 then.
+      RUN_TESTS_WITH_PY3=yes
+    else
+       AC_MSG_ERROR([Python 3 was not found])
+    fi
+fi
+
+if test x$PYTHON3_INTERPRETER = xyes; then
+   MINIMAL_PYTHON_VERSION_FOUND=yes
+fi
+
+if test x$MINIMAL_PYTHON_VERSION_FOUND = xno; then
+  AC_MSG_NOTICE([no minimal version of python found])
+  if test x$PYTHON = xno; then
+     AC_MSG_NOTICE([python binary wasn't found])
+     if test x$PYTHON3_INTERPRETER != xno; then
+     	  AC_MSG_NOTICE([using $PYTHON3_INTERPRETER instead])
+	  PYTHON=$PYTHON3_INTERPRETER
+	  MINIMAL_PYTHON_VERSION_FOUND=yes
+	  MISSING_FEDABIPKGDIFF_DEP=no
+     fi
+  fi
+else
+  AC_MSG_NOTICE([a minimal version of python was found ...])
+  if test x$PYTHON3_INTERPRETER != xno; then
+   # We were instructed to use python3 and it's present on the
+   # system.  Let's update the PYTHON variable that points to the
+   # actual python interpreter we are going to be using
+   AC_MSG_NOTICE([... and it was $PYTHON3_INTERPRETER])
+   PYTHON=$PYTHON3_INTERPRETER
+  fi
+fi
+
 dnl if --enable-fedabipkgdiff has the 'auto' value, then check for the required
 dnl python modules.  If they are present, then enable the fedabipkgdiff program.
 dnl If they are not then disable the program.
@@ -340,73 +406,10 @@ if test x$CHECK_DEPS_FOR_FEDABIPKGDIFF = xyes; then
     fi
   fi
 
-  # The minimal python 2 version we want to support is 2.6.6 because EL6
-  # distributions have that version installed.
-  MINIMAL_PYTHON2_VERSION="2.6.6"
-
-  AC_PATH_PROG(PYTHON, python, no)
-  AX_PROG_PYTHON_VERSION($MINIMAL_PYTHON2_VERSION,
-			 [MINIMAL_PYTHON_VERSION_FOUND=yes],
-			 [MINIMAL_PYTHON_VERSION_FOUND=no])
-
-  # The minimal python 3 version we want to support is 3.5, which is
-  # available in Fedora releases and in EL7.
-  if test x$ENABLE_PYTHON3 != xno; then
-    AC_CHECK_PROGS(PYTHON3_INTERPRETER, [python3 python3.5 python3.6 python3.7], no)
-  else
-    PYTHON3_INTERPRETER=no
-  fi
-
-  if test x$ENABLE_PYTHON3 = xauto; then
-      if test x$PYTHON3_INTERPRETER != xno; then
-        ENABLE_PYTHON3=yes
-      else
-        # When enabling python3 is auto, tests only run if the
-        # python3 interpreter was found on the system. Otherwise,
-        # just ignore it.
-	ENABLE_PYTHON3=no
-        AC_MSG_NOTICE([Python 3 was not found. Skip running tests with Python 3.])
-      fi
-  fi
-
-  if test x$ENABLE_PYTHON3 = xyes; then
-      if  test x$PYTHON3_INTERPRETER != xno; then
-        # We were asked to enable python3 implicitely (auto and
-        # python3 was found) or explicitly.  So enable running tests
-        # using python3 then.
-        RUN_TESTS_WITH_PY3=yes
-      else
-         AC_MSG_ERROR([Python 3 was not found])
-      fi
-  fi
-
-  if test x$PYTHON3_INTERPRETER = xyes; then
-     MINIMAL_PYTHON_VERSION_FOUND=yes
-  fi
-
   if test x$MINIMAL_PYTHON_VERSION_FOUND = xno; then
-    AC_MSG_NOTICE([no minimal version of python found])
     MISSING_FEDABIPKGDIFF_DEP=yes
     if test x$MISSING_FEDABIPKGDIFF_DEP_FATAL = xyes; then
       AC_MSG_ERROR([could not find a python program of version at least $MINIMAL_PYTHON2_VERSION])
-    fi
-    if test x$PYTHON = xno; then
-       AC_MSG_NOTICE([python binary wasn't found])
-       if test x$PYTHON3_INTERPRETER != xno; then
-       	  AC_MSG_NOTICE([using $PYTHON3_INTERPRETER instead])
-       	  PYTHON=$PYTHON3_INTERPRETER
-	  MINIMAL_PYTHON_VERSION_FOUND=yes
-	  MISSING_FEDABIPKGDIFF_DEP=no
-       fi
-    fi
-  else
-    AC_MSG_NOTICE([a minimal version of python was found ...])
-    if test x$PYTHON3_INTERPRETER != xno; then
-     # We were instructed to use python3 and it's present on the
-     # system.  Let's update the PYTHON variable that points to the
-     # actual python interpreter we are going to be using
-     AC_MSG_NOTICE([... and it was $PYTHON3_INTERPRETER])
-     PYTHON=$PYTHON3_INTERPRETER
     fi
   fi
 
