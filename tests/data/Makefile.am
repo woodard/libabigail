@@ -1457,4 +1457,7 @@ test-fedabipkgdiff/dbus-glib/dbus-glib-0.100.2-2.fc20.x86_64.rpm \
 test-fedabipkgdiff/dbus-glib/dbus-glib-0.106-1.fc23.x86_64.rpm \
 test-fedabipkgdiff/nss-util/nss-util-devel-3.24.0-2.0.fc25.x86_64.rpm \
 test-fedabipkgdiff/nss-util/nss-util-3.12.6-1.fc14.x86_64.rpm \
-test-fedabipkgdiff/nss-util/nss-util-3.24.0-2.0.fc25.x86_64.rpm
+test-fedabipkgdiff/nss-util/nss-util-3.24.0-2.0.fc25.x86_64.rpm \
+\
+test-ini/test01-equal-in-property-string.abignore.expected \
+test-ini/test01-equal-in-property-string.abignore
