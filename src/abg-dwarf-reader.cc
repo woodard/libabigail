@@ -16237,7 +16237,7 @@ has_alt_debug_info(const string&	elf_path,
 
 /// Fetch the SONAME ELF property from an ELF binary file.
 ///
-/// @param elf The handler of an ELF binary file.
+/// @param path The path to the elf file to consider.
 ///
 /// @param soname out parameter. Set to the SONAME property of the
 /// binary file, if it present in the ELF file.
