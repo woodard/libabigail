@@ -107,6 +107,9 @@ namespace ir
 // Inject some std::tr1 types in here.
 using std::tr1::unordered_map;
 
+/// A convenience typedef fo r an ordered set of size_t.
+typedef unordered_set<size_t> pointer_set;
+
 /// This is an abstraction of the set of resources necessary to manage
 /// several aspects of the internal representations of the Abigail
 /// library.
@@ -4348,8 +4351,23 @@ struct class_tdecl::shared_ptr_hash
 /// That new visitor class would then be passed to e.g,
 /// translation_unit::traverse or to the traverse method of any type
 /// where the traversal is supposed to start from.
-struct ir_node_visitor : public node_visitor_base
+class ir_node_visitor : public node_visitor_base
 {
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+
+public:
+
+  ir_node_visitor();
+
+  void allow_visiting_already_visited_type_node(bool);
+  bool allow_visiting_already_visited_type_node() const;
+  void mark_type_node_as_visited(type_base *);
+  void forget_visited_type_nodes();
+  bool type_node_has_been_visited(type_base*) const;
+
   virtual bool visit_begin(decl_base*);
   virtual bool visit_end(decl_base*);
 

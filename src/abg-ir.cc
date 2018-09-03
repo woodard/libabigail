@@ -10821,8 +10821,14 @@ type_base::get_alignment_in_bits() const
 bool
 type_base::traverse(ir_node_visitor& v)
 {
+  if (v.type_node_has_been_visited(this))
+    return true;
+
   v.visit_begin(this);
-  return v.visit_end(this);
+  bool result = v.visit_end(this);
+  v.mark_type_node_as_visited(this);
+
+  return result;
 }
 
 type_base::~type_base()
@@ -11328,9 +11334,14 @@ type_decl::get_pretty_representation(bool internal) const
 bool
 type_decl::traverse(ir_node_visitor& v)
 {
-  v.visit_begin(this);
+  if (v.type_node_has_been_visited(this))
+    return true;
 
-  return v.visit_end(this);
+  v.visit_begin(this);
+  bool result = v.visit_end(this);
+  v.mark_type_node_as_visited(this);
+
+  return result;
 }
 
 type_decl::~type_decl()
@@ -11454,6 +11465,9 @@ scope_type_decl::traverse(ir_node_visitor& v)
   if (visiting())
     return true;
 
+  if (v.type_node_has_been_visited(this))
+    return true;
+
   if (v.visit_begin(this))
     {
       visiting(true);
@@ -11466,7 +11480,10 @@ scope_type_decl::traverse(ir_node_visitor& v)
       visiting(false);
     }
 
-  return v.visit_end(this);
+  bool result = v.visit_end(this);
+  v.mark_type_node_as_visited(this);
+
+  return result;
 }
 
 scope_type_decl::~scope_type_decl()
@@ -11877,6 +11894,9 @@ qualified_type_def::get_qualified_name(bool internal) const
 bool
 qualified_type_def::traverse(ir_node_visitor& v)
 {
+  if (v.type_node_has_been_visited(this))
+    return true;
+
   if (visiting())
     return true;
 
@@ -11887,7 +11907,9 @@ qualified_type_def::traverse(ir_node_visitor& v)
 	t->traverse(v);
       visiting(false);
     }
-  return v.visit_end(this);
+  bool result = v.visit_end(this);
+  v.mark_type_node_as_visited(this);
+  return result;
 }
 
 qualified_type_def::~qualified_type_def()
@@ -12252,6 +12274,9 @@ pointer_type_def::get_qualified_name(bool internal) const
 bool
 pointer_type_def::traverse(ir_node_visitor& v)
 {
+  if (v.type_node_has_been_visited(this))
+    return true;
+
   if (visiting())
     return true;
 
@@ -12262,7 +12287,10 @@ pointer_type_def::traverse(ir_node_visitor& v)
 	t->traverse(v);
       visiting(false);
     }
-  return v.visit_end(this);
+
+  bool result = v.visit_end(this);
+  v.mark_type_node_as_visited(this);
+  return result;
 }
 
 pointer_type_def::~pointer_type_def()
@@ -12496,6 +12524,9 @@ reference_type_def::get_qualified_name(bool internal) const
 bool
 reference_type_def::traverse(ir_node_visitor& v)
 {
+  if (v.type_node_has_been_visited(this))
+    return true;
+
   if (visiting())
     return true;
 
@@ -12506,7 +12537,10 @@ reference_type_def::traverse(ir_node_visitor& v)
 	t->traverse(v);
       visiting(false);
     }
-  return v.visit_end(this);
+
+  bool result = v.visit_end(this);
+  v.mark_type_node_as_visited(this);
+  return result;
 }
 
 reference_type_def::~reference_type_def()
@@ -12915,6 +12949,9 @@ array_type_def::subrange_type::get_pretty_representation(bool) const
 bool
 array_type_def::subrange_type::traverse(ir_node_visitor& v)
 {
+  if (v.type_node_has_been_visited(this))
+    return true;
+
   if (v.visit_begin(this))
     {
       visiting(true);
@@ -12923,7 +12960,9 @@ array_type_def::subrange_type::traverse(ir_node_visitor& v)
       visiting(false);
     }
 
-  return v.visit_end(this);
+  bool result = v.visit_end(this);
+  v.mark_type_node_as_visited(this);
+  return result;
 }
 
 // </array_type_def::subrange_type>
@@ -13248,6 +13287,9 @@ array_type_def::get_qualified_name(bool internal) const
 bool
 array_type_def::traverse(ir_node_visitor& v)
 {
+  if (v.type_node_has_been_visited(this))
+    return true;
+
   if (visiting())
     return true;
 
@@ -13258,7 +13300,10 @@ array_type_def::traverse(ir_node_visitor& v)
 	t->traverse(v);
       visiting(false);
     }
-  return v.visit_end(this);
+
+  bool result = v.visit_end(this);
+  v.mark_type_node_as_visited(this);
+  return result;
 }
 
 const location&
@@ -13369,6 +13414,9 @@ enum_type_decl::get_pretty_representation(bool internal) const
 bool
 enum_type_decl::traverse(ir_node_visitor &v)
 {
+  if (v.type_node_has_been_visited(this))
+    return true;
+
   if (visiting())
     return true;
 
@@ -13379,7 +13427,10 @@ enum_type_decl::traverse(ir_node_visitor &v)
 	t->traverse(v);
       visiting(false);
     }
-  return v.visit_end(this);
+
+  bool result = v.visit_end(this);
+  v.mark_type_node_as_visited(this);
+  return result;
 }
 
 /// Destructor for the enum type declaration.
@@ -13949,6 +14000,9 @@ typedef_decl::get_underlying_type() const
 bool
 typedef_decl::traverse(ir_node_visitor& v)
 {
+  if (v.type_node_has_been_visited(this))
+    return true;
+
   if (visiting())
     return true;
 
@@ -13959,7 +14013,10 @@ typedef_decl::traverse(ir_node_visitor& v)
 	t->traverse(v);
       visiting(false);
     }
-  return v.visit_end(this);
+
+  bool result = v.visit_end(this);
+  v.mark_type_node_as_visited(this);
+  return result;
 }
 
 typedef_decl::~typedef_decl()
@@ -14970,6 +15027,10 @@ function_type::get_pretty_representation(bool internal) const
 bool
 function_type::traverse(ir_node_visitor& v)
 {
+  // TODO: should we allow the walker to avoid visiting function type
+  // twice?  I think that if we do, then ir_node_visitor needs an
+  // option to specifically disallow this feature for function types.
+
   if (visiting())
     return true;
 
@@ -16465,6 +16526,9 @@ class_or_union::class_or_union(const environment* env, const string& name,
 bool
 class_or_union::traverse(ir_node_visitor& v)
 {
+  if (v.type_node_has_been_visited(this))
+    return true;
+
   if (visiting())
     return true;
 
@@ -16527,7 +16591,9 @@ class_or_union::traverse(ir_node_visitor& v)
       visiting(false);
     }
 
-  return v.visit_end(this);
+  bool result = v.visit_end(this);
+  v.mark_type_node_as_visited(this);
+  return result;
 }
 
 /// Destrcutor of the @ref class_or_union type.
@@ -17955,6 +18021,7 @@ class_decl::base_spec::traverse(ir_node_visitor& v)
       get_base_class()->traverse(v);
       visiting(false);
     }
+
   return v.visit_end(this);
 }
 
@@ -18913,6 +18980,9 @@ operator!=(const class_decl_sptr& l, const class_decl_sptr& r)
 bool
 class_decl::traverse(ir_node_visitor& v)
 {
+  if (v.type_node_has_been_visited(this))
+    return true;
+
   if (visiting())
     return true;
 
@@ -18986,7 +19056,9 @@ class_decl::traverse(ir_node_visitor& v)
       visiting(false);
     }
 
-  return v.visit_end(this);
+  bool result = v.visit_end(this);
+  v.mark_type_node_as_visited(this);
+  return result;
 }
 
 /// Destructor of the @ref class_decl type.
@@ -19512,6 +19584,9 @@ union_decl::operator==(const union_decl& other) const
 bool
 union_decl::traverse(ir_node_visitor& v)
 {
+  if (v.type_node_has_been_visited(this))
+    return true;
+
   if (visiting())
     return true;
 
@@ -19574,7 +19649,9 @@ union_decl::traverse(ir_node_visitor& v)
       visiting(false);
     }
 
-  return v.visit_end(this);
+  bool result = v.visit_end(this);
+  v.mark_type_node_as_visited(this);
+  return result;
 }
 
 /// Destructor of the @ref union_decl type.
@@ -20917,6 +20994,102 @@ bool
 ir_traversable_base::traverse(ir_node_visitor&)
 {return true;}
 
+// <ir_node_visitor stuff>
+
+/// The private data structure of the ir_node_visitor type.
+struct ir_node_visitor::priv
+{
+  pointer_set visited_ir_nodes;
+  bool allow_visiting_already_visited_type_node;
+
+  priv()
+    : allow_visiting_already_visited_type_node(true)
+  {}
+}; // end struct ir_node_visitory::priv
+
+/// Default Constructor of the ir_node_visitor type.
+ir_node_visitor::ir_node_visitor()
+  : priv_(new priv)
+{}
+
+/// Set if the walker using this visitor is allowed to re-visit a type
+/// node that was previously visited or not.
+///
+/// @param f if true, then the walker using this visitor is allowed to
+/// re-visit a type node that was previously visited.
+void
+ir_node_visitor::allow_visiting_already_visited_type_node(bool f)
+{priv_->allow_visiting_already_visited_type_node = f;}
+
+/// Get if the walker using this visitor is allowed to re-visit a type
+/// node that was previously visited or not.
+///
+/// @return true iff the walker using this visitor is allowed to
+/// re-visit a type node that was previously visited.
+bool
+ir_node_visitor::allow_visiting_already_visited_type_node() const
+{return priv_->allow_visiting_already_visited_type_node;}
+
+/// Mark a given type node as having been visited.
+///
+/// Note that for this function to work, the type node must have been
+/// canonicalized.  Otherwise the process is aborted.
+///
+/// @param p the type to mark as having been visited.
+void
+ir_node_visitor::mark_type_node_as_visited(type_base *p)
+{
+  if (allow_visiting_already_visited_type_node())
+    return;
+
+  if (p == 0 || type_node_has_been_visited(p))
+    return;
+
+  type_base* canonical_type = p->get_naked_canonical_type();
+  assert(canonical_type);
+
+  size_t canonical_ptr_value = reinterpret_cast<size_t>(canonical_type);
+  priv_->visited_ir_nodes.insert(canonical_ptr_value);
+}
+
+/// Un-mark all visited type nodes.
+///
+/// That is, no type node is going to be considered as having been
+/// visited anymore.
+///
+/// In other words, after invoking this funciton,
+/// ir_node_visitor::type_node_has_been_visited() is going to return
+/// false on all type nodes.
+void
+ir_node_visitor::forget_visited_type_nodes()
+{priv_->visited_ir_nodes.clear();}
+
+/// Test if a given type node has been marked as visited.
+///
+/// @param p the type node to consider.
+///
+/// @return true iff the type node @p p has been marked as visited by
+/// the function ir_node_visitor::mark_type_node_as_visited.
+bool
+ir_node_visitor::type_node_has_been_visited(type_base* p) const
+{
+  if (allow_visiting_already_visited_type_node())
+    return false;
+
+  if (p == 0)
+    return false;
+
+  type_base *canonical_type = p->get_naked_canonical_type();
+  assert(canonical_type);
+
+  size_t ptr_value = reinterpret_cast<size_t>(canonical_type);
+  pointer_set::iterator it = priv_->visited_ir_nodes.find(ptr_value);
+  if (it == priv_->visited_ir_nodes.end())
+    return false;
+
+  return true;
+}
+
 bool
 ir_node_visitor::visit_begin(decl_base*)
 {return true;}
@@ -21116,6 +21289,8 @@ ir_node_visitor::visit_begin(member_class_template* d)
 bool
 ir_node_visitor::visit_end(member_class_template* d)
 {return visit_end(static_cast<decl_base*>(d));}
+
+// </ir_node_visitor stuff>
 
 // <debugging facilities>
 

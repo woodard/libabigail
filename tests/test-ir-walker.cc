@@ -67,7 +67,11 @@ struct name_printing_visitor : public abigail::ir_node_visitor
 
   name_printing_visitor()
     : level_()
-  {}
+  {
+    // Using this visitor, the IR walker will visit each type only
+    // once.
+    allow_visiting_already_visited_type_node(false);
+  }
 
   void
   build_level_prefix(string& str)
