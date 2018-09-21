@@ -809,6 +809,38 @@ type_is_suppressed(const ReadContextType&	ctxt,
 		   const location&		type_location,
 		   bool require_drop_property = false)
 {
+  bool type_is_private = false;
+  return type_is_suppressed(ctxt, type_name, type_location, type_is_private);
+}
+
+/// Test if a type (designated by its name and location) is suppressed
+/// by at least one suppression specification associated with a given
+/// read context.
+///
+/// @param ctxt the read context to consider.
+///
+/// @param type_name the name of the type to consider.
+///
+/// @param type_location the location of the type to consider.
+///
+/// @param type_is_private out parameter. If the type is suppressed
+/// because it's private then this out parameter is set to true.
+///
+/// @param require_drop_property if set to "true", tests if the type
+/// is suppressed and if its representation is dropped from the ABI
+/// corpus being built.  Otherwise, if set to "false", only test if
+/// the type is suppressed.
+///
+/// @return true iff at least one type specification matches a type
+/// with name @p type_name and with location @p type_location.
+template <typename ReadContextType>
+bool
+type_is_suppressed(const ReadContextType&	ctxt,
+		   const string&		type_name,
+		   const location&		type_location,
+		   bool&			type_is_private,
+		   bool require_drop_property = false)
+{
   for (suppr::suppressions_type::const_iterator i =
 	 ctxt.get_suppressions().begin();
        i != ctxt.get_suppressions().end();
@@ -819,11 +851,18 @@ type_is_suppressed(const ReadContextType&	ctxt,
 	  continue;
 	if (ctxt.suppression_matches_type_name_or_location(*suppr, type_name,
 							   type_location))
-	  return true;
+	  {
+	    if (is_private_type_suppr_spec(*suppr))
+	      type_is_private = true;
+
+	    return true;
+	  }
       }
 
+  type_is_private = false;
   return false;
 }
+
 // </type_suppression stuff>
 
 }// end namespace suppr

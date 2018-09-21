@@ -796,6 +796,11 @@ file_suppression_sptr
 file_is_suppressed(const string& file_path,
 		   const suppressions_type& suppressions);
 
+const char*
+get_private_types_suppr_spec_label();
+
+bool
+is_private_type_suppr_spec(suppr::type_suppression&);
 } // end namespace suppr
 
 } // end namespace abigail

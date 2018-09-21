@@ -14638,13 +14638,19 @@ variable_is_suppressed(const read_context& ctxt,
 ///
 /// @param type_die the DIE that designates the type to consider.
 ///
+/// @param type_is_private out parameter.  If this function returns
+/// true (the type @p type_die is suppressed) and if the type was
+/// suppressed because it's private then this parameter is set to
+/// true.
+///
 /// @return true iff the type designated by the DIE @p type_die, in
 /// the scope @p scope is suppressed by at the suppression
 /// specifications associated to the current read context.
 static bool
 type_is_suppressed(const read_context& ctxt,
 		   const scope_decl* scope,
-		   Dwarf_Die *type_die)
+		   Dwarf_Die *type_die,
+		   bool &type_is_private)
 {
   if (type_die == 0
       || (dwarf_tag(type_die) != DW_TAG_enumeration_type
@@ -14660,7 +14666,77 @@ type_is_suppressed(const read_context& ctxt,
 
   return suppr::type_is_suppressed(ctxt, qualified_name,
 				   type_location,
+				   type_is_private,
 				   /*require_drop_property=*/true);
+}
+
+/// Test if a type (designated by a given DIE) in a given scope is
+/// suppressed by the suppression specifications that are associated
+/// to a given read context.
+///
+/// @param ctxt the read context to consider.
+///
+/// @param scope of the scope of the type DIE to consider.
+///
+/// @param type_die the DIE that designates the type to consider.
+///
+/// @return true iff the type designated by the DIE @p type_die, in
+/// the scope @p scope is suppressed by at the suppression
+/// specifications associated to the current read context.
+static bool
+type_is_suppressed(const read_context& ctxt,
+		   const scope_decl* scope,
+		   Dwarf_Die *type_die)
+{
+  bool type_is_private = false;
+  return type_is_suppressed(ctxt, scope, type_die, type_is_private);
+}
+
+/// Get the opaque version of a type that was suppressed because it's
+/// a private type.
+///
+/// The opaque version version of the type is just a declared-only
+/// version of the type (class or union type) denoted by @p type_die.
+///
+/// @param ctxt the read context in use.
+///
+/// @param scope the scope of the type die we are looking at.
+///
+/// @param type_die the type DIE we are looking at.
+///
+/// @return the opaque version of the type denoted by @p type_die or
+/// nil if no opaque version was found.
+static class_or_union_sptr
+get_opaque_version_of_type(const read_context	&ctxt,
+			   scope_decl		*scope,
+			   Dwarf_Die		*type_die)
+{
+  class_or_union_sptr result;
+
+    if (type_die == 0
+      || (dwarf_tag(type_die) != DW_TAG_enumeration_type
+	  && dwarf_tag(type_die) != DW_TAG_class_type
+	  && dwarf_tag(type_die) != DW_TAG_structure_type
+	  && dwarf_tag(type_die) != DW_TAG_union_type))
+    return result;
+
+  string type_name, linkage_name;
+  location type_location;
+  die_loc_and_name(ctxt, type_die, type_location, type_name, linkage_name);
+  if (!type_location)
+    return result;
+
+  string qualified_name = build_qualified_name(scope, type_name);
+
+  // TODO: also handle declaration-only unions.  To do that, we mostly
+  // need to adapt add_or_update_union_type to make it schedule
+  // declaration-only unions for resolution too.
+  string_classes_map::const_iterator i =
+    ctxt.declaration_only_classes().find(qualified_name);
+  if (i != ctxt.declaration_only_classes().end())
+    result = i->second.back();
+
+  return result;
 }
 
 /// Create a function symbol with a given name.
@@ -15301,7 +15377,19 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_class_type:
     case DW_TAG_structure_type:
       {
-	if (!type_is_suppressed(ctxt, scope, die))
+	bool type_is_private = false;
+	bool type_suppressed=
+	  type_is_suppressed(ctxt, scope, die, type_is_private);
+
+	if (type_suppressed && type_is_private)
+	  // The type is suppressed because it's private.  If other
+	  // non-suppressed and declaration-only instances of this
+	  // type exist in the current corpus, then it means those
+	  // non-suppressed instances are opaque versions of the
+	  // suppressed private type.  Lets return one of these opaque
+	  // types then.
+	  result = get_opaque_version_of_type(ctxt, scope, die);
+	else if (!type_suppressed)
 	  {
 	    Dwarf_Die spec_die;
 	    scope_decl_sptr scop;

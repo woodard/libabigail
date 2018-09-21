@@ -274,8 +274,6 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
 					  suppr::suppressions_type&	supprs,
 					  bool				verbose,
 					  environment_sptr&		env);
-
-extern const char* PRIVATE_TYPES_SUPPR_SPEC_NAME;
 }// end namespace tools_utils
 
 /// A macro that expands to aborting the program when executed.

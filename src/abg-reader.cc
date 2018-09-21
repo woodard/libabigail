@@ -3087,7 +3087,9 @@ type_is_suppressed(const read_context& ctxt, xmlNodePtr node)
 
   string qualified_name = build_qualified_name(scope, type_name);
 
+  bool type_is_private = false;
   return suppr::type_is_suppressed(ctxt, qualified_name, type_location,
+				   type_is_private,
 				   /*require_drop_property=*/true);
 }
 
