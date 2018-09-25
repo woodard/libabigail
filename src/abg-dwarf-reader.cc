@@ -14704,20 +14704,28 @@ type_is_suppressed(const read_context& ctxt,
 ///
 /// @param type_die the type DIE we are looking at.
 ///
+/// @param where_offset the offset of the DIE where we are "logically"
+/// positionned at, in the DIE tree.  This is useful when @p die is
+/// e.g, DW_TAG_partial_unit that can be included in several places in
+/// the DIE tree.
+///
 /// @return the opaque version of the type denoted by @p type_die or
 /// nil if no opaque version was found.
 static class_or_union_sptr
-get_opaque_version_of_type(const read_context	&ctxt,
+get_opaque_version_of_type(read_context	&ctxt,
 			   scope_decl		*scope,
-			   Dwarf_Die		*type_die)
+			   Dwarf_Die		*type_die,
+			   size_t		where_offset)
 {
   class_or_union_sptr result;
 
-    if (type_die == 0
-      || (dwarf_tag(type_die) != DW_TAG_enumeration_type
-	  && dwarf_tag(type_die) != DW_TAG_class_type
-	  && dwarf_tag(type_die) != DW_TAG_structure_type
-	  && dwarf_tag(type_die) != DW_TAG_union_type))
+  if (type_die == 0)
+    return result;
+
+  unsigned tag = dwarf_tag(type_die);
+  if (tag != DW_TAG_class_type
+      && tag != DW_TAG_structure_type
+      && tag != DW_TAG_union_type)
     return result;
 
   string type_name, linkage_name;
@@ -14735,6 +14743,28 @@ get_opaque_version_of_type(const read_context	&ctxt,
     ctxt.declaration_only_classes().find(qualified_name);
   if (i != ctxt.declaration_only_classes().end())
     result = i->second.back();
+
+  if (!result)
+    {
+      if (tag == DW_TAG_class_type || tag == DW_TAG_structure_type)
+	{
+	  // So we didn't find any pre-existing forward-declared-only
+	  // class for the class definition that we could return as an
+	  // opaque type.  So let's build one.
+	  //
+	  // TODO: we need to be able to do this for unions too!
+	  class_decl_sptr klass(new class_decl(ctxt.env(), type_name,
+					       /*alignment=*/0, /*size=*/0,
+					       tag == DW_TAG_structure_type,
+					       type_location,
+					       decl_base::VISIBILITY_DEFAULT));
+	  klass->set_is_declaration_only(true);
+	  add_decl_to_scope(klass, scope);
+	  ctxt.associate_die_to_type(type_die, klass, where_offset);
+	  ctxt.maybe_schedule_declaration_only_class_for_resolution(klass);
+	  result = klass;
+	}
+    }
 
   return result;
 }
@@ -15388,7 +15418,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	  // non-suppressed instances are opaque versions of the
 	  // suppressed private type.  Lets return one of these opaque
 	  // types then.
-	  result = get_opaque_version_of_type(ctxt, scope, die);
+	  result = get_opaque_version_of_type(ctxt, scope, die, where_offset);
 	else if (!type_suppressed)
 	  {
 	    Dwarf_Die spec_die;
