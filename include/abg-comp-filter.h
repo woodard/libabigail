@@ -43,6 +43,12 @@ bool
 has_harmless_name_change(const decl_base_sptr& f, const decl_base_sptr& s);
 
 bool
+has_harmful_name_change(const decl_base_sptr& f, const decl_base_sptr& s);
+
+bool
+has_harmful_name_change(const diff* dif);
+
+bool
 has_virtual_mem_fn_change(const function_decl_diff* diff);
 
 bool

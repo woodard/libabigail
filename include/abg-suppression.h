@@ -800,7 +800,10 @@ const char*
 get_private_types_suppr_spec_label();
 
 bool
-is_private_type_suppr_spec(suppr::type_suppression&);
+is_private_type_suppr_spec(const type_suppression&);
+
+bool
+is_private_type_suppr_spec(const suppression_sptr& s);
 } // end namespace suppr
 
 } // end namespace abigail

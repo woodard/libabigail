@@ -323,8 +323,9 @@ public:
       return false;
 
   /// We don't want to display nodes suppressed by a user-provided
-  /// suppression specification.
-  if (category & SUPPRESSED_CATEGORY)
+  /// suppression specification or by a "private type" suppression
+  /// specification.
+    if (category & (SUPPRESSED_CATEGORY | PRIVATE_TYPE_CATEGORY))
     return true;
 
   // We don't want to display redundant diff nodes, when the user

@@ -279,7 +279,7 @@ default_reporter::report(const typedef_diff& d,
 	  // want to just know about the local changes of the typedef,
 	  // but also about the changes on the underlying type.
 	  diff_category c = dif->get_category();
-	  if (!(c & SUPPRESSED_CATEGORY))
+	  if (!(c & (SUPPRESSED_CATEGORY | PRIVATE_TYPE_CATEGORY)))
 	    {
 	      out << indent
 		  << "underlying type '"

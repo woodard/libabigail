@@ -2372,10 +2372,13 @@ bool
 diff::is_filtered_out() const
 {
   if (diff * canonical = get_canonical_diff())
-    if (canonical->get_category() & SUPPRESSED_CATEGORY)
-      // The canonical type was suppressed.  This means all the class
-      // of equivalence of that canonical type was suppressed.  So
-      // this node should be suppressed too.
+    if (canonical->get_category() & SUPPRESSED_CATEGORY
+	|| canonical->get_category() & PRIVATE_TYPE_CATEGORY)
+      // The canonical type was suppressed either by a user-provided
+      // suppression specification or by a "private-type" suppression
+      // specification..  This means all the class of equivalence of
+      // that canonical type was suppressed.  So this node should be
+      // suppressed too.
       return true;
   return priv_->is_filtered_out(get_category());
 }
@@ -2401,12 +2404,38 @@ diff::is_filtered_out_wrt_non_inherited_categories() const
 bool
 diff::is_suppressed() const
 {
+  bool is_private = false;
+  return is_suppressed(is_private);
+}
+
+/// Test if the current diff node has been suppressed by a
+/// user-provided suppression specification or by an auto-generated
+/// "private type" suppression specification.
+///
+/// Note that private type suppressions are auto-generated from the
+/// path to where public headers are, as given by the user.
+///
+/// @param is_private_type out parameter if the current diff node was
+/// suppressed because it's a private type then this parameter is set
+/// to true.
+///
+/// @return true if the current diff node has been suppressed by a
+/// user-provided suppression list.
+bool
+diff::is_suppressed(bool &is_private_type) const
+{
   const suppressions_type& suppressions = context()->suppressions();
-    for (suppressions_type::const_iterator i = suppressions.begin();
+  for (suppressions_type::const_iterator i = suppressions.begin();
        i != suppressions.end();
        ++i)
-    if ((*i)->suppresses_diff(this))
-      return true;
+    {
+      if ((*i)->suppresses_diff(this))
+	{
+	  if (is_private_type_suppr_spec(*i))
+	    is_private_type = true;
+	  return true;
+	}
+    }
   return false;
 }
 
@@ -2965,7 +2994,8 @@ operator<<(ostream& o, diff_category c)
       o << "STATIC_DATA_MEMBER_CHANGE_CATEGORY";
       emitted_a_category |= true;
     }
-  else if (c & HARMLESS_ENUM_CHANGE_CATEGORY)
+
+  if (c & HARMLESS_ENUM_CHANGE_CATEGORY)
     {
       if (emitted_a_category)
 	o << "|";
@@ -2978,6 +3008,22 @@ operator<<(ostream& o, diff_category c)
       if (emitted_a_category)
 	o << "|";
       o << "HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY";
+      emitted_a_category |= true;
+    }
+
+  if (c & SUPPRESSED_CATEGORY)
+    {
+      if (emitted_a_category)
+	o << "|";
+      o << "SUPPRESSED_CATEGORY";
+      emitted_a_category |= true;
+    }
+
+  if (c & PRIVATE_TYPE_CATEGORY)
+    {
+      if (emitted_a_category)
+	o << "|";
+      o << "PRIVATE_TYPE_CATEGORY";
       emitted_a_category |= true;
     }
 
@@ -3021,12 +3067,11 @@ operator<<(ostream& o, diff_category c)
       emitted_a_category |= true;
     }
 
-
-  if (c & SUPPRESSED_CATEGORY)
+  if (c & FN_PARM_TYPE_CV_CHANGE_CATEGORY)
     {
       if (emitted_a_category)
 	o << "|";
-      o << "SUPPRESSED_CATEGORY";
+      o << "FN_PARM_TYPE_CV_CHANGE_CATEGORY";
       emitted_a_category |= true;
     }
 
@@ -10553,7 +10598,17 @@ struct category_propagation_visitor : public diff_node_visitor
 	assert(diff);
 
 	diff_category c = diff->get_category();
-	c &= ~(REDUNDANT_CATEGORY|SUPPRESSED_CATEGORY);
+	// Do not propagate redundant and suppressed categories. Those
+	// are propagated in a specific pass elsewhere.
+	c &= ~(REDUNDANT_CATEGORY
+	       | SUPPRESSED_CATEGORY
+	       | PRIVATE_TYPE_CATEGORY);
+	// Also, if a (class) type has got a harmful name change, do not
+	// propagate harmless name changes coming from its sub-types
+	// (i.e, data members) to the class itself.
+	if (filtering::has_harmful_name_change(d))
+	  c &= ~HARMLESS_DECL_NAME_CHANGE_CATEGORY;
+
 	d->add_to_category(c);
 	if (!already_visited && canonical)
 	  if (update_canonical)
@@ -10629,15 +10684,19 @@ struct suppression_categorization_visitor : public diff_node_visitor
   virtual void
   visit_begin(diff* d)
   {
-    if (d->is_suppressed())
+    bool is_private_type = false;
+    if (d->is_suppressed(is_private_type))
       {
-	d->add_to_local_and_inherited_categories(SUPPRESSED_CATEGORY);
+	diff_category c = is_private_type
+	  ? PRIVATE_TYPE_CATEGORY
+	  : SUPPRESSED_CATEGORY;
+	d->add_to_local_and_inherited_categories(c);
 
 	// If a node was suppressed, all the other nodes of its class
 	// of equivalence are suppressed too.
 	diff *canonical_diff = d->get_canonical_diff();
 	if (canonical_diff != d)
-	  canonical_diff->add_to_category(SUPPRESSED_CATEGORY);
+	  canonical_diff->add_to_category(c);
       }
   }
 
@@ -10676,6 +10735,13 @@ struct suppression_categorization_visitor : public diff_node_visitor
 	&& (!d->has_local_changes()
 	    || is_pointer_diff(d)))
       {
+	// Note that we handle private diff nodes differently from
+	// generally suppressed diff nodes.  E.g, it's not because a
+	// type is private (and suppressed because of that; i.e, in
+	// the category PRIVATE_TYPE_CATEGORY) that a typedef to that
+	// type should also be private and so suppressed.  Private
+	// diff nodes thus have different propagation rules than
+	// generally suppressed rules.
 	for (vector<diff*>::const_iterator i = d->children_nodes().begin();
 	     i != d->children_nodes().end();
 	     ++i)

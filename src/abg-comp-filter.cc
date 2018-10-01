@@ -441,6 +441,41 @@ has_harmless_name_change(const decl_base_sptr& f, const decl_base_sptr& s)
 					       0))));
 }
 
+/// Test if two decls represents a harmful name change.
+///
+/// A harmful name change is a name change that is not harmless, so
+/// this function uses the function has_harmless_name_change.
+///
+/// @param f the first decl to consider in the comparison.
+///
+/// @param s the second decl to consider in the comparison.
+///
+/// @return true iff decl @p s represents a harmful name change over
+/// @p f.
+bool
+has_harmful_name_change(const decl_base_sptr& f, const decl_base_sptr& s)
+{return decl_name_changed(f, s) && ! has_harmless_name_change(f, s);}
+
+/// Test if a diff node represents a harmful name change.
+///
+/// A harmful name change is a name change that is not harmless, so
+/// this function uses the function has_harmless_name_change.
+///
+/// @param f the first decl to consider in the comparison.
+///
+/// @param s the second decl to consider in the comparison.
+///
+/// @return true iff decl @p s represents a harmful name change over
+/// @p f.
+bool
+has_harmful_name_change(const diff* dif)
+{
+  decl_base_sptr f = is_decl(dif->first_subject()),
+    s = is_decl(dif->second_subject());
+
+  return has_harmful_name_change(f, s);
+}
+
 /// Test if a class_diff node has non-static members added or
 /// removed.
 ///

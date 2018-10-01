@@ -1148,6 +1148,13 @@ test-diff-suppr/test38-char-class-in-ini-v0.o \
 test-diff-suppr/test38-char-class-in-ini-v1.c \
 test-diff-suppr/test38-char-class-in-ini-v1.o \
 test-diff-suppr/test38-char-class-in-ini.abignore \
+test-diff-suppr/test39-opaque-type-report-0.txt \
+test-diff-suppr/test39-opaque-type-v0.c \
+test-diff-suppr/test39-opaque-type-v1.c \
+test-diff-suppr/test39-opaque-type-v0.o \
+test-diff-suppr/test39-opaque-type-v1.o \
+test-diff-suppr/test39-public-headers-dir/test39-header-v0.h \
+test-diff-suppr/test39-public-headers-dir/test39-header-v1.h \
 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1.abi \

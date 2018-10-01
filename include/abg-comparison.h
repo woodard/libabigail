@@ -357,32 +357,38 @@ enum diff_category
   /// user-provided suppression specification.
   SUPPRESSED_CATEGORY = 1 << 7,
 
+  /// This means that a diff node was warked as being for a private
+  /// type.  That is, the diff node is meant to be suppressed by a
+  /// suppression specification that was auto-generated to filter out
+  /// changes to private types.
+  PRIVATE_TYPE_CATEGORY = 1 << 8,
+
   /// This means the diff node (or at least one of its descendant
   /// nodes) carries a change that modifies the size of a type or an
   /// offset of a type member.  Removal or changes of enumerators in a
   /// enum fall in this category too.
-  SIZE_OR_OFFSET_CHANGE_CATEGORY = 1 << 8,
+  SIZE_OR_OFFSET_CHANGE_CATEGORY = 1 << 9,
 
   /// This means that a diff node in the sub-tree carries an
   /// incompatible change to a vtable.
-  VIRTUAL_MEMBER_CHANGE_CATEGORY = 1 << 9,
+  VIRTUAL_MEMBER_CHANGE_CATEGORY = 1 << 10,
 
   /// A diff node in this category is redundant.  That means it's
   /// present as a child of a other nodes in the diff tree.
-  REDUNDANT_CATEGORY = 1 << 10,
+  REDUNDANT_CATEGORY = 1 << 11,
 
   /// This means that a diff node in the sub-tree carries a class type
   /// that was declaration-only and that is now defined, or vice
   /// versa.
-  CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY = 1 << 11,
+  CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY = 1 << 12,
 
   /// A diff node in this category is a function parameter type which
   /// top cv-qualifiers change.
-  FN_PARM_TYPE_TOP_CV_CHANGE_CATEGORY = 1 << 12,
+  FN_PARM_TYPE_TOP_CV_CHANGE_CATEGORY = 1 << 13,
 
   /// A diff node in this category is a function parameter type which
   /// cv-qualifiers change.
-  FN_PARM_TYPE_CV_CHANGE_CATEGORY = 1 << 13,
+  FN_PARM_TYPE_CV_CHANGE_CATEGORY = 1 << 14,
 
   /// A special enumerator that is the logical 'or' all the
   /// enumerators above.
@@ -398,6 +404,7 @@ enum diff_category
   | HARMLESS_ENUM_CHANGE_CATEGORY
   | HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY
   | SUPPRESSED_CATEGORY
+  | PRIVATE_TYPE_CATEGORY
   | SIZE_OR_OFFSET_CHANGE_CATEGORY
   | VIRTUAL_MEMBER_CHANGE_CATEGORY
   | REDUNDANT_CATEGORY
@@ -935,6 +942,9 @@ public:
 
   bool
   is_suppressed() const;
+
+  bool
+  is_suppressed(bool &is_private_type) const;
 
   bool
   to_be_reported() const;
