@@ -1076,6 +1076,48 @@ has_fn_parm_type_top_cv_qual_change(const diff* diff)
   return false;
 }
 
+/// Test if a type diff only carries a CV qualifier-only change.
+///
+/// @param type_dif the type dif to consider.
+///
+/// @return true iff the type_diff carries a CV qualifier only change.
+static bool
+type_diff_has_cv_qual_change_only(const diff *type_dif)
+{
+  if (!is_type_diff(type_dif))
+    return false;
+
+  if (is_pointer_diff(type_dif))
+    type_dif = peel_pointer_diff(type_dif);
+  else if (is_reference_diff(type_dif))
+    type_dif = peel_reference_diff(type_dif);
+
+  const type_base *f = 0;
+  const type_base *s = 0;
+  if (const distinct_diff *d = is_distinct_diff(type_dif))
+    {
+      if (is_qualified_type(d->first()) == is_qualified_type(d->second()))
+	return false;
+      else
+	{
+	  f = is_type(d->first()).get();
+	  s = is_type(d->second()).get();
+	}
+    }
+  else if (const qualified_type_diff *d = is_qualified_type_diff(type_dif))
+    {
+      f = is_type(d->first_qualified_type()).get();
+      s = is_type(d->second_qualified_type()).get();
+    }
+  else
+    return false;
+
+  f = peel_qualified_type(f);
+  s = peel_qualified_type(s);
+
+  return *f == *s;
+}
+
 /// Test if an @ref fn_parm_diff node has a cv qualifier change on the
 /// type of the function parameter. That is, we are looking for
 /// changes like 'const char*' to 'char*'.
@@ -1097,35 +1139,30 @@ has_fn_parm_type_cv_qual_change(const diff* dif)
     return false;
 
   const diff *type_dif = parm_diff->type_diff().get();
-  if (is_pointer_diff(type_dif))
-    type_dif = peel_pointer_diff(type_dif);
-  else if (is_reference_diff(type_dif))
-    type_dif = peel_reference_diff(type_dif);
+  return type_diff_has_cv_qual_change_only(type_dif);
+}
 
-  const type_base *f = 0;
-  const type_base *s = 0;
-  if (const distinct_diff *d = is_distinct_diff(type_dif))
-    {
-      if (is_qualified_type(d->first()) != is_qualified_type(d->second()))
-	{
-	  f = is_type(d->first()).get();
-	  s = is_type(d->second()).get();
-	}
-      else
-	return false;
-    }
-  else if (const qualified_type_diff *d = is_qualified_type_diff(type_dif))
-    {
-      f = is_type(d->first_qualified_type()).get();
-      s = is_type(d->second_qualified_type()).get();
-    }
-  else
+/// Test if a function type or decl diff node carries a CV
+/// qualifier-only change on its return type.
+///
+/// @param the dif to consider.  Note that if this is neither a
+/// function type nor decl diff node, the function returns false.
+///
+/// @return true iff @p dif is a function decl or type diff node which
+/// carries a CV qualifier-only change on its return type.
+static bool
+has_fn_return_type_cv_qual_change(const diff* dif)
+{
+  const function_type_diff* fn_type_diff = is_function_type_diff(dif);
+  if (!fn_type_diff)
+    if (const function_decl_diff* fn_decl_diff = is_function_decl_diff(dif))
+      fn_type_diff = fn_decl_diff->type_diff().get();
+
+  if (!fn_type_diff)
     return false;
 
-  f = peel_qualified_type(f);
-  s = peel_qualified_type(s);
-
-  return *f == *s;
+  const diff* return_type_diff = fn_type_diff->return_type_diff().get();
+  return type_diff_has_cv_qual_change_only(return_type_diff);
 }
 
 /// Detect if the changes carried by a given diff node are deemed
@@ -1183,6 +1220,9 @@ categorize_harmless_diff_node(diff *d, bool pre)
 
       if (has_fn_parm_type_cv_qual_change(d))
 	category |= FN_PARM_TYPE_CV_CHANGE_CATEGORY;
+
+      if (has_fn_return_type_cv_qual_change(d))
+	category |= FN_RETURN_TYPE_CV_CHANGE_CATEGORY;
 
       if (category)
 	{

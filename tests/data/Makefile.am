@@ -673,6 +673,11 @@ test-diff-filter/libtest45-basic-type-change-v0.so \
 test-diff-filter/libtest45-basic-type-change-v1.so \
 test-diff-filter/test45-basic-type-change-v0.cc \
 test-diff-filter/test45-basic-type-change-v1.cc \
+test-diff-filter/test46-fn-return-qual-change-report-0.txt \
+test-diff-filter/test46-fn-return-qual-change-v0.c \
+test-diff-filter/test46-fn-return-qual-change-v1.c \
+test-diff-filter/test46-fn-return-qual-change-v0.o \
+test-diff-filter/test46-fn-return-qual-change-v1.o \
 \
 test-diff-suppr/test0-type-suppr-v0.cc	\
 test-diff-suppr/test0-type-suppr-v1.cc	\

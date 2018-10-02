@@ -386,9 +386,13 @@ enum diff_category
   /// top cv-qualifiers change.
   FN_PARM_TYPE_TOP_CV_CHANGE_CATEGORY = 1 << 13,
 
-  /// A diff node in this category is a function parameter type which
+  /// A diff node in this category has a function parameter type with a
   /// cv-qualifiers change.
   FN_PARM_TYPE_CV_CHANGE_CATEGORY = 1 << 14,
+
+  /// A diff node in this category is a function return type with a
+  /// cv-qualifier change.
+  FN_RETURN_TYPE_CV_CHANGE_CATEGORY = 1 << 15,
 
   /// A special enumerator that is the logical 'or' all the
   /// enumerators above.
@@ -411,6 +415,7 @@ enum diff_category
   | CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY
   | FN_PARM_TYPE_TOP_CV_CHANGE_CATEGORY
   | FN_PARM_TYPE_CV_CHANGE_CATEGORY
+  | FN_RETURN_TYPE_CV_CHANGE_CATEGORY
 }; // enum diff_category
 
 diff_category
