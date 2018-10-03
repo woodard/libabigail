@@ -394,6 +394,10 @@ enum diff_category
   /// cv-qualifier change.
   FN_RETURN_TYPE_CV_CHANGE_CATEGORY = 1 << 15,
 
+  /// A diff node in this category carries a change from void pointer
+  /// to non-void pointer.
+  VOID_PTR_TO_PTR_CHANGE_CATEGORY = 1 << 16,
+
   /// A special enumerator that is the logical 'or' all the
   /// enumerators above.
   ///
@@ -416,6 +420,7 @@ enum diff_category
   | FN_PARM_TYPE_TOP_CV_CHANGE_CATEGORY
   | FN_PARM_TYPE_CV_CHANGE_CATEGORY
   | FN_RETURN_TYPE_CV_CHANGE_CATEGORY
+  | VOID_PTR_TO_PTR_CHANGE_CATEGORY
 }; // enum diff_category
 
 diff_category

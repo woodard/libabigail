@@ -528,6 +528,20 @@ InOutSpec in_out_specs[] =
     "data/test-diff-filter/libtest45-basic-type-change-report-1.txt",
     "output/test-diff-filter/libtest45-basic-type-change-report-1.txt",
   },
+  {
+    "data/test-diff-filter/test46-fn-return-qual-change-v0.o",
+    "data/test-diff-filter/test46-fn-return-qual-change-v1.o",
+    "--no-default-suppression",
+    "data/test-diff-filter/test46-fn-return-qual-change-report-0.txt",
+    "output/test-diff-filter/test46-fn-return-qual-change-report-0.txt",
+  },
+  {
+    "data/test-diff-filter/test47-filter-void-ptr-change-v0.o",
+    "data/test-diff-filter/test47-filter-void-ptr-change-v1.o",
+    "--no-default-suppression",
+    "data/test-diff-filter/test47-filter-void-ptr-change-report-0.txt",
+    "output/test-diff-filter/test47-filter-void-ptr-change-report-0.txt",
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };

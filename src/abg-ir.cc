@@ -7061,6 +7061,30 @@ reference_type_def_sptr
 is_reference_type(const type_or_decl_base_sptr& t)
 {return dynamic_pointer_cast<reference_type_def>(t);}
 
+/// Test if a type is a pointer to void type.
+///
+/// Note that this looks trough typedefs or CV qualifiers to look for
+/// the void pointer.
+///
+/// @param type the type to consider.
+///
+/// @return the actual void pointer if @p is a void pointer or NULL if
+/// it's not.
+const type_base*
+is_void_pointer_type(const type_base* type)
+{
+  type = peel_qualified_or_typedef_type(type);
+
+  const pointer_type_def * t = is_pointer_type(type);
+  if (!t)
+    return 0;
+
+  if (t->get_environment()->is_void_type(t->get_pointed_to_type()))
+    return t;
+
+  return 0;
+}
+
 /// Test whether a type is a reference_type_def.
 ///
 /// @param t the type to test.

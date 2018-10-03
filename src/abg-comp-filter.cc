@@ -1165,6 +1165,65 @@ has_fn_return_type_cv_qual_change(const diff* dif)
   return type_diff_has_cv_qual_change_only(return_type_diff);
 }
 
+/// Test if a diff node carries a void* to pointer type change.
+///
+/// Note that this function looks through typedef and qualifier types
+/// to find the void pointer.
+///
+/// @param dif the diff node to consider.
+///
+/// @return true iff @p dif carries a void* to pointer type change.
+static bool
+has_void_ptr_to_ptr_change(const diff* dif)
+{
+  dif = peel_typedef_diff(dif);
+
+  if (const distinct_diff *d = is_distinct_diff(dif))
+    {
+      const type_base *f = is_type(d->first().get());
+      const type_base *s = is_type(d->second().get());
+
+      f = peel_qualified_or_typedef_type(f);
+      s = peel_qualified_or_typedef_type(s);
+
+      if (is_void_pointer_type(f)
+	  && is_pointer_type(s)
+	  && !is_void_pointer_type(s)
+	  && f->get_size_in_bits() == s->get_size_in_bits())
+	return true;
+    }
+  else if (const pointer_diff *d = is_pointer_diff(dif))
+    {
+      const type_base *f = is_type(d->first_pointer()).get();
+      const type_base *s = is_type(d->second_pointer()).get();
+
+      f = peel_qualified_or_typedef_type(f);
+      s = peel_qualified_or_typedef_type(s);
+
+      if (is_void_pointer_type(f)
+	  && is_pointer_type(s)
+	  && !is_void_pointer_type(s)
+	  && f->get_size_in_bits() == s->get_size_in_bits())
+	return true;
+    }
+  else if (const qualified_type_diff *d = is_qualified_type_diff(dif))
+    {
+      const type_base *f = is_type(d->first_qualified_type()).get();
+      const type_base *s = is_type(d->second_qualified_type()).get();
+
+      f = peel_qualified_or_typedef_type(f);
+      s = peel_qualified_or_typedef_type(s);
+
+      if (is_void_pointer_type(f)
+	  && is_pointer_type(s)
+	  && !is_void_pointer_type(s)
+	  && f->get_size_in_bits() == s->get_size_in_bits())
+	return true;
+    }
+
+  return false;
+}
+
 /// Detect if the changes carried by a given diff node are deemed
 /// harmless and do categorize the diff node accordingly.
 ///
@@ -1223,6 +1282,9 @@ categorize_harmless_diff_node(diff *d, bool pre)
 
       if (has_fn_return_type_cv_qual_change(d))
 	category |= FN_RETURN_TYPE_CV_CHANGE_CATEGORY;
+
+      if (has_void_ptr_to_ptr_change(d))
+	category |= VOID_PTR_TO_PTR_CHANGE_CATEGORY;
 
       if (category)
 	{

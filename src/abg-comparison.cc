@@ -2923,7 +2923,8 @@ get_default_harmless_categories_bitmap()
 	  | abigail::comparison::CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY
 	  | abigail::comparison::FN_PARM_TYPE_TOP_CV_CHANGE_CATEGORY
 	  | abigail::comparison::FN_PARM_TYPE_CV_CHANGE_CATEGORY
-	  | abigail::comparison::FN_RETURN_TYPE_CV_CHANGE_CATEGORY);
+	  | abigail::comparison::FN_RETURN_TYPE_CV_CHANGE_CATEGORY
+	  | abigail::comparison::VOID_PTR_TO_PTR_CHANGE_CATEGORY);
 }
 
 /// Getter of a bitmap made of the set of change categories that are
@@ -3081,6 +3082,14 @@ operator<<(ostream& o, diff_category c)
       if (emitted_a_category)
 	o << "|";
       o << "FN_RETURN_TYPE_CV_CHANGE_CATEGORY";
+      emitted_a_category |= true;
+    }
+
+    if (c & VOID_PTR_TO_PTR_CHANGE_CATEGORY)
+    {
+      if (emitted_a_category)
+	o << "|";
+      o << "VOID_PTR_TO_PTR_CHANGE_CATEGORY";
       emitted_a_category |= true;
     }
 

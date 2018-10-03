@@ -678,6 +678,11 @@ test-diff-filter/test46-fn-return-qual-change-v0.c \
 test-diff-filter/test46-fn-return-qual-change-v1.c \
 test-diff-filter/test46-fn-return-qual-change-v0.o \
 test-diff-filter/test46-fn-return-qual-change-v1.o \
+test-diff-filter/test47-filter-void-ptr-change-report-0.txt \
+test-diff-filter/test47-filter-void-ptr-change-v0.c \
+test-diff-filter/test47-filter-void-ptr-change-v1.c \
+test-diff-filter/test47-filter-void-ptr-change-v0.o \
+test-diff-filter/test47-filter-void-ptr-change-v1.o \
 \
 test-diff-suppr/test0-type-suppr-v0.cc	\
 test-diff-suppr/test0-type-suppr-v1.cc	\
