@@ -667,8 +667,8 @@ type_suppression::suppresses_diff(const diff* diff) const
   if (!suppresses_type(ft, d->context())
       && !suppresses_type(st, d->context()))
     {
-      // A private type suppression specification considers tha a type
-      // can be private and yet some typedefs of that type can be
+      // A private type suppression specification considers that a
+      // type can be private and yet some typedefs of that type can be
       // public -- depending on, e.g, if the typedef is defined in a
       // public header or not.  So if we are in the context of a
       // private type suppression let's *NOT* peel typedefs away.
