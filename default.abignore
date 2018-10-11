@@ -159,3 +159,16 @@
 ##########################################
 # End of krb5 suppression specifications
 #########################################
+
+
+#############################################
+# libvirt default suppression specifications
+#############################################
+[suppress_function]
+  # Suppress ABI change reports about functions with symbol version
+  # LIBVIRT_PRIVATE
+  symbol_version = LIBVIRT_PRIVATE
+  soname_regexp = libvirt\\.so.*
+####################################################
+# End of libvirt default suppression specifications
+####################################################
