@@ -146,3 +146,16 @@
 #####################################################################
 # End of "Do not compare the kernel.img file from the grub2 package"
 #####################################################################
+
+
+##########################################
+# krb5 default suppression specifications
+#########################################
+[suppress_function]
+  # Suppress ABI change reports about functions starting with the name
+  # krb5int_* in libraries named libkrb5<something>.so
+  soname_regexp = libkrb5.*\\.so.*
+  name_regexp = ^krb5int_.*
+##########################################
+# End of krb5 suppression specifications
+#########################################
