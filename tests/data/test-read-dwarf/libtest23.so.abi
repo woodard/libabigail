@@ -1749,8 +1749,8 @@
       <class-decl name='__normal_iterator&lt;char const*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-83'/>
     </namespace-decl>
 
-    <array-type-def dimensions='1' type-id='type-id-24' size-in-bits='64' id='type-id-91'>
-      <subrange length='1' id='type-id-105'/>
+    <array-type-def dimensions='1' type-id='type-id-24' size-in-bits='infinite' id='type-id-91'>
+      <subrange length='infinite' id='type-id-105'/>
 
     </array-type-def>
     <reference-type-def kind='lvalue' type-id='type-id-89' size-in-bits='64' id='type-id-92'/>

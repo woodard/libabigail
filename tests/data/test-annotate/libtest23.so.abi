@@ -997,7 +997,7 @@
               <var-decl name='_S_terminal' type-id='type-id-9' visibility='default' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='55' column='1'/>
             </data-member>
             <data-member access='public' static='yes'>
-              <!-- static unsigned long int std::basic_string<char, std::char_traits<char>, std::allocator<char> >::_Rep::_S_empty_rep_storage[1] -->
+              <!-- static unsigned long int std::basic_string<char, std::char_traits<char>, std::allocator<char> >::_Rep::_S_empty_rep_storage[] -->
               <var-decl name='_S_empty_rep_storage' type-id='type-id-91' visibility='default' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='66' column='1'/>
             </data-member>
             <member-function access='public' static='yes'>
@@ -2826,10 +2826,10 @@
       <class-decl name='__normal_iterator&lt;char const*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-83'/>
     </namespace-decl>
 
-    <!-- unsigned long int[1] -->
-    <array-type-def dimensions='1' type-id='type-id-24' size-in-bits='64' id='type-id-91'>
-      <!-- <anonymous range>[1] -->
-      <subrange length='1' id='type-id-105'/>
+    <!-- unsigned long int[] -->
+    <array-type-def dimensions='1' type-id='type-id-24' size-in-bits='infinite' id='type-id-91'>
+      <!-- <anonymous range>[] -->
+      <subrange length='infinite' id='type-id-105'/>
 
     </array-type-def>
     <!-- std::basic_string<char, std::char_traits<char>, std::allocator<char> >::_Rep& -->

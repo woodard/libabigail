@@ -14031,6 +14031,7 @@ build_subrange_type(read_context&	ctxt,
   uint64_t lower_bound = get_default_array_lower_bound(language);
   uint64_t upper_bound = 0;
   uint64_t count = 0;
+  bool is_infinite = false;
 
   // The DWARF 4 specifications says, in [5.11 Subrange
   // Type Entries]:
@@ -14064,6 +14065,20 @@ build_subrange_type(read_context&	ctxt,
       // array:
       if (size_t u = lower_bound + count)
 	upper_bound = u - 1;
+
+      if (upper_bound == 0 && count == 0)
+	// No upper_bound nor count was present on the DIE, this means
+	// the array is considered to have an infinite (or rather not
+	// known) size.
+	is_infinite = true;
+    }
+
+  if (UINT64_MAX == upper_bound)
+    {
+      // Of the upper_bound size is the max of the integer value, then
+      // it most certainly means infinite size.
+      is_infinite = true;
+      upper_bound = 0;
     }
 
   result.reset
@@ -14072,6 +14087,7 @@ build_subrange_type(read_context&	ctxt,
 				       lower_bound,
 				       upper_bound,
 				       location()));
+  result->is_infinite(is_infinite);
 
   // load the underlying type.
   Dwarf_Die underlying_type_die;

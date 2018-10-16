@@ -3710,8 +3710,14 @@ build_subrange_type(read_context&	ctxt,
 
   size_t length = 0;
   string length_str;
+  bool is_infinite = false;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "length"))
-    length = atoi(CHAR_STR(s));
+    {
+      if (string(CHAR_STR(s)) == "infinite")
+	is_infinite = true;
+      else
+	length = atoi(CHAR_STR(s));
+    }
 
   string underlying_type_id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
@@ -3728,11 +3734,17 @@ build_subrange_type(read_context&	ctxt,
   read_location(ctxt, node, loc);
 
   // Note that DWARF would actually have a lower_bound of -1 for an
-  // array of length 0
+  // array of length 0.
+  size_t max_bound = 0;
+  if (!is_infinite)
+    if (length > 0)
+      max_bound = length - 1;
+
   array_type_def::subrange_sptr p
     (new array_type_def::subrange_type(ctxt.get_environment(),
-				       name, 0, length - 1,
+				       name, 0, max_bound,
 				       underlying_type, loc));
+  p->is_infinite(is_infinite);
 
   return p;
 }

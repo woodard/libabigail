@@ -1966,8 +1966,8 @@
     <function-type size-in-bits='64' id='type-id-49'>
       <return type-id='type-id-8'/>
     </function-type>
-    <array-type-def dimensions='1' type-id='type-id-31' size-in-bits='64' id='type-id-36'>
-      <subrange length='1' type-id='type-id-90' id='type-id-138'/>
+    <array-type-def dimensions='1' type-id='type-id-31' size-in-bits='infinite' id='type-id-36'>
+      <subrange length='infinite' type-id='type-id-90' id='type-id-138'/>
 
     </array-type-def>
     <reference-type-def kind='lvalue' type-id='type-id-30' size-in-bits='64' id='type-id-44'/>
@@ -5088,15 +5088,15 @@
     <pointer-type-def type-id='type-id-381' size-in-bits='64' id='type-id-353'/>
     <qualified-type-def type-id='type-id-353' const='yes' id='type-id-382'/>
 
-    <array-type-def dimensions='1' type-id='type-id-382' size-in-bits='64' id='type-id-347'>
-      <subrange length='1' type-id='type-id-90' id='type-id-138'/>
+    <array-type-def dimensions='1' type-id='type-id-382' size-in-bits='infinite' id='type-id-347'>
+      <subrange length='infinite' type-id='type-id-90' id='type-id-138'/>
 
     </array-type-def>
     <pointer-type-def type-id='type-id-382' size-in-bits='64' id='type-id-352'/>
     <qualified-type-def type-id='type-id-352' const='yes' id='type-id-383'/>
 
-    <array-type-def dimensions='1' type-id='type-id-383' size-in-bits='64' id='type-id-348'>
-      <subrange length='1' type-id='type-id-90' id='type-id-138'/>
+    <array-type-def dimensions='1' type-id='type-id-383' size-in-bits='infinite' id='type-id-348'>
+      <subrange length='infinite' type-id='type-id-90' id='type-id-138'/>
 
     </array-type-def>
     <pointer-type-def type-id='type-id-345' size-in-bits='64' id='type-id-349'/>

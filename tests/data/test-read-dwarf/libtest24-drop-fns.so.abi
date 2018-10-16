@@ -818,8 +818,8 @@
     <qualified-type-def type-id='type-id-10' const='yes' id='type-id-28'/>
     <typedef-decl name='_Atomic_word' type-id='type-id-5' filepath='/usr/include/c++/5.3.1/x86_64-redhat-linux/bits/atomic_word.h' line='32' column='1' id='type-id-26'/>
 
-    <array-type-def dimensions='1' type-id='type-id-35' size-in-bits='64' id='type-id-30'>
-      <subrange length='1' id='type-id-104'/>
+    <array-type-def dimensions='1' type-id='type-id-35' size-in-bits='infinite' id='type-id-30'>
+      <subrange length='infinite' id='type-id-104'/>
 
     </array-type-def>
     <qualified-type-def type-id='type-id-27' const='yes' id='type-id-105'/>

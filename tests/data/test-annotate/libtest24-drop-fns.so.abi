@@ -110,7 +110,7 @@
               <var-decl name='_S_terminal' type-id='type-id-27' visibility='default' filepath='/usr/include/c++/5.3.1/bits/basic_string.tcc' line='499' column='1'/>
             </data-member>
             <data-member access='public' static='yes'>
-              <!-- static unsigned long int std::basic_string<char, std::char_traits<char>, std::allocator<char> >::_Rep::_S_empty_rep_storage[1] -->
+              <!-- static unsigned long int std::basic_string<char, std::char_traits<char>, std::allocator<char> >::_Rep::_S_empty_rep_storage[] -->
               <var-decl name='_S_empty_rep_storage' type-id='type-id-28' visibility='default' filepath='/usr/include/c++/5.3.1/bits/basic_string.tcc' line='510' column='1'/>
             </data-member>
             <member-function access='public' static='yes'>
@@ -2426,10 +2426,10 @@
     <!-- typedef int _Atomic_word -->
     <typedef-decl name='_Atomic_word' type-id='type-id-37' filepath='/usr/include/c++/5.3.1/x86_64-redhat-linux/bits/atomic_word.h' line='32' column='1' id='type-id-24'/>
 
-    <!-- unsigned long int[1] -->
-    <array-type-def dimensions='1' type-id='type-id-45' size-in-bits='64' id='type-id-28'>
-      <!-- <anonymous range>[1] -->
-      <subrange length='1' id='type-id-78'/>
+    <!-- unsigned long int[] -->
+    <array-type-def dimensions='1' type-id='type-id-45' size-in-bits='infinite' id='type-id-28'>
+      <!-- <anonymous range>[] -->
+      <subrange length='infinite' id='type-id-78'/>
 
     </array-type-def>
     <!-- std::basic_string<char, std::char_traits<char>, std::allocator<char> >::_Rep& -->

@@ -12618,10 +12618,11 @@ struct array_type_def::subrange_type::priv
   size_t		upper_bound_;
   type_base_wptr	underlying_type_;
   translation_unit::language language_;
+  bool			infinite_;
 
   priv(size_t ub,
        translation_unit::language l = translation_unit::LANG_C11)
-    : lower_bound_(0), upper_bound_(ub), language_(l)
+    : lower_bound_(0), upper_bound_(ub), language_(l), infinite_(false)
   {}
 
   priv(size_t lb, size_t ub,
@@ -12764,17 +12765,34 @@ array_type_def::subrange_type::set_lower_bound(size_t lb)
 
 /// Getter of the length of the subrange type.
 ///
+/// Note that a length of zero means the array has an infinite (or
+/// rather a non-known) size.
+///
 /// @return the length of the subrange type.
 size_t
 array_type_def::subrange_type::get_length() const
-{return get_upper_bound() - get_lower_bound() + 1;}
+{
+  if (is_infinite())
+    return 0;
+
+  assert(get_upper_bound() >= get_lower_bound());
+  return get_upper_bound() - get_lower_bound() + 1;
+}
 
 /// Test if the length of the subrange type is infinite.
 ///
 /// @return true iff the length of the subrange type is infinite.
 bool
 array_type_def::subrange_type::is_infinite() const
-{return get_length() == 0;}
+{return priv_->infinite_;}
+
+/// Set the infinite-ness status of the subrange type.
+///
+/// @param f true iff the length of the subrange type should be set to
+/// being infinite.
+void
+array_type_def::subrange_type::is_infinite(bool f)
+{priv_->infinite_ = f;}
 
 /// Getter of the language that generated this type.
 ///
@@ -12798,6 +12816,8 @@ array_type_def::subrange_type::as_string() const
 	o << ir::get_pretty_representation(underlying_type, false) << " ";
       o << "range "<< get_lower_bound() << " .. " << get_upper_bound();
     }
+  else if (is_infinite())
+    o << "[]";
   else
     o << "["  << get_length() << "]";
 

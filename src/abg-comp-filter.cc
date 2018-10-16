@@ -1224,6 +1224,44 @@ has_void_ptr_to_ptr_change(const diff* dif)
   return false;
 }
 
+/// Test if a diff node carries a benign change to the size of a
+/// variable of type array.
+///
+/// A benign size change is a change in size (from or to infinite) of
+/// the array as expressed by the debug info, but when the *ELF* size
+/// (what really matters) of the variable object hasn't changed.  This
+/// happens when the debug info emitter did have trouble figuring out
+/// the actual size of the array.
+///
+/// @param dif the diff node to consider.
+///
+/// @return true iff @p dif contains the benign array type size change.
+static bool
+has_benign_infinite_array_change(const diff* dif)
+{
+  if (const var_diff* var_dif = is_var_diff(dif))
+    {
+      if (!var_dif->first_var()->get_symbol()
+	  || var_dif->second_var()->get_symbol())
+	return false;
+
+      if (var_dif->first_var()->get_symbol()->get_size()
+	  != var_dif->second_var()->get_symbol()->get_size())
+	return false;
+
+      const diff *d = var_dif->type_diff().get();
+      if (!d)
+	return false;
+      d = peel_qualified_diff(d);
+      if (const array_diff *a = is_array_diff(d))
+	{
+	  array_type_def_sptr f = a->first_array(), s = a->second_array();
+	  if (f->is_infinite() != s->is_infinite())
+	    return true;
+	}
+    }
+  return false;
+}
 /// Detect if the changes carried by a given diff node are deemed
 /// harmless and do categorize the diff node accordingly.
 ///
@@ -1285,6 +1323,9 @@ categorize_harmless_diff_node(diff *d, bool pre)
 
       if (has_void_ptr_to_ptr_change(d))
 	category |= VOID_PTR_TO_PTR_CHANGE_CATEGORY;
+
+      if (has_benign_infinite_array_change(d))
+	category |= BENIGN_INFINITE_ARRAY_CHANGE_CATEGORY;
 
       if (category)
 	{

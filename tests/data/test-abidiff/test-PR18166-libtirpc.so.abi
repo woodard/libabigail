@@ -2377,8 +2377,8 @@
     <typedef-decl name='__off_t' type-id='type-id-46' filepath='/usr/include/x86_64-linux-gnu/bits/types.h' line='141' column='1' id='type-id-346'/>
     <type-decl name='signed char' size-in-bits='8' id='type-id-347'/>
 
-    <array-type-def dimensions='1' type-id='type-id-11' size-in-bits='8' id='type-id-348'>
-      <subrange length='1' type-id='type-id-19' id='type-id-352'/>
+    <array-type-def dimensions='1' type-id='type-id-11' size-in-bits='infinite' id='type-id-348'>
+      <subrange type-id='type-id-19' id='type-id-352'/>
 
     </array-type-def>
     <typedef-decl name='__off64_t' type-id='type-id-46' filepath='/usr/include/x86_64-linux-gnu/bits/types.h' line='142' column='1' id='type-id-349'/>
@@ -3936,8 +3936,8 @@
       </data-member>
     </class-decl>
 
-    <array-type-def dimensions='1' type-id='type-id-128' size-in-bits='8' id='type-id-465'>
-      <subrange length='1' type-id='type-id-19' id='type-id-352'/>
+    <array-type-def dimensions='1' type-id='type-id-128' size-in-bits='infinite' id='type-id-465'>
+      <subrange type-id='type-id-19' id='type-id-352'/>
 
     </array-type-def>
     <pointer-type-def type-id='type-id-464' size-in-bits='64' id='type-id-466'/>

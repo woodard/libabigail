@@ -2102,6 +2102,9 @@ public:
     bool
     is_infinite() const;
 
+    void
+    is_infinite(bool);
+
     translation_unit::language
     get_language() const;
 

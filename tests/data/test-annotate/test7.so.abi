@@ -29,7 +29,7 @@
         <var-decl name='e' type-id='type-id-7' visibility='default' filepath='/home/ooprala/rh/u/libabigail/tests/data/test-read-dwarf/test7.cc' line='7' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2248'>
-        <!-- char S::f[0] -->
+        <!-- char S::f[] -->
         <var-decl name='f' type-id='type-id-8' visibility='default' filepath='/home/ooprala/rh/u/libabigail/tests/data/test-read-dwarf/test7.cc' line='8' column='1'/>
       </data-member>
     </class-decl>
@@ -92,9 +92,9 @@
 
     </array-type-def>
 
-    <!-- char[0] -->
+    <!-- char[] -->
     <array-type-def dimensions='1' type-id='type-id-11' size-in-bits='infinite' id='type-id-8'>
-      <!-- <anonymous range>[0] -->
+      <!-- <anonymous range>[] -->
       <subrange length='infinite' type-id='type-id-9' id='type-id-22'/>
 
     </array-type-def>
