@@ -62,6 +62,10 @@ ABG_BEGIN_EXPORT_DECLARATIONS
 ABG_END_EXPORT_DECLARATIONS
 // </headers defining libabigail's API>
 
+#ifndef UINT64_MAX
+#define UINT64_MAX 0xffffffffffffffff
+#endif
+
 using std::string;
 
 namespace abigail
