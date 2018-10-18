@@ -920,14 +920,21 @@ is_mostly_distinct_diff(const diff *d)
     return true;
 
   // Let's consider that 'd' is a type diff ...
-  type_diff_base* td = const_cast<type_diff_base*>(is_type_diff(d));
+  diff * td = const_cast<type_diff_base*>(is_type_diff(d));
   if (!td)
     {
       // ... or a function parameter diff.  In which case, let's get
-      // its child type diff.
+      // its child type diff ...
       fn_parm_diff *pd = const_cast<fn_parm_diff*>(is_fn_parm_diff(d));
       if (pd)
-	td = const_cast<type_diff_base*>(is_type_diff(pd->type_diff().get()));
+	{
+	  td = const_cast<type_diff_base*>(is_type_diff(pd->type_diff().get()));
+	  if (!td)
+	    // if the diff of the fn_parm_diff is a a distinct diff
+	    // then handle it.
+	    td = const_cast<distinct_diff*>
+	      (is_distinct_diff(pd->type_diff().get()));
+	}
       else
 	return false;
     }
