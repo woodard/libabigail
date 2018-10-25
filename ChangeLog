@@ -1,3 +1,307 @@
+2018-10-25  Dodji Seketeli <dodji@redhat.com>
+
+	Update NEWS file for 1.5
+	* NEWS: Update for 1.5
+
+2018-10-18  Dodji Seketeli <dodji@redhat.com>
+
+	Bug rhbz1638554 - assertion failed in is_mostly_distinct_diff
+	* src/abg-comp-filter.cc (is_mostly_distinct_diff): Handle the
+	case of the type diff of the function parameter diff being a
+	distinct diff.
+
+2018-10-17  Dodji Seketeli <dodji@redhat.com>
+
+	Define UINT64_MAX when it's not defined
+	* src/abg-dwarf-reader.cc: Define UINT64_MAX when it's not defined.
+
+2018-10-16  Dodji Seketeli <dodji@redhat.com>
+
+	Better support array with unknown upper bound
+	* include/abg-comparison.h
+	(BENIGN_INFINITE_ARRAY_CHANGE_CATEGORY): A new enumerator in the
+	diff_category enum.
+	(EVERYTHING_CATEGORY): Adjust.
+	* src/abg-comparison.cc (get_default_harmless_categories_bitmap):
+	Adjust.
+	(operator<<(ostream& o, diff_category)): Likewise.
+	* include/abg-ir.h (array_type_def::subrange_type::is_infinite):
+	Declare new member function.
+	* src/abg-ir.cc (array_type_def::subrange_type::priv::infinite_):
+	New data member.
+	(array_type_def::subrange_type::priv::priv): Initialize it.
+	(array_type_def::subrange_type::get_length): Better support
+	unknown sized subrange.
+	(array_type_def::subrange_type::is_infinite): Define new member
+	function.
+	* src/abg-comp-filter.cc (has_benign_infinite_array_change):
+	Define new static function.
+	(categorize_harmless_diff_node): Use the new
+	has_benign_infinite_array_change above.
+	* src/abg-dwarf-reader.cc (build_subrange_type): Better recognize a
+	subrange type with unknown upper bound.  Represent that with the
+	new array_type_def::subrange_type::is_infinite member property.
+	* src/abg-reader.cc (build_subrange_type): Likewise.
+	* tests/data/test-abidiff/test-PR18166-libtirpc.so.abi: Adjust.
+	* tests/data/test-annotate/libtest23.so.abi: Likewise.
+	* tests/data/test-annotate/libtest24-drop-fns-2.so.abi: Likewise.
+	* tests/data/test-annotate/libtest24-drop-fns.so.abi: Likewise.
+	* tests/data/test-annotate/test14-pr18893.so.abi: Likewise.
+	* tests/data/test-annotate/test19-pr19023-libtcmalloc_and_profiler.so.abi:
+	Likewise.
+	* tests/data/test-annotate/test7.so.abi: Likewise.
+	* tests/data/test-read-dwarf/libtest23.so.abi: Likewise.
+	* tests/data/test-read-dwarf/libtest24-drop-fns-2.so.abi: Likewise.
+	* tests/data/test-read-dwarf/libtest24-drop-fns.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test10-pr18818-gcc.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test11-pr18828.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test14-pr18893.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test19-pr19023-libtcmalloc_and_profiler.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test9-pr18818-clang.so.abi: Likewise.
+
+2018-10-11  Dodji Seketeli <dodji@redhat.com>
+
+	Add default suppression specification for the libvirt project
+	* default.abignore: Suppress changes on functions with symbol
+	version LIBVIRT_PRIVATE in libvirt.so.* shared objects.
+
+2018-10-11  Dodji Seketeli <dodji@redhat.com>
+
+	Add default suppression specification for the krb5 project
+	* default.abignore: Ignore changes about functions starting with
+	krb5int_.*.
+
+2018-10-03  Dodji Seketeli <dodji@redhat.com>
+
+	Misc comment fix
+	* src/abg-suppression.cc (type_suppression::suppresses_diff): Fix
+	comment.
+
+2018-10-03  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 23708 - categorize void* to pointer change as harmless
+	* include/abg-comparison.h (VOID_PTR_TO_PTR_CHANGE_CATEGORY): New
+	enumerator in the diff_category enum.  Also, adjust the
+	EVERYTHING_CATEGORY enumerator.
+	* include/abg-fwd.h (is_void_pointer_type): Declare new function.
+	* src/abg-comp-filter.cc (has_void_ptr_to_ptr_change): Define new
+	static function and ...
+	(categorize_harmless_diff_node): ... use it here.
+	* src/abg-comparison.cc (get_default_harmless_categories_bitmap):
+	Add the new abigail::comparison::VOID_PTR_TO_PTR_CHANGE_CATEGORY
+	category in here.
+	(operator<<(ostream& o, diff_category c)): Add support for the new
+	VOID_PTR_TO_PTR_CHANGE_CATEGORY.
+	* src/abg-ir.cc	(is_void_pointer_type): Define new function.
+	* tests/data/Makefile.am: Add the new test material below to source distribution.
+	* tests/data/test-diff-filter/test47-filter-void-ptr-change-report-0.txt:
+	New test reference output.
+	* tests/data/test-diff-filter/test47-filter-void-ptr-change-v{0,1}.c:
+	Source code of the new binary test input below.
+	* tests/data/test-diff-filter/test47-filter-void-ptr-change-v{0,1}.o:
+	New binary test input.
+	* tests/test-diff-filter.cc: Add the test input/output above to
+	test harness.
+
+2018-10-02  Dodji Seketeli <dodji@redhat.com>
+
+	Categorize CV qualifier changes on fn return types as harmless
+	* include/abg-comparison.h (FN_RETURN_TYPE_CV_CHANGE_CATEGORY):
+	New enumerator for diff_category.
+	(EVERYTHING_CATEGORY): Update.
+	* src/abg-comp-filter.cc (type_diff_has_cv_qual_change_only):
+	Factorize this function out of ...
+	(has_fn_parm_type_cv_qual_change): ... this one.
+	(has_fn_return_type_cv_qual_change): Define new static function.
+	(categorize_harmless_diff_node): Use the new
+	has_fn_return_type_cv_qual_change.
+	* src/abg-comparison.cc (get_default_harmless_categories_bitmap):
+	Adjust to add the new FN_RETURN_TYPE_CV_CHANGE_CATEGORY category.
+	(operator<<(ostream& o, diff_category c)): Support the new
+	FN_RETURN_TYPE_CV_CHANGE_CATEGORY.
+	* tests/data/Makefile.am: Add the new test material below to
+	source distribution.
+	* tests/data/test-diff-filter/test46-fn-return-qual-change-report-0.txt:
+	New reference output for the new input test.
+	* tests/data/test-diff-filter/test46-fn-return-qual-change-v{0,1}.c:
+	New source code for the new binary test input.
+	* tests/data/test-diff-filter/test46-fn-return-qual-change-v{0,1}.o:
+	New binary test input files.
+	* tests/test-diff-filter.cc: Add the new test input above to test
+	harness.
+
+2018-10-01  Dodji Seketeli <dodji@redhat.com>
+
+	Fix propagation of private type suppression category
+	* include/abg-comp-filter.h (has_harmful_name_change): Declare new
+	function overloads.
+	* include/abg-comparison.h (PRIVATE_TYPE_CATEGORY): New enumerator
+	for diff_category;
+	(EVERYTHING_CATEGORY): Adjust this enumerator in diff_category;
+	(is_suppressed): Take an output parameter to say if the
+	suppression is a private type suppression.
+	* include/abg-suppression.h (is_private_type_suppr_spec): Take a
+	const reference parameter and add an overload for a shared
+	pointer.
+	* src/abg-comp-filter.cc (has_harmful_name_change): Define new
+	function.
+	* src/abg-comparison-priv.h (diff::priv::is_filtered_out): Diffs
+	of category PRIVATE_TYPE_CATEGORY are also considered filtered
+	out.
+	* src/abg-comparison.cc (diff::is_filtered_out): Adjust to account
+	for canonical diffs of category PRIVATE_TYPE_CATEGORY.
+	(diff::is_suppressed): Add an overload that takes a
+	is_private_type output parameter.  Re-write the old overload in
+	terms of the new one.
+	(operator<<(ostream& o, diff_category c)): Handle
+	PRIVATE_TYPE_CATEGORY.
+	(category_propagation_visitor::visit_end):  Do not propagate
+	PRIVATE_TYPE_CATEGORY here. Do not propagate
+	HARMLESS_DECL_NAME_CHANGE_CATEGORY either, when the class does
+	have a harmful decl name change.
+	(suppression_categorization_visitor::visit_begin): Set the new
+	PRIVATE_TYPE_CATEGORY category but do not propagate it.
+	(suppression_categorization_visitor::visit_end): Add some
+	comments.
+	* src/abg-default-reporter.cc (default_reporter::report): Avoid
+	reporting typedef underlying types that are in the
+	PRIVATE_TYPE_CATEGORY category.
+	* src/abg-suppression.cc (type_suppression::suppresses_diff): Do
+	not peel typedefs if we are a private type suppression.
+	(is_private_type_suppr_spec): Take a const reference.
+	* tests/data/Makefile.am: Add the new test material below to
+	source distribution.
+	* tests/test-diff-suppr.cc: Use new test binary input.
+	* tests/data/test-diff-filter/test7-report.txt: Adjust.
+	* tests/data/test-diff-suppr/test39-opaque-type-report-0.txt: New
+	test reference output.
+	* tests/data/test-diff-suppr/test39-opaque-type-v{0,1}.c: Source
+	code of new test binary input.
+	* tests/data/test-diff-suppr/test39-opaque-type-v{0,1}.o: New test
+	binary input.
+	* tests/data/test-diff-suppr/test39-public-headers-dir/test39-header-v{0,1}.h:
+	Source code of new test binary input.
+
+2018-09-25  Dodji Seketeli <dodji@redhat.com>
+
+	PR23641 - confusion when a type definition DIE is matched by a supprspec and its decl DIEs aren't
+	* src/abg-dwarf-reader.cc (get_opaque_version_of_type): If no
+	pre-existing opaque version was found, a new one is created and
+	returned.  Take a needed "where_offset" parameter.
+	(build_ir_node_from_die): Adjust the call to
+	get_opaque_version_of_type.
+
+2018-09-21  Dodji Seketeli <dodji@redhat.com>
+
+	PR23641 - Type definition DIE matched by a supprspec but not its decl
+	*definition* of T, they will be dropped too.
+	We'll end up with those two libraries that are identical (modulo the
+	order in which libabigail sees type declarations and their
+	definitions) and are considered different when a suppression
+	specification makes us drop T: the second library appears to
+	libabigail as if T was removed from it.
+	This is the problem addressed by this patch.
+	When the definition of a type T is suppressed because it's considered
+	private then we look if there was a forward declaration for it
+	elsewhere, that is not matched by the private type suppression
+	specification.  If we encountered such a type declaration then it
+	means that declaration is in effect an "opaque" version of T.  So
+	rather than just dropping T altogether, we keep (and build an IR) for
+	its opaque version only.  And we drop the definition of T.
+	This seems to fix the issue.
+	I can't seem to reproduce the slight re-ordering of DIEs descriptions that
+	uncover the issue so I'll rely on integration tests to catch future
+	regressions on this issue, rather than on unit tests.  Sigh.
+	* include/abg-tools-utils.h (PRIVATE_TYPES_SUPPR_SPEC_NAME):
+	Remove this extern constant definition.
+	* src/abg-dwarf-reader.cc (type_is_suppressed): Add an overload
+	that takes an additional type_is_private output parameter.
+	(get_opaque_version_of_type): New static function.
+	(build_ir_node_from_die): For class types, get the opaque version
+	for suppressed private types rather than dropping them altogether.
+	* src/abg-reader.cc (type_is_suppressed): Adjust.
+	* src/abg-suppression-priv.h (type_is_suppressed): Add an overload
+	that takes a type_is_private output parameter.
+	* include/abg-suppression.h (get_private_types_suppr_spec_label)
+	(is_private_type_suppr_spec): Declare new functions.
+	* src/abg-suppression.cc
+	(get_private_types_suppr_spec_label, is_private_type_suppr_spec):
+	Define new functions.
+	(suppression_matches_type_name_or_location): Use the new
+	get_private_types_suppr_spec_label rather than a global extern
+	variable.
+	* src/abg-tools-utils.cc (handle_fts_entry): Adjust to use the new
+	get_private_types_suppr_spec_label.
+	(gen_suppr_spec_from_headers): Handle the case or an empty headers
+	root dir.
+
+2018-09-03  Dodji Seketeli <dodji@redhat.com>
+
+	Add option to avoid walking abigail::ir nodes twice
+	* include/abg-ir.h (struct ir_node_visitor): Make this be a class.
+	Add a private data member to it, following the 'pimpl' idiom.
+	(ir_node_visitor::{allow_visiting_already_visited_type_node,
+	mark_type_node_as_visited, forget_visited_type_nodes,
+	type_node_has_been_visited}): Declare new member functions.
+	* src/abg-ir.cc ({type_base, type_decl, scope_type_decl,
+	qualified_type_decl, pointer_type_def, reference_type_def,
+	array_type_def, enum_type_decl, typedef_decl, class_or_union,
+	class_decl, union_decl}::traverse): Avoid re-visiting the type
+	node if the visitor was configured as such.
+	(struct ir_node_visitor::priv): Define new struct.
+	(ir_node_visitor::{allow_visiting_already_visited_type_node,
+	mark_type_node_as_visited, forget_visited_type_nodes,
+	type_node_has_been_visited}): Define new member functions.
+	* tests/test-ir-walker.cc
+	(name_printing_visitor::name_printing_visitor): Avoid visiting a
+	type node twice.
+
+2018-08-31  Dodji Seketeli <dodji@redhat.com>
+
+	Fix apidoc of dwarf_reader::get_soname_of_elf_file
+	* src/abg-dwarf-reader.cc (get_soname_of_elf_file): Document the
+	first parameter.  Remove bogus documentation of the previous 'elf'
+	parameter.
+
+2018-08-30  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 23533 - Accept '=' in ini property values
+	* src/abg-ini.cc (char_is_delimiter): Take a new include_equal
+	flag to control is the equal character should be considered as a
+	delimiter or not.
+	(char_is_property_value_char): Accept the equal character as a
+	valid property value character.
+	* tests/Makefile.am: Build a new runtestini test from the new
+	tests/test-ini.cc source file.
+	* tests/data/Makefile.am: Add the two new test inputs below to
+	source distribution.
+	* tests/data/test-ini/test01-equal-in-property-string.{abignore,
+	abignore.expected}: New test inputs.
+	* tests/test-ini.cc: New test harness.
+
+2018-08-06  Dodji Seketeli <dodji@redhat.com>
+
+	Make test-ir-walker work on ELF binaries directly
+	* test-ir-walker.cc (main): Load an ABI corpus from an elf file
+	and walk its translation units.
+
+2018-07-17  Dodji Seketeli <dodji@redhat.com>
+
+	Allow use of python even when fedabipkgdiff is disabled
+	* configure.ac: Detect the presence and version of python even
+	when fedabipkgdiff is disabled.
+
+2018-07-16  Dodji Seketeli <dodji@redhat.com>
+
+	Bump version number to 1.5
+	* configure.ac: Bump version number to 1.5
+
+2018-07-13  Dodji Seketeli <dodji@redhat.com>
+
+	Update ChangeLog for 1.4 release
+	* ChangeLog: Update this using make update-changelog
+
 2018-07-13  Dodji Seketeli <dodji@redhat.com>
 
 	Update NEWS file for 1.4 release
