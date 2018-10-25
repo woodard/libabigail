@@ -1,3 +1,24 @@
+1.5
+===
+Dodji Seketeli:
+      Bug 23533 - Accept '=' in ini property values
+      PR23641 - Type definition DIE matched by a supprspec but not its decl
+      PR23641 - confusion when a type definition DIE is matched by a supprspec and its decl DIEs aren't
+      Bug 23708 - categorize void* to pointer change as harmless
+      Bug rhbz1638554 - assertion failed in is_mostly_distinct_diff
+      Bump version number to 1.5
+      Allow use of python even when fedabipkgdiff is disabled
+      Make test-ir-walker work on ELF binaries directly
+      Fix apidoc of dwarf_reader::get_soname_of_elf_file
+      Add option to avoid walking abigail::ir nodes twice
+      Fix propagation of private type suppression category
+      Categorize CV qualifier changes on fn return types as harmless
+      Misc comment fix
+      Add default suppression specification for the krb5 project
+      Add default suppression specification for the libvirt project
+      Better support array with unknown upper bound
+      Define UINT64_MAX when it's not defined
+
 1.4
 ===
 Dodji Seketeli:
