@@ -86,6 +86,7 @@ struct options
   bool			no_arch;
   bool			no_corpus;
   bool			leaf_changes_only;
+  bool			fail_no_debug_info;
   bool			show_hexadecimal_values;
   bool			show_offsets_sizes_in_bits;
   bool			show_relative_offset_changes;
@@ -125,6 +126,7 @@ struct options
       no_arch(),
       no_corpus(),
       leaf_changes_only(),
+      fail_no_debug_info(),
       show_hexadecimal_values(),
       show_offsets_sizes_in_bits(true),
       show_relative_offset_changes(true),
@@ -192,6 +194,7 @@ display_usage(const string& prog_name, ostream& out)
        "default suppression specification\n"
     << " --no-architecture  do not take architecture in account\n"
     << " --no-corpus-path  do not take the path to the corpora into account\n"
+    << " --fail-no-debug-info  bail out if no debug info was found\n"
     << " --leaf-changes-only|-l  only show leaf changes, "
     "so no change impact analysis\n"
     << " --deleted-fns  display deleted public functions\n"
@@ -355,6 +358,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.no_arch = true;
       else if (!strcmp(argv[i], "--no-corpus-path"))
 	opts.no_corpus = true;
+      else if (!strcmp(argv[i], "--fail-no-debug-info"))
+	opts.fail_no_debug_info = true;
       else if (!strcmp(argv[i], "--leaf-changes-only")
 	       ||!strcmp(argv[i], "-l"))
 	opts.leaf_changes_only = true;
@@ -1063,7 +1068,10 @@ main(int argc, char* argv[])
 	    set_suppressions(*ctxt, opts);
 	    abigail::dwarf_reader::set_do_log(*ctxt, opts.do_log);
 	    c1 = abigail::dwarf_reader::read_corpus_from_elf(*ctxt, c1_status);
-	    if (!c1)
+	    if (!c1
+		|| (opts.fail_no_debug_info
+		    && (c1_status & STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+		    && (c1_status & STATUS_DEBUG_INFO_NOT_FOUND)))
 	      return handle_error(c1_status, ctxt.get(),
 				  argv[0], opts);
 	  }
@@ -1133,7 +1141,10 @@ main(int argc, char* argv[])
 	    set_suppressions(*ctxt, opts);
 
 	    c2 = abigail::dwarf_reader::read_corpus_from_elf(*ctxt, c2_status);
-	    if (!c2)
+	    if (!c2
+		|| (opts.fail_no_debug_info
+		    && (c2_status & STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+		    && (c2_status & STATUS_DEBUG_INFO_NOT_FOUND)))
 	      return handle_error(c2_status, ctxt.get(), argv[0], opts);
 
 	  }

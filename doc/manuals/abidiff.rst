@@ -359,6 +359,13 @@ Options
 
     Do not emit the path attribute for the ABI corpus.
 
+  * ``--fail-no-debug-info``
+
+    If no debug info was found, then this option makes the program to
+    fail.  Otherwise, without this option, the program will attempt to
+    compare properties of the binaries that are not related to debug
+    info, like pure ELF properties.
+
   * ``--leaf-changes-only|-l`` only show leaf changes, so don't show
     impact analysis report.
 
