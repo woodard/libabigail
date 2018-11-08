@@ -808,12 +808,12 @@ set_corpus_keep_drop_regex_patterns(options& opts, corpus_sptr c)
 ///
 /// @param ctxt the diff context to consider.
 static void
-adjust_diff_context_for_kmidiff(diff_context_sptr &ctxt)
+adjust_diff_context_for_kmidiff(diff_context &ctxt)
 {
-  ctxt->show_linkage_names(false);
-  ctxt->show_added_fns(false);
-  ctxt->show_added_vars(false);
-  ctxt->show_added_symbols_unreferenced_by_debug_info
+  ctxt.show_linkage_names(false);
+  ctxt.show_added_fns(false);
+  ctxt.show_added_vars(false);
+  ctxt.show_added_symbols_unreferenced_by_debug_info
     (false);
 }
 
@@ -1250,7 +1250,7 @@ main(int argc, char* argv[])
 	      return abigail::tools_utils::ABIDIFF_OK;
 	    }
 
-	  adjust_diff_context_for_kmidiff(ctxt);
+	  adjust_diff_context_for_kmidiff(*ctxt);
 	  corpus_diff_sptr diff = compute_diff(g1, g2, ctxt);
 
 	  if (diff->has_net_changes())
