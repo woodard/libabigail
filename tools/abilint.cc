@@ -326,10 +326,11 @@ main(int argc, char* argv[])
 	case abigail::tools_utils::FILE_TYPE_AR:
 	  {
 	    di_root_path = opts.di_root_path.get();
+	    vector<char**> di_roots;
+	    di_roots.push_back(&di_root_path);
 	    abigail::dwarf_reader::read_context_sptr ctxt =
 	      abigail::dwarf_reader::create_read_context(opts.file_path,
-							 &di_root_path,
-							 env.get(),
+							 di_roots, env.get(),
 							 /*load_all_types=*/false);
 	    assert(ctxt);
 	    set_suppressions(*ctxt, opts);

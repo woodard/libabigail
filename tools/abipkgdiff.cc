@@ -1241,6 +1241,10 @@ compare(const elf_file& elf1,
   char *di_dir1 = (char*) debug_dir1.c_str(),
 	*di_dir2 = (char*) debug_dir2.c_str();
 
+  vector<char**> di_dirs1, di_dirs2;
+  di_dirs1.push_back(&di_dir1);
+  di_dirs2.push_back(&di_dir2);
+
   if (opts.verbose)
     emit_prefix("abipkgdiff", cerr)
       << "Comparing the ABIs of file "
@@ -1291,7 +1295,7 @@ compare(const elf_file& elf1,
 
   corpus_sptr corpus1;
   {
-    read_context_sptr c = create_read_context(elf1.path, &di_dir1, env.get(),
+    read_context_sptr c = create_read_context(elf1.path, di_dirs1, env.get(),
 					      /*load_all_types=*/false);
     add_read_context_suppressions(*c, priv_types_supprs1);
     if (!opts.kabi_suppressions.empty())
@@ -1376,7 +1380,7 @@ compare(const elf_file& elf1,
 
   corpus_sptr corpus2;
   {
-    read_context_sptr c = create_read_context(elf2.path, &di_dir2, env.get(),
+    read_context_sptr c = create_read_context(elf2.path, di_dirs2, env.get(),
 					      /*load_all_types=*/false);
     add_read_context_suppressions(*c, priv_types_supprs2);
 

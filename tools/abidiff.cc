@@ -110,8 +110,10 @@ struct options
   bool			dump_diff_tree;
   bool			show_stats;
   bool			do_log;
-  shared_ptr<char>	di_root_path1;
-  shared_ptr<char>	di_root_path2;
+  vector<char*> di_root_paths1;
+  vector<char*> di_root_paths2;
+  vector<char**> prepared_di_root_paths1;
+  vector<char**> prepared_di_root_paths2;
 
   options()
     : display_usage(),
@@ -148,6 +150,22 @@ struct options
       show_stats(),
       do_log()
   {}
+
+  ~options()
+  {
+    for (vector<char*>::iterator i = di_root_paths1.begin();
+	 i != di_root_paths1.end();
+	 ++i)
+      free(*i);
+
+    for (vector<char*>::iterator i = di_root_paths2.begin();
+	 i != di_root_paths2.end();
+	 ++i)
+      free(*i);
+
+    prepared_di_root_paths1.clear();
+    prepared_di_root_paths2.clear();
+  }
 };//end struct options;
 
 static void
@@ -260,8 +278,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    }
 	  // elfutils wants the root path to the debug info to be
 	  // absolute.
-	  opts.di_root_path1 =
-	    abigail::tools_utils::make_path_absolute(argv[j]);
+	  opts.di_root_paths1.push_back
+	    (abigail::tools_utils::make_path_absolute_to_be_freed(argv[j]));
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--debug-info-dir2")
@@ -276,8 +294,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    }
 	  // elfutils wants the root path to the debug info to be
 	  // absolute.
-	  opts.di_root_path2 =
-	    abigail::tools_utils::make_path_absolute(argv[j]);
+	  opts.di_root_paths2.push_back
+	    (abigail::tools_utils::make_path_absolute_to_be_freed(argv[j]));
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--headers-dir1")
@@ -794,6 +812,21 @@ adjust_diff_context_for_kmidiff(diff_context_sptr &ctxt)
     (false);
 }
 
+/// Convert options::di_root_paths{1,2} into
+/// options::prepared_di_root_paths{1,2} which is the suitable type
+/// format that the dwarf_reader expects.
+///
+/// @param o the options to consider.
+static void
+prepare_di_root_paths(options& o)
+{
+  abigail::tools_utils::convert_char_stars_to_char_star_stars
+    (o.di_root_paths1, o.prepared_di_root_paths1);
+
+  abigail::tools_utils::convert_char_stars_to_char_star_stars
+    (o.di_root_paths2, o.prepared_di_root_paths2);
+}
+
 /// Emit an appropriate error message if necessary, given an error
 /// code.
 ///
@@ -827,46 +860,64 @@ static abigail::tools_utils::abidiff_status
 handle_error(abigail::dwarf_reader::status status_code,
 	     const abigail::dwarf_reader::read_context* ctxt,
 	     const string& prog_name,
-	     const string& input_file_name,
-	     char** debug_info_dir1,
-	     char** debug_info_dir2)
+	     const options& opts)
 {
   if (!(status_code & abigail::dwarf_reader::STATUS_OK))
     {
       emit_prefix(prog_name, cerr)
-	<< "failed to read input file " << input_file_name << "\n";
+	<< "failed to read input file " << opts.file1 << "\n";
 
       if (status_code & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
 	{
 	  emit_prefix(prog_name, cerr) <<
 	    "could not find the debug info\n";
-	  if (debug_info_dir1)
-	    {
-	      if (*debug_info_dir1 == 0)
+	  {
+	    if (opts.prepared_di_root_paths1.empty() == 0)
+	      emit_prefix(prog_name, cerr)
+		<< "Maybe you should consider using the "
+		"--debug-info-dir1 option to tell me about the "
+		"root directory of the debuginfo? "
+		"(e.g, --debug-info-dir1 /usr/lib/debug)\n";
+	    else
+	      {
 		emit_prefix(prog_name, cerr)
-		  << "Maybe you should consider using the "
-		  "--debug-info-dir1 option to tell me about the "
-		  "root directory of the debuginfo? "
-		  "(e.g, --debug-info-dir1 /usr/lib/debug)\n";
-	      else
-		emit_prefix(prog_name, cerr)
-		  << "Maybe the root path to the debug information '"
-		  << *debug_info_dir1 << "' is wrong?\n";
-	    }
+		  << "Maybe the root path to the debug information '";
+		for (vector<char**>::const_iterator i
+		       = opts.prepared_di_root_paths1.begin();
+		     i != opts.prepared_di_root_paths1.end();
+		     ++i)
+		  {
+		    if (i != opts.prepared_di_root_paths1.end())
+		      cerr << ", ";
+		    cerr << **i;
+		  }
+		cerr << "' is wrong?\n";
+	      }
+	  }
 
-	  if (debug_info_dir2)
-	    {
-	      if (*debug_info_dir2 == 0)
+	  {
+	    if (opts.prepared_di_root_paths2.empty())
+	      emit_prefix(prog_name, cerr)
+		<< "Maybe you should consider using the "
+		"--debug-info-dir2 option to tell me about the "
+		"root directory of the debuginfo? "
+		"(e.g, --debug-info-dir2 /usr/lib/debug)\n";
+	    else
+	      {
 		emit_prefix(prog_name, cerr)
-		  << "Maybe you should consider using the "
-		  "--debug-info-dir2 option to tell me about the "
-		  "root directory of the debuginfo? "
-		  "(e.g, --debug-info-dir2 /usr/lib/debug)\n";
-	      else
-		emit_prefix(prog_name, cerr)
-		  << "Maybe the root path to the debug information '"
-		  << *debug_info_dir2 << "' is wrong?\n";
-	    }
+		  << "Maybe the root path to the debug information '";
+		for (vector<char**>::const_iterator i
+		       = opts.prepared_di_root_paths2.begin();
+		     i != opts.prepared_di_root_paths2.end();
+		     ++i)
+		  {
+		    if (i != opts.prepared_di_root_paths2.end())
+		      cerr << ", ";
+		    cerr << **i;
+		  }
+		  cerr << "' is wrong?\n";
+	      }
+	  }
 	}
 
       if (status_code & abigail::dwarf_reader::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
@@ -887,7 +938,7 @@ handle_error(abigail::dwarf_reader::status status_code,
       if (status_code & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
 	emit_prefix(prog_name, cerr)
 	  << "could not find the ELF symbols in the file '"
-	  << input_file_name
+	  << opts.file1
 	  << "'\n";
 
       return abigail::tools_utils::ABIDIFF_ERROR;
@@ -934,6 +985,8 @@ main(int argc, char* argv[])
       return 0;
     }
 
+  prepare_di_root_paths(opts);
+
   if (!maybe_check_suppression_files(opts))
     return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 	    | abigail::tools_utils::ABIDIFF_ERROR);
@@ -972,7 +1025,6 @@ main(int argc, char* argv[])
 	c2_status = abigail::dwarf_reader::STATUS_OK;
       corpus_sptr c1, c2;
       corpus_group_sptr g1, g2;
-      char *di_dir1 = 0, *di_dir2 = 0;
       bool files_suppressed = false;
 
       diff_context_sptr ctxt(new diff_context);
@@ -1001,12 +1053,10 @@ main(int argc, char* argv[])
 	case abigail::tools_utils::FILE_TYPE_ELF:
 	case abigail::tools_utils::FILE_TYPE_AR:
 	  {
-	    di_dir1 = opts.di_root_path1.get();
 	    abigail::dwarf_reader::read_context_sptr ctxt =
-	      abigail::dwarf_reader::create_read_context(opts.file1,
-							 &di_dir1, env.get(),
-							 /*readalltypes*/false,
-							 opts.linux_kernel_mode);
+	      abigail::dwarf_reader::create_read_context
+	      (opts.file1, opts.prepared_di_root_paths1, env.get(),
+	       /*readalltypes*/false, opts.linux_kernel_mode);
 	    assert(ctxt);
 
 	    abigail::dwarf_reader::set_show_stats(*ctxt, opts.show_stats);
@@ -1015,9 +1065,7 @@ main(int argc, char* argv[])
 	    c1 = abigail::dwarf_reader::read_corpus_from_elf(*ctxt, c1_status);
 	    if (!c1)
 	      return handle_error(c1_status, ctxt.get(),
-				  argv[0], opts.file1,
-				  &di_dir1,
-				  /*debug_info_dir2=*/0);
+				  argv[0], opts);
 	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
@@ -1030,9 +1078,7 @@ main(int argc, char* argv[])
 	    c1 = abigail::xml_reader::read_corpus_from_input(*ctxt);
 	    if (!c1)
 	      return handle_error(c1_status, /*ctxt=*/0,
-				  argv[0], opts.file1,
-				  /*debug_info_dir1=*/0,
-				  /*debug_info_dir2=*/0);
+				  argv[0], opts);
 	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP:
@@ -1045,19 +1091,14 @@ main(int argc, char* argv[])
 	    g1 = abigail::xml_reader::read_corpus_group_from_input(*ctxt);
 	    if (!g1)
 	      return handle_error(c1_status, /*ctxt=*/0,
-				  argv[0], opts.file1,
-				  /*debug_info_dir1=*/0,
-				  /*debug_info_dir2=*/0);
+				  argv[0], opts);
 	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_ZIP_CORPUS:
 #ifdef WITH_ZIP_ARCHIVE
 	  c1 = abigail::xml_reader::read_corpus_from_file(opts.file1);
 	  if (!c1)
-	    return handle_error(c1_status, /*ctxt=*/0,
-				argv[0], opts.file1,
-				/*debug_info_dir1=*/0,
-				/*debug_info_dir2=*/0);
+	    return handle_error(c1_status, /*ctxt=*/0, argv[0], opts);
 #endif //WITH_ZIP_ARCHIVE
 	  break;
 	case abigail::tools_utils::FILE_TYPE_RPM:
@@ -1082,12 +1123,10 @@ main(int argc, char* argv[])
 	case abigail::tools_utils::FILE_TYPE_ELF:
 	case abigail::tools_utils::FILE_TYPE_AR:
 	  {
-	    di_dir2 = opts.di_root_path2.get();
 	    abigail::dwarf_reader::read_context_sptr ctxt =
-	      abigail::dwarf_reader::create_read_context(opts.file2,
-							 &di_dir2, env.get(),
-							 /*readalltypes=*/false,
-							 opts.linux_kernel_mode);
+	      abigail::dwarf_reader::create_read_context
+	      (opts.file2, opts.prepared_di_root_paths2, env.get(),
+	       /*readalltypes=*/false, opts.linux_kernel_mode);
 	    assert(ctxt);
 	    abigail::dwarf_reader::set_show_stats(*ctxt, opts.show_stats);
 	    abigail::dwarf_reader::set_do_log(*ctxt, opts.do_log);
@@ -1095,10 +1134,8 @@ main(int argc, char* argv[])
 
 	    c2 = abigail::dwarf_reader::read_corpus_from_elf(*ctxt, c2_status);
 	    if (!c2)
-	      return handle_error(c2_status, ctxt.get(),
-				  argv[0], opts.file2,
-				  /*debug_info_dir1=*/0,
-				  /*debug_info_dir2=*/&di_dir2);
+	      return handle_error(c2_status, ctxt.get(), argv[0], opts);
+
 	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
@@ -1110,10 +1147,8 @@ main(int argc, char* argv[])
 	    set_suppressions(*ctxt, opts);
 	    c2 = abigail::xml_reader::read_corpus_from_input(*ctxt);
 	    if (!c2)
-	      return handle_error(c2_status, /*ctxt=*/0,
-				  argv[0], opts.file2,
-				  /*debug_info_dir1=*/0,
-				  /*debug_info_dir2=*/0);
+	      return handle_error(c2_status, /*ctxt=*/0, argv[0], opts);
+
 	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP:
@@ -1125,20 +1160,14 @@ main(int argc, char* argv[])
 	    set_suppressions(*ctxt, opts);
 	    g2 = abigail::xml_reader::read_corpus_group_from_input(*ctxt);
 	    if (!g2)
-	      return handle_error(c2_status, /*ctxt=*/0,
-				  argv[0], opts.file2,
-				  /*debug_info_dir1=*/0,
-				  /*debug_info_dir2=*/0);
+	      return handle_error(c2_status, /*ctxt=*/0, argv[0], opts);
 	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_ZIP_CORPUS:
 #ifdef WITH_ZIP_ARCHIVE
 	  c2 = abigail::xml_reader::read_corpus_from_file(opts.file2);
 	  if (!c2)
-	    return handle_error(c2_status, /*ctxt=*/0,
-				argv[0], opts.file2,
-				/*debug_info_dir1=*/0,
-				/*debug_info_dir2=*/0);
+	    return handle_error(c2_status, /*ctxt=*/0, argv[0], opts);
 #endif //WITH_ZIP_ARCHIVE
 	  break;
 	case abigail::tools_utils::FILE_TYPE_RPM:

@@ -72,6 +72,9 @@ bool execute_command_and_get_output(const string&, vector<string>&);
 bool get_dsos_provided_by_rpm(const string& rpm_path,
 			      set<string>& provided_dsos);
 string trim_white_space(const string&);
+string trim_leading_string(const string& from, const string& to_trim);
+void convert_char_stars_to_char_star_stars(const vector<char*>&,
+					   vector<char**>&);
 suppr::type_suppression_sptr
 gen_suppr_spec_from_headers(const string& hdrs_root_dir);
 
@@ -105,6 +108,11 @@ load_default_system_suppressions(suppr::suppressions_type&);
 
 void
 load_default_user_suppressions(suppr::suppressions_type&);
+
+bool
+find_file_under_dir(const string& root_dir,
+		    const string& file_path_to_look_for,
+		    string& result);
 
 class temp_file;
 
@@ -264,6 +272,9 @@ file_is_kernel_debuginfo_package(const string& file_path,
 
 std::tr1::shared_ptr<char>
 make_path_absolute(const char*p);
+
+char*
+make_path_absolute_to_be_freed(const char*p);
 
 corpus_group_sptr
 build_corpus_group_from_kernel_dist_under(const string&	root,

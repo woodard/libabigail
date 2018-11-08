@@ -50,6 +50,11 @@ Options
     Red Hat based systems, that directory is usually
     ``<root>/usr/lib/debug``.
 
+    This option can be provided several times with different root
+    directories.  In that case, ``abidw`` will potentially look into
+    all those root directories to find the split debug info for the
+    elf file.
+
     Note that this option is not mandatory for split debug information
     installed by your system's package manager because then
     ``abidw`` knows where to find it.

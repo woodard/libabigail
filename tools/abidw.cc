@@ -82,7 +82,8 @@ struct options
   string		wrong_option;
   string		in_file_path;
   string		out_file_path;
-  shared_ptr<char>	di_root_path;
+  vector<char*>	di_root_paths;
+  vector<char**>	prepared_di_root_paths;
   string		headers_dir;
   string		vmlinux;
   vector<string>	suppression_paths;
@@ -119,6 +120,16 @@ struct options
       annotate(),
       do_log()
   {}
+
+  ~options()
+  {
+    for (vector<char*>::iterator i = di_root_paths.begin();
+	 i != di_root_paths.end();
+	 ++i)
+      free(*i);
+
+    prepared_di_root_paths.clear();
+  }
 };
 
 static void
@@ -184,8 +195,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    return false;
 	  // elfutils wants the root path to the debug info to be
 	  // absolute.
-	  opts.di_root_path =
-	    abigail::tools_utils::make_path_absolute(argv[i + 1]);
+	  opts.di_root_paths.push_back
+	    (abigail::tools_utils::make_path_absolute_to_be_freed(argv[i + 1]));
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--headers-dir")
@@ -392,7 +403,7 @@ load_corpus_and_write_abixml(char* argv[],
     {
       if (s == dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
 	{
-	  if (opts.di_root_path.get() == 0)
+	  if (opts.di_root_paths.empty())
 	    {
 	      emit_prefix(argv[0], cerr)
 		<< "Could not read debug info from "
@@ -408,9 +419,16 @@ load_corpus_and_write_abixml(char* argv[],
 	    {
 	      emit_prefix(argv[0], cerr)
 		<< "Could not read debug info for '" << opts.in_file_path
-		<< "' from debug info root directory '"
-		<< opts.di_root_path.get()
-		<< "'\n";
+		<< "' from debug info root directory '";
+	      for (vector<char*>::const_iterator i =
+		     opts.di_root_paths.begin();
+		   i != opts.di_root_paths.end();
+		   ++i)
+		{
+		  if (i != opts.di_root_paths.begin())
+		    cerr << ", ";
+		  cerr << *i;
+		}
 	    }
 	}
       else if (s == dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
@@ -560,6 +578,18 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
   return exit_code;
 }
 
+/// Convert options::di_root_paths into
+/// options::prepared_di_root_paths which is the suitable type format
+/// that the dwarf_reader expects.
+///
+/// @param o the options to consider.
+static void
+prepare_di_root_paths(options& o)
+{
+  tools_utils::convert_char_stars_to_char_star_stars(o.di_root_paths,
+						     o.prepared_di_root_paths);
+}
+
 int
 main(int argc, char* argv[])
 {
@@ -596,6 +626,8 @@ main(int argc, char* argv[])
 	return 1;
     }
 
+  prepare_di_root_paths(opts);
+
   if (!maybe_check_suppression_files(opts))
     return 1;
 
@@ -610,14 +642,14 @@ main(int argc, char* argv[])
       return 1;
     }
 
-  char* p = opts.di_root_path.get();
   environment_sptr env(new environment);
   int exit_code = 0;
 
   if (tools_utils::is_regular_file(opts.in_file_path))
     {
       read_context_sptr c = create_read_context(opts.in_file_path,
-						&p, env.get(),
+						opts.prepared_di_root_paths,
+						env.get(),
 						opts.load_all_types,
 						opts.linux_kernel_mode);
       read_context& ctxt = *c;

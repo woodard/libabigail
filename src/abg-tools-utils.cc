@@ -899,6 +899,47 @@ trim_white_space(const string& str)
   return result;
 }
 
+/// Remove a string of pattern in front of a given string.
+///
+/// For instance, consider this string:
+///    "../../../foo"
+///
+/// The pattern "../" is repeated three times in front of the
+/// sub-string "foo".  Thus, the call:
+///    trim_leading_string("../../../foo", "../")
+/// will return the string "foo".
+///
+/// @param from the string to trim the leading repetition of pattern from.
+///
+/// @param to_trim the pattern to consider (and to trim).
+///
+/// @return the resulting string where the leading patter @p to_trim
+/// has been removed from.
+string
+trim_leading_string(const string& from, const string& to_trim)
+{
+  string str = from;
+
+  while (string_begins_with(str, to_trim))
+    string_suffix(str, to_trim, str);
+  return str;
+}
+
+/// Convert a vector<char*> into a vector<char**>.
+///
+/// @param char_stars the input vector.
+///
+/// @param char_star_stars the output vector.
+void
+convert_char_stars_to_char_star_stars(const vector<char*> &char_stars,
+				      vector<char**>& char_star_stars)
+{
+  for (vector<char*>::const_iterator i = char_stars.begin();
+       i != char_stars.end();
+       ++i)
+    char_star_stars.push_back(const_cast<char**>(&*i));
+}
+
 /// The private data of the @ref temp_file type.
 struct temp_file::priv
 {
@@ -1445,6 +1486,34 @@ make_path_absolute(const char*p)
   return result;
 }
 
+/// Return a copy of the path given in argument, turning it into an
+/// absolute path by prefixing it with the concatenation of the result
+/// of get_current_dir_name() and the '/' character.
+///
+/// The result being a pointer to an allocated memory region, it must
+/// be freed by the caller.
+///
+/// @param p the path to turn into an absolute path.
+///
+/// @return a pointer to the resulting absolute path.  It must be
+/// freed by the caller.
+char*
+make_path_absolute_to_be_freed(const char*p)
+{
+    char* result = 0;
+
+  if (p && p[0] != '/')
+    {
+      char* pwd = get_current_dir_name();
+      string s = string(pwd) + "/" + p;
+      free(pwd);
+      result = strdup(s.c_str());
+    }
+  else
+    result = strdup(p);
+
+  return result;
+}
 
 /// This is a sub-routine of gen_suppr_spec_from_headers.
 ///
@@ -1698,6 +1767,69 @@ load_default_user_suppressions(suppr::suppressions_type& supprs)
   read_suppressions(default_user_suppr_path, supprs);
 }
 
+/// Test if a given FTSENT* denotes a file with a given name.
+///
+/// @param entry the FTSENT* to consider.
+///
+/// @param fname the file name (or end of path) to consider.
+///
+/// @return true iff @p entry denotes a file which path ends with @p
+/// fname.
+static bool
+entry_of_file_with_name(const FTSENT *entry,
+			const string& fname)
+{
+  if (entry == NULL
+      || (entry->fts_info != FTS_F && entry->fts_info != FTS_SL)
+      || entry->fts_info == FTS_ERR
+      || entry->fts_info == FTS_NS)
+    return false;
+
+  string fpath = entry->fts_path;
+  if (string_ends_with(fpath, fname))
+    return true;
+  return false;
+}
+
+/// Find a given file under a root directory and return its absolute
+/// path.
+///
+/// @param root_dir the root directory under which to look for.
+///
+/// @param file_path_to_look_for the file to look for under the
+/// directory @p root_dir.
+///
+/// @param result the resulting path to @p file_path_to_look_for.
+/// This is set iff the file has been found.
+bool
+find_file_under_dir(const string& root_dir,
+		    const string& file_path_to_look_for,
+		    string& result)
+{
+  char* paths[] = {const_cast<char*>(root_dir.c_str()), 0};
+
+  FTS *file_hierarchy = fts_open(paths,
+				 FTS_PHYSICAL|FTS_NOCHDIR|FTS_XDEV, 0);
+  if (!file_hierarchy)
+    return false;
+
+  FTSENT *entry;
+  while ((entry = fts_read(file_hierarchy)))
+    {
+      // Skip descendents of symbolic links.
+      if (entry->fts_info == FTS_SL || entry->fts_info == FTS_SLNONE)
+	{
+	  fts_set(file_hierarchy, entry, FTS_SKIP);
+	  continue;
+	}
+      if (entry_of_file_with_name(entry, file_path_to_look_for))
+	{
+	  result = entry->fts_path;
+	  return true;
+	}
+    }
+  return false;
+}
 /// If we were given suppression specification files or kabi whitelist
 /// files, this function parses those, come up with suppression
 /// specifications as a result, and set them to the read context.
@@ -2060,12 +2192,14 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
       shared_ptr<char> di_root =
 	make_path_absolute(debug_info_root.c_str());
       char *di_root_ptr = di_root.get();
+      vector<char**> di_roots;
+      di_roots.push_back(&di_root_ptr);
       abigail::dwarf_reader::status status = abigail::dwarf_reader::STATUS_OK;
       corpus_group_sptr group;
       if (!vmlinux.empty())
 	{
 	  ctxt =
-	    dwarf_reader::create_read_context(vmlinux, &di_root_ptr,env.get(),
+	    dwarf_reader::create_read_context(vmlinux, di_roots ,env.get(),
 					      /*read_all_types=*/false,
 					      /*linux_kernel_mode=*/true);
 
@@ -2109,7 +2243,7 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
 			  << "/" << total_nb_modules
 			  << ") ... " << std::flush;
 
-	      reset_read_context(ctxt, *m, &di_root_ptr, env.get(),
+	      reset_read_context(ctxt, *m, di_roots, env.get(),
 				 /*read_all_types=*/false,
 				 /*linux_kernel_mode=*/true);
 

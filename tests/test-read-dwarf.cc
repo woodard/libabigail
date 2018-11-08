@@ -290,8 +290,9 @@ struct test_task : public abigail::workers::task
     env.reset(new abigail::ir::environment);
     abigail::dwarf_reader::status status =
     abigail::dwarf_reader::STATUS_UNKNOWN;
+    vector<char**> di_roots;
     read_context_sptr ctxt = create_read_context(in_elf_path,
-						 /*debug_info_root_path=*/0,
+						 di_roots,
 						 env.get());
     assert(ctxt);
     if (!in_suppr_spec_path.empty())

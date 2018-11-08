@@ -1114,9 +1114,9 @@ get_binary_load_address(Elf *elf_handle,
 /// @return true iff the location of the alternate debug info file was
 /// found.
 static bool
-find_alt_debug_info_location(Dwfl_Module *elf_module,
-			     string &alt_file_name,
-			     string &build_id)
+find_alt_debug_info_link(Dwfl_Module *elf_module,
+			 string &alt_file_name,
+			 string &build_id)
 {
   GElf_Addr bias = 0;
   Dwarf *dwarf = dwfl_module_getdwarf(elf_module, &bias);
@@ -1168,10 +1168,55 @@ find_alt_debug_info_location(Dwfl_Module *elf_module,
   return false;
 }
 
+/// Find alternate debuginfo file of a given "link" under a set of
+/// root directories.
+///
+/// The link is a string that is read by the function
+/// find_alt_debug_info_link().  That link is a path that is relative
+/// to a given debug info file, e.g, "../../../.dwz/something.debug".
+/// It designates the alternate debug info file associated to a given
+/// debug info file.
+///
+/// This function will thus try to find the .dwz/something.debug file
+/// under some given root directories.
+///
+/// @param root_dirs the set of root directories to look from.
+///
+/// @param alt_file_name a relative path to the alternate debug info
+/// file to look for.
+///
+/// @param alt_file_path the resulting absolute path to the alternate
+/// debuginfo path denoted by @p alt_file_name and found under one of
+/// the directories in @p root_dirs.  This is set iff the function
+/// returns true.
+///
+/// @return true iff the function found the alternate debuginfo file.
+static bool
+find_alt_debug_info_path(const vector<char**> root_dirs,
+			 const string &alt_file_name,
+			 string &alt_file_path)
+{
+  if (alt_file_name.empty())
+    return false;
+
+  string altfile_name = tools_utils::trim_leading_string(alt_file_name, "../");
+
+  for (vector<char**>::const_iterator i = root_dirs.begin();
+       i != root_dirs.end();
+       ++i)
+    if (tools_utils::find_file_under_dir(**i, altfile_name, alt_file_path))
+      return true;
+
+  return false;
+}
+
 /// Return the alternate debug info associated to a given main debug
 /// info file.
 ///
 /// @param elf_module the elf module to consider.
+///
+/// @param debug_root_dirs a set of root debuginfo directories under
+/// which too look for the alternate debuginfo file.
 ///
 /// @param alt_file_name output parameter.  This is set to the file
 /// path of the alternate debug info file associated to @p elf_module.
@@ -1194,6 +1239,7 @@ find_alt_debug_info_location(Dwfl_Module *elf_module,
 /// otherwise, it's going to be leaked.
 static Dwarf*
 find_alt_debug_info(Dwfl_Module *elf_module,
+		    const vector<char**> debug_root_dirs,
 		    string& alt_file_name,
 		    int& alt_fd)
 {
@@ -1202,7 +1248,7 @@ find_alt_debug_info(Dwfl_Module *elf_module,
 
   Dwarf* result = 0;
   string build_id;
-  find_alt_debug_info_location(elf_module, alt_file_name, build_id);
+  find_alt_debug_info_link(elf_module, alt_file_name, build_id);
 
 #ifdef LIBDW_HAS_DWARF_GETALT
   // We are on recent versions of elfutils where the function
@@ -1231,6 +1277,34 @@ find_alt_debug_info(Dwfl_Module *elf_module,
 
   result = dwarf_begin(alt_fd, DWARF_C_READ);
 #endif
+
+  if (result == 0)
+    {
+      // So we didn't find the alternate debuginfo file from the
+      // information that is in the debuginfo file associated to
+      // elf_module.  Maybe the alternate debuginfo file is located
+      // under one of the directories in debug_root_dirs.  So let's
+      // look in there.
+      string alt_file_path;
+      if (!find_alt_debug_info_path(debug_root_dirs,
+				    alt_file_name,
+				    alt_file_path))
+	return result;
+
+      // If we reach this point it means we have found the path to the
+      // alternate debuginfo file and it's in alt_file_path.  So let's
+      // open it and read it.
+      int fd = open(alt_file_path.c_str(), O_RDONLY);
+      if (fd == -1)
+	return result;
+      result = dwarf_begin(fd, DWARF_C_READ);
+
+#ifdef LIBDW_HAS_DWARF_GETALT
+      Dwarf_Addr bias = 0;
+      Dwarf* dwarf = dwfl_module_getdwarf(elf_module, &bias);
+      dwarf_setalt(dwarf, result);
+#endif
+    }
 
   return result;
 }
@@ -2806,6 +2880,8 @@ public:
   suppr::suppressions_type	supprs_;
   unsigned short		dwarf_version_;
   Dwfl_Callbacks		offline_callbacks_;
+  // The set of directories under which to look for debug info.
+  vector<char**>		debug_info_root_paths_;
   dwfl_sptr			handle_;
   Dwarf*			dwarf_;
   // The alternate debug info.  Alternate debug info sections are a
@@ -2940,9 +3016,10 @@ public:
   /// @param elf_path the path to the elf file the context is to be
   /// used for.
   ///
-  /// @param a pointer to the path to the root directory under which
-  /// the debug info is to be found for @p elf_path.  Leave this to
-  /// NULL if the debug info is not in a split file.
+  /// @param debug_info_root_paths a vector of pointers to the path to
+  /// the root directory under which the debug info is to be found for
+  /// @p elf_path.  Leave this empty if the debug info is not in a
+  /// split file.
   ///
   /// @param environment the environment used by the current context.
   /// This environment contains resources needed by the reader and by
@@ -2964,12 +3041,12 @@ public:
   /// linux kernel symbol tables when determining if a symbol is
   /// exported or not.
   read_context(const string&	elf_path,
-	       char**		debug_info_root_path,
+	       const vector<char**>& debug_info_root_paths,
 	       ir::environment* environment,
 	       bool		load_all_types,
 	       bool		linux_kernel_mode)
   {
-    initialize(elf_path, debug_info_root_path, environment,
+    initialize(elf_path, debug_info_root_paths, environment,
 	       load_all_types, linux_kernel_mode);
   }
 
@@ -2978,9 +3055,9 @@ public:
   /// @param elf_path the path to the elf file the context is to be
   /// used for.
   ///
-  /// @param debug_info_root_path a pointer to the path to the root
-  /// directory under which the debug info is to be found for @p
-  /// elf_path.  Leave this to NULL if the debug info is not in a
+  /// @param debug_info_root_paths a vector of pointers to the path to
+  /// the root directory under which the debug info is to be found for
+  /// @p elf_path.  Leave this empty if the debug info is not in a
   /// split file.
   ///
   /// @param environment the environment used by the current context.
@@ -3004,7 +3081,7 @@ public:
   /// is exported or not.
   void
   initialize(const string&	elf_path,
-	     char**		debug_info_root_path,
+	     const vector<char**>& debug_info_root_paths,
 	     ir::environment* environment,
 	     bool		load_all_types,
 	     bool		linux_kernel_mode)
@@ -3086,7 +3163,7 @@ public:
     clear_per_translation_unit_data();
 
     memset(&offline_callbacks_, 0, sizeof(offline_callbacks_));
-    create_default_dwfl(debug_info_root_path);
+    create_default_dwfl(debug_info_root_paths);
     options_.env = environment;
     options_.load_in_linux_kernel_mode = linux_kernel_mode;
     options_.load_all_types = load_all_types;
@@ -3214,26 +3291,29 @@ public:
   /// Constructor for a default Dwfl handle that knows how to load debug
   /// info from a library or executable elf file.
   ///
-  /// @param debug_info_root_path a pointer to the root path under which
-  /// to look for the debug info of the elf files that are later handled
-  /// by the Dwfl.  This for cases where the debug info is split into a
-  /// different file from the binary we want to inspect.  On Red Hat
-  /// compatible systems, this root path is usually /usr/lib/debug by
-  /// default.  If this argument is set to NULL, then "./debug" and
-  /// /usr/lib/debug will be searched for sub-directories containing the
-  /// debug info file.  Note that for now, elfutils wants this path to
-  /// be absolute otherwise things just don't work and the debug info is
-  /// not found.
+  /// @param debug_info_root_paths a vector of pointers to the root
+  /// path under which to look for the debug info of the elf files
+  /// that are later handled by the Dwfl.  This is for cases where the
+  /// debug info is split into a different file from the binary we
+  /// want to inspect.  On Red Hat compatible systems, this root path
+  /// is usually /usr/lib/debug by default.  If this argument is set
+  /// to the empty set, then "./debug" and /usr/lib/debug will be
+  /// searched for sub-directories containing the debug info file.
+  /// Note that for now, elfutils wants this path to be absolute
+  /// otherwise things just don't work and the debug info is not
+  /// found.
   ///
   /// @return the constructed Dwfl handle.
   void
-  create_default_dwfl(char** debug_info_root_path)
+  create_default_dwfl(const vector<char**>& debug_info_root_paths)
   {
     offline_callbacks()->find_debuginfo = dwfl_standard_find_debuginfo;
     offline_callbacks()->section_address = dwfl_offline_section_address;
-    offline_callbacks()->debuginfo_path = debug_info_root_path;
+    offline_callbacks()->debuginfo_path =
+      debug_info_root_paths.empty() ? 0 : debug_info_root_paths.front();
     handle_.reset(dwfl_begin(offline_callbacks()),
 		  dwfl_deleter());
+    debug_info_root_paths_ = debug_info_root_paths;
   }
 
   unsigned short
@@ -3306,6 +3386,45 @@ public:
   dwarf_is_splitted() const
   {return dwarf_elf_handle() != elf_handle();}
 
+  /// Add paths to the set of paths under which to look for split
+  /// debuginfo files.
+  ///
+  /// @param debug_info_root_paths the paths to add.
+  void
+  add_debug_info_root_paths(const vector<char **>& debug_info_root_paths)
+  {
+    debug_info_root_paths_.insert(debug_info_root_paths_.end(),
+				  debug_info_root_paths.begin(),
+				  debug_info_root_paths.end());
+  }
+
+  /// Add a path to the set of paths under which to look for split
+  /// debuginfo files.
+  ///
+  /// @param debug_info_root_path the path to add.
+  void
+  add_debug_info_root_path(char** debug_info_root_path)
+  {debug_info_root_paths_.push_back(debug_info_root_path);}
+
+  /// Find the alternate debuginfo file associated to a given elf file.
+  ///
+  /// @param elf_module represents the elf file to consider.
+  ///
+  /// @param alt_file_name the resulting path to the alternate
+  /// debuginfo file found.  This is set iff the function returns a
+  /// non-nil value.
+  Dwarf*
+  find_alt_debug_info(Dwfl_Module *elf_module,
+		      string& alt_file_name,
+		      int& alt_fd)
+  {
+    Dwarf *result = 0;
+    result = dwarf_reader::find_alt_debug_info(elf_module,
+					       debug_info_root_paths_,
+					       alt_file_name, alt_fd);
+    return result;
+  }
+
   /// Load the debug info associated with an elf file that is at a
   /// given path.
   ///
@@ -3329,6 +3448,16 @@ public:
 
     Dwarf_Addr bias = 0;
     dwarf_ = dwfl_module_getdwarf(elf_module_, &bias);
+    // Look for split debuginfo files under multiple possible
+    // debuginfo roots.
+    for (vector<char**>::const_iterator i = debug_info_root_paths_.begin();
+	 dwarf_ == 0 && i != debug_info_root_paths_.end();
+	 ++i)
+      {
+	offline_callbacks()->debuginfo_path = *i;
+	dwarf_ = dwfl_module_getdwarf(elf_module_, &bias);
+      }
+
     if (!alt_dwarf_)
       alt_dwarf_ = find_alt_debug_info(elf_module_,
 				       alt_debug_info_path_,
@@ -15916,7 +16045,7 @@ status_to_diagnostic_string(status s)
 ///
 /// @param elf_path the path to the elf file the context is to be used for.
 ///
-/// @param debug_info_root_path a pointer to the path to the root
+/// @param debug_info_root_paths a pointer to the path to the root
 /// directory under which the debug info is to be found for @p
 /// elf_path.  Leave this to NULL if the debug info is not in a split
 /// file.
@@ -15944,14 +16073,14 @@ status_to_diagnostic_string(status s)
 /// @return a smart pointer to the resulting dwarf_reader::read_context.
 read_context_sptr
 create_read_context(const std::string&		elf_path,
-		    char**			debug_info_root_path,
+		    const vector<char**>&	debug_info_root_paths,
 		    ir::environment*		environment,
 		    bool			load_all_types,
 		    bool			linux_kernel_mode)
 {
   // Create a DWARF Front End Library handle to be used by functions
   // of that library.
-  read_context_sptr result(new read_context(elf_path, debug_info_root_path,
+  read_context_sptr result(new read_context(elf_path, debug_info_root_paths,
 					    environment, load_all_types,
 					    linux_kernel_mode));
   return result;
@@ -15994,7 +16123,7 @@ create_read_context(const std::string&		elf_path,
 void
 reset_read_context(read_context_sptr	&ctxt,
 		   const std::string&	 elf_path,
-		   char**		 debug_info_root_path,
+		   const vector<char**>& debug_info_root_path,
 		   ir::environment*	 environment,
 		   bool		 read_all_types,
 		   bool		 linux_kernel_mode)
@@ -16131,14 +16260,14 @@ read_and_add_corpus_to_group_from_elf(read_context& ctxt,
 ///
 /// @param elf_path the path to the elf file.
 ///
-/// @param debug_info_root_path a pointer to the root path under which
-/// to look for the debug info of the elf files that are later handled
-/// by the Dwfl.  This for cases where the debug info is split into a
-/// different file from the binary we want to inspect.  On Red Hat
-/// compatible systems, this root path is usually /usr/lib/debug by
-/// default.  If this argument is set to NULL, then "./debug" and
-/// /usr/lib/debug will be searched for sub-directories containing the
-/// debug info file.
+/// @param debug_info_root_paths a vector of pointers to root paths
+/// under which to look for the debug info of the elf files that are
+/// later handled by the Dwfl.  This for cases where the debug info is
+/// split into a different file from the binary we want to inspect.
+/// On Red Hat compatible systems, this root path is usually
+/// /usr/lib/debug by default.  If this argument is set to NULL, then
+/// "./debug" and /usr/lib/debug will be searched for sub-directories
+/// containing the debug info file.
 ///
 /// @param environment the environment used by the current context.
 /// This environment contains resources needed by the reader and by
@@ -16159,13 +16288,13 @@ read_and_add_corpus_to_group_from_elf(read_context& ctxt,
 /// @return the resulting status.
 corpus_sptr
 read_corpus_from_elf(const std::string& elf_path,
-		     char**		debug_info_root_path,
+		     const vector<char**>& debug_info_root_paths,
 		     ir::environment*	environment,
 		     bool		load_all_types,
 		     status&		status)
 {
   read_context_sptr c = create_read_context(elf_path,
-					    debug_info_root_path,
+					    debug_info_root_paths,
 					    environment,
 					    load_all_types);
   read_context& ctxt = *c;
@@ -16355,7 +16484,9 @@ has_alt_debug_info(const string&	elf_path,
 		   bool&		has_alt_di,
 		   string&		alt_debug_info_path)
 {
-  read_context_sptr c = create_read_context(elf_path, debug_info_root_path, 0);
+  vector<char**> di_roots;
+  di_roots.push_back(debug_info_root_path);
+  read_context_sptr c = create_read_context(elf_path, di_roots, 0);
   read_context& ctxt = *c;
 
   // Load debug info from the elf path.

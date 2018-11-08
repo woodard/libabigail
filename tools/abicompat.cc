@@ -683,11 +683,13 @@ main(int argc, char* argv[])
 
   // Read the application ELF file.
   char * app_di_root = opts.app_di_root_path.get();
+  vector<char**> app_di_roots;
+  app_di_roots.push_back(&app_di_root);
   status status = abigail::dwarf_reader::STATUS_UNKNOWN;
   environment_sptr env(new environment);
   corpus_sptr app_corpus=
     read_corpus_from_elf(opts.app_path,
-			 &app_di_root, env.get(),
+			 app_di_roots, env.get(),
 			 /*load_all_types=*/opts.weak_mode,
 			 status);
 
@@ -734,8 +736,10 @@ main(int argc, char* argv[])
     }
 
   char * lib1_di_root = opts.lib1_di_root_path.get();
+  vector<char**> lib1_di_roots;
+  lib1_di_roots.push_back(&lib1_di_root);
   corpus_sptr lib1_corpus = read_corpus_from_elf(opts.lib1_path,
-						 &lib1_di_root, env.get(),
+						 lib1_di_roots, env.get(),
 						 /*load_all_types=*/false,
 						 status);
   if (status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
@@ -759,9 +763,10 @@ main(int argc, char* argv[])
     {
       assert(!opts.lib2_path.empty());
       char * lib2_di_root = opts.lib2_di_root_path.get();
+      vector<char**> lib2_di_roots;
+      lib2_di_roots.push_back(&lib2_di_root);
       lib2_corpus = read_corpus_from_elf(opts.lib2_path,
-					 &lib2_di_root,
-					 env.get(),
+					 lib2_di_roots, env.get(),
 					 /*load_all_types=*/false,
 					 status);
       if (status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)

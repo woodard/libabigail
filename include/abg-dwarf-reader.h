@@ -102,7 +102,7 @@ typedef shared_ptr<read_context> read_context_sptr;
 
 read_context_sptr
 create_read_context(const std::string&	elf_path,
-		    char**		debug_info_root_path,
+		    const vector<char**>& debug_info_root_paths,
 		    ir::environment*	environment,
 		    bool		read_all_types = false,
 		    bool		linux_kernel_mode = false);
@@ -110,10 +110,10 @@ create_read_context(const std::string&	elf_path,
 void
 reset_read_context(read_context_sptr &ctxt,
 		   const std::string&	elf_path,
-		    char**		debug_info_root_path,
-		    ir::environment*	environment,
-		    bool		read_all_types = false,
-		    bool		linux_kernel_mode = false);
+		   const vector<char**>& debug_info_root_paths,
+		   ir::environment*	environment,
+		   bool		read_all_types = false,
+		   bool		linux_kernel_mode = false);
 
 void
 add_read_context_suppressions(read_context& ctxt,
@@ -127,7 +127,7 @@ read_corpus_from_elf(read_context& ctxt, status& stat);
 
 corpus_sptr
 read_corpus_from_elf(const std::string& elf_path,
-		     char**		debug_info_root_path,
+		     const vector<char**>& debug_info_root_paths,
 		     ir::environment*	environment,
 		     bool		load_all_types,
 		     status&);

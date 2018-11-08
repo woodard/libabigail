@@ -78,6 +78,11 @@ Options
     Red Hat based systems, that directory is usually
     ``<root>/usr/lib/debug``.
 
+    This option can be provided several times with different root
+    directories.  In that case, ``abidiff`` will potentially look into
+    all those root directories to find the split debug info for
+    *first-shared-library*.
+
     Note also that this option is not mandatory for split debug
     information installed by your system's package manager because
     then ``abidiff`` knows where to find it.
@@ -87,6 +92,11 @@ Options
     Like ``--debug-info-dir1``, this options tells ``abidiff`` where
     to find the split debug information for the
     *second-shared-library* file.
+
+    This option can be provided several times with different root
+    directories.  In that case, ``abidiff`` will potentially look into
+    all those root directories to find the split debug info for
+    *second-shared-library*.
 
   * ``--headers-dir1 | --hd1`` <headers-directory-path-1>
 

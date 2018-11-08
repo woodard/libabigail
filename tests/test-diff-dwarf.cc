@@ -385,16 +385,17 @@ main()
 	abigail::dwarf_reader::STATUS_UNKNOWN;
 
       environment_sptr env(new environment);
+      std::vector<char**> di_roots;
       abigail::corpus_sptr corp0 =
 	read_corpus_from_elf(in_elfv0_path,
-			     /*debug_info_root_path=*/0,
+			     /*debug_info_root_path=*/di_roots,
 			     env.get(),
 			     /*load_all_types=*/false,
 			     status);
 
       abigail::corpus_sptr corp1 =
 	read_corpus_from_elf(in_elfv1_path,
-			     /*debug_info_root_path=*/0,
+			     /*debug_info_root_path=*/di_roots,
 			     env.get(),
 			     /*load_all_types=*/false,
 			     status);
