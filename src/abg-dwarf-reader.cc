@@ -10967,6 +10967,17 @@ die_pretty_print_type(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
   int tag = dwarf_tag(die);
   switch (tag)
     {
+    case DW_TAG_string_type:
+      // For now, we won't try to go get the actual representation of
+      // the string because this would make things more complicated;
+      // for that we'd need to interpret some location expressions to
+      // get the length of the string.  And for dynamically allocated
+      // strings, the result of the location expression evaluation
+      // might not even be a constant.  So at the moment I consider
+      // this to be a lot of hassle for no great return.  Until proven
+      // otherwise, of course.
+      repr = "string type";
+
     case DW_TAG_unspecified_type:
     case DW_TAG_ptr_to_member_type:
       break;
@@ -11078,7 +11089,6 @@ die_pretty_print_type(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
       }
       break;
 
-    case DW_TAG_string_type:
     case DW_TAG_set_type:
     case DW_TAG_file_type:
     case DW_TAG_packed_type:
