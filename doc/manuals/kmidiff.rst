@@ -166,7 +166,7 @@ Options
     <abidiff_default_supprs_label>` are loaded .
 
 
-  * ``--full-impact | -f``
+  * ``--impacted-interfaces | -i``
 
     Tell what interfaces got impacted by each individual ABI change.
 

@@ -11,6 +11,7 @@ following packages:
     autoconf
     automake
     libtool
+    pkg-config
 
 If you wan to build the documentation of libabigail, then you also
 need these packages (and its dependencies):
