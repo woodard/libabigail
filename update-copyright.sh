@@ -1,7 +1,7 @@
 #!/bin/sh
 
-oldyear=2017
-newyear=2018
+oldyear=2018
+newyear=2019
 
 for dir in src include tools tests; do
     for ext in cc h; do
