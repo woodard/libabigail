@@ -20,6 +20,7 @@
 
 #include <cstring>
 
+#include "abg-fwd.h"
 #include "abg-internal.h"
 // <headers defining libabigail's API go under here>
 ABG_BEGIN_EXPORT_DECLARATIONS
@@ -182,7 +183,7 @@ compute_lcs(const char* str1, const char* str2, int &ses_len, string& lcs)
   for (unsigned i = 0; i < result.size(); ++i)
     {
       int x = result[i].x(), y = result[i].y();
-      assert(str1[x] == str2[y]);
+      ABG_ASSERT(str1[x] == str2[y]);
       lcs.push_back(str1[x]);
     }
 }

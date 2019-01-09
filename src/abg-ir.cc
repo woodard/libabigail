@@ -77,7 +77,7 @@ public:
   {
     if (const abigail::ir::environment* env = d->get_environment())
       {
-	assert(env == env_);
+	ABG_ASSERT(env == env_);
 	return false;
       }
     else
@@ -95,12 +95,12 @@ public:
   {
     if (abigail::ir::environment* env = t->get_environment())
       {
-	assert(env == env_);
+	ABG_ASSERT(env == env_);
 	return false;
       }
     else
       {
-	assert(!t->get_environment());
+	ABG_ASSERT(!t->get_environment());
 	t->set_environment(env_);
       }
     return true;
@@ -331,7 +331,7 @@ public:
 void
 location::expand(std::string& path, unsigned& line, unsigned& column) const
 {
-  assert(get_location_manager());
+  ABG_ASSERT(get_location_manager());
   get_location_manager()->expand_location(*this, path, line, column);
 }
 
@@ -924,7 +924,7 @@ void
 translation_unit::bind_function_type_life_time(function_type_sptr ftype) const
 {
   const environment* env = get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   const_cast<translation_unit*>(this)->priv_->live_fn_types_.push_back(ftype);
 
@@ -935,11 +935,11 @@ translation_unit::bind_function_type_life_time(function_type_sptr ftype) const
   // The function type must be out of the same environment as its
   // translation unit.
   if (const environment* e = ftype->get_environment())
-    assert(env == e);
+    ABG_ASSERT(env == e);
   ftype->set_environment(const_cast<environment*>(env));
 
   if (const translation_unit* existing_tu = ftype->get_translation_unit())
-    assert(existing_tu == this);
+    ABG_ASSERT(existing_tu == this);
   else
     ftype->set_translation_unit(const_cast<translation_unit*>(this));
 }
@@ -1655,8 +1655,8 @@ elf_symbol::add_alias(const elf_symbol_sptr& alias)
   if (!alias)
     return;
 
-  assert(!alias->has_aliases());
-  assert(is_main_symbol());
+  ABG_ASSERT(!alias->has_aliases());
+  ABG_ASSERT(is_main_symbol());
 
   if (has_aliases())
     {
@@ -1667,11 +1667,11 @@ elf_symbol::add_alias(const elf_symbol_sptr& alias)
 	{
 	  if (a->get_next_alias()->is_main_symbol())
 	    {
-	      assert(last_alias == 0);
+	      ABG_ASSERT(last_alias == 0);
 	      last_alias = a;
 	    }
 	}
-      assert(last_alias);
+      ABG_ASSERT(last_alias);
 
       last_alias->priv_->next_alias_ = alias;
     }
@@ -1704,7 +1704,7 @@ elf_symbol::is_common_symbol() const
 bool
 elf_symbol::has_other_common_instances() const
 {
-  assert(is_common_symbol());
+  ABG_ASSERT(is_common_symbol());
   return get_next_common_instance();
 }
 
@@ -1737,9 +1737,9 @@ elf_symbol::add_common_instance(const elf_symbol_sptr& common)
   if (!common)
     return;
 
-  assert(!common->has_other_common_instances());
-  assert(is_common_symbol());
-  assert(is_main_symbol());
+  ABG_ASSERT(!common->has_other_common_instances());
+  ABG_ASSERT(is_common_symbol());
+  ABG_ASSERT(is_main_symbol());
 
   if (has_other_common_instances())
     {
@@ -1750,11 +1750,11 @@ elf_symbol::add_common_instance(const elf_symbol_sptr& common)
 	{
 	  if (c->get_next_common_instance().get() == get_main_symbol().get())
 	    {
-	      assert(last_common_instance == 0);
+	      ABG_ASSERT(last_common_instance == 0);
 	      last_common_instance = c;
 	    }
 	}
-      assert(last_common_instance);
+      ABG_ASSERT(last_common_instance);
 
       last_common_instance->priv_->next_common_instance_ = common;
     }
@@ -2785,7 +2785,7 @@ void
 set_environment_for_artifact(type_or_decl_base* artifact,
 			     const environment* env)
 {
-  assert(artifact && env);
+  ABG_ASSERT(artifact && env);
 
   ::environment_setter s(artifact, env);
   artifact->traverse(s);
@@ -3173,7 +3173,7 @@ void
 decl_base::set_linkage_name(const string& m)
 {
   const environment* env = get_environment();
-  assert(env);
+  ABG_ASSERT(env);
   priv_->linkage_name_ = env->intern(m);
 }
 
@@ -3653,10 +3653,10 @@ is_member_type(const type_base_sptr& t)
 access_specifier
 get_member_access_specifier(const decl_base& d)
 {
-  assert(is_member_decl(d));
+  ABG_ASSERT(is_member_decl(d));
 
   const context_rel* c = d.get_context_rel();
-  assert(c);
+  ABG_ASSERT(c);
 
   return c->get_access_specifier();
 }
@@ -3683,10 +3683,10 @@ void
 set_member_access_specifier(decl_base& d,
 			    access_specifier a)
 {
-  assert(is_member_decl(d));
+  ABG_ASSERT(is_member_decl(d));
 
   context_rel* c = d.get_context_rel();
-  assert(c);
+  ABG_ASSERT(c);
 
   c->set_access_specifier(a);
 }
@@ -3713,10 +3713,10 @@ set_member_access_specifier(const decl_base_sptr& d,
 bool
 get_member_is_static(const decl_base&d)
 {
-  assert(is_member_decl(d));
+  ABG_ASSERT(is_member_decl(d));
 
   const context_rel* c = d.get_context_rel();
-  assert(c);
+  ABG_ASSERT(c);
 
   return c->get_is_static();
 }
@@ -4026,11 +4026,11 @@ anonymous_data_member_to_class_or_union(const var_decl_sptr &d)
 void
 set_data_member_offset(var_decl_sptr m, uint64_t o)
 {
-  assert(is_data_member(m));
+  ABG_ASSERT(is_data_member(m));
 
   dm_context_rel* ctxt_rel =
     dynamic_cast<dm_context_rel*>(m->get_context_rel());
-  assert(ctxt_rel);
+  ABG_ASSERT(ctxt_rel);
 
   ctxt_rel->set_offset_in_bits(o);
 }
@@ -4043,10 +4043,10 @@ set_data_member_offset(var_decl_sptr m, uint64_t o)
 uint64_t
 get_data_member_offset(const var_decl& m)
 {
-  assert(is_data_member(m));
+  ABG_ASSERT(is_data_member(m));
   const dm_context_rel* ctxt_rel =
     dynamic_cast<const dm_context_rel*>(m.get_context_rel());
-  assert(ctxt_rel);
+  ABG_ASSERT(ctxt_rel);
   return ctxt_rel->get_offset_in_bits();
 }
 
@@ -4077,7 +4077,7 @@ uint64_t
 get_var_size_in_bits(const var_decl_sptr& v)
 {
   type_base_sptr t = v->get_type();
-  assert(t);
+  ABG_ASSERT(t);
 
   return t->get_size_in_bits();
 }
@@ -4090,7 +4090,7 @@ get_var_size_in_bits(const var_decl_sptr& v)
 void
 set_data_member_is_laid_out(var_decl_sptr m, bool l)
 {
-  assert(is_data_member(m));
+  ABG_ASSERT(is_data_member(m));
   dm_context_rel* ctxt_rel =
     dynamic_cast<dm_context_rel*>(m->get_context_rel());
   ctxt_rel->set_is_laid_out(l);
@@ -4104,7 +4104,7 @@ set_data_member_is_laid_out(var_decl_sptr m, bool l)
 bool
 get_data_member_is_laid_out(const var_decl& m)
 {
-  assert(is_data_member(m));
+  ABG_ASSERT(is_data_member(m));
   const dm_context_rel* ctxt_rel =
     dynamic_cast<const dm_context_rel*>(m.get_context_rel());
 
@@ -4155,10 +4155,10 @@ is_member_function(const function_decl_sptr& f)
 bool
 get_member_function_is_ctor(const function_decl& f)
 {
-  assert(is_member_function(f));
+  ABG_ASSERT(is_member_function(f));
 
   const method_decl* m = is_method_decl(&f);
-  assert(m);
+  ABG_ASSERT(m);
 
   const mem_fn_context_rel* ctxt =
     dynamic_cast<const mem_fn_context_rel*>(m->get_context_rel());
@@ -4185,10 +4185,10 @@ get_member_function_is_ctor(const function_decl_sptr& f)
 void
 set_member_function_is_ctor(function_decl& f, bool c)
 {
-  assert(is_member_function(f));
+  ABG_ASSERT(is_member_function(f));
 
   method_decl* m = is_method_decl(&f);
-  assert(m);
+  ABG_ASSERT(m);
 
   mem_fn_context_rel* ctxt =
     dynamic_cast<mem_fn_context_rel*>(m->get_context_rel());
@@ -4214,10 +4214,10 @@ set_member_function_is_ctor(const function_decl_sptr& f, bool c)
 bool
 get_member_function_is_dtor(const function_decl& f)
 {
-  assert(is_member_function(f));
+  ABG_ASSERT(is_member_function(f));
 
   const method_decl* m = is_method_decl(&f);
-  assert(m);
+  ABG_ASSERT(m);
 
   const mem_fn_context_rel* ctxt =
     dynamic_cast<const mem_fn_context_rel*>(m->get_context_rel());
@@ -4242,10 +4242,10 @@ get_member_function_is_dtor(const function_decl_sptr& f)
 void
 set_member_function_is_dtor(function_decl& f, bool d)
 {
-    assert(is_member_function(f));
+    ABG_ASSERT(is_member_function(f));
 
     method_decl* m = is_method_decl(&f);
-  assert(m);
+  ABG_ASSERT(m);
 
   mem_fn_context_rel* ctxt =
     dynamic_cast<mem_fn_context_rel*>(m->get_context_rel());
@@ -4270,10 +4270,10 @@ set_member_function_is_dtor(const function_decl_sptr& f, bool d)
 bool
 get_member_function_is_const(const function_decl& f)
 {
-  assert(is_member_function(f));
+  ABG_ASSERT(is_member_function(f));
 
   const method_decl* m = is_method_decl(&f);
-  assert(m);
+  ABG_ASSERT(m);
 
   const mem_fn_context_rel* ctxt =
     dynamic_cast<const mem_fn_context_rel*>(m->get_context_rel());
@@ -4298,10 +4298,10 @@ get_member_function_is_const(const function_decl_sptr& f)
 void
 set_member_function_is_const(function_decl& f, bool is_const)
 {
-  assert(is_member_function(f));
+  ABG_ASSERT(is_member_function(f));
 
   method_decl* m = is_method_decl(&f);
-  assert(m);
+  ABG_ASSERT(m);
 
   mem_fn_context_rel* ctxt =
     dynamic_cast<mem_fn_context_rel*>(m->get_context_rel());
@@ -4338,11 +4338,11 @@ member_function_has_vtable_offset(const function_decl& f)
 ssize_t
 get_member_function_vtable_offset(const function_decl& f)
 {
-  assert(is_member_function(f));
+  ABG_ASSERT(is_member_function(f));
 
   const method_decl* m =
     dynamic_cast<const method_decl*>(&f);
-  assert(m);
+  ABG_ASSERT(m);
 
   const mem_fn_context_rel* ctxt =
     dynamic_cast<const mem_fn_context_rel*>(m->get_context_rel());
@@ -4371,10 +4371,10 @@ get_member_function_vtable_offset(const function_decl_sptr& f)
 void
 set_member_function_vtable_offset(function_decl& f, ssize_t s)
 {
-  assert(is_member_function(f));
+  ABG_ASSERT(is_member_function(f));
 
   method_decl* m = is_method_decl(&f);
-  assert(m);
+  ABG_ASSERT(m);
 
   mem_fn_context_rel* ctxt =
     dynamic_cast<mem_fn_context_rel*>(m->get_context_rel());
@@ -4401,11 +4401,11 @@ set_member_function_vtable_offset(const function_decl_sptr& f, ssize_t s)
 bool
 get_member_function_is_virtual(const function_decl& f)
 {
-  assert(is_member_function(f));
+  ABG_ASSERT(is_member_function(f));
 
   const method_decl* m =
     dynamic_cast<const method_decl*>(&f);
-  assert(m);
+  ABG_ASSERT(m);
 
   const mem_fn_context_rel* ctxt =
     dynamic_cast<const mem_fn_context_rel*>(m->get_context_rel());
@@ -4439,10 +4439,10 @@ get_member_function_is_virtual(const function_decl* mem_fn)
 void
 set_member_function_is_virtual(function_decl& f, bool is_virtual)
 {
-  assert(is_member_function(f));
+  ABG_ASSERT(is_member_function(f));
 
   method_decl* m = is_method_decl(&f);
-  assert(m);
+  ABG_ASSERT(m);
 
   mem_fn_context_rel* ctxt =
     dynamic_cast<mem_fn_context_rel*>(m->get_context_rel());
@@ -4506,7 +4506,7 @@ strip_typedef(const type_base_sptr type)
     }
 
   environment* env = type->get_environment();
-  assert(env);
+  ABG_ASSERT(env);
   type_base_sptr t = type;
 
   if (const typedef_decl_sptr ty = is_typedef(t))
@@ -4515,7 +4515,7 @@ strip_typedef(const type_base_sptr type)
     {
       type_base_sptr p = strip_typedef(type_or_void(ty->get_pointed_to_type(),
 						    env));
-      assert(p);
+      ABG_ASSERT(p);
       t.reset(new reference_type_def(p,
 				     ty->is_lvalue(),
 				     ty->get_size_in_bits(),
@@ -4526,7 +4526,7 @@ strip_typedef(const type_base_sptr type)
     {
       type_base_sptr p = strip_typedef(type_or_void(ty->get_pointed_to_type(),
 						    env));
-      assert(p);
+      ABG_ASSERT(p);
       t.reset(new pointer_type_def(p,
 				   ty->get_size_in_bits(),
 				   ty->get_alignment_in_bits(),
@@ -4536,7 +4536,7 @@ strip_typedef(const type_base_sptr type)
     {
       type_base_sptr p = strip_typedef(type_or_void(ty->get_underlying_type(),
 						    env));
-      assert(p);
+      ABG_ASSERT(p);
       t.reset(new qualified_type_def(p,
 				     ty->get_cv_quals(),
 				     ty->get_location()));
@@ -4544,7 +4544,7 @@ strip_typedef(const type_base_sptr type)
   else if (const array_type_def_sptr ty = is_array_type(t))
     {
       type_base_sptr p = strip_typedef(ty->get_element_type());
-      assert(p);
+      ABG_ASSERT(p);
       t.reset(new array_type_def(p, ty->get_subranges(), ty->get_location()));
     }
   else if (const method_type_sptr ty = is_method_type(t))
@@ -4557,7 +4557,7 @@ strip_typedef(const type_base_sptr type)
 	{
 	  function_decl::parameter_sptr p = *i;
 	  type_base_sptr typ = strip_typedef(p->get_type());
-	  assert(typ);
+	  ABG_ASSERT(typ);
 	  function_decl::parameter_sptr stripped
 	    (new function_decl::parameter(typ,
 					  p->get_index(),
@@ -4568,7 +4568,7 @@ strip_typedef(const type_base_sptr type)
 	  parm.push_back(stripped);
 	}
       type_base_sptr p = strip_typedef(ty->get_return_type());
-      assert(!!p == !!ty->get_return_type());
+      ABG_ASSERT(!!p == !!ty->get_return_type());
       t.reset(new method_type(p, ty->get_class_type(),
 			      parm, ty->get_is_const(),
 			      ty->get_size_in_bits(),
@@ -4584,7 +4584,7 @@ strip_typedef(const type_base_sptr type)
 	{
 	  function_decl::parameter_sptr p = *i;
 	  type_base_sptr typ = strip_typedef(p->get_type());
-	  assert(typ);
+	  ABG_ASSERT(typ);
 	  function_decl::parameter_sptr stripped
 	    (new function_decl::parameter(typ,
 					  p->get_index(),
@@ -4595,7 +4595,7 @@ strip_typedef(const type_base_sptr type)
 	  parm.push_back(stripped);
 	}
       type_base_sptr p = strip_typedef(ty->get_return_type());
-      assert(!!p == !!ty->get_return_type());
+      ABG_ASSERT(!!p == !!ty->get_return_type());
       t.reset(new function_type(p, parm,
 				ty->get_size_in_bits(),
 				ty->get_alignment_in_bits()));
@@ -5066,14 +5066,14 @@ scope_decl::is_empty() const
 ///
 /// Note that this function updates the qualified name of the member
 /// decl that is added.  It also sets the scope of the member.  Thus,
-/// it asserts that member should not have its scope set, prior to
+/// it ABG_ASSERTs that member should not have its scope set, prior to
 /// calling this function.
 ///
 /// @param member the new member decl to add to this scope.
 decl_base_sptr
 scope_decl::add_member_decl(const decl_base_sptr& member)
 {
-  assert(!has_scope(member));
+  ABG_ASSERT(!has_scope(member));
 
   member->set_scope(this);
   priv_->members_.push_back(member);
@@ -5089,7 +5089,7 @@ scope_decl::add_member_decl(const decl_base_sptr& member)
   if (translation_unit* tu = get_translation_unit())
     {
       if (translation_unit* existing_tu = member->get_translation_unit())
-	assert(tu == existing_tu);
+	ABG_ASSERT(tu == existing_tu);
       else
 	member->set_translation_unit(tu);
     }
@@ -5114,7 +5114,7 @@ decl_base_sptr
 scope_decl::insert_member_decl(const decl_base_sptr& member,
 			       declarations::iterator before)
 {
-  assert(!member->get_scope());
+  ABG_ASSERT(!member->get_scope());
 
   member->set_scope(this);
   priv_->members_.insert(before, member);
@@ -5130,7 +5130,7 @@ scope_decl::insert_member_decl(const decl_base_sptr& member,
   if (translation_unit* tu = get_translation_unit())
     {
       if (translation_unit* existing_tu = member->get_translation_unit())
-	assert(tu == existing_tu);
+	ABG_ASSERT(tu == existing_tu);
       else
 	member->set_translation_unit(tu);
     }
@@ -5381,7 +5381,7 @@ scope_decl::~scope_decl()
 decl_base_sptr
 add_decl_to_scope(decl_base_sptr decl, scope_decl* scope)
 {
-  assert(scope);
+  ABG_ASSERT(scope);
 
   if (scope && decl && !decl->get_scope())
     decl = scope->add_member_decl(decl);
@@ -5530,7 +5530,7 @@ get_top_most_scope_under(const decl_base* decl,
     // SCOPE must come before decl in topological order, but I don't
     // know how to ensure that ...
     return scope;
-  assert(s);
+  ABG_ASSERT(s);
 
   return s;
 }
@@ -5773,7 +5773,7 @@ get_type_name(const type_base* t, bool qualified, bool internal)
   if (!d)
     {
       const function_type* fn_type = is_function_type(t);
-      assert(fn_type);
+      ABG_ASSERT(fn_type);
       return fn_type->get_cached_name(internal);
     }
   if (qualified)
@@ -5815,7 +5815,7 @@ get_name_of_pointer_to_type(const type_base& pointed_to_type,
 			    bool qualified, bool internal)
 {
   const environment* env = pointed_to_type.get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   string tn = get_type_name(pointed_to_type, qualified, internal);
   tn =  tn + "*";
@@ -5840,7 +5840,7 @@ get_name_of_reference_to_type(const type_base& pointed_to_type,
 			      bool qualified, bool internal)
 {
   const environment* env = pointed_to_type.get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   string name = get_type_name(pointed_to_type, qualified, internal);
   if (lvalue_reference)
@@ -5871,7 +5871,7 @@ get_name_of_qualified_type(const type_base_sptr& underlying_type,
 			   bool qualified, bool internal)
 {
   const environment* env = underlying_type->get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   string quals_repr = get_string_representation_of_cv_quals(quals);
   string name = get_type_name(underlying_type, qualified, internal);
@@ -5933,7 +5933,7 @@ interned_string
 get_function_type_name(const function_type* fn_type,
 		       bool internal)
 {
-  assert(fn_type);
+  ABG_ASSERT(fn_type);
 
   if (const method_type* method = is_method_type(fn_type))
     return get_method_type_name(method, internal);
@@ -5958,7 +5958,7 @@ get_function_type_name(const function_type& fn_type,
   std::ostringstream o;
   type_base_sptr return_type = fn_type.get_return_type();
   const environment* env = fn_type.get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   o <<  get_pretty_representation(return_type, internal);
 
@@ -6029,7 +6029,7 @@ get_method_type_name(const method_type& fn_type,
   std::ostringstream o;
   type_base_sptr return_type= fn_type.get_return_type();
   const environment* env = fn_type.get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   if (return_type)
     o << return_type->get_cached_pretty_representation(internal);
@@ -6039,7 +6039,7 @@ get_method_type_name(const method_type& fn_type,
     o << "void";
 
   class_or_union_sptr class_type = fn_type.get_class_type();
-  assert(class_type);
+  ABG_ASSERT(class_type);
 
   o << " (" << class_type->get_qualified_name(internal) << "::*)"
     << " (";
@@ -6144,7 +6144,7 @@ get_pretty_representation(const type_base* t, bool internal)
     return get_pretty_representation(fn_type, internal);
 
   const decl_base* d = get_type_declaration(t);
-  assert(d);
+  ABG_ASSERT(d);
   return get_pretty_representation(d, internal);
 }
 
@@ -7208,7 +7208,7 @@ look_through_decl_only_class(class_or_union_sptr klass)
 	 && klass->get_definition_of_declaration())
     klass = klass->get_definition_of_declaration();
 
-  assert(klass);
+  ABG_ASSERT(klass);
   return klass;
 }
 
@@ -7538,7 +7538,7 @@ type_decl_sptr
 lookup_basic_type(const string& type_name, const translation_unit& tu)
 {
   const environment* env = tu.get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   interned_string s = env->intern(type_name);
   return lookup_basic_type(s, tu);
@@ -7561,7 +7561,7 @@ class_decl_sptr
 lookup_class_type(const string& fqn, const translation_unit& tu)
 {
   const environment* env = tu.get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   interned_string s = env->intern(fqn);
   return lookup_class_type(s, tu);
@@ -7631,7 +7631,7 @@ union_decl_sptr
 lookup_union_type_per_location(const string& loc, const corpus& corp)
 {
   const environment* env = corp.get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   return lookup_union_type_per_location(env->intern(loc), corp);
 }
@@ -7669,7 +7669,7 @@ enum_type_decl_sptr
 lookup_enum_type(const string& type_name, const translation_unit& tu)
 {
   const environment* env = tu.get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   interned_string s = env->intern(type_name);
   return lookup_enum_type(s, tu);
@@ -7711,7 +7711,7 @@ typedef_decl_sptr
 lookup_typedef_type(const string& type_name, const translation_unit& tu)
 {
   const environment* env = tu.get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   interned_string s = env->intern(type_name);
   return lookup_typedef_type(s, tu);
@@ -7800,7 +7800,7 @@ pointer_type_def_sptr
 lookup_pointer_type(const string& type_name, const translation_unit& tu)
 {
   const environment* env = tu.get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   interned_string s = env->intern(type_name);
   return lookup_pointer_type(s, tu);
@@ -7983,7 +7983,7 @@ type_base_sptr
 lookup_type(const string& fqn, const translation_unit& tu)
 {
   const environment *env = tu.get_environment();
-  assert(env);
+  ABG_ASSERT(env);
   interned_string ifqn = env->intern(fqn);
   return lookup_type(ifqn, tu);
 }
@@ -8162,7 +8162,7 @@ lookup_node_in_scope(const list<string>& fqn,
 	return decl_base_sptr();
       cur_scope = new_scope;
     }
-  assert(resulting_decl);
+  ABG_ASSERT(resulting_decl);
   return resulting_decl;
 }
 
@@ -8223,7 +8223,7 @@ lookup_type_in_scope(const type_base& type,
   if (!a.empty())
     {
       first_scope = a.back();
-      assert(first_scope->get_name() == scope->get_name());
+      ABG_ASSERT(first_scope->get_name() == scope->get_name());
       a.pop_back();
     }
 
@@ -8284,7 +8284,7 @@ lookup_type_in_scope(const type_base_sptr type,
     return type_base_sptr();
 
   decl_base_sptr type_decl = get_type_declaration(type);
-  assert(type_decl);
+  ABG_ASSERT(type_decl);
   vector<scope_decl*> access_path;
   for (scope_decl* s = type_decl->get_scope(); s != 0; s = s->get_scope())
     {
@@ -8657,7 +8657,7 @@ lookup_type_from_translation_unit(const string& type_name,
     return type_base_sptr();
 
   translation_unit_sptr tu = i->second;
-  assert(tu);
+  ABG_ASSERT(tu);
 
   type_base_sptr t = lookup_type(type_name, *tu);
   return t;
@@ -8676,7 +8676,7 @@ function_type_sptr
 lookup_or_synthesize_fn_type(const function_type_sptr& fn_t,
 			     const corpus& corpus)
 {
-  assert(fn_t);
+  ABG_ASSERT(fn_t);
 
   function_type_sptr result;
 
@@ -8767,7 +8767,7 @@ type_decl_sptr
 lookup_basic_type_per_location(const string &loc, const corpus &corp)
 {
   const environment* env = corp.get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   return lookup_basic_type_per_location(env->intern(loc), corp);
 }
@@ -8909,7 +8909,7 @@ class_decl_sptr
 lookup_class_type_per_location(const string &loc, const corpus &corp)
 {
   const environment* env = corp.get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   return lookup_class_type_per_location(env->intern(loc), corp);
 }
@@ -9046,7 +9046,7 @@ enum_type_decl_sptr
 lookup_enum_type_per_location(const string &loc, const corpus &corp)
 {
   const environment* env = corp.get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   return lookup_enum_type_per_location(env->intern(loc), corp);
 }
@@ -9143,7 +9143,7 @@ typedef_decl_sptr
 lookup_typedef_type_per_location(const string &loc, const corpus &corp)
 {
   const environment* env = corp.get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   return lookup_typedef_type_per_location(env->intern(loc), corp);
 }
@@ -10164,7 +10164,7 @@ synthesize_function_type_from_translation_unit(const function_type& fn_type,
   function_type_sptr nil = function_type_sptr();
 
   environment* env = tu.get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   type_base_sptr return_type = fn_type.get_return_type();
   type_base_sptr result_return_type;
@@ -10202,7 +10202,7 @@ synthesize_function_type_from_translation_unit(const function_type& fn_type,
     {
       class_type = is_class_or_union_type
 	(synthesize_type_from_translation_unit(method->get_class_type(), tu));
-      assert(class_type);
+      ABG_ASSERT(class_type);
     }
 
   function_type_sptr result_fn_type;
@@ -10246,7 +10246,7 @@ demangle_cplus_mangled_name(const string& mangled_name)
   string demangled_name = mangled_name;
   if (str)
     {
-      assert(status == 0);
+      ABG_ASSERT(status == 0);
       demangled_name = str;
       free(str);
       str = 0;
@@ -10272,7 +10272,7 @@ type_or_void(const type_base_sptr t, const environment* env)
     r = t;
   else
     {
-      assert(env);
+      ABG_ASSERT(env);
       r = type_base_sptr(env->get_void_type());
     }
 
@@ -10389,7 +10389,7 @@ type_base::get_canonical_type_for(type_base_sptr t)
     return t;
 
   environment* env = t->get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   bool decl_only_class_equals_definition =
     (odr_is_relevant(*t) || env->decl_only_class_equals_definition());
@@ -11087,7 +11087,7 @@ integral_type::integral_type(const string& type_name)
     modifiers_(NO_MODIFIER)
 {
   bool could_parse = parse_integral_type(type_name, base_, modifiers_);
-  assert(could_parse);
+  ABG_ASSERT(could_parse);
 }
 
 /// Getter of the base type of the @ref integral_type.
@@ -11588,7 +11588,7 @@ namespace_decl::is_empty_or_has_empty_sub_namespaces() const
 	return false;
 
       namespace_decl_sptr ns = is_namespace(*i);
-      assert(ns);
+      ABG_ASSERT(ns);
 
       if (!ns->is_empty_or_has_empty_sub_namespaces())
 	return false;
@@ -11676,7 +11676,7 @@ class qualified_type_def::priv
 string
 qualified_type_def::build_name(bool fully_qualified, bool internal) const
 {
-  assert(get_underlying_type());
+  ABG_ASSERT(get_underlying_type());
 
   return get_name_of_qualified_type(get_underlying_type(),
 				    get_cv_quals(),
@@ -11860,7 +11860,7 @@ const interned_string&
 qualified_type_def::get_qualified_name(bool internal) const
 {
   const environment* env = get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   if (!get_canonical_type())
     {
@@ -12091,7 +12091,7 @@ pointer_type_def::pointer_type_def(const type_base_sptr&	pointed_to,
 {
   try
     {
-      assert(pointed_to);
+      ABG_ASSERT(pointed_to);
       const environment* env = pointed_to->get_environment();
       decl_base_sptr pto = dynamic_pointer_cast<decl_base>(pointed_to);
       string name = (pto ? pto->get_name() : string("void")) + "*";
@@ -12387,7 +12387,7 @@ reference_type_def::reference_type_def(const type_base_sptr	pointed_to,
       if (!is_lvalue())
 	name += "&";
       environment* env = pointed_to->get_environment();
-      assert(env);
+      ABG_ASSERT(env);
       set_name(env->intern(name));
 
       pointed_to_type_ = type_base_wptr(type_or_void(pointed_to, 0));
@@ -12731,7 +12731,7 @@ array_type_def::subrange_type::get_underlying_type() const
 void
 array_type_def::subrange_type::set_underlying_type(const type_base_sptr &u)
 {
-  assert(priv_->underlying_type_.expired());
+  ABG_ASSERT(priv_->underlying_type_.expired());
   priv_->underlying_type_ = u;
 }
 
@@ -12775,7 +12775,7 @@ array_type_def::subrange_type::get_length() const
   if (is_infinite())
     return 0;
 
-  assert(get_upper_bound() >= get_lower_bound());
+  ABG_ASSERT(get_upper_bound() >= get_lower_bound());
   return get_upper_bound() - get_lower_bound() + 1;
 }
 
@@ -13221,7 +13221,7 @@ array_type_def::append_subrange(subrange_sptr sub)
   set_size_in_bits(s);
   string r = get_pretty_representation();
   const environment* env = get_environment();
-  assert(env);
+  ABG_ASSERT(env);
   set_name(env->intern(r));
 }
 
@@ -13285,7 +13285,7 @@ const interned_string&
 array_type_def::get_qualified_name(bool internal) const
 {
   const environment* env = get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   if (internal)
     {
@@ -13813,7 +13813,7 @@ enum_type_decl::enumerator::get_qualified_name(bool internal) const
   if (priv_->qualified_name_.empty())
     {
       const environment* env = priv_->enum_type_->get_environment();
-      assert(env);
+      ABG_ASSERT(env);
       priv_->qualified_name_ =
 	env->intern(get_enum_type()->get_qualified_name(internal)
 		    + "::"
@@ -13829,7 +13829,7 @@ void
 enum_type_decl::enumerator::set_name(const string& n)
 {
   const environment* env = get_environment();
-  assert(env);
+  ABG_ASSERT(env);
   priv_->name_ = env->intern(n);;
 }
 
@@ -14321,7 +14321,7 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
     dynamic_cast<const dm_context_rel*>(l.get_context_rel());
   const dm_context_rel* c1 =
     dynamic_cast<const dm_context_rel*>(r.get_context_rel());
-  assert(c0 && c1);
+  ABG_ASSERT(c0 && c1);
 
   if (*c0 != *c1)
     {
@@ -14371,7 +14371,7 @@ var_decl::get_id() const
       else if (!get_linkage_name().empty())
 	sym_str = get_linkage_name();
       const environment* env = get_type()->get_environment();
-      assert(env);
+      ABG_ASSERT(env);
       priv_->id_ = env->intern(repr);
       if (!sym_str.empty())
 	priv_->id_ = env->intern(priv_->id_ + "{" + sym_str + "}");
@@ -14567,7 +14567,7 @@ struct function_type::priv
   mark_as_being_compared(const function_type& type) const
   {
     const environment* env = type.get_environment();
-    assert(env);
+    ABG_ASSERT(env);
     interned_string fn_type_name = type.get_cached_name(/*internal=*/true);
     env->priv_->fn_types_being_compared_.insert(fn_type_name);
   }
@@ -14581,7 +14581,7 @@ struct function_type::priv
   unmark_as_being_compared(const function_type& type) const
   {
     const environment* env = type.get_environment();
-    assert(env);
+    ABG_ASSERT(env);
     interned_string fn_type_name = type.get_cached_name(/*internal=*/true);
     env->priv_->fn_types_being_compared_.erase(fn_type_name);
   }
@@ -14595,7 +14595,7 @@ struct function_type::priv
   comparison_started(const function_type& type) const
   {
     const environment* env = type.get_environment();
-    assert(env);
+    ABG_ASSERT(env);
     interned_string fn_type_name = type.get_cached_name(/*internal=*/true);
     interned_string_set_type& c = env->priv_->fn_types_being_compared_;
     return (c.find(fn_type_name) != c.end());
@@ -15623,7 +15623,7 @@ function_decl::clone() const
 				      get_visibility(),
 				      get_binding()));
       class_or_union* scope = is_class_or_union_type(get_scope());
-      assert(scope);
+      ABG_ASSERT(scope);
       scope->add_member_function(m, get_member_access_specifier(*this),
 				 get_member_function_is_virtual(*this),
 				 get_member_function_vtable_offset(*this),
@@ -16033,7 +16033,7 @@ interned_string
 function_decl::parameter::get_type_name() const
 {
   const environment* env = get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   type_base_sptr t = get_type();
   string str;
@@ -16041,7 +16041,7 @@ function_decl::parameter::get_type_name() const
     str = "...";
   else
     {
-	assert(t);
+	ABG_ASSERT(t);
 	str = abigail::ir::get_type_name(t);
     }
   return env->intern(str);
@@ -16059,7 +16059,7 @@ function_decl::parameter::get_type_pretty_representation() const
     str = "...";
   else
     {
-	assert(t);
+	ABG_ASSERT(t);
 	str += get_type_declaration(t)->get_pretty_representation();
     }
   return str;
@@ -16072,7 +16072,7 @@ interned_string
 function_decl::parameter::get_name_id() const
 {
   const environment* env = get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   std::ostringstream o;
   o << "parameter-" << get_index();
@@ -16285,7 +16285,7 @@ string
 function_decl::parameter::get_pretty_representation(bool internal) const
 {
   const environment* env = get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   string type_repr;
   type_base_sptr t = get_type();
@@ -16368,7 +16368,7 @@ struct class_or_union::priv
   mark_as_being_compared(const class_or_union& klass) const
   {
     const environment* env = klass.get_environment();
-    assert(env);
+    ABG_ASSERT(env);
     env->priv_->classes_being_compared_.insert(klass.get_qualified_name());
   }
 
@@ -16416,7 +16416,7 @@ struct class_or_union::priv
   unmark_as_being_compared(const class_or_union& klass) const
   {
     const environment* env = klass.get_environment();
-    assert(env);
+    ABG_ASSERT(env);
     env->priv_->classes_being_compared_.erase(klass.get_qualified_name());
   }
 
@@ -16442,7 +16442,7 @@ struct class_or_union::priv
   comparison_started(const class_or_union& klass) const
   {
     const environment* env = klass.get_environment();
-    assert(env);
+    ABG_ASSERT(env);
     interned_string_set_type& c = env->priv_->classes_being_compared_;
     return (c.find(klass.get_qualified_name()) != c.end());
   }
@@ -16668,7 +16668,7 @@ class_or_union::remove_member_decl(decl_base_sptr decl)
 
   // For now we want to support just removing types from classes.  For
   // other kinds of IR node, we need more work.
-  assert(t);
+  ABG_ASSERT(t);
 
   remove_member_type(t);
 }
@@ -16683,8 +16683,8 @@ class_or_union::insert_member_type(type_base_sptr t,
 				   declarations::iterator before)
 {
   decl_base_sptr d = get_type_declaration(t);
-  assert(d);
-  assert(!has_scope(d));
+  ABG_ASSERT(d);
+  ABG_ASSERT(!has_scope(d));
 
   priv_->member_types_.push_back(t);
   scope_decl::insert_member_decl(d, before);
@@ -16693,7 +16693,7 @@ class_or_union::insert_member_type(type_base_sptr t,
 /// Add a member type to the current instance of class_or_union.
 ///
 /// @param t the member type to add.  It must not have been added to a
-/// scope, otherwise this will violate an assertion.
+/// scope, otherwise this will violate an ABG_ASSERTion.
 void
 class_or_union::add_member_type(type_base_sptr t)
 {insert_member_type(t, get_member_decls().end());}
@@ -16709,8 +16709,8 @@ type_base_sptr
 class_or_union::add_member_type(type_base_sptr t, access_specifier a)
 {
   decl_base_sptr d = get_type_declaration(t);
-  assert(d);
-  assert(!is_member_decl(d));
+  ABG_ASSERT(d);
+  ABG_ASSERT(!is_member_decl(d));
   add_member_type(t);
   set_member_access_specifier(d, a);
   return t;
@@ -16866,7 +16866,7 @@ class_or_union::set_naming_typedef(const typedef_decl_sptr& typedef_type)
 void
 class_or_union::set_definition_of_declaration(class_or_union_sptr d)
 {
-  assert(get_is_declaration_only());
+  ABG_ASSERT(get_is_declaration_only());
   priv_->definition_of_declaration_ = d;
   if (d->get_canonical_type())
     type_base::priv_->canonical_type = d->get_canonical_type();
@@ -16969,7 +16969,7 @@ class_or_union::add_data_member(var_decl_sptr v, access_specifier access,
 				bool is_laid_out, bool is_static,
 				size_t offset_in_bits)
 {
-  assert(!has_scope(v));
+  ABG_ASSERT(!has_scope(v));
 
   priv_->data_members_.push_back(v);
   scope_decl::add_member_decl(v);
@@ -17050,7 +17050,7 @@ class_or_union::add_member_function(method_decl_sptr f,
 				    bool is_static, bool is_ctor,
 				    bool is_dtor, bool is_const)
 {
-  assert(!has_scope(f));
+  ABG_ASSERT(!has_scope(f));
 
   scope_decl::add_member_decl(f);
 
@@ -17151,7 +17151,7 @@ void
 class_or_union::add_member_function_template(member_function_template_sptr m)
 {
   decl_base* c = m->as_function_tdecl()->get_scope();
-  /// TODO: use our own assertion facility that adds a meaningful
+  /// TODO: use our own ABG_ASSERTion facility that adds a meaningful
   /// error message or something like a structured error.
   priv_->member_function_templates_.push_back(m);
   if (!c)
@@ -17165,7 +17165,7 @@ void
 class_or_union::add_member_class_template(member_class_template_sptr m)
 {
   decl_base* c = m->as_class_tdecl()->get_scope();
-  /// TODO: use our own assertion facility that adds a meaningful
+  /// TODO: use our own ABG_ASSERTion facility that adds a meaningful
   /// error message or something like a structured error.
   m->set_scope(this);
   priv_->member_class_templates_.push_back(m);
@@ -17543,11 +17543,11 @@ copy_member_function(const class_or_union_sptr& t,
 method_decl_sptr
 copy_member_function(const class_or_union_sptr& t, const method_decl* method)
 {
-  assert(t);
-  assert(method);
+  ABG_ASSERT(t);
+  ABG_ASSERT(method);
 
   method_type_sptr old_type = method->get_type();
-  assert(old_type);
+  ABG_ASSERT(old_type);
   method_type_sptr new_type(new method_type(old_type->get_return_type(),
 					    t,
 					    old_type->get_parameters(),
@@ -17845,8 +17845,8 @@ class_decl::is_struct() const
 void
 class_decl::add_base_specifier(base_spec_sptr b)
 {
-  assert(get_environment());
-  assert(b->get_environment() == get_environment());
+  ABG_ASSERT(get_environment());
+  ABG_ASSERT(b->get_environment() == get_environment());
   priv_->bases_.push_back(b);
   priv_->bases_map_[b->get_base_class()->get_qualified_name()] = b;
   if (const environment* env = get_environment())
@@ -18404,8 +18404,8 @@ struct virtual_member_function_less_than
   operator()(const method_decl& f,
 	     const method_decl& s)
   {
-    assert(get_member_function_is_virtual(f));
-    assert(get_member_function_is_virtual(s));
+    ABG_ASSERT(get_member_function_is_virtual(f));
+    ABG_ASSERT(get_member_function_is_virtual(s));
 
     if (get_member_function_vtable_offset(f)
 	== get_member_function_vtable_offset(s))
@@ -19398,10 +19398,10 @@ operator<<(std::ostream& o, access_specifier a)
 void
 set_member_is_static(decl_base& d, bool s)
 {
-  assert(is_member_decl(d));
+  ABG_ASSERT(is_member_decl(d));
 
   context_rel* c = d.get_context_rel();
-  assert(c);
+  ABG_ASSERT(c);
 
   c->set_is_static(s);
 
@@ -19453,7 +19453,7 @@ set_member_is_static(decl_base& d, bool s)
 			  break;
 			}
 		    }
-		  assert(var);
+		  ABG_ASSERT(var);
 		  cl->priv_->non_static_data_members_.push_back(var);
 		}
 	    }
@@ -20679,7 +20679,7 @@ void
 keep_type_alive(type_base_sptr t)
 {
   environment* env = t->get_environment();
-  assert(env);
+  ABG_ASSERT(env);
   env->priv_->extra_live_types_.push_back(t);
 }
 
@@ -20743,7 +20743,7 @@ hash_type_or_decl(const type_or_decl_base *tod)
     {
       if (var_decl* v = is_var_decl(d))
 	{
-	  assert(v->get_type());
+	  ABG_ASSERT(v->get_type());
 	  size_t h = hash_type_or_decl(v->get_type());
 	  string repr = v->get_pretty_representation();
 	  std::tr1::hash<string> hash_string;
@@ -20752,7 +20752,7 @@ hash_type_or_decl(const type_or_decl_base *tod)
 	}
       else if (function_decl* f = is_function_decl(d))
 	{
-	  assert(f->get_type());
+	  ABG_ASSERT(f->get_type());
 	  size_t h = hash_type_or_decl(f->get_type());
 	  string repr = f->get_pretty_representation();
 	  std::tr1::hash<string> hash_string;
@@ -20762,7 +20762,7 @@ hash_type_or_decl(const type_or_decl_base *tod)
       else if (function_decl::parameter* p = is_function_parameter(d))
 	{
 	  type_base_sptr parm_type = p->get_type();
-	  assert(parm_type);
+	  ABG_ASSERT(parm_type);
 	  std::tr1::hash<bool> hash_bool;
 	  std::tr1::hash<unsigned> hash_unsigned;
 	  size_t h = hash_type_or_decl(parm_type);
@@ -21090,7 +21090,7 @@ ir_node_visitor::mark_type_node_as_visited(type_base *p)
     return;
 
   type_base* canonical_type = p->get_naked_canonical_type();
-  assert(canonical_type);
+  ABG_ASSERT(canonical_type);
 
   size_t canonical_ptr_value = reinterpret_cast<size_t>(canonical_type);
   priv_->visited_ir_nodes.insert(canonical_ptr_value);
@@ -21124,7 +21124,7 @@ ir_node_visitor::type_node_has_been_visited(type_base* p) const
     return false;
 
   type_base *canonical_type = p->get_naked_canonical_type();
-  assert(canonical_type);
+  ABG_ASSERT(canonical_type);
 
   size_t ptr_value = reinterpret_cast<size_t>(canonical_type);
   pointer_set::iterator it = priv_->visited_ir_nodes.find(ptr_value);
@@ -21509,7 +21509,7 @@ qualified_name_setter::do_update(abigail::ir::decl_base* d)
       else
 	{
 	  abigail::environment* env = d->get_environment();
-	  assert(env);
+	  ABG_ASSERT(env);
 	d->priv_->qualified_name_ =
 	  env->intern(d->priv_->qualified_parent_name_ + "::" + d->get_name());
 	}

@@ -1329,5 +1329,12 @@ dump_decl_location(const decl_base*);
 void
 dump_decl_location(const decl_base_sptr&);
 
+#ifndef ABG_ASSERT
+/// This is a wrapper around the 'assert' glibc call.  It allows for
+/// its argument to have side effects, so that it keeps working when
+/// the code of libabigail is compiled with the NDEBUG macro defined.
+#define ABG_ASSERT(cond) do {({bool __abg_cond__ = (cond); assert(__abg_cond__); !!__abg_cond__;});} while (false)
+#endif
+
 } // end namespace abigail
 #endif // __ABG_IRFWD_H__

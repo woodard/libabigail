@@ -30,6 +30,7 @@
 #define __ABG_CORPUS_PRIV_H__
 
 #include "abg-sptr-utils.h"
+#include "abg-internal.h"
 
 namespace abigail
 {
@@ -363,7 +364,7 @@ public:
     // Now associate all aliases of the underlying symbol to the
     // function too.
     elf_symbol_sptr sym = fn->get_symbol();
-    assert(sym);
+    ABG_ASSERT(sym);
     string sym_id;
     do
       {
@@ -481,9 +482,9 @@ public:
 		 ++i)
 	      {
 		string sym_name, sym_version;
-		assert(elf_symbol::get_name_and_version_from_id(*i,
-								sym_name,
-								sym_version));
+		ABG_ASSERT(elf_symbol::get_name_and_version_from_id(*i,
+								    sym_name,
+								    sym_version));
 		if (sym_name == sym->get_name()
 		    && sym_version == sym->get_version().str())
 		  {
@@ -588,9 +589,9 @@ public:
 		 ++i)
 	      {
 		string sym_name, sym_version;
-		assert(elf_symbol::get_name_and_version_from_id(*i,
-								sym_name,
-								sym_version));
+		ABG_ASSERT(elf_symbol::get_name_and_version_from_id(*i,
+								    sym_name,
+								    sym_version));
 		if (sym_name == sym->get_name()
 		    && sym_version == sym->get_version().str())
 		  {

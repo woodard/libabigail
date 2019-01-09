@@ -32,6 +32,7 @@
 #include <fstream>
 #include <sstream>
 
+#include "abg-fwd.h"
 #include "abg-internal.h"
 // <headers defining libabigail's API go under here>
 ABG_BEGIN_EXPORT_DECLARATIONS
@@ -1034,7 +1035,7 @@ public:
 	  return escaped;
 	if (peek)
 	  {
-	    assert(b == c);
+	    ABG_ASSERT(b == c);
 	    b = get(/*escape=*/false);
 	    if (!good())
 	      return escaped;
@@ -1143,7 +1144,7 @@ public:
   {
     for (char c = peek(); good(); c = peek())
       if (char_is_white_space(c))
-	assert(read_next_char(c));
+	ABG_ASSERT(read_next_char(c));
       else
 	break;
     return good() || eof();
@@ -1202,14 +1203,14 @@ public:
     if (!good() || !char_is_property_name_char(c))
       return false;
 
-    assert(read_next_char(c));
+    ABG_ASSERT(read_next_char(c));
     name += c;
 
     for (c = peek(); good(); c = peek())
       {
 	if (!char_is_property_name_char(c))
 	  break;
-	assert(read_next_char(c));
+	ABG_ASSERT(read_next_char(c));
 	name += c;
       }
 
@@ -1231,14 +1232,14 @@ public:
     if (!good() || !char_is_function_name_char(c))
       return false;
 
-    assert(read_next_char(c));
+    ABG_ASSERT(read_next_char(c));
     name += c;
 
     for (c = peek(); good(); c = peek())
       {
 	if (!char_is_function_name_char(c))
 	  break;
-	assert(read_next_char(c));
+	ABG_ASSERT(read_next_char(c));
 	name += c;
       }
 
@@ -1259,14 +1260,14 @@ public:
     if (!good() || !char_is_function_argument_char(c))
       return false;
 
-    assert(read_next_char(c));
+    ABG_ASSERT(read_next_char(c));
     argument += c;
 
     for (c = peek(); good(); c = peek())
       {
 	if (!char_is_function_argument_char(c))
 	  break;
-	assert(read_next_char(c));
+	ABG_ASSERT(read_next_char(c));
 	argument += c;
       }
 
@@ -1307,7 +1308,7 @@ public:
     char c = 0;
     if (!read_next_char(c))
       return false;
-    assert(c == '(');
+    ABG_ASSERT(c == '(');
 
     skip_white_spaces_or_comments();
     if (!good())
@@ -1331,7 +1332,7 @@ public:
 	if (peek() == ',')
 	  {
 	    c = 0;
-	    assert(read_next_char(c) && c == ',');
+	    ABG_ASSERT(read_next_char(c) && c == ',');
 	    skip_white_spaces_or_comments();
 	    if (!good())
 	      return false;
@@ -1341,7 +1342,7 @@ public:
       }
 
     c = 0;
-    assert(read_next_char(c) && c == ')');
+    ABG_ASSERT(read_next_char(c) && c == ')');
 
     expr.reset(new function_call_expr(name, arguments));
     return true;
@@ -1405,7 +1406,7 @@ public:
 	if (!escaped && !char_is_property_value_char(b))
 	  break;
 	char c = 0;
-	assert(read_next_char(c));
+	ABG_ASSERT(read_next_char(c));
 	v += c;
       }
     return trim_white_space(v);
@@ -1453,7 +1454,7 @@ public:
 
 	char c = 0;
 	read_next_char(c);
-	assert(c == ',');
+	ABG_ASSERT(c == ',');
       }
 
     if (!content.empty())
@@ -1480,7 +1481,7 @@ public:
       return nil;
 
     char c = 0;
-    assert(read_next_char(c));
+    ABG_ASSERT(read_next_char(c));
 
     property_value_sptr value;
     vector<property_value_sptr> values;
@@ -1524,14 +1525,14 @@ public:
       return false;
 
     char c = 0;
-    assert(read_next_char(c) || char_is_section_name_char(b));
+    ABG_ASSERT(read_next_char(c) || char_is_section_name_char(b));
     name += c;
 
     for (b = peek(); good(); b = peek())
       {
 	if (!char_is_section_name_char(b))
 	  break;
-	assert(read_next_char(c));
+	ABG_ASSERT(read_next_char(c));
 	name += c;
       }
 
@@ -1558,8 +1559,8 @@ public:
     char c = peek();
     if (c == '=')
       {
-	assert(read_next_char(c));
-	assert(c == '=');
+	ABG_ASSERT(read_next_char(c));
+	ABG_ASSERT(c == '=');
 	skip_white_spaces();
       }
     else
@@ -1603,7 +1604,7 @@ public:
 
     char c = 0;
     if (b == '[')
-      assert(read_next_char(c) && c == '[');
+      ABG_ASSERT(read_next_char(c) && c == '[');
 
     string name;
     if (!read_section_name(name))

@@ -110,7 +110,7 @@ public:
     ostringstream o;
     o << get_new_id();
     const environment* env = get_environment();
-    assert(env);
+    ABG_ASSERT(env);
     return env->intern(o.str());
   }
 
@@ -124,7 +124,7 @@ public:
     ostringstream o;
     o << prefix << get_new_id();
     const environment* env = get_environment();
-    assert(env);
+    ABG_ASSERT(env);
     return env->intern(o.str());
   }
 };
@@ -564,7 +564,7 @@ public:
   record_decl_only_type_as_emitted(type_base* t)
   {
     class_or_union* cl = is_class_or_union_type(t);
-    assert(cl && cl->get_is_declaration_only());
+    ABG_ASSERT(cl && cl->get_is_declaration_only());
     m_emitted_decl_only_set.insert(t);
   }
 
@@ -1597,7 +1597,7 @@ write_decl_in_scope(const decl_base_sptr&	decl,
 		    unsigned			initial_indent)
 {
   type_base_sptr type = is_type(decl);
-  assert(type);
+  ABG_ASSERT(type);
 
   if (ctxt.type_is_emitted(type))
     return;
@@ -1618,7 +1618,7 @@ write_decl_in_scope(const decl_base_sptr&	decl,
        i != scopes.end();
        ++i)
     {
-      assert(!is_global_scope(*i));
+      ABG_ASSERT(!is_global_scope(*i));
 
       if (i != scopes.begin())
 	o << "\n";
@@ -1891,7 +1891,7 @@ write_translation_unit(const translation_unit&	tu,
 	// pointer or reference type, or has already been emitted, so skip it.
 	continue;
 
-      assert(fn_type);
+      ABG_ASSERT(fn_type);
       o << "\n";
       write_function_type(fn_type, ctxt, indent + c.get_xml_element_indent());
     }
@@ -3186,7 +3186,7 @@ write_class_decl(const class_decl_sptr& decl,
 	    // later.
 	    continue;
 
-	  assert(!get_member_function_is_virtual(fn));
+	  ABG_ASSERT(!get_member_function_is_virtual(fn));
 
 	  do_indent(o, nb_ws);
 	  o << "<member-function";
@@ -3214,7 +3214,7 @@ write_class_decl(const class_decl_sptr& decl,
 	{
 	  function_decl_sptr fn = *f;
 
-	  assert(get_member_function_is_virtual(fn));
+	  ABG_ASSERT(get_member_function_is_virtual(fn));
 
 	  do_indent(o, nb_ws);
 	  o << "<member-function";
@@ -3373,7 +3373,7 @@ write_union_decl(const union_decl_sptr& decl,
 	    // later.
 	    continue;
 
-	  assert(!get_member_function_is_virtual(fn));
+	  ABG_ASSERT(!get_member_function_is_virtual(fn));
 
 	  do_indent(o, nb_ws);
 	  o << "<member-function";
@@ -3472,7 +3472,7 @@ write_member_type_opening_tag(const type_base_sptr& t,
   do_indent_to_level(ctxt, indent, 0);
 
   decl_base_sptr decl = get_type_declaration(t);
-  assert(decl);
+  ABG_ASSERT(decl);
 
   o << "<member-type";
   write_access(decl, o);
@@ -3507,7 +3507,7 @@ write_member_type(const type_base_sptr& t, write_context& ctxt, unsigned indent)
   string id = ctxt.get_id_for_type(t);
 
   unsigned nb_ws = get_indent_to_level(ctxt, indent, 1);
-  assert(write_qualified_type_def(dynamic_pointer_cast<qualified_type_def>(t),
+  ABG_ASSERT(write_qualified_type_def(dynamic_pointer_cast<qualified_type_def>(t),
 				  id, ctxt, nb_ws)
 	 || write_pointer_type_def(dynamic_pointer_cast<pointer_type_def>(t),
 				   id, ctxt, nb_ws)
@@ -4003,7 +4003,7 @@ write_corpus_to_archive(const corpus& corp,
                         const bool annotate)
 {
   archive_write_ctxt_sptr ctxt = create_archive_write_context(path);
-  assert(ctxt);
+  ABG_ASSERT(ctxt);
   return write_corpus_to_archive(corp, ctxt, annotate);
 }
 

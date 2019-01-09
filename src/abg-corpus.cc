@@ -163,7 +163,7 @@ corpus::exported_decls_builder::maybe_add_fn_to_exported_fns(function_decl* fn)
     return;
 
   const string& fn_id = priv_->get_id(*fn);
-  assert(!fn_id.empty());
+  ABG_ASSERT(!fn_id.empty());
 
   if (priv_->fn_is_in_id_fns_map(fn))
     return;
@@ -186,7 +186,7 @@ corpus::exported_decls_builder::maybe_add_var_to_exported_vars(var_decl* var)
     return;
 
   const string& var_id = priv_->get_id(*var);
-  assert(!var_id.empty());
+  ABG_ASSERT(!var_id.empty());
 
   if (priv_->var_id_is_in_id_var_map(var_id))
     return;
@@ -235,18 +235,18 @@ struct func_comp
   operator()(const function_decl* first,
 	     const function_decl* second) const
   {
-    assert(first != 0 && second != 0);
+    ABG_ASSERT(first != 0 && second != 0);
 
     string first_name, second_name;
     first_name = first->get_linkage_name();
     if (first_name.empty())
       first_name = first->get_name();
-    assert(!first_name.empty());
+    ABG_ASSERT(!first_name.empty());
 
     second_name = second->get_linkage_name();
     if (second_name.empty())
       second_name = second->get_name();
-    assert(!second_name.empty());
+    ABG_ASSERT(!second_name.empty());
 
     return first_name < second_name;
   }
@@ -269,7 +269,7 @@ struct var_comp
   operator()(const var_decl* first,
 	     const var_decl* second) const
   {
-    assert(first != 0 && second != 0);
+    ABG_ASSERT(first != 0 && second != 0);
 
     string first_name, second_name;
     first_name = first->get_linkage_name();
@@ -277,9 +277,9 @@ struct var_comp
       {
 	first_name = first->get_pretty_representation();
 	second_name = second->get_pretty_representation();
-	assert(!second_name.empty());
+	ABG_ASSERT(!second_name.empty());
       }
-    assert(!first_name.empty());
+    ABG_ASSERT(!first_name.empty());
 
     if (second_name.empty())
       second_name = second->get_linkage_name();
@@ -288,9 +288,9 @@ struct var_comp
       {
 	second_name = second->get_pretty_representation();
 	first_name = first->get_pretty_representation();
-	assert(!first_name.empty());
+	ABG_ASSERT(!first_name.empty());
       }
-    assert(!second_name.empty());
+    ABG_ASSERT(!second_name.empty());
 
     return first_name < second_name;
   }
@@ -536,7 +536,7 @@ corpus::add(const translation_unit_sptr tu)
   if (!tu->get_environment())
     tu->set_environment(get_environment());
 
-  assert(tu->get_environment() == get_environment());
+  ABG_ASSERT(tu->get_environment() == get_environment());
 
   priv_->members.push_back(tu);
   if (!tu->get_absolute_path().empty())
@@ -544,7 +544,7 @@ corpus::add(const translation_unit_sptr tu)
       // Update the path -> translation_unit map.
       string_tu_map_type::const_iterator i =
 	priv_->path_tu_map.find(tu->get_absolute_path());
-      assert(i == priv_->path_tu_map.end());
+      ABG_ASSERT(i == priv_->path_tu_map.end());
       priv_->path_tu_map[tu->get_absolute_path()] = tu;
     }
 
@@ -1575,7 +1575,7 @@ corpus_group::add_corpus(const corpus_sptr& corp)
   if (const environment* cur_env = get_environment())
     {
       if (environment* corp_env = corp->get_environment())
-	assert(cur_env == corp_env);
+	ABG_ASSERT(cur_env == corp_env);
     }
   else
     set_environment(corp->get_environment());
@@ -1586,7 +1586,7 @@ corpus_group::add_corpus(const corpus_sptr& corp)
   if (cur_arch.empty())
     set_architecture_name(corp_arch);
   else
-    assert(cur_arch == corp_arch);
+    ABG_ASSERT(cur_arch == corp_arch);
 
   priv_->corpora.push_back(corp);
 

@@ -621,7 +621,7 @@ struct test_task : public abigail::workers::task
 	vector<string> debug_info_pkg_paths;
 	split_string(spec.first_in_debug_package_path, ", ",
 		     debug_info_pkg_paths);
-	assert(!debug_info_pkg_paths.empty());
+	ABG_ASSERT(!debug_info_pkg_paths.empty());
 	for (vector<string>::const_iterator s = debug_info_pkg_paths.begin();
 	     s != debug_info_pkg_paths.end();
 	     ++s)
@@ -638,7 +638,7 @@ struct test_task : public abigail::workers::task
 	split_string(spec.second_in_debug_package_path,
 		     ", ",
 		     debug_info_pkg_paths);
-	assert(!debug_info_pkg_paths.empty());
+	ABG_ASSERT(!debug_info_pkg_paths.empty());
 	for (vector<string>::const_iterator s = debug_info_pkg_paths.begin();
 	     s != debug_info_pkg_paths.end();
 	     ++s)
@@ -750,7 +750,7 @@ main()
   for (InOutSpec *s = in_out_specs; s->first_in_package_path; ++s)
     {
       test_task_sptr t(new test_task(*s));
-      assert(task_queue.schedule_task(t));
+      ABG_ASSERT(task_queue.schedule_task(t));
     }
 
   /// Wait for all worker threads to finish their job, and wind down.
@@ -761,7 +761,7 @@ main()
 
   const vector<task_sptr>& completed_tasks =
     task_queue.get_completed_tasks();
-  assert(completed_tasks.size() == num_tests);
+  ABG_ASSERT(completed_tasks.size() == num_tests);
 
   for (vector<task_sptr>::const_iterator ti = completed_tasks.begin();
        ti != completed_tasks.end();

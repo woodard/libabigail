@@ -614,7 +614,7 @@ main(int argc, char* argv[])
       return 0;
     }
 
-  assert(!opts.in_file_path.empty());
+  ABG_ASSERT(!opts.in_file_path.empty());
   if (opts.corpus_group_for_linux)
     {
       if (!abigail::tools_utils::check_dir(opts.in_file_path, cerr, argv[0]))

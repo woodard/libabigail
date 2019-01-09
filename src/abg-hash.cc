@@ -603,12 +603,12 @@ class_or_union::hash::operator()(const class_or_union& t) const
 
   if (t.get_is_declaration_only())
     {
-      assert(t.get_definition_of_declaration());
+      ABG_ASSERT(t.get_definition_of_declaration());
       size_t v = operator()(*t.get_definition_of_declaration());
       return v;
     }
 
-  assert(!t.get_is_declaration_only());
+  ABG_ASSERT(!t.get_is_declaration_only());
 
   std::tr1::hash<string> hash_string;
   scope_type_decl::hash hash_scope_type;
@@ -682,12 +682,12 @@ class_decl::hash::operator()(const class_decl& t) const
 
   if (t.get_is_declaration_only())
     {
-      assert(t.get_definition_of_declaration());
+      ABG_ASSERT(t.get_definition_of_declaration());
       size_t v = operator()(*is_class_type(t.get_definition_of_declaration()));
       return v;
     }
 
-  assert(!t.get_is_declaration_only());
+  ABG_ASSERT(!t.get_is_declaration_only());
 
   std::tr1::hash<string> hash_string;
   class_decl::base_spec::hash hash_base;

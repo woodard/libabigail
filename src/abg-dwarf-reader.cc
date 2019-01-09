@@ -1618,16 +1618,16 @@ lookup_symbol_from_sysv_hash_tab(const environment*		env,
 				 vector<elf_symbol_sptr>&	syms_found)
 {
   Elf_Scn* sym_tab_section = elf_getscn(elf_handle, sym_tab_index);
-  assert(sym_tab_section);
+  ABG_ASSERT(sym_tab_section);
 
   Elf_Data* sym_tab_data = elf_getdata(sym_tab_section, 0);
-  assert(sym_tab_data);
+  ABG_ASSERT(sym_tab_data);
 
   GElf_Shdr sheader_mem;
   GElf_Shdr* sym_tab_section_header = gelf_getshdr(sym_tab_section,
 						   &sheader_mem);
   Elf_Scn* hash_section = elf_getscn(elf_handle, ht_index);
-  assert(hash_section);
+  ABG_ASSERT(hash_section);
 
   // Poke at the different parts of the hash table and get them ready
   // to be used.
@@ -1660,7 +1660,7 @@ lookup_symbol_from_sysv_hash_tab(const environment*		env,
 
   do
     {
-      assert(gelf_getsym(sym_tab_data, symbol_index, &symbol));
+      ABG_ASSERT(gelf_getsym(sym_tab_data, symbol_index, &symbol));
       sym_name_str = elf_strptr(elf_handle,
 				sym_tab_section_header->sh_link,
 				symbol.st_name);
@@ -1675,7 +1675,7 @@ lookup_symbol_from_sysv_hash_tab(const environment*		env,
 	  elf_symbol::version ver;
 	  if (get_version_for_symbol(elf_handle, symbol_index,
 				     /*get_def_version=*/true, ver))
-	    assert(!ver.str().empty());
+	    ABG_ASSERT(!ver.str().empty());
 	  elf_symbol_sptr symbol_found =
 	    elf_symbol::create(env,
 			       symbol_index,
@@ -1706,7 +1706,7 @@ get_elf_class_size_in_bytes(Elf* elf_handle)
   char result = 0;
   GElf_Ehdr hdr;
 
-  assert(gelf_getehdr(elf_handle, &hdr));
+  ABG_ASSERT(gelf_getehdr(elf_handle, &hdr));
   int c = hdr.e_ident[EI_CLASS];
 
   switch (c)
@@ -1740,7 +1740,7 @@ bloom_word_at(Elf*		elf_handle,
 {
   GElf_Word result = 0;
   GElf_Ehdr h;
-  assert(gelf_getehdr(elf_handle, &h));
+  ABG_ASSERT(gelf_getehdr(elf_handle, &h));
   int c;
   c = h.e_ident[EI_CLASS];
 
@@ -1815,12 +1815,12 @@ setup_gnu_ht(Elf* elf_handle,
 	     gnu_ht& ht)
 {
   ht.sym_tab_section = elf_getscn(elf_handle, sym_tab_index);
-  assert(ht.sym_tab_section);
-  assert(gelf_getshdr(ht.sym_tab_section, &ht.sym_tab_section_header));
+  ABG_ASSERT(ht.sym_tab_section);
+  ABG_ASSERT(gelf_getshdr(ht.sym_tab_section, &ht.sym_tab_section_header));
   ht.sym_count =
     ht.sym_tab_section_header.sh_size / ht.sym_tab_section_header.sh_entsize;
   Elf_Scn* hash_section = elf_getscn(elf_handle, ht_index);
-  assert(hash_section);
+  ABG_ASSERT(hash_section);
 
   // Poke at the different parts of the hash table and get them ready
   // to be used.
@@ -1936,7 +1936,7 @@ lookup_symbol_from_gnu_hash_tab(const environment*		env,
 	// looking for.  Let's keep walking.
 	continue;
 
-      assert(gelf_getsym(elf_getdata(ht.sym_tab_section, 0),
+      ABG_ASSERT(gelf_getsym(elf_getdata(ht.sym_tab_section, 0),
 			 i, &symbol));
       sym_name_str = elf_strptr(elf_handle,
 				ht.sym_tab_section_header.sh_link,
@@ -1954,7 +1954,7 @@ lookup_symbol_from_gnu_hash_tab(const environment*		env,
 	  if (get_version_for_symbol(elf_handle, i,
 				     /*get_def_version=*/true,
 				     ver))
-	    assert(!ver.str().empty());
+	    ABG_ASSERT(!ver.str().empty());
 
 	  elf_symbol_sptr symbol_found =
 	    elf_symbol::create(env, i, symbol.st_size, sym_name_str,
@@ -2072,7 +2072,7 @@ lookup_symbol_from_symtab(const environment*		env,
   // structure that associates each symbol with its versions and in
   // which lookups of a given symbol is fast.
   Elf_Scn* sym_tab_section = elf_getscn(elf_handle, sym_tab_index);
-  assert(sym_tab_section);
+  ABG_ASSERT(sym_tab_section);
 
   GElf_Shdr header_mem;
   GElf_Shdr * sym_tab_header = gelf_getshdr(sym_tab_section,
@@ -2107,7 +2107,7 @@ lookup_symbol_from_symtab(const environment*		env,
 	  if (get_version_for_symbol(elf_handle, i,
 				     /*get_def_version=*/sym_is_defined,
 				     ver))
-	    assert(!ver.str().empty());
+	    ABG_ASSERT(!ver.str().empty());
 	  elf_symbol_sptr symbol_found =
 	    elf_symbol::create(env, i, sym->st_size,
 			       name_str, sym_type,
@@ -2324,7 +2324,7 @@ lookup_data_tag_from_dynamic_segment(Elf*                       elf,
 
       // Get the index of the section headers string table.
       size_t string_table_index = 0;
-      assert (elf_getshdrstrndx(elf, &string_table_index) >= 0);
+      ABG_ASSERT (elf_getshdrstrndx(elf, &string_table_index) >= 0);
 
       size_t dynamic_section_header_entry_size = gelf_fsize(elf,
                                                             ELF_T_DYN, 1,
@@ -2335,7 +2335,7 @@ lookup_data_tag_from_dynamic_segment(Elf*                       elf,
         gelf_getshdr(elf_getscn(elf,
                                 dynamic_section_header->sh_link),
 		     &link_mem);
-      assert(link != NULL);
+      ABG_ASSERT(link != NULL);
 
       size_t num_dynamic_section_entries =
         dynamic_section_header->sh_size / dynamic_section_header_entry_size;
@@ -2458,7 +2458,7 @@ public:
   int64_t
   const_value() const
   {
-    assert(is_const());
+    ABG_ASSERT(is_const());
     return const_value_;
   }
 
@@ -2628,7 +2628,7 @@ public:
   operator[](unsigned i)
   {
     unsigned s = elems_.size();
-    assert(s > i);
+    ABG_ASSERT(s > i);
     return elems_[s - 1 -i];
   }
 
@@ -2846,7 +2846,7 @@ public:
     get_container(const read_context& ctxt, Dwarf_Die *die)
     {
       die_source source = NO_DEBUG_INFO_DIE_SOURCE;
-      assert(ctxt.get_die_source(die, source));
+      ABG_ASSERT(ctxt.get_die_source(die, source));
       return get_container(source);
     }
 
@@ -3717,7 +3717,7 @@ public:
 			bool die_as_type) const
   {
     die_source source;
-    assert(get_die_source(die, source));
+    ABG_ASSERT(get_die_source(die, source));
 
     Dwarf_Off die_offset = dwarf_dieoffset(die);
 
@@ -3759,7 +3759,7 @@ public:
 	 decl_die_repr_die_offsets_maps().get_container(source));
 
     Dwarf_Die die;
-    assert(dwarf_offdie(dwarf_per_die_source(source), die_offset, &die));
+    ABG_ASSERT(dwarf_offdie(dwarf_per_die_source(source), die_offset, &die));
 
     // The variable repr is the the string representation of 'die'.
     //
@@ -3792,7 +3792,7 @@ public:
 	// the DIEs referenced in the array should all compare equal.
 	// Otherwise, this is an ODR violation.  In any case, return
 	// the first element of the array.
-	// assert(i->second.size() == 1);
+	// ABG_ASSERT(i->second.size() == 1);
 	canonical_die_offset = i->second.front();
 	get_die_from_offset(source, canonical_die_offset, &canonical_die);
 	set_canonical_die_offset(canonical_dies, die_offset, die_offset);
@@ -3846,7 +3846,7 @@ public:
 		    bool die_as_type) const
   {
     die_source source;
-    assert(get_die_source(die, source));
+    ABG_ASSERT(get_die_source(die, source));
 
     offset_offset_map_type &canonical_dies =
       die_as_type
@@ -3895,7 +3895,7 @@ public:
 	// the DIEs referenced in the array should all compare equal.
 	// Otherwise, this is an ODR violation.  In any case, return
 	// the first element of the array.
-	// assert(i->second.size() == 1);
+	// ABG_ASSERT(i->second.size() == 1);
 	Dwarf_Off canonical_die_offset = i->second.front();
 	get_die_from_offset(source, canonical_die_offset, &canonical_die);
 	set_canonical_die_offset(canonical_dies,
@@ -3955,7 +3955,7 @@ public:
 			       bool die_as_type) const
   {
     die_source source;
-    assert(get_die_source(die, source));
+    ABG_ASSERT(get_die_source(die, source));
 
     offset_offset_map_type &canonical_dies =
       die_as_type
@@ -4015,7 +4015,7 @@ public:
 	// the DIEs referenced in the array should all compare equal.
 	// Otherwise, this is an ODR violation.  In any case, return
 	// the first element of the array.
-	// assert(i->second.size() == 1);
+	// ABG_ASSERT(i->second.size() == 1);
 	Dwarf_Off die_offset = i->second.front();
 	get_die_from_offset(source, die_offset, &canonical_die);
 	set_canonical_die_offset(canonical_dies,
@@ -4072,7 +4072,7 @@ public:
   bool
   get_die_source(Dwarf_Die *die, die_source &source) const
   {
-    assert(die);
+    ABG_ASSERT(die);
     return get_die_source(*die, source);
   }
 
@@ -4142,9 +4142,9 @@ public:
   get_die_from_offset(die_source source, Dwarf_Off offset, Dwarf_Die *die) const
   {
     if (source == TYPE_UNIT_DIE_SOURCE)
-      assert(dwarf_offdie_types(dwarf_per_die_source(source), offset, die));
+      ABG_ASSERT(dwarf_offdie_types(dwarf_per_die_source(source), offset, die));
     else
-      assert(dwarf_offdie(dwarf_per_die_source(source), offset, die));
+      ABG_ASSERT(dwarf_offdie(dwarf_per_die_source(source), offset, die));
   }
 
 public:
@@ -4176,7 +4176,7 @@ public:
 			bool do_associate_by_repr = false)
   {
     die_source source;
-    assert(get_die_source(die, source));
+    ABG_ASSERT(get_die_source(die, source));
 
     die_artefact_map_type& m =
       decl_die_artefact_maps().get_container(source);
@@ -4240,7 +4240,7 @@ public:
   interned_string
   get_die_qualified_name(Dwarf_Die *die, size_t where_offset)
   {
-    assert(die);
+    ABG_ASSERT(die);
     die_istring_map_type& map =
       die_qualified_name_maps_.get_container(*this, die);
 
@@ -4298,7 +4298,7 @@ public:
   interned_string
   get_die_qualified_type_name(Dwarf_Die *die, size_t where_offset) const
   {
-    assert(die);
+    ABG_ASSERT(die);
 
     // The name of the translation unit die is "".
     if (die == cur_tu_die())
@@ -4357,7 +4357,7 @@ public:
   interned_string
   get_die_pretty_type_representation(Dwarf_Die *die, size_t where_offset) const
   {
-    assert(die);
+    ABG_ASSERT(die);
     die_istring_map_type& map =
       die_pretty_type_repr_maps_.get_container(*const_cast<read_context*>(this),
 					       die);
@@ -4393,7 +4393,7 @@ public:
   interned_string
   get_die_pretty_representation(Dwarf_Die *die, size_t where_offset) const
   {
-    assert(die);
+    ABG_ASSERT(die);
 
     die_istring_map_type& map =
       die_pretty_repr_maps_.get_container(*const_cast<read_context*>(this),
@@ -4526,7 +4526,7 @@ public:
   get_die_language(Dwarf_Die *die, translation_unit::language &lang) const
   {
     Dwarf_Die cu_die;
-    assert(dwarf_diecu(die, &cu_die, 0, 0));
+    ABG_ASSERT(dwarf_diecu(die, &cu_die, 0, 0));
 
     uint64_t l = 0;
     if (!die_unsigned_constant_attribute(&cu_die, DW_AT_language, l))
@@ -4573,7 +4573,7 @@ public:
   odr_is_relevant(Dwarf_Off die_offset, die_source source) const
   {
     Dwarf_Die die;
-    assert(dwarf_offdie(dwarf_per_die_source(source), die_offset, &die));
+    ABG_ASSERT(dwarf_offdie(dwarf_per_die_source(source), die_offset, &die));
     return odr_is_relevant(&die);
   }
 
@@ -4692,7 +4692,7 @@ public:
 			   bool die_as_type) const
   {
     die_source source;
-    assert(get_die_source(die, source));
+    ABG_ASSERT(get_die_source(die, source));
 
     Dwarf_Off die_offset = dwarf_dieoffset(die);
 
@@ -5087,7 +5087,7 @@ public:
 	     ++c)
 	  {
 	    class_decl_sptr klass = is_class_type(type_base_sptr(*c));
-	    assert(klass);
+	    ABG_ASSERT(klass);
 
 	    klass = is_class_type(look_through_decl_only_class(klass));
 	    if (klass->get_is_declaration_only())
@@ -5193,8 +5193,8 @@ public:
       if (elf_symbol_sptr sym =
 	  corp->lookup_function_symbol(i->second->get_linkage_name()))
 	{
-	  assert(is_member_function(i->second));
-	  assert(get_member_function_is_virtual(i->second));
+	  ABG_ASSERT(is_member_function(i->second));
+	  ABG_ASSERT(get_member_function_is_virtual(i->second));
 	  i->second->set_symbol(sym);
 	  if (do_log())
 	    cerr << "fixed up '"
@@ -5263,18 +5263,18 @@ public:
     die_source source;
 
     Dwarf_Die equiv_die;
-    assert(get_canonical_die(die, equiv_die,
+    ABG_ASSERT(get_canonical_die(die, equiv_die,
 			     /*where=*/0,
 			     /*die_as_type=*/true));
 
-    assert(get_die_source(&equiv_die, source));
+    ABG_ASSERT(get_die_source(&equiv_die, source));
     o = dwarf_dieoffset(&equiv_die);
 
     const die_artefact_map_type& m =
       type_die_artefact_maps().get_container(*this, die);
 
     die_artefact_map_type::const_iterator i = m.find(o);
-    assert(i != m.end());
+    ABG_ASSERT(i != m.end());
 
     // Then really do the scheduling.
     types_to_canonicalize(source).push_back(o);
@@ -5308,7 +5308,7 @@ public:
 	    Dwarf_Off element = types_to_canonicalize(source)[i];
 	    type_base_sptr t =
 	      lookup_type_from_die_offset(element, source);
-	    assert(t);
+	    ABG_ASSERT(t);
 	    if (do_log())
 	      {
 		cerr << "canonicalizing type "
@@ -5892,7 +5892,7 @@ public:
 					     &header_mem);
 
     Elf_Data* symtab = elf_getdata(symtab_section, 0);
-    assert(symtab);
+    ABG_ASSERT(symtab);
 
     GElf_Sym* s, smem;
     s = gelf_getsym(symtab, symbol_index, &smem);
@@ -5970,7 +5970,7 @@ public:
     if (!bytes)
       return false;
 
-    assert(number_of_bytes <= 8);
+    ABG_ASSERT(number_of_bytes <= 8);
 
     uint64_t res = 0;
 
@@ -6062,7 +6062,7 @@ public:
     // The resulting address we are looking for is going to be formed
     // in this variable.
     GElf_Addr result = 0;
-    assert(read_uint64_from_array_of_bytes(bytes + fn_desc_offset,
+    ABG_ASSERT(read_uint64_from_array_of_bytes(bytes + fn_desc_offset,
 					   is_big_endian, result));
 
     return result;
@@ -6710,7 +6710,7 @@ public:
     bool is_big_endian = (elf_header->e_ident[EI_DATA] == ELFDATA2MSB);
 
     if (!is_big_endian)
-      assert(elf_header->e_ident[EI_DATA] == ELFDATA2LSB);
+      ABG_ASSERT(elf_header->e_ident[EI_DATA] == ELFDATA2LSB);
 
     return is_big_endian;
   }
@@ -6792,7 +6792,7 @@ public:
     size_t nb_syms = symtab_sheader->sh_size / symtab_sheader->sh_entsize;
 
     Elf_Data* symtab = elf_getdata(symtab_section, 0);
-    assert(symtab);
+    ABG_ASSERT(symtab);
 
     bool is_ppc64 = elf_architecture_is_ppc64();
 
@@ -6800,15 +6800,15 @@ public:
       {
 	GElf_Sym* sym, sym_mem;
 	sym = gelf_getsym(symtab, i, &sym_mem);
-	assert(sym);
+	ABG_ASSERT(sym);
 
 	if ((load_fun_map || load_undefined_fun_map)
 	    && (GELF_ST_TYPE(sym->st_info) == STT_FUNC
 		|| GELF_ST_TYPE(sym->st_info) == STT_GNU_IFUNC))
 	  {
 	    elf_symbol_sptr symbol = lookup_elf_symbol_from_index(i);
-	    assert(symbol);
-	    assert(symbol->is_function());
+	    ABG_ASSERT(symbol);
+	    ABG_ASSERT(symbol->is_function());
 
 
 	    if (load_fun_map && symbol->is_public())
@@ -6907,7 +6907,7 @@ public:
 			    (it2->second->get_name()
 			     == string(".") + symbol->get_name());
 
-			  assert(two_symbols_alias
+			  ABG_ASSERT(two_symbols_alias
 				 || symbol_is_foo_and_prev_symbol_is_dot_foo);
 
 			  if (symbol_is_foo_and_prev_symbol_is_dot_foo)
@@ -6943,8 +6943,8 @@ public:
 		     || GELF_ST_TYPE(sym->st_info) != STT_OBJECT ))
 	  {
 	    elf_symbol_sptr symbol = lookup_elf_symbol_from_index(i);
-	    assert(symbol);
-	    assert(symbol->is_variable());
+	    ABG_ASSERT(symbol);
+	    ABG_ASSERT(symbol->is_variable());
 
 	    if (load_var_map && symbol->is_public())
 	      {
@@ -6964,17 +6964,17 @@ public:
 		  {
 		    string_elf_symbols_map_type::iterator it =
 		      var_syms_->find(symbol->get_name());
-		    assert(it != var_syms_->end());
+		    ABG_ASSERT(it != var_syms_->end());
 		    const elf_symbols& common_sym_instances = it->second;
-		    assert(!common_sym_instances.empty());
+		    ABG_ASSERT(!common_sym_instances.empty());
 		    if (common_sym_instances.size() > 1)
 		      {
 			elf_symbol_sptr main_common_sym =
 			  common_sym_instances[0];
-			assert(main_common_sym->get_name()
+			ABG_ASSERT(main_common_sym->get_name()
 			       == symbol->get_name());
-			assert(main_common_sym->is_common_symbol());
-			assert(symbol.get() != main_common_sym.get());
+			ABG_ASSERT(main_common_sym->is_common_symbol());
+			ABG_ASSERT(symbol.get() != main_common_sym.get());
 			main_common_sym->add_common_instance(symbol);
 		      }
 		  }
@@ -7091,14 +7091,14 @@ public:
     bool is_big_endian = elf_architecture_is_big_endian();
     elf_symbol_sptr symbol;
     unsigned char word_size = architecture_word_size();
-    assert(entry_size == word_size * 2);
+    ABG_ASSERT(entry_size == word_size * 2);
 
     for (size_t i = 0, entry_index = 0;
 	 i < nb_entries;
 	 ++i, entry_index = entry_size*i)
       {
 	symbol_address = 0;
-	assert(read_int_from_array_of_bytes(&bytes[entry_index],
+	ABG_ASSERT(read_int_from_array_of_bytes(&bytes[entry_index],
 					    word_size,
 					    is_big_endian,
 					    symbol_address));
@@ -7121,12 +7121,12 @@ public:
 	address_set_sptr set;
 	if (symbol->is_function())
 	  {
-	    assert(lookup_elf_fn_symbol_from_address(adjusted_symbol_address));
+	    ABG_ASSERT(lookup_elf_fn_symbol_from_address(adjusted_symbol_address));
 	    set = linux_exported_fns_set;
 	  }
 	else if (symbol->is_variable())
 	  {
-	    assert(lookup_elf_var_symbol_from_address(adjusted_symbol_address));
+	    ABG_ASSERT(lookup_elf_var_symbol_from_address(adjusted_symbol_address));
 	    set = linux_exported_vars_set;
 	  }
 	else
@@ -7322,9 +7322,9 @@ public:
     if (elf_header->e_type == ET_DYN || elf_header->e_type == ET_EXEC)
       {
 	Dwarf_Addr dwarf_elf_load_address = 0, elf_load_address = 0;
-	assert(get_binary_load_address(dwarf_elf_handle(),
+	ABG_ASSERT(get_binary_load_address(dwarf_elf_handle(),
 				       dwarf_elf_load_address));
-	assert(get_binary_load_address(elf_handle(),
+	ABG_ASSERT(get_binary_load_address(elf_handle(),
 				       elf_load_address));
 	if (dwarf_is_splitted()
 	    && (dwarf_elf_load_address != elf_load_address))
@@ -7373,11 +7373,11 @@ public:
     if (elf_header->e_type == ET_REL)
       {
 	Elf_Scn* text_section = find_text_section(elf);
-	assert(text_section);
+	ABG_ASSERT(text_section);
 
 	GElf_Shdr sheader_mem;
 	GElf_Shdr* text_sheader = gelf_getshdr(text_section, &sheader_mem);
-	assert(text_sheader);
+	ABG_ASSERT(text_sheader);
 	addr = addr - text_sheader->sh_addr;
       }
     else
@@ -7473,7 +7473,7 @@ public:
 
 	GElf_Shdr sheader_mem;
 	GElf_Shdr* data_sheader = gelf_getshdr(data_section, &sheader_mem);
-	assert(data_sheader);
+	ABG_ASSERT(data_sheader);
 
 	return addr - data_sheader->sh_addr;
       }
@@ -7875,7 +7875,7 @@ public:
 	    if (die_die_attribute(&child, DW_AT_import, imported_unit))
 	      {
 		die_source imported_unit_die_source = NO_DEBUG_INFO_DIE_SOURCE;
-		assert(get_die_source(imported_unit, imported_unit_die_source));
+		ABG_ASSERT(get_die_source(imported_unit, imported_unit_die_source));
 		imported_units.push_back
 		  (imported_unit_point(dwarf_dieoffset(&child),
 				       imported_unit,
@@ -8903,8 +8903,8 @@ static bool
 die_this_pointer_from_object_pointer(Dwarf_Die* die,
 				     Dwarf_Die& this_pointer_die)
 {
-  assert(die);
-  assert(dwarf_tag(die) == DW_TAG_formal_parameter);
+  ABG_ASSERT(die);
+  ABG_ASSERT(dwarf_tag(die) == DW_TAG_formal_parameter);
 
   if (die_die_attribute(die, DW_AT_type, this_pointer_die))
     return true;
@@ -8923,7 +8923,7 @@ die_this_pointer_from_object_pointer(Dwarf_Die* die,
 static bool
 die_this_pointer_is_const(Dwarf_Die* die)
 {
-  assert(die);
+  ABG_ASSERT(die);
 
   if (dwarf_tag(die) == DW_TAG_pointer_type)
     {
@@ -8947,8 +8947,8 @@ die_this_pointer_is_const(Dwarf_Die* die)
 static bool
 die_object_pointer_is_for_const_method(Dwarf_Die* die)
 {
-  assert(die);
-  assert(dwarf_tag(die) == DW_TAG_formal_parameter);
+  ABG_ASSERT(die);
+  ABG_ASSERT(dwarf_tag(die) == DW_TAG_formal_parameter);
 
   Dwarf_Die this_pointer_die;
   if (die_this_pointer_from_object_pointer(die, this_pointer_die))
@@ -9103,7 +9103,7 @@ die_function_type_is_method_type(const read_context& ctxt,
     return false;
 
   int tag = dwarf_tag(die);
-  assert(tag == DW_TAG_subroutine_type || tag == DW_TAG_subprogram);
+  ABG_ASSERT(tag == DW_TAG_subroutine_type || tag == DW_TAG_subprogram);
 
   bool has_object_pointer = false;
   is_static = false;
@@ -9150,7 +9150,7 @@ die_function_type_is_method_type(const read_context& ctxt,
 
   if (!is_static)
     {
-      assert(has_object_pointer);
+      ABG_ASSERT(has_object_pointer);
       // The object pointer die points to a DW_TAG_formal_parameter which
       // is the "this" parameter.  The type of the "this" parameter is a
       // pointer.  Let's get that pointer type.
@@ -9269,11 +9269,11 @@ compare_dies_string_attribute_value(Dwarf_Die *l, Dwarf_Die *r,
       || !dwarf_attr_integrate(r, attr_name, &r_attr))
     return false;
 
-  assert(l_attr.form == DW_FORM_strp
+  ABG_ASSERT(l_attr.form == DW_FORM_strp
 	 || l_attr.form == DW_FORM_string
 	 || l_attr.form == DW_FORM_GNU_strp_alt);
 
-  assert(r_attr.form == DW_FORM_strp
+  ABG_ASSERT(r_attr.form == DW_FORM_strp
 	 || r_attr.form == DW_FORM_string
 	 || r_attr.form == DW_FORM_GNU_strp_alt);
 
@@ -9399,7 +9399,7 @@ op_pushes_constant_value(Dwarf_Op*			ops,
 			 uint64_t&			next_index,
 			 dwarf_expr_eval_context&	ctxt)
 {
-  assert(index < ops_len);
+  ABG_ASSERT(index < ops_len);
 
   Dwarf_Op& op = ops[index];
   int64_t value = 0;
@@ -9563,7 +9563,7 @@ op_pushes_non_constant_value(Dwarf_Op* ops,
 			     uint64_t& next_index,
 			     dwarf_expr_eval_context& ctxt)
 {
-  assert(index < ops_len);
+  ABG_ASSERT(index < ops_len);
   Dwarf_Op& op = ops[index];
 
   switch (op.atom)
@@ -9705,26 +9705,26 @@ op_manipulates_stack(Dwarf_Op* expr,
       break;
 
     case DW_OP_over:
-      assert(ctxt.stack.size() > 1);
+      ABG_ASSERT(ctxt.stack.size() > 1);
       v = ctxt.stack[1];
       ctxt.push(v);
       break;
 
     case DW_OP_pick:
-      assert(index + 1 < expr_len);
+      ABG_ASSERT(index + 1 < expr_len);
       v = op.number;
       ctxt.push(v);
       break;
 
     case DW_OP_swap:
-      assert(ctxt.stack.size() > 1);
+      ABG_ASSERT(ctxt.stack.size() > 1);
       v = ctxt.stack[1];
       ctxt.stack.erase(ctxt.stack.begin() + 1);
       ctxt.push(v);
       break;
 
     case DW_OP_rot:
-      assert(ctxt.stack.size() > 2);
+      ABG_ASSERT(ctxt.stack.size() > 2);
       v = ctxt.stack[2];
       ctxt.stack.erase(ctxt.stack.begin() + 2);
       ctxt.push(v);
@@ -9732,7 +9732,7 @@ op_manipulates_stack(Dwarf_Op* expr,
 
     case DW_OP_deref:
     case DW_OP_deref_size:
-      assert(ctxt.stack.size() > 0);
+      ABG_ASSERT(ctxt.stack.size() > 0);
       ctxt.pop();
       v.is_const(false);
       ctxt.push(v);
@@ -9740,7 +9740,7 @@ op_manipulates_stack(Dwarf_Op* expr,
 
     case DW_OP_xderef:
     case DW_OP_xderef_size:
-      assert(ctxt.stack.size() > 1);
+      ABG_ASSERT(ctxt.stack.size() > 1);
       ctxt.pop();
       ctxt.pop();
       v.is_const(false);
@@ -9754,7 +9754,7 @@ op_manipulates_stack(Dwarf_Op* expr,
 
     case DW_OP_form_tls_address:
     case DW_OP_GNU_push_tls_address:
-      assert(ctxt.stack.size() > 0);
+      ABG_ASSERT(ctxt.stack.size() > 0);
       v = ctxt.pop();
       if (op.atom == DW_OP_form_tls_address)
 	v.is_const(false);
@@ -9813,7 +9813,7 @@ op_is_arith_logic(Dwarf_Op* expr,
 		  uint64_t& next_index,
 		  dwarf_expr_eval_context& ctxt)
 {
-  assert(index < expr_len);
+  ABG_ASSERT(index < expr_len);
 
   Dwarf_Op& op = expr[index];
   expr_result val1, val2;
@@ -9827,7 +9827,7 @@ op_is_arith_logic(Dwarf_Op* expr,
       break;
 
     case DW_OP_and:
-      assert(ctxt.stack.size() > 1);
+      ABG_ASSERT(ctxt.stack.size() > 1);
       val1 = ctxt.pop();
       val2 = ctxt.pop();
       ctxt.push(val1 & val2);
@@ -9946,7 +9946,7 @@ op_is_control_flow(Dwarf_Op* expr,
 		   uint64_t& next_index,
 		   dwarf_expr_eval_context& ctxt)
 {
-  assert(index < expr_len);
+  ABG_ASSERT(index < expr_len);
 
   Dwarf_Op& op = expr[index];
   expr_result val1, val2;
@@ -10086,7 +10086,7 @@ eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
       else
 	next_index = index + 1;
 
-      assert(next_index > index);
+      ABG_ASSERT(next_index > index);
       index = next_index;
     } while (index < expr_len);
 
@@ -10932,7 +10932,7 @@ die_function_signature(const read_context& ctxt,
 
   if (is_const)
     {
-      assert(!class_name.empty());
+      ABG_ASSERT(!class_name.empty());
       repr += " const";
     }
 
@@ -11204,7 +11204,7 @@ die_pretty_print(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
 static bool
 compare_as_decl_dies(Dwarf_Die *l, Dwarf_Die *r)
 {
-  assert(l && r);
+  ABG_ASSERT(l && r);
 
   bool result = false;
   if (compare_dies_string_attribute_value(l, r, DW_AT_linkage_name,
@@ -11238,9 +11238,9 @@ compare_as_decl_dies(Dwarf_Die *l, Dwarf_Die *r)
 static bool
 compare_as_type_dies(Dwarf_Die *l, Dwarf_Die *r)
 {
-  assert(l && r);
-  assert(die_is_type(l));
-  assert(die_is_type(r));
+  ABG_ASSERT(l && r);
+  ABG_ASSERT(die_is_type(l));
+  ABG_ASSERT(die_is_type(r));
 
   uint64_t l_size = 0, r_size = 0;
   die_size_in_bits(l, l_size);
@@ -11277,8 +11277,8 @@ compare_dies(const read_context& ctxt, Dwarf_Die *l, Dwarf_Die *r,
 	     istring_set_type& aggregates_being_compared,
 	     bool update_canonical_dies_on_the_fly)
 {
-  assert(l);
-  assert(r);
+  ABG_ASSERT(l);
+  ABG_ASSERT(r);
 
   int l_tag = dwarf_tag(l), r_tag = dwarf_tag(r);
 
@@ -11288,8 +11288,8 @@ compare_dies(const read_context& ctxt, Dwarf_Die *l, Dwarf_Die *r,
   Dwarf_Off l_offset = dwarf_dieoffset(l), r_offset = dwarf_dieoffset(r);
   Dwarf_Off l_canonical_die_offset = 0, r_canonical_die_offset = 0;
   die_source l_die_source, r_die_source;
-  assert(ctxt.get_die_source(l, l_die_source));
-  assert(ctxt.get_die_source(r, r_die_source));
+  ABG_ASSERT(ctxt.get_die_source(l, l_die_source));
+  ABG_ASSERT(ctxt.get_die_source(r, r_die_source));
 
   // If 'l' and 'r' already have canonical DIEs, then just compare the
   // offsets of their canonical DIEs.
@@ -11623,8 +11623,8 @@ compare_dies(const read_context& ctxt, Dwarf_Die *l, Dwarf_Die *r,
 	    {
 	      // Compare the types of the data members or variables.
 	      Dwarf_Die l_type, r_type;
-	      assert(die_die_attribute(l, DW_AT_type, l_type));
-	      assert(die_die_attribute(r, DW_AT_type, r_type));
+	      ABG_ASSERT(die_die_attribute(l, DW_AT_type, l_type));
+	      ABG_ASSERT(die_die_attribute(r, DW_AT_type, r_type));
 	      if (aggregates_being_compared.size () < 5)
 		{
 		  if (!compare_dies(ctxt, &l_type, &r_type,
@@ -11713,8 +11713,8 @@ compare_dies(const read_context& ctxt, Dwarf_Die *l, Dwarf_Die *r,
       // propagate that canonical DIE to 'r'.
       die_source l_source = NO_DEBUG_INFO_DIE_SOURCE,
 	r_source = NO_DEBUG_INFO_DIE_SOURCE;
-      assert(ctxt.get_die_source(l, l_source));
-      assert(ctxt.get_die_source(r, r_source));
+      ABG_ASSERT(ctxt.get_die_source(l, l_source));
+      ABG_ASSERT(ctxt.get_die_source(r, r_source));
       if (!l_has_canonical_die_offset
 	  // A DIE can be equivalent only to another DIE of the same
 	  // source.
@@ -11723,7 +11723,7 @@ compare_dies(const read_context& ctxt, Dwarf_Die *l, Dwarf_Die *r,
 	  if (!r_has_canonical_die_offset)
 	    ctxt.compute_canonical_die_offset(r, r_canonical_die_offset,
 					      /*die_as_type=*/true);
-	  assert(r_canonical_die_offset);
+	  ABG_ASSERT(r_canonical_die_offset);
 	  ctxt.set_canonical_die_offset(l, r_canonical_die_offset,
 					/*die_as_type=*/true);
 	}
@@ -11810,7 +11810,7 @@ find_import_unit_point_between_dies(const read_context& ctxt,
   tu_die_imported_unit_points_map_type::const_iterator iter =
     tu_die_imported_unit_points_map.find(first_die_cu_offset);
 
-  assert(iter != tu_die_imported_unit_points_map.end());
+  ABG_ASSERT(iter != tu_die_imported_unit_points_map.end());
 
   const imported_unit_points_type& imported_unit_points = iter->second;
   if (imported_unit_points.empty())
@@ -11963,10 +11963,10 @@ get_parent_die(const read_context&	ctxt,
 	       Dwarf_Die&		parent_die,
 	       size_t			where_offset)
 {
-  assert(ctxt.dwarf());
+  ABG_ASSERT(ctxt.dwarf());
 
   die_source source = NO_DEBUG_INFO_DIE_SOURCE;
-  assert(ctxt.get_die_source(die, source));
+  ABG_ASSERT(ctxt.get_die_source(die, source));
 
   const offset_offset_map_type& m = ctxt.die_parent_map(source);
   offset_offset_map_type::const_iterator i = m.find(dwarf_dieoffset(die));
@@ -11977,13 +11977,13 @@ get_parent_die(const read_context&	ctxt,
   switch (source)
     {
     case PRIMARY_DEBUG_INFO_DIE_SOURCE:
-      assert(dwarf_offdie(ctxt.dwarf(), i->second, &parent_die));
+      ABG_ASSERT(dwarf_offdie(ctxt.dwarf(), i->second, &parent_die));
       break;
     case ALT_DEBUG_INFO_DIE_SOURCE:
-      assert(dwarf_offdie(ctxt.alt_dwarf(), i->second, &parent_die));
+      ABG_ASSERT(dwarf_offdie(ctxt.alt_dwarf(), i->second, &parent_die));
       break;
     case TYPE_UNIT_DIE_SOURCE:
-      assert(dwarf_offdie_types(ctxt.dwarf(), i->second, &parent_die));
+      ABG_ASSERT(dwarf_offdie_types(ctxt.dwarf(), i->second, &parent_die));
       break;
     case NO_DEBUG_INFO_DIE_SOURCE:
     case NUMBER_OF_DIE_SOURCES:
@@ -12011,9 +12011,9 @@ get_parent_die(const read_context&	ctxt,
 	parent_die = *ctxt.cur_tu_die();
       else
 	{
-	  assert(import_point_offset);
+	  ABG_ASSERT(import_point_offset);
 	  Dwarf_Die import_point_die;
-	  assert(dwarf_offdie(ctxt.dwarf(),
+	  ABG_ASSERT(dwarf_offdie(ctxt.dwarf(),
 			      import_point_offset,
 			      &import_point_die));
 	  return get_parent_die(ctxt, &import_point_die,
@@ -12051,7 +12051,7 @@ get_scope_die(const read_context&	ctxt,
 {
   if (is_c_language(ctxt.cur_transl_unit()->get_language()))
     {
-      assert(dwarf_tag(die) != DW_TAG_member);
+      ABG_ASSERT(dwarf_tag(die) != DW_TAG_member);
       return dwarf_diecu(die, &scope_die, 0, 0);
     }
 
@@ -12099,11 +12099,11 @@ get_scope_for_die(read_context& ctxt,
 		  size_t	where_offset)
 {
   die_source source_of_die;
-  assert(ctxt.get_die_source(die, source_of_die));
+  ABG_ASSERT(ctxt.get_die_source(die, source_of_die));
 
   if (is_c_language(ctxt.cur_transl_unit()->get_language()))
     {
-      assert(dwarf_tag(die) != DW_TAG_member);
+      ABG_ASSERT(dwarf_tag(die) != DW_TAG_member);
       return ctxt.global_scope();
     }
 
@@ -12126,7 +12126,7 @@ get_scope_for_die(read_context& ctxt,
       if (dwarf_tag(&parent_die) == DW_TAG_partial_unit
 	  || dwarf_tag(&parent_die) == DW_TAG_type_unit)
 	{
-	  assert(source_of_die == ALT_DEBUG_INFO_DIE_SOURCE
+	  ABG_ASSERT(source_of_die == ALT_DEBUG_INFO_DIE_SOURCE
 		 || source_of_die == TYPE_UNIT_DIE_SOURCE);
 	  return ctxt.cur_transl_unit()->get_global_scope();
 	}
@@ -12383,7 +12383,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 
   if (!die)
     return result;
-  assert(dwarf_tag(die) == DW_TAG_compile_unit);
+  ABG_ASSERT(dwarf_tag(die) == DW_TAG_compile_unit);
 
   // Clear the part of the context that is dependent on the translation
   // unit we are reading.
@@ -12442,7 +12442,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 	if (is_member_decl(*v))
 	  continue;
 
-	assert((*v)->get_scope());
+	ABG_ASSERT((*v)->get_scope());
 	string demangled_name =
 	  demangle_cplus_mangled_name((*v)->get_linkage_name());
 	if (!demangled_name.empty())
@@ -12481,7 +12481,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 		    d = add_decl_to_scope(*v, class_type);
 		  }
 
-		assert(dynamic_pointer_cast<var_decl>(d));
+		ABG_ASSERT(dynamic_pointer_cast<var_decl>(d));
 		// Let's flag the data member as static.
 		set_member_is_static(d, true);
 	      }
@@ -12524,7 +12524,7 @@ build_namespace_decl_and_add_to_ir(read_context&	ctxt,
     return result;
 
   die_source source;
-  assert(ctxt.get_die_source(die, source));
+  ABG_ASSERT(ctxt.get_die_source(die, source));
 
   unsigned tag = dwarf_tag(die);
   if (tag != DW_TAG_namespace && tag != DW_TAG_module)
@@ -12573,7 +12573,7 @@ build_type_decl(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
 
   if (!die)
     return result;
-  assert(dwarf_tag(die) == DW_TAG_base_type);
+  ABG_ASSERT(dwarf_tag(die) == DW_TAG_base_type);
 
   uint64_t byte_size = 0, bit_size = 0;
   if (!die_unsigned_constant_attribute(die, DW_AT_byte_size, byte_size))
@@ -12734,7 +12734,7 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
   canonicalize(t);
 
   t = dynamic_pointer_cast<type_decl>(d);
-  assert(t);
+  ABG_ASSERT(t);
   result.reset(new enum_type_decl(name, loc, t, enms, linkage_name));
   result->set_is_anonymous(enum_is_anonymous);
   ctxt.associate_die_to_type(die, result, where_offset);
@@ -12760,13 +12760,13 @@ finish_member_function_reading(Dwarf_Die*		  die,
 			       const class_or_union_sptr& klass,
 			       read_context&		  ctxt)
 {
-  assert(klass);
+  ABG_ASSERT(klass);
 
   method_decl_sptr m = is_method_decl(f);
-  assert(m);
+  ABG_ASSERT(m);
 
   method_type_sptr method_t = is_method_type(m->get_type());
-  assert(method_t);
+  ABG_ASSERT(method_t);
 
   bool is_ctor = (f->get_name() == klass->get_name());
   bool is_dtor = (!f->get_name().empty()
@@ -12821,7 +12821,7 @@ finish_member_function_reading(Dwarf_Die*		  die,
   set_member_function_is_dtor(m, is_dtor);
   set_member_function_is_const(m, method_t->get_is_const());
 
-  assert(is_member_function(m));
+  ABG_ASSERT(is_member_function(m));
 
   if (is_virtual && !f->get_linkage_name().empty() && !f->get_symbol())
     {
@@ -13007,17 +13007,17 @@ is_function_for_die_a_member_of_class(read_context& ctxt,
     method_type = method->get_type();
   else
     method_type = is_method_type(artifact);
-  assert(method_type);
+  ABG_ASSERT(method_type);
 
   class_or_union_sptr method_class = method_type->get_class_type();
-  assert(method_class);
+  ABG_ASSERT(method_class);
 
   string method_class_name = method_class->get_qualified_name(),
     class_type_name = class_type->get_qualified_name();
 
   if (method_class_name == class_type_name)
     {
-      //assert(class_type.get() == method_class.get());
+      //ABG_ASSERT(class_type.get() == method_class.get());
       return method;
     }
 
@@ -13114,7 +13114,7 @@ add_or_update_class_type(read_context&	 ctxt,
     return result;
 
   die_source source;
-  assert(ctxt.get_die_source(die, source));
+  ABG_ASSERT(ctxt.get_die_source(die, source));
 
   unsigned tag = dwarf_tag(die);
 
@@ -13127,7 +13127,7 @@ add_or_update_class_type(read_context&	 ctxt,
     if (i != ctxt.die_wip_classes_map(source).end())
       {
 	class_decl_sptr class_type = is_class_type(i->second);
-	assert(class_type);
+	ABG_ASSERT(class_type);
 	return class_type;
       }
   }
@@ -13211,7 +13211,7 @@ add_or_update_class_type(read_context&	 ctxt,
 
       res = add_decl_to_scope(result, scope);
       result = dynamic_pointer_cast<class_decl>(res);
-      assert(result);
+      ABG_ASSERT(result);
     }
 
   if (size)
@@ -13230,7 +13230,7 @@ add_or_update_class_type(read_context&	 ctxt,
 
   scope_decl_sptr scop =
     dynamic_pointer_cast<scope_decl>(res);
-  assert(scop);
+  ABG_ASSERT(scop);
   ctxt.scope_stack().push(scop.get());
 
   if (has_child)
@@ -13282,7 +13282,7 @@ add_or_update_class_type(read_context&	 ctxt,
 					       is_offset_present ? offset : -1,
 					       is_virt));
 	      if (b->get_is_declaration_only())
-		assert(ctxt.is_decl_only_class_scheduled_for_resolution(b));
+		ABG_ASSERT(ctxt.is_decl_only_class_scheduled_for_resolution(b));
 	      if (result->find_base_class(b->get_qualified_name()))
 		continue;
 	      result->add_base_specifier(base);
@@ -13355,7 +13355,7 @@ add_or_update_class_type(read_context&	 ctxt,
 	      var_decl_sptr dm(new var_decl(n, t, loc, m));
 	      result->add_data_member(dm, access, is_laid_out,
 				      is_static, offset_in_bits);
-	      assert(has_scope(dm));
+	      ABG_ASSERT(has_scope(dm));
 	      ctxt.associate_die_to_decl(&child, dm, where_offset,
 					 /*associate_by_repr=*/false);
 	    }
@@ -13439,14 +13439,14 @@ add_or_update_union_type(read_context&	ctxt,
     return result;
 
   die_source source;
-  assert(ctxt.get_die_source(die, source));
+  ABG_ASSERT(ctxt.get_die_source(die, source));
   {
     die_class_or_union_map_type::const_iterator i =
       ctxt.die_wip_classes_map(source).find(dwarf_dieoffset(die));
     if (i != ctxt.die_wip_classes_map(source).end())
       {
 	union_decl_sptr u = is_union_type(i->second);
-	assert(u);
+	ABG_ASSERT(u);
 	return u;
       }
   }
@@ -13510,7 +13510,7 @@ add_or_update_union_type(read_context&	ctxt,
       if (is_declaration_only)
 	result->set_is_declaration_only(true);
       result = is_union_type(add_decl_to_scope(result, scope));
-      assert(result);
+      ABG_ASSERT(result);
     }
 
   if (size)
@@ -13534,7 +13534,7 @@ add_or_update_union_type(read_context&	ctxt,
 
   scope_decl_sptr scop =
     dynamic_pointer_cast<scope_decl>(result);
-  assert(scop);
+  ABG_ASSERT(scop);
   ctxt.scope_stack().push(scop.get());
 
   if (has_child)
@@ -13577,7 +13577,7 @@ add_or_update_union_type(read_context&	ctxt,
 	      result->add_data_member(dm, access, /*is_laid_out=*/true,
 				      /*is_static=*/false,
 				      offset_in_bits);
-	      assert(has_scope(dm));
+	      ABG_ASSERT(has_scope(dm));
 	      ctxt.associate_die_to_decl(&child, dm, where_offset,
 					 /*associate_by_repr=*/false);
 	    }
@@ -13593,7 +13593,7 @@ add_or_update_union_type(read_context&	ctxt,
 		continue;
 
 	      function_decl_sptr f = dynamic_pointer_cast<function_decl>(r);
-	      assert(f);
+	      ABG_ASSERT(f);
 
 	      finish_member_function_reading(&child, f, result, ctxt);
 
@@ -13654,7 +13654,7 @@ build_qualified_type(read_context&	ctxt,
     return result;
 
   die_source source;
-  assert(ctxt.get_die_source(die, source));
+  ABG_ASSERT(ctxt.get_die_source(die, source));
 
   unsigned tag = dwarf_tag(die);
 
@@ -13688,7 +13688,7 @@ build_qualified_type(read_context&	ctxt,
     }
 
   type_base_sptr utype = is_type(utype_decl);
-  assert(utype);
+  ABG_ASSERT(utype);
 
   qualified_type_def::CV qual = qualified_type_def::CV_NONE;
   if (tag == DW_TAG_const_type)
@@ -13777,7 +13777,7 @@ build_pointer_type_def(read_context&	ctxt,
     return result;
 
   die_source source;
-  assert(ctxt.get_die_source(die, source));
+  ABG_ASSERT(ctxt.get_die_source(die, source));
 
   unsigned tag = dwarf_tag(die);
   if (tag != DW_TAG_pointer_type)
@@ -13805,12 +13805,12 @@ build_pointer_type_def(read_context&	ctxt,
   if (type_base_sptr t = ctxt.lookup_type_from_die(die))
     {
       result = is_pointer_type(t);
-      assert(result);
+      ABG_ASSERT(result);
       return result;
     }
 
   type_base_sptr utype = is_type(utype_decl);
-  assert(utype);
+  ABG_ASSERT(utype);
 
   // if the DIE for the pointer type doesn't have a byte_size
   // attribute then we assume the size of the pointer is the address
@@ -13823,10 +13823,10 @@ build_pointer_type_def(read_context&	ctxt,
 
   // And the size of the pointer must be the same as the address size
   // of the current translation unit.
-  assert((size_t) ctxt.cur_transl_unit()->get_address_size() == size);
+  ABG_ASSERT((size_t) ctxt.cur_transl_unit()->get_address_size() == size);
 
   result.reset(new pointer_type_def(utype, size, /*alignment=*/0, location()));
-  assert(result->get_pointed_to_type());
+  ABG_ASSERT(result->get_pointed_to_type());
 
   ctxt.associate_die_to_type(die, result, where_offset);
   return result;
@@ -13861,7 +13861,7 @@ build_reference_type(read_context&	ctxt,
     return result;
 
   die_source source;
-  assert(ctxt.get_die_source(die, source));
+  ABG_ASSERT(ctxt.get_die_source(die, source));
 
   unsigned tag = dwarf_tag(die);
   if (tag != DW_TAG_reference_type
@@ -13884,12 +13884,12 @@ build_reference_type(read_context&	ctxt,
   if (type_base_sptr t = ctxt.lookup_type_from_die(die))
     {
       result = is_reference_type(t);
-      assert(result);
+      ABG_ASSERT(result);
       return result;
     }
 
   type_base_sptr utype = is_type(utype_decl);
-  assert(utype);
+  ABG_ASSERT(utype);
 
   // if the DIE for the reference type doesn't have a byte_size
   // attribute then we assume the size of the reference is the address
@@ -13900,7 +13900,7 @@ build_reference_type(read_context&	ctxt,
 
   // And the size of the pointer must be the same as the address size
   // of the current translation unit.
-  assert((size_t) ctxt.cur_transl_unit()->get_address_size() == size);
+  ABG_ASSERT((size_t) ctxt.cur_transl_unit()->get_address_size() == size);
 
   bool is_lvalue = (tag == DW_TAG_reference_type) ? true : false;
 
@@ -13941,23 +13941,23 @@ build_function_type(read_context&	ctxt,
   if (!die)
     return result;
 
-  assert(dwarf_tag(die) == DW_TAG_subroutine_type
+  ABG_ASSERT(dwarf_tag(die) == DW_TAG_subroutine_type
 	 || dwarf_tag(die) == DW_TAG_subprogram);
 
   die_source source;
-  assert(ctxt.get_die_source(die, source));
+  ABG_ASSERT(ctxt.get_die_source(die, source));
 
   decl_base_sptr type_decl;
 
   translation_unit_sptr tu = ctxt.cur_transl_unit();
-  assert(tu);
+  ABG_ASSERT(tu);
 
   // The call to build_ir_node_from_die() could have triggered the
   // creation of the type for this DIE.  In that case, just return it.
   if (type_base_sptr t = ctxt.lookup_type_from_die(die))
     {
       result = is_function_type(t);
-      assert(result);
+      ABG_ASSERT(result);
       ctxt.associate_die_to_type(die, result, where_offset);
       return result;
     }
@@ -14025,7 +14025,7 @@ build_function_type(read_context&	ctxt,
 	    is_class_or_union_type(build_ir_node_from_die(ctxt, &class_type_die,
 							  /*called_from_pub_decl=*/true,
 							  where_offset));
-	  assert(klass_type);
+	  ABG_ASSERT(klass_type);
 	  is_method = klass_type;
 	}
     }
@@ -14093,7 +14093,7 @@ build_function_type(read_context&	ctxt,
 	    // This is a variadic function parameter.
 	    bool is_artificial = die_is_artificial(&child);
 	    ir::environment* env = ctxt.env();
-	    assert(env);
+	    ABG_ASSERT(env);
 	    type_base_sptr parm_type = env->get_variadic_parameter_type();
 	    function_decl::parameter_sptr p
 	      (new function_decl::parameter(parm_type,
@@ -14162,7 +14162,7 @@ build_subrange_type(read_context&	ctxt,
     return result;
 
   die_source source;
-  assert(ctxt.get_die_source(die, source));
+  ABG_ASSERT(ctxt.get_die_source(die, source));
 
   unsigned tag = dwarf_tag(die);
   if (tag != DW_TAG_subrange_type)
@@ -14338,7 +14338,7 @@ build_array_type(read_context&	ctxt,
     return result;
 
   die_source source;
-  assert(ctxt.get_die_source(die, source));
+  ABG_ASSERT(ctxt.get_die_source(die, source));
 
   unsigned tag = dwarf_tag(die);
   if (tag != DW_TAG_array_type)
@@ -14359,12 +14359,12 @@ build_array_type(read_context&	ctxt,
   if (type_base_sptr t = ctxt.lookup_type_from_die(die))
     {
       result = is_array_type(t);
-      assert(result);
+      ABG_ASSERT(result);
       return result;
     }
 
   type_base_sptr type = is_type(type_decl);
-  assert(type);
+  ABG_ASSERT(type);
 
   array_type_def::subranges_type subranges;
 
@@ -14403,7 +14403,7 @@ build_typedef_type(read_context&	ctxt,
     return result;
 
   die_source source;
-  assert(ctxt.get_die_source(die, source));
+  ABG_ASSERT(ctxt.get_die_source(die, source));
 
   unsigned tag = dwarf_tag(die);
   if (tag != DW_TAG_typedef)
@@ -14436,11 +14436,11 @@ build_typedef_type(read_context&	ctxt,
       if (type_base_sptr t = ctxt.lookup_type_from_die(die))
 	{
 	  result = is_typedef(t);
-	  assert(result);
+	  ABG_ASSERT(result);
 	  return result;
 	}
 
-      assert(utype);
+      ABG_ASSERT(utype);
       result.reset(new typedef_decl(name, utype, loc, linkage_name));
 
       if (class_decl_sptr klass = is_class_type(utype))
@@ -14558,13 +14558,13 @@ build_var_decl(read_context&	ctxt,
     return result;
 
   int tag = dwarf_tag(die);
-  assert(tag == DW_TAG_variable || tag == DW_TAG_member);
+  ABG_ASSERT(tag == DW_TAG_variable || tag == DW_TAG_member);
 
   if (!die_is_public_decl(die))
     return result;
 
   die_source source;
-  assert(ctxt.get_die_source(die, source));
+  ABG_ASSERT(ctxt.get_die_source(die, source));
 
   type_base_sptr type;
   Dwarf_Die type_die;
@@ -14577,7 +14577,7 @@ build_var_decl(read_context&	ctxt,
       if (!ty)
 	return result;
       type = is_type(ty);
-      assert(type);
+      ABG_ASSERT(type);
     }
 
   if (!type)
@@ -14612,7 +14612,7 @@ build_var_decl(read_context&	ctxt,
 	    : result->get_linkage_name();
 
 	  var_sym = create_default_var_sym(var_name, ctxt.env());
-	  assert(var_sym);
+	  ABG_ASSERT(var_sym);
 	  add_symbol_to_map(var_sym, ctxt.var_syms());
 	}
       else
@@ -14975,16 +14975,16 @@ build_function_decl(read_context&	ctxt,
   function_decl_sptr result = fn;
   if (!die)
     return result;
-  assert(dwarf_tag(die) == DW_TAG_subprogram);
+  ABG_ASSERT(dwarf_tag(die) == DW_TAG_subprogram);
 
   die_source source;
-  assert(ctxt.get_die_source(die, source));
+  ABG_ASSERT(ctxt.get_die_source(die, source));
 
   if (!die_is_public_decl(die))
     return result;
 
   translation_unit_sptr tu = ctxt.cur_transl_unit();
-  assert(tu);
+  ABG_ASSERT(tu);
 
   string fname, flinkage_name;
   location floc;
@@ -15040,7 +15040,7 @@ build_function_decl(read_context&	ctxt,
 	    : result->get_linkage_name();
 
 	  fn_sym = create_default_fn_sym(fn_name, ctxt.env());
-	  assert(fn_sym);
+	  ABG_ASSERT(fn_sym);
 	  add_symbol_to_map(fn_sym, ctxt.fun_syms());
 	}
       else
@@ -15098,10 +15098,10 @@ add_fn_symbols_to_map(address_set_type& syms,
   for (address_set_type::iterator i = syms.begin(); i != syms.end(); ++i)
     {
       elf_symbol_sptr sym = ctxt.lookup_elf_fn_symbol_from_address(*i);
-      assert(sym);
+      ABG_ASSERT(sym);
       string_elf_symbols_map_type::iterator it =
 	ctxt.fun_syms().find(sym->get_name());
-      assert(it != ctxt.fun_syms().end());
+      ABG_ASSERT(it != ctxt.fun_syms().end());
       map.insert(*it);
     }
 }
@@ -15149,10 +15149,10 @@ add_var_symbols_to_map(address_set_type& syms,
   for (address_set_type::iterator i = syms.begin(); i != syms.end(); ++i)
     {
       elf_symbol_sptr sym = ctxt.lookup_elf_var_symbol_from_address(*i);
-      assert(sym);
+      ABG_ASSERT(sym);
       string_elf_symbols_map_type::iterator it =
 	ctxt.var_syms().find(sym->get_name());
-      assert(it != ctxt.var_syms().end());
+      ABG_ASSERT(it != ctxt.var_syms().end());
       map.insert(*it);
     }
 }
@@ -15275,7 +15275,7 @@ read_debug_info_into_corpus(read_context& ctxt)
       // be a DW_TAG_compile_unit die.
       translation_unit_sptr ir_node =
 	build_translation_unit_and_add_to_ir(ctxt, &unit, address_size);
-      assert(ir_node);
+      ABG_ASSERT(ir_node);
     }
   if (ctxt.do_log())
     cerr << " DONE@" << ctxt.current_corpus()->get_path() << "\n";
@@ -15342,7 +15342,7 @@ static void
 maybe_canonicalize_type(Dwarf_Die *die, read_context&	ctxt)
 {
   die_source source;
-  assert(ctxt.get_die_source(die, source));
+  ABG_ASSERT(ctxt.get_die_source(die, source));
 
   size_t die_offset = dwarf_dieoffset(die);
   type_base_sptr t = ctxt.lookup_type_from_die(die);
@@ -15384,7 +15384,7 @@ maybe_set_member_type_access_specifier(decl_base_sptr member_type_declaration,
     {
       class_or_union* scope =
 	is_class_or_union_type(member_type_declaration->get_scope());
-      assert(scope);
+      ABG_ASSERT(scope);
 
       access_specifier access = private_access;
       if (class_decl* cl = is_class_type(scope))
@@ -15454,7 +15454,7 @@ build_ir_node_from_die(read_context&	ctxt,
     }
 
   die_source source_of_die;
-  assert(ctxt.get_die_source(die, source_of_die));
+  ABG_ASSERT(ctxt.get_die_source(die, source_of_die));
 
   if ((result = ctxt.lookup_decl_from_die_offset(dwarf_dieoffset(die),
 						 source_of_die)))
@@ -15496,7 +15496,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	  {
 	    result =
 	      add_decl_to_scope(p, ctxt.cur_transl_unit()->get_global_scope());
-	    assert(result->get_translation_unit());
+	    ABG_ASSERT(result->get_translation_unit());
 	    maybe_canonicalize_type(die, ctxt);
 	  }
       }
@@ -15535,7 +15535,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	    decl_base_sptr d = maybe_strip_qualification(is_qualified_type(q));
 	    if (!d)
 	      d = get_type_declaration(q);
-	    assert(d);
+	    ABG_ASSERT(d);
 	    type_base_sptr ty = is_type(d);
 	    // Associate the die to type ty again because 'ty'might be
 	    // different from 'q', because 'ty' is 'q' possibly
@@ -15589,15 +15589,15 @@ build_ir_node_from_die(read_context&	ctxt,
 		  get_scope_for_die(ctxt, &spec_die,
 				    called_from_public_decl,
 				    where_offset);
-		assert(skope);
+		ABG_ASSERT(skope);
 		decl_base_sptr cl =
 		  is_decl(build_ir_node_from_die(ctxt, &spec_die,
 						 skope.get(),
 						 called_from_public_decl,
 						 where_offset));
-		assert(cl);
+		ABG_ASSERT(cl);
 		klass = dynamic_pointer_cast<class_decl>(cl);
-		assert(klass);
+		ABG_ASSERT(klass);
 
 		klass =
 		  add_or_update_class_type(ctxt, die,
@@ -15718,7 +15718,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	bool var_is_cloned = false;
 
 	if (tag == DW_TAG_member)
-	  assert(!is_c_language(ctxt.cur_transl_unit()->get_language()));
+	  ABG_ASSERT(!is_c_language(ctxt.cur_transl_unit()->get_language()));
 
 	if (die_die_attribute(die, DW_AT_specification, spec_die,false)
 	    || (var_is_cloned = die_die_attribute(die, DW_AT_abstract_origin,
@@ -15750,10 +15750,10 @@ build_ir_node_from_die(read_context&	ctxt,
 		      }
 		    else
 		      {
-			assert(has_scope(m));
+			ABG_ASSERT(has_scope(m));
 			ctxt.var_decls_to_re_add_to_tree().push_back(m);
 		      }
-		    assert(m->get_scope());
+		    ABG_ASSERT(m->get_scope());
 		    ctxt.maybe_add_var_to_exported_decls(m.get());
 		    return m;
 		  }
@@ -15766,10 +15766,10 @@ build_ir_node_from_die(read_context&	ctxt,
 							 is_required_decl_spec))
 	  {
 	    result = add_decl_to_scope(v, scope);
-	    assert(is_decl(result)->get_scope());
+	    ABG_ASSERT(is_decl(result)->get_scope());
 	    v = dynamic_pointer_cast<var_decl>(result);
-	    assert(v);
-	    assert(v->get_scope());
+	    ABG_ASSERT(v);
+	    ABG_ASSERT(v->get_scope());
 	    ctxt.var_decls_to_re_add_to_tree().push_back(v);
 	    ctxt.maybe_add_var_to_exported_decls(v.get());
 	  }
@@ -15848,7 +15848,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	  {
 	    class_decl_sptr klass(static_cast<class_decl*>(logical_scope),
 				  sptr_utils::noop_deleter());
-	    assert(klass);
+	    ABG_ASSERT(klass);
 	    finish_member_function_reading(die, fn, klass, ctxt);
 	  }
 
@@ -15940,7 +15940,7 @@ static decl_base_sptr
 build_ir_node_for_void_type(read_context& ctxt)
 {
   ir::environment* env = ctxt.env();
-  assert(env);
+  ABG_ASSERT(env);
   type_base_sptr t = env->get_void_type();
   decl_base_sptr type_declaration = get_type_declaration(t);
   if (!has_scope(type_declaration))
@@ -16551,7 +16551,7 @@ get_soname_of_elf_file(const string& path, string &soname)
           GElf_Shdr* shdr = gelf_getshdr (scn, &shdr_mem);
           int maxcnt = (shdr != NULL
                         ? shdr->sh_size / shdr->sh_entsize : INT_MAX);
-          assert (shdr == NULL || shdr->sh_type == SHT_DYNAMIC);
+          ABG_ASSERT (shdr == NULL || shdr->sh_type == SHT_DYNAMIC);
           Elf_Data* data = elf_getdata (scn, NULL);
           if (data == NULL)
             break;

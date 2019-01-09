@@ -238,7 +238,7 @@ leaf_reporter::report(const fn_parm_diff& d,
   if (!diff_to_be_reported(&d))
     return;
 
-  assert(diff_to_be_reported(d.type_diff().get()));
+  ABG_ASSERT(diff_to_be_reported(d.type_diff().get()));
 
   function_decl::parameter_sptr f = d.first_parameter();
 
@@ -599,7 +599,7 @@ leaf_reporter::report(const class_or_union_diff& d,
 	    {
 	      var_decl_sptr data_mem =
 		dynamic_pointer_cast<var_decl>(*i);
-	      assert(data_mem);
+	      ABG_ASSERT(data_mem);
 	      if (get_member_is_static(data_mem))
 		continue;
 	      if (emitted)
@@ -629,7 +629,7 @@ leaf_reporter::report(const class_or_union_diff& d,
 	    {
 	      var_decl_sptr data_mem =
 		dynamic_pointer_cast<var_decl>(*i);
-	      assert(data_mem);
+	      ABG_ASSERT(data_mem);
 	      out << indent << "  ";
 	      represent_data_member(data_mem, ctxt, out);
 	    }
@@ -641,7 +641,7 @@ leaf_reporter::report(const class_or_union_diff& d,
       size_t num_filtered =
 	d.class_or_union_diff::get_priv()->
 	count_filtered_changed_dm(/*local_only =*/ true);
-      assert(numchanges >= num_filtered);
+      ABG_ASSERT(numchanges >= num_filtered);
       size_t net_numchanges = numchanges - num_filtered;
 
       bool emitted_data_members_changes = false;
@@ -670,7 +670,7 @@ leaf_reporter::report(const class_or_union_diff& d,
       num_filtered =
 	d.class_or_union_diff::get_priv()->
 	count_filtered_subtype_changed_dm(/*local_only =*/ true);
-      assert(numchanges >= num_filtered);
+      ABG_ASSERT(numchanges >= num_filtered);
       net_numchanges = numchanges - num_filtered;
 
       if (net_numchanges)

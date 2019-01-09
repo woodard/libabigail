@@ -122,7 +122,7 @@ struct diff_hash
   operator()(const diff& d) const
   {
     diff* canonical_diff = d.get_canonical_diff();
-    assert(canonical_diff);
+    ABG_ASSERT(canonical_diff);
     return reinterpret_cast<size_t>(canonical_diff);
   }
 }; // end struct diff_hash
@@ -164,10 +164,10 @@ struct diff_equal
   operator()(const diff& d1, const diff& d2) const
   {
     diff* canonical_diff1 = d1.get_canonical_diff();
-    assert(canonical_diff1);
+    ABG_ASSERT(canonical_diff1);
 
     diff *canonical_diff2 = d2.get_canonical_diff();
-    assert(canonical_diff2);
+    ABG_ASSERT(canonical_diff2);
 
     return canonical_diff1 == canonical_diff2;
   }
@@ -558,8 +558,8 @@ struct data_member_comp
     var_decl_sptr first_dm = is_data_member(f);
     var_decl_sptr second_dm = is_data_member(s);
 
-    assert(first_dm);
-    assert(second_dm);
+    ABG_ASSERT(first_dm);
+    ABG_ASSERT(second_dm);
 
     size_t first_offset = get_data_member_offset(first_dm);
     size_t second_offset = get_data_member_offset(second_dm);
@@ -659,8 +659,8 @@ struct data_member_diff_comp
     var_decl_sptr first_dm = f->first_var();
     var_decl_sptr second_dm = s->first_var();
 
-    assert(is_data_member(first_dm));
-    assert(is_data_member(second_dm));
+    ABG_ASSERT(is_data_member(first_dm));
+    ABG_ASSERT(is_data_member(second_dm));
 
     size_t off1 = get_data_member_offset(first_dm);
     size_t off2 = get_data_member_offset(second_dm);
@@ -684,8 +684,8 @@ struct data_member_diff_comp
     first_dm = f->second_var();
     second_dm = s->second_var();
 
-    assert(is_data_member(first_dm));
-    assert(is_data_member(second_dm));
+    ABG_ASSERT(is_data_member(first_dm));
+    ABG_ASSERT(is_data_member(second_dm));
 
     off1 = get_data_member_offset(first_dm);
     off2 = get_data_member_offset(second_dm);
@@ -711,8 +711,8 @@ struct virtual_member_function_diff_comp
   operator()(const function_decl_diff& l,
 	     const function_decl_diff& r) const
   {
-    assert(get_member_function_is_virtual(l.first_function_decl()));
-    assert(get_member_function_is_virtual(r.first_function_decl()));
+    ABG_ASSERT(get_member_function_is_virtual(l.first_function_decl()));
+    ABG_ASSERT(get_member_function_is_virtual(r.first_function_decl()));
 
     return (get_member_function_vtable_offset(l.first_function_decl())
 	    < get_member_function_vtable_offset(r.first_function_decl()));

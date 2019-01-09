@@ -44,6 +44,7 @@
 #include <vector>
 #include <sstream>
 #include <tr1/memory>
+#include "abg-fwd.h"
 
 namespace abigail
 {
@@ -1272,7 +1273,7 @@ print_snake(RandomAccessOutputIterator a_begin,
 	  x <= s.end().x() && y <= s.end().y();
 	  ++x, ++y)
        {
-	 assert(a_begin[x] == b_begin[y]);
+	 ABG_ASSERT(a_begin[x] == b_begin[y]);
 	 out << "(" << x << "," << y << ") ";
        }
    out << "\n";
@@ -1320,7 +1321,7 @@ ses_len(RandomAccessOutputIterator a_begin,
   unsigned b_size = b_end - b_begin;
   snake snak;
 
-  assert(v.max_d() == a_size + b_size);
+  ABG_ASSERT(v.max_d() == a_size + b_size);
 
   int delta = a_size - b_size;
 
@@ -1555,7 +1556,7 @@ compute_diff(RandomAccessOutputIterator a_base,
       ses.insertions().push_back(ins);
 
       ses_len = a_size + b_size;
-      assert(ses_len == ses.length());
+      ABG_ASSERT(ses_len == ses.length());
       return;
     }
 
@@ -1578,8 +1579,8 @@ compute_diff(RandomAccessOutputIterator a_base,
 		   EqualityFunctor>(a_base, a_base + pu.x() + 1, a_end,
 				    b_base, b_base + pu.y() + 1, b_end,
 				    lcs, tmp_ses1, tmp_ses_len1);
-      assert(tmp_ses0.length() + tmp_ses1.length() == d);
-      assert(tmp_ses_len0 + tmp_ses_len1 == d);
+      ABG_ASSERT(tmp_ses0.length() + tmp_ses1.length() == d);
+      ABG_ASSERT(tmp_ses_len0 + tmp_ses_len1 == d);
       ses.append(tmp_ses0);
       ses.append(tmp_ses1);
     }
@@ -1626,7 +1627,7 @@ compute_diff(RandomAccessOutputIterator a_base,
       ses_len = 0;
     }
 
-  assert(ses_len == ses.length());
+  ABG_ASSERT(ses_len == ses.length());
 }
 
 /// Compute the longest common subsequence of two (sub-regions of)

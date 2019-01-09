@@ -356,8 +356,8 @@ default_reporter::report(const qualified_type_diff& d, ostream& out,
     return;
 
   diff_sptr dif = d.leaf_underlying_type_diff();
-  assert(dif);
-  assert(dif->to_be_reported());
+  ABG_ASSERT(dif);
+  ABG_ASSERT(dif->to_be_reported());
   RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(dif,
 						    "unqualified "
 						    "underlying type");
@@ -416,7 +416,7 @@ default_reporter::report_local_reference_type_changes(const reference_diff& d,
     return;
 
   reference_type_def_sptr f = d.first_reference(), s = d.second_reference();
-  assert(f && s);
+  ABG_ASSERT(f && s);
 
   string f_repr = f->get_pretty_representation(),
     s_repr = s->get_pretty_representation();
@@ -502,7 +502,7 @@ default_reporter::report(const fn_parm_diff& d, ostream& out,
   if (d.to_be_reported())
     {
       diff_sptr type_diff = d.type_diff();
-      assert(type_diff->has_changes());
+      ABG_ASSERT(type_diff->has_changes());
       diff_category saved_category = type_diff->get_category();
       // Parameter type changes are never redundants.
       type_diff->set_category(saved_category & ~REDUNDANT_CATEGORY);
@@ -1021,7 +1021,7 @@ default_reporter::report(const class_or_union_diff& d,
 	    {
 	      var_decl_sptr data_mem =
 		dynamic_pointer_cast<var_decl>(*i);
-	      assert(data_mem);
+	      ABG_ASSERT(data_mem);
 	      if (get_member_is_static(data_mem))
 		continue;
 	      if (emitted)
@@ -1051,7 +1051,7 @@ default_reporter::report(const class_or_union_diff& d,
 	    {
 	      var_decl_sptr data_mem =
 		dynamic_pointer_cast<var_decl>(*i);
-	      assert(data_mem);
+	      ABG_ASSERT(data_mem);
 	      out << indent << "  ";
 	      represent_data_member(data_mem, ctxt, out);
 	    }
@@ -1156,7 +1156,7 @@ default_reporter::report(const class_or_union_diff& d,
 
       // report insertions
       int numins = e.num_insertions();
-      assert(numchanges <= numins);
+      ABG_ASSERT(numchanges <= numins);
       numins -= numchanges;
 
       if (numins)

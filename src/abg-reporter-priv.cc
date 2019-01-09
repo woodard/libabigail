@@ -204,7 +204,7 @@ represent(const diff_context& ctxt,
 
   method_decl_sptr meth =
     dynamic_pointer_cast<method_decl>(mem_fn);
-  assert(meth);
+  ABG_ASSERT(meth);
 
   out << "'" << mem_fn->get_pretty_representation() << "'";
   report_loc_info(meth, ctxt, out);
@@ -452,7 +452,7 @@ represent(const var_diff_sptr	&diff,
 	}
       else
 	{
-	  assert(is_anonymous_data_member(n));
+	  ABG_ASSERT(is_anonymous_data_member(n));
 	  string repr = "data member "
 	    + o->get_pretty_representation()
 	    + " at offset";

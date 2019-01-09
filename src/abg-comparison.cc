@@ -525,16 +525,16 @@ get_leaf_type(qualified_type_def_sptr t)
 bool
 is_diff_of_global_decls(const diff* d)
 {
-  assert(d != 0);
+  ABG_ASSERT(d != 0);
 
   if (d == 0)
     return false;
 
   type_or_decl_base_sptr first = d->first_subject();
-  assert(first);
+  ABG_ASSERT(first);
 
   type_or_decl_base_sptr second = d->first_subject();
-  assert(second);
+  ABG_ASSERT(second);
 
   if (decl_base_sptr decl = is_decl(first))
     if (is_at_global_scope(decl))
@@ -703,7 +703,7 @@ is_var_diff(const diff* diff)
 {
   const var_diff* d = dynamic_cast<const var_diff*>(diff);
   if (d)
-    assert(is_decl_diff(diff));
+    ABG_ASSERT(is_decl_diff(diff));
   return d;
 }
 
@@ -718,7 +718,7 @@ is_function_decl_diff(const diff* diff)
 {
   const function_decl_diff *d = dynamic_cast<const function_decl_diff*>(diff);
   if (d)
-    assert(is_decl_diff(diff));
+    ABG_ASSERT(is_decl_diff(diff));
   return d;
 }
 
@@ -992,7 +992,7 @@ diff_context::get_reporter() const
       else
 	priv_->reporter_.reset(new default_reporter);
     }
-  assert(priv_->reporter_);
+  ABG_ASSERT(priv_->reporter_);
   return priv_->reporter_;
 }
 
@@ -1175,7 +1175,7 @@ diff_context::set_canonical_diff_for(const type_or_decl_base_sptr first,
 				     const type_or_decl_base_sptr second,
 				     const diff_sptr d)
 {
-  assert(d);
+  ABG_ASSERT(d);
   if (!has_diff_for(first, second))
     {
       add_diff(first, second, d);
@@ -1199,7 +1199,7 @@ diff_context::set_or_get_canonical_diff_for(const type_or_decl_base_sptr first,
 					    const type_or_decl_base_sptr second,
 					    const diff_sptr canonical_diff)
 {
-  assert(canonical_diff);
+  ABG_ASSERT(canonical_diff);
 
   diff_sptr canonical = get_canonical_diff_for(first, second);
   if (!canonical)
@@ -1259,7 +1259,7 @@ diff*
 diff_context::diff_has_been_visited(const diff* d) const
 {
   const diff* canonical = d->get_canonical_diff();
-  assert(canonical);
+  ABG_ASSERT(canonical);
 
   size_t ptr_value = reinterpret_cast<size_t>(canonical);
   pointer_map::iterator it = priv_->visited_diff_nodes_.find(ptr_value);
@@ -1295,7 +1295,7 @@ diff_context::mark_diff_as_visited(const diff* d)
     return;
 
   const diff* canonical = d->get_canonical_diff();
-  assert(canonical);
+  ABG_ASSERT(canonical);
 
    size_t canonical_ptr_value = reinterpret_cast<size_t>(canonical);
    size_t diff_ptr_value = reinterpret_cast<size_t>(d);;
@@ -1498,7 +1498,7 @@ diff_context::show_leaf_changes_only(bool f)
   // This function can be called only if the reporter hasn't yet been
   // created.  Once it's been created, we are supposed to live with
   // it.
-  assert(priv_->reporter_ == 0);
+  ABG_ASSERT(priv_->reporter_ == 0);
 
   priv_->leaf_changes_only_ = f;
   // So when we are showing only leaf changes, we want to show
@@ -1937,7 +1937,7 @@ diff::diff(type_or_decl_base_sptr	first_subject,
 void
 diff::begin_traversing()
 {
-  assert(!is_traversing());
+  ABG_ASSERT(!is_traversing());
   if (priv_->canonical_diff_)
     priv_->canonical_diff_->priv_->traversing_ = true;
   priv_->traversing_ = true;
@@ -1972,7 +1972,7 @@ diff::is_traversing() const
 void
 diff::end_traversing()
 {
-  assert(is_traversing());
+  ABG_ASSERT(is_traversing());
   if (priv_->canonical_diff_)
     priv_->canonical_diff_->priv_->traversing_ = false;
   priv_->traversing_ = false;
@@ -2046,7 +2046,7 @@ diff::set_canonical_diff(diff * d)
 void
 diff::append_child_node(diff_sptr d)
 {
-  assert(d);
+  ABG_ASSERT(d);
 
   // Ensure 'd' is kept alive for the life time of the context of this
   // diff.
@@ -2114,7 +2114,7 @@ diff::currently_reporting(bool f) const
 bool
 diff::reported_once() const
 {
-  assert(priv_->canonical_diff_);
+  ABG_ASSERT(priv_->canonical_diff_);
   return priv_->canonical_diff_->priv_->reported_once_;
 }
 
@@ -2227,7 +2227,7 @@ diff::traverse(diff_node_visitor& v)
 void
 diff::reported_once(bool f) const
 {
-  assert(priv_->canonical_diff_);
+  ABG_ASSERT(priv_->canonical_diff_);
   priv_->canonical_diff_->priv_->reported_once_ = f;
   priv_->reported_once_ = f;
 }
@@ -2568,7 +2568,7 @@ distinct_diff::get_pretty_representation() const
 void
 distinct_diff::chain_into_hierarchy()
 {
-  assert(entities_are_of_distinct_kinds(first(), second()));
+  ABG_ASSERT(entities_are_of_distinct_kinds(first(), second()));
 
   if (diff_sptr d = compatible_child_diff())
     append_child_node(d);
@@ -2592,7 +2592,7 @@ distinct_diff::distinct_diff(type_or_decl_base_sptr first,
 			     diff_context_sptr ctxt)
   : diff(first, second, ctxt),
     priv_(new priv)
-{assert(entities_are_of_distinct_kinds(first, second));}
+{ABG_ASSERT(entities_are_of_distinct_kinds(first, second));}
 
 /// Finish building the current instance of @ref distinct_diff.
 void
@@ -2866,7 +2866,7 @@ compute_diff_for_types(const type_or_decl_base_sptr& first,
    ||(d = try_to_diff<function_type>(f, s, ctxt))
    ||(d = try_to_diff_distinct_kinds(f, s, ctxt)));
 
-  assert(d);
+  ABG_ASSERT(d);
 
   return d;
 }
@@ -3133,7 +3133,7 @@ compute_diff_for_decls(const decl_base_sptr first,
    || (d = try_to_diff<var_decl>(first, second, ctxt))
    || (d = try_to_diff_distinct_kinds(first, second, ctxt)));
 
-   assert(d);
+   ABG_ASSERT(d);
 
   return d;
 }
@@ -3160,14 +3160,14 @@ compute_diff(const decl_base_sptr	first,
   if (!first || !second)
     return diff_sptr();
 
-  assert(first->get_environment() == second->get_environment());
+  ABG_ASSERT(first->get_environment() == second->get_environment());
 
   diff_sptr d;
   if (is_type(first) && is_type(second))
     d = compute_diff_for_types(first, second, ctxt);
   else
     d = compute_diff_for_decls(first, second, ctxt);
-  assert(d);
+  ABG_ASSERT(d);
   return d;
 }
 
@@ -3193,10 +3193,10 @@ compute_diff(const type_base_sptr	first,
     s = get_type_declaration(second);
 
   if (first && second)
-    assert(first->get_environment() == second->get_environment());
+    ABG_ASSERT(first->get_environment() == second->get_environment());
 
   diff_sptr d = compute_diff_for_types(f,s, ctxt);
-  assert(d);
+  ABG_ASSERT(d);
   return d;
 }
 
@@ -3353,7 +3353,7 @@ compute_diff(const var_decl_sptr	first,
 	     diff_context_sptr		ctxt)
 {
   if (first && second)
-    assert(first->get_environment() == second->get_environment());
+    ABG_ASSERT(first->get_environment() == second->get_environment());
 
   var_diff_sptr d(new var_diff(first, second, diff_sptr(), ctxt));
   ctxt->initialize_canonical_diff(d);
@@ -3497,7 +3497,7 @@ compute_diff(pointer_type_def_sptr	first,
 	     diff_context_sptr		ctxt)
 {
   if (first && second)
-    assert(first->get_environment() == second->get_environment());
+    ABG_ASSERT(first->get_environment() == second->get_environment());
 
   diff_sptr d = compute_diff_for_types(first->get_pointed_to_type(),
 				       second->get_pointed_to_type(),
@@ -3663,7 +3663,7 @@ compute_diff(array_type_def_sptr	first,
 	     diff_context_sptr		ctxt)
 {
   if (first && second)
-    assert(first->get_environment() == second->get_environment());
+    ABG_ASSERT(first->get_environment() == second->get_environment());
 
   diff_sptr d = compute_diff_for_types(first->get_element_type(),
 				       second->get_element_type(),
@@ -3808,7 +3808,7 @@ compute_diff(reference_type_def_sptr	first,
 	     diff_context_sptr		ctxt)
 {
   if (first && second)
-    assert(first->get_environment() == second->get_environment());
+    ABG_ASSERT(first->get_environment() == second->get_environment());
 
   diff_sptr d = compute_diff_for_types(first->get_pointed_to_type(),
 				       second->get_pointed_to_type(),
@@ -3968,7 +3968,7 @@ compute_diff(const qualified_type_def_sptr	first,
 	     diff_context_sptr			ctxt)
 {
   if (first && second)
-    assert(first->get_environment() == second->get_environment());
+    ABG_ASSERT(first->get_environment() == second->get_environment());
 
   diff_sptr d = compute_diff_for_types(first->get_underlying_type(),
 				       second->get_underlying_type(),
@@ -4025,7 +4025,7 @@ enum_diff::ensure_lookup_tables_populated()
 	const enum_type_decl::enumerator& n =
 	  first_enum()->get_enumerators()[i];
 	const string& name = n.get_name();
-	assert(priv_->deleted_enumerators_.find(n.get_name())
+	ABG_ASSERT(priv_->deleted_enumerators_.find(n.get_name())
 	       == priv_->deleted_enumerators_.end());
 	priv_->deleted_enumerators_[name] = n;
       }
@@ -4043,7 +4043,7 @@ enum_diff::ensure_lookup_tables_populated()
 	    const enum_type_decl::enumerator& n =
 	      second_enum()->get_enumerators()[i];
 	    const string& name = n.get_name();
-	    assert(priv_->inserted_enumerators_.find(n.get_name())
+	    ABG_ASSERT(priv_->inserted_enumerators_.find(n.get_name())
 		   == priv_->inserted_enumerators_.end());
 	    string_enumerator_map::const_iterator j =
 	      priv_->deleted_enumerators_.find(name);
@@ -4196,7 +4196,7 @@ compute_diff(const enum_type_decl_sptr first,
 	     diff_context_sptr ctxt)
 {
   if (first && second)
-    assert(first->get_environment() == second->get_environment());
+    ABG_ASSERT(first->get_environment() == second->get_environment());
 
   diff_sptr ud = compute_diff_for_types(first->get_underlying_type(),
 					second->get_underlying_type(),
@@ -4433,12 +4433,12 @@ class_or_union_diff::priv::count_filtered_changed_mem_fns
       method_decl_sptr f =
 	dynamic_pointer_cast<method_decl>
 	((*i)->first_function_decl());
-      assert(f);
+      ABG_ASSERT(f);
 
       method_decl_sptr s =
 	dynamic_pointer_cast<method_decl>
 	((*i)->second_function_decl());
-      assert(s);
+      ABG_ASSERT(s);
 
       SKIP_MEM_FN_IF_VIRTUALITY_DISALLOWED;
 
@@ -4623,7 +4623,7 @@ class_or_union_diff::ensure_lookup_tables_populated(void) const
 	unsigned i = it->index();
 	decl_base_sptr d = first_class_or_union()->get_non_static_data_members()[i];
 	string qname = d->get_qualified_name();
-	assert(priv_->deleted_data_members_.find(qname)
+	ABG_ASSERT(priv_->deleted_data_members_.find(qname)
 	       == priv_->deleted_data_members_.end());
 	priv_->deleted_data_members_[qname] = d;
       }
@@ -4642,7 +4642,7 @@ class_or_union_diff::ensure_lookup_tables_populated(void) const
 	      second_class_or_union()->get_non_static_data_members()[i];
 	    var_decl_sptr dm = is_var_decl(d);
 	    string qname = dm->get_qualified_name();
-	    assert(priv_->inserted_data_members_.find(qname)
+	    ABG_ASSERT(priv_->inserted_data_members_.find(qname)
 		   == priv_->inserted_data_members_.end());
 	    string_decl_base_sptr_map::const_iterator j =
 	      priv_->deleted_data_members_.find(qname);
@@ -4728,7 +4728,7 @@ class_or_union_diff::ensure_lookup_tables_populated(void) const
 	  first_class_or_union()->get_member_class_templates()[i]->
 	  as_class_tdecl();
 	string qname = d->get_qualified_name();
-	assert(priv_->deleted_member_class_tmpls_.find(qname)
+	ABG_ASSERT(priv_->deleted_member_class_tmpls_.find(qname)
 	       == priv_->deleted_member_class_tmpls_.end());
 	priv_->deleted_member_class_tmpls_[qname] = d;
       }
@@ -4747,7 +4747,7 @@ class_or_union_diff::ensure_lookup_tables_populated(void) const
 	      second_class_or_union()->get_member_class_templates()[i]->
 	      as_class_tdecl();
 	    string qname = d->get_qualified_name();
-	    assert(priv_->inserted_member_class_tmpls_.find(qname)
+	    ABG_ASSERT(priv_->inserted_member_class_tmpls_.find(qname)
 		   == priv_->inserted_member_class_tmpls_.end());
 	    string_decl_base_sptr_map::const_iterator j =
 	      priv_->deleted_member_class_tmpls_.find(qname);
@@ -4822,8 +4822,8 @@ class_or_union_diff::get_priv() const
   // the shared one, from the canonical type.
   class_or_union_diff *canonical =
     dynamic_cast<class_or_union_diff*>(get_canonical_diff());
-  assert(canonical);
-  assert(canonical->priv_);
+  ABG_ASSERT(canonical);
+  ABG_ASSERT(canonical->priv_);
 
   return canonical->priv_;
 }
@@ -5054,7 +5054,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	class_decl::base_spec_sptr b =
 	  first_class_decl()->get_base_specifiers()[i];
 	string qname = b->get_base_class()->get_qualified_name();
-	assert(get_priv()->deleted_bases_.find(qname)
+	ABG_ASSERT(get_priv()->deleted_bases_.find(qname)
 	       == get_priv()->deleted_bases_.end());
 	get_priv()->deleted_bases_[qname] = b;
       }
@@ -5072,7 +5072,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	    class_decl::base_spec_sptr b =
 	      second_class_decl()->get_base_specifiers()[i];
 	    string qname = b->get_base_class()->get_qualified_name();
-	    assert(get_priv()->inserted_bases_.find(qname)
+	    ABG_ASSERT(get_priv()->inserted_bases_.find(qname)
 		   == get_priv()->inserted_bases_.end());
 	    string_base_sptr_map::const_iterator j =
 	      get_priv()->deleted_bases_.find(qname);
@@ -5111,7 +5111,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	string name = mem_fn->get_linkage_name();
 	if (name.empty())
 	  name = mem_fn->get_pretty_representation();
-	assert(!name.empty());
+	ABG_ASSERT(!name.empty());
 	if (p->deleted_member_functions_.find(name)
 	    != p->deleted_member_functions_.end())
 	  continue;
@@ -5134,7 +5134,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	    string name = mem_fn->get_linkage_name();
 	    if (name.empty())
 	      name = mem_fn->get_pretty_representation();
-	    assert(!name.empty());
+	    ABG_ASSERT(!name.empty());
 	    if (p->inserted_member_functions_.find(name)
 		!= p->inserted_member_functions_.end())
 	      continue;
@@ -5322,8 +5322,8 @@ class_diff::get_priv() const
   // the shared one, from the canonical type.
   class_diff *canonical =
     dynamic_cast<class_diff*>(get_canonical_diff());
-  assert(canonical);
-  assert(canonical->priv_);
+  ABG_ASSERT(canonical);
+  ABG_ASSERT(canonical->priv_);
 
   return canonical->priv_;
 }
@@ -5450,7 +5450,7 @@ compute_diff(const class_decl_sptr	first,
 	     diff_context_sptr		ctxt)
 {
   if (first && second)
-    assert(first->get_environment() == second->get_environment());
+    ABG_ASSERT(first->get_environment() == second->get_environment());
 
   class_decl_sptr f = is_class_type(look_through_decl_only_class(first)),
     s = is_class_type(look_through_decl_only_class(second));
@@ -5458,14 +5458,14 @@ compute_diff(const class_decl_sptr	first,
   class_diff_sptr changes(new class_diff(f, s, ctxt));
 
   ctxt->initialize_canonical_diff(changes);
-  assert(changes->get_canonical_diff());
+  ABG_ASSERT(changes->get_canonical_diff());
 
   if (!ctxt->get_canonical_diff_for(first, second))
     {
       // Either first or second is a decl-only class; let's set the
       // canonical diff here in that case.
       diff_sptr canonical_diff = ctxt->get_canonical_diff_for(changes);
-      assert(canonical_diff);
+      ABG_ASSERT(canonical_diff);
       ctxt->set_canonical_diff_for(first, second, canonical_diff);
     }
 
@@ -5687,10 +5687,10 @@ compute_diff(const class_decl::base_spec_sptr	first,
 {
   if (first && second)
     {
-      assert(first->get_environment() == second->get_environment());
-      assert(first->get_base_class()->get_environment()
+      ABG_ASSERT(first->get_environment() == second->get_environment());
+      ABG_ASSERT(first->get_base_class()->get_environment()
 	     == second->get_base_class()->get_environment());
-      assert(first->get_environment()
+      ABG_ASSERT(first->get_environment()
 	     == first->get_base_class()->get_environment());
     }
 
@@ -5815,12 +5815,12 @@ compute_diff(const union_decl_sptr	first,
 	     diff_context_sptr	ctxt)
 {
   if (first && second)
-    assert(first->get_environment() == second->get_environment());
+    ABG_ASSERT(first->get_environment() == second->get_environment());
 
   union_diff_sptr changes(new union_diff(first, second, ctxt));
 
   ctxt->initialize_canonical_diff(changes);
-  assert(changes->get_canonical_diff());
+  ABG_ASSERT(changes->get_canonical_diff());
 
   // Ok, so this is an optimization.  Do not freak out if it looks
   // weird, because, well, it does look weird.  This speeds up
@@ -5943,13 +5943,13 @@ scope_diff::ensure_lookup_tables_populated()
 	  if (klass_decl && klass_decl->get_is_declaration_only())
 	    continue;
 
-	  assert(priv_->deleted_types_.find(qname)
+	  ABG_ASSERT(priv_->deleted_types_.find(qname)
 		 == priv_->deleted_types_.end());
 	  priv_->deleted_types_[qname] = decl;
 	}
       else
 	{
-	  assert(priv_->deleted_decls_.find(qname)
+	  ABG_ASSERT(priv_->deleted_decls_.find(qname)
 		 == priv_->deleted_decls_.end());
 	  priv_->deleted_decls_[qname] = decl;
 	}
@@ -5974,7 +5974,7 @@ scope_diff::ensure_lookup_tables_populated()
 	      if (klass_decl && klass_decl->get_is_declaration_only())
 		continue;
 
-	      assert(priv_->inserted_types_.find(qname)
+	      ABG_ASSERT(priv_->inserted_types_.find(qname)
 		     == priv_->inserted_types_.end());
 	      string_decl_base_sptr_map::const_iterator j =
 		priv_->deleted_types_.find(qname);
@@ -5990,7 +5990,7 @@ scope_diff::ensure_lookup_tables_populated()
 	    }
 	  else
 	    {
-	      assert(priv_->inserted_decls_.find(qname)
+	      ABG_ASSERT(priv_->inserted_decls_.find(qname)
 		     == priv_->inserted_decls_.end());
 	      string_decl_base_sptr_map::const_iterator j =
 		priv_->deleted_decls_.find(qname);
@@ -6326,10 +6326,10 @@ compute_diff(const scope_decl_sptr	first,
 	     scope_diff_sptr		d,
 	     diff_context_sptr		ctxt)
 {
-  assert(d->first_scope() == first && d->second_scope() == second);
+  ABG_ASSERT(d->first_scope() == first && d->second_scope() == second);
 
   if (first && second)
-    assert(first->get_environment() == second->get_environment());
+    ABG_ASSERT(first->get_environment() == second->get_environment());
 
   compute_diff(first->get_member_decls().begin(),
 	       first->get_member_decls().end(),
@@ -6362,7 +6362,7 @@ compute_diff(const scope_decl_sptr	first_scope,
 	     diff_context_sptr		ctxt)
 {
   if (first_scope && second_scope)
-    assert(first_scope->get_environment()
+    ABG_ASSERT(first_scope->get_environment()
 	   == second_scope->get_environment());
 
   scope_diff_sptr d(new scope_diff(first_scope, second_scope, ctxt));
@@ -6391,11 +6391,11 @@ fn_parm_diff::fn_parm_diff(const function_decl::parameter_sptr	first,
   : decl_diff_base(first, second, ctxt),
     priv_(new priv)
 {
-  assert(first->get_index() == second->get_index());
+  ABG_ASSERT(first->get_index() == second->get_index());
   priv_->type_diff = compute_diff(first->get_type(),
 				  second->get_type(),
 				  ctxt);
-  assert(priv_->type_diff);
+  ABG_ASSERT(priv_->type_diff);
 }
 
 /// Finish the building of the current instance of @ref fn_parm_diff.
@@ -6521,7 +6521,7 @@ compute_diff(const function_decl::parameter_sptr	first,
   if (!first || !second)
     return fn_parm_diff_sptr();
 
-  assert(first->get_environment() == second->get_environment());
+  ABG_ASSERT(first->get_environment() == second->get_environment());
 
   fn_parm_diff_sptr result(new fn_parm_diff(first, second, ctxt));
   ctxt->initialize_canonical_diff(result);
@@ -6552,7 +6552,7 @@ function_type_diff::ensure_lookup_tables_populated()
       parm_name = parm->get_name_id();
       // If for a reason the type name is empty we want to know and
       // fix that.
-      assert(!parm_name.empty());
+      ABG_ASSERT(!parm_name.empty());
       priv_->deleted_parms_[parm_name] = parm;
       priv_->deleted_parms_by_id_[parm->get_index()] = parm;
     }
@@ -6571,7 +6571,7 @@ function_type_diff::ensure_lookup_tables_populated()
 	  parm_name = parm->get_name_id();
 	  // If for a reason the type name is empty we want to know and
 	  // fix that.
-	  assert(!parm_name.empty());
+	  ABG_ASSERT(!parm_name.empty());
 	  {
 	    string_parm_map::const_iterator k =
 	      priv_->deleted_parms_.find(parm_name);
@@ -6815,7 +6815,7 @@ compute_diff(const function_type_sptr	first,
       return function_type_diff_sptr();
     }
 
-  assert(first->get_environment() == second->get_environment());
+  ABG_ASSERT(first->get_environment() == second->get_environment());
 
   function_type_diff_sptr result(new function_type_diff(first, second, ctxt));
 
@@ -6967,7 +6967,7 @@ compute_diff(const function_decl_sptr first,
       return function_decl_diff_sptr();
     }
 
-  assert(first->get_environment() == second->get_environment());
+  ABG_ASSERT(first->get_environment() == second->get_environment());
 
   function_type_diff_sptr type_diff = compute_diff(first->get_type(),
 						   second->get_type(),
@@ -7101,7 +7101,7 @@ compute_diff(const type_decl_sptr	first,
 	     diff_context_sptr		ctxt)
 {
   if (first && second)
-    assert(first->get_environment() == second->get_environment());
+    ABG_ASSERT(first->get_environment() == second->get_environment());
 
   type_decl_diff_sptr result(new type_decl_diff(first, second, ctxt));
 
@@ -7264,7 +7264,7 @@ compute_diff(const typedef_decl_sptr	first,
 	     diff_context_sptr		ctxt)
 {
   if (first && second)
-    assert(first->get_environment() == second->get_environment());
+    ABG_ASSERT(first->get_environment() == second->get_environment());
 
   diff_sptr d = compute_diff_for_types(first->get_underlying_type(),
 				       second->get_underlying_type(),
@@ -7382,9 +7382,9 @@ compute_diff(const translation_unit_sptr	first,
 	     const translation_unit_sptr	second,
 	     diff_context_sptr			ctxt)
 {
-  assert(first && second);
+  ABG_ASSERT(first && second);
 
-  assert(first->get_environment() == second->get_environment());
+  ABG_ASSERT(first->get_environment() == second->get_environment());
 
   if (!ctxt)
     ctxt.reset(new diff_context);
@@ -7733,7 +7733,7 @@ corpus_diff::diff_stats::num_removed_func_filtered_out(size_t t)
 size_t
 corpus_diff::diff_stats::net_num_func_removed() const
 {
-  assert(num_func_removed() >= num_removed_func_filtered_out());
+  ABG_ASSERT(num_func_removed() >= num_removed_func_filtered_out());
   return num_func_removed() - num_removed_func_filtered_out();
 }
 
@@ -7780,7 +7780,7 @@ corpus_diff::diff_stats::num_added_func_filtered_out(size_t n)
 size_t
 corpus_diff::diff_stats::net_num_func_added() const
 {
-  assert(num_func_added() >= num_added_func_filtered_out());
+  ABG_ASSERT(num_func_added() >= num_added_func_filtered_out());
   return num_func_added() - num_added_func_filtered_out();
 }
 
@@ -7892,7 +7892,7 @@ corpus_diff::diff_stats::num_removed_vars_filtered_out(size_t n) const
 size_t
 corpus_diff::diff_stats::net_num_vars_removed() const
 {
-  assert(num_vars_removed() >= num_removed_vars_filtered_out());
+  ABG_ASSERT(num_vars_removed() >= num_removed_vars_filtered_out());
   return num_vars_removed() - num_removed_vars_filtered_out();
 }
 
@@ -7940,7 +7940,7 @@ corpus_diff::diff_stats::num_added_vars_filtered_out(size_t n)
 size_t
 corpus_diff::diff_stats::net_num_vars_added() const
 {
-  assert(num_vars_added() >= num_added_vars_filtered_out());
+  ABG_ASSERT(num_vars_added() >= num_added_vars_filtered_out());
   return num_vars_added() - num_added_vars_filtered_out();
 }
 
@@ -8045,7 +8045,7 @@ corpus_diff::diff_stats::num_removed_func_syms_filtered_out(size_t n)
 size_t
 corpus_diff::diff_stats::net_num_removed_func_syms() const
 {
-  assert(num_func_syms_removed() >= num_removed_func_syms_filtered_out());
+  ABG_ASSERT(num_func_syms_removed() >= num_removed_func_syms_filtered_out());
   return num_func_syms_removed() - num_removed_func_syms_filtered_out();
 }
 
@@ -8104,7 +8104,7 @@ corpus_diff::diff_stats::num_added_func_syms_filtered_out(size_t n)
 size_t
 corpus_diff::diff_stats::net_num_added_func_syms() const
 {
-  assert(num_func_syms_added() >= num_added_func_syms_filtered_out());
+  ABG_ASSERT(num_func_syms_added() >= num_added_func_syms_filtered_out());
   return num_func_syms_added()- num_added_func_syms_filtered_out();
 }
 
@@ -8162,7 +8162,7 @@ corpus_diff::diff_stats::num_removed_var_syms_filtered_out(size_t n)
 size_t
 corpus_diff::diff_stats::net_num_removed_var_syms() const
 {
-  assert(num_var_syms_removed() >= num_removed_var_syms_filtered_out());
+  ABG_ASSERT(num_var_syms_removed() >= num_removed_var_syms_filtered_out());
   return num_var_syms_removed() - num_removed_var_syms_filtered_out();
 }
 
@@ -8221,7 +8221,7 @@ corpus_diff::diff_stats::num_added_var_syms_filtered_out(size_t n)
 size_t
 corpus_diff::diff_stats::net_num_added_var_syms() const
 {
-  assert(num_var_syms_added() >= num_added_var_syms_filtered_out());
+  ABG_ASSERT(num_var_syms_added() >= num_added_var_syms_filtered_out());
   return num_var_syms_added() - num_added_var_syms_filtered_out();
 }
 
@@ -8267,7 +8267,7 @@ corpus_diff::diff_stats::num_leaf_changes_filtered_out(size_t n)
 size_t
 corpus_diff::diff_stats::net_num_leaf_changes() const
 {
-  assert(num_leaf_changes() >= num_leaf_changes_filtered_out());
+  ABG_ASSERT(num_leaf_changes() >= num_leaf_changes_filtered_out());
   return num_leaf_changes() - num_leaf_changes_filtered_out();
 }
 
@@ -8450,15 +8450,15 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	 ++it)
       {
 	unsigned i = it->index();
-	assert(i < first_->get_functions().size());
+	ABG_ASSERT(i < first_->get_functions().size());
 
 	function_decl* deleted_fn = first_->get_functions()[i];
 	string n = deleted_fn->get_id();
-	assert(!n.empty());
+	ABG_ASSERT(!n.empty());
 	// The below is commented out because there can be several
 	// functions with the same ID in the corpus.  So several
 	// functions with the same ID can be deleted.
-	// assert(deleted_fns_.find(n) == deleted_fns_.end());
+	// ABG_ASSERT(deleted_fns_.find(n) == deleted_fns_.end());
 	deleted_fns_[n] = deleted_fn;
       }
 
@@ -8474,11 +8474,11 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	    unsigned i = *iit;
 	    function_decl* added_fn = second_->get_functions()[i];
 	    string n = added_fn->get_id();
-	    assert(!n.empty());
+	    ABG_ASSERT(!n.empty());
 	    // The below is commented out because there can be several
 	    // functions with the same ID in the corpus.  So several
 	    // functions with the same ID can be added.
-	    // assert(added_fns_.find(n) == added_fns_.end());
+	    // ABG_ASSERT(added_fns_.find(n) == added_fns_.end());
 	    string_function_ptr_map::const_iterator j =
 	      deleted_fns_.find(n);
 	    if (j != deleted_fns_.end())
@@ -8550,12 +8550,12 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	 ++it)
       {
 	unsigned i = it->index();
-	assert(i < first_->get_variables().size());
+	ABG_ASSERT(i < first_->get_variables().size());
 
 	var_decl* deleted_var = first_->get_variables()[i];
 	string n = deleted_var->get_id();
-	assert(!n.empty());
-	assert(deleted_vars_.find(n) == deleted_vars_.end());
+	ABG_ASSERT(!n.empty());
+	ABG_ASSERT(deleted_vars_.find(n) == deleted_vars_.end());
 	deleted_vars_[n] = deleted_var;
       }
 
@@ -8571,12 +8571,12 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	    unsigned i = *iit;
 	    var_decl* added_var = second_->get_variables()[i];
 	    string n = added_var->get_id();
-	    assert(!n.empty());
+	    ABG_ASSERT(!n.empty());
 	    {
 	      string_var_ptr_map::const_iterator k = added_vars_.find(n);
 	      if ( k != added_vars_.end())
 		{
-		  assert(is_member_decl(k->second)
+		  ABG_ASSERT(is_member_decl(k->second)
 			 && get_member_is_static(k->second));
 		  continue;
 		}
@@ -8654,7 +8654,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	 ++it)
       {
 	unsigned i = it->index();
-	assert(i < first_->get_unreferenced_function_symbols().size());
+	ABG_ASSERT(i < first_->get_unreferenced_function_symbols().size());
 	elf_symbol_sptr deleted_sym =
 	  first_->get_unreferenced_function_symbols()[i];
 	if (!second_->lookup_function_symbol(*deleted_sym))
@@ -8671,7 +8671,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	     ++iit)
 	  {
 	    unsigned i = *iit;
-	    assert(i < second_->get_unreferenced_function_symbols().size());
+	    ABG_ASSERT(i < second_->get_unreferenced_function_symbols().size());
 	    elf_symbol_sptr added_sym =
 	      second_->get_unreferenced_function_symbols()[i];
 	    if ((deleted_unrefed_fn_syms_.find(added_sym->get_id_string())
@@ -8715,7 +8715,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	 ++it)
       {
 	unsigned i = it->index();
-	assert(i < first_->get_unreferenced_variable_symbols().size());
+	ABG_ASSERT(i < first_->get_unreferenced_variable_symbols().size());
 	elf_symbol_sptr deleted_sym =
 	  first_->get_unreferenced_variable_symbols()[i];
 	if (!second_->lookup_variable_symbol(*deleted_sym))
@@ -8732,7 +8732,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	     ++iit)
 	  {
 	    unsigned i = *iit;
-	    assert(i < second_->get_unreferenced_variable_symbols().size());
+	    ABG_ASSERT(i < second_->get_unreferenced_variable_symbols().size());
 	    elf_symbol_sptr added_sym =
 	      second_->get_unreferenced_variable_symbols()[i];
 	    if (deleted_unrefed_var_syms_.find(added_sym->get_id_string())
@@ -8889,7 +8889,7 @@ corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
 		function_decl *f = e->second;
 		class_decl_sptr c =
 		  is_class_type(is_method_type(f->get_type())->get_class_type());
-		assert(c);
+		ABG_ASSERT(c);
 		if (type_suppr->suppresses_type(c, ctxt))
 		  suppressed_added_fns_[e->first] = e->second;
 	      }
@@ -8903,7 +8903,7 @@ corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
 		function_decl *f = e->second;
 		class_decl_sptr c =
 		  is_class_type(is_method_type(f->get_type())->get_class_type());
-		assert(c);
+		ABG_ASSERT(c);
 		if (type_suppr->suppresses_type(c, ctxt))
 		  suppressed_deleted_fns_[e->first] = e->second;
 	      }
@@ -9693,7 +9693,7 @@ corpus_diff::children_nodes() const
 void
 corpus_diff::append_child_node(diff_sptr d)
 {
-  assert(d);
+  ABG_ASSERT(d);
 
   diff_less_than_functor is_less_than;
   bool inserted = false;
@@ -10063,7 +10063,7 @@ struct leaf_diff_node_marker_visitor : public diff_node_visitor
       {
 	diff_context_sptr ctxt = d->context();
 	const corpus_diff *corpus_diff_node = ctxt->get_corpus_diff().get();
-	assert(corpus_diff_node);
+	ABG_ASSERT(corpus_diff_node);
 	type_or_decl_base_sptr iface =
 	  get_current_topmost_iface_diff()->first_subject();
 	// So this is diff node carries a leaf change.  Let's add it
@@ -10219,11 +10219,11 @@ compute_diff(const corpus_sptr	f,
   typedef elf_symbols::const_iterator symbols_it_type;
   typedef diff_utils::deep_ptr_eq_functor eq_type;
 
-  assert(f && s);
+  ABG_ASSERT(f && s);
 
   // We can only compare two corpora that were built out of the same
   // environment.
-  assert(f->get_environment() == s->get_environment());
+  ABG_ASSERT(f->get_environment() == s->get_environment());
 
   if (!ctxt)
     ctxt.reset(new diff_context);
@@ -10622,7 +10622,7 @@ struct category_propagation_visitor : public diff_node_visitor
 	  ? (*i)->get_canonical_diff()
 	  : *i;
 
-	assert(diff);
+	ABG_ASSERT(diff);
 
 	diff_category c = diff->get_category();
 	// Do not propagate redundant and suppressed categories. Those

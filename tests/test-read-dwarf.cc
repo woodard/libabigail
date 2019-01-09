@@ -294,7 +294,7 @@ struct test_task : public abigail::workers::task
     read_context_sptr ctxt = create_read_context(in_elf_path,
 						 di_roots,
 						 env.get());
-    assert(ctxt);
+    ABG_ASSERT(ctxt);
     if (!in_suppr_spec_path.empty())
       set_suppressions(*ctxt, in_suppr_spec_path);
 
@@ -391,7 +391,7 @@ main(int argc, char *argv[])
       test_task_sptr t(new test_task(*s, out_abi_base,
 				     in_elf_base,
 				     in_abi_base));
-      assert(task_queue.schedule_task(t));
+      ABG_ASSERT(task_queue.schedule_task(t));
     }
 
   /// Wait for all worker threads to finish their job, and wind down.
@@ -403,7 +403,7 @@ main(int argc, char *argv[])
   const vector<abigail::workers::task_sptr>& completed_tasks =
     task_queue.get_completed_tasks();
 
-  assert(completed_tasks.size() == num_tests);
+  ABG_ASSERT(completed_tasks.size() == num_tests);
 
   for (vector<abigail::workers::task_sptr>::const_iterator ti =
 	 completed_tasks.begin();

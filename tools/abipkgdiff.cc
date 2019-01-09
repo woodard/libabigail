@@ -803,8 +803,7 @@ package::extracted_packages_parent_dir()
         }
 
       // Create the cache directory if it doesn't exist
-      bool cache_dir_is_created = ensure_dir_path_created(p);
-      assert(cache_dir_is_created);
+      ABG_ASSERT(ensure_dir_path_created(p));
 
       string libabigail_tmp_dir_template = p;
       libabigail_tmp_dir_template += "/abipkgdiff-tmp-dir-XXXXXX";

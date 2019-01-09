@@ -33,6 +33,7 @@
 #include <vector>
 #include <iostream>
 
+#include "abg-fwd.h"
 #include "abg-internal.h"
 // <headers defining libabigail's API go under here>
 ABG_BEGIN_EXPORT_DECLARATIONS
@@ -229,7 +230,7 @@ struct queue::priv
     for (unsigned i = 0; i < num_workers; ++i)
       {
 	worker w;
-	assert(pthread_create(&w.tid,
+	ABG_ASSERT(pthread_create(&w.tid,
 			      /*attr=*/0,
 			      (void*(*)(void*))&worker::wait_to_execute_a_task,
 			      this) == 0);
@@ -305,13 +306,13 @@ struct queue::priv
     // the condition.
     pthread_mutex_lock(&queue_cond_mutex);
     bring_workers_down = true;
-    assert(pthread_cond_broadcast(&queue_cond) == 0);
+    ABG_ASSERT(pthread_cond_broadcast(&queue_cond) == 0);
     pthread_mutex_unlock(&queue_cond_mutex);
 
     for (std::vector<worker>::const_iterator i = workers.begin();
 	 i != workers.end();
 	 ++i)
-      assert(pthread_join(i->tid, /*thread_return=*/0) == 0);
+      ABG_ASSERT(pthread_join(i->tid, /*thread_return=*/0) == 0);
     workers.clear();
   }
 

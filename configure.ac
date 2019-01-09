@@ -181,6 +181,13 @@ AC_CHECK_HEADER(elfutils/libdwfl.h,
 		[],
 		[AC_MSG_ERROR([could not find elfutils/libdwfl.h installed])])
 
+dnl Allow users to compile with the NDEBUG macro defined,
+dnl meaning they are compiling in a mode where the
+dnl assert call does nothing.  With the directive below,
+dnl users just need to pass the --disable-assert
+dnl option to configure.
+AC_HEADER_ASSERT
+
 if test x$ELF_LIBS = x; then
    AC_MSG_ERROR([could not find elfutils elf library installed])
 fi

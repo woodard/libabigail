@@ -131,7 +131,7 @@ main()
   for (const char** p = elf_paths; p && *p; ++p)
     {
       test_task_sptr t(new test_task(*p));
-      assert(task_queue.schedule_task(t));
+      ABG_ASSERT(task_queue.schedule_task(t));
     }
 
   /// Wait for all worker threads to finish their job, and wind down.
@@ -143,7 +143,7 @@ main()
   const vector<task_sptr>& completed_tasks =
     task_queue.get_completed_tasks();
 
-  assert(completed_tasks.size () == num_tests);
+  ABG_ASSERT(completed_tasks.size () == num_tests);
 
   bool is_ok = true;
   for (vector<task_sptr>::const_iterator ti = completed_tasks.begin();

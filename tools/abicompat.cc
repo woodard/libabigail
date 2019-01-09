@@ -332,9 +332,9 @@ perform_compat_check_in_normal_mode(options& opts,
 				    corpus_sptr lib1_corpus,
 				    corpus_sptr lib2_corpus)
 {
-  assert(lib1_corpus);
-  assert(lib2_corpus);
-  assert(app_corpus);
+  ABG_ASSERT(lib1_corpus);
+  ABG_ASSERT(lib2_corpus);
+  ABG_ASSERT(app_corpus);
 
   abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
 
@@ -465,8 +465,8 @@ perform_compat_check_in_weak_mode(options& opts,
 				  corpus_sptr app_corpus,
 				  corpus_sptr lib_corpus)
 {
-  assert(lib_corpus);
-  assert(app_corpus);
+  ABG_ASSERT(lib_corpus);
+  ABG_ASSERT(app_corpus);
 
   abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
 
@@ -523,7 +523,7 @@ perform_compat_check_in_weak_mode(options& opts,
 	// lib_fn_type contains the type of a function that is defined
 	// in lib_corpus.
 	lib_fn_type = (*i)->get_type();
-	assert(lib_fn_type);
+	ABG_ASSERT(lib_fn_type);
 
 	// app_fn_type contains the the "version" of lib_fn_type that
 	// is expected by app_corpus.
@@ -585,7 +585,7 @@ perform_compat_check_in_weak_mode(options& opts,
 	 ++i)
       {
 	lib_var_type = (*i)->get_type();
-	assert(lib_var_type);
+	ABG_ASSERT(lib_var_type);
 	app_var_type = lookup_type(lib_var_type, *app_corpus);
 	diff_sptr type_diff;
 	if (app_var_type)
@@ -652,7 +652,7 @@ main(int argc, char* argv[])
       return 0;
     }
 
-  assert(!opts.app_path.empty());
+  ABG_ASSERT(!opts.app_path.empty());
   if (!abigail::tools_utils::check_file(opts.app_path, cerr, opts.prog_name))
     return abigail::tools_utils::ABIDIFF_ERROR;
 
@@ -725,7 +725,7 @@ main(int argc, char* argv[])
     }
 
   // Read the first version of the library.
-  assert(!opts.lib1_path.empty());
+  ABG_ASSERT(!opts.lib1_path.empty());
   if (!abigail::tools_utils::check_file(opts.lib1_path, cerr, opts.prog_name))
     return abigail::tools_utils::ABIDIFF_ERROR;
   type = abigail::tools_utils::guess_file_type(opts.lib1_path);
@@ -761,7 +761,7 @@ main(int argc, char* argv[])
   corpus_sptr lib2_corpus;
   if (!opts.weak_mode)
     {
-      assert(!opts.lib2_path.empty());
+      ABG_ASSERT(!opts.lib2_path.empty());
       char * lib2_di_root = opts.lib2_di_root_path.get();
       vector<char**> lib2_di_roots;
       lib2_di_roots.push_back(&lib2_di_root);

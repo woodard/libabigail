@@ -458,7 +458,7 @@ public:
   /// @param scope the scope to pop.
   void
   pop_scope_or_abort(scope_decl_sptr scope)
-  {assert(pop_scope(scope));}
+  {ABG_ASSERT(pop_scope(scope));}
 
   void
   clear_decls_stack()
@@ -625,7 +625,7 @@ public:
   key_fn_tmpl_decl(shared_ptr<function_tdecl> fn_tmpl_decl,
 		   const string& id)
   {
-    assert(fn_tmpl_decl);
+    ABG_ASSERT(fn_tmpl_decl);
 
     const_fn_tmpl_map_it i = m_fn_tmpl_map.find(id);
     if (i != m_fn_tmpl_map.end())
@@ -648,7 +648,7 @@ public:
   key_class_tmpl_decl(shared_ptr<class_tdecl> class_tmpl_decl,
 		      const string& id)
   {
-    assert(class_tmpl_decl);
+    ABG_ASSERT(class_tmpl_decl);
 
     const_class_tmpl_map_it i = m_class_tmpl_map.find(id);
     if (i != m_class_tmpl_map.end())
@@ -667,13 +667,13 @@ public:
   push_decl_to_current_scope(decl_base_sptr decl,
 			     bool add_to_current_scope)
   {
-    assert(decl);
+    ABG_ASSERT(decl);
 
     if (add_to_current_scope)
       add_decl_to_scope(decl, get_cur_scope());
     if (!decl->get_translation_unit())
       decl->set_translation_unit(get_translation_unit());
-    assert(decl->get_translation_unit());
+    ABG_ASSERT(decl->get_translation_unit());
     push_decl(decl);
   }
 
@@ -692,12 +692,12 @@ public:
 			 bool add_to_current_scope)
   {
     shared_ptr<decl_base> decl = dynamic_pointer_cast<decl_base>(t);
-    assert(decl);
+    ABG_ASSERT(decl);
 
     push_decl_to_current_scope(decl, add_to_current_scope);
     if (!t->get_translation_unit())
       t->set_translation_unit(get_translation_unit());
-    assert(t->get_translation_unit());
+    ABG_ASSERT(t->get_translation_unit());
     key_type_decl(t, id);
     return true;
   }
@@ -867,7 +867,7 @@ public:
 	// We do not want to try to canonicalize a class type that
 	// hasn't been properly added to its context.
 	if (class_decl_sptr c = is_class_type(t))
-	  assert(c->get_scope());
+	  ABG_ASSERT(c->get_scope());
 
 	schedule_type_for_late_canonicalizing(t);
       }
@@ -1264,7 +1264,7 @@ read_context::get_scope_for_node(xmlNodePtr node,
       push_decl(parent_scope);
       scope = dynamic_pointer_cast<scope_decl>
 	(handle_element_node(*this, parent, /*add_decl_to_scope=*/true));
-      assert(scope);
+      ABG_ASSERT(scope);
       pop_scope_or_abort(parent_scope);
     }
   else
@@ -1291,7 +1291,7 @@ read_context::build_or_get_type_decl(const string& id,
   if (!t)
     {
       xmlNodePtr n = get_xml_node_from_id(id);
-      assert(n);
+      ABG_ASSERT(n);
 
       scope_decl_sptr scope;
       access_specifier access = no_access;
@@ -1307,17 +1307,17 @@ read_context::build_or_get_type_decl(const string& id,
 	  /// 'n' ourselves.
 	  if ((t = get_type_decl(id)))
 	    return t;
-	  assert(scope);
+	  ABG_ASSERT(scope);
 	  push_decl(scope);
 	}
 
       t = build_type(*this, n, add_decl_to_scope);
-      assert(t);
+      ABG_ASSERT(t);
       if (is_member_type(t) && access != no_access)
 	{
-	  assert(add_decl_to_scope);
+	  ABG_ASSERT(add_decl_to_scope);
 	  decl_base_sptr d = get_type_declaration(t);
-	  assert(d);
+	  ABG_ASSERT(d);
 	  set_member_access_specifier(d, access);
 	}
       map_xml_node_to_decl(n, get_type_declaration(t));
@@ -1451,7 +1451,7 @@ get_or_read_and_add_translation_unit(read_context& ctxt, xmlNodePtr node)
   if (path_str)
     {
       tu_path = reinterpret_cast<char*>(path_str.get());
-      assert(!tu_path.empty());
+      ABG_ASSERT(!tu_path.empty());
 
       if (corp)
 	tu = corp->find_translation_unit(tu_path);
@@ -1881,7 +1881,7 @@ read_corpus_from_input(read_context& ctxt)
   bool is_ok = read_symbol_db_from_input(ctxt, fn_sym_db, var_sym_db);
   if (is_ok)
     {
-      assert(fn_sym_db || var_sym_db);
+      ABG_ASSERT(fn_sym_db || var_sym_db);
       if (fn_sym_db)
 	{
 	  corp.set_fun_symbol_map(fn_sym_db);
@@ -2556,7 +2556,7 @@ build_namespace_decl(read_context&	ctxt,
   if (decl_base_sptr d = ctxt.get_decl_for_xml_node(node))
     {
       namespace_decl_sptr result = dynamic_pointer_cast<namespace_decl>(d);
-      assert(result);
+      ABG_ASSERT(result);
       return result;
     }
 
@@ -2802,8 +2802,8 @@ build_elf_symbol_db(read_context& ctxt,
         {
           string_elf_symbol_sptr_map_type::const_iterator i =
           id_sym_map.find(*alias);
-          assert(i != id_sym_map.end());
-          assert(i->second->is_main_symbol());
+          ABG_ASSERT(i != id_sym_map.end());
+          ABG_ASSERT(i->second->is_main_symbol());
 
           x->second->get_main_symbol()->add_alias(i->second);
         }
@@ -2826,7 +2826,7 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
   if (!node || !xmlStrEqual(node->name, BAD_CAST("parameter")))
     return nil;
 
-  assert(ctxt.get_environment());
+  ABG_ASSERT(ctxt.get_environment());
 
   bool is_variadic = false;
   string is_variadic_str;
@@ -2855,11 +2855,11 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
     type = ctxt.get_environment()->get_variadic_parameter_type();
   else
     {
-      assert(!type_id.empty());
+      ABG_ASSERT(!type_id.empty());
       type = ctxt.build_or_get_type_decl(type_id, true);
     }
-  assert(type);
-  assert(type->get_environment() == ctxt.get_environment());
+  ABG_ASSERT(type);
+  ABG_ASSERT(type->get_environment() == ctxt.get_environment());
 
   string name;
   if (xml_char_sptr a = xml::build_sptr(xmlGetProp(node, BAD_CAST("name"))))
@@ -2930,7 +2930,7 @@ build_function_decl(read_context&	ctxt,
   read_location(ctxt, node, loc);
 
   environment* env = ctxt.get_environment();
-  assert(env);
+  ABG_ASSERT(env);
   std::vector<function_decl::parameter_sptr> parms;
   type_base_sptr return_type = env->get_void_type();
 
@@ -2963,7 +2963,7 @@ build_function_decl(read_context&	ctxt,
 			     : new function_type(return_type,
 						 parms, size, align));
 
-  assert(fn_type);
+  ABG_ASSERT(fn_type);
 
   function_decl_sptr fn_decl(as_method_decl
 			     ? new method_decl (name, fn_type,
@@ -3189,7 +3189,7 @@ build_var_decl(read_context&	ctxt,
     type_id = CHAR_STR(s);
   type_base_sptr underlying_type = ctxt.build_or_get_type_decl(type_id,
 							       true);
-  assert(underlying_type);
+  ABG_ASSERT(underlying_type);
 
   string mangled_name;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "mangled-name"))
@@ -3247,7 +3247,7 @@ build_type_decl(read_context&		ctxt,
   if (decl_base_sptr d = ctxt.get_decl_for_xml_node(node))
     {
       type_decl_sptr result = dynamic_pointer_cast<type_decl>(d);
-      assert(result);
+      ABG_ASSERT(result);
       return result;
     }
 
@@ -3258,7 +3258,7 @@ build_type_decl(read_context&		ctxt,
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
-  assert(!id.empty());
+  ABG_ASSERT(!id.empty());
 
   size_t size_in_bits= 0;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "size-in-bits"))
@@ -3279,10 +3279,10 @@ build_type_decl(read_context&		ctxt,
       // I've seen instances of DSOs where a type_decl would appear
       // several times.  Hugh.
       type_decl_sptr ty = dynamic_pointer_cast<type_decl>(d);
-      assert(ty);
-      assert(name == ty->get_name());
-      assert(ty->get_size_in_bits() == size_in_bits);
-      assert(ty->get_alignment_in_bits() == alignment_in_bits);
+      ABG_ASSERT(ty);
+      ABG_ASSERT(name == ty->get_name());
+      ABG_ASSERT(ty->get_size_in_bits() == size_in_bits);
+      ABG_ASSERT(ty->get_alignment_in_bits() == alignment_in_bits);
       return ty;
     }
 
@@ -3323,7 +3323,7 @@ build_qualified_type_decl(read_context&	ctxt,
     {
       qualified_type_def_sptr result =
 	dynamic_pointer_cast<qualified_type_def>(d);
-      assert(result);
+      ABG_ASSERT(result);
       return result;
     }
 
@@ -3333,7 +3333,7 @@ build_qualified_type_decl(read_context&	ctxt,
 
   shared_ptr<type_base> underlying_type =
     ctxt.build_or_get_type_decl(type_id, true);
-  assert(underlying_type);
+  ABG_ASSERT(underlying_type);
 
   // maybe building the underlying type triggered building this one in
   // the mean time ...
@@ -3341,7 +3341,7 @@ build_qualified_type_decl(read_context&	ctxt,
     {
       qualified_type_def_sptr result =
 	dynamic_pointer_cast<qualified_type_def>(d);
-      assert(result);
+      ABG_ASSERT(result);
       return result;
     }
 
@@ -3375,14 +3375,14 @@ build_qualified_type_decl(read_context&	ctxt,
   location loc;
   read_location(ctxt, node, loc);
 
-  assert(!id.empty());
+  ABG_ASSERT(!id.empty());
 
   qualified_type_def_sptr decl;
 
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
       qualified_type_def_sptr ty = is_qualified_type(d);
-      assert(ty);
+      ABG_ASSERT(ty);
       string pr1 = get_pretty_representation(ty->get_underlying_type()),
 	pr2 = get_pretty_representation(underlying_type);
       return ty;
@@ -3424,7 +3424,7 @@ build_pointer_type_def(read_context&	ctxt,
     {
       pointer_type_def_sptr result =
 	dynamic_pointer_cast<pointer_type_def>(d);
-      assert(result);
+      ABG_ASSERT(result);
       return result;
     }
 
@@ -3434,7 +3434,7 @@ build_pointer_type_def(read_context&	ctxt,
 
   shared_ptr<type_base> pointed_to_type =
     ctxt.build_or_get_type_decl(type_id, true);
-  assert(pointed_to_type);
+  ABG_ASSERT(pointed_to_type);
 
   // maybe building the underlying type triggered building this one in
   // the mean time ...
@@ -3442,7 +3442,7 @@ build_pointer_type_def(read_context&	ctxt,
     {
       pointer_type_def_sptr result =
 	dynamic_pointer_cast<pointer_type_def>(d);
-      assert(result);
+      ABG_ASSERT(result);
       return result;
     }
 
@@ -3455,12 +3455,12 @@ build_pointer_type_def(read_context&	ctxt,
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
-  assert(!id.empty());
+  ABG_ASSERT(!id.empty());
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
       pointer_type_def_sptr ty = is_pointer_type(d);
-      assert(ty);
-      assert(ctxt.types_equal(pointed_to_type,
+      ABG_ASSERT(ty);
+      ABG_ASSERT(ctxt.types_equal(pointed_to_type,
 			      ty->get_pointed_to_type()));
       return ty;
     }
@@ -3507,7 +3507,7 @@ build_reference_type_def(read_context&		ctxt,
     {
       reference_type_def_sptr result =
 	dynamic_pointer_cast<reference_type_def>(d);
-      assert(result);
+      ABG_ASSERT(result);
       return result;
     }
 
@@ -3522,7 +3522,7 @@ build_reference_type_def(read_context&		ctxt,
 
   shared_ptr<type_base> pointed_to_type = ctxt.build_or_get_type_decl(type_id,
 								      true);
-  assert(pointed_to_type);
+  ABG_ASSERT(pointed_to_type);
 
   // maybe building the underlying type triggered building this one in
   // the mean time ...
@@ -3530,7 +3530,7 @@ build_reference_type_def(read_context&		ctxt,
     {
       reference_type_def_sptr result =
 	dynamic_pointer_cast<reference_type_def>(d);
-      assert(result);
+      ABG_ASSERT(result);
       return result;
     }
 
@@ -3543,13 +3543,13 @@ build_reference_type_def(read_context&		ctxt,
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
-  assert(!id.empty());
+  ABG_ASSERT(!id.empty());
 
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
       reference_type_def_sptr ty = is_reference_type(d);
-      assert(ty);
-      assert(ctxt.types_equal(pointed_to_type, ty->get_pointed_to_type()));
+      ABG_ASSERT(ty);
+      ABG_ASSERT(ctxt.types_equal(pointed_to_type, ty->get_pointed_to_type()));
       return ty;
     }
 
@@ -3595,7 +3595,7 @@ build_function_type(read_context&	ctxt,
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
-  assert(!id.empty());
+  ABG_ASSERT(!id.empty());
 
   string method_class_id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "method-class-id"))
@@ -3607,7 +3607,7 @@ build_function_type(read_context&	ctxt,
   read_size_and_alignment(node, size, align);
 
   environment* env = ctxt.get_environment();
-  assert(env);
+  ABG_ASSERT(env);
   std::vector<shared_ptr<function_decl::parameter> > parms;
   type_base_sptr return_type = env->get_void_type();;
 
@@ -3617,7 +3617,7 @@ build_function_type(read_context&	ctxt,
       method_class_type =
 	is_class_type(ctxt.build_or_get_type_decl(method_class_id,
 						  /*add_decl_to_scope=*/true));
-      assert(method_class_type);
+      ABG_ASSERT(method_class_type);
     }
 
 
@@ -3684,7 +3684,7 @@ build_subrange_type(read_context&	ctxt,
     {
       array_type_def::subrange_sptr result =
 	dynamic_pointer_cast<array_type_def::subrange_type>(d);
-      assert(result);
+      ABG_ASSERT(result);
       return result;
     }
 
@@ -3700,7 +3700,7 @@ build_subrange_type(read_context&	ctxt,
     if (type_base_sptr d = ctxt.get_type_decl(id))
       {
 	array_type_def::subrange_sptr ty = is_subrange_type(d);
-	assert(ty);
+	ABG_ASSERT(ty);
 	return ty;
       }
 
@@ -3727,7 +3727,7 @@ build_subrange_type(read_context&	ctxt,
   if (!underlying_type_id.empty())
     {
       underlying_type = ctxt.build_or_get_type_decl(underlying_type_id, true);
-      assert(underlying_type);
+      ABG_ASSERT(underlying_type);
     }
 
   location loc;
@@ -3775,7 +3775,7 @@ build_array_type_def(read_context&	ctxt,
     {
       array_type_def_sptr result =
 	dynamic_pointer_cast<array_type_def>(d);
-      assert(result);
+      ABG_ASSERT(result);
       return result;
     }
 
@@ -3790,7 +3790,7 @@ build_array_type_def(read_context&	ctxt,
   // The type of array elements.
   type_base_sptr type =
     ctxt.build_or_get_type_decl(type_id, true);
-  assert(type);
+  ABG_ASSERT(type);
 
   // maybe building the type of array elements triggered building this
   // one in the mean time ...
@@ -3798,7 +3798,7 @@ build_array_type_def(read_context&	ctxt,
     {
       array_type_def_sptr result =
 	dynamic_pointer_cast<array_type_def>(d);
-      assert(result);
+      ABG_ASSERT(result);
       return result;
     }
 
@@ -3829,14 +3829,14 @@ build_array_type_def(read_context&	ctxt,
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
-  assert(!id.empty());
+  ABG_ASSERT(!id.empty());
 
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
       array_type_def_sptr ty = is_array_type(d);
-      assert(ty);
-      assert(*type == *ty->get_element_type());
-      assert(type->get_alignment_in_bits() == alignment_in_bits);
+      ABG_ASSERT(ty);
+      ABG_ASSERT(*type == *ty->get_element_type());
+      ABG_ASSERT(type->get_alignment_in_bits() == alignment_in_bits);
       return ty;
     }
 
@@ -3869,7 +3869,7 @@ build_array_type_def(read_context&	ctxt,
   if (has_size_in_bits)
     if (size_in_bits != ar_type->get_size_in_bits())
       {
-	assert(size_in_bits == (size_t) -1
+	ABG_ASSERT(size_in_bits == (size_t) -1
 	       || ar_type->get_element_type()->get_size_in_bits() == (size_t)-1
 	       || ar_type->get_element_type()->get_size_in_bits() == 0);
       }
@@ -3933,7 +3933,7 @@ build_enum_type_decl(read_context&	ctxt,
     {
       enum_type_decl_sptr result =
 	dynamic_pointer_cast<enum_type_decl>(d);
-      assert(result);
+      ABG_ASSERT(result);
       return result;
     }
 
@@ -3955,10 +3955,10 @@ build_enum_type_decl(read_context&	ctxt,
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
 
-  assert(!id.empty());
+  ABG_ASSERT(!id.empty());
 
   const environment* env = ctxt.get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   string base_type_id;
   enum_type_decl::enumerators enums;
@@ -3998,7 +3998,7 @@ build_enum_type_decl(read_context&	ctxt,
 
   type_base_sptr underlying_type =
     ctxt.build_or_get_type_decl(base_type_id, true);
-  assert(underlying_type);
+  ABG_ASSERT(underlying_type);
 
   enum_type_decl_sptr t(new enum_type_decl(name, loc,
 					   underlying_type,
@@ -4033,14 +4033,14 @@ build_typedef_decl(read_context&	ctxt,
   if (decl_base_sptr d = ctxt.get_decl_for_xml_node(node))
     {
       typedef_decl_sptr result = is_typedef(d);
-      assert(result);
+      ABG_ASSERT(result);
       return result;
     }
 
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
-  assert(!id.empty());
+  ABG_ASSERT(!id.empty());
 
   string name;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
@@ -4051,14 +4051,14 @@ build_typedef_decl(read_context&	ctxt,
     type_id = CHAR_STR(s);
   shared_ptr<type_base> underlying_type(ctxt.build_or_get_type_decl(type_id,
 								    true));
-  assert(underlying_type);
+  ABG_ASSERT(underlying_type);
 
   // maybe building the underlying type triggered building this one in
   // the mean time ...
   if (decl_base_sptr d = ctxt.get_decl_for_xml_node(node))
     {
       typedef_decl_sptr result = dynamic_pointer_cast<typedef_decl>(d);
-      assert(result);
+      ABG_ASSERT(result);
       return result;
     }
 
@@ -4068,9 +4068,9 @@ build_typedef_decl(read_context&	ctxt,
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
       typedef_decl_sptr ty = dynamic_pointer_cast<typedef_decl>(d);
-      assert(ty);
-      assert(name == ty->get_name());
-      assert(get_type_name(underlying_type)
+      ABG_ASSERT(ty);
+      ABG_ASSERT(name == ty->get_name());
+      ABG_ASSERT(get_type_name(underlying_type)
 	     == get_type_name(ty->get_underlying_type()));
       // it's possible to have the same typedef several times.
     }
@@ -4155,7 +4155,7 @@ build_class_decl(read_context&		ctxt,
   if (decl_base_sptr d = ctxt.get_decl_for_xml_node(node))
     {
       class_decl_sptr result = dynamic_pointer_cast<class_decl>(d);
-      assert(result);
+      ABG_ASSERT(result);
       return result;
     }
 
@@ -4197,7 +4197,7 @@ build_class_decl(read_context&		ctxt,
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "naming-typedef-id"))
     naming_typedef_id = xml::unescape_xml_string(CHAR_STR(s));
 
-  assert(!id.empty());
+  ABG_ASSERT(!id.empty());
   class_decl_sptr previous_definition, previous_declaration;
   const vector<type_base_sptr> *types_ptr = ctxt.get_all_type_decls(id);
   if (types_ptr)
@@ -4210,7 +4210,7 @@ build_class_decl(read_context&		ctxt,
 	   ++i)
 	{
 	  class_decl_sptr klass = is_class_type(*i);
-	  assert(klass);
+	  ABG_ASSERT(klass);
 	  if (klass->get_is_declaration_only()
 	      && !klass->get_definition_of_declaration())
 	    previous_declaration = klass;
@@ -4222,17 +4222,17 @@ build_class_decl(read_context&		ctxt,
 	}
 
       if (previous_declaration)
-	assert(previous_declaration->get_name() == name);
+	ABG_ASSERT(previous_declaration->get_name() == name);
 
       if (previous_definition)
-	assert(previous_definition->get_name() == name);
+	ABG_ASSERT(previous_definition->get_name() == name);
 
       if (is_decl_only && previous_declaration)
 	return previous_declaration;
     }
 
   const environment* env = ctxt.get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   if (!is_decl_only && previous_definition)
     // We are in the case where we've read this class definition
@@ -4288,7 +4288,7 @@ build_class_decl(read_context&		ctxt,
 	   ++i)
 	{
 	  class_decl_sptr d = is_class_type(*i);
-	  assert(d);
+	  ABG_ASSERT(d);
 	  if (d->get_is_declaration_only()
 	      && !d->get_definition_of_declaration())
 	    {
@@ -4302,12 +4302,12 @@ build_class_decl(read_context&		ctxt,
     {
       // decl is a declaration of the previous definition
       // previous_definition.  Let's link them.
-      assert(decl->get_is_declaration_only()
+      ABG_ASSERT(decl->get_is_declaration_only()
 	     && !decl->get_definition_of_declaration());
       decl->set_definition_of_declaration(previous_definition);
     }
 
-  assert(!is_decl_only || !is_def_of_decl);
+  ABG_ASSERT(!is_decl_only || !is_def_of_decl);
 
   ctxt.push_decl_to_current_scope(decl, add_to_current_scope);
 
@@ -4320,7 +4320,7 @@ build_class_decl(read_context&		ctxt,
     {
       typedef_decl_sptr naming_typedef =
 	is_typedef(ctxt.build_or_get_type_decl(naming_typedef_id, true));
-      assert(naming_typedef);
+      ABG_ASSERT(naming_typedef);
       decl->set_naming_typedef(naming_typedef);
     }
 
@@ -4343,7 +4343,7 @@ build_class_decl(read_context&		ctxt,
 	  shared_ptr<class_decl> b =
 	    dynamic_pointer_cast<class_decl>
 	    (ctxt.build_or_get_type_decl(type_id, true));
-	  assert(b);
+	  ABG_ASSERT(b);
 
 	  if (decl->find_base_class(b->get_qualified_name()))
 	    // We are in updating mode for this class.  The version of
@@ -4384,12 +4384,12 @@ build_class_decl(read_context&		ctxt,
 		  build_type(ctxt, p, /*add_to_current_scope=*/true))
 		{
 		  decl_base_sptr td = get_type_declaration(t);
-		  assert(td);
+		  ABG_ASSERT(td);
 		  set_member_access_specifier(td, access);
 		  ctxt.maybe_canonicalize_type(t, !add_to_current_scope);
 		  xml_char_sptr i= XML_NODE_GET_ATTRIBUTE(p, "id");
 		  string id = CHAR_STR(i);
-		  assert(!id.empty());
+		  ABG_ASSERT(!id.empty());
 		  ctxt.key_type_decl(t, id);
 		  ctxt.map_xml_node_to_decl(p, td);
 		}
@@ -4430,7 +4430,7 @@ build_class_decl(read_context&		ctxt,
 		      // built (and that was pushed to the current
 		      // stack of decls built) and move on.
 		      decl_base_sptr d = ctxt.pop_decl();
-		      assert(is_var_decl(d));
+		      ABG_ASSERT(is_var_decl(d));
 		      continue;
 		    }
 		  if (!is_static
@@ -4477,7 +4477,7 @@ build_class_decl(read_context&		ctxt,
 							/*add_to_cur_sc=*/true))
 		{
 		  method_decl_sptr m = is_method_decl(f);
-		  assert(m);
+		  ABG_ASSERT(m);
 		  set_member_access_specifier(m, access);
 		  set_member_is_static(m, is_static);
 		  if (vtable_offset != -1)
@@ -4518,7 +4518,7 @@ build_class_decl(read_context&		ctxt,
 		  shared_ptr<member_function_template> m
 		    (new member_function_template(f, access, is_static,
 						  is_ctor, is_const));
-		  assert(f->get_scope());
+		  ABG_ASSERT(f->get_scope());
 		  decl->add_member_function_template(m);
 		}
 	      else if (shared_ptr<class_tdecl> c =
@@ -4528,7 +4528,7 @@ build_class_decl(read_context&		ctxt,
 		  member_class_template_sptr m(new member_class_template(c,
 									 access,
 									 is_static));
-		  assert(c->get_scope());
+		  ABG_ASSERT(c->get_scope());
 		  decl->add_member_class_template(m);
 		}
 	    }
@@ -4566,7 +4566,7 @@ build_union_decl(read_context& ctxt,
   if (decl_base_sptr d = ctxt.get_decl_for_xml_node(node))
     {
       union_decl_sptr result = dynamic_pointer_cast<union_decl>(d);
-      assert(result);
+      ABG_ASSERT(result);
       return result;
     }
 
@@ -4599,7 +4599,7 @@ build_union_decl(read_context& ctxt,
   bool is_anonymous = false;
   read_is_anonymous(node, is_anonymous);
 
-  assert(!id.empty());
+  ABG_ASSERT(!id.empty());
   union_decl_sptr previous_definition, previous_declaration;
   const vector<type_base_sptr> *types_ptr = ctxt.get_all_type_decls(id);
   if (types_ptr)
@@ -4612,7 +4612,7 @@ build_union_decl(read_context& ctxt,
 	   ++i)
 	{
 	  union_decl_sptr onion = is_union_type(*i);
-	  assert(onion);
+	  ABG_ASSERT(onion);
 	  if (onion->get_is_declaration_only()
 	      && !onion->get_definition_of_declaration())
 	    previous_declaration = onion;
@@ -4624,17 +4624,17 @@ build_union_decl(read_context& ctxt,
 	}
 
       if (previous_declaration)
-	assert(previous_declaration->get_name() == name);
+	ABG_ASSERT(previous_declaration->get_name() == name);
 
       if (previous_definition)
-	assert(previous_definition->get_name() == name);
+	ABG_ASSERT(previous_definition->get_name() == name);
 
       if (is_decl_only && previous_declaration)
 	return previous_declaration;
     }
 
   const environment* env = ctxt.get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   if (!is_decl_only && previous_definition)
     // We are in the case where we've read this class definition
@@ -4688,7 +4688,7 @@ build_union_decl(read_context& ctxt,
 	   ++i)
 	{
 	  union_decl_sptr d = is_union_type(*i);
-	  assert(d);
+	  ABG_ASSERT(d);
 	  if (d->get_is_declaration_only()
 	      && !d->get_definition_of_declaration())
 	    {
@@ -4702,12 +4702,12 @@ build_union_decl(read_context& ctxt,
     {
       // decl is a declaration of the previous definition
       // previous_definition.  Let's link them.
-      assert(decl->get_is_declaration_only()
+      ABG_ASSERT(decl->get_is_declaration_only()
 	     && !decl->get_definition_of_declaration());
       decl->set_definition_of_declaration(previous_definition);
     }
 
-  assert(!is_decl_only || !is_def_of_decl);
+  ABG_ASSERT(!is_decl_only || !is_def_of_decl);
 
   ctxt.push_decl_to_current_scope(decl, add_to_current_scope);
 
@@ -4736,12 +4736,12 @@ build_union_decl(read_context& ctxt,
 		  build_type(ctxt, p, /*add_to_current_scope=*/true))
 		{
 		  decl_base_sptr td = get_type_declaration(t);
-		  assert(td);
+		  ABG_ASSERT(td);
 		  set_member_access_specifier(td, access);
 		  ctxt.maybe_canonicalize_type(t, !add_to_current_scope);
 		  xml_char_sptr i= XML_NODE_GET_ATTRIBUTE(p, "id");
 		  string id = CHAR_STR(i);
-		  assert(!id.empty());
+		  ABG_ASSERT(!id.empty());
 		  ctxt.key_type_decl(t, id);
 		  ctxt.map_xml_node_to_decl(p, td);
 		}
@@ -4776,7 +4776,7 @@ build_union_decl(read_context& ctxt,
 		      // built (and that was pushed to the current
 		      // stack of decls built) and move on.
 		      decl_base_sptr d = ctxt.pop_decl();
-		      assert(is_var_decl(d));
+		      ABG_ASSERT(is_var_decl(d));
 		      continue;
 		    }
 		  if (!is_static
@@ -4811,7 +4811,7 @@ build_union_decl(read_context& ctxt,
 							/*add_to_cur_sc=*/true))
 		{
 		  method_decl_sptr m = is_method_decl(f);
-		  assert(m);
+		  ABG_ASSERT(m);
 		  set_member_access_specifier(m, access);
 		  set_member_is_static(m, is_static);
 		  set_member_function_is_ctor(m, is_ctor);
@@ -4846,7 +4846,7 @@ build_union_decl(read_context& ctxt,
 		  member_function_template_sptr m
 		    (new member_function_template(f, access, is_static,
 						  is_ctor, is_const));
-		  assert(f->get_scope());
+		  ABG_ASSERT(f->get_scope());
 		  decl->add_member_function_template(m);
 		}
 	      else if (class_tdecl_sptr c =
@@ -4856,7 +4856,7 @@ build_union_decl(read_context& ctxt,
 		  member_class_template_sptr m(new member_class_template(c,
 									 access,
 									 is_static));
-		  assert(c->get_scope());
+		  ABG_ASSERT(c->get_scope());
 		  decl->add_member_class_template(m);
 		}
 	    }
@@ -4907,7 +4907,7 @@ build_function_tdecl(read_context& ctxt,
   read_binding(node, bind);
 
   const environment* env = ctxt.get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   function_tdecl_sptr fn_tmpl_decl(new function_tdecl(env, loc, vis, bind));
 
@@ -4971,7 +4971,7 @@ build_class_tdecl(read_context&	ctxt,
   read_visibility(node, vis);
 
   const environment* env = ctxt.get_environment();
-  assert(env);
+  ABG_ASSERT(env);
 
   class_tdecl_sptr class_tmpl (new class_tdecl(env, loc, vis));
 
@@ -5034,7 +5034,7 @@ build_type_tparameter(read_context&		ctxt,
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
   if (!id.empty())
-    assert(!ctxt.get_type_decl(id));
+    ABG_ASSERT(!ctxt.get_type_decl(id));
 
   string type_id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
@@ -5059,7 +5059,7 @@ build_type_tparameter(read_context&		ctxt,
   else
     ctxt.push_and_key_type_decl(result, id, /*add_to_current_scope=*/true);
 
-  assert(result->get_environment());
+  ABG_ASSERT(result->get_environment());
 
   ctxt.maybe_canonicalize_type(result, /*force_delay=*/false);
 
@@ -5202,7 +5202,7 @@ build_template_tparameter(read_context&	ctxt,
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
   // Bail out if a type with the same ID already exists.
-  assert(!id.empty());
+  ABG_ASSERT(!id.empty());
 
   string type_id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
@@ -5689,7 +5689,7 @@ read_corpus_from_file(corpus_sptr& corp,
   if (error_code)
     return -1;
 
-  assert(archive);
+  ABG_ASSERT(archive);
   return read_corpus_from_archive(archive, corp);
 }
 

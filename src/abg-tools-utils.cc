@@ -766,7 +766,7 @@ sorted_strings_common_prefix(vector<string>& input_strings, string& prefix)
       string s;
       if (common_prefix(prefix_candidate, cur_str, s))
 	{
-	  assert(!s.empty());
+	  ABG_ASSERT(!s.empty());
 	  prefix_candidate = s;
 	  found_prefix = true;
 	}
@@ -1018,7 +1018,7 @@ temp_file::get_path() const
 std::iostream&
 temp_file::get_stream()
 {
-  assert(is_good());
+  ABG_ASSERT(is_good());
   return *priv_->iostream_;
 }
 

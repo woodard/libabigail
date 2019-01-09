@@ -606,7 +606,7 @@ type_suppression::suppresses_diff(const diff* diff) const
 	      function_decl_sptr f = d->first_function_decl();
 	      class_decl_sptr fc =
 		is_class_type(is_method_type(f->get_type())->get_class_type());
-	      assert(fc);
+	      ABG_ASSERT(fc);
 	      if (suppresses_type(fc, diff->context()))
 		return true;
 	    }
@@ -647,12 +647,12 @@ type_suppression::suppresses_diff(const diff* diff) const
 	  if (const pointer_diff* ptr_diff = is_pointer_diff(diff))
 	    {
 	      d = is_type_diff(ptr_diff->underlying_type_diff().get());
-	      assert(d);
+	      ABG_ASSERT(d);
 	    }
 	  else if (const reference_diff* ref_diff = is_reference_diff(diff))
 	    {
 	      d = is_type_diff(ref_diff->underlying_type_diff().get());
-	      assert(d);
+	      ABG_ASSERT(d);
 	    }
 	  else
 	    return false;
@@ -662,7 +662,7 @@ type_suppression::suppresses_diff(const diff* diff) const
   type_base_sptr ft, st;
   ft = is_type(d->first_subject());
   st = is_type(d->second_subject());
-  assert(ft && st);
+  ABG_ASSERT(ft && st);
 
   if (!suppresses_type(ft, d->context())
       && !suppresses_type(st, d->context()))
@@ -987,7 +987,7 @@ suppression_matches_type_location(const type_suppression&	s,
 		// We tried hard above to get the definition of
 		// the declaration.  If we reach this place, it
 		// means the class has no definition at this point.
-		assert(!cl->get_definition_of_declaration());
+		ABG_ASSERT(!cl->get_definition_of_declaration());
 	      if (s.get_label() == get_private_types_suppr_spec_label())
 		// So this looks like what really amounts to an
 		// opaque type.  So it's not defined in the public
@@ -1578,7 +1578,7 @@ read_type_suppression(const ini::config::section& section)
 	{
 	  ini::list_property_value_sptr val =
 	    is_list_property_value(v->get_value_items()[0]);
-	  assert(val);
+	  ABG_ASSERT(val);
 	  string str = val->get_content()[0];
 	  if (str == "end")
 	    begin =
@@ -2219,7 +2219,7 @@ function_suppression::suppresses_diff(const diff* diff) const
 
   function_decl_sptr ff = is_function_decl(d->first_function_decl()),
     sf = is_function_decl(d->second_function_decl());
-  assert(ff && sf);
+  ABG_ASSERT(ff && sf);
 
   return (suppresses_function(ff,
 			      FUNCTION_SUBTYPE_CHANGE_KIND,
@@ -2281,7 +2281,7 @@ function_suppression::suppresses_function(const function_decl* fn,
 	  // names of all aliases.
 	  string symbol_name;
 	  elf_symbol_sptr sym = fn->get_symbol();
-	  assert(sym);
+	  ABG_ASSERT(sym);
 	  symbol_name = sym->get_name();
 	  if (sym->has_aliases() && sym->get_alias_from_name(fname))
 	    {
@@ -2317,7 +2317,7 @@ function_suppression::suppresses_function(const function_decl* fn,
 	  // the aliases.
 	  string symbol_name;
 	  elf_symbol_sptr sym = fn->get_symbol();
-	  assert(sym);
+	  ABG_ASSERT(sym);
 	  symbol_name = sym->get_name();
 	  if (sym->has_aliases())
 	    {
@@ -2352,7 +2352,7 @@ function_suppression::suppresses_function(const function_decl* fn,
 	  // the aliases.
 	  string symbol_name;
 	  elf_symbol_sptr sym = fn->get_symbol();
-	  assert(sym);
+	  ABG_ASSERT(sym);
 	  symbol_name = sym->get_name();
 	  if (sym->has_aliases())
 	    {
@@ -2564,7 +2564,7 @@ function_suppression::suppresses_function_symbol(const elf_symbol* sym,
   if (!sym->is_function())
     return false;
 
-  assert(k & function_suppression::ADDED_FUNCTION_CHANGE_KIND
+  ABG_ASSERT(k & function_suppression::ADDED_FUNCTION_CHANGE_KIND
 	 || k & function_suppression::DELETED_FUNCTION_CHANGE_KIND);
 
   // Check if the name and soname of the binaries match
@@ -3046,7 +3046,7 @@ read_function_suppression(const ini::config::section& section)
     if ((*p)->get_name() == "parameter")
       {
 	ini::simple_property_sptr prop = is_simple_property(*p);
-	assert(prop);
+	ABG_ASSERT(prop);
 	if ((parm = read_parameter_spec_from_string
 	      (prop->get_value()->as_string())))
 	  parms.push_back(parm);
@@ -3435,7 +3435,7 @@ variable_suppression::suppresses_diff(const diff* diff) const
   var_decl_sptr fv = is_var_decl(is_decl(d->first_subject())),
     sv = is_var_decl(is_decl(d->second_subject()));
 
-  assert(fv && sv);
+  ABG_ASSERT(fv && sv);
 
   return (suppresses_variable(fv,
 			      VARIABLE_SUBTYPE_CHANGE_KIND,
@@ -3614,7 +3614,7 @@ variable_suppression::suppresses_variable_symbol(const elf_symbol* sym,
   if (!sym->is_variable())
     return false;
 
-  assert(k & ADDED_VARIABLE_CHANGE_KIND
+  ABG_ASSERT(k & ADDED_VARIABLE_CHANGE_KIND
 	 || k & DELETED_VARIABLE_CHANGE_KIND);
 
   // Check if the name and soname of the binaries match
