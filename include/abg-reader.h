@@ -64,6 +64,9 @@ create_native_xml_read_context(const string& path, environment *env);
 read_context_sptr
 create_native_xml_read_context(std::istream* in, environment* env);
 
+const string&
+read_context_get_path(const read_context&);
+
 abigail::corpus_sptr
 read_corpus_from_file(const string& path);
 

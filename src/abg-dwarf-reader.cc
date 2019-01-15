@@ -16096,6 +16096,13 @@ create_read_context(const std::string&		elf_path,
   return result;
 }
 
+/// Getter for the path to the binary this @ref read_context is for.
+///
+/// @return the path to the binary the @ref read_context is for.
+const string&
+read_context_get_path(const read_context& ctxt)
+{return ctxt.elf_path();}
+
 /// Re-initialize a read_context so that it can re-used to read
 /// another binary.
 ///

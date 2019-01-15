@@ -107,6 +107,9 @@ create_read_context(const std::string&	elf_path,
 		    bool		read_all_types = false,
 		    bool		linux_kernel_mode = false);
 
+const string&
+read_context_get_path(const read_context&);
+
 void
 reset_read_context(read_context_sptr &ctxt,
 		   const std::string&	elf_path,

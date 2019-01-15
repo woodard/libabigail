@@ -5763,6 +5763,13 @@ create_native_xml_read_context(std::istream* in, environment* env)
   return result;
 }
 
+/// Getter for the path to the binary this @ref read_context is for.
+///
+/// @return the path to the binary the @ref read_context is for.
+const string&
+read_context_get_path(const read_context& ctxt)
+{return ctxt.get_path();}
+
 /// De-serialize an ABI corpus from an input XML document which root
 /// node is 'abi-corpus'.
 ///

@@ -720,10 +720,12 @@ set_suppressions(ReadContextType& read_ctxt, const options& opts)
        ++i)
     read_suppressions(*i, supprs);
 
-  if (!opts.headers_dir1.empty())
+  if (read_context_get_path(read_ctxt) == opts.file1
+      && !opts.headers_dir1.empty())
     {
       // Generate suppression specification to avoid showing ABI
-      // changes on types that are not defined in public headers.
+      // changes on types that are not defined in public headers for
+      // the first binary.
       //
       // As these suppression specifications are applied during the
       // corpus loading, they are going to be dropped from the
@@ -738,10 +740,12 @@ set_suppressions(ReadContextType& read_ctxt, const options& opts)
 	}
     }
 
-  if (!opts.headers_dir2.empty())
+  if (read_context_get_path(read_ctxt) == opts.file2
+      && !opts.headers_dir2.empty())
     {
       // Generate suppression specification to avoid showing ABI
-      // changes on types that are not defined in public headers.
+      // changes on types that are not defined in public headers for
+      // the second binary.
       //
       // As these suppression specifications are applied during the
       // corpus loading, they are going to be dropped from the
