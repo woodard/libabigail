@@ -12194,10 +12194,14 @@ dwarf_language_to_tu_language(size_t l)
     case DW_LANG_C89:
       return translation_unit::LANG_C89;
     case DW_LANG_C:
+    case DW_LANG_C11:
       return translation_unit::LANG_C;
     case DW_LANG_Ada83:
       return translation_unit::LANG_Ada83;
     case DW_LANG_C_plus_plus:
+    case DW_LANG_C_plus_plus_03:
+    case DW_LANG_C_plus_plus_11:
+    case DW_LANG_C_plus_plus_14:
       return translation_unit::LANG_C_plus_plus;
     case DW_LANG_Cobol74:
       return translation_unit::LANG_Cobol74;
