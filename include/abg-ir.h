@@ -537,6 +537,7 @@ public:
     LANG_C99,
     LANG_C11,
     LANG_C,
+    LANG_C_plus_plus_03,
     LANG_C_plus_plus_11,
     LANG_C_plus_plus_14,
     LANG_C_plus_plus,

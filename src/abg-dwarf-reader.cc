@@ -12199,9 +12199,6 @@ dwarf_language_to_tu_language(size_t l)
     case DW_LANG_Ada83:
       return translation_unit::LANG_Ada83;
     case DW_LANG_C_plus_plus:
-    case DW_LANG_C_plus_plus_03:
-    case DW_LANG_C_plus_plus_11:
-    case DW_LANG_C_plus_plus_14:
       return translation_unit::LANG_C_plus_plus;
     case DW_LANG_Cobol74:
       return translation_unit::LANG_Cobol74;
@@ -12229,7 +12226,9 @@ dwarf_language_to_tu_language(size_t l)
       return translation_unit::LANG_ObjC;
     case DW_LANG_ObjC_plus_plus:
       return translation_unit::LANG_ObjC_plus_plus;
+#ifdef DW_LANG_Rust
     case DW_LANG_Rust:
+#endif
       return translation_unit::LANG_Rust;
 #ifdef DW_LANG_UPC
     case DW_LANG_UPC:
@@ -12249,6 +12248,11 @@ dwarf_language_to_tu_language(size_t l)
 #ifdef DW_LANG_Go
     case DW_LANG_Go:
       return translation_unit::LANG_Go;
+#endif
+
+#ifdef DW_LANG_C_plus_plus_03
+    case DW_LANG_C_plus_plus_03:
+      return translation_unit::LANG_C_plus_plus_03;
 #endif
 
 #ifdef DW_LANG_C_plus_plus_11
@@ -12300,6 +12304,7 @@ get_default_array_lower_bound(translation_unit::language l)
     case translation_unit::LANG_C99:
     case translation_unit::LANG_C11:
     case translation_unit::LANG_C:
+    case translation_unit::LANG_C_plus_plus_03:
     case translation_unit::LANG_C_plus_plus_11:
     case translation_unit::LANG_C_plus_plus_14:
     case translation_unit::LANG_C_plus_plus:
