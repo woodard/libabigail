@@ -12225,6 +12225,8 @@ dwarf_language_to_tu_language(size_t l)
       return translation_unit::LANG_ObjC;
     case DW_LANG_ObjC_plus_plus:
       return translation_unit::LANG_ObjC_plus_plus;
+    case DW_LANG_Rust:
+      return translation_unit::LANG_Rust;
 #ifdef DW_LANG_UPC
     case DW_LANG_UPC:
       return DW_LANG_UPC;
@@ -12299,6 +12301,7 @@ get_default_array_lower_bound(translation_unit::language l)
     case translation_unit::LANG_C_plus_plus:
     case translation_unit::LANG_ObjC:
     case translation_unit::LANG_ObjC_plus_plus:
+    case translation_unit::LANG_Rust:
       value = 0;
       break;
     case translation_unit::LANG_Fortran77:

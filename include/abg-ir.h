@@ -555,6 +555,7 @@ public:
     LANG_D,
     LANG_Python,
     LANG_Go,
+    LANG_Rust,
     LANG_Mips_Assembler
   };
 
