@@ -12228,8 +12228,8 @@ dwarf_language_to_tu_language(size_t l)
       return translation_unit::LANG_ObjC_plus_plus;
 #ifdef DW_LANG_Rust
     case DW_LANG_Rust:
-#endif
       return translation_unit::LANG_Rust;
+#endif
 #ifdef DW_LANG_UPC
     case DW_LANG_UPC:
       return DW_LANG_UPC;
