@@ -1113,7 +1113,8 @@ is_c_language(translation_unit::language l)
 bool
 is_cplus_plus_language(translation_unit::language l)
 {
-  return (l == translation_unit::LANG_C_plus_plus_11
+  return (l == translation_unit::LANG_C_plus_plus_03
+	  || l == translation_unit::LANG_C_plus_plus_11
 	  || l == translation_unit::LANG_C_plus_plus_14
 	  || l == translation_unit::LANG_C_plus_plus);
 }

@@ -585,6 +585,8 @@ if test x$ABIGAIL_DEVEL != x; then
    CXXFLAGS="-g -Wall -Wextra -Werror"
 fi
 
+dnl Check if several decls and constant are defined in dependant
+dnl libraries
 HAS_EM_AARCH64=no
 AC_CHECK_DECL([EM_AARCH64],
               [HAS_EM_AARCH64=yes],
@@ -619,6 +621,117 @@ if test x$HAS_EM_TILEGX = xyes; then
   AC_DEFINE([HAVE_EM_TILEGX_MACRO],
                  1,
             [Defined to 1 if elf.h has EM_TILEGX macro defined])
+fi
+
+HAS_DW_LANG_UPC=no
+AC_CHECK_DECL([DW_LANG_UPC],
+	      [HAS_DW_LANG_UPC=yes],
+	      [HAS_DW_LANG_UPC=no],
+	      [[#include <dwarf.h>]])
+if test x$HAS_DW_LANG_UPC = xyes; then
+   AC_DEFINE([HAVE_DW_LANG_UPC_enumerator],
+	     1,
+	     [Define to 1 if dwarf.h has the DW_LANG_UPC enumerator])
+fi
+
+HAS_DW_LANG_D=no
+AC_CHECK_DECL([DW_LANG_D],
+	      [HAS_DW_LANG_D=yes],
+	      [HAS_DW_LANG_D=no],
+	      [[#include <dwarf.h>]])
+if test x$HAS_DW_LANG_D = xyes; then
+   AC_DEFINE([HAVE_DW_LANG_D_enumerator],
+             1,
+	     [Define to 1 if dwarf.h has the DW_LANG_D enumerator])
+fi
+
+HAS_DW_LANG_Python=no
+AC_CHECK_DECL([DW_LANG_Python],
+	      [HAS_DW_LANG_Python=yes],
+	      [HAS_DW_LANG_Python=no],
+	      [[#include <dwarf.h>]])
+if test x$HAS_DW_LANG_Python = xyes; then
+   AC_DEFINE([HAVE_DW_LANG_Python_enumerator],
+             1,
+	     [Define to 1 if dwarf.h has the DW_LANG_Python enumerator])
+fi
+
+HAS_DW_LANG_Go=no
+AC_CHECK_DECL([DW_LANG_Go],
+	      [HAS_DW_LANG_Go=yes],
+	      [HAS_DW_LANG_Go=no],
+	      [[#include <dwarf.h>]])
+if test x$HAS_DW_LANG_Go = xyes; then
+   AC_DEFINE([HAVE_DW_LANG_Go_enumerator],
+             1,
+	     [Define to 1 if dwarf.h has the DW_LANG_Go enumerator])
+fi
+
+HAS_DW_LANG_C11=no
+AC_CHECK_DECL([DW_LANG_C11],
+	      [HAS_DW_LANG_C11=yes],
+	      [HAS_DW_LANG_C11=no],
+	      [[#include <dwarf.h>]])
+if test x$HAS_DW_LANG_C11 = xyes; then
+   AC_DEFINE([HAVE_DW_LANG_C11_enumerator],
+             1,
+	     [Define to 1 if dwarf.h has the DW_LANG_C11 enumerator])
+fi
+
+HAS_DW_LANG_C_plus_plus_03=no
+AC_CHECK_DECL([DW_LANG_C_plus_plus_03],
+	      [HAS_DW_LANG_C_plus_plus_03=yes],
+	      [HAS_DW_LANG_C_plus_plus_03=no],
+	      [[#include <dwarf.h>]])
+if test x$HAS_DW_LANG_C_plus_plus_03 = xyes; then
+   AC_DEFINE([HAVE_DW_LANG_C_plus_plus_03_enumerator],
+             1,
+	     [Define to 1 if dwarf.h has the DW_LANG_C_plus_plus_03 enumerator])
+fi
+
+HAS_DW_LANG_C_plus_plus_11=no
+AC_CHECK_DECL([DW_LANG_C_plus_plus_11],
+	      [HAS_DW_LANG_C_plus_plus_11=yes],
+	      [HAS_DW_LANG_C_plus_plus_11=no],
+	      [[#include <dwarf.h>]])
+if test x$HAS_DW_LANG_C_plus_plus_11 = xyes; then
+   AC_DEFINE([HAVE_DW_LANG_C_plus_plus_11_enumerator],
+             1,
+	     [Define to 1 if dwarf.h has the DW_LANG_C_plus_plus_11 enumerator])
+fi
+
+HAS_DW_LANG_C_plus_plus_14=no
+AC_CHECK_DECL([DW_LANG_C_plus_plus_14],
+	      [HAS_DW_LANG_C_plus_plus_14=yes],
+	      [HAS_DW_LANG_C_plus_plus_14=no],
+	      [[#include <dwarf.h>]])
+if test x$HAS_DW_LANG_C_plus_plus_14 = xyes; then
+   AC_DEFINE([HAVE_DW_LANG_C_plus_plus_14_enumerator],
+             1,
+	     [Define to 1 if dwarf.h has the DW_LANG_C_plus_plus_14 enumerator])
+fi
+
+HAS_DW_LANG_Mips_Assembler=no
+AC_CHECK_DECL([DW_LANG_Mips_Assembler],
+	      [HAS_DW_LANG_Mips_Assembler=yes],
+	      [HAS_DW_LANG_Mips_Assembler=no],
+	      [[#include <dwarf.h>]])
+if test x$HAS_DW_LANG_Mips_Assembler = xyes; then
+   AC_DEFINE([HAVE_DW_LANG_Mips_Assembler_enumerator],
+             1,
+	     [Define to 1 if dwarf.h has the DW_LANG_Mips_Assembler enumerator])
+fi
+
+HAS_DW_LANG_Rust=no
+AC_CHECK_DECL([DW_LANG_Rust],
+	      [HAS_LANG_Rust=yes],
+	      [HAS_LANG_Rust=no],
+	      [[#include <dwarf.h>]])
+
+if test x$HAS_DW_LANG_Rust = xyes; then
+  AC_DEFINE([HAVE_DW_LANG_Rust_enumerator], 
+  	    1,
+	    [Define to 1 if dwarf.h has the DW_LANG_Rust enumerator])
 fi
 
 dnl Set large files support

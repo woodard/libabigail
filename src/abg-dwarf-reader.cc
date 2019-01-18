@@ -12194,7 +12194,6 @@ dwarf_language_to_tu_language(size_t l)
     case DW_LANG_C89:
       return translation_unit::LANG_C89;
     case DW_LANG_C:
-    case DW_LANG_C11:
       return translation_unit::LANG_C;
     case DW_LANG_Ada83:
       return translation_unit::LANG_Ada83;
@@ -12226,51 +12225,53 @@ dwarf_language_to_tu_language(size_t l)
       return translation_unit::LANG_ObjC;
     case DW_LANG_ObjC_plus_plus:
       return translation_unit::LANG_ObjC_plus_plus;
-#ifdef DW_LANG_Rust
+
+#ifdef HAVE_DW_LANG_Rust_enumerator
     case DW_LANG_Rust:
       return translation_unit::LANG_Rust;
 #endif
-#ifdef DW_LANG_UPC
+
+#ifdef HAVE_DW_LANG_UPC_enumerator
     case DW_LANG_UPC:
-      return DW_LANG_UPC;
+      return translation_unit::LANG_UPC;
 #endif
 
-#ifdef DW_LANG_D
+#ifdef HAVE_DW_LANG_D_enumerator
     case DW_LANG_D:
       return translation_unit::LANG_D;
 #endif
 
-#ifdef DW_LANG_Python
+#ifdef HAVE_DW_LANG_Python_enumerator
     case DW_LANG_Python:
       return translation_unit::LANG_Python;
 #endif
 
-#ifdef DW_LANG_Go
+#ifdef HAVE_DW_LANG_Go_enumerator
     case DW_LANG_Go:
       return translation_unit::LANG_Go;
 #endif
 
-#ifdef DW_LANG_C_plus_plus_03
-    case DW_LANG_C_plus_plus_03:
-      return translation_unit::LANG_C_plus_plus_03;
-#endif
-
-#ifdef DW_LANG_C_plus_plus_11
-    case DW_LANG_C_plus_plus_11:
-      return translation_unit::LANG_C_plus_plus_11;
-#endif
-
-#ifdef DW_LANG_C11
+#ifdef HAVE_DW_LANG_C11_enumerator
     case DW_LANG_C11:
       return translation_unit::LANG_C11;
 #endif
 
-#ifdef DW_LANG_C_plus_plus_14
+#ifdef HAVE_DW_LANG_C_plus_plus_03_enumerator
+      case DW_LANG_C_plus_plus_03:
+	return translation_unit::LANG_C_plus_plus_03;
+#endif
+
+#ifdef HAVE_DW_LANG_C_plus_plus_11_enumerator
+    case DW_LANG_C_plus_plus_11:
+      return translation_unit::LANG_C_plus_plus_11;
+#endif
+
+#ifdef HAVE_DW_LANG_C_plus_plus_14_enumerator
     case DW_LANG_C_plus_plus_14:
       return translation_unit::LANG_C_plus_plus_14;
 #endif
 
-#ifdef DW_LANG_Mips_Assembler
+#ifdef HAVE_DW_LANG_Mips_Assembler_enumerator
     case DW_LANG_Mips_Assembler:
       return translation_unit::LANG_Mips_Assembler;
 #endif
