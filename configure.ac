@@ -724,8 +724,8 @@ fi
 
 HAS_DW_LANG_Rust=no
 AC_CHECK_DECL([DW_LANG_Rust],
-	      [HAS_LANG_Rust=yes],
-	      [HAS_LANG_Rust=no],
+	      [HAS_DW_LANG_Rust=yes],
+	      [HAS_DW_LANG_Rust=no],
 	      [[#include <dwarf.h>]])
 
 if test x$HAS_DW_LANG_Rust = xyes; then
