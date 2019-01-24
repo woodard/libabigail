@@ -344,12 +344,14 @@ InOutSpec in_out_specs[] =
     "data/test-diff-dwarf/test45-anon-dm-change-report-0.txt",
     "output/test-diff-dwarf/test45-anon-dm-change-report-0.txt"
   },
+#ifdef HAVE_DW_LANG_Rust_enumerator
   {
     "data/test-diff-dwarf/test46-rust-libone.so",
     "data/test-diff-dwarf/test46-rust-libtwo.so",
     "data/test-diff-dwarf/test46-rust-report-0.txt",
     "output/test-diff-dwarf/test46-rust-report-0.txt"
   },
+#endif
   // This should be the last entry
   {NULL, NULL, NULL, NULL}
 };
