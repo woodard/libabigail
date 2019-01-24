@@ -323,6 +323,10 @@ test-diff-dwarf/test45-anon-dm-change-v0.cc \
 test-diff-dwarf/test45-anon-dm-change-v0.o \
 test-diff-dwarf/test45-anon-dm-change-v1.cc \
 test-diff-dwarf/test45-anon-dm-change-v1.o \
+test-diff-dwarf/test46-readme.txt \
+test-diff-dwarf/test46-rust-libone.so \
+test-diff-dwarf/test46-rust-libtwo.so \
+test-diff-dwarf/test46-rust-report-0.txt \
 \
 test-read-dwarf/test0			\
 test-read-dwarf/test0.abi			\
