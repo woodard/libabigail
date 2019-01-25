@@ -1160,8 +1160,9 @@ has_fn_parm_type_cv_qual_change(const diff* dif)
 /// Test if a function type or decl diff node carries a CV
 /// qualifier-only change on its return type.
 ///
-/// @param the dif to consider.  Note that if this is neither a
-/// function type nor decl diff node, the function returns false.
+/// @param dif the diff node to consider.  Note that if this is
+/// neither a function type nor decl diff node, the function returns
+/// false.
 ///
 /// @return true iff @p dif is a function decl or type diff node which
 /// carries a CV qualifier-only change on its return type.

@@ -316,6 +316,25 @@ public:
 
 /// An enum for the different categories that a diff tree node falls
 /// into, regarding the kind of changes it represents.
+///
+/// Note that if you add an enumerator to this enum, you need to
+/// update a few spots accordingly:
+///
+///   * update the ACCESS_CHANGE_CATEGORY enumerator (which is the
+///     last enumerator of this enum by OR-ing its initializer with
+///     the new enumerator.
+///
+///   * update the categorize_harmless_diff_node or
+///     categorize_harmful_diff_node function depending on if the new
+///     enumerator classifies diff nodes as harmless or harmful.
+///
+///   * update the get_default_harmless_categories_bitmap or
+///    get_default_harmful_categories_bitmap function as well, just
+///    like above.
+///
+///   * update the "operator<<(ostream& o, diff_category c)" streaming
+///     operator so that it can stream the new enumerator to a textual
+///     output stream.
 enum diff_category
 {
   /// This means the diff node does not carry any (meaningful) change,
