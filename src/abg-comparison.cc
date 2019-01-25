@@ -2924,6 +2924,7 @@ get_default_harmless_categories_bitmap()
 	  | abigail::comparison::FN_PARM_TYPE_TOP_CV_CHANGE_CATEGORY
 	  | abigail::comparison::FN_PARM_TYPE_CV_CHANGE_CATEGORY
 	  | abigail::comparison::FN_RETURN_TYPE_CV_CHANGE_CATEGORY
+	  | abigail::comparison::VAR_TYPE_CV_CHANGE_CATEGORY
 	  | abigail::comparison::VOID_PTR_TO_PTR_CHANGE_CATEGORY
 	  | abigail::comparison::BENIGN_INFINITE_ARRAY_CHANGE_CATEGORY);
 }
@@ -3083,6 +3084,14 @@ operator<<(ostream& o, diff_category c)
       if (emitted_a_category)
 	o << "|";
       o << "FN_RETURN_TYPE_CV_CHANGE_CATEGORY";
+      emitted_a_category |= true;
+    }
+
+   if (c & VAR_TYPE_CV_CHANGE_CATEGORY)
+    {
+      if (emitted_a_category)
+	o << "|";
+      o << "VAR_TYPE_CV_CHANGE_CATEGORY";
       emitted_a_category |= true;
     }
 

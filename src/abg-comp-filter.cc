@@ -1122,6 +1122,14 @@ type_diff_has_cv_qual_change_only(const diff *type_dif)
   f = peel_qualified_type(f);
   s = peel_qualified_type(s);
 
+  // If f and s are arrays, note that they can differ only by the cv
+  // qualifier of the array element type.  That cv qualifier is not
+  // removed by peel_qualified_type.  So we need to test this case
+  // specifically.
+  if (array_type_def *f_a = is_array_type(f))
+    if (array_type_def *s_a = is_array_type(s))
+      return equals_modulo_cv_qualifier(f_a, s_a);
+
   return *f == *s;
 }
 
@@ -1170,6 +1178,36 @@ has_fn_return_type_cv_qual_change(const diff* dif)
 
   const diff* return_type_diff = fn_type_diff->return_type_diff().get();
   return type_diff_has_cv_qual_change_only(return_type_diff);
+}
+
+/// Test if a variable diff node carries a CV qualifier change on its type.
+///
+/// @param dif the diff node to consider.  Note that if it's not of
+/// var_diff type, the function returns false.
+///
+/// @return true iff the @p dif carries a CV qualifier change on its
+/// type.
+static bool
+has_var_type_cv_qual_change(const diff* dif)
+{
+  const var_diff *var_dif = is_var_diff(dif);
+  if (!var_dif)
+    return false;
+
+  {
+    // Make sure the variable diff does carry a type change at least
+    change_kind ch_kind;
+    if (equals(*var_dif->first_var(), *var_dif->second_var(), &ch_kind))
+      return false;
+
+    if (!(ch_kind & LOCAL_TYPE_CHANGE_KIND || ch_kind & SUBTYPE_CHANGE_KIND))
+      return false;
+  }
+
+  diff *type_dif = var_dif->type_diff().get();
+  ABG_ASSERT(type_dif);
+
+  return type_diff_has_cv_qual_change_only(type_dif);
 }
 
 /// Test if a diff node carries a void* to pointer type change.
@@ -1327,6 +1365,9 @@ categorize_harmless_diff_node(diff *d, bool pre)
 
       if (has_fn_return_type_cv_qual_change(d))
 	category |= FN_RETURN_TYPE_CV_CHANGE_CATEGORY;
+
+      if (has_var_type_cv_qual_change(d))
+	category |= VAR_TYPE_CV_CHANGE_CATEGORY;
 
       if (has_void_ptr_to_ptr_change(d))
 	category |= VOID_PTR_TO_PTR_CHANGE_CATEGORY;

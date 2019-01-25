@@ -31,12 +31,7 @@
                          type of '_Xtransport* _XtransConnInfo::transptr' changed:
                            in pointed to type 'struct _Xtransport' at Xtransint.h:158:1:
                              type size hasn't changed
-                             5 data member changes (14 filtered):
-                              type of 'char* _Xtransport::TransName' changed:
-                                in pointed to type 'char':
-                                  entity changed from 'char' to 'const char'
-                                  type size hasn't changed
-
+                             3 data member changes (16 filtered):
                               type of 'typedef XtransConnInfo (_Xtransport*, char*, char*, char*)* _Xtransport::OpenCOTSClient' changed:
                                 in pointed to type 'function type typedef XtransConnInfo (_Xtransport*, char*, char*, char*)':
                                   parameter 2 of type 'char*' changed:
@@ -51,12 +46,6 @@
                                     in pointed to type 'char':
                                       entity changed from 'char' to 'const char'
                                       type size hasn't changed
-
-                              type of 'char** _Xtransport::nolisten' changed:
-                                in pointed to type 'char*':
-                                  in pointed to type 'char':
-                                    entity changed from 'char' to 'const char'
-                                    type size hasn't changed
 
                               type of 'typedef XtransConnInfo (_Xtransport*, char*, char*, char*)* _Xtransport::OpenCOTSServer' changed:
                                 in pointed to type 'function type typedef XtransConnInfo (_Xtransport*, char*, char*, char*)':

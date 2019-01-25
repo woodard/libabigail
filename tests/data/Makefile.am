@@ -1424,6 +1424,13 @@ test-diff-pkg/elfutils-devel-0.171-1.el7.x86_64.rpm \
 test-diff-pkg/elfutils-libs-0.170-4.el7.x86_64.rpm \
 test-diff-pkg/elfutils-libs-0.171-1.el7.x86_64.rpm \
 test-diff-pkg/elfutils-libs-0.170-4.el7.x86_64-multiple-sym-vers-report-0.txt \
+test-diff-pkg/nss-3.23.0-1.0.fc23.x86_64.rpm \
+test-diff-pkg/nss-3.24.0-1.0.fc23.x86_64.rpm \
+test-diff-pkg/nss-debuginfo-3.23.0-1.0.fc23.x86_64.rpm \
+test-diff-pkg/nss-debuginfo-3.24.0-1.0.fc23.x86_64.rpm \
+test-diff-pkg/nss-devel-3.23.0-1.0.fc23.x86_64.rpm \
+test-diff-pkg/nss-devel-3.24.0-1.0.fc23.x86_64.rpm \
+test-diff-pkg/nss-3.23.0-1.0.fc23.x86_64-report-0.txt \
 \
 test-fedabipkgdiff/dbus-glib-0.104-3.fc23.x86_64.rpm \
 test-fedabipkgdiff/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm \

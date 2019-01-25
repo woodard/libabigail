@@ -2451,6 +2451,9 @@ public:
 bool
 equals(const var_decl&, const var_decl&, change_kind*);
 
+bool
+equals_modulo_cv_qualifier(const array_type_def*, const array_type_def*);
+
 /// Abstracts a variable declaration.
 class var_decl : public virtual decl_base
 {

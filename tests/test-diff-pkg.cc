@@ -551,6 +551,18 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/elfutils-libs-0.170-4.el7.x86_64-multiple-sym-vers-report-0.txt",
     "output/test-diff-pkg/elfutils-libs-0.170-4.el7.x86_64-multiple-sym-vers-report-0.txt"
   },
+  {
+    "data/test-diff-pkg/nss-3.23.0-1.0.fc23.x86_64.rpm",
+    "data/test-diff-pkg/nss-3.24.0-1.0.fc23.x86_64.rpm",
+    "--fail-no-dbg",
+    "",
+    "data/test-diff-pkg/nss-debuginfo-3.23.0-1.0.fc23.x86_64.rpm",
+    "data/test-diff-pkg/nss-debuginfo-3.24.0-1.0.fc23.x86_64.rpm",
+    "data/test-diff-pkg/nss-devel-3.23.0-1.0.fc23.x86_64.rpm",
+    "data/test-diff-pkg/nss-devel-3.24.0-1.0.fc23.x86_64.rpm",
+    "data/test-diff-pkg/nss-3.23.0-1.0.fc23.x86_64-report-0.txt",
+    "output/test-diff-pkg/nss-3.23.0-1.0.fc23.x86_64-report-0.txt"
+  },
 #endif //WITH_RPM
 
 #ifdef WITH_DEB

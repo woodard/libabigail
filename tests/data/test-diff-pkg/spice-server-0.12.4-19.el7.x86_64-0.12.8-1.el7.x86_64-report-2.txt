@@ -95,12 +95,7 @@
                     type of 'RedChannel MainChannel::base' changed:
                       underlying type 'struct RedChannel' at red_channel.h:303:1 changed:
                         type size hasn't changed
-                        2 data member changes (1 filtered):
-                         type of 'SpiceCoreInterface* RedChannel::core' changed:
-                           in pointed to type 'typedef SpiceCoreInterface':
-                             entity changed from 'typedef SpiceCoreInterface' to 'const SpiceCoreInterface'
-                             type size hasn't changed
-
+                        1 data member changes (2 filtered):
                          type of 'ChannelCbs RedChannel::channel_cbs' changed:
                            underlying type 'struct {channel_configure_socket_proc config_socket; channel_disconnect_proc on_disconnect; channel_send_pipe_item_proc send_item; channel_hold_pipe_item_proc hold_item; channel_release_pipe_item_proc release_item; channel_alloc_msg_recv_buf_proc alloc_recv_buf; channel_release_msg_recv_buf_proc release_recv_buf; channel_handle_migrate_flush_mark_proc handle_migrate_flush_mark; channel_handle_migrate_data_proc handle_migrate_data; channel_handle_migrate_data_get_serial_proc handle_migrate_data_get_serial;}' at red_channel.h:195:1 changed:
                              type size hasn't changed

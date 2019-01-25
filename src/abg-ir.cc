@@ -13164,6 +13164,50 @@ equals(const array_type_def& l, const array_type_def& r, change_kind* k)
   return result;
 }
 
+/// Test if two variables are equals modulo CV qualifiers.
+///
+/// @param l the first array of the comparison.
+///
+/// @param r the second array of the comparison.
+///
+/// @return true iff @p l equals @p r or, if they are different, the
+/// difference between the too is just a matter of CV qualifiers.
+bool
+equals_modulo_cv_qualifier(const array_type_def* l, const array_type_def* r)
+{
+  if (l == r)
+    return true;
+
+  if (!l || !r)
+    return false;
+
+  l = is_array_type(peel_qualified_or_typedef_type(l));
+  r = is_array_type(peel_qualified_or_typedef_type(r));
+
+  std::vector<array_type_def::subrange_sptr > this_subs = l->get_subranges();
+  std::vector<array_type_def::subrange_sptr > other_subs = r->get_subranges();
+
+  if (this_subs.size() != other_subs.size())
+    return false;
+
+  std::vector<array_type_def::subrange_sptr >::const_iterator i,j;
+  for (i = this_subs.begin(), j = other_subs.begin();
+       i != this_subs.end() && j != other_subs.end();
+       ++i, ++j)
+    if (**i != **j)
+      return false;
+
+  type_base *first_element_type =
+    peel_qualified_or_typedef_type(l->get_element_type().get());
+  type_base *second_element_type =
+    peel_qualified_or_typedef_type(r->get_element_type().get());
+
+  if (*first_element_type != *second_element_type)
+    return false;
+
+  return true;
+}
+
 /// Get the language of the array.
 ///
 /// @return the language of the array.
