@@ -1728,6 +1728,26 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test39-opaque-type-report-0.txt",
     "output/test-diff-suppr/test39-opaque-type-report-0.txt"
   },
+  {
+    "data/test-diff-suppr/libtest40-enumerator-changes-v0.so",
+    "data/test-diff-suppr/libtest40-enumerator-changes-v1.so",
+    "",
+    "",
+    "data/test-diff-suppr/test40-enumerator-changes-0.suppr",
+    "--no-default-suppression",
+    "data/test-diff-suppr/test40-enumerator-changes-report-0.txt",
+    "output/test-diff-suppr/test40-enumerator-changes-report-0.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest41-enumerator-changes-v0.so",
+    "data/test-diff-suppr/libtest41-enumerator-changes-v1.so",
+    "",
+    "",
+    "data/test-diff-suppr/test41-enumerator-changes-0.suppr",
+    "--no-default-suppression",
+    "data/test-diff-suppr/test41-enumerator-changes-report-0.txt",
+    "output/test-diff-suppr/test41-enumerator-changes-report-0.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}
 };

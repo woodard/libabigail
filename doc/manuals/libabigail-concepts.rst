@@ -560,6 +560,22 @@ The potential properties of this sections are listed below:
  string that might be used by a tool to refer to a type suppression in
  error messages.
 
+.. _suppr_changed_enumerators_label:
+
+* ``changed_enumerators``
+
+  Usage:
+
+    ``changed_enumerators`` ``=`` <list-of-enumerators>
+    
+  Suppresses change reports involving changes in the value of
+  enumerators of a given enum type.  This property is applied if the
+  ``type_kind`` property is set to the value ``enum``, at least.  The
+  value of the ``changed_enumerators`` is a comma-separated list of
+  the enumerators that the user expects to change.  For instance: ::
+
+      changed_enumerators = LAST_ENUMERATORS0, LAST_ENUMERATOR1
+
 ``[suppress_function]``
 $$$$$$$$$$$$$$$$$$$$$$$$
 

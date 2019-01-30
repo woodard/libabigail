@@ -254,6 +254,12 @@ public:
   void
   set_source_location_to_keep_regex_str(const string&);
 
+  const vector<string>&
+  get_changed_enumerator_names() const;
+
+  void
+  set_changed_enumerator_names(const vector<string>&);
+
   virtual bool
   suppresses_diff(const diff* diff) const;
 

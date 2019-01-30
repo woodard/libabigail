@@ -26,6 +26,8 @@
 /// libabigail.
 
 #include "abg-internal.h"
+#include <algorithm>
+
 // <headers defining libabigail's API go under here>
 ABG_BEGIN_EXPORT_DECLARATIONS
 
@@ -573,6 +575,26 @@ void
 type_suppression::set_source_location_to_keep_regex_str(const string& r)
 {priv_->source_location_to_keep_regex_str_ = r;}
 
+/// Getter of the vector of the changed enumerators that are supposed
+/// to be suppressed.  Note that this will be "valid" only if the type
+/// suppression has the 'type_kind = enum' property.
+///
+/// @return the vector of the changed enumerators that are supposed to
+/// be suppressed.
+const vector<string>&
+type_suppression::get_changed_enumerator_names() const
+{return priv_->changed_enumerator_names_;}
+
+/// Setter of the vector of changed enumerators that are supposed to
+/// be suppressed.  Note that this will be "valid" only if the type
+/// suppression has the 'type_kind = enum' property.
+///
+/// @param n the vector of the changed enumerators that are supposed
+/// to be suppressed.
+void
+type_suppression::set_changed_enumerator_names(const vector<string>& n)
+{priv_->changed_enumerator_names_ = n;}
+
 /// Evaluate this suppression specification on a given diff node and
 /// say if the diff node should be suppressed or not.
 ///
@@ -752,6 +774,39 @@ type_suppression::suppresses_diff(const diff* diff) const
 	  if (!matched)
 	    return false;
 	}
+    }
+
+  const enum_diff* enum_dif = dynamic_cast<const enum_diff*>(d);
+  if (// We are looking at an enum diff node which ...
+      enum_dif
+      //... carries no deleted enumerator ... "
+      && enum_dif->deleted_enumerators().empty()
+      // ... carries no size change ...
+      && (enum_dif->first_enum()->get_size_in_bits()
+	  == enum_dif->second_enum()->get_size_in_bits())
+      // ... and yet carries some changed enumerators!
+      && !enum_dif->changed_enumerators().empty())
+    {
+      // Make sure that all changed enumerators are listed in the
+      // vector of enumerator names returned by the
+      // get_changed_enumerator_names() member function.
+      bool matched = true;
+      for (string_changed_enumerator_map::const_iterator i =
+	     enum_dif->changed_enumerators().begin();
+	   i != enum_dif->changed_enumerators().end();
+	   ++i)
+	{
+	  matched &= true;
+	  if (std::find(get_changed_enumerator_names().begin(),
+			get_changed_enumerator_names().end(),
+			i->first) == get_changed_enumerator_names().end())
+	    {
+	      matched &= false;
+	      break;
+	    }
+	}
+      if (!matched)
+	return false;
     }
 
   return true;
@@ -1689,6 +1744,30 @@ read_type_suppression(const ini::config::section& section)
 	return nil;
     }
 
+  /// Support 'changed_enumerators = foo, bar, baz'
+  ///
+  /// Note that this constraint is valid only if we have:
+  ///   'type_kind = enum'.
+  ///
+  /// If the current type is an enum and if it carries changed
+  /// enumerators listed in the changed_enumerators property value
+  /// then it should be suppressed.
+
+  ini::property_sptr changed_enumerators_prop =
+    section.find_property("changed_enumerators");
+
+  vector<string> changed_enumerator_names;
+  if (changed_enumerators_prop)
+    {
+      if (ini::list_property_sptr p =
+	  is_list_property(changed_enumerators_prop))
+	changed_enumerator_names =
+	  p->get_value()->get_content();
+      else if (ini::simple_property_sptr p =
+	       is_simple_property(changed_enumerators_prop))
+	changed_enumerator_names.push_back(p->get_value()->as_string());
+    }
+
   if (file_name_regex_str.empty()
       && file_name_not_regex_str.empty()
       && soname_regex_str.empty()
@@ -1742,6 +1821,10 @@ read_type_suppression(const ini::config::section& section)
 	   || !srcloc_not_regexp_str.empty()
 	   || !srcloc_not_in.empty())))
     suppr->set_drops_artifact_from_ir(true);
+
+  if (suppr->get_type_kind() == type_suppression::ENUM_TYPE_KIND
+      && !changed_enumerator_names.empty())
+    suppr->set_changed_enumerator_names(changed_enumerator_names);
 
   return suppr;
 }

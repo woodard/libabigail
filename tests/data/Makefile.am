@@ -1169,6 +1169,18 @@ test-diff-suppr/test39-opaque-type-v0.o \
 test-diff-suppr/test39-opaque-type-v1.o \
 test-diff-suppr/test39-public-headers-dir/test39-header-v0.h \
 test-diff-suppr/test39-public-headers-dir/test39-header-v1.h \
+test-diff-suppr/libtest40-enumerator-changes-v0.so \
+test-diff-suppr/libtest40-enumerator-changes-v1.so \
+test-diff-suppr/libtest41-enumerator-changes-v0.so \
+test-diff-suppr/libtest41-enumerator-changes-v1.so \
+test-diff-suppr/test40-enumerator-changes-0.suppr \
+test-diff-suppr/test40-enumerator-changes-report-0.txt \
+test-diff-suppr/test40-enumerator-changes-v0.cc \
+test-diff-suppr/test40-enumerator-changes-v1.cc \
+test-diff-suppr/test41-enumerator-changes-0.suppr \
+test-diff-suppr/test41-enumerator-changes-report-0.txt \
+test-diff-suppr/test41-enumerator-changes-v0.cc \
+test-diff-suppr/test41-enumerator-changes-v1.cc \
 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1.abi \
