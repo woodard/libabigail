@@ -4132,7 +4132,7 @@ const string_enumerator_map&
 enum_diff::inserted_enumerators() const
 {return priv_->inserted_enumerators_;}
 
-/// @return a map the enumerators that were changed
+/// @return a map of the enumerators that were changed
 const string_changed_enumerator_map&
 enum_diff::changed_enumerators() const
 {return priv_->changed_enumerators_;}
