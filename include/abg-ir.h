@@ -2056,27 +2056,61 @@ public:
     subrange_type();
   public:
 
+    /// This class is to hold the value of the bound of a subrange.
+    /// The value can be either signed or unsigned, at least when it
+    /// comes from DWARF.  The class keeps the sign information, but
+    /// allows users to access the value as signed or unsigned as they
+    /// see fit.
+    class bound_value
+    {
+    public:
+      enum signedness
+      {
+	UNSIGNED_SIGNEDNESS,
+	SIGNED_SIGNEDNESS
+      };
+
+    private:
+      signedness s_;
+
+    public:
+      union
+      {
+	uint64_t unsigned_;
+	int64_t signed_;
+      } v_;
+      bound_value();
+      bound_value(uint64_t);
+      bound_value(int64_t);
+      enum signedness get_signedness() const;
+      void set_signedness(enum signedness s);
+      int64_t get_signed_value() const;
+      uint64_t get_unsigned_value();
+      void set_unsigned(uint64_t v);
+      void set_signed(int64_t v);
+    }; //end class bound_value
+
     /// Hasher for an instance of array::subrange
     struct hash;
 
     subrange_type(const environment*	env,
 		  const string&	name,
-		  size_t		lower_bound,
-		  size_t		upper_bound,
+		  bound_value		lower_bound,
+		  bound_value		upper_bound,
 		  type_base_sptr&	underlying_type,
 		  const location&	loc,
 		  translation_unit::language l = translation_unit::LANG_C11);
 
     subrange_type(const environment* env,
 		  const string& name,
-		  size_t lower_bound,
-		  size_t upper_bound,
+		  bound_value lower_bound,
+		  bound_value upper_bound,
 		  const location& loc,
 		  translation_unit::language l = translation_unit::LANG_C11);
 
     subrange_type(const environment* env,
 		  const string& name,
-		  size_t upper_bound,
+		  bound_value upper_bound,
 		  const location& loc,
 		  translation_unit::language l = translation_unit::LANG_C11);
 
@@ -2086,19 +2120,19 @@ public:
     void
     set_underlying_type(const type_base_sptr &);
 
-    size_t
+    int64_t
     get_upper_bound() const;
 
-    size_t
+    int64_t
     get_lower_bound() const;
 
     void
-    set_upper_bound(size_t ub);
+    set_upper_bound(int64_t ub);
 
     void
-    set_lower_bound(size_t lb);
+    set_lower_bound(int64_t lb);
 
-    size_t
+    uint64_t
     get_length() const;
 
     bool

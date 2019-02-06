@@ -3735,14 +3735,15 @@ build_subrange_type(read_context&	ctxt,
 
   // Note that DWARF would actually have a lower_bound of -1 for an
   // array of length 0.
-  size_t max_bound = 0;
+  array_type_def::subrange_type::bound_value max_bound;
+  array_type_def::subrange_type::bound_value min_bound;
   if (!is_infinite)
     if (length > 0)
-      max_bound = length - 1;
+      max_bound.set_signed(length - 1);
 
   array_type_def::subrange_sptr p
     (new array_type_def::subrange_type(ctxt.get_environment(),
-				       name, 0, max_bound,
+				       name, min_bound, max_bound,
 				       underlying_type, loc));
   p->is_infinite(is_infinite);
 

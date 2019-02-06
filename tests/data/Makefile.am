@@ -1443,6 +1443,15 @@ test-diff-pkg/nss-debuginfo-3.24.0-1.0.fc23.x86_64.rpm \
 test-diff-pkg/nss-devel-3.23.0-1.0.fc23.x86_64.rpm \
 test-diff-pkg/nss-devel-3.24.0-1.0.fc23.x86_64.rpm \
 test-diff-pkg/nss-3.23.0-1.0.fc23.x86_64-report-0.txt \
+test-diff-pkg/GtkAda-debuginfo-2.24.2-29.fc29.x86_64.rpm \
+test-diff-pkg/GtkAda-debuginfo-2.24.2-30.fc30.x86_64.rpm \
+test-diff-pkg/GtkAda-devel-2.24.2-29.fc29.x86_64.rpm \
+test-diff-pkg/GtkAda-devel-2.24.2-30.fc30.x86_64.rpm \
+test-diff-pkg/GtkAda-gl-2.24.2-29.fc29.x86_64--2.24.2-30.fc30.x86_64-report-0.txt \
+test-diff-pkg/GtkAda-gl-2.24.2-29.fc29.x86_64.rpm \
+test-diff-pkg/GtkAda-gl-2.24.2-30.fc30.x86_64.rpm \
+test-diff-pkg/GtkAda-gl-debuginfo-2.24.2-29.fc29.x86_64.rpm \
+test-diff-pkg/GtkAda-gl-debuginfo-2.24.2-30.fc30.x86_64.rpm \
 \
 test-fedabipkgdiff/dbus-glib-0.104-3.fc23.x86_64.rpm \
 test-fedabipkgdiff/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm \

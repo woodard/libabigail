@@ -563,6 +563,20 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/nss-3.23.0-1.0.fc23.x86_64-report-0.txt",
     "output/test-diff-pkg/nss-3.23.0-1.0.fc23.x86_64-report-0.txt"
   },
+  {
+    "data/test-diff-pkg/GtkAda-gl-2.24.2-29.fc29.x86_64.rpm",
+    "data/test-diff-pkg/GtkAda-gl-2.24.2-30.fc30.x86_64.rpm",
+    "--fail-no-dbg",
+    "",
+    "data/test-diff-pkg/GtkAda-debuginfo-2.24.2-29.fc29.x86_64.rpm, "
+    "data/test-diff-pkg/GtkAda-gl-debuginfo-2.24.2-29.fc29.x86_64.rpm",
+    "data/test-diff-pkg/GtkAda-debuginfo-2.24.2-30.fc30.x86_64.rpm, "
+    "data/test-diff-pkg/GtkAda-gl-debuginfo-2.24.2-30.fc30.x86_64.rpm",
+    "data/test-diff-pkg/GtkAda-devel-2.24.2-29.fc29.x86_64.rpm",
+    "data/test-diff-pkg/GtkAda-devel-2.24.2-30.fc30.x86_64.rpm",
+    "data/test-diff-pkg/GtkAda-gl-2.24.2-29.fc29.x86_64--2.24.2-30.fc30.x86_64-report-0.txt",
+    "output/test-diff-pkg/GtkAda-gl-2.24.2-29.fc29.x86_64--2.24.2-30.fc30.x86_64-report-0.txt"
+  },
 #endif //WITH_RPM
 
 #ifdef WITH_DEB

@@ -12613,25 +12613,107 @@ operator!=(const reference_type_def_sptr& l, const reference_type_def_sptr& r)
 // <array_type_def definitions>
 
 // <array_type_def::subrange_type>
+
+// <array_type_def::subrante_type::bound_value>
+
+/// Default constructor of the @ref
+/// array_type_def::subrange_type::bound_value class.
+///
+/// Constructs an unsigned bound_value of value zero.
+array_type_def::subrange_type::bound_value::bound_value()
+  : s_(UNSIGNED_SIGNEDNESS)
+{
+  v_.unsigned_ = 0;
+}
+
+/// Initialize an unsigned bound_value with a given value.
+///
+/// @param v the initial bound value.
+array_type_def::subrange_type::bound_value::bound_value(uint64_t v)
+  : s_(UNSIGNED_SIGNEDNESS)
+{
+  v_.unsigned_ = v;
+}
+
+/// Initialize a signed bound_value with a given value.
+///
+/// @param v the initial bound value.
+array_type_def::subrange_type::bound_value::bound_value(int64_t v)
+  : s_(SIGNED_SIGNEDNESS)
+{
+  v_.signed_ = v;
+}
+
+/// Getter of the signedness (unsigned VS signed) of the bound value.
+///
+/// @return the signedness of the bound value.
+enum array_type_def::subrange_type::bound_value::signedness
+array_type_def::subrange_type::bound_value::get_signedness() const
+{return s_;}
+
+/// Setter of the signedness (unsigned VS signed) of the bound value.
+///
+/// @param s the new signedness of the bound value.
+void
+array_type_def::subrange_type::bound_value::set_signedness(enum signedness s)
+{ s_ = s;}
+
+/// Getter of the bound value as a signed value.
+///
+/// @return the bound value as signed.
+int64_t
+array_type_def::subrange_type::bound_value::get_signed_value() const
+{return v_.signed_;
+}
+
+/// Getter of the bound value as an unsigned value.
+///
+/// @return the bound value as unsigned.
+uint64_t
+array_type_def::subrange_type::bound_value::get_unsigned_value()
+{return v_.unsigned_;}
+
+/// Setter of the bound value as unsigned.
+///
+/// @param v the new unsigned value.
+void
+array_type_def::subrange_type::bound_value::set_unsigned(uint64_t v)
+{
+    s_ = UNSIGNED_SIGNEDNESS;
+  v_.unsigned_ = v;
+}
+
+/// Setter of the bound value as signed.
+///
+/// @param v the new signed value.
+void
+array_type_def::subrange_type::bound_value::set_signed(int64_t v)
+{
+  s_ = SIGNED_SIGNEDNESS;
+  v_.signed_ = v;
+}
+
+// </array_type_def::subrante_type::bound_value>
+
 struct array_type_def::subrange_type::priv
 {
-  size_t		lower_bound_;
-  size_t		upper_bound_;
+  bound_value		lower_bound_;
+  bound_value		upper_bound_;
   type_base_wptr	underlying_type_;
   translation_unit::language language_;
   bool			infinite_;
 
-  priv(size_t ub,
+  priv(bound_value ub,
        translation_unit::language l = translation_unit::LANG_C11)
-    : lower_bound_(0), upper_bound_(ub), language_(l), infinite_(false)
+    : upper_bound_(ub), language_(l), infinite_(false)
   {}
 
-  priv(size_t lb, size_t ub,
+  priv(bound_value lb, bound_value ub,
        translation_unit::language l = translation_unit::LANG_C11)
     : lower_bound_(lb), upper_bound_(ub), language_(l)
   {}
 
-  priv(size_t lb, size_t ub, const type_base_sptr &u,
+  priv(bound_value lb, bound_value ub, const type_base_sptr &u,
        translation_unit::language l = translation_unit::LANG_C11)
     : lower_bound_(lb), upper_bound_(ub), underlying_type_(u), language_(l)
   {}
@@ -12653,13 +12735,16 @@ struct array_type_def::subrange_type::priv
 /// @param loc the source location where the type is defined.
 array_type_def::subrange_type::subrange_type(const environment* env,
 					     const string&	name,
-					     size_t		lower_bound,
-					     size_t		upper_bound,
+					     bound_value	lower_bound,
+					     bound_value	upper_bound,
 					     type_base_sptr&	underlying_type,
 					     const location&	loc,
 					     translation_unit::language l)
   : type_or_decl_base(env),
-    type_base(env, upper_bound - lower_bound, 0),
+    type_base(env,
+	      upper_bound.get_unsigned_value()
+	      - lower_bound.get_unsigned_value(),
+	      0),
     decl_base(env, name, loc, ""),
     priv_(new priv(lower_bound, upper_bound, underlying_type, l))
 {}
@@ -12680,12 +12765,14 @@ array_type_def::subrange_type::subrange_type(const environment* env,
 /// @param l the language that generated this subrange.
 array_type_def::subrange_type::subrange_type(const environment* env,
 					     const string&	name,
-					     size_t		lower_bound,
-					     size_t		upper_bound,
+					     bound_value	lower_bound,
+					     bound_value	upper_bound,
 					     const location&	loc,
 					     translation_unit::language l)
   : type_or_decl_base(env),
-    type_base(env, upper_bound - lower_bound, 0),
+    type_base(env,
+	      upper_bound.get_unsigned_value()
+	      - lower_bound.get_unsigned_value(), 0),
     decl_base(env, name, loc, ""),
     priv_(new priv(lower_bound, upper_bound, l))
 {}
@@ -12704,11 +12791,11 @@ array_type_def::subrange_type::subrange_type(const environment* env,
 /// @param the language that generated this type.
 array_type_def::subrange_type::subrange_type(const environment* env,
 					     const string&	name,
-					     size_t		upper_bound,
+					     bound_value	upper_bound,
 					     const location&	loc,
 					     translation_unit::language l)
   : type_or_decl_base(env),
-    type_base(env, upper_bound, 0),
+    type_base(env, upper_bound.get_unsigned_value(), 0),
     decl_base(env, name, loc, ""),
     priv_(new priv(upper_bound, l))
 {}
@@ -12739,29 +12826,29 @@ array_type_def::subrange_type::set_underlying_type(const type_base_sptr &u)
 /// Getter of the upper bound of the subrange type.
 ///
 /// @return the upper bound of the subrange type.
-size_t
+int64_t
 array_type_def::subrange_type::get_upper_bound() const
-{return priv_->upper_bound_;}
+{return priv_->upper_bound_.get_signed_value();}
 
 /// Getter of the lower bound of the subrange type.
 ///
 /// @return the lower bound of the subrange type.
-size_t
+int64_t
 array_type_def::subrange_type::get_lower_bound() const
-{return priv_->lower_bound_;}
+{return priv_->lower_bound_.get_signed_value();}
 
 /// Setter of the upper bound of the subrange type.
 ///
 /// @param ub the new value of the upper bound.
 void
-array_type_def::subrange_type::set_upper_bound(size_t ub)
+array_type_def::subrange_type::set_upper_bound(int64_t ub)
 {priv_->upper_bound_ = ub;}
 
 /// Setter of the lower bound.
 ///
 /// @param lb the new value of the lower bound.
 void
-array_type_def::subrange_type::set_lower_bound(size_t lb)
+array_type_def::subrange_type::set_lower_bound(int64_t lb)
 {priv_->lower_bound_ = lb;}
 
 /// Getter of the length of the subrange type.
@@ -12770,7 +12857,7 @@ array_type_def::subrange_type::set_lower_bound(size_t lb)
 /// rather a non-known) size.
 ///
 /// @return the length of the subrange type.
-size_t
+uint64_t
 array_type_def::subrange_type::get_length() const
 {
   if (is_infinite())
@@ -21043,6 +21130,22 @@ types_have_similar_structure(const type_base* first, const type_base* second)
 	    || !types_have_similar_structure(ty1->get_element_type(),
 					     ty2->get_element_type()))
 	  return false;
+
+      return true;
+    }
+
+  if (const array_type_def::subrange_type *ty1 = is_subrange_type(first))
+    {
+      const array_type_def::subrange_type *ty2 = is_subrange_type(second);
+      if (!ty2)
+	return false;
+
+      if (ty1->get_upper_bound() != ty2->get_upper_bound()
+	  || ty1->get_lower_bound() != ty2->get_lower_bound()
+	  || ty1->get_language() != ty2->get_language()
+	  || !types_have_similar_structure(ty1->get_underlying_type(),
+					  ty2->get_underlying_type()))
+	return false;
 
       return true;
     }
