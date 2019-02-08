@@ -1452,6 +1452,15 @@ test-diff-pkg/GtkAda-gl-2.24.2-29.fc29.x86_64.rpm \
 test-diff-pkg/GtkAda-gl-2.24.2-30.fc30.x86_64.rpm \
 test-diff-pkg/GtkAda-gl-debuginfo-2.24.2-29.fc29.x86_64.rpm \
 test-diff-pkg/GtkAda-gl-debuginfo-2.24.2-30.fc30.x86_64.rpm \
+test-diff-pkg/netcdf-fortran-debuginfo-4.4.4-10.fc29.x86_64.rpm \
+test-diff-pkg/netcdf-fortran-debuginfo-4.4.4-11.fc30.x86_64.rpm \
+test-diff-pkg/netcdf-fortran-mpich-4.4.4-10.fc29.x86_64.rpm \
+test-diff-pkg/netcdf-fortran-mpich-4.4.4-11.fc30.x86_64.rpm \
+test-diff-pkg/netcdf-fortran-mpich-debuginfo-4.4.4-10.fc29.x86_64.rpm \
+test-diff-pkg/netcdf-fortran-mpich-debuginfo-4.4.4-11.fc30.x86_64.rpm \
+test-diff-pkg/netcdf-fortran-mpich-devel-4.4.4-10.fc29.x86_64.rpm \
+test-diff-pkg/netcdf-fortran-mpich-devel-4.4.4-11.fc30.x86_64.rpm \
+test-diff-pkg/netcdf-fortran-mpich-4.4.4-10.fc29.x86_64-4.4.4-11.fc30.x86_64-report-0.txt \
 \
 test-fedabipkgdiff/dbus-glib-0.104-3.fc23.x86_64.rpm \
 test-fedabipkgdiff/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm \

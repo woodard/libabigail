@@ -11406,6 +11406,16 @@ compare_as_type_dies(Dwarf_Die *l, Dwarf_Die *r)
   ABG_ASSERT(die_is_type(l));
   ABG_ASSERT(die_is_type(r));
 
+  if (dwarf_tag(l) == DW_TAG_string_type
+      && dwarf_tag(r) == DW_TAG_string_type
+      && dwarf_dieoffset(l) != dwarf_dieoffset(r))
+    // For now, we cannot compare DW_TAG_string_type because of its
+    // string_length attribute that is a location descriptor that is
+    // not necessarily a constant.  So it's super hard to evaluate it
+    // in a libabigail context.  So for now, we just say that all
+    // DW_TAG_string_type DIEs are different, by default.
+    return false;
+
   uint64_t l_size = 0, r_size = 0;
   die_size_in_bits(l, l_size);
   die_size_in_bits(r, r_size);
@@ -11475,6 +11485,7 @@ compare_dies(const read_context& ctxt, Dwarf_Die *l, Dwarf_Die *r,
   switch (l_tag)
     {
     case DW_TAG_base_type:
+    case DW_TAG_string_type:
       if (!compare_as_type_dies(l, r)
 	  || !compare_as_decl_dies(l, r))
 	result = false;
@@ -11821,7 +11832,6 @@ compare_dies(const read_context& ctxt, Dwarf_Die *l, Dwarf_Die *r,
     case DW_TAG_compile_unit:
     case DW_TAG_namespace:
     case DW_TAG_module:
-    case DW_TAG_string_type:
     case DW_TAG_constant:
     case DW_TAG_partial_unit:
     case DW_TAG_imported_unit:

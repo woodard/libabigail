@@ -577,6 +577,20 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/GtkAda-gl-2.24.2-29.fc29.x86_64--2.24.2-30.fc30.x86_64-report-0.txt",
     "output/test-diff-pkg/GtkAda-gl-2.24.2-29.fc29.x86_64--2.24.2-30.fc30.x86_64-report-0.txt"
   },
+  {
+    "data/test-diff-pkg/netcdf-fortran-mpich-4.4.4-10.fc29.x86_64.rpm",
+    "data/test-diff-pkg/netcdf-fortran-mpich-4.4.4-11.fc30.x86_64.rpm",
+    "--fail-no-dbg",
+    "",
+    "data/test-diff-pkg/netcdf-fortran-mpich-debuginfo-4.4.4-10.fc29.x86_64.rpm,"
+    "data/test-diff-pkg/netcdf-fortran-debuginfo-4.4.4-10.fc29.x86_64.rpm",
+    "data/test-diff-pkg/netcdf-fortran-mpich-debuginfo-4.4.4-11.fc30.x86_64.rpm,"
+    "data/test-diff-pkg/netcdf-fortran-debuginfo-4.4.4-11.fc30.x86_64.rpm",
+    "data/test-diff-pkg/netcdf-fortran-mpich-devel-4.4.4-10.fc29.x86_64.rpm",
+    "data/test-diff-pkg/netcdf-fortran-mpich-devel-4.4.4-11.fc30.x86_64.rpm",
+    "data/test-diff-pkg/netcdf-fortran-mpich-4.4.4-10.fc29.x86_64-4.4.4-11.fc30.x86_64-report-0.txt",
+    "output/test-diff-pkg/netcdf-fortran-mpich-4.4.4-10.fc29.x86_64-4.4.4-11.fc30.x86_64-report-0.txt"
+  },
 #endif //WITH_RPM
 
 #ifdef WITH_DEB
