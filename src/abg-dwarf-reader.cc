@@ -8204,7 +8204,7 @@ set_ignore_symbol_table(read_context &ctxt, bool f)
 ///
 /// @return the value of the flag.
 bool
-get_ignore_symbol_table(read_context& ctxt)
+get_ignore_symbol_table(const read_context& ctxt)
 {return ctxt.options_.ignore_symbol_table;}
 
 /// Test if a given DIE is anonymous
@@ -14859,9 +14859,17 @@ function_is_suppressed(const read_context& ctxt,
     {
       Dwarf_Addr fn_addr;
       elf_symbol_sptr fn_sym;
-      if (!ctxt.get_function_address(function_die, fn_addr)
-	  || !(ctxt.function_symbol_is_exported(fn_addr)))
+      if (!ctxt.get_function_address(function_die, fn_addr))
 	return true;
+      if (!get_ignore_symbol_table(ctxt))
+	{
+	  // We were not instructed to ignore (avoid loading) the
+	  // symbol table, so we can rely on its presence to see if
+	  // the address corresponds to the address of an exported
+	  // function symbol.
+	  if (!ctxt.function_symbol_is_exported(fn_addr))
+	    return true;
+	}
     }
 
   return suppr::function_is_suppressed(ctxt, qualified_name,
@@ -14965,9 +14973,17 @@ variable_is_suppressed(const read_context& ctxt,
     {
       Dwarf_Addr var_addr = 0;
       elf_symbol_sptr var_sym;
-      if (!ctxt.get_variable_address(variable_die, var_addr)
-	  || !(ctxt.variable_symbol_is_exported(var_addr)))
+      if (!ctxt.get_variable_address(variable_die, var_addr))
 	return true;
+      if (!get_ignore_symbol_table(ctxt))
+	{
+	  // We were not instructed to ignore (avoid loading) the
+	  // symbol table, so we can rely on its presence to see if
+	  // the address corresponds to the address of an exported
+	  // variable symbol.
+	  if (!ctxt.variable_symbol_is_exported(var_addr))
+	    return true;
+	}
     }
 
   return suppr::variable_is_suppressed(ctxt, qualified_name,
