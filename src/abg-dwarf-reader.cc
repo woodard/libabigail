@@ -7912,6 +7912,45 @@ public:
 
   }
 
+  /// Determine if we do have to build a DIE -> parent map, depending
+  /// on a given language.
+  ///
+  /// Some languages like C++, Ada etc, do have the concept of
+  /// namespace and yet, the DIE data structure doesn't provide us
+  /// with a way to get the parent namespace of a given DIE.  So for
+  /// those languages, we need to build a DIE -> parent map so that we
+  /// can get the namespace DIE (or more generally the scope DIE) of a given
+  /// DIE as we need it.
+  ///
+  /// But then some more basic languages like C or assembly don't have
+  /// that need.
+  ///
+  /// This function, depending on the language, tells us if we need to
+  /// build the DIE -> parent map or not.
+  ///
+  /// @param lang the language to consider.
+  ///
+  /// @return true iff we need to build the DIE -> parent map for this
+  /// language.
+  bool
+  do_we_build_die_parent_maps(translation_unit::language lang)
+  {
+    if (is_c_language(lang))
+      return false;
+
+    switch (lang)
+      {
+      case translation_unit::LANG_UNKNOWN:
+#ifdef HAVE_DW_LANG_Mips_Assembler_enumerator
+      case translation_unit::LANG_Mips_Assembler:
+#endif
+	return false;
+      default:
+	break;
+      }
+    return true;
+  }
+
   /// Walk all the DIEs accessible in the debug info (and in the
   /// alternate debug info as well) and build maps representing the
   /// relationship DIE -> parent.  That is, make it so that we can get
@@ -7952,13 +7991,8 @@ public:
 	uint64_t l = 0;
 	die_unsigned_constant_attribute(&cu, DW_AT_language, l);
 	translation_unit::language lang = dwarf_language_to_tu_language(l);
-	if (!is_c_language(lang) && lang != translation_unit::LANG_UNKNOWN)
-	  {
-	    // So we'll build the DIE -> parent map as we are
-	    // looking at a translation unit that is not C.
-	    we_do_have_to_build_die_parent_map = true;
-	    break;
-	  }
+	if (do_we_build_die_parent_maps(lang))
+	  we_do_have_to_build_die_parent_map = true;
       }
 
     if (!we_do_have_to_build_die_parent_map)
