@@ -2590,6 +2590,21 @@ environment::is_void_type(const type_base_sptr& t) const
   return t.get() == get_void_type().get();
 }
 
+/// Test if a given type is a void type as defined in the current
+/// environment.
+///
+/// @param t the type to consider.
+///
+/// @return true iff @p t is a void type as defined in the current
+/// environment.
+bool
+environment::is_void_type(const type_base* t) const
+{
+  if (!t)
+    return false;
+  return t == get_void_type().get();
+}
+
 /// Test if a type is a variadic parameter type as defined in the
 /// current environment.
 ///
@@ -7080,8 +7095,11 @@ is_void_pointer_type(const type_base* type)
   if (!t)
     return 0;
 
-  if (t->get_environment()->is_void_type(t->get_pointed_to_type()))
-    return t;
+  // Look through typedefs in the pointed-to type as well.
+  type_base * ty = t->get_pointed_to_type().get();
+  ty = peel_qualified_or_typedef_type(ty);
+  if (ty->get_environment()->is_void_type(ty))
+    return ty;
 
   return 0;
 }

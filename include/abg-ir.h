@@ -176,6 +176,9 @@ public:
   is_void_type(const type_base_sptr&) const;
 
   bool
+  is_void_type(const type_base*) const;
+
+  bool
   is_variadic_parameter_type(const type_base*) const;
 
   bool
