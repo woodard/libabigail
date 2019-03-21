@@ -21200,6 +21200,62 @@ types_have_similar_structure(const type_base* first, const type_base* second)
   return false;
 }
 
+/// Look for a data member of a given class, struct or union type and
+/// return it.
+///
+/// The data member is designated by its name.
+///
+/// @param type the class, struct or union type to consider.
+///
+/// @param dm_name the name of the data member to lookup.
+///
+/// @return the data member iff it was found in @type or NULL if no
+/// data member with that name was found.
+const var_decl*
+lookup_data_member(const type_base* type,
+		   const char* dm_name)
+
+{
+  class_or_union *cou = is_class_or_union_type(type);
+  if (!cou)
+    return 0;
+
+  for (class_or_union::data_members::const_iterator i =
+	 cou->get_data_members().begin();
+       i != cou->get_data_members().end();
+       ++i)
+    {
+      if ((*i)->get_name() == dm_name)
+	return i->get();
+    }
+  return 0;
+}
+
+/// Get the function parameter designated by its index.
+///
+/// Note that the first function parameter has index 0.
+///
+/// @param fun the function to consider.
+///
+/// @param parm_index the index of the function parameter to get.
+///
+/// @return the function parameter designated by its index, of NULL if
+/// no function parameter with that index was found.
+const function_decl::parameter*
+get_function_parameter(const decl_base* fun,
+		       unsigned parm_index)
+{
+  function_decl* fn = is_function_decl(fun);
+  if (!fn)
+    return 0;
+
+  const function_decl::parameters &parms = fn->get_type()->get_parameters();
+  if (parms.size() <= parm_index)
+    return 0;
+
+  return parms[parm_index].get();
+}
+
 bool
 ir_traversable_base::traverse(ir_node_visitor&)
 {return true;}

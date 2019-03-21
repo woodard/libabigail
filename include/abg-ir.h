@@ -4149,6 +4149,14 @@ is_method_decl(const type_or_decl_base&);
 method_decl_sptr
 is_method_decl(const type_or_decl_base_sptr&);
 
+const var_decl*
+lookup_data_member(const type_base* type,
+		   const char* dm_name);
+
+const function_decl::parameter*
+get_function_parameter(const decl_base* fun,
+		       unsigned parm_num);
+
 /// Abstract a member function template.
 class member_function_template : public member_base, public virtual decl_base
 {
