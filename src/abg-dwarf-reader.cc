@@ -14641,15 +14641,19 @@ build_typedef_type(read_context&	ctxt,
 
   if (!result)
     {
+      type_base_sptr utype;
       Dwarf_Die underlying_type_die;
       if (!die_die_attribute(die, DW_AT_type, underlying_type_die))
-	return result;
+	// A typedef DIE with no underlying type means a typedef to
+	// void type.
+	utype = ctxt.env()->get_void_type();
 
-      type_base_sptr utype =
-	is_type(build_ir_node_from_die(ctxt,
-				       &underlying_type_die,
-				       called_from_public_decl,
-				       where_offset));
+      if (!utype)
+	utype =
+	  is_type(build_ir_node_from_die(ctxt,
+					 &underlying_type_die,
+					 called_from_public_decl,
+					 where_offset));
       if (!utype)
 	return result;
 
