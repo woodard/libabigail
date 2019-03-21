@@ -337,6 +337,9 @@ static bool
 die_is_pointer_or_reference_type(Dwarf_Die* die);
 
 static bool
+die_is_pointer_reference_or_typedef_type(Dwarf_Die* die);
+
+static bool
 die_is_class_type(Dwarf_Die* die);
 
 static bool
@@ -9028,6 +9031,17 @@ die_is_pointer_or_reference_type(Dwarf_Die* die)
 	 || die_is_reference_type(die)
 	 || die_is_array_type(die));}
 
+/// Test if a DIE represents a pointer, a reference or a typedef type.
+///
+/// @param die the die to consider.
+///
+/// @return true iff @p die represents a pointer, a reference or a
+/// typedef type.
+static bool
+die_is_pointer_reference_or_typedef_type(Dwarf_Die* die)
+{return (die_is_pointer_or_reference_type(die)
+	 || dwarf_tag(die) == DW_TAG_typedef);}
+
 /// Test if a DIE represents a class type.
 ///
 /// @param die the die to consider.
@@ -9267,6 +9281,45 @@ die_peel_typedef(Dwarf_Die *die, Dwarf_Die& peeled_die)
 
 }
 
+/// Return the leaf DIE under a pointer, a reference or a typedef DIE.
+///
+/// @param die the DIE to consider.
+///
+/// @param peeled_die the resulting peeled (or leaf) DIE.  This is set
+/// iff the function returned true.
+///
+/// @return true iff the function could peel @p die.
+static bool
+die_peel_pointer_and_typedef(Dwarf_Die *die, Dwarf_Die& peeled_die)
+{
+  if (!die)
+    return false;
+
+  int tag = dwarf_tag(die);
+
+  if (tag == DW_TAG_pointer_type
+      || tag == DW_TAG_reference_type
+      || tag == DW_TAG_rvalue_reference_type
+      || tag == DW_TAG_typedef)
+    {
+      if (!die_die_attribute(die, DW_AT_type, peeled_die))
+	return false;
+    }
+  else
+    return false;
+
+  while (tag == DW_TAG_pointer_type
+	 || tag == DW_TAG_reference_type
+	 || tag == DW_TAG_rvalue_reference_type
+	 || tag == DW_TAG_typedef)
+    {
+      if (!die_die_attribute(&peeled_die, DW_AT_type, peeled_die))
+	break;
+      tag = dwarf_tag(&peeled_die);
+    }
+  return true;
+}
+
 /// Test if a DIE for a function type represents a method type.
 ///
 /// @param ctxt the read context.
@@ -9457,7 +9510,7 @@ die_is_declared_inline(Dwarf_Die* die)
 /// if one of the DIEs does not have the attribute @p attr_name.  In
 /// any case, if this function returns true, then the parameter @p
 /// result is set to the result of the comparison.
-bool
+static bool
 compare_dies_string_attribute_value(Dwarf_Die *l, Dwarf_Die *r,
 				    unsigned attr_name,
 				    bool &result)
@@ -9505,13 +9558,19 @@ compare_dies_string_attribute_value(Dwarf_Die *l, Dwarf_Die *r,
   return true;
 }
 
-/// Compare the file path of two compilation units (aka CU) dies.
+/// Compare the file path of the compilation units (aka CUs)
+/// associated to two DIEs.
 ///
-/// @param l the first CU DIE to consider.
+/// If the DIEs are for pointers or typedefs, this function also
+/// compares the file paths of the CUs of the leaf DIEs (underlying
+/// DIEs of the pointer or the typedef).
 ///
-/// @param r the second CU DIE to consider.
+/// @param l the first type DIE to consider.
 ///
-/// @return true iff the file paths of the two CU are equal.
+/// @param r the second type DIE to consider.
+///
+/// @return true iff the file paths of the DIEs of the two types are
+/// equal.
 static bool
 compare_dies_cu_decl_file(Dwarf_Die* l, Dwarf_Die *r, bool &result)
 {
@@ -9520,9 +9579,29 @@ compare_dies_cu_decl_file(Dwarf_Die* l, Dwarf_Die *r, bool &result)
       ||!dwarf_diecu(r, &r_cu, 0, 0))
     return false;
 
-  return compare_dies_string_attribute_value(&l_cu, &r_cu,
-					     DW_AT_name,
-					     result);
+  bool compared =
+    compare_dies_string_attribute_value(&l_cu, &r_cu,
+					DW_AT_name,
+					result);
+  if (compared)
+    {
+      Dwarf_Die peeled_l, peeled_r;
+      if (die_is_pointer_reference_or_typedef_type(l)
+	  && die_is_pointer_reference_or_typedef_type(r)
+	  && die_peel_pointer_and_typedef(l, peeled_l)
+	  && die_peel_pointer_and_typedef(r, peeled_r))
+	{
+	  if (!dwarf_diecu(&peeled_l, &l_cu, 0, 0)
+	      ||!dwarf_diecu(&peeled_r, &r_cu, 0, 0))
+	    return false;
+	  compared =
+	    compare_dies_string_attribute_value(&l_cu, &r_cu,
+						DW_AT_name,
+						result);
+	}
+    }
+
+  return  compared;
 }
 
 // -----------------------------------
@@ -11404,6 +11483,9 @@ compare_as_decl_dies(Dwarf_Die *l, Dwarf_Die *r)
 {
   ABG_ASSERT(l && r);
 
+  if (dwarf_tag(l) != dwarf_tag(r))
+    return false;
+
   bool result = false;
   if (compare_dies_string_attribute_value(l, r, DW_AT_linkage_name,
 					  result)
@@ -11533,39 +11615,46 @@ compare_dies(const read_context& ctxt, Dwarf_Die *l, Dwarf_Die *r,
     case DW_TAG_volatile_type:
     case DW_TAG_restrict_type:
       {
-	bool from_the_same_tu = false;
 	if (!compare_as_type_dies(l, r))
-	  result = false;
-	else if (!pointer_or_qual_die_of_anonymous_class_type(l)
-		 && compare_dies_cu_decl_file(l, r, from_the_same_tu)
-		 && from_the_same_tu)
-	  // These two typedefs, pointer, reference, or qualified
-	  // types have the same name and are defined in the same TU.
-	  // They thus ought to be the same.
-	  //
-	  // Note that pointers, reference or qualified types to
-	  // anonymous types are not taking into account here because
-	  // those always need to be structurally compared.
-	  result = true;
-	else
 	  {
-	    // No fancy optimization in this case.  We need to
-	    // structurally compare the two DIEs.
-	    Dwarf_Die lu_type_die, ru_type_die;
-	    bool lu_is_void, ru_is_void;
-
-	    lu_is_void = !die_die_attribute(l, DW_AT_type, lu_type_die);
-	    ru_is_void = !die_die_attribute(r, DW_AT_type, ru_type_die);
-
-	    if (lu_is_void && ru_is_void)
-	      ;
-	    else if (lu_is_void != ru_is_void)
-	      result = false;
-	    else
-	      result = compare_dies(ctxt, &lu_type_die, &ru_type_die,
-				    aggregates_being_compared,
-				    update_canonical_dies_on_the_fly);
+	    result = false;
+	    break;
 	  }
+
+	bool from_the_same_tu = false;
+	if (!pointer_or_qual_die_of_anonymous_class_type(l)
+	    && compare_dies_cu_decl_file(l, r, from_the_same_tu)
+	    && from_the_same_tu)
+	  {
+	    // These two typedefs, pointer, reference, or qualified
+	    // types have the same name and are defined in the same TU.
+	    // They thus ought to be the same.
+	    //
+	    // Note that pointers, reference or qualified types to
+	    // anonymous types are not taking into account here because
+	    // those always need to be structurally compared.
+	    result = true;
+	    break;
+	  }
+      }
+
+      {
+	// No fancy optimization in this case.  We need to
+	// structurally compare the two DIEs.
+	Dwarf_Die lu_type_die, ru_type_die;
+	bool lu_is_void, ru_is_void;
+
+	lu_is_void = !die_die_attribute(l, DW_AT_type, lu_type_die);
+	ru_is_void = !die_die_attribute(r, DW_AT_type, ru_type_die);
+
+	if (lu_is_void && ru_is_void)
+	  result = true;
+	else if (lu_is_void != ru_is_void)
+	  result = false;
+	else
+	  result = compare_dies(ctxt, &lu_type_die, &ru_type_die,
+				aggregates_being_compared,
+				update_canonical_dies_on_the_fly);
       }
       break;
 
