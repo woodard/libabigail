@@ -14252,7 +14252,7 @@ build_function_type(read_context&	ctxt,
     return result;
 
   ABG_ASSERT(dwarf_tag(die) == DW_TAG_subroutine_type
-	 || dwarf_tag(die) == DW_TAG_subprogram);
+	     || dwarf_tag(die) == DW_TAG_subprogram);
 
   die_source source;
   ABG_ASSERT(ctxt.get_die_source(die, source));
@@ -14747,7 +14747,8 @@ build_typedef_type(read_context&	ctxt,
 	return result;
 
       // The call to build_ir_node_from_die() could have triggered the
-      // creation of the type for this DIE.  In that case, just return it.
+      // creation of the type for this DIE.  In that case, just return
+      // it.
       if (type_base_sptr t = ctxt.lookup_type_from_die(die))
 	{
 	  result = is_typedef(t);
