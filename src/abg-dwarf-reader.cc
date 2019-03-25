@@ -12363,6 +12363,7 @@ get_scope_die(const read_context&	ctxt,
     return false;
 
   if (dwarf_tag(&scope_die) == DW_TAG_subprogram
+      || dwarf_tag(&scope_die) == DW_TAG_subroutine_type
       || dwarf_tag(&scope_die) == DW_TAG_array_type)
     return get_scope_die(ctxt, &scope_die, where_offset, scope_die);
   return true;

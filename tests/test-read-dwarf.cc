@@ -228,6 +228,12 @@ InOutSpec in_out_specs[] =
     "data/test-read-dwarf/PR22122-libftdc.so.abi",
     "output/test-read-dwarf/PR22122-libftdc.so.abi",
   },
+  {
+    "data/test-read-dwarf/PR24378-fn-is-not-scope.o",
+    "",
+    "data/test-read-dwarf/PR24378-fn-is-not-scope.abi",
+    "output/test-read-dwarf/PR24378-fn-is-not-scope.abi",
+  },
   // This should be the last entry.
   {NULL, NULL, NULL, NULL}
 };
