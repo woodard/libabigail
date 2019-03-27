@@ -1,3 +1,44 @@
+1.6
+===
+Dodji Seketeli:
+      Bump version number to 1.6
+      Update website for 1.5
+      Support having several debuginfo search dirs for a binary
+      Add a --fail-no-debug-info to abidiff
+      Some light style change in abidiff.cc
+      Add basic support for Fortran binaries
+      Update copyright for 2019
+      Bug 23044 - Assertions with side effects
+      Separate public types of first binary from those of the second
+      Add (very) basic support for Rust
+      Support some new DWARF language encoding for C and C++
+      Fix a thinko
+      Overhaul detection the DW_LANG_* enumerators from dwarf.h
+      Fix a typo in the recent Rust support and update regression tests
+      Conditionalize the Rust support regression test
+      Properly add the new rust tests to EXTRA_DIST
+      Bug 20175 - Classify CV qual changes in variable type as harmless
+      Better comments in the comparison engine
+      Bug 24139 - Support suppressing some enumerator changes
+      Small apidoc fix
+      Bug 24157 - Wrong support of Ada ranges
+      Bug 24188 - Assertion failed while analysing a Fortran binary
+      Avoid over-suppressing fns & vars when analysing the Kernel
+      Do not build DIE -> parent map just because we see an asm TU
+      PR24257 - Handle DW_TAG_typedef with no underlying type
+      Better detection of void* to something* change
+      Add ir::{lookup_data_member, get_function_parameter}
+      Better pointer name equality optimization in DIE de-duplication code
+      Misc cleanups
+      Bug 24378 - DW_TAG_subroutine_type as a DIE scope causes infinite loop
+      Add missing assignment operators
+
+Mark Wielaard:
+      Conditionalize the use of DW_LANG_C_plus_plus_03 and DW_LANG_Rust
+
+Xiao Jia via libabigail:
+      Some documentation fixes
+
 1.5
 ===
 Dodji Seketeli:
