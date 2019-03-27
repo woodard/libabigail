@@ -1,3 +1,614 @@
+2019-03-27  Dodji Seketeli <dodji@redhat.com>
+
+	Update NEWS file for 1.6
+	* NEWS: Update for 1.6
+
+2019-03-27  Dodji Seketeli <dodji@redhat.com>
+
+	Add missing assignment operators
+	* include/abg-interned-str.h (interned_string::operator=): Define
+	assignment operator.
+	* include/abg-ir.h
+	({location, enum_type_decl::enumerator}::operator=): Declare
+	assignment operator.
+	* src/abg-ir.cc (enum_type_decl::enumerator::operator=): Define
+	assignment operator.
+
+2019-03-25  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 24378 - DW_TAG_subroutine_type as a DIE scope causes infinite loop
+	* src/abg-dwarf-reader.cc (get_scope_die): Look through
+	DW_TAG_subroutine_type to get the scope of a given DIE.
+	* tests/data/Makefile.am: Add the two new files below to source
+	distribution.
+	* tests/data/test-read-dwarf/PR24378-fn-is-not-scope.abi: New
+	reference test output.
+	* tests/data/test-read-dwarf/PR24378-fn-is-not-scope.o: New binary
+	test input.
+	* tests/test-read-dwarf.cc (in_out_specs): Add the new test input
+	to the test harness.
+
+2019-03-22  Dodji Seketeli <dodji@redhat.com>
+
+	Misc cleanups
+	* src/abg-dwarf-reader.cc (build_function_type): Cleanup
+	indentation and comments.
+
+2019-03-21  Dodji Seketeli <dodji@redhat.com>
+
+	Better pointer name equality optimization in DIE de-duplication code
+	* src/abg-dwarf-reader.cc
+	(die_is_pointer_reference_or_typedef_type)
+	(die_peel_pointer_and_typedef): Define new static functions.
+	(compare_dies_string_attribute_value): Turn this function into a
+	static one.
+	(compare_dies_cu_decl_file): Make this function compare the cu
+	decl file name of the leaf type of the pointer, not just the one
+	of the pointer itself.
+	(compare_as_decl_dies): Compare the DWARF tags too.
+	(compare_dies): Simplify logic.
+
+2019-03-21  Dodji Seketeli <dodji@redhat.com>
+
+	Add ir::{lookup_data_member, get_function_parameter}
+	* include/abg-ir.h (lookup_data_member, get_function_parameter):
+	Declare new functions.
+	* src/abg-ir.cc (lookup_data_member, get_function_parameter):
+	Define them.
+
+2019-03-21  Dodji Seketeli <dodji@redhat.com>
+
+	Better detection of void* to something* change
+	* include/abg-ir.h (is_void_type): Add a new overload that takes
+	type_base*.
+	* src/abg-ir.cc (is_void_type): Define the new overload that takes
+	type_base*.
+	(is_void_pointer_type): Look through typedefs in
+	the pointed-to type.
+
+2019-03-21  Dodji Seketeli <dodji@redhat.com>
+
+	PR24257 - Handle DW_TAG_typedef with no underlying type
+	* src/abg-dwarf-reader.cc (build_typedef_type): DW_TAG_typedef
+	with no underlying type means typedef void foo.
+	* tests/data/test-annotate/test15-pr18892.so.abi: Adjust.
+	* tests/data/test-annotate/test18-pr19037-libvtkRenderingLIC-6.1.so.abi:
+	Likewise.
+	* tests/data/test-annotate/test19-pr19023-libtcmalloc_and_profiler.so.abi:
+	Likewise.
+	* tests/data/test-annotate/test20-pr19025-libvtkParallelCore-6.1.so.abi:
+	Likewise.
+	* tests/data/test-annotate/test21-pr19092.so.abi: Likewise.
+	* tests/data/test-read-dwarf/PR22015-libboost_iostreams.so.abi:
+	Likewise.
+	* tests/data/test-read-dwarf/PR22122-libftdc.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test10-pr18818-gcc.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test11-pr18828.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test12-pr18844.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test15-pr18892.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test16-pr18904.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test18-pr19037-libvtkRenderingLIC-6.1.so.abi:
+	Likewise.
+	* tests/data/test-read-dwarf/test19-pr19023-libtcmalloc_and_profiler.so.abi:
+	Likewise.
+	* tests/data/test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so.abi:
+	Likewise.
+	* tests/data/test-read-dwarf/test21-pr19092.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so.abi:
+	Likewise.
+	* tests/data/test-read-dwarf/test9-pr18818-clang.so.abi: Likewise.
+
+2019-02-20  Dodji Seketeli <dodji@redhat.com>
+
+	Do not build DIE -> parent map just because we see an asm TU
+	* src/abg-dwarf-reader.cc:
+
+2019-02-19  Dodji Seketeli <dodji@redhat.com>
+
+	Avoid over-suppressing fns & vars when analysing the Kernel
+	* include/abg-dwarf-reader.h (get_ignore_symbol_table): Take a
+	const read_context&.
+	* src/abg-dwarf-reader.cc (get_ignore_symbol_table): Likewise.
+	(function_is_suppressed): When the symbol table optimization is in
+	flight -- that is, when no symbol table has been loaded -- do not
+	try to see if a given function symbol was exported at the ELF
+	level or not.  Just look at if the function was suppressed or not.
+	(variable_is_suppressed): Likewise for variables.
+
+2019-02-08  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 24188 - Assertion failed while analysing a Fortran binary
+	* src/abg-dwarf-reader.cc (compare_as_type_dies): Handle
+	DW_TAG_string_type DIEs here.
+	(compare_dies): Handle DW_TAG_string_type DIEs by using
+	compare_as_type_dies.
+	* tests/data/test-diff-pkg/netcdf-fortran-debuginfo-4.4.4-10.fc29.x86_64.rpm:
+	New test RPM.
+	* tests/data/test-diff-pkg/netcdf-fortran-debuginfo-4.4.4-11.fc30.x86_64.rpm:
+	Likewise.
+	* tests/data/test-diff-pkg/netcdf-fortran-mpich-4.4.4-10.fc29.x86_64-4.4.4-11.fc30.x86_64-report-0.txt:
+	New expected test reference output.
+	* tests/data/test-diff-pkg/netcdf-fortran-mpich-4.4.4-10.fc29.x86_64.rpm:
+	New test RPM.
+	* tests/data/test-diff-pkg/netcdf-fortran-mpich-4.4.4-11.fc30.x86_64.rpm:
+	Likewise.
+	* tests/data/test-diff-pkg/netcdf-fortran-mpich-debuginfo-4.4.4-10.fc29.x86_64.rpm:
+	Likewise.
+	* tests/data/test-diff-pkg/netcdf-fortran-mpich-debuginfo-4.4.4-11.fc30.x86_64.rpm:
+	Likewise.
+	* tests/data/test-diff-pkg/netcdf-fortran-mpich-devel-4.4.4-10.fc29.x86_64.rpm:
+	Likewise.
+	* tests/data/test-diff-pkg/netcdf-fortran-mpich-devel-4.4.4-11.fc30.x86_64.rpm:
+	Likewise.
+	* tests/data/Makefile.am: Add the new test input material above to
+	source distribution.
+	* tests/test-diff-pkg.cc (in_out_spec): Add the new test RPMs
+	above to the set of RPMs to use as test input.
+
+2019-02-06  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 24157 - Wrong support of Ada ranges
+	* include/abg-ir.h (array_type_def::subrange_type::bound_value):
+	Define new class.
+	(array_type_def::subrange_type::subrange_type): Adjust to use the
+	new bound_value type for bound values.
+	(array_type_def::subrange_type::{get_upper_bound, get_lower_bound,
+	set_upper_bound, set_lower_bound}): Return or take int64_t rather
+	than size_t.
+	(array_type_def::subrange_type::get_length): Return uint64_t
+	rather than size_t.
+	* src/abg-dwarf-reader.cc (die_signed_constant_attribute)
+	(die_constant_attribute, die_attribute_has_form)
+	(die_attribute_is_signed, die_attribute_is_unsigned)
+	(die_attribute_has_no_signedness): Define new static functions.
+	(get_default_array_lower_bound): Return uint64_t rather than int.
+	(build_subrange_type): Use the new
+	array_type_def::subrange_type::bound_value type for bound values.
+	Use the new die_constant_attribute function, rather than
+	die_unsigned_constant_attribute to fecth the bound values.
+	* src/abg-ir.cc
+	(array_type_def::subrange_type::bound_value::{bound_value,
+	get_signedness, set_signedness, get_signed_value,
+	get_unsigned_value, set_unsigned, set_signed}): Define new member
+	functions.
+	(array_type_def::subrange_type::priv::{lower_bound_,
+	upper_bound}): Use the new class bound_value.
+	(array_type_def::subrange_type::priv::priv): Adjust to use the new
+	bound_value class to hold bound values.
+	(array_type_def::subrange_type::subrange_type): Likewise.
+	(array_type_def::subrange_type::{get_upper_bound, get_lower_bound,
+	set_upper_bound, set_lower_bound}): Return or take int64_t rather
+	than size_t.
+	(array_type_def::subrange_type::get_length): Return uint64_t
+	rather than size_t.
+	(types_have_similar_structure): Handle array_type_def::subrange_type
+	* src/abg-reader.cc (build_subrange_type): Use the new
+	array_type_def::subrange_type::bound_value to hold bound values.
+	* tests/data/test-diff-pkg/GtkAda-debuginfo-2.24.2-29.fc29.x86_64.rpm:
+	New binary RPM as test input.
+	* tests/data/test-diff-pkg/GtkAda-debuginfo-2.24.2-30.fc30.x86_64.rpm:
+	Likewise.
+	* tests/data/test-diff-pkg/GtkAda-devel-2.24.2-29.fc29.x86_64.rpm:
+	Likewise.
+	* tests/data/test-diff-pkg/GtkAda-devel-2.24.2-30.fc30.x86_64.rpm:
+	Likewise.
+	* tests/data/test-diff-pkg/GtkAda-gl-2.24.2-29.fc29.x86_64--2.24.2-30.fc30.x86_64-report-0.txt:
+	New expected test output.
+	* tests/data/test-diff-pkg/GtkAda-gl-2.24.2-29.fc29.x86_64.rpm:
+	New binary RPM as test input.
+	* tests/data/test-diff-pkg/GtkAda-gl-2.24.2-30.fc30.x86_64.rpm:
+	Likewise.
+	* tests/data/test-diff-pkg/GtkAda-gl-debuginfo-2.24.2-29.fc29.x86_64.rpm:
+	Likewise.
+	* tests/data/test-diff-pkg/GtkAda-gl-debuginfo-2.24.2-30.fc30.x86_64.rpm:
+	Likewise.
+	* tests/data/Makefile.am: Add the new test material above to source
+	distribution.
+	* tests/test-diff-pkg.cc (in_out_specs): Add the new input testing
+	RPMs in here.
+
+2019-01-30  Dodji Seketeli <dodji@redhat.com>
+
+	Small apidoc fix
+	* src/abg-comparison.cc (enum_diff::changed_enumerators): Fix apidoc.
+
+2019-01-30  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 24139 - Support suppressing some enumerator changes
+	* doc/manuals/libabigail-concepts.rst: Document the new
+	'changed_enumerators' property.
+	* include/abg-suppression.h
+	(type_suppression::{g, s}et_changed_enumerator_names): Declare two
+	new member functions.
+	* src/abg-suppression-priv.h
+	(type_suppression::priv::changed_enumerator_names_): Add a new
+	data member.
+	* src/abg-suppression.cc
+	(type_suppression::{g,s}et_changed_enumerator_names): Define two
+	new member functions.
+	(type_suppression::suppresses_diff): Support evaluating the new
+	'changed_enumerators = <vector of changed enumerators>'.
+	(read_type_suppression): Read the new list
+	property'changed_enumerators" and store it into the
+	type_suppression using the new
+	type_suppression::set_changed_enumerator_names ().
+	* tests/data/test-diff-suppr/libtest4{0,1}-enumerator-changes-v{0,1}.so:
+	Add new test inpujts.
+	* tests/data/test-diff-suppr/test4{0,1}-enumerator-changes-0.suppr:
+	Add a new suppr spec for this new test.
+	* tests/data/test-diff-suppr/test4{0,1}-enumerator-changes-report-0.txt:
+	The default report.
+	* tests/data/test-diff-suppr/test4{0,1}-enumerator-changes-v{0,1}.cc:
+	Add Source code of libtest4{0,1}-enumerator-changes-v{0,1}.so.
+	* tests/data/Makefile.am: Add the test files above to source
+	distribution.
+	* tests/test-diff-suppr.cc: Add the test input files above to the
+	harness.
+
+2019-01-25  Dodji Seketeli <dodji@redhat.com>
+
+	Better comments in the comparison engine
+	* include/abg-comparison.h (enum diff_category): Add comments to
+	describe what to update when a new enumerator is added to this enum.
+	* src/abg-comp-filter.cc (has_fn_return_type_cv_qual_change): Fix
+	comment thinko here.
+
+2019-01-25  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 20175 - Classify CV qual changes in variable type as harmless
+	* include/abg-comparison.h (VAR_TYPE_CV_CHANGE_CATEGORY): Add new
+	enumerator to diff_category enum.
+	(EVERYTHING_CATEGORY): Update this enumerator.
+	* src/abg-comp-filter.cc (type_diff_has_cv_qual_change_only):
+	Support array diff nodes carrying a cv qual change on the element
+	type.
+	(has_var_type_cv_qual_change): Define new static function.
+	(categorize_harmless_diff_node): Use the new
+	has_var_type_cv_qual_change to categorize variable diff node with
+	cv qual change on its type as harmless.
+	* src/abg-comparison.cc
+	(get_default_harmless_categories_bitmap): Update this.
+	(operator<<(ostream& o, diff_category c)): Likewise.
+	* include/abg-ir.h (equals_modulo_cv_qualifier): Declare new ...
+	* src/abg-ir.cc (equals_modulo_cv_qualifier): ... function.
+	* tests/data/test-diff-pkg/libICE-1.0.6-1.el6.x86_64.rpm--libICE-1.0.9-2.el7.x86_64.rpm-report-0.txt:
+	Update expected test output.
+	* tests/data/test-diff-pkg/spice-server-0.12.4-19.el7.x86_64-0.12.8-1.el7.x86_64-report-2.txt: Likewise.
+	* tests/data/Makefile.am: Add the new test material below to
+	source distribution.
+	* tests/data/test-diff-pkg/nss-3.23.0-1.0.fc23.x86_64-report-0.txt:
+	New expecte test output.
+	* tests/data/test-diff-pkg/nss-3.23.0-1.0.fc23.x86_64.rpm: New
+	test input.
+	* tests/data/test-diff-pkg/nss-3.24.0-1.0.fc23.x86_64.rpm: Likewise.
+	* tests/data/test-diff-pkg/nss-debuginfo-3.23.0-1.0.fc23.x86_64.rpm: Likewise.
+	* tests/data/test-diff-pkg/nss-debuginfo-3.24.0-1.0.fc23.x86_64.rpm: Likewise.
+	* tests/data/test-diff-pkg/nss-devel-3.23.0-1.0.fc23.x86_64.rpm: Likewise.
+	* tests/data/test-diff-pkg/nss-devel-3.24.0-1.0.fc23.x86_64.rpm: Likewise.
+	* tests/test-diff-pkg.cc (in_out_specs): Add the test input above
+	to the test harness.
+
+2019-01-24  Dodji Seketeli <dodji@redhat.com>
+
+	Properly add the new rust tests to EXTRA_DIST
+	* tests/data/Makefile.am: Add the new rust tests to
+	EXTRA_DIST.
+
+2019-01-24  Dodji Seketeli <dodji@redhat.com>
+
+	Conditionalize the Rust support regression test
+	* tests/test-diff-dwarf.cc: Run the rust support regression test
+	only if we support Rust on the platform.
+	* tests/test-utils.h: Include config.h.
+
+2019-01-24  Dodji Seketeli <dodji@redhat.com>
+
+	Fix a typo in the recent Rust support and update regression tests
+	* configure.ac: Fix the typo HAS_LANG_Rust into HAS_DW_LANG_Rust.
+	* tests/data/test-diff-dwarf/test46-readme.txt: Add new file to
+	the test suite.
+	* tests/data/test-diff-dwarf/test46-rust-libone.so: Likewise.
+	* tests/data/test-diff-dwarf/test46-rust-libtwo.so: Likewise.
+	* tests/data/test-diff-dwarf/test46-rust-report-0.txt: Likewise.
+	* tests/test-diff-dwarf.cc (in_out_specs): Update the tests array
+	to compare the two new binaries included above.
+
+2019-01-18  Dodji Seketeli <dodji@redhat.com>
+
+	Overhaul detection the DW_LANG_* enumerators from dwarf.h
+	* configure.ac: Detect the presence of DW_LANG_{UPC, D, Python,
+	Go, C11, C_plus_plus_03, C_plus_plus_11, C_plus_plus_14,
+	Mips_Assembler, Rust} and define the corresponding
+	HAVE_DW_LANG_*_enumerator macro accordingly.
+	* include/abg-ir.h (LANG_C_plus_plus_03): Define this new
+	enumerator in the translation_unit::language enum.
+	* src/abg-dwarf-reader.cc (dwarf_language_to_tu_language): Use the
+	new HAVE_DW_LANG_*_enumerator macros.
+	(get_default_array_lower_bound): Support the
+	translation_unit::LANG_C_plus_plus_03 enumerator.
+	* src/abg-ir.cc (is_cplus_plus_language): Support the
+	translation_unit::LANG_C_plus_plus_03 enumerator.
+
+2019-01-18  Dodji Seketeli <dodji@redhat.com>
+
+	Fix a thinko
+	* src/abg-dwarf-reader.cc (dwarf_language_to_tu_language): Fix a
+	thinko in the detection of the support of the DW_LANG_Rust enumerator.
+
+2019-01-17  Mark Wielaard <mark@klomp.org>
+
+	Conditionalize the use of DW_LANG_C_plus_plus_03 and DW_LANG_Rust
+	* include/abg-ir.h (LANG_C_plus_plus_03): Add this new language
+	enum to "enum translation_unit::language".
+	* src/abg-dwarf-reader.cc (dwarf_language_to_tu_language): Do not
+	use DW_LANG_Rust or DW_LANG_C_plus_plus_03 if these are not
+	defined.
+	(get_default_array_lower_bound): Handle the new
+	translation_unit::LANG_C_plus_plus_03 enumerator.
+
+2019-01-17  Dodji Seketeli <dodji@redhat.com>
+
+	Support some new DWARF language encoding for C and C++
+	* src/abg-dwarf-reader.cc (dwarf_language_to_tu_language): Support
+	new DW_LANG_{C11, C_plus_plus_03, C_plus_plus_11, C_plus_plus_14}
+	enumerators.
+
+2019-01-17  Dodji Seketeli <dodji@redhat.com>
+
+	Add (very) basic support for Rust
+	* include/abg-ir.h (LANG_Rust): Add this new enumerator to the
+	"enum language" enum.
+	* src/abg-dwarf-reader.cc (dwarf_language_to_tu_language): Handle
+	the Rust language.
+	(get_default_array_lower_bound): Likewise.
+
+2019-01-15  Dodji Seketeli <dodji@redhat.com>
+
+	Separate public types of first binary from those of the second
+	* include/abg-dwarf-reader.h (read_context_get_path): Declare new
+	function.
+	* include/abg-reader.h (read_context_get_path): Likewise.
+	* src/abg-dwarf-reader.cc (read_context_get_path): Define new function.
+	* src/abg-reader.cc (read_context_get_path): Likewise.
+	* tools/abidiff.cc (set_suppressions): Set the suppression
+	specification derived from the --headers-dir1 option only for the first
+	binary, and similarly, from the --headers-dir2 option only for the
+	second binary.
+
+2019-01-09  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 23044 - Assertions with side effects
+	* configure.ac:
+	* include/abg-diff-utils.h:
+	* include/abg-fwd.h:
+	* src/abg-comp-filter.cc:
+	* src/abg-comparison-priv.h:
+	* src/abg-comparison.cc:
+	* src/abg-corpus-priv.h:
+	* src/abg-corpus.cc:
+	* src/abg-default-reporter.cc:
+	* src/abg-diff-utils.cc:
+	* src/abg-dwarf-reader.cc:
+	* src/abg-hash.cc:
+	* src/abg-ini.cc:
+	* src/abg-ir.cc:
+	* src/abg-leaf-reporter.cc:
+	* src/abg-reader.cc:
+	* src/abg-reporter-priv.cc:
+	* src/abg-suppression.cc:
+	* src/abg-tools-utils.cc:
+	* src/abg-workers.cc:
+	* src/abg-writer.cc:
+	* tests/test-diff-filter.cc:
+	* tests/test-diff-pkg.cc:
+	* tests/test-read-dwarf.cc:
+	* tests/test-read-write.cc:
+	* tests/test-types-stability.cc:
+	* tools/abicompat.cc:
+	* tools/abidw.cc:
+	* tools/abipkgdiff.cc:
+
+2019-01-07  Dodji Seketeli <dodji@redhat.com>
+
+	Update copyright for 2019
+	* include/abg-comp-filter.h: Update copyright for 2019
+	* include/abg-comparison.h: Update copyright for 2019
+	* include/abg-config.h: Update copyright for 2019
+	* include/abg-corpus.h: Update copyright for 2019
+	* include/abg-diff-utils.h: Update copyright for 2019
+	* include/abg-dwarf-reader.h: Update copyright for 2019
+	* include/abg-fwd.h: Update copyright for 2019
+	* include/abg-hash.h: Update copyright for 2019
+	* include/abg-ini.h: Update copyright for 2019
+	* include/abg-interned-str.h: Update copyright for 2019
+	* include/abg-ir.h: Update copyright for 2019
+	* include/abg-libxml-utils.h: Update copyright for 2019
+	* include/abg-libzip-utils.h: Update copyright for 2019
+	* include/abg-reader.h: Update copyright for 2019
+	* include/abg-reporter.h: Update copyright for 2019
+	* include/abg-sptr-utils.h: Update copyright for 2019
+	* include/abg-suppression.h: Update copyright for 2019
+	* include/abg-tools-utils.h: Update copyright for 2019
+	* include/abg-traverse.h: Update copyright for 2019
+	* include/abg-viz-common.h: Update copyright for 2019
+	* include/abg-viz-dot.h: Update copyright for 2019
+	* include/abg-viz-svg.h: Update copyright for 2019
+	* include/abg-workers.h: Update copyright for 2019
+	* include/abg-writer.h: Update copyright for 2019
+	* src/abg-comp-filter.cc: Update copyright for 2019
+	* src/abg-comparison-priv.h: Update copyright for 2019
+	* src/abg-comparison.cc: Update copyright for 2019
+	* src/abg-config.cc: Update copyright for 2019
+	* src/abg-corpus-priv.h: Update copyright for 2019
+	* src/abg-corpus.cc: Update copyright for 2019
+	* src/abg-default-reporter.cc: Update copyright for 2019
+	* src/abg-diff-utils.cc: Update copyright for 2019
+	* src/abg-dwarf-reader.cc: Update copyright for 2019
+	* src/abg-hash.cc: Update copyright for 2019
+	* src/abg-ini.cc: Update copyright for 2019
+	* src/abg-internal.h: Update copyright for 2019
+	* src/abg-ir-priv.h: Update copyright for 2019
+	* src/abg-ir.cc: Update copyright for 2019
+	* src/abg-leaf-reporter.cc: Update copyright for 2019
+	* src/abg-libxml-utils.cc: Update copyright for 2019
+	* src/abg-libzip-utils.cc: Update copyright for 2019
+	* src/abg-reader.cc: Update copyright for 2019
+	* src/abg-reporter-priv.cc: Update copyright for 2019
+	* src/abg-reporter-priv.h: Update copyright for 2019
+	* src/abg-sptr-utils.cc: Update copyright for 2019
+	* src/abg-suppression-priv.h: Update copyright for 2019
+	* src/abg-suppression.cc: Update copyright for 2019
+	* src/abg-tools-utils.cc: Update copyright for 2019
+	* src/abg-traverse.cc: Update copyright for 2019
+	* src/abg-viz-common.cc: Update copyright for 2019
+	* src/abg-viz-dot.cc: Update copyright for 2019
+	* src/abg-viz-svg.cc: Update copyright for 2019
+	* src/abg-workers.cc: Update copyright for 2019
+	* src/abg-writer.cc: Update copyright for 2019
+	* tests/print-diff-tree.cc: Update copyright for 2019
+	* tests/test-abicompat.cc: Update copyright for 2019
+	* tests/test-abidiff-exit.cc: Update copyright for 2019
+	* tests/test-abidiff.cc: Update copyright for 2019
+	* tests/test-alt-dwarf-file.cc: Update copyright for 2019
+	* tests/test-core-diff.cc: Update copyright for 2019
+	* tests/test-diff-dwarf-abixml.cc: Update copyright for 2019
+	* tests/test-diff-dwarf.cc: Update copyright for 2019
+	* tests/test-diff-filter.cc: Update copyright for 2019
+	* tests/test-diff-pkg.cc: Update copyright for 2019
+	* tests/test-diff-suppr.cc: Update copyright for 2019
+	* tests/test-diff2.cc: Update copyright for 2019
+	* tests/test-ini.cc: Update copyright for 2019
+	* tests/test-ir-walker.cc: Update copyright for 2019
+	* tests/test-lookup-syms.cc: Update copyright for 2019
+	* tests/test-read-dwarf.cc: Update copyright for 2019
+	* tests/test-read-write.cc: Update copyright for 2019
+	* tests/test-types-stability.cc: Update copyright for 2019
+	* tests/test-utils.cc: Update copyright for 2019
+	* tests/test-utils.h: Update copyright for 2019
+	* tests/test-write-read-archive.cc: Update copyright for 2019
+	* tools/abiar.cc: Update copyright for 2019
+	* tools/abicompat.cc: Update copyright for 2019
+	* tools/abidiff.cc: Update copyright for 2019
+	* tools/abidw.cc: Update copyright for 2019
+	* tools/abilint.cc: Update copyright for 2019
+	* tools/abipkgdiff.cc: Update copyright for 2019
+	* tools/abisym.cc: Update copyright for 2019
+	* tools/binilint.cc: Update copyright for 2019
+	* tools/kmidiff.cc: Update copyright for 2019
+	* update-copyright.sh: Update new year to 2019
+
+2018-12-06  Xiao Jia via libabigail <libabigail@sourceware.org>
+
+	Some documentation fixes
+	* COMPILING: Add the pkg-config dependency.
+	* doc/manuals/kmidiff.rst: Replace the redundant --full-impact
+	documentation with the proper --impacted-interfaces one.
+
+2018-11-29  Dodji Seketeli <dodji@redhat.com>
+
+	Add basic support for Fortran binaries
+	* src/abg-dwarf-reader.cc (die_pretty_print_type): Support
+	DW_TAG_string_type DIEs.  They all have the same representation
+	for now.
+
+2018-11-08  Dodji Seketeli <dodji@redhat.com>
+
+	Some light style change in abidiff.cc
+	* tools/abidiff.cc (adjust_diff_context_for_kmidiff): Take a
+	reference to diff_context rather than a pointer.
+	(main): Adjust.
+
+2018-11-08  Dodji Seketeli <dodji@redhat.com>
+
+	Add a --fail-no-debug-info to abidiff
+	* doc/manuals/abidiff.rst: Document the new --fail-no-debug-info
+	option.
+	* tools/abidiff.cc (options::fail_no_debug_info): Define new data
+	member.
+	(display_usage): Provide a help string for the new
+	--fail-no-debug-info option.
+	(parse_command_line): Parse the new option.
+	(main): If --fail-no-debug-info and no debug info was found, or
+	not alternate debuginfo file was found, bail out.
+
+2018-11-08  Dodji Seketeli <dodji@redhat.com>
+
+	Support having several debuginfo search dirs for a binary
+	* doc/manuals/abidiff.rst: Adjust doc for the
+	--debug-info-dir{1,2} that can now be provided several times.
+	* include/abg-dwarf-reader.h ({create, reset}_read_context)
+	(read_corpus_from_elf): Take a vector of debug info root dirs.
+	* include/abg-tools-utils.h (trim_leading_string)
+	(find_file_under_dir, make_path_absolute_to_be_freed)
+	(convert_char_stars_to_char_star_stars): Declare new functions.
+	* src/abg-dwarf-reader.cc (find_alt_debug_info_link): Renamed
+	find_alt_debug_info_location into this.
+	(find_alt_debug_info_path): Define new static function.
+	(find_alt_debug_info): Take a vector of debug info root dirs.  Use
+	the new find_alt_debug_info_path to look into the debug info root
+	dirs for the alt debug info.
+	(read_context::debug_info_root_paths_): Define new data member.
+	(read_context::read_context): Take a vector of debug info root
+	dirs and initialize the new read_context::debug_info_root_paths_.
+	(read_context::{initialize, create_default_dwfl}): Take a vector
+	of debug info root dirs and adjust.
+	(read_context::{add_debug_info_root_paths,
+	add_debug_info_root_path, find_alt_debug_info}): Define new member
+	functions.
+	(read_context::load_debug_info): Look into the debug info roots
+	for split debug info files.
+	(create_read_context, read_corpus_from_elf): Take a vector of
+	debug info root dirs and adjust.
+	(has_alt_debug_info): Adjust.
+	* src/abg-tools-utils.cc (trim_leading_string)
+	(make_path_absolute_to_be_freed, find_file_under_dir)
+	(convert_char_stars_to_char_star_stars): Define new functions.
+	(entry_of_file_with_name): Define new static function.
+	(build_corpus_group_from_kernel_dist_under): Adjust.
+	* tests/print-diff-tree.cc (main): Adjust.
+	* tests/test-diff-dwarf.cc (main): Adjust.
+	* tests/test-ir-walker.cc (main): Adjust.
+	* tests/test-read-dwarf.cc (main): Adjust.
+	* tools/abicompat.cc (main): Adjust.
+	* tools/abidiff.cc (options::di_root_paths{1,2}): Changed
+	di_root_path{1,2} into this, change their types into vectors of
+	allocated char*.
+	(options::prepared_di_root_paths{1,2}): Define new data members.
+	(options::~options): Define new destructor.
+	(parse_command_line): Adjust.
+	(prepare_di_root_paths): Define new static function.
+	(handle_error): Remove arguments input_file_name,
+	debug_info_dir{1,2}.  Now just take an instance of options
+	instead.  Adjust.
+	(main): Adjust.
+	* tools/abidw.cc (options::dir_root_paths): Renamed dir_root_path
+	into this and make it be a vector of allocated char*.
+	(options::prepared_di_root_paths): Define new data member.
+	(options::~options): Free the allocated char* in
+	options::dir_root_paths.
+	(parse_command_line): Support several --debug-info-dir.
+	(load_corpus_and_write_abixml): Adjust.
+	(prepare_di_root_paths): Define static function.
+	(main): Adjust.
+	* tools/abilint.cc (main): Adjust.
+	* tools/abipkgdiff.cc (compare): Adjust.
+
+2018-10-26  Dodji Seketeli <dodji@redhat.com>
+
+	Update website for 1.5
+	* doc/website/mainpage.txt: Update website for 1.5
+
+2018-10-26  Dodji Seketeli <dodji@redhat.com>
+
+	Bump version number to 1.6
+	* configure.ac: Bump version number to 1.6
+
+2018-10-25  Dodji Seketeli <dodji@redhat.com>
+
+	Update ChangeLog for 1.5
+	* ChangeLog: Update automatically by calling make
+	update-changelog.
+
 2018-10-25  Dodji Seketeli <dodji@redhat.com>
 
 	Update NEWS file for 1.5
