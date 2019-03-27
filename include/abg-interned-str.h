@@ -82,6 +82,16 @@ public:
   interned_string(const interned_string& o)
   {raw_ = o.raw_;}
 
+  /// Assignment operator.
+  ///
+  /// @param o the other instance to assign to the current one.
+  interned_string&
+  operator=(const interned_string& o)
+  {
+    raw_ = o.raw_;
+    return *this;
+  }
+
   /// Test if the current instance of @ref interned_string is empty.
   ///
   /// @return true iff the currentisntance of @ref interned_string is

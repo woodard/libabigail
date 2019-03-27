@@ -234,6 +234,17 @@ public:
       loc_manager_(l.loc_manager_)
   {}
 
+  /// Assignment operator of the location.
+  ///
+  /// @param l the location to assign to the current one.
+  location&
+  operator=(const location& l)
+  {
+    value_ = l.value_;
+    loc_manager_ = l.loc_manager_;
+    return *this;
+  }
+
   /// Default constructor for the @ref location type.
   location()
     : value_(), loc_manager_()
@@ -2337,6 +2348,9 @@ public:
   enumerator(const environment* env, const string& name, int64_t value);
 
   enumerator(const enumerator&);
+
+  enumerator&
+  operator=(const enumerator&);
 
   bool
   operator==(const enumerator& other) const;

@@ -13907,6 +13907,18 @@ enum_type_decl::enumerator::enumerator(const enumerator& other)
 		   other.get_enum_type()))
 {}
 
+/// Assignment operator of the @ref enum_type_decl::enumerator type.
+///
+/// @param o
+enum_type_decl::enumerator&
+enum_type_decl::enumerator::operator=(const enumerator& o)
+{
+  priv_->env_ = o.get_environment();
+  priv_->name_ = o.get_name();
+  priv_->value_ = o.get_value();
+  priv_->enum_type_ = o.get_enum_type();
+  return *this;
+}
 /// Equality operator
 ///
 /// @param other the enumerator to compare to the current instance of
