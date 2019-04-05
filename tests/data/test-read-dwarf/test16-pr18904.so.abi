@@ -37398,23 +37398,31 @@
         </function-decl>
       </member-function>
     </class-decl>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/include/myo/myoimpl.h' line='352' column='1' id='type-id-3173'>
+      <data-member access='public' layout-offset-in-bits='0'>
+        <var-decl name='varName' type-id='type-id-19' visibility='default' filepath='../../../gcc/liboffloadmic/include/myo/myoimpl.h' line='354' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='64'>
+        <var-decl name='sharedAddr' type-id='type-id-2' visibility='default' filepath='../../../gcc/liboffloadmic/include/myo/myoimpl.h' line='356' column='1'/>
+      </data-member>
+    </class-decl>
     <pointer-type-def type-id='type-id-67' size-in-bits='64' id='type-id-3172'/>
     <pointer-type-def type-id='type-id-3028' size-in-bits='64' id='type-id-3076'/>
-    <qualified-type-def type-id='type-id-3028' const='yes' id='type-id-3173'/>
-    <pointer-type-def type-id='type-id-3173' size-in-bits='64' id='type-id-3078'/>
+    <qualified-type-def type-id='type-id-3028' const='yes' id='type-id-3174'/>
+    <pointer-type-def type-id='type-id-3174' size-in-bits='64' id='type-id-3078'/>
     <pointer-type-def type-id='type-id-3045' size-in-bits='64' id='type-id-3071'/>
     <qualified-type-def type-id='type-id-3045' const='yes' id='type-id-3129'/>
     <pointer-type-def type-id='type-id-3129' size-in-bits='64' id='type-id-3077'/>
     <reference-type-def kind='lvalue' type-id='type-id-3045' size-in-bits='64' id='type-id-3149'/>
     <reference-type-def kind='lvalue' type-id='type-id-3129' size-in-bits='64' id='type-id-3151'/>
     <pointer-type-def type-id='type-id-3068' size-in-bits='64' id='type-id-3152'/>
-    <qualified-type-def type-id='type-id-3068' const='yes' id='type-id-3174'/>
-    <reference-type-def kind='lvalue' type-id='type-id-3174' size-in-bits='64' id='type-id-3153'/>
-    <pointer-type-def type-id='type-id-3174' size-in-bits='64' id='type-id-3154'/>
+    <qualified-type-def type-id='type-id-3068' const='yes' id='type-id-3175'/>
+    <reference-type-def kind='lvalue' type-id='type-id-3175' size-in-bits='64' id='type-id-3153'/>
+    <pointer-type-def type-id='type-id-3175' size-in-bits='64' id='type-id-3154'/>
     <reference-type-def kind='lvalue' type-id='type-id-3028' size-in-bits='64' id='type-id-3055'/>
     <pointer-type-def type-id='type-id-3058' size-in-bits='64' id='type-id-3073'/>
-    <qualified-type-def type-id='type-id-3058' const='yes' id='type-id-3175'/>
-    <reference-type-def kind='lvalue' type-id='type-id-3175' size-in-bits='64' id='type-id-3074'/>
+    <qualified-type-def type-id='type-id-3058' const='yes' id='type-id-3176'/>
+    <reference-type-def kind='lvalue' type-id='type-id-3176' size-in-bits='64' id='type-id-3074'/>
     <reference-type-def kind='lvalue' type-id='type-id-3058' size-in-bits='64' id='type-id-3079'/>
     <reference-type-def kind='lvalue' type-id='type-id-3081' size-in-bits='64' id='type-id-3082'/>
     <reference-type-def kind='lvalue' type-id='type-id-3084' size-in-bits='64' id='type-id-3085'/>
@@ -37422,58 +37430,58 @@
 
 
     <pointer-type-def type-id='type-id-3057' size-in-bits='64' id='type-id-3059'/>
-    <reference-type-def kind='lvalue' type-id='type-id-3173' size-in-bits='64' id='type-id-3133'/>
+    <reference-type-def kind='lvalue' type-id='type-id-3174' size-in-bits='64' id='type-id-3133'/>
     <pointer-type-def type-id='type-id-3095' size-in-bits='64' id='type-id-3167'/>
-    <qualified-type-def type-id='type-id-3095' const='yes' id='type-id-3176'/>
-    <reference-type-def kind='lvalue' type-id='type-id-3176' size-in-bits='64' id='type-id-3168'/>
-    <pointer-type-def type-id='type-id-3176' size-in-bits='64' id='type-id-3169'/>
+    <qualified-type-def type-id='type-id-3095' const='yes' id='type-id-3177'/>
+    <reference-type-def kind='lvalue' type-id='type-id-3177' size-in-bits='64' id='type-id-3168'/>
+    <pointer-type-def type-id='type-id-3177' size-in-bits='64' id='type-id-3169'/>
     <pointer-type-def type-id='type-id-3043' size-in-bits='64' id='type-id-3100'/>
-    <qualified-type-def type-id='type-id-3043' const='yes' id='type-id-3177'/>
-    <reference-type-def kind='lvalue' type-id='type-id-3177' size-in-bits='64' id='type-id-3094'/>
+    <qualified-type-def type-id='type-id-3043' const='yes' id='type-id-3178'/>
+    <reference-type-def kind='lvalue' type-id='type-id-3178' size-in-bits='64' id='type-id-3094'/>
     <reference-type-def kind='lvalue' type-id='type-id-3043' size-in-bits='64' id='type-id-3093'/>
     <reference-type-def kind='lvalue' type-id='type-id-3158' size-in-bits='64' id='type-id-3159'/>
-    <qualified-type-def type-id='type-id-3158' const='yes' id='type-id-3178'/>
-    <reference-type-def kind='lvalue' type-id='type-id-3178' size-in-bits='64' id='type-id-3160'/>
-    <qualified-type-def type-id='type-id-3062' const='yes' id='type-id-3179'/>
-    <reference-type-def kind='lvalue' type-id='type-id-3179' size-in-bits='64' id='type-id-3060'/>
+    <qualified-type-def type-id='type-id-3158' const='yes' id='type-id-3179'/>
+    <reference-type-def kind='lvalue' type-id='type-id-3179' size-in-bits='64' id='type-id-3160'/>
+    <qualified-type-def type-id='type-id-3062' const='yes' id='type-id-3180'/>
+    <reference-type-def kind='lvalue' type-id='type-id-3180' size-in-bits='64' id='type-id-3060'/>
     <reference-type-def kind='lvalue' type-id='type-id-3062' size-in-bits='64' id='type-id-3061'/>
-    <qualified-type-def type-id='type-id-3026' const='yes' id='type-id-3180'/>
-    <pointer-type-def type-id='type-id-3180' size-in-bits='64' id='type-id-3064'/>
+    <qualified-type-def type-id='type-id-3026' const='yes' id='type-id-3181'/>
+    <pointer-type-def type-id='type-id-3181' size-in-bits='64' id='type-id-3064'/>
     <pointer-type-def type-id='type-id-3026' size-in-bits='64' id='type-id-3065'/>
     <reference-type-def kind='lvalue' type-id='type-id-3026' size-in-bits='64' id='type-id-3067'/>
     <pointer-type-def type-id='type-id-3034' size-in-bits='64' id='type-id-3123'/>
-    <qualified-type-def type-id='type-id-3034' const='yes' id='type-id-3181'/>
-    <pointer-type-def type-id='type-id-3181' size-in-bits='64' id='type-id-3124'/>
+    <qualified-type-def type-id='type-id-3034' const='yes' id='type-id-3182'/>
+    <pointer-type-def type-id='type-id-3182' size-in-bits='64' id='type-id-3124'/>
     <reference-type-def kind='lvalue' type-id='type-id-3120' size-in-bits='64' id='type-id-3125'/>
-    <qualified-type-def type-id='type-id-3120' const='yes' id='type-id-3182'/>
-    <reference-type-def kind='lvalue' type-id='type-id-3182' size-in-bits='64' id='type-id-3126'/>
+    <qualified-type-def type-id='type-id-3120' const='yes' id='type-id-3183'/>
+    <reference-type-def kind='lvalue' type-id='type-id-3183' size-in-bits='64' id='type-id-3126'/>
     <pointer-type-def type-id='type-id-3036' size-in-bits='64' id='type-id-3134'/>
-    <qualified-type-def type-id='type-id-3130' const='yes' id='type-id-3183'/>
-    <reference-type-def kind='lvalue' type-id='type-id-3183' size-in-bits='64' id='type-id-3135'/>
-    <qualified-type-def type-id='type-id-3036' const='yes' id='type-id-3184'/>
-    <pointer-type-def type-id='type-id-3184' size-in-bits='64' id='type-id-3136'/>
+    <qualified-type-def type-id='type-id-3130' const='yes' id='type-id-3184'/>
+    <reference-type-def kind='lvalue' type-id='type-id-3184' size-in-bits='64' id='type-id-3135'/>
+    <qualified-type-def type-id='type-id-3036' const='yes' id='type-id-3185'/>
+    <pointer-type-def type-id='type-id-3185' size-in-bits='64' id='type-id-3136'/>
     <reference-type-def kind='lvalue' type-id='type-id-3127' size-in-bits='64' id='type-id-3137'/>
-    <qualified-type-def type-id='type-id-3127' const='yes' id='type-id-3185'/>
-    <reference-type-def kind='lvalue' type-id='type-id-3185' size-in-bits='64' id='type-id-3138'/>
+    <qualified-type-def type-id='type-id-3127' const='yes' id='type-id-3186'/>
+    <reference-type-def kind='lvalue' type-id='type-id-3186' size-in-bits='64' id='type-id-3138'/>
     <pointer-type-def type-id='type-id-3025' size-in-bits='64' id='type-id-3046'/>
-    <qualified-type-def type-id='type-id-3042' const='yes' id='type-id-3186'/>
-    <reference-type-def kind='lvalue' type-id='type-id-3186' size-in-bits='64' id='type-id-3047'/>
-    <qualified-type-def type-id='type-id-3027' const='yes' id='type-id-3187'/>
-    <reference-type-def kind='lvalue' type-id='type-id-3187' size-in-bits='64' id='type-id-3048'/>
-    <qualified-type-def type-id='type-id-3025' const='yes' id='type-id-3188'/>
-    <reference-type-def kind='lvalue' type-id='type-id-3188' size-in-bits='64' id='type-id-3049'/>
+    <qualified-type-def type-id='type-id-3042' const='yes' id='type-id-3187'/>
+    <reference-type-def kind='lvalue' type-id='type-id-3187' size-in-bits='64' id='type-id-3047'/>
+    <qualified-type-def type-id='type-id-3027' const='yes' id='type-id-3188'/>
+    <reference-type-def kind='lvalue' type-id='type-id-3188' size-in-bits='64' id='type-id-3048'/>
+    <qualified-type-def type-id='type-id-3025' const='yes' id='type-id-3189'/>
+    <reference-type-def kind='lvalue' type-id='type-id-3189' size-in-bits='64' id='type-id-3049'/>
     <reference-type-def kind='lvalue' type-id='type-id-3025' size-in-bits='64' id='type-id-3050'/>
-    <pointer-type-def type-id='type-id-3188' size-in-bits='64' id='type-id-3052'/>
+    <pointer-type-def type-id='type-id-3189' size-in-bits='64' id='type-id-3052'/>
     <reference-type-def kind='lvalue' type-id='type-id-3027' size-in-bits='64' id='type-id-3053'/>
     <reference-type-def kind='lvalue' type-id='type-id-3041' size-in-bits='64' id='type-id-3054'/>
     <pointer-type-def type-id='type-id-3044' size-in-bits='64' id='type-id-3056'/>
     <pointer-type-def type-id='type-id-3139' size-in-bits='64' id='type-id-3142'/>
     <reference-type-def kind='lvalue' type-id='type-id-3139' size-in-bits='64' id='type-id-3143'/>
     <pointer-type-def type-id='type-id-3141' size-in-bits='64' id='type-id-3144'/>
-    <pointer-type-def type-id='type-id-3189' size-in-bits='64' id='type-id-3190'/>
+    <pointer-type-def type-id='type-id-3190' size-in-bits='64' id='type-id-3191'/>
     <function-decl name='__intel_cilk_for_64_offload' mangled-name='__intel_cilk_for_64_offload' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='1261' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__intel_cilk_for_64_offload'>
       <parameter type-id='type-id-31' name='size' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='1262' column='1'/>
-      <parameter type-id='type-id-3190' name='copy_constructor' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='1263' column='1'/>
+      <parameter type-id='type-id-3191' name='copy_constructor' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='1263' column='1'/>
       <parameter type-id='type-id-31' name='target_number' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='1264' column='1'/>
       <parameter type-id='type-id-2' name='raddr' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='1265' column='1'/>
       <parameter type-id='type-id-2' name='closure_object' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='1266' column='1'/>
@@ -37483,7 +37491,7 @@
     </function-decl>
     <function-decl name='__intel_cilk_for_32_offload' mangled-name='__intel_cilk_for_32_offload' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='1208' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__intel_cilk_for_32_offload'>
       <parameter type-id='type-id-31' name='size' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='1209' column='1'/>
-      <parameter type-id='type-id-3190' name='copy_constructor' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='1210' column='1'/>
+      <parameter type-id='type-id-3191' name='copy_constructor' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='1210' column='1'/>
       <parameter type-id='type-id-31' name='target_number' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='1211' column='1'/>
       <parameter type-id='type-id-2' name='raddr' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='1212' column='1'/>
       <parameter type-id='type-id-2' name='closure_object' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='1213' column='1'/>
@@ -37510,17 +37518,17 @@
       <parameter type-id='type-id-4' name='align' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='1151' column='1'/>
       <return type-id='type-id-2'/>
     </function-decl>
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='16MyoOwnershipType' filepath='../../../gcc/liboffloadmic/include/myo/myotypes.h' line='83' column='1' id='type-id-3191'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='16MyoOwnershipType' filepath='../../../gcc/liboffloadmic/include/myo/myotypes.h' line='83' column='1' id='type-id-3192'>
       <underlying-type type-id='type-id-156'/>
       <enumerator name='MYO_ARENA_MINE' value='1'/>
       <enumerator name='MYO_ARENA_OURS' value='2'/>
     </enum-decl>
-    <typedef-decl name='MyoOwnershipType' type-id='type-id-3191' filepath='../../../gcc/liboffloadmic/include/myo/myotypes.h' line='86' column='1' id='type-id-3192'/>
-    <pointer-type-def type-id='type-id-98' size-in-bits='64' id='type-id-3193'/>
+    <typedef-decl name='MyoOwnershipType' type-id='type-id-3192' filepath='../../../gcc/liboffloadmic/include/myo/myotypes.h' line='86' column='1' id='type-id-3193'/>
+    <pointer-type-def type-id='type-id-98' size-in-bits='64' id='type-id-3194'/>
     <function-decl name='_Offload_shared_arena_create' mangled-name='_Offload_shared_arena_create' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='1134' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Offload_shared_arena_create'>
-      <parameter type-id='type-id-3192' name='ownership' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='1135' column='1'/>
+      <parameter type-id='type-id-3193' name='ownership' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='1135' column='1'/>
       <parameter type-id='type-id-31' name='consistency' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='1136' column='1'/>
-      <parameter type-id='type-id-3193' name='arena' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='1137' column='1'/>
+      <parameter type-id='type-id-3194' name='arena' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='1137' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='_Offload_shared_aligned_free' mangled-name='_Offload_shared_aligned_free' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='1122' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Offload_shared_aligned_free'>
@@ -37558,15 +37566,31 @@
       <parameter type-id='type-id-75' name='fptr_table' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='715' column='1'/>
       <return type-id='type-id-61'/>
     </function-decl>
-    <pointer-type-def type-id='type-id-94' size-in-bits='64' id='type-id-3194'/>
-    <pointer-type-def type-id='type-id-81' size-in-bits='64' id='type-id-3195'/>
+    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_table.h' line='289' column='1' id='type-id-3195'>
+      <data-member access='public' layout-offset-in-bits='0'>
+        <var-decl name='func' type-id='type-id-97' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_table.h' line='295' column='1'/>
+      </data-member>
+    </class-decl>
+    <pointer-type-def type-id='type-id-94' size-in-bits='64' id='type-id-3196'/>
+    <class-decl name='__anonymous_struct__' size-in-bits='192' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_table.h' line='275' column='1' id='type-id-3197'>
+      <data-member access='public' layout-offset-in-bits='0'>
+        <var-decl name='funcName' type-id='type-id-19' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_table.h' line='277' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='64'>
+        <var-decl name='funcAddr' type-id='type-id-2' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_table.h' line='279' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='128'>
+        <var-decl name='localThunkAddr' type-id='type-id-2' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_table.h' line='281' column='1'/>
+      </data-member>
+    </class-decl>
+    <pointer-type-def type-id='type-id-81' size-in-bits='64' id='type-id-3198'/>
     <function-decl name='__offload_myoRegisterTables' mangled-name='__offload_myoRegisterTables' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='691' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__offload_myoRegisterTables'>
-      <parameter type-id='type-id-3194' name='init_table' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='692' column='1'/>
+      <parameter type-id='type-id-3196' name='init_table' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='692' column='1'/>
       <parameter type-id='type-id-3172' name='shared_table' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='693' column='1'/>
-      <parameter type-id='type-id-3195' name='fptr_table' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='694' column='1'/>
+      <parameter type-id='type-id-3198' name='fptr_table' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='694' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <class-decl name='MyoWrapper' size-in-bits='1408' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='53' column='1' id='type-id-3196'>
+    <class-decl name='MyoWrapper' size-in-bits='1408' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='53' column='1' id='type-id-3199'>
       <data-member access='private' layout-offset-in-bits='0'>
         <var-decl name='m_lib_handle' type-id='type-id-2' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='227' column='1'/>
       </data-member>
@@ -37580,89 +37604,89 @@
         <var-decl name='m_vtable_arena' type-id='type-id-98' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='230' column='1'/>
       </data-member>
       <data-member access='private' layout-offset-in-bits='192'>
-        <var-decl name='m_lib_init' type-id='type-id-3197' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='233' column='1'/>
+        <var-decl name='m_lib_init' type-id='type-id-3200' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='233' column='1'/>
       </data-member>
       <data-member access='private' layout-offset-in-bits='256'>
         <var-decl name='m_lib_fini' type-id='type-id-305' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='234' column='1'/>
       </data-member>
       <data-member access='private' layout-offset-in-bits='320'>
-        <var-decl name='m_shared_malloc' type-id='type-id-3198' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='235' column='1'/>
+        <var-decl name='m_shared_malloc' type-id='type-id-3201' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='235' column='1'/>
       </data-member>
       <data-member access='private' layout-offset-in-bits='384'>
-        <var-decl name='m_shared_free' type-id='type-id-3199' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='236' column='1'/>
+        <var-decl name='m_shared_free' type-id='type-id-3202' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='236' column='1'/>
       </data-member>
       <data-member access='private' layout-offset-in-bits='448'>
-        <var-decl name='m_shared_aligned_malloc' type-id='type-id-3200' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='237' column='1'/>
+        <var-decl name='m_shared_aligned_malloc' type-id='type-id-3203' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='237' column='1'/>
       </data-member>
       <data-member access='private' layout-offset-in-bits='512'>
-        <var-decl name='m_shared_aligned_free' type-id='type-id-3199' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='238' column='1'/>
+        <var-decl name='m_shared_aligned_free' type-id='type-id-3202' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='238' column='1'/>
       </data-member>
       <data-member access='private' layout-offset-in-bits='576'>
-        <var-decl name='m_acquire' type-id='type-id-3201' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='239' column='1'/>
+        <var-decl name='m_acquire' type-id='type-id-3204' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='239' column='1'/>
       </data-member>
       <data-member access='private' layout-offset-in-bits='640'>
-        <var-decl name='m_release' type-id='type-id-3201' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='240' column='1'/>
+        <var-decl name='m_release' type-id='type-id-3204' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='240' column='1'/>
       </data-member>
       <data-member access='private' layout-offset-in-bits='704'>
-        <var-decl name='m_host_var_table_propagate' type-id='type-id-3202' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='241' column='1'/>
+        <var-decl name='m_host_var_table_propagate' type-id='type-id-3205' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='241' column='1'/>
       </data-member>
       <data-member access='private' layout-offset-in-bits='768'>
-        <var-decl name='m_host_fptr_table_register' type-id='type-id-3203' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='242' column='1'/>
+        <var-decl name='m_host_fptr_table_register' type-id='type-id-3206' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='242' column='1'/>
       </data-member>
       <data-member access='private' layout-offset-in-bits='832'>
-        <var-decl name='m_remote_thunk_call' type-id='type-id-3204' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='243' column='1'/>
+        <var-decl name='m_remote_thunk_call' type-id='type-id-3207' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='243' column='1'/>
       </data-member>
       <data-member access='private' layout-offset-in-bits='896'>
-        <var-decl name='m_remote_call' type-id='type-id-3205' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='244' column='1'/>
+        <var-decl name='m_remote_call' type-id='type-id-3208' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='244' column='1'/>
       </data-member>
       <data-member access='private' layout-offset-in-bits='960'>
-        <var-decl name='m_get_result' type-id='type-id-3206' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='245' column='1'/>
+        <var-decl name='m_get_result' type-id='type-id-3209' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='245' column='1'/>
       </data-member>
       <data-member access='private' layout-offset-in-bits='1024'>
-        <var-decl name='m_arena_create' type-id='type-id-3207' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='246' column='1'/>
+        <var-decl name='m_arena_create' type-id='type-id-3210' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='246' column='1'/>
       </data-member>
       <data-member access='private' layout-offset-in-bits='1088'>
-        <var-decl name='m_arena_aligned_malloc' type-id='type-id-3208' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='247' column='1'/>
+        <var-decl name='m_arena_aligned_malloc' type-id='type-id-3211' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='247' column='1'/>
       </data-member>
       <data-member access='private' layout-offset-in-bits='1152'>
-        <var-decl name='m_arena_aligned_free' type-id='type-id-3209' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='248' column='1'/>
+        <var-decl name='m_arena_aligned_free' type-id='type-id-3212' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='248' column='1'/>
       </data-member>
       <data-member access='private' layout-offset-in-bits='1216'>
-        <var-decl name='m_arena_acquire' type-id='type-id-3210' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='249' column='1'/>
+        <var-decl name='m_arena_acquire' type-id='type-id-3213' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='249' column='1'/>
       </data-member>
       <data-member access='private' layout-offset-in-bits='1280'>
-        <var-decl name='m_arena_release' type-id='type-id-3210' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='250' column='1'/>
+        <var-decl name='m_arena_release' type-id='type-id-3213' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='250' column='1'/>
       </data-member>
       <data-member access='private' layout-offset-in-bits='1344'>
-        <var-decl name='m_feature_available' type-id='type-id-3211' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='252' column='1'/>
+        <var-decl name='m_feature_available' type-id='type-id-3214' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='252' column='1'/>
       </data-member>
       <member-function access='private' constructor='yes'>
         <function-decl name='MyoWrapper' mangled-name='_ZN10MyoWrapperC4Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='55' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-3212' is-artificial='yes'/>
+          <parameter type-id='type-id-3215' is-artificial='yes'/>
           <return type-id='type-id-1'/>
         </function-decl>
       </member-function>
       <member-function access='private' const='yes'>
         <function-decl name='is_available' mangled-name='_ZNK10MyoWrapper12is_availableEv' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='58' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK10MyoWrapper12is_availableEv'>
-          <parameter type-id='type-id-3213' is-artificial='yes'/>
+          <parameter type-id='type-id-3216' is-artificial='yes'/>
           <return type-id='type-id-61'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
         <function-decl name='LoadLibrary' mangled-name='_ZN10MyoWrapper11LoadLibraryEv' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='62' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-3212' is-artificial='yes'/>
+          <parameter type-id='type-id-3215' is-artificial='yes'/>
           <return type-id='type-id-61'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
         <function-decl name='UnloadLibrary' mangled-name='_ZN10MyoWrapper13UnloadLibraryEv' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='65' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN10MyoWrapper13UnloadLibraryEv'>
-          <parameter type-id='type-id-3212' is-artificial='yes'/>
+          <parameter type-id='type-id-3215' is-artificial='yes'/>
           <return type-id='type-id-1'/>
         </function-decl>
       </member-function>
       <member-function access='private' const='yes'>
         <function-decl name='LibInit' mangled-name='_ZNK10MyoWrapper7LibInitEPvS0_' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='73' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK10MyoWrapper7LibInitEPvS0_'>
-          <parameter type-id='type-id-3213' is-artificial='yes'/>
+          <parameter type-id='type-id-3216' is-artificial='yes'/>
           <parameter type-id='type-id-2'/>
           <parameter type-id='type-id-2'/>
           <return type-id='type-id-1'/>
@@ -37670,27 +37694,27 @@
       </member-function>
       <member-function access='private' const='yes'>
         <function-decl name='LibFini' mangled-name='_ZNK10MyoWrapper7LibFiniEv' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='79' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK10MyoWrapper7LibFiniEv'>
-          <parameter type-id='type-id-3213' is-artificial='yes'/>
+          <parameter type-id='type-id-3216' is-artificial='yes'/>
           <return type-id='type-id-1'/>
         </function-decl>
       </member-function>
       <member-function access='private' const='yes'>
         <function-decl name='SharedMalloc' mangled-name='_ZNK10MyoWrapper12SharedMallocEm' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='84' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK10MyoWrapper12SharedMallocEm'>
-          <parameter type-id='type-id-3213' is-artificial='yes'/>
+          <parameter type-id='type-id-3216' is-artificial='yes'/>
           <parameter type-id='type-id-4'/>
           <return type-id='type-id-2'/>
         </function-decl>
       </member-function>
       <member-function access='private' const='yes'>
         <function-decl name='SharedFree' mangled-name='_ZNK10MyoWrapper10SharedFreeEPv' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='90' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK10MyoWrapper10SharedFreeEPv'>
-          <parameter type-id='type-id-3213' is-artificial='yes'/>
+          <parameter type-id='type-id-3216' is-artificial='yes'/>
           <parameter type-id='type-id-2'/>
           <return type-id='type-id-1'/>
         </function-decl>
       </member-function>
       <member-function access='private' const='yes'>
         <function-decl name='SharedAlignedMalloc' mangled-name='_ZNK10MyoWrapper19SharedAlignedMallocEmm' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='96' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK10MyoWrapper19SharedAlignedMallocEmm'>
-          <parameter type-id='type-id-3213' is-artificial='yes'/>
+          <parameter type-id='type-id-3216' is-artificial='yes'/>
           <parameter type-id='type-id-4'/>
           <parameter type-id='type-id-4'/>
           <return type-id='type-id-2'/>
@@ -37698,26 +37722,26 @@
       </member-function>
       <member-function access='private' const='yes'>
         <function-decl name='SharedAlignedFree' mangled-name='_ZNK10MyoWrapper17SharedAlignedFreeEPv' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='102' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK10MyoWrapper17SharedAlignedFreeEPv'>
-          <parameter type-id='type-id-3213' is-artificial='yes'/>
+          <parameter type-id='type-id-3216' is-artificial='yes'/>
           <parameter type-id='type-id-2'/>
           <return type-id='type-id-1'/>
         </function-decl>
       </member-function>
       <member-function access='private' const='yes'>
         <function-decl name='Acquire' mangled-name='_ZNK10MyoWrapper7AcquireEv' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='108' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK10MyoWrapper7AcquireEv'>
-          <parameter type-id='type-id-3213' is-artificial='yes'/>
+          <parameter type-id='type-id-3216' is-artificial='yes'/>
           <return type-id='type-id-1'/>
         </function-decl>
       </member-function>
       <member-function access='private' const='yes'>
         <function-decl name='Release' mangled-name='_ZNK10MyoWrapper7ReleaseEv' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='114' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK10MyoWrapper7ReleaseEv'>
-          <parameter type-id='type-id-3213' is-artificial='yes'/>
+          <parameter type-id='type-id-3216' is-artificial='yes'/>
           <return type-id='type-id-1'/>
         </function-decl>
       </member-function>
       <member-function access='private' const='yes'>
         <function-decl name='HostVarTablePropagate' mangled-name='_ZNK10MyoWrapper21HostVarTablePropagateEPvi' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='120' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK10MyoWrapper21HostVarTablePropagateEPvi'>
-          <parameter type-id='type-id-3213' is-artificial='yes'/>
+          <parameter type-id='type-id-3216' is-artificial='yes'/>
           <parameter type-id='type-id-2'/>
           <parameter type-id='type-id-31'/>
           <return type-id='type-id-1'/>
@@ -37725,7 +37749,7 @@
       </member-function>
       <member-function access='private' const='yes'>
         <function-decl name='HostFptrTableRegister' mangled-name='_ZNK10MyoWrapper21HostFptrTableRegisterEPvii' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='125' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK10MyoWrapper21HostFptrTableRegisterEPvii'>
-          <parameter type-id='type-id-3213' is-artificial='yes'/>
+          <parameter type-id='type-id-3216' is-artificial='yes'/>
           <parameter type-id='type-id-2'/>
           <parameter type-id='type-id-31'/>
           <parameter type-id='type-id-31'/>
@@ -37734,7 +37758,7 @@
       </member-function>
       <member-function access='private'>
         <function-decl name='RemoteThunkCall' mangled-name='_ZN10MyoWrapper15RemoteThunkCallEPvS0_i' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='134' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN10MyoWrapper15RemoteThunkCallEPvS0_i'>
-          <parameter type-id='type-id-3212' is-artificial='yes'/>
+          <parameter type-id='type-id-3215' is-artificial='yes'/>
           <parameter type-id='type-id-2'/>
           <parameter type-id='type-id-2'/>
           <parameter type-id='type-id-31'/>
@@ -37743,50 +37767,50 @@
       </member-function>
       <member-function access='private' const='yes'>
         <function-decl name='RemoteCall' mangled-name='_ZNK10MyoWrapper10RemoteCallEPKcPvi' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='140' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK10MyoWrapper10RemoteCallEPKcPvi'>
-          <parameter type-id='type-id-3213' is-artificial='yes'/>
+          <parameter type-id='type-id-3216' is-artificial='yes'/>
           <parameter type-id='type-id-19'/>
           <parameter type-id='type-id-2'/>
           <parameter type-id='type-id-31'/>
-          <return type-id='type-id-3214'/>
+          <return type-id='type-id-3217'/>
         </function-decl>
       </member-function>
       <member-function access='private' const='yes'>
         <function-decl name='GetResult' mangled-name='_ZNK10MyoWrapper9GetResultEPv' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='146' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK10MyoWrapper9GetResultEPv'>
-          <parameter type-id='type-id-3213' is-artificial='yes'/>
-          <parameter type-id='type-id-3214'/>
+          <parameter type-id='type-id-3216' is-artificial='yes'/>
+          <parameter type-id='type-id-3217'/>
           <return type-id='type-id-1'/>
         </function-decl>
       </member-function>
       <member-function access='private' const='yes'>
         <function-decl name='PostInitFuncSupported' mangled-name='_ZNK10MyoWrapper21PostInitFuncSupportedEv' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='151' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK10MyoWrapper21PostInitFuncSupportedEv'>
-          <parameter type-id='type-id-3213' is-artificial='yes'/>
+          <parameter type-id='type-id-3216' is-artificial='yes'/>
           <return type-id='type-id-61'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
         <function-decl name='CreateVtableArena' mangled-name='_ZN10MyoWrapper17CreateVtableArenaEv' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='161' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN10MyoWrapper17CreateVtableArenaEv'>
-          <parameter type-id='type-id-3212' is-artificial='yes'/>
+          <parameter type-id='type-id-3215' is-artificial='yes'/>
           <return type-id='type-id-1'/>
         </function-decl>
       </member-function>
       <member-function access='private' const='yes'>
         <function-decl name='GetVtableArena' mangled-name='_ZNK10MyoWrapper14GetVtableArenaEv' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='163' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK10MyoWrapper14GetVtableArenaEv'>
-          <parameter type-id='type-id-3213' is-artificial='yes'/>
+          <parameter type-id='type-id-3216' is-artificial='yes'/>
           <return type-id='type-id-98'/>
         </function-decl>
       </member-function>
       <member-function access='private' const='yes'>
         <function-decl name='ArenaCreate' mangled-name='_ZNK10MyoWrapper11ArenaCreateE16MyoOwnershipTypeiPj' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='167' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK10MyoWrapper11ArenaCreateE16MyoOwnershipTypeiPj'>
-          <parameter type-id='type-id-3213' is-artificial='yes'/>
-          <parameter type-id='type-id-3192'/>
-          <parameter type-id='type-id-31'/>
+          <parameter type-id='type-id-3216' is-artificial='yes'/>
           <parameter type-id='type-id-3193'/>
+          <parameter type-id='type-id-31'/>
+          <parameter type-id='type-id-3194'/>
           <return type-id='type-id-1'/>
         </function-decl>
       </member-function>
       <member-function access='private' const='yes'>
         <function-decl name='SharedAlignedArenaMalloc' mangled-name='_ZNK10MyoWrapper24SharedAlignedArenaMallocEjmm' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='178' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK10MyoWrapper24SharedAlignedArenaMallocEjmm'>
-          <parameter type-id='type-id-3213' is-artificial='yes'/>
+          <parameter type-id='type-id-3216' is-artificial='yes'/>
           <parameter type-id='type-id-98'/>
           <parameter type-id='type-id-4'/>
           <parameter type-id='type-id-4'/>
@@ -37795,7 +37819,7 @@
       </member-function>
       <member-function access='private' const='yes'>
         <function-decl name='SharedAlignedArenaFree' mangled-name='_ZNK10MyoWrapper22SharedAlignedArenaFreeEjPv' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='190' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK10MyoWrapper22SharedAlignedArenaFreeEjPv'>
-          <parameter type-id='type-id-3213' is-artificial='yes'/>
+          <parameter type-id='type-id-3216' is-artificial='yes'/>
           <parameter type-id='type-id-98'/>
           <parameter type-id='type-id-2'/>
           <return type-id='type-id-2'/>
@@ -37803,34 +37827,34 @@
       </member-function>
       <member-function access='private' const='yes'>
         <function-decl name='ArenaAcquire' mangled-name='_ZNK10MyoWrapper12ArenaAcquireEj' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='200' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK10MyoWrapper12ArenaAcquireEj'>
-          <parameter type-id='type-id-3213' is-artificial='yes'/>
+          <parameter type-id='type-id-3216' is-artificial='yes'/>
           <parameter type-id='type-id-98'/>
           <return type-id='type-id-1'/>
         </function-decl>
       </member-function>
       <member-function access='private' const='yes'>
         <function-decl name='ArenaRelease' mangled-name='_ZNK10MyoWrapper12ArenaReleaseEj' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='209' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK10MyoWrapper12ArenaReleaseEj'>
-          <parameter type-id='type-id-3213' is-artificial='yes'/>
+          <parameter type-id='type-id-3216' is-artificial='yes'/>
           <parameter type-id='type-id-98'/>
           <return type-id='type-id-1'/>
         </function-decl>
       </member-function>
       <member-function access='private' const='yes'>
         <function-decl name='CheckResult' mangled-name='_ZNK10MyoWrapper11CheckResultEPKc8MyoError' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='219' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK10MyoWrapper11CheckResultEPKc8MyoError'>
-          <parameter type-id='type-id-3213' is-artificial='yes'/>
+          <parameter type-id='type-id-3216' is-artificial='yes'/>
           <parameter type-id='type-id-19'/>
-          <parameter type-id='type-id-3215'/>
+          <parameter type-id='type-id-3218'/>
           <return type-id='type-id-1'/>
         </function-decl>
       </member-function>
       <member-function access='private' constructor='yes'>
         <function-decl name='MyoWrapper' mangled-name='_ZN10MyoWrapperC2Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='55' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN10MyoWrapperC1Ev'>
-          <parameter type-id='type-id-3212' is-artificial='yes'/>
+          <parameter type-id='type-id-3215' is-artificial='yes'/>
           <return type-id='type-id-1'/>
         </function-decl>
       </member-function>
     </class-decl>
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='8MyoError' filepath='../../../gcc/liboffloadmic/include/myo/myotypes.h' line='61' column='1' id='type-id-3216'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='8MyoError' filepath='../../../gcc/liboffloadmic/include/myo/myotypes.h' line='61' column='1' id='type-id-3219'>
       <underlying-type type-id='type-id-156'/>
       <enumerator name='MYO_SUCCESS' value='0'/>
       <enumerator name='MYO_ERROR' value='1'/>
@@ -37845,100 +37869,100 @@
       <enumerator name='MYO_EOF' value='10'/>
       <enumerator name='MYO_FEATURE_NOT_IMPLEMENTED' value='-1'/>
     </enum-decl>
-    <typedef-decl name='MyoError' type-id='type-id-3216' filepath='../../../gcc/liboffloadmic/include/myo/myotypes.h' line='79' column='1' id='type-id-3215'/>
-    <pointer-type-def type-id='type-id-3217' size-in-bits='64' id='type-id-3197'/>
-    <pointer-type-def type-id='type-id-3218' size-in-bits='64' id='type-id-3198'/>
-    <pointer-type-def type-id='type-id-3219' size-in-bits='64' id='type-id-3199'/>
+    <typedef-decl name='MyoError' type-id='type-id-3219' filepath='../../../gcc/liboffloadmic/include/myo/myotypes.h' line='79' column='1' id='type-id-3218'/>
     <pointer-type-def type-id='type-id-3220' size-in-bits='64' id='type-id-3200'/>
     <pointer-type-def type-id='type-id-3221' size-in-bits='64' id='type-id-3201'/>
     <pointer-type-def type-id='type-id-3222' size-in-bits='64' id='type-id-3202'/>
     <pointer-type-def type-id='type-id-3223' size-in-bits='64' id='type-id-3203'/>
     <pointer-type-def type-id='type-id-3224' size-in-bits='64' id='type-id-3204'/>
-    <typedef-decl name='MyoiRFuncCallHandle' type-id='type-id-2' filepath='../../../gcc/liboffloadmic/include/myo/myoimpl.h' line='193' column='1' id='type-id-3214'/>
     <pointer-type-def type-id='type-id-3225' size-in-bits='64' id='type-id-3205'/>
     <pointer-type-def type-id='type-id-3226' size-in-bits='64' id='type-id-3206'/>
     <pointer-type-def type-id='type-id-3227' size-in-bits='64' id='type-id-3207'/>
+    <typedef-decl name='MyoiRFuncCallHandle' type-id='type-id-2' filepath='../../../gcc/liboffloadmic/include/myo/myoimpl.h' line='193' column='1' id='type-id-3217'/>
     <pointer-type-def type-id='type-id-3228' size-in-bits='64' id='type-id-3208'/>
     <pointer-type-def type-id='type-id-3229' size-in-bits='64' id='type-id-3209'/>
     <pointer-type-def type-id='type-id-3230' size-in-bits='64' id='type-id-3210'/>
     <pointer-type-def type-id='type-id-3231' size-in-bits='64' id='type-id-3211'/>
-    <pointer-type-def type-id='type-id-3196' size-in-bits='64' id='type-id-3212'/>
-    <qualified-type-def type-id='type-id-3196' const='yes' id='type-id-3232'/>
-    <pointer-type-def type-id='type-id-3232' size-in-bits='64' id='type-id-3213'/>
-    <function-type size-in-bits='64' id='type-id-3221'>
-      <return type-id='type-id-3215'/>
+    <pointer-type-def type-id='type-id-3232' size-in-bits='64' id='type-id-3212'/>
+    <pointer-type-def type-id='type-id-3233' size-in-bits='64' id='type-id-3213'/>
+    <pointer-type-def type-id='type-id-3234' size-in-bits='64' id='type-id-3214'/>
+    <pointer-type-def type-id='type-id-3199' size-in-bits='64' id='type-id-3215'/>
+    <qualified-type-def type-id='type-id-3199' const='yes' id='type-id-3235'/>
+    <pointer-type-def type-id='type-id-3235' size-in-bits='64' id='type-id-3216'/>
+    <function-type size-in-bits='64' id='type-id-3224'>
+      <return type-id='type-id-3218'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-3231'>
+    <function-type size-in-bits='64' id='type-id-3234'>
       <parameter type-id='type-id-31'/>
-      <return type-id='type-id-3215'/>
+      <return type-id='type-id-3218'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-3233'>
+      <parameter type-id='type-id-98'/>
+      <return type-id='type-id-3218'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-3230'>
-      <parameter type-id='type-id-98'/>
-      <return type-id='type-id-3215'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-3227'>
-      <parameter type-id='type-id-3192'/>
-      <parameter type-id='type-id-31'/>
       <parameter type-id='type-id-3193'/>
-      <return type-id='type-id-3215'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-3226'>
-      <parameter type-id='type-id-3214'/>
-      <return type-id='type-id-3215'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-3222'>
-      <parameter type-id='type-id-2'/>
       <parameter type-id='type-id-31'/>
-      <return type-id='type-id-3215'/>
+      <parameter type-id='type-id-3194'/>
+      <return type-id='type-id-3218'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-3223'>
-      <parameter type-id='type-id-2'/>
-      <parameter type-id='type-id-31'/>
-      <parameter type-id='type-id-31'/>
-      <return type-id='type-id-3215'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-3217'>
-      <parameter type-id='type-id-2'/>
-      <parameter type-id='type-id-2'/>
-      <return type-id='type-id-3215'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-3224'>
-      <parameter type-id='type-id-2'/>
-      <parameter type-id='type-id-2'/>
-      <parameter type-id='type-id-31'/>
-      <return type-id='type-id-3215'/>
+    <function-type size-in-bits='64' id='type-id-3229'>
+      <parameter type-id='type-id-3217'/>
+      <return type-id='type-id-3218'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-3225'>
+      <parameter type-id='type-id-2'/>
+      <parameter type-id='type-id-31'/>
+      <return type-id='type-id-3218'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-3226'>
+      <parameter type-id='type-id-2'/>
+      <parameter type-id='type-id-31'/>
+      <parameter type-id='type-id-31'/>
+      <return type-id='type-id-3218'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-3220'>
+      <parameter type-id='type-id-2'/>
+      <parameter type-id='type-id-2'/>
+      <return type-id='type-id-3218'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-3227'>
+      <parameter type-id='type-id-2'/>
+      <parameter type-id='type-id-2'/>
+      <parameter type-id='type-id-31'/>
+      <return type-id='type-id-3218'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-3228'>
       <parameter type-id='type-id-19'/>
       <parameter type-id='type-id-2'/>
       <parameter type-id='type-id-31'/>
-      <return type-id='type-id-3214'/>
+      <return type-id='type-id-3217'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-3219'>
+    <function-type size-in-bits='64' id='type-id-3222'>
       <parameter type-id='type-id-2' name='target_image'/>
       <return type-id='type-id-1'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-3189'>
+    <function-type size-in-bits='64' id='type-id-3190'>
       <parameter type-id='type-id-2'/>
       <parameter type-id='type-id-2'/>
       <return type-id='type-id-1'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-3228'>
+    <function-type size-in-bits='64' id='type-id-3231'>
       <parameter type-id='type-id-98' name='arena'/>
       <parameter type-id='type-id-4' name='size'/>
       <parameter type-id='type-id-4' name='align'/>
       <return type-id='type-id-2'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-3229'>
+    <function-type size-in-bits='64' id='type-id-3232'>
       <parameter type-id='type-id-98'/>
       <parameter type-id='type-id-2'/>
       <return type-id='type-id-2'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-3218'>
+    <function-type size-in-bits='64' id='type-id-3221'>
       <parameter type-id='type-id-4' name='size'/>
       <return type-id='type-id-2'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-3220'>
+    <function-type size-in-bits='64' id='type-id-3223'>
       <parameter type-id='type-id-4' name='size'/>
       <parameter type-id='type-id-4' name='align'/>
       <return type-id='type-id-2'/>
@@ -37950,117 +37974,117 @@
 
 
 
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-3233' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload.h' line='305' column='1' id='type-id-3234'>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-3236' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload.h' line='305' column='1' id='type-id-3237'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='lock' type-id='type-id-3235' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload.h' line='306' column='1'/>
+        <var-decl name='lock' type-id='type-id-3238' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload.h' line='306' column='1'/>
       </data-member>
     </class-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-3235' visibility='default' filepath='./../libgomp/omp.h' line='42' column='1' id='type-id-3236'>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-3238' visibility='default' filepath='./../libgomp/omp.h' line='42' column='1' id='type-id-3239'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='_x' type-id='type-id-1717' visibility='default' filepath='./../libgomp/omp.h' line='44' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='omp_nest_lock_t' type-id='type-id-3236' filepath='./../libgomp/omp.h' line='45' column='1' id='type-id-3235'/>
-    <typedef-decl name='omp_nest_lock_target_t' type-id='type-id-3234' filepath='../../../gcc/liboffloadmic/runtime/offload.h' line='307' column='1' id='type-id-3233'/>
-    <pointer-type-def type-id='type-id-3233' size-in-bits='64' id='type-id-3237'/>
+    <typedef-decl name='omp_nest_lock_t' type-id='type-id-3239' filepath='./../libgomp/omp.h' line='45' column='1' id='type-id-3238'/>
+    <typedef-decl name='omp_nest_lock_target_t' type-id='type-id-3237' filepath='../../../gcc/liboffloadmic/runtime/offload.h' line='307' column='1' id='type-id-3236'/>
+    <pointer-type-def type-id='type-id-3236' size-in-bits='64' id='type-id-3240'/>
     <function-decl name='omp_test_nest_lock_target' mangled-name='omp_test_nest_lock_target' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='454' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='omp_test_nest_lock_target'>
       <parameter type-id='type-id-2067' name='target_type' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='455' column='1'/>
       <parameter type-id='type-id-31' name='target_number' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='456' column='1'/>
-      <parameter type-id='type-id-3237' name='lock' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='457' column='1'/>
+      <parameter type-id='type-id-3240' name='lock' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='457' column='1'/>
       <return type-id='type-id-31'/>
     </function-decl>
     <function-decl name='omp_unset_nest_lock_target' mangled-name='omp_unset_nest_lock_target' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='431' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='omp_unset_nest_lock_target'>
       <parameter type-id='type-id-2067' name='target_type' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='432' column='1'/>
       <parameter type-id='type-id-31' name='target_number' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='433' column='1'/>
-      <parameter type-id='type-id-3237' name='lock' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='434' column='1'/>
+      <parameter type-id='type-id-3240' name='lock' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='434' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='omp_set_nest_lock_target' mangled-name='omp_set_nest_lock_target' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='408' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='omp_set_nest_lock_target'>
       <parameter type-id='type-id-2067' name='target_type' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='432' column='1'/>
       <parameter type-id='type-id-31' name='target_number' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='433' column='1'/>
-      <parameter type-id='type-id-3237' name='lock' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='434' column='1'/>
+      <parameter type-id='type-id-3240' name='lock' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='434' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='omp_destroy_nest_lock_target' mangled-name='omp_destroy_nest_lock_target' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='385' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='omp_destroy_nest_lock_target'>
       <parameter type-id='type-id-2067' name='target_type' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='432' column='1'/>
       <parameter type-id='type-id-31' name='target_number' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='433' column='1'/>
-      <parameter type-id='type-id-3237' name='lock' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='434' column='1'/>
+      <parameter type-id='type-id-3240' name='lock' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='434' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='omp_init_nest_lock_target' mangled-name='omp_init_nest_lock_target' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='362' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='omp_init_nest_lock_target'>
       <parameter type-id='type-id-2067' name='target_type' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='432' column='1'/>
       <parameter type-id='type-id-31' name='target_number' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='433' column='1'/>
-      <parameter type-id='type-id-3237' name='lock' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='434' column='1'/>
+      <parameter type-id='type-id-3240' name='lock' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='434' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='32' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-3238' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload.h' line='269' column='1' id='type-id-3239'>
+    <class-decl name='__anonymous_struct__' size-in-bits='32' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-3241' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload.h' line='269' column='1' id='type-id-3242'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='lock' type-id='type-id-3240' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload.h' line='270' column='1'/>
+        <var-decl name='lock' type-id='type-id-3243' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload.h' line='270' column='1'/>
       </data-member>
     </class-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='32' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-3240' visibility='default' filepath='./../libgomp/omp.h' line='36' column='1' id='type-id-3241'>
+    <class-decl name='__anonymous_struct__' size-in-bits='32' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-3243' visibility='default' filepath='./../libgomp/omp.h' line='36' column='1' id='type-id-3244'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='_x' type-id='type-id-3242' visibility='default' filepath='./../libgomp/omp.h' line='38' column='1'/>
+        <var-decl name='_x' type-id='type-id-3245' visibility='default' filepath='./../libgomp/omp.h' line='38' column='1'/>
       </data-member>
     </class-decl>
 
-    <array-type-def dimensions='1' type-id='type-id-382' size-in-bits='32' id='type-id-3242'>
+    <array-type-def dimensions='1' type-id='type-id-382' size-in-bits='32' id='type-id-3245'>
       <subrange length='4' type-id='type-id-40' id='type-id-285'/>
 
     </array-type-def>
-    <typedef-decl name='omp_lock_t' type-id='type-id-3241' filepath='./../libgomp/omp.h' line='39' column='1' id='type-id-3240'/>
-    <typedef-decl name='omp_lock_target_t' type-id='type-id-3239' filepath='../../../gcc/liboffloadmic/runtime/offload.h' line='271' column='1' id='type-id-3238'/>
-    <pointer-type-def type-id='type-id-3238' size-in-bits='64' id='type-id-3243'/>
+    <typedef-decl name='omp_lock_t' type-id='type-id-3244' filepath='./../libgomp/omp.h' line='39' column='1' id='type-id-3243'/>
+    <typedef-decl name='omp_lock_target_t' type-id='type-id-3242' filepath='../../../gcc/liboffloadmic/runtime/offload.h' line='271' column='1' id='type-id-3241'/>
+    <pointer-type-def type-id='type-id-3241' size-in-bits='64' id='type-id-3246'/>
     <function-decl name='omp_test_lock_target' mangled-name='omp_test_lock_target' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='327' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='omp_test_lock_target'>
       <parameter type-id='type-id-2067' name='target_type' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='328' column='1'/>
       <parameter type-id='type-id-31' name='target_number' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='329' column='1'/>
-      <parameter type-id='type-id-3243' name='lock' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='330' column='1'/>
+      <parameter type-id='type-id-3246' name='lock' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='330' column='1'/>
       <return type-id='type-id-31'/>
     </function-decl>
     <function-decl name='omp_unset_lock_target' mangled-name='omp_unset_lock_target' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='304' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='omp_unset_lock_target'>
       <parameter type-id='type-id-2067' name='target_type' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='305' column='1'/>
       <parameter type-id='type-id-31' name='target_number' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='306' column='1'/>
-      <parameter type-id='type-id-3243' name='lock' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='307' column='1'/>
+      <parameter type-id='type-id-3246' name='lock' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='307' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='omp_set_lock_target' mangled-name='omp_set_lock_target' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='281' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='omp_set_lock_target'>
       <parameter type-id='type-id-2067' name='target_type' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='305' column='1'/>
       <parameter type-id='type-id-31' name='target_number' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='306' column='1'/>
-      <parameter type-id='type-id-3243' name='lock' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='307' column='1'/>
+      <parameter type-id='type-id-3246' name='lock' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='307' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='omp_destroy_lock_target' mangled-name='omp_destroy_lock_target' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='258' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='omp_destroy_lock_target'>
       <parameter type-id='type-id-2067' name='target_type' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='305' column='1'/>
       <parameter type-id='type-id-31' name='target_number' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='306' column='1'/>
-      <parameter type-id='type-id-3243' name='lock' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='307' column='1'/>
+      <parameter type-id='type-id-3246' name='lock' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='307' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='omp_init_lock_target' mangled-name='omp_init_lock_target' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='235' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='omp_init_lock_target'>
       <parameter type-id='type-id-2067' name='target_type' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='305' column='1'/>
       <parameter type-id='type-id-31' name='target_number' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='306' column='1'/>
-      <parameter type-id='type-id-3243' name='lock' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='307' column='1'/>
+      <parameter type-id='type-id-3246' name='lock' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='307' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <enum-decl name='omp_sched_t' filepath='./../libgomp/omp.h' line='48' column='1' id='type-id-3244'>
+    <enum-decl name='omp_sched_t' filepath='./../libgomp/omp.h' line='48' column='1' id='type-id-3247'>
       <underlying-type type-id='type-id-156'/>
       <enumerator name='omp_sched_static' value='1'/>
       <enumerator name='omp_sched_dynamic' value='2'/>
       <enumerator name='omp_sched_guided' value='3'/>
       <enumerator name='omp_sched_auto' value='4'/>
     </enum-decl>
-    <typedef-decl name='omp_sched_t' type-id='type-id-3244' filepath='./../libgomp/omp.h' line='54' column='1' id='type-id-3245'/>
-    <pointer-type-def type-id='type-id-3245' size-in-bits='64' id='type-id-3246'/>
+    <typedef-decl name='omp_sched_t' type-id='type-id-3247' filepath='./../libgomp/omp.h' line='54' column='1' id='type-id-3248'/>
+    <pointer-type-def type-id='type-id-3248' size-in-bits='64' id='type-id-3249'/>
     <function-decl name='omp_get_schedule_target' mangled-name='omp_get_schedule_target' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='202' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='omp_get_schedule_target'>
       <parameter type-id='type-id-2067' name='target_type' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='203' column='1'/>
       <parameter type-id='type-id-31' name='target_number' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='204' column='1'/>
-      <parameter type-id='type-id-3246' name='kind' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='205' column='1'/>
+      <parameter type-id='type-id-3249' name='kind' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='205' column='1'/>
       <parameter type-id='type-id-2841' name='modifier' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='206' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='omp_set_schedule_target' mangled-name='omp_set_schedule_target' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='171' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='omp_set_schedule_target'>
       <parameter type-id='type-id-2067' name='target_type' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='172' column='1'/>
       <parameter type-id='type-id-31' name='target_number' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='173' column='1'/>
-      <parameter type-id='type-id-3245' name='kind' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='174' column='1'/>
+      <parameter type-id='type-id-3248' name='kind' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='174' column='1'/>
       <parameter type-id='type-id-31' name='modifier' filepath='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' line='175' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
@@ -38144,14 +38168,14 @@
 
 
 
-      <class-decl name='_Setprecision' size-in-bits='32' is-struct='yes' visibility='default' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/iomanip' line='185' column='1' id='type-id-3247'>
+      <class-decl name='_Setprecision' size-in-bits='32' is-struct='yes' visibility='default' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/iomanip' line='185' column='1' id='type-id-3250'>
         <data-member access='public' layout-offset-in-bits='0'>
           <var-decl name='_M_n' type-id='type-id-31' visibility='default' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/iomanip' line='185' column='1'/>
         </data-member>
       </class-decl>
       <function-decl name='setprecision' mangled-name='_ZSt12setprecisioni' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/iomanip' line='195' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt12setprecisioni'>
         <parameter type-id='type-id-31'/>
-        <return type-id='type-id-3247'/>
+        <return type-id='type-id-3250'/>
       </function-decl>
       <function-decl name='fixed' mangled-name='_ZSt5fixedRSt8ios_base' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/ios_base.h' line='1035' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt5fixedRSt8ios_base'>
         <parameter type-id='type-id-157'/>
@@ -38162,45 +38186,45 @@
 
 
 
-    <typedef-decl name='__clock_t' type-id='type-id-14' filepath='/usr/include/bits/types.h' line='135' column='1' id='type-id-3248'/>
-    <typedef-decl name='clock_t' type-id='type-id-3248' filepath='/usr/include/time.h' line='59' column='1' id='type-id-3249'/>
+    <typedef-decl name='__clock_t' type-id='type-id-14' filepath='/usr/include/bits/types.h' line='135' column='1' id='type-id-3251'/>
+    <typedef-decl name='clock_t' type-id='type-id-3251' filepath='/usr/include/time.h' line='59' column='1' id='type-id-3252'/>
     <function-decl name='clock' filepath='/usr/include/time.h' line='189' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <return type-id='type-id-3249'/>
+      <return type-id='type-id-3252'/>
     </function-decl>
-    <typedef-decl name='__time_t' type-id='type-id-14' filepath='/usr/include/bits/types.h' line='139' column='1' id='type-id-3250'/>
-    <typedef-decl name='time_t' type-id='type-id-3250' filepath='/usr/include/time.h' line='75' column='1' id='type-id-3251'/>
+    <typedef-decl name='__time_t' type-id='type-id-14' filepath='/usr/include/bits/types.h' line='139' column='1' id='type-id-3253'/>
+    <typedef-decl name='time_t' type-id='type-id-3253' filepath='/usr/include/time.h' line='75' column='1' id='type-id-3254'/>
     <function-decl name='difftime' filepath='/usr/include/time.h' line='195' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-3251'/>
-      <parameter type-id='type-id-3251'/>
+      <parameter type-id='type-id-3254'/>
+      <parameter type-id='type-id-3254'/>
       <return type-id='type-id-297'/>
     </function-decl>
-    <pointer-type-def type-id='type-id-293' size-in-bits='64' id='type-id-3252'/>
+    <pointer-type-def type-id='type-id-293' size-in-bits='64' id='type-id-3255'/>
     <function-decl name='mktime' filepath='/usr/include/time.h' line='199' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-3252'/>
-      <return type-id='type-id-3251'/>
+      <parameter type-id='type-id-3255'/>
+      <return type-id='type-id-3254'/>
     </function-decl>
-    <pointer-type-def type-id='type-id-3251' size-in-bits='64' id='type-id-3253'/>
+    <pointer-type-def type-id='type-id-3254' size-in-bits='64' id='type-id-3256'/>
     <function-decl name='time' filepath='/usr/include/time.h' line='192' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-3253'/>
-      <return type-id='type-id-3251'/>
+      <parameter type-id='type-id-3256'/>
+      <return type-id='type-id-3254'/>
     </function-decl>
     <function-decl name='asctime' filepath='/usr/include/time.h' line='261' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-295'/>
       <return type-id='type-id-6'/>
     </function-decl>
-    <qualified-type-def type-id='type-id-3251' const='yes' id='type-id-3254'/>
-    <pointer-type-def type-id='type-id-3254' size-in-bits='64' id='type-id-3255'/>
+    <qualified-type-def type-id='type-id-3254' const='yes' id='type-id-3257'/>
+    <pointer-type-def type-id='type-id-3257' size-in-bits='64' id='type-id-3258'/>
     <function-decl name='ctime' filepath='/usr/include/time.h' line='264' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-3255'/>
+      <parameter type-id='type-id-3258'/>
       <return type-id='type-id-6'/>
     </function-decl>
     <function-decl name='gmtime' filepath='/usr/include/time.h' line='239' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-3255'/>
-      <return type-id='type-id-3252'/>
+      <parameter type-id='type-id-3258'/>
+      <return type-id='type-id-3255'/>
     </function-decl>
     <function-decl name='localtime' filepath='/usr/include/time.h' line='243' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-3255'/>
-      <return type-id='type-id-3252'/>
+      <parameter type-id='type-id-3258'/>
+      <return type-id='type-id-3255'/>
     </function-decl>
     <function-decl name='strftime' filepath='/usr/include/time.h' line='205' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-6'/>
@@ -38214,73 +38238,73 @@
     <var-decl name='offload_report_enabled' type-id='type-id-31' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_timer.h' line='77' column='1'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C99'>
-    <class-decl name='ORSLBusySet' size-in-bits='1088' is-struct='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='52' column='1' id='type-id-3256'>
+    <class-decl name='ORSLBusySet' size-in-bits='1088' is-struct='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='52' column='1' id='type-id-3259'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='type' type-id='type-id-3257' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='53' column='1'/>
+        <var-decl name='type' type-id='type-id-3260' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='53' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='cpu_set' type-id='type-id-3258' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='55' column='1'/>
+        <var-decl name='cpu_set' type-id='type-id-3261' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='55' column='1'/>
       </data-member>
     </class-decl>
-    <enum-decl name='ORSLBusySetType' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='45' column='1' id='type-id-3259'>
+    <enum-decl name='ORSLBusySetType' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='45' column='1' id='type-id-3262'>
       <underlying-type type-id='type-id-156'/>
       <enumerator name='BUSY_SET_EMPTY' value='0'/>
       <enumerator name='BUSY_SET_PARTIAL' value='1'/>
       <enumerator name='BUSY_SET_FULL' value='2'/>
     </enum-decl>
-    <typedef-decl name='BusySetType' type-id='type-id-3259' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='49' column='1' id='type-id-3257'/>
-    <class-decl name='__anonymous_struct__' size-in-bits='1024' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-3258' visibility='default' filepath='/usr/include/bits/sched.h' line='125' column='1' id='type-id-3260'>
+    <typedef-decl name='BusySetType' type-id='type-id-3262' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='49' column='1' id='type-id-3260'/>
+    <class-decl name='__anonymous_struct__' size-in-bits='1024' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-3261' visibility='default' filepath='/usr/include/bits/sched.h' line='125' column='1' id='type-id-3263'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='__bits' type-id='type-id-3261' visibility='default' filepath='/usr/include/bits/sched.h' line='127' column='1'/>
+        <var-decl name='__bits' type-id='type-id-3264' visibility='default' filepath='/usr/include/bits/sched.h' line='127' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='__cpu_mask' type-id='type-id-3' filepath='/usr/include/bits/sched.h' line='118' column='1' id='type-id-3262'/>
+    <typedef-decl name='__cpu_mask' type-id='type-id-3' filepath='/usr/include/bits/sched.h' line='118' column='1' id='type-id-3265'/>
 
-    <array-type-def dimensions='1' type-id='type-id-3262' size-in-bits='1024' id='type-id-3261'>
+    <array-type-def dimensions='1' type-id='type-id-3265' size-in-bits='1024' id='type-id-3264'>
       <subrange length='16' type-id='type-id-40' id='type-id-332'/>
 
     </array-type-def>
-    <typedef-decl name='cpu_set_t' type-id='type-id-3260' filepath='/usr/include/bits/sched.h' line='128' column='1' id='type-id-3258'/>
-    <typedef-decl name='ORSLBusySet' type-id='type-id-3256' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='62' column='1' id='type-id-3263'/>
-    <qualified-type-def type-id='type-id-3263' const='yes' id='type-id-3264'/>
-    <pointer-type-def type-id='type-id-3264' size-in-bits='64' id='type-id-3265'/>
-    <typedef-decl name='ORSLTag' type-id='type-id-6' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='65' column='1' id='type-id-3266'/>
+    <typedef-decl name='cpu_set_t' type-id='type-id-3263' filepath='/usr/include/bits/sched.h' line='128' column='1' id='type-id-3261'/>
+    <typedef-decl name='ORSLBusySet' type-id='type-id-3259' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='62' column='1' id='type-id-3266'/>
     <qualified-type-def type-id='type-id-3266' const='yes' id='type-id-3267'/>
+    <pointer-type-def type-id='type-id-3267' size-in-bits='64' id='type-id-3268'/>
+    <typedef-decl name='ORSLTag' type-id='type-id-6' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='65' column='1' id='type-id-3269'/>
+    <qualified-type-def type-id='type-id-3269' const='yes' id='type-id-3270'/>
     <function-decl name='ORSLRelease' mangled-name='ORSLRelease' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='327' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='ORSLRelease'>
       <parameter type-id='type-id-222' name='n' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='327' column='1'/>
       <parameter type-id='type-id-2068' name='inds' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='327' column='1'/>
-      <parameter type-id='type-id-3265' name='bsets' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='328' column='1'/>
-      <parameter type-id='type-id-3267' name='tag' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='329' column='1'/>
+      <parameter type-id='type-id-3268' name='bsets' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='328' column='1'/>
+      <parameter type-id='type-id-3270' name='tag' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='329' column='1'/>
       <return type-id='type-id-31'/>
     </function-decl>
-    <enum-decl name='ORSLPartialGranularity' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='148' column='1' id='type-id-3268'>
+    <enum-decl name='ORSLPartialGranularity' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='148' column='1' id='type-id-3271'>
       <underlying-type type-id='type-id-156'/>
       <enumerator name='GRAN_CARD' value='0'/>
       <enumerator name='GRAN_THREAD' value='1'/>
     </enum-decl>
-    <typedef-decl name='ORSLPartialGranularity' type-id='type-id-3268' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='151' column='1' id='type-id-3269'/>
-    <qualified-type-def type-id='type-id-3269' const='yes' id='type-id-3270'/>
-    <pointer-type-def type-id='type-id-3263' size-in-bits='64' id='type-id-3271'/>
+    <typedef-decl name='ORSLPartialGranularity' type-id='type-id-3271' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='151' column='1' id='type-id-3272'/>
+    <qualified-type-def type-id='type-id-3272' const='yes' id='type-id-3273'/>
+    <pointer-type-def type-id='type-id-3266' size-in-bits='64' id='type-id-3274'/>
     <function-decl name='ORSLReservePartial' mangled-name='ORSLReservePartial' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='290' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='ORSLReservePartial'>
-      <parameter type-id='type-id-3270' name='gran' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='290' column='1'/>
+      <parameter type-id='type-id-3273' name='gran' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='290' column='1'/>
       <parameter type-id='type-id-222' name='n' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='290' column='1'/>
       <parameter type-id='type-id-2068' name='inds' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='291' column='1'/>
-      <parameter type-id='type-id-3271' name='bsets' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='291' column='1'/>
-      <parameter type-id='type-id-3267' name='tag' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='292' column='1'/>
+      <parameter type-id='type-id-3274' name='bsets' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='291' column='1'/>
+      <parameter type-id='type-id-3270' name='tag' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='292' column='1'/>
       <return type-id='type-id-31'/>
     </function-decl>
     <function-decl name='ORSLTryReserve' mangled-name='ORSLTryReserve' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='262' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='ORSLTryReserve'>
       <parameter type-id='type-id-222' name='n' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='327' column='1'/>
       <parameter type-id='type-id-2068' name='inds' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='327' column='1'/>
-      <parameter type-id='type-id-3265' name='bsets' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='328' column='1'/>
-      <parameter type-id='type-id-3267' name='tag' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='329' column='1'/>
+      <parameter type-id='type-id-3268' name='bsets' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='328' column='1'/>
+      <parameter type-id='type-id-3270' name='tag' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='329' column='1'/>
       <return type-id='type-id-31'/>
     </function-decl>
     <function-decl name='ORSLReserve' mangled-name='ORSLReserve' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='230' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='ORSLReserve'>
       <parameter type-id='type-id-222' name='n' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='230' column='1'/>
       <parameter type-id='type-id-2068' name='inds' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='230' column='1'/>
-      <parameter type-id='type-id-3265' name='bsets' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='231' column='1'/>
-      <parameter type-id='type-id-3267' name='tag' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='232' column='1'/>
+      <parameter type-id='type-id-3268' name='bsets' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='231' column='1'/>
+      <parameter type-id='type-id-3270' name='tag' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='232' column='1'/>
       <return type-id='type-id-31'/>
     </function-decl>
   </abi-instr>

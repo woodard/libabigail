@@ -10756,20 +10756,39 @@ struct suppression_categorization_visitor : public diff_node_visitor
     bool has_non_suppressed_child = false;
     bool has_non_empty_child = false;
     bool has_suppressed_child = false;
+    bool has_non_private_child = false;
+    bool has_private_child = false;
 
     if (// A node to which we can propagate the "SUPPRESSED_CATEGORY"
+	// (or the PRIVATE_TYPE_CATEGORY for the same matter)
 	// category from its children is a node which:
 	//
 	//  1/ hasn't been suppressed already
-	//  2/ and has no local change (unless it's pointer diff
-	//     node).
 	//
-	// Note that all pointer diff node changes are potentially
-	// considered local, i.e, local changes of the pointed-to-type
-	// are considered local to the pointer itself.
+	//  2/ and has no local change (unless it's a pointer,
+	//  reference or qualified diff node).
+	//
+	//  Note that qualified type diff nodes are a bit special.
+	//  The local changes of the underlying type are considered
+	//  local for the qualified type, just like for
+	//  pointer/reference types.  But then the qualified type
+	//  itself can have local changes of its own, and those
+	//  changes are of the kind LOCAL_NON_TYPE_CHANGE_KIND.  So a
+	//  qualified type which have local changes that are *NOT* of
+	//  LOCAL_NON_TYPE_CHANGE_KIND (or that has no local changes
+	//  at all) and which is in the PRIVATE_TYPE_CATEGORY or
+	//  SUPPRESSED_CATEGORY can see these categories be
+	//  propagated.
+	//
+	// Note that all pointer/reference diff node changes are
+	// potentially considered local, i.e, local changes of the
+	// pointed-to-type are considered local to the pointer itself.
 	!(d->get_category() & SUPPRESSED_CATEGORY)
 	&& (!d->has_local_changes()
-	    || is_pointer_diff(d)))
+	    || is_pointer_diff(d)
+	    || is_reference_diff(d)
+	    || (is_qualified_type_diff(d)
+		&& (!(d->has_local_changes() & LOCAL_NON_TYPE_CHANGE_KIND)))))
       {
 	// Note that we handle private diff nodes differently from
 	// generally suppressed diff nodes.  E.g, it's not because a
@@ -10788,8 +10807,24 @@ struct suppression_categorization_visitor : public diff_node_visitor
 		has_non_empty_child = true;
 		if (child->get_class_of_equiv_category() & SUPPRESSED_CATEGORY)
 		  has_suppressed_child = true;
+		else if (child->get_class_of_equiv_category()
+			 & PRIVATE_TYPE_CATEGORY)
+		  // Propagation of the PRIVATE_TYPE_CATEGORY is going
+		  // to be handled later below.
+		  ;
 		else
 		  has_non_suppressed_child = true;
+
+		if (child->get_class_of_equiv_category()
+		    & PRIVATE_TYPE_CATEGORY)
+		  has_private_child = true;
+		else if (child->get_class_of_equiv_category()
+			 & SUPPRESSED_CATEGORY)
+		  // Propagation of the SUPPRESSED_CATEGORY is going
+		  // to be handled later below.
+		  ;
+		else
+		  has_non_private_child = true;
 	      }
 	  }
 
@@ -10803,6 +10838,23 @@ struct suppression_categorization_visitor : public diff_node_visitor
 	    diff *canonical_diff = d->get_canonical_diff();
 	    if (canonical_diff != d)
 	      canonical_diff->add_to_category(SUPPRESSED_CATEGORY);
+	  }
+
+	if (// We don't propagate "private type"-ness to typedefs
+	    // because defining "public" typedefs of private (opaque)
+	    // types is a common idiom.  So the typedef must stay
+	    // public.
+	    !is_typedef_diff(d)
+	    && has_non_empty_child
+	    && has_private_child
+	    && !has_non_private_child)
+	  {
+	    d->add_to_category(PRIVATE_TYPE_CATEGORY);
+	    // If a node was suppressed, all the other nodes of its class
+	    // of equivalence are suppressed too.
+	    diff *canonical_diff = d->get_canonical_diff();
+	    if (canonical_diff != d)
+	      canonical_diff->add_to_category(PRIVATE_TYPE_CATEGORY);
 	  }
       }
   }
