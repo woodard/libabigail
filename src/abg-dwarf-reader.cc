@@ -13495,7 +13495,10 @@ add_or_update_class_type(read_context&	 ctxt,
   // re-use that one.
   if (class_decl_sptr pre_existing_class =
       is_class_type(ctxt.lookup_type_artifact_from_die(die)))
-    klass = pre_existing_class;
+    // For an anonymous type, make sure the pre-existing one has the
+    // same scope as the current one.
+    if (!is_anonymous || pre_existing_class->get_scope() == scope)
+      klass = pre_existing_class;
 
   uint64_t size = 0;
   die_size_in_bits(die, size);
@@ -13803,7 +13806,10 @@ add_or_update_union_type(read_context&	ctxt,
   // 'die' then let's re-use that one.
   if (union_decl_sptr pre_existing_union =
       is_union_type(ctxt.lookup_artifact_from_die(die)))
-    union_type = pre_existing_union;
+    // For an anonymous type, make sure the pre-existing one has the
+    // same scope as the current one.
+    if (!is_anonymous || pre_existing_union->get_scope() == scope)
+      union_type = pre_existing_union;
 
   uint64_t size = 0;
   die_size_in_bits(die, size);
