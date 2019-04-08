@@ -426,8 +426,8 @@ has_harmless_name_change(const decl_base_sptr& f, const decl_base_sptr& s)
 	       && is_typedef(s)
 	       && (is_typedef(f)->get_underlying_type()
 		   == is_typedef(s)->get_underlying_type()))
-	      // .. or a data member name change, without having the
-	      // its type changed ...
+	      // .. or a data member name change, without having its
+	      // type changed ...
 	      || (is_data_member(f)
 		  && is_data_member(s)
 		  && (is_var_decl(f)->get_type()

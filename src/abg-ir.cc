@@ -14558,7 +14558,7 @@ var_decl::get_hash() const
 /// data member, then the qualified name is actually the flat
 /// representation (the definition) of the type of the anonymous data
 /// member.  We chose the flat representation because otherwise, the
-/// name an *anonymous* data member is empty, by construction, e.g:
+/// name of an *anonymous* data member is empty, by construction, e.g:
 ///
 ///   struct foo {
 ///     int a;
