@@ -19718,7 +19718,7 @@ string
 union_decl::get_pretty_representation(bool internal) const
 {
   string repr;
-  if (get_is_anonymous())
+  if (get_is_anonymous() && !internal)
     repr = get_class_or_union_flat_representation(this, "",
 						  /*one_line=*/true);
   else
