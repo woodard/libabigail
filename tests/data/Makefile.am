@@ -1463,6 +1463,15 @@ test-diff-pkg/netcdf-fortran-mpich-debuginfo-4.4.4-11.fc30.x86_64.rpm \
 test-diff-pkg/netcdf-fortran-mpich-devel-4.4.4-10.fc29.x86_64.rpm \
 test-diff-pkg/netcdf-fortran-mpich-devel-4.4.4-11.fc30.x86_64.rpm \
 test-diff-pkg/netcdf-fortran-mpich-4.4.4-10.fc29.x86_64-4.4.4-11.fc30.x86_64-report-0.txt \
+test-diff-pkg/PR24410-new/poppler-debuginfo-0.73.0-8.fc30.x86_64.rpm \
+test-diff-pkg/PR24410-new/poppler-qt5-0.73.0-8.fc30.x86_64.rpm \
+test-diff-pkg/PR24410-new/poppler-qt5-debuginfo-0.73.0-8.fc30.x86_64.rpm \
+test-diff-pkg/PR24410-new/poppler-qt5-devel-0.73.0-8.fc30.x86_64.rpm \
+test-diff-pkg/PR24410-old/poppler-debuginfo-0.73.0-4.fc30.x86_64.rpm \
+test-diff-pkg/PR24410-old/poppler-qt5-0.73.0-4.fc30.x86_64.rpm \
+test-diff-pkg/PR24410-old/poppler-qt5-debuginfo-0.73.0-4.fc30.x86_64.rpm \
+test-diff-pkg/PR24410-old/poppler-qt5-devel-0.73.0-4.fc30.x86_64.rpm \
+test-diff-pkg/PR24410-report-0.txt \
 \
 test-fedabipkgdiff/dbus-glib-0.104-3.fc23.x86_64.rpm \
 test-fedabipkgdiff/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm \

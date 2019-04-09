@@ -591,6 +591,20 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/netcdf-fortran-mpich-4.4.4-10.fc29.x86_64-4.4.4-11.fc30.x86_64-report-0.txt",
     "output/test-diff-pkg/netcdf-fortran-mpich-4.4.4-10.fc29.x86_64-4.4.4-11.fc30.x86_64-report-0.txt"
   },
+  {
+    "data/test-diff-pkg/PR24410-old/poppler-qt5-0.73.0-4.fc30.x86_64.rpm",
+    "data/test-diff-pkg/PR24410-new/poppler-qt5-0.73.0-8.fc30.x86_64.rpm",
+    "--fail-no-dbg",
+    "",
+    "data/test-diff-pkg/PR24410-old/poppler-debuginfo-0.73.0-4.fc30.x86_64.rpm, "
+    "data/test-diff-pkg/PR24410-old/poppler-qt5-debuginfo-0.73.0-4.fc30.x86_64.rpm",
+    "data/test-diff-pkg/PR24410-new/poppler-debuginfo-0.73.0-8.fc30.x86_64.rpm, "
+    "data/test-diff-pkg/PR24410-new/poppler-qt5-debuginfo-0.73.0-8.fc30.x86_64.rpm",
+    "data/test-diff-pkg/PR24410-old/poppler-qt5-devel-0.73.0-4.fc30.x86_64.rpm",
+    "data/test-diff-pkg/PR24410-new/poppler-qt5-devel-0.73.0-8.fc30.x86_64.rpm",
+    "data/test-diff-pkg/PR24410-report-0.txt",
+    "output/test-diff-pkg/PR24410-report-0.txt"
+  },
 #endif //WITH_RPM
 
 #ifdef WITH_DEB
