@@ -655,6 +655,12 @@ is_array_type(const type_or_decl_base* decl);
 array_type_def_sptr
 is_array_type(const type_or_decl_base_sptr& decl);
 
+array_type_def_sptr
+is_array_of_qualified_element(type_base_sptr&);
+
+qualified_type_def_sptr
+is_array_of_qualified_element(const array_type_def_sptr&);
+
 void
 set_data_member_offset(var_decl_sptr, uint64_t);
 
@@ -1246,6 +1252,9 @@ type_or_void(const type_base_sptr, const environment*);
 
 type_base_sptr
 canonicalize(type_base_sptr);
+
+type_base_sptr
+re_canonicalize(type_base_sptr);
 
 type_base*
 type_has_non_canonicalized_subtype(type_base_sptr t);

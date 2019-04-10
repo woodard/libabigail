@@ -1,6 +1,6 @@
 ================ changes of 'libnss3.so'===============
   Functions changes summary: 0 Removed, 1 Changed (62 filtered out), 0 Added functions
-  Variables changes summary: 0 Removed, 0 Changed (36 filtered out), 0 Added variables
+  Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
   1 function with some indirect sub-type change:
 
@@ -67,17 +67,19 @@
 
   1 Changed variable:
 
-    [C]'PRUint16[74] const SSL_ImplementedCiphers' was changed to 'const PRUint16[69] const SSL_ImplementedCiphers' at sslenum.c:51:1:
+    [C]'const PRUint16 SSL_ImplementedCiphers[74]' was changed to 'const PRUint16 SSL_ImplementedCiphers[69]' at sslenum.c:51:1:
       size of symbol changed from 148 to 138
       type of variable changed:
-       'PRUint16[74] const' changed to 'const PRUint16[69] const'
+       type name changed from 'PRUint16[74]' to 'const PRUint16[69]'
+       array type size changed from 1184 to 1104
+       array type subrange 1 changed length from 74 to 69
 
 
 ================ end of changes of 'libssl3.so'===============
 
 ================ changes of 'libsmime3.so'===============
   Functions changes summary: 0 Removed, 1 Changed (127 filtered out), 0 Added functions
-  Variables changes summary: 0 Removed, 0 Changed (2 filtered out), 0 Added variables
+  Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
   1 function with some indirect sub-type change:
 

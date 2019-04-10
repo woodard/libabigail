@@ -6249,11 +6249,11 @@
     <qualified-type-def type-id='type-id-30' const='yes' id='type-id-45'/>
     <qualified-type-def type-id='type-id-192' const='yes' id='type-id-303'/>
 
-    <array-type-def dimensions='1' type-id='type-id-17' size-in-bits='4194304' id='type-id-307'>
+    <array-type-def dimensions='1' type-id='type-id-307' size-in-bits='4194304' id='type-id-304'>
       <subrange length='65536' type-id='type-id-17' id='type-id-308'/>
 
     </array-type-def>
-    <qualified-type-def type-id='type-id-307' volatile='yes' id='type-id-304'/>
+    <qualified-type-def type-id='type-id-17' volatile='yes' id='type-id-307'/>
     <pointer-type-def type-id='type-id-249' size-in-bits='64' id='type-id-305'/>
     <qualified-type-def type-id='type-id-249' const='yes' id='type-id-309'/>
     <pointer-type-def type-id='type-id-309' size-in-bits='64' id='type-id-306'/>

@@ -689,6 +689,9 @@ test-diff-filter/test47-filter-void-ptr-change-v0.c \
 test-diff-filter/test47-filter-void-ptr-change-v1.c \
 test-diff-filter/test47-filter-void-ptr-change-v0.o \
 test-diff-filter/test47-filter-void-ptr-change-v1.o \
+test-diff-filter/PR24430-fold-qualified-array-clang \
+test-diff-filter/PR24430-fold-qualified-array-gcc \
+test-diff-filter/PR24430-fold-qualified-array-report-0.txt \
 \
 test-diff-suppr/test0-type-suppr-v0.cc	\
 test-diff-suppr/test0-type-suppr-v1.cc	\

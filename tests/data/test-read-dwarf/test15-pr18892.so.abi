@@ -24374,19 +24374,19 @@
       <return type-id='type-id-1750'/>
     </function-decl>
 
-    <array-type-def dimensions='1' type-id='type-id-1746' size-in-bits='11904' id='type-id-1760'>
-      <subrange length='62' type-id='type-id-28' id='type-id-1761'/>
+    <array-type-def dimensions='1' type-id='type-id-1760' size-in-bits='11904' id='type-id-1761'>
+      <subrange length='62' type-id='type-id-28' id='type-id-1762'/>
 
     </array-type-def>
-    <qualified-type-def type-id='type-id-1760' const='yes' id='type-id-1762'/>
-    <var-decl name='__asan_cplus_demangle_operators' type-id='type-id-1762' mangled-name='__asan_cplus_demangle_operators' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='1688' column='1' elf-symbol-id='__asan_cplus_demangle_operators'/>
+    <qualified-type-def type-id='type-id-1746' const='yes' id='type-id-1760'/>
+    <var-decl name='__asan_cplus_demangle_operators' type-id='type-id-1761' mangled-name='__asan_cplus_demangle_operators' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='1688' column='1' elf-symbol-id='__asan_cplus_demangle_operators'/>
 
-    <array-type-def dimensions='1' type-id='type-id-1752' size-in-bits='8448' id='type-id-1763'>
-      <subrange length='33' type-id='type-id-28' id='type-id-1764'/>
+    <array-type-def dimensions='1' type-id='type-id-1763' size-in-bits='8448' id='type-id-1764'>
+      <subrange length='33' type-id='type-id-28' id='type-id-1765'/>
 
     </array-type-def>
-    <qualified-type-def type-id='type-id-1763' const='yes' id='type-id-1765'/>
-    <var-decl name='__asan_cplus_demangle_builtin_types' type-id='type-id-1765' mangled-name='__asan_cplus_demangle_builtin_types' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='2188' column='1' elf-symbol-id='__asan_cplus_demangle_builtin_types'/>
+    <qualified-type-def type-id='type-id-1752' const='yes' id='type-id-1763'/>
+    <var-decl name='__asan_cplus_demangle_builtin_types' type-id='type-id-1764' mangled-name='__asan_cplus_demangle_builtin_types' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='2188' column='1' elf-symbol-id='__asan_cplus_demangle_builtin_types'/>
     <function-decl name='free' filepath='/usr/include/stdlib.h' line='488' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-6'/>

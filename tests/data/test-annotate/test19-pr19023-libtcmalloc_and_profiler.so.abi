@@ -9900,7 +9900,7 @@
         <var-decl name='kValueMask' type-id='type-id-65' visibility='default' filepath='src/packed-cache-inl.h' line='230' column='1'/>
       </data-member>
       <data-member access='private' layout-offset-in-bits='0'>
-        <!-- unsigned long int[65536] volatile PackedCache<35, long unsigned int>::array_ -->
+        <!-- volatile unsigned long int PackedCache<35, long unsigned int>::array_[65536] -->
         <var-decl name='array_' type-id='type-id-304' visibility='default' filepath='src/packed-cache-inl.h' line='234' column='1'/>
       </data-member>
       <member-function access='private'>
@@ -10006,14 +10006,14 @@
     <!-- const uintptr_t -->
     <qualified-type-def type-id='type-id-192' const='yes' id='type-id-303'/>
 
-    <!-- unsigned long int[65536] -->
-    <array-type-def dimensions='1' type-id='type-id-17' size-in-bits='4194304' id='type-id-307'>
+    <!-- volatile unsigned long int[65536] -->
+    <array-type-def dimensions='1' type-id='type-id-307' size-in-bits='4194304' id='type-id-304'>
       <!-- <anonymous range>[65536] -->
       <subrange length='65536' type-id='type-id-17' id='type-id-308'/>
 
     </array-type-def>
-    <!-- unsigned long int[65536] volatile -->
-    <qualified-type-def type-id='type-id-307' volatile='yes' id='type-id-304'/>
+    <!-- volatile unsigned long int -->
+    <qualified-type-def type-id='type-id-17' volatile='yes' id='type-id-307'/>
     <!-- PackedCache<35, long unsigned int>* -->
     <pointer-type-def type-id='type-id-249' size-in-bits='64' id='type-id-305'/>
     <!-- const PackedCache<35, long unsigned int> -->

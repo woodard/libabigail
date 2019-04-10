@@ -14050,18 +14050,62 @@ maybe_strip_qualification(const qualified_type_def_sptr t)
 
   if (t->get_cv_quals() & qualified_type_def::CV_CONST
       && (is_reference_type(u)))
-    // Let's strip only the const qualifier.  To do that, the "const"
-    // qualified is turned into a no-op "none" qualified.
-    result.reset(new qualified_type_def
-		 (u, t->get_cv_quals() & ~qualified_type_def::CV_CONST,
-		  t->get_location()));
+    {
+      // Let's strip only the const qualifier.  To do that, the "const"
+      // qualified is turned into a no-op "none" qualified.
+      result.reset(new qualified_type_def
+		   (u, t->get_cv_quals() & ~qualified_type_def::CV_CONST,
+		    t->get_location()));
+    }
   else if (t->get_cv_quals() & qualified_type_def::CV_CONST
 	   && env->is_void_type(u))
-    // So this type is a "const void".  Let's strip the "const"
-    // qualifier out and make this just be "void", so that a "const
-    // void" type and a "void" type compare equal after going through
-    // this function.
-    result = is_decl(u);
+    {
+      // So this type is a "const void".  Let's strip the "const"
+      // qualifier out and make this just be "void", so that a "const
+      // void" type and a "void" type compare equal after going through
+      // this function.
+      result = is_decl(u);
+    }
+  else if (is_array_of_qualified_element(u))
+    {
+      // In C and C++, a cv qualifiers of a qualified array apply to
+      // the array element type.  So the qualifiers of the array can
+      // be dropped and applied to the element type.
+      //
+      // Here, the element type is qualified already.  So apply the
+      // qualifiers of the array itself to the already qualified
+      // element type and drop the array qualifiers.
+      array_type_def_sptr array = is_array_type(u);
+      qualified_type_def_sptr element_type =
+	is_qualified_type(array->get_element_type());
+      qualified_type_def::CV quals = element_type->get_cv_quals();
+      quals |= t->get_cv_quals();
+      element_type->set_cv_quals(quals);
+      result = is_decl(u);
+      if (u->get_canonical_type())
+	re_canonicalize(u);
+    }
+  else if (is_array_type(u) && !is_array_of_qualified_element(is_array_type(u)))
+    {
+      // In C and C++, a cv qualifiers of a qualified array apply to
+      // the array element type.  So the qualifiers of the array can
+      // be dropped and applied to the element type.
+      //
+      // Here, the element type is not qualified.  So apply the
+      // qualifiers of the array itself to the element type and drop
+      // the array qualifiers.
+      array_type_def_sptr array = is_array_type(u);
+      type_base_sptr element_type = array->get_element_type();
+      qualified_type_def_sptr qual_type
+	(new qualified_type_def(element_type,
+				t->get_cv_quals(),
+				t->get_location()));
+      add_decl_to_scope(qual_type, is_decl(element_type)->get_scope());
+      array->set_element_type(qual_type);
+      result = is_decl(u);
+      if (u->get_canonical_type())
+	re_canonicalize(u);
+    }
 
   return result;
 }

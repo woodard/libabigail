@@ -7314,6 +7314,37 @@ array_type_def_sptr
 is_array_type(const type_or_decl_base_sptr& type)
 {return dynamic_pointer_cast<array_type_def>(type);}
 
+/// Tests if the element of a given array is a qualified type.
+///
+/// @param array the array type to consider.
+///
+/// @return the qualified element of the array iff it's a qualified
+/// type.  Otherwise, return a nil object.
+qualified_type_def_sptr
+is_array_of_qualified_element(const array_type_def_sptr& array)
+{
+  if (!array)
+    return qualified_type_def_sptr();
+
+  return is_qualified_type(array->get_element_type());
+}
+
+/// Test if an array type is an array to a qualified element type.
+///
+/// @param type the array type to consider.
+///
+/// @return true the array @p type iff it's an array to a qualified
+/// element type.
+array_type_def_sptr
+is_array_of_qualified_element(type_base_sptr& type)
+{
+  if (array_type_def_sptr array = is_array_type(type))
+    if (is_array_of_qualified_element(array))
+      return array;
+
+  return array_type_def_sptr();
+}
+
 /// Test if a type is an array_type_def::subrange_type.
 ///
 /// @param type the type to consider.
@@ -10702,6 +10733,22 @@ canonicalize(type_base_sptr t)
   return canonical;
 }
 
+/// Re-compute the canonical type of a type which already has one.
+///
+/// This does what @ref canonicalize does, but clears out the
+/// previously computed canonical type first.
+///
+/// @param t the type to compute the canonical type for.
+///
+/// @return the newly computed canonical type.
+type_base_sptr
+re_canonicalize(type_base_sptr t)
+{
+  t->priv_->canonical_type.reset();
+  t->priv_->naked_canonical_type = 0;
+  return canonicalize(t);
+}
+
 /// The constructor of @ref type_base.
 ///
 /// @param s the size of the type, in bits.
@@ -13359,6 +13406,19 @@ array_type_def::get_element_type() const
   if (priv_->element_type_.expired())
     return type_base_sptr();
   return type_base_sptr(priv_->element_type_);
+}
+
+/// Setter of the type of array element.
+///
+/// Beware that after using this function, one might want to
+/// re-compute the canonical type of the array, if one has already
+/// been computed.
+///
+/// @param element_type the new element type to set.
+void
+array_type_def::set_element_type(const type_base_sptr& element_type)
+{
+  priv_->element_type_ = element_type;
 }
 
 // Append a single subrange @param sub.

@@ -542,6 +542,13 @@ InOutSpec in_out_specs[] =
     "data/test-diff-filter/test47-filter-void-ptr-change-report-0.txt",
     "output/test-diff-filter/test47-filter-void-ptr-change-report-0.txt",
   },
+  {
+    "data/test-diff-filter/PR24430-fold-qualified-array-clang",
+    "data/test-diff-filter/PR24430-fold-qualified-array-gcc",
+    "--no-default-suppression",
+    "data/test-diff-filter/PR24430-fold-qualified-array-report-0.txt",
+    "output/test-diff-filter/PR24430-fold-qualified-array-report-0.txt",
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };
