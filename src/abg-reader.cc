@@ -1978,7 +1978,7 @@ read_corpus_group_from_input(read_context& ctxt)
   ctxt.set_corpus_node(node);
 
   corpus_sptr corp;
-  while (corp = read_corpus_from_input(ctxt))
+  while ((corp = read_corpus_from_input(ctxt)))
     ctxt.get_corpus_group()->add_corpus(corp);
 
   xmlTextReaderNext(reader.get());
