@@ -87,7 +87,7 @@ typedef shared_ptr<corpus_group> corpus_group_sptr;
 
 // Forward declarations for ir.
 
-struct ir_node_visitor;
+class  ir_node_visitor;
 
 struct ir_traversable_base;
 
