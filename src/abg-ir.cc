@@ -56,14 +56,11 @@ namespace
 /// to a new environment.
 class environment_setter : public abigail::ir::ir_node_visitor
 {
-  abigail::ir::type_or_decl_base* artifact_;
   const abigail::ir::environment* env_;
 
 public:
-  environment_setter(abigail::ir::type_or_decl_base*	a,
-		     const abigail::ir::environment*	env)
-    : artifact_(a),
-      env_(env)
+  environment_setter(const abigail::ir::environment* env)
+    : env_(env)
   {}
 
   /// This function is called on each sub-tree node that is a
@@ -112,13 +109,8 @@ public:
 /// function update_qualified_name().
 class qualified_name_setter : public abigail::ir::ir_node_visitor
 {
-  abigail::ir::decl_base* node_;
 
 public:
-  qualified_name_setter(abigail::ir::decl_base* node)
-    : node_(node)
-  {}
-
   bool
   do_update(abigail::ir::decl_base* d);
 
@@ -2803,7 +2795,7 @@ set_environment_for_artifact(type_or_decl_base* artifact,
 {
   ABG_ASSERT(artifact && env);
 
-  ::environment_setter s(artifact, env);
+  ::environment_setter s(env);
   artifact->traverse(s);
 }
 
@@ -4988,7 +4980,7 @@ peel_typedef_pointer_or_reference_type(const type_base* type,
 static void
 update_qualified_name(decl_base * d)
 {
-  ::qualified_name_setter setter(d);
+  ::qualified_name_setter setter;
   d->traverse(setter);
 }
 
