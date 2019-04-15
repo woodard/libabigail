@@ -186,7 +186,7 @@ public:
   operator--(int)
   {
     point tmp(*this);
-    (*this)--;
+    --(*this);
     return tmp;
   }
 
@@ -194,7 +194,7 @@ public:
   operator++(int)
   {
     point tmp(*this);
-    (*this)++;
+    ++(*this);
     return tmp;
   }
 
