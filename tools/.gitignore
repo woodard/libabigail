@@ -1,5 +1,8 @@
-/biar
-/bidiff
-/bidw
-/bilint
-/bisym
+abicompat
+abidiff
+abidw
+abilint
+abinilint
+abipkgdiff
+abisym
+kmidiff
