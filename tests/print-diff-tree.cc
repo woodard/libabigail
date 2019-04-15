@@ -106,7 +106,7 @@ main(int argc, char* argv[])
     {
       cerr << "unrecognized option\n"
 	"try the --help option for more information\n";
-      return false;
+      return 1;
     }
 
   if (opts.display_help)

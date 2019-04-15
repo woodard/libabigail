@@ -255,7 +255,7 @@ main(int argc, char* argv[])
 	emit_prefix(argv[0], cerr)
 	  << "unrecognized option: " << opts.wrong_option << "\n";
       display_usage(argv[0], cerr);
-      return true;
+      return 1;
     }
 
   if (opts.display_version)
@@ -266,13 +266,13 @@ main(int argc, char* argv[])
     }
 
   if (!maybe_check_suppression_files(opts))
-    return true;
+    return 1;
 
   abigail::ir::environment_sptr env(new abigail::ir::environment);
   if (opts.read_from_stdin)
     {
       if (!cin.good())
-	return true;
+	return 1;
 
       if (opts.read_tu)
 	{
@@ -283,12 +283,12 @@ main(int argc, char* argv[])
 	    {
 	      emit_prefix(argv[0], cerr)
 		<< "failed to read the ABI instrumentation from stdin\n";
-	      return true;
+	      return 1;
 	    }
 
 	  if (!opts.noout)
 	    write_translation_unit(*tu, 0, cout);
-	  return false;
+	  return 0;
 	}
       else
 	{
@@ -300,13 +300,13 @@ main(int argc, char* argv[])
 	  corpus_sptr corp = abigail::xml_reader::read_corpus_from_input(*ctxt);
 	  if (!opts.noout)
 	    write_corpus(corp, /*indent=*/0, cout);
-	  return false;
+	  return 0;
 	}
     }
   else if (!opts.file_path.empty())
     {
       if (!check_file(opts.file_path, cerr, argv[0]))
-	return true;
+	return 1;
       abigail::translation_unit_sptr tu;
       abigail::corpus_sptr corp;
       abigail::dwarf_reader::status s = abigail::dwarf_reader::STATUS_OK;
@@ -318,7 +318,7 @@ main(int argc, char* argv[])
 	case abigail::tools_utils::FILE_TYPE_UNKNOWN:
 	  emit_prefix(argv[0], cerr)
 	    << "Unknown file type given in input: " << opts.file_path;
-	  return true;
+	  return 1;
 	case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
 	  tu = read_translation_unit_from_file(opts.file_path, env.get());
 	  break;
@@ -392,7 +392,7 @@ main(int argc, char* argv[])
 		  << opts.file_path
 		  << "\n";
 	    }
-	  return true;
+	  return 1;
 	}
 
       using abigail::tools_utils::temp_file;
@@ -402,7 +402,7 @@ main(int argc, char* argv[])
       if (!tmp_file)
 	{
 	  emit_prefix(argv[0], cerr) << "failed to create temporary file\n";
-	  return true;
+	  return 1;
 	}
 
       std::iostream& of = tmp_file->get_stream();
@@ -465,8 +465,8 @@ main(int argc, char* argv[])
 	    is_ok = false;
 	}
 
-      return !is_ok;
+      return is_ok ? 0 : 1;
     }
 
-  return true;
+  return 1;
 }
