@@ -2671,7 +2671,8 @@ distinct_diff::entities_are_of_distinct_kinds(type_or_decl_base_sptr first,
   if (first == second)
     return false;
 
-  return typeid(*first.get()) != typeid(*second.get());
+  const type_or_decl_base &f = *first, &s = *second;
+  return typeid(f) != typeid(s);
 }
 
 /// @return true if the two subjects of the diff are different, false
