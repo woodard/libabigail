@@ -141,6 +141,7 @@ public:
   report(const corpus_diff& d, ostream& out,
 	 const string& indent = "") const = 0;
 
+  virtual ~reporter_base() {}
 }; //end class reporter_base
 
 class default_reporter;

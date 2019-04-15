@@ -2278,6 +2278,8 @@ public:
 
   class diff_stats;
 
+  virtual ~corpus_diff() {}
+
   /// A convenience typedef for a shared pointer to @ref diff_stats
   typedef shared_ptr<diff_stats> diff_stats_sptr;
 
@@ -2543,6 +2545,8 @@ protected:
 public:
 
   diff_node_visitor();
+
+  virtual ~diff_node_visitor() {}
 
   diff_node_visitor(visiting_kind k);
 

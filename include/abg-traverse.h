@@ -76,6 +76,9 @@ public:
   traversable_base()
     : visiting_()
   {}
+
+  virtual ~traversable_base() {}
+
   /// This virtual method is overloaded and implemented by any single
   /// type which instance is going to be visited during the traversal
   /// of translation unit nodes.

@@ -78,6 +78,8 @@ public:
 
   corpus(ir::environment*, const string& path= "");
 
+  virtual ~corpus() {}
+
   const environment*
   get_environment() const;
 
