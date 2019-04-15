@@ -111,17 +111,13 @@ struct dot
 private:
 
   const std::string    	_M_title;
-  const canvas&	       	_M_canvas;
-  const typography&    	_M_typo;	
 
   std::ostringstream   	_M_sstream;
   
 public:
 
-  dot(const std::string &__title,
-      const canvas& __cv = ansi_letter_canvas,
-      const typography& __typo = arial_typo) 
-  : _M_title(__title), _M_canvas(__cv), _M_typo(__typo)
+  dot(const std::string &__title)
+  : _M_title(__title)
   { }
   
   // Empty when the output buffer is.
