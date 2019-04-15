@@ -807,8 +807,7 @@ template <typename ReadContextType>
 bool
 type_is_suppressed(const ReadContextType&	ctxt,
 		   const string&		type_name,
-		   const location&		type_location,
-		   bool require_drop_property = false)
+		   const location&		type_location)
 {
   bool type_is_private = false;
   return type_is_suppressed(ctxt, type_name, type_location, type_is_private);
