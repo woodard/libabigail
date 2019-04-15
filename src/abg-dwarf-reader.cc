@@ -2626,7 +2626,7 @@ public:
   operator&(const expr_result& o)
   {
     expr_result r(*this);
-    r.const_value_ = *this & o;
+    r.const_value_ &= o.const_value_;
     r.is_const_ = r.is_const_ && o.is_const_;
     return r;
   }
