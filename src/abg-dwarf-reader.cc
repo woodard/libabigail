@@ -2772,6 +2772,92 @@ struct dwarf_expr_eval_context
 // </location expression evaluation types>
 // ---------------------------------------
 
+/// An enum for the diffent kinds of linux kernel specific symbol
+/// tables.
+enum kernel_symbol_table_kind
+{
+  /// This is for an undefined kind of kernel symbol table.
+  KERNEL_SYMBOL_TABLE_KIND_UNDEFINED,
+
+  /// The __ksymtab symbol table.
+  KERNEL_SYMBOL_TABLE_KIND_KSYMTAB,
+
+  /// The __ksymtab_gpl symbol table.
+  KERNEL_SYMBOL_TABLE_KIND_KSYMTAB_GPL
+};
+
+/// An enum which specifies the format of the kernel symbol table
+/// (__ksymtab or __ksymtab_gpl).
+enum ksymtab_format
+{
+  /// This enumerator means that no __ksymtab format has been
+  /// determined yet.
+  UNDEFINED_KSYMTAB_FORMAT,
+
+  /// Before Linux v4.19, the format of the __ksymtab (and the
+  /// __ksymtab_gpl) section was the following.
+  ///
+  /// It's an array of entries.  Each entry describes a symbol.  Each
+  /// entry is made of two words.  each is of the word size of the
+  /// architecture. (8-bytes on a 64 bits arch and 4-bytes on a 32
+  /// bits arch) The first word is the address of a symbol.  The
+  /// second one is the address of a static global variable symbol
+  /// which value is the string representing the symbol name.  That
+  /// string is in the __ksymtab_strings section.
+  ///
+  /// So we are mostly interested in the symbol address part of each
+  /// entry.
+  ///
+  /// Thus this enumerator means that we have the pre v4.19 __ksymtab
+  /// section format.
+  PRE_V4_19_KSYMTAB_FORMAT,
+
+  /// Since, Linux v4.19, the format of the __ksymtab section has
+  /// changed.  The commit that changed is
+  /// https://github.com/torvalds/linux/commit/7290d58095712a89f845e1bca05334796dd49ed2.
+  ///
+  /// The __ksymtab and __ksymtab_gpl sections each are an array of
+  /// entries.  Each entry describes a symbol.  Each entry is made of
+  /// two words.  Each word is 4-bytes length.  The first word is the
+  /// 'place-relative' address of a symbol.  The second one is the
+  /// 'place-relative' address of a static global variable symbol
+  /// which value is the string representing the symbol name.  That
+  /// string is in the __ksymtab_strings section.
+  ///
+  /// Below is the description of what a "place-relative address"
+  /// means.  For that, we are going to define the meaning of four
+  /// values: 'N', 'S', 'O', and 'A'.
+  ///
+  /// *** 'N' and '0' ***
+  /// Suppose 'N' is the value of the number stored at offset 'O' (big
+  /// oh, not zero) in the __ksymtab section.
+  ///
+  /// *** 'S'***
+  /// That N designates a symbol in the symtab section which value is
+  /// S.  So S is the symbol value (in the .symtab symbol table)
+  /// referred to by the number N found at offset 'O'.
+  ///
+  /// *** 'A' ***
+  /// Also, suppose the __ksymtab section will be loaded at memory
+  /// address A, as indicated by the 'address' field of the section
+  /// header describing the __ksymtab section.
+  ///
+  /// So here is the formula that gives us S, from N:
+  ///
+  ///     S = N + O + A.
+  ///
+  /// Storing addresses this way does away with the need to have
+  /// relocations for the __ksymtab section.  So in effect, vmlinux
+  /// binaries implementing this new format of __ksymtab won't have
+  /// any .rela__ksymtab relocation section for the __ksymtab section
+  /// in particular (nor any relocation section at all).
+  ///
+  ///
+  /// Note that we are mostly interested in the symbol address part of
+  /// each entry.
+  V4_19_KSYMTAB_FORMAT
+}; // end enum ksymtab_format
+
 /// The context used to build ABI corpus from debug info in DWARF
 /// format.
 ///
@@ -2935,6 +3021,15 @@ public:
   // ppc64 elf v1 binaries.  This section contains the procedure
   // descriptors on that platform.
   Elf_Scn*			opd_section_;
+  /// The format of the special __ksymtab section from the linux
+  /// kernel binary.
+  mutable ksymtab_format	ksymtab_format_;
+  /// The size of one entry of the __ksymtab section.
+  mutable size_t		ksymtab_entry_size_;
+  /// The number of entries in the __ksymtab section.
+  mutable size_t		nb_ksymtab_entries_;
+  /// The number of entries in the __ksymtab_gpl section.
+  mutable size_t		nb_ksymtab_gpl_entries_;
   /// The special __ksymtab and __ksymtab_gpl sections from linux
   /// kernel or module binaries.  The former is used to store
   /// references to symbols exported using the EXPORT_SYMBOL macro
@@ -3128,6 +3223,10 @@ public:
     data1_section_ = 0;
     symtab_section_ = 0;
     opd_section_ = 0;
+    ksymtab_format_ = UNDEFINED_KSYMTAB_FORMAT;
+    ksymtab_entry_size_ = 0;
+    nb_ksymtab_entries_ = 0;
+    nb_ksymtab_gpl_entries_ = 0;
     ksymtab_section_ = 0;
     ksymtab_gpl_section_ = 0;
     versym_section_ = 0;
@@ -7031,18 +7130,113 @@ public:
     return true;
   }
 
-  /// An enum for the diffent kinds of kernel symbol table.
-  enum kernel_symbol_table_kind
+  /// Determine the format of the __ksymtab and __ksymtab_gpl
+  /// sections.
+  ///
+  /// This is important because we need the know the format of these
+  /// sections to be able to read from them.
+  ///
+  /// @return the format the __ksymtab[_gpl] sections.
+  enum ksymtab_format
+  get_ksymtab_format() const
   {
-    /// This is for an undefined kind of kernel symbol table.
-    KERNEL_SYMBOL_TABLE_KIND_UNDEFINED,
+    if (!find_ksymtab_section())
+      ksymtab_format_ = UNDEFINED_KSYMTAB_FORMAT;
+    else
+      {
+	if (ksymtab_format_ == UNDEFINED_KSYMTAB_FORMAT)
+	  {
+	    // Only kernels prior to v4.19 systematically had a
+	    // .rela__ksymtab section.  And not having a
+	    // .rela__ksymtab means that there are no relocations for
+	    // the __ksymtab section.  And that is a hint that
+	    // __ksymtab entries are "place-relative" addresses in
+	    // that case, thus, not needing relocations.  So we use
+	    // the presence of the .rela__ksymtab as a property of pre
+	    // v4.19 "classical" ksymtab kernels.
+	    if (find_section(elf_handle(), ".rela__ksymtab", SHT_RELA))
+	      ksymtab_format_ = PRE_V4_19_KSYMTAB_FORMAT;
+	    else
+	      ksymtab_format_ = V4_19_KSYMTAB_FORMAT;
+	  }
+      }
+    return ksymtab_format_;
+  }
 
-    /// The __ksymtab symbol table.
-    KERNEL_SYMBOL_TABLE_KIND_KSYMTAB,
+  /// Getter of the size of the symbol value part of an entry of the
+  /// ksymtab section.
+  ///
+  /// @return the size of the symbol value part of the entry of the
+  /// ksymtab section.
+  unsigned char
+  get_ksymtab_symbol_value_size() const
+  {
+    unsigned char result = 0;
+    ksymtab_format format = get_ksymtab_format();
+    if (format == UNDEFINED_KSYMTAB_FORMAT)
+      ;
+    else if (format == PRE_V4_19_KSYMTAB_FORMAT)
+      result = architecture_word_size();
+    else if (format == V4_19_KSYMTAB_FORMAT)
+      result = 4;
+    else
+      ABG_ASSERT_NOT_REACHED;
 
-    /// The __ksymtab_gpl symbol table.
-    KERNEL_SYMBOL_TABLE_KIND_KSYMTAB_GPL
-  };
+    return result;
+  }
+
+  /// Getter of the size of one entry of the ksymtab section.
+  ///
+  /// @return the size of one entry of the ksymtab section.
+  unsigned char
+  get_ksymtab_entry_size() const
+  {
+    if (ksymtab_entry_size_ == 0)
+      // The entry size if 2 *  symbol_value_size.
+      ksymtab_entry_size_ = 2 * get_ksymtab_symbol_value_size();
+
+    return ksymtab_entry_size_;
+  }
+
+  /// Getter of the number of entries that are present in the ksymtab
+  /// section.
+  ///
+  /// @return the number of entries that are present in the ksymtab
+  /// section.
+  size_t
+  get_nb_ksymtab_entries() const
+  {
+    if (nb_ksymtab_entries_ == 0)
+      {
+	Elf_Scn *section = find_ksymtab_section();
+	GElf_Shdr header_mem;
+	GElf_Shdr *section_header = gelf_getshdr(section, &header_mem);
+	size_t entry_size = get_ksymtab_entry_size();
+	ABG_ASSERT(entry_size);
+	nb_ksymtab_entries_ = section_header->sh_size / entry_size;
+      }
+    return nb_ksymtab_entries_;
+  }
+
+  /// Getter of the number of entries that are present in the
+  /// ksymtab_gpl section.
+  ///
+  /// @return the number of entries that are present in the
+  /// ksymtab_gpl section.
+  size_t
+  get_nb_ksymtab_gpl_entries()
+  {
+    if (nb_ksymtab_gpl_entries_ == 0)
+      {
+	Elf_Scn *section = find_ksymtab_gpl_section();
+	GElf_Shdr header_mem;
+	GElf_Shdr *section_header = gelf_getshdr(section, &header_mem);
+	size_t entry_size = get_ksymtab_entry_size();
+	ABG_ASSERT(entry_size);
+	nb_ksymtab_gpl_entries_ = section_header->sh_size / entry_size;
+      }
+    return nb_ksymtab_gpl_entries_;
+  }
 
   /// Load a given kernel symbol table.
   ///
@@ -7058,6 +7252,7 @@ public:
   bool
   load_kernel_symbol_table(kernel_symbol_table_kind kind)
   {
+    size_t nb_entries = 0;
     Elf_Scn *section = 0;
     address_set_sptr linux_exported_fns_set, linux_exported_vars_set;
 
@@ -7067,31 +7262,20 @@ public:
 	break;
       case KERNEL_SYMBOL_TABLE_KIND_KSYMTAB:
 	section = find_ksymtab_section();
+	nb_entries = get_nb_ksymtab_entries();
 	linux_exported_fns_set = create_or_get_linux_exported_fn_syms();
 	linux_exported_vars_set = create_or_get_linux_exported_var_syms();
 	break;
       case KERNEL_SYMBOL_TABLE_KIND_KSYMTAB_GPL:
 	section = find_ksymtab_gpl_section();
+	nb_entries = get_nb_ksymtab_gpl_entries();
 	linux_exported_fns_set = create_or_get_linux_exported_gpl_fn_syms();
 	linux_exported_vars_set = create_or_get_linux_exported_gpl_var_syms();
 	break;
       }
 
-    if (!section || !linux_exported_vars_set || !linux_exported_fns_set)
+    if (!linux_exported_vars_set || !linux_exported_fns_set)
       return false;
-
-
-    GElf_Shdr header_mem;
-    GElf_Shdr *section_header = gelf_getshdr(section, &header_mem);
-
-    // The size of an entry in this ksymbol table.
-    size_t entry_size = 2 * architecture_word_size();
-
-    if (section_header->sh_entsize)
-      entry_size = section_header->sh_entsize;
-
-    // The number of entries in the ksymbol table.
-    size_t nb_entries = section_header->sh_size / entry_size;
 
     // The data of the section.
     Elf_Data *elf_data = elf_rawdata(section, 0);
@@ -7105,32 +7289,46 @@ public:
     GElf_Addr symbol_address = 0, adjusted_symbol_address = 0;
 
     // So the section is an array of entries.  Each entry describes a
-    // symbol.  Each entry is made of two words.  Each word is of the
-    // word size of the architecture.  (8-bytes on a 64 bits arch and
-    // 4-bytes on a 32 bits arch) The first word is the address of a
-    // symbol.  The second one is the address of a static global
-    // variable symbol which value is the string representing the
-    // symbol name.  That string is in the __ksymtab_strings symbol.
-    // Here, we are only interested in the first entry.
+    // symbol.  Each entry is made of two words.
+    //
+    // The first word is the address of a symbol.  The second one is
+    // the address of a static global variable symbol which value is
+    // the string representing the symbol name.  That string is in the
+    // __ksymtab_strings section.  Here, we are only interested in the
+    // first entry.
     //
     // Lets thus walk the array of entries, and let's read just the
     // symbol address part of each entry.
     bool is_big_endian = elf_architecture_is_big_endian();
     elf_symbol_sptr symbol;
-    unsigned char word_size = architecture_word_size();
-    ABG_ASSERT(entry_size == word_size * 2);
+    unsigned char symbol_value_size = get_ksymtab_symbol_value_size();
 
-    for (size_t i = 0, entry_index = 0;
+    for (size_t i = 0, entry_offset = 0;
 	 i < nb_entries;
-	 ++i, entry_index = entry_size*i)
+	 ++i, entry_offset = get_ksymtab_entry_size() * i)
       {
 	symbol_address = 0;
-	ABG_ASSERT(read_int_from_array_of_bytes(&bytes[entry_index],
-					    word_size,
-					    is_big_endian,
-					    symbol_address));
+	ABG_ASSERT(read_int_from_array_of_bytes(&bytes[entry_offset],
+						symbol_value_size,
+						is_big_endian,
+						symbol_address));
 
+	// Starting from linux kernel v4.19, it can happen that the
+	// address value read from the ksymtab[_gpl] section might
+	// need some decoding to get the real symbol address that has
+	// a meaning in the .symbol section.
+	symbol_address =
+	  maybe_adjust_sym_address_from_v4_19_ksymtab(symbol_address,
+						      entry_offset, section);
+
+	// We might also want to adjust the symbol address, depending
+	// on if we are looking at an ET_REL, an executable or a
+	// shared object binary.
 	adjusted_symbol_address = maybe_adjust_fn_sym_address(symbol_address);
+
+	// OK now the symbol address should be in a suitable form to
+	// be used to look the symbol up in the usual .symbol section
+	// (aka ELF symbol table).
 	symbol = lookup_elf_symbol_from_address(adjusted_symbol_address);
 	if (!symbol)
 	  {
@@ -7325,6 +7523,39 @@ public:
   {
     load_dt_soname_and_needed();
     load_elf_architecture();
+  }
+
+  /// Convert the value of the symbol address part of a post V4.19
+  /// ksymtab entry (that contains place-relative addresses) into its
+  /// corresponding symbol value in the .symtab section.  The value of
+  /// the symbol in .symtab equals to addr_offset + address-of-ksymtab
+  /// + addr.
+  ///
+  /// @param addr the address read from the ksymtab section.
+  ///
+  /// @param addr_offset the offset at which @p addr was read.
+  ///
+  /// @param ksymtab_section the kymstab section @p addr was read
+  /// from.
+  GElf_Addr
+  maybe_adjust_sym_address_from_v4_19_ksymtab(GElf_Addr addr,
+					      size_t addr_offset,
+					      Elf_Scn *ksymtab_section)
+  {
+    GElf_Addr result = addr;
+
+    if (get_ksymtab_format() == V4_19_KSYMTAB_FORMAT)
+      {
+	GElf_Shdr mem;
+	GElf_Shdr *section_header = gelf_getshdr(ksymtab_section, &mem);
+	if (architecture_word_size() == 4)
+	  result = (uint32_t)(addr + section_header->sh_addr + addr_offset);
+	else
+	  // We are in 64 bits
+	  result = addr + section_header->sh_addr + addr_offset;
+      }
+
+    return result;
   }
 
   /// This is a sub-routine of maybe_adjust_fn_sym_address and
