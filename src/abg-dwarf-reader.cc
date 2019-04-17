@@ -7130,6 +7130,81 @@ public:
     return true;
   }
 
+  /// Try reading the first __ksymtab section entry as if it is in the
+  /// v4_19 format and lookup a symbol from the .symbol section to see
+  /// if that succeeds.  If it does, then we can assume the __ksymtab
+  /// section is in the v4_19 format.
+  ///
+  /// @return the symbol resulting from the lookup of the symbol
+  /// address we got from reading the first entry of the ksymtab
+  /// section assuming the v4.19 format.  If nil, it means the
+  /// __ksymtab section is not in the v4.19 format.
+  elf_symbol_sptr
+  try_reading_first_ksymtab_entry_using_pre_v4_19_format() const
+  {
+    Elf_Scn *section = find_ksymtab_section();
+    Elf_Data *elf_data = elf_rawdata(section, 0);
+    uint8_t *bytes = reinterpret_cast<uint8_t*>(elf_data->d_buf);
+    bool is_big_endian = elf_architecture_is_big_endian();
+    elf_symbol_sptr symbol;
+    unsigned char symbol_value_size = architecture_word_size();
+
+    GElf_Addr symbol_address = 0, adjusted_symbol_address = 0;
+    ABG_ASSERT(read_int_from_array_of_bytes(bytes,
+					    symbol_value_size,
+					    is_big_endian,
+					    symbol_address));
+    adjusted_symbol_address = maybe_adjust_fn_sym_address(symbol_address);
+    symbol = lookup_elf_symbol_from_address(adjusted_symbol_address);
+    return symbol;
+  }
+
+  /// Try reading the first __ksymtab section entry as if it is in the
+  /// pre-v4_19 format and lookup a symbol from the .symbol section to
+  /// see if that succeeds.  If it does, then we can assume the
+  /// __ksymtab section is in the pre-v4_19 format.
+  ///
+  /// @return the symbol resulting from the lookup of the symbol
+  /// address we got from reading the first entry of the ksymtab
+  /// section assuming the pre-v4.19 format.  If nil, it means the
+  /// __ksymtab section is not in the pre-v4.19 format.
+  elf_symbol_sptr
+  try_reading_first_ksymtab_entry_using_v4_19_format() const
+  {
+    Elf_Scn *section = find_ksymtab_section();
+    Elf_Data *elf_data = elf_rawdata(section, 0);
+    uint8_t *bytes = reinterpret_cast<uint8_t*>(elf_data->d_buf);
+    bool is_big_endian = elf_architecture_is_big_endian();
+    elf_symbol_sptr symbol;
+    unsigned char symbol_value_size = 4;
+    unsigned char arch_word_size = architecture_word_size();
+
+    GElf_Addr symbol_address = 0, adjusted_symbol_address = 0;
+    ABG_ASSERT(read_int_from_array_of_bytes(bytes,
+					    symbol_value_size,
+					    is_big_endian,
+					    symbol_address));
+    GElf_Shdr mem;
+    GElf_Shdr *section_header = gelf_getshdr(section, &mem);
+    if (arch_word_size == 4)
+      symbol_address = (uint32_t)(symbol_address + section_header->sh_addr);
+    else if (arch_word_size == 8)
+      {
+	symbol_address = symbol_address + section_header->sh_addr;
+	if (symbol_address < ((uint64_t)1 << 32))
+	  // The symbol address is expressed in 32 bits.  So let's
+	  // convert it to a 64 bits address with the 4 most
+	  // significant bytes set to ff each.
+	  symbol_address = ((uint64_t)0xffffffff << 32) | symbol_address;
+      }
+    else
+      ABG_ASSERT_NOT_REACHED;
+
+    adjusted_symbol_address = maybe_adjust_fn_sym_address(symbol_address);
+    symbol = lookup_elf_symbol_from_address(adjusted_symbol_address);
+    return symbol;
+  }
+
   /// Determine the format of the __ksymtab and __ksymtab_gpl
   /// sections.
   ///
@@ -7146,18 +7221,22 @@ public:
       {
 	if (ksymtab_format_ == UNDEFINED_KSYMTAB_FORMAT)
 	  {
-	    // Only kernels prior to v4.19 systematically had a
-	    // .rela__ksymtab section.  And not having a
-	    // .rela__ksymtab means that there are no relocations for
-	    // the __ksymtab section.  And that is a hint that
-	    // __ksymtab entries are "place-relative" addresses in
-	    // that case, thus, not needing relocations.  So we use
-	    // the presence of the .rela__ksymtab as a property of pre
-	    // v4.19 "classical" ksymtab kernels.
-	    if (find_section(elf_handle(), ".rela__ksymtab", SHT_RELA))
+	    // OK this is a dirty little heuristic to determine the
+	    // format of the ksymtab section.
+	    //
+	    // We try to read the first ksymtab entry assuming a
+	    // pre-v4.19 format.  If that succeeds then we are in the
+	    // pr-v4.19 format.  Otherwise, try reading it assuming a
+	    // v4.19 format.  For now, we just support
+	    // PRE_V4_19_KSYMTAB_FORMAT and V4_19_KSYMTAB_FORMAT.
+	    if (try_reading_first_ksymtab_entry_using_pre_v4_19_format())
 	      ksymtab_format_ = PRE_V4_19_KSYMTAB_FORMAT;
-	    else
+	    else if (try_reading_first_ksymtab_entry_using_v4_19_format())
 	      ksymtab_format_ = V4_19_KSYMTAB_FORMAT;
+	    else
+	      // If a new format emerges, then we need to add its
+	      // support above.
+	      ABG_ASSERT_NOT_REACHED;
 	  }
       }
     return ksymtab_format_;
@@ -7540,7 +7619,7 @@ public:
   GElf_Addr
   maybe_adjust_sym_address_from_v4_19_ksymtab(GElf_Addr addr,
 					      size_t addr_offset,
-					      Elf_Scn *ksymtab_section)
+					      Elf_Scn *ksymtab_section) const
   {
     GElf_Addr result = addr;
 
@@ -7550,9 +7629,20 @@ public:
 	GElf_Shdr *section_header = gelf_getshdr(ksymtab_section, &mem);
 	if (architecture_word_size() == 4)
 	  result = (uint32_t)(addr + section_header->sh_addr + addr_offset);
+	else if (architecture_word_size() == 8)
+	  {
+	    result = addr + section_header->sh_addr + addr_offset;
+	    if (result < ((uint64_t)1 << 32))
+	      // The symbol address is expressed in 32 bits.  So let's
+	      // convert it to a 64 bits address with the 4 most
+	      // significant bytes set to ff each.  This is how 64
+	      // bits addresses of symbols are in the .symbol section,
+	      // so we need this address to be consistent with that
+	      // format.
+	      result = ((uint64_t)0xffffffff << 32) | result;
+	  }
 	else
-	  // We are in 64 bits
-	  result = addr + section_header->sh_addr + addr_offset;
+	  ABG_ASSERT_NOT_REACHED;
       }
 
     return result;
