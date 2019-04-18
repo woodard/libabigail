@@ -405,7 +405,10 @@ real_path(const string&path, string& result)
 
   char *realp = realpath(path.c_str(), NULL);
   if (realp)
-    result = realp;
+    {
+      result = realp;
+      free(realp);
+    }
 }
 
 /// Ensures #dir_path is a directory and is created.  If #dir_path is
