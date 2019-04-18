@@ -1104,12 +1104,12 @@ get_binary_load_address(Elf *elf_handle,
   GElf_Ehdr eh_mem;
   GElf_Ehdr *elf_header = gelf_getehdr(elf_handle, &eh_mem);
   size_t num_segments = elf_header->e_phnum;
-  GElf_Phdr *lowest_program_header = 0;
+  GElf_Phdr *lowest_program_header = 0, *program_header = 0;
+  GElf_Phdr ph_mem;
 
   for (unsigned i = 0; i < num_segments; ++i)
     {
-      GElf_Phdr ph_mem;
-      GElf_Phdr *program_header = gelf_getphdr(elf_handle, i, &ph_mem);
+      program_header = gelf_getphdr(elf_handle, i, &ph_mem);
       if (program_header->p_type == PT_LOAD
 	  && (!lowest_program_header
 	      || program_header->p_vaddr < lowest_program_header->p_vaddr))
