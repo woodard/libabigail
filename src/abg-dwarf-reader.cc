@@ -14403,8 +14403,12 @@ maybe_strip_qualification(const qualified_type_def_sptr t)
       quals |= t->get_cv_quals();
       element_type->set_cv_quals(quals);
       result = is_decl(u);
-      if (u->get_canonical_type())
-	re_canonicalize(u);
+      if (u->get_canonical_type()
+	  || element_type->get_canonical_type())
+	// We shouldn't be editing types that were already
+	// canonicalized.  For those, canonicalization should be
+	// delayed until after all editing is done.
+	ABG_ASSERT_NOT_REACHED;
     }
   else if (is_array_type(u) && !is_array_of_qualified_element(is_array_type(u)))
     {
@@ -14425,7 +14429,10 @@ maybe_strip_qualification(const qualified_type_def_sptr t)
       array->set_element_type(qual_type);
       result = is_decl(u);
       if (u->get_canonical_type())
-	re_canonicalize(u);
+	// We shouldn't be editing types that were already
+	// canonicalized.  For those, canonicalization should be
+	// delayed until after all editing is done.
+	ABG_ASSERT_NOT_REACHED;
     }
 
   return result;
@@ -16054,17 +16061,22 @@ maybe_canonicalize_type(Dwarf_Die *die, read_context&	ctxt)
   if (!t)
     return;
 
-  type_base_sptr peeled_type = peel_typedef_pointer_or_reference_type(t);
+  type_base_sptr peeled_type =
+    peel_typedef_pointer_or_reference_type(t, /*peel_qual_types=*/false);
   if (is_class_type(peeled_type)
       || is_union_type(peeled_type)
-      || is_function_type(peeled_type))
+      || is_function_type(peeled_type)
+      || is_array_type(peeled_type)
+      || is_qualified_type(peeled_type))
     // We delay canonicalization of classes/unions or typedef,
     // pointers, references and array to classes/unions.  This is
     // because the (underlying) class might not be finished yet and we
     // might not be able to able detect it here (thinking about
     // classes that are work-in-progress, or classes that might be
     // later amended by some DWARF construct).  So we err on the safe
-    // side.
+    // side.  We also delay canonicalization for array and qualified
+    // types because they can be edited (in particular by
+    // maybe_strip_qualification) after they are initially built.
     ctxt.schedule_type_for_late_canonicalization(die);
   else if ((is_function_type(t)
 	    && ctxt.is_wip_function_type_die_offset(die_offset, source))
