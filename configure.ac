@@ -583,6 +583,10 @@ AC_SUBST(DEPS_LIBS)
 if test x$ABIGAIL_DEVEL != x; then
    CFLAGS="-g -Wall -Wextra -Werror"
    CXXFLAGS="-g -Wall -Wextra -Werror"
+   if test x$ABIGAIL_DEVEL_ASAN != x; then
+      CFLAGS="$CFLAGS -fsanitize=address"
+      CXXFLAGS="$CXXFLAGS -fsanitize=address"
+   fi
 fi
 
 dnl Check if several decls and constant are defined in dependant
