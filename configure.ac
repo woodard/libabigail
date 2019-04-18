@@ -103,6 +103,18 @@ AC_ARG_ENABLE([python3],
 	      ENABLE_PYTHON3=$enableval,
 	      ENABLE_PYTHON3=auto)
 
+AC_ARG_ENABLE(asan,
+	      AS_HELP_STRING([--enable-asan=yes|no],
+			     [enable the support of building with -fsanitize=address)]),
+	      ENABLE_ASAN=$enableval,
+	      ENABLE_ASAN=no)
+
+AC_ARG_ENABLE(ubsan,
+	      AS_HELP_STRING([--enable-ubsan=yes|no],
+			     [enable the support of building with -fsanitize=undefined)]),
+	      ENABLE_UBSAN=$enableval,
+	      ENABLE_UBSAN=no)
+
 dnl *************************************************
 dnl check for dependencies
 dnl *************************************************
@@ -583,10 +595,16 @@ AC_SUBST(DEPS_LIBS)
 if test x$ABIGAIL_DEVEL != x; then
    CFLAGS="-g -Wall -Wextra -Werror"
    CXXFLAGS="-g -Wall -Wextra -Werror"
-   if test x$ABIGAIL_DEVEL_ASAN != x; then
-      CFLAGS="$CFLAGS -fsanitize=address"
-      CXXFLAGS="$CXXFLAGS -fsanitize=address"
-   fi
+fi
+
+if test x$ENABLE_ASAN = xyes; then
+    CFLAGS="$CFLAGS -fsanitize=address"
+    CXXFLAGS="$CXXFLAGS -fsanitize=address"
+fi
+
+if test x$ENABLE_UBSAN = xyes; then
+    CFLAGS="$CFLAGS -fsanitize=undefined"
+    CXXFLAGS="$CXXFLAGS -fsanitize=undefined"
 fi
 
 dnl Check if several decls and constant are defined in dependant
@@ -794,6 +812,8 @@ AC_MSG_NOTICE([
     Enable fedabipkgdiff                           : ${ENABLE_FEDABIPKGDIFF}
     Enable python 3				   : ${ENABLE_PYTHON3}
     Enable running tests under Valgrind            : ${enable_valgrind}
+    Enable build with -fsanitize=address    	   : ${ENABLE_ASAN}
+    Enable build with -fsanitize=undefined  	   : ${ENABLE_UBSAN}
     Generate html apidoc	                   : ${ENABLE_APIDOC}
     Generate html manual	                   : ${ENABLE_MANUAL}
 ])
