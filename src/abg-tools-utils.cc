@@ -1831,6 +1831,8 @@ find_file_under_dir(const string& root_dir,
 	  return true;
 	}
     }
+
+  fts_close(file_hierarchy);
   return false;
 }
 /// If we were given suppression specification files or kabi whitelist
