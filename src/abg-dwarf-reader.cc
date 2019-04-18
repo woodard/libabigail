@@ -1127,23 +1127,18 @@ get_binary_load_address(Elf *elf_handle,
   return false;
 }
 
-/// Find the file name of the alternate debug info file, as well as
-/// its build ID.
+/// Find the file name of the alternate debug info file.
 ///
 /// @param elf_module the elf module to consider.
 ///
 /// @param out parameter.  Is set to the file name of the alternate
 /// debug info file, iff this function returns true.
 ///
-/// @param out parameter.  Is set to the build ID of the alternate
-/// debug info file.
-///
 /// @return true iff the location of the alternate debug info file was
 /// found.
 static bool
 find_alt_debug_info_link(Dwfl_Module *elf_module,
-			 string &alt_file_name,
-			 string &build_id)
+			 string &alt_file_name)
 {
   GElf_Addr bias = 0;
   Dwarf *dwarf = dwfl_module_getdwarf(elf_module, &bias);
@@ -1187,7 +1182,6 @@ find_alt_debug_info_link(Dwfl_Module *elf_module,
       if (buildid == 0 || alt_name == 0)
 	return false;
 
-      build_id = buildid;
       alt_file_name = alt_name;
       return true;
     }
@@ -1274,8 +1268,7 @@ find_alt_debug_info(Dwfl_Module *elf_module,
     return 0;
 
   Dwarf* result = 0;
-  string build_id;
-  find_alt_debug_info_link(elf_module, alt_file_name, build_id);
+  find_alt_debug_info_link(elf_module, alt_file_name);
 
 #ifdef LIBDW_HAS_DWARF_GETALT
   // We are on recent versions of elfutils where the function
