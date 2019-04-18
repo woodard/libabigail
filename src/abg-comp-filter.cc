@@ -1197,7 +1197,7 @@ has_var_type_cv_qual_change(const diff* dif)
 
   {
     // Make sure the variable diff does carry a type change at least
-    change_kind ch_kind;
+    change_kind ch_kind = NO_CHANGE_KIND;
     if (equals(*var_dif->first_var(), *var_dif->second_var(), &ch_kind))
       return false;
 
