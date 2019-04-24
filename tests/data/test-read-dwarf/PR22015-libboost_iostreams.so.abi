@@ -2773,6 +2773,7 @@
       <parameter type-id='type-id-245'/>
       <return type-id='type-id-90'/>
     </function-decl>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-257' visibility='default' is-declaration-only='yes' id='type-id-239'/>
     <typedef-decl name='div_t' type-id='type-id-239' filepath='/usr/include/stdlib.h' line='101' column='1' id='type-id-257'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-10'/>

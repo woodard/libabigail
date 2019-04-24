@@ -417,10 +417,7 @@ type_decl_sptr
 is_type_decl(const decl_base_sptr&);
 
 typedef_decl_sptr
-is_typedef(const type_base_sptr);
-
-typedef_decl_sptr
-is_typedef(const decl_base_sptr);
+is_typedef(const type_or_decl_base_sptr);
 
 const typedef_decl*
 is_typedef(const type_base*);

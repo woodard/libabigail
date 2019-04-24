@@ -6850,18 +6850,8 @@ is_type_decl(const decl_base_sptr& t)
 /// @return the typedef declaration of the @p t, or NULL if it's not a
 /// typedef.
 typedef_decl_sptr
-is_typedef(const type_base_sptr t)
+is_typedef(const type_or_decl_base_sptr t)
 {return dynamic_pointer_cast<typedef_decl>(t);}
-
-/// Test whether a type is a typedef.
-///
-/// @param t the declaration of the type to test for.
-///
-/// @return the typedef declaration of the @p t, or NULL if it's not a
-/// typedef.
-typedef_decl_sptr
-is_typedef(const decl_base_sptr d)
-{return is_typedef(is_type(d));}
 
 /// Test whether a type is a typedef.
 ///

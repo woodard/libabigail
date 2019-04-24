@@ -13855,13 +13855,14 @@ add_or_update_class_type(read_context&	 ctxt,
 	}
     }
 
-  // If we've already seen the same class as 'die', then let's
-  // re-use that one.
-  if (class_decl_sptr pre_existing_class =
-      is_class_type(ctxt.lookup_type_artifact_from_die(die)))
-    // For an anonymous type, make sure the pre-existing one has the
-    // same scope as the current one.
-    if (!is_anonymous || pre_existing_class->get_scope() == scope)
+  // If we've already seen the same class as 'die', then let's re-use
+  // that one, unless it's an anonymous class.  We can't really safely
+  // re-use anonymous classes as they have no name, by construction.
+  // What we can do, rather, is to reuse the typedef that name them,
+  // when they do have a naming typedef.
+  if (!is_anonymous)
+    if (class_decl_sptr pre_existing_class =
+	is_class_type(ctxt.lookup_type_artifact_from_die(die)))
       klass = pre_existing_class;
 
   uint64_t size = 0;
@@ -14166,13 +14167,14 @@ add_or_update_union_type(read_context&	ctxt,
 	}
     }
 
-  // if we've already seen a union with the same union as
-  // 'die' then let's re-use that one.
-  if (union_decl_sptr pre_existing_union =
-      is_union_type(ctxt.lookup_artifact_from_die(die)))
-    // For an anonymous type, make sure the pre-existing one has the
-    // same scope as the current one.
-    if (!is_anonymous || pre_existing_union->get_scope() == scope)
+  // if we've already seen a union with the same union as 'die' then
+  // let's re-use that one. We can't really safely re-use anonymous
+  // classes as they have no name, by construction.  What we can do,
+  // rather, is to reuse the typedef that name them, when they do have
+  // a naming typedef.
+  if (!is_anonymous)
+    if (union_decl_sptr pre_existing_union =
+	is_union_type(ctxt.lookup_artifact_from_die(die)))
       union_type = pre_existing_union;
 
   uint64_t size = 0;
@@ -15153,6 +15155,10 @@ build_typedef_type(read_context&	ctxt,
   if (corpus_sptr corp = ctxt.should_reuse_type_from_corpus_group())
     if (loc)
       result = lookup_typedef_type_per_location(loc.expand(), *corp);
+
+  if (!ctxt.odr_is_relevant(die))
+    if (typedef_decl_sptr t = is_typedef(ctxt.lookup_artifact_from_die(die)))
+      result = t;
 
   if (!result)
     {
