@@ -41172,26 +41172,22 @@
     </function-decl>
 
     <!-- const demangle_operator_info[62] -->
-    <array-type-def dimensions='1' type-id='type-id-1760' size-in-bits='11904' id='type-id-1761'>
+    <array-type-def dimensions='1' type-id='type-id-1747' size-in-bits='11904' id='type-id-1760'>
       <!-- <anonymous range>[62] -->
-      <subrange length='62' type-id='type-id-28' id='type-id-1762'/>
+      <subrange length='62' type-id='type-id-28' id='type-id-1761'/>
 
     </array-type-def>
-    <!-- const demangle_operator_info -->
-    <qualified-type-def type-id='type-id-1746' const='yes' id='type-id-1760'/>
     <!-- const demangle_operator_info __asan_cplus_demangle_operators[62] -->
-    <var-decl name='__asan_cplus_demangle_operators' type-id='type-id-1761' mangled-name='__asan_cplus_demangle_operators' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='1688' column='1' elf-symbol-id='__asan_cplus_demangle_operators'/>
+    <var-decl name='__asan_cplus_demangle_operators' type-id='type-id-1760' mangled-name='__asan_cplus_demangle_operators' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='1688' column='1' elf-symbol-id='__asan_cplus_demangle_operators'/>
 
     <!-- const demangle_builtin_type_info[33] -->
-    <array-type-def dimensions='1' type-id='type-id-1763' size-in-bits='8448' id='type-id-1764'>
+    <array-type-def dimensions='1' type-id='type-id-1754' size-in-bits='8448' id='type-id-1762'>
       <!-- <anonymous range>[33] -->
-      <subrange length='33' type-id='type-id-28' id='type-id-1765'/>
+      <subrange length='33' type-id='type-id-28' id='type-id-1763'/>
 
     </array-type-def>
-    <!-- const demangle_builtin_type_info -->
-    <qualified-type-def type-id='type-id-1752' const='yes' id='type-id-1763'/>
     <!-- const demangle_builtin_type_info __asan_cplus_demangle_builtin_types[33] -->
-    <var-decl name='__asan_cplus_demangle_builtin_types' type-id='type-id-1764' mangled-name='__asan_cplus_demangle_builtin_types' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='2188' column='1' elf-symbol-id='__asan_cplus_demangle_builtin_types'/>
+    <var-decl name='__asan_cplus_demangle_builtin_types' type-id='type-id-1762' mangled-name='__asan_cplus_demangle_builtin_types' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='2188' column='1' elf-symbol-id='__asan_cplus_demangle_builtin_types'/>
     <!-- void free(void*) -->
     <function-decl name='free' filepath='/usr/include/stdlib.h' line='488' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'void*' -->
@@ -41266,11 +41262,11 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
     <!-- typedef long int __off_t -->
-    <typedef-decl name='__off_t' type-id='type-id-293' filepath='/usr/include/bits/types.h' line='141' column='1' id='type-id-1766'/>
+    <typedef-decl name='__off_t' type-id='type-id-293' filepath='/usr/include/bits/types.h' line='141' column='1' id='type-id-1764'/>
     <!-- typedef __off_t off_t -->
-    <typedef-decl name='off_t' type-id='type-id-1766' filepath='/usr/include/sys/types.h' line='87' column='1' id='type-id-1767'/>
+    <typedef-decl name='off_t' type-id='type-id-1764' filepath='/usr/include/sys/types.h' line='87' column='1' id='type-id-1765'/>
     <!-- struct backtrace_view -->
-    <class-decl name='backtrace_view' size-in-bits='192' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='169' column='1' id='type-id-1768'>
+    <class-decl name='backtrace_view' size-in-bits='192' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='169' column='1' id='type-id-1766'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- void* backtrace_view::data -->
         <var-decl name='data' type-id='type-id-3' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='172' column='1'/>
@@ -41285,7 +41281,7 @@
       </data-member>
     </class-decl>
     <!-- backtrace_view* -->
-    <pointer-type-def type-id='type-id-1768' size-in-bits='64' id='type-id-1769'/>
+    <pointer-type-def type-id='type-id-1766' size-in-bits='64' id='type-id-1767'/>
     <!-- int __asan_backtrace_get_view(backtrace_state*, int, off_t, size_t, backtrace_error_callback, void*, backtrace_view*) -->
     <function-decl name='__asan_backtrace_get_view' mangled-name='__asan_backtrace_get_view' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='53' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_get_view'>
       <!-- parameter of type 'backtrace_state*' -->
@@ -41293,7 +41289,7 @@
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-13' name='descriptor' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='54' column='1'/>
       <!-- parameter of type 'typedef off_t' -->
-      <parameter type-id='type-id-1767' name='offset' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='54' column='1'/>
+      <parameter type-id='type-id-1765' name='offset' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='54' column='1'/>
       <!-- parameter of type 'typedef size_t' -->
       <parameter type-id='type-id-1541' name='size' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='54' column='1'/>
       <!-- parameter of type 'typedef backtrace_error_callback' -->
@@ -41301,7 +41297,7 @@
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-3' name='data' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='56' column='1'/>
       <!-- parameter of type 'backtrace_view*' -->
-      <parameter type-id='type-id-1769' name='view' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='56' column='1'/>
+      <parameter type-id='type-id-1767' name='view' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='56' column='1'/>
       <!-- int -->
       <return type-id='type-id-13'/>
     </function-decl>
@@ -41310,7 +41306,7 @@
       <!-- parameter of type 'backtrace_state*' -->
       <parameter type-id='type-id-1718' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='87' column='1'/>
       <!-- parameter of type 'backtrace_view*' -->
-      <parameter type-id='type-id-1769' name='view' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='88' column='1'/>
+      <parameter type-id='type-id-1767' name='view' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='88' column='1'/>
       <!-- parameter of type 'typedef backtrace_error_callback' -->
       <parameter type-id='type-id-1706' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='89' column='1'/>
       <!-- parameter of type 'void*' -->
@@ -41336,7 +41332,7 @@
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-13'/>
       <!-- parameter of type 'typedef __off_t' -->
-      <parameter type-id='type-id-1766'/>
+      <parameter type-id='type-id-1764'/>
       <!-- void* -->
       <return type-id='type-id-3'/>
     </function-decl>

@@ -3080,6 +3080,7 @@ public:
   vector<Dwarf_Off>		types_to_canonicalize_;
   vector<Dwarf_Off>		alt_types_to_canonicalize_;
   vector<Dwarf_Off>		type_unit_types_to_canonicalize_;
+  vector<type_base_sptr>	extra_types_to_canonicalize_;
   string_classes_map		decl_only_classes_map_;
   die_tu_map_type		die_tu_map_;
   corpus_group_sptr		cur_corpus_group_;
@@ -3252,6 +3253,7 @@ public:
     types_to_canonicalize_.clear();
     alt_types_to_canonicalize_.clear();
     type_unit_types_to_canonicalize_.clear();
+    extra_types_to_canonicalize_.clear();
     decl_only_classes_map_.clear();
     die_tu_map_.clear();
     cur_corpus_group_.reset();
@@ -5358,6 +5360,17 @@ public:
   types_to_canonicalize(die_source source) const
   {return const_cast<read_context*>(this)->types_to_canonicalize(source);}
 
+  /// Return a reference to the vector containing the types created
+  /// during the binary analysis but that are not tied to a given
+  /// DWARF DIE.
+  ///
+  /// @return reference to the vector containing the types created
+  /// during the binary analysis but that are not tied to a given
+  /// DWARF DIE.
+  const vector<type_base_sptr>&
+  extra_types_to_canonicalize() const
+  {return extra_types_to_canonicalize_;}
+
   /// Clear the containers holding types to canonicalize.
   void
   clear_types_to_canonicalize()
@@ -5365,6 +5378,7 @@ public:
     types_to_canonicalize_.clear();
     alt_types_to_canonicalize_.clear();
     type_unit_types_to_canonicalize_.clear();
+    extra_types_to_canonicalize_.clear();
   }
 
   /// Put the offset of a DIE representing a type on a side vector so
@@ -5397,6 +5411,16 @@ public:
 
     // Then really do the scheduling.
     types_to_canonicalize(source).push_back(o);
+  }
+
+  /// Types that were created but not tied to a particular DIE, must
+  /// be scheduled for late canonicalization using this method.
+  ///
+  /// @param t the type to schedule for late canonicalization.
+  void
+  schedule_type_for_late_canonicalization(const type_base_sptr &t)
+  {
+    extra_types_to_canonicalize_.push_back(t);
   }
 
   /// Canonicalize types which DIE offsets are stored in vectors on
@@ -5440,6 +5464,32 @@ public:
 	    canonicalize(t);
 	    if (do_log())
 	      cerr << " DONE\n";
+	  }
+
+	// Now canonicalize types that were created but not tied to
+	// any DIE.
+	if (!extra_types_to_canonicalize().empty())
+	  {
+	    size_t total = extra_types_to_canonicalize().size();
+	    if (do_log())
+	      cerr << total << " extra types to canonicalize\n";
+	    size_t i = 1;
+	    for (vector<type_base_sptr>::const_iterator it =
+		   extra_types_to_canonicalize().begin();
+		 it != extra_types_to_canonicalize().end();
+		 ++it, ++i)
+	      {
+		if (do_log())
+		  {
+		    cerr << "canonicalizing extra type "
+			 << get_pretty_representation(*it, false)
+			 << " [" << i << "/" << total << "]";
+		    if (corpus_sptr c = current_corpus())
+		      cerr << "@" << c->get_path();
+		    cerr << " ...";
+		  }
+		canonicalize(*it);
+	      }
 	  }
       }
     if (do_log())
@@ -14351,9 +14401,12 @@ build_qualified_type(read_context&	ctxt,
 ///
 /// @param t the type to strip const qualification from.
 ///
+/// @param ctxt the @ref read_context to use.
+///
 /// @return the stripped type or just return @p t.
 static decl_base_sptr
-maybe_strip_qualification(const qualified_type_def_sptr t)
+maybe_strip_qualification(const qualified_type_def_sptr t,
+			  read_context &ctxt)
 {
   if (!t)
     return t;
@@ -14420,6 +14473,7 @@ maybe_strip_qualification(const qualified_type_def_sptr t)
 				t->get_location()));
       add_decl_to_scope(qual_type, is_decl(element_type)->get_scope());
       array->set_element_type(qual_type);
+      ctxt.schedule_type_for_late_canonicalization(is_type(qual_type));
       result = is_decl(u);
       if (u->get_canonical_type())
 	// We shouldn't be editing types that were already
@@ -16241,7 +16295,8 @@ build_ir_node_from_die(read_context&	ctxt,
 	  {
 	    // Strip some potentially redundant type qualifiers from
 	    // the qualified type we just built.
-	    decl_base_sptr d = maybe_strip_qualification(is_qualified_type(q));
+	    decl_base_sptr d = maybe_strip_qualification(is_qualified_type(q),
+							 ctxt);
 	    if (!d)
 	      d = get_type_declaration(q);
 	    ABG_ASSERT(d);
