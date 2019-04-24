@@ -265,7 +265,12 @@ public:
   /// @return true iff type has already been assigned an ID.
   bool
   type_has_existing_id(type_base* type) const
-  {return (m_type_id_map.find(type) != m_type_id_map.end());}
+  {
+    type_base *c = type->get_naked_canonical_type();
+    if (c == 0)
+      c = const_cast<type_base*>(type);
+    return (m_type_id_map.find(c) != m_type_id_map.end());
+  }
 
   /// Associate a unique id to a given type.  For that, put the type
   /// in a hash table, hashing the type.  So if the type has no id
@@ -280,14 +285,18 @@ public:
   /// associated to it, create a new one and return it.  Otherwise,
   /// return the existing id for that type.
   interned_string
-  get_id_for_type(type_base* t) const
+  get_id_for_type(const type_base* t) const
   {
-    type_ptr_map::const_iterator it = m_type_id_map.find(t);
+    type_base *c = t->get_naked_canonical_type();
+    if (c == 0)
+      c = const_cast<type_base*>(t);
+
+    type_ptr_map::const_iterator it = m_type_id_map.find(c);
     if (it == m_type_id_map.end())
       {
 	interned_string id =
 	  get_id_manager().get_id_with_prefix("type-id-");
-	m_type_id_map[t] = id;
+	m_type_id_map[c] = id;
 	return id;
       }
     return it->second;
@@ -503,7 +512,12 @@ public:
   /// @param t the type to flag.
   void
   record_type_as_emitted(const type_base *t)
-  {m_emitted_type_set.insert(t);}
+  {
+    type_base *c = t->get_naked_canonical_type();
+    if (c == 0)
+      c = const_cast<type_base*>(t);
+    m_emitted_type_set.insert(c);
+  }
 
   /// Test if a given type has been written out to the XML output.
   ///
@@ -513,7 +527,12 @@ public:
   /// otherwise.
   bool
   type_is_emitted(const type_base *t)
-  {return m_emitted_type_set.find(t) != m_emitted_type_set.end();}
+  {
+    type_base *c = t->get_naked_canonical_type();
+    if (c == 0)
+      c = const_cast<type_base*>(t);
+    return m_emitted_type_set.find(c) != m_emitted_type_set.end();
+  }
 
   /// Test if a given type has been written out to the XML output.
   ///
