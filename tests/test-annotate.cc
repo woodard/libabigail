@@ -139,6 +139,11 @@ InOutSpec in_out_specs[] =
     "data/test-annotate/libtest24-drop-fns-2.so.abi",
     "output/test-annotate/libtest24-drop-fns-2.so.abi",
   },
+  {
+    "data/test-annotate/test-anonymous-members-0.o",
+    "data/test-annotate/test-anonymous-members-0.o.abi",
+    "output/test-annotate/test-anonymous-members-0.o.abi",
+  },
   // This should be the last entry.
   {NULL, NULL, NULL}
 };

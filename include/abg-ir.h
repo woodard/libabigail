@@ -3621,6 +3621,15 @@ public:
   const member_types&
   get_member_types() const;
 
+  size_t
+  get_num_anonymous_member_classes() const;
+
+  size_t
+  get_num_anonymous_member_unions() const;
+
+  size_t
+  get_num_anonymous_member_enums() const;
+
   type_base_sptr
   find_member_type(const string& name) const;
 

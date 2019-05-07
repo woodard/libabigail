@@ -421,6 +421,7 @@ represent(const var_diff_sptr	&diff,
       is_strict_anonymous_data_member_change = true;
       string tr1 = o->get_pretty_representation();
       string tr2 = n->get_pretty_representation();
+      type_base_sptr t1 = o->get_type(), t2 = n->get_type();
       if (tr1 != tr2)
 	{
 	  show_offset_or_size(indent + "anonymous data member at offset",
@@ -431,6 +432,22 @@ represent(const var_diff_sptr	&diff,
 	      << indent << "  " << tr1 << "\n"
 	      << indent << "to:\n"
 	      << indent << "  " << tr2 << "\n";
+	}
+      else if (get_type_name(t1) != get_type_name(t2)
+	       && is_decl(t1) && is_decl(t2)
+	       && is_decl(t1)->get_is_anonymous()
+	       && is_decl(t2)->get_is_anonymous())
+	{
+	  out << indent << "while looking at anonymous data member '"
+	      << tr1 << "':\n"
+	      << indent << "the internal name of that anonymous data member"
+	                   "changed from:\n"
+	      << indent << " " << get_type_name(o->get_type()) << "\n"
+	      << indent << "to:\n"
+	      << indent << " " << get_type_name(n->get_type()) << "\n"
+	      << indent << " This is usually due to "
+	      <<"an anonymous member type being added or removed from "
+	      << "the containing type\n";
 	}
     }
   else if (filtering::has_anonymous_data_member_change(diff))

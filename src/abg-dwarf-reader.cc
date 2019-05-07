@@ -423,6 +423,18 @@ die_die_attribute(Dwarf_Die* die,
 		  bool look_thru_abstract_origin = true);
 
 static string
+get_internal_anonynous_die_base_name(Dwarf_Die *die);
+
+static string
+build_internal_anonymous_die_name(const string &base_name,
+				  size_t anonymous_type_index);
+
+
+static string
+get_internal_anonymous_die_name(Dwarf_Die *die,
+				size_t anonymous_type_index);
+
+static string
 die_qualified_type_name(const read_context& ctxt, Dwarf_Die* die, size_t where);
 
 static string
@@ -10917,6 +10929,108 @@ die_virtual_function_index(Dwarf_Die* die,
   return true;
 }
 
+/// Test if a given DIE represents an anonymous type.
+///
+/// Anonymous types we are interested in are classes, unions and
+/// enumerations.
+///
+/// @param die the DIE to consider.
+///
+/// @return true iff @p die represents an anonymous type.
+bool
+is_anonymous_type_die(Dwarf_Die *die)
+{
+  int tag = dwarf_tag(die);
+
+  if (tag == DW_TAG_class_type
+      || tag == DW_TAG_structure_type
+      || tag == DW_TAG_union_type
+      || tag == DW_TAG_enumeration_type)
+    return die_is_anonymous(die);
+
+  return false;
+}
+
+/// Return the base of the internal name to represent an anonymous
+/// type.
+///
+/// Typically, anonymous enums would be named
+/// __anonymous_enum__<number>, anonymous struct or classes would be
+/// named __anonymous_struct__<number> and anonymous unions would be
+/// named __anonymous_union__<number>.  The first part of these
+/// anonymous names (i.e, __anonymous_{enum,struct,union}__ is called
+/// the base name.  This function returns that base name, depending on
+/// the kind of type DIE we are looking at.
+///
+/// @param die the type DIE to look at.  This function expects a type
+/// DIE with an empty DW_AT_name property value (anonymous).
+///
+/// @return a string representing the base of the internal anonymous
+/// name.
+static string
+get_internal_anonynous_die_base_name(Dwarf_Die *die)
+{
+  ABG_ASSERT(die_is_type(die));
+  ABG_ASSERT(die_string_attribute(die, DW_AT_name) == "");
+
+  int tag = dwarf_tag(die);
+  string type_name;
+  if (tag == DW_TAG_class_type || tag == DW_TAG_structure_type)
+    type_name = "__anonymous_struct__";
+  else if (tag == DW_TAG_union_type)
+    type_name = "__anonymous_union__";
+  else if (tag == DW_TAG_enumeration_type)
+    type_name = "__anonymous_enum__";
+
+  return type_name;
+}
+
+/// Build a full internal anonymous type name.
+///
+/// @param base_name this is the base name as returned by the function
+/// @ref get_internal_anonynous_die_base_name.
+///
+/// @param anonymous_type_index this is the index of the anonymous
+/// type in its scope.  That is, if there are more than one anonymous
+/// types of a given kind in a scope, this index is what tells them
+/// appart, starting from 0.
+///
+/// @return the built string, which is a concatenation of @p base_name
+/// and @p anonymous_type_index.
+static string
+build_internal_anonymous_die_name(const string &base_name,
+				  size_t anonymous_type_index)
+{
+  string name = base_name;
+  if (anonymous_type_index && !base_name.empty())
+    {
+      std::ostringstream o;
+      o << base_name << anonymous_type_index;
+      name = o.str();
+    }
+  return name;
+}
+
+/// Build a full internal anonymous type name.
+///
+/// @param die the DIE representing the anonymous type to consider.
+///
+/// @param anonymous_type_index the index of the anonymous type
+/// represented by @p DIE, in its scope.  That is, if there are
+/// several different anonymous types of the same kind as @p die, this
+/// index is what tells them appart.
+///
+/// @return the internal name of the anonymous type represented by @p
+/// DIE.
+static string
+get_internal_anonymous_die_name(Dwarf_Die *die,
+				size_t anonymous_type_index)
+{
+  string name = get_internal_anonynous_die_base_name(die);
+  name = build_internal_anonymous_die_name(name, anonymous_type_index);
+  return name;
+}
+
 // ------------------------------------
 // <DIE pretty printer>
 // ------------------------------------
@@ -10997,14 +11111,14 @@ die_qualified_type_name(const read_context& ctxt,
 	  }
 
 	if (name.empty())
-	  {
-	    if (tag == DW_TAG_structure_type || tag == DW_TAG_class_type)
-	      name = "__anonymous_struct__";
-	    else if (tag == DW_TAG_union_type)
-	      name = "__anonymous_union__";
-	    else if (tag == DW_TAG_enumeration_type)
-	      name = "__anonymous_enum__";
-	  }
+	  // TODO: handle cases where there are more than one
+	  // anonymous type of the same kind in the same scope.  In
+	  // that case, their name must be built with the function
+	  // get_internal_anonymous_die_name or something of the same
+	  // kind.
+	  name = get_internal_anonynous_die_base_name(die);
+
+	ABG_ASSERT(!name.empty());
 	repr = parent_name.empty() ? name : parent_name + separator + name;
       }
       break;
@@ -12730,6 +12844,7 @@ get_scope_die(const read_context&	ctxt,
       || dwarf_tag(&scope_die) == DW_TAG_subroutine_type
       || dwarf_tag(&scope_die) == DW_TAG_array_type)
     return get_scope_die(ctxt, &scope_die, where_offset, scope_die);
+
   return true;
 }
 
@@ -12816,9 +12931,28 @@ get_scope_for_die(read_context& ctxt,
     // was defined right before the parameter, under the scope of the
     // function.  Yeah, weird.  So if I drop the typedef DIE, I'd drop
     // the function parm too.  So for that case, let's say that the
-    // scope is the scope of the function itself.
-    return get_scope_for_die(ctxt, &parent_die,
-			     called_for_public_decl, where_offset);
+    // scope is the scope of the function itself.  Note that this is
+    // an error of the DWARF emitter.  We should never see this DIE in
+    // this context.
+    {
+      scope_decl_sptr s = get_scope_for_die(ctxt, &parent_die,
+					    called_for_public_decl,
+					    where_offset);
+      if (is_anonymous_type_die(die))
+	// For anonymous type that have nothing to do in a function or
+	// array type context, let's put it in the containing
+	// namespace.  That is, do not let it be in a containing class
+	// or union where it has nothing to do.
+	while (is_class_or_union_type(s))
+	  {
+	    if (!get_parent_die(ctxt, &parent_die, parent_die, where_offset))
+	      return ctxt.nil_scope();
+	    s = get_scope_for_die(ctxt, &parent_die,
+				  called_for_public_decl,
+				  where_offset);
+	  }
+      return s;
+    }
   else
     d = build_ir_node_from_die(ctxt, &parent_die,
 			       called_for_public_decl,
@@ -13300,9 +13434,16 @@ build_type_decl(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
 ///
 /// @param die the DIE to read from.
 ///
+/// @param scope the scope of the final enum.  Note that this function
+/// does *NOT* add the built type to this scope.  The scope is just so
+/// that the function knows how to name anonymous enums.
+///
 /// @return the built enum_type_decl or NULL if it could not be built.
 static enum_type_decl_sptr
-build_enum_type(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
+build_enum_type(read_context&	ctxt,
+		Dwarf_Die*	die,
+		scope_decl*	scope,
+		size_t		where_offset)
 {
   enum_type_decl_sptr result;
   if (!die)
@@ -13320,9 +13461,15 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
   // If the enum is anonymous, let's give it a name.
   if (name.empty())
     {
-      name = "__anonymous_enum__";
+      name = get_internal_anonynous_die_base_name(die);
+      ABG_ASSERT(!name.empty());
       // But we remember that the type is anonymous.
       enum_is_anonymous = true;
+
+      if (class_or_union * cl = is_class_or_union_type(scope))
+	if (size_t s = cl->get_num_anonymous_member_enums())
+	  // TODO: handle anonymous enums in non-class scopes.
+	  name = build_internal_anonymous_die_name(name, s);
     }
 
   bool use_odr = ctxt.odr_is_relevant(die);
@@ -13629,22 +13776,32 @@ lookup_class_typedef_or_enum_type_from_corpus(scope_decl* scope,
   return result;
 }
 
-/// Lookup a class, typedef or enum type with a given qualified name
-/// in the corpus that a given scope belongs to.
+/// Lookup a class, typedef or enum type in a given scope, in the
+/// corpus that scope belongs to.
 ///
-/// @param scope the scope to consider.
+/// @param die the DIE of the class, typedef or enum to lookup.
 ///
-/// @param type_name the qualified name of the type to look for.
+/// @param anonymous_member_type_idx if @p DIE represents an anonymous
+/// type, this is the index of that anonymous type in its scope, in
+/// case there are several anonymous types of the same kind in that
+/// scope.
+///
+/// @param scope the scope in which to look the type for.
 ///
 /// @return the typedef, enum or class type found.
 static type_base_sptr
 lookup_class_typedef_or_enum_type_from_corpus(Dwarf_Die* die,
+					      size_t anonymous_member_type_idx,
 					      scope_decl* scope)
 {
   if (!die)
     return class_decl_sptr();
 
   string type_name = die_string_attribute(die, DW_AT_name);
+  if (is_anonymous_type_die(die))
+    type_name =
+      get_internal_anonymous_die_name(die, anonymous_member_type_idx);
+
   if (type_name.empty())
     return class_decl_sptr();
 
@@ -13817,9 +13974,15 @@ add_or_update_class_type(read_context&	 ctxt,
     {
       // So we are looking at an anonymous struct.  Let's
       // give it a name.
-      name = "__anonymous_struct__";
+      name = get_internal_anonynous_die_base_name(die);
+      ABG_ASSERT(!name.empty());
       // But we remember that the type is anonymous.
       is_anonymous = true;
+
+      if (class_or_union * cl = is_class_or_union_type(scope))
+	if (size_t s = cl->get_num_anonymous_member_classes())
+	  // TODO: handle anonymous classes in non-class scopes.
+	  name = build_internal_anonymous_die_name(name, s);
     }
 
   if (!is_anonymous)
@@ -13914,6 +14077,10 @@ add_or_update_class_type(read_context&	 ctxt,
 
   if (has_child)
     {
+      int anonymous_member_class_index = -1;
+      int anonymous_member_union_index = -1;
+      int anonymous_member_enum_index = -1;
+
       do
 	{
 	  tag = dwarf_tag(&child);
@@ -14052,10 +14219,28 @@ add_or_update_class_type(read_context&	 ctxt,
 	  // Handle member types
 	  else if (die_is_type(&child))
 	    {
-	      // If the type is not already a member of this class,
+	      // Track the anonymous type index in the current
+	      // scope. Look for what this means by reading the
+	      // comment of the function
+	      // build_internal_anonymous_die_name.
+	      int anonymous_member_type_index = 0;
+	      if (is_anonymous_type_die(&child))
+		{
+		  // Update the anonymous type index.
+		  if (die_is_class_type(&child))
+		    anonymous_member_type_index =
+		      ++anonymous_member_class_index;
+		  else if (dwarf_tag(&child) == DW_TAG_union_type)
+		    anonymous_member_type_index =
+		      ++anonymous_member_union_index;
+		  else if (dwarf_tag(&child) == DW_TAG_enumeration_type)
+		    anonymous_member_type_index =
+		      ++anonymous_member_enum_index;
+		}
+	      // if the type is not already a member of this class,
 	      // then add it to the class.
-	      if (!lookup_class_typedef_or_enum_type_from_corpus(&child,
-								 result.get()))
+	      if (!lookup_class_typedef_or_enum_type_from_corpus
+		  (&child, anonymous_member_type_index, result.get()))
 		build_ir_node_from_die(ctxt, &child, result.get(),
 				       called_from_public_decl,
 				       where_offset);
@@ -14140,9 +14325,15 @@ add_or_update_union_type(read_context&	ctxt,
     {
       // So we are looking at an anonymous union.  Let's give it a
       // name.
-      name = "__anonymous_union__";
+      name = get_internal_anonynous_die_base_name(die);
+      ABG_ASSERT(!name.empty());
       // But we remember that the type is anonymous.
       is_anonymous = true;
+
+      if (class_or_union *cl = is_class_or_union_type(scope))
+	if (size_t s = cl->get_num_anonymous_member_unions())
+	  // TODO: handle anonymous unions in non-class scopes.
+	  name = build_internal_anonymous_die_name(name, s);
     }
 
   // If the type has location, then associate it to its
@@ -16322,7 +16513,8 @@ build_ir_node_from_die(read_context&	ctxt,
       {
 	if (!type_is_suppressed(ctxt, scope, die))
 	  {
-	    enum_type_decl_sptr e = build_enum_type(ctxt, die, where_offset);
+	    enum_type_decl_sptr e = build_enum_type(ctxt, die, scope,
+						    where_offset);
 	    result = add_decl_to_scope(e, scope);
 	    if (result)
 	      {

@@ -7635,6 +7635,27 @@ lookup_union_type(const interned_string& type_name, const translation_unit& tu)
 					tu.get_types().union_types());
 }
 
+/// Lookup a union type from a translation unit.
+///
+/// This is done by looking the type up in the type map that is
+/// maintained in the translation unit.  So this is as fast as
+/// possible.
+///
+/// @param fqn the fully qualified name of the type to lookup.
+///
+/// @param tu the translation unit to look into.
+///
+/// @return the union type found or nil if no union type was found.
+union_decl_sptr
+lookup_union_type(const string& fqn, const translation_unit& tu)
+{
+  const environment* env = tu.get_environment();
+  ABG_ASSERT(env);
+
+  interned_string s = env->intern(fqn);
+  return lookup_union_type(s, tu);
+}
+
 /// Lookup a union type in a given corpus, from its location.
 ///
 /// @param loc the location of the union type to look for.
@@ -9180,8 +9201,8 @@ lookup_typedef_type_per_location(const string &loc, const corpus &corp)
   return lookup_typedef_type_per_location(env->intern(loc), corp);
 }
 
-/// Look into a corpus to find a class or typedef type which has a
-/// given qualified name.
+/// Look into a corpus to find a class, union or typedef type which
+/// has a given qualified name.
 ///
 /// If the per-corpus type map is non-empty (because the corpus allows
 /// the One Definition Rule) then the type islooked up in that
@@ -9197,6 +9218,9 @@ type_base_sptr
 lookup_class_or_typedef_type(const string& qualified_name, const corpus& corp)
 {
   type_base_sptr result = lookup_class_type(qualified_name, corp);
+  if (!result)
+    result = lookup_union_type(qualified_name, corp);
+
   if (!result)
     result = lookup_typedef_type(qualified_name, corp);
   return result;
@@ -17132,6 +17156,61 @@ class_or_union::set_earlier_declaration(decl_base_sptr declaration)
 const class_or_union::member_types&
 class_or_union::get_member_types() const
 {return priv_->member_types_;}
+
+/// Get the number of anonymous member classes contained in this
+/// class.
+///
+/// @return the number of anonymous member classes contained in this
+/// class.
+size_t
+class_or_union::get_num_anonymous_member_classes() const
+{
+  int result = 0;
+  for (member_types::const_iterator it = get_member_types().begin();
+       it != get_member_types().end();
+       ++it)
+    if (class_decl_sptr t = is_class_type(*it))
+      if (t->get_is_anonymous())
+	++result;
+
+  return result;
+}
+
+/// Get the number of anonymous member unions contained in this class.
+///
+/// @return the number of anonymous member unions contained in this
+/// class.
+size_t
+class_or_union::get_num_anonymous_member_unions() const
+{
+  int result = 0;
+  for (member_types::const_iterator it = get_member_types().begin();
+       it != get_member_types().end();
+       ++it)
+    if (union_decl_sptr t = is_union_type(*it))
+      if (t->get_is_anonymous())
+	++result;
+
+  return result;
+}
+
+/// Get the number of anonymous member enums contained in this class.
+///
+/// @return the number of anonymous member enums contained in this
+/// class.
+size_t
+class_or_union::get_num_anonymous_member_enums() const
+{
+    int result = 0;
+  for (member_types::const_iterator it = get_member_types().begin();
+       it != get_member_types().end();
+       ++it)
+    if (enum_type_decl_sptr t = is_enum_type(*it))
+      if (t->get_is_anonymous())
+	++result;
+
+  return result;
+}
 
 /// Find a member type of a given name, inside the current @ref
 /// class_or_union.

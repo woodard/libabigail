@@ -420,6 +420,9 @@ test-annotate/test21-pr19092.so.abi \
 test-annotate/libtest23.so.abi \
 test-annotate/libtest24-drop-fns-2.so.abi \
 test-annotate/libtest24-drop-fns.so.abi \
+test-annotate/test-anonymous-members-0.cc \
+test-annotate/test-anonymous-members-0.o \
+test-annotate/test-anonymous-members-0.o.abi \
 \
 test-types-stability/pr19434-elf0 \
 test-types-stability/pr19139-DomainNeighborMapInst.o \
