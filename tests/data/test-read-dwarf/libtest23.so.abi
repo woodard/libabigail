@@ -510,7 +510,7 @@
       <parameter type-id='type-id-27'/>
       <return type-id='type-id-40'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' id='type-id-52'/>
+    <class-decl name='__anonymous_struct__1' is-struct='yes' is-anonymous='yes' visibility='default' id='type-id-52'/>
     <pointer-type-def type-id='type-id-52' size-in-bits='64' id='type-id-53'/>
     <function-decl name='localeconv' filepath='/usr/include/locale.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-53'/>

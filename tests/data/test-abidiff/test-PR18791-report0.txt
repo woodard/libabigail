@@ -32,10 +32,30 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
                            underlying type 'class std::list<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >' changed:
                              type name changed from 'std::list<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >' to 'std::__cxx11::list<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >'
                              type size changed from 128 to 192 (in bits)
-                             1 base class deletion:
-                               class std::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >
-                             1 base class insertion:
-                               class std::__cxx11::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >
+                             1 base class change:
+                               'class std::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >' changed:
+                                 type name changed from 'std::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >' to 'std::__cxx11::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >'
+                                 type size changed from 128 to 192 (in bits)
+                                 1 data member change:
+                                  type of 'std::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_List_impl std::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_M_impl' changed:
+                                    type name changed from 'std::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_List_impl' to 'std::__cxx11::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_List_impl'
+                                    type size changed from 128 to 192 (in bits)
+                                    1 data member change:
+                                     type of 'std::__detail::_List_node_base std::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_List_impl::_M_node' changed:
+                                       type name changed from 'std::__detail::_List_node_base' to 'std::_List_node<long unsigned int>'
+                                       type size changed from 128 to 192 (in bits)
+                                       1 base class insertion:
+                                         struct std::__detail::_List_node_base
+                                       2 data member deletions:
+                                         'std::__detail::_List_node_base* std::__detail::_List_node_base::_M_next', at offset 0 (in bits)
+
+                                         'std::__detail::_List_node_base* std::__detail::_List_node_base::_M_prev', at offset 64 (in bits)
+
+                                       1 data member insertion:
+                                         'unsigned long int std::_List_node<long unsigned int>::_M_data', at offset 128 (in bits)
+                                     and name of 'std::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_List_impl::_M_node' changed to 'std::__cxx11::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_List_impl::_M_node'
+                                  and name of 'std::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_M_impl' changed to 'std::__cxx11::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_M_impl'
+
 
                          'bool sigc::internal::trackable_callback_list::clearing_' offset changed from 128 to 192 (in bits) (by +64 bits)
 
@@ -103,10 +123,20 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
          type of 'std::list<sigc::slot_base, std::allocator<sigc::slot_base> > sigc::internal::signal_impl::slots_' changed:
            type name changed from 'std::list<sigc::slot_base, std::allocator<sigc::slot_base> >' to 'std::__cxx11::list<sigc::slot_base, std::allocator<sigc::slot_base> >'
            type size changed from 128 to 192 (in bits)
-           1 base class deletion:
-             class std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >
-           1 base class insertion:
-             class std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >
+           1 base class change:
+             'class std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >' changed:
+               type name changed from 'std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >' to 'std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >'
+               type size changed from 128 to 192 (in bits)
+               1 data member change:
+                type of 'std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_impl' changed:
+                  type name changed from 'std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl' to 'std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl'
+                  type size changed from 128 to 192 (in bits)
+                  1 data member change:
+                   type of 'std::__detail::_List_node_base std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl::_M_node' changed:
+                     details were reported earlier
+                   and name of 'std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl::_M_node' changed to 'std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl::_M_node'
+                and name of 'std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_impl' changed to 'std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_impl'
+
 
 
   [C]'method sigc::signal_base::iterator_type sigc::signal_base::insert(sigc::signal_base::iterator_type, const sigc::slot_base&)' has some indirect sub-type changes:

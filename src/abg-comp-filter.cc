@@ -420,11 +420,14 @@ has_harmless_name_change(const decl_base_sptr& f, const decl_base_sptr& s)
 {
   // So, a harmless name change is either ...
   return (decl_name_changed(f, s)
-	  && (// ... a typedef name change, without having the
+	  && (// ... an anonymous decl name changed into another
+	      // anonymous decl name ...
+	      (f->get_is_anonymous() && s->get_is_anonymous())
+	      // ... a typedef name change, without having the
 	      // underlying type changed ...
-	      (is_typedef(f)
-	       && is_typedef(s)
-	       && (is_typedef(f)->get_underlying_type()
+	      || (is_typedef(f)
+		  && is_typedef(s)
+		  && (is_typedef(f)->get_underlying_type()
 		   == is_typedef(s)->get_underlying_type()))
 	      // .. or a data member name change, without having its
 	      // type changed ...

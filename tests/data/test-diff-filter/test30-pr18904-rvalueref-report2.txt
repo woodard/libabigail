@@ -1175,31 +1175,31 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
 6 functions with some indirect sub-type change:
 
   [C]'method void OffloadDescriptor::report_coi_error(error_types, COIRESULT)' at offload_host.h:206:1 has some indirect sub-type changes:
-    parameter 1 of type 'typedef error_types' has sub-type changes:
+    parameter 1 of type 'typedef error_types' changed:
       underlying type 'enum __anonymous_enum__' at liboffload_error_codes.h:38:1 changed:
         type size hasn't changed
         21 enumerator insertions:
-          '__anonymous_enum__::c_process_set_cache_size' value '32'
-          '__anonymous_enum__::c_bad_ptr_mem_alloc' value '56'
-          '__anonymous_enum__::c_incorrect_affinity' value '69'
-          '__anonymous_enum__::c_cannot_set_affinity' value '70'
-          '__anonymous_enum__::c_report_myosupportsfeature' value '127'
-          '__anonymous_enum__::c_report_myosharedarenacreate' value '128'
-          '__anonymous_enum__::c_report_myosharedalignedarenamalloc' value '129'
-          '__anonymous_enum__::c_report_myosharedalignedarenafree' value '130'
-          '__anonymous_enum__::c_report_myoarenaacquire' value '131'
-          '__anonymous_enum__::c_report_myoarenarelease' value '132'
-          '__anonymous_enum__::c_in_with_preallocated' value '134'
-          '__anonymous_enum__::c_report_no_host_exe' value '135'
-          '__anonymous_enum__::c_report_path_buff_overflow' value '136'
-          '__anonymous_enum__::c_create_pipeline_for_stream' value '137'
-          '__anonymous_enum__::c_offload_no_stream' value '138'
-          '__anonymous_enum__::c_get_engine_info' value '139'
-          '__anonymous_enum__::c_clear_cpu_mask' value '140'
-          '__anonymous_enum__::c_set_cpu_mask' value '141'
-          '__anonymous_enum__::c_report_state_stream' value '142'
-          '__anonymous_enum__::c_report_stream' value '143'
-          '__anonymous_enum__::c_unload_library' value '144'
+          '__anonymous_enum__1::c_process_set_cache_size' value '32'
+          '__anonymous_enum__1::c_bad_ptr_mem_alloc' value '56'
+          '__anonymous_enum__1::c_incorrect_affinity' value '69'
+          '__anonymous_enum__1::c_cannot_set_affinity' value '70'
+          '__anonymous_enum__1::c_report_myosupportsfeature' value '127'
+          '__anonymous_enum__1::c_report_myosharedarenacreate' value '128'
+          '__anonymous_enum__1::c_report_myosharedalignedarenamalloc' value '129'
+          '__anonymous_enum__1::c_report_myosharedalignedarenafree' value '130'
+          '__anonymous_enum__1::c_report_myoarenaacquire' value '131'
+          '__anonymous_enum__1::c_report_myoarenarelease' value '132'
+          '__anonymous_enum__1::c_in_with_preallocated' value '134'
+          '__anonymous_enum__1::c_report_no_host_exe' value '135'
+          '__anonymous_enum__1::c_report_path_buff_overflow' value '136'
+          '__anonymous_enum__1::c_create_pipeline_for_stream' value '137'
+          '__anonymous_enum__1::c_offload_no_stream' value '138'
+          '__anonymous_enum__1::c_get_engine_info' value '139'
+          '__anonymous_enum__1::c_clear_cpu_mask' value '140'
+          '__anonymous_enum__1::c_set_cpu_mask' value '141'
+          '__anonymous_enum__1::c_report_state_stream' value '142'
+          '__anonymous_enum__1::c_report_stream' value '143'
+          '__anonymous_enum__1::c_unload_library' value '144'
 
         92 enumerator changes:
           '__anonymous_enum__::c_process_get_func_handles' from value '32' to '33' at liboffload_error_codes.h:38:1
@@ -1300,31 +1300,24 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
     parameter 1 of type 'VarDesc*' has sub-type changes:
       in pointed to type 'struct VarDesc' at offload_common.h:254:1:
         type size hasn't changed
-        2 data member changes:
+        1 data member changes (1 filtered):
          type of 'union {struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst;}; uint32_t bits;} VarDesc::flags' changed:
            type name changed from 'VarDesc::__anonymous_union__2' to 'varDescFlags'
            type size hasn't changed
 
-           1 data member deletion:
-             'struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst;}'
+           1 data member changes (1 filtered):
+            anonymous data member at offset 0 (in bytes) changed from:
+              struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst;}
+            to:
+              struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t targetptr; uint32_t preallocated; uint32_t is_pointer; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst; uint32_t always_copy; uint32_t always_delete; uint32_t pin;}
 
-           1 data member insertion:
-             'struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t targetptr; uint32_t preallocated; uint32_t is_pointer; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst; uint32_t always_copy; uint32_t always_delete; uint32_t pin;}'
-           no data member change (1 filtered);
-
-         while looking at anonymous data member 'union {int64_t count; int64_t disp;}':
-         the internal name of that anonymous data memberchanged from:
-          VarDesc::__anonymous_union__3
-         to:
-          VarDesc::__anonymous_union__2
-          This is usually due to an anonymous member type being added or removed from the containing type
 
 
   [C]'function void __offload_myoRegisterTables(InitTableEntry*, SharedTableEntry*, FptrTableEntry*)' at offload_myo_host.cpp:691:1 has some indirect sub-type changes:
     parameter 1 of type 'InitTableEntry*' changed:
       in pointed to type 'struct InitTableEntry' at offload_table.h:296:1:
         entity changed from 'struct InitTableEntry' to compatible type 'typedef InitTableEntry' at offload_table.h:296:1
-          type name changed from 'InitTableEntry' to '__anonymous_struct__'
+          type name changed from 'InitTableEntry' to '__anonymous_struct__2'
           type size hasn't changed
 
           1 data member change:
@@ -1332,7 +1325,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
              in pointed to type 'function type void ()':
                parameter 1 of type 'typedef MyoArena' was added
 
-           and name of 'InitTableEntry::func' changed to '__anonymous_struct__::func' at offload_table.h:295:1
+           and name of 'InitTableEntry::func' changed to '__anonymous_struct__2::func' at offload_table.h:295:1
 
   [C]'function int __offload_offload(OFFLOAD, const char*, int, int, VarDesc*, VarDesc2*, int, void**, void*, int, void*)' at compiler_if_host.cpp:456:1 has some indirect sub-type changes:
     parameter 1 of type 'typedef OFFLOAD' has sub-type changes:

@@ -40767,7 +40767,7 @@
       </data-member>
     </class-decl>
     <!-- struct {const demangle_operator_info* op;} -->
-    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='470' column='1' id='type-id-1734'>
+    <class-decl name='__anonymous_struct__1' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='470' column='1' id='type-id-1734'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- const demangle_operator_info* op -->
         <var-decl name='op' type-id='type-id-1745' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='473' column='1'/>
@@ -40797,7 +40797,7 @@
     <!-- const demangle_operator_info* -->
     <pointer-type-def type-id='type-id-1747' size-in-bits='64' id='type-id-1745'/>
     <!-- struct {int args; demangle_component* name;} -->
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='477' column='1' id='type-id-1735'>
+    <class-decl name='__anonymous_struct__2' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='477' column='1' id='type-id-1735'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- int args -->
         <var-decl name='args' type-id='type-id-13' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='480' column='1'/>
@@ -40810,7 +40810,7 @@
     <!-- demangle_component* -->
     <pointer-type-def type-id='type-id-1730' size-in-bits='64' id='type-id-1748'/>
     <!-- struct {demangle_component* length; short int accum; short int sat;} -->
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='486' column='1' id='type-id-1736'>
+    <class-decl name='__anonymous_struct__3' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='486' column='1' id='type-id-1736'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- demangle_component* length -->
         <var-decl name='length' type-id='type-id-1748' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='489' column='1'/>
@@ -40825,7 +40825,7 @@
       </data-member>
     </class-decl>
     <!-- struct {gnu_v3_ctor_kinds kind; demangle_component* name;} -->
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='497' column='1' id='type-id-1737'>
+    <class-decl name='__anonymous_struct__4' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='497' column='1' id='type-id-1737'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- gnu_v3_ctor_kinds kind -->
         <var-decl name='kind' type-id='type-id-1749' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='500' column='1'/>
@@ -40845,7 +40845,7 @@
       <enumerator name='gnu_v3_object_ctor_group' value='5'/>
     </enum-decl>
     <!-- struct {gnu_v3_dtor_kinds kind; demangle_component* name;} -->
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='506' column='1' id='type-id-1738'>
+    <class-decl name='__anonymous_struct__5' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='506' column='1' id='type-id-1738'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- gnu_v3_dtor_kinds kind -->
         <var-decl name='kind' type-id='type-id-1750' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='509' column='1'/>
@@ -40865,7 +40865,7 @@
       <enumerator name='gnu_v3_object_dtor_group' value='5'/>
     </enum-decl>
     <!-- struct {const demangle_builtin_type_info* type;} -->
-    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='515' column='1' id='type-id-1739'>
+    <class-decl name='__anonymous_struct__6' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='515' column='1' id='type-id-1739'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- const demangle_builtin_type_info* type -->
         <var-decl name='type' type-id='type-id-1751' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='518' column='1'/>
@@ -40913,7 +40913,7 @@
     <!-- const demangle_builtin_type_info* -->
     <pointer-type-def type-id='type-id-1754' size-in-bits='64' id='type-id-1751'/>
     <!-- struct {const char* string; int len;} -->
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='522' column='1' id='type-id-1740'>
+    <class-decl name='__anonymous_struct__7' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='522' column='1' id='type-id-1740'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- const char* string -->
         <var-decl name='string' type-id='type-id-32' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='525' column='1'/>
@@ -40924,21 +40924,21 @@
       </data-member>
     </class-decl>
     <!-- struct {long int number;} -->
-    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='531' column='1' id='type-id-1741'>
+    <class-decl name='__anonymous_struct__8' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='531' column='1' id='type-id-1741'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- long int number -->
         <var-decl name='number' type-id='type-id-293' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='534' column='1'/>
       </data-member>
     </class-decl>
     <!-- struct {int character;} -->
-    <class-decl name='__anonymous_struct__' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='538' column='1' id='type-id-1742'>
+    <class-decl name='__anonymous_struct__9' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='538' column='1' id='type-id-1742'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- int character -->
         <var-decl name='character' type-id='type-id-13' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='540' column='1'/>
       </data-member>
     </class-decl>
     <!-- struct {demangle_component* left; demangle_component* right;} -->
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='544' column='1' id='type-id-1743'>
+    <class-decl name='__anonymous_struct__10' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='544' column='1' id='type-id-1743'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- demangle_component* left -->
         <var-decl name='left' type-id='type-id-1748' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='547' column='1'/>
@@ -40949,7 +40949,7 @@
       </data-member>
     </class-decl>
     <!-- struct {demangle_component* sub; int num;} -->
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='552' column='1' id='type-id-1744'>
+    <class-decl name='__anonymous_struct__11' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='552' column='1' id='type-id-1744'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- demangle_component* sub -->
         <var-decl name='sub' type-id='type-id-1748' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='555' column='1'/>

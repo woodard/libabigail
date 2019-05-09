@@ -4587,8 +4587,8 @@ class_or_union_diff::ensure_lookup_tables_populated(void) const
 	class_or_union_sptr record_type = is_class_or_union_type(d);
 	if (record_type && record_type->get_is_declaration_only())
 	  continue;
-	string qname = d->get_qualified_name();
-	priv_->deleted_member_types_[qname] = d;
+	string name = d->get_name();
+	priv_->deleted_member_types_[name] = d;
       }
 
     for (vector<insertion>::const_iterator it = e.insertions().begin();
@@ -4606,19 +4606,19 @@ class_or_union_diff::ensure_lookup_tables_populated(void) const
 	    class_or_union_sptr record_type = is_class_or_union_type(d);
 	    if (record_type && record_type->get_is_declaration_only())
 	      continue;
-	    string qname = d->get_qualified_name();
+	    string name = d->get_name();
 	    string_decl_base_sptr_map::const_iterator j =
-	      priv_->deleted_member_types_.find(qname);
+	      priv_->deleted_member_types_.find(name);
 	    if (j != priv_->deleted_member_types_.end())
 	      {
 		if (*j->second != *d)
-		  priv_->changed_member_types_[qname] =
+		  priv_->changed_member_types_[name] =
 		    compute_diff(j->second, d, context());
 
 		priv_->deleted_member_types_.erase(j);
 	      }
 	    else
-	      priv_->inserted_member_types_[qname] = d;
+	      priv_->inserted_member_types_[name] = d;
 	  }
       }
   }
@@ -4632,10 +4632,10 @@ class_or_union_diff::ensure_lookup_tables_populated(void) const
       {
 	unsigned i = it->index();
 	decl_base_sptr d = first_class_or_union()->get_non_static_data_members()[i];
-	string qname = d->get_qualified_name();
-	ABG_ASSERT(priv_->deleted_data_members_.find(qname)
+	string name = d->get_name();
+	ABG_ASSERT(priv_->deleted_data_members_.find(name)
 	       == priv_->deleted_data_members_.end());
-	priv_->deleted_data_members_[qname] = d;
+	priv_->deleted_data_members_[name] = d;
       }
 
     for (vector<insertion>::const_iterator it = e.insertions().begin();
@@ -4651,23 +4651,23 @@ class_or_union_diff::ensure_lookup_tables_populated(void) const
 	    decl_base_sptr d =
 	      second_class_or_union()->get_non_static_data_members()[i];
 	    var_decl_sptr dm = is_var_decl(d);
-	    string qname = dm->get_qualified_name();
-	    ABG_ASSERT(priv_->inserted_data_members_.find(qname)
+	    string name = dm->get_name();
+	    ABG_ASSERT(priv_->inserted_data_members_.find(name)
 		   == priv_->inserted_data_members_.end());
 	    string_decl_base_sptr_map::const_iterator j =
-	      priv_->deleted_data_members_.find(qname);
+	      priv_->deleted_data_members_.find(name);
 	    if (j != priv_->deleted_data_members_.end())
 	      {
 		if (*j->second != *d)
 		  {
 		    var_decl_sptr old_dm = is_var_decl(j->second);
-		    priv_->subtype_changed_dm_[qname]=
+		    priv_->subtype_changed_dm_[name]=
 		      compute_diff(old_dm, dm, context());
 		  }
 		priv_->deleted_data_members_.erase(j);
 	      }
 	    else
-	      priv_->inserted_data_members_[qname] = d;
+	      priv_->inserted_data_members_[name] = d;
 	  }
       }
 
@@ -4716,9 +4716,9 @@ class_or_union_diff::ensure_lookup_tables_populated(void) const
 	priv_->deleted_dm_by_offset_.erase(i->first);
 	priv_->inserted_dm_by_offset_.erase(i->first);
 	priv_->deleted_data_members_.erase
-	  (i->second->first_var()->get_qualified_name());
+	  (i->second->first_var()->get_name());
 	priv_->inserted_data_members_.erase
-	  (i->second->second_var()->get_qualified_name());
+	  (i->second->second_var()->get_name());
       }
   }
   sort_string_data_member_diff_sptr_map(priv_->subtype_changed_dm_,
@@ -4737,10 +4737,10 @@ class_or_union_diff::ensure_lookup_tables_populated(void) const
 	decl_base_sptr d =
 	  first_class_or_union()->get_member_class_templates()[i]->
 	  as_class_tdecl();
-	string qname = d->get_qualified_name();
-	ABG_ASSERT(priv_->deleted_member_class_tmpls_.find(qname)
+	string name = d->get_name();
+	ABG_ASSERT(priv_->deleted_member_class_tmpls_.find(name)
 	       == priv_->deleted_member_class_tmpls_.end());
-	priv_->deleted_member_class_tmpls_[qname] = d;
+	priv_->deleted_member_class_tmpls_[name] = d;
       }
 
     for (vector<insertion>::const_iterator it = e.insertions().begin();
@@ -4756,20 +4756,20 @@ class_or_union_diff::ensure_lookup_tables_populated(void) const
 	    decl_base_sptr d =
 	      second_class_or_union()->get_member_class_templates()[i]->
 	      as_class_tdecl();
-	    string qname = d->get_qualified_name();
-	    ABG_ASSERT(priv_->inserted_member_class_tmpls_.find(qname)
+	    string name = d->get_name();
+	    ABG_ASSERT(priv_->inserted_member_class_tmpls_.find(name)
 		   == priv_->inserted_member_class_tmpls_.end());
 	    string_decl_base_sptr_map::const_iterator j =
-	      priv_->deleted_member_class_tmpls_.find(qname);
+	      priv_->deleted_member_class_tmpls_.find(name);
 	    if (j != priv_->deleted_member_class_tmpls_.end())
 	      {
 		if (*j->second != *d)
-		  priv_->changed_member_types_[qname]=
+		  priv_->changed_member_types_[name]=
 		    compute_diff(j->second, d, context());
 		priv_->deleted_member_class_tmpls_.erase(j);
 	      }
 	    else
-	      priv_->inserted_member_class_tmpls_[qname] = d;
+	      priv_->inserted_member_class_tmpls_[name] = d;
 	  }
       }
   }
@@ -5063,10 +5063,10 @@ class_diff::ensure_lookup_tables_populated(void) const
 	unsigned i = it->index();
 	class_decl::base_spec_sptr b =
 	  first_class_decl()->get_base_specifiers()[i];
-	string qname = b->get_base_class()->get_qualified_name();
-	ABG_ASSERT(get_priv()->deleted_bases_.find(qname)
+	string name = b->get_base_class()->get_name();
+	ABG_ASSERT(get_priv()->deleted_bases_.find(name)
 	       == get_priv()->deleted_bases_.end());
-	get_priv()->deleted_bases_[qname] = b;
+	get_priv()->deleted_bases_[name] = b;
       }
 
     for (vector<insertion>::const_iterator it = e.insertions().begin();
@@ -5081,20 +5081,20 @@ class_diff::ensure_lookup_tables_populated(void) const
 	    unsigned i = *iit;
 	    class_decl::base_spec_sptr b =
 	      second_class_decl()->get_base_specifiers()[i];
-	    string qname = b->get_base_class()->get_qualified_name();
-	    ABG_ASSERT(get_priv()->inserted_bases_.find(qname)
+	    string name = b->get_base_class()->get_name();
+	    ABG_ASSERT(get_priv()->inserted_bases_.find(name)
 		   == get_priv()->inserted_bases_.end());
 	    string_base_sptr_map::const_iterator j =
-	      get_priv()->deleted_bases_.find(qname);
+	      get_priv()->deleted_bases_.find(name);
 	    if (j != get_priv()->deleted_bases_.end())
 	      {
 		if (j->second != b)
-		  get_priv()->changed_bases_[qname] =
+		  get_priv()->changed_bases_[name] =
 		    compute_diff(j->second, b, context());
 		get_priv()->deleted_bases_.erase(j);
 	      }
 	    else
-	      get_priv()->inserted_bases_[qname] = b;
+	      get_priv()->inserted_bases_[name] = b;
 	  }
       }
   }
@@ -10856,6 +10856,24 @@ struct suppression_categorization_visitor : public diff_node_visitor
 	    diff *canonical_diff = d->get_canonical_diff();
 	    if (canonical_diff != d)
 	      canonical_diff->add_to_category(PRIVATE_TYPE_CATEGORY);
+	  }
+
+	// If the underlying type of a typedef is private and carries
+	// changes (that are implicitely suppressed because it's
+	// private) then the typedef must be suppressed too, so that
+	// those changes to the underlying type are not seen.
+	if (is_typedef_diff(d)
+	    && !d->has_local_changes()
+	    && has_private_child
+	    && has_non_empty_child)
+	  {
+	    d->add_to_category(SUPPRESSED_CATEGORY|PRIVATE_TYPE_CATEGORY);
+	    // If a node was suppressed, all the other nodes of its class
+	    // of equivalence are suppressed too.
+	    diff *canonical_diff = d->get_canonical_diff();
+	    if (canonical_diff != d)
+	      canonical_diff->add_to_category
+		(SUPPRESSED_CATEGORY|PRIVATE_TYPE_CATEGORY);
 	  }
       }
   }

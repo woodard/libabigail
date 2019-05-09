@@ -683,7 +683,7 @@
     <typedef-decl name='PQHeapHandle' type-id='type-id-55' filepath='libtess/priorityq-heap.h' line='80' column='1' id='type-id-83'/>
     <typedef-decl name='PQnode' type-id='type-id-86' filepath='libtess/priorityq-heap.h' line='83' column='1' id='type-id-85'/>
     <pointer-type-def type-id='type-id-85' size-in-bits='64' id='type-id-81'/>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-87' visibility='default' filepath='libtess/priorityq-heap.h' line='84' column='1' id='type-id-88'>
+    <class-decl name='__anonymous_struct__1' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-87' visibility='default' filepath='libtess/priorityq-heap.h' line='84' column='1' id='type-id-88'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='key' type-id='type-id-89' visibility='default' filepath='libtess/priorityq-heap.h' line='84' column='1'/>
       </data-member>
@@ -747,7 +747,7 @@
 
     </array-type-def>
     <typedef-decl name='__jmp_buf' type-id='type-id-113' filepath='/usr/include/bits/setjmp.h' line='32' column='1' id='type-id-111'/>
-    <class-decl name='__anonymous_struct__' size-in-bits='1024' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-112' visibility='default' filepath='/usr/include/bits/sigset.h' line='30' column='1' id='type-id-115'>
+    <class-decl name='__anonymous_struct__2' size-in-bits='1024' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-112' visibility='default' filepath='/usr/include/bits/sigset.h' line='30' column='1' id='type-id-115'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='__val' type-id='type-id-116' visibility='default' filepath='/usr/include/bits/sigset.h' line='31' column='1'/>
       </data-member>

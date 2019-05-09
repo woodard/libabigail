@@ -1400,14 +1400,14 @@
     <pointer-type-def type-id='type-id-95' size-in-bits='64' id='type-id-96'/>
     <!-- typedef void (DBusConnection*, void*)* DBusObjectPathUnregisterFunction -->
     <typedef-decl name='DBusObjectPathUnregisterFunction' type-id='type-id-96' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.h' line='367' column='1' id='type-id-93'/>
-    <!-- enum __anonymous_enum__ -->
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-shared.h' line='67' column='1' id='type-id-97'>
+    <!-- enum __anonymous_enum__1 -->
+    <enum-decl name='__anonymous_enum__1' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-shared.h' line='67' column='1' id='type-id-97'>
       <underlying-type type-id='type-id-30'/>
       <enumerator name='DBUS_HANDLER_RESULT_HANDLED' value='0'/>
       <enumerator name='DBUS_HANDLER_RESULT_NOT_YET_HANDLED' value='1'/>
       <enumerator name='DBUS_HANDLER_RESULT_NEED_MEMORY' value='2'/>
     </enum-decl>
-    <!-- typedef __anonymous_enum__ DBusHandlerResult -->
+    <!-- typedef __anonymous_enum__1 DBusHandlerResult -->
     <typedef-decl name='DBusHandlerResult' type-id='type-id-97' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-shared.h' line='71' column='1' id='type-id-98'/>
     <!-- typedef DBusHandlerResult (DBusConnection*, DBusMessage*, void*)* -->
     <pointer-type-def type-id='type-id-99' size-in-bits='64' id='type-id-100'/>

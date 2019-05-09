@@ -10,8 +10,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       type size changed from 32 to 64 (in bits)
       1 data member insertion:
         'u32 two::Foo::b', at offset 32 (in bits)
-      1 data member change:
-       name of 'one::Foo::a' changed to 'two::Foo::a'
     parameter 2 of type 'u32' was added
 
 

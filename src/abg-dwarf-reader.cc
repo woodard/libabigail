@@ -13466,10 +13466,8 @@ build_enum_type(read_context&	ctxt,
       // But we remember that the type is anonymous.
       enum_is_anonymous = true;
 
-      if (class_or_union * cl = is_class_or_union_type(scope))
-	if (size_t s = cl->get_num_anonymous_member_enums())
-	  // TODO: handle anonymous enums in non-class scopes.
-	  name = build_internal_anonymous_die_name(name, s);
+      if (size_t s = scope->get_num_anonymous_member_enums())
+	name = build_internal_anonymous_die_name(name, s);
     }
 
   bool use_odr = ctxt.odr_is_relevant(die);
@@ -13979,10 +13977,8 @@ add_or_update_class_type(read_context&	 ctxt,
       // But we remember that the type is anonymous.
       is_anonymous = true;
 
-      if (class_or_union * cl = is_class_or_union_type(scope))
-	if (size_t s = cl->get_num_anonymous_member_classes())
-	  // TODO: handle anonymous classes in non-class scopes.
-	  name = build_internal_anonymous_die_name(name, s);
+      if (size_t s = scope->get_num_anonymous_member_classes())
+	name = build_internal_anonymous_die_name(name, s);
     }
 
   if (!is_anonymous)
@@ -14330,10 +14326,8 @@ add_or_update_union_type(read_context&	ctxt,
       // But we remember that the type is anonymous.
       is_anonymous = true;
 
-      if (class_or_union *cl = is_class_or_union_type(scope))
-	if (size_t s = cl->get_num_anonymous_member_unions())
-	  // TODO: handle anonymous unions in non-class scopes.
-	  name = build_internal_anonymous_die_name(name, s);
+      if (size_t s = scope->get_num_anonymous_member_unions())
+	name = build_internal_anonymous_die_name(name, s);
     }
 
   // If the type has location, then associate it to its

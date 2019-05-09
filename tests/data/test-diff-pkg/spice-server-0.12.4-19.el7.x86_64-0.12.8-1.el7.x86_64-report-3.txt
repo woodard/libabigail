@@ -19,18 +19,18 @@ Leaf changes summary: 11 artifacts changed (7 filtered out)
     [A] 'function void spice_server_set_playback_rate(SpicePlaybackInstance*, uint32_t)'    {spice_server_set_playback_rate@@SPICE_SERVER_0.12.5}
     [A] 'function void spice_server_set_record_rate(SpiceRecordInstance*, uint32_t)'    {spice_server_set_record_rate@@SPICE_SERVER_0.12.5}
 
-  'enum __anonymous_enum__ at spice.h:471:1' changed:
-    type name changed from '__anonymous_enum__' to 'SpiceImageCompression'
+  'enum __anonymous_enum__2 at spice.h:471:1' changed:
+    type name changed from '__anonymous_enum__2' to 'SpiceImageCompression'
     type size hasn't changed
 
     7 enumerator deletions:
-      '__anonymous_enum__::SPICE_IMAGE_COMPRESS_INVALID' value '0'
-      '__anonymous_enum__::SPICE_IMAGE_COMPRESS_OFF' value '1'
-      '__anonymous_enum__::SPICE_IMAGE_COMPRESS_AUTO_GLZ' value '2'
-      '__anonymous_enum__::SPICE_IMAGE_COMPRESS_AUTO_LZ' value '3'
-      '__anonymous_enum__::SPICE_IMAGE_COMPRESS_QUIC' value '4'
-      '__anonymous_enum__::SPICE_IMAGE_COMPRESS_GLZ' value '5'
-      '__anonymous_enum__::SPICE_IMAGE_COMPRESS_LZ' value '6'
+      '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_INVALID' value '0'
+      '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_OFF' value '1'
+      '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_AUTO_GLZ' value '2'
+      '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_AUTO_LZ' value '3'
+      '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_QUIC' value '4'
+      '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_GLZ' value '5'
+      '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_LZ' value '6'
 
     9 enumerator insertions:
       'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_INVALID' value '0'

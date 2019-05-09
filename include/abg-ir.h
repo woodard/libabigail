@@ -1341,6 +1341,9 @@ public:
   virtual const interned_string&
   get_qualified_name(bool internal = false) const;
 
+  virtual const interned_string&
+  get_scoped_name() const;
+
   bool
   get_is_in_public_symbol_table() const;
 
@@ -1509,6 +1512,15 @@ public:
 
   declarations&
   get_member_decls();
+
+  virtual size_t
+  get_num_anonymous_member_classes() const;
+
+  virtual size_t
+  get_num_anonymous_member_unions() const;
+
+  virtual size_t
+  get_num_anonymous_member_enums() const;
 
   scopes&
   get_member_scopes();
@@ -3621,13 +3633,13 @@ public:
   const member_types&
   get_member_types() const;
 
-  size_t
+  virtual size_t
   get_num_anonymous_member_classes() const;
 
-  size_t
+  virtual size_t
   get_num_anonymous_member_unions() const;
 
-  size_t
+  virtual size_t
   get_num_anonymous_member_enums() const;
 
   type_base_sptr

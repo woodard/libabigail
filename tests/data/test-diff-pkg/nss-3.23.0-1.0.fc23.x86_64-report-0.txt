@@ -6,20 +6,20 @@
 
     [C]'function SECStatus CERT_AddOCSPAcceptableResponses(CERTOCSPRequest*, SECOidTag, ...)' at ocsp.c:2199:1 has some indirect sub-type changes:
       parameter 2 of type 'typedef SECOidTag' has sub-type changes:
-        underlying type 'enum __anonymous_enum__' at secoidt.h:34:1 changed:
+        underlying type 'enum __anonymous_enum__1' at secoidt.h:34:1 changed:
           type size hasn't changed
           1 enumerator insertion:
-            '__anonymous_enum__::SEC_OID_TLS_ECDHE_PSK' value '347'
+            '__anonymous_enum__1::SEC_OID_TLS_ECDHE_PSK' value '347'
 
           1 enumerator change:
-            '__anonymous_enum__::SEC_OID_TOTAL' from value '347' to '348' at secoidt.h:34:1
+            '__anonymous_enum__1::SEC_OID_TOTAL' from value '347' to '348' at secoidt.h:34:1
 
 
 
 ================ end of changes of 'libnss3.so'===============
 
 ================ changes of 'libssl3.so'===============
-  Functions changes summary: 0 Removed, 2 Changed (7 filtered out), 1 Added functions
+  Functions changes summary: 0 Removed, 2 Changed (12 filtered out), 1 Added functions
   Variables changes summary: 0 Removed, 1 Changed, 0 Added variable
 
   1 Added function:
@@ -33,7 +33,7 @@
         underlying type 'enum __anonymous_enum__' at sslt.h:38:1 changed:
           type size hasn't changed
           1 enumerator insertion:
-            '__anonymous_enum__::ssl_kea_ecdh_psk' value '5'
+            '__anonymous_enum__1::ssl_kea_ecdh_psk' value '5'
 
           1 enumerator change:
             '__anonymous_enum__::ssl_kea_size' from value '5' to '6' at sslt.h:40:1
@@ -46,7 +46,7 @@
             type size hasn't changed
             1 data member insertion:
               'SSLAuthType SSLCipherSuiteInfoStr::authType', at offset 736 (in bits) at sslt.h:250:1
-            1 data member changes (1 filtered):
+            1 data member changes (3 filtered):
              type of 'SSLAuthType SSLCipherSuiteInfoStr::authAlgorithm' changed:
                underlying type 'enum __anonymous_enum__' at sslt.h:87:1 changed:
                  type size hasn't changed
@@ -110,13 +110,13 @@
                                         type size hasn't changed
                                         1 data member change:
                                          type of 'SECOidTag SECOidDataStr::offset' changed:
-                                           underlying type 'enum __anonymous_enum__' at secoidt.h:34:1 changed:
+                                           underlying type 'enum __anonymous_enum__1' at secoidt.h:34:1 changed:
                                              type size hasn't changed
                                              1 enumerator insertion:
-                                               '__anonymous_enum__::SEC_OID_TLS_ECDHE_PSK' value '347'
+                                               '__anonymous_enum__1::SEC_OID_TLS_ECDHE_PSK' value '347'
 
                                              1 enumerator change:
-                                               '__anonymous_enum__::SEC_OID_TOTAL' from value '347' to '348' at secoidt.h:34:1
+                                               '__anonymous_enum__1::SEC_OID_TOTAL' from value '347' to '348' at secoidt.h:34:1
 
 
 

@@ -2891,7 +2891,17 @@ struct decl_base::priv
   // canonicalized.  Once the type is canonicalized, the cached use is
   // the data member qualified_parent_name_ above.
   interned_string	temporary_qualified_name_;
+  // This is the fully qualified name of the decl.  It contains the
+  // name of the decl and the qualified name of its scope.  So if in
+  // the parent scopes of the decl, there is one anonymous struct,
+  // somewhere in the name, there is going to by an
+  // __anonymous_struct__ string, even if the anonymous struct is not
+  // the direct containing scope of this decl.
   interned_string	qualified_name_;
+  // Unline qualified_name_, scoped_name_ contains the name of the
+  // decl and the name of its scope; not the qualified name of the
+  // scope.
+    interned_string	scoped_name_;
   interned_string	linkage_name_;
   visibility		visibility_;
 
@@ -3253,7 +3263,14 @@ string
 decl_base::get_pretty_representation(bool internal) const
 {return get_qualified_name(internal);}
 
-/// Compute the qualified name of the decl.
+/// Return the qualified name of the decl.
+///
+/// This is the fully qualified name of the decl.  It's made of the
+/// concatenation of the name of the decl with the qualified name of
+/// its scope.
+///
+/// Note that the value returned by this function is computed by @ref
+/// update_qualified_name when the decl is added to its scope.
 ///
 /// @param internal set to true if the call is intended for an
 /// internal use (for technical use inside the library itself), false
@@ -3264,6 +3281,20 @@ decl_base::get_pretty_representation(bool internal) const
 const interned_string&
 decl_base::get_qualified_name(bool /*internal*/) const
 {return priv_->qualified_name_;}
+
+/// Return the scoped name of the decl.
+///
+/// This is made of the concatenation of the name of the decl with the
+/// name of its scope.  It doesn't contain the qualified name of its
+/// scope, unlike what is returned by decl_base::get_qualified_name.
+///
+/// Note that the value returned by this function is computed by @ref
+/// update_qualified_name when the decl is added to its scope.
+///
+/// @return the scoped name of the decl.
+const interned_string&
+decl_base::get_scoped_name() const
+{return priv_->scoped_name_;}
 
 change_kind
 operator|(change_kind l, change_kind r)
@@ -3341,7 +3372,25 @@ equals(const decl_base& l, const decl_base& r, change_kind* k)
 	}
     }
 
-  if (l.get_qualified_name() != r.get_qualified_name())
+  // This is the name of the decls that we want to compare.  The kind
+  // of name we want to consider depends on if the containing scopes
+  // are anonymous or not.
+  interned_string ln = l.get_scoped_name(), rn = r.get_scoped_name();
+  scope_decl *lscope = l.get_scope(), *rscope = r.get_scope();
+  if (// If the two scopes are anonymous then only consider the name
+      // of the decl, not its scope name.  This is because the two
+      // scope (internal) names might be different even though they
+      // are both anonymous.  In that case, the internal name of the
+      // scope is irrelevant so we want to ignore it.
+      lscope && lscope->get_is_anonymous()
+      && rscope && rscope->get_is_anonymous())
+    {
+      ln = l.get_name();
+      rn = r.get_name();
+    }
+
+  if (!l.get_is_anonymous() && !r.get_is_anonymous()
+      && ln != rn)
     {
       result = false;
       if (k)
@@ -5047,6 +5096,60 @@ scope_decl::get_member_decls() const
 scope_decl::declarations&
 scope_decl::get_member_decls()
 {return priv_->members_;}
+
+/// Getter for the number of anonymous classes contained in this
+/// scope.
+///
+/// @return the number of anonymous classes contained in this scope.
+size_t
+scope_decl::get_num_anonymous_member_classes() const
+{
+  int result = 0;
+  for (declarations::const_iterator it = get_member_decls().begin();
+       it != get_member_decls().end();
+       ++it)
+    if (class_decl_sptr t = is_class_type(*it))
+      if (t->get_is_anonymous())
+	++result;
+
+  return result;
+}
+
+/// Getter for the number of anonymous unions contained in this
+/// scope.
+///
+/// @return the number of anonymous unions contained in this scope.
+size_t
+scope_decl::get_num_anonymous_member_unions() const
+{
+  int result = 0;
+  for (declarations::const_iterator it = get_member_decls().begin();
+       it != get_member_decls().end();
+       ++it)
+    if (union_decl_sptr t = is_union_type(*it))
+      if (t->get_is_anonymous())
+	++result;
+
+  return result;
+}
+
+/// Getter for the number of anonymous enums contained in this
+/// scope.
+///
+/// @return the number of anonymous enums contained in this scope.
+size_t
+scope_decl::get_num_anonymous_member_enums() const
+{
+  int result = 0;
+  for (declarations::const_iterator it = get_member_decls().begin();
+       it != get_member_decls().end();
+       ++it)
+    if (enum_type_decl_sptr t = is_enum_type(*it))
+      if (t->get_is_anonymous())
+	++result;
+
+  return result;
+}
 
 /// Getter for the scopes carried by the current scope.
 ///
@@ -17201,7 +17304,7 @@ class_or_union::get_num_anonymous_member_unions() const
 size_t
 class_or_union::get_num_anonymous_member_enums() const
 {
-    int result = 0;
+  int result = 0;
   for (member_types::const_iterator it = get_member_types().begin();
        it != get_member_types().end();
        ++it)
@@ -17614,10 +17717,12 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 
       if (!def1 || !def2)
 	{
-	  if (l.get_environment()->decl_only_class_equals_definition())
+	  if (l.get_environment()->decl_only_class_equals_definition()
+	      && !l.get_is_anonymous()
+	      && !r.get_is_anonymous())
 	    {
-	      const interned_string& q1 = l.get_qualified_name();
-	      const interned_string& q2 = r.get_qualified_name();
+	      const interned_string& q1 = l.get_scoped_name();
+	      const interned_string& q2 = r.get_scoped_name();
 	      if (q1 == q2)
 		// Not using RETURN(true) here, because that causes
 		// performance issues.  We don't need to do
@@ -21227,7 +21332,8 @@ types_have_similar_structure(const type_base* first, const type_base* second)
       if (ty2 == 0)
 	return false;
 
-      if (ty1->get_name() != ty2->get_name())
+      if (!ty1->get_is_anonymous() && !ty2->get_is_anonymous()
+	  && ty1->get_name() != ty2->get_name())
 	return false;
 
       if (!was_indirect_type)
@@ -21262,7 +21368,8 @@ types_have_similar_structure(const type_base* first, const type_base* second)
       if (ty2 == 0)
 	return false;
 
-      if (ty1->get_name() != ty2->get_name())
+      if (!ty1->get_is_anonymous() && !ty2->get_is_anonymous()
+	  && ty1->get_name() != ty2->get_name())
 	return false;
 
       if (!was_indirect_type)
@@ -21842,8 +21949,8 @@ fns_to_str(vector<function_decl*>::const_iterator a_begin,
 namespace
 {
 
-/// Update the qualified parent name and qualified name of a tree decl
-/// node.
+/// Update the qualified parent name, qualified name and scoped name
+/// of a tree decl node.
 ///
 /// @return true if the tree walking should continue, false otherwise.
 ///
@@ -21852,22 +21959,33 @@ bool
 qualified_name_setter::do_update(abigail::ir::decl_base* d)
 {
   std::string parent_qualified_name;
-  if (abigail::ir::scope_decl* parent = d->get_scope())
+  abigail::ir::scope_decl* parent = d->get_scope();
+  if (parent)
     d->priv_->qualified_parent_name_ = parent->get_qualified_name();
   else
     d->priv_->qualified_parent_name_ = abigail::interned_string();
 
+  abigail::environment* env = d->get_environment();
+  ABG_ASSERT(env);
   if (!d->priv_->qualified_parent_name_.empty())
     {
       if (d->get_name().empty())
 	d->priv_->qualified_name_ = abigail::interned_string();
       else
-	{
-	  abigail::environment* env = d->get_environment();
-	  ABG_ASSERT(env);
 	d->priv_->qualified_name_ =
 	  env->intern(d->priv_->qualified_parent_name_ + "::" + d->get_name());
-	}
+    }
+
+  if (d->priv_->scoped_name_.empty())
+    {
+      if (parent
+	  && !parent->get_is_anonymous()
+	  && !parent->get_name().empty())
+	d->priv_->scoped_name_ =
+	  env->intern(parent->get_name() + "::" + d->get_name());
+      else
+	d->priv_->scoped_name_ =
+	  env->intern(d->get_name());
     }
 
   if (!is_scope_decl(d))

@@ -5,7 +5,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
   [C]'function char f1(Struct1Ptr)' has some indirect sub-type changes:
     parameter 1 of type 'typedef Struct1Ptr' has sub-type changes:
-      underlying type '__anonymous_struct__*' changed:
+      underlying type '__anonymous_struct__1*' changed:
         in pointed to type 'struct {char m1; char m2;}':
           type size changed from 16 to 8 (in bits)
           1 data member deletion:

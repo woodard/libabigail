@@ -1112,7 +1112,7 @@
     <!-- PQnode* -->
     <pointer-type-def type-id='type-id-85' size-in-bits='64' id='type-id-81'/>
     <!-- struct {PQHeapKey key; PQHeapHandle node;} -->
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-87' visibility='default' filepath='libtess/priorityq-heap.h' line='84' column='1' id='type-id-88'>
+    <class-decl name='__anonymous_struct__1' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-87' visibility='default' filepath='libtess/priorityq-heap.h' line='84' column='1' id='type-id-88'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- PQHeapKey key -->
         <var-decl name='key' type-id='type-id-89' visibility='default' filepath='libtess/priorityq-heap.h' line='84' column='1'/>
@@ -1124,7 +1124,7 @@
     </class-decl>
     <!-- typedef void* PQHeapKey -->
     <typedef-decl name='PQHeapKey' type-id='type-id-11' filepath='libtess/priorityq-heap.h' line='79' column='1' id='type-id-89'/>
-    <!-- typedef __anonymous_struct__ PQhandleElem -->
+    <!-- typedef __anonymous_struct__1 PQhandleElem -->
     <typedef-decl name='PQhandleElem' type-id='type-id-88' filepath='libtess/priorityq-heap.h' line='84' column='1' id='type-id-87'/>
     <!-- PQhandleElem* -->
     <pointer-type-def type-id='type-id-87' size-in-bits='64' id='type-id-82'/>
@@ -1217,7 +1217,7 @@
     <!-- typedef long int[8] __jmp_buf -->
     <typedef-decl name='__jmp_buf' type-id='type-id-113' filepath='/usr/include/bits/setjmp.h' line='32' column='1' id='type-id-111'/>
     <!-- struct {unsigned long int __val[16];} -->
-    <class-decl name='__anonymous_struct__' size-in-bits='1024' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-112' visibility='default' filepath='/usr/include/bits/sigset.h' line='30' column='1' id='type-id-115'>
+    <class-decl name='__anonymous_struct__2' size-in-bits='1024' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-112' visibility='default' filepath='/usr/include/bits/sigset.h' line='30' column='1' id='type-id-115'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- unsigned long int __val[16] -->
         <var-decl name='__val' type-id='type-id-116' visibility='default' filepath='/usr/include/bits/sigset.h' line='31' column='1'/>
@@ -1230,7 +1230,7 @@
       <subrange length='16' type-id='type-id-57' id='type-id-117'/>
 
     </array-type-def>
-    <!-- typedef __anonymous_struct__ __sigset_t -->
+    <!-- typedef __anonymous_struct__2 __sigset_t -->
     <typedef-decl name='__sigset_t' type-id='type-id-115' filepath='/usr/include/bits/sigset.h' line='32' column='1' id='type-id-112'/>
 
     <!-- __jmp_buf_tag[1] -->
