@@ -7234,29 +7234,17 @@ public:
     uint8_t *bytes = reinterpret_cast<uint8_t*>(elf_data->d_buf);
     bool is_big_endian = elf_architecture_is_big_endian();
     elf_symbol_sptr symbol;
-    unsigned char symbol_value_size = 4;
-    unsigned char arch_word_size = architecture_word_size();
 
+    int32_t offset = 0;
+    const unsigned char symbol_value_size = sizeof(offset);
     GElf_Addr symbol_address = 0, adjusted_symbol_address = 0;
     ABG_ASSERT(read_int_from_array_of_bytes(bytes,
 					    symbol_value_size,
 					    is_big_endian,
-					    symbol_address));
+					    offset));
     GElf_Shdr mem;
     GElf_Shdr *section_header = gelf_getshdr(section, &mem);
-    if (arch_word_size == 4)
-      symbol_address = (uint32_t)(symbol_address + section_header->sh_addr);
-    else if (arch_word_size == 8)
-      {
-	symbol_address = symbol_address + section_header->sh_addr;
-	if (symbol_address < ((uint64_t)1 << 32))
-	  // The symbol address is expressed in 32 bits.  So let's
-	  // convert it to a 64 bits address with the 4 most
-	  // significant bytes set to ff each.
-	  symbol_address = ((uint64_t)0xffffffff << 32) | symbol_address;
-      }
-    else
-      ABG_ASSERT_NOT_REACHED;
+    symbol_address = offset + section_header->sh_addr;
 
     adjusted_symbol_address = maybe_adjust_fn_sym_address(symbol_address);
     symbol = lookup_elf_symbol_from_address(adjusted_symbol_address);
