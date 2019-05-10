@@ -7186,14 +7186,14 @@ public:
   }
 
   /// Try reading the first __ksymtab section entry as if it is in the
-  /// v4_19 format and lookup a symbol from the .symbol section to see
-  /// if that succeeds.  If it does, then we can assume the __ksymtab
-  /// section is in the v4_19 format.
+  /// pre-v4_19 format and lookup a symbol from the .symbol section to
+  /// see if that succeeds.  If it does, then we can assume the
+  /// __ksymtab section is in the pre-v4_19 format.
   ///
   /// @return the symbol resulting from the lookup of the symbol
   /// address we got from reading the first entry of the ksymtab
-  /// section assuming the v4.19 format.  If nil, it means the
-  /// __ksymtab section is not in the v4.19 format.
+  /// section assuming the pre-v4.19 format.  If nil, it means the
+  /// __ksymtab section is not in the pre-v4.19 format.
   elf_symbol_sptr
   try_reading_first_ksymtab_entry_using_pre_v4_19_format() const
   {
@@ -7215,14 +7215,14 @@ public:
   }
 
   /// Try reading the first __ksymtab section entry as if it is in the
-  /// pre-v4_19 format and lookup a symbol from the .symbol section to
-  /// see if that succeeds.  If it does, then we can assume the
-  /// __ksymtab section is in the pre-v4_19 format.
+  /// v4_19 format and lookup a symbol from the .symbol section to see
+  /// if that succeeds.  If it does, then we can assume the __ksymtab
+  /// section is in the v4_19 format.
   ///
   /// @return the symbol resulting from the lookup of the symbol
   /// address we got from reading the first entry of the ksymtab
-  /// section assuming the pre-v4.19 format.  If nil, it means the
-  /// __ksymtab section is not in the pre-v4.19 format.
+  /// section assuming the v4.19 format.  If nil, it means the
+  /// __ksymtab section is not in the v4.19 format.
   elf_symbol_sptr
   try_reading_first_ksymtab_entry_using_v4_19_format() const
   {
