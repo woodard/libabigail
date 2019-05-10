@@ -1116,24 +1116,32 @@ get_binary_load_address(Elf *elf_handle,
   GElf_Ehdr eh_mem;
   GElf_Ehdr *elf_header = gelf_getehdr(elf_handle, &eh_mem);
   size_t num_segments = elf_header->e_phnum;
-  GElf_Phdr *lowest_program_header = 0, *program_header = 0;
+  GElf_Phdr *program_header = 0;
+  GElf_Addr result;
+  bool found_loaded_segment = false;
   GElf_Phdr ph_mem;
 
   for (unsigned i = 0; i < num_segments; ++i)
     {
       program_header = gelf_getphdr(elf_handle, i, &ph_mem);
-      if (program_header->p_type == PT_LOAD
-	  && (!lowest_program_header
-	      || program_header->p_vaddr < lowest_program_header->p_vaddr))
-	lowest_program_header = program_header;
+      if (program_header && program_header->p_type == PT_LOAD)
+	{
+	  if (!found_loaded_segment)
+	    {
+	      result = program_header->p_vaddr;
+	      found_loaded_segment = true;
+	    }
+
+	  if (program_header->p_vaddr < result)
+	    // The resulting load address we want is the lowest
+	    // load address of all the loaded segments.
+	    result = program_header->p_vaddr;
+	}
     }
 
-  if (lowest_program_header)
+  if (found_loaded_segment)
     {
-      // This program header represent the segment containing the
-      // first byte of this binary.  We want to return the address
-      // at which the segment is loaded in memory.
-      load_address = lowest_program_header->p_vaddr;
+      load_address = result;
       return true;
     }
   return false;
@@ -7703,12 +7711,12 @@ public:
       {
 	Dwarf_Addr dwarf_elf_load_address = 0, elf_load_address = 0;
 	ABG_ASSERT(get_binary_load_address(dwarf_elf_handle(),
-				       dwarf_elf_load_address));
+					   dwarf_elf_load_address));
 	ABG_ASSERT(get_binary_load_address(elf_handle(),
-				       elf_load_address));
+					   elf_load_address));
 	if (dwarf_is_splitted()
 	    && (dwarf_elf_load_address != elf_load_address))
-	  // This means that in theory the DWARF an the executable are
+	  // This means that in theory the DWARF and the executable are
 	  // not loaded at the same address.  And addr is meaningful
 	  // only in the context of the DWARF.
 	  //
