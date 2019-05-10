@@ -6125,9 +6125,10 @@ public:
     return read_int_from_array_of_bytes(bytes, 8, is_big_endian, result);
   }
 
-  /// Read N bytes and convert their value into an uint64_t.
+  /// Read N bytes and convert their value into an integer type T.
   ///
-  /// Note that N cannot be bigger than 8 for now.
+  /// Note that N cannot be bigger than 8 for now. The type passed needs to be
+  /// at least of the size of number_of_bytes.
   ///
   /// @param bytes the array of bytes to read the next 8 bytes from.
   /// Note that this array must be at least 8 bytes long.
@@ -6138,22 +6139,24 @@ public:
   /// @param is_big_endian if true, read the 8 bytes in Big Endian
   /// mode, otherwise, read them in Little Endian.
   ///
-  /// @param result where to store the resuting uint64_t that was read.
+  /// @param result where to store the resuting integer that was read.
   ///
   ///
   /// @param true if the 8 bytes could be read, false otherwise.
+  template<typename T>
   bool
   read_int_from_array_of_bytes(const uint8_t	*bytes,
 			       unsigned char	number_of_bytes,
 			       bool		is_big_endian,
-			       uint64_t	&result) const
+			       T		&result) const
   {
     if (!bytes)
       return false;
 
     ABG_ASSERT(number_of_bytes <= 8);
+    ABG_ASSERT(number_of_bytes <= sizeof(T));
 
-    uint64_t res = 0;
+    T res = 0;
 
     const uint8_t *cur = bytes;
     if (is_big_endian)
@@ -6165,7 +6168,7 @@ public:
 
 	// Now read the remaining least significant bytes.
 	for (uint i = 1; i < number_of_bytes; ++i)
-	  res = (res << 8) | ((uint64_t)msb[i]);
+	  res = (res << 8) | ((T)msb[i]);
       }
     else
       {
@@ -6175,7 +6178,7 @@ public:
 	res = *lsb;
 	// Now read the remaining most significant bytes.
 	for (uint i = 1; i < number_of_bytes; ++i)
-	  res = res | (((uint64_t)lsb[i]) << i * 8);
+	  res = res | (((T)lsb[i]) << i * 8);
       }
 
     result = res;
