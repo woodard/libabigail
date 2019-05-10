@@ -7671,24 +7671,10 @@ public:
 
     if (get_ksymtab_format() == V4_19_KSYMTAB_FORMAT)
       {
+	int32_t offset = addr;
 	GElf_Shdr mem;
 	GElf_Shdr *section_header = gelf_getshdr(ksymtab_section, &mem);
-	if (architecture_word_size() == 4)
-	  result = (uint32_t)(addr + section_header->sh_addr + addr_offset);
-	else if (architecture_word_size() == 8)
-	  {
-	    result = addr + section_header->sh_addr + addr_offset;
-	    if (result < ((uint64_t)1 << 32))
-	      // The symbol address is expressed in 32 bits.  So let's
-	      // convert it to a 64 bits address with the 4 most
-	      // significant bytes set to ff each.  This is how 64
-	      // bits addresses of symbols are in the .symbol section,
-	      // so we need this address to be consistent with that
-	      // format.
-	      result = ((uint64_t)0xffffffff << 32) | result;
-	  }
-	else
-	  ABG_ASSERT_NOT_REACHED;
+	result = offset + section_header->sh_addr + addr_offset;
       }
 
     return result;
