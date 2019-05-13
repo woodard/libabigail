@@ -1035,19 +1035,20 @@ find_symbol_table_section_index(Elf* elf_handle,
 static Elf_Scn*
 find_section(Elf* elf_handle, const string& name, Elf64_Word section_type)
 {
-  GElf_Ehdr ehmem, *elf_header;
-  elf_header = gelf_getehdr(elf_handle, &ehmem);
+  size_t section_header_string_index = 0;
+  if (elf_getshdrstrndx (elf_handle, &section_header_string_index) < 0)
+    return 0;
 
   Elf_Scn* section = 0;
+  GElf_Shdr header_mem, *header;
   while ((section = elf_nextscn(elf_handle, section)) != 0)
     {
-      GElf_Shdr header_mem, *header;
       header = gelf_getshdr(section, &header_mem);
-      if (header->sh_type != section_type)
-	continue;
+      if (header == NULL || header->sh_type != section_type)
+      continue;
 
       const char* section_name =
-	elf_strptr(elf_handle, elf_header->e_shstrndx, header->sh_name);
+	elf_strptr(elf_handle, section_header_string_index, header->sh_name);
       if (section_name && name == section_name)
 	return section;
     }
@@ -5930,6 +5931,20 @@ public:
     return ksymtab_gpl_section_;
   }
 
+  /// Return either a __ksymtab or a __ksymtab_gpl section, in case
+  /// only the __ksymtab_gpl exists.
+  ///
+  /// @return the __ksymtab section if it exists, or the
+  /// __ksymtab_gpl; or NULL if neither is found.
+  Elf_Scn*
+  find_any_ksymtab_section() const
+  {
+    Elf_Scn *result = find_ksymtab_section();
+    if (!result)
+      result = find_ksymtab_gpl_section();
+    return result;
+  }
+
   /// Return the SHT_GNU_versym, SHT_GNU_verdef and SHT_GNU_verneed
   /// sections that are involved in symbol versionning.
   ///
@@ -7208,7 +7223,7 @@ public:
   elf_symbol_sptr
   try_reading_first_ksymtab_entry_using_pre_v4_19_format() const
   {
-    Elf_Scn *section = find_ksymtab_section();
+    Elf_Scn *section = find_any_ksymtab_section();
     Elf_Data *elf_data = elf_rawdata(section, 0);
     uint8_t *bytes = reinterpret_cast<uint8_t*>(elf_data->d_buf);
     bool is_big_endian = elf_architecture_is_big_endian();
@@ -7237,7 +7252,7 @@ public:
   elf_symbol_sptr
   try_reading_first_ksymtab_entry_using_v4_19_format() const
   {
-    Elf_Scn *section = find_ksymtab_section();
+    Elf_Scn *section = find_any_ksymtab_section();
     Elf_Data *elf_data = elf_rawdata(section, 0);
     uint8_t *bytes = reinterpret_cast<uint8_t*>(elf_data->d_buf);
     bool is_big_endian = elf_architecture_is_big_endian();
@@ -7269,7 +7284,7 @@ public:
   enum ksymtab_format
   get_ksymtab_format() const
   {
-    if (!find_ksymtab_section())
+    if (!find_any_ksymtab_section())
       ksymtab_format_ = UNDEFINED_KSYMTAB_FORMAT;
     else
       {
@@ -7342,11 +7357,14 @@ public:
     if (nb_ksymtab_entries_ == 0)
       {
 	Elf_Scn *section = find_ksymtab_section();
-	GElf_Shdr header_mem;
-	GElf_Shdr *section_header = gelf_getshdr(section, &header_mem);
-	size_t entry_size = get_ksymtab_entry_size();
-	ABG_ASSERT(entry_size);
-	nb_ksymtab_entries_ = section_header->sh_size / entry_size;
+	if (section)
+	  {
+	    GElf_Shdr header_mem;
+	    GElf_Shdr *section_header = gelf_getshdr(section, &header_mem);
+	    size_t entry_size = get_ksymtab_entry_size();
+	    ABG_ASSERT(entry_size);
+	    nb_ksymtab_entries_ = section_header->sh_size / entry_size;
+	  }
       }
     return nb_ksymtab_entries_;
   }
@@ -7362,11 +7380,14 @@ public:
     if (nb_ksymtab_gpl_entries_ == 0)
       {
 	Elf_Scn *section = find_ksymtab_gpl_section();
-	GElf_Shdr header_mem;
-	GElf_Shdr *section_header = gelf_getshdr(section, &header_mem);
-	size_t entry_size = get_ksymtab_entry_size();
-	ABG_ASSERT(entry_size);
-	nb_ksymtab_gpl_entries_ = section_header->sh_size / entry_size;
+	if (section)
+	  {
+	    GElf_Shdr header_mem;
+	    GElf_Shdr *section_header = gelf_getshdr(section, &header_mem);
+	    size_t entry_size = get_ksymtab_entry_size();
+	    ABG_ASSERT(entry_size);
+	    nb_ksymtab_gpl_entries_ = section_header->sh_size / entry_size;
+	  }
       }
     return nb_ksymtab_gpl_entries_;
   }
@@ -7407,7 +7428,10 @@ public:
 	break;
       }
 
-    if (!linux_exported_vars_set || !linux_exported_fns_set)
+    if (!linux_exported_vars_set
+	|| !linux_exported_fns_set
+	|| !section
+	|| !nb_entries)
       return false;
 
     // The data of the section.
@@ -7458,6 +7482,11 @@ public:
 	// on if we are looking at an ET_REL, an executable or a
 	// shared object binary.
 	adjusted_symbol_address = maybe_adjust_fn_sym_address(symbol_address);
+
+	if (adjusted_symbol_address == 0)
+	  // The resulting symbol address is zero, not sure this
+	  // valid; ignore it.
+	  continue;
 
 	// OK now the symbol address should be in a suitable form to
 	// be used to look the symbol up in the usual .symbol section
@@ -7704,6 +7733,9 @@ public:
   Dwarf_Addr
   maybe_adjust_address_for_exec_or_dyn(Dwarf_Addr addr) const
   {
+    if (addr == 0)
+      return addr;
+
     GElf_Ehdr eh_mem;
     GElf_Ehdr *elf_header = gelf_getehdr(elf_handle(), &eh_mem);
 
@@ -7754,6 +7786,9 @@ public:
   Dwarf_Addr
   maybe_adjust_fn_sym_address(Dwarf_Addr addr) const
   {
+    if (addr == 0)
+      return addr;
+
     Elf* elf = elf_handle();
     GElf_Ehdr eh_mem;
     GElf_Ehdr* elf_header = gelf_getehdr(elf, &eh_mem);
