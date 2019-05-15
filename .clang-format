@@ -1,0 +1,10 @@
+---
+BasedOnStyle: GNU
+AlwaysBreakAfterReturnType: All
+BinPackParameters: false
+BreakStringLiterals: false
+PointerAlignment: Left
+SpaceBeforeParens: ControlStatements
+TabWidth: 8
+UseTab: Always
+---
