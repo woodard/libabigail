@@ -843,6 +843,7 @@ public:
     if (!force_delay
 	&& !type_has_non_canonicalized_subtype(t)
 	&& !is_class_type(t)
+	&& !is_union_type(t)
 	&& !is_wip_type(t)
 	// Below are types that *must* be canonicalized only after
 	// they are added to their context; but then this function
@@ -4200,7 +4201,9 @@ build_class_decl(read_context&		ctxt,
 
   ABG_ASSERT(!id.empty());
   class_decl_sptr previous_definition, previous_declaration;
-  const vector<type_base_sptr> *types_ptr = ctxt.get_all_type_decls(id);
+  const vector<type_base_sptr> *types_ptr = 0;
+  if (!is_anonymous)
+    types_ptr = ctxt.get_all_type_decls(id);
   if (types_ptr)
     {
       // Lets look at the previous declarations and the first previous
@@ -4602,7 +4605,9 @@ build_union_decl(read_context& ctxt,
 
   ABG_ASSERT(!id.empty());
   union_decl_sptr previous_definition, previous_declaration;
-  const vector<type_base_sptr> *types_ptr = ctxt.get_all_type_decls(id);
+  const vector<type_base_sptr> *types_ptr = 0;
+  if (!is_anonymous)
+    types_ptr = ctxt.get_all_type_decls(id);
   if (types_ptr)
     {
       // Lets look at the previous declarations and the first previous
