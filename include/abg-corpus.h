@@ -164,7 +164,7 @@ public:
   const string_elf_symbols_map_sptr
   get_fun_symbol_map_sptr() const;
 
-  const string_elf_symbols_map_type&
+  virtual const string_elf_symbols_map_type&
   get_fun_symbol_map() const;
 
   const string_elf_symbols_map_sptr
@@ -182,7 +182,7 @@ public:
   const string_elf_symbols_map_sptr
   get_var_symbol_map_sptr() const;
 
-  const string_elf_symbols_map_type&
+  virtual const string_elf_symbols_map_type&
   get_var_symbol_map() const;
 
   const string_elf_symbols_map_sptr
@@ -373,10 +373,10 @@ public:
   virtual const corpus::variables&
   get_variables() const;
 
-  const string_elf_symbols_map_type&
+  virtual const string_elf_symbols_map_type&
   get_var_symbol_map() const;
 
-  const string_elf_symbols_map_type&
+  virtual const string_elf_symbols_map_type&
   get_fun_symbol_map() const;
 
   virtual const elf_symbols&

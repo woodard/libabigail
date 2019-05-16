@@ -101,6 +101,12 @@ static InOutSpec specs[] =
     "data/test-abidiff/test-PR18791-report0.txt",
     "output/test-abidiff/test-PR18791-report0.txt"
   },
+  {
+    "data/test-abidiff/test-PR24552-v0.abi",
+    "data/test-abidiff/test-PR24552-v1.abi",
+    "data/test-abidiff/test-PR24552-report0.txt",
+    "output/test-abidiff/test-PR24552-report0.txt"
+  },
   // This should be the last entry.
   {0, 0, 0, 0}
 };
@@ -117,10 +123,12 @@ using abigail::tools_utils::guess_file_type;
 using abigail::ir::environment;
 using abigail::ir::environment_sptr;
 using abigail::corpus_sptr;
+using abigail::corpus_group_sptr;
 using abigail::translation_unit;
 using abigail::translation_unit_sptr;
 using abigail::xml_reader::read_translation_unit_from_file;
 using abigail::xml_reader::read_corpus_from_native_xml_file;
+using abigail::xml_reader::read_corpus_group_from_native_xml_file;
 using abigail::comparison::corpus_diff_sptr;
 using abigail::comparison::translation_unit_diff_sptr;
 using abigail::comparison::compute_diff;
@@ -161,14 +169,18 @@ main(int, char*[])
       environment_sptr env(new environment);
       translation_unit_sptr tu1, tu2;
       corpus_sptr corpus1, corpus2;
+      corpus_group_sptr corpus_group1, corpus_group2;
       file_type t = guess_file_type(first_in_path);
       if (t == abigail::tools_utils::FILE_TYPE_NATIVE_BI)
 	tu1 = read_translation_unit_from_file(first_in_path, env.get());
       else if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
 	corpus1 = read_corpus_from_native_xml_file(first_in_path, env.get());
+      else if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP)
+	corpus_group1 = read_corpus_group_from_native_xml_file(first_in_path,
+							       env.get());
       else
 	abort();
-      if (!tu1 && !corpus1)
+      if (!tu1 && !corpus1 && !corpus_group1)
 	{
 	  cerr << "failed to read " << first_in_path << "\n";
 	  is_ok = false;
@@ -180,9 +192,12 @@ main(int, char*[])
 	tu2 = read_translation_unit_from_file(second_in_path, env.get());
       else if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
 	corpus2 = read_corpus_from_native_xml_file(second_in_path, env.get());
+      else if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP)
+	corpus_group2 = read_corpus_group_from_native_xml_file(first_in_path,
+							       env.get());
       else
 	abort();
-      if (!tu2 && !corpus2)
+      if (!tu2 && !corpus2 && !corpus_group2)
 	{
 	  cerr << "failed to read " << second_in_path << "\n";
 	  is_ok = false;
@@ -195,8 +210,10 @@ main(int, char*[])
       ctxt->show_locs(false);
       if (tu1)
 	d1= compute_diff(tu1, tu2, ctxt);
-      else
+      else if (corpus1)
 	d2 = compute_diff(corpus1, corpus2, ctxt);
+      else if (corpus_group1)
+	d2 = compute_diff(corpus_group1, corpus_group2, ctxt);
       ofstream of(out_path.c_str(), std::ios_base::trunc);
       if (!of.is_open())
 	{

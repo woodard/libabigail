@@ -1043,12 +1043,12 @@ corpus::get_sorted_undefined_var_symbols() const
 const elf_symbol_sptr
 corpus::lookup_function_symbol(const string& n) const
 {
-  if (!get_fun_symbol_map_sptr())
+  if (get_fun_symbol_map().empty())
     return elf_symbol_sptr();
 
   string_elf_symbols_map_type::const_iterator it =
-    get_fun_symbol_map_sptr()->find(n);
-  if ( it == get_fun_symbol_map_sptr()->end())
+    get_fun_symbol_map().find(n);
+  if ( it == get_fun_symbol_map().end())
     return elf_symbol_sptr();
   return it->second[0];
 }
@@ -1110,12 +1110,12 @@ const elf_symbol_sptr
 corpus::lookup_function_symbol(const string& symbol_name,
 			       const elf_symbol::version& version) const
 {
-  if (!get_fun_symbol_map_sptr())
+  if (get_fun_symbol_map().empty())
     return elf_symbol_sptr();
 
   string_elf_symbols_map_type::const_iterator it =
-    get_fun_symbol_map_sptr()->find(symbol_name);
-  if ( it == get_fun_symbol_map_sptr()->end())
+    get_fun_symbol_map().find(symbol_name);
+  if ( it == get_fun_symbol_map().end())
     return elf_symbol_sptr();
 
   return find_symbol_by_version(version, it->second);
@@ -1139,12 +1139,12 @@ corpus::lookup_function_symbol(const elf_symbol& symbol) const
 const elf_symbol_sptr
 corpus::lookup_variable_symbol(const string& n) const
 {
-    if (!get_var_symbol_map_sptr())
+  if (get_var_symbol_map().empty())
     return elf_symbol_sptr();
 
   string_elf_symbols_map_type::const_iterator it =
-    get_var_symbol_map_sptr()->find(n);
-  if ( it == get_var_symbol_map_sptr()->end())
+    get_var_symbol_map().find(n);
+  if ( it == get_var_symbol_map().end())
     return elf_symbol_sptr();
   return it->second[0];
 }
@@ -1161,12 +1161,12 @@ const elf_symbol_sptr
 corpus::lookup_variable_symbol(const string& symbol_name,
 			       const elf_symbol::version& version) const
 {
-    if (!get_var_symbol_map_sptr())
+  if (get_var_symbol_map().empty())
     return elf_symbol_sptr();
 
   string_elf_symbols_map_type::const_iterator it =
-    get_var_symbol_map_sptr()->find(symbol_name);
-  if ( it == get_var_symbol_map_sptr()->end())
+    get_var_symbol_map().find(symbol_name);
+  if ( it == get_var_symbol_map().end())
     return elf_symbol_sptr();
 
   return find_symbol_by_version(version, it->second);
