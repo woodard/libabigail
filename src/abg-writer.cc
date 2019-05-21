@@ -167,6 +167,7 @@ class write_context
   bool					m_show_locs;
   bool					m_write_architecture;
   bool					m_write_corpus_path;
+  bool					m_write_comp_dir;
   mutable type_ptr_map			m_type_id_map;
   mutable type_ptr_set_type		m_emitted_type_set;
   type_ptr_set_type			m_emitted_decl_only_set;
@@ -197,7 +198,8 @@ public:
       m_annotate(false),
       m_show_locs(true),
       m_write_architecture(true),
-      m_write_corpus_path(true)
+      m_write_corpus_path(true),
+      m_write_comp_dir(true)
   {}
 
   /// Getter of the environment we are operating from.
@@ -266,6 +268,21 @@ public:
   void
   set_write_corpus_path(bool f)
   {m_write_corpus_path = f;}
+
+  /// Getter of the comp-dir-path option.
+  ///
+  /// @return true iff compilation dir information shall be emitted
+  bool
+  get_write_comp_dir()
+  {return m_write_comp_dir;}
+
+  /// Setter of the comp-dir-path option
+  ///
+  /// @param f the new value of the flag.
+  void
+  set_write_comp_dir(bool f)
+  {m_write_comp_dir = f;}
+
 
   /// Getter of the "show-locs" option.
   ///
@@ -1819,6 +1836,18 @@ void
 set_write_corpus_path(write_context& ctxt, bool flag)
 {ctxt.set_write_corpus_path(flag);}
 
+/// Set the 'write-comp-dir' flag.
+///
+/// When this flag is set then the XML writer will emit compilation dir
+/// information
+///
+/// @param ctxt the context to set this flag on to.
+///
+/// @param flag the new value of the 'write-comp-dir' flag.
+void
+set_write_comp_dir(write_context& ctxt, bool flag)
+{ctxt.set_write_comp_dir(flag);}
+
 /// Serialize a translation unit to an output stream.
 ///
 /// @param ctxt the context of the serialization.  It contains e.g,
@@ -1851,7 +1880,7 @@ write_translation_unit(write_context&	       ctxt,
   if (!tu.get_path().empty())
     o << " path='" << xml::escape_xml_string(tu.get_path()) << "'";
 
-  if (!tu.get_compilation_dir_path().empty())
+  if (!tu.get_compilation_dir_path().empty() && ctxt.get_write_comp_dir())
     o << " comp-dir-path='"
       << xml::escape_xml_string(tu.get_compilation_dir_path()) << "'";
 
