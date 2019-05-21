@@ -188,11 +188,11 @@ public:
   /// @param env the enviroment we are operating from.
   ///
   /// @param os the output stream to write to.
-  write_context(const environment* env, ostream& os, const bool annotate = false)
+  write_context(const environment* env, ostream& os)
     : m_env(env),
       m_id_manager(env),
       m_ostream(os),
-      m_annotate(annotate),
+      m_annotate(false),
       m_show_locs(true)
   {}
 
@@ -1715,8 +1715,7 @@ write_context_sptr
 create_write_context(const environment *env,
 		     ostream& default_output_stream)
 {
-  write_context_sptr ctxt(new write_context(env, default_output_stream,
-					    /*annotate=*/false));
+  write_context_sptr ctxt(new write_context(env, default_output_stream));
   return ctxt;
 }
 
@@ -1938,7 +1937,8 @@ write_translation_unit(const translation_unit&	tu,
 		       std::ostream&		out,
 		       const bool		annotate)
 {
-  write_context ctxt(tu.get_environment(), out, annotate);
+  write_context ctxt(tu.get_environment(), out);
+  set_annotate(ctxt, annotate);
   return write_translation_unit(tu, ctxt, indent);
 }
 
@@ -4169,7 +4169,8 @@ write_corpus(const corpus_sptr	corpus,
   if (!corpus)
     return false;
 
-  write_context ctxt(corpus->get_environment(), out, annotate);
+  write_context ctxt(corpus->get_environment(), out);
+  set_annotate(ctxt, annotate);
 
   return write_corpus(corpus, indent, ctxt);
 }
@@ -4248,7 +4249,8 @@ write_corpus_group(const corpus_group_sptr&	group,
   if (!group)
     return false;
 
-  write_context ctxt(group->get_environment(), out, annotate);
+  write_context ctxt(group->get_environment(), out);
+  set_annotate(ctxt, annotate);
 
   return write_corpus_group(group, indent, ctxt);
 }
@@ -4315,7 +4317,8 @@ using namespace abigail::ir;
 void
 dump(const decl_base_sptr d, std::ostream& o, const bool annotate)
 {
-  xml_writer::write_context ctxt(d->get_environment(), o, annotate);
+  xml_writer::write_context ctxt(d->get_environment(), o);
+  xml_writer::set_annotate(ctxt, annotate);
   write_decl(d, ctxt, /*indent=*/0);
   o << "\n";
 }
@@ -4359,7 +4362,8 @@ dump(const type_base_sptr t, const bool annotate)
 void
 dump(const var_decl_sptr v, std::ostream& o, const bool annotate)
 {
-  xml_writer::write_context ctxt(v->get_environment(), o, annotate);
+  xml_writer::write_context ctxt(v->get_environment(), o);
+  xml_writer::set_annotate(ctxt, annotate);
   write_var_decl(v, ctxt, /*linkage_name*/true, /*indent=*/0);
   cerr << "\n";
 }
@@ -4383,7 +4387,8 @@ dump(const var_decl_sptr v, const bool annotate)
 void
 dump(const translation_unit& t, std::ostream& o, const bool annotate)
 {
-  xml_writer::write_context ctxt(t.get_environment(), o, annotate);
+  xml_writer::write_context ctxt(t.get_environment(), o);
+  xml_writer::set_annotate(ctxt, annotate);
   write_translation_unit(t, ctxt, /*indent=*/0);
   o << "\n";
 }
