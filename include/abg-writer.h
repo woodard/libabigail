@@ -53,6 +53,24 @@ set_show_locs(write_context& ctxt, bool flag);
 void
 set_annotate(write_context& ctxt, bool flag);
 
+
+/// A convenience generic function to set common options (usually used
+/// by Libabigail tools) from a generic options carrying-object, into
+/// a given @ref write_context.
+///
+/// @param ctxt the @ref the write_context to consider.
+///
+/// @param opts the option-carrying object to set the options from.
+/// It must contain data members named: annotate, and show_locs, at
+/// very least.
+template <typename OPTS>
+void
+set_common_options(write_context& ctxt, const OPTS& opts)
+{
+  set_annotate(ctxt, opts.annotate);
+  set_show_locs(ctxt, opts.show_locs);
+}
+
 void
 set_ostream(write_context& ctxt, ostream& os);
 

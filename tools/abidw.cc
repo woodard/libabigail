@@ -444,8 +444,7 @@ load_corpus_and_write_abixml(char* argv[],
     {
       const write_context_sptr& write_ctxt
 	  = create_write_context(corp->get_environment(), cout);
-      set_annotate(*write_ctxt, opts.annotate);
-      set_show_locs(*write_ctxt, opts.show_locs);
+      set_common_options(*write_ctxt, opts);
 
       if (opts.abidiff)
 	{
@@ -558,7 +557,7 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
     {
       const xml_writer::write_context_sptr& ctxt
 	  = xml_writer::create_write_context(group->get_environment(), cout);
-      set_annotate(*ctxt, opts.annotate);
+      set_common_options(*ctxt, opts);
 
       if (!opts.out_file_path.empty())
 	{
