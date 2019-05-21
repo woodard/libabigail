@@ -165,6 +165,8 @@ class write_context
   ostream*				m_ostream;
   bool					m_annotate;
   bool					m_show_locs;
+  bool					m_write_architecture;
+  bool					m_write_corpus_path;
   mutable type_ptr_map			m_type_id_map;
   mutable type_ptr_set_type		m_emitted_type_set;
   type_ptr_set_type			m_emitted_decl_only_set;
@@ -193,7 +195,9 @@ public:
       m_id_manager(env),
       m_ostream(&os),
       m_annotate(false),
-      m_show_locs(true)
+      m_show_locs(true),
+      m_write_architecture(true),
+      m_write_corpus_path(true)
   {}
 
   /// Getter of the environment we are operating from.
@@ -234,6 +238,34 @@ public:
   void
   set_annotate(bool f)
   {m_annotate = f;}
+
+  /// Getter of the write-architecture option.
+  ///
+  /// @return true iff architecture information shall be emitted
+  bool
+  get_write_architecture()
+  {return m_write_architecture;}
+
+  /// Setter of the write-architecture option
+  ///
+  /// @param f the new value of the flag.
+  void
+  set_write_architecture(bool f)
+  {m_write_architecture = f;}
+
+  /// Getter of the write-corpus-path option.
+  ///
+  /// @return true iff corpus-path information shall be emitted
+  bool
+  get_write_corpus_path()
+  {return m_write_corpus_path;}
+
+  /// Setter of the write-corpus-path option
+  ///
+  /// @param f the new value of the flag.
+  void
+  set_write_corpus_path(bool f)
+  {m_write_corpus_path = f;}
 
   /// Getter of the "show-locs" option.
   ///
@@ -1762,6 +1794,30 @@ set_annotate(write_context& ctxt, bool flag)
 void
 set_ostream(write_context& ctxt, ostream& os)
 {ctxt.set_ostream(os);}
+
+/// Set the 'write-architecture' flag.
+///
+/// When this flag is set then the XML writer will emit architecture
+/// information
+///
+/// @param ctxt the context to set this flag on to.
+///
+/// @param flag the new value of the 'write-architecture' flag.
+void
+set_write_architecture(write_context& ctxt, bool flag)
+{ctxt.set_write_architecture(flag);}
+
+/// Set the 'write-corpus-path' flag.
+///
+/// When this flag is set then the XML writer will emit corpus-path
+/// information
+///
+/// @param ctxt the context to set this flag on to.
+///
+/// @param flag the new value of the 'write-corpus-path' flag.
+void
+set_write_corpus_path(write_context& ctxt, bool flag)
+{ctxt.set_write_corpus_path(flag);}
 
 /// Serialize a translation unit to an output stream.
 ///
@@ -4092,7 +4148,10 @@ write_corpus_to_archive(const corpus_sptr corp, const bool annotate)
 ///
 /// @return true upon successful completion, false otherwise.
 bool
-write_corpus(write_context& ctxt, const corpus_sptr& corpus, unsigned indent)
+write_corpus(write_context&	ctxt,
+	     const corpus_sptr& corpus,
+	     unsigned		indent,
+	     bool		member_of_group)
 {
   if (!corpus)
     return false;
@@ -4102,10 +4161,26 @@ write_corpus(write_context& ctxt, const corpus_sptr& corpus, unsigned indent)
   std::ostream& out = ctxt.get_ostream();
 
   out << "<abi-corpus";
-  if (!corpus->get_path().empty())
-    out << " path='" << xml::escape_xml_string(corpus->get_path()) << "'";
 
-  if (!corpus->get_architecture_name().empty())
+  // For an abi-corpus as part of an abi-corpus group, only omit the path, but
+  // keep the filename.
+  std::string corpus_path = corpus->get_path();
+  if (!ctxt.get_write_corpus_path())
+    {
+      if (member_of_group)
+	{
+	  size_t pos = corpus_path.rfind('/');
+	  corpus_path
+	      = corpus_path.substr(pos != std::string::npos ? pos + 1 : 0);
+	}
+      else
+	corpus_path.clear();
+    }
+  if (!corpus_path.empty())
+    out << " path='" << xml::escape_xml_string(corpus_path) << "'";
+
+  if (!corpus->get_architecture_name().empty()
+      && ctxt.get_write_architecture())
     out << " architecture='" << corpus->get_architecture_name()<< "'";
 
   if (!corpus->get_soname().empty())
@@ -4247,10 +4322,10 @@ std::ostream& out = ctxt.get_ostream();
 
   out << "<abi-corpus-group";
 
-  if (!group->get_path().empty())
+  if (!group->get_path().empty() && ctxt.get_write_corpus_path())
     out << " path='" << xml::escape_xml_string(group->get_path()) << "'";
 
-  if (!group->get_architecture_name().empty())
+  if (!group->get_architecture_name().empty() && ctxt.get_write_architecture())
     out << " architecture='" << group->get_architecture_name()<< "'";
 
   if (group->is_empty())
@@ -4266,7 +4341,7 @@ std::ostream& out = ctxt.get_ostream();
 	 group->get_corpora().begin();
        c != group->get_corpora().end();
        ++c)
-    write_corpus(ctxt, *c, get_indent_to_level(ctxt, indent, 1));
+    write_corpus(ctxt, *c, get_indent_to_level(ctxt, indent, 1), true);
 
   do_indent_to_level(ctxt, indent, 0);
   out << "</abi-corpus-group>\n";

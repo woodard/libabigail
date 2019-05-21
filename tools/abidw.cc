@@ -481,11 +481,6 @@ load_corpus_and_write_abixml(char* argv[],
       if (opts.noout)
 	return 0;
 
-      if (!opts.write_architecture)
-	corp->set_architecture_name("");
-      if (!opts.write_corpus_path)
-	corp->set_path("");
-
       if (!opts.out_file_path.empty())
 	{
 	  ofstream of(opts.out_file_path.c_str(), std::ios_base::trunc);
@@ -547,11 +542,6 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
 
   if (!group)
     return 1;
-
-  if (!opts.write_architecture)
-    group->set_architecture_name("");
-  if (!opts.write_corpus_path)
-    group->set_path("");
 
   if (!opts.noout)
     {

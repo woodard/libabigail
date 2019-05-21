@@ -53,6 +53,11 @@ set_show_locs(write_context& ctxt, bool flag);
 void
 set_annotate(write_context& ctxt, bool flag);
 
+void
+set_write_architecture(write_context& ctxt, bool flag);
+
+void
+set_write_corpus_path(write_context& ctxt, bool flag);
 
 /// A convenience generic function to set common options (usually used
 /// by Libabigail tools) from a generic options carrying-object, into
@@ -69,6 +74,8 @@ set_common_options(write_context& ctxt, const OPTS& opts)
 {
   set_annotate(ctxt, opts.annotate);
   set_show_locs(ctxt, opts.show_locs);
+  set_write_architecture(ctxt, opts.write_architecture);
+  set_write_corpus_path(ctxt, opts.write_corpus_path);
 }
 
 void
@@ -105,7 +112,10 @@ write_corpus_to_archive(const corpus_sptr corp,
 			const bool annotate = false);
 
 bool
-write_corpus(write_context& ctxt, const corpus_sptr& corpus, unsigned indent);
+write_corpus(write_context&	ctxt,
+	     const corpus_sptr& corpus,
+	     unsigned		indent,
+	     bool		member_of_group = false);
 
 bool ABG_DEPRECATED
 write_corpus(const corpus_sptr& corpus, unsigned indent, write_context& ctxt);
