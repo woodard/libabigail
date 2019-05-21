@@ -1342,14 +1342,5 @@ dump_decl_location(const decl_base_sptr&);
 #define ABG_ASSERT(cond) do {({bool __abg_cond__ = (cond); assert(__abg_cond__); !!__abg_cond__;});} while (false)
 #endif
 
-/// Define ABG_DEPRECATED to allow marking parts of the API deprecated without
-/// actually removing it. This allows to keep compatible (yet incomplete) APIs
-/// around for a transition period into a major version.
-#ifdef __GNUC__
-#define ABG_DEPRECATED __attribute__((deprecated))
-#else
-#define ABG_DEPRECATED
-#endif
-
 } // end namespace abigail
 #endif // __ABG_IRFWD_H__

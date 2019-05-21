@@ -94,18 +94,6 @@ write_translation_unit(write_context&	       ctxt,
 		       const translation_unit& tu,
 		       const unsigned	       indent);
 
-bool ABG_DEPRECATED
-write_translation_unit(const translation_unit& tu,
-		       unsigned		       indent,
-		       std::ostream&	       out,
-		       const bool	       annotate = false);
-
-bool ABG_DEPRECATED
-write_translation_unit(const translation_unit& tu,
-		       unsigned		       indent,
-		       const string&	       path,
-		       const bool	       annotate = false);
-
 bool
 write_corpus_to_archive(const corpus& corp,
 			const string& path,
@@ -125,42 +113,10 @@ write_corpus(write_context&	ctxt,
 	     unsigned		indent,
 	     bool		member_of_group = false);
 
-bool ABG_DEPRECATED
-write_corpus(const corpus_sptr& corpus, unsigned indent, write_context& ctxt);
-
-bool ABG_DEPRECATED
-write_corpus(const corpus_sptr corpus,
-	     unsigned	       indent,
-	     std::ostream&     out,
-	     const bool	       annotate = false);
-
-bool ABG_DEPRECATED
-write_corpus(const corpus_sptr corpus,
-	     unsigned	       indent,
-	     const string&     path,
-	     const bool	       annotate = false);
-
 bool
 write_corpus_group(write_context&	    ctx,
 		   const corpus_group_sptr& group,
 		   unsigned		    indent);
-
-bool ABG_DEPRECATED
-write_corpus_group(const corpus_group_sptr& group,
-		   unsigned		    indent,
-		   write_context&	    ctxt);
-
-bool ABG_DEPRECATED
-write_corpus_group(const corpus_group_sptr& group,
-		   unsigned		    indent,
-		   std::ostream&	    out,
-		   const bool		    annotate = false);
-
-bool ABG_DEPRECATED
-write_corpus_group(const corpus_group_sptr& group,
-		   unsigned		    indent,
-		   const string&	    path,
-		   const bool		    annotate = false);
 
 }// end namespace xml_writer
 }// end namespace abigail
