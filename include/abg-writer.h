@@ -29,6 +29,8 @@
 #ifndef __ABG_WRITER_H__
 #define __ABG_WRITER_H__
 
+#include "abg-fwd.h"
+
 namespace abigail
 {
 namespace xml_writer
@@ -52,16 +54,21 @@ void
 set_annotate(write_context& ctxt, bool flag);
 
 bool
-write_translation_unit(const translation_unit&	tu,
-		       unsigned		indent,
-		       std::ostream&		out,
-		       const bool		annotate = false);
+write_translation_unit(write_context&	       ctxt,
+		       const translation_unit& tu,
+		       const unsigned	       indent);
 
-bool
-write_translation_unit(const translation_unit&	tu,
-		       unsigned		indent,
-		       const string&		path,
-		       const bool		annotate = false);
+bool ABG_DEPRECATED
+write_translation_unit(const translation_unit& tu,
+		       unsigned		       indent,
+		       std::ostream&	       out,
+		       const bool	       annotate = false);
+
+bool ABG_DEPRECATED
+write_translation_unit(const translation_unit& tu,
+		       unsigned		       indent,
+		       const string&	       path,
+		       const bool	       annotate = false);
 
 bool
 write_corpus_to_archive(const corpus& corp,

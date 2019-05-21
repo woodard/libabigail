@@ -67,6 +67,8 @@ using abigail::xml_reader::read_corpus_from_native_xml;
 using abigail::xml_reader::read_corpus_from_native_xml_file;
 using abigail::dwarf_reader::read_corpus_from_elf;
 using abigail::xml_writer::write_translation_unit;
+using abigail::xml_writer::write_context_sptr;
+using abigail::xml_writer::create_write_context;
 using abigail::xml_writer::write_corpus;
 using abigail::xml_writer::write_corpus_to_archive;
 
@@ -287,7 +289,11 @@ main(int argc, char* argv[])
 	    }
 
 	  if (!opts.noout)
-	    write_translation_unit(*tu, 0, cout);
+	    {
+	      const write_context_sptr& ctxt
+		  = create_write_context(tu->get_environment(), cout);
+	      write_translation_unit(*ctxt, *tu, 0);
+	    }
 	  return 0;
 	}
       else
@@ -411,10 +417,17 @@ main(int argc, char* argv[])
       if (tu)
 	{
 	  if (opts.diff)
-	    r = write_translation_unit(*tu, /*indent=*/0,
-				       tmp_file->get_stream());
+	    {
+	      const write_context_sptr& ctxt = create_write_context(
+		  tu->get_environment(), tmp_file->get_stream());
+	      r = write_translation_unit(*ctxt, *tu, 0);
+	    }
 	  if (!opts.noout && !opts.diff)
-	    r &= write_translation_unit(*tu, /*indent=*/0, cout);
+	    {
+	      const write_context_sptr& ctxt
+		  = create_write_context(tu->get_environment(), cout);
+	      r &= write_translation_unit(*ctxt, *tu, 0);
+	    }
 	}
       else
 	{

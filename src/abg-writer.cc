@@ -649,8 +649,6 @@ public:
 
 };//end write_context
 
-static bool write_translation_unit(const translation_unit&,
-				   write_context&, unsigned);
 static void write_location(const location&, write_context&);
 static void write_location(const decl_base_sptr&, write_context&);
 static bool write_visibility(const decl_base_sptr&, ostream&);
@@ -1746,19 +1744,19 @@ set_annotate(write_context& ctxt, bool flag)
 
 /// Serialize a translation unit to an output stream.
 ///
-/// @param tu the translation unit to serialize.
-///
 /// @param ctxt the context of the serialization.  It contains e.g,
 /// the output stream to serialize to.
+///
+/// @param tu the translation unit to serialize.
 ///
 /// @param indent how many indentation spaces to use during the
 /// serialization.
 ///
 /// @return true upon successful completion, false otherwise.
-static bool
-write_translation_unit(const translation_unit&	tu,
-		       write_context&		ctxt,
-		       unsigned		indent)
+bool
+write_translation_unit(write_context&	       ctxt,
+		       const translation_unit& tu,
+		       const unsigned	       indent)
 {
   ostream& o = ctxt.get_ostream();
   const config& c = ctxt.get_config();
@@ -1930,16 +1928,20 @@ write_translation_unit(const translation_unit&	tu,
 ///
 /// @param out the output stream to serialize the translation unit to.
 ///
+/// @param annotate whether to annotate the output with debug information
+///
+/// @deprecated use write_translation_unit(ctct, tu, indent)
+///
 /// @return true upon successful completion, false otherwise.
-bool
-write_translation_unit(const translation_unit&	tu,
-		       unsigned		indent,
-		       std::ostream&		out,
-		       const bool		annotate)
+bool ABG_DEPRECATED
+write_translation_unit(const translation_unit& tu,
+		       unsigned		       indent,
+		       std::ostream&	       out,
+		       const bool	       annotate)
 {
   write_context ctxt(tu.get_environment(), out);
   set_annotate(ctxt, annotate);
-  return write_translation_unit(tu, ctxt, indent);
+  return write_translation_unit(ctxt, tu, indent);
 }
 
 /// Serialize a translation unit to a file.
@@ -1949,14 +1951,18 @@ write_translation_unit(const translation_unit&	tu,
 /// @param indent how many indentation spaces to use during the
 /// serialization.
 ///
-/// @param out the file to serialize the translation unit to.
+/// @param path the file to serialize the translation unit to.
+///
+/// @param annotate whether to annotate the output with debug information
+///
+/// @deprecated use write_translation_unit(ctct, tu, indent)
 ///
 /// @return true upon successful completion, false otherwise.
-bool
-write_translation_unit(const translation_unit&	tu,
-		       unsigned		indent,
-		       const string&		path,
-		       const bool annotate)
+bool ABG_DEPRECATED
+write_translation_unit(const translation_unit& tu,
+		       unsigned		       indent,
+		       const string&	       path,
+		       const bool	       annotate)
 {
   bool result = true;
 
@@ -1969,7 +1975,9 @@ write_translation_unit(const translation_unit&	tu,
 	  return false;
 	}
 
-      if (!write_translation_unit(tu, indent, of, annotate))
+      write_context ctxt(tu.get_environment(), of);
+      set_annotate(ctxt, annotate);
+      if (!write_translation_unit(ctxt, tu, indent))
 	{
 	  cerr << "failed to access " << path << "\n";
 	  result = false;
@@ -4139,7 +4147,7 @@ write_corpus(const corpus_sptr	corpus,
     {
       translation_unit& tu = **i;
       if (!tu.is_empty())
-	write_translation_unit(tu, ctxt, get_indent_to_level(ctxt, indent, 1));
+	write_translation_unit(ctxt, tu, get_indent_to_level(ctxt, indent, 1));
     }
 
   do_indent_to_level(ctxt, indent, 0);
@@ -4389,7 +4397,7 @@ dump(const translation_unit& t, std::ostream& o, const bool annotate)
 {
   xml_writer::write_context ctxt(t.get_environment(), o);
   xml_writer::set_annotate(ctxt, annotate);
-  write_translation_unit(t, ctxt, /*indent=*/0);
+  write_translation_unit(ctxt, t, /*indent=*/0);
   o << "\n";
 }
 
