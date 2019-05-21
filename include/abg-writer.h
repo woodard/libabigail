@@ -102,21 +102,26 @@ write_corpus(const corpus_sptr corpus,
 	     const bool	       annotate = false);
 
 bool
-write_corpus_group(const corpus_group_sptr&	group,
-		   unsigned			indent,
-		   write_context&		ctxt);
+write_corpus_group(write_context&	    ctx,
+		   const corpus_group_sptr& group,
+		   unsigned		    indent);
 
-bool
-write_corpus_group(const corpus_group_sptr&	group,
-		   unsigned			indent,
-		   std::ostream&		out,
-		   const bool			annotate = false);
+bool ABG_DEPRECATED
+write_corpus_group(const corpus_group_sptr& group,
+		   unsigned		    indent,
+		   write_context&	    ctxt);
 
-bool
-write_corpus_group(const corpus_group_sptr&	group,
-		   unsigned			indent,
-		   const string&		path,
-		   const bool			annotate = false);
+bool ABG_DEPRECATED
+write_corpus_group(const corpus_group_sptr& group,
+		   unsigned		    indent,
+		   std::ostream&	    out,
+		   const bool		    annotate = false);
+
+bool ABG_DEPRECATED
+write_corpus_group(const corpus_group_sptr& group,
+		   unsigned		    indent,
+		   const string&	    path,
+		   const bool		    annotate = false);
 
 }// end namespace xml_writer
 }// end namespace abigail

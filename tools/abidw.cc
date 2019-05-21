@@ -570,12 +570,18 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
 		<< opts.out_file_path << "'\n";
 	      return 1;
 	    }
-	  exit_code = !xml_writer::write_corpus_group(group, 0, of,
-						      opts.annotate);
+	  const write_context_sptr& ctxt
+	      = create_write_context(group->get_environment(), of);
+	  set_annotate(*ctxt, opts.annotate);
+	  exit_code = !write_corpus_group(*ctxt, group, 0);
 	}
       else
-	exit_code = !xml_writer::write_corpus_group(group, 0, cout,
-						    opts.annotate);
+	{
+	  const write_context_sptr& ctxt
+	      = create_write_context(group->get_environment(), cout);
+	  set_annotate(*ctxt, opts.annotate);
+	  exit_code = !write_corpus_group(*ctxt, group, 0);
+	}
     }
 
   return exit_code;
