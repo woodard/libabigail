@@ -442,15 +442,18 @@ load_corpus_and_write_abixml(char* argv[],
     }
   else
     {
+      const write_context_sptr& write_ctxt
+	  = create_write_context(corp->get_environment(), cout);
+      set_annotate(*write_ctxt, opts.annotate);
+      set_show_locs(*write_ctxt, opts.show_locs);
+
       if (opts.abidiff)
 	{
 	  // Save the abi in abixml format in a temporary file, read
 	  // it back, and compare the ABI of what we've read back
 	  // against the ABI of the input ELF file.
 	  temp_file_sptr tmp_file = temp_file::create();
-	  const write_context_sptr& write_ctxt = create_write_context(
-	      corp->get_environment(), tmp_file->get_stream());
-	  set_annotate(*write_ctxt, opts.annotate);
+	  set_ostream(*write_ctxt, tmp_file->get_stream());
 	  write_corpus(*write_ctxt, corp, 0);
 	  tmp_file->get_stream().flush();
 	  corpus_sptr corp2 =
@@ -494,20 +497,13 @@ load_corpus_and_write_abixml(char* argv[],
 		<< opts.out_file_path << "'\n";
 	      return 1;
 	    }
-	  const write_context_sptr& write_ctxt
-	      = create_write_context(corp->get_environment(), of);
-	  set_show_locs(*write_ctxt, opts.show_locs);
-	  set_annotate(*write_ctxt, opts.annotate);
+	  set_ostream(*write_ctxt, of);
 	  write_corpus(*write_ctxt, corp, 0);
 	  of.close();
 	  return 0;
 	}
       else
 	{
-	  write_context_sptr write_ctxt
-	      = create_write_context(corp->get_environment(), cout);
-	  set_show_locs(*write_ctxt, opts.show_locs);
-	  set_annotate(*write_ctxt, opts.annotate);
 	  exit_code = !write_corpus(*write_ctxt, corp, 0);
 	}
     }
@@ -560,6 +556,10 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
 
   if (!opts.noout)
     {
+      const xml_writer::write_context_sptr& ctxt
+	  = xml_writer::create_write_context(group->get_environment(), cout);
+      set_annotate(*ctxt, opts.annotate);
+
       if (!opts.out_file_path.empty())
 	{
 	  ofstream of(opts.out_file_path.c_str(), std::ios_base::trunc);
@@ -570,16 +570,11 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
 		<< opts.out_file_path << "'\n";
 	      return 1;
 	    }
-	  const write_context_sptr& ctxt
-	      = create_write_context(group->get_environment(), of);
-	  set_annotate(*ctxt, opts.annotate);
+	  set_ostream(*ctxt, of);
 	  exit_code = !write_corpus_group(*ctxt, group, 0);
 	}
       else
 	{
-	  const write_context_sptr& ctxt
-	      = create_write_context(group->get_environment(), cout);
-	  set_annotate(*ctxt, opts.annotate);
 	  exit_code = !write_corpus_group(*ctxt, group, 0);
 	}
     }

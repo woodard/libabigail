@@ -162,7 +162,7 @@ class write_context
   const environment*			m_env;
   id_manager				m_id_manager;
   config				m_config;
-  ostream&				m_ostream;
+  ostream*				m_ostream;
   bool					m_annotate;
   bool					m_show_locs;
   mutable type_ptr_map			m_type_id_map;
@@ -191,7 +191,7 @@ public:
   write_context(const environment* env, ostream& os)
     : m_env(env),
       m_id_manager(env),
-      m_ostream(os),
+      m_ostream(&os),
       m_annotate(false),
       m_show_locs(true)
   {}
@@ -207,9 +207,19 @@ public:
   get_config() const
   {return m_config;}
 
+  /// Getter for the current ostream
+  ///
+  /// @return a reference to the current ostream
   ostream&
   get_ostream()
-  {return m_ostream;}
+  {return *m_ostream;}
+
+  /// Setter for the current ostream
+  ///
+  /// @param os the new ostream
+  void
+  set_ostream(ostream& os)
+  {m_ostream = &os;}
 
   /// Getter of the annotation option.
   ///
@@ -1741,6 +1751,17 @@ set_show_locs(write_context& ctxt, bool flag)
 void
 set_annotate(write_context& ctxt, bool flag)
 {ctxt.set_annotate(flag);}
+
+/// Set the new ostream.
+///
+/// The ostream refers to the object, writers should stream new output to.
+///
+/// @param ctxt the context to set this to.
+///
+/// @param os the new ostream
+void
+set_ostream(write_context& ctxt, ostream& os)
+{ctxt.set_ostream(os);}
 
 /// Serialize a translation unit to an output stream.
 ///

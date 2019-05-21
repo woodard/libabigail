@@ -53,6 +53,9 @@ set_show_locs(write_context& ctxt, bool flag);
 void
 set_annotate(write_context& ctxt, bool flag);
 
+void
+set_ostream(write_context& ctxt, ostream& os);
+
 bool
 write_translation_unit(write_context&	       ctxt,
 		       const translation_unit& tu,
