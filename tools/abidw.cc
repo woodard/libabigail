@@ -97,6 +97,7 @@ struct options
   bool			write_architecture;
   bool			write_corpus_path;
   bool			write_comp_dir;
+  bool			short_locs;
   bool			load_all_types;
   bool			linux_kernel_mode;
   bool			corpus_group_for_linux;
@@ -114,6 +115,7 @@ struct options
       write_architecture(true),
       write_corpus_path(true),
       write_comp_dir(true),
+      short_locs(false),
       load_all_types(),
       linux_kernel_mode(true),
       corpus_group_for_linux(false),
@@ -152,6 +154,7 @@ display_usage(const string& prog_name, ostream& out)
     << "  --no-architecture  do not emit architecture info in the output\n"
     << "  --no-corpus-path  do not take the path to the corpora into account\n"
     << "  --no-show-locs  do not show location information\n"
+    << "  --short-locs  only print filenames rather than paths\n"
     << "  --no-comp-dir-path  do not show compilation path information\n"
     << "  --check-alternate-debug-info <elf-path>  check alternate debug info "
     "of <elf-path>\n"
@@ -260,6 +263,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.write_corpus_path = false;
       else if (!strcmp(argv[i], "--no-show-locs"))
 	opts.show_locs = false;
+      else if (!strcmp(argv[i], "--short-locs"))
+	opts.short_locs = true;
       else if (!strcmp(argv[i], "--no-comp-dir-path"))
 	opts.write_comp_dir = false;
       else if (!strcmp(argv[i], "--check-alternate-debug-info")
