@@ -46,6 +46,9 @@ using abigail::dwarf_reader::read_corpus_from_elf;
 using abigail::dwarf_reader::read_context;
 using abigail::dwarf_reader::read_context_sptr;
 using abigail::dwarf_reader::create_read_context;
+using abigail::xml_writer::create_write_context;
+using abigail::xml_writer::write_context_sptr;
+using abigail::xml_writer::write_corpus;
 
 /// This is an aggregate that specifies where a test shall get its
 /// input from, and where it shall write its ouput to.
@@ -333,8 +336,9 @@ struct test_task : public abigail::workers::task
 	is_ok = false;
 	return;
       }
-    is_ok =
-      abigail::xml_writer::write_corpus(corp, /*indent=*/0, of);
+    const write_context_sptr write_ctxt
+	= create_write_context(corp->get_environment(), of);
+    is_ok = write_corpus(*write_ctxt, corp, /*indent=*/0);
     of.close();
 
     string abidw = string(get_build_dir()) + "/tools/abidw";

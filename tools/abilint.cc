@@ -305,7 +305,11 @@ main(int argc, char* argv[])
 	  set_suppressions(*ctxt, opts);
 	  corpus_sptr corp = abigail::xml_reader::read_corpus_from_input(*ctxt);
 	  if (!opts.noout)
-	    write_corpus(corp, /*indent=*/0, cout);
+	    {
+	      const write_context_sptr& ctxt
+		  = create_write_context(corp->get_environment(), cout);
+	      write_corpus(*ctxt, corp, /*indent=*/0);
+	    }
 	  return 0;
 	}
     }
@@ -411,50 +415,34 @@ main(int argc, char* argv[])
 	  return 1;
 	}
 
-      std::iostream& of = tmp_file->get_stream();
-      bool r = true;
+      std::ostream& of = opts.diff ? tmp_file->get_stream() : cout;
+      const abigail::ir::environment* env
+	  = tu ? tu->get_environment() : corp->get_environment();
+      const write_context_sptr ctxt = create_write_context(env, of);
+
+      bool is_ok = true;
 
       if (tu)
 	{
-	  if (opts.diff)
-	    {
-	      const write_context_sptr& ctxt = create_write_context(
-		  tu->get_environment(), tmp_file->get_stream());
-	      r = write_translation_unit(*ctxt, *tu, 0);
-	    }
-	  if (!opts.noout && !opts.diff)
-	    {
-	      const write_context_sptr& ctxt
-		  = create_write_context(tu->get_environment(), cout);
-	      r &= write_translation_unit(*ctxt, *tu, 0);
-	    }
+	  if (!opts.noout)
+	    is_ok = write_translation_unit(*ctxt, *tu, 0);
 	}
       else
 	{
-	  r = true;
-	  if (type == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
+	  if (type == abigail::tools_utils::FILE_TYPE_XML_CORPUS
+	      || type == abigail::tools_utils::FILE_TYPE_ELF)
 	    {
-	      if (opts.diff)
-		r = write_corpus(corp, /*indent=*/0, of);
-
-	      if (!opts.noout && !opts.diff)
-		r &= write_corpus(corp, /*indent=*/0, cout);
+	      if (!opts.noout)
+		is_ok = write_corpus(*ctxt, corp, 0);
 	    }
 	  else if (type == abigail::tools_utils::FILE_TYPE_ZIP_CORPUS)
 	    {
 #ifdef WITH_ZIP_ARCHIVE
 	      if (!opts.noout)
-		r = write_corpus_to_archive(*corp, tmp_file->get_path());
+		is_ok = write_corpus_to_archive(*corp, tmp_file->get_path());
 #endif //WITH_ZIP_ARCHIVE
 	    }
-	  else if (type == abigail::tools_utils::FILE_TYPE_ELF)
-	    {
-	      if (!opts.noout)
-		r = write_corpus(corp, /*indent=*/0, cout);
-	    }
 	}
-
-      bool is_ok = r;
 
       if (!is_ok)
 	{

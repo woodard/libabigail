@@ -4063,17 +4063,15 @@ write_corpus_to_archive(const corpus_sptr corp, const bool annotate)
 /// Serialize an ABI corpus to a single native xml document.  The root
 /// note of the resulting XML document is 'abi-corpus'.
 ///
+/// @param ctxt the write context to use.
+///
 /// @param corpus the corpus to serialize.
 ///
 /// @param indent the number of white space indentation to use.
 ///
-/// @param ctxt the write context to use.
-///
 /// @return true upon successful completion, false otherwise.
 bool
-write_corpus(const corpus_sptr	corpus,
-	     unsigned		indent,
-	     write_context&	ctxt)
+write_corpus(write_context& ctxt, const corpus_sptr& corpus, unsigned indent)
 {
   if (!corpus)
     return false;
@@ -4157,7 +4155,25 @@ write_corpus(const corpus_sptr	corpus,
 }
 
 /// Serialize an ABI corpus to a single native xml document.  The root
-/// note of the resulting XML document is 'abi-corpus'.
+/// node of the resulting XML document is 'abi-corpus'.
+///
+/// @param corpus the corpus to serialize.
+///
+/// @param indent the number of white space indentation to use.
+///
+/// @param ctxt the write context to use.
+///
+/// @deprecated: use write_corpus(ctxt, corpus, indent)
+///
+/// @return true upon successful completion, false otherwise.
+bool ABG_DEPRECATED
+write_corpus(const corpus_sptr& corpus, unsigned indent, write_context& ctxt)
+{
+  return write_corpus(ctxt, corpus, indent);
+}
+
+/// Serialize an ABI corpus to a single native xml document.  The root
+/// node of the resulting XML document is 'abi-corpus'.
 ///
 /// @param corpus the corpus to serialize.
 ///
@@ -4167,12 +4183,14 @@ write_corpus(const corpus_sptr	corpus,
 ///
 /// @param annotate whether ABIXML output should be annotated.
 ///
+/// @deprecated: use write_corpus(ctxt, corpus, indent)
+///
 /// @return true upon successful completion, false otherwise.
-bool
-write_corpus(const corpus_sptr	corpus,
-	     unsigned		indent,
-	     std::ostream&	out,
-	     const bool	annotate)
+bool ABG_DEPRECATED
+write_corpus(const corpus_sptr corpus,
+	     unsigned	       indent,
+	     std::ostream&     out,
+	     const bool	       annotate)
 {
   if (!corpus)
     return false;
@@ -4180,7 +4198,7 @@ write_corpus(const corpus_sptr	corpus,
   write_context ctxt(corpus->get_environment(), out);
   set_annotate(ctxt, annotate);
 
-  return write_corpus(corpus, indent, ctxt);
+  return write_corpus(ctxt, corpus, indent);
 }
 
 /// Serialize an ABI corpus group to a single native xml document.
@@ -4227,7 +4245,7 @@ std::ostream& out = ctxt.get_ostream();
 	 group->get_corpora().begin();
        c != group->get_corpora().end();
        ++c)
-    write_corpus(*c, get_indent_to_level(ctxt, indent, 1), ctxt);
+    write_corpus(ctxt, *c, get_indent_to_level(ctxt, indent, 1));
 
   do_indent_to_level(ctxt, indent, 0);
   out << "</abi-corpus-group>\n";
@@ -4274,12 +4292,14 @@ write_corpus_group(const corpus_group_sptr&	group,
 ///
 /// @param annotate whether ABIXML output should be annotated.
 ///
+/// @deprecated: use write_corpus(ctxt, corpus, indent)
+///
 /// @return true upon successful completion, false otherwise.
-bool
-write_corpus(const corpus_sptr	corpus,
-	     unsigned		indent,
-	     const string&	path,
-	     const bool	annotate)
+bool ABG_DEPRECATED
+write_corpus(const corpus_sptr corpus,
+	     unsigned	       indent,
+	     const string&     path,
+	     const bool	       annotate)
 {
     bool result = true;
 
@@ -4292,7 +4312,10 @@ write_corpus(const corpus_sptr	corpus,
 	  return false;
 	}
 
-      if (!write_corpus(corpus, indent, of, annotate))
+      const write_context_sptr& ctxt
+	  = create_write_context(corpus->get_environment(), of);
+      ctxt->set_annotate(annotate);
+      if (!write_corpus(*ctxt, corpus, indent))
 	{
 	  cerr << "failed to access " << path << "\n";
 	  result = false;

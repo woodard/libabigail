@@ -84,21 +84,22 @@ write_corpus_to_archive(const corpus_sptr corp,
 			const bool annotate = false);
 
 bool
-write_corpus(const corpus_sptr	corpus,
-	     unsigned		indent,
-	     write_context&	ctxt);
+write_corpus(write_context& ctxt, const corpus_sptr& corpus, unsigned indent);
 
-bool
-write_corpus(const corpus_sptr	corpus,
-	     unsigned		indent,
-	     std::ostream&	out,
-	     const bool	annotate = false);
+bool ABG_DEPRECATED
+write_corpus(const corpus_sptr& corpus, unsigned indent, write_context& ctxt);
 
-bool
-write_corpus(const corpus_sptr	corpus,
-	     unsigned		indent,
-	     const string&	path,
-	     const bool	annotate = false);
+bool ABG_DEPRECATED
+write_corpus(const corpus_sptr corpus,
+	     unsigned	       indent,
+	     std::ostream&     out,
+	     const bool	       annotate = false);
+
+bool ABG_DEPRECATED
+write_corpus(const corpus_sptr corpus,
+	     unsigned	       indent,
+	     const string&     path,
+	     const bool	       annotate = false);
 
 bool
 write_corpus_group(const corpus_group_sptr&	group,

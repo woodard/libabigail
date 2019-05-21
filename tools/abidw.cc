@@ -69,6 +69,8 @@ using abigail::comparison::corpus_diff_sptr;
 using abigail::comparison::compute_diff;
 using abigail::comparison::diff_context_sptr;
 using abigail::comparison::diff_context;
+using abigail::xml_writer::create_write_context;
+using abigail::xml_writer::write_context_sptr;
 using abigail::xml_writer::write_corpus;
 using abigail::xml_reader::read_corpus_from_native_xml_file;
 using abigail::dwarf_reader::read_context;
@@ -446,7 +448,10 @@ load_corpus_and_write_abixml(char* argv[],
 	  // it back, and compare the ABI of what we've read back
 	  // against the ABI of the input ELF file.
 	  temp_file_sptr tmp_file = temp_file::create();
-	  write_corpus(corp, 0, tmp_file->get_stream(), opts.annotate);
+	  const write_context_sptr& write_ctxt = create_write_context(
+	      corp->get_environment(), tmp_file->get_stream());
+	  set_annotate(*write_ctxt, opts.annotate);
+	  write_corpus(*write_ctxt, corp, 0);
 	  tmp_file->get_stream().flush();
 	  corpus_sptr corp2 =
 	    read_corpus_from_native_xml_file(tmp_file->get_path(),
@@ -489,23 +494,21 @@ load_corpus_and_write_abixml(char* argv[],
 		<< opts.out_file_path << "'\n";
 	      return 1;
 	    }
-	  abigail::xml_writer::write_context_sptr write_ctxt =
-	    abigail::xml_writer::create_write_context(corp->get_environment(),
-						      of);
-	  abigail::xml_writer::set_show_locs(*write_ctxt, opts.show_locs);
-	  abigail::xml_writer::set_annotate(*write_ctxt, opts.annotate);
-	  abigail::xml_writer::write_corpus(corp, 0, *write_ctxt);
+	  const write_context_sptr& write_ctxt
+	      = create_write_context(corp->get_environment(), of);
+	  set_show_locs(*write_ctxt, opts.show_locs);
+	  set_annotate(*write_ctxt, opts.annotate);
+	  write_corpus(*write_ctxt, corp, 0);
 	  of.close();
 	  return 0;
 	}
       else
 	{
-	  abigail::xml_writer::write_context_sptr write_ctxt =
-	    abigail::xml_writer::create_write_context(corp->get_environment(),
-						      cout);
-	  abigail::xml_writer::set_show_locs(*write_ctxt, opts.show_locs);
-	  abigail::xml_writer::set_annotate(*write_ctxt, opts.annotate);
-	  exit_code = !abigail::xml_writer::write_corpus(corp, 0, *write_ctxt);
+	  write_context_sptr write_ctxt
+	      = create_write_context(corp->get_environment(), cout);
+	  set_show_locs(*write_ctxt, opts.show_locs);
+	  set_annotate(*write_ctxt, opts.annotate);
+	  exit_code = !write_corpus(*write_ctxt, corp, 0);
 	}
     }
 
