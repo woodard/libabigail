@@ -296,27 +296,27 @@ get_symbol_versionning_sections(Elf*		elf_handle,
 
 static bool
 get_parent_die(const read_context&	ctxt,
-	       Dwarf_Die*		die,
+	       const Dwarf_Die*	die,
 	       Dwarf_Die&		parent_die,
 	       size_t			where_offset);
 
 static bool
 get_scope_die(const read_context&	ctxt,
-	      Dwarf_Die*		die,
+	      const Dwarf_Die*		die,
 	      size_t			where_offset,
 	      Dwarf_Die&		scope_die);
 
 static bool
-die_is_anonymous(Dwarf_Die* die);
+die_is_anonymous(const Dwarf_Die* die);
 
 static bool
-die_is_type(Dwarf_Die* die);
+die_is_type(const Dwarf_Die* die);
 
 static bool
-die_is_decl(Dwarf_Die* die);
+die_is_decl(const Dwarf_Die* die);
 
 static bool
-die_is_namespace(Dwarf_Die* die);
+die_is_namespace(const Dwarf_Die* die);
 
 static bool
 die_is_unspecified(Dwarf_Die* die);
@@ -325,28 +325,28 @@ static bool
 die_is_void_type(Dwarf_Die* die);
 
 static bool
-die_is_pointer_type(Dwarf_Die* die);
+die_is_pointer_type(const Dwarf_Die* die);
 
 static bool
-pointer_or_qual_die_of_anonymous_class_type(Dwarf_Die* die);
+pointer_or_qual_die_of_anonymous_class_type(const Dwarf_Die* die);
 
 static bool
-die_is_reference_type(Dwarf_Die* die);
+die_is_reference_type(const Dwarf_Die* die);
 
 static bool
-die_is_pointer_or_reference_type(Dwarf_Die* die);
+die_is_pointer_or_reference_type(const Dwarf_Die* die);
 
 static bool
-die_is_pointer_reference_or_typedef_type(Dwarf_Die* die);
+die_is_pointer_reference_or_typedef_type(const Dwarf_Die* die);
 
 static bool
 die_is_class_type(Dwarf_Die* die);
 
 static bool
-die_is_qualified_type(Dwarf_Die* die);
+die_is_qualified_type(const Dwarf_Die* die);
 
 static bool
-die_has_object_pointer(Dwarf_Die* die,
+die_has_object_pointer(const Dwarf_Die* die,
 		       Dwarf_Die& object_pointer);
 
 static bool
@@ -361,7 +361,7 @@ die_object_pointer_is_for_const_method(Dwarf_Die* die);
 
 static bool
 die_is_at_class_scope(const read_context& ctxt,
-		      Dwarf_Die* die,
+		      const Dwarf_Die* die,
 		      size_t where_offset,
 		      Dwarf_Die& class_scope_die);
 static bool
@@ -374,42 +374,42 @@ static translation_unit::language
 dwarf_language_to_tu_language(size_t l);
 
 static bool
-die_unsigned_constant_attribute(Dwarf_Die*	die,
-				unsigned	attr_name,
-				uint64_t&	cst);
+die_unsigned_constant_attribute(const Dwarf_Die*	die,
+				unsigned		attr_name,
+				uint64_t&		cst);
 
 static bool
-die_signed_constant_attribute(Dwarf_Die*die,
+die_signed_constant_attribute(const Dwarf_Die*die,
 			      unsigned	attr_name,
 			      int64_t&	cst);
 
 static bool
-die_constant_attribute(Dwarf_Die *die,
+die_constant_attribute(const Dwarf_Die *die,
 		       unsigned attr_name,
 		       array_type_def::subrange_type::bound_value &value);
 
 static bool
-die_attribute_has_form(Dwarf_Die*					 die,
-		       unsigned						 attr_name,
-		       unsigned int					 form);
+die_attribute_has_form(const Dwarf_Die* die,
+		       unsigned	attr_name,
+		       unsigned int	form);
 
 static bool
-die_attribute_is_signed(Dwarf_Die* die, unsigned attr_name);
+die_attribute_is_signed(const Dwarf_Die* die, unsigned attr_name);
 
 static bool
-die_attribute_is_unsigned(Dwarf_Die* die, unsigned attr_name);
+die_attribute_is_unsigned(const Dwarf_Die* die, unsigned attr_name);
 
 static bool
-die_attribute_has_no_signedness(Dwarf_Die* die, unsigned attr_name);
+die_attribute_has_no_signedness(const Dwarf_Die* die, unsigned attr_name);
 
 static bool
 die_address_attribute(Dwarf_Die* die, unsigned attr_name, Dwarf_Addr& result);
 
 static string
-die_name(Dwarf_Die* die);
+die_name(const Dwarf_Die* die);
 
 static location
-die_location(const read_context& ctxt, Dwarf_Die* die);
+die_location(const read_context& ctxt, const Dwarf_Die* die);
 
 static bool
 die_location_address(Dwarf_Die*	die,
@@ -417,13 +417,13 @@ die_location_address(Dwarf_Die*	die,
 		     bool&		is_tls_address);
 
 static bool
-die_die_attribute(Dwarf_Die* die,
+die_die_attribute(const Dwarf_Die* die,
 		  unsigned attr_name,
 		  Dwarf_Die& result,
 		  bool look_thru_abstract_origin = true);
 
 static string
-get_internal_anonynous_die_base_name(Dwarf_Die *die);
+get_internal_anonynous_die_base_name(const Dwarf_Die *die);
 
 static string
 build_internal_anonymous_die_name(const string &base_name,
@@ -435,22 +435,28 @@ get_internal_anonymous_die_name(Dwarf_Die *die,
 				size_t anonymous_type_index);
 
 static string
-die_qualified_type_name(const read_context& ctxt, Dwarf_Die* die, size_t where);
+die_qualified_type_name(const read_context& ctxt,
+			const Dwarf_Die* die,
+			size_t where);
 
 static string
-die_qualified_decl_name(const read_context& ctxt, Dwarf_Die* die, size_t where);
+die_qualified_decl_name(const read_context& ctxt,
+			const Dwarf_Die* die,
+			size_t where);
 
 static string
-die_qualified_name(const read_context& ctxt, Dwarf_Die* die, size_t where);
+die_qualified_name(const read_context& ctxt,
+		   const Dwarf_Die* die,
+		   size_t where);
 
 static bool
 die_qualified_type_name_empty(const read_context& ctxt,
-			      Dwarf_Die* die, size_t where,
+			      const Dwarf_Die* die, size_t where,
 			      string &qualified_name);
 
 static void
 die_return_and_parm_names_from_fn_type_die(const read_context& ctxt,
-					   Dwarf_Die* die,
+					   const Dwarf_Die* die,
 					   size_t where_offset,
 					   bool pretty_print,
 					   string &return_type_name,
@@ -461,7 +467,7 @@ die_return_and_parm_names_from_fn_type_die(const read_context& ctxt,
 
 static string
 die_function_signature(const read_context& ctxt,
-		       Dwarf_Die *die,
+		       const Dwarf_Die *die,
 		       size_t where_offset);
 
 static bool
@@ -469,23 +475,30 @@ die_peel_qual_ptr(Dwarf_Die *die, Dwarf_Die& peeled_die);
 
 static bool
 die_function_type_is_method_type(const read_context& ctxt,
-				 Dwarf_Die *die,
+				 const Dwarf_Die *die,
 				 size_t where_offset,
 				 Dwarf_Die& object_pointer_die,
 				 Dwarf_Die& class_die,
 				 bool& is_static);
 
 static string
-die_pretty_print_type(read_context& ctxt, Dwarf_Die* die, size_t where_offset);
+die_pretty_print_type(read_context& ctxt,
+		      const Dwarf_Die* die,
+		      size_t where_offset);
 
 static string
-die_pretty_print_decl(read_context& ctxt, Dwarf_Die* die, size_t where_offset);
+die_pretty_print_decl(read_context& ctxt,
+		      const Dwarf_Die* die,
+		      size_t where_offset);
 
 static string
-die_pretty_print(read_context& ctxt, Dwarf_Die* die, size_t where_offset);
+die_pretty_print(read_context& ctxt,
+		 const Dwarf_Die* die,
+		 size_t where_offset);
 
 static void
-maybe_canonicalize_type(Dwarf_Die* die, read_context& ctxt);
+maybe_canonicalize_type(Dwarf_Die* die,
+			read_context& ctxt);
 
 static uint64_t
 get_default_array_lower_bound(translation_unit::language l);
@@ -496,21 +509,21 @@ find_lower_bound_in_imported_unit_points(const imported_unit_points_type&,
 					 imported_unit_points_type::const_iterator&);
 
 static array_type_def::subrange_sptr
-build_subrange_type(read_context& ctxt,
-		    Dwarf_Die*		die,
+build_subrange_type(read_context&	ctxt,
+		    const Dwarf_Die*	die,
 		    size_t		where_offset,
 		    bool		associate_type_to_die = true);
 
 static void
-build_subranges_from_array_type_die(read_context&	ctxt,
-				    Dwarf_Die*		die,
-				    array_type_def::subranges_type& subranges,
-				    size_t		where_offset,
-				    bool		associate_type_to_die = true);
+build_subranges_from_array_type_die(read_context&			ctxt,
+				    const Dwarf_Die*			die,
+				    array_type_def::subranges_type&	subranges,
+				    size_t				where_offset,
+				    bool				associate_type_to_die = true);
 
 static bool
 compare_dies(const read_context& ctxt,
-	     Dwarf_Die *l, Dwarf_Die *r,
+	     const Dwarf_Die *l, const Dwarf_Die *r,
 	     bool update_canonical_dies_on_the_fly);
 
 /// Convert an elf symbol type (given by the ELF{32,64}_ST_TYPE
@@ -2970,7 +2983,7 @@ public:
     /// @return the container that associates DIEs coming from the
     /// same source as @p die.
     ContainerType&
-    get_container(const read_context& ctxt, Dwarf_Die *die)
+    get_container(const read_context& ctxt, const Dwarf_Die *die)
     {
       die_source source = NO_DEBUG_INFO_DIE_SOURCE;
       ABG_ASSERT(ctxt.get_die_source(die, source));
@@ -2988,7 +3001,7 @@ public:
     /// @return the container that associates DIEs coming from the
     /// same source as @p die.
     const ContainerType&
-    get_container(const read_context& ctxt, Dwarf_Die *die) const
+    get_container(const read_context& ctxt, const Dwarf_Die *die) const
     {
       return const_cast<die_source_dependant_container_set*>(this)->
 	get_container(ctxt, die);
@@ -3821,7 +3834,7 @@ public:
   /// @param die_as_type if yes, it means @p die has to be considered
   /// as a type.
   void
-  compute_canonical_die_offset(Dwarf_Die *die,
+  compute_canonical_die_offset(const Dwarf_Die *die,
 			       Dwarf_Off &canonical_die_offset,
 			       bool die_as_type) const
   {
@@ -3853,7 +3866,7 @@ public:
   /// @param die_as_type if yes, it means @p die has to be considered
   /// as a type.
   void
-  compute_canonical_die(Dwarf_Die *die,
+  compute_canonical_die(const Dwarf_Die *die,
 			offset_offset_map_type& canonical_dies,
 			Dwarf_Die &canonical_die,
 			bool die_as_type) const
@@ -3861,7 +3874,7 @@ public:
     die_source source;
     ABG_ASSERT(get_die_source(die, source));
 
-    Dwarf_Off die_offset = dwarf_dieoffset(die);
+    Dwarf_Off die_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(die));
 
     compute_canonical_die(die_offset, source,
 			  canonical_dies,
@@ -4091,7 +4104,7 @@ public:
   /// itself. @p canonical_die is thus set to the canonical die in
   /// either cases.
   bool
-  get_or_compute_canonical_die(Dwarf_Die* die,
+  get_or_compute_canonical_die(const Dwarf_Die* die,
 			       Dwarf_Die& canonical_die,
 			       size_t where,
 			       bool die_as_type) const
@@ -4106,7 +4119,7 @@ public:
       : const_cast<read_context*>(this)->canonical_decl_die_offsets_.
       get_container(source);
 
-    Dwarf_Off initial_die_offset = dwarf_dieoffset(die);
+    Dwarf_Off initial_die_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(die));
 
     if (Dwarf_Off canonical_die_offset =
 	get_canonical_die_offset(canonical_dies,
@@ -4212,7 +4225,7 @@ public:
   /// @return true iff the source of the DIE could be determined and
   /// returned.
   bool
-  get_die_source(Dwarf_Die *die, die_source &source) const
+  get_die_source(const Dwarf_Die *die, die_source &source) const
   {
     ABG_ASSERT(die);
     return get_die_source(*die, source);
@@ -4233,12 +4246,14 @@ public:
   /// @return true iff the source of the DIE could be determined and
   /// returned.
   bool
-  get_die_source(Dwarf_Die &die, die_source &source) const
+  get_die_source(const Dwarf_Die &die, die_source &source) const
   {
     Dwarf_Die cu_die;
     Dwarf_Die cu_kind;
     uint8_t address_size = 0, offset_size = 0;
-    if (!dwarf_diecu(&die, &cu_die, &address_size, &offset_size))
+    if (!dwarf_diecu(const_cast<Dwarf_Die*>(&die),
+		     &cu_die, &address_size,
+		     &offset_size))
       return false;
 
     Dwarf_Half version = 0;
@@ -4438,7 +4453,7 @@ public:
   /// @return the interned string representing the qualified name of
   /// @p die.
   interned_string
-  get_die_qualified_type_name(Dwarf_Die *die, size_t where_offset) const
+  get_die_qualified_type_name(const Dwarf_Die *die, size_t where_offset) const
   {
     ABG_ASSERT(die);
 
@@ -4450,7 +4465,7 @@ public:
       die_qualified_name_maps_.get_container(*const_cast<read_context*>(this),
 					     die);
 
-    size_t die_offset = dwarf_dieoffset(die);
+    size_t die_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(die));
     die_istring_map_type::const_iterator i =
       map.find(die_offset);
 
@@ -4458,7 +4473,7 @@ public:
       {
 	read_context& ctxt  = *const_cast<read_context*>(this);
 	string qualified_name;
-	int tag = dwarf_tag(die);
+	int tag = dwarf_tag(const_cast<Dwarf_Die*>(die));
 	if ((tag == DW_TAG_structure_type
 	     || tag == DW_TAG_class_type
 	     || tag == DW_TAG_union_type)
@@ -4497,14 +4512,15 @@ public:
   /// @return the interned_string that represents the pretty
   /// representation.
   interned_string
-  get_die_pretty_type_representation(Dwarf_Die *die, size_t where_offset) const
+  get_die_pretty_type_representation(const Dwarf_Die *die,
+				     size_t where_offset) const
   {
     ABG_ASSERT(die);
     die_istring_map_type& map =
       die_pretty_type_repr_maps_.get_container(*const_cast<read_context*>(this),
 					       die);
 
-    size_t die_offset = dwarf_dieoffset(die);
+    size_t die_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(die));
     die_istring_map_type::const_iterator i = map.find(die_offset);
 
     if (i == map.end())
@@ -4533,7 +4549,7 @@ public:
   /// @return the interned_string that represents the pretty
   /// representation.
   interned_string
-  get_die_pretty_representation(Dwarf_Die *die, size_t where_offset) const
+  get_die_pretty_representation(const Dwarf_Die *die, size_t where_offset) const
   {
     ABG_ASSERT(die);
 
@@ -4541,7 +4557,7 @@ public:
       die_pretty_repr_maps_.get_container(*const_cast<read_context*>(this),
 					  die);
 
-    size_t die_offset = dwarf_dieoffset(die);
+    size_t die_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(die));
     die_istring_map_type::const_iterator i = map.find(die_offset);
 
     if (i == map.end())
@@ -4665,10 +4681,10 @@ public:
   ///
   /// @return true iff the language of the DIE was found.
   bool
-  get_die_language(Dwarf_Die *die, translation_unit::language &lang) const
+  get_die_language(const Dwarf_Die *die, translation_unit::language &lang) const
   {
     Dwarf_Die cu_die;
-    ABG_ASSERT(dwarf_diecu(die, &cu_die, 0, 0));
+    ABG_ASSERT(dwarf_diecu(const_cast<Dwarf_Die*>(die), &cu_die, 0, 0));
 
     uint64_t l = 0;
     if (!die_unsigned_constant_attribute(&cu_die, DW_AT_language, l))
@@ -4726,7 +4742,7 @@ public:
   ///
   /// @return true if the ODR is relevant for @p die.
   bool
-  odr_is_relevant(Dwarf_Die *die) const
+  odr_is_relevant(const Dwarf_Die *die) const
   {
     translation_unit::language lang;
     if (!get_die_language(die, lang))
@@ -4829,14 +4845,14 @@ public:
   /// @param die_as_type if true, it means that @p die has to be
   /// considered as a type.
   void
-  set_canonical_die_offset(Dwarf_Die *die,
+  set_canonical_die_offset(const Dwarf_Die *die,
 			   Dwarf_Off canonical_die_offset,
 			   bool die_as_type) const
   {
     die_source source;
     ABG_ASSERT(get_die_source(die, source));
 
-    Dwarf_Off die_offset = dwarf_dieoffset(die);
+    Dwarf_Off die_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(die));
 
     set_canonical_die_offset(die_offset, source,
 			     canonical_die_offset,
@@ -4896,7 +4912,7 @@ public:
   ///
   /// @param where_offset where in the DIE stream we logically are.
   void
-  associate_die_to_type(Dwarf_Die	*die,
+  associate_die_to_type(const Dwarf_Die	*die,
 			type_base_sptr	type,
 			size_t		where)
   {
@@ -8646,10 +8662,10 @@ get_ignore_symbol_table(const read_context& ctxt)
 ///
 /// @return true iff @p die is anonymous.
 static bool
-die_is_anonymous(Dwarf_Die* die)
+die_is_anonymous(const Dwarf_Die* die)
 {
   Dwarf_Attribute attr;
-  if (!dwarf_attr_integrate(die, DW_AT_name, &attr))
+  if (!dwarf_attr_integrate(const_cast<Dwarf_Die*>(die), DW_AT_name, &attr))
     return true;
   return false;
 }
@@ -8665,13 +8681,13 @@ die_is_anonymous(Dwarf_Die* die)
 /// @return the string representing the value of the attribute, or an
 /// empty string if no string attribute could be found.
 static string
-die_string_attribute(Dwarf_Die* die, unsigned attr_name)
+die_string_attribute(const Dwarf_Die* die, unsigned attr_name)
 {
   if (!die)
     return "";
 
   Dwarf_Attribute attr;
-  if (!dwarf_attr_integrate(die, attr_name, &attr))
+  if (!dwarf_attr_integrate(const_cast<Dwarf_Die*>(die), attr_name, &attr))
     return "";
 
   const char* str = dwarf_formstring(&attr);
@@ -8694,7 +8710,7 @@ die_string_attribute(Dwarf_Die* die, unsigned attr_name)
 /// @return true if there was an attribute of the name @p attr_name
 /// and with a value that is a constant, false otherwise.
 static bool
-die_unsigned_constant_attribute(Dwarf_Die*	die,
+die_unsigned_constant_attribute(const Dwarf_Die*	die,
 				unsigned	attr_name,
 				uint64_t&	cst)
 {
@@ -8703,7 +8719,7 @@ die_unsigned_constant_attribute(Dwarf_Die*	die,
 
   Dwarf_Attribute attr;
   Dwarf_Word result = 0;
-  if (!dwarf_attr_integrate(die, attr_name, &attr)
+  if (!dwarf_attr_integrate(const_cast<Dwarf_Die*>(die), attr_name, &attr)
       || dwarf_formudata(&attr, &result))
     return false;
 
@@ -8724,7 +8740,7 @@ die_unsigned_constant_attribute(Dwarf_Die*	die,
 /// @return true iff a signed constant attribute of the name @p
 /// attr_name was found on the DIE @p die.
 static bool
-die_signed_constant_attribute(Dwarf_Die *die,
+die_signed_constant_attribute(const Dwarf_Die *die,
 			      unsigned	attr_name,
 			      int64_t&	cst)
 {
@@ -8733,7 +8749,7 @@ die_signed_constant_attribute(Dwarf_Die *die,
 
   Dwarf_Attribute attr;
   Dwarf_Sword result = 0;
-  if (!dwarf_attr_integrate(die, attr_name, &attr)
+  if (!dwarf_attr_integrate(const_cast<Dwarf_Die*>(die), attr_name, &attr)
       || dwarf_formsdata(&attr, &result))
     return false;
 
@@ -8757,7 +8773,7 @@ die_signed_constant_attribute(Dwarf_Die *die,
 /// @return true iff DIE @p die has an attribute named @p attr_name
 /// with a constant value.
 static bool
-die_constant_attribute(Dwarf_Die *die,
+die_constant_attribute(const Dwarf_Die *die,
 		       unsigned attr_name,
 		       array_type_def::subrange_type::bound_value &value)
 {
@@ -8791,12 +8807,12 @@ die_constant_attribute(Dwarf_Die *die,
 /// @return true iff the attribute named @p attr_name on DIE @p die
 /// has the form @p attr_form.
 static bool
-die_attribute_has_form(Dwarf_Die	*die,
+die_attribute_has_form(const Dwarf_Die	*die,
 		       unsigned	attr_name,
 		       unsigned int	attr_form)
 {
   Dwarf_Attribute attr;
-  if (!dwarf_attr_integrate(die, attr_name, &attr))
+  if (!dwarf_attr_integrate(const_cast<Dwarf_Die*>(die), attr_name, &attr))
     return false;
 
   return dwarf_hasform(&attr, attr_form);
@@ -8811,7 +8827,7 @@ die_attribute_has_form(Dwarf_Die	*die,
 /// @return true iff the attribute named @p attr_name on DIE @p die is
 /// signed.
 static bool
-die_attribute_is_signed(Dwarf_Die* die, unsigned attr_name)
+die_attribute_is_signed(const Dwarf_Die* die, unsigned attr_name)
 {
   if (die_attribute_has_form(die, attr_name, DW_FORM_sdata))
     return true;
@@ -8827,7 +8843,7 @@ die_attribute_is_signed(Dwarf_Die* die, unsigned attr_name)
 /// @return true iff the attribute named @p attr_name on DIE @p die is
 /// unsigned.
 static bool
-die_attribute_is_unsigned(Dwarf_Die* die, unsigned attr_name)
+die_attribute_is_unsigned(const Dwarf_Die* die, unsigned attr_name)
 {
   if (die_attribute_has_form(die, attr_name, DW_FORM_udata))
     return true;
@@ -8845,7 +8861,7 @@ die_attribute_is_unsigned(Dwarf_Die* die, unsigned attr_name)
 /// @return true iff the attribute named @p attr_name of DIE @p die is
 /// neither specifically signed nor unsigned.
 static bool
-die_attribute_has_no_signedness(Dwarf_Die *die, unsigned attr_name)
+die_attribute_has_no_signedness(const Dwarf_Die *die, unsigned attr_name)
 {
   return (!die_attribute_is_unsigned(die, attr_name)
 	  && !die_attribute_is_signed(die, attr_name));
@@ -8885,7 +8901,7 @@ die_flag_attribute(Dwarf_Die* die, unsigned attr_name, bool& flag)
 /// @return the mangled name if it's present in the DIE, or just an
 /// empty string if it's not.
 static string
-die_linkage_name(Dwarf_Die* die)
+die_linkage_name(const Dwarf_Die* die)
 {
   if (!die)
     return "";
@@ -8907,12 +8923,12 @@ die_linkage_name(Dwarf_Die* die)
 /// doesn't have a DW_AT_decl_file attribute, then the return value is
 /// just an empty string.
 static string
-die_decl_file_attribute(Dwarf_Die* die)
+die_decl_file_attribute(const Dwarf_Die* die)
 {
   if (!die)
     return "";
 
-  const char* str = dwarf_decl_file(die);
+  const char* str = dwarf_decl_file(const_cast<Dwarf_Die*>(die));
 
   return str ? str : "";
 }
@@ -8938,7 +8954,7 @@ die_decl_file_attribute(Dwarf_Die* die)
 /// @return true if the DIE @p die contains an attribute named @p
 /// attr_name that is a DIE reference, false otherwise.
 static bool
-die_die_attribute(Dwarf_Die* die,
+die_die_attribute(const Dwarf_Die* die,
 		  unsigned attr_name,
 		  Dwarf_Die& result,
 		  bool look_thru_abstract_origin)
@@ -8946,12 +8962,12 @@ die_die_attribute(Dwarf_Die* die,
   Dwarf_Attribute attr;
   if (look_thru_abstract_origin)
     {
-      if (!dwarf_attr_integrate(die, attr_name, &attr))
+      if (!dwarf_attr_integrate(const_cast<Dwarf_Die*>(die), attr_name, &attr))
 	return false;
     }
   else
     {
-      if (!dwarf_attr(die, attr_name, &attr))
+      if (!dwarf_attr(const_cast<Dwarf_Die*>(die), attr_name, &attr))
 	return false;
     }
   bool r = dwarf_formref_die(&attr, &result);
@@ -8986,7 +9002,7 @@ die_address_attribute(Dwarf_Die* die, unsigned attr_name, Dwarf_Addr& result)
 ///
 /// @return the location associated with @p die.
 static location
-die_location(const read_context& ctxt, Dwarf_Die* die)
+die_location(const read_context& ctxt, const Dwarf_Die* die)
 {
   if (!die)
     return location();
@@ -9010,7 +9026,7 @@ die_location(const read_context& ctxt, Dwarf_Die* die)
 ///
 /// @return a copy of the name of the DIE.
 static string
-die_name(Dwarf_Die* die)
+die_name(const Dwarf_Die* die)
 {
   string name = die_string_attribute(die, DW_AT_name);
   return name;
@@ -9049,7 +9065,7 @@ die_loc_and_name(const read_context&	ctxt,
 ///
 /// @return true if the size attribute was found.
 static bool
-die_size_in_bits(Dwarf_Die* die, uint64_t& size)
+die_size_in_bits(const Dwarf_Die* die, uint64_t& size)
 {
   if (!die)
     return false;
@@ -9272,11 +9288,11 @@ is_decl_tag(unsigned tag)
 ///
 /// @return true if @p die represents a type, false otherwise.
 static bool
-die_is_type(Dwarf_Die* die)
+die_is_type(const Dwarf_Die* die)
 {
   if (!die)
     return false;
-  return is_type_tag(dwarf_tag(die));
+  return is_type_tag(dwarf_tag(const_cast<Dwarf_Die*>(die)));
 }
 
 /// Test if a DIE represents a declaration.
@@ -9285,11 +9301,11 @@ die_is_type(Dwarf_Die* die)
 ///
 /// @return true if @p die represents a decl, false otherwise.
 static bool
-die_is_decl(Dwarf_Die* die)
+die_is_decl(const Dwarf_Die* die)
 {
   if (!die)
     return false;
-  return is_decl_tag(dwarf_tag(die));
+  return is_decl_tag(dwarf_tag(const_cast<Dwarf_Die*>(die)));
 }
 
 /// Test if a DIE represents a namespace.
@@ -9298,11 +9314,11 @@ die_is_decl(Dwarf_Die* die)
 ///
 /// @return true if @p die represents a namespace, false otherwise.
 static bool
-die_is_namespace(Dwarf_Die* die)
+die_is_namespace(const Dwarf_Die* die)
 {
   if (!die)
     return false;
-  return (dwarf_tag(die) == DW_TAG_namespace);
+  return (dwarf_tag(const_cast<Dwarf_Die*>(die)) == DW_TAG_namespace);
 }
 
 /// Test if a DIE has tag DW_TAG_unspecified_type.
@@ -9342,12 +9358,12 @@ die_is_void_type(Dwarf_Die* die)
 ///
 /// @return true iff @p die represents a pointer type.
 static bool
-die_is_pointer_type(Dwarf_Die* die)
+die_is_pointer_type(const Dwarf_Die* die)
 {
   if (!die)
     return false;
 
-  int tag = dwarf_tag(die);
+  int tag = dwarf_tag(const_cast<Dwarf_Die*>(die));
   if (tag == DW_TAG_pointer_type)
     return true;
 
@@ -9362,7 +9378,7 @@ die_is_pointer_type(Dwarf_Die* die)
 /// @return true iff @p is for a pointer, reference or qualified type
 /// to anonymous class or struct.
 static bool
-pointer_or_qual_die_of_anonymous_class_type(Dwarf_Die* die)
+pointer_or_qual_die_of_anonymous_class_type(const Dwarf_Die* die)
 {
   if (!die_is_pointer_or_reference_type(die)
       && !die_is_qualified_type(die))
@@ -9386,12 +9402,12 @@ pointer_or_qual_die_of_anonymous_class_type(Dwarf_Die* die)
 ///
 /// @return true iff @p die represents a reference type.
 static bool
-die_is_reference_type(Dwarf_Die* die)
+die_is_reference_type(const Dwarf_Die* die)
 {
   if (!die)
     return false;
 
-  int tag = dwarf_tag(die);
+  int tag = dwarf_tag(const_cast<Dwarf_Die*>(die));
   if (tag == DW_TAG_reference_type || tag == DW_TAG_rvalue_reference_type)
     return true;
 
@@ -9404,12 +9420,12 @@ die_is_reference_type(Dwarf_Die* die)
 ///
 /// @return true iff @p die represents an array type.
 static bool
-die_is_array_type(Dwarf_Die* die)
+die_is_array_type(const Dwarf_Die* die)
 {
   if (!die)
     return false;
 
-  int tag = dwarf_tag(die);
+  int tag = dwarf_tag(const_cast<Dwarf_Die*>(die));
   if (tag == DW_TAG_array_type)
     return true;
 
@@ -9422,7 +9438,7 @@ die_is_array_type(Dwarf_Die* die)
 ///
 /// @return true iff @p die represents a pointer or reference type.
 static bool
-die_is_pointer_or_reference_type(Dwarf_Die* die)
+die_is_pointer_or_reference_type(const Dwarf_Die* die)
 {return (die_is_pointer_type(die)
 	 || die_is_reference_type(die)
 	 || die_is_array_type(die));}
@@ -9434,9 +9450,9 @@ die_is_pointer_or_reference_type(Dwarf_Die* die)
 /// @return true iff @p die represents a pointer, a reference or a
 /// typedef type.
 static bool
-die_is_pointer_reference_or_typedef_type(Dwarf_Die* die)
+die_is_pointer_reference_or_typedef_type(const Dwarf_Die* die)
 {return (die_is_pointer_or_reference_type(die)
-	 || dwarf_tag(die) == DW_TAG_typedef);}
+	 || dwarf_tag(const_cast<Dwarf_Die*>(die)) == DW_TAG_typedef);}
 
 /// Test if a DIE represents a class type.
 ///
@@ -9460,9 +9476,9 @@ die_is_class_type(Dwarf_Die* die)
 ///
 /// @return true iff @p die is for a qualified type.
 static bool
-die_is_qualified_type(Dwarf_Die* die)
+die_is_qualified_type(const Dwarf_Die* die)
 {
-    int tag = dwarf_tag(die);
+  int tag = dwarf_tag(const_cast<Dwarf_Die*>(die));
     if (tag == DW_TAG_const_type
 	|| tag == DW_TAG_volatile_type
 	|| tag == DW_TAG_restrict_type)
@@ -9483,7 +9499,7 @@ die_is_qualified_type(Dwarf_Die* die)
 /// case, the parameter @p object_pointer is set to the DIE of that
 /// object pointer.
 static bool
-die_has_object_pointer(Dwarf_Die* die, Dwarf_Die& object_pointer)
+die_has_object_pointer(const Dwarf_Die* die, Dwarf_Die& object_pointer)
 {
   if (!die)
     return false;
@@ -9583,7 +9599,7 @@ die_object_pointer_is_for_const_method(Dwarf_Die* die)
 /// die.
 static bool
 die_is_at_class_scope(const read_context& ctxt,
-		      Dwarf_Die* die,
+		      const Dwarf_Die* die,
 		      size_t where_offset,
 		      Dwarf_Die& class_scope_die)
 {
@@ -9686,12 +9702,12 @@ die_peel_typedef(Dwarf_Die *die, Dwarf_Die& peeled_die)
 ///
 /// @return true iff the function could peel @p die.
 static bool
-die_peel_pointer_and_typedef(Dwarf_Die *die, Dwarf_Die& peeled_die)
+die_peel_pointer_and_typedef(const Dwarf_Die *die, Dwarf_Die& peeled_die)
 {
   if (!die)
     return false;
 
-  int tag = dwarf_tag(die);
+  int tag = dwarf_tag(const_cast<Dwarf_Die*>(die));
 
   if (tag == DW_TAG_pointer_type
       || tag == DW_TAG_reference_type
@@ -9740,7 +9756,7 @@ die_peel_pointer_and_typedef(Dwarf_Die *die, Dwarf_Die& peeled_die)
 /// @return true iff @p die is a DIE for a method type.
 static bool
 die_function_type_is_method_type(const read_context& ctxt,
-				 Dwarf_Die *die,
+				 const Dwarf_Die *die,
 				 size_t where_offset,
 				 Dwarf_Die& object_pointer_die,
 				 Dwarf_Die& class_die,
@@ -9749,7 +9765,7 @@ die_function_type_is_method_type(const read_context& ctxt,
   if (!die)
     return false;
 
-  int tag = dwarf_tag(die);
+  int tag = dwarf_tag(const_cast<Dwarf_Die*>(die));
   ABG_ASSERT(tag == DW_TAG_subroutine_type || tag == DW_TAG_subprogram);
 
   bool has_object_pointer = false;
@@ -9835,7 +9851,7 @@ enum virtuality
 ///
 /// @return true if the virtual-ness could be determined.
 static bool
-die_virtuality(Dwarf_Die* die, virtuality& virt)
+die_virtuality(const Dwarf_Die* die, virtuality& virt)
 {
   if (!die)
     return false;
@@ -9860,7 +9876,7 @@ die_virtuality(Dwarf_Die* die, virtuality& virt)
 /// @return bool if the DIE represents a virtual base or function,
 /// false othersise.
 static bool
-die_is_virtual(Dwarf_Die* die)
+die_is_virtual(const Dwarf_Die* die)
 {
   virtuality v;
   if (!die_virtuality(die, v))
@@ -9907,13 +9923,13 @@ die_is_declared_inline(Dwarf_Die* die)
 /// any case, if this function returns true, then the parameter @p
 /// result is set to the result of the comparison.
 static bool
-compare_dies_string_attribute_value(Dwarf_Die *l, Dwarf_Die *r,
+compare_dies_string_attribute_value(const Dwarf_Die *l, const Dwarf_Die *r,
 				    unsigned attr_name,
 				    bool &result)
 {
   Dwarf_Attribute l_attr, r_attr;
-  if (!dwarf_attr_integrate(l, attr_name, &l_attr)
-      || !dwarf_attr_integrate(r, attr_name, &r_attr))
+  if (!dwarf_attr_integrate(const_cast<Dwarf_Die*>(l), attr_name, &l_attr)
+      || !dwarf_attr_integrate(const_cast<Dwarf_Die*>(r), attr_name, &r_attr))
     return false;
 
   ABG_ASSERT(l_attr.form == DW_FORM_strp
@@ -9968,11 +9984,11 @@ compare_dies_string_attribute_value(Dwarf_Die *l, Dwarf_Die *r,
 /// @return true iff the file paths of the DIEs of the two types are
 /// equal.
 static bool
-compare_dies_cu_decl_file(Dwarf_Die* l, Dwarf_Die *r, bool &result)
+compare_dies_cu_decl_file(const Dwarf_Die* l, const Dwarf_Die *r, bool &result)
 {
   Dwarf_Die l_cu, r_cu;
-  if (!dwarf_diecu(l, &l_cu, 0, 0)
-      ||!dwarf_diecu(r, &r_cu, 0, 0))
+  if (!dwarf_diecu(const_cast<Dwarf_Die*>(l), &l_cu, 0, 0)
+      ||!dwarf_diecu(const_cast<Dwarf_Die*>(r), &r_cu, 0, 0))
     return false;
 
   bool compared =
@@ -10022,7 +10038,7 @@ compare_dies_cu_decl_file(Dwarf_Die* l, Dwarf_Die *r, bool &result)
 /// value.  In that case the expr and expr_len arguments are set to
 /// the resulting dwarf exprssion.
 static bool
-die_location_expr(Dwarf_Die* die,
+die_location_expr(const Dwarf_Die* die,
 		  unsigned attr_name,
 		  Dwarf_Op** expr,
 		  uint64_t* expr_len)
@@ -10031,7 +10047,7 @@ die_location_expr(Dwarf_Die* die,
     return false;
 
   Dwarf_Attribute attr;
-  if (!dwarf_attr_integrate(die, attr_name, &attr))
+  if (!dwarf_attr_integrate(const_cast<Dwarf_Die*>(die), attr_name, &attr))
     return false;
 
   size_t len = 0;
@@ -10848,7 +10864,9 @@ eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
 ///@param offset the resulting constant offset, in bits.  This
 ///argument is set iff the function returns true.
 static bool
-die_member_offset(const read_context& ctxt, Dwarf_Die* die, int64_t& offset)
+die_member_offset(const read_context& ctxt,
+		  const Dwarf_Die* die,
+		  int64_t& offset)
 {
   Dwarf_Op* expr = NULL;
   uint64_t expr_len = 0;
@@ -10988,12 +11006,12 @@ is_anonymous_type_die(Dwarf_Die *die)
 /// @return a string representing the base of the internal anonymous
 /// name.
 static string
-get_internal_anonynous_die_base_name(Dwarf_Die *die)
+get_internal_anonynous_die_base_name(const Dwarf_Die *die)
 {
   ABG_ASSERT(die_is_type(die));
   ABG_ASSERT(die_string_attribute(die, DW_AT_name) == "");
 
-  int tag = dwarf_tag(die);
+  int tag = dwarf_tag(const_cast<Dwarf_Die*>(die));
   string type_name;
   if (tag == DW_TAG_class_type || tag == DW_TAG_structure_type)
     type_name = "__anonymous_struct__";
@@ -11070,13 +11088,13 @@ get_internal_anonymous_die_name(Dwarf_Die *die,
 /// @return a copy of the qualified name of the type.
 static string
 die_qualified_type_name(const read_context& ctxt,
-			Dwarf_Die* die,
+			const Dwarf_Die* die,
 			size_t where_offset)
 {
   if (!die)
     return "";
 
-  int tag = dwarf_tag (die);
+  int tag = dwarf_tag (const_cast<Dwarf_Die*>(die));
   if (tag == DW_TAG_compile_unit
       || tag == DW_TAG_partial_unit
       || tag == DW_TAG_type_unit)
@@ -11344,7 +11362,7 @@ die_qualified_type_name(const read_context& ctxt,
 /// @return a copy of the computed name.
 static string
 die_qualified_decl_name(const read_context& ctxt,
-			Dwarf_Die* die,
+			const Dwarf_Die* die,
 			size_t where_offset)
 {
   if (!die || !die_is_decl(die))
@@ -11361,7 +11379,7 @@ die_qualified_decl_name(const read_context& ctxt,
 
   string repr;
 
-  int tag = dwarf_tag(die);
+  int tag = dwarf_tag(const_cast<Dwarf_Die*>(die));
   switch (tag)
     {
     case DW_TAG_namespace:
@@ -11404,7 +11422,7 @@ die_qualified_decl_name(const read_context& ctxt,
 ///
 /// @return a copy of the computed name.
 static string
-die_qualified_name(const read_context& ctxt, Dwarf_Die* die, size_t where)
+die_qualified_name(const read_context& ctxt, const Dwarf_Die* die, size_t where)
 {
   if (die_is_type(die))
     return die_qualified_type_name(ctxt, die, where);
@@ -11431,13 +11449,14 @@ die_qualified_name(const read_context& ctxt, Dwarf_Die* die, size_t where)
 ///
 /// @return true if the qualified name of the DIE is empty.
 static bool
-die_qualified_type_name_empty(const read_context& ctxt, Dwarf_Die* die,
+die_qualified_type_name_empty(const read_context& ctxt,
+			      const Dwarf_Die* die,
 			      size_t where, string &qualified_name)
 {
   if (!die)
     return true;
 
-  int tag = dwarf_tag(die);
+  int tag = dwarf_tag(const_cast<Dwarf_Die*>(die));
 
   string qname;
   if (tag == DW_TAG_typedef
@@ -11510,7 +11529,7 @@ die_qualified_type_name_empty(const read_context& ctxt, Dwarf_Die* die,
 /// member function, then this is set to true.
 static void
 die_return_and_parm_names_from_fn_type_die(const read_context& ctxt,
-					   Dwarf_Die* die,
+					   const Dwarf_Die* die,
 					   size_t where_offset,
 					   bool pretty_print,
 					   string &return_type_name,
@@ -11561,7 +11580,7 @@ die_return_and_parm_names_from_fn_type_die(const read_context& ctxt,
 	return_type_name.clear();
     }
 
-  if (dwarf_child(die, &child) == 0)
+  if (dwarf_child(const_cast<Dwarf_Die*>(die), &child) == 0)
     do
       {
 	int child_tag = dwarf_tag(&child);
@@ -11619,7 +11638,7 @@ die_return_and_parm_names_from_fn_type_die(const read_context& ctxt,
 /// @return a copy of the computed function signature string.
 static string
 die_function_signature(const read_context& ctxt,
-		       Dwarf_Die *fn_die,
+		       const Dwarf_Die *fn_die,
 		       size_t where_offset)
 {
 
@@ -11732,14 +11751,18 @@ die_function_signature(const read_context& ctxt,
 ///
 /// @return the resulting pretty representation.
 static string
-die_pretty_print_type(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
+die_pretty_print_type(read_context& ctxt,
+		      const Dwarf_Die* die,
+		      size_t where_offset)
 {
-  if (!die || (!die_is_type(die) && dwarf_tag(die) != DW_TAG_subprogram))
+  if (!die
+      || (!die_is_type(die)
+	  && dwarf_tag(const_cast<Dwarf_Die*>(die)) != DW_TAG_subprogram))
     return "";
 
   string repr;
 
-  int tag = dwarf_tag(die);
+  int tag = dwarf_tag(const_cast<Dwarf_Die*>(die));
   switch (tag)
     {
     case DW_TAG_string_type:
@@ -11895,14 +11918,16 @@ die_pretty_print_type(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
 ///
 /// @return the resulting pretty representation.
 static string
-die_pretty_print_decl(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
+die_pretty_print_decl(read_context& ctxt,
+		      const Dwarf_Die* die,
+		      size_t where_offset)
 {
   if (!die || !die_is_decl(die))
     return "";
 
   string repr;
 
-  int tag = dwarf_tag(die);
+  int tag = dwarf_tag(const_cast<Dwarf_Die*>(die));
   switch (tag)
     {
     case DW_TAG_namespace:
@@ -11949,7 +11974,7 @@ die_pretty_print_decl(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
 ///
 /// @return a copy of the pretty printed artifact.
 static string
-die_pretty_print(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
+die_pretty_print(read_context& ctxt, const Dwarf_Die* die, size_t where_offset)
 {
   if (die_is_type(die))
     return die_pretty_print_type(ctxt, die, where_offset);
@@ -11977,11 +12002,12 @@ die_pretty_print(read_context& ctxt, Dwarf_Die* die, size_t where_offset)
 ///
 /// @return true iff @p l equals @p r.
 static bool
-compare_as_decl_dies(Dwarf_Die *l, Dwarf_Die *r)
+compare_as_decl_dies(const Dwarf_Die *l, const Dwarf_Die *r)
 {
   ABG_ASSERT(l && r);
 
-  if (dwarf_tag(l) != dwarf_tag(r))
+  if (dwarf_tag(const_cast<Dwarf_Die*>(l))
+      != dwarf_tag(const_cast<Dwarf_Die*>(r)))
     return false;
 
   bool result = false;
@@ -12014,15 +12040,16 @@ compare_as_decl_dies(Dwarf_Die *l, Dwarf_Die *r)
 ///
 /// @return true iff @p l equals @p r.
 static bool
-compare_as_type_dies(Dwarf_Die *l, Dwarf_Die *r)
+compare_as_type_dies(const Dwarf_Die *l, const Dwarf_Die *r)
 {
   ABG_ASSERT(l && r);
   ABG_ASSERT(die_is_type(l));
   ABG_ASSERT(die_is_type(r));
 
-  if (dwarf_tag(l) == DW_TAG_string_type
-      && dwarf_tag(r) == DW_TAG_string_type
-      && dwarf_dieoffset(l) != dwarf_dieoffset(r))
+  if (dwarf_tag(const_cast<Dwarf_Die*>(l)) == DW_TAG_string_type
+      && dwarf_tag(const_cast<Dwarf_Die*>(r)) == DW_TAG_string_type
+      && (dwarf_dieoffset(const_cast<Dwarf_Die*>(l))
+	  != dwarf_dieoffset(const_cast<Dwarf_Die*>(r))))
     // For now, we cannot compare DW_TAG_string_type because of its
     // string_length attribute that is a location descriptor that is
     // not necessarily a constant.  So it's super hard to evaluate it
@@ -12061,19 +12088,22 @@ compare_as_type_dies(Dwarf_Die *l, Dwarf_Die *r)
 ///
 /// @return true iff @p l equals @p r.
 static bool
-compare_dies(const read_context& ctxt, Dwarf_Die *l, Dwarf_Die *r,
+compare_dies(const read_context& ctxt,
+	     const Dwarf_Die *l, const Dwarf_Die *r,
 	     istring_set_type& aggregates_being_compared,
 	     bool update_canonical_dies_on_the_fly)
 {
   ABG_ASSERT(l);
   ABG_ASSERT(r);
 
-  int l_tag = dwarf_tag(l), r_tag = dwarf_tag(r);
+  int l_tag = dwarf_tag(const_cast<Dwarf_Die*>(l)),
+    r_tag = dwarf_tag(const_cast<Dwarf_Die*>(r));
 
   if (l_tag != r_tag)
     return false;
 
-  Dwarf_Off l_offset = dwarf_dieoffset(l), r_offset = dwarf_dieoffset(r);
+  Dwarf_Off l_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(l)),
+    r_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(r));
   Dwarf_Off l_canonical_die_offset = 0, r_canonical_die_offset = 0;
   die_source l_die_source, r_die_source;
   ABG_ASSERT(ctxt.get_die_source(l, l_die_source));
@@ -12166,8 +12196,10 @@ compare_dies(const read_context& ctxt, Dwarf_Die *l, Dwarf_Die *r,
 	  Dwarf_Die l_enumtor, r_enumtor;
 	  bool found_l_enumtor, found_r_enumtor;
 
-	  for (found_l_enumtor = dwarf_child(l, &l_enumtor) == 0,
-		 found_r_enumtor = dwarf_child(r, &r_enumtor) == 0;
+	  for (found_l_enumtor = dwarf_child(const_cast<Dwarf_Die*>(l),
+					     &l_enumtor) == 0,
+		 found_r_enumtor = dwarf_child(const_cast<Dwarf_Die*>(r),
+					       &r_enumtor) == 0;
 	       found_l_enumtor && found_r_enumtor;
 	       found_l_enumtor = dwarf_siblingof(&l_enumtor, &l_enumtor) == 0,
 		 found_r_enumtor = dwarf_siblingof(&r_enumtor, &r_enumtor) == 0)
@@ -12223,8 +12255,10 @@ compare_dies(const read_context& ctxt, Dwarf_Die *l, Dwarf_Die *r,
 
 	    Dwarf_Die l_member, r_member;
 	    bool found_l_member, found_r_member;
-	    for (found_l_member = dwarf_child(l, &l_member) == 0,
-		   found_r_member = dwarf_child(r, &r_member) == 0;
+	    for (found_l_member = dwarf_child(const_cast<Dwarf_Die*>(l),
+					      &l_member) == 0,
+		   found_r_member = dwarf_child(const_cast<Dwarf_Die*>(r),
+						&r_member) == 0;
 		 found_l_member && found_r_member;
 		 found_l_member = dwarf_siblingof(&l_member, &l_member) == 0,
 		   found_r_member = dwarf_siblingof(&r_member, &r_member) == 0)
@@ -12260,8 +12294,10 @@ compare_dies(const read_context& ctxt, Dwarf_Die *l, Dwarf_Die *r,
       {
 	Dwarf_Die l_child, r_child;
 	bool found_l_child, found_r_child;
-	for (found_l_child = dwarf_child(l, &l_child) == 0,
-	       found_r_child = dwarf_child(r, &r_child) == 0;
+	for (found_l_child = dwarf_child(const_cast<Dwarf_Die*>(l),
+					 &l_child) == 0,
+	       found_r_child = dwarf_child(const_cast<Dwarf_Die*>(r),
+					   &r_child) == 0;
 	     found_l_child && found_r_child;
 	     found_l_child = dwarf_siblingof(&l_child, &l_child) == 0,
 	       found_r_child = dwarf_siblingof(&r_child, &r_child) == 0)
@@ -12359,8 +12395,10 @@ compare_dies(const read_context& ctxt, Dwarf_Die *l, Dwarf_Die *r,
 	      {
 		Dwarf_Die l_child, r_child;
 		bool found_l_child, found_r_child;
-		for (found_l_child = dwarf_child(l, &l_child) == 0,
-		       found_r_child = dwarf_child(r, &r_child) == 0;
+		for (found_l_child = dwarf_child(const_cast<Dwarf_Die*>(l),
+						 &l_child) == 0,
+		       found_r_child = dwarf_child(const_cast<Dwarf_Die*>(r),
+						   &r_child) == 0;
 		     found_l_child && found_r_child;
 		     found_l_child = dwarf_siblingof(&l_child,
 						     &l_child) == 0,
@@ -12544,7 +12582,8 @@ compare_dies(const read_context& ctxt, Dwarf_Die *l, Dwarf_Die *r,
 /// @return true iff @p l equals @p r.
 static bool
 compare_dies(const read_context& ctxt,
-	     Dwarf_Die *l, Dwarf_Die *r,
+	     const Dwarf_Die *l,
+	     const Dwarf_Die *r,
 	     bool update_canonical_dies_on_the_fly)
 {
   istring_set_type aggregates_being_compared;
@@ -12754,7 +12793,7 @@ find_import_unit_point_before_die(const read_context&	ctxt,
 /// otherwise.
 static bool
 get_parent_die(const read_context&	ctxt,
-	       Dwarf_Die*		die,
+	       const Dwarf_Die*	die,
 	       Dwarf_Die&		parent_die,
 	       size_t			where_offset)
 {
@@ -12764,7 +12803,8 @@ get_parent_die(const read_context&	ctxt,
   ABG_ASSERT(ctxt.get_die_source(die, source));
 
   const offset_offset_map_type& m = ctxt.die_parent_map(source);
-  offset_offset_map_type::const_iterator i = m.find(dwarf_dieoffset(die));
+  offset_offset_map_type::const_iterator i =
+    m.find(dwarf_dieoffset(const_cast<Dwarf_Die*>(die)));
 
   if (i == m.end())
     return false;
@@ -12840,14 +12880,14 @@ get_parent_die(const read_context&	ctxt,
 /// scope DIE iff the function returns true.
 static bool
 get_scope_die(const read_context&	ctxt,
-	      Dwarf_Die*		die,
+	      const Dwarf_Die*		die,
 	      size_t			where_offset,
 	      Dwarf_Die&		scope_die)
 {
   if (is_c_language(ctxt.cur_transl_unit()->get_language()))
     {
-      ABG_ASSERT(dwarf_tag(die) != DW_TAG_member);
-      return dwarf_diecu(die, &scope_die, 0, 0);
+      ABG_ASSERT(dwarf_tag(const_cast<Dwarf_Die*>(die)) != DW_TAG_member);
+      return dwarf_diecu(const_cast<Dwarf_Die*>(die), &scope_die, 0, 0);
     }
 
   Dwarf_Die logical_parent_die;
@@ -15095,7 +15135,7 @@ build_function_type(read_context&	ctxt,
 /// array_type_def::subrange_type, or nil if no type could be built.
 static array_type_def::subrange_sptr
 build_subrange_type(read_context&	ctxt,
-		    Dwarf_Die*		die,
+		    const Dwarf_Die*		die,
 		    size_t		where_offset,
 		    bool		associate_type_to_die)
 {
@@ -15107,7 +15147,7 @@ build_subrange_type(read_context&	ctxt,
   die_source source;
   ABG_ASSERT(ctxt.get_die_source(die, source));
 
-  unsigned tag = dwarf_tag(die);
+  unsigned tag = dwarf_tag(const_cast<Dwarf_Die*>(die));
   if (tag != DW_TAG_subrange_type)
     return result;
 
@@ -15212,15 +15252,15 @@ build_subrange_type(read_context&	ctxt,
 /// e.g, DW_TAG_partial_unit that can be included in several places in
 /// the DIE tree.
 static void
-build_subranges_from_array_type_die(read_context&	ctxt,
-				    Dwarf_Die*		die,
+build_subranges_from_array_type_die(read_context&			ctxt,
+				    const Dwarf_Die*			die,
 				    array_type_def::subranges_type&	subranges,
-				    size_t		where_offset,
-				    bool		associate_type_to_die)
+				    size_t				where_offset,
+				    bool				associate_type_to_die)
 {
   Dwarf_Die child;
 
-  if (dwarf_child(die, &child) == 0)
+  if (dwarf_child(const_cast<Dwarf_Die*>(die), &child) == 0)
     {
       do
 	{
