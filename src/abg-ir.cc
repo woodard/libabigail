@@ -3377,6 +3377,40 @@ equals(const decl_base& l, const decl_base& r, change_kind* k)
   // are anonymous or not.
   interned_string ln = l.get_scoped_name(), rn = r.get_scoped_name();
   scope_decl *lscope = l.get_scope(), *rscope = r.get_scope();
+
+  /// If the current decl is anonymous, let's consider its scope
+  /// instead.  If the scope is anonymous as well, then we won't
+  /// consider it.
+  ///
+  /// TODO: Ideally, we'll compare the fully qualified names of the
+  /// decls, comparing them component by component.  Whenever two
+  /// components are anonymous, don't compare them.
+  if (l.get_is_anonymous())
+    {
+      if (lscope && lscope->get_is_anonymous())
+	ln.clear();
+      else if (lscope)
+	ln = lscope->get_name();
+    }
+  else
+    {
+      if (lscope && lscope->get_is_anonymous())
+	ln = l.get_name();
+    }
+
+    if (r.get_is_anonymous())
+    {
+      if (rscope && rscope->get_is_anonymous())
+	rn.clear();
+      else if (rscope)
+	rn = rscope->get_name();
+    }
+  else
+    {
+      if (rscope && rscope->get_is_anonymous())
+	rn = r.get_name();
+    }
+
   if (// If the two scopes are anonymous then only consider the name
       // of the decl, not its scope name.  This is because the two
       // scope (internal) names might be different even though they
@@ -3389,8 +3423,7 @@ equals(const decl_base& l, const decl_base& r, change_kind* k)
       rn = r.get_name();
     }
 
-  if (!l.get_is_anonymous() && !r.get_is_anonymous()
-      && ln != rn)
+  if (ln != rn)
     {
       result = false;
       if (k)

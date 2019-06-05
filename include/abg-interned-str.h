@@ -92,6 +92,11 @@ public:
     return *this;
   }
 
+  /// Clear the string.
+  void
+  clear()
+  {raw_ = 0;}
+
   /// Test if the current instance of @ref interned_string is empty.
   ///
   /// @return true iff the currentisntance of @ref interned_string is
