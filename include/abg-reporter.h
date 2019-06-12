@@ -28,8 +28,16 @@
 #ifndef __ABG_REPORTER_H__
 #define __ABG_REPORTER_H__
 
+#include <ostream>
+#include <string>
+#include <tr1/memory>
+
 namespace abigail
 {
+
+using std::ostream;
+using std::tr1::shared_ptr;
+
 namespace comparison
 {
 class diff;
