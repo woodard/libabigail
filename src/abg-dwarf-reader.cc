@@ -177,6 +177,12 @@ typedef shared_ptr<address_set_type> address_set_sptr;
 /// addr_elf_symbol_sptr_map_type.
 typedef shared_ptr<addr_elf_symbol_sptr_map_type> addr_elf_symbol_sptr_map_sptr;
 
+/// Convenience typedef for a map that associates and @ref
+/// interned_string to a @ref function_type_sptr.
+typedef unordered_map<interned_string,
+		      function_type_sptr,
+		      hash_interned_string> istring_fn_type_map_type;
+
 /// Convenience typedef for a stack containing the scopes up to the
 /// current point in the abigail Internal Representation (aka IR) tree
 /// that is being built.
@@ -344,6 +350,9 @@ die_is_class_type(Dwarf_Die* die);
 
 static bool
 die_is_qualified_type(const Dwarf_Die* die);
+
+static bool
+die_is_function_type(const Dwarf_Die *die);
 
 static bool
 die_has_object_pointer(const Dwarf_Die* die,
@@ -3104,6 +3113,10 @@ public:
   /// the offset of a decl DIE to the offset of its canonical DIE.
   mutable die_source_dependant_container_set<offset_offset_map_type>
   canonical_decl_die_offsets_;
+  /// A map that associates a function type representations to
+  /// function types, inside a translation unit.
+  mutable istring_fn_type_map_type per_tu_repr_to_fn_type_maps_;
+
   die_class_or_union_map_type	die_wip_classes_map_;
   die_class_or_union_map_type	alternate_die_wip_classes_map_;
   die_class_or_union_map_type	type_unit_die_wip_classes_map_;
@@ -3357,6 +3370,7 @@ public:
     while (!scope_stack().empty())
       scope_stack().pop();
     var_decls_to_re_add_to_tree().clear();
+    per_tu_repr_to_fn_type_maps().clear();
   }
 
   /// Clear the data that is relevant for the current corpus being
@@ -4786,6 +4800,71 @@ public:
   const die_source_dependant_container_set<die_artefact_map_type>&
   type_die_artefact_maps() const
   {return type_die_artefact_maps_;}
+
+  /// Getter of the maps that associates function type representations
+  /// to function types, inside a translation unit.
+  ///
+  /// @return the maps that associates function type representations
+  /// to function types, inside a translation unit.
+  istring_fn_type_map_type&
+  per_tu_repr_to_fn_type_maps()
+  {return per_tu_repr_to_fn_type_maps_;}
+
+  /// Getter of the maps that associates function type representations
+  /// to function types, inside a translation unit.
+  ///
+  /// @return the maps that associates function type representations
+  /// to function types, inside a translation unit.
+  const istring_fn_type_map_type&
+  per_tu_repr_to_fn_type_maps() const
+  {return per_tu_repr_to_fn_type_maps_;}
+
+  /// Associate the representation of a function type DIE to a given
+  /// function type, inside the current translation unit.
+  ///
+  /// @param die the DIE to associate to the function type, using its
+  /// representation.
+  ///
+  /// @param fn_type the function type to associate to @p die.
+  void
+  associate_die_repr_to_fn_type_per_tu(const Dwarf_Die *die,
+				       const function_type_sptr &fn_type)
+  {
+    if (!die_is_function_type(die))
+      return;
+
+    interned_string repr =
+      get_die_pretty_type_representation(die, /*where=*/0);
+    ABG_ASSERT(!repr.empty());
+
+    per_tu_repr_to_fn_type_maps()[repr]= fn_type;
+  }
+
+  /// Lookup the function type associated to a given function type
+  /// DIE, in the current translation unit.
+  ///
+  /// @param die the DIE of function type to consider.
+  ///
+  /// @return the @ref function_type_sptr associated to @p die, or nil
+  /// of no function_type is associated to @p die.
+  function_type_sptr
+  lookup_fn_type_from_die_repr_per_tu(const Dwarf_Die *die)
+  {
+    if (!die_is_function_type(die))
+      return function_type_sptr();
+
+    interned_string repr =
+      get_die_pretty_representation(die, /*where=*/0);
+    ABG_ASSERT(!repr.empty());
+
+    istring_fn_type_map_type::const_iterator i =
+      per_tu_repr_to_fn_type_maps().find(repr);
+
+    if (i == per_tu_repr_to_fn_type_maps().end())
+      return function_type_sptr();
+
+    return i->second;
+  }
 
   /// Set the canonical DIE offset of a given DIE.
   ///
@@ -9485,6 +9564,21 @@ die_is_qualified_type(const Dwarf_Die* die)
       return true;
 
     return false;
+}
+
+/// Test if a DIE is for a function type.
+///
+/// @param die the DIE to consider.
+///
+/// @return true iff @p die is for a function type.
+static bool
+die_is_function_type(const Dwarf_Die *die)
+{
+  int tag = dwarf_tag(const_cast<Dwarf_Die*>(die));
+  if (tag == DW_TAG_subprogram || tag == DW_TAG_subroutine_type)
+    return true;
+
+  return false;
 }
 
 /// Test if a DIE for a function pointer or member function has an
@@ -14935,9 +15029,10 @@ build_function_type(read_context&	ctxt,
   translation_unit_sptr tu = ctxt.cur_transl_unit();
   ABG_ASSERT(tu);
 
-  // The call to build_ir_node_from_die() could have triggered the
-  // creation of the type for this DIE.  In that case, just return it.
-  if (type_base_sptr t = ctxt.lookup_type_from_die(die))
+  /// If, inside the current translation unit, we've already seen a
+  /// function type with the same text representation, then reuse that
+  /// one instead.
+  if (type_base_sptr t = ctxt.lookup_fn_type_from_die_repr_per_tu(die))
     {
       result = is_function_type(t);
       ABG_ASSERT(result);
@@ -14957,22 +15052,6 @@ build_function_type(read_context&	ctxt,
       // type as the one denoted by 'die'.
       if (function_type_sptr fn_type =
 	  is_function_type(ctxt.lookup_type_artifact_from_die(die)))
-	{
-	  ctxt.associate_die_to_type(die, fn_type, where_offset);
-	  return fn_type;
-	}
-    }
-  else
-    {
-      // We cannot rely on the One Definition Rule across the entire
-      // binary.  But then we can still say that inside the current
-      // *translation unit*, if two function types have the same name
-      // (rather representation) then they designate the same type.
-      // Thus, if we've already seen a DIE with the same
-      // representation as the one of 'die', then it designates the
-      // same function type.
-      if (function_type_sptr fn_type =
-	  is_function_type(ctxt.lookup_type_from_die(die)))
 	{
 	  ctxt.associate_die_to_type(die, fn_type, where_offset);
 	  return fn_type;
@@ -15026,6 +15105,7 @@ build_function_type(read_context&	ctxt,
 				   /*alignment=*/0));
   ctxt.associate_die_to_type(die, result, where_offset);
   ctxt.die_wip_function_types_map(source)[dwarf_dieoffset(die)] = result;
+  ctxt.associate_die_repr_to_fn_type_per_tu(die, result);
 
   type_base_sptr return_type;
   Dwarf_Die ret_type_die;

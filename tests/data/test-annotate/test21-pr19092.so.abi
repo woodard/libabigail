@@ -10287,7 +10287,7 @@
     <!-- void xexit(int) -->
     <function-decl name='xexit' filepath='../.././libiberty/../include/libiberty.h' line='288' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'int' -->
-      <parameter type-id='type-id-3' name='ch' filepath='../.././libiberty/cplus-dem.c' line='100' column='1'/>
+      <parameter type-id='type-id-3'/>
       <!-- void -->
       <return type-id='type-id-1'/>
     </function-decl>
@@ -10395,7 +10395,7 @@
     <!-- size_t htab_size(htab_t) -->
     <function-decl name='htab_size' mangled-name='htab_size' filepath='../.././libiberty/hashtab.c' line='224' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='htab_size'>
       <!-- parameter of type 'typedef htab_t' -->
-      <parameter type-id='type-id-193'/>
+      <parameter type-id='type-id-193' name='htab' filepath='../.././libiberty/hashtab.c' line='224' column='1'/>
       <!-- typedef size_t -->
       <return type-id='type-id-5'/>
     </function-decl>
@@ -10459,13 +10459,13 @@
     <!-- htab_t htab_try_create(size_t, htab_hash, htab_eq, htab_del) -->
     <function-decl name='htab_try_create' mangled-name='htab_try_create' filepath='../.././libiberty/hashtab.c' line='412' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='htab_try_create'>
       <!-- parameter of type 'typedef size_t' -->
-      <parameter type-id='type-id-5' name='size' filepath='../.././libiberty/hashtab.c' line='406' column='1'/>
+      <parameter type-id='type-id-5' name='size' filepath='../.././libiberty/hashtab.c' line='412' column='1'/>
       <!-- parameter of type 'typedef htab_hash' -->
-      <parameter type-id='type-id-175' name='hash_f' filepath='../.././libiberty/hashtab.c' line='406' column='1'/>
+      <parameter type-id='type-id-175' name='hash_f' filepath='../.././libiberty/hashtab.c' line='412' column='1'/>
       <!-- parameter of type 'typedef htab_eq' -->
-      <parameter type-id='type-id-176' name='eq_f' filepath='../.././libiberty/hashtab.c' line='406' column='1'/>
+      <parameter type-id='type-id-176' name='eq_f' filepath='../.././libiberty/hashtab.c' line='412' column='1'/>
       <!-- parameter of type 'typedef htab_del' -->
-      <parameter type-id='type-id-177' name='del_f' filepath='../.././libiberty/hashtab.c' line='406' column='1'/>
+      <parameter type-id='type-id-177' name='del_f' filepath='../.././libiberty/hashtab.c' line='412' column='1'/>
       <!-- typedef htab_t -->
       <return type-id='type-id-193'/>
     </function-decl>
@@ -10581,7 +10581,7 @@
     <!-- const char* dos_lbasename(const char*) -->
     <function-decl name='dos_lbasename' mangled-name='dos_lbasename' filepath='../.././libiberty/lbasename.c' line='61' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dos_lbasename'>
       <!-- parameter of type 'const char*' -->
-      <parameter type-id='type-id-8' name='name' filepath='../.././libiberty/lbasename.c' line='49' column='1'/>
+      <parameter type-id='type-id-8' name='name' filepath='../.././libiberty/lbasename.c' line='61' column='1'/>
       <!-- const char* -->
       <return type-id='type-id-8'/>
     </function-decl>
@@ -11141,7 +11141,7 @@
     <!-- void _exit(int) -->
     <function-decl name='_exit' filepath='/usr/include/unistd.h' line='600' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'int' -->
-      <parameter type-id='type-id-3' name='ch' filepath='../.././libiberty/cplus-dem.c' line='100' column='1'/>
+      <parameter type-id='type-id-3'/>
       <!-- void -->
       <return type-id='type-id-1'/>
     </function-decl>

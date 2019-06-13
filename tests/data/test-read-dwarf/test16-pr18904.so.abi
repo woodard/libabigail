@@ -38281,10 +38281,10 @@
       <return type-id='type-id-31'/>
     </function-decl>
     <function-decl name='ORSLTryReserve' mangled-name='ORSLTryReserve' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='262' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='ORSLTryReserve'>
-      <parameter type-id='type-id-222' name='n' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='327' column='1'/>
-      <parameter type-id='type-id-2068' name='inds' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='327' column='1'/>
-      <parameter type-id='type-id-3268' name='bsets' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='328' column='1'/>
-      <parameter type-id='type-id-3270' name='tag' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='329' column='1'/>
+      <parameter type-id='type-id-222' name='n' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='262' column='1'/>
+      <parameter type-id='type-id-2068' name='inds' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='262' column='1'/>
+      <parameter type-id='type-id-3268' name='bsets' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='263' column='1'/>
+      <parameter type-id='type-id-3270' name='tag' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='264' column='1'/>
       <return type-id='type-id-31'/>
     </function-decl>
     <function-decl name='ORSLReserve' mangled-name='ORSLReserve' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' line='230' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='ORSLReserve'>

@@ -543,18 +543,18 @@
     <!-- void gluQuadricOrientation(GLUquadric*, GLenum) -->
     <function-decl name='gluQuadricOrientation' mangled-name='gluQuadricOrientation' filepath='libutil/quad.c' line='120' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluQuadricOrientation'>
       <!-- parameter of type 'GLUquadric*' -->
-      <parameter type-id='type-id-26' name='qobj' filepath='libutil/quad.c' line='99' column='1'/>
+      <parameter type-id='type-id-26' name='qobj' filepath='libutil/quad.c' line='120' column='1'/>
       <!-- parameter of type 'typedef GLenum' -->
-      <parameter type-id='type-id-6' name='normals' filepath='libutil/quad.c' line='99' column='1'/>
+      <parameter type-id='type-id-6' name='orientation' filepath='libutil/quad.c' line='120' column='1'/>
       <!-- void -->
       <return type-id='type-id-10'/>
     </function-decl>
     <!-- void gluQuadricDrawStyle(GLUquadric*, GLenum) -->
     <function-decl name='gluQuadricDrawStyle' mangled-name='gluQuadricDrawStyle' filepath='libutil/quad.c' line='134' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluQuadricDrawStyle'>
       <!-- parameter of type 'GLUquadric*' -->
-      <parameter type-id='type-id-26' name='qobj' filepath='libutil/quad.c' line='99' column='1'/>
+      <parameter type-id='type-id-26' name='qobj' filepath='libutil/quad.c' line='134' column='1'/>
       <!-- parameter of type 'typedef GLenum' -->
-      <parameter type-id='type-id-6' name='normals' filepath='libutil/quad.c' line='99' column='1'/>
+      <parameter type-id='type-id-6' name='drawStyle' filepath='libutil/quad.c' line='134' column='1'/>
       <!-- void -->
       <return type-id='type-id-10'/>
     </function-decl>
@@ -1301,7 +1301,7 @@
     <!-- void gluTessBeginContour(GLUtesselator*) -->
     <function-decl name='gluTessBeginContour' mangled-name='gluTessBeginContour' filepath='libtess/tess.c' line='476' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluTessBeginContour'>
       <!-- parameter of type 'GLUtesselator*' -->
-      <parameter type-id='type-id-121' name='tess' filepath='libtess/tess.c' line='493' column='1'/>
+      <parameter type-id='type-id-121' name='tess' filepath='libtess/tess.c' line='476' column='1'/>
       <!-- void -->
       <return type-id='type-id-10'/>
     </function-decl>
@@ -1326,7 +1326,7 @@
     <!-- void gluBeginPolygon(GLUtesselator*) -->
     <function-decl name='gluBeginPolygon' mangled-name='gluBeginPolygon' filepath='libtess/tess.c' line='611' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluBeginPolygon'>
       <!-- parameter of type 'GLUtesselator*' -->
-      <parameter type-id='type-id-121' name='tess' filepath='libtess/tess.c' line='493' column='1'/>
+      <parameter type-id='type-id-121' name='tess' filepath='libtess/tess.c' line='611' column='1'/>
       <!-- void -->
       <return type-id='type-id-10'/>
     </function-decl>
@@ -1340,7 +1340,7 @@
     <!-- void gluEndPolygon(GLUtesselator*) -->
     <function-decl name='gluEndPolygon' mangled-name='gluEndPolygon' filepath='libtess/tess.c' line='628' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluEndPolygon'>
       <!-- parameter of type 'GLUtesselator*' -->
-      <parameter type-id='type-id-121' name='tess' filepath='libtess/tess.c' line='493' column='1'/>
+      <parameter type-id='type-id-121' name='tess' filepath='libtess/tess.c' line='628' column='1'/>
       <!-- void -->
       <return type-id='type-id-10'/>
     </function-decl>
@@ -1358,7 +1358,7 @@
     <!-- void gluDeleteTess(GLUtesselator*) -->
     <function-decl name='gluDeleteTess' mangled-name='gluDeleteTess' filepath='libtess/tess.c' line='193' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluDeleteTess'>
       <!-- parameter of type 'GLUtesselator*' -->
-      <parameter type-id='type-id-121' name='tess' filepath='libtess/tess.c' line='493' column='1'/>
+      <parameter type-id='type-id-121' name='tess' filepath='libtess/tess.c' line='193' column='1'/>
       <!-- void -->
       <return type-id='type-id-10'/>
     </function-decl>

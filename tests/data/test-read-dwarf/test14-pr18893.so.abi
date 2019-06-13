@@ -293,13 +293,13 @@
       <return type-id='type-id-10'/>
     </function-decl>
     <function-decl name='gluQuadricOrientation' mangled-name='gluQuadricOrientation' filepath='libutil/quad.c' line='120' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluQuadricOrientation'>
-      <parameter type-id='type-id-26' name='qobj' filepath='libutil/quad.c' line='99' column='1'/>
-      <parameter type-id='type-id-6' name='normals' filepath='libutil/quad.c' line='99' column='1'/>
+      <parameter type-id='type-id-26' name='qobj' filepath='libutil/quad.c' line='120' column='1'/>
+      <parameter type-id='type-id-6' name='orientation' filepath='libutil/quad.c' line='120' column='1'/>
       <return type-id='type-id-10'/>
     </function-decl>
     <function-decl name='gluQuadricDrawStyle' mangled-name='gluQuadricDrawStyle' filepath='libutil/quad.c' line='134' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluQuadricDrawStyle'>
-      <parameter type-id='type-id-26' name='qobj' filepath='libutil/quad.c' line='99' column='1'/>
-      <parameter type-id='type-id-6' name='normals' filepath='libutil/quad.c' line='99' column='1'/>
+      <parameter type-id='type-id-26' name='qobj' filepath='libutil/quad.c' line='134' column='1'/>
+      <parameter type-id='type-id-6' name='drawStyle' filepath='libutil/quad.c' line='134' column='1'/>
       <return type-id='type-id-10'/>
     </function-decl>
     <function-decl name='gluSphere' mangled-name='gluSphere' filepath='libutil/quad.c' line='694' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluSphere'>
@@ -796,7 +796,7 @@
       <return type-id='type-id-10'/>
     </function-decl>
     <function-decl name='gluTessBeginContour' mangled-name='gluTessBeginContour' filepath='libtess/tess.c' line='476' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluTessBeginContour'>
-      <parameter type-id='type-id-121' name='tess' filepath='libtess/tess.c' line='493' column='1'/>
+      <parameter type-id='type-id-121' name='tess' filepath='libtess/tess.c' line='476' column='1'/>
       <return type-id='type-id-10'/>
     </function-decl>
     <function-decl name='gluNextContour' mangled-name='gluNextContour' filepath='libtess/tess.c' line='620' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluNextContour'>
@@ -810,7 +810,7 @@
       <return type-id='type-id-10'/>
     </function-decl>
     <function-decl name='gluBeginPolygon' mangled-name='gluBeginPolygon' filepath='libtess/tess.c' line='611' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluBeginPolygon'>
-      <parameter type-id='type-id-121' name='tess' filepath='libtess/tess.c' line='493' column='1'/>
+      <parameter type-id='type-id-121' name='tess' filepath='libtess/tess.c' line='611' column='1'/>
       <return type-id='type-id-10'/>
     </function-decl>
     <function-decl name='gluTessEndPolygon' mangled-name='gluTessEndPolygon' filepath='libtess/tess.c' line='500' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluTessEndPolygon'>
@@ -818,7 +818,7 @@
       <return type-id='type-id-10'/>
     </function-decl>
     <function-decl name='gluEndPolygon' mangled-name='gluEndPolygon' filepath='libtess/tess.c' line='628' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluEndPolygon'>
-      <parameter type-id='type-id-121' name='tess' filepath='libtess/tess.c' line='493' column='1'/>
+      <parameter type-id='type-id-121' name='tess' filepath='libtess/tess.c' line='628' column='1'/>
       <return type-id='type-id-10'/>
     </function-decl>
     <function-decl name='gluTessVertex' mangled-name='gluTessVertex' filepath='libtess/tess.c' line='415' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluTessVertex'>
@@ -828,7 +828,7 @@
       <return type-id='type-id-10'/>
     </function-decl>
     <function-decl name='gluDeleteTess' mangled-name='gluDeleteTess' filepath='libtess/tess.c' line='193' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluDeleteTess'>
-      <parameter type-id='type-id-121' name='tess' filepath='libtess/tess.c' line='493' column='1'/>
+      <parameter type-id='type-id-121' name='tess' filepath='libtess/tess.c' line='193' column='1'/>
       <return type-id='type-id-10'/>
     </function-decl>
     <function-decl name='gluNewTess' mangled-name='gluNewTess' filepath='libtess/tess.c' line='92' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluNewTess'>
