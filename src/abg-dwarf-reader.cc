@@ -4708,6 +4708,38 @@ public:
     return true;
   }
 
+  /// Test if a given DIE originates from a program written in the C
+  /// language.
+  ///
+  /// @param die the DIE to consider.
+  ///
+  /// @return true iff @p die originates from a program in the C
+  /// language.
+  bool
+  die_is_in_c(const Dwarf_Die *die) const
+  {
+    translation_unit::language l = translation_unit::LANG_UNKNOWN;
+    if (!get_die_language(die, l))
+      return false;
+    return is_c_language(l);
+  }
+
+  /// Test if a given DIE originates from a program written either in
+  /// C or C++.
+  ///
+  /// @param die the DIE to consider.
+  ///
+  /// @return true iff @p die originates from a program written either in
+  /// C or C++.
+  bool
+  die_is_in_c_or_cplusplus(const Dwarf_Die *die) const
+  {
+    translation_unit::language l = translation_unit::LANG_UNKNOWN;
+    if (!get_die_language(die, l))
+      return false;
+    return (is_cplus_plus_language(l) || is_c_language(l));
+  }
+
   /// Check if we can assume the One Definition Rule[1] to be relevant
   /// for the current translation unit.
   ///
@@ -12158,6 +12190,59 @@ compare_as_type_dies(const Dwarf_Die *l, const Dwarf_Die *r)
   return l_size == r_size;
 }
 
+/// Test if two DIEs representing function declarations have the same
+/// linkage name, and thus are considered equal if they are C or C++,
+/// because the two DIEs represent functions in the same binary.
+///
+/// If the DIEs don't have a linkage name, the function compares their
+/// name.  But in that case, the caller of the function must know that
+/// in C++ for instance, that doesn't imply that the two functions are
+/// equal.
+///
+/// @param ctxt the @ref read_context to consider.
+///
+/// @param l the first function DIE to consider.
+///
+/// @param r the second function DIE to consider.
+///
+/// @return true iff the function represented by @p l have the same
+/// linkage name as the function represented by @p r.
+static bool
+fn_die_equal_by_linkage_name(const read_context &ctxt,
+			     const Dwarf_Die *l,
+			     const Dwarf_Die *r)
+{
+  if (!!l != !!r)
+    return false;
+
+  if (!l)
+    return false;
+
+  int tag = dwarf_tag(const_cast<Dwarf_Die*>(l));
+  ABG_ASSERT(tag == DW_TAG_subprogram);
+  tag = dwarf_tag(const_cast<Dwarf_Die*>(r));
+  ABG_ASSERT(tag == DW_TAG_subprogram);
+
+  string lname = die_name(l), rname = die_name(r);
+  string llinkage_name = die_linkage_name(l),
+    rlinkage_name = die_linkage_name(r);
+
+  if (ctxt.die_is_in_c_or_cplusplus(l)
+      && ctxt.die_is_in_c_or_cplusplus(r))
+    {
+      if (!llinkage_name.empty() && !rlinkage_name.empty())
+	return llinkage_name == rlinkage_name;
+      else if (!!llinkage_name.empty() != !!rlinkage_name.empty())
+	return false;
+      else
+	return lname == rname;
+    }
+
+  return (!llinkage_name.empty()
+	  && !rlinkage_name.empty()
+	  && llinkage_name == rlinkage_name);
+}
+
 /// Compare two DIEs emitted by a C compiler.
 ///
 /// @param ctxt the read context used to load the DWARF information.
@@ -12468,56 +12553,66 @@ compare_dies(const read_context& ctxt,
 	      && from_the_same_tu)
 	    result = true;
 	}
-	else
-	  {
-	    aggregates_being_compared.insert(ln);
-	    aggregates_being_compared.insert(rn);
-
-	    Dwarf_Die l_return_type, r_return_type;
-	    bool l_return_type_is_void = !die_die_attribute(l, DW_AT_type,
-							    l_return_type);
-	    bool r_return_type_is_void = !die_die_attribute(r, DW_AT_type,
-							    r_return_type);
-	    if (l_return_type_is_void != r_return_type_is_void
-		|| (!l_return_type_is_void
-		    && !compare_dies(ctxt,
-				     &l_return_type, &r_return_type,
-				     aggregates_being_compared,
-				     update_canonical_dies_on_the_fly)))
+      else
+	{
+	  if (!fn_die_equal_by_linkage_name(ctxt, l, r))
+	    {
 	      result = false;
-	    else
-	      {
-		Dwarf_Die l_child, r_child;
-		bool found_l_child, found_r_child;
-		for (found_l_child = dwarf_child(const_cast<Dwarf_Die*>(l),
-						 &l_child) == 0,
-		       found_r_child = dwarf_child(const_cast<Dwarf_Die*>(r),
-						   &r_child) == 0;
-		     found_l_child && found_r_child;
-		     found_l_child = dwarf_siblingof(&l_child,
-						     &l_child) == 0,
-		       found_r_child = dwarf_siblingof(&r_child,
-						       &r_child)==0)
-		  {
-		    int l_child_tag = dwarf_tag(&l_child);
-		    int r_child_tag = dwarf_tag(&r_child);
-		    if (l_child_tag != r_child_tag
-			|| (l_child_tag == DW_TAG_formal_parameter
-			    && !compare_dies(ctxt, &l_child, &r_child,
-					     aggregates_being_compared,
-					     update_canonical_dies_on_the_fly)))
-		      {
-			result = false;
-			break;
-		      }
-		  }
-		if (found_l_child != found_r_child)
-		  result = false;
-	      }
+	      break;
+	    }
 
-	    aggregates_being_compared.erase(ln);
-	    aggregates_being_compared.erase(rn);
-	  }
+	  if (!ctxt.die_is_in_c(l) && !ctxt.die_is_in_c(r))
+	    {
+	      // In C, we cannot have two different functions with the
+	      // same linkage name in a given binary.  But here we are
+	      // looking at DIEs that don't originate from C.  So we
+	      // need to compare return types and parameter types.
+	      Dwarf_Die l_return_type, r_return_type;
+	      bool l_return_type_is_void = !die_die_attribute(l, DW_AT_type,
+							      l_return_type);
+	      bool r_return_type_is_void = !die_die_attribute(r, DW_AT_type,
+							      r_return_type);
+	      if (l_return_type_is_void != r_return_type_is_void
+		  || (!l_return_type_is_void
+		      && !compare_dies(ctxt,
+				       &l_return_type, &r_return_type,
+				       aggregates_being_compared,
+				       update_canonical_dies_on_the_fly)))
+		result = false;
+	      else
+		{
+		  Dwarf_Die l_child, r_child;
+		  bool found_l_child, found_r_child;
+		  for (found_l_child = dwarf_child(const_cast<Dwarf_Die*>(l),
+						   &l_child) == 0,
+			 found_r_child = dwarf_child(const_cast<Dwarf_Die*>(r),
+						     &r_child) == 0;
+		       found_l_child && found_r_child;
+		       found_l_child = dwarf_siblingof(&l_child,
+						       &l_child) == 0,
+			 found_r_child = dwarf_siblingof(&r_child,
+							 &r_child)==0)
+		    {
+		      int l_child_tag = dwarf_tag(&l_child);
+		      int r_child_tag = dwarf_tag(&r_child);
+		      if (l_child_tag != r_child_tag
+			  || (l_child_tag == DW_TAG_formal_parameter
+			      && !compare_dies(ctxt, &l_child, &r_child,
+					       aggregates_being_compared,
+					       update_canonical_dies_on_the_fly)))
+			{
+			  result = false;
+			  break;
+			}
+		    }
+		  if (found_l_child != found_r_child)
+		    result = false;
+		}
+	    }
+
+	  aggregates_being_compared.erase(ln);
+	  aggregates_being_compared.erase(rn);
+	}
       }
       break;
 

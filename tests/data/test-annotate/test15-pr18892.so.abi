@@ -40381,7 +40381,7 @@
     <!-- backtrace_vector* -->
     <pointer-type-def type-id='type-id-1727' size-in-bits='64' id='type-id-1728'/>
     <!-- void* __asan_backtrace_vector_grow(backtrace_state*, size_t, backtrace_error_callback, void*, backtrace_vector*) -->
-    <function-decl name='__asan_backtrace_vector_grow' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='235' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='__asan_backtrace_vector_grow' mangled-name='__asan_backtrace_vector_grow' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='235' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_vector_grow'>
       <!-- parameter of type 'backtrace_state*' -->
       <parameter type-id='type-id-1718'/>
       <!-- parameter of type 'typedef size_t' -->
@@ -40408,7 +40408,7 @@
       <return type-id='type-id-13'/>
     </function-decl>
     <!-- void __asan_backtrace_free(backtrace_state*, void*, size_t, backtrace_error_callback, void*) -->
-    <function-decl name='__asan_backtrace_free' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='212' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='__asan_backtrace_free' mangled-name='__asan_backtrace_free' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='212' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_free'>
       <!-- parameter of type 'backtrace_state*' -->
       <parameter type-id='type-id-1718'/>
       <!-- parameter of type 'void*' -->
@@ -40469,7 +40469,7 @@
       <return type-id='type-id-13'/>
     </function-decl>
     <!-- void* __asan_backtrace_alloc(backtrace_state*, size_t, backtrace_error_callback, void*) -->
-    <function-decl name='__asan_backtrace_alloc' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='206' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='__asan_backtrace_alloc' mangled-name='__asan_backtrace_alloc' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='206' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_alloc'>
       <!-- parameter of type 'backtrace_state*' -->
       <parameter type-id='type-id-1718'/>
       <!-- parameter of type 'typedef size_t' -->
@@ -40482,7 +40482,7 @@
       <return type-id='type-id-3'/>
     </function-decl>
     <!-- void __asan_backtrace_qsort(void*, size_t, size_t, int (void*, void*)*) -->
-    <function-decl name='__asan_backtrace_qsort' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='201' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='__asan_backtrace_qsort' mangled-name='__asan_backtrace_qsort' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='201' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_qsort'>
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-3'/>
       <!-- parameter of type 'typedef size_t' -->
@@ -40495,7 +40495,7 @@
       <return type-id='type-id-6'/>
     </function-decl>
     <!-- int __asan_backtrace_vector_release(backtrace_state*, backtrace_vector*, backtrace_error_callback, void*) -->
-    <function-decl name='__asan_backtrace_vector_release' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='253' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='__asan_backtrace_vector_release' mangled-name='__asan_backtrace_vector_release' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='253' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_vector_release'>
       <!-- parameter of type 'backtrace_state*' -->
       <parameter type-id='type-id-1718'/>
       <!-- parameter of type 'backtrace_vector*' -->
@@ -40540,7 +40540,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
     <!-- int __asan_backtrace_open(const char*, backtrace_error_callback, void*, int*) -->
-    <function-decl name='__asan_backtrace_open' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='159' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='__asan_backtrace_open' mangled-name='__asan_backtrace_open' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='159' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_open'>
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-32'/>
       <!-- parameter of type 'typedef backtrace_error_callback' -->
@@ -40553,7 +40553,7 @@
       <return type-id='type-id-13'/>
     </function-decl>
     <!-- int __asan_backtrace_initialize(backtrace_state*, int, backtrace_error_callback, void*, fileline*) -->
-    <function-decl name='__asan_backtrace_initialize' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='268' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='__asan_backtrace_initialize' mangled-name='__asan_backtrace_initialize' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='268' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_initialize'>
       <!-- parameter of type 'backtrace_state*' -->
       <parameter type-id='type-id-1718'/>
       <!-- parameter of type 'int' -->
@@ -40607,8 +40607,6 @@
       <!-- int -->
       <return type-id='type-id-13'/>
     </function-decl>
-  </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/sort.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/state.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
   </abi-instr>
