@@ -10059,12 +10059,12 @@ compare_dies_string_attribute_value(const Dwarf_Die *l, const Dwarf_Die *r,
     return false;
 
   ABG_ASSERT(l_attr.form == DW_FORM_strp
-	 || l_attr.form == DW_FORM_string
-	 || l_attr.form == DW_FORM_GNU_strp_alt);
+	     || l_attr.form == DW_FORM_string
+	     || l_attr.form == DW_FORM_GNU_strp_alt);
 
   ABG_ASSERT(r_attr.form == DW_FORM_strp
-	 || r_attr.form == DW_FORM_string
-	 || r_attr.form == DW_FORM_GNU_strp_alt);
+	     || r_attr.form == DW_FORM_string
+	     || r_attr.form == DW_FORM_GNU_strp_alt);
 
   if ((l_attr.form == DW_FORM_strp
        && r_attr.form == DW_FORM_strp)
