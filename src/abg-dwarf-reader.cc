@@ -346,7 +346,7 @@ static bool
 die_is_pointer_reference_or_typedef_type(const Dwarf_Die* die);
 
 static bool
-die_is_class_type(Dwarf_Die* die);
+die_is_class_type(const Dwarf_Die* die);
 
 static bool
 die_is_qualified_type(const Dwarf_Die* die);
@@ -9571,9 +9571,9 @@ die_is_pointer_reference_or_typedef_type(const Dwarf_Die* die)
 ///
 /// @return true iff @p die represents a class type.
 static bool
-die_is_class_type(Dwarf_Die* die)
+die_is_class_type(const Dwarf_Die* die)
 {
-  int tag = dwarf_tag(die);
+  int tag = dwarf_tag(const_cast<Dwarf_Die*>(die));
 
   if (tag == DW_TAG_class_type || tag == DW_TAG_structure_type)
     return true;
@@ -12132,27 +12132,38 @@ compare_as_decl_dies(const Dwarf_Die *l, const Dwarf_Die *r)
 {
   ABG_ASSERT(l && r);
 
-  if (dwarf_tag(const_cast<Dwarf_Die*>(l))
-      != dwarf_tag(const_cast<Dwarf_Die*>(r)))
+  int l_tag = dwarf_tag(const_cast<Dwarf_Die*>(l));
+  int r_tag = dwarf_tag(const_cast<Dwarf_Die*>(r));
+  if (l_tag != r_tag)
     return false;
 
   bool result = false;
-  if (compare_dies_string_attribute_value(l, r, DW_AT_linkage_name,
-					  result)
-      || compare_dies_string_attribute_value(l, r, DW_AT_MIPS_linkage_name,
-					     result))
+
+  if (l_tag == DW_TAG_subprogram || l_tag == DW_TAG_variable)
     {
-      if (!result)
-	return false;
+      // Fast path for functions and global variables.
+      if (compare_dies_string_attribute_value(l, r, DW_AT_linkage_name,
+					      result)
+	  || compare_dies_string_attribute_value(l, r, DW_AT_MIPS_linkage_name,
+						 result))
+	{
+	  if (!result)
+	    return false;
+	}
+
+      if (compare_dies_string_attribute_value(l, r, DW_AT_name,
+					      result))
+	{
+	  if (!result)
+	    return false;
+	}
+      return true;
     }
 
+  // Fast path for types.
   if (compare_dies_string_attribute_value(l, r, DW_AT_name,
 					  result))
-    {
-      if (!result)
-	return false;
-    }
-
+    return result;
   return true;
 }
 
