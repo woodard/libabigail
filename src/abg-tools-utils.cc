@@ -294,6 +294,131 @@ is_dir(const string& path)
   return false;
 }
 
+static const char* ANONYMOUS_STRUCT_INTERNAL_NAME = "__anonymous_struct__";
+static const char* ANONYMOUS_UNION_INTERNAL_NAME =  "__anonymous_union__";
+static const char* ANONYMOUS_ENUM_INTERNAL_NAME =   "__anonymous_enum__";
+
+static int ANONYMOUS_STRUCT_INTERNAL_NAME_LEN =
+  strlen(ANONYMOUS_STRUCT_INTERNAL_NAME);
+
+static int ANONYMOUS_UNION_INTERNAL_NAME_LEN =
+  strlen(ANONYMOUS_UNION_INTERNAL_NAME);
+
+static int ANONYMOUS_ENUM_INTERNAL_NAME_LEN =
+  strlen(ANONYMOUS_ENUM_INTERNAL_NAME);
+
+/// Getter of the prefix for the name of anonymous structs.
+///
+/// @reaturn the prefix for the name of anonymous structs.
+const char*
+get_anonymous_struct_internal_name_prefix()
+{return ANONYMOUS_STRUCT_INTERNAL_NAME;}
+
+/// Getter of the prefix for the name of anonymous unions.
+///
+/// @reaturn the prefix for the name of anonymous unions.
+const char*
+get_anonymous_union_internal_name_prefix()
+{return ANONYMOUS_UNION_INTERNAL_NAME;}
+
+/// Getter of the prefix for the name of anonymous enums.
+///
+/// @reaturn the prefix for the name of anonymous enums.
+const char*
+get_anonymous_enum_internal_name_prefix()
+{return ANONYMOUS_ENUM_INTERNAL_NAME;}
+
+/// Compare two fully qualified decl names by taking into account that
+/// they might have compontents that are anonymous types/namespace names.
+///
+/// For instance:
+///
+/// __anonymous_struct__1::foo and __anonymous_struct__2::foo are
+/// considered being equivalent qualified names because both are data
+/// members that belong to anonymous structs.  The anonymous structs
+/// are numbered so that we can tell them appart (and look them up)
+/// where there are several of them in the same scope.  But during
+/// comparison, for various purposes, we want to consider them as
+/// equivalent.
+///
+/// Similarly, __anonymous_struct__1::foo::__anonymous_struct__2::bar
+/// and __anonymous_struct__10::foo::__anonymous_struct__11::bar are
+/// equivalent.
+///
+/// But __anonymous_struct__1::foo::__anonymous_struct__2::bar and
+/// __anonymous_struct__10::foo::__anonymous_union__11::bar are not
+/// equivalent because the former designates a member of an anonymous
+/// struct and the latter designates a member of an anonymous union.
+///
+/// So this function handles those cases.
+///
+/// @param l the name of the first (left hand side) decl to consider.
+///
+/// @param r the name of the second (right hand side) decl to consider.
+///
+/// @return true iff @p l is equivalent to @p r when taking into
+/// account the anonymous scopes that both might have and if they
+/// might be anonymous themselves.
+bool
+decl_names_equal(const string& l, const string& r)
+{
+  string::size_type l_pos1 = 0, l_pos2 = 0, r_pos1 = 0, r_pos2 = 0;
+  string::size_type l_length = l.length(), r_length = r.length();
+
+  while (l_pos1 < l_length && r_pos1 < r_length)
+    {
+      l_pos2 = l.find("::", l_pos1);
+      r_pos2 = r.find("::", r_pos1);
+
+      if ((l.compare(l_pos1,
+		     ANONYMOUS_STRUCT_INTERNAL_NAME_LEN,
+		     ANONYMOUS_STRUCT_INTERNAL_NAME) == 0
+	   && r.compare(r_pos1,
+			ANONYMOUS_STRUCT_INTERNAL_NAME_LEN,
+			ANONYMOUS_STRUCT_INTERNAL_NAME) == 0)
+	  ||
+	  (l.compare(l_pos1,
+		     ANONYMOUS_UNION_INTERNAL_NAME_LEN,
+		     ANONYMOUS_UNION_INTERNAL_NAME) == 0
+	   && r.compare(r_pos1,
+			ANONYMOUS_UNION_INTERNAL_NAME_LEN,
+			ANONYMOUS_UNION_INTERNAL_NAME) == 0)
+	  ||
+	  (l.compare(l_pos1,
+		     ANONYMOUS_ENUM_INTERNAL_NAME_LEN,
+		     ANONYMOUS_ENUM_INTERNAL_NAME) == 0
+	   && r.compare(r_pos1,
+			ANONYMOUS_ENUM_INTERNAL_NAME_LEN,
+			ANONYMOUS_ENUM_INTERNAL_NAME) == 0))
+	{
+	  if (l_pos2 == l.npos || r_pos2 == r.npos)
+	    return true;
+
+	  l_pos1 = l_pos2 + 2;
+	  r_pos1 = r_pos2 + 2;
+	  continue;
+	}
+
+      if (l_pos2 == l.npos || r_pos2 == r.npos)
+	{
+	  if (l_pos2 != r_pos2)
+	    return false;
+
+	  return !l.compare(l_pos1, l_pos2, r,
+			    r_pos1, r_pos2);
+	}
+
+      if (l.compare(l_pos1, l_pos2 - l_pos1, r,
+		    r_pos1, r_pos2 - r_pos1))
+	return false;
+
+      l_pos1 = l_pos2 + 2;
+      r_pos1 = r_pos2 + 2;
+    }
+
+  return true;
+}
+
 /// If a given file is a symbolic link, get the canonicalized absolute
 /// path to the target file.
 ///

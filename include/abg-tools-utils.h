@@ -42,11 +42,16 @@ using std::set;
 using std::tr1::shared_ptr;
 
 const char* get_system_libdir();
+const char* get_anonymous_struct_internal_name_prefix();
+const char* get_anonymous_union_internal_name_prefix();
+const char* get_anonymous_enum_internal_name_prefix();
+
 bool file_exists(const string&);
 bool is_regular_file(const string&);
 bool is_dir(const string&);
 bool dir_exists(const string&);
 bool dir_is_empty(const string &);
+bool decl_names_equal(const string&, const string&);
 bool maybe_get_symlink_target_file_path(const string& file_path,
 					string& target_path);
 bool base_name(string const& path,

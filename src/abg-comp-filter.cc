@@ -30,6 +30,7 @@
 ABG_BEGIN_EXPORT_DECLARATIONS
 
 #include "abg-comp-filter.h"
+#include "abg-tools-utils.h"
 
 ABG_END_EXPORT_DECLARATIONS
 // </headers defining libabigail's API>
@@ -423,6 +424,13 @@ has_harmless_name_change(const decl_base_sptr& f, const decl_base_sptr& s)
 	  && (// ... an anonymous decl name changed into another
 	      // anonymous decl name ...
 	      (f->get_is_anonymous() && s->get_is_anonymous())
+	      ||
+	      // ... an anonymous decl name changed harmlessly into
+	      // another anonymous decl name ...
+	      ((f->get_is_anonymous_or_has_anonymous_parent()
+		&& s->get_is_anonymous_or_has_anonymous_parent())
+	       && tools_utils::decl_names_equal(f->get_qualified_name(),
+						s->get_qualified_name()))
 	      // ... a typedef name change, without having the
 	      // underlying type changed ...
 	      || (is_typedef(f)

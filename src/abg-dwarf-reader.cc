@@ -432,7 +432,7 @@ die_die_attribute(const Dwarf_Die* die,
 		  bool look_thru_abstract_origin = true);
 
 static string
-get_internal_anonynous_die_base_name(const Dwarf_Die *die);
+get_internal_anonymous_die_prefix_name(const Dwarf_Die *die);
 
 static string
 build_internal_anonymous_die_name(const string &base_name,
@@ -11132,7 +11132,7 @@ is_anonymous_type_die(Dwarf_Die *die)
 /// @return a string representing the base of the internal anonymous
 /// name.
 static string
-get_internal_anonynous_die_base_name(const Dwarf_Die *die)
+get_internal_anonymous_die_prefix_name(const Dwarf_Die *die)
 {
   ABG_ASSERT(die_is_type(die));
   ABG_ASSERT(die_string_attribute(die, DW_AT_name) == "");
@@ -11140,11 +11140,11 @@ get_internal_anonynous_die_base_name(const Dwarf_Die *die)
   int tag = dwarf_tag(const_cast<Dwarf_Die*>(die));
   string type_name;
   if (tag == DW_TAG_class_type || tag == DW_TAG_structure_type)
-    type_name = "__anonymous_struct__";
+    type_name = tools_utils::get_anonymous_struct_internal_name_prefix();
   else if (tag == DW_TAG_union_type)
-    type_name = "__anonymous_union__";
+    type_name = tools_utils::get_anonymous_union_internal_name_prefix();
   else if (tag == DW_TAG_enumeration_type)
-    type_name = "__anonymous_enum__";
+    type_name = tools_utils::get_anonymous_enum_internal_name_prefix();
 
   return type_name;
 }
@@ -11152,7 +11152,7 @@ get_internal_anonynous_die_base_name(const Dwarf_Die *die)
 /// Build a full internal anonymous type name.
 ///
 /// @param base_name this is the base name as returned by the function
-/// @ref get_internal_anonynous_die_base_name.
+/// @ref get_internal_anonymous_die_prefix_name.
 ///
 /// @param anonymous_type_index this is the index of the anonymous
 /// type in its scope.  That is, if there are more than one anonymous
@@ -11190,7 +11190,7 @@ static string
 get_internal_anonymous_die_name(Dwarf_Die *die,
 				size_t anonymous_type_index)
 {
-  string name = get_internal_anonynous_die_base_name(die);
+  string name = get_internal_anonymous_die_prefix_name(die);
   name = build_internal_anonymous_die_name(name, anonymous_type_index);
   return name;
 }
@@ -11280,7 +11280,7 @@ die_qualified_type_name(const read_context& ctxt,
 	  // that case, their name must be built with the function
 	  // get_internal_anonymous_die_name or something of the same
 	  // kind.
-	  name = get_internal_anonynous_die_base_name(die);
+	  name = get_internal_anonymous_die_prefix_name(die);
 
 	ABG_ASSERT(!name.empty());
 	repr = parent_name.empty() ? name : parent_name + separator + name;
@@ -13721,7 +13721,7 @@ build_enum_type(read_context&	ctxt,
   // If the enum is anonymous, let's give it a name.
   if (name.empty())
     {
-      name = get_internal_anonynous_die_base_name(die);
+      name = get_internal_anonymous_die_prefix_name(die);
       ABG_ASSERT(!name.empty());
       // But we remember that the type is anonymous.
       enum_is_anonymous = true;
@@ -14232,7 +14232,7 @@ add_or_update_class_type(read_context&	 ctxt,
     {
       // So we are looking at an anonymous struct.  Let's
       // give it a name.
-      name = get_internal_anonynous_die_base_name(die);
+      name = get_internal_anonymous_die_prefix_name(die);
       ABG_ASSERT(!name.empty());
       // But we remember that the type is anonymous.
       is_anonymous = true;
@@ -14581,7 +14581,7 @@ add_or_update_union_type(read_context&	ctxt,
     {
       // So we are looking at an anonymous union.  Let's give it a
       // name.
-      name = get_internal_anonynous_die_base_name(die);
+      name = get_internal_anonymous_die_prefix_name(die);
       ABG_ASSERT(!name.empty());
       // But we remember that the type is anonymous.
       is_anonymous = true;

@@ -45,6 +45,7 @@ runtestaltdwarf			\
 runtestcorediff			\
 runtestabidiffexit		\
 runtestini			\
+runtesttoolsutils		\
 $(CXX11_TESTS)
 
 if ENABLE_RUNNING_TESTS_WITH_PY3
@@ -132,6 +133,9 @@ runtesttypesstability_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestini_SOURCES = test-ini.cc
 runtestini_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
+
+runtesttoolsutils_SOURCES = test-tools-utils.cc
+runtesttoolsutils_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestsvg_SOURCES=test-svg.cc
 runtestsvg_LDADD=$(top_builddir)/src/libabigail.la

@@ -1371,6 +1371,15 @@ public:
   void
   set_is_anonymous(bool);
 
+  bool
+  get_has_anonymous_parent() const;
+
+  void
+  set_has_anonymous_parent(bool f) const;
+
+  bool
+  get_is_anonymous_or_has_anonymous_parent() const;
+
   const interned_string&
   get_linkage_name() const;
 

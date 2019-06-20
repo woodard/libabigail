@@ -2882,6 +2882,7 @@ struct decl_base::priv
 {
   bool			in_pub_sym_tab_;
   bool			is_anonymous_;
+  bool			has_anonymous_parent_;
   location		location_;
   context_rel		*context_;
   interned_string	name_;
@@ -2908,6 +2909,7 @@ struct decl_base::priv
   priv()
     : in_pub_sym_tab_(false),
       is_anonymous_(true),
+      has_anonymous_parent_(false),
       context_(),
       visibility_(VISIBILITY_DEFAULT)
   {}
@@ -2923,11 +2925,13 @@ struct decl_base::priv
       visibility_(vis)
   {
     is_anonymous_ = name_.empty();
+    has_anonymous_parent_ = false;
   }
 
   priv(const location& l)
     : in_pub_sym_tab_(false),
       is_anonymous_(true),
+      has_anonymous_parent_(false),
       location_(l),
       context_(),
       visibility_(VISIBILITY_DEFAULT)
@@ -3177,6 +3181,34 @@ void
 decl_base::set_is_anonymous(bool f)
 {priv_->is_anonymous_ = f;}
 
+/// Get the "has_anonymous_parent" flag of the current declaration.
+///
+/// Having an anoymous parent means having a anonymous parent scope
+/// (containing type or namespace) which is either direct or indirect.
+///
+/// @return true iff the current decl has a direct or indirect scope
+/// which is anonymous.
+bool
+decl_base::get_has_anonymous_parent() const
+{return priv_->has_anonymous_parent_;}
+
+/// Set the "has_anonymous_parent" flag of the current declaration.
+///
+/// Having an anoymous parent means having a anonymous parent scope
+/// (containing type or namespace) which is either direct or indirect.
+///
+/// @param f set the flag which says if the current decl has a direct
+/// or indirect scope which is anonymous.
+void
+decl_base::set_has_anonymous_parent(bool f) const
+{priv_->has_anonymous_parent_ = f;}
+
+/// @return the logical "OR" of decl_base::get_is_anonymous() and
+/// decl_base::get_has_anonymous_parent().
+bool
+decl_base::get_is_anonymous_or_has_anonymous_parent() const
+{return get_is_anonymous() || get_has_anonymous_parent();}
+
 /// Getter for the mangled name.
 ///
 /// @return the new mangled name.
@@ -3372,58 +3404,36 @@ equals(const decl_base& l, const decl_base& r, change_kind* k)
 	}
     }
 
-  // This is the name of the decls that we want to compare.  The kind
-  // of name we want to consider depends on if the containing scopes
-  // are anonymous or not.
-  interned_string ln = l.get_scoped_name(), rn = r.get_scoped_name();
-  scope_decl *lscope = l.get_scope(), *rscope = r.get_scope();
+  // This is the name of the decls that we want to compare.
+  interned_string ln = l.get_qualified_name(), rn = r.get_qualified_name();
 
-  /// If the current decl is anonymous, let's consider its scope
-  /// instead.  If the scope is anonymous as well, then we won't
-  /// consider it.
+  /// If both of the current decls have an anonymous scope then let's
+  /// compare their name component by component by properly handling
+  /// anonyous scopes. That's the slow path.
   ///
-  /// TODO: Ideally, we'll compare the fully qualified names of the
-  /// decls, comparing them component by component.  Whenever two
-  /// components are anonymous, don't compare them.
-  if (l.get_is_anonymous())
-    {
-      if (lscope && lscope->get_is_anonymous())
-	ln.clear();
-      else if (lscope)
-	ln = lscope->get_name();
-    }
-  else
-    {
-      if (lscope && lscope->get_is_anonymous())
-	ln = l.get_name();
-    }
+  /// Otherwise, let's just compare their name, the obvious way.
+  /// That's the fast path because in that case the names are
+  /// interned_string and comparing them is much faster.
+  bool decls_are_different = (ln != rn);
+  if (decls_are_different
+      && l.get_is_anonymous()
+      && !l.get_has_anonymous_parent()
+      && r.get_is_anonymous()
+      && !r.get_has_anonymous_parent())
+    // Both decls are anonymous and their scope are *NOT* anonymous.
+    // So we consider the decls to have equivalent names (both
+    // anonymous, remember).  We are still in the fast path here.
+    decls_are_different = false;
 
-    if (r.get_is_anonymous())
-    {
-      if (rscope && rscope->get_is_anonymous())
-	rn.clear();
-      else if (rscope)
-	rn = rscope->get_name();
-    }
-  else
-    {
-      if (rscope && rscope->get_is_anonymous())
-	rn = r.get_name();
-    }
+  if (decls_are_different
+      && l.get_has_anonymous_parent()
+      && r.get_has_anonymous_parent())
+    // This is the slow path as we are comparing the decl qualified
+    // names component by component, properly handling anonymous
+    // scopes.
+    decls_are_different = tools_utils::decl_names_equal(ln, rn);
 
-  if (// If the two scopes are anonymous then only consider the name
-      // of the decl, not its scope name.  This is because the two
-      // scope (internal) names might be different even though they
-      // are both anonymous.  In that case, the internal name of the
-      // scope is irrelevant so we want to ignore it.
-      lscope && lscope->get_is_anonymous()
-      && rscope && rscope->get_is_anonymous())
-    {
-      ln = l.get_name();
-      rn = r.get_name();
-    }
-
-  if (ln != rn)
+  if (decls_are_different)
     {
       result = false;
       if (k)
@@ -5226,6 +5236,11 @@ scope_decl::add_member_decl(const decl_base_sptr& member)
     priv_->member_scopes_.push_back(m);
 
   update_qualified_name(member);
+
+  // Propagate scope anonymity
+  if (get_has_anonymous_parent()
+      || (!is_global_scope(this) && get_is_anonymous()))
+    member->set_has_anonymous_parent(true);
 
   if (const environment* env = get_environment())
     set_environment_for_artifact(member, env);
