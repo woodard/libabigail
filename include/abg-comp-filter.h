@@ -42,6 +42,8 @@ namespace filtering
 bool
 has_harmless_name_change(const decl_base_sptr& f, const decl_base_sptr& s);
 
+bool union_diff_has_harmless_changes(const diff *d);
+
 bool
 has_harmful_name_change(const decl_base_sptr& f, const decl_base_sptr& s);
 

@@ -1319,6 +1319,25 @@ has_benign_infinite_array_change(const diff* dif)
     }
   return false;
 }
+
+/// Test if a union diff node does have changes that don't impact its
+/// size.
+///
+/// @param d the union diff node to consider.
+///
+/// @return true iff @p d is a diff node which has changes that don't
+/// impact its size.
+bool
+union_diff_has_harmless_changes(const diff *d)
+{
+  if (is_union_diff(d)
+      && d->has_changes()
+      && !has_type_size_change(d))
+    return true;
+
+  return false;
+}
+
 /// Detect if the changes carried by a given diff node are deemed
 /// harmless and do categorize the diff node accordingly.
 ///
@@ -1354,6 +1373,9 @@ categorize_harmless_diff_node(diff *d, bool pre)
       if (has_harmless_name_change(f, s)
 	  || class_diff_has_harmless_odr_violation_change(d))
 	category |= HARMLESS_DECL_NAME_CHANGE_CATEGORY;
+
+      if (union_diff_has_harmless_changes(d))
+	category |= HARMLESS_UNION_CHANGE_CATEGORY;
 
       if (has_non_virtual_mem_fn_change(d))
 	category |= NON_VIRT_MEM_FUN_CHANGE_CATEGORY;

@@ -2921,6 +2921,7 @@ get_default_harmless_categories_bitmap()
 	  | abigail::comparison::STATIC_DATA_MEMBER_CHANGE_CATEGORY
 	  | abigail::comparison::HARMLESS_ENUM_CHANGE_CATEGORY
 	  | abigail::comparison::HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY
+	  | abigail::comparison::HARMLESS_UNION_CHANGE_CATEGORY
 	  | abigail::comparison::CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY
 	  | abigail::comparison::FN_PARM_TYPE_TOP_CV_CHANGE_CATEGORY
 	  | abigail::comparison::FN_PARM_TYPE_CV_CHANGE_CATEGORY
@@ -3013,6 +3014,14 @@ operator<<(ostream& o, diff_category c)
       if (emitted_a_category)
 	o << "|";
       o << "HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY";
+      emitted_a_category |= true;
+    }
+
+  if (c & HARMLESS_UNION_CHANGE_CATEGORY)
+    {
+      if (emitted_a_category)
+	o << "|";
+      o << "HARMLESS_UNION_CHANGE_CATEORY";
       emitted_a_category |= true;
     }
 

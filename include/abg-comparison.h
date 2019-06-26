@@ -372,59 +372,61 @@ enum diff_category
   /// alias change that is harmless.
   HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY = 1 << 6,
 
+  HARMLESS_UNION_CHANGE_CATEGORY = 1 << 7,
+
   /// This means that a diff node was marked as suppressed by a
   /// user-provided suppression specification.
-  SUPPRESSED_CATEGORY = 1 << 7,
+  SUPPRESSED_CATEGORY = 1 << 8,
 
   /// This means that a diff node was warked as being for a private
   /// type.  That is, the diff node is meant to be suppressed by a
   /// suppression specification that was auto-generated to filter out
   /// changes to private types.
-  PRIVATE_TYPE_CATEGORY = 1 << 8,
+  PRIVATE_TYPE_CATEGORY = 1 << 9,
 
   /// This means the diff node (or at least one of its descendant
   /// nodes) carries a change that modifies the size of a type or an
   /// offset of a type member.  Removal or changes of enumerators in a
   /// enum fall in this category too.
-  SIZE_OR_OFFSET_CHANGE_CATEGORY = 1 << 9,
+  SIZE_OR_OFFSET_CHANGE_CATEGORY = 1 << 10,
 
   /// This means that a diff node in the sub-tree carries an
   /// incompatible change to a vtable.
-  VIRTUAL_MEMBER_CHANGE_CATEGORY = 1 << 10,
+  VIRTUAL_MEMBER_CHANGE_CATEGORY = 1 << 11,
 
   /// A diff node in this category is redundant.  That means it's
   /// present as a child of a other nodes in the diff tree.
-  REDUNDANT_CATEGORY = 1 << 11,
+  REDUNDANT_CATEGORY = 1 << 12,
 
   /// This means that a diff node in the sub-tree carries a class type
   /// that was declaration-only and that is now defined, or vice
   /// versa.
-  CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY = 1 << 12,
+  CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY = 1 << 13,
 
   /// A diff node in this category is a function parameter type which
   /// top cv-qualifiers change.
-  FN_PARM_TYPE_TOP_CV_CHANGE_CATEGORY = 1 << 13,
+  FN_PARM_TYPE_TOP_CV_CHANGE_CATEGORY = 1 << 14,
 
   /// A diff node in this category has a function parameter type with a
   /// cv-qualifiers change.
-  FN_PARM_TYPE_CV_CHANGE_CATEGORY = 1 << 14,
+  FN_PARM_TYPE_CV_CHANGE_CATEGORY = 1 << 15,
 
   /// A diff node in this category is a function return type with a
   /// cv-qualifier change.
-  FN_RETURN_TYPE_CV_CHANGE_CATEGORY = 1 << 15,
+  FN_RETURN_TYPE_CV_CHANGE_CATEGORY = 1 << 16,
 
   /// A diff node in this category is for a variable which type holds
   /// a cv-qualifier change.
-  VAR_TYPE_CV_CHANGE_CATEGORY = 1 << 16,
+  VAR_TYPE_CV_CHANGE_CATEGORY = 1 << 17,
 
   /// A diff node in this category carries a change from void pointer
   /// to non-void pointer.
-  VOID_PTR_TO_PTR_CHANGE_CATEGORY = 1 << 17,
+  VOID_PTR_TO_PTR_CHANGE_CATEGORY = 1 << 18,
 
   /// A diff node in this category carries a change in the size of the
   /// array type of a global variable, but the ELF size of the
   /// variable didn't change.
-  BENIGN_INFINITE_ARRAY_CHANGE_CATEGORY = 1 << 18,
+  BENIGN_INFINITE_ARRAY_CHANGE_CATEGORY = 1 << 19,
   /// A special enumerator that is the logical 'or' all the
   /// enumerators above.
   ///
@@ -438,6 +440,7 @@ enum diff_category
   | STATIC_DATA_MEMBER_CHANGE_CATEGORY
   | HARMLESS_ENUM_CHANGE_CATEGORY
   | HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY
+  | HARMLESS_UNION_CHANGE_CATEGORY
   | SUPPRESSED_CATEGORY
   | PRIVATE_TYPE_CATEGORY
   | SIZE_OR_OFFSET_CHANGE_CATEGORY
