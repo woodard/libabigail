@@ -1210,7 +1210,8 @@ public:
   traverse(ir_node_visitor&);
 
   virtual string
-  get_pretty_representation(bool internal = false) const = 0;
+  get_pretty_representation(bool internal = false,
+			    bool qualified_name = true) const = 0;
 }; // end class type_or_decl_base
 
 bool
@@ -1332,7 +1333,8 @@ public:
   get_hash() const;
 
   virtual string
-  get_pretty_representation(bool internal = false) const;
+  get_pretty_representation(bool internal = false,
+			    bool qualified_name = true) const;
 
   virtual void
   get_qualified_name(interned_string& qualified_name,
@@ -1777,7 +1779,8 @@ public:
   bool operator!=(const type_decl&)const;
 
   virtual string
-  get_pretty_representation(bool internal = false) const;
+  get_pretty_representation(bool internal = false,
+			    bool qualified_name = false) const;
 
   virtual bool
   traverse(ir_node_visitor&);
@@ -1829,7 +1832,8 @@ public:
 		 const location& locus, visibility vis = VISIBILITY_DEFAULT);
 
   virtual string
-  get_pretty_representation(bool internal = false) const;
+  get_pretty_representation(bool internal = false,
+			    bool qualified_name = true) const;
 
   virtual bool
   operator==(const decl_base&) const;
@@ -2203,7 +2207,8 @@ public:
     vector_as_string(const vector<subrange_sptr>&);
 
     virtual string
-    get_pretty_representation(bool internal = false) const;
+    get_pretty_representation(bool internal = false,
+			      bool qualified_name = true) const;
 
     virtual bool
     traverse(ir_node_visitor&);
@@ -2248,7 +2253,8 @@ public:
   is_infinite() const;
 
   virtual string
-  get_pretty_representation(bool internal = false) const;
+  get_pretty_representation(bool internal = false,
+			    bool qualified_name = true) const;
 
   virtual string
   get_subrange_representation() const;
@@ -2332,7 +2338,8 @@ public:
   get_enumerators();
 
   virtual string
-  get_pretty_representation(bool internal = false) const;
+  get_pretty_representation(bool internal = false,
+			    bool qualified_name = true) const;
 
   virtual bool
   operator==(const decl_base&) const;
@@ -2450,7 +2457,8 @@ public:
   operator==(const type_base&) const;
 
   virtual string
-  get_pretty_representation(bool internal = false) const;
+  get_pretty_representation(bool internal = false,
+			    bool qualified_name = true) const;
 
   type_base_sptr
   get_underlying_type() const;
@@ -2595,7 +2603,8 @@ public:
   get_hash() const;
 
   virtual string
-  get_pretty_representation(bool internal = false) const;
+  get_pretty_representation(bool internal = false,
+			    bool qualified_name = true) const;
 
   virtual bool
   traverse(ir_node_visitor& v);
@@ -2672,7 +2681,8 @@ public:
 		binding bind = BINDING_GLOBAL);
 
   virtual string
-  get_pretty_representation(bool internal = false) const;
+  get_pretty_representation(bool internal = false,
+			    bool qualified_name = true) const;
 
   string
   get_pretty_representation_of_declarator (bool internal = false) const;
@@ -2875,7 +2885,8 @@ public:
 		     bool internal = false) const;
 
   virtual string
-  get_pretty_representation(bool internal = false) const;
+  get_pretty_representation(bool internal = false,
+			    bool qualified_name = true) const;
 }; // end class function_decl::parameter
 
 bool
@@ -2971,7 +2982,8 @@ public:
   operator==(const type_base&) const;
 
   virtual string
-  get_pretty_representation(bool internal = false) const;
+  get_pretty_representation(bool internal = false,
+			    bool qualified_name = true) const;
 
   virtual bool
   traverse(ir_node_visitor&);
@@ -3045,7 +3057,8 @@ public:
   virtual ~method_type();
 
   virtual string
-  get_pretty_representation(bool internal = false) const;
+  get_pretty_representation(bool internal = false,
+			    bool qualified_name = true) const;
 
   friend interned_string
   get_method_type_name(const method_type& fn_type, bool internal);
@@ -3832,7 +3845,8 @@ public:
   get_naked_definition_of_declaration() const;
 
   virtual string
-  get_pretty_representation(bool internal = false) const;
+  get_pretty_representation(bool internal = false,
+			    bool qualified_name = true) const;
 
   void
   is_struct(bool f);
@@ -4034,7 +4048,8 @@ public:
 	     bool is_declaration_only = true);
 
   virtual string
-  get_pretty_representation(bool internal = false) const;
+  get_pretty_representation(bool internal = false,
+			    bool qualified_name = true) const;
 
   virtual bool
   operator==(const decl_base&) const;

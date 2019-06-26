@@ -3288,12 +3288,20 @@ decl_base::get_qualified_name(interned_string& qn, bool internal) const
 /// otherwise.  If you don't know what this is for, then set it to
 /// false.
 ///
+/// @param qualified_name if true, names emitted in the pretty
+/// representation are fully qualified.
+///
 /// @return the default pretty representation for a decl.  This is
 /// basically the fully qualified name of the decl optionally prefixed
 /// with a meaningful string to add context for the user.
 string
-decl_base::get_pretty_representation(bool internal) const
-{return get_qualified_name(internal);}
+decl_base::get_pretty_representation(bool internal,
+				     bool qualified_name) const
+{
+  if (qualified_name)
+    return get_qualified_name(internal);
+  return get_name();
+}
 
 /// Return the qualified name of the decl.
 ///
@@ -6459,7 +6467,8 @@ get_pretty_representation(const method_type_sptr method, bool internal)
 string
 get_class_or_union_flat_representation(const class_or_union& cou,
 				       const string& indent,
-				       bool one_line)
+				       bool one_line,
+				       bool qualified_names)
 {
   string repr;
   string local_indent = "  ";
@@ -6507,22 +6516,28 @@ get_class_or_union_flat_representation(const class_or_union& cou,
 	repr +=
 	  get_class_or_union_flat_representation
 	  (anonymous_data_member_to_class_or_union(*dm),
-	   real_indent, one_line);
+	   real_indent, one_line, qualified_names);
       else
 	{
 	  if (one_line)
 	    {
 	      if (dm != dmems.begin())
 		repr += real_indent;
-	      repr += (*dm)->get_pretty_representation();
+	      repr += (*dm)->get_pretty_representation(/*internal=*/false,
+						       qualified_names);
 	    }
 	  else
-	    repr +=  real_indent+ (*dm)->get_pretty_representation();
+	    repr +=
+	      real_indent+ (*dm)->get_pretty_representation(/*internal=*/false,
+							    qualified_names);
 	}
       repr += ";";
     }
 
-  repr += indent + "}";
+  if (one_line)
+    repr += "}";
+  else
+    repr += indent + "}";
 
   return repr;
 }
@@ -6546,10 +6561,12 @@ get_class_or_union_flat_representation(const class_or_union& cou,
 string
 get_class_or_union_flat_representation(const class_or_union* cou,
 				       const string& indent,
-				       bool one_line)
+				       bool one_line,
+				       bool qualified_names)
 {
   if (cou)
-    return get_class_or_union_flat_representation(*cou, indent, one_line);
+    return get_class_or_union_flat_representation(*cou, indent, one_line,
+						  qualified_names);
   return "";
 }
 
@@ -6572,8 +6589,12 @@ get_class_or_union_flat_representation(const class_or_union* cou,
 string
 get_class_or_union_flat_representation(const class_or_union_sptr& cou,
 				       const string& indent,
-				       bool one_line)
-{return get_class_or_union_flat_representation(cou.get(), indent, one_line);}
+				       bool one_line,
+				       bool qualified_names)
+{return get_class_or_union_flat_representation(cou.get(),
+					       indent,
+					       one_line,
+					       qualified_names);}
 
 /// By looking at the language of the TU a given ABI artifact belongs
 /// to, test if the ONE Definition Rule should apply.
@@ -11566,10 +11587,18 @@ operator!=(const type_decl_sptr& l, const type_decl_sptr& r)
 /// otherwise.  If you don't know what this is for, then set it to
 /// false.
 ///
+/// @param qualified_name if true, names emitted in the pretty
+/// representation are fully qualified.
+///
 /// @return the pretty representatin of the @ref type_decl.
 string
-type_decl::get_pretty_representation(bool internal) const
-{return get_qualified_name(internal);}
+type_decl::get_pretty_representation(bool internal,
+				     bool qualified_name) const
+{
+  if (qualified_name)
+    return get_qualified_name(internal);
+  return get_name();
+}
 
 /// This implements the ir_traversable_base::traverse pure virtual
 /// function.
@@ -11771,11 +11800,17 @@ namespace_decl::namespace_decl(const environment*	env,
 /// otherwise.  If you don't know what this is for, then set it to
 /// false.
 ///
+/// @param qualified_name if true, names emitted in the pretty
+/// representation are fully qualified.
+///
 /// @return a copy of the pretty representation of the namespace.
 string
-namespace_decl::get_pretty_representation(bool internal) const
+namespace_decl::get_pretty_representation(bool internal,
+					  bool qualified_name) const
 {
-  string r = "namespace " + scope_decl::get_pretty_representation(internal);
+  string r =
+    "namespace " + scope_decl::get_pretty_representation(internal,
+							 qualified_name);
   return r;
 }
 
@@ -13279,7 +13314,7 @@ array_type_def::subrange_type::operator!=(const subrange_type& o) const
 /// @return a copy of the pretty representation of the current
 /// instance of typedef_decl.
 string
-array_type_def::subrange_type::get_pretty_representation(bool) const
+array_type_def::subrange_type::get_pretty_representation(bool, bool) const
 {
   string name = get_name();
   string repr;
@@ -13407,7 +13442,8 @@ get_type_representation(const array_type_def& a, bool internal)
 /// otherwise.  If you don't know what this is for, then set it to
 /// false.
 string
-array_type_def::get_pretty_representation(bool internal) const
+array_type_def::get_pretty_representation(bool internal,
+					  bool /*qualified_name*/) const
 {return get_type_representation(*this, internal);}
 
 /// Compares two instances of @ref array_type_def.
@@ -13807,11 +13843,16 @@ enum_type_decl::get_enumerators()
 /// otherwise.  If you don't know what this is for, then set it to
 /// false.
 ///
+/// @param qualified_name if true, names emitted in the pretty
+/// representation are fully qualified.
+///
 /// @return the pretty representation of the enum type.
 string
-enum_type_decl::get_pretty_representation(bool internal) const
+enum_type_decl::get_pretty_representation(bool internal,
+					  bool qualified_name) const
 {
-  string r = "enum " + decl_base::get_pretty_representation(internal);
+  string r = "enum " + decl_base::get_pretty_representation(internal,
+							    qualified_name);
   return r;
 }
 
@@ -14393,12 +14434,22 @@ typedef_decl::operator==(const type_base& o) const
 /// otherwise.  If you don't know what this is for, then set it to
 /// false.
 ///
+/// @param qualified_name if true, names emitted in the pretty
+/// representation are fully qualified.
+///
 /// @return a copy of the pretty representation of the current
 /// instance of typedef_decl.
 string
-typedef_decl::get_pretty_representation(bool internal) const
+typedef_decl::get_pretty_representation(bool internal,
+					bool qualified_name) const
 {
-  string result = "typedef " + get_qualified_name(internal);
+
+  string result = "typedef ";
+  if (qualified_name)
+    result += get_qualified_name(internal);
+  else
+    result += get_name();
+
   return result;
 }
 
@@ -14815,9 +14866,12 @@ var_decl::get_qualified_name(bool internal) const
 /// otherwise.  If you don't know what this is for, then set it to
 /// false.
 ///
+/// @param qualified_name if true, names emitted in the pretty
+/// representation are fully qualified.
+///
 /// @return a copy of the pretty representation of this variable.
 string
-var_decl::get_pretty_representation(bool internal) const
+var_decl::get_pretty_representation(bool internal, bool qualified_name) const
 {
   string result;
 
@@ -14834,7 +14888,7 @@ var_decl::get_pretty_representation(bool internal) const
   if (array_type_def_sptr t = is_array_type(get_type()))
     {
       string name;
-      if (member_of_anonymous_class)
+      if (member_of_anonymous_class || !qualified_name)
 	name = get_name();
       else
 	name = get_qualified_name(internal);
@@ -14860,7 +14914,7 @@ var_decl::get_pretty_representation(bool internal) const
 	    (is_class_or_union_type(get_type()),
 	     "", /*one_line=*/true);
 	  result += " ";
-	  if (member_of_anonymous_class)
+	  if (member_of_anonymous_class || !qualified_name)
 	    // It doesn't make sense to name the member of an
 	    // anonymous class or union like:
 	    // "__anonymous__::data_member_name".  So let's just use
@@ -14875,7 +14929,7 @@ var_decl::get_pretty_representation(bool internal) const
 	    get_type_declaration(get_type())->get_qualified_name(internal)
 	    + " ";
 
-	  if (member_of_anonymous_class)
+	  if (member_of_anonymous_class || !qualified_name)
 	    // It doesn't make sense to name the member of an
 	    // anonymous class or union like:
 	    // "__anonymous__::data_member_name".  So let's just use
@@ -15432,7 +15486,8 @@ function_type::operator==(const type_base& other) const
 /// @return a copy of the pretty representation of the current @ref
 /// function_type.
 string
-function_type::get_pretty_representation(bool internal) const
+function_type::get_pretty_representation(bool internal,
+					 bool /*qualified_name*/) const
 {return ir::get_pretty_representation(this, internal);}
 
 /// Traverses an instance of @ref function_type, visiting all the
@@ -15646,7 +15701,8 @@ method_type::set_class_type(const class_or_union_sptr& t)
 /// @return a copy of the pretty representation of the current @ref
 /// method_type.
 string
-method_type::get_pretty_representation(bool internal) const
+method_type::get_pretty_representation(bool internal,
+				       bool /*qualified_name*/) const
 {return ir::get_pretty_representation(*this, internal);}
 
 /// Setter of the "is-const" property of @ref method_type.
@@ -15765,7 +15821,8 @@ function_decl::function_decl(const string&	name,
 ///
 /// @return the pretty representation for a function.
 string
-function_decl::get_pretty_representation(bool internal) const
+function_decl::get_pretty_representation(bool internal,
+					 bool /*qualified_name*/) const
 {
   const method_decl* mem_fn =
     dynamic_cast<const method_decl*>(this);
@@ -16661,7 +16718,8 @@ function_decl::parameter::get_qualified_name(interned_string& qualified_name,
 /// @return a copy of the textual representation of the current
 /// function parameter.
 string
-function_decl::parameter::get_pretty_representation(bool internal) const
+function_decl::parameter::get_pretty_representation(bool internal,
+						    bool /*qualified_name*/) const
 {
   const environment* env = get_environment();
   ABG_ASSERT(env);
@@ -18354,9 +18412,13 @@ class_decl::sort_virtual_mem_fns()
 /// otherwise.  If you don't know what this is for, then set it to
 /// false.
 ///
+/// @param qualified_name if true, names emitted in the pretty
+/// representation are fully qualified.
+///
 /// @return the pretty representaion for a class_decl.
 string
-class_decl::get_pretty_representation(bool internal) const
+class_decl::get_pretty_representation(bool internal,
+				      bool qualified_name) const
 {
   string cl = "class ";
   if (!internal && is_struct())
@@ -18381,7 +18443,13 @@ class_decl::get_pretty_representation(bool internal) const
 						      /*one_line=*/true);
     }
 
-  return cl + get_qualified_name(internal);
+  string result = cl;
+  if (qualified_name)
+    result += get_qualified_name(internal);
+  else
+    result += get_name();
+
+  return result;
 }
 
 decl_base_sptr
@@ -19987,16 +20055,26 @@ union_decl::union_decl(const environment* env,
 /// otherwise.  If you don't know what this is for, then set it to
 /// false.
 ///
+/// @param qualified_name if true, names emitted in the pretty
+/// representation are fully qualified.
+///
 /// @return the pretty representaion for a union_decl.
 string
-union_decl::get_pretty_representation(bool internal) const
+union_decl::get_pretty_representation(bool internal,
+				      bool qualified_name) const
 {
   string repr;
   if (get_is_anonymous() && !internal)
     repr = get_class_or_union_flat_representation(this, "",
 						  /*one_line=*/true);
   else
-    repr = "union " + get_qualified_name(internal);
+    {
+      repr = "union ";
+      if (qualified_name)
+	repr += get_qualified_name(internal);
+      else
+	repr += get_name();
+    }
 
   return repr;
 }

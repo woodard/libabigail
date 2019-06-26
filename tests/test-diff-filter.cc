@@ -556,6 +556,13 @@ InOutSpec in_out_specs[] =
     "data/test-diff-filter/test-PR24731-report-0.txt",
     "output/test-diff-filter/test-PR24731-report-0.txt",
   },
+  {
+    "data/test-diff-filter/test-PR24731-v0.o ",
+    "data/test-diff-filter/test-PR24731-v1.o ",
+    "--no-default-suppression --harmless",
+    "data/test-diff-filter/test-PR24731-report-1.txt",
+    "output/test-diff-filter/test-PR24731-report-1.txt",
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };

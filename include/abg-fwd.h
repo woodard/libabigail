@@ -916,17 +916,20 @@ get_pretty_representation(const method_type_sptr&,
 string
 get_class_or_union_flat_representation(const class_or_union& cou,
 				       const string& indent,
-				       bool one_line);
+				       bool one_line,
+				       bool qualified_name = true);
 
 string
 get_class_or_union_flat_representation(const class_or_union* cou,
 				       const string& indent,
-				       bool one_line);
+				       bool one_line,
+				       bool qualified_name = true);
 
 string
 get_class_or_union_flat_representation(const class_or_union_sptr& cou,
 				       const string& indent,
-				       bool one_line);
+				       bool one_line,
+				       bool qualified_name = true);
 
 bool
 odr_is_relevant(const type_or_decl_base&);
