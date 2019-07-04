@@ -506,7 +506,7 @@ die_pretty_print(read_context& ctxt,
 		 size_t where_offset);
 
 static void
-maybe_canonicalize_type(Dwarf_Die* die,
+maybe_canonicalize_type(const Dwarf_Die* die,
 			read_context& ctxt);
 
 static uint64_t
@@ -4009,7 +4009,7 @@ public:
   ///
   /// @return true iff a canonical DIE was found for @p die.
   bool
-  get_canonical_die(Dwarf_Die *die,
+  get_canonical_die(const Dwarf_Die *die,
 		    Dwarf_Die &canonical_die,
 		    size_t where,
 		    bool die_as_type) const
@@ -4024,7 +4024,7 @@ public:
       : const_cast<read_context*>(this)->canonical_decl_die_offsets_.
       get_container(source);
 
-    Dwarf_Off die_offset = dwarf_dieoffset(die);
+    Dwarf_Off die_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(die));
     if (Dwarf_Off canonical_die_offset =
 	get_canonical_die_offset(canonical_dies, die_offset))
       {
@@ -4633,7 +4633,7 @@ public:
   ///
   /// @return the artifact found.
   type_or_decl_base_sptr
-  lookup_artifact_from_die(Dwarf_Die *die, bool die_as_type = false) const
+  lookup_artifact_from_die(const Dwarf_Die *die, bool die_as_type = false) const
   {
     Dwarf_Die equiv_die;
     if (!get_or_compute_canonical_die(die, equiv_die, /*where=*/0, die_as_type))
@@ -5051,7 +5051,7 @@ public:
   /// @return the type associated to the DIE or NULL if no type is
   /// associated to the DIE.
   type_base_sptr
-  lookup_type_from_die(Dwarf_Die* die) const
+  lookup_type_from_die(const Dwarf_Die* die) const
   {
     type_or_decl_base_sptr artifact =
       lookup_artifact_from_die(die, /*die_as_type=*/true);
@@ -5538,7 +5538,7 @@ public:
   /// @param die the type DIE to schedule for late type
   /// canonicalization.
   void
-  schedule_type_for_late_canonicalization(Dwarf_Die *die)
+  schedule_type_for_late_canonicalization(const Dwarf_Die *die)
   {
     Dwarf_Off o;
     die_source source;
@@ -16534,12 +16534,12 @@ read_debug_info_into_corpus(read_context& ctxt)
 ///
 /// @param ctxt the @ref read_context to use.
 static void
-maybe_canonicalize_type(Dwarf_Die *die, read_context&	ctxt)
+maybe_canonicalize_type(const Dwarf_Die *die, read_context& ctxt)
 {
   die_source source;
   ABG_ASSERT(ctxt.get_die_source(die, source));
 
-  size_t die_offset = dwarf_dieoffset(die);
+  size_t die_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(die));
   type_base_sptr t = ctxt.lookup_type_from_die(die);
 
   if (!t)
