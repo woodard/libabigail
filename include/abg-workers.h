@@ -31,10 +31,10 @@
 #ifndef __ABG_WORKERS_H__
 #define __ABG_WORKERS_H__
 
-#include <tr1/memory>
 #include <vector>
+#include "abg-cxx-compat.h"
 
-using std::tr1::shared_ptr;
+using abg_compat::shared_ptr;
 
 namespace abigail
 {

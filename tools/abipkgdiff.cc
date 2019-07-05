@@ -95,8 +95,8 @@
 #include <vector>
 #include <algorithm>
 #include <map>
-#include <tr1/unordered_set>
 
+#include "abg-cxx-compat.h"
 #include "abg-workers.h"
 #include "abg-config.h"
 #include "abg-tools-utils.h"
@@ -110,11 +110,11 @@ using std::string;
 using std::ostream;
 using std::vector;
 using std::map;
-using std::tr1::unordered_set;
+using abg_compat::unordered_set;
 using std::set;
 using std::ostringstream;
-using std::tr1::shared_ptr;
-using std::tr1::dynamic_pointer_cast;
+using abg_compat::shared_ptr;
+using abg_compat::dynamic_pointer_cast;
 using abigail::workers::task;
 using abigail::workers::task_sptr;
 using abigail::workers::queue;
@@ -1532,7 +1532,7 @@ maybe_create_private_types_suppressions(package& pkg, const options &opts)
       pkg.private_types_suppressions().push_back(suppr);
     }
 
-  return suppr;
+  return bool(suppr);
 }
 
 /// If the user wants to avoid comparing DSOs that are private to this

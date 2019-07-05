@@ -43,7 +43,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
-#include <tr1/memory>
+#include "abg-cxx-compat.h"
 #include "abg-fwd.h"
 
 namespace abigail
@@ -57,7 +57,7 @@ namespace abigail
 namespace diff_utils
 {
 
-using std::tr1::shared_ptr;
+using abg_compat::shared_ptr;
 
 // Inject the names from std:: below into this namespace
 using std::string;

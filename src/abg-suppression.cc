@@ -25,8 +25,9 @@
 /// This contains the implementation of the suppression engine of
 /// libabigail.
 
-#include "abg-internal.h"
 #include <algorithm>
+#include "abg-cxx-compat.h"
+#include "abg-internal.h"
 
 // <headers defining libabigail's API go under here>
 ABG_BEGIN_EXPORT_DECLARATIONS
@@ -47,7 +48,7 @@ namespace abigail
 namespace suppr
 {
 
-using std::tr1::dynamic_pointer_cast;
+using abg_compat::dynamic_pointer_cast;
 
 // <suppression_base stuff>
 

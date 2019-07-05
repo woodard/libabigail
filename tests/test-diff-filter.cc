@@ -660,7 +660,7 @@ int
 main()
 {
   using std::vector;
-  using std::tr1::dynamic_pointer_cast;
+  using abg_compat::dynamic_pointer_cast;
   using abigail::workers::queue;
   using abigail::workers::task;
   using abigail::workers::task_sptr;

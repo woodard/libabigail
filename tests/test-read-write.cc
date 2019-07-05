@@ -28,6 +28,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <vector>
+#include "abg-cxx-compat.h"
 #include "abg-ir.h"
 #include "abg-reader.h"
 #include "abg-writer.h"
@@ -40,7 +41,7 @@ using std::vector;
 using std::ofstream;
 using std::cerr;
 
-using std::tr1::dynamic_pointer_cast;
+using abg_compat::dynamic_pointer_cast;
 
 using abigail::tools_utils::file_type;
 using abigail::tools_utils::check_file;

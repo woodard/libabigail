@@ -23,7 +23,7 @@
 #ifndef __ABG_SUPPRESSION_H__
 #define __ABG_SUPPRESSION_H__
 
-#include <tr1/unordered_set>
+#include "abg-cxx-compat.h"
 #include "abg-ini.h"
 #include "abg-comparison.h"
 
@@ -43,7 +43,7 @@ namespace suppr
 {
 
 using namespace abigail::comparison;
-using std::tr1::unordered_set;
+using abg_compat::unordered_set;
 
 /// Base type of the suppression specifications types.
 ///

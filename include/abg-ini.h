@@ -28,11 +28,11 @@
 #ifndef __ABG_INI_H__
 #define __ABG_INI_H__
 
-#include <tr1/memory>
 #include <string>
 #include <vector>
 #include <istream>
 #include <ostream>
+#include "abg-cxx-compat.h"
 
 namespace abigail
 {
@@ -40,8 +40,8 @@ namespace abigail
 namespace ini
 {
 // Inject some standard types in this namespace.
-using std::tr1::shared_ptr;
-using std::tr1::dynamic_pointer_cast;
+using abg_compat::shared_ptr;
+using abg_compat::dynamic_pointer_cast;
 using std::string;
 using std::vector;
 using std:: pair;

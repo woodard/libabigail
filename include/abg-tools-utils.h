@@ -20,13 +20,13 @@
 
 ///@file
 
-#include <tr1/memory>
 #include <string>
 #include <set>
 #include <ostream>
 #include <istream>
 #include <iostream>
-#include <abg-suppression.h>
+#include "abg-cxx-compat.h"
+#include "abg-suppression.h"
 
 namespace abigail
 {
@@ -39,7 +39,7 @@ using std::istream;
 using std::ifstream;
 using std::string;
 using std::set;
-using std::tr1::shared_ptr;
+using abg_compat::shared_ptr;
 
 const char* get_system_libdir();
 const char* get_anonymous_struct_internal_name_prefix();
@@ -275,7 +275,7 @@ bool
 file_is_kernel_debuginfo_package(const string& file_path,
 				 file_type file_type);
 
-std::tr1::shared_ptr<char>
+abg_compat::shared_ptr<char>
 make_path_absolute(const char*p);
 
 char*

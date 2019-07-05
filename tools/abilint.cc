@@ -35,6 +35,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include "abg-cxx-compat.h"
 #include "abg-config.h"
 #include "abg-tools-utils.h"
 #include "abg-ir.h"
@@ -81,7 +82,7 @@ struct options
   bool				read_tu;
   bool				diff;
   bool				noout;
-  std::tr1::shared_ptr<char>	di_root_path;
+  abg_compat::shared_ptr<char>	di_root_path;
   vector<string>		suppression_paths;
   string			headers_dir;
 

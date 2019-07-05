@@ -29,13 +29,13 @@
 #include <cstring>
 #include <cstdlib>
 #include <cerrno>
-#include <tr1/unordered_map>
 #include <deque>
 #include <assert.h>
 #include <sstream>
 #include <libxml/xmlstring.h>
 #include <libxml/xmlreader.h>
 
+#include "abg-cxx-compat.h"
 #include "abg-suppression-priv.h"
 
 #include "abg-internal.h"
@@ -63,9 +63,9 @@ namespace xml_reader
 {
 using std::string;
 using std::deque;
-using std::tr1::shared_ptr;
-using std::tr1::unordered_map;
-using std::tr1::dynamic_pointer_cast;
+using abg_compat::shared_ptr;
+using abg_compat::unordered_map;
+using abg_compat::dynamic_pointer_cast;
 using std::vector;
 using std::istream;
 #ifdef WITH_ZIP_ARCHIVE
@@ -404,7 +404,7 @@ public:
     if (d)
       return (ir::get_translation_unit(d) == get_translation_unit());
     else if (function_type_sptr fn_type = is_function_type(type))
-      return lookup_function_type(fn_type, *get_translation_unit());
+      return bool(lookup_function_type(fn_type, *get_translation_unit()));
     else
       return false;
   }
@@ -1901,7 +1901,7 @@ read_corpus_from_input(read_context& ctxt)
   do
     {
       translation_unit_sptr tu = read_translation_unit_from_input(ctxt);
-      is_ok = tu;
+      is_ok = bool(tu);
     }
   while (is_ok);
 
@@ -2750,7 +2750,7 @@ build_elf_symbol_db(read_context& ctxt,
 
   ctxt.set_corpus_node(node);
 
-  typedef std::tr1::unordered_map<xmlNodePtr, elf_symbol_sptr>
+  typedef abg_compat::unordered_map<xmlNodePtr, elf_symbol_sptr>
     xml_node_ptr_elf_symbol_sptr_map_type;
   xml_node_ptr_elf_symbol_sptr_map_type xml_node_ptr_elf_symbol_map;
 

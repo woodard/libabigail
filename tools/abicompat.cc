@@ -48,7 +48,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <tr1/memory>
+#include "abg-cxx-compat.h"
 #include "abg-config.h"
 #include "abg-tools-utils.h"
 #include "abg-corpus.h"
@@ -62,7 +62,7 @@ using std::cout;
 using std::ostream;
 using std::ofstream;
 using std::vector;
-using std::tr1::shared_ptr;
+using abg_compat::shared_ptr;
 
 using abigail::tools_utils::emit_prefix;
 

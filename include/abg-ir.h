@@ -33,7 +33,7 @@
 #include <assert.h>
 #include <stdint.h>
 #include <cstdlib>
-#include <tr1/unordered_map>
+#include "abg-cxx-compat.h"
 #include "abg-fwd.h"
 #include "abg-hash.h"
 #include "abg-traverse.h"
@@ -105,7 +105,7 @@ namespace ir
 {
 
 // Inject some std::tr1 types in here.
-using std::tr1::unordered_map;
+using abg_compat::unordered_map;
 
 /// A convenience typedef fo r an ordered set of size_t.
 typedef unordered_set<size_t> pointer_set;
@@ -132,8 +132,8 @@ public:
   /// the pretty representation string of a particular type and the
   /// value is the vector of canonical types that have the same pretty
   /// representation string.
-  typedef std::tr1::unordered_map<string,
-				  std::vector<type_base_sptr> > canonical_types_map_type;
+  typedef abg_compat::unordered_map<string, std::vector<type_base_sptr> >
+      canonical_types_map_type;
 
 private:
   struct priv;
@@ -354,7 +354,7 @@ struct type_or_decl_hash
   operator()(const type_or_decl_base *artifact) const
   {
     string repr =  get_pretty_representation(artifact);
-    std::tr1::hash<string> do_hash;
+    abg_compat::hash<string> do_hash;
     return do_hash(repr);
   }
 
@@ -723,7 +723,7 @@ typedef weak_ptr<elf_symbol> elf_symbol_wptr;
 
 /// Convenience typedef for a map which key is a string and which
 /// value if the elf symbol of the same name.
-typedef std::tr1::unordered_map<string, elf_symbol_sptr>
+typedef abg_compat::unordered_map<string, elf_symbol_sptr>
 string_elf_symbol_sptr_map_type;
 
 /// Convenience typedef for a shared pointer to an
@@ -736,7 +736,7 @@ typedef std::vector<elf_symbol_sptr> elf_symbols;
 
 /// Convenience typedef for a map which key is a string and which
 /// value is a vector of elf_symbol.
-typedef std::tr1::unordered_map<string, elf_symbols>
+typedef abg_compat::unordered_map<string, elf_symbols>
 string_elf_symbols_map_type;
 
 /// Convenience typedef for a shared pointer to

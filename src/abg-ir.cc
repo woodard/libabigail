@@ -31,9 +31,8 @@
 #include <iterator>
 #include <typeinfo>
 #include <sstream>
-#include <tr1/memory>
-#include <tr1/unordered_map>
 
+#include "abg-cxx-compat.h"
 #include "abg-internal.h"
 // <headers defining libabigail's API go under here>
 ABG_BEGIN_EXPORT_DECLARATIONS
@@ -130,9 +129,9 @@ namespace abigail
 using std::string;
 using std::list;
 using std::vector;
-using std::tr1::unordered_map;
-using std::tr1::dynamic_pointer_cast;
-using std::tr1::static_pointer_cast;
+using abg_compat::unordered_map;
+using abg_compat::dynamic_pointer_cast;
+using abg_compat::static_pointer_cast;
 
 /// Convenience typedef for a map of string -> string*.
 typedef unordered_map<string, string*> pool_map_type;
@@ -1620,7 +1619,7 @@ elf_symbol::get_next_alias() const
 ///@return true iff the current elf_symbol has an alias.
 bool
 elf_symbol::has_aliases() const
-{return get_next_alias();}
+{return bool(get_next_alias());}
 
 /// Get the number of aliases to this elf symbol
 ///
@@ -1698,7 +1697,7 @@ bool
 elf_symbol::has_other_common_instances() const
 {
   ABG_ASSERT(is_common_symbol());
-  return get_next_common_instance();
+  return bool(get_next_common_instance());
 }
 
 /// Get the next common instance of the current common symbol.
@@ -1955,7 +1954,7 @@ elf_symbol::operator==(const elf_symbol& other) const
 {
   bool are_equal = textually_equals(*this, other);
   if (!are_equal)
-    are_equal = get_alias_which_equals(other);
+    are_equal = bool(get_alias_which_equals(other));
   return are_equal;
 }
 
@@ -21649,7 +21648,7 @@ hash_type_or_decl(const type_or_decl_base *tod)
 	  ABG_ASSERT(v->get_type());
 	  size_t h = hash_type_or_decl(v->get_type());
 	  string repr = v->get_pretty_representation();
-	  std::tr1::hash<string> hash_string;
+	  abg_compat::hash<string> hash_string;
 	  h = hashing::combine_hashes(h, hash_string(repr));
 	  result = h;
 	}
@@ -21658,7 +21657,7 @@ hash_type_or_decl(const type_or_decl_base *tod)
 	  ABG_ASSERT(f->get_type());
 	  size_t h = hash_type_or_decl(f->get_type());
 	  string repr = f->get_pretty_representation();
-	  std::tr1::hash<string> hash_string;
+	  abg_compat::hash<string> hash_string;
 	  h = hashing::combine_hashes(h, hash_string(repr));
 	  result = h;
 	}
@@ -21666,8 +21665,8 @@ hash_type_or_decl(const type_or_decl_base *tod)
 	{
 	  type_base_sptr parm_type = p->get_type();
 	  ABG_ASSERT(parm_type);
-	  std::tr1::hash<bool> hash_bool;
-	  std::tr1::hash<unsigned> hash_unsigned;
+	  abg_compat::hash<bool> hash_bool;
+	  abg_compat::hash<unsigned> hash_unsigned;
 	  size_t h = hash_type_or_decl(parm_type);
 	  h = hashing::combine_hashes(h, hash_unsigned(p->get_index()));
 	  h = hashing::combine_hashes(h, hash_bool(p->get_variadic_marker()));
@@ -21676,8 +21675,8 @@ hash_type_or_decl(const type_or_decl_base *tod)
       else if (class_decl::base_spec *bs = is_class_base_spec(d))
 	{
 	  member_base::hash hash_member;
-	  std::tr1::hash<size_t> hash_size;
-	  std::tr1::hash<bool> hash_bool;
+	  abg_compat::hash<size_t> hash_size;
+	  abg_compat::hash<bool> hash_bool;
 	  type_base_sptr type = bs->get_base_class();
 	  size_t h = hash_type_or_decl(type);
 	  h = hashing::combine_hashes(h, hash_member(*bs));

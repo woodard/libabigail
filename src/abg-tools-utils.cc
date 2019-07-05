@@ -62,6 +62,7 @@
 
 #include "abg-dwarf-reader.h"
 #include "abg-internal.h"
+#include "abg-cxx-compat.h"
 // <headers defining libabigail's API go under here>
 ABG_BEGIN_EXPORT_DECLARATIONS
 
@@ -1591,10 +1592,10 @@ struct malloced_char_star_deleter
 /// @param p the path to turn into an absolute path.
 ///
 /// @return a shared pointer to the resulting absolute path.
-std::tr1::shared_ptr<char>
+abg_compat::shared_ptr<char>
 make_path_absolute(const char*p)
 {
-  using std::tr1::shared_ptr;
+  using abg_compat::shared_ptr;
 
   shared_ptr<char> result;
 

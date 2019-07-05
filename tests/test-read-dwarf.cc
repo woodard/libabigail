@@ -40,7 +40,7 @@ using std::vector;
 using std::string;
 using std::ofstream;
 using std::cerr;
-using std::tr1::dynamic_pointer_cast;
+using abg_compat::dynamic_pointer_cast;
 using abigail::tests::get_build_dir;
 using abigail::dwarf_reader::read_corpus_from_elf;
 using abigail::dwarf_reader::read_context;

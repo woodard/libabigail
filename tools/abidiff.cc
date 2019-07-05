@@ -38,7 +38,7 @@ using std::string;
 using std::ostream;
 using std::cout;
 using std::cerr;
-using std::tr1::shared_ptr;
+using abg_compat::shared_ptr;
 using abigail::ir::environment;
 using abigail::ir::environment_sptr;
 using abigail::translation_unit;

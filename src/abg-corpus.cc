@@ -26,8 +26,8 @@
 #include <cassert>
 #include <stdexcept>
 #include <algorithm>
-#include <tr1/unordered_map>
 
+#include "abg-cxx-compat.h"
 #include "abg-internal.h"
 // <headers defining libabigail's API go under here>
 ABG_BEGIN_EXPORT_DECLARATIONS
@@ -56,7 +56,7 @@ namespace ir
 {
 
 using std::ostringstream;
-using std::tr1::unordered_map;
+using abg_compat::unordered_map;
 using std::list;
 using std::vector;
 

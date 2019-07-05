@@ -32,6 +32,7 @@
 #ifndef __ABG_COMPARISON_PRIV_H__
 #define __ABG_COMPARISON_PRIV_H__
 
+#include "abg-cxx-compat.h"
 #include "abg-internal.h"
 // <headers defining libabigail's API go under here>
 ABG_BEGIN_EXPORT_DECLARATIONS
@@ -52,13 +53,13 @@ namespace abigail
 namespace comparison
 {
 
-using std::tr1::unordered_set;
+using abg_compat::unordered_set;
 using namespace abigail::suppr;
 
 // Inject types from outside in here.
 using std::vector;
-using std::tr1::dynamic_pointer_cast;
-using std::tr1::static_pointer_cast;
+using abg_compat::dynamic_pointer_cast;
+using abg_compat::static_pointer_cast;
 using abigail::sptr_utils::noop_deleter;
 
 /// Convenience typedef for a pair of decls or types.

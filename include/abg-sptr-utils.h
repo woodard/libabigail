@@ -25,9 +25,9 @@
 #ifndef __ABG_SPTR_UTILS_H__
 #define __ABG_SPTR_UTILS_H__
 
-#include <tr1/memory>
 #include <regex.h>
 #include <libxml/xmlreader.h>
+#include "abg-cxx-compat.h"
 
 namespace abigail
 {
@@ -36,7 +36,7 @@ namespace abigail
 namespace sptr_utils
 {
 
-using std::tr1::shared_ptr;
+using abg_compat::shared_ptr;
 
 /// This is to be specialized for the diverse C types that needs
 /// wrapping in shared_ptr.

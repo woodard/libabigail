@@ -78,7 +78,7 @@ const InOutSpec archive_spec =
 using std::string;
 using std::cerr;
 using std::ofstream;
-using std::tr1::shared_ptr;
+using abg_compat::shared_ptr;
 using abigail::corpus;
 using abigail::corpus_sptr;
 using abigail::translation_unit;

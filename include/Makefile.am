@@ -20,6 +20,7 @@ abg-config.h		\
 abg-ini.h		\
 abg-workers.h		\
 abg-traverse.h		\
+abg-cxx-compat.h	\
 abg-version.h		\
 abg-viz-common.h	\
 abg-viz-dot.h		\

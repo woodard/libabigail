@@ -39,14 +39,13 @@
 #include <elfutils/libdwfl.h>
 #include <dwarf.h>
 #include <algorithm>
-#include <tr1/unordered_map>
-#include <tr1/unordered_set>
 #include <stack>
 #include <deque>
 #include <list>
 #include <ostream>
 #include <sstream>
 
+#include "abg-cxx-compat.h"
 #include "abg-ir-priv.h"
 #include "abg-suppression-priv.h"
 #include "abg-corpus-priv.h"
@@ -77,10 +76,10 @@ using std::cerr;
 namespace dwarf_reader
 {
 
-using std::tr1::dynamic_pointer_cast;
-using std::tr1::static_pointer_cast;
-using std::tr1::unordered_map;
-using std::tr1::unordered_set;
+using abg_compat::dynamic_pointer_cast;
+using abg_compat::static_pointer_cast;
+using abg_compat::unordered_map;
+using abg_compat::unordered_set;
 using std::stack;
 using std::deque;
 using std::list;
@@ -5837,7 +5836,7 @@ public:
   /// @return if there is a corpus group being built, false otherwise.
   bool
   has_corpus_group() const
-  {return cur_corpus_group_;}
+  {return bool(cur_corpus_group_);}
 
   /// Return the main corpus from the current corpus group, if any.
   ///

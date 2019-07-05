@@ -25,6 +25,7 @@
 /// This file contains definitions of diff objects filtering
 /// facilities.
 
+#include "abg-cxx-compat.h"
 #include "abg-internal.h"
 // <headers defining libabigail's API go under here>
 ABG_BEGIN_EXPORT_DECLARATIONS
@@ -42,7 +43,7 @@ namespace comparison
 namespace filtering
 {
 
-using std::tr1::dynamic_pointer_cast;
+using abg_compat::dynamic_pointer_cast;
 
 /// Walk the diff sub-trees of a a @ref corpus_diff and apply a filter
 /// to the nodes visted.  The filter categorizes each node, assigning

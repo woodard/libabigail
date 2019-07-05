@@ -30,13 +30,13 @@
 
 #include <ostream>
 #include <string>
-#include <tr1/memory>
+#include "abg-cxx-compat.h"
 
 namespace abigail
 {
 
 using std::ostream;
-using std::tr1::shared_ptr;
+using abg_compat::shared_ptr;
 
 namespace comparison
 {

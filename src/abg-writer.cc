@@ -33,8 +33,8 @@
 #include <vector>
 #include <stack>
 #include <algorithm>
-#include <tr1/unordered_map>
 
+#include "abg-cxx-compat.h"
 #include "abg-tools-utils.h"
 
 #include "abg-internal.h"
@@ -59,16 +59,16 @@ ABG_END_EXPORT_DECLARATIONS
 namespace abigail
 {
 using std::cerr;
-using std::tr1::shared_ptr;
-using std::tr1::dynamic_pointer_cast;
-using std::tr1::static_pointer_cast;
+using abg_compat::shared_ptr;
+using abg_compat::dynamic_pointer_cast;
+using abg_compat::static_pointer_cast;
 using std::ofstream;
 using std::ostream;
 using std::ostringstream;
 using std::list;
 using std::vector;
 using std::stack;
-using std::tr1::unordered_map;
+using abg_compat::unordered_map;
 using abigail::sptr_utils::noop_deleter;
 
 #if WITH_ZIP_ARCHIVE

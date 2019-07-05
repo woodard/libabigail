@@ -20,9 +20,9 @@
 
 /// @file
 
-#include <tr1/memory>
 #include <istream>
-#include <abg-sptr-utils.h>
+#include "abg-sptr-utils.h"
+#include "abg-cxx-compat.h"
 
 namespace abigail
 {
@@ -32,7 +32,7 @@ namespace xml
 {
 
 using sptr_utils::build_sptr;
-using std::tr1::shared_ptr;
+using abg_compat::shared_ptr;
 using sptr_utils::reader_sptr;
 using sptr_utils::xml_char_sptr;
 
