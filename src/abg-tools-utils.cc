@@ -42,7 +42,6 @@
 #include <ctype.h>
 #include <errno.h>
 #include <libgen.h>
-#include <ext/stdio_filebuf.h> // For __gnu_cxx::stdio_filebuf
 // If fts.h is included before config.h, its indirect inclusions may
 // not give us the right LFS aliases of these functions, so map them
 // manually.
@@ -1071,10 +1070,9 @@ convert_char_stars_to_char_star_stars(const vector<char*> &char_stars,
 /// The private data of the @ref temp_file type.
 struct temp_file::priv
 {
-  char*					path_template_;
-  int						fd_;
-  shared_ptr<__gnu_cxx::stdio_filebuf<char> >	filebuf_;
-  shared_ptr<std::iostream>			iostream_;
+  char*			   path_template_;
+  int			   fd_;
+  shared_ptr<std::fstream> fstream_;
 
   priv()
   {
@@ -1088,18 +1086,17 @@ struct temp_file::priv
     if (fd_ == -1)
       return;
 
-    using __gnu_cxx::stdio_filebuf;
-    filebuf_.reset(new stdio_filebuf<char>(fd_,
-					   std::ios::in | std::ios::out));
-    iostream_.reset(new std::iostream(filebuf_.get()));
+    fstream_.reset(new std::fstream(path_template_,
+				    std::ios::trunc
+				    | std::ios::in
+				    | std::ios::out));
   }
 
   ~priv()
   {
     if (fd_ && fd_ != -1)
       {
-	iostream_.reset();
-	filebuf_.reset();
+	fstream_.reset();
 	close(fd_);
 	remove(path_template_);
       }
@@ -1120,7 +1117,7 @@ temp_file::temp_file()
 /// useable.
 bool
 temp_file::is_good() const
-{return (priv_->fd_ && priv_->fd_ != -1);}
+{return priv_->fstream_->good();}
 
 /// Return the path to the temporary file.
 ///
@@ -1135,19 +1132,19 @@ temp_file::get_path() const
   return 0;
 }
 
-/// Get the iostream to the temporary file.
+/// Get the fstream to the temporary file.
 ///
 /// Note that the current process is aborted if this member function
 /// is invoked on an instance of @ref temp_file that is not usable.
 /// So please test that the instance is usable by invoking the
 /// temp_file::is_good() member function on it first.
 ///
-/// @return the iostream to the temporary file.
-std::iostream&
+/// @return the fstream to the temporary file.
+std::fstream&
 temp_file::get_stream()
 {
   ABG_ASSERT(is_good());
-  return *priv_->iostream_;
+  return *priv_->fstream_;
 }
 
 /// Create the temporary file and return it if it's usable.

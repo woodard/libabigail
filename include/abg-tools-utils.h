@@ -129,7 +129,7 @@ typedef shared_ptr<temp_file> temp_file_sptr;
 /// This is a helper file around the  mkstemp API.
 ///
 /// Once the temporary file is created, users can interact with it
-/// using an iostream.  They can also get the path to the newly
+/// using an fstream.  They can also get the path to the newly
 /// created temporary file.
 ///
 /// When the instance of @ref temp_file is destroyed, the underlying
@@ -152,7 +152,7 @@ public:
   const char*
   get_path() const;
 
-  std::iostream&
+  std::fstream&
   get_stream();
 
   static temp_file_sptr

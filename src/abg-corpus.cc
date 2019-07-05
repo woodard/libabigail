@@ -24,7 +24,6 @@
 #include <cstdio>
 #include <cstring>
 #include <cassert>
-#include <ext/stdio_filebuf.h>
 #include <stdexcept>
 #include <algorithm>
 #include <tr1/unordered_map>
