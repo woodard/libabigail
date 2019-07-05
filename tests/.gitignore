@@ -25,6 +25,7 @@ runtestlookupsyms
 runtestreaddwarf
 runtestreadwrite
 runtestsvg
+runtesttoolsutils
 runtesttypesstability
 testdiff2
 testirwalker
