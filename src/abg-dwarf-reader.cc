@@ -509,6 +509,15 @@ static void
 maybe_canonicalize_type(const Dwarf_Die* die,
 			read_context& ctxt);
 
+static void
+maybe_canonicalize_type(const type_base_sptr&	t,
+			read_context&		ctxt);
+
+static void
+maybe_canonicalize_type(const Dwarf_Die*	die,
+			const type_base_sptr&	t,
+			read_context&		ctxt);
+
 static uint64_t
 get_default_array_lower_bound(translation_unit::language l);
 
@@ -15294,6 +15303,7 @@ build_function_type(read_context&	ctxt,
       ctxt.die_wip_function_types_map(source).erase(i);
   }
 
+  maybe_canonicalize_type(result, ctxt);
   return result;
 }
 
@@ -16527,6 +16537,30 @@ read_debug_info_into_corpus(read_context& ctxt)
 /// all of its sub-types are canonicalized themselve.  Non composite
 /// types are always deemed suitable for early canonicalization.
 ///
+/// Note that this function doesn't work on *ANONYMOUS* classes,
+/// structs, unions or enums because it first does some
+/// canonicalization of the DWARF DIE @p die.  That canonicalization
+/// is done by looking up @p die by name; and because these are
+/// anonymous types, they don't have names! and so that
+/// canonicalization fails.  So the type artifact associated to @p
+/// die often ends being *NOT* canonicalized.  This later leads to
+/// extreme slowness of operation, especially when comparisons are
+/// later performed on these anonymous types.
+///
+/// So when you have classes, structs, unions, or enums that can be
+/// anonymous, please use this overload instead:
+///
+///     void
+///     maybe_canonicalize_type(const Dwarf_Die*	die,
+///				const type_base_sptr&	t,
+///				read_context&		ctxt);
+///
+/// It knows how to deal with anonymous types.
+///
+/// @p looks up the type artifact
+/// associated to @p die.  During that lookup, ; but then those types don't have
+/// names because they are anonymous.
+///
 /// @param die the type DIE to consider for canonicalization.  Note
 /// that this DIE must have been associated with its type using the
 /// function read_context::associate_die_to_type() prior to calling
@@ -16568,6 +16602,120 @@ maybe_canonicalize_type(const Dwarf_Die *die, read_context& ctxt)
     ctxt.schedule_type_for_late_canonicalization(die);
   else
     canonicalize(t);
+}
+
+/// Canonicalize a type if it's suitable for early canonicalizing, or,
+/// if it's not, schedule it for late canonicalization, after the
+/// debug info of the current translation unit has been fully read.
+///
+/// A (composite) type is deemed suitable for early canonicalizing iff
+/// all of its sub-types are canonicalized themselve.  Non composite
+/// types are always deemed suitable for early canonicalization.
+///
+/// Note that this function nows how to deal with anonymous classes,
+/// structs and enums, unlike the overload below:
+///
+///     void maybe_canonicalize_type(const Dwarf_Die *die, read_context& ctxt)
+///
+/// The problem, though is that this function is much slower that that
+/// overload above because of how the types that are meant for later
+/// canonicalization are stored.  So the idea is that this function
+/// should be used only for the smallest possible subset of types that
+/// are anonymous and thus cannot be handled by the overload above.
+///
+/// @param t the type DIE to consider for canonicalization.
+///
+/// @param ctxt the @ref read_context to use.
+static void
+maybe_canonicalize_type(const type_base_sptr& t,
+			read_context&	ctxt)
+{
+  if (!t)
+    return;
+
+  type_base_sptr peeled_type =
+    peel_typedef_pointer_or_reference_type(t, /*peel_qual_types=*/false);
+  if (is_class_type(peeled_type)
+      || is_union_type(peeled_type)
+      || is_function_type(peeled_type)
+      || is_array_type(peeled_type)
+      || is_qualified_type(peeled_type))
+    // We delay canonicalization of classes/unions or typedef,
+    // pointers, references and array to classes/unions.  This is
+    // because the (underlying) class might not be finished yet and we
+    // might not be able to able detect it here (thinking about
+    // classes that are work-in-progress, or classes that might be
+    // later amended by some DWARF construct).  So we err on the safe
+    // side.  We also delay canonicalization for array and qualified
+    // types because they can be edited (in particular by
+    // maybe_strip_qualification) after they are initially built.
+    ctxt.schedule_type_for_late_canonicalization(t);
+  else if (type_has_non_canonicalized_subtype(t))
+    ctxt.schedule_type_for_late_canonicalization(t);
+  else
+    canonicalize(t);
+}
+
+/// Canonicalize a type if it's suitable for early canonicalizing, or,
+/// if it's not, schedule it for late canonicalization, after the
+/// debug info of the current translation unit has been fully read.
+///
+/// A (composite) type is deemed suitable for early canonicalizing iff
+/// all of its sub-types are canonicalized themselve.  Non composite
+/// types are always deemed suitable for early canonicalization.
+///
+/// Note that this function knows how to properly use either one of
+/// the following two overloads:
+///
+///     1/
+///     void maybe_canonicalize_type(const Dwarf_Die*	die,
+///				     const type_base_sptr&	t,
+///				     read_context&		ctxt);
+///
+///     2/
+///     void maybe_canonicalize_type(const Dwarf_Die *die, read_context& ctxt);
+///
+/// So this function uses 1/ for most types and uses uses 2/ for
+/// anonymous struct/classes and enum types.  It also uses it for
+/// function types.  Using 2/ is slower and bigger than using 1/, but
+/// then 1/ doesn't know how to deal with anonymous types.  That's why
+/// this function uses 2/ only for the types that really need it.
+///
+/// @param die the DIE of the type denoted by @p t.
+///
+/// @param t the type to consider.  Its DIE is @p die.
+///
+/// @param ctxt the read context in use.
+static void
+maybe_canonicalize_type(const Dwarf_Die	*die,
+			const type_base_sptr&	t,
+			read_context&		ctxt)
+{
+  if (const class_or_union_sptr cl = is_class_or_union_type(t))
+    {
+      if (cl->get_is_anonymous())
+	{
+	  maybe_canonicalize_type(t, ctxt);
+	  return;
+	}
+    }
+
+  if (const enum_type_decl_sptr e = is_enum_type(t))
+    {
+      if (e->get_is_anonymous())
+	{
+	  maybe_canonicalize_type(t, ctxt);
+	  return ;
+	}
+    }
+
+  if (const function_type_sptr ft = is_function_type(t))
+    {
+      maybe_canonicalize_type(ft, ctxt);
+      return;
+    }
+
+  maybe_canonicalize_type(die, ctxt);
 }
 
 /// If a given decl is a member type declaration, set its access
@@ -16820,7 +16968,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	    if (klass)
 	      {
 		maybe_set_member_type_access_specifier(klass, die);
-		maybe_canonicalize_type(die, ctxt);
+		maybe_canonicalize_type(die, klass, ctxt);
 	      }
 	  }
       }
@@ -16836,7 +16984,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	  if (union_type)
 	    {
 	      maybe_set_member_type_access_specifier(union_type, die);
-	      maybe_canonicalize_type(die, ctxt);
+	      maybe_canonicalize_type(die, union_type, ctxt);
 	    }
 	  result = union_type;
 	}

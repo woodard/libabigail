@@ -7038,7 +7038,7 @@
     <pointer-type-def type-id='type-id-514' size-in-bits='64' id='type-id-501'/>
     <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='82' column='1' id='type-id-515'>
       <member-type access='public'>
-        <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='85' column='1' id='type-id-516'>
+        <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='85' column='1' id='type-id-480'>
           <data-member access='private'>
             <var-decl name='__wch' type-id='type-id-69' visibility='default' filepath='/usr/include/wchar.h' line='88' column='1'/>
           </data-member>
@@ -7051,7 +7051,7 @@
         <var-decl name='__count' type-id='type-id-5' visibility='default' filepath='/usr/include/wchar.h' line='84' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='32'>
-        <var-decl name='__value' type-id='type-id-516' visibility='default' filepath='/usr/include/wchar.h' line='93' column='1'/>
+        <var-decl name='__value' type-id='type-id-480' visibility='default' filepath='/usr/include/wchar.h' line='93' column='1'/>
       </data-member>
     </class-decl>
     <reference-type-def kind='lvalue' type-id='type-id-93' size-in-bits='64' id='type-id-503'/>
