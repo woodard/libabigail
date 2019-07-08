@@ -602,10 +602,7 @@ public:
   bool
   type_is_emitted(const type_base *t)
   {
-    type_base *c = t->get_naked_canonical_type();
-    if (c == 0)
-      c = const_cast<type_base*>(t);
-    return m_emitted_type_set.find(c) != m_emitted_type_set.end();
+    return m_emitted_type_set.find(t) != m_emitted_type_set.end();
   }
 
   /// Test if a given type has been written out to the XML output.
