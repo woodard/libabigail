@@ -1167,13 +1167,66 @@ class type_or_decl_base : public ir_traversable_base
 
 protected:
 
+  /// This is a bitmap type which instance is meant to contain the
+  /// runtime type of a given ABI artifact.  Bits of the identifiers
+  /// of the type of a given artifact as well as the types it inherits
+  /// from are to be set to 1.
+  enum type_or_decl_kind
+  {
+    ABSTRACT_TYPE_OR_DECL,
+    ABSTRACT_DECL_BASE = 1,
+    ABSTRACT_SCOPE_DECL = 1 << 1,
+    GLOBAL_SCOPE_DECL = 1 << 2,
+    NAMESPACE_DECL = 1 << 3,
+    VAR_DECL = 1 << 4,
+    FUNCTION_DECL = 1 << 5,
+    FUNCTION_PARAMETER_DECL = 1 << 6,
+    METHOD_DECL = 1 << 7,
+    TEMPLATE_DECL = 1 << 8,
+    ABSTRACT_TYPE_BASE = 1 << 9,
+    ABSTRACT_SCOPE_TYPE_DECL = 1 << 10,
+    BASIC_TYPE = 1 << 11,
+    QUALIFIED_TYPE = 1 << 12,
+    POINTER_TYPE = 1 << 13,
+    REFERENCE_TYPE = 1 << 14,
+    ARRAY_TYPE = 1 << 15,
+    ENUM_TYPE = 1 << 16,
+    TYPEDEF_TYPE = 1 << 17,
+    CLASS_TYPE = 1 << 18,
+    UNION_TYPE = 1 << 19,
+    FUNCTION_TYPE = 1 << 20,
+    METHOD_TYPE = 1 << 21,
+  }; // end enum type_or_decl_kind
+
+  enum type_or_decl_kind
+  kind() const;
+
+  void
+  kind(enum type_or_decl_kind);
+
+  const void*
+  runtime_type_instance() const;
+
+  void*
+  runtime_type_instance();
+
+  void
+  runtime_type_instance(void*);
+
+  const void*
+  type_or_decl_base_pointer() const;
+
+  void*
+  type_or_decl_base_pointer();
+
   bool hashing_started() const;
 
   void hashing_started(bool) const;
 
 public:
 
-  type_or_decl_base(const environment*);
+  type_or_decl_base(const environment*,
+		    enum type_or_decl_kind k = ABSTRACT_TYPE_OR_DECL);
 
   type_or_decl_base(const type_or_decl_base&);
 
@@ -1212,7 +1265,51 @@ public:
   virtual string
   get_pretty_representation(bool internal = false,
 			    bool qualified_name = true) const = 0;
+
+  friend type_or_decl_base::type_or_decl_kind
+  operator|(type_or_decl_base::type_or_decl_kind,
+	    type_or_decl_base::type_or_decl_kind);
+
+  friend type_or_decl_base::type_or_decl_kind&
+  operator|=(type_or_decl_base::type_or_decl_kind&,
+	     type_or_decl_base::type_or_decl_kind);
+
+  friend type_or_decl_base::type_or_decl_kind
+  operator&(type_or_decl_base::type_or_decl_kind,
+	    type_or_decl_base::type_or_decl_kind);
+
+  friend type_or_decl_base::type_or_decl_kind&
+  operator&=(type_or_decl_base::type_or_decl_kind&,
+	     type_or_decl_base::type_or_decl_kind);
+
+  friend class_decl*
+  is_class_type(const type_or_decl_base*);
+
+  friend pointer_type_def*
+  is_pointer_type(type_or_decl_base*);
+
+  friend type_base*
+  is_type(const type_or_decl_base*);
+
+  friend decl_base*
+  is_decl(const type_or_decl_base* d);
 }; // end class type_or_decl_base
+
+type_or_decl_base::type_or_decl_kind
+operator|(type_or_decl_base::type_or_decl_kind,
+	  type_or_decl_base::type_or_decl_kind);
+
+type_or_decl_base::type_or_decl_kind&
+operator|=(type_or_decl_base::type_or_decl_kind&,
+	   type_or_decl_base::type_or_decl_kind);
+
+type_or_decl_base::type_or_decl_kind
+operator&(type_or_decl_base::type_or_decl_kind,
+	  type_or_decl_base::type_or_decl_kind);
+
+type_or_decl_base::type_or_decl_kind&
+operator&=(type_or_decl_base::type_or_decl_kind&,
+	   type_or_decl_base::type_or_decl_kind);
 
 bool
 operator==(const type_or_decl_base&, const type_or_decl_base&);
@@ -1590,12 +1687,7 @@ class global_scope : public scope_decl
 {
   translation_unit* translation_unit_;
 
-  global_scope(translation_unit *tu)
-    : type_or_decl_base(tu->get_environment()),
-      decl_base(tu->get_environment(), "", location()),
-      scope_decl(tu->get_environment(), "", location()),
-      translation_unit_(tu)
-  {}
+  global_scope(translation_unit *tu);
 
 public:
 

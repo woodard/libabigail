@@ -408,13 +408,10 @@ bool
 is_anonymous_type(const type_base_sptr&);
 
 const type_decl*
-is_type_decl(const type_base*);
+is_type_decl(const type_or_decl_base*);
 
 type_decl_sptr
-is_type_decl(const type_base_sptr&);
-
-type_decl_sptr
-is_type_decl(const decl_base_sptr&);
+is_type_decl(const type_or_decl_base_sptr&);
 
 typedef_decl_sptr
 is_typedef(const type_or_decl_base_sptr);

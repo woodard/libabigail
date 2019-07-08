@@ -2646,16 +2646,91 @@ environment::intern(const string& s) const
 /// The private data of @ref type_or_decl_base.
 struct type_or_decl_base::priv
 {
+  // This holds the kind of dynamic type of particular instance.
+  // Yes, this is part of the implementation of a "poor man" runtime
+  // type identification.  We are doing this because profiling shows
+  // that using dynamic_cast in some places is really to slow and is
+  // constituting a hotspot.  This poor man's implementation made
+  // things be much faster.
+  enum type_or_decl_kind	kind_;
+  // This holds the runtime type instance pointer of particular
+  // instance.  In other words, this is the "this pointer" of the
+  // dynamic type of a particular instance.
+  void*			rtti_;
+  // This holds a pointer to either the type_base sub-object (if the
+  // current instance is a type) or the decl_base sub-object (if the
+  // current instance is a decl).  This is used by the is_decl() and
+  // is_type() functions, which also show up during profiling as
+  // hotspots, due to their use of dynamic_cast.
+  void*			type_or_decl_ptr_;
   bool				hashing_started_;
   const environment*		env_;
   translation_unit*		translation_unit_;
 
-  priv(const environment* e = 0)
-    : hashing_started_(),
+  /// Constructor of the type_or_decl_base::priv private type.
+  ///
+  /// @param e the environment in which the ABI artifact was created.
+  ///
+  /// @param k the identifier of the runtime type of the current
+  /// instance of ABI artifact.
+  priv(const environment* e = 0,
+       enum type_or_decl_kind k = ABSTRACT_TYPE_OR_DECL)
+    : kind_(k),
+      rtti_(),
+      type_or_decl_ptr_(),
+      hashing_started_(),
       env_(e),
       translation_unit_()
   {}
+
+  enum type_or_decl_kind
+  kind() const
+  {return kind_;}
+
+  void
+  kind (enum type_or_decl_kind k)
+  {kind_ |= k;}
 }; // end struct type_or_decl_base::priv
+
+/// bitwise "OR" operator for the type_or_decl_base::type_or_decl_kind
+/// bitmap type.
+type_or_decl_base::type_or_decl_kind
+operator|(type_or_decl_base::type_or_decl_kind l,
+	  type_or_decl_base::type_or_decl_kind r)
+{
+  return static_cast<type_or_decl_base::type_or_decl_kind>
+    (static_cast<unsigned>(l) | static_cast<unsigned>(r));
+}
+
+/// bitwise "|=" operator for the type_or_decl_base::type_or_decl_kind
+/// bitmap type.
+type_or_decl_base::type_or_decl_kind&
+operator|=(type_or_decl_base::type_or_decl_kind& l,
+	   type_or_decl_base::type_or_decl_kind r)
+{
+  l = l | r;
+  return l;
+}
+
+/// bitwise "AND" operator for the
+/// type_or_decl_base::type_or_decl_kind bitmap type.
+type_or_decl_base::type_or_decl_kind
+operator&(type_or_decl_base::type_or_decl_kind l,
+	  type_or_decl_base::type_or_decl_kind r)
+{
+  return static_cast<type_or_decl_base::type_or_decl_kind>
+    (static_cast<unsigned>(l) & static_cast<unsigned>(r));
+}
+
+/// bitwise "A&=" operator for the
+/// type_or_decl_base::type_or_decl_kind bitmap type.
+type_or_decl_base::type_or_decl_kind&
+operator&=(type_or_decl_base::type_or_decl_kind& l,
+	  type_or_decl_base::type_or_decl_kind r)
+{
+  l = l & r;
+  return l;
+}
 
 /// Default constructor of @ref type_or_decl_base.
 type_or_decl_base::type_or_decl_base()
@@ -2663,8 +2738,14 @@ type_or_decl_base::type_or_decl_base()
 {}
 
 /// Constructor of @ref type_or_decl_base.
-type_or_decl_base::type_or_decl_base(const environment* e)
-  :priv_(new priv(e))
+///
+/// @param the environment the current ABI artifact is constructed
+/// from.
+///
+/// @param k the runtime identifier bitmap of the type being built.
+type_or_decl_base::type_or_decl_base(const environment* e,
+				     enum type_or_decl_kind k)
+  :priv_(new priv(e, k))
 {}
 
 /// Copy constructor of @ref type_or_decl_base.
@@ -2674,6 +2755,83 @@ type_or_decl_base::type_or_decl_base(const type_or_decl_base& o)
 /// The destructor of the @ref type_or_decl_base type.
 type_or_decl_base::~type_or_decl_base()
 {}
+
+/// Getter for the "kind" property of @ref type_or_decl_base type.
+///
+/// This property holds the identifier bitmap of the runtime type of
+/// an ABI artifact.
+///
+/// @return the runtime type identifier bitmap of the current ABI
+/// artifact.
+enum type_or_decl_base::type_or_decl_kind
+type_or_decl_base::kind() const
+{return priv_->kind();}
+
+/// Setter for the "kind" property of @ref type_or_decl_base type.
+///
+/// This property holds the identifier bitmap of the runtime type of
+/// an ABI artifact.
+///
+/// @param the runtime type identifier bitmap of the current ABI
+/// artifact.
+void
+type_or_decl_base::kind(enum type_or_decl_kind k)
+{priv_->kind(k);}
+
+/// Getter of the pointer to the runtime type sub-object of the
+/// current instance.
+///
+/// @return the pointer to the runtime type sub-object of the current
+/// instance.
+const void*
+type_or_decl_base::runtime_type_instance() const
+{return priv_->rtti_;}
+
+/// Getter of the pointer to the runtime type sub-object of the
+/// current instance.
+///
+/// @return the pointer to the runtime type sub-object of the current
+/// instance.
+void*
+type_or_decl_base::runtime_type_instance()
+{return priv_->rtti_;}
+
+/// Setter of the pointer to the runtime type sub-object of the
+/// current instance.
+///
+/// @param i the new pointer to the runtime type sub-object of the
+/// current instance.
+void
+type_or_decl_base::runtime_type_instance(void* i)
+{
+  priv_->rtti_ = i;
+  if (type_base* t = dynamic_cast<type_base*>(this))
+    priv_->type_or_decl_ptr_ = t;
+  else if (decl_base *d = dynamic_cast<decl_base*>(this))
+    priv_->type_or_decl_ptr_ = d;
+}
+
+/// Getter of the pointer to either the type_base sub-object of the
+/// current instance if it's a type, or to the decl_base sub-object of
+/// the current instance if it's a decl.
+///
+/// @return the pointer to either the type_base sub-object of the
+/// current instance if it's a type, or to the decl_base sub-object of
+/// the current instance if it's a decl.
+const void*
+type_or_decl_base::type_or_decl_base_pointer() const
+{return const_cast<type_or_decl_base*>(this)->type_or_decl_base_pointer();}
+
+/// Getter of the pointer to either the type_base sub-object of the
+/// current instance if it's a type, or to the decl_base sub-object of
+/// the current instance if it's a decl.
+///
+/// @return the pointer to either the type_base sub-object of the
+/// current instance if it's a type, or to the decl_base sub-object of
+/// the current instance if it's a decl.
+void*
+type_or_decl_base::type_or_decl_base_pointer()
+{return priv_->type_or_decl_ptr_;}
 
 /// Getter for the 'hashing_started' property.
 ///
@@ -2961,9 +3119,10 @@ decl_base::decl_base(const environment* e,
 		     const location&	locus,
 		     const string&	linkage_name,
 		     visibility	vis)
-  : type_or_decl_base(e),
+  : type_or_decl_base(e, ABSTRACT_DECL_BASE),
     priv_(new priv(e->intern(name), locus, e->intern(linkage_name), vis))
-{}
+{
+}
 
 /// Constructor.
 ///
@@ -2983,7 +3142,7 @@ decl_base::decl_base(const environment* e,
 		     const location& locus,
 		     const interned_string& linkage_name,
 		     visibility vis)
-  : type_or_decl_base(e),
+  : type_or_decl_base(e, ABSTRACT_DECL_BASE),
     priv_(new priv(name, locus, linkage_name, vis))
 {}
 
@@ -2995,7 +3154,7 @@ decl_base::decl_base(const environment* e,
 /// @param l the location where to find the declaration in the source
 /// code.
 decl_base::decl_base(const environment* e, const location& l)
-  : type_or_decl_base(e),
+  : type_or_decl_base(e, ABSTRACT_DECL_BASE),
     priv_(new priv(l))
 {}
 
@@ -5112,7 +5271,7 @@ scope_decl::scope_decl(const environment* env,
 		       const string& name,
 		       const location& locus,
 		       visibility vis)
-  : type_or_decl_base(env),
+  : type_or_decl_base(env, ABSTRACT_SCOPE_DECL|ABSTRACT_DECL_BASE),
     decl_base(env, name, locus, /*mangled_name=*/name, vis),
     priv_(new priv)
 {}
@@ -5125,7 +5284,7 @@ scope_decl::scope_decl(const environment* env,
 ///
 /// @param vis the visibility of the declaration.
 scope_decl::scope_decl(const environment* env, location& l)
-  : type_or_decl_base(env),
+  : type_or_decl_base(env, ABSTRACT_SCOPE_DECL|ABSTRACT_DECL_BASE),
     decl_base(env, "", l),
     priv_(new priv)
 {}
@@ -5616,6 +5775,21 @@ insert_decl_into_scope(decl_base_sptr decl,
 		       scope_decl::declarations::iterator before,
 		       scope_decl_sptr scope)
 {return insert_decl_into_scope(decl, before, scope.get());}
+
+/// Constructor of the @ref global_scope type.
+///
+/// @param tu the translation unit the scope belongs to.
+global_scope::global_scope(translation_unit *tu)
+  : type_or_decl_base(tu->get_environment(),
+		      GLOBAL_SCOPE_DECL
+		      | ABSTRACT_DECL_BASE
+		      | ABSTRACT_SCOPE_DECL),
+    decl_base(tu->get_environment(), "", location()),
+    scope_decl(tu->get_environment(), "", location()),
+    translation_unit_(tu)
+{
+  runtime_type_instance(this);
+}
 
 /// return the global scope as seen by a given declaration.
 ///
@@ -6900,7 +7074,13 @@ is_function_parameter(const type_or_decl_base_sptr tod)
 /// declaration, or NULL if it is not.
 decl_base*
 is_decl(const type_or_decl_base* d)
-{return dynamic_cast<decl_base*>(const_cast<type_or_decl_base*>(d));}
+{
+  if (d && (d->kind() & type_or_decl_base::ABSTRACT_DECL_BASE))
+    return reinterpret_cast<decl_base*>
+      (const_cast<type_or_decl_base*>(d)->type_or_decl_base_pointer());
+
+  return 0;
+}
 
 /// Test if an ABI artifact is a declaration.
 ///
@@ -6931,8 +7111,14 @@ is_type(const type_or_decl_base& tod)
 ///
 /// @return true if the artifact is a type, false otherwise.
 type_base*
-is_type(const type_or_decl_base* tod)
-{return const_cast<type_base*>(dynamic_cast<const type_base*>(tod));}
+is_type(const type_or_decl_base* t)
+{
+  if (t && (t->kind() & type_or_decl_base::ABSTRACT_TYPE_BASE))
+    return reinterpret_cast<type_base*>
+      (const_cast<type_or_decl_base*>(t)->type_or_decl_base_pointer());
+
+  return 0;
+}
 
 /// Test whether a declaration is a type.
 ///
@@ -6996,7 +7182,7 @@ is_anonymous_type(const type_base_sptr& t)
 /// @return the type_decl* for @t if it's type_decl, otherwise, return
 /// nil.
 const type_decl*
-is_type_decl(const type_base* t)
+is_type_decl(const type_or_decl_base* t)
 {return dynamic_cast<const type_decl*>(t);}
 
 /// Test whether a type is a type_decl (a builtin type).
@@ -7004,15 +7190,7 @@ is_type_decl(const type_base* t)
 /// @return the type_decl_sptr for @t if it's type_decl, otherwise,
 /// return nil.
 type_decl_sptr
-is_type_decl(const type_base_sptr& t)
-{return dynamic_pointer_cast<type_decl>(t);}
-
-/// Test whether a decl is for a type type_decl (a builtin type).
-///
-/// @return the type_decl_sptr for @t if it's a type_decl, otherwise,
-/// return nil.
-type_decl_sptr
-is_type_decl(const decl_base_sptr& t)
+is_type_decl(const type_or_decl_base_sptr& t)
 {return dynamic_pointer_cast<type_decl>(t);}
 
 /// Test whether a type is a typedef.
@@ -7111,7 +7289,16 @@ is_class_type(const type_or_decl_base& t)
 /// @return the class_decl if @p t is a class_decl or null otherwise.
 class_decl*
 is_class_type(const type_or_decl_base* t)
-{return dynamic_cast<class_decl*>(const_cast<type_or_decl_base*>(t));}
+{
+  if (!t)
+    return 0;
+
+  if (t->kind() & type_or_decl_base::CLASS_TYPE)
+    return reinterpret_cast<class_decl*>
+      (const_cast<type_or_decl_base*>(t)->runtime_type_instance());
+
+  return 0;
+}
 
 /// Test whether a type is a class.
 ///
@@ -7179,7 +7366,16 @@ is_union_type(const shared_ptr<type_or_decl_base>& t)
 /// pointer_type_def, null otherwise.
 pointer_type_def*
 is_pointer_type(type_or_decl_base* t)
-{return dynamic_cast<pointer_type_def*>(t);}
+{
+  if (!t)
+    return 0;
+
+  if (t->kind() & type_or_decl_base::POINTER_TYPE)
+    return reinterpret_cast<pointer_type_def*>
+      (const_cast<type_or_decl_base*>(t)->runtime_type_instance());
+
+  return 0;
+}
 
 /// Test whether a type is a pointer_type_def.
 ///
@@ -7189,7 +7385,9 @@ is_pointer_type(type_or_decl_base* t)
 /// pointer_type_def, null otherwise.
 const pointer_type_def*
 is_pointer_type(const type_or_decl_base* t)
-{return dynamic_cast<const pointer_type_def*>(t);}
+{
+  return is_pointer_type(const_cast<type_or_decl_base*>(t));
+}
 
 /// Test whether a type is a pointer_type_def.
 ///
@@ -10933,7 +11131,7 @@ re_canonicalize(type_base_sptr t)
 ///
 /// @param a the alignment of the type, in bits.
 type_base::type_base(const environment* e, size_t s, size_t a)
-  : type_or_decl_base(e),
+  : type_or_decl_base(e, ABSTRACT_TYPE_BASE|ABSTRACT_TYPE_BASE),
     priv_(new priv(s, a))
 {}
 
@@ -11437,10 +11635,15 @@ type_decl::type_decl(const environment* env,
 		     const string&	linkage_name,
 		     visibility	vis)
 
-  : type_or_decl_base(env),
+  : type_or_decl_base(env,
+		      BASIC_TYPE
+		      | ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE),
     decl_base(env, name, locus, linkage_name, vis),
     type_base(env, size_in_bits, alignment_in_bits)
 {
+  runtime_type_instance(this);
+
   integral_type::base_type base_type = integral_type::INT_BASE_TYPE;
   integral_type::modifiers_type modifiers = integral_type::NO_MODIFIER;
   integral_type int_type(base_type, modifiers);
@@ -11645,7 +11848,10 @@ scope_type_decl::scope_type_decl(const environment*	env,
 				 size_t		alignment_in_bits,
 				 const location&	locus,
 				 visibility		vis)
-  : type_or_decl_base(env),
+  : type_or_decl_base(env,
+		      ABSTRACT_SCOPE_TYPE_DECL
+		      | ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE),
     decl_base(env, name, locus, "", vis),
     type_base(env, size_in_bits, alignment_in_bits),
     scope_decl(env, name, locus)
@@ -11787,10 +11993,15 @@ namespace_decl::namespace_decl(const environment*	env,
     // here, as what we really want is to initialize the decl_base
     // subobject.  Wow, virtual inheritance is		useful, but setting it
     // up is ugly.
-  : type_or_decl_base(env),
+  : type_or_decl_base(env,
+		      NAMESPACE_DECL
+		      | ABSTRACT_DECL_BASE
+		      | ABSTRACT_SCOPE_DECL),
     decl_base(env, name, locus, "", vis),
     scope_decl(env, name, locus)
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// Build and return a copy of the pretty representation of the
 /// namespace.
@@ -11951,13 +12162,17 @@ qualified_type_def::build_name(bool fully_qualified, bool internal) const
 qualified_type_def::qualified_type_def(type_base_sptr		type,
 				       CV			quals,
 				       const location&		locus)
-  : type_or_decl_base(type->get_environment()),
+  : type_or_decl_base(type->get_environment(),
+		      QUALIFIED_TYPE
+		      | ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE),
     type_base(type->get_environment(), type->get_size_in_bits(),
 	      type->get_alignment_in_bits()),
     decl_base(type->get_environment(), "", locus, "",
 	      dynamic_pointer_cast<decl_base>(type)->get_visibility()),
     priv_(new priv(quals, type))
 {
+  runtime_type_instance(this);
   interned_string name = type->get_environment()->intern(build_name(false));
   set_name(name);
 }
@@ -12342,11 +12557,15 @@ pointer_type_def::pointer_type_def(const type_base_sptr&	pointed_to,
 				   size_t			size_in_bits,
 				   size_t			align_in_bits,
 				   const location&		locus)
-  : type_or_decl_base(pointed_to->get_environment()),
+  : type_or_decl_base(pointed_to->get_environment(),
+		      POINTER_TYPE
+		      | ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE),
     type_base(pointed_to->get_environment(), size_in_bits, align_in_bits),
     decl_base(pointed_to->get_environment(), "", locus, ""),
     priv_(new priv(pointed_to))
 {
+  runtime_type_instance(this);
   try
     {
       ABG_ASSERT(pointed_to);
@@ -12405,7 +12624,7 @@ equals(const pointer_type_def& l, const pointer_type_def& r, change_kind* k)
 bool
 pointer_type_def::operator==(const decl_base& o) const
 {
-  const pointer_type_def* other = dynamic_cast<const pointer_type_def*>(&o);
+  const pointer_type_def* other = is_pointer_type(&o);
   if (!other)
     return false;
 
@@ -12429,7 +12648,7 @@ pointer_type_def::operator==(const decl_base& o) const
 bool
 pointer_type_def::operator==(const type_base& other) const
 {
-  const decl_base* o = dynamic_cast<const decl_base*>(&other);
+  const decl_base* o = is_decl(&other);
   if (!o)
     return false;
   return *this == *o;
@@ -12624,11 +12843,16 @@ reference_type_def::reference_type_def(const type_base_sptr	pointed_to,
 				       size_t			size_in_bits,
 				       size_t			align_in_bits,
 				       const location&		locus)
-  : type_or_decl_base(pointed_to->get_environment()),
+  : type_or_decl_base(pointed_to->get_environment(),
+		      REFERENCE_TYPE
+		      | ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE),
     type_base(pointed_to->get_environment(), size_in_bits, align_in_bits),
     decl_base(pointed_to->get_environment(), "", locus, ""),
     is_lvalue_(lvalue)
 {
+  runtime_type_instance(this);
+
   try
     {
       decl_base_sptr pto = dynamic_pointer_cast<decl_base>(pointed_to);
@@ -12997,14 +13221,16 @@ array_type_def::subrange_type::subrange_type(const environment* env,
 					     type_base_sptr&	underlying_type,
 					     const location&	loc,
 					     translation_unit::language l)
-  : type_or_decl_base(env),
+  : type_or_decl_base(env, ABSTRACT_TYPE_BASE | ABSTRACT_DECL_BASE),
     type_base(env,
 	      upper_bound.get_unsigned_value()
 	      - lower_bound.get_unsigned_value(),
 	      0),
     decl_base(env, name, loc, ""),
     priv_(new priv(lower_bound, upper_bound, underlying_type, l))
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// Constructor of the array_type_def::subrange_type type.
 ///
@@ -13026,13 +13252,15 @@ array_type_def::subrange_type::subrange_type(const environment* env,
 					     bound_value	upper_bound,
 					     const location&	loc,
 					     translation_unit::language l)
-  : type_or_decl_base(env),
+  : type_or_decl_base(env, ABSTRACT_TYPE_BASE | ABSTRACT_DECL_BASE),
     type_base(env,
 	      upper_bound.get_unsigned_value()
 	      - lower_bound.get_unsigned_value(), 0),
     decl_base(env, name, loc, ""),
     priv_(new priv(lower_bound, upper_bound, l))
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// Constructor of the array_type_def::subrange_type type.
 ///
@@ -13051,11 +13279,13 @@ array_type_def::subrange_type::subrange_type(const environment* env,
 					     bound_value	upper_bound,
 					     const location&	loc,
 					     translation_unit::language l)
-  : type_or_decl_base(env),
+  : type_or_decl_base(env, ABSTRACT_TYPE_BASE | ABSTRACT_DECL_BASE),
     type_base(env, upper_bound.get_unsigned_value(), 0),
     decl_base(env, name, loc, ""),
     priv_(new priv(upper_bound, l))
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// Getter of the underlying type of the subrange, that is, the type
 /// that defines the range.
@@ -13385,11 +13615,17 @@ struct array_type_def::priv
 array_type_def::array_type_def(const type_base_sptr			e_type,
 			       const std::vector<subrange_sptr>&	subs,
 			       const location&				locus)
-  : type_or_decl_base(e_type->get_environment()),
+  : type_or_decl_base(e_type->get_environment(),
+		      ARRAY_TYPE
+		      | ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE),
     type_base(e_type->get_environment(), 0, e_type->get_alignment_in_bits()),
     decl_base(e_type->get_environment(), locus),
     priv_(new priv(e_type))
-{append_subranges(subs);}
+{
+  runtime_type_instance(this);
+  append_subranges(subs);
+}
 
 string
 array_type_def::get_subrange_representation() const
@@ -13806,7 +14042,10 @@ enum_type_decl::enum_type_decl(const string&	name,
 			       enumerators&	enums,
 			       const string&	linkage_name,
 			       visibility	vis)
-  : type_or_decl_base(underlying_type->get_environment()),
+  : type_or_decl_base(underlying_type->get_environment(),
+		      ENUM_TYPE
+		      | ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE),
     type_base(underlying_type->get_environment(),
 	      underlying_type->get_size_in_bits(),
 	      underlying_type->get_alignment_in_bits()),
@@ -13814,6 +14053,7 @@ enum_type_decl::enum_type_decl(const string&	name,
 	      name, locus, linkage_name, vis),
     priv_(new priv(underlying_type, enums))
 {
+  runtime_type_instance(this);
   for (enumerators::iterator e = get_enumerators().begin();
        e != get_enumerators().end();
        ++e)
@@ -14313,14 +14553,19 @@ typedef_decl::typedef_decl(const string&		name,
 			   const location&		locus,
 			   const string&		linkage_name,
 			   visibility vis)
-  : type_or_decl_base(underlying_type->get_environment()),
+  : type_or_decl_base(underlying_type->get_environment(),
+		      TYPEDEF_TYPE
+		      | ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE),
     type_base(underlying_type->get_environment(),
 	      underlying_type->get_size_in_bits(),
 	      underlying_type->get_alignment_in_bits()),
     decl_base(underlying_type->get_environment(),
 	      name, locus, linkage_name, vis),
     priv_(new priv(underlying_type))
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// Return the size of the typedef.
 ///
@@ -14539,10 +14784,13 @@ var_decl::var_decl(const string&	name,
 		   const string&	linkage_name,
 		   visibility		vis,
 		   binding		bind)
-  : type_or_decl_base(type->get_environment()),
+  : type_or_decl_base(type->get_environment(),
+		      VAR_DECL | ABSTRACT_DECL_BASE),
     decl_base(type->get_environment(), name, locus, linkage_name, vis),
     priv_(new priv(type, bind))
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// Getter of the type of the variable.
 ///
@@ -15056,10 +15304,13 @@ function_type::function_type(type_base_sptr	return_type,
 			     const parameters&	parms,
 			     size_t		size_in_bits,
 			     size_t		alignment_in_bits)
-  : type_or_decl_base(return_type->get_environment()),
+  : type_or_decl_base(return_type->get_environment(),
+		      FUNCTION_TYPE | ABSTRACT_TYPE_BASE),
     type_base(return_type->get_environment(), size_in_bits, alignment_in_bits),
     priv_(new priv(parms, return_type))
 {
+  runtime_type_instance(this);
+
   for (parameters::size_type i = 0, j = 1;
        i < priv_->parms_.size();
        ++i, ++j)
@@ -15084,10 +15335,13 @@ function_type::function_type(type_base_sptr	return_type,
 /// @param alignment_in_bits the alignment of this type, in bits.
 function_type::function_type(type_base_sptr return_type,
 			     size_t size_in_bits, size_t alignment_in_bits)
-  : type_or_decl_base(return_type->get_environment()),
+  : type_or_decl_base(return_type->get_environment(),
+		      FUNCTION_TYPE | ABSTRACT_TYPE_BASE),
     type_base(return_type->get_environment(), size_in_bits, alignment_in_bits),
     priv_(new priv(return_type))
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// A constructor for a function_type that takes no parameter and
 /// that has no return_type yet.  These missing parts can (and must)
@@ -15101,10 +15355,12 @@ function_type::function_type(type_base_sptr return_type,
 function_type::function_type(const environment* env,
 			     size_t		size_in_bits,
 			     size_t		alignment_in_bits)
-  : type_or_decl_base(env),
+  : type_or_decl_base(env, FUNCTION_TYPE | ABSTRACT_TYPE_BASE),
     type_base(env, size_in_bits, alignment_in_bits),
     priv_(new priv)
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// Getter for the return type of the current instance of @ref
 /// function_type.
@@ -15578,11 +15834,13 @@ method_type::method_type (type_base_sptr return_type,
 			  bool is_const,
 			  size_t size_in_bits,
 			  size_t alignment_in_bits)
-  : type_or_decl_base(class_type->get_environment()),
+  : type_or_decl_base(class_type->get_environment(),
+		      METHOD_TYPE | ABSTRACT_TYPE_BASE | FUNCTION_TYPE),
     type_base(class_type->get_environment(), size_in_bits, alignment_in_bits),
     function_type(return_type, p, size_in_bits, alignment_in_bits),
     priv_(new priv)
 {
+  runtime_type_instance(this);
   set_class_type(class_type);
   set_is_const(is_const);
 }
@@ -15616,11 +15874,13 @@ method_type::method_type(type_base_sptr return_type,
 			 bool is_const,
 			 size_t size_in_bits,
 			 size_t alignment_in_bits)
-  : type_or_decl_base(class_type->get_environment()),
+  : type_or_decl_base(class_type->get_environment(),
+		      METHOD_TYPE | ABSTRACT_TYPE_BASE | FUNCTION_TYPE),
     type_base(class_type->get_environment(), size_in_bits, alignment_in_bits),
     function_type(return_type, p, size_in_bits, alignment_in_bits),
     priv_(new priv)
 {
+  runtime_type_instance(this);
   set_class_type(is_class_type(class_type));
   set_is_const(is_const);
 }
@@ -15635,11 +15895,13 @@ method_type::method_type(type_base_sptr return_type,
 method_type::method_type(const environment*	env,
 			 size_t		size_in_bits,
 			 size_t		alignment_in_bits)
-  : type_or_decl_base(env),
+  : type_or_decl_base(env, METHOD_TYPE | ABSTRACT_TYPE_BASE | FUNCTION_TYPE),
     type_base(env, size_in_bits, alignment_in_bits),
     function_type(env, size_in_bits, alignment_in_bits),
     priv_(new priv)
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// Constructor of instances of method_type.
 ///
@@ -15658,13 +15920,15 @@ method_type::method_type(class_or_union_sptr class_type,
 			 bool is_const,
 			 size_t size_in_bits,
 			 size_t alignment_in_bits)
-  : type_or_decl_base(class_type->get_environment()),
+  : type_or_decl_base(class_type->get_environment(),
+		      METHOD_TYPE | ABSTRACT_TYPE_BASE | FUNCTION_TYPE),
     type_base(class_type->get_environment(), size_in_bits, alignment_in_bits),
     function_type(class_type->get_environment(),
 		  size_in_bits,
 		  alignment_in_bits),
     priv_(new priv)
 {
+  runtime_type_instance(this);
   set_class_type(class_type);
   set_is_const(is_const);
 }
@@ -15770,10 +16034,13 @@ function_decl::function_decl(const string& name,
 			     const string& mangled_name,
 			     visibility vis,
 			     binding bind)
-  : type_or_decl_base(function_type->get_environment()),
+  : type_or_decl_base(function_type->get_environment(),
+		      FUNCTION_DECL | ABSTRACT_DECL_BASE),
     decl_base(function_type->get_environment(), name, locus, mangled_name, vis),
     priv_(new priv(function_type, declared_inline, bind))
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// Constructor of the function_decl type.
 ///
@@ -15805,12 +16072,15 @@ function_decl::function_decl(const string&	name,
 			     const string&	linkage_name,
 			     visibility	vis,
 			     binding		bind)
-  : type_or_decl_base(fn_type->get_environment()),
+  : type_or_decl_base(fn_type->get_environment(),
+		      FUNCTION_DECL | ABSTRACT_DECL_BASE),
     decl_base(fn_type->get_environment(), name, locus, linkage_name, vis),
     priv_(new priv(dynamic_pointer_cast<function_type>(fn_type),
 		   declared_inline,
 		   bind))
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// Get the pretty representation of the current instance of @ref function_decl.
 ///
@@ -16422,10 +16692,13 @@ function_decl::parameter::parameter(const type_base_sptr	type,
 				    const string&		name,
 				    const location&		loc,
 				    bool			is_variadic)
-  : type_or_decl_base(type->get_environment()),
+  : type_or_decl_base(type->get_environment(),
+		      FUNCTION_PARAMETER_DECL | ABSTRACT_DECL_BASE),
     decl_base(type->get_environment(), name, loc),
     priv_(new priv(type, index, is_variadic, /*is_artificial=*/false))
-{}
+{
+  runtime_type_instance(this);
+}
 
 function_decl::parameter::parameter(const type_base_sptr	type,
 				    unsigned			index,
@@ -16433,28 +16706,37 @@ function_decl::parameter::parameter(const type_base_sptr	type,
 				    const location&		loc,
 				    bool			is_variadic,
 				    bool			is_artificial)
-  : type_or_decl_base(type->get_environment()),
+  : type_or_decl_base(type->get_environment(),
+		      FUNCTION_PARAMETER_DECL | ABSTRACT_DECL_BASE),
     decl_base(type->get_environment(), name, loc),
     priv_(new priv(type, index, is_variadic, is_artificial))
-{}
+{
+  runtime_type_instance(this);
+}
 
 function_decl::parameter::parameter(const type_base_sptr	type,
 				    const string&		name,
 				    const location&		loc,
 				    bool			is_variadic,
 				    bool			is_artificial)
-  : type_or_decl_base(type->get_environment()),
+  : type_or_decl_base(type->get_environment(),
+		      FUNCTION_PARAMETER_DECL | ABSTRACT_DECL_BASE),
     decl_base(type->get_environment(), name, loc),
     priv_(new priv(type, 0, is_variadic, is_artificial))
-{}
+{
+  runtime_type_instance(this);
+}
 
 function_decl::parameter::parameter(const type_base_sptr	type,
 				    unsigned			index,
 				    bool			variad)
-  : type_or_decl_base(type->get_environment()),
+  : type_or_decl_base(type->get_environment(),
+		      FUNCTION_PARAMETER_DECL | ABSTRACT_DECL_BASE),
     decl_base(type->get_environment(), "", location()),
     priv_(new priv(type, index, variad, /*is_artificial=*/false))
-{}
+{
+  runtime_type_instance(this);
+}
 
 const type_base_sptr
 function_decl::parameter::get_type()const
@@ -16929,7 +17211,11 @@ class_or_union::class_or_union(const environment* env, const string& name,
 			       member_types& mem_types,
 			       data_members& data_members,
 			       member_functions& member_fns)
-  : type_or_decl_base(env),
+  : type_or_decl_base(env,
+		      ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE
+		      | ABSTRACT_SCOPE_TYPE_DECL
+		      | ABSTRACT_SCOPE_DECL),
     decl_base(env, name, locus, name, vis),
     type_base(env, size_in_bits, align_in_bits),
     scope_type_decl(env, name, size_in_bits, align_in_bits, locus, vis),
@@ -16972,7 +17258,11 @@ class_or_union::class_or_union(const environment* env, const string& name,
 class_or_union::class_or_union(const environment* env, const string& name,
 			       size_t size_in_bits, size_t align_in_bits,
 			       const location& locus, visibility vis)
-  : type_or_decl_base(env),
+  : type_or_decl_base(env,
+		      ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE
+		      | ABSTRACT_SCOPE_TYPE_DECL
+		      | ABSTRACT_SCOPE_DECL),
     decl_base(env, name, locus, name, vis),
     type_base(env, size_in_bits, align_in_bits),
     scope_type_decl(env, name, size_in_bits, align_in_bits, locus, vis),
@@ -16989,7 +17279,11 @@ class_or_union::class_or_union(const environment* env, const string& name,
 /// represents a declaration only, or not.
 class_or_union::class_or_union(const environment* env, const string& name,
 			       bool is_declaration_only)
-  :type_or_decl_base(env),
+  : type_or_decl_base(env,
+		      ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE
+		      | ABSTRACT_SCOPE_TYPE_DECL
+		      | ABSTRACT_SCOPE_DECL),
     decl_base(env, name, location(), name),
     type_base(env, 0, 0),
     scope_type_decl(env, name, 0, 0, location()),
@@ -18225,13 +18519,20 @@ class_decl::class_decl(const environment* env, const string& name,
 		       member_types& mbr_types,
 		       data_members& data_mbrs,
 		       member_functions& mbr_fns)
-  : type_or_decl_base(env),
+  : type_or_decl_base(env,
+		      CLASS_TYPE
+		      | ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE
+		      | ABSTRACT_SCOPE_TYPE_DECL
+		      | ABSTRACT_SCOPE_DECL),
     decl_base(env, name, locus, name, vis),
     type_base(env, size_in_bits, align_in_bits),
     class_or_union(env, name, size_in_bits, align_in_bits,
 		   locus, vis, mbr_types, data_mbrs, mbr_fns),
     priv_(new priv(is_struct, bases))
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// A constructor for instances of class_decl.
 ///
@@ -18252,13 +18553,20 @@ class_decl::class_decl(const environment* env, const string& name,
 		       size_t size_in_bits, size_t align_in_bits,
 		       bool is_struct, const location& locus,
 		       visibility vis)
-  : type_or_decl_base(env),
+  : type_or_decl_base(env,
+		      CLASS_TYPE
+		      | ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE
+		      | ABSTRACT_SCOPE_TYPE_DECL
+		      | ABSTRACT_SCOPE_DECL),
     decl_base(env, name, locus, name, vis),
     type_base(env, size_in_bits, align_in_bits),
     class_or_union(env, name, size_in_bits, align_in_bits,
 		   locus, vis),
     priv_(new priv(is_struct))
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// A constuctor for instances of class_decl that represent a
 /// declaration without definition.
@@ -18271,12 +18579,19 @@ class_decl::class_decl(const environment* env, const string& name,
 /// represents a declaration only, or not.
 class_decl::class_decl(const environment* env, const string& name,
 		       bool is_struct, bool is_declaration_only)
-  : type_or_decl_base(env),
+  : type_or_decl_base(env,
+		      CLASS_TYPE
+		      | ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE
+		      | ABSTRACT_SCOPE_TYPE_DECL
+		      | ABSTRACT_SCOPE_DECL),
     decl_base(env, name, location(), name),
     type_base(env, 0, 0),
     class_or_union(env, name, is_declaration_only),
     priv_(new priv(is_struct))
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// This method is invoked automatically right after the current
 /// instance of @ref class_decl has been canonicalized.
@@ -18502,12 +18817,15 @@ class_decl::base_spec::base_spec(const class_decl_sptr& base,
 				 access_specifier a,
 				 long offset_in_bits,
 				 bool is_virtual)
-  : type_or_decl_base(base->get_environment()),
+  : type_or_decl_base(base->get_environment(),
+		      ABSTRACT_DECL_BASE),
     decl_base(base->get_environment(), base->get_name(), base->get_location(),
 	      base->get_linkage_name(), base->get_visibility()),
     member_base(a),
     priv_(new priv(base, offset_in_bits, is_virtual))
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// Get the base class referred to by the current base class
 /// specifier.
@@ -18594,16 +18912,19 @@ class_decl::base_spec::base_spec(const type_base_sptr& base,
 				 access_specifier a,
 				 long offset_in_bits,
 				 bool is_virtual)
-  : type_or_decl_base(base->get_environment()),
+  : type_or_decl_base(base->get_environment(),
+		      ABSTRACT_DECL_BASE),
     decl_base(base->get_environment(), get_type_declaration(base)->get_name(),
 	      get_type_declaration(base)->get_location(),
 	      get_type_declaration(base)->get_linkage_name(),
 	      get_type_declaration(base)->get_visibility()),
-      member_base(a),
-      priv_(new priv(dynamic_pointer_cast<class_decl>(base),
-		     offset_in_bits,
-		     is_virtual))
-{}
+    member_base(a),
+    priv_(new priv(dynamic_pointer_cast<class_decl>(base),
+		   offset_in_bits,
+		   is_virtual))
+{
+  runtime_type_instance(this);
+}
 
 /// Compares two instances of @ref class_decl::base_spec.
 ///
@@ -18703,11 +19024,15 @@ method_decl::method_decl(const string&		name,
 			 const string&		linkage_name,
 			 visibility		vis,
 			 binding		bind)
-  : type_or_decl_base(type->get_environment()),
+  : type_or_decl_base(type->get_environment(),
+		      METHOD_DECL
+		      | ABSTRACT_DECL_BASE
+		      |FUNCTION_DECL),
     decl_base(type->get_environment(), name, locus, linkage_name, vis),
     function_decl(name, static_pointer_cast<function_type>(type),
 		  declared_inline, locus, linkage_name, vis, bind)
 {
+  runtime_type_instance(this);
   set_context_rel(new mem_fn_context_rel(0));
   set_member_function_is_const(*this, type->get_is_const());
 }
@@ -18736,12 +19061,16 @@ method_decl::method_decl(const string&		name,
 			 const string&		linkage_name,
 			 visibility		vis,
 			 binding		bind)
-  : type_or_decl_base(type->get_environment()),
+  : type_or_decl_base(type->get_environment(),
+		      METHOD_DECL
+		      | ABSTRACT_DECL_BASE
+		      | FUNCTION_DECL),
     decl_base(type->get_environment(), name, locus, linkage_name, vis),
     function_decl(name, static_pointer_cast<function_type>
 		  (dynamic_pointer_cast<method_type>(type)),
 		  declared_inline, locus, linkage_name, vis, bind)
 {
+  runtime_type_instance(this);
   set_context_rel(new mem_fn_context_rel(0));
 }
 
@@ -18769,12 +19098,16 @@ method_decl::method_decl(const string&		name,
 			 const string&		linkage_name,
 			 visibility		vis,
 			 binding		bind)
-  : type_or_decl_base(type->get_environment()),
+  : type_or_decl_base(type->get_environment(),
+		      METHOD_DECL
+		      | ABSTRACT_DECL_BASE
+		      | FUNCTION_DECL),
     decl_base(type->get_environment(), name, locus, linkage_name, vis),
     function_decl(name, static_pointer_cast<function_type>
 		  (dynamic_pointer_cast<method_type>(type)),
 		  declared_inline, locus, linkage_name, vis, bind)
 {
+  runtime_type_instance(this);
   set_context_rel(new mem_fn_context_rel(0));
 }
 
@@ -19422,7 +19755,7 @@ copy_member_function(const class_decl_sptr& clazz, const method_decl* f)
 bool
 class_decl::operator==(const decl_base& other) const
 {
-  const class_decl* op = dynamic_cast<const class_decl*>(&other);
+  const class_decl* op = is_class_type(&other);
   if (!op)
     return false;
 
@@ -19461,7 +19794,7 @@ class_decl::operator==(const decl_base& other) const
 bool
 class_decl::operator==(const type_base& other) const
 {
-  const decl_base* o = dynamic_cast<const decl_base*>(&other);
+  const decl_base* o = is_decl(&other);
   if (!o)
     return false;
   return *this == *o;
@@ -20002,12 +20335,17 @@ union_decl::union_decl(const environment* env, const string& name,
 		       size_t size_in_bits, const location& locus,
 		       visibility vis, member_types& mbr_types,
 		       data_members& data_mbrs, member_functions& member_fns)
-  : type_or_decl_base(env),
+  : type_or_decl_base(env,
+		      UNION_TYPE
+		      | ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE),
     decl_base(env, name, locus, name, vis),
     type_base(env, size_in_bits, 0),
     class_or_union(env, name, size_in_bits, 0,
 		   locus, vis, mbr_types, data_mbrs, member_fns)
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// Constructor for the @ref union_decl type.
 ///
@@ -20023,12 +20361,19 @@ union_decl::union_decl(const environment* env, const string& name,
 union_decl::union_decl(const environment* env, const string& name,
 		       size_t size_in_bits, const location& locus,
 		       visibility vis)
-  : type_or_decl_base(env),
+  : type_or_decl_base(env,
+		      UNION_TYPE
+		      | ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE
+		      | ABSTRACT_SCOPE_TYPE_DECL
+		      | ABSTRACT_SCOPE_DECL),
     decl_base(env, name, locus, name, vis),
     type_base(env, size_in_bits, 0),
     class_or_union(env, name, size_in_bits,
 		   0, locus, vis)
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// Constructor for the @ref union_decl type.
 ///
@@ -20041,11 +20386,18 @@ union_decl::union_decl(const environment* env, const string& name,
 union_decl::union_decl(const environment* env,
 		       const string& name,
 		       bool is_declaration_only)
-  : type_or_decl_base(env),
+  : type_or_decl_base(env,
+		      UNION_TYPE
+		      | ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE
+		      | ABSTRACT_SCOPE_TYPE_DECL
+		      | ABSTRACT_SCOPE_DECL),
     decl_base(env, name, location(), name),
     type_base(env, 0, 0),
     class_or_union(env, name, is_declaration_only)
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// Getter of the pretty representation of the current instance of
 /// @ref union_decl.
@@ -20321,10 +20673,12 @@ template_decl::template_decl(const environment* env,
 			     const string& name,
 			     const location& locus,
 			     visibility vis)
-  : type_or_decl_base(env),
+  : type_or_decl_base(env, TEMPLATE_DECL | ABSTRACT_DECL_BASE),
     decl_base(env, name, locus, /*mangled_name=*/"", vis),
     priv_(new priv)
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// Destructor.
 template_decl::~template_decl()
@@ -20476,13 +20830,18 @@ type_tparameter::type_tparameter(unsigned		index,
 				 template_decl_sptr	enclosing_tdecl,
 				 const string&		name,
 				 const location&	locus)
-  : type_or_decl_base(enclosing_tdecl->get_environment()),
+  : type_or_decl_base(enclosing_tdecl->get_environment(),
+		      ABSTRACT_DECL_BASE
+		      | ABSTRACT_TYPE_BASE
+		      | BASIC_TYPE),
     decl_base(enclosing_tdecl->get_environment(), name, locus),
     type_base(enclosing_tdecl->get_environment(), 0, 0),
     type_decl(enclosing_tdecl->get_environment(), name, 0, 0, locus),
     template_parameter(index, enclosing_tdecl),
     priv_(new priv)
-{}
+{
+  runtime_type_instance(this);
+}
 
 bool
 type_tparameter::operator==(const type_base& other) const
@@ -20552,11 +20911,13 @@ non_type_tparameter::non_type_tparameter(unsigned		index,
 					 const string&		name,
 					 type_base_sptr	type,
 					 const location&	locus)
-  : type_or_decl_base(type->get_environment()),
+  : type_or_decl_base(type->get_environment(), ABSTRACT_DECL_BASE),
     decl_base(type->get_environment(), name, locus, ""),
     template_parameter(index, enclosing_tdecl),
     priv_(new priv(type))
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// Getter for the type of the template parameter.
 ///
@@ -20632,7 +20993,10 @@ template_tparameter::template_tparameter(unsigned		index,
 					 template_decl_sptr	enclosing_tdecl,
 					 const string&		name,
 					 const location&	locus)
-  : type_or_decl_base(enclosing_tdecl->get_environment()),
+  : type_or_decl_base(enclosing_tdecl->get_environment(),
+		      ABSTRACT_DECL_BASE
+		      | ABSTRACT_TYPE_BASE
+		      | BASIC_TYPE),
     decl_base(enclosing_tdecl->get_environment(), name, locus),
     type_base(enclosing_tdecl->get_environment(), 0, 0),
     type_decl(enclosing_tdecl->get_environment(), name,
@@ -20640,7 +21004,9 @@ template_tparameter::template_tparameter(unsigned		index,
     type_tparameter(index, enclosing_tdecl, name, locus),
     template_decl(enclosing_tdecl->get_environment(), name, locus),
     priv_(new priv)
-{}
+{
+  runtime_type_instance(this);
+}
 
 bool
 template_tparameter::operator==(const type_base& other) const
@@ -20717,11 +21083,14 @@ public:
 type_composition::type_composition(unsigned		index,
 				   template_decl_sptr	tdecl,
 				   type_base_sptr	t)
-  : type_or_decl_base(tdecl->get_environment()),
+  : type_or_decl_base(tdecl->get_environment(),
+		      ABSTRACT_DECL_BASE),
     decl_base(tdecl->get_environment(), "", location()),
     template_parameter(index, tdecl),
     priv_(new priv(t))
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// Getter for the resulting composed type.
 ///
@@ -20796,12 +21165,17 @@ function_tdecl::function_tdecl(const environment*	env,
 			       const location&		locus,
 			       visibility		vis,
 			       binding			bind)
-  : type_or_decl_base(env),
+  : type_or_decl_base(env,
+		      ABSTRACT_DECL_BASE
+		      | TEMPLATE_DECL
+		      | ABSTRACT_SCOPE_DECL),
     decl_base(env, "", locus, "", vis),
     template_decl(env, "", locus, vis),
     scope_decl(env, "", locus),
     priv_(new priv(bind))
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// Constructor for a function template declaration.
 ///
@@ -20819,13 +21193,18 @@ function_tdecl::function_tdecl(function_decl_sptr	pattern,
 			       const location&		locus,
 			       visibility		vis,
 			       binding			bind)
-  : type_or_decl_base(pattern->get_environment()),
+  : type_or_decl_base(pattern->get_environment(),
+		      ABSTRACT_DECL_BASE
+		      | TEMPLATE_DECL
+		      | ABSTRACT_SCOPE_DECL),
     decl_base(pattern->get_environment(), pattern->get_name(), locus,
 	      pattern->get_name(), vis),
     template_decl(pattern->get_environment(), pattern->get_name(), locus, vis),
     scope_decl(pattern->get_environment(), pattern->get_name(), locus),
     priv_(new priv(pattern, bind))
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// Set a new pattern to the function template.
 ///
@@ -20959,12 +21338,17 @@ public:
 class_tdecl::class_tdecl(const environment*	env,
 			 const location&	locus,
 			 visibility		vis)
-  : type_or_decl_base(env),
+  : type_or_decl_base(env,
+		      ABSTRACT_DECL_BASE
+		      | TEMPLATE_DECL
+		      | ABSTRACT_SCOPE_DECL),
     decl_base(env, "", locus, "", vis),
     template_decl(env, "", locus, vis),
     scope_decl(env, "", locus),
     priv_(new priv)
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// Constructor for the @ref class_tdecl type.
 ///
@@ -20979,13 +21363,18 @@ class_tdecl::class_tdecl(const environment*	env,
 class_tdecl::class_tdecl(class_decl_sptr	pattern,
 			 const location&	locus,
 			 visibility		vis)
-  : type_or_decl_base(pattern->get_environment()),
+  : type_or_decl_base(pattern->get_environment(),
+		      ABSTRACT_DECL_BASE
+		      | TEMPLATE_DECL
+		      | ABSTRACT_SCOPE_DECL),
     decl_base(pattern->get_environment(), pattern->get_name(),
 	      locus, pattern->get_name(), vis),
     template_decl(pattern->get_environment(), pattern->get_name(), locus, vis),
     scope_decl(pattern->get_environment(), pattern->get_name(), locus),
     priv_(new priv(pattern))
-{}
+{
+  runtime_type_instance(this);
+}
 
 /// Setter of the pattern of the template.
 ///
@@ -21222,7 +21611,7 @@ hash_type_or_decl(const type_or_decl_base *tod)
 
   if (tod == 0)
     ;
-  else if (const type_base* t = dynamic_cast<const type_base*>(tod))
+  else if (const type_base* t = is_type(tod))
     {
       // If the type has a canonical type, then use the pointer value
       // as a hash.  This is the fastest we can get.
@@ -21253,7 +21642,7 @@ hash_type_or_decl(const type_or_decl_base *tod)
 	  result = hash(t);
 	}
     }
-  else if (const decl_base* d = dynamic_cast<const decl_base*>(tod))
+  else if (const decl_base* d = is_decl(tod))
     {
       if (var_decl* v = is_var_decl(d))
 	{
