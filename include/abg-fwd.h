@@ -1264,6 +1264,9 @@ void
 keep_type_alive(type_base_sptr t);
 
 size_t
+hash_type(const type_base *t);
+
+size_t
 hash_type_or_decl(const type_or_decl_base *);
 
 size_t
