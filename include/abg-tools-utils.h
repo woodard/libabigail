@@ -20,6 +20,9 @@
 
 ///@file
 
+#ifndef __ABG_TOOLS_UTILS_H
+#define __ABG_TOOLS_UTILS_H
+
 #include <string>
 #include <set>
 #include <ostream>
@@ -304,3 +307,5 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
       abort();								\
   } while (false)
 }//end namespace abigail
+
+#endif //__ABG_TOOLS_UTILS_H
