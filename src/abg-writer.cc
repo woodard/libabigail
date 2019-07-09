@@ -1942,7 +1942,6 @@ write_translation_unit(write_context&	       ctxt,
       if (decl_base_sptr d = is_decl(*i))
 	if (ctxt.decl_is_emitted(d))
 	  continue;
-
       o << "\n";
       write_decl(*i, ctxt, indent + c.get_xml_element_indent());
     }

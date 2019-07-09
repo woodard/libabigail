@@ -177,7 +177,7 @@ typedef shared_ptr<address_set_type> address_set_sptr;
 /// addr_elf_symbol_sptr_map_type.
 typedef shared_ptr<addr_elf_symbol_sptr_map_type> addr_elf_symbol_sptr_map_sptr;
 
-/// Convenience typedef for a map that associates and @ref
+/// Convenience typedef for a map that associates an @ref
 /// interned_string to a @ref function_type_sptr.
 typedef unordered_map<interned_string,
 		      function_type_sptr,
@@ -5554,8 +5554,8 @@ public:
 
     Dwarf_Die equiv_die;
     ABG_ASSERT(get_canonical_die(die, equiv_die,
-			     /*where=*/0,
-			     /*die_as_type=*/true));
+				  /*where=*/0,
+				 /*die_as_type=*/true));
 
     ABG_ASSERT(get_die_source(&equiv_die, source));
     o = dwarf_dieoffset(&equiv_die);

@@ -21687,7 +21687,7 @@ hash_type_or_decl(const type_or_decl_base *tod)
 	}
       else
 	// This is a *really* *SLOW* path.  If it shows up in a
-	// performan profile, I bet it'd be a good idea to try to
+	// performance profile, I bet it'd be a good idea to try to
 	// avoid it altogether.
 	result = d->get_hash();
     }
