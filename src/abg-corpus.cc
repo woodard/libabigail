@@ -623,6 +623,29 @@ type_maps&
 corpus::get_type_per_loc_map()
 {return priv_->type_per_loc_map_;}
 
+/// Getter of the group this corpus is a member of.
+///
+/// @return the group this corpus is a member of, or nil if it's not
+/// part of any @ref corpus_group.
+const corpus_group*
+corpus::get_group() const
+{return priv_->group;}
+
+/// Getter of the group this corpus belongs to.
+///
+/// @return the group this corpus belong to, or nil if it's not part
+/// of any @ref corpus_group.
+corpus_group*
+corpus::get_group()
+{return priv_->group;}
+
+/// Setter of the group this corpus belongs to.
+///
+/// @param g the new group.
+void
+corpus::set_group(corpus_group* g)
+{priv_->group = g;}
+
 /// Getter for the origin of the corpus.
 ///
 /// @return the origin of the corpus.
@@ -1588,6 +1611,7 @@ corpus_group::add_corpus(const corpus_sptr& corp)
     ABG_ASSERT(cur_arch == corp_arch);
 
   priv_->corpora.push_back(corp);
+  corp->set_group(this);
 
   /// Add the unreferenced function and variable symbols of this
   /// corpus to the unreferenced symbols of the current corpus group.
@@ -1602,6 +1626,24 @@ corpus_group::add_corpus(const corpus_sptr& corp)
 const corpus_group::corpora_type&
 corpus_group::get_corpora() const
 {return priv_->corpora;}
+
+/// Getter of the first corpus added to this Group.
+///
+/// @return the first corpus added to this Group.
+const corpus_sptr
+corpus_group::get_main_corpus() const
+{return const_cast<corpus_group*>(this)->get_main_corpus();}
+
+/// Getter of the first corpus added to this Group.
+///
+/// @return the first corpus added to this Group.
+corpus_sptr
+corpus_group::get_main_corpus()
+{
+  if (!get_corpora().empty())
+    return get_corpora().front();
+  return corpus_sptr();
+}
 
 /// Test if the current corpus group is empty.
 ///

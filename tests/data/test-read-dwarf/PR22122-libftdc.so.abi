@@ -4780,6 +4780,12 @@
                 <return type-id='type-id-3'/>
               </function-decl>
             </member-function>
+            <member-function access='public' static='yes' vtable-offset='2'>
+              <function-decl name='_M_run' mangled-name='_ZNSt6thread5_ImplISt12_Bind_simpleIFSt5_BindIFSt7_Mem_fnIMN5mongo14FTDCControllerEFvvEEPS5_EEvEEE6_M_runEv' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/thread' line='115' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt6thread5_ImplISt12_Bind_simpleIFSt5_BindIFSt7_Mem_fnIMN5mongo14FTDCControllerEFvvEEPS5_EEvEEE6_M_runEv'>
+                <parameter type-id='type-id-254' is-artificial='yes'/>
+                <return type-id='type-id-3'/>
+              </function-decl>
+            </member-function>
             <member-function access='public' static='yes' destructor='yes' vtable-offset='0'>
               <function-decl name='~_Impl_base' mangled-name='_ZNSt6thread10_Impl_baseD0Ev' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/thread' line='101' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt6thread10_Impl_baseD0Ev'>
                 <parameter type-id='type-id-254' is-artificial='yes'/>
@@ -4788,12 +4794,6 @@
             </member-function>
             <member-function access='public' static='yes' destructor='yes' vtable-offset='0'>
               <function-decl name='~_Impl_base' mangled-name='_ZNSt6thread10_Impl_baseD2Ev' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/thread' line='101' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt6thread10_Impl_baseD2Ev'>
-                <parameter type-id='type-id-254' is-artificial='yes'/>
-                <return type-id='type-id-3'/>
-              </function-decl>
-            </member-function>
-            <member-function access='public' static='yes' vtable-offset='2'>
-              <function-decl name='_M_run' mangled-name='_ZNSt6thread5_ImplISt12_Bind_simpleIFSt5_BindIFSt7_Mem_fnIMN5mongo14FTDCControllerEFvvEEPS5_EEvEEE6_M_runEv' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/thread' line='115' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt6thread5_ImplISt12_Bind_simpleIFSt5_BindIFSt7_Mem_fnIMN5mongo14FTDCControllerEFvvEEPS5_EEvEEE6_M_runEv'>
                 <parameter type-id='type-id-254' is-artificial='yes'/>
                 <return type-id='type-id-3'/>
               </function-decl>
@@ -6388,14 +6388,14 @@
               <return type-id='type-id-3'/>
             </function-decl>
           </member-function>
-          <member-function access='public' static='yes' vtable-offset='2'>
-            <function-decl name='dispose' mangled-name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEE7disposeEv' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/detail/sp_counted_impl.hpp' line='73' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEE7disposeEv'>
+          <member-function access='public' static='yes' vtable-offset='3'>
+            <function-decl name='destroy' mangled-name='_ZN5boost6detail15sp_counted_base7destroyEv' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/detail/sp_counted_base_clang.hpp' line='90' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6detail15sp_counted_base7destroyEv'>
               <parameter type-id='type-id-360' is-artificial='yes'/>
               <return type-id='type-id-3'/>
             </function-decl>
           </member-function>
-          <member-function access='public' static='yes' vtable-offset='3'>
-            <function-decl name='destroy' mangled-name='_ZN5boost6detail15sp_counted_base7destroyEv' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/detail/sp_counted_base_clang.hpp' line='90' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6detail15sp_counted_base7destroyEv'>
+          <member-function access='public' static='yes' vtable-offset='2'>
+            <function-decl name='dispose' mangled-name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEE7disposeEv' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/detail/sp_counted_impl.hpp' line='73' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEE7disposeEv'>
               <parameter type-id='type-id-360' is-artificial='yes'/>
               <return type-id='type-id-3'/>
             </function-decl>

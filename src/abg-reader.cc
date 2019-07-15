@@ -4005,6 +4005,7 @@ build_enum_type_decl(read_context&	ctxt,
   enum_type_decl_sptr t(new enum_type_decl(name, loc,
 					   underlying_type,
 					   enums, linkage_name));
+  t->set_is_anonymous(is_anonymous);
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, t);

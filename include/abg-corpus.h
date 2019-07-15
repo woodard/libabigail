@@ -64,7 +64,8 @@ public:
   {
     ARTIFICIAL_ORIGIN = 0,
     NATIVE_XML_ORIGIN,
-    DWARF_ORIGIN
+    DWARF_ORIGIN,
+    LINUX_KERNEL_BINARY_ORIGIN
   };
 
 private:
@@ -72,6 +73,7 @@ private:
 
   void record_canonical_type(const type_base_sptr&) const;
   type_base_sptr lookup_canonical_type(const string& qualified_name) const;
+  void set_group(corpus_group*);
 
 public:
   shared_ptr<priv> priv_;
@@ -112,6 +114,12 @@ public:
 
   const type_maps&
   get_type_per_loc_map() const;
+
+  const corpus_group*
+  get_group() const;
+
+  corpus_group*
+  get_group();
 
   origin
   get_origin() const;
@@ -281,6 +289,7 @@ public:
   get_exported_decls_builder() const;
 
   friend class type_base;
+  friend class corpus_group;
 };// end class corpus.
 
 /// Abstracts the building of the set of exported variables and
@@ -363,6 +372,12 @@ public:
 
   const corpora_type&
   get_corpora() const;
+
+  const corpus_sptr
+  get_main_corpus() const;
+
+  corpus_sptr
+  get_main_corpus();
 
   virtual bool
   is_empty() const;

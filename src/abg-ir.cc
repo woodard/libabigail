@@ -10138,7 +10138,20 @@ maybe_update_types_lookup_map(const type_decl_sptr& basic_type)
 	(basic_type,
 	 type_corpus->get_type_per_loc_map().basic_types(),
 	 /*use_type_name_as_key*/false);
+
+      if (corpus *group = type_corpus->get_group())
+	{
+	  maybe_update_types_lookup_map<type_decl>
+	    (basic_type,
+	     group->priv_->get_types().basic_types());
+
+	  maybe_update_types_lookup_map<type_decl>
+	    (basic_type,
+	     group->get_type_per_loc_map().basic_types(),
+	     /*use_type_name_as_key*/false);
+	}
     }
+
 }
 
 /// Update the map that associates the fully qualified name of a class
@@ -10169,6 +10182,18 @@ maybe_update_types_lookup_map(const class_decl_sptr& class_type)
 	(class_type,
 	 type_corpus->get_type_per_loc_map().class_types(),
 	 /*use_type_name_as_key*/false);
+
+      if (corpus *group = type_corpus->get_group())
+	{
+	  maybe_update_types_lookup_map<class_decl>
+	    (class_type,
+	     group->priv_->get_types().class_types());
+
+	  maybe_update_types_lookup_map<class_decl>
+	    (class_type,
+	     group->get_type_per_loc_map().class_types(),
+	     /*use_type_name_as_key*/false);
+	}
     }
 }
 
@@ -10200,6 +10225,18 @@ maybe_update_types_lookup_map(const union_decl_sptr& union_type)
 	(union_type,
 	 type_corpus->get_type_per_loc_map().union_types(),
 	 /*use_type_name_as_key*/false);
+
+      if (corpus *group = type_corpus->get_group())
+	{
+	  maybe_update_types_lookup_map<union_decl>
+	    (union_type,
+	     group->priv_->get_types().union_types());
+
+	  maybe_update_types_lookup_map<union_decl>
+	    (union_type,
+	     group->get_type_per_loc_map().union_types(),
+	     /*use_type_name_as_key*/false);
+	}
     }
 }
 
@@ -10231,7 +10268,20 @@ maybe_update_types_lookup_map(const enum_type_decl_sptr& enum_type)
 	(enum_type,
 	 type_corpus->get_type_per_loc_map().enum_types(),
 	 /*use_type_name_as_key*/false);
+
+      if (corpus *group = type_corpus->get_group())
+	{
+	  maybe_update_types_lookup_map<enum_type_decl>
+	    (enum_type,
+	     group->priv_->get_types().enum_types());
+
+	  maybe_update_types_lookup_map<enum_type_decl>
+	    (enum_type,
+	     group->get_type_per_loc_map().enum_types(),
+	     /*use_type_name_as_key*/false);
+	}
     }
+
 }
 
 /// Update the map that associates the fully qualified name of a
@@ -10262,6 +10312,18 @@ maybe_update_types_lookup_map(const typedef_decl_sptr& typedef_type)
 	(typedef_type,
 	 type_corpus->get_type_per_loc_map().typedef_types(),
 	 /*use_type_name_as_key*/false);
+
+      if (corpus *group = type_corpus->get_group())
+	{
+	  maybe_update_types_lookup_map<typedef_decl>
+	    (typedef_type,
+	     group->priv_->get_types().typedef_types());
+
+	  maybe_update_types_lookup_map<typedef_decl>
+	    (typedef_type,
+	     group->get_type_per_loc_map().typedef_types(),
+	     /*use_type_name_as_key*/false);
+	}
     }
 }
 
@@ -10284,9 +10346,18 @@ maybe_update_types_lookup_map(const qualified_type_def_sptr& qualified_type)
       (qualified_type, tu->get_types().qualified_types());
 
   if (corpus *type_corpus = qualified_type->get_corpus())
-    maybe_update_types_lookup_map<qualified_type_def>
-      (qualified_type,
-       type_corpus->priv_->get_types().qualified_types());
+    {
+      maybe_update_types_lookup_map<qualified_type_def>
+	(qualified_type,
+	 type_corpus->priv_->get_types().qualified_types());
+
+      if (corpus *group = type_corpus->get_group())
+	{
+	  maybe_update_types_lookup_map<qualified_type_def>
+	    (qualified_type,
+	     group->priv_->get_types().qualified_types());
+	}
+    }
 }
 
 /// Update the map that associates the fully qualified name of a
@@ -10308,9 +10379,18 @@ maybe_update_types_lookup_map(const pointer_type_def_sptr& pointer_type)
       (pointer_type, tu->get_types().pointer_types());
 
   if (corpus *type_corpus = pointer_type->get_corpus())
-    maybe_update_types_lookup_map<pointer_type_def>
-      (pointer_type,
-       type_corpus->priv_->get_types().pointer_types());
+    {
+      maybe_update_types_lookup_map<pointer_type_def>
+	(pointer_type,
+	 type_corpus->priv_->get_types().pointer_types());
+
+      if (corpus *group = type_corpus->get_group())
+	{
+	  maybe_update_types_lookup_map<pointer_type_def>
+	    (pointer_type,
+	     group->priv_->get_types().pointer_types());
+	}
+    }
 }
 
 /// Update the map that associates the fully qualified name of a
@@ -10332,9 +10412,18 @@ maybe_update_types_lookup_map(const reference_type_def_sptr& reference_type)
       (reference_type, tu->get_types().reference_types());
 
   if (corpus *type_corpus = reference_type->get_corpus())
-    maybe_update_types_lookup_map<reference_type_def>
-      (reference_type,
-       type_corpus->priv_->get_types().reference_types());
+    {
+      maybe_update_types_lookup_map<reference_type_def>
+	(reference_type,
+	 type_corpus->priv_->get_types().reference_types());
+
+      if (corpus *group = type_corpus->get_group())
+	{
+	  maybe_update_types_lookup_map<reference_type_def>
+	    (reference_type,
+	     group->priv_->get_types().reference_types());
+	}
+    }
 }
 
 /// Update the map that associates the fully qualified name of a type
@@ -10365,6 +10454,18 @@ maybe_update_types_lookup_map(const array_type_def_sptr& array_type)
 	(array_type,
 	 type_corpus->get_type_per_loc_map().array_types(),
 	 /*use_type_name_as_key*/false);
+
+      if (corpus *group = type_corpus->get_group())
+	{
+	  maybe_update_types_lookup_map<array_type_def>
+	    (array_type,
+	     group->priv_->get_types().array_types());
+
+	  maybe_update_types_lookup_map<array_type_def>
+	    (array_type,
+	     group->get_type_per_loc_map().array_types(),
+	     /*use_type_name_as_key*/false);
+	}
     }
 }
 
@@ -10397,6 +10498,18 @@ maybe_update_types_lookup_map
 	(subrange_type,
 	 type_corpus->get_type_per_loc_map().subrange_types(),
 	 /*use_type_name_as_key*/false);
+
+      if (corpus *group = subrange_type->get_corpus())
+	{
+	  maybe_update_types_lookup_map<array_type_def::subrange_type>
+	    (subrange_type,
+	     group->priv_->get_types().subrange_types());
+
+	  maybe_update_types_lookup_map<array_type_def::subrange_type>
+	    (subrange_type,
+	     group->get_type_per_loc_map().subrange_types(),
+	     /*use_type_name_as_key*/false);
+	}
     }
 }
 
@@ -10420,9 +10533,18 @@ maybe_update_types_lookup_map(const function_type_sptr& fn_type)
       (fn_type, tu->get_types().function_types());
 
   if (corpus *type_corpus = fn_type->get_corpus())
-    maybe_update_types_lookup_map<function_type>
-      (fn_type,
-       type_corpus->priv_->get_types().function_types());
+    {
+      maybe_update_types_lookup_map<function_type>
+	(fn_type,
+	 type_corpus->priv_->get_types().function_types());
+
+      if (corpus *group = fn_type->get_corpus())
+	{
+	  maybe_update_types_lookup_map<function_type>
+	    (fn_type,
+	     group->priv_->get_types().function_types());
+	}
+    }
 }
 
 /// Update the map that associates the fully qualified name of a type
@@ -10785,6 +10907,101 @@ type_eligible_for_odr_based_comparison(const type_base_sptr& type)
   return false;
 }
 
+/// Test if two types are eligible to the "Linux Kernel Fast Type
+/// Comparison Optimization", a.k.a LKFTCO.
+///
+/// Two types T1 and T2 (who are presumably of the same name and kind)
+/// are eligible to the LKFTCO if they fulfill the following criteria/
+///
+/// 1/ T1 and T2 come from the same Linux Kernel Corpus and they are
+/// either class, union or enums.
+///
+/// 2/ They are defined in the same translation unit.
+///
+/// @param t1 the first type to consider.
+///
+/// @param t2 the second type to consider.
+///
+/// @return true iff t1 and t2 are eligible to the LKFTCO.
+static bool
+types_defined_same_linux_kernel_corpus_public(const type_base& t1,
+					      const type_base& t2)
+{
+  const corpus *t1_corpus = t1.get_corpus(), *t2_corpus = t2.get_corpus();
+  string t1_file_path, t2_file_path;
+
+  /// If the t1 (and t2) are classes/unions/enums from the same linux
+  /// kernel corpus, let's move on.  Otherwise bail out.
+  if (!(t1_corpus && t2_corpus
+	&& t1_corpus == t2_corpus
+	&& (t1_corpus->get_origin() == corpus::LINUX_KERNEL_BINARY_ORIGIN)
+	&& (is_class_or_union_type(&t1)
+	    || is_enum_type(&t1))))
+    return false;
+
+  class_or_union *c1 = 0, *c2 = 0;
+  c1 = is_class_or_union_type(&t1);
+  c2 = is_class_or_union_type(&t2);
+
+  if ((c1 && c1->get_is_anonymous() && !c1->get_naming_typedef())
+      || (c2 && c2->get_is_anonymous() && !c2->get_naming_typedef()))
+    return false;
+
+  if (const enum_type_decl *e1 = is_enum_type(&t1))
+    if (const enum_type_decl *e2 = is_enum_type(&t2))
+      if (e1->get_is_anonymous() || e2->get_is_anonymous())
+	return false;
+
+  if (c1 && c1->get_is_declaration_only())
+    c1 = c1->get_definition_of_declaration().get();
+  if (c2 && c2->get_is_declaration_only())
+    c2 = c2->get_definition_of_declaration().get();
+
+  if (c1 && c2)
+    {
+      if (c1->get_is_declaration_only() != c2->get_is_declaration_only())
+	{
+	  if (c1->get_environment()->decl_only_class_equals_definition())
+	    // At least of classes/union is declaration-only.  Because
+	    // we are in a context in which a declaration-only
+	    // class/union is equal to all definitions of that
+	    // class/union, we can assume that the two types are
+	    // equal.
+	    return true;
+	}
+    }
+
+  if (t1.get_size_in_bits() != t2.get_size_in_bits())
+    return false;
+
+    {
+      location l;
+
+      if (c1)
+	l = c1->get_location();
+      else
+	l = dynamic_cast<const decl_base&>(t1).get_location();
+
+      unsigned line = 0, col = 0;
+      if (l)
+	l.expand(t1_file_path, line, col);
+      if (c2)
+	l = c2->get_location();
+      else
+	l = dynamic_cast<const decl_base&>(t2).get_location();
+      if (l)
+	l.expand(t2_file_path, line, col);
+    }
+
+    if (t1_file_path.empty() || t2_file_path.empty())
+      return false;
+
+    if (t1_file_path == t2_file_path)
+      return true;
+
+    return false;
+}
+
 /// Compute the canonical type for a given instance of @ref type_base.
 ///
 /// Consider two types T and T'.  The canonical type of T, denoted
@@ -10828,7 +11045,6 @@ type_base::get_canonical_type_for(type_base_sptr t)
 	  return type_base_sptr();
 	else
 	  t = cl;
-
       }
 
   class_decl_sptr is_class = is_class_type(t);
@@ -10964,6 +11180,11 @@ type_base::get_canonical_type_for(type_base_sptr t)
 	  // Compare types by considering that decl-only classes don't
 	  // equal their definition.
 	  env->decl_only_class_equals_definition(false);
+	  if (types_defined_same_linux_kernel_corpus_public(**it, *t))
+	    {
+	      result = *it;
+	      break;
+	    }
 	  if (*it == t)
 	    {
 	      // Restore the state of the on-the-fly-canonicalization
@@ -18189,6 +18410,9 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
       RETURN(false);
     }
 
+  if (types_defined_same_linux_kernel_corpus_public(l, r))
+    return true;
+
   if (l.priv_->comparison_started(l)
       || l.priv_->comparison_started(r))
     return true;
@@ -19849,6 +20073,37 @@ bool
 operator!=(const class_decl_sptr& l, const class_decl_sptr& r)
 {return !operator==(l, r);}
 
+/// Turn equality of shared_ptr of class_or_union into a deep
+/// equality; that is, make it compare the pointed to objects too.
+///
+/// @param l the left-hand-side operand of the operator
+///
+/// @param r the right-hand-side operand of the operator.
+///
+/// @return true iff @p l equals @p r.
+bool
+operator==(const class_or_union_sptr& l, const class_or_union_sptr& r)
+{
+  if (l.get() == r.get())
+    return true;
+  if (!!l != !!r)
+    return false;
+
+  return *l == *r;
+}
+
+/// Turn inequality of shared_ptr of class_or_union into a deep
+/// equality; that is, make it compare the pointed to objects too.
+///
+/// @param l the left-hand-side operand of the operator
+///
+/// @param r the right-hand-side operand of the operator.
+///
+/// @return true iff @p l is different from @p r.
+bool
+operator!=(const class_or_union_sptr& l, const class_or_union_sptr& r)
+{return !operator==(l, r);}
+
 /// This implements the ir_traversable_base::traverse pure virtual
 /// function.
 ///
@@ -20626,6 +20881,36 @@ copy_member_function(const union_decl_sptr& union_type,
   return copy_member_function(t, f);
 }
 
+/// Turn equality of shared_ptr of union_decl into a deep equality;
+/// that is, make it compare the pointed to objects too.
+///
+/// @param l the left-hand-side operand of the operator
+///
+/// @param r the right-hand-side operand of the operator.
+///
+/// @return true iff @p l equals @p r.
+bool
+operator==(const union_decl_sptr& l, const union_decl_sptr& r)
+{
+  if (l.get() == r.get())
+    return true;
+  if (!!l != !!r)
+    return false;
+
+  return *l == *r;
+}
+
+/// Turn inequality of shared_ptr of union_decl into a deep equality;
+/// that is, make it compare the pointed to objects too.
+///
+/// @param l the left-hand-side operand of the operator
+///
+/// @param r the right-hand-side operand of the operator.
+///
+/// @return true iff @p l is different from @p r.
+bool
+operator!=(const union_decl_sptr& l, const union_decl_sptr& r)
+{return !operator==(l, r);}
 // </union_decl>
 
 // <template_decl stuff>

@@ -3863,6 +3863,12 @@ method_decl_sptr
 copy_member_function(const class_or_union_sptr& clazz,
 		     const method_decl* f);
 
+bool
+operator==(const class_or_union_sptr& l, const class_or_union_sptr& r);
+
+bool
+operator!=(const class_or_union_sptr& l, const class_or_union_sptr& r);
+
 /// Hasher for the @ref class_or_union type
 struct class_or_union::hash
 {
@@ -4168,6 +4174,12 @@ copy_member_function(const union_decl_sptr& union_type,
 method_decl_sptr
 copy_member_function(const union_decl_sptr& union_type,
 		     const method_decl* f);
+
+bool
+operator==(const union_decl_sptr& l, const union_decl_sptr& r);
+
+bool
+operator!=(const union_decl_sptr& l, const union_decl_sptr& r);
 
 /// Abstraction of a member function context relationship.  This
 /// relates a member function to its parent class.

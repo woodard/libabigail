@@ -5845,9 +5845,8 @@ public:
   corpus_sptr
   main_corpus_from_current_group()
   {
-    if (cur_corpus_group_ && !cur_corpus_group_->get_corpora().empty())
-      return cur_corpus_group_->get_corpora().front();
-
+    if (cur_corpus_group_)
+      return cur_corpus_group_->get_main_corpus();
     return corpus_sptr();
   }
 
@@ -5884,15 +5883,15 @@ public:
   /// coming from the "vmlinux" binary that is the main corpus of the
   /// group.
   ///
-  /// @return true if the current corpus is part of a corpus group
-  /// being built and if it's not the main corpus of the group.
+  /// @return the corpus group the current corpus belongs to, if the
+  /// current corpus is part of a corpus group being built. Nil otherwise.
   corpus_sptr
   should_reuse_type_from_corpus_group() const
   {
     if (has_corpus_group() && is_c_language(cur_transl_unit()->get_language()))
       if (corpus_sptr main_corpus = main_corpus_from_current_group())
 	if (!current_corpus_is_main_corpus_from_current_group())
-	  return main_corpus;
+	  return current_corpus_group();
 
     return corpus_sptr();
   }
@@ -16385,10 +16384,15 @@ read_debug_info_into_corpus(read_context& ctxt)
   // First set some mundane properties of the corpus gathered from
   // ELF.
   ctxt.current_corpus()->set_path(ctxt.elf_path());
-  ctxt.current_corpus()->set_origin(corpus::DWARF_ORIGIN);
+  if (ctxt.is_linux_kernel_binary())
+    ctxt.current_corpus()->set_origin(corpus::LINUX_KERNEL_BINARY_ORIGIN);
+  else
+    ctxt.current_corpus()->set_origin(corpus::DWARF_ORIGIN);
   ctxt.current_corpus()->set_soname(ctxt.dt_soname());
   ctxt.current_corpus()->set_needed(ctxt.dt_needed());
   ctxt.current_corpus()->set_architecture_name(ctxt.elf_architecture());
+  if (corpus_group_sptr group = ctxt.current_corpus_group())
+    group->add_corpus(ctxt.current_corpus());
 
   // Set symbols information to the corpus.
   if (!get_ignore_symbol_table(ctxt))
@@ -16674,11 +16678,11 @@ maybe_canonicalize_type(const type_base_sptr& t,
 ///     2/
 ///     void maybe_canonicalize_type(const Dwarf_Die *die, read_context& ctxt);
 ///
-/// So this function uses 1/ for most types and uses uses 2/ for
-/// anonymous struct/classes and enum types.  It also uses it for
-/// function types.  Using 2/ is slower and bigger than using 1/, but
-/// then 1/ doesn't know how to deal with anonymous types.  That's why
-/// this function uses 2/ only for the types that really need it.
+/// So this function uses 1/ for most types and uses uses 2/ function
+/// types.  Using 2/ is slower and bigger than using 1/, but then 1/
+/// deals poorly with anonymous types because of how poorly DIEs
+/// canonicalization works on anonymous types.  That's why this
+/// function uses 2/ only for the types that really need it.
 ///
 /// @param die the DIE of the type denoted by @p t.
 ///
@@ -16690,24 +16694,6 @@ maybe_canonicalize_type(const Dwarf_Die	*die,
 			const type_base_sptr&	t,
 			read_context&		ctxt)
 {
-  if (const class_or_union_sptr cl = is_class_or_union_type(t))
-    {
-      if (cl->get_is_anonymous())
-	{
-	  maybe_canonicalize_type(t, ctxt);
-	  return;
-	}
-    }
-
-  if (const enum_type_decl_sptr e = is_enum_type(t))
-    {
-      if (e->get_is_anonymous())
-	{
-	  maybe_canonicalize_type(t, ctxt);
-	  return ;
-	}
-    }
-
   if (const function_type_sptr ft = is_function_type(t))
     {
       maybe_canonicalize_type(ft, ctxt);
@@ -17613,7 +17599,8 @@ read_and_add_corpus_to_group_from_elf(read_context& ctxt,
   corpus_sptr corp = read_corpus_from_elf(ctxt, status);
   if (status & STATUS_OK)
     {
-      group.add_corpus(corp);
+      if (!corp->get_group())
+	group.add_corpus(corp);
       result = corp;
     }
 

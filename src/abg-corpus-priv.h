@@ -678,6 +678,7 @@ struct corpus::priv
 {
   mutable unordered_map<string, type_base_sptr> canonical_types_;
   environment*					env;
+  corpus_group*				group;
   corpus::exported_decls_builder_sptr		exported_decls_builder;
   origin					origin_;
   vector<string>				regex_patterns_fns_to_suppress;
@@ -725,6 +726,7 @@ public:
   priv(const string &	p,
        environment*	e)
     : env(e),
+      group(),
       origin_(ARTIFICIAL_ORIGIN),
       path(p)
   {}
