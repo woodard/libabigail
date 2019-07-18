@@ -10943,15 +10943,20 @@ types_defined_same_linux_kernel_corpus_public(const type_base& t1,
   c1 = is_class_or_union_type(&t1);
   c2 = is_class_or_union_type(&t2);
 
+  // Two anonymous class types with no naming typedefs cannot be
+  // eligible to this optimization.
   if ((c1 && c1->get_is_anonymous() && !c1->get_naming_typedef())
       || (c2 && c2->get_is_anonymous() && !c2->get_naming_typedef()))
     return false;
 
+  // Two anonymous enum types cannot be eligible to this optimization.
   if (const enum_type_decl *e1 = is_enum_type(&t1))
     if (const enum_type_decl *e2 = is_enum_type(&t2))
       if (e1->get_is_anonymous() || e2->get_is_anonymous())
 	return false;
 
+  // Look through declaration-only types.  That is, get the associated
+  // definition type.
   if (c1 && c1->get_is_declaration_only())
     c1 = c1->get_definition_of_declaration().get();
   if (c2 && c2->get_is_declaration_only())
@@ -10962,8 +10967,8 @@ types_defined_same_linux_kernel_corpus_public(const type_base& t1,
       if (c1->get_is_declaration_only() != c2->get_is_declaration_only())
 	{
 	  if (c1->get_environment()->decl_only_class_equals_definition())
-	    // At least of classes/union is declaration-only.  Because
-	    // we are in a context in which a declaration-only
+	    // At least one of classes/union is declaration-only.
+	    // Because we are in a context in which a declaration-only
 	    // class/union is equal to all definitions of that
 	    // class/union, we can assume that the two types are
 	    // equal.
@@ -10974,32 +10979,34 @@ types_defined_same_linux_kernel_corpus_public(const type_base& t1,
   if (t1.get_size_in_bits() != t2.get_size_in_bits())
     return false;
 
-    {
-      location l;
+  // Look at the file names of the locations of t1 and t2.  If they
+  // are equal, then t1 and t2 are defined in the same file.
+  {
+    location l;
 
-      if (c1)
-	l = c1->get_location();
-      else
-	l = dynamic_cast<const decl_base&>(t1).get_location();
+    if (c1)
+      l = c1->get_location();
+    else
+      l = dynamic_cast<const decl_base&>(t1).get_location();
 
-      unsigned line = 0, col = 0;
-      if (l)
-	l.expand(t1_file_path, line, col);
-      if (c2)
-	l = c2->get_location();
-      else
-	l = dynamic_cast<const decl_base&>(t2).get_location();
-      if (l)
-	l.expand(t2_file_path, line, col);
-    }
+    unsigned line = 0, col = 0;
+    if (l)
+      l.expand(t1_file_path, line, col);
+    if (c2)
+      l = c2->get_location();
+    else
+      l = dynamic_cast<const decl_base&>(t2).get_location();
+    if (l)
+      l.expand(t2_file_path, line, col);
+  }
 
-    if (t1_file_path.empty() || t2_file_path.empty())
-      return false;
-
-    if (t1_file_path == t2_file_path)
-      return true;
-
+  if (t1_file_path.empty() || t2_file_path.empty())
     return false;
+
+  if (t1_file_path == t2_file_path)
+    return true;
+
+  return false;
 }
 
 /// Compute the canonical type for a given instance of @ref type_base.
