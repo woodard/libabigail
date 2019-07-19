@@ -254,6 +254,37 @@ abidiff_status_has_abi_change(abidiff_status s);
 bool
 abidiff_status_has_incompatible_abi_change(abidiff_status s);
 
+/// A type used to time various part of the libabigail system.
+class timer
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+
+public:
+  enum kind
+  {
+    /// Default timer kind.
+    DEFAULT_TIMER_KIND = 0,
+    /// This kind of timer starts upon instantiation.
+    START_ON_INSTANTIATION_TIMER_KIND = 1,
+  };
+
+  timer (kind k = DEFAULT_TIMER_KIND);
+  bool start();
+  bool stop();
+  time_t value_in_seconds() const;
+  bool value(time_t& hours,
+	     time_t& minutes,
+	     time_t& seconds,
+	     time_t& milliseconds) const;
+  string value_as_string() const;
+  ~timer();
+}; //end class timer
+
+ostream& operator<<(ostream&, const timer&);
+
 ostream&
 operator<<(ostream& output, file_type r);
 

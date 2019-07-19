@@ -5588,6 +5588,7 @@ public:
   void
   canonicalize_types_scheduled(die_source source)
   {
+    tools_utils::timer cn_timer;
     if (do_log())
       {
 	cerr << "going to canonicalize types";
@@ -5595,10 +5596,12 @@ public:
 	if (c)
 	  cerr << " of corpus " << current_corpus()->get_path();
 	cerr << " (DIEs source: " << source << ")\n";
+	cn_timer.start();
       }
 
     if (!types_to_canonicalize(source).empty())
       {
+	tools_utils::timer single_type_cn_timer;
 	size_t total = types_to_canonicalize(source).size();
 	if (do_log())
 	  cerr << total << " types to canonicalize\n";
@@ -5616,16 +5619,22 @@ public:
 		if (corpus_sptr c = current_corpus())
 		  cerr << "@" << c->get_path();
 		cerr << " ...";
+		single_type_cn_timer.start();
 	      }
 	    canonicalize(t);
 	    if (do_log())
-	      cerr << " DONE\n";
+	      {
+		cerr << " DONE";
+		single_type_cn_timer.stop();
+		cerr << ":" <<single_type_cn_timer << "\n";
+	      }
 	  }
 
 	// Now canonicalize types that were created but not tied to
 	// any DIE.
 	if (!extra_types_to_canonicalize().empty())
 	  {
+	    tools_utils::timer single_type_cn_timer;
 	    size_t total = extra_types_to_canonicalize().size();
 	    if (do_log())
 	      cerr << total << " extra types to canonicalize\n";
@@ -5643,14 +5652,32 @@ public:
 		    if (corpus_sptr c = current_corpus())
 		      cerr << "@" << c->get_path();
 		    cerr << " ...";
+		    single_type_cn_timer.start();
 		  }
 		canonicalize(*it);
+		if (do_log())
+		  {
+		    single_type_cn_timer.stop();
+		    cerr << "DONE:"
+			 << single_type_cn_timer
+			 << "\n";
+		  }
 	      }
 	  }
       }
+
     if (do_log())
-      cerr << "finished canonicalizing types.  (source: "
-	   << source << ")\n";
+      {
+	cn_timer.stop();
+	cerr << "finished canonicalizing types";
+	corpus_sptr c = current_corpus();
+	if (c)
+	  cerr << " of corpus " << current_corpus()->get_path();
+	cerr << " (DIEs source: "
+	     << source << "):"
+	     << cn_timer
+	     << "\n";
+      }
   }
 
   /// Compute the number of canonicalized and missed types in the late
@@ -16449,57 +16476,105 @@ read_debug_info_into_corpus(read_context& ctxt)
 
   // Walk all the DIEs of the debug info to build a DIE -> parent map
   // useful for get_die_parent() to work.
-  if (ctxt.do_log())
-    cerr << "building die -> parent maps ...";
+  {
+    tools_utils::timer t;
+    if (ctxt.do_log())
+      {
+	cerr << "building die -> parent maps ...";
+	t.start();
+      }
 
-  ctxt.build_die_parent_maps();
+    ctxt.build_die_parent_maps();
 
-  if (ctxt.do_log())
-    cerr << " DONE@" << ctxt.current_corpus()->get_path() << "\n";
+    if (ctxt.do_log())
+      {
+	t.stop();
+	cerr << " DONE@" << ctxt.current_corpus()->get_path()
+	     << ":"
+	     << t
+	     << "\n";
+      }
+  }
 
   ctxt.env()->canonicalization_is_done(false);
 
-  if (ctxt.do_log())
-    cerr << "building the libabigail internal representation ...";
-  // And now walk all the DIEs again to build the libabigail IR.
-  Dwarf_Half dwarf_version = 0;
-  for (Dwarf_Off offset = 0, next_offset = 0;
-       (dwarf_next_unit(ctxt.dwarf(), offset, &next_offset, &header_size,
-			&dwarf_version, NULL, &address_size, NULL,
-			NULL, NULL) == 0);
-       offset = next_offset)
-    {
-      Dwarf_Off die_offset = offset + header_size;
-      Dwarf_Die unit;
-      if (!dwarf_offdie(ctxt.dwarf(), die_offset, &unit)
-	  || dwarf_tag(&unit) != DW_TAG_compile_unit)
-	continue;
+  {
+    tools_utils::timer t;
+    if (ctxt.do_log())
+      {
+	cerr << "building the libabigail internal representation ...";
+	t.start();
+      }
+    // And now walk all the DIEs again to build the libabigail IR.
+    Dwarf_Half dwarf_version = 0;
+    for (Dwarf_Off offset = 0, next_offset = 0;
+	 (dwarf_next_unit(ctxt.dwarf(), offset, &next_offset, &header_size,
+			  &dwarf_version, NULL, &address_size, NULL,
+			  NULL, NULL) == 0);
+	 offset = next_offset)
+      {
+	Dwarf_Off die_offset = offset + header_size;
+	Dwarf_Die unit;
+	if (!dwarf_offdie(ctxt.dwarf(), die_offset, &unit)
+	    || dwarf_tag(&unit) != DW_TAG_compile_unit)
+	  continue;
 
-      ctxt.dwarf_version(dwarf_version);
+	ctxt.dwarf_version(dwarf_version);
 
-      address_size *= 8;
+	address_size *= 8;
 
-      // Build a translation_unit IR node from cu; note that cu must
-      // be a DW_TAG_compile_unit die.
-      translation_unit_sptr ir_node =
-	build_translation_unit_and_add_to_ir(ctxt, &unit, address_size);
-      ABG_ASSERT(ir_node);
-    }
-  if (ctxt.do_log())
-    cerr << " DONE@" << ctxt.current_corpus()->get_path() << "\n";
+	// Build a translation_unit IR node from cu; note that cu must
+	// be a DW_TAG_compile_unit die.
+	translation_unit_sptr ir_node =
+	  build_translation_unit_and_add_to_ir(ctxt, &unit, address_size);
+	ABG_ASSERT(ir_node);
+      }
+    if (ctxt.do_log())
+      {
+	t.stop();
+	cerr << " DONE@" << ctxt.current_corpus()->get_path()
+	     << ":"
+	     << t
+	     << "\n";
+      }
+  }
 
-  if (ctxt.do_log())
-    cerr << "resolving declaration only classes ...";
-  ctxt.resolve_declaration_only_classes();
-  if (ctxt.do_log())
-    cerr << " DONE@" << ctxt.current_corpus()->get_path() <<"\n";
+  {
+    tools_utils::timer t;
+    if (ctxt.do_log())
+      {
+	cerr << "resolving declaration only classes ...";
+	t.start();
+      }
+    ctxt.resolve_declaration_only_classes();
+    if (ctxt.do_log())
+      {
+	t.stop();
+	cerr << " DONE@" << ctxt.current_corpus()->get_path()
+	     << ":"
+	     << t
+	     <<"\n";
+      }
+  }
 
-  if (ctxt.do_log())
-    cerr << "fixing up functions with linkage name but "
-	 << "no advertised underlying symbols ....";
-  ctxt.fixup_functions_with_no_symbols();
-  if (ctxt.do_log())
-    cerr << " DONE@" << ctxt.current_corpus()->get_path() <<"\n";
+  {
+    tools_utils::timer t;
+    if (ctxt.do_log())
+      {
+	cerr << "fixing up functions with linkage name but "
+	     << "no advertised underlying symbols ....";
+	t.start();
+      }
+    ctxt.fixup_functions_with_no_symbols();
+    if (ctxt.do_log())
+      {
+	t.stop();
+	cerr << " DONE@" << ctxt.current_corpus()->get_path()
+	     <<":"
+	     << t
+	     <<"\n";
+      }
+  }
 
   /// Now, look at the types that needs to be canonicalized after the
   /// translation has been constructed (which is just now) and
@@ -16512,22 +16587,46 @@ read_debug_info_into_corpus(read_context& ctxt)
   /// even for some static data members.  We need to do that for types
   /// are in the alternate debug info section and for types that in
   /// the main debug info section.
-  if (ctxt.do_log())
-    cerr << "perform late type canonicalizing ...\n";
-  ctxt.perform_late_type_canonicalizing();
-  if (ctxt.do_log())
-    cerr << "late type canonicalizing DONE@"
-	 << ctxt.current_corpus()->get_path()
-	 << "\n";
+  {
+    tools_utils::timer t;
+    if (ctxt.do_log())
+      {
+	cerr << "perform late type canonicalizing ...\n";
+	t.start();
+      }
+
+    ctxt.perform_late_type_canonicalizing();
+    if (ctxt.do_log())
+      {
+	t.stop();
+	cerr << "late type canonicalizing DONE@"
+	     << ctxt.current_corpus()->get_path()
+	     << ":"
+	     << t
+	     << "\n";
+      }
+  }
 
   ctxt.env()->canonicalization_is_done(true);
 
-  if (ctxt.do_log())
-    cerr << "sort functions and variables ...";
-  ctxt.current_corpus()->sort_functions();
-  ctxt.current_corpus()->sort_variables();
-  if (ctxt.do_log())
-    cerr << " DONE@" << ctxt.current_corpus()->get_path() <<" \n";
+  {
+    tools_utils::timer t;
+    if (ctxt.do_log())
+      {
+	cerr << "sort functions and variables ...";
+	t.start();
+      }
+    ctxt.current_corpus()->sort_functions();
+    ctxt.current_corpus()->sort_variables();
+    if (ctxt.do_log())
+      {
+	t.stop();
+	cerr << " DONE@" << ctxt.current_corpus()->get_path()
+	     << ":"
+	     << t
+	     <<" \n";
+      }
+  }
 
   return ctxt.current_corpus();
 }

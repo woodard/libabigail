@@ -56,6 +56,7 @@ using abigail::tools_utils::temp_file;
 using abigail::tools_utils::temp_file_sptr;
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::build_corpus_group_from_kernel_dist_under;
+using abigail::tools_utils::timer;
 using abigail::ir::environment_sptr;
 using abigail::ir::environment;
 using abigail::corpus;
@@ -405,12 +406,26 @@ load_corpus_and_write_abixml(char* argv[],
 			     const options& opts)
 {
   int exit_code = 0;
+  timer t;
 
   read_context& ctxt = *context;
   corpus_sptr corp;
   dwarf_reader::status s = dwarf_reader::STATUS_UNKNOWN;
+  t.start();
   corp = read_corpus_from_elf(ctxt, s);
+  t.stop();
+  if (opts.do_log)
+    emit_prefix(argv[0], cerr)
+      << "read corpus from elf file in: " << t << "\n";
+
+  t.start();
   context.reset();
+  t.stop();
+
+  if (opts.do_log)
+    emit_prefix(argv[0], cerr)
+      << "reset read context in: " << t << "\n";
+
   if (!corp)
     {
       if (s == dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
@@ -452,9 +467,16 @@ load_corpus_and_write_abixml(char* argv[],
     }
   else
     {
+      t.start();
       const write_context_sptr& write_ctxt
 	  = create_write_context(corp->get_environment(), cout);
       set_common_options(*write_ctxt, opts);
+      t.stop();
+
+      if (opts.do_log)
+	emit_prefix(argv[0], cerr)
+	  << "created & initialized write context in: "
+	  << t << "\n";
 
       if (opts.abidiff)
 	{
@@ -465,9 +487,15 @@ load_corpus_and_write_abixml(char* argv[],
 	  set_ostream(*write_ctxt, tmp_file->get_stream());
 	  write_corpus(*write_ctxt, corp, 0);
 	  tmp_file->get_stream().flush();
+	  t.start();
 	  corpus_sptr corp2 =
 	    read_corpus_from_native_xml_file(tmp_file->get_path(),
 					     env.get());
+	  t.stop();
+	  if (opts.do_log)
+	    emit_prefix(argv[0], cerr)
+	      << "Read corpus in: " << t << "\n";
+
 	  if (!corp2)
 	    {
 	      emit_prefix(argv[0], cerr)
@@ -475,14 +503,26 @@ load_corpus_and_write_abixml(char* argv[],
 		"elf file back\n";
 	      return 1;
 	    }
+
 	  diff_context_sptr ctxt(new diff_context);
 	  set_diff_context(ctxt);
 	  ctxt->show_locs(opts.show_locs);
+	  t.start();
 	  corpus_diff_sptr diff = compute_diff(corp, corp2, ctxt);
+	  t.stop();
+	  if (opts.do_log)
+	    emit_prefix(argv[0], cerr)
+	      << "computed diff in: " << t << "\n";
+
 	  bool has_error = diff->has_incompatible_changes();
 	  if (has_error)
 	    {
+	      t.start();
 	      diff->report(cerr);
+	      t.stop();
+	      if (opts.do_log)
+		emit_prefix(argv[0], cerr)
+		  << "emitted report in: " << t << "\n";
 	      return 1;
 	    }
 	  return 0;
@@ -502,13 +542,23 @@ load_corpus_and_write_abixml(char* argv[],
 	      return 1;
 	    }
 	  set_ostream(*write_ctxt, of);
+	  t.start();
 	  write_corpus(*write_ctxt, corp, 0);
+	  t.stop();
+	  if (opts.do_log)
+	    emit_prefix(argv[0], cerr)
+	      << "emitted abixml output in: " << t << "\n";
 	  of.close();
 	  return 0;
 	}
       else
 	{
+	  t.start();
 	  exit_code = !write_corpus(*write_ctxt, corp, 0);
+	  t.stop();
+	  if (opts.do_log)
+	    emit_prefix(argv[0], cerr)
+	      << "emitted abixml out in: " << t << "\n";
 	}
     }
 
@@ -541,7 +591,15 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
     if (!abigail::tools_utils::check_file(opts.vmlinux, cerr, argv[0]))
       return 1;
 
+  timer t, global_timer;
   suppressions_type supprs;
+
+  if (opts.do_log)
+    emit_prefix(argv[0], cerr)
+      << "going to build ABI representation of the Linux Kernel ...\n";
+
+  global_timer.start();
+  t.start();
   corpus_group_sptr group =
     build_corpus_group_from_kernel_dist_under(opts.in_file_path,
 					      /*debug_info_root=*/"",
@@ -549,6 +607,14 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
 					      opts.suppression_paths,
 					      opts.kabi_whitelist_paths,
 					      supprs, opts.do_log, env);
+  t.stop();
+
+  if (opts.do_log)
+    {
+      emit_prefix(argv[0], cerr)
+	<< "built ABI representation of the Linux Kernel in: "
+	<< t << "\n";
+    }
 
   if (!group)
     return 1;
@@ -569,15 +635,36 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
 		<< opts.out_file_path << "'\n";
 	      return 1;
 	    }
+
+	  if (opts.do_log)
+	    emit_prefix(argv[0], cerr)
+	      << "emitting the abixml output ...\n";
 	  set_ostream(*ctxt, of);
+	  t.start();
 	  exit_code = !write_corpus_group(*ctxt, group, 0);
+	  t.stop();
+	  if (opts.do_log)
+	    emit_prefix(argv[0], cerr)
+	      << "emitted abixml output in: " << t << "\n";
 	}
       else
 	{
+	  if (opts.do_log)
+	    emit_prefix(argv[0], cerr)
+	      << "emitting the abixml output ...\n";
+	  t.start();
 	  exit_code = !write_corpus_group(*ctxt, group, 0);
+	  t.stop();
+	  if (opts.do_log)
+	    emit_prefix(argv[0], cerr)
+	      << "emitted abixml output in: " << t << "\n";
 	}
     }
 
+  global_timer.stop();
+  if (opts.do_log)
+    emit_prefix(argv[0], cerr)
+      << "total processing done in " << global_timer << "\n";
   return exit_code;
 }
 

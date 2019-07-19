@@ -35,6 +35,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <dirent.h>
 #include <time.h>
 #include <cstdlib>
@@ -186,6 +187,154 @@ abidiff_status_has_incompatible_abi_change(abidiff_status s)
 #define DECLARE_STAT(st) \
   struct stat st; \
   memset(&st, 0, sizeof(st))
+
+// <class timer stuff>
+
+/// The private data type of the @ref timer class.
+struct timer::priv
+{
+  timer::kind timer_kind;
+  struct timeval begin_timeval;
+  struct timeval end_timeval;
+
+  priv(timer::kind k)
+    : timer_kind(k),
+      begin_timeval(),
+      end_timeval()
+  {}
+}; // end struct timer::priv
+
+/// Constructor of the @ref timer type.
+///
+/// @param k the kind of timer to instantiate.
+timer::timer(timer::kind k)
+  : priv_(new timer::priv(k))
+{
+  if (priv_->timer_kind == START_ON_INSTANTIATION_TIMER_KIND)
+    start();
+}
+
+/// Start the timer.
+///
+/// To stop the timer (and record the time elapsed since the timer was
+/// started), call the timer::stop member function.
+///
+/// @return true upon successful completion.
+bool
+timer::start()
+{
+  if (gettimeofday(&priv_->begin_timeval, 0))
+    return false;
+  return true;
+}
+
+/// Stop the timer.
+///
+/// This records the time elapsed since the timer was started using
+/// the timer::start member function.
+///
+/// @return true upon successful completion.
+bool
+timer::stop()
+{
+  if (gettimeofday(&priv_->end_timeval, 0))
+    return false;
+  return true;
+}
+
+/// Get the elapsed time in seconds.
+///
+/// @return the time elapsed between the invocation of the methods
+/// timer::start() and timer::stop, in seconds.
+time_t
+timer::value_in_seconds() const
+{return priv_->end_timeval.tv_sec - priv_->begin_timeval.tv_sec;}
+
+/// Get the elapsed time in hour:minutes:seconds:milliseconds.
+///
+/// @param hours out parameter. This is set to the number of hours elapsed.
+///
+/// @param minutes out parameter.  This is set to the number of minutes
+/// (passed the number of hours) elapsed.
+///
+/// @param seconds out parameter.  This is se to the number of
+/// seconds (passed the number of hours and minutes) elapsed.
+///
+/// @param milliseconds.  This is set ot the number of milliseconds
+/// (passed the number of hours, minutes and seconds) elapsed.
+///
+/// @return true upon successful completion.
+bool
+timer::value(time_t&		hours,
+	     time_t&		minutes,
+	     time_t&		seconds,
+	     time_t&	milliseconds) const
+{
+  time_t elapsed_seconds =
+    priv_->end_timeval.tv_sec - priv_->begin_timeval.tv_sec;
+  suseconds_t elapsed_usecs =
+    ((priv_->end_timeval.tv_sec * 1000000) + priv_->end_timeval.tv_usec)
+    - ((priv_->begin_timeval.tv_sec * 1000000) + priv_->begin_timeval.tv_usec);
+
+  milliseconds = 0;
+
+  hours = elapsed_seconds / 3600;
+  minutes = (elapsed_seconds % 3600) / 60;
+  seconds = (elapsed_seconds % 3600) % 60;
+  if (elapsed_seconds == 0)
+    milliseconds = elapsed_usecs / 1000;
+
+  return true;
+}
+
+/// Get the elapsed time as a human-readable string.
+///
+/// @return the elapsed time as a human-readable string.
+string
+timer::value_as_string() const
+{
+  time_t hours = 0, minutes = 0, seconds = 0;
+  time_t msecs = 0;
+
+  value(hours, minutes, seconds, msecs);
+
+  std::ostringstream o;
+
+  if (hours)
+    o << hours << "h";
+
+  if (minutes)
+    o << minutes << "m";
+
+  o << seconds << "s";
+
+  if (msecs)
+    o <<msecs <<"ms";
+
+  return o.str();
+}
+
+/// Destructor of the @ref timer type.
+timer::~timer()
+{
+}
+
+/// Streaming operator for the @ref timer type.
+///
+/// Emit a string representing the elapsed time (in a human-readable
+/// manner) to an output stream.
+///
+/// @param o the output stream to emit the elapsed time string to.
+///
+/// @param t the timer to consider.
+///
+/// @return the output stream considered.
+ostream&
+operator<<(ostream& o, const timer& t)
+{
+  o << t.value_as_string();
+  return o;
+}
 
 /// Get the stat struct (as returned by the lstat() function of the C
 /// library) of a file.  Note that the function uses lstat, so that
@@ -2305,14 +2454,18 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
   vector<string> modules;
 
   if (verbose)
-    std::cout << "Analysing kernel dist root '"
+    std::cerr << "Analysing kernel dist root '"
 	      << root << "' ... " << std::flush;
 
+  timer t;
+
+  t.start();
   bool got_binary_paths =
     get_binary_paths_from_kernel_dist(root, debug_info_root, vmlinux, modules);
+  t.stop();
 
   if (verbose)
-    std::cout << "DONE\n";
+    std::cerr << "DONE: " << t << "\n";
 
   dwarf_reader::read_context_sptr ctxt;
   if (got_binary_paths)
@@ -2330,9 +2483,17 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
 	    dwarf_reader::create_read_context(vmlinux, di_roots ,env.get(),
 					      /*read_all_types=*/false,
 					      /*linux_kernel_mode=*/true);
+	  dwarf_reader::set_do_log(*ctxt, verbose);
 
+	  t.start();
 	  load_generate_apply_suppressions(*ctxt, suppr_paths,
 					   kabi_wl_paths, supprs);
+	  t.stop();
+
+	  if (verbose)
+	    std::cerr << "loaded white list and generated suppr spec in: "
+		      << t
+		      << "\n";
 
 	  // If we have been given a whitelist of functions and
 	  // variable symbols to look at, then we can avoid loading
@@ -2345,14 +2506,18 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
 	  set_read_context_corpus_group(*ctxt, group);
 
 	  if (verbose)
-	    std::cout << "reading kernel binary '"
-		      << vmlinux << "' ... " << std::flush;
+	    std::cerr << "reading kernel binary '"
+		      << vmlinux << "' ...\n" << std::flush;
 
 	  // Read the vmlinux corpus and add it to the group.
+	  t.start();
 	  read_and_add_corpus_to_group_from_elf(*ctxt, *group, status);
+	  t.stop();
 
-	    if (verbose)
-	      std::cout << " DONE\n";
+	  if (verbose)
+	    std::cerr << vmlinux
+		      << " reading DONE:"
+		      << t << "\n";
 	}
 
       if (!group->is_empty())
@@ -2365,7 +2530,7 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
 	       ++m, ++cur_module_index)
 	    {
 	      if (verbose)
-		std::cout << "reading module '"
+		std::cerr << "reading module '"
 			  << *m << "' ("
 			  << cur_module_index
 			  << "/" << total_nb_modules
@@ -2387,10 +2552,15 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
 
 	      set_read_context_corpus_group(*ctxt, group);
 
+	      t.start();
 	      read_and_add_corpus_to_group_from_elf(*ctxt,
 						    *group, status);
+	      t.stop();
 	      if (verbose)
-		std::cout << " DONE\n";
+		std::cerr << "module '"
+			  << *m
+			  << "' reading DONE: "
+			  << t << "\n";
 	    }
 
 	  result = group;
