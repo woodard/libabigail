@@ -2799,7 +2799,10 @@ const diff*
 peel_qualified_diff(const diff* dif);
 
 const diff*
-peel_pointer_or_qualified_type(const diff*dif);
+peel_pointer_or_qualified_type_diff(const diff* dif);
+
+const diff*
+peel_typedef_or_qualified_type_diff(const diff* dif);
 }// end namespace comparison
 
 }// end namespace abigail

@@ -563,6 +563,13 @@ InOutSpec in_out_specs[] =
     "data/test-diff-filter/test-PR24731-report-1.txt",
     "output/test-diff-filter/test-PR24731-report-1.txt",
   },
+  {
+    "data/test-diff-filter/PR24787-libone.so",
+    "data/test-diff-filter/PR24787-libtwo.so",
+    "--no-default-suppression",
+    "data/test-diff-filter/PR24787-report-0.txt",
+    "output/test-diff-filter/PR24787-report-0.txt",
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };

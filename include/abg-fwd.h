@@ -423,6 +423,9 @@ is_typedef(type_base*);
 enum_type_decl_sptr
 is_enum_type(const type_or_decl_base_sptr&);
 
+const enum_type_decl*
+is_enum_type(const type_or_decl_base*);
+
 bool
 is_class_type(const type_or_decl_base&);
 

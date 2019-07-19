@@ -11551,7 +11551,7 @@ const type_decl_diff*
 is_diff_of_basic_type(const diff* diff, bool allow_indirect_type)
 {
   if (allow_indirect_type)
-      diff = peel_pointer_or_qualified_type(diff);
+      diff = peel_pointer_or_qualified_type_diff(diff);
   return is_diff_of_basic_type(diff);
 }
 
@@ -11646,7 +11646,7 @@ peel_qualified_diff(const diff* dif)
 /// @return the underlying diff node of @p dif, or just return @p dif
 /// if it's not a pointer, reference or qualified diff node.
 const diff*
-peel_pointer_or_qualified_type(const diff*dif)
+peel_pointer_or_qualified_type_diff(const diff*dif)
 {
   while (true)
     {
@@ -11654,6 +11654,33 @@ peel_pointer_or_qualified_type(const diff*dif)
 	dif = peel_pointer_diff(d);
       else if (const reference_diff *d = is_reference_diff(dif))
 	dif = peel_reference_diff(d);
+      else if (const qualified_type_diff *d = is_qualified_type_diff(dif))
+	dif = peel_qualified_diff(d);
+      else
+	break;
+    }
+  return dif;
+}
+
+/// If a diff node is about changes between two typedefs or qualified
+/// types, get the diff node about changes between the underlying
+/// types.
+///
+/// Note that this function walks the tree of underlying diff nodes
+/// returns the first diff node about types that are not typedef or
+/// qualified types.
+///
+/// @param dif the dif node to consider.
+///
+/// @return the underlying diff node of @p dif, or just return @p dif
+/// if it's not typedef or qualified diff node.
+const diff*
+peel_typedef_or_qualified_type_diff(const diff *dif)
+{
+  while (true)
+    {
+      if (const typedef_diff *d = is_typedef_diff(dif))
+	dif = peel_typedef_diff(d);
       else if (const qualified_type_diff *d = is_qualified_type_diff(dif))
 	dif = peel_qualified_diff(d);
       else

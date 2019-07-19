@@ -1035,6 +1035,52 @@ has_harmful_enum_change(const diff* diff)
   return false;
 }
 
+/// Test if a diff node carries a harmless change of an enum into an
+/// integer (or vice-versa).
+///
+/// The test takes into account the fact change we care about might be
+/// wrapped into a typedef or qualified type diff.
+///
+/// @param diff the diff node to consider.
+///
+/// @return true if @p diff is a harmless enum to integer change.
+static bool
+has_harmless_enum_to_int_change(const diff* diff)
+{
+  if (!diff)
+    return false;
+
+  diff = peel_typedef_or_qualified_type_diff(diff);
+
+  if (const distinct_diff *d = is_distinct_diff(diff))
+    {
+      const enum_type_decl *enum_type = 0;
+      const type_base *integer_type = 0;
+
+      type_base *first_type =
+	peel_qualified_or_typedef_type(is_type(d->first().get()));
+      type_base *second_type =
+	peel_qualified_or_typedef_type(is_type(d->second().get()));
+
+      if (const enum_type_decl *e = is_enum_type(first_type))
+	enum_type = e;
+      else if (const enum_type_decl *e = is_enum_type(second_type))
+	enum_type = e;
+
+      if (const type_base * i = is_type_decl(first_type))
+	integer_type = i;
+      else if (const type_base *i = is_type_decl(second_type))
+	integer_type = i;
+
+      if (enum_type
+	  && integer_type
+	  && enum_type->get_size_in_bits() == integer_type->get_size_in_bits())
+	return true;
+    }
+
+  return false;
+}
+
 /// Test if an @ref fn_parm_diff node has a top cv qualifier change on
 /// the type of the function parameter.
 ///
@@ -1385,8 +1431,9 @@ categorize_harmless_diff_node(diff *d, bool pre)
 	  || static_data_member_type_size_changed(f, s))
 	category |= STATIC_DATA_MEMBER_CHANGE_CATEGORY;
 
-      if (has_enumerator_insertion(d)
-	  && !has_harmful_enum_change(d))
+      if ((has_enumerator_insertion(d)
+	   && !has_harmful_enum_change(d))
+	  || has_harmless_enum_to_int_change(d))
 	category |= HARMLESS_ENUM_CHANGE_CATEGORY;
 
       if (function_name_changed_but_not_symbol(d))
