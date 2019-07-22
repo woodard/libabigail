@@ -7,7 +7,6 @@ if ENABLE_CXX11
 CXX11_SOURCES = abg-viz-common.cc			\
 		abg-viz-dot.cc				\
 		abg-viz-svg.cc
-AM_CXXFLAGS += "-std=c++11"
 else
 CXX11_SOURCES =
 endif

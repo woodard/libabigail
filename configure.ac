@@ -545,6 +545,7 @@ AC_SUBST(DEPS_CPPFLAGS)
 
 dnl Handle conditional use of a C++11 compiler
 if test x$ENABLE_CXX11 = xyes; then
+   CXXFLAGS="$CXXFLAGS -std=c++11"
    AC_DEFINE([WITH_CXX11], 1, [Defined to 1 if a C++11 compiler is used])
 fi
 
