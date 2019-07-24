@@ -8350,7 +8350,10 @@ public:
   ///
   bool
   is_linux_kernel_binary() const
-  {return find_section(elf_handle(), "__ksymtab_strings", SHT_PROGBITS);}
+  {
+    return find_section(elf_handle(), "__ksymtab_strings", SHT_PROGBITS)
+	   || find_section(elf_handle(), ".modinfo", SHT_PROGBITS);
+  }
 
   /// Getter of the "show_stats" flag.
   ///
