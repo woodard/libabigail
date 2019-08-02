@@ -24,38 +24,38 @@
     <elf-symbol name='_ZZN1B3fooEvE1a' size='4' type='object-type' binding='gnu-unique-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='test6.cc' comp-dir-path='/home/skumari/Tasks/source_repo/dodji/libabigail/tests/data/test-read-dwarf' language='LANG_C_plus_plus'>
+    <!-- int -->
+    <type-decl name='int' size-in-bits='32' id='type-id-1'/>
     <!-- struct B -->
-    <class-decl name='B' size-in-bits='8' is-struct='yes' visibility='default' filepath='/home/skumari/Tasks/source_repo/dodji/libabigail/tests/data/test-read-dwarf/test6.cc' line='9' column='1' id='type-id-1'>
+    <class-decl name='B' size-in-bits='8' is-struct='yes' visibility='default' filepath='/home/skumari/Tasks/source_repo/dodji/libabigail/tests/data/test-read-dwarf/test6.cc' line='9' column='1' id='type-id-2'>
       <member-function access='public'>
         <!-- int B::foo() -->
         <function-decl name='foo' mangled-name='_ZN1B3fooEv' filepath='/home/skumari/Tasks/source_repo/dodji/libabigail/tests/data/test-read-dwarf/test6.cc' line='11' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN1B3fooEv'>
           <!-- implicit parameter of type 'B*' -->
-          <parameter type-id='type-id-2' is-artificial='yes'/>
+          <parameter type-id='type-id-3' is-artificial='yes'/>
           <!-- int -->
-          <return type-id='type-id-3'/>
+          <return type-id='type-id-1'/>
         </function-decl>
       </member-function>
     </class-decl>
-    <!-- int -->
-    <type-decl name='int' size-in-bits='32' id='type-id-3'/>
-    <!-- B* -->
-    <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-2'/>
-    <!-- int bar() -->
-    <function-decl name='bar' mangled-name='_Z3barv' filepath='/home/skumari/Tasks/source_repo/dodji/libabigail/tests/data/test-read-dwarf/test6.cc' line='19' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z3barv'>
-      <!-- int -->
-      <return type-id='type-id-3'/>
-    </function-decl>
-    <!-- int bleh() -->
-    <function-decl name='bleh' mangled-name='_Z4blehv' filepath='/home/skumari/Tasks/source_repo/dodji/libabigail/tests/data/test-read-dwarf/test6.cc' line='34' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z4blehv'>
-      <!-- int -->
-      <return type-id='type-id-3'/>
-    </function-decl>
     <!-- struct C<int> -->
     <class-decl name='C&lt;int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/home/skumari/Tasks/source_repo/dodji/libabigail/tests/data/test-read-dwarf/test6.cc' line='26' column='1' id='type-id-4'>
       <data-member access='public' static='yes'>
         <!-- static int C<int>::bar -->
-        <var-decl name='bar' type-id='type-id-3' mangled-name='_ZN1CIiE3barE' visibility='default' filepath='/home/skumari/Tasks/source_repo/dodji/libabigail/tests/data/test-read-dwarf/test6.cc' line='31' column='1' elf-symbol-id='_ZN1CIiE3barE'/>
+        <var-decl name='bar' type-id='type-id-1' mangled-name='_ZN1CIiE3barE' visibility='default' filepath='/home/skumari/Tasks/source_repo/dodji/libabigail/tests/data/test-read-dwarf/test6.cc' line='31' column='1' elf-symbol-id='_ZN1CIiE3barE'/>
       </data-member>
     </class-decl>
+    <!-- B* -->
+    <pointer-type-def type-id='type-id-2' size-in-bits='64' id='type-id-3'/>
+    <!-- int bar() -->
+    <function-decl name='bar' mangled-name='_Z3barv' filepath='/home/skumari/Tasks/source_repo/dodji/libabigail/tests/data/test-read-dwarf/test6.cc' line='19' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z3barv'>
+      <!-- int -->
+      <return type-id='type-id-1'/>
+    </function-decl>
+    <!-- int bleh() -->
+    <function-decl name='bleh' mangled-name='_Z4blehv' filepath='/home/skumari/Tasks/source_repo/dodji/libabigail/tests/data/test-read-dwarf/test6.cc' line='34' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z4blehv'>
+      <!-- int -->
+      <return type-id='type-id-1'/>
+    </function-decl>
   </abi-instr>
 </abi-corpus>

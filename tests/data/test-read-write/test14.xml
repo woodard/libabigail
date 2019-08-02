@@ -1,18 +1,18 @@
 <abi-instr version='1.0' path='data/test-read-write/test14.xml'>
-  <type-decl name='int' size-in-bits='32' id='type-id-1'/>
-  <class-decl name='S' size-in-bits='8' alignment-in-bits='8' visibility='default' id='type-id-2'>
+  <class-decl name='S' size-in-bits='8' alignment-in-bits='8' visibility='default' id='type-id-1'>
     <member-template access='public'>
-      <function-template-decl id='fn-tmpl-id-3'>
-        <template-type-parameter id='type-id-4' name='T'/>
+      <function-template-decl id='fn-tmpl-id-2'>
+        <template-type-parameter id='type-id-3' name='T'/>
         <template-parameter-type-composition>
-          <pointer-type-def type-id='type-id-4' id='type-id-5'/>
+          <pointer-type-def type-id='type-id-3' id='type-id-4'/>
         </template-parameter-type-composition>
-        <template-non-type-parameter type-id='type-id-5' name='U'/>
+        <template-non-type-parameter type-id='type-id-4' name='U'/>
         <function-decl name='foo' binding='global' size-in-bits='8' alignment-in-bits='8'>
-          <parameter type-id='type-id-5' name='first'/>
-          <return type-id='type-id-1'/>
+          <parameter type-id='type-id-4' name='first'/>
+          <return type-id='type-id-5'/>
         </function-decl>
       </function-template-decl>
     </member-template>
   </class-decl>
+  <type-decl name='int' size-in-bits='32' id='type-id-5'/>
 </abi-instr>

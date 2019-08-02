@@ -110,6 +110,25 @@ using abg_compat::unordered_map;
 /// A convenience typedef fo r an ordered set of size_t.
 typedef unordered_set<size_t> pointer_set;
 
+/// Functor to hash a canonical type by using its pointer value.
+struct canonical_type_hash
+{
+  size_t operator()(const type_base_sptr& l) const;
+  size_t operator()(const type_base *l) const;
+}; //end struct canonical_type_hash
+
+/// Helper typedef for an unordered set of type_base_sptr which uses
+/// pointer value to tell its members appart, because the members are
+/// canonical types.
+typedef unordered_set<type_base_sptr,
+		      canonical_type_hash> canonical_type_sptr_set_type;
+
+/// Helper typedef for a vector of pointer to type_base.
+typedef vector<type_base*> type_base_ptrs_type;
+
+/// Helper typedef for a vector of shared pointer to a type_base.
+typedef vector<type_base_sptr> type_base_sptrs_type;
+
 /// This is an abstraction of the set of resources necessary to manage
 /// several aspects of the internal representations of the Abigail
 /// library.
@@ -147,6 +166,9 @@ public:
 
   canonical_types_map_type&
   get_canonical_types_map();
+
+  const canonical_types_map_type&
+  get_canonical_types_map() const;
 
   const type_base_sptr&
   get_void_type() const;
@@ -1615,6 +1637,15 @@ public:
   virtual bool
   operator==(const decl_base&) const;
 
+  const canonical_type_sptr_set_type&
+  get_canonical_types() const;
+
+  canonical_type_sptr_set_type&
+  get_canonical_types();
+
+  const type_base_sptrs_type&
+  get_sorted_canonical_types() const;
+
   const declarations&
   get_member_decls() const;
 
@@ -1660,6 +1691,9 @@ public:
 
   friend void
   remove_decl_from_scope(decl_base_sptr decl);
+
+  friend type_base_sptr
+  canonicalize(type_base_sptr);
 };//end class scope_decl
 
 bool

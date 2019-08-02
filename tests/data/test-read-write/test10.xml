@@ -4,9 +4,10 @@
   <pointer-type-def type-id='type-id-2' size-in-bits='64' alignment-in-bits='64' id='type-id-3'/>
   <namespace-decl name='ns0'>
     <class-decl name='base0' size-in-bits='40' alignment-in-bits='8' visibility='default' id='type-id-4'>
-      <member-type access='public'>
-        <typedef-decl name='TINT' type-id='type-id-2' id='type-id-5'/>
-      </member-type>
+
+        <member-type access='public'>
+          <typedef-decl name='TINT' type-id='type-id-2' id='type-id-5'/>
+        </member-type>
       <data-member access='private'>
         <var-decl name='m_first' type-id='type-id-1'/>
       </data-member>

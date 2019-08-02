@@ -66,6 +66,7 @@ using abigail::xml_reader::read_translation_unit_from_istream;
 using abigail::xml_reader::read_corpus_from_file;
 using abigail::xml_reader::read_corpus_from_native_xml;
 using abigail::xml_reader::read_corpus_from_native_xml_file;
+using abigail::xml_reader::read_corpus_group_from_input;
 using abigail::dwarf_reader::read_corpus_from_elf;
 using abigail::xml_writer::write_translation_unit;
 using abigail::xml_writer::write_context_sptr;
@@ -320,6 +321,7 @@ main(int argc, char* argv[])
 	return 1;
       abigail::translation_unit_sptr tu;
       abigail::corpus_sptr corp;
+      abigail::corpus_group_sptr group;
       abigail::dwarf_reader::status s = abigail::dwarf_reader::STATUS_OK;
       char* di_root_path = 0;
       file_type type = guess_file_type(opts.file_path);
@@ -358,6 +360,16 @@ main(int argc, char* argv[])
 	    corp = read_corpus_from_input(*ctxt);
 	    break;
 	  }
+	case abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP:
+	  {
+	    abigail::xml_reader::read_context_sptr ctxt =
+	      abigail::xml_reader::create_native_xml_read_context(opts.file_path,
+								  env.get());
+	    assert(ctxt);
+	    set_suppressions(*ctxt, opts);
+	    group = read_corpus_group_from_input(*ctxt);
+	  }
+	  break;
 	case abigail::tools_utils::FILE_TYPE_ZIP_CORPUS:
 #if WITH_ZIP_ARCHIVE
 	  corp = read_corpus_from_file(opts.file_path);
@@ -373,11 +385,9 @@ main(int argc, char* argv[])
 	  break;
 	case abigail::tools_utils::FILE_TYPE_TAR:
 	  break;
-	case abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP:
-	  break;
 	}
 
-      if (!tu && !corp)
+      if (!tu && !corp && !group)
 	{
 	  emit_prefix(argv[0], cerr)
 	    << "failed to read " << opts.file_path << "\n";
@@ -417,8 +427,15 @@ main(int argc, char* argv[])
 	}
 
       std::ostream& of = opts.diff ? tmp_file->get_stream() : cout;
-      const abigail::ir::environment* env
-	  = tu ? tu->get_environment() : corp->get_environment();
+      const abigail::ir::environment* env = 0;
+      if (tu)
+	env = tu->get_environment();
+      else if (corp)
+	env = corp->get_environment();
+      else if (group)
+	env = group->get_environment();
+
+      ABG_ASSERT(env);
       const write_context_sptr ctxt = create_write_context(env, of);
 
       bool is_ok = true;
@@ -431,6 +448,7 @@ main(int argc, char* argv[])
       else
 	{
 	  if (type == abigail::tools_utils::FILE_TYPE_XML_CORPUS
+	      ||type == abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP
 	      || type == abigail::tools_utils::FILE_TYPE_ELF)
 	    {
 	      if (!opts.noout)
@@ -459,6 +477,7 @@ main(int argc, char* argv[])
       if (is_ok
 	  && opts.diff
 	  && ((type == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
+	      ||type == abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP
 	      || type == abigail::tools_utils::FILE_TYPE_NATIVE_BI
 	      || type == abigail::tools_utils::FILE_TYPE_ZIP_CORPUS))
 	{

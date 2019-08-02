@@ -390,6 +390,12 @@ is_decl(const type_or_decl_base*);
 decl_base_sptr
 is_decl(const type_or_decl_base_sptr&);
 
+decl_base*
+is_decl_slow(const type_or_decl_base*);
+
+decl_base_sptr
+is_decl_slow(const type_or_decl_base_sptr&);
+
 bool
 is_type(const type_or_decl_base&);
 
@@ -800,6 +806,10 @@ peel_typedef_pointer_or_reference_type(const type_base_sptr,
 type_base*
 peel_typedef_pointer_or_reference_type(const type_base* type,
 				       bool peel_qualified_type = true);
+
+type_base*
+peel_pointer_or_reference_type(const type_base *type,
+			       bool peel_qualified_type = true);
 
 string
 get_name(const type_or_decl_base*, bool qualified = true);

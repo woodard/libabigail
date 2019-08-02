@@ -149,6 +149,11 @@ typedef unordered_set<const type_base*, type_hasher,
 		      abigail::diff_utils::deep_ptr_eq_functor>
 type_ptr_set_type;
 
+/// A convenience typedef for a set of function type*.
+typedef unordered_set<function_type*, type_hasher,
+		      abigail::diff_utils::deep_ptr_eq_functor>
+fn_type_ptr_set_type;
+
 typedef unordered_map<shared_ptr<function_tdecl>,
 		      string,
 		      function_tdecl::shared_ptr_hash> fn_tmpl_shared_ptr_map;
@@ -174,7 +179,9 @@ class write_context
   type_ptr_set_type			m_emitted_decl_only_set;
   // A map of types that are referenced by emitted pointers,
   // references or typedefs
-  type_ptr_map				m_referenced_types_map;
+  type_ptr_set_type			m_referenced_types_set;
+  fn_type_ptr_set_type			m_referenced_fn_types_set;
+  type_ptr_set_type			m_referenced_non_canonical_types_set;
   fn_tmpl_shared_ptr_map		m_fn_tmpl_id_map;
   class_tmpl_shared_ptr_map		m_class_tmpl_id_map;
   string_elf_symbol_sptr_map_type	m_fun_symbol_map;
@@ -407,13 +414,32 @@ public:
   {m_type_id_map.clear();}
 
 
-  /// Getter of the map of types that were referenced by a pointer,
+  /// Getter of the set of types that were referenced by a pointer,
   /// reference or typedef.
   ///
-  /// @return the map of types that were referenced.
-  const type_ptr_map&
+  /// This set contains only types that do have canonical types and
+  /// which are not function types.
+  ///
+  /// @return the set of types that were referenced.
+  const type_ptr_set_type&
   get_referenced_types() const
-  {return m_referenced_types_map;}
+  {return m_referenced_types_set;}
+
+  /// Getter of the set of function types that were referenced by a
+  /// pointer, reference or typedef.
+  ///
+  /// @return the set of function types that were referenced.
+  const fn_type_ptr_set_type&
+  get_referenced_function_types() const
+  {return m_referenced_fn_types_set;}
+
+  /// Getter of the set of types which have no canonical types and
+  /// which were referenced by a pointer, reference or typedef.
+  ///
+  /// @return the of referenced type that have no canonical types.
+  const type_ptr_set_type&
+  get_referenced_non_canonical_types() const
+  {return m_referenced_non_canonical_types_set;}
 
   /// Record a given type as being referenced by a pointer, a
   /// reference or a typedef type that is being emitted to the XML
@@ -422,7 +448,18 @@ public:
   /// @param t a shared pointer to a type
   void
   record_type_as_referenced(const type_base_sptr& t)
-  {m_referenced_types_map[t.get()] = interned_string();}
+  {
+    // If the type is a function type, record it in a dedicated data
+    // structure.
+    if (function_type* f = is_function_type(t.get()))
+      m_referenced_fn_types_set.insert(f);
+    else if (!t->get_naked_canonical_type())
+      // If the type doesn't have a canonical type, record it in a
+      // dedicated data structure.
+      m_referenced_non_canonical_types_set.insert(t.get());
+    else
+      m_referenced_types_set.insert(t.get());
+  }
 
   /// Test if a given type has been referenced by a pointer, a
   /// reference or a typedef type that was emitted to the XML output.
@@ -434,8 +471,15 @@ public:
   bool
   type_is_referenced(const type_base_sptr& t)
   {
-    return m_referenced_types_map.find
-      (t.get()) != m_referenced_types_map.end();
+    if (function_type *f = is_function_type(t.get()))
+      return (m_referenced_fn_types_set.find(f)
+	      != m_referenced_fn_types_set.end());
+    else if (!t->get_naked_canonical_type())
+      return (m_referenced_non_canonical_types_set.find(t.get())
+	      != m_referenced_non_canonical_types_set.end());
+    else
+      return m_referenced_types_set.find
+	(t.get()) != m_referenced_types_set.end();
   }
 
   /// A comparison functor to compare pointers to @ref type_base.
@@ -519,14 +563,14 @@ public:
   /// @param sorted the resulted sorted vector.  It's set by this
   /// function with the result of the sorting.
   void
-  sort_types(type_ptr_map& types,
+  sort_types(type_ptr_set_type& types,
 	     vector<type_base*>& sorted)
   {
     string id;
-    for (type_ptr_map::const_iterator i = types.begin();
+    for (type_ptr_set_type::const_iterator i = types.begin();
 	 i != types.end();
 	 ++i)
-	sorted.push_back(i->first);
+      sorted.push_back(const_cast<type_base*>(*i));
     type_ptr_cmp comp(&m_type_id_map);
     sort(sorted.begin(), sorted.end(), comp);
   }
@@ -707,8 +751,12 @@ public:
   /// Clear the map that contains the IDs of the types that has been
   /// recorded as having been written out to the XML output.
   void
-  clear_referenced_types_map()
-  {m_referenced_types_map.clear();}
+  clear_referenced_types()
+  {
+    m_referenced_types_set.clear();
+    m_referenced_non_canonical_types_set.clear();
+    m_referenced_fn_types_set.clear();
+  }
 
   const string_elf_symbol_sptr_map_type&
   get_fun_symbol_map() const
@@ -1622,6 +1670,44 @@ write_naming_typedef(const class_decl_sptr& klass, write_context& ctxt)
     }
 }
 
+/// Helper to serialize a type artifact.
+///
+/// @param type the type to serialize.
+///
+/// @param ctxt the @ref write_context to use.
+///
+/// @param indent the number of white space to use for indentation.
+///
+/// @return true upon successful completion.
+static bool
+write_type(const type_base_sptr& type, write_context& ctxt, unsigned indent)
+{
+  if (write_type_decl(dynamic_pointer_cast<type_decl> (type),
+		      ctxt, indent)
+      || write_qualified_type_def (dynamic_pointer_cast<qualified_type_def>
+				   (type),
+				   ctxt, indent)
+      || write_pointer_type_def(dynamic_pointer_cast<pointer_type_def>(type),
+				ctxt, indent)
+      || write_reference_type_def(dynamic_pointer_cast
+				  <reference_type_def>(type), ctxt, indent)
+      || write_array_type_def(dynamic_pointer_cast
+			      <array_type_def>(type), ctxt, indent)
+      || write_enum_type_decl(dynamic_pointer_cast<enum_type_decl>(type),
+			      ctxt, indent)
+      || write_typedef_decl(dynamic_pointer_cast<typedef_decl>(type),
+			    ctxt, indent)
+      || write_class_decl(is_class_type(type), ctxt, indent)
+      || write_union_decl(is_union_type(type), ctxt, indent)
+      || (write_function_tdecl
+	  (dynamic_pointer_cast<function_tdecl>(type), ctxt, indent))
+      || (write_class_tdecl
+	  (dynamic_pointer_cast<class_tdecl>(type), ctxt, indent)))
+    return true;
+
+  return false;
+}
+
 /// Serialize a pointer to an of decl_base into an output stream.
 ///
 /// @param decl the pointer to decl_base to serialize
@@ -1875,6 +1961,44 @@ void
 set_short_locs(write_context& ctxt, bool flag)
 {ctxt.set_short_locs(flag);}
 
+/// Serialize the canonical types of a given scope.
+///
+/// @param scope the scope to consider.
+///
+/// @param ctxt the write context to use.
+///
+/// @param indent the number of white space indentation to use.
+ //
+ // @param is_member_type if true, the canonical types are emitted as
+ // member types (of a class).
+ //
+ // return true upon successful completion.
+static bool
+write_canonical_types_of_scope(const scope_decl	&scope,
+			       write_context		&ctxt,
+			       const unsigned		indent,
+			       bool			is_member_type = false)
+{
+  const type_base_sptrs_type &canonical_types =
+    scope.get_sorted_canonical_types();
+
+  ostream& o = ctxt.get_ostream();
+  const config& c = ctxt.get_config();
+
+  for (type_base_sptrs_type::const_iterator i = canonical_types.begin();
+       i != canonical_types.end();
+       ++i)
+    {
+      o << "\n";
+      if (is_member_type)
+	write_member_type(*i, ctxt, indent + c.get_xml_element_indent());
+      else
+	write_type(*i, ctxt, indent + c.get_xml_element_indent());
+    }
+
+  return true;
+}
+
 /// Serialize a translation unit to an output stream.
 ///
 /// @param ctxt the context of the serialization.  It contains e.g,
@@ -1927,6 +2051,9 @@ write_translation_unit(write_context&	       ctxt,
 
   o << ">";
 
+  write_canonical_types_of_scope(*tu.get_global_scope(),
+				 ctxt, indent);
+
   typedef scope_decl::declarations declarations;
   typedef declarations::const_iterator const_iterator;
   const declarations& d = tu.get_global_scope()->get_member_decls();
@@ -1934,10 +2061,20 @@ write_translation_unit(write_context&	       ctxt,
   for (const_iterator i = d.begin(); i != d.end(); ++i)
     {
       if (type_base_sptr t = is_type(*i))
-	if (ctxt.type_is_emitted(t))
-	  // This type has already been written out to the current
-	  // translation unit, so do not emit it again.
+	{
+	  // Emit non-empty classes that are declaration-only. Those
+	  // beasts are class that only contain member types.
+	  if (class_decl_sptr class_type = is_class_type(t))
+	    if (class_type->get_is_declaration_only()
+		&& !class_type->is_empty()
+		&& !ctxt.type_is_emitted(class_type))
+	    {
+	      o << "\n";
+	      write_type(class_type, ctxt,
+			 indent + c.get_xml_element_indent());
+	    }
 	  continue;
+	}
 
       if (decl_base_sptr d = is_decl(*i))
 	if (ctxt.decl_is_emitted(d))
@@ -1947,22 +2084,38 @@ write_translation_unit(write_context&	       ctxt,
     }
 
   // Now let's handle types that were referenced, but not yet
-  // emitted.  We must emit those, along with their scope.
+  // emitted because they are either:
+  //   1/ Types without canonical type
+  //   2/ or function types (these might have no scope).
 
   // So this map of type -> string is to contain the referenced types
   // we need to emit.
-  type_ptr_map referenced_types_to_emit;
+  type_ptr_set_type referenced_types_to_emit;
 
-  for (type_ptr_map::const_iterator i = ctxt.get_referenced_types().begin();
-       i != ctxt.get_referenced_types().end();
+  for (fn_type_ptr_set_type::const_iterator i =
+	 ctxt.get_referenced_function_types().begin();
+       i != ctxt.get_referenced_function_types().end();
        ++i)
     {
-      type_base_sptr type(i->first, noop_deleter());
+      type_base_sptr type(*i, noop_deleter());
       if (!ctxt.type_is_emitted(type)
 	  && !ctxt.decl_only_type_is_emitted(type))
 	// A referenced type that was not emitted at all must be
 	// emitted now.
-	referenced_types_to_emit[type.get()] = interned_string();
+	referenced_types_to_emit.insert(type.get());
+    }
+
+  for (type_ptr_set_type::const_iterator i =
+	 ctxt.get_referenced_non_canonical_types().begin();
+       i != ctxt.get_referenced_non_canonical_types().end();
+       ++i)
+    {
+      const type_base_sptr type(const_cast<type_base*>(*i), noop_deleter());
+      if (!ctxt.type_is_emitted(type)
+	  && !ctxt.decl_only_type_is_emitted(type))
+	// A referenced type that was not emitted at all must be
+	// emitted now.
+	referenced_types_to_emit.insert(type.get());
     }
 
   // Ok, now let's emit the referenced type for good.
@@ -2009,19 +2162,22 @@ write_translation_unit(write_context&	       ctxt,
 
       // But then, while emitting those referenced type, other types
       // might have been referenced by those referenced types
-      // themselves!  So let's look at the map of referenced type that
-      // is maintained for the entire ABI corpus and see if there are
-      // still some referenced types in there that are not emitted
-      // yet.  If yes, then we'll emit those again.
-      for (type_ptr_map::const_iterator i =
-	     ctxt.get_referenced_types().begin();
-	   i != ctxt.get_referenced_types().end();
+      // themselves!  So let's look at the sets of referenced type
+      // that are maintained for the entire ABI corpus and see if
+      // there are still some referenced types in there that are not
+      // emitted yet.  If yes, then we'll emit those again.
+
+      for (type_ptr_set_type::const_iterator i =
+	     ctxt.get_referenced_non_canonical_types().begin();
+	   i != ctxt.get_referenced_non_canonical_types().end();
 	   ++i)
 	{
-	  type_base_sptr type(i->first, noop_deleter());
+	  type_base_sptr type(const_cast<type_base*>(*i), noop_deleter());
 	  if (!ctxt.type_is_emitted(type)
 	      && !ctxt.decl_only_type_is_emitted(type))
-	    referenced_types_to_emit[type.get()] = interned_string();
+	    // A referenced type that was not emitted at all must be
+	    // emitted now.
+	    referenced_types_to_emit.insert(type.get());
 	}
     }
 
@@ -3229,11 +3385,15 @@ write_class_decl(const class_decl_sptr& decl,
 	  ctxt.record_type_as_referenced(base_type);
 	}
 
+      write_canonical_types_of_scope(*decl, ctxt, nb_ws,
+				     /*is_member_type=*/true);
+
       for (class_decl::member_types::const_iterator ti =
 	     decl->get_member_types().begin();
 	   ti != decl->get_member_types().end();
 	   ++ti)
-	write_member_type(*ti, ctxt, nb_ws);
+	if (!(*ti)->get_naked_canonical_type())
+	  write_member_type(*ti, ctxt, nb_ws);
 
       for (class_decl::data_members::const_iterator data =
 	     decl->get_data_members().begin();

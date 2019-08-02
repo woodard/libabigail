@@ -4732,6 +4732,22 @@ public:
     return is_c_language(l);
   }
 
+  /// Test if a given DIE originates from a program written in the C++
+  /// language.
+  ///
+  /// @param die the DIE to consider.
+  ///
+  /// @return true iff @p die originates from a program in the C++
+  /// language.
+  bool
+  die_is_in_cplus_plus(const Dwarf_Die *die) const
+  {
+    translation_unit::language l = translation_unit::LANG_UNKNOWN;
+    if (!get_die_language(die, l))
+      return false;
+    return is_cplus_plus_language(l);
+  }
+
   /// Test if a given DIE originates from a program written either in
   /// C or C++.
   ///
@@ -14258,6 +14274,19 @@ add_or_update_class_type(read_context&	 ctxt,
 	return class_type;
       }
   }
+
+  if (!ctxt.die_is_in_cplus_plus(die))
+    // In c++, a given class might be put together "piecewise".  That
+    // is, in a translation unit, some data members of that class
+    // might be defined; then in another later, some member types
+    // might be defined.  So we can't just re-use a class "verbatim"
+    // just because we've seen previously.  So in c++, re-using the
+    // class is a much clever process.  In the other languages however
+    // (like in C) we can re-use a class definition verbatim.
+    if (class_decl_sptr class_type =
+	is_class_type(ctxt.lookup_type_from_die(die)))
+      if (!class_type->get_is_declaration_only())
+	return class_type;
 
   string name, linkage_name;
   location loc;

@@ -2411,16 +2411,17 @@ typedef unordered_map<interned_string,
 /// The private data of the @ref environment type.
 struct environment::priv
 {
-  canonical_types_map_type	canonical_types_;
-  type_base_sptr		void_type_;
-  type_base_sptr		variadic_marker_type_;
-  interned_string_set_type	classes_being_compared_;
-  interned_string_set_type	fn_types_being_compared_;
-  vector<type_base_sptr>	extra_live_types_;
-  interned_string_pool		string_pool_;
-  bool				canonicalization_is_done_;
-  bool				do_on_the_fly_canonicalization_;
-  bool				decl_only_class_equals_definition_;
+  canonical_types_map_type	 canonical_types_;
+  mutable vector<type_base_sptr> sorted_canonical_types_;
+  type_base_sptr		 void_type_;
+  type_base_sptr		 variadic_marker_type_;
+  interned_string_set_type	 classes_being_compared_;
+  interned_string_set_type	 fn_types_being_compared_;
+  vector<type_base_sptr>	 extra_live_types_;
+  interned_string_pool		 string_pool_;
+  bool				 canonicalization_is_done_;
+  bool				 do_on_the_fly_canonicalization_;
+  bool				 decl_only_class_equals_definition_;
 
   priv()
     : canonicalization_is_done_(),
@@ -2445,6 +2446,113 @@ environment::~environment()
 environment::canonical_types_map_type&
 environment::get_canonical_types_map()
 {return priv_->canonical_types_;}
+
+/// Getter the map of canonical types.
+///
+/// @return the map of canonical types.  The key of the map is the
+/// hash of the canonical type and its value if the canonical type.
+const environment::canonical_types_map_type&
+environment::get_canonical_types_map() const
+{return const_cast<environment*>(this)->get_canonical_types_map();}
+
+/// Helper to detect if a type is either a reference, a pointer, or a
+/// qualified type.
+static bool
+is_ptr_ref_or_qual_type(const type_base *t)
+{
+  if (is_pointer_type(t)
+      || is_reference_type(t)
+      || is_qualified_type(t))
+    return true;
+  return false;
+}
+
+/// A functor to sort types somewhat topologically.  That is, types
+/// are sorted in a way that makes the ones that are defined "first"
+/// to come first.
+///
+/// The topological criteria is a lexicographic sort of the definition
+/// location of the type.  For types that have no location, it's their
+/// qualified name that is used for the lexicographic sort.
+struct type_topo_comp
+{
+  /// The "Less Than" comparison operator of this functor.
+  ///
+  /// @param f the first type to be considered for the comparison.
+  ///
+  /// @param s the second type to be considered for the comparison.
+  ///
+  /// @return true iff @p f is less than @p s.
+  bool
+  operator()(const type_base_sptr &f,
+	     const type_base_sptr &s)
+  {return operator()(f.get(), s.get());}
+
+  /// The "Less Than" comparison operator of this functor.
+  ///
+  /// @param f the first type to be considered for the comparison.
+  ///
+  /// @param s the second type to be considered for the comparison.
+  ///
+  /// @return true iff @p f is less than @p s.
+  bool
+  operator()(const type_base *f,
+	     const type_base *s)
+  {
+    bool f_is_ptr_ref_or_qual = is_ptr_ref_or_qual_type(f);
+    bool s_is_ptr_ref_or_qual = is_ptr_ref_or_qual_type(s);
+
+    if (f_is_ptr_ref_or_qual != s_is_ptr_ref_or_qual)
+      return !f_is_ptr_ref_or_qual && s_is_ptr_ref_or_qual;
+
+    if (f_is_ptr_ref_or_qual && s_is_ptr_ref_or_qual)
+      {
+	string s1 = get_pretty_representation(f, true);
+	string s2 = get_pretty_representation(s, true);
+	if (s1 == s2)
+	  if (qualified_type_def * q = is_qualified_type(f))
+	    if (q->get_cv_quals() == qualified_type_def::CV_NONE)
+	      return true;
+	return (s1 < s2);
+      }
+
+    decl_base *fd = is_decl(f);
+    decl_base *sd = is_decl(s);
+
+    if (!!fd != !!sd)
+      return fd && !sd;
+
+    if (!fd)
+      {
+	type_base *peeled_f = peel_pointer_or_reference_type(f);
+	type_base *peeled_s = peel_pointer_or_reference_type(s);
+
+	fd = is_decl(peeled_f);
+	sd = is_decl(peeled_s);
+
+	if (!!fd != !!sd)
+	  return fd && !sd;
+
+	if (!fd)
+	  return (get_pretty_representation(f, true)
+		  < get_pretty_representation(s, true));
+      }
+
+    // From this point, fd and sd should be non-nil
+
+    location fl = fd->get_location();
+    location sl = sd->get_location();
+    if (fl.get_value() == sl.get_value())
+      {
+	if (fl)
+	  return fl.expand() < sl.expand();
+	return (get_pretty_representation(f, true)
+		< get_pretty_representation(s, true));
+      }
+
+    return fl.get_value() < sl.get_value();
+  }
+}; //end struct type_topo_comp
 
 /// Get a @ref type_decl that represents a "void" type for the current
 /// environment.
@@ -5232,6 +5340,40 @@ peel_typedef_pointer_or_reference_type(const type_base* type,
   return const_cast<type_base*>(type);
 }
 
+/// Return the leaf underlying or pointed-to type node of a, @ref
+/// pointer_type_def, @ref reference_type_def or @ref
+/// qualified_type_def type node.
+///
+/// @param type the type to peel.
+///
+/// @param peel_qualified_type if true, also peel qualified types.
+///
+/// @return the leaf underlying or pointed-to type node of @p type.
+type_base*
+peel_pointer_or_reference_type(const type_base *type,
+			       bool peel_qual_type)
+{
+  while (is_pointer_type(type)
+	 || is_reference_type(type)
+	 || (peel_qual_type && is_qualified_type(type)))
+    {
+      if (const pointer_type_def* t = is_pointer_type(type))
+	type = peel_pointer_type(t);
+
+      if (const reference_type_def* t = is_reference_type(type))
+	type = peel_reference_type(t);
+
+      if (const array_type_def* t = is_array_type(type))
+	type = peel_array_type(t);
+
+      if (peel_qual_type)
+	if (const qualified_type_def* t = is_qualified_type(type))
+	  type = peel_qualified_type(t);
+    }
+
+  return const_cast<type_base*>(type);
+}
+
 /// Update the qualified name of a given sub-tree.
 ///
 /// @param d the sub-tree for which to update the qualified name.
@@ -5251,10 +5393,30 @@ update_qualified_name(decl_base_sptr d)
 
 // <scope_decl stuff>
 
+/// Hash a type by returning the pointer value of its canonical type.
+///
+/// @param l the type to hash.
+///
+/// @return the the pointer value of the canonical type of @p l.
+size_t
+canonical_type_hash::operator()(const type_base_sptr& l) const
+{return operator()(l.get());}
+
+/// Hash a (canonical) type by returning its pointer value
+///
+/// @param l the canonical type to hash.
+///
+/// @return the the pointer value of the canonical type of @p l.
+size_t
+canonical_type_hash::operator()(const type_base *l) const
+{return reinterpret_cast<size_t>(l);}
+
 struct scope_decl::priv
 {
   declarations members_;
   scopes member_scopes_;
+  canonical_type_sptr_set_type canonical_types_;
+  type_base_sptrs_type sorted_canonical_types_;
 }; // end struct scope_decl::priv
 
 /// Constructor of the @ref scope_decl type.
@@ -5287,6 +5449,43 @@ scope_decl::scope_decl(const environment* env, location& l)
     decl_base(env, "", l),
     priv_(new priv)
 {}
+
+/// @eturn the set of canonical types of the the current scope.
+canonical_type_sptr_set_type&
+scope_decl::get_canonical_types()
+{return priv_->canonical_types_;}
+
+/// @eturn the set of canonical types of the the current scope.
+const canonical_type_sptr_set_type&
+scope_decl::get_canonical_types() const
+{return const_cast<scope_decl*>(this)->get_canonical_types();}
+
+/// Return a vector of sorted canonical types of the current scope.
+///
+/// The types are sorted "almost topologically". That means, they are
+/// sorted using the lexicographic order of the string representing
+/// the location their definition point.  If a type doesn't have a
+/// location, then its pretty representation is used.
+///
+/// @return a vector of sorted canonical types of the current scope.
+const type_base_sptrs_type&
+scope_decl::get_sorted_canonical_types() const
+{
+  if (priv_->sorted_canonical_types_.empty())
+    {
+      for (canonical_type_sptr_set_type::const_iterator e =
+	     get_canonical_types().begin();
+	   e != get_canonical_types().end();
+	   ++e)
+	priv_->sorted_canonical_types_.push_back(*e);
+
+      type_topo_comp comp;
+      std::sort(priv_->sorted_canonical_types_.begin(),
+		priv_->sorted_canonical_types_.end(),
+		comp);
+    }
+  return priv_->sorted_canonical_types_;
+}
 
 /// Getter for the member declarations carried by the current @ref
 /// scope_decl.
@@ -5379,7 +5578,10 @@ scope_decl::get_member_scopes() const
 /// @return true iff the current scope is empty.
 bool
 scope_decl::is_empty() const
-{return get_member_decls().empty();}
+{
+  return (get_member_decls().empty()
+	  && get_canonical_types().empty());
+}
 
 /// Add a member decl to this scope.  Note that user code should not
 /// use this, but rather use add_decl_to_scope.
@@ -7075,9 +7277,22 @@ decl_base*
 is_decl(const type_or_decl_base* d)
 {
   if (d && (d->kind() & type_or_decl_base::ABSTRACT_DECL_BASE))
-    return reinterpret_cast<decl_base*>
-      (const_cast<type_or_decl_base*>(d)->type_or_decl_base_pointer());
+    {
+      if (!(d->kind() & type_or_decl_base::ABSTRACT_TYPE_BASE))
+	// The artifact is a decl-only (like a function or a
+	// variable).  That is, it's not a type that also has a
+	// declaration.  In this case, we are in the fast path and we
+	// have a pointer to the decl sub-object handy.  Just return
+	// it ...
+	return reinterpret_cast<decl_base*>
+	  (const_cast<type_or_decl_base*>(d)->type_or_decl_base_pointer());
 
+      // ... Otherwise, we are in the slow path, which is that the
+      // artifact is a type which has a declaration.  In that case,
+      // let's use the slow dynamic_cast because we don't have the
+      // pointer to the decl sub-object handily present.
+      return dynamic_cast<decl_base*>(const_cast<type_or_decl_base*>(d));
+    }
   return 0;
 }
 
@@ -7090,6 +7305,28 @@ is_decl(const type_or_decl_base* d)
 decl_base_sptr
 is_decl(const type_or_decl_base_sptr& d)
 {return dynamic_pointer_cast<decl_base>(d);}
+
+/// Test if an ABI artifact is a declaration.
+///
+/// This is done using a slow path that uses dynamic_cast.
+///
+/// @param d the artifact to consider.
+///
+/// @param return the declaration sub-object of @p d if it's a
+decl_base*
+is_decl_slow(const type_or_decl_base* t)
+{return dynamic_cast<decl_base*>(const_cast<type_or_decl_base*>(t));}
+
+/// Test if an ABI artifact is a declaration.
+///
+/// This is done using a slow path that uses dynamic_cast.
+///
+/// @param d the artifact to consider.
+///
+/// @param return the declaration sub-object of @p d if it's a
+decl_base_sptr
+is_decl_slow(const type_or_decl_base_sptr& t)
+{return dynamic_pointer_cast<decl_base>(t);}
 
 /// Test whether a declaration is a type.
 ///
@@ -11326,11 +11563,24 @@ canonicalize(type_base_sptr t)
 
   if (class_decl_sptr cl = is_class_type(t))
     if (type_base_sptr d = is_type(cl->get_earlier_declaration()))
-      if (d->get_canonical_type())
+      if ((canonical = d->get_canonical_type()))
 	{
 	  d->priv_->canonical_type = canonical;
 	  d->priv_->naked_canonical_type = canonical.get();
 	}
+
+  if (canonical)
+    if (decl_base_sptr d = is_decl_slow(canonical))
+      {
+	scope_decl *scope = d->get_scope();
+	// Add the canonical type to the set of canonical types
+	// belonging to its scope.
+	if (scope)
+	  scope->get_canonical_types().insert(canonical);
+	//else, if the type doesn't have a scope, it's doesn't meant
+	// to be emitted.  This can be the case for the result of the
+	// function strip_typedef, for instance.
+      }
 
   t->on_canonical_type_set();
   return canonical;

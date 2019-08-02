@@ -14,19 +14,23 @@
     <elf-symbol name='_init' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
   <abi-instr version='1.0' address-size='64' path='test8-qualified-this-pointer.cc' comp-dir-path='/home/dodji/git/libabigail/master/tests/data/test-read-dwarf' language='LANG_C_plus_plus'>
+    <!-- int -->
+    <type-decl name='int' size-in-bits='32' id='type-id-1'/>
+    <!-- void -->
+    <type-decl name='void' id='type-id-2'/>
     <!-- struct S -->
-    <class-decl name='S' size-in-bits='32' is-struct='yes' visibility='default' filepath='/home/dodji/git/libabigail/master/tests/data/test-read-dwarf/test8-qualified-this-pointer.cc' line='1' column='1' id='type-id-1'>
+    <class-decl name='S' size-in-bits='32' is-struct='yes' visibility='default' filepath='/home/dodji/git/libabigail/master/tests/data/test-read-dwarf/test8-qualified-this-pointer.cc' line='1' column='1' id='type-id-3'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- int S::i -->
-        <var-decl name='i' type-id='type-id-2' visibility='default' filepath='/home/dodji/git/libabigail/master/tests/data/test-read-dwarf/test8-qualified-this-pointer.cc' line='3' column='1'/>
+        <var-decl name='i' type-id='type-id-1' visibility='default' filepath='/home/dodji/git/libabigail/master/tests/data/test-read-dwarf/test8-qualified-this-pointer.cc' line='3' column='1'/>
       </data-member>
       <member-function access='public' constructor='yes'>
         <!-- S::S() -->
         <function-decl name='S' filepath='/home/dodji/git/libabigail/master/tests/data/test-read-dwarf/test8-qualified-this-pointer.cc' line='5' column='1' visibility='default' binding='global' size-in-bits='64'>
           <!-- implicit parameter of type 'S*' -->
-          <parameter type-id='type-id-3' is-artificial='yes'/>
+          <parameter type-id='type-id-4' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-4'/>
+          <return type-id='type-id-2'/>
         </function-decl>
       </member-function>
       <member-function access='public' const='yes'>
@@ -35,18 +39,14 @@
           <!-- implicit parameter of type 'const S*' -->
           <parameter type-id='type-id-5' is-artificial='yes'/>
           <!-- int -->
-          <return type-id='type-id-2'/>
+          <return type-id='type-id-1'/>
         </function-decl>
       </member-function>
     </class-decl>
-    <!-- int -->
-    <type-decl name='int' size-in-bits='32' id='type-id-2'/>
-    <!-- void -->
-    <type-decl name='void' id='type-id-4'/>
     <!-- S* -->
-    <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-3'/>
+    <pointer-type-def type-id='type-id-3' size-in-bits='64' id='type-id-4'/>
     <!-- const S -->
-    <qualified-type-def type-id='type-id-1' const='yes' id='type-id-6'/>
+    <qualified-type-def type-id='type-id-3' const='yes' id='type-id-6'/>
     <!-- const S* -->
     <pointer-type-def type-id='type-id-6' size-in-bits='64' id='type-id-5'/>
   </abi-instr>
