@@ -1086,6 +1086,38 @@ find_section(Elf* elf_handle, const string& name, Elf64_Word section_type)
   return 0;
 }
 
+/// Test if the ELF binary denoted by a given ELF handle is a Linux
+/// Kernel Module.
+///
+/// @param elf_handle the ELF handle to consider.
+///
+/// @return true iff the binary denoted by @p elf_handle is a Linux
+/// kernel module.
+static bool
+binary_is_linux_kernel_module(Elf *elf_handle)
+{
+  return (find_section(elf_handle, ".modinfo", SHT_PROGBITS)
+	  && find_section(elf_handle,
+			  ".gnu.linkonce.this_module",
+			  SHT_PROGBITS));
+}
+
+/// Test if the ELF binary denoted by a given ELF handle is a Linux
+/// Kernel binary (either vmlinux or a kernel module).
+///
+/// @param elf_handle the ELF handle to consider.
+///
+/// @return true iff the binary denoted by @p elf_handle is a Linux
+/// kernel binary
+static bool
+binary_is_linux_kernel(Elf *elf_handle)
+{
+  return (find_section(elf_handle,
+		       "__ksymtab_strings",
+		       SHT_PROGBITS)
+	  || binary_is_linux_kernel_module(elf_handle));
+}
+
 /// Find and return the .text section.
 ///
 /// @param elf_handle the elf handle to use.
@@ -1130,6 +1162,20 @@ find_data_section(Elf* elf_handle)
 static Elf_Scn*
 find_data1_section(Elf* elf_handle)
 {return find_section(elf_handle, ".data1", SHT_PROGBITS);}
+
+/// Find the __ksymtab_strings section of a Linux kernel binary.
+///
+///
+/// @return the find_ksymtab_strings_section of the linux kernel
+/// binary denoted by @p elf_handle, or nil if such a section could
+/// not be found.
+static Elf_Scn*
+find_ksymtab_strings_section(Elf *elf_handle)
+{
+  if (binary_is_linux_kernel(elf_handle))
+    return find_section(elf_handle, "__ksymtab_strings", SHT_PROGBITS);
+  return 0;
+}
 
 /// Get the address at which a given binary is loaded in memory⋅
 ///
@@ -1724,10 +1770,15 @@ lookup_symbol_from_sysv_hash_tab(const environment*		env,
   GElf_Sym symbol;
   const char* sym_name_str;
   size_t sym_size;
+  uint64_t sym_value;
   elf_symbol::type sym_type;
   elf_symbol::binding sym_binding;
   elf_symbol::visibility sym_visibility;
   bool found = false;
+  Elf_Scn *strings_section = find_ksymtab_strings_section(elf_handle);
+  size_t strings_ndx = strings_section
+    ? elf_ndxscn(strings_section)
+    : 0;
 
   do
     {
@@ -1743,6 +1794,7 @@ lookup_symbol_from_sysv_hash_tab(const environment*		env,
 	  sym_visibility =
 	    stv_to_elf_symbol_visibility(GELF_ST_VISIBILITY(symbol.st_other));
 	  sym_size = symbol.st_size;
+	  sym_value = symbol.st_value;
 	  elf_symbol::version ver;
 	  if (get_version_for_symbol(elf_handle, symbol_index,
 				     /*get_def_version=*/true, ver))
@@ -1751,12 +1803,14 @@ lookup_symbol_from_sysv_hash_tab(const environment*		env,
 	    elf_symbol::create(env,
 			       symbol_index,
 			       sym_size,
+			       sym_value,
 			       sym_name_str,
 			       sym_type,
 			       sym_binding,
 			       symbol.st_shndx != SHN_UNDEF,
 			       symbol.st_shndx == SHN_COMMON,
-			       ver, sym_visibility);
+			       ver, sym_visibility,
+			       symbol.st_shndx == strings_ndx);
 	  syms_found.push_back(symbol_found);
 	  found = true;
 	}
@@ -1990,6 +2044,10 @@ lookup_symbol_from_gnu_hash_tab(const environment*		env,
   elf_symbol::type sym_type;
   elf_symbol::binding sym_binding;
   elf_symbol::visibility sym_visibility;
+  Elf_Scn *strings_section = find_ksymtab_strings_section(elf_handle);
+    size_t strings_ndx = strings_section
+    ? elf_ndxscn(strings_section)
+    : 0;
 
   // Let's walk the hash table and record the versions of all the
   // symbols which name equal sym_name.
@@ -2028,11 +2086,15 @@ lookup_symbol_from_gnu_hash_tab(const environment*		env,
 	    ABG_ASSERT(!ver.str().empty());
 
 	  elf_symbol_sptr symbol_found =
-	    elf_symbol::create(env, i, symbol.st_size, sym_name_str,
+	    elf_symbol::create(env, i,
+			       symbol.st_size,
+			       symbol.st_value,
+			       sym_name_str,
 			       sym_type, sym_binding,
 			       symbol.st_shndx != SHN_UNDEF,
 			       symbol.st_shndx == SHN_COMMON,
-			       ver, sym_visibility);
+			       ver, sym_visibility,
+			       symbol.st_shndx == strings_ndx);
 	  syms_found.push_back(symbol_found);
 	  found = true;
 	}
@@ -2155,6 +2217,10 @@ lookup_symbol_from_symtab(const environment*		env,
   char* name_str = 0;
   elf_symbol::version ver;
   bool found = false;
+  Elf_Scn *strings_section = find_ksymtab_strings_section(elf_handle);
+  size_t strings_ndx = strings_section
+    ? elf_ndxscn(strings_section)
+    : 0;
 
   for (size_t i = 0; i < symcount; ++i)
     {
@@ -2181,9 +2247,11 @@ lookup_symbol_from_symtab(const environment*		env,
 	    ABG_ASSERT(!ver.str().empty());
 	  elf_symbol_sptr symbol_found =
 	    elf_symbol::create(env, i, sym->st_size,
+			       sym->st_value,
 			       name_str, sym_type,
 			       sym_binding, sym_is_defined,
-			       sym_is_common, ver, sym_visibility);
+			       sym_is_common, ver, sym_visibility,
+			       sym->st_shndx == strings_ndx);
 	  syms_found.push_back(symbol_found);
 	  found = true;
 	}
@@ -3081,7 +3149,10 @@ public:
   /// to symbols exported using the EXPORT_SYMBOL_GPL macro from the
   /// linux kernel.
   Elf_Scn*			ksymtab_section_;
+  Elf_Scn*			ksymtab_reloc_section_;
   Elf_Scn*			ksymtab_gpl_section_;
+  Elf_Scn*			ksymtab_gpl_reloc_section_;
+  Elf_Scn*			ksymtab_strings_section_;
   Elf_Scn*			versym_section_;
   Elf_Scn*			verdef_section_;
   Elf_Scn*			verneed_section_;
@@ -3277,7 +3348,10 @@ public:
     nb_ksymtab_entries_ = 0;
     nb_ksymtab_gpl_entries_ = 0;
     ksymtab_section_ = 0;
+    ksymtab_reloc_section_ = 0;
     ksymtab_gpl_section_ = 0;
+    ksymtab_gpl_reloc_section_ = 0;
+    ksymtab_strings_section_ = 0;
     versym_section_ = 0;
     verdef_section_ = 0;
     verneed_section_ = 0;
@@ -6095,6 +6169,23 @@ public:
     return ksymtab_section_;
   }
 
+  /// Return the .rel{a,}__ksymtab section of a linux kernel ELF file (either
+  /// a vmlinux binary or a kernel module).
+  ///
+  /// @return the .rel{a,}__ksymtab section if found, nil otherwise.
+  Elf_Scn*
+  find_ksymtab_reloc_section() const
+  {
+    if (!ksymtab_reloc_section_)
+      {
+        Elf_Scn *sec = find_section(elf_handle(), ".rela__ksymtab", SHT_RELA);
+	if (!sec)
+	  sec = find_section(elf_handle(), ".rel__ksymtab", SHT_REL);
+	const_cast<read_context*>(this)->ksymtab_reloc_section_ = sec;
+      }
+    return ksymtab_reloc_section_;
+  }
+
   /// Return the __ksymtab_gpl section of a linux kernel ELF file
   /// (either a vmlinux binary or a kernel module).
   ///
@@ -6108,6 +6199,36 @@ public:
     return ksymtab_gpl_section_;
   }
 
+  /// Return the .rel{a,}__ksymtab_gpl section of a linux kernel ELF file
+  /// (either a vmlinux binary or a kernel module).
+  ///
+  /// @return the .rel{a,}__ksymtab_gpl section if found, nil otherwise.
+  Elf_Scn*
+  find_ksymtab_gpl_reloc_section() const
+  {
+    if (!ksymtab_gpl_reloc_section_)
+      {
+	Elf_Scn *sec = find_section(elf_handle(), ".rela__ksymtab_gpl", SHT_RELA);
+	if (!sec)
+	  sec = find_section(elf_handle(), ".rel__ksymtab_gpl", SHT_REL);
+	const_cast<read_context*>(this)->ksymtab_gpl_reloc_section_ = sec;
+      }
+    return ksymtab_gpl_reloc_section_;
+  }
+
+  /// Return the __ksymtab_strings section of a linux kernel ELF file
+  /// (either a vmlinux binary or a kernel module).
+  ///
+  /// @return the __ksymtab_strings section if found, nil otherwise.
+  Elf_Scn*
+  find_ksymtab_strings_section() const
+  {
+    if (!ksymtab_strings_section_)
+      const_cast<read_context*>(this)->ksymtab_strings_section_ =
+	dwarf_reader::find_ksymtab_strings_section(elf_handle());
+    return ksymtab_strings_section_;
+  }
+
   /// Return either a __ksymtab or a __ksymtab_gpl section, in case
   /// only the __ksymtab_gpl exists.
   ///
@@ -6119,6 +6240,19 @@ public:
     Elf_Scn *result = find_ksymtab_section();
     if (!result)
       result = find_ksymtab_gpl_section();
+    return result;
+  }
+
+  /// Return either a .rel{a,}__ksymtab or a .rel{a,}__ksymtab_gpl section
+  ///
+  /// @return the .rel{a,}__ksymtab section if it exists, or the
+  /// .rel{a,}__ksymtab_gpl; or NULL if neither is found.
+  Elf_Scn*
+  find_any_ksymtab_reloc_section() const
+  {
+    Elf_Scn *result = find_ksymtab_reloc_section();
+    if (!result)
+      result = find_ksymtab_gpl_reloc_section();
     return result;
   }
 
@@ -6298,11 +6432,18 @@ public:
     elf_symbol::visibility vis =
       stv_to_elf_symbol_visibility(GELF_ST_VISIBILITY(s->st_other));
 
+    Elf_Scn *strings_section = find_ksymtab_strings_section();
+    size_t strings_ndx = strings_section
+      ? elf_ndxscn(strings_section)
+      : 0;
+
     elf_symbol_sptr sym =
-      elf_symbol::create(env(), symbol_index, s->st_size, name_str,
+      elf_symbol::create(env(), symbol_index, s->st_size,
+			 s->st_value, name_str,
 			 stt_to_elf_symbol_type(GELF_ST_TYPE(s->st_info)),
 			 stb_to_elf_symbol_binding(GELF_ST_BIND(s->st_info)),
-			 sym_is_defined, sym_is_common, ver, vis);
+			 sym_is_defined, sym_is_common, ver, vis,
+			 s->st_shndx == strings_ndx);
     return sym;
   }
 
@@ -7451,6 +7592,75 @@ public:
     return symbol;
   }
 
+  /// Try to determine the format of the __ksymtab and __ksymtab_gpl
+  /// sections of Linux kernel modules.
+  ///
+  /// This is important because we need to know the format of these
+  /// sections to be able to read from them.
+  ///
+  /// @return the format the __ksymtab[_gpl] sections.
+  enum ksymtab_format
+  get_ksymtab_format_module() const
+  {
+    Elf_Scn *section = find_any_ksymtab_reloc_section();
+
+    ABG_ASSERT(section);
+
+    // Libdwfl has a weird quirk where, in the process of obtaining an Elf
+    // descriptor via dwfl_module_getelf(), it will apply all relocations it
+    // knows how to and it will zero the relocation info after applying it. If
+    // the .rela__ksymtab* section contained only simple (absolute) relocations,
+    // they will have been all applied and sh_size will be 0. For arches that
+    // support relative ksymtabs, simple relocations only appear in pre-4.19
+    // kernel modules.
+    GElf_Shdr section_mem;
+    GElf_Shdr *section_shdr = gelf_getshdr(section, &section_mem);
+    if (section_shdr->sh_size == 0)
+      return PRE_V4_19_KSYMTAB_FORMAT;
+
+    bool is_relasec = (section_shdr->sh_type == SHT_RELA);
+
+    // If we still have a normal non-zeroed relocation section, we can guess
+    // what format the ksymtab is in depending on what types of relocs it
+    // contains.
+
+    int type;
+    Elf_Data *section_data = elf_rawdata(section, 0);
+    if (is_relasec)
+      {
+	GElf_Rela rela;
+	gelf_getrela(section_data, 0, &rela);
+	type = GELF_R_TYPE(rela.r_info);
+      }
+    else
+      {
+	GElf_Rel rel;
+	gelf_getrel(section_data, 0, &rel);
+	type = GELF_R_TYPE(rel.r_info);
+      }
+
+    // Sigh, I dislike the arch-dependent code here, but this seems to be a
+    // reliable heuristic for kernel modules for now. Relative ksymtabs only
+    // supported on x86 and arm64 as of v4.19.
+    ksymtab_format format;
+    switch (type)
+      {
+      case R_X86_64_64: // Same as R_386_32, fallthrough
+      case R_AARCH64_ABS64:
+	format = PRE_V4_19_KSYMTAB_FORMAT;
+	break;
+      case R_X86_64_PC32: // Same as R_386_PC32, fallthrough
+      case R_AARCH64_PREL32:
+	format = V4_19_KSYMTAB_FORMAT;
+	break;
+      default:
+	// Fall back to other methods of determining the ksymtab format.
+	format = UNDEFINED_KSYMTAB_FORMAT;
+	break;
+      }
+    return format;
+  }
+
   /// Determine the format of the __ksymtab and __ksymtab_gpl
   /// sections.
   ///
@@ -7467,6 +7677,18 @@ public:
       {
 	if (ksymtab_format_ == UNDEFINED_KSYMTAB_FORMAT)
 	  {
+	    // Since Linux kernel modules are relocatable, we can first try
+	    // using a heuristic based on relocations to guess the ksymtab format.
+	    if (is_linux_kernel_module())
+	     {
+	       ksymtab_format_ = get_ksymtab_format_module();
+	       if (ksymtab_format_ != UNDEFINED_KSYMTAB_FORMAT)
+		  return ksymtab_format_;
+	     }
+
+	    // If it's not a kernel module or we couldn't determine its format
+	    // with relocations, fall back to the heuristics below.
+
 	    // OK this is a dirty little heuristic to determine the
 	    // format of the ksymtab section.
 	    //
@@ -7569,48 +7791,24 @@ public:
     return nb_ksymtab_gpl_entries_;
   }
 
-  /// Load a given kernel symbol table.
+  /// Populate the symbol map by reading exported symbols from the
+  /// ksymtab directly.
   ///
-  /// One can thus retrieve the resulting symbols by using the
-  /// accessors read_context::linux_exported_fn_syms(),
-  /// read_context::linux_exported_var_syms(),
-  /// read_context::linux_exported_gpl_fn_syms(), or
-  /// read_context::linux_exported_gpl_var_syms().
+  /// @param section the ksymtab section to read from
   ///
-  /// @param kind the kind of kernel symbol table to load.
+  /// @param exported_fns_set the set of exported functions
+  ///
+  /// @param exported_vars_set the set of exported variables
+  ///
+  /// @param nb_entries the number of ksymtab entries to read
   ///
   /// @return true upon successful completion, false otherwise.
   bool
-  load_kernel_symbol_table(kernel_symbol_table_kind kind)
+  populate_symbol_map_from_ksymtab(Elf_Scn *section,
+                                   address_set_sptr exported_fns_set,
+                                   address_set_sptr exported_vars_set,
+                                   size_t nb_entries)
   {
-    size_t nb_entries = 0;
-    Elf_Scn *section = 0;
-    address_set_sptr linux_exported_fns_set, linux_exported_vars_set;
-
-    switch (kind)
-      {
-      case KERNEL_SYMBOL_TABLE_KIND_UNDEFINED:
-	break;
-      case KERNEL_SYMBOL_TABLE_KIND_KSYMTAB:
-	section = find_ksymtab_section();
-	nb_entries = get_nb_ksymtab_entries();
-	linux_exported_fns_set = create_or_get_linux_exported_fn_syms();
-	linux_exported_vars_set = create_or_get_linux_exported_var_syms();
-	break;
-      case KERNEL_SYMBOL_TABLE_KIND_KSYMTAB_GPL:
-	section = find_ksymtab_gpl_section();
-	nb_entries = get_nb_ksymtab_gpl_entries();
-	linux_exported_fns_set = create_or_get_linux_exported_gpl_fn_syms();
-	linux_exported_vars_set = create_or_get_linux_exported_gpl_var_syms();
-	break;
-      }
-
-    if (!linux_exported_vars_set
-	|| !linux_exported_fns_set
-	|| !section
-	|| !nb_entries)
-      return false;
-
     // The data of the section.
     Elf_Data *elf_data = elf_rawdata(section, 0);
 
@@ -7686,18 +7884,167 @@ public:
 	if (symbol->is_function())
 	  {
 	    ABG_ASSERT(lookup_elf_fn_symbol_from_address(adjusted_symbol_address));
-	    set = linux_exported_fns_set;
+	    set = exported_fns_set;
 	  }
 	else if (symbol->is_variable())
 	  {
 	    ABG_ASSERT(lookup_elf_var_symbol_from_address(adjusted_symbol_address));
-	    set = linux_exported_vars_set;
+	    set = exported_vars_set;
 	  }
 	else
 	  ABG_ASSERT_NOT_REACHED;
 	set->insert(adjusted_symbol_address);
       }
     return true;
+  }
+
+  /// Populate the symbol map by extracting the exported symbols from a
+  /// ksymtab rela section.
+  ///
+  /// @param section the ksymtab section to read from
+  ///
+  /// @param exported_fns_set the set of exported functions
+  ///
+  /// @param exported_vars_set the set of exported variables
+  ///
+  /// @return true upon successful completion, false otherwise.
+  bool
+  populate_symbol_map_from_ksymtab_reloc(Elf_Scn *reloc_section,
+                                         address_set_sptr exported_fns_set,
+                                         address_set_sptr exported_vars_set)
+  {
+    GElf_Shdr reloc_section_mem;
+    GElf_Shdr *reloc_section_shdr = gelf_getshdr(reloc_section,
+						 &reloc_section_mem);
+    size_t reloc_count =
+      reloc_section_shdr->sh_size / reloc_section_shdr->sh_entsize;
+
+    Elf_Data *reloc_section_data = elf_rawdata(reloc_section, 0);
+
+    bool is_relasec = (reloc_section_shdr->sh_type == SHT_RELA);
+    elf_symbol_sptr symbol;
+    for (unsigned int i = 0; i < reloc_count; i++)
+      {
+	if (is_relasec)
+	  {
+	    GElf_Rela rela;
+	    gelf_getrela(reloc_section_data, i, &rela);
+	    symbol = lookup_elf_symbol_from_index(GELF_R_SYM(rela.r_info));
+	  }
+	else
+	  {
+	    GElf_Rel rel;
+	    gelf_getrel(reloc_section_data, i, &rel);
+	    symbol = lookup_elf_symbol_from_index(GELF_R_SYM(rel.r_info));
+	  }
+
+	ABG_ASSERT(symbol);
+
+        // If the symbol is a linux string constant then ignore it.
+	if (symbol->get_is_linux_string_cst())
+	  continue;
+
+	if (!symbol->is_function() && !symbol->is_variable())
+	  {
+	    if (do_log())
+	      {
+		if (symbol->get_type() == elf_symbol::NOTYPE_TYPE)
+		  cerr << "skipping NOTYPE symbol "
+		       << symbol->get_name()
+		       << " shndx: "
+		       << symbol->get_index()
+		       << " @"
+		       << elf_path()
+		       << "\n";
+		else if (symbol->get_type() == elf_symbol::SECTION_TYPE)
+		  cerr << "skipping SECTION symbol "
+		       << "shndx: "
+		       << symbol->get_index()
+		       << " @"
+		       << elf_path()
+		       << "\n";
+	       }
+	    continue;
+	  }
+
+	address_set_sptr set;
+	if (symbol->is_function())
+	  {
+	    ABG_ASSERT(lookup_elf_fn_symbol_from_address(symbol->get_value()));
+	    set = exported_fns_set;
+	  }
+	else if (symbol->is_variable())
+	  {
+	    ABG_ASSERT(lookup_elf_var_symbol_from_address(symbol->get_value()));
+	    set = exported_vars_set;
+	  }
+	else
+	  ABG_ASSERT_NOT_REACHED;
+	set->insert(symbol->get_value());
+      }
+    return true;
+  }
+
+  /// Load a given kernel symbol table.
+  ///
+  /// One can thus retrieve the resulting symbols by using the
+  /// accessors read_context::linux_exported_fn_syms(),
+  /// read_context::linux_exported_var_syms(),
+  /// read_context::linux_exported_gpl_fn_syms(), or
+  /// read_context::linux_exported_gpl_var_syms().
+  ///
+  /// @param kind the kind of kernel symbol table to load.
+  ///
+  /// @return true upon successful completion, false otherwise.
+  bool
+  load_kernel_symbol_table(kernel_symbol_table_kind kind)
+  {
+    size_t nb_entries = 0;
+    Elf_Scn *section = 0, *reloc_section = 0;
+    address_set_sptr linux_exported_fns_set, linux_exported_vars_set;
+
+    switch (kind)
+      {
+      case KERNEL_SYMBOL_TABLE_KIND_UNDEFINED:
+	break;
+      case KERNEL_SYMBOL_TABLE_KIND_KSYMTAB:
+	section = find_ksymtab_section();
+	reloc_section = find_ksymtab_reloc_section();
+	nb_entries = get_nb_ksymtab_entries();
+	linux_exported_fns_set = create_or_get_linux_exported_fn_syms();
+	linux_exported_vars_set = create_or_get_linux_exported_var_syms();
+	break;
+      case KERNEL_SYMBOL_TABLE_KIND_KSYMTAB_GPL:
+	section = find_ksymtab_gpl_section();
+	reloc_section = find_ksymtab_gpl_reloc_section();
+	nb_entries = get_nb_ksymtab_gpl_entries();
+	linux_exported_fns_set = create_or_get_linux_exported_gpl_fn_syms();
+	linux_exported_vars_set = create_or_get_linux_exported_gpl_var_syms();
+	break;
+      }
+
+    if (!linux_exported_vars_set
+	|| !linux_exported_fns_set
+	|| !section
+	|| !nb_entries)
+      return false;
+
+    ksymtab_format format = get_ksymtab_format();
+
+    // Although pre-v4.19 kernel modules can have a relocation section for the
+    // __ksymtab section, libdwfl zeroes the rela section after applying
+    // "simple" absolute relocations via dwfl_module_getelf(). For v4.19 and
+    // above, we get PC-relative relocations so dwfl_module_getelf() doesn't
+    // apply those relocations and we're safe to read the relocation section to
+    // determine which exported symbols are in the ksymtab.
+    if (!reloc_section || format == PRE_V4_19_KSYMTAB_FORMAT)
+      return populate_symbol_map_from_ksymtab(section, linux_exported_fns_set,
+                                              linux_exported_vars_set,
+					      nb_entries);
+    else
+      return populate_symbol_map_from_ksymtab_reloc(reloc_section,
+                                                    linux_exported_fns_set,
+                                                    linux_exported_vars_set);
   }
 
   /// Load the special __ksymtab section. This is for linux kernel
@@ -8368,7 +8715,19 @@ public:
   is_linux_kernel_binary() const
   {
     return find_section(elf_handle(), "__ksymtab_strings", SHT_PROGBITS)
-	   || find_section(elf_handle(), ".modinfo", SHT_PROGBITS);
+	   || is_linux_kernel_module();
+  }
+
+  /// Guess if the current binary is a Linux Kernel module.
+  ///
+  /// To guess that, the function looks for the presence of the special
+  /// ".modinfo" and ".gnu.linkonce.this_module" sections in the binary.
+  ///
+  bool
+  is_linux_kernel_module() const
+  {
+    return find_section(elf_handle(), ".modinfo", SHT_PROGBITS)
+	   && find_section(elf_handle(), ".gnu.linkonce.this_module", SHT_PROGBITS);
   }
 
   /// Getter of the "show_stats" flag.
@@ -15766,13 +16125,15 @@ create_default_var_sym(const string& sym_name, const environment *env)
     elf_symbol::create(env,
 		       /*symbol index=*/ 0,
 		       /*symbol size=*/ 0,
+		       /*symbol value=*/ 0,
 		       sym_name,
 		       /*symbol type=*/ elf_symbol::OBJECT_TYPE,
 		       /*symbol binding=*/ elf_symbol::GLOBAL_BINDING,
 		       /*symbol is defined=*/ true,
 		       /*symbol is common=*/ false,
 		       /*symbol version=*/ ver,
-		       /*symbol_visibility=*/vis);
+		       /*symbol_visibility=*/vis,
+		       /*is_linux_string_cst=*/false);
   return result;
 }
 
@@ -16205,13 +16566,15 @@ create_default_fn_sym(const string& sym_name, const environment *env)
     elf_symbol::create(env,
 		       /*symbol index=*/ 0,
 		       /*symbol size=*/ 0,
+		       /*symbol value=*/ 0,
 		       sym_name,
 		       /*symbol type=*/ elf_symbol::FUNC_TYPE,
 		       /*symbol binding=*/ elf_symbol::GLOBAL_BINDING,
 		       /*symbol is defined=*/ true,
 		       /*symbol is common=*/ false,
 		       /*symbol version=*/ ver,
-		       /*symbol visibility=*/elf_symbol::DEFAULT_VISIBILITY);
+		       /*symbol visibility=*/elf_symbol::DEFAULT_VISIBILITY,
+		       /*symbol is linux string cst=*/false);
   return result;
 }
 

@@ -2658,10 +2658,12 @@ build_elf_symbol(read_context& ctxt, const xmlNodePtr node)
   elf_symbol::version version(version_string, is_default_version);
 
   const environment* env = ctxt.get_environment();
-  elf_symbol_sptr e = elf_symbol::create(env, /*index=*/0, size,
+  elf_symbol_sptr e = elf_symbol::create(env, /*index=*/0,
+					 size, /*value=*/0,
 					 name, type, binding,
 					 is_defined, is_common,
-					 version, visibility);
+					 version, visibility,
+					 /*is_linux_string_cst=*/false);
   return e;
 }
 

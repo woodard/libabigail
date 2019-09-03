@@ -1169,6 +1169,7 @@ struct elf_symbol::priv
   const environment*	env_;
   size_t		index_;
   size_t		size_;
+  uint64_t		value_;
   string		name_;
   elf_symbol::type	type_;
   elf_symbol::binding	binding_;
@@ -1204,6 +1205,7 @@ struct elf_symbol::priv
   //     STT_COMMON. If no such symbol is found, it looks for the
   //     STT_COMMON definition of that name that has the largest size.
   bool			is_common_;
+  bool			is_linux_string_cst_;
   elf_symbol_wptr	main_symbol_;
   elf_symbol_wptr	next_alias_;
   elf_symbol_wptr	next_common_instance_;
@@ -1213,33 +1215,39 @@ struct elf_symbol::priv
     : env_(),
       index_(),
       size_(),
+      value_(),
       type_(elf_symbol::NOTYPE_TYPE),
       binding_(elf_symbol::GLOBAL_BINDING),
       visibility_(elf_symbol::DEFAULT_VISIBILITY),
       is_defined_(false),
-      is_common_(false)
+      is_common_(false),
+      is_linux_string_cst_(false)
   {}
 
   priv(const environment*		e,
        size_t				i,
        size_t				s,
+       uint64_t			val,
        const string&			n,
        elf_symbol::type		t,
        elf_symbol::binding		b,
        bool				d,
        bool				c,
        const elf_symbol::version&	ve,
-       elf_symbol::visibility		vi)
+       elf_symbol::visibility		vi,
+       bool				is_linux_string_cst)
     : env_(e),
       index_(i),
       size_(s),
+      value_(val),
       name_(n),
       type_(t),
       binding_(b),
       version_(ve),
       visibility_(vi),
       is_defined_(d),
-      is_common_(c)
+      is_common_(c),
+      is_linux_string_cst_(is_linux_string_cst)
   {
     if (!is_common_)
       is_common_ = type_ == COMMON_TYPE;
@@ -1269,6 +1277,8 @@ elf_symbol::elf_symbol()
 ///
 /// @param s the size of the symbol.
 ///
+/// @param val the value of the symbol.
+///
 /// @param n the name of the symbol.
 ///
 /// @param t the type of the symbol.
@@ -1282,17 +1292,23 @@ elf_symbol::elf_symbol()
 /// @param ve the version of the symbol.
 ///
 /// @param vi the visibility of the symbol.
+///
+/// @param is_linux_string_cst true if the symbol is a Linux Kernel
+/// string constant defined in the __ksymtab_strings section.
 elf_symbol::elf_symbol(const environment*	e,
 		       size_t			i,
 		       size_t			s,
+		       uint64_t		val,
 		       const string&		n,
 		       type			t,
 		       binding			b,
 		       bool			d,
 		       bool			c,
 		       const version&		ve,
-		       visibility		vi)
-  : priv_(new priv(e, i, s, n, t, b, d, c, ve, vi))
+		       visibility		vi,
+		       bool			is_linux_string_cst)
+  : priv_(new priv(e, i, s, val, n, t, b, d,
+		   c, ve, vi, is_linux_string_cst))
 {}
 
 /// Factory of instances of @ref elf_symbol.
@@ -1319,6 +1335,8 @@ elf_symbol::create()
 ///
 /// @param s the size of the symbol.
 ///
+/// @param val the value of the symbol.
+///
 /// @param n the name of the symbol.
 ///
 /// @param t the type of the symbol.
@@ -1333,21 +1351,28 @@ elf_symbol::create()
 ///
 /// @param vi the visibility of the symbol.
 ///
+/// @param is_linux_string_cst if true, it means the symbol represents
+/// a string constant from a linux kernel binary.
+///
 /// @return a (smart) pointer to a newly created instance of @ref
 /// elf_symbol.
 elf_symbol_sptr
 elf_symbol::create(const environment*	e,
 		   size_t		i,
 		   size_t		s,
+		   uint64_t		val,
 		   const string&	n,
 		   type		t,
 		   binding		b,
 		   bool		d,
 		   bool		c,
 		   const version&	ve,
-		   visibility		vi)
+		   visibility		vi,
+		   bool		is_linux_string_cst)
 {
-  elf_symbol_sptr sym(new elf_symbol(e, i, s, n, t, b, d, c, ve, vi));
+  elf_symbol_sptr sym(new elf_symbol(e, i, s, val,
+				     n, t, b, d, c, ve,
+				     vi, is_linux_string_cst));
   sym->priv_->main_symbol_ = sym;
   return sym;
 }
@@ -1410,6 +1435,22 @@ elf_symbol::get_index() const
 void
 elf_symbol::set_index(size_t s)
 {priv_->index_ = s;}
+
+/// Getter for the symbol value.
+///
+/// @return the value of the symbol.
+uint64_t
+elf_symbol::get_value() const
+{return priv_->value_;}
+
+/// Test if the ELF symbol is for a string constant of a Linux binary
+/// defined in the __ksymtab_strings symbol table.
+///
+/// @return true iff ELF symbol is for a string constant of a Linux
+/// binary defined in the __ksymtab_strings symbol table.
+bool
+elf_symbol::get_is_linux_string_cst() const
+{return priv_->is_linux_string_cst_;}
 
 /// Getter for the name of the @ref elf_symbol.
 ///
