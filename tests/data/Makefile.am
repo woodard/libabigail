@@ -1205,6 +1205,12 @@ test-diff-suppr/test41-enumerator-changes-0.suppr \
 test-diff-suppr/test41-enumerator-changes-report-0.txt \
 test-diff-suppr/test41-enumerator-changes-v0.cc \
 test-diff-suppr/test41-enumerator-changes-v1.cc \
+test-diff-suppr/test43-suppr-direct-fn-subtype-suppr-1.txt \
+test-diff-suppr/test43-suppr-direct-fn-subtype-v0.cc \
+test-diff-suppr/test43-suppr-direct-fn-subtype-v0.o \
+test-diff-suppr/test43-suppr-direct-fn-subtype-v1.cc \
+test-diff-suppr/test43-suppr-direct-fn-subtype-v1.o \
+test-diff-suppr/test43-suppr-direct-fn-subtype-report-1.txt \
 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1.abi \

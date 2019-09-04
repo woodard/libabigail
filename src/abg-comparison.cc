@@ -10798,6 +10798,12 @@ struct suppression_categorization_visitor : public diff_node_visitor
 	    || is_pointer_diff(d)
 	    || is_reference_diff(d)
 	    || (is_qualified_type_diff(d)
+		&& (!(d->has_local_changes() & LOCAL_NON_TYPE_CHANGE_KIND)))
+	    || (is_function_decl_diff(d)
+		&& (!(d->has_local_changes() & LOCAL_NON_TYPE_CHANGE_KIND)))
+	    || (is_fn_parm_diff(d)
+		&& (!(d->has_local_changes() & LOCAL_NON_TYPE_CHANGE_KIND)))
+	    || (is_function_type_diff(d)
 		&& (!(d->has_local_changes() & LOCAL_NON_TYPE_CHANGE_KIND)))))
       {
 	// Note that we handle private diff nodes differently from
@@ -10883,6 +10889,27 @@ struct suppression_categorization_visitor : public diff_node_visitor
 	    if (canonical_diff != d)
 	      canonical_diff->add_to_category
 		(SUPPRESSED_CATEGORY|PRIVATE_TYPE_CATEGORY);
+	  }
+
+	if (const function_decl_diff *fn_diff = is_function_decl_diff(d))
+	  if (!(d->has_local_changes() & LOCAL_NON_TYPE_CHANGE_KIND))
+	    {
+	      // d is a function diff that carries a local *type*
+	      // change (that means it's a change to the function
+	      // type).  Let's see if the child function type diff
+	      // node is suppressed.  That would mean that we are
+	      // instructed to show details of a diff that is deemed
+	      // suppressed; this means the suppression conflicts with
+	      // a local type change.  In that case, let's follow what
+	      // the user asked and suppress the function altogether,
+	      if (function_type_diff_sptr fn_type_diff = fn_diff->type_diff())
+		if (fn_type_diff->is_suppressed())
+		  d->add_to_category(SUPPRESSED_CATEGORY);
+	    // If a node was suppressed, all the other nodes of its class
+	    // of equivalence are suppressed too.
+	    diff *canonical_diff = d->get_canonical_diff();
+	    if (canonical_diff != d)
+	      canonical_diff->add_to_category(SUPPRESSED_CATEGORY);
 	  }
       }
   }
