@@ -675,6 +675,8 @@ class type_suppression::priv
   string				type_name_regex_str_;
   mutable sptr_utils::regex_t_sptr	type_name_regex_;
   string				type_name_;
+  string				type_name_not_regex_str_;
+  mutable sptr_utils::regex_t_sptr	type_name_not_regex_;
   bool					consider_type_kind_;
   type_suppression::type_kind		type_kind_;
   bool					consider_reach_kind_;
@@ -733,6 +735,56 @@ public:
   void
   set_type_name_regex(sptr_utils::regex_t_sptr r)
   {type_name_regex_ = r;}
+
+  /// Get the regular expression object associated to the
+  /// 'type_name_not_regex' property of @ref type_suppression.
+  ///
+  /// If the regular expression object is not created, this method
+  /// creates it and returns it.
+  ///
+  /// If the 'type_name_not_regex' property of @ref type_suppression is
+  /// empty then this method returns nil.
+  const sptr_utils::regex_t_sptr
+  get_type_name_not_regex() const
+  {
+    if (!type_name_not_regex_)
+      {
+	if (!type_name_not_regex_str_.empty())
+	  {
+	    sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
+	    if (regcomp(r.get(),
+			type_name_not_regex_str_.c_str(),
+			REG_EXTENDED) == 0)
+	      type_name_not_regex_ = r;
+	  }
+      }
+    return type_name_not_regex_;
+  }
+
+  /// Setter for the type_name_not_regex object.
+  ///
+  /// @param r the new type_name_not_regex object.
+  void
+  set_type_name_not_regex(sptr_utils::regex_t_sptr r)
+  {type_name_not_regex_ = r;}
+
+  /// Getter for the string that denotes the 'type_name_not_regex'
+  /// property.
+  ///
+  /// @return the value of the string value of the
+  /// 'type_name_not_regex' property.
+  const string&
+  get_type_name_not_regex_str() const
+  {return type_name_not_regex_str_;}
+
+  /// Setter for the string that denotes the 'type_name_not_regex'
+  /// property.
+  ///
+  /// @return the value of the string value of the
+  /// 'type_name_not_regex' property.
+  void
+  set_type_name_not_regex_str(const string regex_str)
+  {type_name_not_regex_str_ = regex_str;}
 
   /// Getter for the source_location_to_keep_regex object.
   ///

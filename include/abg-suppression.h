@@ -201,6 +201,12 @@ public:
   get_type_name_regex_str() const;
 
   void
+  set_type_name_not_regex_str(const string& name_regex_str);
+
+  const string&
+  get_type_name_not_regex_str() const;
+
+  void
   set_type_name(const string& name);
 
   const string&

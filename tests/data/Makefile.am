@@ -1205,6 +1205,14 @@ test-diff-suppr/test41-enumerator-changes-0.suppr \
 test-diff-suppr/test41-enumerator-changes-report-0.txt \
 test-diff-suppr/test41-enumerator-changes-v0.cc \
 test-diff-suppr/test41-enumerator-changes-v1.cc \
+test-diff-suppr/test42-negative-suppr-type-report-0.txt \
+test-diff-suppr/test42-negative-suppr-type-report-1.txt \
+test-diff-suppr/test42-negative-suppr-type-suppr-1.txt \
+test-diff-suppr/test42-negative-suppr-type-suppr-2.txt \
+test-diff-suppr/test42-negative-suppr-type-v0.cc \
+test-diff-suppr/test42-negative-suppr-type-v0.o \
+test-diff-suppr/test42-negative-suppr-type-v1.cc \
+test-diff-suppr/test42-negative-suppr-type-v1.o \
 test-diff-suppr/test43-suppr-direct-fn-subtype-suppr-1.txt \
 test-diff-suppr/test43-suppr-direct-fn-subtype-v0.cc \
 test-diff-suppr/test43-suppr-direct-fn-subtype-v0.o \

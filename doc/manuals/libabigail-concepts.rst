@@ -247,8 +247,9 @@ Note that for the ``[suppress_type]`` directive to work, at least one
 of the following properties must be provided:
 
   ``file_name_regexp``, ``file_name_not_regexp``, ``soname_regexp``,
-  ``soname_not_regexp``, ``name``, ``name_regexp``, ``type_kind``,
-  ``source_location_not_in``, ``source_location_not_regexp``.
+  ``soname_not_regexp``, ``name``, ``name_regexp``,
+  ``name_not_regexp``, ``type_kind``, ``source_location_not_in``,
+  ``source_location_not_regexp``.
 
 If none of the following properties are provided, then the
 ``[suppress_type]`` directive is simply ignored.
@@ -304,6 +305,18 @@ The potential properties of this sections are listed below:
 
  Suppresses change reports involving types whose name matches the
  regular expression specified as value of this property.
+
+
+* ``name_not_regexp``
+
+ Usage:
+
+   ``name_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+ Suppresses change reports involving types whose name does *NOT* match
+ the regular expression specified as value of this property.  Said
+ otherwise, this property specifies which types to keep, rather than
+ types to suppress from reports.
 
 * ``name``
 

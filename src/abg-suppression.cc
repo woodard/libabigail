@@ -406,13 +406,35 @@ type_suppression::set_type_name_regex_str(const string& name_regex_str)
 /// Getter for the "type_name_regex" property of the type suppression
 /// specification.
 ///
-/// This returns a regular expression that specifies the family of
-/// types about which diff reports should be suppressed.
+/// This returns a regular expression string that specifies the family
+/// of types about which diff reports should be suppressed.
 ///
-/// @return the regular expression.
+/// @return the regular expression string.
 const string&
 type_suppression::get_type_name_regex_str() const
 {return priv_->type_name_regex_str_;}
+
+/// Setter for the "type_name_not_regex_str" property of the type
+/// suppression specification.
+///
+/// This returns a regular expression string that specifies the family
+/// of types that should be kept after suppression.
+///
+/// @param r the new regexp string.
+void
+type_suppression::set_type_name_not_regex_str(const string& r)
+{priv_->set_type_name_not_regex_str(r);}
+
+/// Getter for the "type_name_not_regex_str" property of the type
+/// suppression specification.
+///
+/// This returns a regular expression string that specifies the family
+/// of types that should be kept after suppression.
+///
+/// @return the new regexp string.
+const string&
+type_suppression::get_type_name_not_regex_str() const
+{return priv_->get_type_name_not_regex_str();}
 
 /// Setter for the name of the type about which diff reports should be
 /// suppressed.
@@ -921,7 +943,9 @@ bool
 suppression_matches_type_name(const type_suppression&	s,
 			      const string&		type_name)
 {
-  if (!s.get_type_name().empty() || s.priv_->get_type_name_regex())
+  if (!s.get_type_name().empty()
+      || s.priv_->get_type_name_regex()
+      || s.priv_->get_type_name_not_regex())
     {
       // Check if there is an exact type name match.
       if (!s.get_type_name().empty())
@@ -936,12 +960,23 @@ suppression_matches_type_name(const type_suppression&	s,
 	  // If the qualified name of the considered type doesn't match
 	  // the regular expression of the type name, then this
 	  // suppression doesn't apply.
-	  const sptr_utils::regex_t_sptr& type_name_regex =
-	    s.priv_->get_type_name_regex();
-	  if (type_name_regex && (regexec(type_name_regex.get(),
-					  type_name.c_str(),
-					  0, NULL, 0) != 0))
-	    return false;
+	  if (const sptr_utils::regex_t_sptr& type_name_regex =
+	      s.priv_->get_type_name_regex())
+	    {
+	      if (regexec(type_name_regex.get(),
+			  type_name.c_str(),
+			  0, NULL, 0) != 0)
+		return false;
+	    }
+
+	  if (const sptr_utils::regex_t_sptr type_name_not_regex =
+	      s.priv_->get_type_name_not_regex())
+	    {
+	      if (regexec(type_name_not_regex.get(),
+			  type_name.c_str(),
+			  0, NULL, 0) == 0)
+		return false;
+	    }
 	}
     }
 
@@ -1530,6 +1565,12 @@ read_type_suppression(const ini::config::section& section)
     ? name_regex_prop->get_value()->as_string()
     : "";
 
+  ini::simple_property_sptr name_not_regex_prop =
+    is_simple_property(section.find_property("name_not_regexp"));
+  string name_not_regex_str = name_not_regex_prop
+    ? name_not_regex_prop->get_value()->as_string()
+    : "";
+
   ini::simple_property_sptr name_prop =
     is_simple_property(section.find_property("name"));
   string name_str = name_prop
@@ -1774,6 +1815,8 @@ read_type_suppression(const ini::config::section& section)
       && soname_regex_str.empty()
       && soname_not_regex_str.empty()
       && (!name_regex_prop || name_regex_prop->get_value()->as_string().empty())
+      && (!name_not_regex_prop
+	  || name_not_regex_prop->get_value()->as_string().empty())
       && (!name_prop || name_prop->get_value()->as_string().empty())
       && !consider_type_kind
       && srcloc_not_regexp_str.empty()
@@ -1797,6 +1840,9 @@ read_type_suppression(const ini::config::section& section)
 
   if (consider_data_member_insertion)
     suppr->set_data_member_insertion_ranges(insert_ranges);
+
+  if (!name_not_regex_str.empty())
+    suppr->set_type_name_not_regex_str(name_not_regex_str);
 
   if (!file_name_regex_str.empty())
     suppr->set_file_name_regex_str(file_name_regex_str);
