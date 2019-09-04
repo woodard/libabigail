@@ -176,6 +176,9 @@ has_type_size_change(const diff* diff)
   if (!diff)
     return false;
 
+  if (const fn_parm_diff* fn_parm_d = is_fn_parm_diff(diff))
+    diff = fn_parm_d->type_diff().get();
+
   type_base_sptr f = is_type(diff->first_subject()),
     s = is_type(diff->second_subject());
 
