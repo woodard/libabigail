@@ -646,6 +646,30 @@ if test x$HAS_EM_TILEGX = xyes; then
             [Defined to 1 if elf.h has EM_TILEGX macro defined])
 fi
 
+HAS_R_AARCH64_ABS64=no
+AC_CHECK_DECL([R_AARCH64_ABS64],
+	      [HAS_R_AARCH64_ABS64=yes],
+	      [HAS_R_AARCH64_ABS64=no],
+	      [[#include <elf.h>]])
+
+if test x$HAS_R_AARCH64_ABS64 = xyes; then
+   AC_DEFINE([HAVE_R_AARCH64_ABS64_MACRO],
+	     1,
+	     [Defined to 1 if elf.h has R_AARCH64_ABS64 macro defined])
+fi
+
+HAS_R_AARCH64_PREL32=no
+AC_CHECK_DECL([R_AARCH64_PREL32],
+	      [HAS_R_AARCH64_PREL32=yes],
+	      [HAS_R_AARCH64_PREL32=no],
+	      [[#include <elf.h>]])
+
+if test x$HAS_R_AARCH64_PREL32 = xyes; then
+   AC_DEFINE([HAVE_R_AARCH64_PREL32_MACRO],
+	     1,
+	     [Defined to 1 if elf.h has R_AARCH64_PREL32 macro defined])
+fi
+
 HAS_DW_LANG_UPC=no
 AC_CHECK_DECL([DW_LANG_UPC],
 	      [HAS_DW_LANG_UPC=yes],

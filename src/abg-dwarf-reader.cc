@@ -7646,11 +7646,15 @@ public:
     switch (type)
       {
       case R_X86_64_64: // Same as R_386_32, fallthrough
+#ifdef HAVE_R_AARCH64_ABS64_MACRO
       case R_AARCH64_ABS64:
+#endif
 	format = PRE_V4_19_KSYMTAB_FORMAT;
 	break;
       case R_X86_64_PC32: // Same as R_386_PC32, fallthrough
+#ifdef HAVE_R_AARCH64_PREL32_MACRO
       case R_AARCH64_PREL32:
+#endif
 	format = V4_19_KSYMTAB_FORMAT;
 	break;
       default:
