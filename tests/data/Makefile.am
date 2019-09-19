@@ -402,6 +402,8 @@ test-read-dwarf/PR22122-libftdc.so \
 test-read-dwarf/PR22122-libftdc.so.abi \
 test-read-dwarf/PR24378-fn-is-not-scope.abi \
 test-read-dwarf/PR24378-fn-is-not-scope.o \
+test-read-dwarf/PR25007-sdhci.ko \
+test-read-dwarf/PR25007-sdhci.ko.abi \
 \
 test-annotate/test0.abi			\
 test-annotate/test1.abi			\

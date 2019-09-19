@@ -1,9 +1,0 @@
-Functions changes summary: 0 Removed, 1 Changed, 0 Added function
-Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
-
-1 function with some indirect sub-type change:
-
-  [C]'function int bar()' has some indirect sub-type changes:
-    'function int bar() {_ZN1S3fooEv}' now becomes 'method int S::foo() {_ZN1S3fooEv}'
-
-

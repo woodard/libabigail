@@ -1,7 +1,5 @@
 Functions changes summary: 0 Removed, 1 Changed, 2 Added functions
 Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
-Function symbols changes summary: 0 Removed, 1 Added function symbol not referenced by debug info
-Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referenced by debug info
 
 2 Added functions:
 
@@ -17,8 +15,4 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
         1 data member insertion:
           'int S::m0', at offset 0 (in bits)
 
-
-1 Added function symbol not referenced by debug info:
-
-  _ZN1SC1Ev
 

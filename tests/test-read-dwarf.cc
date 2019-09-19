@@ -237,6 +237,12 @@ InOutSpec in_out_specs[] =
     "data/test-read-dwarf/PR24378-fn-is-not-scope.abi",
     "output/test-read-dwarf/PR24378-fn-is-not-scope.abi",
   },
+  {
+    "data/test-read-dwarf/PR25007-sdhci.ko",
+    "",
+    "data/test-read-dwarf/PR25007-sdhci.ko.abi",
+    "output/test-read-dwarf/PR25007-sdhci.ko.abi",
+  },
   // This should be the last entry.
   {NULL, NULL, NULL, NULL}
 };

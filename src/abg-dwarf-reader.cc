@@ -6384,6 +6384,35 @@ public:
 						syms);
   }
 
+  /// Lookup an elf symbol, referred to by its index, from the .symtab
+  /// section.
+  ///
+  /// The resulting symbol returned is an instance of a GElf_Sym, from
+  /// the libelf library.
+  ///
+  /// @param symbol_index the index of the symbol to look up.
+  ///
+  /// @param elf_sym out parameter.  This is set to the resulting ELF
+  /// symbol iff the function returns TRUE, meaning the symbol was
+  /// found.
+  ///
+  /// @return TRUE iff the symbol was found.
+  bool
+  lookup_native_elf_symbol_from_index(size_t symbol_index, GElf_Sym &elf_sym)
+  {
+    Elf_Scn* symtab_section = find_symbol_table_section();
+    if (!symtab_section)
+      return false;
+
+    Elf_Data* symtab = elf_getdata(symtab_section, 0);
+    ABG_ASSERT(symtab);
+
+    if (!gelf_getsym(symtab, symbol_index, &elf_sym))
+      return false;
+
+    return true;
+  }
+
   /// Given the index of a symbol into the symbol table of an ELF
   /// file, look the symbol up, build an instace of @ref elf_symbol
   /// and return it.
@@ -6391,13 +6420,37 @@ public:
   /// @param symbol_index the index of the symbol into the symbol
   /// table of the current elf file.
   ///
-  /// @param symbol the resulting instance of @ref elf_symbol, iff the
-  /// function returns true.
-  ///
   /// @return the elf symbol found or nil if none was found.
   elf_symbol_sptr
   lookup_elf_symbol_from_index(size_t symbol_index)
   {
+    GElf_Sym s;
+    elf_symbol_sptr result =
+      lookup_elf_symbol_from_index(symbol_index, s);
+    return result;
+  }
+
+  /// Lookup an ELF symbol given its index into the .symtab section.
+  ///
+  /// This function returns both the native symbol (from libelf) and
+  /// the @p abigail::ir::elf_symbol instance, which is the
+  /// libabigail-specific representation of the symbol.
+  ///
+  /// @param symbol_index the index of the symbol to look for.
+  ///
+  /// @param native_sym output parameter.  This is set to the native
+  /// ELF symbol found iff the function returns a non-nil value.
+  ///
+  /// @return an instance of libabigail::ir::elf_symbol representing
+  /// the ELF symbol found, iff one was found.  Otherwise, returns
+  /// nil.
+  elf_symbol_sptr
+  lookup_elf_symbol_from_index(size_t symbol_index,
+			       GElf_Sym &native_sym)
+  {
+    if (!lookup_native_elf_symbol_from_index(symbol_index, native_sym))
+      return elf_symbol_sptr();
+
     Elf_Scn* symtab_section = find_symbol_table_section();
     if (!symtab_section)
       return elf_symbol_sptr();
@@ -6409,18 +6462,13 @@ public:
     Elf_Data* symtab = elf_getdata(symtab_section, 0);
     ABG_ASSERT(symtab);
 
-    GElf_Sym* s, smem;
-    s = gelf_getsym(symtab, symbol_index, &smem);
-    if (!s)
-      return elf_symbol_sptr();
-
-    bool sym_is_defined = s->st_shndx != SHN_UNDEF;
-    bool sym_is_common = s->st_shndx == SHN_COMMON; // this occurs in
-						    // relocatable
-						    // files.
+    bool sym_is_defined = native_sym.st_shndx != SHN_UNDEF;
+    bool sym_is_common = native_sym.st_shndx == SHN_COMMON; // this occurs in
+							    // relocatable
+							    // files.
     const char* name_str = elf_strptr(elf_handle(),
 				      symtab_sheader->sh_link,
-				      s->st_name);
+				      native_sym.st_name);
     if (name_str == 0)
       name_str = "";
 
@@ -6430,7 +6478,7 @@ public:
 			   ver);
 
     elf_symbol::visibility vis =
-      stv_to_elf_symbol_visibility(GELF_ST_VISIBILITY(s->st_other));
+      stv_to_elf_symbol_visibility(GELF_ST_VISIBILITY(native_sym.st_other));
 
     Elf_Scn *strings_section = find_ksymtab_strings_section();
     size_t strings_ndx = strings_section
@@ -6438,12 +6486,14 @@ public:
       : 0;
 
     elf_symbol_sptr sym =
-      elf_symbol::create(env(), symbol_index, s->st_size,
-			 s->st_value, name_str,
-			 stt_to_elf_symbol_type(GELF_ST_TYPE(s->st_info)),
-			 stb_to_elf_symbol_binding(GELF_ST_BIND(s->st_info)),
+      elf_symbol::create(env(), symbol_index, native_sym.st_size,
+			 native_sym.st_value, name_str,
+			 stt_to_elf_symbol_type
+			 (GELF_ST_TYPE(native_sym.st_info)),
+			 stb_to_elf_symbol_binding
+			 (GELF_ST_BIND(native_sym.st_info)),
 			 sym_is_defined, sym_is_common, ver, vis,
-			 s->st_shndx == strings_ndx);
+			 native_sym.st_shndx == strings_ndx);
     return sym;
   }
 
@@ -7319,6 +7369,9 @@ public:
     Elf_Data* symtab = elf_getdata(symtab_section, 0);
     ABG_ASSERT(symtab);
 
+    GElf_Ehdr elf_header;
+    ABG_ASSERT(gelf_getehdr(elf_handle(), &elf_header));
+
     bool is_ppc64 = elf_architecture_is_ppc64();
 
     for (size_t i = 0; i < nb_syms; ++i)
@@ -7351,11 +7404,14 @@ public:
 		}
 
 		{
+		  GElf_Addr symbol_value =
+		    maybe_adjust_et_rel_sym_addr_to_abs_addr(sym);
+
 		  addr_elf_symbol_sptr_map_type::const_iterator it =
-		    fun_addr_sym_map_->find(sym->st_value);
+		    fun_addr_sym_map_->find(symbol_value);
 		  if (it == fun_addr_sym_map_->end())
-		    (*fun_addr_sym_map_)[sym->st_value] = symbol;
-		  else  if (sym->st_value != 0)
+		    (*fun_addr_sym_map_)[symbol_value] = symbol;
+		  else //if (sym->st_value != 0)
 		    it->second->get_main_symbol()->add_alias(symbol);
 
 		  if (is_ppc64)
@@ -7505,10 +7561,12 @@ public:
 		  }
 		else
 		  {
+		    GElf_Addr symbol_value =
+		      maybe_adjust_et_rel_sym_addr_to_abs_addr(sym);
 		    addr_elf_symbol_sptr_map_type::const_iterator it =
-		      var_addr_sym_map_->find(sym->st_value);
+		      var_addr_sym_map_->find(symbol_value);
 		    if (it == var_addr_sym_map_->end())
-		      (*var_addr_sym_map_)[sym->st_value] = symbol;
+		      (*var_addr_sym_map_)[symbol_value] = symbol;
 		    else
 		      it->second->get_main_symbol()->add_alias(symbol);
 		  }
@@ -7887,12 +7945,14 @@ public:
 	address_set_sptr set;
 	if (symbol->is_function())
 	  {
-	    ABG_ASSERT(lookup_elf_fn_symbol_from_address(adjusted_symbol_address));
+	    ABG_ASSERT(lookup_elf_fn_symbol_from_address
+		       (adjusted_symbol_address));
 	    set = exported_fns_set;
 	  }
 	else if (symbol->is_variable())
 	  {
-	    ABG_ASSERT(lookup_elf_var_symbol_from_address(adjusted_symbol_address));
+	    ABG_ASSERT(lookup_elf_var_symbol_from_address
+		       (adjusted_symbol_address));
 	    set = exported_vars_set;
 	  }
 	else
@@ -7927,19 +7987,22 @@ public:
 
     bool is_relasec = (reloc_section_shdr->sh_type == SHT_RELA);
     elf_symbol_sptr symbol;
+    GElf_Sym native_symbol;
     for (unsigned int i = 0; i < reloc_count; i++)
       {
 	if (is_relasec)
 	  {
 	    GElf_Rela rela;
 	    gelf_getrela(reloc_section_data, i, &rela);
-	    symbol = lookup_elf_symbol_from_index(GELF_R_SYM(rela.r_info));
+	    symbol = lookup_elf_symbol_from_index(GELF_R_SYM(rela.r_info),
+						  native_symbol);
 	  }
 	else
 	  {
 	    GElf_Rel rel;
 	    gelf_getrel(reloc_section_data, i, &rel);
-	    symbol = lookup_elf_symbol_from_index(GELF_R_SYM(rel.r_info));
+	    symbol = lookup_elf_symbol_from_index(GELF_R_SYM(rel.r_info),
+						  native_symbol);
 	  }
 
 	ABG_ASSERT(symbol);
@@ -7971,20 +8034,27 @@ public:
 	    continue;
 	  }
 
+	// If we are looking at an ET_REL (relocatable) binary, then
+	// the symbol value of native_symbol is relative to the
+	// section that symbol is defined in.  We need to translate it
+	// into an absolute (okay, binary-relative, rather) address.
+	GElf_Addr symbol_address =
+	  maybe_adjust_et_rel_sym_addr_to_abs_addr (&native_symbol);
+
 	address_set_sptr set;
 	if (symbol->is_function())
 	  {
-	    ABG_ASSERT(lookup_elf_fn_symbol_from_address(symbol->get_value()));
+	    ABG_ASSERT(lookup_elf_fn_symbol_from_address(symbol_address));
 	    set = exported_fns_set;
 	  }
 	else if (symbol->is_variable())
 	  {
-	    ABG_ASSERT(lookup_elf_var_symbol_from_address(symbol->get_value()));
+	    ABG_ASSERT(lookup_elf_var_symbol_from_address(symbol_address));
 	    set = exported_vars_set;
 	  }
 	else
 	  ABG_ASSERT_NOT_REACHED;
-	set->insert(symbol->get_value());
+	set->insert(symbol_address);
       }
     return true;
   }
@@ -8322,19 +8392,85 @@ public:
     GElf_Ehdr* elf_header = gelf_getehdr(elf, &eh_mem);
 
     if (elf_header->e_type == ET_REL)
-      {
-	Elf_Scn* text_section = find_text_section(elf);
-	ABG_ASSERT(text_section);
-
-	GElf_Shdr sheader_mem;
-	GElf_Shdr* text_sheader = gelf_getshdr(text_section, &sheader_mem);
-	ABG_ASSERT(text_sheader);
-	addr = addr - text_sheader->sh_addr;
-      }
+      // We are looking at a relocatable file.  In this case, we don't
+      // do anything because:
+      //
+      // 1/ the addresses from DWARF are absolute (relative to the
+      // beginning of the relocatable file)
+      //
+      // 2/ The ELF symbol addresses that we store in our lookup
+      // tables are translated from section-related to absolute as
+      // well.  So we don't have anything to do at this point for
+      // ET_REL files.
+      ;
     else
       addr = maybe_adjust_address_for_exec_or_dyn(addr);
 
     return addr;
+  }
+
+  /// Translate a section-relative symbol address (i.e, symbol value)
+  /// into an absolute symbol address by adding the address of the
+  /// section the symbol belongs to, to the address value.
+  ///
+  /// This is useful when looking at symbol values coming from
+  /// relocatable files (of ET_REL kind).  If the binary is not
+  /// ET_REL, then the function does nothing and returns the input
+  /// address unchanged.
+  ///
+  /// @param addr the symbol address to possibly translate.
+  ///
+  /// @param section the section the symbol which value is @p addr
+  /// belongs to.
+  ///
+  /// @return the section-relative address, translated into an
+  /// absolute address, if @p section is an ET_REL binary.  Otherwise,
+  /// return @p addr, unchanged.
+  GElf_Addr
+  maybe_adjust_et_rel_sym_addr_to_abs_addr(GElf_Addr addr, Elf_Scn *section)
+  {
+    if (section == 0)
+      return addr;
+
+    Elf* elf = elf_handle();
+    GElf_Ehdr elf_header;
+
+    if (!gelf_getehdr(elf, &elf_header))
+      return addr;
+
+    if (elf_header.e_type != ET_REL)
+      return addr;
+
+    GElf_Shdr section_header;
+    if (!gelf_getshdr(section, &section_header))
+      return addr;
+
+    return addr + section_header.sh_addr;
+  }
+
+  /// Translate a section-relative symbol address (i.e, symbol value)
+  /// into an absolute symbol address by adding the address of the
+  /// section the symbol belongs to, to the address value.
+  ///
+  /// This is useful when looking at symbol values coming from
+  /// relocatable files (of ET_REL kind).  If the binary is not
+  /// ET_REL, then the function does nothing and returns the input
+  /// address unchanged.
+  ///
+  /// @param sym the symbol whose address to possibly needs to be
+  /// translated.
+  ///
+  /// @return the section-relative address, translated into an
+  /// absolute address, if @p sym is from an ET_REL binary.
+  /// Otherwise, return the address of @p sym, unchanged.
+  GElf_Addr
+  maybe_adjust_et_rel_sym_addr_to_abs_addr(GElf_Sym *sym)
+  {
+    Elf_Scn *symbol_section = elf_getscn(elf_handle(), sym->st_shndx);
+    ABG_ASSERT(symbol_section);
+    GElf_Addr result = sym->st_value;
+    result = maybe_adjust_et_rel_sym_addr_to_abs_addr(result, symbol_section);
+    return result;
   }
 
   /// Test if a given address is in a given section.
@@ -8415,19 +8551,17 @@ public:
     GElf_Ehdr* elf_header = gelf_getehdr(elf, &eh_mem);
 
     if (elf_header->e_type == ET_REL)
-      {
-	Elf_Scn* data_section = get_data_section_for_variable_address(addr);
-	if (!data_section)
-	  // It's likely that this address doesn't come from any
-	  // data section.
-	  return addr;
-
-	GElf_Shdr sheader_mem;
-	GElf_Shdr* data_sheader = gelf_getshdr(data_section, &sheader_mem);
-	ABG_ASSERT(data_sheader);
-
-	return addr - data_sheader->sh_addr;
-      }
+      // We are looking at a relocatable file.  In this case, we don't
+      // do anything because:
+      //
+      // 1/ the addresses from DWARF are absolute (relative to the
+      // beginning of the relocatable file)
+      //
+      // 2/ The ELF symbol addresses that we store in our lookup
+      // tables are translated from section-related to absolute as
+      // well.  So we don't have anything to do at this point for
+      // ET_REL files.
+      ;
     else
       addr = maybe_adjust_address_for_exec_or_dyn(addr);
 

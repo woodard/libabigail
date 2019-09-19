@@ -19,7 +19,7 @@ Variable symbols changes summary: 0 Removed, 3 Added variable symbols not refere
 
 3 Added variable symbols not referenced by debug info:
 
-  _ZTI1S, aliases _ZTS1S
+  _ZTI1S
   _ZTS1S
-  _ZTV1S, aliases _ZTI1S, _ZTS1S
+  _ZTV1S
 
