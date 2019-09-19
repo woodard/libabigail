@@ -818,7 +818,6 @@ private:
   elf_symbol(const environment* e,
 	     size_t		i,
 	     size_t		s,
-	     uint64_t		val,
 	     const string&	n,
 	     type		t,
 	     binding		b,
@@ -842,7 +841,6 @@ public:
   create(const environment*	e,
 	 size_t		i,
 	 size_t		s,
-	 uint64_t		val,
 	 const string&		n,
 	 type			t,
 	 binding		b,
@@ -863,9 +861,6 @@ public:
 
   void
   set_index(size_t);
-
-  uint64_t
-  get_value() const;
 
   bool
   get_is_linux_string_cst() const;

@@ -1169,7 +1169,6 @@ struct elf_symbol::priv
   const environment*	env_;
   size_t		index_;
   size_t		size_;
-  uint64_t		value_;
   string		name_;
   elf_symbol::type	type_;
   elf_symbol::binding	binding_;
@@ -1215,7 +1214,6 @@ struct elf_symbol::priv
     : env_(),
       index_(),
       size_(),
-      value_(),
       type_(elf_symbol::NOTYPE_TYPE),
       binding_(elf_symbol::GLOBAL_BINDING),
       visibility_(elf_symbol::DEFAULT_VISIBILITY),
@@ -1227,7 +1225,6 @@ struct elf_symbol::priv
   priv(const environment*		e,
        size_t				i,
        size_t				s,
-       uint64_t			val,
        const string&			n,
        elf_symbol::type		t,
        elf_symbol::binding		b,
@@ -1239,7 +1236,6 @@ struct elf_symbol::priv
     : env_(e),
       index_(i),
       size_(s),
-      value_(val),
       name_(n),
       type_(t),
       binding_(b),
@@ -1277,8 +1273,6 @@ elf_symbol::elf_symbol()
 ///
 /// @param s the size of the symbol.
 ///
-/// @param val the value of the symbol.
-///
 /// @param n the name of the symbol.
 ///
 /// @param t the type of the symbol.
@@ -1298,7 +1292,6 @@ elf_symbol::elf_symbol()
 elf_symbol::elf_symbol(const environment*	e,
 		       size_t			i,
 		       size_t			s,
-		       uint64_t		val,
 		       const string&		n,
 		       type			t,
 		       binding			b,
@@ -1307,7 +1300,7 @@ elf_symbol::elf_symbol(const environment*	e,
 		       const version&		ve,
 		       visibility		vi,
 		       bool			is_linux_string_cst)
-  : priv_(new priv(e, i, s, val, n, t, b, d,
+  : priv_(new priv(e, i, s, n, t, b, d,
 		   c, ve, vi, is_linux_string_cst))
 {}
 
@@ -1335,8 +1328,6 @@ elf_symbol::create()
 ///
 /// @param s the size of the symbol.
 ///
-/// @param val the value of the symbol.
-///
 /// @param n the name of the symbol.
 ///
 /// @param t the type of the symbol.
@@ -1360,7 +1351,6 @@ elf_symbol_sptr
 elf_symbol::create(const environment*	e,
 		   size_t		i,
 		   size_t		s,
-		   uint64_t		val,
 		   const string&	n,
 		   type		t,
 		   binding		b,
@@ -1370,8 +1360,7 @@ elf_symbol::create(const environment*	e,
 		   visibility		vi,
 		   bool		is_linux_string_cst)
 {
-  elf_symbol_sptr sym(new elf_symbol(e, i, s, val,
-				     n, t, b, d, c, ve,
+  elf_symbol_sptr sym(new elf_symbol(e, i, s, n, t, b, d, c, ve,
 				     vi, is_linux_string_cst));
   sym->priv_->main_symbol_ = sym;
   return sym;
@@ -1435,13 +1424,6 @@ elf_symbol::get_index() const
 void
 elf_symbol::set_index(size_t s)
 {priv_->index_ = s;}
-
-/// Getter for the symbol value.
-///
-/// @return the value of the symbol.
-uint64_t
-elf_symbol::get_value() const
-{return priv_->value_;}
 
 /// Test if the ELF symbol is for a string constant of a Linux binary
 /// defined in the __ksymtab_strings symbol table.

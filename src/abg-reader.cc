@@ -2659,8 +2659,7 @@ build_elf_symbol(read_context& ctxt, const xmlNodePtr node)
 
   const environment* env = ctxt.get_environment();
   elf_symbol_sptr e = elf_symbol::create(env, /*index=*/0,
-					 size, /*value=*/0,
-					 name, type, binding,
+					 size, name, type, binding,
 					 is_defined, is_common,
 					 version, visibility,
 					 /*is_linux_string_cst=*/false);

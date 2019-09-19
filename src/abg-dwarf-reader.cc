@@ -1770,7 +1770,6 @@ lookup_symbol_from_sysv_hash_tab(const environment*		env,
   GElf_Sym symbol;
   const char* sym_name_str;
   size_t sym_size;
-  uint64_t sym_value;
   elf_symbol::type sym_type;
   elf_symbol::binding sym_binding;
   elf_symbol::visibility sym_visibility;
@@ -1794,7 +1793,6 @@ lookup_symbol_from_sysv_hash_tab(const environment*		env,
 	  sym_visibility =
 	    stv_to_elf_symbol_visibility(GELF_ST_VISIBILITY(symbol.st_other));
 	  sym_size = symbol.st_size;
-	  sym_value = symbol.st_value;
 	  elf_symbol::version ver;
 	  if (get_version_for_symbol(elf_handle, symbol_index,
 				     /*get_def_version=*/true, ver))
@@ -1803,7 +1801,6 @@ lookup_symbol_from_sysv_hash_tab(const environment*		env,
 	    elf_symbol::create(env,
 			       symbol_index,
 			       sym_size,
-			       sym_value,
 			       sym_name_str,
 			       sym_type,
 			       sym_binding,
@@ -2088,7 +2085,6 @@ lookup_symbol_from_gnu_hash_tab(const environment*		env,
 	  elf_symbol_sptr symbol_found =
 	    elf_symbol::create(env, i,
 			       symbol.st_size,
-			       symbol.st_value,
 			       sym_name_str,
 			       sym_type, sym_binding,
 			       symbol.st_shndx != SHN_UNDEF,
@@ -2247,7 +2243,6 @@ lookup_symbol_from_symtab(const environment*		env,
 	    ABG_ASSERT(!ver.str().empty());
 	  elf_symbol_sptr symbol_found =
 	    elf_symbol::create(env, i, sym->st_size,
-			       sym->st_value,
 			       name_str, sym_type,
 			       sym_binding, sym_is_defined,
 			       sym_is_common, ver, sym_visibility,
@@ -6487,8 +6482,7 @@ public:
 
     elf_symbol_sptr sym =
       elf_symbol::create(env(), symbol_index, native_sym.st_size,
-			 native_sym.st_value, name_str,
-			 stt_to_elf_symbol_type
+			 name_str, stt_to_elf_symbol_type
 			 (GELF_ST_TYPE(native_sym.st_info)),
 			 stb_to_elf_symbol_binding
 			 (GELF_ST_BIND(native_sym.st_info)),
@@ -16263,7 +16257,6 @@ create_default_var_sym(const string& sym_name, const environment *env)
     elf_symbol::create(env,
 		       /*symbol index=*/ 0,
 		       /*symbol size=*/ 0,
-		       /*symbol value=*/ 0,
 		       sym_name,
 		       /*symbol type=*/ elf_symbol::OBJECT_TYPE,
 		       /*symbol binding=*/ elf_symbol::GLOBAL_BINDING,
@@ -16704,7 +16697,6 @@ create_default_fn_sym(const string& sym_name, const environment *env)
     elf_symbol::create(env,
 		       /*symbol index=*/ 0,
 		       /*symbol size=*/ 0,
-		       /*symbol value=*/ 0,
 		       sym_name,
 		       /*symbol type=*/ elf_symbol::FUNC_TYPE,
 		       /*symbol binding=*/ elf_symbol::GLOBAL_BINDING,
