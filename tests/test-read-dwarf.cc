@@ -237,12 +237,14 @@ InOutSpec in_out_specs[] =
     "data/test-read-dwarf/PR24378-fn-is-not-scope.abi",
     "output/test-read-dwarf/PR24378-fn-is-not-scope.abi",
   },
+#if defined(HAVE_R_AARCH64_ABS64_MACRO) && defined(HAVE_R_AARCH64_PREL32_MACRO)
   {
     "data/test-read-dwarf/PR25007-sdhci.ko",
     "",
     "data/test-read-dwarf/PR25007-sdhci.ko.abi",
     "output/test-read-dwarf/PR25007-sdhci.ko.abi",
   },
+#endif
   // This should be the last entry.
   {NULL, NULL, NULL, NULL}
 };
