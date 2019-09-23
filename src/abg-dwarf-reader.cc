@@ -7676,8 +7676,8 @@ public:
     // what format the ksymtab is in depending on what types of relocs it
     // contains.
 
-    int type;
-    Elf_Data *section_data = elf_rawdata(section, 0);
+    uint64_t type;
+    Elf_Data *section_data = elf_getdata(section, 0);
     if (is_relasec)
       {
 	GElf_Rela rela;
@@ -7977,7 +7977,7 @@ public:
     size_t reloc_count =
       reloc_section_shdr->sh_size / reloc_section_shdr->sh_entsize;
 
-    Elf_Data *reloc_section_data = elf_rawdata(reloc_section, 0);
+    Elf_Data *reloc_section_data = elf_getdata(reloc_section, 0);
 
     bool is_relasec = (reloc_section_shdr->sh_type == SHT_RELA);
     elf_symbol_sptr symbol;
