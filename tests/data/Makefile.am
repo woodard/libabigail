@@ -404,6 +404,8 @@ test-read-dwarf/PR24378-fn-is-not-scope.abi \
 test-read-dwarf/PR24378-fn-is-not-scope.o \
 test-read-dwarf/PR25007-sdhci.ko \
 test-read-dwarf/PR25007-sdhci.ko.abi \
+test-read-dwarf/PR25042-libgdbm-clang-dwarf5.so.6.0.0 \
+test-read-dwarf/PR25042-libgdbm-clang-dwarf5.so.6.0.0.abi \
 \
 test-annotate/test0.abi			\
 test-annotate/test1.abi			\

@@ -402,6 +402,9 @@ die_attribute_has_form(const Dwarf_Die* die,
 		       unsigned int	form);
 
 static bool
+form_is_DW_FORM_strx(unsigned form);
+
+static bool
 die_attribute_is_signed(const Dwarf_Die* die, unsigned attr_name);
 
 static bool
@@ -9473,6 +9476,34 @@ die_attribute_has_form(const Dwarf_Die	*die,
   return dwarf_hasform(&attr, attr_form);
 }
 
+/// Test if a given DWARF form is DW_FORM_strx{1,4}.
+///
+/// Unfortunaly, the DW_FORM_strx{1,4} are enumerators of an untagged
+/// enum in dwarf.h so we have to use an unsigned int for the form,
+/// grrr.
+///
+/// @param form the form to consider.
+///
+/// @return true iff @p form is DW_FORM_strx{1,4}.
+static bool
+form_is_DW_FORM_strx(unsigned form)
+{
+  if (form)
+    {
+#if defined HAVE_DW_FORM_strx1		\
+  && defined HAVE_DW_FORM_strx2	\
+  && defined HAVE_DW_FORM_strx3	\
+  && defined HAVE_DW_FORM_strx4
+      if (form == DW_FORM_strx1
+	  || form == DW_FORM_strx2
+	  || form == DW_FORM_strx3
+	  ||form == DW_FORM_strx4)
+	return true;
+#endif
+    }
+  return false;
+}
+
 /// Test if a given DIE attribute is signed.
 ///
 /// @param die the DIE to consider.
@@ -10604,16 +10635,20 @@ compare_dies_string_attribute_value(const Dwarf_Die *l, const Dwarf_Die *r,
 
   ABG_ASSERT(l_attr.form == DW_FORM_strp
 	     || l_attr.form == DW_FORM_string
-	     || l_attr.form == DW_FORM_GNU_strp_alt);
+	     || l_attr.form == DW_FORM_GNU_strp_alt
+	     || form_is_DW_FORM_strx(l_attr.form));
 
   ABG_ASSERT(r_attr.form == DW_FORM_strp
 	     || r_attr.form == DW_FORM_string
-	     || r_attr.form == DW_FORM_GNU_strp_alt);
+	     || r_attr.form == DW_FORM_GNU_strp_alt
+	     || form_is_DW_FORM_strx(r_attr.form));
 
   if ((l_attr.form == DW_FORM_strp
        && r_attr.form == DW_FORM_strp)
       || (l_attr.form == DW_FORM_GNU_strp_alt
-	  && r_attr.form == DW_FORM_GNU_strp_alt))
+	  && r_attr.form == DW_FORM_GNU_strp_alt)
+      || (form_is_DW_FORM_strx(l_attr.form)
+	  && form_is_DW_FORM_strx(r_attr.form)))
     {
       // So these string attributes are actually pointers into a
       // string table.  The string table is most likely de-duplicated

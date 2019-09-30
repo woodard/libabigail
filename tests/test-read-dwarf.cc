@@ -245,6 +245,14 @@ InOutSpec in_out_specs[] =
     "output/test-read-dwarf/PR25007-sdhci.ko.abi",
   },
 #endif
+#if defined HAVE_DW_FORM_strx
+  {
+    "data/test-read-dwarf/PR25042-libgdbm-clang-dwarf5.so.6.0.0",
+    "",
+    "data/test-read-dwarf/PR25042-libgdbm-clang-dwarf5.so.6.0.0.abi",
+    "output/test-read-dwarf/PR25042-libgdbm-clang-dwarf5.so.6.0.0.abi",
+  },
+#endif
   // This should be the last entry.
   {NULL, NULL, NULL, NULL}
 };

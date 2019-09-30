@@ -781,6 +781,64 @@ if test x$HAS_DW_LANG_Rust = xyes; then
 	    [Define to 1 if dwarf.h has the DW_LANG_Rust enumerator])
 fi
 
+HAS_DW_FORM_strx1=no
+HAS_DW_FORM_strx2=no
+HAS_DW_FORM_strx3=no
+HAS_DW_FORM_strx4=no
+
+AC_CHECK_DECL([DW_FORM_strx1],
+	      [HAS_DW_FORM_strx1=yes],
+	      [HAS_DW_FORM_strx1=no],
+	      [[#include <dwarf.h>]])
+
+if test x$HAS_DW_FORM_strx1 = xyes; then
+   AC_DEFINE([HAVE_DW_FORM_strx1],
+   	     1,
+	     [Define to 1 if dwarf.h has the DW_FORM_strx1 enumerator])
+fi
+
+AC_CHECK_DECL([DW_FORM_strx2],
+	      [HAS_DW_FORM_strx2=yes],
+	      [HAS_DW_FORM_strx2=no],
+	      [[#include <dwarf.h>]])
+
+if test x$HAS_DW_FORM_strx2 = xyes; then
+   AC_DEFINE([HAVE_DW_FORM_strx2],
+   	     1,
+	     [Define to 1 if dwarf.h has the DW_FORM_strx2 enumerator])
+fi
+
+AC_CHECK_DECL([DW_FORM_strx3],
+	      [HAS_DW_FORM_strx3=yes],
+	      [HAS_DW_FORM_strx3=no],
+	      [[#include <dwarf.h>]])
+
+if test x$HAS_DW_FORM_strx3 = xyes; then
+   AC_DEFINE([HAVE_DW_FORM_strx3],
+   	     1,
+	     [Define to 1 if dwarf.h has the DW_FORM_strx3 enumerator])
+fi
+
+AC_CHECK_DECL([DW_FORM_strx4],
+	      [HAS_DW_FORM_strx4=yes],
+	      [HAS_DW_FORM_strx4=no],
+	      [[#include <dwarf.h>]])
+
+if test x$HAS_DW_FORM_strx4 = xyes; then
+   AC_DEFINE([HAVE_DW_FORM_strx4],
+   	     1,
+	     [Define to 1 if dwarf.h has the DW_FORM_strx4 enumerator])
+fi
+
+if test x$HAS_DW_FORM_strx1 -a \
+   	x$HAS_DW_FORM_strx2 -a \
+   	x$HAS_DW_FORM_strx3 -a \
+   	x$HAS_DW_FORM_strx4; then
+   AC_DEFINE([HAVE_DW_FORM_strx],
+   	     1,
+	     [Define to 1 if dwarf.h has the DW_FORM_strx enumerators])
+fi
+
 dnl Set large files support
 AC_SYS_LARGEFILE
 
