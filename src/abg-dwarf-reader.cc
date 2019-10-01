@@ -10601,8 +10601,8 @@ die_is_declared_inline(Dwarf_Die* die)
   return inline_value == DW_INL_declared_inlined;
 }
 
-/// This function is a fast routine (optmization) to compare the values of
-/// two string attributes of two DIEs.
+/// This function is a fast routine (optimization) to compare the
+/// values of two string attributes of two DIEs.
 ///
 /// @param l the first DIE to consider.
 ///
