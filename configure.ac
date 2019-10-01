@@ -830,10 +830,10 @@ if test x$HAS_DW_FORM_strx4 = xyes; then
 	     [Define to 1 if dwarf.h has the DW_FORM_strx4 enumerator])
 fi
 
-if test x$HAS_DW_FORM_strx1 -a \
-   	x$HAS_DW_FORM_strx2 -a \
-   	x$HAS_DW_FORM_strx3 -a \
-   	x$HAS_DW_FORM_strx4; then
+if test x$HAS_DW_FORM_strx1 = xyes -a \
+	x$HAS_DW_FORM_strx2 = xyes -a \
+	x$HAS_DW_FORM_strx3 = xyes -a \
+	x$HAS_DW_FORM_strx4 = xyes ; then
    AC_DEFINE([HAVE_DW_FORM_strx],
    	     1,
 	     [Define to 1 if dwarf.h has the DW_FORM_strx enumerators])
