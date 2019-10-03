@@ -330,6 +330,9 @@ test-diff-dwarf/test46-readme.txt \
 test-diff-dwarf/test46-rust-libone.so \
 test-diff-dwarf/test46-rust-libtwo.so \
 test-diff-dwarf/test46-rust-report-0.txt \
+test-diff-dwarf/PR25058-liblttng-ctl-report-1.txt \
+test-diff-dwarf/PR25058-liblttng-ctl.so \
+test-diff-dwarf/PR25058-liblttng-ctl2.10.so \
 \
 test-read-dwarf/test0			\
 test-read-dwarf/test0.abi			\

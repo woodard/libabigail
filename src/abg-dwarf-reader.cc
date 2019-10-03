@@ -8565,6 +8565,27 @@ public:
     return addr;
   }
 
+  /// Get the first address in the set of addresses referred to by the
+  /// DW_AT_ranges attribute of a given DIE.
+  ///
+  /// @param die the DIE we are considering.
+  ///
+  /// @param address output parameter.  This is set to the first
+  /// address found in the sequence pointed to by the DW_AT_ranges
+  /// attribute found on the DIE @p die, iff the function returns
+  /// true.  Otherwise, no value is set into this output parameter.
+  ///
+  /// @return true iff the DIE @p die does have a DW_AT_ranges
+  /// attribute and an address was found in its sequence value.
+  bool
+  get_first_address_from_DW_AT_ranges(Dwarf_Die* die, Dwarf_Addr& address) const
+  {
+    Dwarf_Addr base;
+    Dwarf_Addr end_addr;
+    if (dwarf_ranges(die, /*offset=*/0, &base, &address, &end_addr))
+      return true;
+    return false;
+  }
 
   /// Get the address of the function.
   ///
@@ -8580,15 +8601,20 @@ public:
   ///
   /// @return true if the function address was found.
   bool
-  get_function_address(Dwarf_Die* function_die,
-		       Dwarf_Addr& address) const
+  get_function_address(Dwarf_Die* function_die, Dwarf_Addr& address) const
   {
-    Dwarf_Addr low_pc = 0;
-    if (!die_address_attribute(function_die, DW_AT_low_pc, low_pc))
-      return false;
+    Dwarf_Addr fn_address = 0;
+    if (!die_address_attribute(function_die, DW_AT_low_pc, fn_address))
+      // So no DW_AT_low_pc was found.  Let's see if the function DIE
+      // has got a DW_AT_ranges attribute instead.  If it does, the
+      // first address of the set of addresses represented by the
+      // value of that DW_AT_ranges represents the function (symbol)
+      // address we are looking for.
+      if (!get_first_address_from_DW_AT_ranges(function_die, fn_address))
+	return false;
 
-    low_pc = maybe_adjust_fn_sym_address(low_pc);
-    address = low_pc;
+    fn_address = maybe_adjust_fn_sym_address(fn_address);
+    address = fn_address;
     return true;
   }
 

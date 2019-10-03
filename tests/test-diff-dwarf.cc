@@ -352,6 +352,12 @@ InOutSpec in_out_specs[] =
     "output/test-diff-dwarf/test46-rust-report-0.txt"
   },
 #endif
+  {
+    "data/test-diff-dwarf/PR25058-liblttng-ctl2.10.so",
+    "data/test-diff-dwarf/PR25058-liblttng-ctl.so",
+    "data/test-diff-dwarf/PR25058-liblttng-ctl-report-1.txt",
+    "output/test-diff-dwarf/PR25058-liblttng-ctl-report-1.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL}
 };
