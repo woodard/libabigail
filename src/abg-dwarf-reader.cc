@@ -8565,8 +8565,8 @@ public:
     return addr;
   }
 
-  /// Get the first address in the set of addresses referred to by the
-  /// DW_AT_ranges attribute of a given DIE.
+  /// Get the first exported function address in the set of addresses
+  /// referred to by the DW_AT_ranges attribute of a given DIE.
   ///
   /// @param die the DIE we are considering.
   ///
@@ -8576,14 +8576,29 @@ public:
   /// true.  Otherwise, no value is set into this output parameter.
   ///
   /// @return true iff the DIE @p die does have a DW_AT_ranges
-  /// attribute and an address was found in its sequence value.
+  /// attribute and an address of an exported function was found in
+  /// its sequence value.
   bool
-  get_first_address_from_DW_AT_ranges(Dwarf_Die* die, Dwarf_Addr& address) const
+  get_first_exported_fn_address_from_DW_AT_ranges(Dwarf_Die* die,
+						  Dwarf_Addr& address) const
   {
     Dwarf_Addr base;
     Dwarf_Addr end_addr;
-    if (dwarf_ranges(die, /*offset=*/0, &base, &address, &end_addr))
-      return true;
+    ptrdiff_t offset = 0;
+
+    do
+      {
+	Dwarf_Addr addr, fn_addr;
+	if ((offset = dwarf_ranges(die, offset, &base, &addr, &end_addr)) >= 0)
+	  {
+	    fn_addr = maybe_adjust_fn_sym_address(addr);
+	    if (function_symbol_is_exported(fn_addr))
+	      {
+		address = fn_addr;
+		return true;
+	      }
+	  }
+      } while (offset > 0);
     return false;
   }
 
@@ -8603,18 +8618,17 @@ public:
   bool
   get_function_address(Dwarf_Die* function_die, Dwarf_Addr& address) const
   {
-    Dwarf_Addr fn_address = 0;
-    if (!die_address_attribute(function_die, DW_AT_low_pc, fn_address))
+    if (!die_address_attribute(function_die, DW_AT_low_pc, address))
       // So no DW_AT_low_pc was found.  Let's see if the function DIE
       // has got a DW_AT_ranges attribute instead.  If it does, the
       // first address of the set of addresses represented by the
       // value of that DW_AT_ranges represents the function (symbol)
       // address we are looking for.
-      if (!get_first_address_from_DW_AT_ranges(function_die, fn_address))
+      if (!get_first_exported_fn_address_from_DW_AT_ranges(function_die,
+							   address))
 	return false;
 
-    fn_address = maybe_adjust_fn_sym_address(fn_address);
-    address = fn_address;
+    address = maybe_adjust_fn_sym_address(address);
     return true;
   }
 
