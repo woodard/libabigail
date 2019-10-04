@@ -18255,9 +18255,10 @@ read_corpus_from_elf(read_context& ctxt, status& status)
       status |= STATUS_ALT_DEBUG_INFO_NOT_FOUND;
   }
 
+  ctxt.load_elf_properties();  // DT_SONAME, DT_NEEDED, architecture
+
   if (!get_ignore_symbol_table(ctxt))
     {
-      ctxt.load_elf_properties();
       // Read the symbols for publicly defined decls
       if (!ctxt.load_symbol_maps())
 	status |= STATUS_NO_SYMBOLS_FOUND;
