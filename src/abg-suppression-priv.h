@@ -272,6 +272,8 @@ struct function_suppression::priv
   string				symbol_name_;
   string				symbol_name_regex_str_;
   mutable sptr_utils::regex_t_sptr	symbol_name_regex_;
+  string				symbol_name_not_regex_str_;
+  mutable sptr_utils::regex_t_sptr	symbol_name_not_regex_;
   string				symbol_version_;
   string				symbol_version_regex_str_;
   mutable sptr_utils::regex_t_sptr	symbol_version_regex_;
@@ -399,6 +401,29 @@ struct function_suppression::priv
 
   /// Getter for a pointer to a regular expression object built from
   /// the regular expression string
+  /// function_suppression::priv::symbol_name_not_regex_str_.
+  ///
+  /// If that string is empty, then an empty regular expression object
+  /// pointer is returned.
+  ///
+  /// @return a pointer to the regular expression object of
+  /// function_suppression::priv::symbol_name_not_regex_str_.
+  const sptr_utils::regex_t_sptr
+  get_symbol_name_not_regex() const
+  {
+    if (!symbol_name_not_regex_ && !symbol_name_not_regex_str_.empty())
+      {
+	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
+	if (regcomp(r.get(),
+		    symbol_name_not_regex_str_.c_str(),
+		    REG_EXTENDED) == 0)
+	  symbol_name_not_regex_ = r;
+      }
+    return symbol_name_not_regex_;
+  }
+
+  /// Getter for a pointer to a regular expression object built from
+  /// the regular expression string
   /// function_suppression::priv::symbol_version_regex_str_.
   ///
   /// If that string is empty, then an empty regular expression object
@@ -474,10 +499,12 @@ function_is_suppressed(const ReadContextType&	ctxt,
       {
 	if (require_drop_property && !(*i)->get_drops_artifact_from_ir())
 	  continue;
-	if (ctxt.suppression_matches_function_name(*suppr, fn_name))
+	if (!fn_name.empty()
+	    && ctxt.suppression_matches_function_name(*suppr, fn_name))
 	  return true;
-	if (ctxt.suppression_matches_function_sym_name(*suppr,
-						       fn_linkage_name))
+	if (!fn_linkage_name.empty()
+	    && ctxt.suppression_matches_function_sym_name(*suppr,
+							  fn_linkage_name))
 	  return true;
       }
   return false;
@@ -500,6 +527,8 @@ struct variable_suppression::priv
   string				symbol_name_;
   string				symbol_name_regex_str_;
   mutable sptr_utils::regex_t_sptr	symbol_name_regex_;
+  string				symbol_name_not_regex_str_;
+  mutable sptr_utils::regex_t_sptr	symbol_name_not_regex_;
   string				symbol_version_;
   string				symbol_version_regex_str_;
   mutable sptr_utils::regex_t_sptr	symbol_version_regex_;
@@ -597,6 +626,28 @@ struct variable_suppression::priv
 
   /// Getter for a pointer to a regular expression object built from
   /// the regular expression string
+  /// variable_suppression::priv::symbol_name_not_regex_str_.
+  ///
+  /// If that string is empty, then an empty regular expression object
+  /// pointer is returned.
+  ///
+  /// @return a pointer to the regular expression object of
+  /// variable_suppression::priv::symbol_name_not_regex_str_.
+  const sptr_utils::regex_t_sptr
+  get_symbol_name_not_regex() const
+  {
+    if (!symbol_name_not_regex_ && !symbol_name_not_regex_str_.empty())
+      {
+	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
+	if (regcomp(r.get(), symbol_name_not_regex_str_.c_str(),
+		    REG_EXTENDED == 0) == 0)
+	  symbol_name_not_regex_ = r;
+      }
+    return symbol_name_not_regex_;
+  }
+
+  /// Getter for a pointer to a regular expression object built from
+  /// the regular expression string
   /// variable_suppression::priv::symbol_version_regex_str_.
   ///
   /// If that string is empty, then an empty regular expression object
@@ -657,10 +708,12 @@ variable_is_suppressed(const ReadContextType&	ctxt,
       {
 	if (require_drop_property && !(*i)->get_drops_artifact_from_ir())
 	  continue;
-	if (ctxt.suppression_matches_variable_name(*suppr, var_name))
+	if (!var_name.empty()
+	    && ctxt.suppression_matches_variable_name(*suppr, var_name))
 	  return true;
-	if (ctxt.suppression_matches_variable_sym_name(*suppr,
-						       var_linkage_name))
+	if (!var_linkage_name.empty()
+	    && ctxt.suppression_matches_variable_sym_name(*suppr,
+							  var_linkage_name))
 	  return true;
       }
   return false;
@@ -912,6 +965,33 @@ type_is_suppressed(const ReadContextType&	ctxt,
       }
 
   type_is_private = false;
+  return false;
+}
+
+/// Test if a given ELF symbol is suppressed by a suppression
+/// specification.
+///
+/// @param ctxt the read context to use.
+///
+/// @param sym_name the name of the symbol to consider.
+///
+/// @param sym_type the type of the symbol to consider.
+///
+/// @return true iff the elf symbol denoted by @p sym_name and @p
+/// sym_type is suppressed.
+template<typename ReadContextType>
+bool
+is_elf_symbol_suppressed(const ReadContextType& ctxt,
+			 const string& sym_name,
+			 elf_symbol::type sym_type)
+{
+  if (elf_symbol_is_function(sym_type))
+    return suppr::function_is_suppressed(ctxt, /*fn_name=*/"",
+					 /*symbol_name=*/sym_name);
+  else if (elf_symbol_is_variable(sym_type))
+    return suppr::variable_is_suppressed(ctxt, /*var_name=*/"",
+					 /*symbol_name=*/sym_name);
+
   return false;
 }
 

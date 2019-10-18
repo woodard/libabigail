@@ -993,6 +993,12 @@ bool
 string_to_elf_symbol_visibility(const string&, elf_symbol::visibility&);
 
 bool
+elf_symbol_is_function(elf_symbol::type);
+
+bool
+elf_symbol_is_variable(elf_symbol::type);
+
+bool
 operator==(const elf_symbol_sptr& lhs, const elf_symbol_sptr& rhs);
 
 bool

@@ -2314,6 +2314,26 @@ string_to_elf_symbol_visibility(const string& s, elf_symbol::visibility& v)
   return true;
 }
 
+/// Test if the type of an ELF symbol denotes a function symbol.
+///
+/// @param t the type of the ELF symbol.
+///
+/// @return true iff elf symbol type @p t denotes a function symbol
+/// type.
+bool
+elf_symbol_is_function(elf_symbol::type t)
+{return t == elf_symbol::FUNC_TYPE;}
+
+/// Test if the type of an ELF symbol denotes a function symbol.
+///
+/// @param t the type of the ELF symbol.
+///
+/// @return true iff elf symbol type @p t denotes a function symbol
+/// type.
+bool
+elf_symbol_is_variable(elf_symbol::type t)
+{return t == elf_symbol::OBJECT_TYPE;}
+
 // <elf_symbol::version stuff>
 
 struct elf_symbol::version::priv

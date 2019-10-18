@@ -601,7 +601,8 @@ one of the following properties must be provided:
   ``label``, ``file_name_regexp``, ``file_name_not_regexp``,
   ``soname_regexp``, ``soname_not_regexp``, ``name``, ``name_regexp``,
   ``name_not_regexp``, ``parameter``, ``return_type_name``,
-   ``symbol_name``, ``symbol_name_regexp``, ``symbol_version``,
+  ``symbol_name``, ``symbol_name_regexp``,
+  ``symbol_name_not_regexp``,``symbol_version``,
   ``symbol_version_regexp``.
 
 If none of the following properties are provided, then the
@@ -830,6 +831,15 @@ The potential properties of this sections are:
  the aliases of the function for the directive to actually suppress
  the diff reports for said function.
 
+* ``symbol_name_not_regexp``
+
+ Usage:
+
+   ``symbol_name_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+ Suppresses change reports involving functions whose symbol name does
+ not match the regular expression specified as value of this property.
+
 * ``symbol_version``
 
  Usage:
@@ -879,8 +889,8 @@ one of the following properties must be provided:
 
   ``label``, ``file_name_regexp``, ``file_name_not_regexp``,
   ``soname_regexp``, ``soname_not_regexp``, ``name``, ``name_regexp``,
-  ``symbol_name``, ``symbol_name_regexp``, ``symbol_version``,
-  ``symbol_version_regexp``.
+  ``symbol_name``, ``symbol_name_regexp``, ``symbol_name_not_regexp``,
+  ``symbol_version``, ``symbol_version_regexp``.
 
 If none of the following properties are provided, then the
 ``[suppres_variable]`` directive is simply ignored.
@@ -987,6 +997,15 @@ The potential properties of this sections are:
  Suppresses change reports involving variables whose symbol name
  matches the regular expression specified as value of this property.
 
+
+* ``symbol_name_not_regexp``
+
+ Usage:
+
+   ``symbol_name_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+ Suppresses change reports involving variables whose symbol name does
+ not match the regular expression specified as value of this property.
 
 * ``symbol_version``
 

@@ -1778,6 +1778,46 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test43-suppr-direct-fn-subtype-report-1.txt",
     "output/test-diff-suppr/test43-suppr-direct-fn-subtype-report-1.txt"
   },
+  {
+    "data/test-diff-suppr/test44-suppr-sym-name-not-regexp-v0.o",
+    "data/test-diff-suppr/test44-suppr-sym-name-not-regexp-v1.o",
+    "",
+    "",
+    "",
+    "--no-default-suppression",
+    "data/test-diff-suppr/test44-suppr-sym-name-not-regexp-report-1.txt",
+    "output/test-diff-suppr/test44-suppr-sym-name-not-regexp-report-1.txt"
+  },
+  {
+    "data/test-diff-suppr/test44-suppr-sym-name-not-regexp-v0.o",
+    "data/test-diff-suppr/test44-suppr-sym-name-not-regexp-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/test44-suppr-sym-name-not-regexp.suppr.txt",
+    "--no-default-suppression",
+    "data/test-diff-suppr/test44-suppr-sym-name-not-regexp-report-2.txt",
+    "output/test-diff-suppr/test44-suppr-sym-name-not-regexp-report-2.txt"
+  },
+  {
+    "data/test-diff-suppr/test44-suppr-sym-name-not-regexp-v0.o.abi",
+    "data/test-diff-suppr/test44-suppr-sym-name-not-regexp-v1.o.abi",
+    "",
+    "",
+    "",
+    "--no-default-suppression",
+    "data/test-diff-suppr/test44-suppr-sym-name-not-regexp-report-1.txt",
+    "output/test-diff-suppr/test44-suppr-sym-name-not-regexp-report-1.txt"
+  },
+  {
+    "data/test-diff-suppr/test44-suppr-sym-name-not-regexp-v0.o.abi",
+    "data/test-diff-suppr/test44-suppr-sym-name-not-regexp-v1.o.abi",
+    "",
+    "",
+    "data/test-diff-suppr/test44-suppr-sym-name-not-regexp.suppr.txt",
+    "--no-default-suppression",
+    "data/test-diff-suppr/test44-suppr-sym-name-not-regexp-report-2.txt",
+    "output/test-diff-suppr/test44-suppr-sym-name-not-regexp-report-2.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}
 };

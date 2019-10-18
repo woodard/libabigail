@@ -7385,6 +7385,10 @@ public:
 	    ABG_ASSERT(symbol);
 	    ABG_ASSERT(symbol->is_function());
 
+	    // If the symbol was suppressed by a suppression
+	    // specification then drop it on the floor.
+	    if (is_elf_symbol_suppressed(symbol))
+	      continue;
 
 	    if (load_fun_map && symbol->is_public())
 	      {
@@ -7850,6 +7854,21 @@ public:
     return nb_ksymtab_gpl_entries_;
   }
 
+  /// Test if a given ELF symbol was suppressed by a suppression
+  /// specification.
+  ///
+  /// @param symbol the ELF symbol to consider.
+  ///
+  /// @return true iff @p symbol is suppressed.
+  bool
+  is_elf_symbol_suppressed(const elf_symbol_sptr& symbol) const
+  {
+    return (symbol
+	    && suppr::is_elf_symbol_suppressed(*this,
+					       symbol->get_name(),
+					       symbol->get_type()));
+  }
+
   /// Populate the symbol map by reading exported symbols from the
   /// ksymtab directly.
   ///
@@ -7938,6 +7957,11 @@ public:
 	      // am not sure what those are.
 	      continue;
 	  }
+
+	// If the symbol was suppressed by a suppression
+	// specification then drop it on the floor.
+	if (is_elf_symbol_suppressed(symbol))
+	  continue;
 
 	address_set_sptr set;
 	if (symbol->is_function())
@@ -8030,6 +8054,11 @@ public:
 	       }
 	    continue;
 	  }
+
+	// If the symbol was suppressed by a suppression
+	// specification then drop it on the floor.
+	if (is_elf_symbol_suppressed(symbol))
+	  continue;
 
 	// If we are looking at an ET_REL (relocatable) binary, then
 	// the symbol value of native_symbol is relative to the
@@ -16477,13 +16506,14 @@ function_is_suppressed(const read_context& ctxt,
 
   string fname = die_string_attribute(function_die, DW_AT_name);
   string flinkage_name = die_linkage_name(function_die);
+  if (flinkage_name.empty() && ctxt.die_is_in_c(function_die))
+    flinkage_name = fname;
   string qualified_name = build_qualified_name(scope, fname);
 
   // A non-member function which symbol is not exported is suppressed.
   if (!is_class_type(scope) && !die_is_declaration_only(function_die))
     {
       Dwarf_Addr fn_addr;
-      elf_symbol_sptr fn_sym;
       if (!ctxt.get_function_address(function_die, fn_addr))
 	return true;
       if (!get_ignore_symbol_table(ctxt))
@@ -16583,6 +16613,8 @@ variable_is_suppressed(const read_context& ctxt,
 
   string name = die_string_attribute(variable_die, DW_AT_name);
   string linkage_name = die_linkage_name(variable_die);
+  if (linkage_name.empty() && ctxt.die_is_in_c(variable_die))
+    linkage_name = name;
   string qualified_name = build_qualified_name(scope, name);
 
   // If a non member variable that is a declaration (has no exported
@@ -16597,7 +16629,6 @@ variable_is_suppressed(const read_context& ctxt,
   if (!is_class_type(scope) && !is_required_decl_spec)
     {
       Dwarf_Addr var_addr = 0;
-      elf_symbol_sptr var_sym;
       if (!ctxt.get_variable_address(variable_die, var_addr))
 	return true;
       if (!get_ignore_symbol_table(ctxt))

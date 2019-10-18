@@ -1093,7 +1093,7 @@ build_namespace_decl(read_context&, const xmlNodePtr, bool);
 // below.
 
 static elf_symbol_sptr
-build_elf_symbol(read_context&, const xmlNodePtr);
+build_elf_symbol(read_context&, const xmlNodePtr, bool);
 
 static elf_symbol_sptr
 build_elf_symbol_from_reference(read_context&, const xmlNodePtr,
@@ -1882,7 +1882,9 @@ read_corpus_from_input(read_context& ctxt)
   bool is_ok = read_symbol_db_from_input(ctxt, fn_sym_db, var_sym_db);
   if (is_ok)
     {
-      ABG_ASSERT(fn_sym_db || var_sym_db);
+      // Note that it's possible that both fn_sym_db and var_sym_db
+      // are nil, due to potential suppression specifications.  That's
+      // fine.
       if (fn_sym_db)
 	{
 	  corp.set_fun_symbol_map(fn_sym_db);
@@ -2592,9 +2594,13 @@ build_namespace_decl(read_context&	ctxt,
 ///
 /// @param node the XML node to read.
 ///
+/// @param drop_if_suppressed if the elf symbol was suppressed by a
+/// suppression specification then do not build it.
+///
 /// @return the @ref elf_symbol built, or nil if it couldn't be built.
 static elf_symbol_sptr
-build_elf_symbol(read_context& ctxt, const xmlNodePtr node)
+build_elf_symbol(read_context& ctxt, const xmlNodePtr node,
+		 bool drop_if_suppressed)
 {
   elf_symbol_sptr nil;
 
@@ -2656,6 +2662,9 @@ build_elf_symbol(read_context& ctxt, const xmlNodePtr node)
   read_elf_symbol_binding(node, visibility);
 
   elf_symbol::version version(version_string, is_default_version);
+
+  if (drop_if_suppressed && suppr::is_elf_symbol_suppressed(ctxt, name, type))
+    return elf_symbol_sptr();
 
   const environment* env = ctxt.get_environment();
   elf_symbol_sptr e = elf_symbol::create(env, /*index=*/0,
@@ -2758,7 +2767,7 @@ build_elf_symbol_db(read_context& ctxt,
   elf_symbol_sptr sym;
   for (xmlNodePtr n = node->children; n; n = n->next)
     {
-      if ((sym = build_elf_symbol(ctxt, n)))
+      if ((sym = build_elf_symbol(ctxt, n, /*drop_if_suppress=*/true)))
 	{
 	  id_sym_map[sym->get_id_string()] = sym;
 	  xml_node_ptr_elf_symbol_map[n] = sym;

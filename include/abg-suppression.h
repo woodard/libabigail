@@ -519,6 +519,12 @@ public:
   set_symbol_name_regex_str(const string&);
 
   const string&
+  get_symbol_name_not_regex_str() const;
+
+  void
+  set_symbol_name_not_regex_str(const string&);
+
+  const string&
   get_symbol_version() const;
 
   void
@@ -706,6 +712,12 @@ public:
 
   void
   set_symbol_name_regex_str(const string&);
+
+  const string&
+  get_symbol_name_not_regex_str() const;
+
+  void
+  set_symbol_name_not_regex_str(const string&);
 
   const string&
   get_symbol_version() const;
