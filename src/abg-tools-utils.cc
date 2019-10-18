@@ -1943,9 +1943,14 @@ gen_suppr_spec_from_kernel_abi_whitelist(const string& abi_whitelist_path,
 
       if (!function_names_regexp.empty())
 	{
+	  // Build a suppression specification which *keeps* functions
+	  // whose ELF symbols match the regular expression contained
+	  // in function_names_regexp.  This will also keep the ELF
+	  // symbols (not designated by any debug info) whose names
+	  // match this regexp.
 	  fn_suppr.reset(new function_suppression);
 	  fn_suppr->set_label(section_name);
-	  fn_suppr->set_name_not_regex_str(function_names_regexp);
+	  fn_suppr->set_symbol_name_not_regex_str(function_names_regexp);
 	  fn_suppr->set_drops_artifact_from_ir(true);
 	  supprs.push_back(fn_suppr);
 	  created_a_suppr = true;
@@ -1953,9 +1958,14 @@ gen_suppr_spec_from_kernel_abi_whitelist(const string& abi_whitelist_path,
 
       if (!variable_names_regexp.empty())
 	{
+	  // Build a suppression specification which *keeps* variables
+	  // whose ELF symbols match the regular expression contained
+	  // in function_names_regexp.  This will also keep the ELF
+	  // symbols (not designated by any debug info) whose names
+	  // match this regexp.
 	  var_suppr.reset(new variable_suppression);
 	  var_suppr->set_label(section_name);
-	  var_suppr->set_name_not_regex_str(variable_names_regexp);
+	  var_suppr->set_symbol_name_not_regex_str(variable_names_regexp);
 	  var_suppr->set_drops_artifact_from_ir(true);
 	  supprs.push_back(var_suppr);
 	  created_a_suppr = true;
