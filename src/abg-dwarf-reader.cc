@@ -7588,67 +7588,86 @@ public:
     return true;
   }
 
+  /// Try reading the first __ksymtab section entry.
+  ///
+  /// We lookup the symbol from the raw section passed as an argument. For
+  /// that, consider endianess and adjust for potential Elf relocations before
+  /// looking up the symbol in the .symtab section.
+  //
+  /// Optionally, support position relative relocations by considering the
+  /// ksymtab entry as 32 bit and applying the relocation relative to the
+  /// section header (i.e. the symbol position as we are reading the first
+  /// symbol).
+  ///
+  /// @return the symbol resulting from the lookup of the symbol address we
+  /// got from reading the first entry of the ksymtab or null if no such entry
+  /// could be found.
+  elf_symbol_sptr
+  try_reading_first_ksymtab_entry(Elf_Scn* section,
+				  bool position_relative_relocations) const
+  {
+    // this function does not support relocatable ksymtab entries (as for
+    // example in kernel modules). Hence assert here on not having any
+    // relocation sections around. We can consider this a TODO that we have to
+    // work around in the rest of the code.
+    ABG_ASSERT(!find_any_ksymtab_reloc_section());
+
+    Elf_Data*	    elf_data = elf_rawdata(section, 0);
+    uint8_t*	    bytes = reinterpret_cast<uint8_t*>(elf_data->d_buf);
+    bool	    is_big_endian = elf_architecture_is_big_endian();
+    elf_symbol_sptr symbol;
+    GElf_Addr	    symbol_address = 0;
+
+    unsigned char symbol_value_size;
+    if (position_relative_relocations)
+      symbol_value_size = sizeof(int32_t);
+    else
+      symbol_value_size = architecture_word_size();
+
+    if (position_relative_relocations)
+      {
+	int32_t offset = 0;
+	ABG_ASSERT(read_int_from_array_of_bytes(bytes, symbol_value_size,
+						is_big_endian, offset));
+	GElf_Shdr section_header;
+	gelf_getshdr(section, &section_header);
+	symbol_address = offset + section_header.sh_addr;
+      }
+    else
+      ABG_ASSERT(read_int_from_array_of_bytes(bytes, symbol_value_size,
+					      is_big_endian, symbol_address));
+
+    symbol_address = maybe_adjust_fn_sym_address(symbol_address);
+    symbol = lookup_elf_symbol_from_address(symbol_address);
+    return symbol;
+  }
+
   /// Try reading the first __ksymtab section entry as if it is in the
-  /// pre-v4_19 format and lookup a symbol from the .symbol section to
-  /// see if that succeeds.  If it does, then we can assume the
-  /// __ksymtab section is in the pre-v4_19 format.
+  /// pre-v4_19 format, that is without position relative relocations.
   ///
   /// @return the symbol resulting from the lookup of the symbol
   /// address we got from reading the first entry of the ksymtab
-  /// section assuming the pre-v4.19 format.  If nil, it means the
+  /// section assuming the pre-v4.19 format. If null, it means the
   /// __ksymtab section is not in the pre-v4.19 format.
   elf_symbol_sptr
   try_reading_first_ksymtab_entry_using_pre_v4_19_format() const
   {
     Elf_Scn *section = find_any_ksymtab_section();
-    Elf_Data *elf_data = elf_rawdata(section, 0);
-    uint8_t *bytes = reinterpret_cast<uint8_t*>(elf_data->d_buf);
-    bool is_big_endian = elf_architecture_is_big_endian();
-    elf_symbol_sptr symbol;
-    unsigned char symbol_value_size = architecture_word_size();
-
-    GElf_Addr symbol_address = 0, adjusted_symbol_address = 0;
-    ABG_ASSERT(read_int_from_array_of_bytes(bytes,
-					    symbol_value_size,
-					    is_big_endian,
-					    symbol_address));
-    adjusted_symbol_address = maybe_adjust_fn_sym_address(symbol_address);
-    symbol = lookup_elf_symbol_from_address(adjusted_symbol_address);
-    return symbol;
+    return try_reading_first_ksymtab_entry(section, false);
   }
 
   /// Try reading the first __ksymtab section entry as if it is in the
-  /// v4_19 format and lookup a symbol from the .symbol section to see
-  /// if that succeeds.  If it does, then we can assume the __ksymtab
-  /// section is in the v4_19 format.
+  /// v4_19 format, that is with position relative relocations.
   ///
   /// @return the symbol resulting from the lookup of the symbol
   /// address we got from reading the first entry of the ksymtab
-  /// section assuming the v4.19 format.  If nil, it means the
+  /// section assuming the v4.19 format. If null, it means the
   /// __ksymtab section is not in the v4.19 format.
   elf_symbol_sptr
   try_reading_first_ksymtab_entry_using_v4_19_format() const
   {
     Elf_Scn *section = find_any_ksymtab_section();
-    Elf_Data *elf_data = elf_rawdata(section, 0);
-    uint8_t *bytes = reinterpret_cast<uint8_t*>(elf_data->d_buf);
-    bool is_big_endian = elf_architecture_is_big_endian();
-    elf_symbol_sptr symbol;
-
-    int32_t offset = 0;
-    const unsigned char symbol_value_size = sizeof(offset);
-    GElf_Addr symbol_address = 0, adjusted_symbol_address = 0;
-    ABG_ASSERT(read_int_from_array_of_bytes(bytes,
-					    symbol_value_size,
-					    is_big_endian,
-					    offset));
-    GElf_Shdr mem;
-    GElf_Shdr *section_header = gelf_getshdr(section, &mem);
-    symbol_address = offset + section_header->sh_addr;
-
-    adjusted_symbol_address = maybe_adjust_fn_sym_address(symbol_address);
-    symbol = lookup_elf_symbol_from_address(adjusted_symbol_address);
-    return symbol;
+    return try_reading_first_ksymtab_entry(section, true);
   }
 
   /// Try to determine the format of the __ksymtab and __ksymtab_gpl
