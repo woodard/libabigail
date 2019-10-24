@@ -10066,7 +10066,7 @@ struct leaf_diff_node_marker_visitor : public diff_node_visitor
 	&& !is_reference_diff(d)
 	&& !is_qualified_type_diff(d)
 	&& !is_array_diff(d)
-	// Similarly a parameter chagne in itself doesn't make sense.
+	// Similarly a parameter change in itself doesn't make sense.
 	// It should have already been reported as part of the change
 	// of the function it belongs to.
 	&& !is_fn_parm_diff(d)
