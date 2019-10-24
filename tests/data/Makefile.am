@@ -1233,6 +1233,13 @@ test-diff-suppr/test44-suppr-sym-name-not-regexp-v1.c \
 test-diff-suppr/test44-suppr-sym-name-not-regexp-v1.o \
 test-diff-suppr/test44-suppr-sym-name-not-regexp-v1.o.abi \
 test-diff-suppr/test44-suppr-sym-name-not-regexp.suppr.txt \
+test-diff-suppr/test45-abi-report-1.txt \
+test-diff-suppr/test45-abi-wl.xml \
+test-diff-suppr/test45-abi.suppr.txt \
+test-diff-suppr/test45-abi.xml \
+test-diff-suppr/test46-PR25128-base.xml \
+test-diff-suppr/test46-PR25128-new.xml \
+test-diff-suppr/test46-PR25128-report-1.txt \
 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1.abi \

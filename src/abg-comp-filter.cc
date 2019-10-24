@@ -823,6 +823,72 @@ static bool
 base_classes_added_or_removed(const diff* diff)
 {return base_classes_added_or_removed(dynamic_cast<const class_diff*>(diff));}
 
+/// Test if two classes that are decl-only (have the decl-only flag
+/// and carry no data members) but are different just by their size.
+///
+/// In some weird DWARF representation, it happens that a decl-only
+/// class (with no data member) actually carries a non-zero size.
+/// That shouldn't happen, but hey, we need to deal with real life.
+/// So we need to detect that case first.
+///
+/// @param first the first class or union to consider.
+///
+/// @param seconf the second class or union to consider.
+///
+/// @return true if the two classes are decl-only and differ in their
+/// size.
+bool
+is_decl_only_class_with_size_change(const class_or_union_sptr& first,
+				    const class_or_union_sptr& second)
+{
+  if (!first || !second)
+    return false;
+
+  class_or_union_sptr f =
+    look_through_decl_only_class(first);
+  class_or_union_sptr s =
+    look_through_decl_only_class(second);
+
+  if (f->get_qualified_name() != s->get_qualified_name())
+    return false;
+
+  if (!f->get_is_declaration_only() || !s->get_is_declaration_only())
+    return false;
+
+  bool f_is_empty = f->get_data_members().empty();
+  bool s_is_empty = s->get_data_members().empty();
+
+  return f_is_empty && s_is_empty;
+}
+
+/// Test if a diff node is for two classes that are decl-only (have
+/// the decl-only flag and carry no data members) but are different
+/// just by their size.
+///
+/// In some weird DWARF representation, it happens that a decl-only
+/// class (with no data member) actually carries a non-zero size.
+/// That shouldn't happen, but hey, we need to deal with real life.
+/// So we need to detect that case first.
+///
+/// @param diff the diff node to consider.
+///
+/// @return true if the two classes are decl-only and differ in their
+/// size.
+bool
+is_decl_only_class_with_size_change(const diff *diff)
+{
+  const class_or_union_diff *d = dynamic_cast<const class_or_union_diff*>(diff);
+  if (!d)
+    return false;
+
+  class_or_union_sptr f =
+    look_through_decl_only_class(d->first_class_or_union());
+  class_or_union_sptr s =
+    look_through_decl_only_class(d->second_class_or_union());
+
+  return is_decl_only_class_with_size_change(f, s);
+}
+
 /// Test if two @ref class_or_union_sptr are different just by the
 /// fact that one is decl-only and the other one is defined.
 ///

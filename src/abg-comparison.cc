@@ -10078,7 +10078,13 @@ struct leaf_diff_node_marker_visitor : public diff_node_visitor
 	// struct/union.
 	&& !is_anonymous_class_or_union_diff(d)
 	// Don't show decl-only-ness changes of classes either.
-	&& !filtering::has_class_decl_only_def_change(d))
+	&& !filtering::has_class_decl_only_def_change(d)
+	// Sometime, we can encounter artifacts of bogus DWARF that
+	// yield a diff node for a decl-only class (and empty class
+	// with the is_declaration flag set) that carries a non-zero
+	// size!  And of course at some point that non-zero size
+	// changes.  We need to be able to detect that.
+	&& !filtering::is_decl_only_class_with_size_change(d))
       {
 	diff_context_sptr ctxt = d->context();
 	const corpus_diff *corpus_diff_node = ctxt->get_corpus_diff().get();

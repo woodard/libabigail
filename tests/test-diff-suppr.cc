@@ -1818,6 +1818,26 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test44-suppr-sym-name-not-regexp-report-2.txt",
     "output/test-diff-suppr/test44-suppr-sym-name-not-regexp-report-2.txt"
   },
+  {
+    "data/test-diff-suppr/test45-abi.xml",
+    "data/test-diff-suppr/test45-abi-wl.xml",
+    "",
+    "",
+    "data/test-diff-suppr/test45-abi.suppr.txt",
+    "--no-default-suppression",
+    "data/test-diff-suppr/test45-abi-report-1.txt",
+    "output/test-diff-suppr/test45-abi-report-1.txt"
+  },
+  {
+    "data/test-diff-suppr/test46-PR25128-base.xml",
+    "data/test-diff-suppr/test46-PR25128-new.xml",
+    "",
+    "",
+    "",
+    "--no-default-suppression --leaf-changes-only",
+    "data/test-diff-suppr/test46-PR25128-report-1.txt",
+    "output/test-diff-suppr/test46-PR25128-report-1.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}
 };
