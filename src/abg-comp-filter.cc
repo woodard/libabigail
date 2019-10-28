@@ -838,6 +838,36 @@ base_classes_added_or_removed(const diff* diff)
 /// @return true if the two classes are decl-only and differ in their
 /// size.
 bool
+is_decl_only_class_with_size_change(const class_or_union& first,
+				    const class_or_union& second)
+{
+  if (first.get_qualified_name() != second.get_qualified_name())
+    return false;
+
+  if (!first.get_is_declaration_only() || !second.get_is_declaration_only())
+    return false;
+
+  bool f_is_empty = first.get_data_members().empty();
+  bool s_is_empty = second.get_data_members().empty();
+
+  return f_is_empty && s_is_empty;
+}
+
+/// Test if two classes that are decl-only (have the decl-only flag
+/// and carry no data members) but are different just by their size.
+///
+/// In some weird DWARF representation, it happens that a decl-only
+/// class (with no data member) actually carries a non-zero size.
+/// That shouldn't happen, but hey, we need to deal with real life.
+/// So we need to detect that case first.
+///
+/// @param first the first class or union to consider.
+///
+/// @param seconf the second class or union to consider.
+///
+/// @return true if the two classes are decl-only and differ in their
+/// size.
+bool
 is_decl_only_class_with_size_change(const class_or_union_sptr& first,
 				    const class_or_union_sptr& second)
 {
@@ -849,16 +879,7 @@ is_decl_only_class_with_size_change(const class_or_union_sptr& first,
   class_or_union_sptr s =
     look_through_decl_only_class(second);
 
-  if (f->get_qualified_name() != s->get_qualified_name())
-    return false;
-
-  if (!f->get_is_declaration_only() || !s->get_is_declaration_only())
-    return false;
-
-  bool f_is_empty = f->get_data_members().empty();
-  bool s_is_empty = s->get_data_members().empty();
-
-  return f_is_empty && s_is_empty;
+  return is_decl_only_class_with_size_change(*f, *s);
 }
 
 /// Test if a diff node is for two classes that are decl-only (have

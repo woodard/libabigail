@@ -511,6 +511,9 @@ method_type*
 is_method_type(type_or_decl_base*);
 
 class_or_union_sptr
+look_through_decl_only_class(const class_or_union&);
+
+class_or_union_sptr
 look_through_decl_only_class(class_or_union_sptr);
 
 var_decl*

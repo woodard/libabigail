@@ -48,10 +48,6 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
               class std::tr1::__shared_ptr<abigail::ir::type_base, __gnu_cxx::_Lock_policy::_S_atomic> at shared_ptr.h:539:1
 
   [C]'method bool abigail::xml_writer::write_context::type_ptr_cmp::operator()(const abigail::ir::type_base*, const abigail::ir::type_base*) const' at abg-writer.cc:359:1 has some indirect sub-type changes:
-    parameter 1 of type 'const abigail::ir::type_base*' has sub-type changes:
-      in pointed to type 'const abigail::ir::type_base':
-        in unqualified underlying type 'class abigail::ir::type_base':
-          type size changed from 0 to 384 (in bits)
 
 
 

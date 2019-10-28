@@ -54,6 +54,10 @@ bool
 has_virtual_mem_fn_change(const function_decl_diff* diff);
 
 bool
+is_decl_only_class_with_size_change(const class_or_union& first,
+				    const class_or_union& second);
+
+bool
 is_decl_only_class_with_size_change(const class_or_union_sptr& first,
 				    const class_or_union_sptr& second);
 
@@ -63,6 +67,7 @@ is_decl_only_class_with_size_change(const diff *diff);
 bool
 has_class_decl_only_def_change(const class_or_union_sptr& first,
 			       const class_or_union_sptr& second);
+
 bool
 has_class_decl_only_def_change(const diff *diff);
 

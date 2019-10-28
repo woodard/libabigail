@@ -46,6 +46,7 @@ ABG_END_EXPORT_DECLARATIONS
 // </headers defining libabigail's API>
 
 #include "abg-tools-utils.h"
+#include "abg-comp-filter.h"
 #include "abg-ir-priv.h"
 
 namespace
@@ -7844,12 +7845,16 @@ is_method_type(type_or_decl_base* t)
 /// If a class (or union) is a decl-only class, get its definition.
 /// Otherwise, just return the initial class.
 ///
-/// @param klass the class (or union) to consider.
+/// @param the_klass the class (or union) to consider.
 ///
 /// @return either the definition of the class, or the class itself.
 class_or_union_sptr
-look_through_decl_only_class(class_or_union_sptr klass)
+look_through_decl_only_class(const class_or_union& the_class)
 {
+  class_or_union_sptr klass;
+  if (the_class.get_is_declaration_only())
+    klass = the_class.get_definition_of_declaration();
+
   if (!klass)
     return klass;
 
@@ -7860,6 +7865,25 @@ look_through_decl_only_class(class_or_union_sptr klass)
 
   ABG_ASSERT(klass);
   return klass;
+}
+
+/// If a class (or union) is a decl-only class, get its definition.
+/// Otherwise, just return the initial class.
+///
+/// @param klass the class (or union) to consider.
+///
+/// @return either the definition of the class, or the class itself.
+class_or_union_sptr
+look_through_decl_only_class(class_or_union_sptr klass)
+{
+  if (!klass)
+    return klass;
+
+  class_or_union_sptr result = look_through_decl_only_class(*klass);
+  if (!result)
+    result = klass;
+
+  return result;
 }
 
 /// Tests if a declaration is a variable declaration.
@@ -18637,6 +18661,17 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 
       if (!def1 || !def2)
 	{
+	  if (!l.get_is_anonymous()
+	      && !r.get_is_anonymous()
+	      && l_is_decl_only && r_is_decl_only
+	      && comparison::filtering::is_decl_only_class_with_size_change(l, r))
+	    // The two decl-only classes differ from their size.  A
+	    // true decl-only class should not have a size property to
+	    // begin with.  This comes from a DWARF oddity and can
+	    // results in a false positive, so let's not consider that
+	    // change.
+	    return true;
+
 	  if (l.get_environment()->decl_only_class_equals_definition()
 	      && !l.get_is_anonymous()
 	      && !r.get_is_anonymous())
