@@ -6167,6 +6167,37 @@ public:
     return ksymtab_section_;
   }
 
+  /// Return the .rel{a,} section corresponding to a given section.
+  ///
+  /// @param target_section the section to search the relocation section for
+  ///
+  /// @return the .rel{a,} section if found, null otherwise.
+  Elf_Scn*
+  find_relocation_section(Elf_Scn* target_section) const
+  {
+    if (target_section)
+      {
+	// the relo section we are searching for has this index as sh_info
+	size_t target_index = elf_ndxscn(target_section);
+
+	// now iterate over all the sections, look for relocation sections and
+	// find the one that points to the section we are searching for
+	Elf_Scn*  section = 0;
+	GElf_Shdr header_mem, *header;
+	while ((section = elf_nextscn(elf_handle(), section)) != 0)
+	  {
+	    header = gelf_getshdr(section, &header_mem);
+	    if (header == NULL
+		|| (header->sh_type != SHT_RELA && header->sh_type != SHT_REL))
+	      continue;
+
+	    if (header->sh_info == target_index)
+	      return section;
+	  }
+      }
+    return NULL;
+  }
+
   /// Return the .rel{a,}__ksymtab section of a linux kernel ELF file (either
   /// a vmlinux binary or a kernel module).
   ///
@@ -6176,10 +6207,8 @@ public:
   {
     if (!ksymtab_reloc_section_)
       {
-        Elf_Scn *sec = find_section(elf_handle(), ".rela__ksymtab", SHT_RELA);
-	if (!sec)
-	  sec = find_section(elf_handle(), ".rel__ksymtab", SHT_REL);
-	const_cast<read_context*>(this)->ksymtab_reloc_section_ = sec;
+	const_cast<read_context*>(this)->ksymtab_reloc_section_
+	    = find_relocation_section(find_ksymtab_section());
       }
     return ksymtab_reloc_section_;
   }
@@ -6206,10 +6235,8 @@ public:
   {
     if (!ksymtab_gpl_reloc_section_)
       {
-	Elf_Scn *sec = find_section(elf_handle(), ".rela__ksymtab_gpl", SHT_RELA);
-	if (!sec)
-	  sec = find_section(elf_handle(), ".rel__ksymtab_gpl", SHT_REL);
-	const_cast<read_context*>(this)->ksymtab_gpl_reloc_section_ = sec;
+	const_cast<read_context*>(this)->ksymtab_gpl_reloc_section_
+	    = find_relocation_section(find_ksymtab_gpl_section());
       }
     return ksymtab_gpl_reloc_section_;
   }
