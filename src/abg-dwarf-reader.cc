@@ -7632,9 +7632,14 @@ public:
   /// the section designated by @p section contains position-relative
   /// relocated symbol addresses.
   ///
-  ///@param symbol_offset if different from zero
+  /// @param symbol_offset if different from zero
   /// If symbol_offset is != 0, adjust the position we consider the section
   /// start. That is useful to read the ksymtab with a slight offset.
+  ///
+  /// Note, this function does not support relocatable ksymtab entries (as for
+  /// example in kernel modules). Using this function for ksymtabs where
+  /// relocations need to be applied for the entries we are reading here, will
+  /// yield wrong results.
   ///
   /// @return the symbol resulting from the lookup of the symbol address we
   /// got from reading the first entry of the ksymtab or null if no such entry
@@ -7644,12 +7649,6 @@ public:
 				  bool position_relative_relocations,
 				  int  symbol_offset = 0) const
   {
-    // this function does not support relocatable ksymtab entries (as for
-    // example in kernel modules). Hence assert here on not having any
-    // relocation sections around. We can consider this a TODO that we have to
-    // work around in the rest of the code.
-    ABG_ASSERT(!find_any_ksymtab_reloc_section());
-
     Elf_Data*	    elf_data = elf_rawdata(section, 0);
     uint8_t*	    bytes = reinterpret_cast<uint8_t*>(elf_data->d_buf);
     bool	    is_big_endian = elf_architecture_is_big_endian();
