@@ -251,6 +251,28 @@ Options
 	$
 
 
+  * ``--non-reachable-types|-t``
+
+    Analyze and emit change reports for all the types of the binary,
+    including those that are not reachable from global functions and
+    variables.
+
+    This option might incur some serious performance degradation as
+    the number of types analyzed can be huge.  However, if paired with
+    the ``--devel-pkg{1,2}`` options, the additional non-reachable
+    types analyzed are restricted to those defined in the public
+    headers files carried by the referenced development packages, thus
+    hopefully making the performance hit acceptable.
+
+    Also, using this option alongside suppression specifications (by
+    also using the ``--suppressions`` option) might help keep the number of
+    analyzed types (and the potential performance degradation) in
+    control.
+
+    Note that without this option, only types that are reachable from
+    global functions and variables are analyzed, so the tool detects
+    and reports changes on these reachable types only.
+
   *  ``--redundant``
 
     In the diff reports, do display redundant changes.  A redundant

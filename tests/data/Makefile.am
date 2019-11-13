@@ -1240,6 +1240,27 @@ test-diff-suppr/test45-abi.xml \
 test-diff-suppr/test46-PR25128-base.xml \
 test-diff-suppr/test46-PR25128-new.xml \
 test-diff-suppr/test46-PR25128-report-1.txt \
+test-diff-suppr/test47-non-reachable-types-report-1.txt \
+test-diff-suppr/test47-non-reachable-types-report-2.txt \
+test-diff-suppr/test47-non-reachable-types-report-3.txt \
+test-diff-suppr/test47-non-reachable-types-report-4.txt \
+test-diff-suppr/test47-non-reachable-types-report-5.txt \
+test-diff-suppr/test47-non-reachable-types-report-6.txt \
+test-diff-suppr/test47-non-reachable-types-report-7.txt \
+test-diff-suppr/test47-non-reachable-types-report-8.txt \
+test-diff-suppr/test47-non-reachable-types-report-9.txt \
+test-diff-suppr/test47-non-reachable-types-suppr-1.txt \
+test-diff-suppr/test47-non-reachable-types-suppr-2.txt \
+test-diff-suppr/test47-non-reachable-types-suppr-3.txt \
+test-diff-suppr/test47-non-reachable-types-suppr-4.txt \
+test-diff-suppr/test47-non-reachable-types-suppr-5.txt \
+test-diff-suppr/test47-non-reachable-types-v0.c \
+test-diff-suppr/test47-non-reachable-types-v0.o \
+test-diff-suppr/test47-non-reachable-types-v1.c \
+test-diff-suppr/test47-non-reachable-types-v1.o \
+test-diff-suppr/test47-non-reachable-types-v0.o.alltypes.abixml \
+test-diff-suppr/test47-non-reachable-types-v1.o.alltypes.abixml \
+test-diff-suppr/test47-non-reachable-types-report-10.txt \
 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1.abi \
@@ -1529,6 +1550,15 @@ test-diff-pkg/PR24410-old/poppler-qt5-0.73.0-4.fc30.x86_64.rpm \
 test-diff-pkg/PR24410-old/poppler-qt5-debuginfo-0.73.0-4.fc30.x86_64.rpm \
 test-diff-pkg/PR24410-old/poppler-qt5-devel-0.73.0-4.fc30.x86_64.rpm \
 test-diff-pkg/PR24410-report-0.txt \
+test-diff-pkg/PR24690/PR24690-report-0.txt \
+test-diff-pkg/PR24690/flatpak-debuginfo-1.2.4-3.fc30.x86_64.rpm \
+test-diff-pkg/PR24690/flatpak-debuginfo-1.4.0-1.fc30.x86_64.rpm \
+test-diff-pkg/PR24690/flatpak-devel-1.2.4-3.fc30.x86_64.rpm \
+test-diff-pkg/PR24690/flatpak-devel-1.4.0-1.fc30.x86_64.rpm \
+test-diff-pkg/PR24690/flatpak-libs-1.2.4-3.fc30.x86_64.rpm \
+test-diff-pkg/PR24690/flatpak-libs-1.4.0-1.fc30.x86_64.rpm \
+test-diff-pkg/PR24690/flatpak-libs-debuginfo-1.2.4-3.fc30.x86_64.rpm \
+test-diff-pkg/PR24690/flatpak-libs-debuginfo-1.4.0-1.fc30.x86_64.rpm \
 \
 test-fedabipkgdiff/dbus-glib-0.104-3.fc23.x86_64.rpm \
 test-fedabipkgdiff/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm \

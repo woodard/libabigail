@@ -103,6 +103,9 @@ void
 add_read_context_suppressions(read_context& ctxt,
 			      const suppr::suppressions_type& supprs);
 
+void
+consider_types_not_reachable_from_public_interfaces(read_context& ctxt,
+						    bool flag);
 }//end xml_reader
 }//end namespace abigail
 

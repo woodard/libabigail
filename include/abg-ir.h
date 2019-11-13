@@ -465,7 +465,8 @@ istring_type_or_decl_base_sptr_map_type;
 ///
 /// For instance, the type_maps contains a map of string to basic
 /// type, a map of string to class type, a map of string to union
-/// types, etc.
+/// types, etc.  The key of a map entry is the pretty representation
+/// of the type, and the value of the map entry is the type.
 class type_maps
 {
   struct priv;
@@ -544,6 +545,9 @@ public:
 
   const istring_type_base_wptrs_map_type&
   function_types() const;
+
+  const vector<type_base_wptr>&
+  get_types_sorted_by_name() const;
 }; // end class type_maps;
 
 /// This is the abstraction of the set of relevant artefacts (types,
@@ -1504,6 +1508,12 @@ public:
   set_is_anonymous(bool);
 
   bool
+  get_is_artificial() const;
+
+  void
+  set_is_artificial(bool);
+
+  bool
   get_has_anonymous_parent() const;
 
   void
@@ -1585,6 +1595,9 @@ public:
 
 bool
 operator==(const decl_base_sptr&, const decl_base_sptr&);
+
+bool
+operator!=(const decl_base_sptr&, const decl_base_sptr&);
 
 bool
 operator==(const type_base_sptr&, const type_base_sptr&);
@@ -2995,12 +3008,6 @@ public:
 
   void
   set_index(unsigned i);
-
-  bool
-  get_artificial() const;
-
-  void
-  set_artificial(bool f);
 
   bool
   get_variadic_marker() const;

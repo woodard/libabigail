@@ -605,6 +605,20 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/PR24410-report-0.txt",
     "output/test-diff-pkg/PR24410-report-0.txt"
   },
+  {
+    "data/test-diff-pkg/PR24690/flatpak-libs-1.2.4-3.fc30.x86_64.rpm",
+    "data/test-diff-pkg/PR24690/flatpak-libs-1.4.0-1.fc30.x86_64.rpm",
+    "--non-reachable-types",
+    "",
+    "data/test-diff-pkg/PR24690/flatpak-debuginfo-1.2.4-3.fc30.x86_64.rpm, "
+    "data/test-diff-pkg/PR24690/flatpak-libs-debuginfo-1.2.4-3.fc30.x86_64.rpm",
+    "data/test-diff-pkg/PR24690/flatpak-debuginfo-1.4.0-1.fc30.x86_64.rpm, "
+    "data/test-diff-pkg/PR24690/flatpak-libs-debuginfo-1.4.0-1.fc30.x86_64.rpm",
+    "data/test-diff-pkg/PR24690/flatpak-devel-1.2.4-3.fc30.x86_64.rpm",
+    "data/test-diff-pkg/PR24690/flatpak-devel-1.4.0-1.fc30.x86_64.rpm",
+    "data/test-diff-pkg/PR24690/PR24690-report-0.txt",
+    "output/test-diff-pkg/PR24690/PR24690-report-0.txt"
+  },
 #endif //WITH_RPM
 
 #ifdef WITH_DEB

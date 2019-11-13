@@ -420,6 +420,7 @@ struct type_maps::priv
   mutable istring_type_base_wptrs_map_type	array_types_;
   mutable istring_type_base_wptrs_map_type	subrange_types_;
   mutable istring_type_base_wptrs_map_type	function_types_;
+  mutable vector<type_base_wptr>		sorted_types_;
 }; // end struct type_maps::priv
 
 type_maps::type_maps()
@@ -595,6 +596,99 @@ type_maps::function_types() const
 istring_type_base_wptrs_map_type&
 type_maps::function_types()
 {return priv_->function_types_;}
+
+/// A comparison functor to compare/sort types based on their pretty
+/// representations.
+struct type_name_comp
+{
+  /// Comparison operator for two instances of @ref type_base.
+  ///
+  /// This compares the two types by lexicographically comparing their
+  /// pretty representation.
+  ///
+  /// @param l the left-most type to compare.
+  ///
+  /// @param r the right-most type to compare.
+  ///
+  /// @return true iff @p l < @p r.
+  bool
+  operator()(type_base *l, type_base *r) const
+  {
+    if (l == 0 && r == 0)
+      return false;
+
+    string l_repr = get_pretty_representation(l);
+    string r_repr = get_pretty_representation(r);
+    return l_repr < r_repr;
+  }
+
+  /// Comparison operator for two instances of @ref type_base.
+  ///
+  /// This compares the two types by lexicographically comparing their
+  /// pretty representation.
+  ///
+  /// @param l the left-most type to compare.
+  ///
+  /// @param r the right-most type to compare.
+  ///
+  /// @return true iff @p l < @p r.
+  bool
+  operator()(const type_base_sptr &l, const type_base_sptr &r) const
+  {return operator()(l.get(), r.get());}
+
+  /// Comparison operator for two instances of @ref type_base.
+  ///
+  /// This compares the two types by lexicographically comparing their
+  /// pretty representation.
+  ///
+  /// @param l the left-most type to compare.
+  ///
+  /// @param r the right-most type to compare.
+  ///
+  /// @return true iff @p l < @p r.
+  bool
+  operator()(const type_base_wptr &l, const type_base_wptr &r) const
+  {return operator()(type_base_sptr(l), type_base_sptr(r));}
+}; // end struct type_name_comp
+
+/// Getter of all types types sorted by their pretty representation.
+///
+/// @return a sorted vector of all types sorted by their pretty
+/// representation.
+const vector<type_base_wptr>&
+type_maps::get_types_sorted_by_name() const
+{
+  if (priv_->sorted_types_.empty())
+    {
+      istring_type_base_wptrs_map_type::const_iterator i;
+      vector<type_base_wptr>::const_iterator j;
+
+      for (i = basic_types().begin(); i != basic_types().end(); ++i)
+	for (j = i->second.begin(); j != i->second.end(); ++j)
+	  priv_->sorted_types_.push_back(*j);
+
+      for (i = class_types().begin(); i != class_types().end(); ++i)
+	for (j = i->second.begin(); j != i->second.end(); ++j)
+	  priv_->sorted_types_.push_back(*j);
+
+      for (i = union_types().begin(); i != union_types().end(); ++i)
+	for (j = i->second.begin(); j != i->second.end(); ++j)
+	  priv_->sorted_types_.push_back(*j);
+
+      for (i = enum_types().begin(); i != enum_types().end(); ++i)
+	for (j = i->second.begin(); j != i->second.end(); ++j)
+	  priv_->sorted_types_.push_back(*j);
+
+      for (i = typedef_types().begin(); i != typedef_types().end(); ++i)
+	for (j = i->second.begin(); j != i->second.end(); ++j)
+	  priv_->sorted_types_.push_back(*j);
+
+      type_name_comp comp;
+      sort(priv_->sorted_types_.begin(), priv_->sorted_types_.end(), comp);
+    }
+
+  return priv_->sorted_types_;
+}
 
 // </type_maps stuff>
 
@@ -3191,6 +3285,7 @@ struct decl_base::priv
 {
   bool			in_pub_sym_tab_;
   bool			is_anonymous_;
+  bool			is_artificial_;
   bool			has_anonymous_parent_;
   location		location_;
   context_rel		*context_;
@@ -3218,6 +3313,7 @@ struct decl_base::priv
   priv()
     : in_pub_sym_tab_(false),
       is_anonymous_(true),
+      is_artificial_(false),
       has_anonymous_parent_(false),
       context_(),
       visibility_(VISIBILITY_DEFAULT)
@@ -3490,6 +3586,29 @@ decl_base::get_is_anonymous() const
 void
 decl_base::set_is_anonymous(bool f)
 {priv_->is_anonymous_ = f;}
+
+/// Getter of the flag that says if the declaration is artificial.
+///
+/// Being artificial means the parameter was not explicitely
+/// mentionned in the source code, but was rather artificially created
+/// by the compiler.
+///
+/// @return true iff the declaration is artificial.
+bool
+decl_base::get_is_artificial() const
+{return priv_->is_artificial_;}
+
+/// Setter of the flag that says if the declaration is artificial.
+///
+/// Being artificial means the parameter was not explicitely
+/// mentionned in the source code, but was rather artificially created
+/// by the compiler.
+///
+/// @param f the new value of the flag that says if the declaration is
+/// artificial.
+void
+decl_base::set_is_artificial(bool f)
+{priv_->is_artificial_ = f;}
 
 /// Get the "has_anonymous_parent" flag of the current declaration.
 ///
@@ -3926,7 +4045,8 @@ operator<<(std::ostream& o, decl_base::binding b)
 }
 
 /// Turn equality of shared_ptr of decl_base into a deep equality;
-/// that is, make it compare the pointed to objects too.
+/// that is, make it compare the pointed to objects, not just the
+/// pointers.
 ///
 /// @param l the shared_ptr of decl_base on left-hand-side of the
 /// equality.
@@ -3946,6 +4066,20 @@ operator==(const decl_base_sptr& l, const decl_base_sptr& r)
 
   return *l == *r;
 }
+
+/// Inequality operator of shared_ptr of @ref decl_base.
+///
+/// This is a deep equality operator, that is, it compares the
+/// pointed-to objects, rather than just the pointers.
+///
+/// @param l the left-hand-side operand.
+///
+/// @param r the right-hand-side operand.
+///
+/// @return true iff @p l is different from @p r.
+bool
+operator!=(const decl_base_sptr& l, const decl_base_sptr& r)
+{return !operator==(l, r);}
 
 /// Turn equality of shared_ptr of type_base into a deep equality;
 /// that is, make it compare the pointed to objects too.
@@ -4060,6 +4194,43 @@ is_member_type(const type_base_sptr& t)
   decl_base_sptr d = get_type_declaration(t);
   return is_member_decl(d);
 }
+
+/// Test if a type is user-defined.
+///
+/// A type is considered user-defined if it's a
+/// struct/class/union/enum that is *NOT* artificial.
+///
+/// @param t the type to consider.
+///
+/// @return true iff the type @p t is user-defined.
+bool
+is_user_defined_type(const type_base* t)
+{
+  if (t == 0)
+    return false;
+
+  t = peel_qualified_or_typedef_type(t);
+  decl_base *d = is_decl(t);
+
+  if ((is_class_or_union_type(t) || is_enum_type(t))
+      && d && !d->get_is_artificial())
+    return true;
+
+  return false;
+}
+
+/// Test if a type is user-defined.
+///
+/// A type is considered user-defined if it's a
+/// struct/class/union/enum.
+///
+///
+/// @param t the type to consider.
+///
+/// @return true iff the type @p t is user-defined.
+bool
+is_user_defined_type(const type_base_sptr& t)
+{return is_user_defined_type(t.get());}
 
 /// Gets the access specifier for a class member.
 ///
@@ -4982,7 +5153,7 @@ strip_typedef(const type_base_sptr type)
 					  p->get_name(),
 					  p->get_location(),
 					  p->get_variadic_marker(),
-					  p->get_artificial()));
+					  p->get_is_artificial()));
 	  parm.push_back(stripped);
 	}
       type_base_sptr p = strip_typedef(ty->get_return_type());
@@ -5009,7 +5180,7 @@ strip_typedef(const type_base_sptr type)
 					  p->get_name(),
 					  p->get_location(),
 					  p->get_variadic_marker(),
-					  p->get_artificial()));
+					  p->get_is_artificial()));
 	  parm.push_back(stripped);
 	}
       type_base_sptr p = strip_typedef(ty->get_return_type());
@@ -11043,7 +11214,7 @@ synthesize_function_type_from_translation_unit(const function_type& fn_type,
 					      (*i)->get_name(),
 					      (*i)->get_location(),
 					      (*i)->get_variadic_marker(),
-					      (*i)->get_artificial()));
+					      (*i)->get_is_artificial()));
       parms.push_back(parm);
     }
 
@@ -15859,7 +16030,7 @@ function_type::function_type(type_base_sptr	return_type,
        i < priv_->parms_.size();
        ++i, ++j)
     {
-      if (i == 0 && priv_->parms_[i]->get_artificial())
+      if (i == 0 && priv_->parms_[i]->get_is_artificial())
 	// If the first parameter is artificial, then it certainly
 	// means that this is a member function, and the first
 	// parameter is the implicit this pointer.  In that case, set
@@ -15980,7 +16151,7 @@ function_type::set_parameters(const parameters &p)
        i < priv_->parms_.size();
        ++i, ++j)
     {
-      if (i == 0 && priv_->parms_[i]->get_artificial())
+      if (i == 0 && priv_->parms_[i]->get_is_artificial())
 	// If the first parameter is artificial, then it certainly
 	// means that this is a member function, and the first
 	// parameter is the implicit this pointer.  In that case, set
@@ -17212,22 +17383,18 @@ struct function_decl::parameter::priv
   type_base_wptr	type_;
   unsigned		index_;
   bool			variadic_marker_;
-  bool			artificial_;
 
   priv()
     : index_(),
-      variadic_marker_(),
-      artificial_()
+      variadic_marker_()
   {}
 
   priv(type_base_sptr type,
        unsigned index,
-       bool variadic_marker,
-       bool artificial)
+       bool variadic_marker)
     : type_(type),
       index_(index),
-      variadic_marker_(variadic_marker),
-      artificial_(artificial)
+      variadic_marker_(variadic_marker)
   {}
 };// end struct function_decl::parameter::priv
 
@@ -17239,7 +17406,7 @@ function_decl::parameter::parameter(const type_base_sptr	type,
   : type_or_decl_base(type->get_environment(),
 		      FUNCTION_PARAMETER_DECL | ABSTRACT_DECL_BASE),
     decl_base(type->get_environment(), name, loc),
-    priv_(new priv(type, index, is_variadic, /*is_artificial=*/false))
+    priv_(new priv(type, index, is_variadic))
 {
   runtime_type_instance(this);
 }
@@ -17253,9 +17420,10 @@ function_decl::parameter::parameter(const type_base_sptr	type,
   : type_or_decl_base(type->get_environment(),
 		      FUNCTION_PARAMETER_DECL | ABSTRACT_DECL_BASE),
     decl_base(type->get_environment(), name, loc),
-    priv_(new priv(type, index, is_variadic, is_artificial))
+    priv_(new priv(type, index, is_variadic))
 {
   runtime_type_instance(this);
+  set_is_artificial(is_artificial);
 }
 
 function_decl::parameter::parameter(const type_base_sptr	type,
@@ -17266,9 +17434,10 @@ function_decl::parameter::parameter(const type_base_sptr	type,
   : type_or_decl_base(type->get_environment(),
 		      FUNCTION_PARAMETER_DECL | ABSTRACT_DECL_BASE),
     decl_base(type->get_environment(), name, loc),
-    priv_(new priv(type, 0, is_variadic, is_artificial))
+    priv_(new priv(type, 0, is_variadic))
 {
   runtime_type_instance(this);
+  set_is_artificial(is_artificial);
 }
 
 function_decl::parameter::parameter(const type_base_sptr	type,
@@ -17277,7 +17446,7 @@ function_decl::parameter::parameter(const type_base_sptr	type,
   : type_or_decl_base(type->get_environment(),
 		      FUNCTION_PARAMETER_DECL | ABSTRACT_DECL_BASE),
     decl_base(type->get_environment(), "", location()),
-    priv_(new priv(type, index, variad, /*is_artificial=*/false))
+    priv_(new priv(type, index, variad))
 {
   runtime_type_instance(this);
 }
@@ -17350,31 +17519,10 @@ void
 function_decl::parameter::set_index(unsigned i)
 {priv_->index_ = i;}
 
-/// Test if the parameter is artificial.
-///
-/// Being artificial means the parameter was not explicitely
-/// mentionned in the source code, but was rather artificially
-/// created by the compiler.
-///
-/// @return true if the parameter is artificial, false otherwise.
-bool
-function_decl::parameter::get_artificial() const
-{return priv_->artificial_;}
 
 bool
 function_decl::parameter::get_variadic_marker() const
 {return priv_->variadic_marker_;}
-
-/// Getter for the artificial-ness of the parameter.
-///
-/// Being artificial means the parameter was not explicitely
-/// mentionned in the source code, but was rather artificially
-/// created by the compiler.
-///
-/// @param f set to true if the parameter is artificial.
-void
-function_decl::parameter::set_artificial(bool f)
-{priv_->artificial_ = f;}
 
 /// Compares two instances of @ref function_decl::parameter.
 ///

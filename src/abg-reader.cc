@@ -76,6 +76,9 @@ using zip_utils::open_file_in_archive;
 #endif //WITH_ZIP_ARCHIVE
 
 static bool	read_is_declaration_only(xmlNodePtr, bool&);
+static bool	read_is_artificial(xmlNodePtr, bool&);
+static bool	read_tracking_non_reachable_types(xmlNodePtr, bool&);
+static bool	read_is_non_reachable_type(xmlNodePtr, bool&);
 
 class read_context;
 
@@ -125,6 +128,7 @@ private:
   corpus_group_sptr					m_corpus_group;
   corpus::exported_decls_builder*			m_exported_decls_builder;
   suppr::suppressions_type				m_supprs;
+  bool							m_tracking_non_reachable_types;
 
   read_context();
 
@@ -134,8 +138,27 @@ public:
     : m_env(env),
       m_reader(reader),
       m_corp_node(),
-      m_exported_decls_builder()
+      m_exported_decls_builder(),
+      m_tracking_non_reachable_types()
   {}
+
+  /// Getter for the flag that tells us if we are tracking types that
+  /// are not reachable from global functions and variables.
+  ///
+  /// @return true iff we are tracking types that are not reachable
+  /// from global functions and variables.
+  bool
+  tracking_non_reachable_types() const
+  {return m_tracking_non_reachable_types;}
+
+  /// Setter for the flag that tells us if we are tracking types that
+  /// are not reachable from global functions and variables.
+  ///
+  /// @param f the new value of the flag.
+  /// from global functions and variables.
+  void
+  tracking_non_reachable_types(bool f)
+  {m_tracking_non_reachable_types = f;}
 
   /// Getter of the path to the ABI file.
   ///
@@ -1768,6 +1791,19 @@ add_read_context_suppressions(read_context& ctxt,
       ctxt.get_suppressions().push_back(*i);
 }
 
+/// Configure the @ref read_context so that types not reachable from
+/// public interface are taken into account when the abixml file is
+/// read.
+///
+/// @param ctxt the @read_context to consider.
+///
+/// @param flag if yes, then types not reachable from public interface
+/// are taken into account when the abixml file is read.
+void
+consider_types_not_reachable_from_public_interfaces(read_context& ctxt,
+						    bool flag)
+{ctxt.tracking_non_reachable_types(flag);}
+
 /// Parse the input XML document containing an ABI corpus, represented
 /// by an 'abi-corpus' element node, associated to the current
 /// context.
@@ -1906,6 +1942,17 @@ read_corpus_from_input(read_context& ctxt)
       is_ok = bool(tu);
     }
   while (is_ok);
+
+  if (ctxt.tracking_non_reachable_types())
+    {
+      bool is_tracking_non_reachable_types = false;
+      read_tracking_non_reachable_types(node, is_tracking_non_reachable_types);
+
+      ABG_ASSERT
+	(corp.recording_types_reachable_from_public_interface_supported()
+	 == is_tracking_non_reachable_types);
+    }
+
 
   ctxt.perform_late_type_canonicalizing();
 
@@ -2116,6 +2163,23 @@ handle_element_node(read_context& ctxt, xmlNodePtr node,
 				    add_to_current_scope))
    || (decl = handle_class_tdecl(ctxt, node,
 				 add_to_current_scope)));
+
+  // If the user wants us to track non-reachable types, then read the
+  // 'is-non-reachable-type' attribute on type elements and record
+  // reachable types accordingly.
+  if (ctxt.tracking_non_reachable_types())
+    {
+      if (type_base_sptr t = is_type(decl))
+	{
+	  corpus_sptr abi = ctxt.get_corpus();
+	  ABG_ASSERT(abi);
+	  bool is_non_reachable_type = false;
+	  read_is_non_reachable_type(node, is_non_reachable_type);
+	  if (!is_non_reachable_type)
+	    abi->record_type_as_reachable_from_public_interfaces(*t);
+	}
+    }
+
     return decl;
 }
 
@@ -2384,22 +2448,98 @@ read_cdtor_const(xmlNodePtr	node,
 /// @param node the xml node to consider.
 ///
 /// @param is_decl_only is set to true iff the "is-declaration-only" attribute
-/// is present and set to "yes"
+/// is present and set to "yes".
 ///
 /// @return true iff the is_decl_only attribute was set.
 static bool
 read_is_declaration_only(xmlNodePtr node, bool& is_decl_only)
 {
-    if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "is-declaration-only"))
-      {
-	string str = CHAR_STR(s);
-	if (str == "yes")
-	  is_decl_only = true;
-	else
-	  is_decl_only = false;
-	return true;
-      }
-    return false;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "is-declaration-only"))
+    {
+      string str = CHAR_STR(s);
+      if (str == "yes")
+	is_decl_only = true;
+      else
+	is_decl_only = false;
+      return true;
+    }
+  return false;
+}
+
+/// Read the "is-artificial" attribute of the current XML node.
+///
+/// @param node the XML node to consider.
+///
+/// @param is_artificial this output parameter is set to true iff the
+/// "is-artificial" parameter is present and set to 'yes'.
+///
+/// @return true iff the "is-artificial" parameter was present on the
+/// XML node.
+static bool
+read_is_artificial(xmlNodePtr node, bool& is_artificial)
+{
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "is-artificial"))
+    {
+      string is_artificial_str = CHAR_STR(s) ? CHAR_STR(s) : "";
+      is_artificial = (is_artificial_str == "yes") ? true : false;
+      return true;
+    }
+  return false;
+}
+
+/// Read the 'tracking-non-reachable-types' attribute on the current
+/// XML element.
+///
+/// @param node the current XML element.
+///
+/// @param tracking_non_reachable_types output parameter.  This is set
+/// to true iff the 'tracking-non-reachable-types' attribute is
+/// present on the current XML node and set to 'yes'.  In that case,
+/// the function returns true.
+///
+/// @return true iff the 'tracking-non-reachable-types' attribute is
+/// present on the current XML node and set to 'yes'.
+static bool
+read_tracking_non_reachable_types(xmlNodePtr node,
+				  bool& tracking_non_reachable_types)
+{
+  if (xml_char_sptr s =
+      XML_NODE_GET_ATTRIBUTE(node, "tracking-non-reachable-types"))
+    {
+      string tracking_non_reachable_types_str = CHAR_STR(s) ? CHAR_STR(s) : "";
+      tracking_non_reachable_types =
+	(tracking_non_reachable_types_str == "yes")
+	? true
+	: false;
+      return true;
+    }
+  return false;
+}
+
+/// Read the 'is-non-reachable' attribute on the current XML element.
+///
+/// @param node the current XML element.
+///
+/// @param is_non_reachable_type output parameter. This is set to true
+/// iff the 'is-non-reachable' attribute is present on the current XML
+/// element with a value se to 'yes'.
+///
+/// @return true iff the 'is-non-reachable' attribute is present on
+/// the current XML element with a value se to 'yes'.
+static bool
+read_is_non_reachable_type(xmlNodePtr node, bool& is_non_reachable_type)
+{
+  if (xml_char_sptr s =
+      XML_NODE_GET_ATTRIBUTE(node, "is-non-reachable"))
+    {
+      string is_non_reachable_type_str = CHAR_STR(s) ? CHAR_STR(s) : "";
+      is_non_reachable_type =
+	(is_non_reachable_type_str == "yes")
+	? true
+	: false;
+      return true;
+    }
+  return false;
 }
 
 /// Read the "is-virtual" attribute of the current xml node.
@@ -2849,13 +2989,7 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
     }
 
   bool is_artificial = false;
-  string is_artificial_str;
-  if (xml_char_sptr s =
-      xml::build_sptr(xmlGetProp(node, BAD_CAST("is-artificial"))))
-    {
-      is_artificial_str = CHAR_STR(s) ? CHAR_STR(s) : "";
-      is_artificial = (is_artificial_str == "yes") ? true : false;
-    }
+  read_is_artificial(node, is_artificial);
 
   string type_id;
   if (xml_char_sptr a = xml::build_sptr(xmlGetProp(node, BAD_CAST("type-id"))))
@@ -3963,6 +4097,9 @@ build_enum_type_decl(read_context&	ctxt,
   bool is_anonymous = false;
   read_is_anonymous(node, is_anonymous);
 
+  bool is_artificial = false;
+  read_is_artificial(node, is_artificial);
+
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
@@ -4016,6 +4153,7 @@ build_enum_type_decl(read_context&	ctxt,
 					   underlying_type,
 					   enums, linkage_name));
   t->set_is_anonymous(is_anonymous);
+  t->set_is_artificial(is_artificial);
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, t);
@@ -4182,6 +4320,9 @@ build_class_decl(read_context&		ctxt,
   decl_base::visibility vis = decl_base::VISIBILITY_NONE;
   read_visibility(node, vis);
 
+  bool is_artificial = false;
+  read_is_artificial(node, is_artificial);
+
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
@@ -4270,6 +4411,8 @@ build_class_decl(read_context&		ctxt,
 				  data_mbrs, mbr_functions));
       decl->set_is_anonymous(is_anonymous);
     }
+
+  decl->set_is_artificial(is_artificial);
 
   string def_id;
   bool is_def_of_decl = false;
@@ -4595,6 +4738,9 @@ build_union_decl(read_context& ctxt,
   decl_base::visibility vis = decl_base::VISIBILITY_NONE;
   read_visibility(node, vis);
 
+  bool is_artificial = false;
+  read_is_artificial(node, is_artificial);
+
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
@@ -4672,6 +4818,8 @@ build_union_decl(read_context& ctxt,
 				  mbr_functions));
       decl->set_is_anonymous(is_anonymous);
     }
+
+  decl->set_is_artificial(is_artificial);
 
   string def_id;
   bool is_def_of_decl = false;
@@ -5324,6 +5472,16 @@ build_type(read_context&	ctxt,
 					      add_to_current_scope))
    || (t = build_union_decl_if_not_suppressed(ctxt, node,
 					      add_to_current_scope)));
+
+  if (ctxt.tracking_non_reachable_types() && t)
+    {
+      corpus_sptr abi = ctxt.get_corpus();
+      ABG_ASSERT(abi);
+      bool is_non_reachable_type = false;
+      read_is_non_reachable_type(node, is_non_reachable_type);
+      if (!is_non_reachable_type)
+	abi->record_type_as_reachable_from_public_interfaces(*t);
+    }
 
   return t;
 }

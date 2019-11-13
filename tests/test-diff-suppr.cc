@@ -1838,6 +1838,116 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test46-PR25128-report-1.txt",
     "output/test-diff-suppr/test46-PR25128-report-1.txt"
   },
+  {
+    "data/test-diff-suppr/test47-non-reachable-types-v0.o",
+    "data/test-diff-suppr/test47-non-reachable-types-v1.o",
+    "",
+    "",
+    "",
+    "--no-default-suppression --non-reachable-types",
+    "data/test-diff-suppr/test47-non-reachable-types-report-1.txt",
+    "output/test-diff-suppr/test47-non-reachable-types-report-1.txt"
+  },
+  {
+    "data/test-diff-suppr/test47-non-reachable-types-v0.o",
+    "data/test-diff-suppr/test47-non-reachable-types-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/test47-non-reachable-types-suppr-1.txt",
+    "--no-default-suppression --non-reachable-types",
+    "data/test-diff-suppr/test47-non-reachable-types-report-2.txt",
+    "output/test-diff-suppr/test47-non-reachable-types-report-2.txt"
+  },
+  {
+    "data/test-diff-suppr/test47-non-reachable-types-v0.o",
+    "data/test-diff-suppr/test47-non-reachable-types-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/test47-non-reachable-types-suppr-2.txt",
+    "--no-default-suppression --non-reachable-types",
+    "data/test-diff-suppr/test47-non-reachable-types-report-3.txt",
+    "output/test-diff-suppr/test47-non-reachable-types-report-3.txt"
+  },
+  {
+    "data/test-diff-suppr/test47-non-reachable-types-v0.o",
+    "data/test-diff-suppr/test47-non-reachable-types-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/test47-non-reachable-types-suppr-3.txt",
+    "--no-default-suppression --non-reachable-types",
+    "data/test-diff-suppr/test47-non-reachable-types-report-4.txt",
+    "output/test-diff-suppr/test47-non-reachable-types-report-4.txt"
+  },
+  {
+    "data/test-diff-suppr/test47-non-reachable-types-v0.o",
+    "data/test-diff-suppr/test47-non-reachable-types-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/test47-non-reachable-types-suppr-4.txt",
+    "--no-default-suppression --non-reachable-types",
+    "data/test-diff-suppr/test47-non-reachable-types-report-5.txt",
+    "output/test-diff-suppr/test47-non-reachable-types-report-5.txt"
+  },
+  {
+    "data/test-diff-suppr/test47-non-reachable-types-v0.o",
+    "data/test-diff-suppr/test47-non-reachable-types-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/test47-non-reachable-types-suppr-5.txt",
+    "--no-default-suppression --non-reachable-types",
+    "data/test-diff-suppr/test47-non-reachable-types-report-6.txt",
+    "output/test-diff-suppr/test47-non-reachable-types-report-6.txt"
+  },
+  {
+    "data/test-diff-suppr/test47-non-reachable-types-v0.o",
+    "data/test-diff-suppr/test47-non-reachable-types-v1.o",
+    "",
+    "",
+    "",
+    "--no-default-suppression --non-reachable-types --leaf-changes-only",
+    "data/test-diff-suppr/test47-non-reachable-types-report-7.txt",
+    "output/test-diff-suppr/test47-non-reachable-types-report-7.txt"
+  },
+  {
+    "data/test-diff-suppr/test47-non-reachable-types-v0.o",
+    "data/test-diff-suppr/test47-non-reachable-types-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/test47-non-reachable-types-suppr-4.txt",
+    "--no-default-suppression --non-reachable-types --leaf-changes-only",
+    "data/test-diff-suppr/test47-non-reachable-types-report-8.txt",
+    "output/test-diff-suppr/test47-non-reachable-types-report-8.txt"
+  },
+  {
+    "data/test-diff-suppr/test47-non-reachable-types-v0.o",
+    "data/test-diff-suppr/test47-non-reachable-types-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/test47-non-reachable-types-suppr-5.txt",
+    "--no-default-suppression --non-reachable-types --leaf-changes-only",
+    "data/test-diff-suppr/test47-non-reachable-types-report-9.txt",
+    "output/test-diff-suppr/test47-non-reachable-types-report-9.txt"
+  },
+  {
+    "data/test-diff-suppr/test47-non-reachable-types-v0.o.alltypes.abixml",
+    "data/test-diff-suppr/test47-non-reachable-types-v1.o.alltypes.abixml",
+    "",
+    "",
+    "",
+    "--no-default-suppression --non-reachable-types",
+    "data/test-diff-suppr/test47-non-reachable-types-report-1.txt",
+    "output/test-diff-suppr/test47-non-reachable-types-report-1.txt"
+  },
+  {
+    "data/test-diff-suppr/test47-non-reachable-types-v0.o.alltypes.abixml",
+    "data/test-diff-suppr/test47-non-reachable-types-v1.o.alltypes.abixml",
+    "",
+    "",
+    "",
+    "--no-default-suppression",
+    "data/test-diff-suppr/test47-non-reachable-types-report-10.txt",
+    "output/test-diff-suppr/test47-non-reachable-types-report-10.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}
 };

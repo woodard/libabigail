@@ -2245,6 +2245,11 @@ default_reporter::report(const corpus_diff& d, ostream& out,
 	out << '\n';
     }
 
+  // Report added/removed/changed types not reacheable from public
+  // interfaces.
+
+  maybe_report_unreachable_type_changes(d, s, indent, out);
+
   d.priv_->maybe_dump_diff_tree();
 }
 

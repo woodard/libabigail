@@ -470,7 +470,6 @@ sort_string_parm_map(const string_parm_map& map,
        ++i)
     sorted.push_back(i->second);
 
-  // TODO: finish this.
   parm_comp comp;
   std::sort(sorted.begin(), sorted.end(), comp);
 }
@@ -491,6 +490,29 @@ sort_artifacts_set(const artifact_sptr_set_type& set,
        it != set.end();
        ++it)
     sorted.push_back(*it);
+
+  type_or_decl_base_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// Sort a map of string to type_base_sptr entities.
+///
+/// The entries are sorted based on the lexicographic order of the
+/// pretty representation of the type_sptr_sptr.  The sorted result is
+/// put in a vector of type_base_sptr.
+///
+/// @param map the map to sort.
+///
+/// @param sorted the resulting vector of type_base_sptr
+/// lexicographically sorted using their pretty representation.
+void
+sort_string_type_base_sptr_map(string_type_base_sptr_map& map,
+			       vector<type_base_sptr>& sorted)
+{
+  for (string_type_base_sptr_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
 
   type_or_decl_base_comp comp;
   std::sort(sorted.begin(), sorted.end(), comp);
@@ -1779,6 +1801,24 @@ diff_context::show_added_symbols_unreferenced_by_debug_info() const
 void
 diff_context::show_added_symbols_unreferenced_by_debug_info(bool f)
 {priv_->show_added_syms_unreferenced_by_di_ = f;}
+
+/// Setter for the flag that indicates if changes on types unreachable
+/// from global functions and variables are to be reported.
+///
+/// @param f if true, then changes on types unreachable from global
+/// functions and variables are to be reported.
+void
+diff_context::show_unreachable_types(bool f)
+{priv_->show_unreachable_types_ = f;}
+
+/// Getter for the flag that indicates if changes on types unreachable
+/// from global functions and variables are to be reported.
+///
+/// @return true iff changes on types unreachable from global
+/// functions and variables are to be reported.
+bool
+diff_context::show_unreachable_types()
+{return priv_->show_unreachable_types_;}
 
 /// Getter of the flag that indicates if the leaf reporter should
 /// display a summary of the interfaces impacted by a given leaf
@@ -7622,6 +7662,13 @@ diff_maps::get_distinct_diff_map()
 ///
 /// @param dif the new diff node to insert into the @ref diff_maps.
 ///
+/// @param impacted_iface the interface (global function or variable)
+/// currently being analysed that led to analysing the diff node @p
+/// dif.  In other words, this is the interface impacted by the diff
+/// node @p dif.  Note that this can be nil in cases where we are
+/// directly analysing changes to a type that is not reachable from
+/// any global function or variable.
+///
 /// @return true iff the diff node could be added to the current
 /// instance of @ref diff_maps.
 bool
@@ -7660,20 +7707,23 @@ diff_maps::insert_diff_node(const diff *dif,
   else
       ABG_ASSERT_NOT_REACHED;
 
-  // Update the map that associate the interface that is impacted by
-  // this diff, to this diff node.
+  // Update the map that associates this diff node to the set of
+  // interfaces it impacts.
 
-  diff_artifact_set_map_type::iterator i =
-    priv_->impacted_artifacts_map_.find(dif);
-
-  if (i == priv_->impacted_artifacts_map_.end())
+  if (impacted_iface)
     {
-      artifact_sptr_set_type set;
-      set.insert(impacted_iface);
-      priv_->impacted_artifacts_map_[dif] = set;
+      diff_artifact_set_map_type::iterator i =
+	priv_->impacted_artifacts_map_.find(dif);
+
+      if (i == priv_->impacted_artifacts_map_.end())
+	{
+	  artifact_sptr_set_type set;
+	  set.insert(impacted_iface);
+	  priv_->impacted_artifacts_map_[dif] = set;
+	}
+      else
+	i->second.insert(impacted_iface);
     }
-  else
-    i->second.insert(impacted_iface);
 
   return true;
 }
@@ -8384,6 +8434,202 @@ void
 corpus_diff::diff_stats::num_leaf_var_changes(size_t n)
 {priv_->num_leaf_var_changes = n;}
 
+/// Getter of the number of added types that are unreachable from the
+/// public interface of the ABI corpus.
+///
+/// Public interface means the set of defined and publicly exported
+/// functions and variables of the ABI corpus.
+///
+/// @return the number of added types that are unreachable from the
+/// public interface of the ABI corpus.
+size_t
+corpus_diff::diff_stats::num_added_unreachable_types() const
+{return priv_->num_added_unreachable_types;}
+
+/// Setter of the number of added types that are unreachable from the
+/// public interface (global functions or variables) of the ABI
+/// corpus.
+///
+/// Public interface means the set of defined and publicly exported
+/// functions and variables of the ABI corpus.
+///
+/// @param n the new number of added types that are unreachable from
+/// the public interface of the ABI corpus.
+void
+corpus_diff::diff_stats::num_added_unreachable_types(size_t n)
+{priv_->num_added_unreachable_types = n;}
+
+/// Getter of the number of added types that are unreachable from
+/// public interfaces and that are filtered out by suppression
+/// specifications.
+///
+/// @return the number of added types that are unreachable from public
+/// interfaces and that are filtered out by suppression
+/// specifications.
+size_t
+corpus_diff::diff_stats::num_added_unreachable_types_filtered_out() const
+{return priv_->num_added_unreachable_types_filtered_out;}
+
+/// Setter of the number of added types that are unreachable from
+/// public interfaces and that are filtered out by suppression
+/// specifications.
+///
+/// @param n the new number of added types that are unreachable from
+/// public interfaces and that are filtered out by suppression
+/// specifications.
+void
+corpus_diff::diff_stats::num_added_unreachable_types_filtered_out(size_t n)
+{priv_->num_added_unreachable_types_filtered_out = n;}
+
+/// Getter of the number of added types that are unreachable from
+/// public interfaces and that are *NOT* filtered out by suppression
+/// specifications.
+///
+/// @return the number of added types that are unreachable from public
+/// interfaces and that are *NOT* filtered out by suppression
+/// specifications.
+size_t
+corpus_diff::diff_stats::net_num_added_unreachable_types() const
+{
+  ABG_ASSERT(num_added_unreachable_types()
+	     >=
+	     num_added_unreachable_types_filtered_out());
+
+  return (num_added_unreachable_types()
+	  -
+	  num_added_unreachable_types_filtered_out());
+}
+
+/// Getter of the number of removed types that are unreachable from
+/// the public interface of the ABI corpus.
+///
+/// Public interface means the set of defined and publicly exported
+/// functions and variables of the ABI corpus.
+///
+/// @return the number of removed types that are unreachable from
+/// the public interface of the ABI corpus.
+size_t
+corpus_diff::diff_stats::num_removed_unreachable_types() const
+{return priv_->num_removed_unreachable_types;}
+
+/// Setter of the number of removed types that are unreachable from
+/// the public interface of the ABI corpus.
+///
+/// Public interface means the set of defined and publicly exported
+/// functions and variables of the ABI corpus.
+///
+///@param n the new number of removed types that are unreachable from
+/// the public interface of the ABI corpus.
+void
+corpus_diff::diff_stats::num_removed_unreachable_types(size_t n)
+{priv_->num_removed_unreachable_types = n;}
+
+/// Getter of the number of removed types that are not reachable from
+/// public interfaces and that have been filtered out by suppression
+/// specifications.
+///
+/// @return the number of removed types that are not reachable from
+/// public interfaces and that have been filtered out by suppression
+/// specifications.
+size_t
+corpus_diff::diff_stats::num_removed_unreachable_types_filtered_out() const
+{return priv_->num_removed_unreachable_types_filtered_out;}
+
+/// Setter of the number of removed types that are not reachable from
+/// public interfaces and that have been filtered out by suppression
+/// specifications.
+///
+/// @param n the new number of removed types that are not reachable
+/// from public interfaces and that have been filtered out by
+/// suppression specifications.
+void
+corpus_diff::diff_stats::num_removed_unreachable_types_filtered_out(size_t n)
+{priv_->num_removed_unreachable_types_filtered_out = n;}
+
+/// Getter of the number of removed types that are not reachable from
+/// public interfaces and that have *NOT* been filtered out by
+/// suppression specifications.
+///
+/// @return the number of removed types that are not reachable from
+/// public interfaces and that have *NOT* been filtered out by
+/// suppression specifications.
+size_t
+corpus_diff::diff_stats::net_num_removed_unreachable_types() const
+{
+  ABG_ASSERT(num_removed_unreachable_types()
+	     >=
+	     num_removed_unreachable_types_filtered_out());
+
+  return (num_removed_unreachable_types()
+	  -
+	  num_removed_unreachable_types_filtered_out());
+}
+
+/// Getter of the number of changed types that are unreachable from
+/// the public interface of the ABI corpus.
+///
+/// Public interface means the set of defined and publicly exported
+/// functions and variables of the ABI corpus.
+///
+/// @return the number of changed types that are unreachable from the
+/// public interface of the ABI corpus.
+size_t
+corpus_diff::diff_stats::num_changed_unreachable_types() const
+{return priv_->num_changed_unreachable_types;}
+
+/// Setter of the number of changed types that are unreachable from
+/// the public interface of the ABI corpus.
+///
+/// Public interface means the set of defined and publicly exported
+/// functions and variables of the ABI corpus.
+///
+///@param n the new number of changed types that are unreachable from
+/// the public interface of the ABI corpus.
+void
+corpus_diff::diff_stats::num_changed_unreachable_types(size_t n)
+{priv_->num_changed_unreachable_types = n;}
+
+/// Getter of the number of changed types that are unreachable from
+/// public interfaces and that have been filtered out by suppression
+/// specifications.
+///
+/// @return the number of changed types that are unreachable from
+/// public interfaces and that have been filtered out by suppression
+/// specifications.
+size_t
+corpus_diff::diff_stats::num_changed_unreachable_types_filtered_out() const
+{return priv_->num_changed_unreachable_types_filtered_out;}
+
+/// Setter of the number of changed types that are unreachable from
+/// public interfaces and that have been filtered out by suppression
+/// specifications.
+///
+/// @param n the new number of changed types that are unreachable from
+/// public interfaces and that have been filtered out by suppression
+/// specifications.
+void
+corpus_diff::diff_stats::num_changed_unreachable_types_filtered_out(size_t n)
+{priv_->num_changed_unreachable_types_filtered_out = n;}
+
+/// Getter of the number of changed types that are unreachable from
+/// public interfaces and that have *NOT* been filtered out by
+/// suppression specifications.
+///
+/// @return the number of changed types that are unreachable from
+/// public interfaces and that have *NOT* been filtered out by
+/// suppression specifications.
+size_t
+corpus_diff::diff_stats::net_num_changed_unreachable_types() const
+{
+  ABG_ASSERT(num_changed_unreachable_types()
+	     >=
+	     num_changed_unreachable_types_filtered_out());
+
+  return (num_changed_unreachable_types()
+	  -
+	  num_changed_unreachable_types_filtered_out());
+}
+
 /// Getter for the number of leaf variable changes diff nodes that
 /// have been filtered out.
 ///
@@ -8412,7 +8658,9 @@ corpus_diff::diff_stats::num_leaf_var_changes_filtered_out(size_t n)
 size_t
 corpus_diff::diff_stats::net_num_leaf_var_changes() const
 {return num_leaf_var_changes() - num_leaf_var_changes_filtered_out();}
-// <corpus stuff>
+
+
+// <corpus_diff stuff>
 
 /// Getter of the context associated with this corpus.
 ///
@@ -8784,6 +9032,91 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	  }
       }
   }
+
+  // Handle the unreachable_types_edit_script_
+  {
+    edit_script& e = unreachable_types_edit_script_;
+
+    // Populate the map of deleted unreachable types from the
+    // deletions of the edit script.
+    for (vector<deletion>::const_iterator it = e.deletions().begin();
+	 it != e.deletions().end();
+	 ++it)
+      {
+	unsigned i = it->index();
+	type_base_sptr t
+	  (first_->get_types_not_reachable_from_public_interfaces()[i]);
+
+	if (!is_user_defined_type(t))
+	  continue;
+
+	string repr = abigail::ir::get_pretty_representation(t, true);
+	deleted_unreachable_types_[repr] = t;
+      }
+
+    // Populate the map of added and change unreachable types from the
+    // insertions of the edit script.
+    for (vector<insertion>::const_iterator it = e.insertions().begin();
+	 it != e.insertions().end();
+	 ++it)
+      {
+	for (vector<unsigned>::const_iterator iit =
+	       it->inserted_indexes().begin();
+	     iit != it->inserted_indexes().end();
+	     ++iit)
+	  {
+	    unsigned i = *iit;
+	    type_base_sptr t
+	      (second_->get_types_not_reachable_from_public_interfaces()[i]);
+
+	    if (!is_user_defined_type(t))
+	      continue;
+
+	    string repr = abigail::ir::get_pretty_representation(t, true);
+
+	    // Let's see if the inserted type we are looking at was
+	    // reported as deleted as well.
+	    //
+	    // If it's been deleted and a different version of it has
+	    // now been added, it means it's been *changed*.  In that
+	    // case we'll compute the diff of that change and store it
+	    // in the map of changed unreachable types.
+	    //
+	    // Otherwise, it means the type's been added so we'll add
+	    // it to the set of added unreachable types.
+
+	    string_type_base_sptr_map::const_iterator j =
+	      deleted_unreachable_types_.find(repr);
+	    if (j != deleted_unreachable_types_.end())
+	      {
+		// So there was another type of the same pretty
+		// representation which was reported as deleted.
+		// Let's see if they are different or not ...
+		decl_base_sptr old_type = is_decl(j->second);
+		decl_base_sptr new_type = is_decl(t);
+		if (old_type != new_type)
+		  {
+		    // The previously added type is different from this
+		    // one that is added.  That means the initial type
+		    // was changed.  Let's compute its diff and store it
+		    // as a changed type.
+		    diff_sptr d = compute_diff(old_type, new_type, ctxt);
+		    ABG_ASSERT(d->has_changes());
+		    changed_unreachable_types_[repr]= d;
+		  }
+
+		// In any case, the type was both deleted and added,
+		// so we cannot have it marked as being deleted.  So
+		// let's remove it from the deleted types.
+		deleted_unreachable_types_.erase(j);
+	      }
+	    else
+	      // The type wasn't previously reported as deleted, so
+	      // it's really added.
+	      added_unreachable_types_[repr] = t;
+	  }
+      }
+  }
 }
 
 /// Test if a change reports about a given @ref function_decl that is
@@ -8840,10 +9173,11 @@ variable_is_suppressed(const var_decl* var,
   return var_suppr->suppresses_variable(var, k, ctxt);
 }
 
-/// Apply the suppression specifications for this corpus diff to the
-/// set of added and removed functions and variables.
+/// Apply suppression specifications for this corpus diff to the set
+/// of added/removed functions/variables, as well as to types not
+/// reachable from global functions/variables.
 void
-corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
+corpus_diff::priv::apply_supprs_to_added_removed_fns_vars_unreachable_types()
 {
   diff_context_sptr ctxt = get_context();
 
@@ -8926,6 +9260,24 @@ corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
 		if (type_suppr->suppresses_type(c, ctxt))
 		  suppressed_deleted_fns_[e->first] = e->second;
 	      }
+
+	  // Apply this type suppression to deleted types
+	  // non-reachable from a public interface.
+	  for (string_type_base_sptr_map::const_iterator e =
+		 deleted_unreachable_types_.begin();
+	       e != deleted_unreachable_types_.end();
+	       ++e)
+	    if (type_suppr->suppresses_type(e->second, ctxt))
+	      suppressed_deleted_unreachable_types_[e->first] = e->second;
+
+	  // Apply this type suppression to added types
+	  // non-reachable from a public interface.
+	  for (string_type_base_sptr_map::const_iterator e =
+		 added_unreachable_types_.begin();
+	       e != added_unreachable_types_.end();
+	       ++e)
+	    if (type_suppr->suppresses_type(e->second, ctxt))
+	      suppressed_added_unreachable_types_[e->first] = e->second;
 	}
       // Added/Deleted variables
       else if (variable_suppression_sptr var_suppr =
@@ -8989,6 +9341,50 @@ corpus_diff::priv::deleted_function_is_suppressed(const function_decl* fn) const
     suppressed_deleted_fns_.find(fn->get_id());
 
   return (i != suppressed_deleted_fns_.end());
+}
+
+/// Test if an added type that is unreachable from public interface
+/// has been suppressed by a suppression specification.
+///
+/// @param t the added unreachable type to be considered.
+///
+/// @return true iff @p t has been suppressed by a suppression
+/// specification.
+bool
+corpus_diff::priv::added_unreachable_type_is_suppressed(const type_base *t)const
+{
+  if (!t)
+    return false;
+
+  string repr = abigail::ir::get_pretty_representation(t, /*internal=*/true);
+  string_type_base_sptr_map::const_iterator i =
+    suppressed_added_unreachable_types_.find(repr);
+  if (i == suppressed_added_unreachable_types_.end())
+    return false;
+
+  return true;
+}
+
+/// Test if a deleted type that is unreachable from public interface
+/// has been suppressed by a suppression specification.
+///
+/// @param t the deleted unreachable type to be considered.
+///
+/// @return true iff @p t has been suppressed by a suppression
+/// specification.
+bool
+corpus_diff::priv::deleted_unreachable_type_is_suppressed(const type_base *t) const
+{
+  if (!t)
+    return false;
+
+  string repr = abigail::ir::get_pretty_representation(t, /*internal=*/true);
+  string_type_base_sptr_map::const_iterator i =
+    suppressed_deleted_unreachable_types_.find(repr);
+  if (i == suppressed_deleted_unreachable_types_.end())
+    return false;
+
+  return true;
 }
 
 /// Test if the change reports for a give given added function has
@@ -9195,6 +9591,71 @@ corpus_diff::priv::count_leaf_type_changes(size_t &num_changes,
 			    num_changes, num_filtered);
 }
 
+/// Count the number of types not reachable from the interface (i.e,
+/// not reachable from global functions or variables).
+///
+/// @param num_added this is set to the number of added types not
+/// reachable from the interface.
+///
+/// @param num_deleted this is set to the number of deleted types not
+/// reachable from the interface.
+///
+/// @param num_changed this is set to the number of changed types not
+/// reachable from the interface.
+///
+/// @param num_filtered_added this is set to the number of added types
+/// not reachable from the interface and that have been filtered out
+/// by suppression specifications.
+///
+/// @param num_filtered_deleted this is set to the number of deleted
+/// types not reachable from the interface and that have been filtered
+/// out by suppression specifications.
+///
+/// @param num_filtered_changed this is set to the number of changed
+/// types not reachable from the interface and that have been filtered
+/// out by suppression specifications.
+void
+corpus_diff::priv::count_unreachable_types(size_t &num_added,
+					   size_t &num_deleted,
+					   size_t &num_changed,
+					   size_t &num_filtered_added,
+					   size_t &num_filtered_deleted,
+					   size_t &num_filtered_changed)
+{
+  num_added = added_unreachable_types_.size();
+  num_deleted = deleted_unreachable_types_.size();
+  num_changed = changed_unreachable_types_.size();
+  num_filtered_added = suppressed_added_unreachable_types_.size();
+  num_filtered_deleted = suppressed_deleted_unreachable_types_.size();
+
+  for (vector<diff_sptr>::const_iterator i =
+	 changed_unreachable_types_sorted().begin();
+       i != changed_unreachable_types_sorted().end();
+       ++i)
+    if (!(*i)->to_be_reported())
+      ++num_filtered_changed;
+}
+
+/// Get the sorted vector of diff nodes representing changed
+/// unreachable types.
+///
+/// Upon the first invocation of this method, if the vector is empty,
+/// this function gets the diff nodes representing changed
+/// unreachable, sort them, and return the sorted vector.
+///
+/// @return the sorted vector of diff nodes representing changed
+/// unreachable types.
+const vector<diff_sptr>&
+corpus_diff::priv::changed_unreachable_types_sorted() const
+{
+if (changed_unreachable_types_sorted_.empty())
+  if (!changed_unreachable_types_.empty())
+    sort_string_diff_sptr_map(changed_unreachable_types_,
+			      changed_unreachable_types_sorted_);
+
+ return changed_unreachable_types_sorted_;
+}
+
 /// Compute the diff stats.
 ///
 /// To know the number of functions that got filtered out, this
@@ -9211,7 +9672,6 @@ corpus_diff::priv::count_leaf_type_changes(size_t &num_changes,
 /// got filtered out from the report
 void
 corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
-
 {
   stat.num_func_removed(deleted_fns_.size());
   stat.num_removed_func_filtered_out(suppressed_deleted_fns_.size());
@@ -9243,6 +9703,17 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
   // filters.
   for (var_diff_sptrs_type::const_iterator i = sorted_changed_vars_.begin();
        i != sorted_changed_vars_.end();
+       ++i)
+    {
+      diff_sptr diff = *i;
+      ctxt->maybe_apply_filters(diff);
+    }
+
+  // walk the changed unreachable types to apply categorization
+  // filters
+  for (diff_sptrs_type::const_iterator i =
+	  changed_unreachable_types_sorted().begin();
+	i != changed_unreachable_types_sorted().end();
        ++i)
     {
       diff_sptr diff = *i;
@@ -9325,6 +9796,33 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
 
     stat.num_leaf_changes(num_changes);
     stat.num_leaf_changes_filtered_out(num_filtered);
+  }
+
+  // Walk the unreachable types to count them
+  {
+    size_t num_added_unreachable_types = 0,
+      num_changed_unreachable_types = 0,
+      num_deleted_unreachable_types = 0,
+      num_added_unreachable_types_filtered = 0,
+      num_changed_unreachable_types_filtered = 0,
+      num_deleted_unreachable_types_filtered = 0;
+
+    count_unreachable_types(num_added_unreachable_types,
+			    num_deleted_unreachable_types,
+			    num_changed_unreachable_types,
+			    num_added_unreachable_types_filtered,
+			    num_deleted_unreachable_types_filtered,
+			    num_changed_unreachable_types_filtered);
+
+    stat.num_added_unreachable_types(num_added_unreachable_types);
+    stat.num_removed_unreachable_types(num_deleted_unreachable_types);
+    stat.num_changed_unreachable_types(num_changed_unreachable_types);
+    stat.num_added_unreachable_types_filtered_out
+      (num_added_unreachable_types_filtered);
+    stat.num_removed_unreachable_types_filtered_out
+      (num_deleted_unreachable_types_filtered);
+    stat.num_changed_unreachable_types_filtered_out
+      (num_changed_unreachable_types_filtered);
   }
 }
 
@@ -9487,6 +9985,43 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
       out << "\n";
     }
 
+  // Show statistics about types not reachable from global
+  // functions/variables.
+  if (ctxt->show_unreachable_types())
+    {
+      size_t total_nb_variable_changes =
+	s.num_removed_unreachable_types()
+	+ s.num_changed_unreachable_types()
+	+ s.num_added_unreachable_types();
+
+      // Show summary of unreachable types
+      out << indent << "Unreachable types summary: "
+	  << s.net_num_removed_unreachable_types()
+	  << " removed";
+      if (s.num_removed_unreachable_types_filtered_out())
+	out << " (" << s.num_removed_unreachable_types_filtered_out()
+	    << " filtered out)";
+      out << ", ";
+
+      out << s.net_num_changed_unreachable_types()
+	  << " changed";
+      if (s.num_changed_unreachable_types_filtered_out())
+	out << " (" << s.num_changed_unreachable_types_filtered_out()
+	    << " filtered out)";
+      out << ", ";
+
+      out << s.net_num_added_unreachable_types()
+	  << " added";
+      if (s.num_added_unreachable_types_filtered_out())
+	out << " (" << s.num_added_unreachable_types_filtered_out()
+	    << " filtered out)";
+      if (total_nb_variable_changes <= 1)
+	out << " type";
+      else
+	out << " types";
+      out << "\n";
+    }
+
   if (ctxt->show_symbols_unreferenced_by_debug_info()
       && (s.num_func_syms_removed()
 	  || s.num_func_syms_added()
@@ -9577,6 +10112,15 @@ corpus_diff::priv::categorize_redundant_changed_sub_nodes()
       diff_sptr diff = *i;
       categorize_redundancy(diff);
     }
+
+  for (diff_sptrs_type::const_iterator i =
+	 changed_unreachable_types_sorted().begin();
+       i!= changed_unreachable_types_sorted().end();
+       ++i)
+    {
+      diff_sptr diff = *i;
+      categorize_redundancy(diff);
+    }
 }
 
 /// Walk the changed functions and variables diff nodes and clear the
@@ -9635,6 +10179,20 @@ corpus_diff::priv::maybe_dump_diff_tree()
       for (var_diff_sptrs_type::const_iterator i =
 	     sorted_changed_vars_.begin();
 	   i != sorted_changed_vars_.end();
+	   ++i)
+	{
+	  diff_sptr d = *i;
+	  print_diff_tree(d, *ctxt->error_output_stream());
+	}
+    }
+
+  if (!changed_unreachable_types_sorted().empty())
+    {
+      *ctxt->error_output_stream() << "\nchanged unreachable "
+	"types diff tree: \n\n";
+      for (vector<diff_sptr>::const_iterator i =
+	     changed_unreachable_types_sorted().begin();
+	   i != changed_unreachable_types_sorted().end();
 	   ++i)
 	{
 	  diff_sptr d = *i;
@@ -9868,6 +10426,77 @@ const string_elf_symbol_map&
 corpus_diff::added_unrefed_variable_symbols() const
 {return priv_->added_unrefed_var_syms_;}
 
+/// Getter for a map of deleted types that are not reachable from
+/// global functions/variables.
+///
+/// @return a map that associates pretty representation of deleted
+/// unreachable types and said types.
+const string_type_base_sptr_map&
+corpus_diff::deleted_unreachable_types() const
+{return priv_->deleted_unreachable_types_;}
+
+/// Getter of a sorted vector of deleted types that are not reachable
+/// from global functions/variables.
+///
+/// @return a sorted vector of deleted types that are not reachable
+/// from global functions/variables.  The types are lexicographically
+/// sorted by considering their pretty representation.
+const vector<type_base_sptr>&
+corpus_diff::deleted_unreachable_types_sorted() const
+{
+  if (priv_->deleted_unreachable_types_sorted_.empty())
+    if (!priv_->deleted_unreachable_types_.empty())
+      sort_string_type_base_sptr_map(priv_->deleted_unreachable_types_,
+				     priv_->deleted_unreachable_types_sorted_);
+
+  return priv_->deleted_unreachable_types_sorted_;
+}
+
+/// Getter for a map of added types that are not reachable from global
+/// functions/variables.
+///
+/// @return a map that associates pretty representation of added
+/// unreachable types and said types.
+const string_type_base_sptr_map&
+corpus_diff::added_unreachable_types() const
+{return priv_->added_unreachable_types_;}
+
+/// Getter of a sorted vector of added types that are not reachable
+/// from global functions/variables.
+///
+/// @return a sorted vector of added types that are not reachable from
+/// global functions/variables.  The types are lexicographically
+/// sorted by considering their pretty representation.
+const vector<type_base_sptr>&
+corpus_diff::added_unreachable_types_sorted() const
+{
+  if (priv_->added_unreachable_types_sorted_.empty())
+    if (!priv_->added_unreachable_types_.empty())
+      sort_string_type_base_sptr_map(priv_->added_unreachable_types_,
+				     priv_->added_unreachable_types_sorted_);
+
+  return priv_->added_unreachable_types_sorted_;
+}
+
+/// Getter for a map of changed types that are not reachable from
+/// global functions/variables.
+///
+/// @return a map that associates pretty representation of changed
+/// unreachable types and said types.
+const string_diff_sptr_map&
+corpus_diff::changed_unreachable_types() const
+{return priv_->changed_unreachable_types_;}
+
+/// Getter of a sorted vector of changed types that are not reachable
+/// from global functions/variables.
+///
+/// @return a sorted vector of changed types that are not reachable
+/// from global functions/variables.  The diffs are lexicographically
+/// sorted by considering their pretty representation.
+const vector<diff_sptr>&
+corpus_diff::changed_unreachable_types_sorted() const
+{return priv_->changed_unreachable_types_sorted();}
+
 /// Getter of the diff context of this diff
 ///
 /// @return the diff context for this diff.
@@ -9892,7 +10521,8 @@ corpus_diff::get_pretty_representation() const
     }
   return priv_->pretty_representation_;
 }
-/// Return true iff the current diff node carries a change.
+/// Return true iff the current @ref corpus_diff node carries a
+/// change.
 ///
 /// @return true iff the current diff node carries a change.
 bool
@@ -9909,7 +10539,10 @@ corpus_diff::has_changes() const
 	  || priv_->added_unrefed_fn_syms_.size()
 	  || priv_->deleted_unrefed_fn_syms_.size()
 	  || priv_->added_unrefed_var_syms_.size()
-	  || priv_->deleted_unrefed_var_syms_.size());
+	  || priv_->deleted_unrefed_var_syms_.size()
+	  || priv_->deleted_unreachable_types_.size()
+	  || priv_->added_unreachable_types_.size()
+	  || priv_->changed_unreachable_types_.size());
 }
 
 /// Test if the current instance of @ref corpus_diff carries changes
@@ -9949,7 +10582,9 @@ corpus_diff::has_incompatible_changes() const
 	      && stats.net_num_func_changed() != 0)
 	  || stats.net_num_vars_removed() != 0
 	  || stats.net_num_removed_func_syms() != 0
-	  || stats.net_num_removed_var_syms() != 0);
+	  || stats.net_num_removed_var_syms() != 0
+	  || stats.net_num_removed_unreachable_types() != 0
+	  || stats.net_num_changed_unreachable_types() != 0);
 }
 
 /// Test if the current instance of @ref corpus_diff carries subtype
@@ -9966,7 +10601,9 @@ corpus_diff::has_net_subtype_changes() const
       apply_filters_and_suppressions_before_reporting();
 
   return (stats.net_num_func_changed() != 0
-	  || stats.net_num_vars_changed() != 0);
+	  || stats.net_num_vars_changed() != 0
+	  || stats.net_num_removed_unreachable_types() != 0
+	  || stats.net_num_changed_unreachable_types() != 0);
 }
 
 /// Test if the current instance of @ref corpus_diff carries changes
@@ -9992,7 +10629,10 @@ corpus_diff::has_net_changes() const
 	    || stats.net_num_vars_added()
 	    || stats.net_num_added_var_syms()
 	    || stats.net_num_vars_removed()
-	    || stats.net_num_removed_var_syms());
+	    || stats.net_num_removed_var_syms()
+	    || stats.net_num_added_unreachable_types()
+	    || stats.net_num_removed_unreachable_types()
+	    || stats.net_num_changed_unreachable_types());
 }
 
 /// Apply the different filters that are registered to be applied to
@@ -10037,9 +10677,13 @@ struct leaf_diff_node_marker_visitor : public diff_node_visitor
   /// This is called when the visitor visits a diff node.
   ///
   /// It basically tests if the diff node being visited is a leaf diff
-  /// node - that is, if contains local changes.  If it does, then the
+  /// node - that is, it contains local changes.  If it does, then the
   /// node is added to the set of maps that hold leaf diffs in the
   /// current corpus_diff.
+  ///
+  /// Note that only leaf nodes that are reachable from public
+  /// interfaces (global functions or variables) are collected by this
+  /// visitor.
   ///
   /// @param d the diff node being visited.
   virtual void
@@ -10089,12 +10733,15 @@ struct leaf_diff_node_marker_visitor : public diff_node_visitor
 	diff_context_sptr ctxt = d->context();
 	const corpus_diff *corpus_diff_node = ctxt->get_corpus_diff().get();
 	ABG_ASSERT(corpus_diff_node);
-	type_or_decl_base_sptr iface =
-	  get_current_topmost_iface_diff()->first_subject();
-	// So this is diff node carries a leaf change.  Let's add it
-	// to the set of of leaf diffs of corpus_diff_node.
-	const_cast<corpus_diff*>(corpus_diff_node)->
-	  get_leaf_diffs().insert_diff_node(d, iface);
+
+	if (diff *iface_diff = get_current_topmost_iface_diff())
+	  {
+	    type_or_decl_base_sptr iface = iface_diff->first_subject();
+	    // So this diff node carries a leaf change.  Let's add it
+	    // to the set of of leaf diffs of corpus_diff_node.
+	    const_cast<corpus_diff*>(corpus_diff_node)->
+	      get_leaf_diffs().insert_diff_node(d, iface);
+	  }
       }
   }
 }; // end struct leaf_diff_node_marker_visitor
@@ -10218,6 +10865,27 @@ corpus_diff::traverse(diff_node_visitor& v)
 
   v.set_current_topmost_iface_diff(0);
 
+  // Traverse the changed unreachable type diffs.  These diffs are on
+  // types that are not reachable from global functions or variables.
+  for (vector<diff_sptr>::const_iterator i =
+	 changed_unreachable_types_sorted().begin();
+       i != changed_unreachable_types_sorted().end();
+       ++i)
+    {
+      if (diff_sptr d = *i)
+	{
+	  const diff_context_sptr &ctxt = context();
+	  if (ctxt->visiting_a_node_twice_is_forbidden_per_interface())
+	    ctxt->forget_visited_diffs();
+
+	  if (!d->traverse(v))
+	    {
+	      v.visit_end(this);
+	      return false;
+	    }
+	}
+    }
+
   v.visit_end(this);
   return true;
 }
@@ -10243,6 +10911,7 @@ compute_diff(const corpus_sptr	f,
   typedef corpus::variables::const_iterator vars_it_type;
   typedef elf_symbols::const_iterator symbols_it_type;
   typedef diff_utils::deep_ptr_eq_functor eq_type;
+  typedef vector<type_base_wptr>::const_iterator type_base_wptr_it_type;
 
   ABG_ASSERT(f && s);
 
@@ -10262,17 +10931,21 @@ compute_diff(const corpus_sptr	f,
   r->priv_->architectures_equal_ =
     f->get_architecture_name() == s->get_architecture_name();
 
+  // Compute the diff of publicly defined and exported functions
   diff_utils::compute_diff<fns_it_type, eq_type>(f->get_functions().begin(),
 						 f->get_functions().end(),
 						 s->get_functions().begin(),
 						 s->get_functions().end(),
 						 r->priv_->fns_edit_script_);
 
+  // Compute the diff of publicly defined and exported variables.
   diff_utils::compute_diff<vars_it_type, eq_type>
     (f->get_variables().begin(), f->get_variables().end(),
      s->get_variables().begin(), s->get_variables().end(),
      r->priv_->vars_edit_script_);
 
+  // Compute the diff of function elf symbols not referenced by debug
+  // info.
   diff_utils::compute_diff<symbols_it_type, eq_type>
     (f->get_unreferenced_function_symbols().begin(),
      f->get_unreferenced_function_symbols().end(),
@@ -10280,12 +10953,24 @@ compute_diff(const corpus_sptr	f,
      s->get_unreferenced_function_symbols().end(),
      r->priv_->unrefed_fn_syms_edit_script_);
 
+  // Compute the diff of variable elf symbols not referenced by debug
+  // info.
     diff_utils::compute_diff<symbols_it_type, eq_type>
     (f->get_unreferenced_variable_symbols().begin(),
      f->get_unreferenced_variable_symbols().end(),
      s->get_unreferenced_variable_symbols().begin(),
      s->get_unreferenced_variable_symbols().end(),
      r->priv_->unrefed_var_syms_edit_script_);
+
+    if (ctxt->show_unreachable_types())
+      // Compute the diff of types not reachable from public functions
+      // or global variables that are exported.
+      diff_utils::compute_diff<type_base_wptr_it_type, eq_type>
+	(f->get_types_not_reachable_from_public_interfaces().begin(),
+	 f->get_types_not_reachable_from_public_interfaces().end(),
+	 s->get_types_not_reachable_from_public_interfaces().begin(),
+	 s->get_types_not_reachable_from_public_interfaces().end(),
+	 r->priv_->unreachable_types_edit_script_);
 
   r->priv_->ensure_lookup_tables_populated();
 
@@ -10953,8 +11638,8 @@ void
 apply_suppressions(diff_sptr diff_tree)
 {apply_suppressions(diff_tree.get());}
 
-/// Walk a diff tree and appply the suppressions carried by the
-/// context.  If the suppression applies to a given node than
+/// Walk a @ref corpus_diff tree and appply the suppressions carried
+/// by the context.  If the suppression applies to a given node then
 /// categorize the node into the SUPPRESSED_CATEGORY category and
 /// propagate that categorization.
 ///
@@ -10974,9 +11659,11 @@ apply_suppressions(const corpus_diff* diff_tree)
       const_cast<corpus_diff*>(diff_tree)->traverse(v);
       diff_tree->context()->forbid_visiting_a_node_twice(s);
 
-      // ... then also visit the set added and removed functions,
-      // variables, and symbols
-      diff_tree->priv_->apply_suppressions_to_added_removed_fns_vars();
+      // ... then also visit the set of added and removed functions,
+      // variables, symbols, and types not reachable from global
+      // functions and variables.
+      diff_tree->priv_->
+	apply_supprs_to_added_removed_fns_vars_unreachable_types();
     }
 }
 

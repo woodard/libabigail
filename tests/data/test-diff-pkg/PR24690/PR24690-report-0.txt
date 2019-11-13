@@ -1,0 +1,51 @@
+================ changes of 'libflatpak.so.0.10204.0'===============
+  Functions changes summary: 0 Removed, 0 Changed (16 filtered out), 16 Added functions
+  Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+  Unreachable types summary: 3 removed (2 filtered out), 1 changed (15 filtered out), 3 added (1 filtered out) types
+
+  16 Added functions:
+
+    'function gboolean flatpak_installation_add_remote(FlatpakInstallation*, FlatpakRemote*, gboolean, GCancellable*, GError**)'    {flatpak_installation_add_remote}
+    'function FlatpakRemoteRef* flatpak_installation_fetch_remote_ref_sync_full(FlatpakInstallation*, const char*, FlatpakRefKind, const char*, const char*, const char*, FlatpakQueryFlags, GCancellable*, GError**)'    {flatpak_installation_fetch_remote_ref_sync_full}
+    'function GPtrArray* flatpak_installation_list_remote_refs_sync_full(FlatpakInstallation*, const char*, FlatpakQueryFlags, GCancellable*, GError**)'    {flatpak_installation_list_remote_refs_sync_full}
+    'function GType flatpak_query_flags_get_type()'    {flatpak_query_flags_get_type}
+    'function char* flatpak_remote_get_comment(FlatpakRemote*)'    {flatpak_remote_get_comment}
+    'function char* flatpak_remote_get_description(FlatpakRemote*)'    {flatpak_remote_get_description}
+    'function char* flatpak_remote_get_filter(FlatpakRemote*)'    {flatpak_remote_get_filter}
+    'function char* flatpak_remote_get_homepage(FlatpakRemote*)'    {flatpak_remote_get_homepage}
+    'function char* flatpak_remote_get_icon(FlatpakRemote*)'    {flatpak_remote_get_icon}
+    'function FlatpakRemote* flatpak_remote_new_from_file(const char*, GBytes*, GError**)'    {flatpak_remote_new_from_file}
+    'function void flatpak_remote_set_comment(FlatpakRemote*, const char*)'    {flatpak_remote_set_comment}
+    'function void flatpak_remote_set_description(FlatpakRemote*, const char*)'    {flatpak_remote_set_description}
+    'function void flatpak_remote_set_filter(FlatpakRemote*, const char*)'    {flatpak_remote_set_filter}
+    'function void flatpak_remote_set_homepage(FlatpakRemote*, const char*)'    {flatpak_remote_set_homepage}
+    'function void flatpak_remote_set_icon(FlatpakRemote*, const char*)'    {flatpak_remote_set_icon}
+    'function gboolean flatpak_transaction_add_rebase(FlatpakTransaction*, const char*, const char*, const char**, const char**, GError**)'    {flatpak_transaction_add_rebase}
+
+  3 removed types unreachable from any public interface:
+
+    struct _GUnixFDList at gunixfdlist.h:58:1
+    typedef GUnixFDList at giotypes.h:549:1
+    typedef GUnixFDListPrivate at gunixfdlist.h:41:1
+
+  1 changed type unreachable from any public interface:
+
+  'struct _FlatpakTransactionClass' changed:
+      type size changed from 2176 to 2240 (in bits)
+      1 data member insertion:
+        'typedef gboolean (FlatpakTransaction*, const char*, const char*, const char*, const char*, const char**)* _FlatpakTransactionClass::end_of_lifed_with_rebase', at offset 1408 (in bits) at flatpak-transaction.h:117:1
+      4 data member changes (3 filtered):
+       'typedef gboolean (FlatpakTransaction*)* _FlatpakTransactionClass::ready' offset changed from 1408 to 1472 (in bits) (by +64 bits)
+       'typedef gboolean (FlatpakTransaction*, typedef FlatpakTransactionRemoteReason, const char*, const char*, const char*)* _FlatpakTransactionClass::add_new_remote' offset changed from 1472 to 1536 (in bits) (by +64 bits)
+       'typedef gboolean (FlatpakTransaction*, GCancellable*, GError**)* _FlatpakTransactionClass::run' offset changed from 1536 to 1600 (in bits) (by +64 bits)
+       'gpointer _FlatpakTransactionClass::padding[9]' offset changed from 1600 to 1664 (in bits) (by +64 bits)
+
+
+  3 added types unreachable from any public interface:
+
+    'struct gpgme_data_cbs' at gpgme-64.h:1139:1
+    'typedef GSubprocess' at giotypes.h:642:1
+    'typedef OstreeRepoResolveRevExtFlags' at ostree-repo.h:473:1
+
+================ end of changes of 'libflatpak.so.0.10204.0'===============
+

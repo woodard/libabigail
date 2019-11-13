@@ -236,6 +236,12 @@ show_linkage_name_and_aliases(ostream& out,
 			      const string_elf_symbols_map_type& sym_map);
 
 void
+maybe_report_unreachable_type_changes(const corpus_diff& d,
+				      const corpus_diff::diff_stats &s,
+				      const string& indent,
+				      ostream& out);
+
+void
 maybe_report_interfaces_impacted_by_diff(const diff		*d,
 					 ostream		&out,
 					 const string		&indent,

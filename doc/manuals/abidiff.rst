@@ -210,6 +210,27 @@ Options
     the global variables that were added (defined) to
     *second-shared-library*.
 
+  * ``--non-reachable-types|-t``
+
+    Analyze and emit change reports for all the types of the binary,
+    including those that are not reachable from global functions and
+    variables.
+
+    This option might incur some serious performance degradation as
+    the number of types analyzed can be huge.  However, if paired with
+    the ``--headers-dir{1,2}`` options, the additional non-reachable
+    types analyzed are restricted to those defined in public headers
+    files, thus hopefully making the performance hit acceptable.
+
+    Also, using this option alongside suppression specifications (by
+    also using the ``--suppressions`` option) might help keep the number of
+    analyzed types (and the potential performance degradation) in
+    control.
+
+    Note that without this option, only types that are reachable from
+    global functions and variables are analyzed, so the tool detects
+    and reports changes on these reachable types only.
+
   * ``--no-added-syms``
 
     In the resulting report about the differences between

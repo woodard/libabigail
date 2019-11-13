@@ -115,6 +115,18 @@ public:
   const type_maps&
   get_type_per_loc_map() const;
 
+  virtual bool
+  recording_types_reachable_from_public_interface_supported();
+
+  void
+  record_type_as_reachable_from_public_interfaces(const type_base&);
+
+  bool
+  type_is_reachable_from_public_interfaces(const type_base&) const;
+
+  const vector<type_base_wptr>&
+  get_types_not_reachable_from_public_interfaces() const;
+
   const corpus_group*
   get_group() const;
 
@@ -405,6 +417,12 @@ public:
 
   virtual const elf_symbols&
   get_unreferenced_variable_symbols() const;
+
+  unordered_set<interned_string, hash_interned_string>*
+  get_public_types_pretty_representations();
+
+  virtual bool
+  recording_types_reachable_from_public_interface_supported();
 
   bool
   operator==(const corpus_group&) const;

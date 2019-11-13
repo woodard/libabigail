@@ -144,6 +144,10 @@ typedef unordered_map<size_t, size_t> pointer_map;
 /// value is a @ref decl_base_sptr.
 typedef unordered_map<string, decl_base_sptr> string_decl_base_sptr_map;
 
+/// Convenience typedef for a map which key is a string and which
+/// value is a @ref type_base_sptr.
+typedef unordered_map<string, type_base_sptr> string_type_base_sptr_map;
+
 /// Convenience typedef for a map which key is an unsigned integer and
 /// which value is a @ref decl_base_sptr
 typedef unordered_map<unsigned, decl_base_sptr> unsigned_decl_base_sptr_map;
@@ -829,6 +833,10 @@ public:
 
   void
   show_added_symbols_unreferenced_by_debug_info(bool f);
+
+  void show_unreachable_types(bool f);
+
+  bool show_unreachable_types();
 
   bool
   show_impacted_interfaces() const;
@@ -2345,6 +2353,24 @@ public:
   const string_elf_symbol_map&
   added_unrefed_variable_symbols() const;
 
+  const string_type_base_sptr_map&
+  deleted_unreachable_types() const;
+
+  const vector<type_base_sptr>&
+  deleted_unreachable_types_sorted() const;
+
+  const string_type_base_sptr_map&
+  added_unreachable_types() const;
+
+  const vector<type_base_sptr>&
+  added_unreachable_types_sorted() const;
+
+  const string_diff_sptr_map&
+  changed_unreachable_types() const;
+
+  const vector<diff_sptr>&
+  changed_unreachable_types_sorted() const;
+
   const diff_context_sptr
   context() const;
 
@@ -2391,6 +2417,12 @@ public:
 
   friend void
   apply_suppressions(const corpus_diff* diff_tree);
+
+  friend void
+  maybe_report_unreachable_type_changes(const corpus_diff& d,
+					const corpus_diff::diff_stats &s,
+					const string& indent,
+					ostream& out);
 
   friend class default_reporter;
   friend class leaf_reporter;
@@ -2533,6 +2565,28 @@ public:
   size_t num_leaf_var_changes_filtered_out() const;
   void num_leaf_var_changes_filtered_out(size_t);
   size_t net_num_leaf_var_changes() const;
+
+  size_t num_added_unreachable_types() const;
+  void num_added_unreachable_types(size_t);
+
+  size_t num_added_unreachable_types_filtered_out() const;
+  void num_added_unreachable_types_filtered_out(size_t);
+  size_t net_num_added_unreachable_types() const;
+
+  size_t num_removed_unreachable_types() const;
+  void num_removed_unreachable_types(size_t);
+
+  size_t num_removed_unreachable_types_filtered_out() const;
+  void num_removed_unreachable_types_filtered_out(size_t);
+  size_t net_num_removed_unreachable_types() const;
+
+  size_t num_changed_unreachable_types() const;
+  void num_changed_unreachable_types(size_t);
+
+  size_t num_changed_unreachable_types_filtered_out() const;
+  void num_changed_unreachable_types_filtered_out(size_t);
+  size_t net_num_changed_unreachable_types() const;
+
 }; // end class corpus_diff::diff_stats
 
 /// The base class for the node visitors.  These are the types used to

@@ -101,6 +101,7 @@ struct options
   bool			show_changed_vars;
   bool			show_added_vars;
   bool			show_all_vars;
+  bool			show_all_types;
   bool			show_linkage_names;
   bool			show_locs;
   bool			show_harmful_changes;
@@ -141,6 +142,7 @@ struct options
       show_changed_vars(),
       show_added_vars(),
       show_all_vars(true),
+      show_all_types(false),
       show_linkage_names(true),
       show_locs(true),
       show_harmful_changes(true),
@@ -203,6 +205,8 @@ display_usage(const string& prog_name, ostream& out)
     << " --deleted-vars  display deleted global public variables\n"
     << " --changed-vars  display changed global public variables\n"
     << " --added-vars  display added global public variables\n"
+    << " --non-reachable-types|-t  consider types non reachable"
+    " from public interfaces\n"
     << " --no-added-syms  do not display added functions or variables\n"
     << " --no-linkage-name  do not display linkage names of "
     "added/removed/changed\n"
@@ -399,6 +403,9 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.show_all_fns = false;
 	  opts.show_all_vars = false;
 	}
+      else if (!strcmp(argv[i], "--non-reachable-types")
+	       || !strcmp(argv[i], "-t"))
+	  opts.show_all_types = true;
       else if (!strcmp(argv[i], "--no-added-syms"))
 	{
 	  opts.show_added_syms = false;
@@ -647,6 +654,7 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
     (opts.show_symbols_not_referenced_by_debug_info);
   ctxt->show_added_symbols_unreferenced_by_debug_info
     (opts.show_symbols_not_referenced_by_debug_info && opts.show_added_syms);
+  ctxt->show_unreachable_types(opts.show_all_types);
   ctxt->show_impacted_interfaces(opts.show_impacted_interfaces);
 
   if (!opts.show_harmless_changes)
@@ -767,6 +775,20 @@ set_suppressions(ReadContextType& read_ctxt, const options& opts)
     gen_suppr_spec_from_kernel_abi_whitelist(*i, supprs);
 
   add_read_context_suppressions(read_ctxt, supprs);
+}
+
+/// Configure the abigail::xml_reacher::read_context based on the
+/// relevant command-line options.
+///
+/// @param ctxt the read context to configure.
+///
+/// @param opts the command-line options to configure @p ctxt from.
+static void
+set_native_xml_reader_options(abigail::xml_reader::read_context& ctxt,
+			      const options& opts)
+{
+  consider_types_not_reachable_from_public_interfaces(ctxt,
+						      opts.show_all_types);
 }
 
 /// Set the regex patterns describing the functions to drop from the
@@ -1059,13 +1081,14 @@ main(int argc, char* argv[])
 	  t1 = abigail::xml_reader::read_translation_unit_from_file(opts.file1,
 								    env.get());
 	  break;
-	case abigail::tools_utils::FILE_TYPE_ELF:
+	case abigail::tools_utils::FILE_TYPE_ELF: // fall through
 	case abigail::tools_utils::FILE_TYPE_AR:
 	  {
 	    abigail::dwarf_reader::read_context_sptr ctxt =
 	      abigail::dwarf_reader::create_read_context
-	      (opts.file1, opts.prepared_di_root_paths1, env.get(),
-	       /*readalltypes*/false, opts.linux_kernel_mode);
+	      (opts.file1, opts.prepared_di_root_paths1,
+	       env.get(), /*readalltypes=*/opts.show_all_types,
+	       opts.linux_kernel_mode);
 	    assert(ctxt);
 
 	    abigail::dwarf_reader::set_show_stats(*ctxt, opts.show_stats);
@@ -1087,6 +1110,7 @@ main(int argc, char* argv[])
 								  env.get());
 	    assert(ctxt);
 	    set_suppressions(*ctxt, opts);
+	    set_native_xml_reader_options(*ctxt, opts);
 	    c1 = abigail::xml_reader::read_corpus_from_input(*ctxt);
 	    if (!c1)
 	      return handle_error(c1_status, /*ctxt=*/0,
@@ -1100,6 +1124,7 @@ main(int argc, char* argv[])
 								  env.get());
 	    assert(ctxt);
 	    set_suppressions(*ctxt, opts);
+	    set_native_xml_reader_options(*ctxt, opts);
 	    g1 = abigail::xml_reader::read_corpus_group_from_input(*ctxt);
 	    if (!g1)
 	      return handle_error(c1_status, /*ctxt=*/0,
@@ -1132,13 +1157,14 @@ main(int argc, char* argv[])
 	  t2 = abigail::xml_reader::read_translation_unit_from_file(opts.file2,
 								    env.get());
 	  break;
-	case abigail::tools_utils::FILE_TYPE_ELF:
+	case abigail::tools_utils::FILE_TYPE_ELF: // Fall through
 	case abigail::tools_utils::FILE_TYPE_AR:
 	  {
 	    abigail::dwarf_reader::read_context_sptr ctxt =
 	      abigail::dwarf_reader::create_read_context
-	      (opts.file2, opts.prepared_di_root_paths2, env.get(),
-	       /*readalltypes=*/false, opts.linux_kernel_mode);
+	      (opts.file2, opts.prepared_di_root_paths2,
+	       env.get(), /*readalltypes=*/opts.show_all_types,
+	       opts.linux_kernel_mode);
 	    assert(ctxt);
 	    abigail::dwarf_reader::set_show_stats(*ctxt, opts.show_stats);
 	    abigail::dwarf_reader::set_do_log(*ctxt, opts.do_log);
@@ -1160,6 +1186,7 @@ main(int argc, char* argv[])
 								  env.get());
 	    assert(ctxt);
 	    set_suppressions(*ctxt, opts);
+	    set_native_xml_reader_options(*ctxt, opts);
 	    c2 = abigail::xml_reader::read_corpus_from_input(*ctxt);
 	    if (!c2)
 	      return handle_error(c2_status, /*ctxt=*/0, argv[0], opts);
@@ -1173,6 +1200,7 @@ main(int argc, char* argv[])
 								  env.get());
 	    assert(ctxt);
 	    set_suppressions(*ctxt, opts);
+	    set_native_xml_reader_options(*ctxt, opts);
 	    g2 = abigail::xml_reader::read_corpus_group_from_input(*ctxt);
 	    if (!g2)
 	      return handle_error(c2_status, /*ctxt=*/0, argv[0], opts);

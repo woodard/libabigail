@@ -217,6 +217,7 @@ struct diff_context::priv
   bool					show_redundant_changes_;
   bool					show_syms_unreferenced_by_di_;
   bool					show_added_syms_unreferenced_by_di_;
+  bool					show_unreachable_types_;
   bool					show_impacted_interfaces_;
   bool					dump_diff_tree_;
 
@@ -245,6 +246,7 @@ struct diff_context::priv
       show_redundant_changes_(true),
       show_syms_unreferenced_by_di_(true),
       show_added_syms_unreferenced_by_di_(true),
+      show_unreachable_types_(false),
       show_impacted_interfaces_(true),
       dump_diff_tree_()
    {}
@@ -792,16 +794,36 @@ struct scope_diff::priv
 /// A comparison functor for instances of @ref diff.
 struct diff_comp
 {
+  /// Lexicographically compare two diff nodes.
+  ///
+  /// Compare the pretty representation of the first subjects of two
+  /// diff nodes.
+  ///
+  /// @return true iff @p l is less than @p r.
   bool
   operator()(const diff& l, diff& r) const
   {
-    return (get_name(l.first_subject()) < get_name(r.first_subject()));
+    return (get_pretty_representation(l.first_subject(), true)
+	    <
+	    get_pretty_representation(r.first_subject(), true));
   }
 
+  /// Lexicographically compare two diff nodes.
+  ///
+  /// Compare the pretty representation of the first subjects of two
+  /// diff nodes.
+  ///
+  /// @return true iff @p l is less than @p r.
   bool
   operator()(const diff* l, diff* r) const
   {return operator()(*l, *r);}
 
+  /// Lexicographically compare two diff nodes.
+  ///
+  /// Compare the pretty representation of the first subjects of two
+  /// diff nodes.
+  ///
+  /// @return true iff @p l is less than @p r.
   bool
   operator()(const diff_sptr l, diff_sptr r) const
   {return operator()(l.get(), r.get());}
@@ -989,6 +1011,15 @@ struct corpus_diff::priv
   string_elf_symbol_map		suppressed_added_unrefed_var_syms_;
   string_elf_symbol_map		deleted_unrefed_var_syms_;
   string_elf_symbol_map		suppressed_deleted_unrefed_var_syms_;
+  edit_script				unreachable_types_edit_script_;
+  string_type_base_sptr_map		deleted_unreachable_types_;
+  vector<type_base_sptr>		deleted_unreachable_types_sorted_;
+  string_type_base_sptr_map		suppressed_deleted_unreachable_types_;
+  string_type_base_sptr_map		added_unreachable_types_;
+  vector<type_base_sptr>		added_unreachable_types_sorted_;
+  string_type_base_sptr_map		suppressed_added_unreachable_types_;
+  string_diff_sptr_map			changed_unreachable_types_;
+  mutable vector<diff_sptr>		changed_unreachable_types_sorted_;
   diff_maps				leaf_diffs_;
 
   /// Default constructor of corpus_diff::priv.
@@ -1029,7 +1060,7 @@ struct corpus_diff::priv
   ensure_lookup_tables_populated();
 
   void
-  apply_suppressions_to_added_removed_fns_vars();
+  apply_supprs_to_added_removed_fns_vars_unreachable_types();
 
   bool
   deleted_function_is_suppressed(const function_decl* fn) const;
@@ -1042,6 +1073,12 @@ struct corpus_diff::priv
 
   bool
   added_variable_is_suppressed(const var_decl* var) const;
+
+  bool
+  added_unreachable_type_is_suppressed(const type_base *t)const ;
+
+  bool
+  deleted_unreachable_type_is_suppressed(const type_base *t)const ;
 
   bool
   deleted_unrefed_fn_sym_is_suppressed(const elf_symbol*) const;
@@ -1059,6 +1096,16 @@ struct corpus_diff::priv
 
   void count_leaf_type_changes(size_t &num_type_changes,
 			       size_t &num_type_changes_filtered);
+
+  void count_unreachable_types(size_t &num_added_unreachable_types,
+			       size_t &num_removed_unreachable_types,
+			       size_t &num_changed_unreachable_types,
+			       size_t &num_filtered_added_unreachable_types,
+			       size_t &num_filtered_removed_unreachable_types,
+			       size_t &num_filtered_changed_unreachable_types);
+
+  const vector<diff_sptr>&
+  changed_unreachable_types_sorted() const;
 
   void
   apply_filters_and_compute_diff_stats(corpus_diff::diff_stats&);
@@ -1236,6 +1283,12 @@ struct corpus_diff::diff_stats::priv
   size_t		num_leaf_func_changes_filtered_out;
   size_t		num_leaf_var_changes;
   size_t		num_leaf_var_changes_filtered_out;
+  size_t		num_added_unreachable_types;
+  size_t		num_added_unreachable_types_filtered_out;
+  size_t		num_removed_unreachable_types;
+  size_t		num_removed_unreachable_types_filtered_out;
+  size_t		num_changed_unreachable_types;
+  size_t		num_changed_unreachable_types_filtered_out;
 
   priv(diff_context_sptr ctxt)
     : ctxt_(ctxt),
@@ -1267,7 +1320,13 @@ struct corpus_diff::diff_stats::priv
       num_leaf_func_changes(),
       num_leaf_func_changes_filtered_out(),
       num_leaf_var_changes(),
-      num_leaf_var_changes_filtered_out()
+      num_leaf_var_changes_filtered_out(),
+      num_added_unreachable_types(),
+      num_added_unreachable_types_filtered_out(),
+      num_removed_unreachable_types(),
+      num_removed_unreachable_types_filtered_out(),
+      num_changed_unreachable_types(),
+      num_changed_unreachable_types_filtered_out()
   {}
 
   diff_context_sptr
@@ -1291,6 +1350,9 @@ void
 sort_string_function_ptr_map(const string_function_ptr_map& map,
 			     vector<function_decl*>& sorted);
 
+void
+sort_string_type_base_sptr_map(string_type_base_sptr_map& map,
+			       vector<type_base_sptr>& sorted);
 void
 sort_string_function_decl_diff_sptr_map
 (const string_function_decl_diff_sptr_map& map,

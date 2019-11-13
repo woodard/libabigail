@@ -14547,6 +14547,8 @@ build_enum_type(read_context&	ctxt,
       while (dwarf_siblingof(&child, &child) == 0);
     }
 
+  bool is_artificial = die_is_artificial(die);
+
   // DWARF up to version 4 (at least) doesn't seem to carry the
   // underlying type, so let's create an artificial one here, which
   // sole purpose is to be passed to the constructor of the
@@ -14563,6 +14565,7 @@ build_enum_type(read_context&	ctxt,
   ABG_ASSERT(t);
   result.reset(new enum_type_decl(name, loc, t, enms, linkage_name));
   result->set_is_anonymous(enum_is_anonymous);
+  result->set_is_artificial(is_artificial);
   ctxt.associate_die_to_type(die, result, where_offset);
   return result;
 }
@@ -14619,7 +14622,7 @@ finish_member_function_reading(Dwarf_Die*		  die,
       first_parm = f->get_parameters()[0];
 
     bool is_artificial =
-      first_parm && first_parm->get_artificial();;
+      first_parm && first_parm->get_is_artificial();;
     pointer_type_def_sptr this_ptr_type;
     type_base_sptr other_klass;
 
@@ -15045,6 +15048,7 @@ add_or_update_class_type(read_context&	 ctxt,
 
   uint64_t size = 0;
   die_size_in_bits(die, size);
+  bool is_artificial = die_is_artificial(die);
 
   Dwarf_Die child;
   bool has_child = (dwarf_child(die, &child) == 0);
@@ -15073,6 +15077,8 @@ add_or_update_class_type(read_context&	 ctxt,
 
   if (size)
     result->set_size_in_bits(size);
+
+  result->set_is_artificial(is_artificial);
 
   ctxt.associate_die_to_type(die, result, where_offset);
 
@@ -15383,6 +15389,7 @@ add_or_update_union_type(read_context&	ctxt,
 
   uint64_t size = 0;
   die_size_in_bits(die, size);
+  bool is_artificial = die_is_artificial(die);
 
   if (union_type)
     {
@@ -15405,6 +15412,8 @@ add_or_update_union_type(read_context&	ctxt,
       result->set_size_in_bits(size);
       result->set_is_declaration_only(false);
     }
+
+  result->set_is_artificial(is_artificial);
 
   ctxt.associate_die_to_type(die, result, where_offset);
 
@@ -17619,7 +17628,15 @@ build_ir_node_from_die(read_context&	ctxt,
 
   if ((result = ctxt.lookup_decl_from_die_offset(dwarf_dieoffset(die),
 						 source_of_die)))
-    return result;
+    {
+      if (ctxt.load_all_types())
+	if (called_from_public_decl)
+	  if (type_base_sptr t = is_type(result))
+	    if (corpus *abi_corpus = scope->get_corpus())
+	      abi_corpus->record_type_as_reachable_from_public_interfaces(*t);
+
+      return result;
+    }
 
   switch (tag)
     {
@@ -18090,6 +18107,13 @@ build_ir_node_from_die(read_context&	ctxt,
   if (result && tag != DW_TAG_subroutine_type)
     ctxt.associate_die_to_decl(die, is_decl(result), where_offset,
 			       /*associate_by_repr=*/false);
+
+  if (result)
+    if (ctxt.load_all_types())
+      if (called_from_public_decl)
+	if (type_base_sptr t = is_type(result))
+	  if (corpus *abi_corpus = scope->get_corpus())
+	    abi_corpus->record_type_as_reachable_from_public_interfaces(*t);
 
   return result;
 }

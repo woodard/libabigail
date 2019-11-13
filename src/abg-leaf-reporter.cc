@@ -1231,6 +1231,10 @@ leaf_reporter::report(const corpus_diff& d,
   // Now show the changed types.
   const diff_maps& leaf_diffs = d.get_leaf_diffs();
   report_type_changes_from_diff_maps(*this, leaf_diffs, out, indent);
+
+  // Report added/removed/changed types not reacheable from public
+  // interfaces.
+  maybe_report_unreachable_type_changes(d, s, indent, out);
 }
 } // end namespace comparison
 } // end namespace abigail

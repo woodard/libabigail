@@ -772,6 +772,9 @@ static void write_location(const location&, write_context&);
 static void write_location(const decl_base_sptr&, write_context&);
 static bool write_visibility(const decl_base_sptr&, ostream&);
 static bool write_binding(const decl_base_sptr&, ostream&);
+static bool write_is_artificial(const decl_base_sptr&, ostream&);
+static bool write_is_non_reachable(const type_base_sptr&, ostream&);
+static bool write_tracking_non_reachable_types(const corpus_sptr&, ostream&);
 static void write_array_size_and_alignment(const array_type_def_sptr,
 					   ostream&);
 static void write_size_and_alignment(const type_base_sptr, ostream&);
@@ -1127,7 +1130,7 @@ annotate(const function_decl::parameter_sptr&	parm,
     o << "variadic parameter";
   else
     {
-      if (parm->get_artificial())
+      if (parm->get_is_artificial())
 	{
 	  if (parm->get_index() == 0)
 	    o << "implicit ";
@@ -1285,6 +1288,75 @@ write_binding(const shared_ptr<decl_base>& decl, ostream& o)
     o << " binding='" << str << "'";
 
   return true;
+}
+
+/// Write the "is-artificial" attribute of the @ref decl.
+///
+/// @param decl the declaration to consider.
+///
+/// @param o the output stream to emit the "is-artificial" attribute
+/// to.
+///
+/// @return true iff the "is-artificial" attribute was emitted.
+static bool
+write_is_artificial(const decl_base_sptr& decl, ostream& o)
+{
+  if (!decl)
+    return false;
+
+  if (decl->get_is_artificial())
+    o << " is-artificial='yes'";
+
+  return true;
+}
+
+/// Write the 'is-non-reachable' attribute if a given type we are
+/// looking at is not reachable from global functions and variables
+/// and if the user asked us to track that information.
+///
+/// @param t the type to consider.
+///
+/// @param o the output stream to write the 'is-non-reachable'
+/// attribute to.
+static bool
+write_is_non_reachable(const type_base_sptr& t, ostream& o)
+{
+  if (!t)
+    return false;
+
+  corpus* c = t->get_corpus();
+  if (!c)
+    return false;
+
+  if (!c->recording_types_reachable_from_public_interface_supported()
+      || c->type_is_reachable_from_public_interfaces(*t))
+    return false;
+
+  o << " is-non-reachable='yes'";
+
+  return true;
+}
+
+/// Write the 'tracking-non-reachable-types' attribute if for a given
+/// corpus, the user wants us to track non-reachable types.
+///
+/// @param corpus the ABI corpus to consider.
+///
+/// @param o the output parameter to write the
+/// 'tracking-non-reachable-types' attribute to.
+static bool
+write_tracking_non_reachable_types(const corpus_sptr& corpus,
+				   ostream& o)
+{
+  corpus_group* group = corpus->get_group();
+  if (!group)
+    if (corpus->recording_types_reachable_from_public_interface_supported())
+      {
+	o << " tracking-non-reachable-types='yes'";
+	return true;
+      }
+
+  return false;
 }
 
 /// Serialize the size and alignment attributes of a given type.
@@ -2704,6 +2776,8 @@ write_enum_type_decl(const enum_type_decl_sptr& decl,
   o << "<enum-decl name='" << xml::escape_xml_string(decl->get_name()) << "'";
 
   write_is_anonymous(decl, o);
+  write_is_artificial(decl, o);
+  write_is_non_reachable(is_type(decl), o);
 
   if (!decl->get_linkage_name().empty())
     o << " linkage-name='" << decl->get_linkage_name() << "'";
@@ -3075,8 +3149,7 @@ write_function_decl(const function_decl_sptr& decl, write_context& ctxt,
 	  if (!(*pi)->get_name().empty())
 	    o << " name='" << (*pi)->get_name() << "'";
 	}
-      if ((*pi)->get_artificial())
-	  o << " is-artificial='yes'";
+      write_is_artificial(*pi, o);
       write_location((*pi)->get_location(), ctxt);
       o << "/>\n";
     }
@@ -3171,8 +3244,7 @@ write_function_type(const function_type_sptr& fn_type,
 	      o << " name='" << name << "'";
 	    }
 	}
-      if ((*pi)->get_artificial())
-	o << " is-artificial='yes'";
+      write_is_artificial(*pi, o);
       o << "/>\n";
     }
 
@@ -3229,6 +3301,10 @@ write_class_decl_opening_tag(const class_decl_sptr&	decl,
   write_is_struct(decl, o);
 
   write_is_anonymous(decl, o);
+
+  write_is_artificial(decl, o);
+
+  write_is_non_reachable(is_type(decl), o);
 
   write_naming_typedef(decl, ctxt);
 
@@ -3303,6 +3379,10 @@ write_union_decl_opening_tag(const union_decl_sptr&	decl,
   write_is_anonymous(decl, o);
 
   write_visibility(decl, o);
+
+  write_is_artificial(decl, o);
+
+  write_is_non_reachable(is_type(decl), o);
 
   write_location(decl, ctxt);
 
@@ -4329,6 +4409,8 @@ write_corpus(write_context&	ctxt,
   if (!corpus->get_soname().empty())
     out << " soname='" << corpus->get_soname()<< "'";
 
+  write_tracking_non_reachable_types(corpus, out);
+
   if (corpus->is_empty())
     {
       out << "/>\n";
@@ -4423,6 +4505,8 @@ std::ostream& out = ctxt.get_ostream();
 
   if (!group->get_architecture_name().empty() && ctxt.get_write_architecture())
     out << " architecture='" << group->get_architecture_name()<< "'";
+
+  write_tracking_non_reachable_types(group, out);
 
   if (group->is_empty())
     {

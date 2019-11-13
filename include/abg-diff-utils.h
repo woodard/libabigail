@@ -772,12 +772,36 @@ struct deep_ptr_eq_functor
     return *first == *second;
   }
 
+  /// This equality operator compares pointers by comparing the
+  /// pointed-to objects.
+  ///
+  /// @param first the first comparison argument.
+  ///
+  /// @param second the second comparison argument.
+  ///
+  /// @return true if the objects pointed to by the pointers are
+  /// equal, false otherwise.
   template<typename T>
   bool
   operator()(const shared_ptr<T> first,
 	     const shared_ptr<T> second) const
   {return operator()(first.get(), second.get());}
-};
+
+  /// This equality operator compares pointers by comparing the
+  /// pointed-to objects.
+  ///
+  /// @param first the first comparison argument.
+  ///
+  /// @param second the second comparison argument.
+  ///
+  /// @return true if the objects pointed to by the pointers are
+  /// equal, false otherwise.
+  template<typename T>
+  bool
+  operator()(const weak_ptr<T> first,
+	     const weak_ptr<T> second) const
+  {return operator()(shared_ptr<T>(first), shared_ptr<T>(second));}
+}; // end struct deep_ptr_eq_functor
 
 /// Find the end of the furthest reaching d-path on diagonal k, for
 /// two sequences.  In the paper This is referred to as "the basic

@@ -1219,8 +1219,148 @@ show_linkage_name_and_aliases(ostream& out,
     out << ", aliases " << aliases;
 }
 
+/// Report changes about types that are not reachable from global
+/// functions and variables, in a given @param corpus_diff.
+///
+/// @param d the corpus_diff to consider.
+///
+/// @param s the statistics of the changes, after filters and
+/// suppressions are reported.  This is typically what is returned by
+/// corpus_diff::apply_filters_and_suppressions_before_reporting().
+///
+/// @param indent the indendation string (usually a string of white
+/// spaces) to use for indentation during the reporting.
+///
+/// @param out the output stream to emit the report to.
+void
+maybe_report_unreachable_type_changes(const corpus_diff& d,
+				      const corpus_diff::diff_stats &s,
+				      const string& indent,
+				      ostream& out)
+{
+  const unsigned large_num = 100;
+  const diff_context_sptr& ctxt = d.context();
+
+  if (!(ctxt->show_unreachable_types()
+	&& (!d.priv_->deleted_unreachable_types_.empty()
+	    || !d.priv_->added_unreachable_types_.empty()
+	    || !d.priv_->changed_unreachable_types_.empty())))
+    // The user either doesn't want us to show changes about
+    // unreachable types or there are not such changes.
+    return;
+
+  // Handle removed unreachable types.
+  if (s.net_num_removed_unreachable_types() == 1)
+    out << indent
+	<< "1 removed type unreachable from any public interface:\n\n";
+  else if (s.net_num_removed_unreachable_types() > 1)
+    out << indent
+	<< s.net_num_removed_unreachable_types()
+	<< " removed types unreachable from any public interface:\n\n";
+
+  vector<type_base_sptr> sorted_removed_unreachable_types;
+  sort_string_type_base_sptr_map(d.priv_->deleted_unreachable_types_,
+				 sorted_removed_unreachable_types);
+  bool emitted = false;
+  for (vector<type_base_sptr>::const_iterator i =
+	 sorted_removed_unreachable_types.begin();
+       i != sorted_removed_unreachable_types.end();
+       ++i)
+    {
+      if (d.priv_->deleted_unreachable_type_is_suppressed((*i).get()))
+	continue;
+
+      out << indent << "  ";
+      if (s.num_removed_unreachable_types() > large_num)
+	out << "[D] ";
+      out << get_pretty_representation(*i);
+      report_loc_info(*i, *ctxt, out);
+      out << "\n";
+      emitted = true;
+    }
+  if (emitted)
+    {
+      out << "\n";
+      emitted = false;
+    }
+
+  // Handle changed unreachable types!
+  if (s.net_num_changed_unreachable_types() == 1)
+    out << indent
+	<< "1 changed type unreachable from any public interface:\n\n";
+  else if (s.net_num_changed_unreachable_types() > 1)
+    out << indent
+	<< s.net_num_changed_unreachable_types()
+	<< " changed types unreachable from any public interface:\n\n";
+
+  diff_sptrs_type sorted_diff_sptrs;
+  sort_string_diff_sptr_map(d.priv_->changed_unreachable_types_,
+			    sorted_diff_sptrs);
+  emitted =  true;
+  for (diff_sptrs_type::const_iterator i = sorted_diff_sptrs.begin();
+       i != sorted_diff_sptrs.end();
+       ++i)
+    {
+      diff_sptr diff = *i;
+      if (!diff || !diff->to_be_reported())
+	continue;
+
+      string repr = diff->first_subject()->get_pretty_representation();
+
+      out << "  ";
+
+      if (sorted_diff_sptrs.size() > large_num)
+	out << "[C] ";
+
+      out << "'" << repr << "' changed:\n";
+      diff->report(out, indent + "    ");
+      out << "\n";
+      emitted = true;
+    }
+  if (emitted)
+    {
+      out << "\n";
+      emitted = false;
+    }
+
+  // Handle added unreachable types.
+  if (s.net_num_added_unreachable_types() == 1)
+    out << indent
+	<< "1 added type unreachable from any public interface:\n\n";
+  else if (s.net_num_added_unreachable_types() > 1)
+    out << indent
+	<< s.net_num_added_unreachable_types()
+	<< " added types unreachable from any public interface:\n\n";
+
+  vector<type_base_sptr> sorted_added_unreachable_types;
+  sort_string_type_base_sptr_map(d.priv_->added_unreachable_types_,
+				 sorted_added_unreachable_types);
+  emitted = false;
+  for (vector<type_base_sptr>::const_iterator i =
+	 sorted_added_unreachable_types.begin();
+       i != sorted_added_unreachable_types.end();
+       ++i)
+    {
+      if (d.priv_->added_unreachable_type_is_suppressed((*i).get()))
+	continue;
+
+      out << indent << "  ";
+      if (s.num_added_unreachable_types() > large_num)
+	out << "[A] ";
+      out << "'" << get_pretty_representation(*i) << "'";
+      report_loc_info(*i, *ctxt, out);
+      out << "\n";
+      emitted = true;
+    }
+  if (emitted)
+    {
+      out << "\n";
+      emitted = false;
+    }
+}
+
 /// If a given diff node impacts some public interfaces, then report
-/// about those impacted interfaces on standard output.
+/// about those impacted interfaces on a given output stream.
 ///
 /// @param d the diff node to get the impacted interfaces for.
 ///

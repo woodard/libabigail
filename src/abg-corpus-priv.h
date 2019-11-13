@@ -718,6 +718,8 @@ struct corpus::priv
   // the type maps of each translation unit.
   type_maps					types_;
   type_maps					type_per_loc_map_;
+  mutable vector<type_base_wptr>		types_not_reachable_from_pub_ifaces_;
+  unordered_set<interned_string, hash_interned_string> *pub_type_pretty_reprs_;
 
 private:
   priv();
@@ -728,7 +730,8 @@ public:
     : env(e),
       group(),
       origin_(ARTIFICIAL_ORIGIN),
-      path(p)
+      path(p),
+      pub_type_pretty_reprs_()
   {}
 
   void
@@ -739,6 +742,11 @@ public:
 
   const type_maps&
   get_types() const;
+
+  unordered_set<interned_string, hash_interned_string>*
+  get_public_types_pretty_representations();
+
+  ~priv();
 }; // end struct corpus::priv
 
 void

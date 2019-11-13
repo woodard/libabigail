@@ -192,6 +192,7 @@ public:
   bool		compare_dso_only;
   bool		compare_private_dsos;
   bool		leaf_changes_only;
+  bool		show_all_types;
   bool		show_hexadecimal_values;
   bool		show_offsets_sizes_in_bits;
   bool		show_impacted_interfaces;
@@ -226,6 +227,7 @@ public:
       compare_dso_only(),
       compare_private_dsos(),
       leaf_changes_only(),
+      show_all_types(),
       show_hexadecimal_values(),
       show_offsets_sizes_in_bits(true),
       show_impacted_interfaces(),
@@ -853,6 +855,8 @@ display_usage(const string& prog_name, ostream& out)
     "interfaces impacted by ABI changes\n"
     << " --full-impact|-f  when comparing kernel packages, show the "
     "full impact analysis report rather than the default leaf changes reports\n"
+    << " --non-reachable-types|-t  consider types non reachable"
+    " from public interfaces\n"
     << " --no-linkage-name		do not display linkage names of "
     "added/removed/changed\n"
     << " --redundant                    display redundant changes\n"
@@ -1173,6 +1177,7 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
   ctxt->show_redundant_changes(opts.show_redundant_changes);
   ctxt->show_leaf_changes_only(opts.leaf_changes_only);
   ctxt->show_impacted_interfaces(opts.show_impacted_interfaces);
+  ctxt->show_unreachable_types(opts.show_all_types);
   ctxt->show_hex_values(opts.show_hexadecimal_values);
   ctxt->show_offsets_sizes_in_bits(opts.show_offsets_sizes_in_bits);
   ctxt->show_relative_offset_changes(opts.show_relative_offset_changes);
@@ -1294,8 +1299,9 @@ compare(const elf_file& elf1,
 
   corpus_sptr corpus1;
   {
-    read_context_sptr c = create_read_context(elf1.path, di_dirs1, env.get(),
-					      /*load_all_types=*/false);
+    read_context_sptr c =
+      create_read_context(elf1.path, di_dirs1, env.get(),
+			  /*load_all_types=*/opts.show_all_types);
     add_read_context_suppressions(*c, priv_types_supprs1);
     if (!opts.kabi_suppressions.empty())
       add_read_context_suppressions(*c, opts.kabi_suppressions);
@@ -1379,8 +1385,9 @@ compare(const elf_file& elf1,
 
   corpus_sptr corpus2;
   {
-    read_context_sptr c = create_read_context(elf2.path, di_dirs2, env.get(),
-					      /*load_all_types=*/false);
+    read_context_sptr c =
+      create_read_context(elf2.path, di_dirs2, env.get(),
+			  /*load_all_types=*/opts.show_all_types);
     add_read_context_suppressions(*c, priv_types_supprs2);
 
     if (!opts.kabi_suppressions.empty())
@@ -2809,6 +2816,9 @@ parse_command_line(int argc, char* argv[], options& opts)
       else if (!strcmp(argv[i], "--impacted-interfaces")
 	       ||!strcmp(argv[i], "-i"))
 	opts.show_impacted_interfaces = true;
+      else if (!strcmp(argv[i], "--non-reachable-types")
+	       ||!strcmp(argv[i], "-t"))
+	opts.show_all_types = true;
       else if (!strcmp(argv[i], "--full-impact")
 	       ||!strcmp(argv[i], "-f"))
 	opts.show_full_impact_report = true;
