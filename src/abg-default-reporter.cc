@@ -2065,7 +2065,8 @@ default_reporter::report(const corpus_diff& d, ostream& out,
 
   if (ctxt->show_changed_vars())
     {
-      size_t num_changed = s.num_vars_changed() - s.num_changed_vars_filtered_out();
+      size_t num_changed =
+	s.num_vars_changed() - s.num_changed_vars_filtered_out();
       if (num_changed == 1)
 	out << indent << "1 Changed variable:\n\n";
       else if (num_changed > 1)
