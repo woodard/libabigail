@@ -1769,7 +1769,7 @@ read_elf_needed_from_input(read_context&	ctxt,
 /// are only considered during the construction of the ABI corpus.
 /// For instance, they are not taken into account during e.g
 /// comparisons of two ABI corpora that might happen later.  If you
-/// want to apply suppression specificatins to the comparison (or
+/// want to apply suppression specifications to the comparison (or
 /// reporting) of ABI corpora please refer to the documentation of the
 /// @ref diff_context type to learn how to set suppressions that are
 /// to be used in that context.

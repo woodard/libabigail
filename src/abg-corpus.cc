@@ -678,7 +678,7 @@ corpus::type_is_reachable_from_public_interfaces(const type_base& t) const
 	  !=  priv_->get_public_types_pretty_representations()->end());
 }
 
-/// Getter ofa a sorted vector of the types that are *NOT* reachable
+/// Getter of a sorted vector of the types that are *NOT* reachable
 /// from public interfaces.
 ///
 /// Note that for this to be non-empty, the libabigail reader that

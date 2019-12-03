@@ -10737,8 +10737,9 @@ struct leaf_diff_node_marker_visitor : public diff_node_visitor
 	if (diff *iface_diff = get_current_topmost_iface_diff())
 	  {
 	    type_or_decl_base_sptr iface = iface_diff->first_subject();
-	    // So this diff node carries a leaf change.  Let's add it
-	    // to the set of of leaf diffs of corpus_diff_node.
+	    // So, this diff node that is reachable from a global
+	    // function or variable carries a leaf change.  Let's add
+	    // it to the set of of leaf diffs of corpus_diff_node.
 	    const_cast<corpus_diff*>(corpus_diff_node)->
 	      get_leaf_diffs().insert_diff_node(d, iface);
 	  }

@@ -3270,7 +3270,7 @@ operator==(const type_or_decl_base_sptr& l, const type_or_decl_base_sptr& r)
 ///
 /// @param l the left-hand operand of the equality.
 ///
-/// @param r the right-hand operatnr of the equality.
+/// @param r the right-hand operator of the equality.
 ///
 /// @return true iff @p l is different from @p r.
 bool
@@ -3623,7 +3623,7 @@ decl_base::get_has_anonymous_parent() const
 
 /// Set the "has_anonymous_parent" flag of the current declaration.
 ///
-/// Having an anoymous parent means having a anonymous parent scope
+/// Having an anonymous parent means having a anonymous parent scope
 /// (containing type or namespace) which is either direct or indirect.
 ///
 /// @param f set the flag which says if the current decl has a direct
