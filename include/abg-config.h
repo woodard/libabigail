@@ -80,10 +80,13 @@ extern "C"
   /// \param min the minor version number of the library.
   ///
   /// \param rev the revision version number of the library.
+  ///
+  /// \param suf the version suffix of the library.
   void
   abigail_get_library_version(std::string& maj,
 			      std::string& min,
-			      std::string& rev);
+			      std::string& rev,
+			      std::string& suf);
 }
 
 }//end namespace abigail

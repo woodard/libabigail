@@ -86,11 +86,13 @@ extern "C"
 void
 abigail_get_library_version(std::string& major,
 			    std::string& minor,
-			    std::string& revision)
+			    std::string& revision,
+			    std::string& suffix)
 {
   major = ABIGAIL_VERSION_MAJOR;
   minor = ABIGAIL_VERSION_MINOR;
   revision = ABIGAIL_VERSION_REVISION;
+  suffix = ABIGAIL_VERSION_SUFFIX;
 }
 
 }

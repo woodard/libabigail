@@ -1064,9 +1064,9 @@ sorted_strings_common_prefix(vector<string>& input_strings, string& prefix)
 string
 get_library_version_string()
 {
-  string major, minor, revision, version_string;
-  abigail::abigail_get_library_version(major, minor, revision);
-  version_string = major + "." + minor + "." + revision;
+  string major, minor, revision, version_string, suffix;
+  abigail::abigail_get_library_version(major, minor, revision, suffix);
+  version_string = major + "." + minor + "." + revision + suffix;
   return version_string;
 }
 

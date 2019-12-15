@@ -42,6 +42,17 @@ AC_SUBST(VERSION_MAJOR)
 AC_SUBST(VERSION_MINOR)
 AC_SUBST(VERSION_REVISION)
 
+dnl This VERSION_SUFFIX environment variable is to allow appending
+dnl arbitrary text to the libabigail version string representation.
+dnl That is useful to identify custom versions of the library
+dnl (e.g. development versions or versions of a particular origin).
+dnl
+dnl The feature can be enabled by passing VERSION_SUFFIX to `configure`,
+dnl e.g.
+dnl
+dnl   $ configure VERSION_SUFFIX="-dev"
+AC_SUBST(VERSION_SUFFIX)
+
 AC_ARG_ENABLE(rpm,
 	      AS_HELP_STRING([--enable-rpm=yes|no|auto],
 			     [enable the support of rpm in abipkgdiff (default is auto)]),
@@ -872,7 +883,7 @@ AC_OUTPUT
 
 AC_MSG_NOTICE([
 =====================================================================
-	Libabigail: $VERSION_MAJOR.$VERSION_MINOR.$VERSION_REVISION
+	Libabigail: $VERSION_MAJOR.$VERSION_MINOR.$VERSION_REVISION$VERSION_SUFFIX
 =====================================================================
 
 		Here is the configuration of the package:
