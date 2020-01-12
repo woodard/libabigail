@@ -560,7 +560,8 @@ corpus::add(const translation_unit_sptr tu)
 
   ABG_ASSERT(tu->get_environment() == get_environment());
 
-  priv_->members.push_back(tu);
+  ABG_ASSERT(priv_->members.insert(tu).second);
+
   if (!tu->get_absolute_path().empty())
     {
       // Update the path -> translation_unit map.

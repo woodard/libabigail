@@ -119,8 +119,6 @@ class translation_unit;
 /// Convenience typedef for a shared pointer on a @ref
 /// translation_unit type.
 typedef shared_ptr<translation_unit> translation_unit_sptr;
-/// Convenience typedef for a vector of @ref translation_unit_sptr.
-typedef std::vector<translation_unit_sptr> translation_units;
 /// Convenience typedef for a map that associates a string to a
 /// translation unit.
 typedef unordered_map<string, translation_unit_sptr> string_tu_map_type;
