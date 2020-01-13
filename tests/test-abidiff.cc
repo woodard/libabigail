@@ -107,6 +107,24 @@ static InOutSpec specs[] =
     "data/test-abidiff/test-PR24552-report0.txt",
     "output/test-abidiff/test-PR24552-report0.txt"
   },
+  {
+    "data/test-abidiff/test-empty-corpus-0.xml",
+    "data/test-abidiff/test-empty-corpus-0.xml",
+    "data/test-abidiff/test-empty-corpus-report.txt",
+    "output/test-abidiff/test-empty-corpus-report.txt"
+  },
+  {
+    "data/test-abidiff/test-empty-corpus-1.xml",
+    "data/test-abidiff/test-empty-corpus-1.xml",
+    "data/test-abidiff/test-empty-corpus-report.txt",
+    "output/test-abidiff/test-empty-corpus-report.txt"
+  },
+  {
+    "data/test-abidiff/test-empty-corpus-2.xml",
+    "data/test-abidiff/test-empty-corpus-2.xml",
+    "data/test-abidiff/test-empty-corpus-report.txt",
+    "output/test-abidiff/test-empty-corpus-report.txt"
+  },
   // This should be the last entry.
   {0, 0, 0, 0}
 };

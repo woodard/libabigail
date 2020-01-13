@@ -84,6 +84,10 @@ test-abidiff/test-PR18791-v1.so.abi     \
 test-abidiff/test-PR24552-report0.txt	\
 test-abidiff/test-PR24552-v0.abi	\
 test-abidiff/test-PR24552-v1.abi	\
+test-abidiff/test-empty-corpus-0.xml		\
+test-abidiff/test-empty-corpus-1.xml		\
+test-abidiff/test-empty-corpus-2.xml		\
+test-abidiff/test-empty-corpus-report.txt	\
 \
 test-abidiff-exit/test1-voffset-change-report0.txt \
 test-abidiff-exit/test1-voffset-change-report1.txt \

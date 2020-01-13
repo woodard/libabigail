@@ -1867,8 +1867,6 @@ read_corpus_from_input(read_context& ctxt)
 	return nil;
 
       call_reader_next = true;
-
-      ctxt.set_corpus_node(node->children);
     }
   else
     {
@@ -1898,9 +1896,12 @@ read_corpus_from_input(read_context& ctxt)
 	XML_NODE_GET_ATTRIBUTE(node, "soname");
       if (soname_str)
 	corp.set_soname(reinterpret_cast<char*>(soname_str.get()));
-
-      ctxt.set_corpus_node(node->children);
     }
+
+  if (!node->children)
+    return nil;
+
+  ctxt.set_corpus_node(node->children);
 
   corpus& corp = *ctxt.get_corpus();
 
