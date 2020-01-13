@@ -849,13 +849,30 @@ void
 corpus::set_architecture_name(const string& arch)
 {priv_->architecture_name = arch;}
 
-/// Tests if the corpus contains no translation unit.
+/// Tests if the corpus is empty from an ABI surface perspective. I.e. if all
+/// of these criteria are true:
+///  - all translation units (members) are empty
+///  - the maps function and variable symbols are not having entries
+///  - for shared libraries:
+///    - the soname is empty
+///    - there are no DT_NEEDED entries
 ///
 /// @return true if the corpus contains no translation unit.
 bool
 corpus::is_empty() const
 {
-  return (priv_->members.empty()
+  bool members_empty = true;
+  for (translation_units::const_iterator i = priv_->members.begin(),
+					 e = priv_->members.end();
+       i != e; ++i)
+    {
+      if (!(*i)->is_empty())
+	{
+	  members_empty = false;
+	  break;
+	}
+    }
+  return (members_empty
 	  && priv_->fun_symbol_map
 	  && priv_->fun_symbol_map->empty()
 	  && priv_->var_symbol_map
