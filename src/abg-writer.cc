@@ -4362,6 +4362,10 @@ write_corpus_to_archive(const corpus_sptr corp, const bool annotate)
 /// Serialize an ABI corpus to a single native xml document.  The root
 /// note of the resulting XML document is 'abi-corpus'.
 ///
+/// Note: If either corpus is null or corpus does not contain serializable
+///       content (i.e. corpus.is_empty()), nothing is emitted to the ctxt's
+///       output stream.
+///
 /// @param ctxt the write context to use.
 ///
 /// @param corpus the corpus to serialize.
@@ -4377,6 +4381,9 @@ write_corpus(write_context&	ctxt,
 {
   if (!corpus)
     return false;
+
+  if (corpus->is_empty())
+    return true;
 
   do_indent_to_level(ctxt, indent, 0);
 
@@ -4410,12 +4417,6 @@ write_corpus(write_context&	ctxt,
     out << " soname='" << corpus->get_soname()<< "'";
 
   write_tracking_non_reachable_types(corpus, out);
-
-  if (corpus->is_empty())
-    {
-      out << "/>\n";
-      return true;
-    }
 
   out << ">\n";
 
