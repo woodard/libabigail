@@ -1839,6 +1839,16 @@ InOutSpec in_out_specs[] =
     "output/test-diff-suppr/test46-PR25128-report-1.txt"
   },
   {
+    "data/test-diff-suppr/test46-PR25128-base.xml",
+    "data/test-diff-suppr/test46-PR25128-new.xml",
+    "",
+    "",
+    "",
+    "--no-default-suppression --leaf-changes-only --no-added-syms",
+    "data/test-diff-suppr/test46-PR25128-report-2.txt",
+    "output/test-diff-suppr/test46-PR25128-report-2.txt"
+  },
+  {
     "data/test-diff-suppr/test47-non-reachable-types-v0.o",
     "data/test-diff-suppr/test47-non-reachable-types-v1.o",
     "",

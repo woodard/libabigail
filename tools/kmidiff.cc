@@ -322,10 +322,6 @@ set_diff_context(diff_context_sptr ctxt, const options& opts)
   ctxt->show_redundant_changes(false);
   ctxt->show_locs(true);
   ctxt->show_linkage_names(false);
-  ctxt->show_added_fns(false);
-  ctxt->show_added_vars(false);
-  ctxt->show_added_symbols_unreferenced_by_debug_info
-    (false);
   ctxt->show_symbols_unreferenced_by_debug_info
     (true);
   ctxt->show_leaf_changes_only(opts.leaf_changes_only);

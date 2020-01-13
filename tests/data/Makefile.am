@@ -1240,6 +1240,7 @@ test-diff-suppr/test45-abi.xml \
 test-diff-suppr/test46-PR25128-base.xml \
 test-diff-suppr/test46-PR25128-new.xml \
 test-diff-suppr/test46-PR25128-report-1.txt \
+test-diff-suppr/test46-PR25128-report-2.txt \
 test-diff-suppr/test47-non-reachable-types-report-1.txt \
 test-diff-suppr/test47-non-reachable-types-report-2.txt \
 test-diff-suppr/test47-non-reachable-types-report-3.txt \
