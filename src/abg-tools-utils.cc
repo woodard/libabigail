@@ -38,8 +38,10 @@
 #include <sys/time.h>
 #include <dirent.h>
 #include <time.h>
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <iterator>
 #include <ctype.h>
 #include <errno.h>
 #include <libgen.h>
@@ -1867,6 +1869,122 @@ gen_suppr_spec_from_headers(const string& headers_root_dir)
   while ((entry = fts_read(file_hierarchy)))
     handle_fts_entry(entry, result);
   fts_close(file_hierarchy);
+  return result;
+}
+
+/// Generate a suppression specification from kernel abi whitelist
+/// files.
+///
+/// A kernel ABI whitelist file is an INI file that usually has only
+/// one section.  The name of the section is a string that ends up
+/// with the sub-string "whitelist".  For instance
+/// RHEL7_x86_64_whitelist.
+///
+/// Then the content of the section is a set of function or variable
+/// names, one name per line.  Each function or variable name is the
+/// name of a function or a variable whose changes are to be keept.
+///
+/// A whitelist file can have multiple sections (adhering to the naming
+/// conventions and multiple files can be passed. The suppression that
+/// is created takes all whitelist sections from all files into account.
+/// Symbols (or expression of such) are deduplicated in the final
+/// suppression expression.
+///
+/// This function reads the white lists and generates a
+/// function_suppression_sptr and variable_suppression_sptr and returns
+/// a vector containing those.
+///
+/// @param abi_whitelist_paths a vector of KMI whitelist paths
+///
+/// @return a vector or suppressions
+suppressions_type
+gen_suppr_spec_from_kernel_abi_whitelists
+   (const std::vector<std::string>& abi_whitelist_paths)
+{
+
+  std::vector<std::string> whitelisted_names;
+  for (std::vector<std::string>::const_iterator
+	   path_iter = abi_whitelist_paths.begin(),
+	   path_end = abi_whitelist_paths.end();
+       path_iter != path_end;
+       ++path_iter)
+    {
+
+      abigail::ini::config whitelist;
+      if (!read_config(*path_iter, whitelist))
+	continue;
+
+      const ini::config::sections_type& whitelist_sections =
+	  whitelist.get_sections();
+
+      for (ini::config::sections_type::const_iterator
+	       section_iter = whitelist_sections.begin(),
+	       section_end = whitelist_sections.end();
+	   section_iter != section_end;
+	   ++section_iter)
+	{
+	  std::string section_name = (*section_iter)->get_name();
+	  if (!string_ends_with(section_name, "whitelist"))
+	    continue;
+	  for (ini::config::properties_type::const_iterator
+		   prop_iter = (*section_iter)->get_properties().begin(),
+		   prop_end = (*section_iter)->get_properties().end();
+	       prop_iter != prop_end;
+	       ++prop_iter)
+	    {
+	      if (const simple_property_sptr& prop =
+		      is_simple_property(*prop_iter))
+		if (prop->has_empty_value())
+		  {
+		    const std::string& name = prop->get_name();
+		    if (!name.empty())
+		      whitelisted_names.push_back(name);
+		  }
+	    }
+	}
+    }
+
+  suppressions_type result;
+  if (!whitelisted_names.empty())
+    {
+      // Drop duplicates to simplify the regex we are generating
+      std::sort(whitelisted_names.begin(), whitelisted_names.end());
+      whitelisted_names.erase(std::unique(whitelisted_names.begin(),
+					  whitelisted_names.end()),
+			      whitelisted_names.end());
+
+      // Build a regular expression representing the union of all
+      // the function and variable names expressed in the white list.
+      std::stringstream regex_ss;
+      regex_ss << "^";
+      std::copy(whitelisted_names.begin(), whitelisted_names.end(),
+		std::ostream_iterator<std::string>(regex_ss, "$|^"));
+      regex_ss.seekp(0, std::ios::end);
+      const std::string& regex =
+	  regex_ss.str().substr(0, static_cast<size_t>(regex_ss.tellp()) - 2);
+
+      // Build a suppression specification which *keeps* functions
+      // whose ELF symbols match the regular expression contained
+      // in function_names_regexp.  This will also keep the ELF
+      // symbols (not designated by any debug info) whose names
+      // match this regexp.
+      function_suppression_sptr fn_suppr(new function_suppression);
+      fn_suppr->set_label("whitelist");
+      fn_suppr->set_symbol_name_not_regex_str(regex);
+      fn_suppr->set_drops_artifact_from_ir(true);
+      result.push_back(fn_suppr);
+
+      // Build a suppression specification which *keeps* variables
+      // whose ELF symbols match the regular expression contained
+      // in function_names_regexp.  This will also keep the ELF
+      // symbols (not designated by any debug info) whose names
+      // match this regexp.
+      variable_suppression_sptr var_suppr(new variable_suppression);
+      var_suppr->set_label("whitelist");
+      var_suppr->set_symbol_name_not_regex_str(regex);
+      var_suppr->set_drops_artifact_from_ir(true);
+      result.push_back(var_suppr);
+    }
   return result;
 }
 

@@ -21,6 +21,7 @@ runtestdifffilter
 runtestdiffpkg
 runtestdiffsuppr
 runtestini
+runtestkmiwhitelist
 runtestlookupsyms
 runtestreaddwarf
 runtestreadwrite

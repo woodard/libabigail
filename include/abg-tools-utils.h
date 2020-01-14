@@ -90,6 +90,10 @@ bool
 gen_suppr_spec_from_kernel_abi_whitelist(const string& abi_whitelist_path,
 					 suppr::suppressions_type& s);
 
+suppr::suppressions_type
+gen_suppr_spec_from_kernel_abi_whitelists
+   (const vector<string>& abi_whitelist_paths);
+
 bool
 get_vmlinux_path_from_kernel_dist(const string&	from,
 				  string&		vmlinux_path);

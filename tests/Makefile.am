@@ -45,6 +45,7 @@ runtestcorediff			\
 runtestabidiffexit		\
 runtestini			\
 runtesttoolsutils		\
+runtestkmiwhitelist		\
 $(CXX11_TESTS)
 
 if ENABLE_RUNNING_TESTS_WITH_PY3
@@ -135,6 +136,9 @@ runtestini_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtesttoolsutils_SOURCES = test-tools-utils.cc
 runtesttoolsutils_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
+
+runtestkmiwhitelist_SOURCES = test-kmi-whitelist.cc
+runtestkmiwhitelist_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestsvg_SOURCES=test-svg.cc
 runtestsvg_LDADD=$(top_builddir)/src/libabigail.la
