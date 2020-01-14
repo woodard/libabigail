@@ -86,10 +86,6 @@ void convert_char_stars_to_char_star_stars(const vector<char*>&,
 suppr::type_suppression_sptr
 gen_suppr_spec_from_headers(const string& hdrs_root_dir);
 
-bool
-gen_suppr_spec_from_kernel_abi_whitelist(const string& abi_whitelist_path,
-					 suppr::suppressions_type& s);
-
 suppr::suppressions_type
 gen_suppr_spec_from_kernel_abi_whitelists
    (const vector<string>& abi_whitelist_paths);

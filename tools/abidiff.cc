@@ -59,7 +59,7 @@ using abigail::tools_utils::emit_prefix;
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::guess_file_type;
 using abigail::tools_utils::gen_suppr_spec_from_headers;
-using abigail::tools_utils::gen_suppr_spec_from_kernel_abi_whitelist;
+using abigail::tools_utils::gen_suppr_spec_from_kernel_abi_whitelists;
 using abigail::tools_utils::load_default_system_suppressions;
 using abigail::tools_utils::load_default_user_suppressions;
 using abigail::tools_utils::abidiff_status;
@@ -768,11 +768,11 @@ set_suppressions(ReadContextType& read_ctxt, const options& opts)
 	}
     }
 
-  for (vector<string>::const_iterator i =
-	 opts.kernel_abi_whitelist_paths.begin();
-       i != opts.kernel_abi_whitelist_paths.end();
-       ++i)
-    gen_suppr_spec_from_kernel_abi_whitelist(*i, supprs);
+  const suppressions_type& wl_suppr =
+      gen_suppr_spec_from_kernel_abi_whitelists(
+	  opts.kernel_abi_whitelist_paths);
+
+  supprs.insert(supprs.end(), wl_suppr.begin(), wl_suppr.end());
 
   add_read_context_suppressions(read_ctxt, supprs);
 }

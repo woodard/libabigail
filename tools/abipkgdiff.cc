@@ -136,7 +136,6 @@ using abigail::tools_utils::base_name;
 using abigail::tools_utils::get_rpm_arch;
 using abigail::tools_utils::file_is_kernel_package;
 using abigail::tools_utils::gen_suppr_spec_from_headers;
-using abigail::tools_utils::gen_suppr_spec_from_kernel_abi_whitelist;
 using abigail::tools_utils::get_default_system_suppression_file_path;
 using abigail::tools_utils::get_default_user_suppression_file_path;
 using abigail::tools_utils::get_vmlinux_path_from_kernel_dist;

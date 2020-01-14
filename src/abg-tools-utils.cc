@@ -1988,111 +1988,6 @@ gen_suppr_spec_from_kernel_abi_whitelists
   return result;
 }
 
-/// Generate a suppression specification from kernel abi whitelist
-/// files.
-///
-/// A kernel ABI whitelist file is an INI file that usually has only
-/// one section.  The name of the section is a string that ends up
-/// with the sub-string "whitelist".  For instance
-/// RHEL7_x86_64_whitelist.
-///
-/// Then the content of the section is a set of function or variable
-/// names, one name per line.  Each function or variable name is the
-/// name of a function or a variable whose changes are to be keept.
-///
-/// This function reads the white list and generates a
-/// function_suppression_sptr or variable_suppression_sptr (or
-/// several, if there are more than one section) that is added to a
-/// vector of suppressions.
-///
-/// @param abi_whitelist_path the path to the Kernel ABI whitelist.
-///
-/// @param supprs the resulting vector of suppressions to which the
-/// new function suppressions resulting from reading the whitelist are
-/// added.  This vector is updated iff the function returns true.
-///
-/// @return true iff the abi whitelist file was read and function
-/// suppressions could be generated as a result.
-bool
-gen_suppr_spec_from_kernel_abi_whitelist(const string& abi_whitelist_path,
-					 suppressions_type& supprs)
-{
-  abigail::ini::config whitelist;
-  if (!read_config(abi_whitelist_path, whitelist))
-    return false;
-
-  bool created_a_suppr = false;
-
-  const ini::config::sections_type &whitelist_sections =
-    whitelist.get_sections();
-  for (ini::config::sections_type::const_iterator s =
-	 whitelist_sections.begin();
-       s != whitelist_sections.end();
-       ++s)
-    {
-      string section_name = (*s)->get_name();
-      if (!string_ends_with(section_name, "whitelist"))
-	continue;
-
-      function_suppression_sptr fn_suppr;
-      variable_suppression_sptr var_suppr;
-      string function_names_regexp, variable_names_regexp;
-      for (ini::config::properties_type::const_iterator p =
-	     (*s)->get_properties().begin();
-	   p != (*s)->get_properties().end();
-	   ++p)
-	{
-	  if (simple_property_sptr prop = is_simple_property(*p))
-	    if (prop->has_empty_value())
-	      {
-		const string &name = prop->get_name();
-		if (!name.empty())
-		  {
-		    if (!function_names_regexp.empty())
-		      function_names_regexp += "|";
-		    function_names_regexp += "^" + name + "$";
-
-		    if (!variable_names_regexp.empty())
-		      variable_names_regexp += "|";
-		    variable_names_regexp += "^" + name + "$";
-		  }
-	      }
-	}
-
-      if (!function_names_regexp.empty())
-	{
-	  // Build a suppression specification which *keeps* functions
-	  // whose ELF symbols match the regular expression contained
-	  // in function_names_regexp.  This will also keep the ELF
-	  // symbols (not designated by any debug info) whose names
-	  // match this regexp.
-	  fn_suppr.reset(new function_suppression);
-	  fn_suppr->set_label(section_name);
-	  fn_suppr->set_symbol_name_not_regex_str(function_names_regexp);
-	  fn_suppr->set_drops_artifact_from_ir(true);
-	  supprs.push_back(fn_suppr);
-	  created_a_suppr = true;
-	}
-
-      if (!variable_names_regexp.empty())
-	{
-	  // Build a suppression specification which *keeps* variables
-	  // whose ELF symbols match the regular expression contained
-	  // in function_names_regexp.  This will also keep the ELF
-	  // symbols (not designated by any debug info) whose names
-	  // match this regexp.
-	  var_suppr.reset(new variable_suppression);
-	  var_suppr->set_label(section_name);
-	  var_suppr->set_symbol_name_not_regex_str(variable_names_regexp);
-	  var_suppr->set_drops_artifact_from_ir(true);
-	  supprs.push_back(var_suppr);
-	  created_a_suppr = true;
-	}
-    }
-
-  return created_a_suppr;
-}
-
 /// Get the path to the default system suppression file.
 ///
 /// @return a copy of the default system suppression file.
@@ -2267,11 +2162,10 @@ load_generate_apply_suppressions(dwarf_reader::read_context &read_ctxt,
 	   ++i)
 	read_suppressions(*i, supprs);
 
-      for (vector<string>::const_iterator i =
-	     kabi_whitelist_paths.begin();
-	   i != kabi_whitelist_paths.end();
-	   ++i)
-	gen_suppr_spec_from_kernel_abi_whitelist(*i, supprs);
+      const suppressions_type& wl_suppr =
+	  gen_suppr_spec_from_kernel_abi_whitelists(kabi_whitelist_paths);
+
+      supprs.insert(supprs.end(), wl_suppr.begin(), wl_suppr.end());
     }
 
   abigail::dwarf_reader::add_read_context_suppressions(read_ctxt, supprs);

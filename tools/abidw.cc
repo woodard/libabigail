@@ -375,12 +375,12 @@ set_suppressions(read_context& read_ctxt, options& opts)
   if (suppr)
     supprs.push_back(suppr);
 
-  using abigail::tools_utils::gen_suppr_spec_from_kernel_abi_whitelist;
-  for (vector<string>::const_iterator i =
-	 opts.kabi_whitelist_paths.begin();
-       i != opts.kabi_whitelist_paths.end();
-       ++i)
-    gen_suppr_spec_from_kernel_abi_whitelist(*i, opts.kabi_whitelist_supprs);
+  using abigail::tools_utils::gen_suppr_spec_from_kernel_abi_whitelists;
+  const suppressions_type& wl_suppr =
+      gen_suppr_spec_from_kernel_abi_whitelists(opts.kabi_whitelist_paths);
+
+  opts.kabi_whitelist_supprs.insert(opts.kabi_whitelist_supprs.end(),
+				    wl_suppr.begin(), wl_suppr.end());
 
   add_read_context_suppressions(read_ctxt, supprs);
   add_read_context_suppressions(read_ctxt, opts.kabi_whitelist_supprs);

@@ -60,7 +60,6 @@ using abigail::comparison::get_default_harmful_categories_bitmap;
 using abigail::suppr::suppression_sptr;
 using abigail::suppr::suppressions_type;
 using abigail::suppr::read_suppressions;
-using abigail::tools_utils::gen_suppr_spec_from_kernel_abi_whitelist;
 using abigail::tools_utils::guess_file_type;
 using abigail::tools_utils::file_type;
 using abigail::xml_reader::read_corpus_group_from_native_xml_file;
