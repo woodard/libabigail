@@ -2367,14 +2367,14 @@ read_static(xmlNodePtr node, bool& is_static)
 /// @param offset_in_bits set to true if the element node contains the
 /// attribute.
 ///
-/// @return true iff the xml element node contain$s the attribute.
+/// @return true iff the xml element node contains the attribute.
 static bool
 read_offset_in_bits(xmlNodePtr	node,
 		    size_t&	offset_in_bits)
 {
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "layout-offset-in-bits"))
     {
-      offset_in_bits = atoi(CHAR_STR(s));
+      offset_in_bits = strtoull(CHAR_STR(s), 0, 0);
       return true;
     }
   return false;

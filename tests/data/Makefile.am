@@ -1266,6 +1266,9 @@ test-diff-suppr/test47-non-reachable-types-report-10.txt \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1.abi \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1-report-0.txt \
+test-diff-dwarf-abixml/PR25409-librte_bus_dpaa.so.20.0 \
+test-diff-dwarf-abixml/PR25409-librte_bus_dpaa.so.20.0.abi \
+test-diff-dwarf-abixml/PR25409-librte_bus_dpaa.so.20.0-report-0.txt \
 \
 test-lookup-syms/test0.cc		\
 test-lookup-syms/test0.o		\

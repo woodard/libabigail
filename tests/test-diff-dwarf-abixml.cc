@@ -48,10 +48,18 @@ struct InOutSpec
 
 InOutSpec in_out_specs[] =
 {
-  "data/test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1",
-  "data/test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1.abi",
-  "data/test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1-report-0.txt",
-  "output/test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1-report-0.txt",
+  {
+    "data/test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1",
+    "data/test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1.abi",
+    "data/test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1-report-0.txt",
+    "output/test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1-report-0.txt",
+  },
+  {
+    "data/test-diff-dwarf-abixml/PR25409-librte_bus_dpaa.so.20.0",
+    "data/test-diff-dwarf-abixml/PR25409-librte_bus_dpaa.so.20.0.abi",
+    "data/test-diff-dwarf-abixml/PR25409-librte_bus_dpaa.so.20.0-report-0.txt",
+    "output/test-diff-dwarf-abixml/PR25409-librte_bus_dpaa.so.20.0-report-0.txt"
+  },
   // This should be the last entry
   {0, 0, 0, 0}
 };
