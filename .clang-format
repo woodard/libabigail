@@ -12,4 +12,5 @@ SortUsingDeclarations: false
 SpaceBeforeParens: ControlStatements
 TabWidth: 8
 UseTab: Always
+BreakBeforeBinaryOperators: NonAssignment
 ---
