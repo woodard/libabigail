@@ -253,6 +253,12 @@ InOutSpec in_out_specs[] =
     "output/test-read-dwarf/PR25042-libgdbm-clang-dwarf5.so.6.0.0.abi",
   },
 #endif
+  {
+    "data/test-read-dwarf/test25-bogus-binary.elf",
+    "",
+    "",
+    "",
+  },
   // This should be the last entry.
   {NULL, NULL, NULL, NULL}
 };
@@ -324,6 +330,12 @@ struct test_task : public abigail::workers::task
       set_suppressions(*ctxt, in_suppr_spec_path);
 
     abigail::corpus_sptr corp = read_corpus_from_elf(*ctxt, status);
+    // if there is no output and no input, assume that we do not care about the
+    // actual read result, just that it succeeded.
+    if (in_abi_path.empty() && out_abi_path.empty()) {
+	// Phew! we made it here and we did not crash! yay!
+	return;
+    }
     if (!corp)
       {
 	error_message = string("failed to read ") + in_elf_path  + "\n";

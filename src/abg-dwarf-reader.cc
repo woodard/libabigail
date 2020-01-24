@@ -7388,6 +7388,11 @@ public:
     GElf_Shdr header_mem;
     GElf_Shdr* symtab_sheader = gelf_getshdr(symtab_section,
 					     &header_mem);
+
+    // check for bogus section header
+    if (symtab_sheader->sh_entsize == 0)
+      return false;
+
     size_t nb_syms = symtab_sheader->sh_size / symtab_sheader->sh_entsize;
 
     Elf_Data* symtab = elf_getdata(symtab_section, 0);
