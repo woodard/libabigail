@@ -20,6 +20,9 @@
 
 /// @file
 
+#ifndef __ABG_LIBXML_UTILS_H__
+#define __ABG_LIBXML_UTILS_H__
+
 #include <istream>
 #include "abg-sptr-utils.h"
 #include "abg-cxx-compat.h"
@@ -119,3 +122,4 @@ unescape_xml_comment(const std::string& str);
 
 }//end namespace xml
 }//end namespace abigail
+#endif //__ABG_LIBXML_UTILS_H__

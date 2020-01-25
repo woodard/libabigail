@@ -20,6 +20,9 @@
 
 /// @file
 
+#ifndef __ABG_LIBZIP_UTILS_H__
+#define __ABG_LIBZIP_UTILS_H__
+
 #include <zip.h>
 #include "abg-cxx-compat.h"
 
@@ -70,3 +73,4 @@ zip_file_sptr open_file_in_archive(zip_sptr archive,
 
 }// end namespace zip
 }// end namespace abigail
+#endif //__ABG_LIBZIP_UTILS_H__

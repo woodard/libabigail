@@ -26,13 +26,13 @@
 /// de-serialize an instance of @ref abigail::corpus from a file in
 /// elf format, containing dwarf information.
 
+#ifndef __ABG_DWARF_READER_H__
+#define __ABG_DWARF_READER_H__
+
 #include <ostream>
 #include <elfutils/libdwfl.h>
 #include "abg-corpus.h"
 #include "abg-suppression.h"
-
-#ifndef __ABG_DWARF_READER_H__
-#define __ABG_DWARF_READER_H__
 
 namespace abigail
 {

@@ -20,11 +20,11 @@
 //
 // Author: Dodji Seketeli
 
-#include "abg-comparison.h"
-#include "abg-reporter.h"
-
 #ifndef __ABG_REPORTER_PRIV_H__
 #define __ABG_REPORTER_PRIV_H__
+
+#include "abg-comparison.h"
+#include "abg-reporter.h"
 
 /// This is a subroutine of a *::report() function.
 ///
