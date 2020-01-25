@@ -7396,7 +7396,8 @@ public:
     size_t nb_syms = symtab_sheader->sh_size / symtab_sheader->sh_entsize;
 
     Elf_Data* symtab = elf_getdata(symtab_section, 0);
-    ABG_ASSERT(symtab);
+    if (!symtab)
+      return false;
 
     GElf_Ehdr elf_header;
     ABG_ASSERT(gelf_getehdr(elf_handle(), &elf_header));
