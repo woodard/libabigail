@@ -5,6 +5,8 @@
 *.trs
 *.txt
 
+.dirstamp
+
 output/
 
 mockfedabipkgdiff

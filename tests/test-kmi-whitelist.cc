@@ -26,6 +26,8 @@
 
 #include <string>
 
+#include "lib/catch.hpp"
+
 #include "abg-fwd.h"
 #include "abg-suppression.h"
 #include "abg-tools-utils.h"
@@ -55,108 +57,88 @@ const static std::string whitelist_with_duplicate_entry
     = std::string(abigail::tests::get_src_dir())
       + "/tests/data/test-kmi-whitelist/whitelist-with-duplicate-entry";
 
-bool
-suppressions_are_consistent(const suppressions_type& suppr,
+void
+test_suppressions_are_consistent(const suppressions_type& suppr,
 			    const std::string&	     expr)
 {
-  if (suppr.size() != 2)
-    return false;
+  REQUIRE(suppr.size() == 2);
 
   function_suppression_sptr left = is_function_suppression(suppr[0]);
   variable_suppression_sptr right = is_variable_suppression(suppr[1]);
 
-  return // correctly casted
-      (left && right)
-      // same label
-      && (left->get_label() == right->get_label())
-      // same mode
-      && (left->get_drops_artifact_from_ir()
-	  == right->get_drops_artifact_from_ir())
-      // same regex
-      && (left->get_symbol_name_not_regex_str()
-	  == right->get_symbol_name_not_regex_str())
-      // regex as expected
-      && (left->get_symbol_name_not_regex_str() == expr);
+  // correctly casted
+  REQUIRE(left);
+  REQUIRE(right);
+  // same label
+  REQUIRE(left->get_label() == right->get_label());
+  // same mode
+  REQUIRE(left->get_drops_artifact_from_ir()
+	  == right->get_drops_artifact_from_ir());
+  // same regex
+  REQUIRE(left->get_symbol_name_not_regex_str()
+     == right->get_symbol_name_not_regex_str());
+  // regex as expected
+  REQUIRE(left->get_symbol_name_not_regex_str() == expr);
 }
 
-bool
-testNoWhitelist()
+TEST_CASE("NoWhitelists", "[whitelists]")
 {
   const std::vector<std::string> abi_whitelist_paths;
-  suppressions_type		 suppr
-      = gen_suppr_spec_from_kernel_abi_whitelists(abi_whitelist_paths);
-  return suppr.empty();
+  suppressions_type		 suppr =
+      gen_suppr_spec_from_kernel_abi_whitelists(abi_whitelist_paths);
+  REQUIRE(suppr.empty());
 }
 
-bool
-testSingleEntryWhitelist()
+TEST_CASE("WhitelistWithASingleEntry", "[whitelists]")
 {
   std::vector<std::string> abi_whitelist_paths;
   abi_whitelist_paths.push_back(whitelist_with_single_entry);
   suppressions_type suppr
       = gen_suppr_spec_from_kernel_abi_whitelists(abi_whitelist_paths);
-  return !suppr.empty() && suppressions_are_consistent(suppr, "^test_symbol$");
+  REQUIRE(!suppr.empty());
+  test_suppressions_are_consistent(suppr, "^test_symbol$");
 }
 
-bool
-testWhitelistWithDuplicateEntries()
+TEST_CASE("WhitelistWithADuplicateEntry", "[whitelists]")
 {
   std::vector<std::string> abi_whitelist_paths;
   abi_whitelist_paths.push_back(whitelist_with_duplicate_entry);
   suppressions_type suppr
       = gen_suppr_spec_from_kernel_abi_whitelists(abi_whitelist_paths);
-  return !suppr.empty() && suppressions_are_consistent(suppr, "^test_symbol$");
+  REQUIRE(!suppr.empty());
+  test_suppressions_are_consistent(suppr, "^test_symbol$");
 }
 
-bool
-testTwoWhitelists()
+TEST_CASE("TwoWhitelists", "[whitelists]")
 {
   std::vector<std::string> abi_whitelist_paths;
   abi_whitelist_paths.push_back(whitelist_with_single_entry);
   abi_whitelist_paths.push_back(whitelist_with_another_single_entry);
-  suppressions_type suppr
-      = gen_suppr_spec_from_kernel_abi_whitelists(abi_whitelist_paths);
-  return !suppr.empty()
-	 && suppressions_are_consistent(suppr,
-					"^test_another_symbol$|^test_symbol$");
+  suppressions_type suppr =
+      gen_suppr_spec_from_kernel_abi_whitelists(abi_whitelist_paths);
+  REQUIRE(!suppr.empty());
+  test_suppressions_are_consistent(suppr,
+				   "^test_another_symbol$|^test_symbol$");
 }
 
-bool
-testTwoWhitelistsWithDuplicates()
+TEST_CASE("TwoWhitelistsWithDuplicates", "[whitelists]")
 {
   std::vector<std::string> abi_whitelist_paths;
   abi_whitelist_paths.push_back(whitelist_with_duplicate_entry);
   abi_whitelist_paths.push_back(whitelist_with_another_single_entry);
   suppressions_type suppr
       = gen_suppr_spec_from_kernel_abi_whitelists(abi_whitelist_paths);
-  return !suppr.empty()
-	 && suppressions_are_consistent(suppr,
-					"^test_another_symbol$|^test_symbol$");
+  REQUIRE(!suppr.empty());
+  test_suppressions_are_consistent(suppr,
+				   "^test_another_symbol$|^test_symbol$");
 }
 
-bool
-testWhitelistWithTwoSections()
+TEST_CASE("WhitelistWithTwoSections", "[whitelists]")
 {
   std::vector<std::string> abi_whitelist_paths;
   abi_whitelist_paths.push_back(whitelist_with_two_sections);
   suppressions_type suppr
       = gen_suppr_spec_from_kernel_abi_whitelists(abi_whitelist_paths);
-  return !suppr.empty()
-	 && suppressions_are_consistent(suppr,
-					"^test_symbol1$|^test_symbol2$");
-}
-
-int
-main(int, char*[])
-{
-  bool is_ok = true;
-
-  is_ok = is_ok && testNoWhitelist();
-  is_ok = is_ok && testSingleEntryWhitelist();
-  is_ok = is_ok && testWhitelistWithDuplicateEntries();
-  is_ok = is_ok && testTwoWhitelists();
-  is_ok = is_ok && testTwoWhitelistsWithDuplicates();
-  is_ok = is_ok && testWhitelistWithTwoSections();
-
-  return !is_ok;
+  REQUIRE(!suppr.empty());
+  test_suppressions_are_consistent(suppr, "^test_symbol1$|^test_symbol2$");
 }

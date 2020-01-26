@@ -72,7 +72,7 @@ runtestcanonicalizetypes.output.final.txt
 
 noinst_PROGRAMS= $(TESTS) testirwalker testdiff2 printdifftree
 noinst_SCRIPTS = mockfedabipkgdiff
-noinst_LTLIBRARIES = libtestutils.la
+noinst_LTLIBRARIES = libtestutils.la libcatch.la
 
 libtestutils_la_SOURCES=	\
 test-utils.h 			\
@@ -81,6 +81,8 @@ test-utils.cc
 libtestutils_la_CXXFLAGS=		\
 -DABIGAIL_SRC_DIR=\"${abs_top_srcdir}\"  	\
 -DABIGAIL_BUILD_DIR=\"${abs_top_builddir}\"
+
+libcatch_la_SOURCES = lib/catch.cc lib/catch.hpp
 
 runtestreadwrite_SOURCES=test-read-write.cc
 runtestreadwrite_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
@@ -138,7 +140,7 @@ runtesttoolsutils_SOURCES = test-tools-utils.cc
 runtesttoolsutils_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestkmiwhitelist_SOURCES = test-kmi-whitelist.cc
-runtestkmiwhitelist_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
+runtestkmiwhitelist_LDADD = libtestutils.la libcatch.la $(top_builddir)/src/libabigail.la
 
 runtestsvg_SOURCES=test-svg.cc
 runtestsvg_LDADD=$(top_builddir)/src/libabigail.la
