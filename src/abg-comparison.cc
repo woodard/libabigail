@@ -10530,19 +10530,19 @@ corpus_diff::has_changes() const
 {
   return (soname_changed()
 	  || architecture_changed()
-	  || priv_->deleted_fns_.size()
-	  || priv_->added_fns_.size()
-	  || priv_->changed_fns_map_.size()
-	  || priv_->deleted_vars_.size()
-	  || priv_->added_vars_.size()
-	  || priv_->changed_vars_map_.size()
-	  || priv_->added_unrefed_fn_syms_.size()
-	  || priv_->deleted_unrefed_fn_syms_.size()
-	  || priv_->added_unrefed_var_syms_.size()
-	  || priv_->deleted_unrefed_var_syms_.size()
-	  || priv_->deleted_unreachable_types_.size()
-	  || priv_->added_unreachable_types_.size()
-	  || priv_->changed_unreachable_types_.size());
+	  || !(priv_->deleted_fns_.empty()
+	       && priv_->added_fns_.empty()
+	       && priv_->changed_fns_map_.empty()
+	       && priv_->deleted_vars_.empty()
+	       && priv_->added_vars_.empty()
+	       && priv_->changed_vars_map_.empty()
+	       && priv_->added_unrefed_fn_syms_.empty()
+	       && priv_->deleted_unrefed_fn_syms_.empty()
+	       && priv_->added_unrefed_var_syms_.empty()
+	       && priv_->deleted_unrefed_var_syms_.empty()
+	       && priv_->deleted_unreachable_types_.empty()
+	       && priv_->added_unreachable_types_.empty()
+	       && priv_->changed_unreachable_types_.empty()));
 }
 
 /// Test if the current instance of @ref corpus_diff carries changes
