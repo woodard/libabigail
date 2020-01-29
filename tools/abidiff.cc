@@ -1083,7 +1083,7 @@ main(int argc, char* argv[])
 	    abigail::dwarf_reader::read_context_sptr ctxt =
 	      abigail::dwarf_reader::create_read_context
 	      (opts.file1, opts.prepared_di_root_paths1,
-	       env.get(), /*readalltypes=*/opts.show_all_types,
+	       env.get(), /*read_all_types=*/opts.show_all_types,
 	       opts.linux_kernel_mode);
 	    assert(ctxt);
 
@@ -1159,7 +1159,7 @@ main(int argc, char* argv[])
 	    abigail::dwarf_reader::read_context_sptr ctxt =
 	      abigail::dwarf_reader::create_read_context
 	      (opts.file2, opts.prepared_di_root_paths2,
-	       env.get(), /*readalltypes=*/opts.show_all_types,
+	       env.get(), /*read_all_types=*/opts.show_all_types,
 	       opts.linux_kernel_mode);
 	    assert(ctxt);
 	    abigail::dwarf_reader::set_show_stats(*ctxt, opts.show_stats);

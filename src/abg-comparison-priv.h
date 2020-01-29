@@ -1097,12 +1097,12 @@ struct corpus_diff::priv
   void count_leaf_type_changes(size_t &num_type_changes,
 			       size_t &num_type_changes_filtered);
 
-  void count_unreachable_types(size_t &num_added_unreachable_types,
-			       size_t &num_removed_unreachable_types,
-			       size_t &num_changed_unreachable_types,
-			       size_t &num_filtered_added_unreachable_types,
-			       size_t &num_filtered_removed_unreachable_types,
-			       size_t &num_filtered_changed_unreachable_types);
+  void count_unreachable_types(size_t &num_added,
+			       size_t &num_removed,
+			       size_t &num_changed,
+			       size_t &num_filtered_added,
+			       size_t &num_filtered_removed,
+			       size_t &num_filtered_changed);
 
   const vector<diff_sptr>&
   changed_unreachable_types_sorted() const;
