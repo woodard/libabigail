@@ -103,6 +103,10 @@ test-abidiff-exit/test2-filtered-removed-fns-v1.c \
 test-abidiff-exit/test2-filtered-removed-fns-v0.o \
 test-abidiff-exit/test2-filtered-removed-fns-v1.o \
 test-abidiff-exit/test2-filtered-removed-fns.abignore \
+test-abidiff-exit/test-loc-v0.bi \
+test-abidiff-exit/test-loc-v1.bi \
+test-abidiff-exit/test-loc-with-locs-report.txt \
+test-abidiff-exit/test-loc-without-locs-report.txt \
 \
 test-diff-dwarf/test0-v0.cc		\
 test-diff-dwarf/test0-v0.o			\

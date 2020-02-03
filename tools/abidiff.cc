@@ -1243,8 +1243,7 @@ main(int argc, char* argv[])
 
       if (t1)
 	{
-	  diff_context_sptr diff_ctxt(new diff_context);
-	  translation_unit_diff_sptr diff = compute_diff(t1, t2, diff_ctxt);
+	  translation_unit_diff_sptr diff = compute_diff(t1, t2, ctxt);
 	  if (diff->has_changes())
 	    diff->report(cout);
 	}

@@ -93,6 +93,24 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test2-filtered-removed-fns-report1.txt",
     "output/test-abidiff-exit/test2-filtered-removed-fns-report1.txt"
   },
+  {
+    "data/test-abidiff-exit/test-loc-v0.bi",
+    "data/test-abidiff-exit/test-loc-v1.bi",
+    "",
+    "",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    "data/test-abidiff-exit/test-loc-with-locs-report.txt",
+    "output/test-abidiff-exit/test-loc-with-locs-report.txt"
+  },
+  {
+    "data/test-abidiff-exit/test-loc-v0.bi",
+    "data/test-abidiff-exit/test-loc-v1.bi",
+    "",
+    "--no-show-locs",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    "data/test-abidiff-exit/test-loc-without-locs-report.txt",
+    "output/test-abidiff-exit/test-loc-without-locs-report.txt"
+  },
   {0, 0, 0 ,0,  abigail::tools_utils::ABIDIFF_OK, 0, 0}
 };
 
