@@ -8747,7 +8747,7 @@ public:
 
     do
       {
-	Dwarf_Addr addr, fn_addr;
+	Dwarf_Addr addr = 0, fn_addr = 0;
 	if ((offset = dwarf_ranges(die, offset, &base, &addr, &end_addr)) >= 0)
 	  {
 	    fn_addr = maybe_adjust_fn_sym_address(addr);
