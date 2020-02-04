@@ -2326,7 +2326,8 @@ find_vmlinux_path(const string&	from,
 /// binary that was found.
 ///
 /// @param module_paths output parameter.  The paths of the kernel
-/// module binaries that were found.
+/// module binaries that were found, sorted to impose a deterministic
+/// ordering.
 ///
 /// @return true if at least the path to the vmlinux binary was found.
 bool
@@ -2364,6 +2365,8 @@ get_binary_paths_from_kernel_dist(const string&	dist_root,
   string from = dist_root;
   if (find_vmlinux_and_module_paths(from, vmlinux_path, module_paths))
     found = true;
+
+  std::sort(module_paths.begin(), module_paths.end());
 
   return found;
 }
