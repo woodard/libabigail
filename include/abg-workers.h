@@ -45,9 +45,6 @@ namespace abigail
 namespace workers
 {
 
-class task;
-typedef shared_ptr<task> task_sptr;
-
 size_t get_number_of_threads();
 
 /// This represents a task to be performed.
@@ -60,12 +57,13 @@ size_t get_number_of_threads();
 class task
 {
 public:
-  task();
   virtual void
   perform() = 0;
 
-  virtual ~task();
+  virtual ~task(){};
 }; // end class task.
+
+typedef shared_ptr<task> task_sptr;
 
 /// This represents a queue of tasks to be performed.
 ///
