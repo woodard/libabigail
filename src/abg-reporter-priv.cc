@@ -486,30 +486,25 @@ represent(const var_diff_sptr	&diff,
     {
       if (local_only && d->has_local_changes())
 	{
-	  std::ostringstream out_buffer;
-	    out_buffer
-	      << indent << "type '" << get_pretty_representation(o->get_type())
+	  out << indent << "type '" << get_pretty_representation(o->get_type())
 	      << "' of '" << o->get_qualified_name()
 	      << "' changed";
 
 	  if (d->currently_reporting())
 	    {
-	      out_buffer << " as being reported\n";
-	      begin_with_and = true;
+	      out << " as being reported\n";
 	    }
 	  else if (d->reported_once())
 	    {
-	      out_buffer << " as reported earlier\n";
-	      begin_with_and = true;
+	      out << " as reported earlier\n";
 	    }
 	  else
 	    {
-	      out_buffer << ":\n";
-	      d->report(out_buffer, indent + "  ");
-	      begin_with_and = false;
+	      out << ":\n";
+	      d->report(out, indent + "  ");
 	    }
 
-	  out << out_buffer.str();
+	  begin_with_and = true;
 	  emitted = true;
 	}
       else

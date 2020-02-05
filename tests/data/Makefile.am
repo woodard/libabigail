@@ -107,6 +107,9 @@ test-abidiff-exit/test-loc-v0.bi \
 test-abidiff-exit/test-loc-v1.bi \
 test-abidiff-exit/test-loc-with-locs-report.txt \
 test-abidiff-exit/test-loc-without-locs-report.txt \
+test-abidiff-exit/test-no-stray-comma-report.txt \
+test-abidiff-exit/test-no-stray-comma-v0.o \
+test-abidiff-exit/test-no-stray-comma-v1.o \
 \
 test-diff-dwarf/test0-v0.cc		\
 test-diff-dwarf/test0-v0.o			\

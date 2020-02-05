@@ -111,6 +111,15 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-loc-without-locs-report.txt",
     "output/test-abidiff-exit/test-loc-without-locs-report.txt"
   },
+  {
+    "data/test-abidiff-exit/test-no-stray-comma-v0.o",
+    "data/test-abidiff-exit/test-no-stray-comma-v1.o",
+    "",
+    "--leaf-changes-only",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    "data/test-abidiff-exit/test-no-stray-comma-report.txt",
+    "output/test-abidiff-exit/test-no-stray-comma-report.txt"
+  },
   {0, 0, 0 ,0,  abigail::tools_utils::ABIDIFF_OK, 0, 0}
 };
 
