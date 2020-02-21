@@ -1,4 +1,4 @@
-// Copyright (C) 2013 Free Software Foundation, Inc.
+// Copyright (C) 2013-2019 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
