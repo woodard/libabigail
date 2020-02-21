@@ -119,6 +119,15 @@ public:
   suppresses_diff(const diff*) const = 0;
 
   virtual ~suppression_base();
+
+  friend bool
+  suppression_matches_soname(const string& soname,
+			     const suppression_base& suppr);
+
+  friend bool
+  suppression_matches_soname_or_filename(const string& soname,
+					 const string& filename,
+					 const suppression_base& suppr);
 }; // end class suppression_base
 
 void
@@ -825,6 +834,15 @@ is_file_suppression(const suppression_sptr);
 file_suppression_sptr
 file_is_suppressed(const string& file_path,
 		   const suppressions_type& suppressions);
+
+bool
+suppression_matches_soname(const string& soname,
+			   const suppression_base& suppr);
+
+bool
+suppression_matches_soname_or_filename(const string& soname,
+				       const string& filename,
+				       const suppression_base& suppr);
 
 const char*
 get_private_types_suppr_spec_label();

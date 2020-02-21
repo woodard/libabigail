@@ -1958,6 +1958,56 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test47-non-reachable-types-report-10.txt",
     "output/test-diff-suppr/test47-non-reachable-types-report-10.txt"
   },
+  {
+    "data/test-diff-suppr/libtest48-soname-abixml-v0.so",
+    "data/test-diff-suppr/libtest48-soname-abixml-v1.so.abi",
+    "",
+    "",
+    "",
+    "--no-default-suppression",
+    "data/test-diff-suppr/libtest48-soname-abixml-report-1.txt",
+    "output/test-diff-suppr/libtest48-soname-abixml-report-1.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest48-soname-abixml-v0.so",
+    "data/test-diff-suppr/libtest48-soname-abixml-v1.so.abi",
+    "",
+    "",
+    "data/test-diff-suppr/libtest48-soname-abixml-suppr.txt",
+    "--no-default-suppression",
+    "data/test-diff-suppr/libtest48-soname-abixml-report-2.txt",
+    "output/test-diff-suppr/libtest48-soname-abixml-report-2.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest48-soname-abixml-v0.so",
+    "data/test-diff-suppr/libtest48-soname-abixml-v1.so.abi",
+    "",
+    "",
+    "data/test-diff-suppr/libtest48-soname-abixml-suppr-2.txt",
+    "--no-default-suppression",
+    "data/test-diff-suppr/libtest48-soname-abixml-report-1.txt",
+    "output/test-diff-suppr/libtest48-soname-abixml-report-1.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest48-soname-abixml-v0.so",
+    "data/test-diff-suppr/libtest48-soname-abixml-v1.so.abi",
+    "",
+    "",
+    "data/test-diff-suppr/libtest48-soname-abixml-suppr-3.txt",
+    "--no-default-suppression",
+    "data/test-diff-suppr/libtest48-soname-abixml-report-2.txt",
+    "output/test-diff-suppr/libtest48-soname-abixml-report-2.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest48-soname-abixml-v0.so",
+    "data/test-diff-suppr/libtest48-soname-abixml-v1.so.abi",
+    "",
+    "",
+    "data/test-diff-suppr/libtest48-soname-abixml-suppr-4.txt",
+    "--no-default-suppression",
+    "data/test-diff-suppr/libtest48-soname-abixml-report-1.txt",
+    "output/test-diff-suppr/libtest48-soname-abixml-report-1.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}
 };

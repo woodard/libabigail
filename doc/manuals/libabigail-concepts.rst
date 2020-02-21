@@ -197,10 +197,10 @@ suppress ABI change reports for a particular kind of ABI artifact.
 $$$$$$$$$$$$$$$$$$$
 
 This directive prevents a given tool from loading a file (binary or
-not) if its file name matches certain properties.  Thus, if the tool
-is meant to compare the ABIs of two files, and if the directive
-prevents it from loading either one of the files, then no comparison
-is performed.
+abixml file) if its file name or other properties match certain
+properties.  Thus, if the tool is meant to compare the ABIs of two
+files, and if the directive prevents it from loading either one of the
+files, then no comparison is performed.
 
 Note that for the ``[suppress_file]`` directive to work, at least one
 of the following properties must be provided:
@@ -227,6 +227,28 @@ The potential properties of this sections are listed below:
   Prevents the system from loading the file which name does not match
   the regular expression specified as value of this property.
 
+
+* ``soname_regexp``
+
+  Usage:
+
+    ``soname_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+  Prevents the system from loading the file which contains a SONAME
+  property that matches the regular expression of this property.  Note
+  that this property also works on an abixml file if it contains a
+  SONAME property.
+
+* ``soname_not_regexp``
+
+  Usage:
+
+    ``soname_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+  Prevents the system from loading the file which contains a SONAME
+  property that does *NOT* match the regular expression of this
+  property.  Note that this property also works on an abixml file if
+  it contains a SONAME property.
 
 * ``label``
 

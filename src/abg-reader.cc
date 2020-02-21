@@ -794,6 +794,35 @@ public:
   get_suppressions() const
   {return const_cast<read_context*>(this)->get_suppressions();}
 
+  /// Test if there are suppression specifications (associated to the
+  /// current corpus) that match a given SONAME or file name.
+  ///
+  /// @param soname the SONAME to consider.
+  ///
+  /// @param the file name to consider.
+  ///
+  /// @return true iff there are suppression specifications (associated to the
+  /// current corpus) that match the SONAME denoted by @p soname or
+  /// the file name denoted by @p filename.
+  bool
+  corpus_is_suppressed_by_soname_or_filename(const string& soname,
+					     const string& filename)
+  {
+    using suppr::suppressions_type;
+    using suppr::file_suppression_sptr;
+    using suppr::is_file_suppression;
+
+    for (suppressions_type::const_iterator s = get_suppressions().begin();
+	 s != get_suppressions().end();
+	 ++s)
+      if (file_suppression_sptr suppr = is_file_suppression(*s))
+	if (suppr::suppression_matches_soname_or_filename(soname, filename,
+							  *suppr))
+	  return true;
+
+    return false;
+  }
+
   /// Add a given function to the set of exported functions of the
   /// current corpus, if the function satisfies the different
   /// constraints requirements.
@@ -1860,8 +1889,13 @@ read_corpus_from_input(read_context& ctxt)
       ctxt.set_exported_decls_builder(corp.get_exported_decls_builder().get());
 
       xml::xml_char_sptr path_str = XML_READER_GET_ATTRIBUTE(reader, "path");
+      string path;
+
       if (path_str)
-	corp.set_path(reinterpret_cast<char*>(path_str.get()));
+	{
+	  path = reinterpret_cast<char*>(path_str.get());
+	  corp.set_path(path);
+	}
 
       xml::xml_char_sptr architecture_str =
 	XML_READER_GET_ATTRIBUTE(reader, "architecture");
@@ -1871,8 +1905,24 @@ read_corpus_from_input(read_context& ctxt)
 
       xml::xml_char_sptr soname_str =
 	XML_READER_GET_ATTRIBUTE(reader, "soname");
+      string soname;
+
       if (soname_str)
-	corp.set_soname(reinterpret_cast<char*>(soname_str.get()));
+	{
+	  soname = reinterpret_cast<char*>(soname_str.get());
+	  corp.set_soname(soname);
+	}
+
+      // Apply suppression specifications here to honour:
+      //
+      //   [suppress_file]
+      //     (soname_regexp
+      //      |soname_not_regexp
+      //      |file_name_regexp
+      //      |file_name_not_regexp) = <soname-or-file-name>
+      if ((!soname.empty() || !path.empty())
+	  && ctxt.corpus_is_suppressed_by_soname_or_filename(soname, path))
+	return nil;
 
       node = xmlTextReaderExpand(reader.get());
       if (!node)

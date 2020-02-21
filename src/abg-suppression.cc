@@ -4335,13 +4335,38 @@ read_file_suppression(const ini::config::section& section)
     ? file_name_not_regex_prop->get_value()->as_string()
     : "";
 
-  if (file_name_regex_str.empty()
-      && file_name_not_regex_str.empty())
-    return result;
+  ini::simple_property_sptr soname_regex_prop =
+    is_simple_property(section.find_property("soname_regexp"));
+  string soname_regex_str =
+    soname_regex_prop ? soname_regex_prop->get_value()->as_string() : "";
 
+  ini::simple_property_sptr soname_not_regex_prop =
+    is_simple_property(section.find_property("soname_not_regexp"));
+  string soname_not_regex_str =
+    soname_not_regex_prop
+    ? soname_not_regex_prop->get_value()->as_string()
+    : "";
+
+  if (file_name_regex_str.empty()
+      && file_name_not_regex_str.empty()
+      && soname_regex_str.empty()
+      && soname_not_regex_str.empty())
+    return result;
   result.reset(new file_suppression(label_str,
 				    file_name_regex_str,
 				    file_name_not_regex_str));
+
+  if (!soname_regex_str.empty())
+    {
+      result->set_soname_regex_str(soname_regex_str);
+      result->set_drops_artifact_from_ir(true);
+    }
+
+  if (!soname_not_regex_str.empty())
+    {
+      result->set_soname_not_regex_str(soname_not_regex_str);
+      result->set_drops_artifact_from_ir(true);
+    }
 
   return result;
 }
@@ -4380,6 +4405,42 @@ file_is_suppressed(const string& file_path,
 	return s;
 
   return file_suppression_sptr();
+}
+
+/// Test if a given SONAME is matched by a given suppression
+/// specification.
+///
+/// @param soname the SONAME to consider.
+///
+/// @param suppr the suppression specification to consider.
+///
+/// @return true iff a given SONAME is matched by a given suppression
+/// specification.
+bool
+suppression_matches_soname(const string& soname,
+			   const suppression_base& suppr)
+{
+  return suppr.priv_->matches_soname(soname);
+}
+
+/// Test if a given SONAME or file name is matched by a given
+/// suppression specification.
+///
+/// @param soname the SONAME to consider.
+///
+/// @param filename the file name to consider.
+///
+/// @param suppr the suppression specification to consider.
+///
+/// @return true iff either @p soname or @p filename is matched by the
+/// suppression specification @p suppr.
+bool
+suppression_matches_soname_or_filename(const string& soname,
+				       const string& filename,
+				       const suppression_base& suppr)
+{
+  return (suppression_matches_soname(soname, suppr)
+	 || suppr.priv_->matches_binary_name(filename));
 }
 
 /// @return the name of the artificial private type suppression

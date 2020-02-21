@@ -1273,6 +1273,18 @@ test-diff-suppr/test47-non-reachable-types-v1.o \
 test-diff-suppr/test47-non-reachable-types-v0.o.alltypes.abixml \
 test-diff-suppr/test47-non-reachable-types-v1.o.alltypes.abixml \
 test-diff-suppr/test47-non-reachable-types-report-10.txt \
+test-diff-suppr/libtest48-soname-abixml-v0.so \
+test-diff-suppr/libtest48-soname-abixml-v0.so.abi \
+test-diff-suppr/libtest48-soname-abixml-v1.so \
+test-diff-suppr/libtest48-soname-abixml-v1.so.abi \
+test-diff-suppr/test48-soname-abixml-v0.c \
+test-diff-suppr/test48-soname-abixml-v1.c \
+test-diff-suppr/libtest48-soname-abixml-report-1.txt \
+test-diff-suppr/libtest48-soname-abixml-report-2.txt \
+test-diff-suppr/libtest48-soname-abixml-suppr.txt \
+test-diff-suppr/libtest48-soname-abixml-suppr-2.txt \
+test-diff-suppr/libtest48-soname-abixml-suppr-3.txt \
+test-diff-suppr/libtest48-soname-abixml-suppr-4.txt \
 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1.abi \
