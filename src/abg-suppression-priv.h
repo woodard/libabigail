@@ -179,32 +179,72 @@ public:
     return soname_not_regex_;
   }
 
+  /// Test if the current suppression matches a given SONAME.
+  ///
+  /// @param soname the SONAME to consider.
+  ///
+  /// @return true iff the suppression matches the SONAME denoted by
+  /// @p soname.
+  ///
+  /// Note that if the suppression contains no property that is
+  /// related to SONAMEs, the function returns false.
   bool
   matches_soname(const string& soname) const
   {
+    bool has_regexp = false;
     if (sptr_utils::regex_t_sptr regexp = get_soname_regex())
-      if (regexec(regexp.get(), soname.c_str(), 0, NULL, 0) != 0)
-	return false;
+      {
+	has_regexp = true;
+	if (regexec(regexp.get(), soname.c_str(), 0, NULL, 0) != 0)
+	  return false;
+      }
 
     if (sptr_utils::regex_t_sptr regexp = get_soname_not_regex())
-      if (regexec(regexp.get(), soname.c_str(), 0, NULL, 0) == 0)
+      {
+	has_regexp = true;
+	if (regexec(regexp.get(), soname.c_str(), 0, NULL, 0) == 0)
+	  return false;
+      }
+
+      if (!has_regexp)
 	return false;
 
     return true;
   }
 
+  /// Test if the current suppression matches the full file path to a
+  /// given binary.
+  ///
+  /// @param binary_name the full path to the binary.
+  ///
+  /// @return true iff the suppression matches the path denoted by @p
+  /// binary_name.
+  ///
+  /// Note that if the suppression contains no property that is
+  /// related to file name, the function returns false.
   bool
   matches_binary_name(const string& binary_name) const
   {
+    bool has_regexp = false;
+
     if (sptr_utils::regex_t_sptr regexp = get_file_name_regex())
-      if (regexec(regexp.get(), binary_name.c_str(),
-		  0, NULL, 0) != 0)
-	return false;
+      {
+	has_regexp = true;
+	if (regexec(regexp.get(), binary_name.c_str(),
+	  0, NULL, 0) != 0)
+	  return false;
+      }
 
     if (sptr_utils::regex_t_sptr regexp = get_file_name_not_regex())
-      if (regexec(regexp.get(), binary_name.c_str(),
-		  0, NULL, 0) == 0)
-	return false;
+      {
+	has_regexp = true;
+	if (regexec(regexp.get(), binary_name.c_str(),
+	  0, NULL, 0) == 0)
+	  return false;
+      }
+
+    if (!has_regexp)
+      return false;
 
     return true;
   }

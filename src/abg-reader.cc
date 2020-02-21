@@ -948,10 +948,22 @@ public:
   suppression_can_match(const suppr::suppression_base& s) const
   {
     corpus_sptr corp = get_corpus();
-    if (s.priv_->matches_soname(corp->get_soname())
-	&& s.priv_->matches_binary_name(corp->get_path()))
-      return true;
-    return false;
+
+    if (!s.priv_->matches_soname(corp->get_soname()))
+      if (s.has_soname_related_property())
+	// The suppression has some SONAME related properties, but
+	// none of them match the SONAME of the current binary.  So
+	// the suppression cannot match the current binary.
+	return false;
+
+    if (!s.priv_->matches_binary_name(corp->get_path()))
+      if (s.has_file_name_related_property())
+	// The suppression has some file_name related properties, but
+	// none of them match the file name of the current binary.  So
+	// the suppression cannot match the current binary.
+	return false;
+
+    return true;
   }
 
   /// Test whether if a given function suppression matches a function

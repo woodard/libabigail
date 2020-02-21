@@ -97,6 +97,9 @@ public:
   const string&
   get_file_name_not_regex_str() const;
 
+  bool
+  has_file_name_related_property() const;
+
   void
   set_soname_regex_str(const string& regexp);
 
@@ -108,6 +111,9 @@ public:
 
   const string&
   get_soname_not_regex_str() const;
+
+  bool
+  has_soname_related_property() const;
 
   virtual bool
   suppresses_diff(const diff*) const = 0;

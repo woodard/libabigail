@@ -184,6 +184,18 @@ const string&
 suppression_base::get_file_name_not_regex_str() const
 {return priv_->file_name_not_regex_str_;}
 
+/// Test if the current suppression has a property related to file
+/// name.
+///
+/// @return true iff the current suppression has either a
+/// file_name_regex or a file_name_not_regex property.
+bool
+suppression_base::has_file_name_related_property() const
+{
+  return (!(get_file_name_regex_str().empty()
+	    && get_file_name_not_regex_str().empty()));
+}
+
 /// Setter of the "soname_regex_str property of the current instance
 /// of @ref suppression_base.
 ///
@@ -234,6 +246,17 @@ const string&
 suppression_base::get_soname_not_regex_str() const
 {return priv_->soname_not_regex_str_;}
 
+/// Test if the current suppression has a property related to SONAMEs.
+///
+/// @return true iff the current suppression has either a soname_regex
+/// or a soname_not_regex property.
+bool
+suppression_base::has_soname_related_property() const
+{
+  return (!(get_soname_regex_str().empty()
+	    && get_soname_not_regex_str().empty()));
+}
+
 /// Check if the SONAMEs of the two binaries being compared match the
 /// content of the properties "soname_regexp" and "soname_not_regexp"
 /// of the current suppression specification.
@@ -253,6 +276,9 @@ sonames_of_binaries_match(const suppression_base& suppr,
   // Check if the sonames of the binaries match
   string first_soname = ctxt.get_corpus_diff()->first_corpus()->get_soname(),
     second_soname = ctxt.get_corpus_diff()->second_corpus()->get_soname();
+
+  if (!suppr.has_soname_related_property())
+    return false;
 
   if (!suppr.priv_->matches_soname(first_soname)
       && !suppr.priv_->matches_soname(second_soname))
@@ -280,6 +306,9 @@ names_of_binaries_match(const suppression_base& suppr,
    // Check if the file names of the binaries match
   string first_binary_path = ctxt.get_corpus_diff()->first_corpus()->get_path(),
     second_binary_path = ctxt.get_corpus_diff()->second_corpus()->get_path();
+
+  if (!suppr.has_file_name_related_property())
+    return false;
 
   if (!suppr.priv_->matches_binary_name(first_binary_path)
       && !suppr.priv_->matches_binary_name(second_binary_path))
@@ -850,17 +879,18 @@ type_suppression::suppresses_type(const type_base_sptr& type,
 {
   if (ctxt)
     {
-      // Check if the names of the binaries match
+      // Check if the names of the binaries match the suppression
       if (!names_of_binaries_match(*this, *ctxt))
-	return false;
+	if (has_file_name_related_property())
+	  return false;
 
-      // Check if the sonames of the binaries match
+      // Check if the sonames of the binaries match the suppression
       if (!sonames_of_binaries_match(*this, *ctxt))
-	return false;
+	if (has_soname_related_property())
+	  return false;
     }
 
   return suppresses_type(type);
-
 }
 
 /// Test if an instance of @ref type_suppression matches a given type.
@@ -2419,16 +2449,19 @@ function_suppression::suppresses_function(const function_decl* fn,
   if (!(get_change_kind() & k))
     return false;
 
-  // Check if the name and soname of the binaries match
+  // Check if the name and soname of the binaries match the current
+  // suppr spec
   if (ctxt)
     {
-      // Check if the name of the binaries match
+      // Check if the name of the binaries match the current suppr spec
       if (!names_of_binaries_match(*this, *ctxt))
-	return false;
+	if (has_file_name_related_property())
+	  return false;
 
-      // Check if the soname of the binaries match
+      // Check if the soname of the binaries match the current suppr spec
       if (!sonames_of_binaries_match(*this, *ctxt))
-	return false;
+	if (has_soname_related_property())
+	  return false;
     }
 
   string fname = fn->get_qualified_name();
@@ -2752,16 +2785,21 @@ function_suppression::suppresses_function_symbol(const elf_symbol* sym,
   ABG_ASSERT(k & function_suppression::ADDED_FUNCTION_CHANGE_KIND
 	 || k & function_suppression::DELETED_FUNCTION_CHANGE_KIND);
 
-  // Check if the name and soname of the binaries match
+  // Check if the name and soname of the binaries match the current
+  // suppr spect
   if (ctxt)
     {
-      // Check if the name of the binaries match
+      // Check if the name of the binaries match the current
+      // suppr spect
       if (!names_of_binaries_match(*this, *ctxt))
-	return false;
+	if (has_file_name_related_property())
+	  return false;
 
-      // Check if the soname of the binaries match
+      // Check if the soname of the binaries match the current
+      // suppr spect
       if (!sonames_of_binaries_match(*this, *ctxt))
-	return false;
+	if (has_soname_related_property())
+	  return false;
     }
 
   string sym_name = sym->get_name(), sym_version = sym->get_version().str();
@@ -3715,13 +3753,17 @@ variable_suppression::suppresses_variable(const var_decl* var,
   // Check if the name and soname of the binaries match
   if (ctxt)
     {
-      // Check if the name of the binaries match
+      // Check if the name of the binaries match the current
+      // suppr spec
       if (!names_of_binaries_match(*this, *ctxt))
-	return false;
+	if (has_file_name_related_property())
+	  return false;
 
-      // Check if the soname of the binaries match
+      // Check if the soname of the binaries match the current suppr
+      // spec
       if (!sonames_of_binaries_match(*this, *ctxt))
-	return false;
+	if (has_soname_related_property())
+	  return false;
     }
 
   string var_name = var->get_qualified_name();
@@ -3871,16 +3913,20 @@ variable_suppression::suppresses_variable_symbol(const elf_symbol* sym,
   ABG_ASSERT(k & ADDED_VARIABLE_CHANGE_KIND
 	 || k & DELETED_VARIABLE_CHANGE_KIND);
 
-  // Check if the name and soname of the binaries match
+  // Check if the name and soname of the binaries match the current
+  // suppr spec.
   if (ctxt)
     {
-      // Check if the name of the binaries match
+      // Check if the name of the binaries match the current suppr
+      // spec
       if (!names_of_binaries_match(*this, *ctxt))
-	return false;
+	if (has_file_name_related_property())
+	  return false;
 
-      // Check if the soname of the binaries match
+      // Check if the soname of the binaries match the current suppr spec
       if (!sonames_of_binaries_match(*this, *ctxt))
-	return false;
+	if (has_soname_related_property())
+	  return false;
     }
 
   string sym_name = sym->get_name(), sym_version = sym->get_version().str();
@@ -4227,15 +4273,26 @@ file_suppression::suppresses_file(const string& file_path)
   string fname;
   tools_utils::base_name(file_path, fname);
 
+  bool has_regexp = false;
+
   if (sptr_utils::regex_t_sptr regexp =
       suppression_base::priv_->get_file_name_regex())
-    if (regexec(regexp.get(), fname.c_str(), 0, NULL, 0) != 0)
-      return false;
+    {
+      has_regexp = true;
+      if (regexec(regexp.get(), fname.c_str(), 0, NULL, 0) != 0)
+	return false;
+    }
 
   if (sptr_utils::regex_t_sptr regexp =
       suppression_base::priv_->get_file_name_not_regex())
-    if (regexec(regexp.get(), fname.c_str(), 0, NULL, 0) == 0)
-      return false;
+    {
+      has_regexp = true;
+      if (regexec(regexp.get(), fname.c_str(), 0, NULL, 0) == 0)
+	return false;
+    }
+
+  if (!has_regexp)
+    return false;
 
   return true;
 }
