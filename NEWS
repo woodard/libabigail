@@ -1,3 +1,153 @@
+1.7
+==
+Dodji Seketeli:
+      Internal pretty repr of union cannot be flat representation
+      Fix anonymous union constructed under the wrong context
+      Propagate private type diff category through refs/qualified type diffs
+      Add test for the fix for PR24410
+      Fix "Add test for the fix for PR24410"
+      Bug 24430 - Fold away const for array types
+      Bug 24431 - ELF reader can't interpret ksymtab with Kernel 4.19+
+      Bug 24431 - ELF reader fails to determine __ksymtab format
+      Enable building with AddressSanitizer activated
+      Fix a memory leak in real_path
+      Delay canonicalization for array and qualified types
+      abg-tools-utils.cc: Plug a leak in find_file_under_dir
+      Add --enable-{asan,ubsan} configure options
+      Canonicalize types non tied to any DWARF DIE
+      Don't try to de-duplicate all anonymous struct DIEs
+      Use canonical types hash maps for type IDs in abixml writer
+      Handle several member anonymous types of the same kind
+      Better handle several anonymous types of the same kind
+      Fix logic of get_binary_load_address
+      Handle Linux kernel binaries with no __ksymtab section
+      Bug 24560 - Assertion failure on an abixml with an anonymous type
+      Bug 24552 - abidiff fails comparing a corpus against a corpus group
+      Take anonymous scopes into account when comparing decls
+      [dwarf-reader] const-ify Dwarf_Die* use in many places
+      [dwarf-reader] Re-use function types inside a given TU
+      [dwarf-reader] Better use of linkage name for fn decl de-duplication
+      [dwarf-reader] Optimize speed of compare_as_decl_dies
+      [dwarf-reader] Fix indentation in compare_dies_string_attribute_value
+      Fully account for anonymous-ness of scopes when comparing decl names
+      Bug 24731 - Wrongly reporting union members order change
+      Make abidiff --harmless show harmless changes in unions
+      [dwarf-reader] Constify the first parameter of maybe_canonicalize_type
+      [dwarf-reader] Make sure to canonicalize anonymous types
+      Implement a poor-man's RTTI for performance
+      [xml-writter] Avoid using RTTI when dynamically hashing types
+      [xml-writter] Speedup function_type::get_cached_name
+      [xml-writer] Remove a useless kludge
+      Misc indent cleanup
+      Implement fast comparison of Linux Kernel types when applicable
+      [ir] Fix indentation and add comments
+      Add timing to the verbose logs of abidw
+      Bug 24787 - Filter out enum changes into compatible integer types
+      Serialize canonical types to avoid testing if types have been emitted
+      Detect the presence of R_AARCH64_{ABS64, PREL32} macros
+      Bug 25007 - Don't use section-relative symbol values on ET_REL binaries
+      Remove the elf_symbol::get_value property
+      Guard testing v4.19+ AARCH64 kernel module loading for EL6 support
+      Fix reading of relocation sections when endianness mismatches
+      [has_type_change] Better detect type size changes
+      Better propagation of suppressed-ness to function types
+      Support the "name_not_regexp" property in the [suppress_type] section
+      PR25042 - Support string form DW_FORM_strx{1,4} from DWARF 5
+      Fix a typo in a comment of abg-dwar-reader.cc
+      Fix thinkos in DW_FORM_strx detection in configure.ac
+      PR25058 - Support decl DIEs referring to symbols using DW_AT_ranges
+      PR25058 - Better support fn DIEs referring to symbols using DW_AT_ranges
+      [abg-comparison.cc] Fix comments typo
+      Support symbol_name_not_regexp in [suppress_{function, variable}]
+      Bug 25095 - Apply symbol white lists to ELF symbols
+      Bug 25128 - Leaf diff reporter shouldn't compare decl-only classes
+      Bug 25128 - Handle decl-only classes that differ only in size
+      Small style fix in abg-default-reporter.cc
+      Bug 24690 - Support comparing non-reachable types of a binary
+      Misc typo fixes
+      Bug 25409 - Fix reading layout-offset-in-bits attribute of data-member
+      suppression: Better handle soname/filename properties evaluation
+      abixml-reader: Support SONAME related properties on file suppression
+      tools-utils: Drop redefinition of fopen when BAD_FTS is defined
+      gen-changelog.py: Update the script for python3
+
+Giuliano Procida:
+      Remove redundant mention of libtool in COMPILING documentation.
+      Fix typo in COMPILING.
+      Don't ignore options when diffing translation units (.bi files).
+      Sort kernel module object files before processing them.
+      Fix stray comma in leaf-changes-only mode.
+
+Jessica Yu:
+      Support pre and post v4.19 ksymtabs for Linux kernel modules
+
+Mark Wielaard:
+      Fix an undefined behaviour in has_var_type_cv_qual_change
+      Don't try to read a build_id as string in find_alt_debug_info_link.
+
+Matthias Maennich:
+      dwarf-reader: fix undefined behaviour in get_binary_load_address
+      Add .clang-format approximation
+      abg-writer: Simplify 'annotate' propagation
+      Add deprecation facilities
+      abg-writer: Refactor write_translation_unit API
+      abg-writer: Refactor write_corpus API
+      abg-writer: Refactor write_corpus_group API
+      write_context: allow mutating the ostream used
+      abidw: Consolidate setting options
+      Make write_architecture and write_corpus_path flags in the write_context
+      abidw: add option to omit the compilation directory
+      abidw: add option to only emit file names (--short-locs)
+      abg-writer: drop deprecated API
+      .gitignore: Add libabigail-?.* *.orig files
+      .clang-format: Add more options for match existing coding style
+      abg-reporter.h: add missing includes / using declarations
+      Drop requirement to compile with GNU extensions
+      Update tests/.gitignore to ignore runtesttoolsutils
+      Add compatibility layer for C++11 mode
+      abg-tools-utils: add missing header include guards
+      Ensure a consistent C++ standard use
+      abg-dwarf-reader: detect kernel modules without exports as such
+      dwarf-reader: read_corpus_from_elf: unconditionally load elf properties
+      kmidiff: fix help message
+      dwarf-reader: refactor try_reading_first_ksymtab_entry_using{pre,}_v4_19_format
+      dwarf-reader: add support for symbol namespaces in ksymtab entries
+      abg-dwarf-reader: resolve relocation sections by index
+      dwarf-reader: relax restriction about relocation sections in try_reading_first_ksymtab_entry
+      Add (undocumented) support for version suffixes
+      abidiff/kmidiff: do not default-suppress added symbols
+      abg-reader: handle empty corpus nodes in xml representation
+      corpus: is_empty: consider actual translation unit contents
+      writer: completely skip over empty corpora
+      KMI Whitelists: Add functionality to make whitelists additive
+      KMI Whitelists: Drop old whitelist extraction methods
+      clang-format: Better approximation for binary operators and assignments
+      dwarf-reader: handle symtab.section_header.sh_entsize == 0
+      dwarf-reader: handle binaries with missing symtab
+      Fix / add include guards
+      abg-fwd: drop duplicate forward declaration for corpus_sptr
+      Testing: add Catch Unit test framework
+      Fix some parameter name inconsistencies
+      abg-comparison: prefer .empty() over implicit bool conversion of .size()
+      abg-dwarf-reader: zero initialize local Dwarf_Addr values
+      abg-workers: Rework the worker queue to improve concurrent behaviour
+      abg-fwd.h: fix mismatched tags for ir_node_visitor
+      abilint: fix return types bool -> int
+      abg-reader: clarify boolean use of assignment
+      diff-utils: point: fix postfix decrement/increment operator
+      add missing virtual destructors
+      viz-dot: remove unused members from dot
+      suppressions: drop unused parameter from type_is_suppressed
+      ir: drop unused data members from {environment,qualified_name}_setter
+      distinct_diff: avoid expression with side effects within typeid
+      dwarf-reader: fix recursion in expr_result::operator&
+      Update .gitignore files to ignore typical dev side products
+      dwarf-reader: Fix comments for try_reading_first_ksymtab_entry_using_{pre_,}v4_19_format
+      dwarf-reader: templatize read_int_from_array_of_bytes
+      Bug 24431 Read 32bit values when testing for the v4.19 symbol table format
+      Bug 24431 Treat __ksymtab as int32_t for v4.19+ kernels
+
+
 1.6
 ===
 Dodji Seketeli:

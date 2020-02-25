@@ -32,6 +32,8 @@
 // For package configuration macros.
 #include "config.h"
 
+// In case we don't have a bad fts then we need to include fts.h after
+// config.h.
 #ifndef BAD_FTS
   #include <sys/types.h>
   #include <fts.h>
