@@ -73,23 +73,23 @@ def process_commit(lines, files):
       fields[-1] = '<tim@centricular.net>'
 
     top_line = ' '.join(fields)
-    print top_line.strip()
-    print
+    print(top_line.strip())
+    print()
 
     if subject_line_index > 0:
-        print '\t', lines[subject_line_index]
+        print('\t%s' % lines[subject_line_index].strip())
 
     if not fileincommit:
         for f in files:
-            print '\t* %s:' % f
-        print
+            print('\t* %s:' % f.strip())
+        print()
 
     if first_cl_body_line_index > 0:
         for l in lines[first_cl_body_line_index:]:
             if l.startswith('Signed-off-by:'):
                 continue
-            print '\t', l
-        print
+            print('\t%s' % l.strip())
+        print()
 
 def output_commits():
     cmd = ['git', 'log', '--pretty=format:--START-COMMIT--%H%n%ai  %an <%ae>%n%n%s%n%b%n--END-COMMIT--',
@@ -102,7 +102,9 @@ def output_commits():
     else:
         cmd.extend(["%s..HEAD" % (start_tag)])
 
-    p = subprocess.Popen(args=cmd, shell=False, stdout=subprocess.PIPE)
+    p = subprocess.Popen(args=cmd, shell=False,
+                         stdout=subprocess.PIPE,
+                         text=True)
     buf = []
     files = []
     filemode = False
@@ -113,7 +115,7 @@ def output_commits():
             hash = lin[16:].strip()
             try:
                 rel = release_refs[hash]
-                print "=== release %d.%d.%d ===\n" % (int(rel[0]), int(rel[1]), int(rel[2]))
+                print("=== release %d.%d.%d ===\n" % (int(rel[0]), int(rel[1]), int(rel[2])))
             except:
                 pass
             buf = []
@@ -133,9 +135,11 @@ def get_rel_tags():
     reltagre = re.compile("^([a-z0-9]{40}) refs\/tags\/GNET-([0-9]+)[-_.]([0-9]+)[-_.]([0-9]+)")
 
     cmd = ['git', 'show-ref', '--tags', '--dereference']
-    p = subprocess.Popen(args=cmd, shell=False, stdout=subprocess.PIPE)
-    for lin in p.stdout.readlines():
-       match = reltagre.search (lin)
+    p = subprocess.Popen(args=cmd, shell=False,
+                         stdout=subprocess.PIPE,
+                         text=True)
+    for lin in p.stdout:
+       match = reltagre.search(lin)
        if match:
            (sha, maj, min, nano) = match.groups()
            release_refs[sha] = (maj, min, nano)
@@ -143,9 +147,11 @@ def get_rel_tags():
 def find_start_tag():
     starttagre = re.compile("^([a-z0-9]{40}) refs\/tags\/CHANGELOG_START")
     cmd = ['git', 'show-ref', '--tags']
-    p = subprocess.Popen(args=cmd, shell=False, stdout=subprocess.PIPE)
-    for lin in p.stdout.readlines():
-       match = starttagre.search (lin)
+    p = subprocess.Popen(args=cmd, shell=False,
+                         stdout=subprocess.PIPE,
+                         text=True)
+    for lin in p.stdout:
+       match = starttagre.search(lin)
        if match:
            return match.group(1)
     return None
