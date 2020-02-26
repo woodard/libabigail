@@ -32,6 +32,11 @@
 // For package configuration macros.
 #include "config.h"
 
+#ifndef BAD_FTS
+  #include <sys/types.h>
+  #include <fts.h>
+#endif
+
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -45,18 +50,6 @@
 #include <ctype.h>
 #include <errno.h>
 #include <libgen.h>
-// If fts.h is included before config.h, its indirect inclusions may
-// not give us the right LFS aliases of these functions, so map them
-// manually.
-#ifdef BAD_FTS
-  #ifdef _FILE_OFFSET_BITS
-    #define open open64
-    #define fopen fopen64
-  #endif
-#else
-  #include <sys/types.h>
-  #include <fts.h>
-#endif
 
 #include <fstream>
 #include <iostream>
