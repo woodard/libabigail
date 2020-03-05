@@ -11,7 +11,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 17 functions with some indirect sub-type change:
 
-  [C]'method sigc::connection::connection(sigc::slot_base&)' has some indirect sub-type changes:
+  [C] 'method sigc::connection::connection(sigc::slot_base&)' has some indirect sub-type changes:
     parameter 1 of type 'sigc::slot_base&' has sub-type changes:
       in referenced type 'class sigc::slot_base':
         type size hasn't changed
@@ -62,7 +62,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 
 
-  [C]'method sigc::connection& sigc::connection::operator=(const sigc::connection&)' has some indirect sub-type changes:
+  [C] 'method sigc::connection& sigc::connection::operator=(const sigc::connection&)' has some indirect sub-type changes:
     return type changed:
       in referenced type 'struct sigc::connection':
         type size hasn't changed
@@ -74,11 +74,11 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in referenced type 'const sigc::connection':
         unqualified underlying type 'struct sigc::connection' changed, as reported earlier
 
-  [C]'method void sigc::connection::set_slot(sigc::slot_base*)' has some indirect sub-type changes:
+  [C] 'method void sigc::connection::set_slot(sigc::slot_base*)' has some indirect sub-type changes:
     parameter 1 of type 'sigc::slot_base*' has sub-type changes:
       pointed to type 'class sigc::slot_base' changed, as reported earlier
 
-  [C]'method sigc::internal::signal_impl::iterator_type sigc::internal::signal_impl::connect(const sigc::slot_base&)' has some indirect sub-type changes:
+  [C] 'method sigc::internal::signal_impl::iterator_type sigc::internal::signal_impl::connect(const sigc::slot_base&)' has some indirect sub-type changes:
     return type changed:
       underlying type 'typedef std::list<sigc::slot_base, std::allocator<sigc::slot_base> >::iterator' changed:
         typedef name changed from std::list<sigc::slot_base, std::allocator<sigc::slot_base> >::iterator to std::__cxx11::list<sigc::slot_base, std::allocator<sigc::slot_base> >::iterator
@@ -87,13 +87,13 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in referenced type 'const sigc::slot_base':
         unqualified underlying type 'class sigc::slot_base' changed, as reported earlier
 
-  [C]'method sigc::internal::signal_impl::iterator_type sigc::internal::signal_impl::erase(sigc::internal::signal_impl::iterator_type)' has some indirect sub-type changes:
+  [C] 'method sigc::internal::signal_impl::iterator_type sigc::internal::signal_impl::erase(sigc::internal::signal_impl::iterator_type)' has some indirect sub-type changes:
     return type changed:
       underlying type 'typedef std::list<sigc::slot_base, std::allocator<sigc::slot_base> >::iterator' changed, as reported earlier
     parameter 1 of type 'typedef sigc::internal::signal_impl::iterator_type' changed:
       underlying type 'typedef std::list<sigc::slot_base, std::allocator<sigc::slot_base> >::iterator' changed, as reported earlier
 
-  [C]'method sigc::internal::signal_impl::iterator_type sigc::internal::signal_impl::insert(sigc::internal::signal_impl::iterator_type, const sigc::slot_base&)' has some indirect sub-type changes:
+  [C] 'method sigc::internal::signal_impl::iterator_type sigc::internal::signal_impl::insert(sigc::internal::signal_impl::iterator_type, const sigc::slot_base&)' has some indirect sub-type changes:
     return type changed:
       underlying type 'typedef std::list<sigc::slot_base, std::allocator<sigc::slot_base> >::iterator' changed, as reported earlier
     parameter 1 of type 'typedef sigc::internal::signal_impl::iterator_type' changed:
@@ -102,20 +102,20 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in referenced type 'const sigc::slot_base':
         unqualified underlying type 'class sigc::slot_base' changed, as reported earlier
 
-  [C]'method sigc::signal_base::iterator_type sigc::signal_base::connect(const sigc::slot_base&)' has some indirect sub-type changes:
+  [C] 'method sigc::signal_base::iterator_type sigc::signal_base::connect(const sigc::slot_base&)' has some indirect sub-type changes:
     return type changed:
       underlying type 'typedef sigc::internal::signal_impl::iterator_type' changed, as reported earlier
     parameter 1 of type 'const sigc::slot_base&' has sub-type changes:
       in referenced type 'const sigc::slot_base':
         unqualified underlying type 'class sigc::slot_base' changed, as reported earlier
 
-  [C]'method sigc::signal_base::iterator_type sigc::signal_base::erase(sigc::signal_base::iterator_type)' has some indirect sub-type changes:
+  [C] 'method sigc::signal_base::iterator_type sigc::signal_base::erase(sigc::signal_base::iterator_type)' has some indirect sub-type changes:
     return type changed:
       underlying type 'typedef sigc::internal::signal_impl::iterator_type' changed, as reported earlier
     parameter 1 of type 'typedef sigc::signal_base::iterator_type' changed:
       underlying type 'typedef sigc::internal::signal_impl::iterator_type' changed, as reported earlier
 
-  [C]'method sigc::internal::signal_impl* sigc::signal_base::impl()' has some indirect sub-type changes:
+  [C] 'method sigc::internal::signal_impl* sigc::signal_base::impl()' has some indirect sub-type changes:
     return type changed:
       in pointed to type 'struct sigc::internal::signal_impl':
         type size changed from 192 to 256 (in bits)
@@ -139,7 +139,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 
 
-  [C]'method sigc::signal_base::iterator_type sigc::signal_base::insert(sigc::signal_base::iterator_type, const sigc::slot_base&)' has some indirect sub-type changes:
+  [C] 'method sigc::signal_base::iterator_type sigc::signal_base::insert(sigc::signal_base::iterator_type, const sigc::slot_base&)' has some indirect sub-type changes:
     return type changed:
       underlying type 'typedef sigc::internal::signal_impl::iterator_type' changed, as reported earlier
     parameter 1 of type 'typedef sigc::signal_base::iterator_type' changed:
@@ -148,7 +148,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in referenced type 'const sigc::slot_base':
         unqualified underlying type 'class sigc::slot_base' changed, as reported earlier
 
-  [C]'method sigc::signal_base& sigc::signal_base::operator=(const sigc::signal_base&)' has some indirect sub-type changes:
+  [C] 'method sigc::signal_base& sigc::signal_base::operator=(const sigc::signal_base&)' has some indirect sub-type changes:
     return type changed:
       in referenced type 'struct sigc::signal_base':
         type size hasn't changed
@@ -164,35 +164,35 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in referenced type 'const sigc::signal_base':
         unqualified underlying type 'struct sigc::signal_base' changed, as reported earlier
 
-  [C]'method sigc::signal_base::signal_base(const sigc::signal_base&)' has some indirect sub-type changes:
+  [C] 'method sigc::signal_base::signal_base(const sigc::signal_base&)' has some indirect sub-type changes:
     parameter 1 of type 'const sigc::signal_base&' has sub-type changes:
       in referenced type 'const sigc::signal_base':
         unqualified underlying type 'struct sigc::signal_base' changed, as reported earlier
 
-  [C]'method sigc::slot_base& sigc::slot_base::operator=(const sigc::slot_base&)' has some indirect sub-type changes:
+  [C] 'method sigc::slot_base& sigc::slot_base::operator=(const sigc::slot_base&)' has some indirect sub-type changes:
     return type changed:
       referenced type 'class sigc::slot_base' changed, as reported earlier
     parameter 1 of type 'const sigc::slot_base&' has sub-type changes:
       in referenced type 'const sigc::slot_base':
         unqualified underlying type 'class sigc::slot_base' changed, as reported earlier
 
-  [C]'method sigc::slot_base::slot_base(const sigc::slot_base&)' has some indirect sub-type changes:
+  [C] 'method sigc::slot_base::slot_base(const sigc::slot_base&)' has some indirect sub-type changes:
     parameter 1 of type 'const sigc::slot_base&' has sub-type changes:
       in referenced type 'const sigc::slot_base':
         unqualified underlying type 'class sigc::slot_base' changed, as reported earlier
 
-  [C]'method sigc::internal::trackable_callback_list* sigc::trackable::callback_list()' has some indirect sub-type changes:
+  [C] 'method sigc::internal::trackable_callback_list* sigc::trackable::callback_list()' has some indirect sub-type changes:
     return type changed:
       pointed to type 'struct sigc::internal::trackable_callback_list' changed, as reported earlier
 
-  [C]'method sigc::trackable& sigc::trackable::operator=(const sigc::trackable&)' has some indirect sub-type changes:
+  [C] 'method sigc::trackable& sigc::trackable::operator=(const sigc::trackable&)' has some indirect sub-type changes:
     return type changed:
       referenced type 'struct sigc::trackable' changed, as reported earlier
     parameter 1 of type 'const sigc::trackable&' has sub-type changes:
       in referenced type 'const sigc::trackable':
         unqualified underlying type 'struct sigc::trackable' changed, as reported earlier
 
-  [C]'method sigc::trackable::trackable(const sigc::trackable&)' has some indirect sub-type changes:
+  [C] 'method sigc::trackable::trackable(const sigc::trackable&)' has some indirect sub-type changes:
     parameter 1 of type 'const sigc::trackable&' has sub-type changes:
       in referenced type 'const sigc::trackable':
         unqualified underlying type 'struct sigc::trackable' changed, as reported earlier

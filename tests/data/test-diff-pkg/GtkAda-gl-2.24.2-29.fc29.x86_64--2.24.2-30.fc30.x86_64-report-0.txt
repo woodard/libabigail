@@ -6,7 +6,7 @@
 
   2 functions with some indirect sub-type change:
 
-    [C]'function void gl_h__glgentextures(const gdk__gl__gl_configs, const gl_h__gluint_vec___XUP)' at gl_h.adb:35:1 has some indirect sub-type changes:
+    [C] 'function void gl_h__glgentextures(const gdk__gl__gl_configs, const gl_h__gluint_vec___XUP)' at gl_h.adb:35:1 has some indirect sub-type changes:
       parameter 2 of type 'const gl_h__gluint_vec___XUP' has sub-type changes:
         in unqualified underlying type 'struct gl_h__gluint_vec___XUP' at gl_h.ads:57:1:
           type size hasn't changed
@@ -25,7 +25,7 @@
 
 
 
-    [C]'function gtk__glarea__gtk_glarea gtk__glarea__gtk_new(gtk__glarea__gtk_glarea, const gtk__glarea__attributes_array___XUP)' at gtk-glarea.adb:63:1 has some indirect sub-type changes:
+    [C] 'function gtk__glarea__gtk_glarea gtk__glarea__gtk_new(gtk__glarea__gtk_glarea, const gtk__glarea__attributes_array___XUP)' at gtk-glarea.adb:63:1 has some indirect sub-type changes:
       parameter 2 of type 'const gtk__glarea__attributes_array___XUP' has sub-type changes:
         in unqualified underlying type 'struct gtk__glarea__attributes_array___XUP' at gtk-glarea.ads:48:1:
           type size hasn't changed

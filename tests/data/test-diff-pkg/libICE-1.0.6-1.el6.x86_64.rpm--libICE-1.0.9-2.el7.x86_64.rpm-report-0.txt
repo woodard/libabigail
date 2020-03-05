@@ -10,7 +10,7 @@
 
   1 function with some indirect sub-type change:
 
-    [C]'function IceConn IceAcceptConnection(IceListenObj, IceAcceptStatus*)' at accept.c:38:1 has some indirect sub-type changes:
+    [C] 'function IceConn IceAcceptConnection(IceListenObj, IceAcceptStatus*)' at accept.c:38:1 has some indirect sub-type changes:
       return type changed:
         underlying type '_IceConn*' changed:
           in pointed to type 'struct _IceConn' at ICEconn.h:131:1:
@@ -92,7 +92,7 @@
 
   2 Changed variables:
 
-    [C]'char* _IceAuthNames[1]' was changed to 'const char* _IceAuthNames[1]' at globals.h:37:1:
+    [C] 'char* _IceAuthNames[1]' was changed to 'const char* _IceAuthNames[1]' at globals.h:37:1:
       type of variable changed:
        array element type 'char*' changed: 
          in pointed to type 'char':
@@ -101,7 +101,7 @@
        type name changed from 'char*[1]' to 'const char*[1]'
        type size hasn't changed
 
-    [C]'_IceWatchProc* _IceWatchProcs' was changed at globals.h:39:1:
+    [C] '_IceWatchProc* _IceWatchProcs' was changed at globals.h:39:1:
       type of variable changed:
        in pointed to type 'struct _IceWatchProc' at ICElibint.h:322:1:
          entity changed from 'struct _IceWatchProc' to compatible type 'typedef _IceWatchProc' at ICElibint.h:322:1

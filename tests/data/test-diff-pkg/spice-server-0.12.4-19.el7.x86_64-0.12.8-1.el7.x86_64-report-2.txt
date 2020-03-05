@@ -19,7 +19,7 @@
 
   6 functions with some indirect sub-type change:
 
-    [C]'function void spice_qxl_add_memslot(QXLInstance*, QXLDevMemSlot*)' at red_dispatcher.c:879:1 has some indirect sub-type changes:
+    [C] 'function void spice_qxl_add_memslot(QXLInstance*, QXLDevMemSlot*)' at red_dispatcher.c:879:1 has some indirect sub-type changes:
       parameter 1 of type 'QXLInstance*' has sub-type changes:
         in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
           underlying type 'struct QXLInstance' at spice.h:259:1 changed:
@@ -55,7 +55,7 @@
 
 
 
-    [C]'function int spice_server_add_client(SpiceServer*, int, int)' at reds.c:2391:1 has some indirect sub-type changes:
+    [C] 'function int spice_server_add_client(SpiceServer*, int, int)' at reds.c:2391:1 has some indirect sub-type changes:
       parameter 1 of type 'SpiceServer*' has sub-type changes:
         in pointed to type 'typedef SpiceServer' at spice-server.h:38:1:
           underlying type 'struct RedsState' at reds-private.h:127:1 changed:
@@ -327,7 +327,7 @@
 
             no data member change (1 filtered);
 
-    [C]'function spice_image_compression_t spice_server_get_image_compression(SpiceServer*)' at reds.c:3618:1 has some indirect sub-type changes:
+    [C] 'function spice_image_compression_t spice_server_get_image_compression(SpiceServer*)' at reds.c:3618:1 has some indirect sub-type changes:
       return type changed:
         typedef name changed from spice_image_compression_t to SpiceImageCompression at enums.h:197:1
         underlying type 'enum __anonymous_enum__2' at spice.h:471:1 changed:
@@ -355,7 +355,7 @@
             'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_ENUM_END' value '8'
 
 
-    [C]'function void spice_server_playback_get_buffer(SpicePlaybackInstance*, uint32_t**, uint32_t*)' at snd_worker.c:1081:1 has some indirect sub-type changes:
+    [C] 'function void spice_server_playback_get_buffer(SpicePlaybackInstance*, uint32_t**, uint32_t*)' at snd_worker.c:1081:1 has some indirect sub-type changes:
       parameter 1 of type 'SpicePlaybackInstance*' has sub-type changes:
         in pointed to type 'typedef SpicePlaybackInstance' at spice-audio.h:33:1:
           underlying type 'struct SpicePlaybackInstance' at spice.h:350:1 changed:
@@ -370,7 +370,7 @@
                    no data member changes (2 filtered);
 
 
-    [C]'function uint32_t spice_server_record_get_samples(SpiceRecordInstance*, uint32_t*, uint32_t)' at snd_worker.c:1331:1 has some indirect sub-type changes:
+    [C] 'function uint32_t spice_server_record_get_samples(SpiceRecordInstance*, uint32_t*, uint32_t)' at snd_worker.c:1331:1 has some indirect sub-type changes:
       parameter 1 of type 'SpiceRecordInstance*' has sub-type changes:
         in pointed to type 'typedef SpiceRecordInstance' at spice-audio.h:67:1:
           underlying type 'struct SpiceRecordInstance' at spice.h:380:1 changed:
@@ -385,7 +385,7 @@
                    no data member changes (2 filtered);
 
 
-    [C]'function int spice_server_set_image_compression(SpiceServer*, spice_image_compression_t)' at reds.c:3602:1 has some indirect sub-type changes:
+    [C] 'function int spice_server_set_image_compression(SpiceServer*, spice_image_compression_t)' at reds.c:3602:1 has some indirect sub-type changes:
       parameter 2 of type 'typedef spice_image_compression_t' changed:
         typedef name changed from spice_image_compression_t to SpiceImageCompression at enums.h:197:1
         underlying type 'enum __anonymous_enum__2' at spice.h:471:1 changed:

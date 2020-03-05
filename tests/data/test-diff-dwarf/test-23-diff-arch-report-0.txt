@@ -6,7 +6,7 @@ architecture changed from 'elf-intel-80386' to 'elf-amd-x86_64'
 
 1 function with some indirect sub-type change:
 
-  [C]'function int foo()' has some indirect sub-type changes:
+  [C] 'function int foo()' has some indirect sub-type changes:
     address size of function changed from 32 bits to 64 bits
 
 

@@ -1174,7 +1174,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
 
 6 functions with some indirect sub-type change:
 
-  [C]'method void OffloadDescriptor::report_coi_error(error_types, COIRESULT)' has some indirect sub-type changes:
+  [C] 'method void OffloadDescriptor::report_coi_error(error_types, COIRESULT)' has some indirect sub-type changes:
     parameter 1 of type 'typedef error_types' changed:
       underlying type 'enum __anonymous_enum__' changed:
         type size hasn't changed
@@ -1296,7 +1296,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
           '__anonymous_enum__::c_coipipe_max_number' from value '123' to '133'
 
 
-  [C]'method bool OffloadDescriptor::setup_descriptors(VarDesc*, VarDesc2*, int, int, void*)' has some indirect sub-type changes:
+  [C] 'method bool OffloadDescriptor::setup_descriptors(VarDesc*, VarDesc2*, int, int, void*)' has some indirect sub-type changes:
     parameter 1 of type 'VarDesc*' has sub-type changes:
       in pointed to type 'struct VarDesc':
         type size hasn't changed
@@ -1313,7 +1313,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
 
 
 
-  [C]'function void __offload_myoRegisterTables(InitTableEntry*, SharedTableEntry*, FptrTableEntry*)' has some indirect sub-type changes:
+  [C] 'function void __offload_myoRegisterTables(InitTableEntry*, SharedTableEntry*, FptrTableEntry*)' has some indirect sub-type changes:
     parameter 1 of type 'InitTableEntry*' changed:
       in pointed to type 'struct InitTableEntry':
         entity changed from 'struct InitTableEntry' to compatible type 'typedef InitTableEntry'
@@ -1327,7 +1327,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
 
            and name of 'InitTableEntry::func' changed to '__anonymous_struct__2::func'
 
-  [C]'function int __offload_offload(OFFLOAD, const char*, int, int, VarDesc*, VarDesc2*, int, void**, void*, int, void*)' has some indirect sub-type changes:
+  [C] 'function int __offload_offload(OFFLOAD, const char*, int, int, VarDesc*, VarDesc2*, int, void**, void*, int, void*)' has some indirect sub-type changes:
     parameter 1 of type 'typedef OFFLOAD' has sub-type changes:
       underlying type 'OffloadDescriptor*' changed:
         in pointed to type 'struct OffloadDescriptor':
@@ -1440,12 +1440,12 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
            'uint64_t OffloadDescriptor::m_out_datalen' offset changed from 2112 to 2176 (in bits) (by +64 bits)
            'bool OffloadDescriptor::m_need_runfunction' offset changed from 2176 to 2240 (in bits) (by +64 bits)
 
-  [C]'function void __offload_register_image(void*)' has some indirect sub-type changes:
+  [C] 'function void __offload_register_image(void*)' has some indirect sub-type changes:
     return type changed:
       type name changed from 'void' to 'bool'
       type size changed from 0 to 8 (in bits)
 
-  [C]'method void std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::_M_emplace_back_aux<const VarTable::Entry*>(const VarTable::Entry*&&)' has some indirect sub-type changes:
+  [C] 'method void std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::_M_emplace_back_aux<const VarTable::Entry*>(const VarTable::Entry*&&)' has some indirect sub-type changes:
     Please note that the symbol of this function is _ZNSt6vectorIPKN8VarTable5EntryESaIS3_EE19_M_emplace_back_auxIJS3_EEEvDpOT_
      and it aliases symbol: _ZNSt6vectorIPKN8VarTable5EntryESaIS3_EE19_M_emplace_back_auxIIS3_EEEvDpOT_
     parameter 1 of type 'const VarTable::Entry*&&' changed:
@@ -1518,7 +1518,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
 
 1 Changed variable:
 
-  [C]'static const char* Engine::m_func_names[6]' was changed to 'static const char* Engine::m_func_names[7]':
+  [C] 'static const char* Engine::m_func_names[6]' was changed to 'static const char* Engine::m_func_names[7]':
     size of symbol changed from 48 to 56
     type of variable changed:
      type name changed from 'const char*[6]' to 'const char*[7]'

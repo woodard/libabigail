@@ -36,7 +36,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
 
 2 functions with some indirect sub-type change:
 
-  [C]'method void abigail::xml_writer::write_context::record_type_as_emitted(const abigail::ir::type_base_sptr&)' at abg-writer.cc:473:1 has some indirect sub-type changes:
+  [C] 'method void abigail::xml_writer::write_context::record_type_as_emitted(const abigail::ir::type_base_sptr&)' at abg-writer.cc:473:1 has some indirect sub-type changes:
     parameter 1 of type 'const abigail::ir::type_base_sptr&' has sub-type changes:
       in referenced type 'const abigail::ir::type_base_sptr':
         in unqualified underlying type 'typedef abigail::ir::type_base_sptr' at abg-fwd.h:110:1:
@@ -47,7 +47,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
             1 base class insertion:
               class std::tr1::__shared_ptr<abigail::ir::type_base, __gnu_cxx::_Lock_policy::_S_atomic> at shared_ptr.h:539:1
 
-  [C]'method bool abigail::xml_writer::write_context::type_ptr_cmp::operator()(const abigail::ir::type_base*, const abigail::ir::type_base*) const' at abg-writer.cc:359:1 has some indirect sub-type changes:
+  [C] 'method bool abigail::xml_writer::write_context::type_ptr_cmp::operator()(const abigail::ir::type_base*, const abigail::ir::type_base*) const' at abg-writer.cc:359:1 has some indirect sub-type changes:
 
 
 

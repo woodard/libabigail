@@ -7,7 +7,7 @@ Variables changes summary: 0 Removed, 1 Changed, 1 Added variables
 
 1 Changed variable:
 
-  [C]'int global_var0' was changed to 'char global_var0':
+  [C] 'int global_var0' was changed to 'char global_var0':
     size of symbol changed from 4 to 1
     type of variable changed:
      type name changed from 'int' to 'char'

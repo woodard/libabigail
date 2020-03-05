@@ -13,11 +13,11 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 2 functions with some indirect sub-type change:
 
-  [C]'method virtual int non_defined_class::virtual_func0()' at test30-priv-lib-v1.h:15:1 has some indirect sub-type changes:
+  [C] 'method virtual int non_defined_class::virtual_func0()' at test30-priv-lib-v1.h:15:1 has some indirect sub-type changes:
     the vtable offset of method virtual int non_defined_class::virtual_func0() changed from 3 to 4
       note that this is an ABI incompatible change to the vtable of class non_defined_class
 
-  [C]'function int public_function(S*)' at test30-pub-lib-v1.cc:22:1 has some indirect sub-type changes:
+  [C] 'function int public_function(S*)' at test30-pub-lib-v1.cc:22:1 has some indirect sub-type changes:
     parameter 1 of type 'S*' has sub-type changes:
       in pointed to type 'class S' at test30-pub-lib-v1.h:1:1:
         type size hasn't changed

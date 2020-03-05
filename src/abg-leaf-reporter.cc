@@ -1130,7 +1130,7 @@ leaf_reporter::report(const corpus_diff& d,
 	  if (diff_to_be_reported(diff.get()))
 	    {
 	      function_decl_sptr fn = (*i)->first_function_decl();
-	      out << indent << "  [C]'"
+	      out << indent << "  [C] '"
 		  << fn->get_pretty_representation() << "'";
 	      report_loc_info((*i)->second_function_decl(), *ctxt, out);
 	      out << " has some sub-type changes:\n";

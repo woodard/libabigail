@@ -12,7 +12,7 @@
 
   2 functions with some indirect sub-type change:
 
-    [C]'method sigc::connection::connection(const sigc::connection&)' has some indirect sub-type changes:
+    [C] 'method sigc::connection::connection(const sigc::connection&)' has some indirect sub-type changes:
       parameter 1 of type 'const sigc::connection&' has sub-type changes:
         in referenced type 'const sigc::connection':
           in unqualified underlying type 'struct sigc::connection':
@@ -69,7 +69,7 @@
 
 
 
-    [C]'method sigc::internal::signal_impl* sigc::signal_base::impl() const' has some indirect sub-type changes:
+    [C] 'method sigc::internal::signal_impl* sigc::signal_base::impl() const' has some indirect sub-type changes:
       return type changed:
         in pointed to type 'struct sigc::internal::signal_impl':
           type size changed from 192 to 256 (in bits)

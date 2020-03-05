@@ -3,7 +3,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 1 function with some indirect sub-type change:
 
-  [C]'function one::Foo one::foo(u32)' has some indirect sub-type changes:
+  [C] 'function one::Foo one::foo(u32)' has some indirect sub-type changes:
     'function one::Foo one::foo(u32) {foo}' now becomes 'function two::Foo two::foo(u32, u32) {foo}'
     return type changed:
       type name changed from 'one::Foo' to 'two::Foo'

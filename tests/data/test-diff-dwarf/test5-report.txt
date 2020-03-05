@@ -3,7 +3,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 1 function with some indirect sub-type change:
 
-  [C]'function C0 foo()' has some indirect sub-type changes:
+  [C] 'function C0 foo()' has some indirect sub-type changes:
     return type changed:
       entity changed from 'class C0' to compatible type 'typedef c0_type'
         type size hasn't changed

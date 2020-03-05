@@ -1913,7 +1913,7 @@ default_reporter::report(const corpus_diff& d, ostream& out,
 	  if (diff->to_be_reported())
 	    {
 	      function_decl_sptr fn = (*i)->first_function_decl();
-	      out << indent << "  [C]'"
+	      out << indent << "  [C] '"
 		  << fn->get_pretty_representation() << "'";
 	      report_loc_info((*i)->second_function_decl(), *ctxt, out);
 	      out << " has some indirect sub-type changes:\n";
@@ -2090,7 +2090,7 @@ default_reporter::report(const corpus_diff& d, ostream& out,
 	  n1 = diff->first_subject()->get_pretty_representation();
 	  n2 = diff->second_subject()->get_pretty_representation();
 
-	  out << indent << "  [C]'" << n1 << "' was changed";
+	  out << indent << "  [C] '" << n1 << "' was changed";
 	  if (n1 != n2)
 	    out << " to '" << n2 << "'";
 	  report_loc_info(diff->second_subject(), *ctxt, out);

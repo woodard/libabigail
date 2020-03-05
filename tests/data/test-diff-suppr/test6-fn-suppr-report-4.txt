@@ -3,7 +3,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 2 functions with some indirect sub-type change:
 
-  [C]'function void bar(S1*)' has some indirect sub-type changes:
+  [C] 'function void bar(S1*)' has some indirect sub-type changes:
     parameter 0 of type 'S1*' has sub-type changes:
       in pointed to type 'struct S1':
         size changed from 32 to 64 bits
@@ -12,7 +12,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         1 data member change:
          'int S1::m0' offset changed from 0 to 32
 
-  [C]'function int bar(S&)' has some indirect sub-type changes:
+  [C] 'function int bar(S&)' has some indirect sub-type changes:
     parameter 0 of type 'S&' has sub-type changes:
       in referenced type 'struct S':
         size changed from 32 to 64 bits
