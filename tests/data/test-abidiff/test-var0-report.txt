@@ -3,4 +3,4 @@
     type of variable changed:
      type name changed from 'int' to 'char'
      type size changed from 32 to 8 (in bits)
-     type alignement changed from 32 to 8
+     type alignment changed from 32 to 8

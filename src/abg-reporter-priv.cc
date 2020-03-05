@@ -812,7 +812,7 @@ report_size_and_alignment_changes(type_or_decl_base_sptr	first,
       if (n)
 	out << "\n";
       out << indent;
-      show_numerical_change("type alignement", fa, sa, *ctxt, out,
+      show_numerical_change("type alignment", fa, sa, *ctxt, out,
 			    /*show_bits_or_bytes=*/false);
       n = true;
     }
