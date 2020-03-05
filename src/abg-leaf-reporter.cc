@@ -647,7 +647,7 @@ leaf_reporter::report(const class_or_union_diff& d,
       bool emitted_data_members_changes = false;
       if (net_numchanges)
 	{
-	  report_mem_header(out, subtype_change_kind, "data member", indent);
+	  report_mem_header(out, change_kind, "data member", indent);
 	  for (var_diff_sptrs_type::const_iterator it =
 		 d.class_or_union_diff::get_priv()->
 		 sorted_changed_dm_.begin();
@@ -676,7 +676,7 @@ leaf_reporter::report(const class_or_union_diff& d,
       if (net_numchanges)
 	{
 	  if (!emitted_data_members_changes)
-	    report_mem_header(out, change_kind, "data member", indent);
+	    report_mem_header(out, subtype_change_kind, "data member", indent);
 	  for (var_diff_sptrs_type::const_iterator it =
 		 d.class_or_union_diff::get_priv()->sorted_subtype_changed_dm_.begin();
 	       it != d.class_or_union_diff::get_priv()->sorted_subtype_changed_dm_.end();

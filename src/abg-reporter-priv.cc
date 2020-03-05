@@ -446,7 +446,7 @@ represent(const var_diff_sptr	&diff,
 	      << indent << "to:\n"
 	      << indent << " " << get_type_name(n->get_type()) << "\n"
 	      << indent << " This is usually due to "
-	      <<"an anonymous member type being added or removed from "
+	      << "an anonymous member type being added or removed from "
 	      << "the containing type\n";
 	}
     }
@@ -645,6 +645,7 @@ represent(const var_diff_sptr	&diff,
 	out << ", ";
       out << "visibility changed from " << o->get_visibility()
 	  << " to " << n->get_visibility();
+      emitted = true;
     }
   if ((ctxt->get_allowed_category() & ACCESS_CHANGE_CATEGORY)
       && (get_member_access_specifier(o)
@@ -683,6 +684,7 @@ represent(const var_diff_sptr	&diff,
 	out << "is no more static";
       else
 	out << "now becomes static";
+      emitted = true;
     }
 }
 
@@ -1090,7 +1092,7 @@ maybe_report_diff_for_symbol(const elf_symbol_sptr&	symbol1,
 {
   bool reported = false;
 
-  if (!symbol1 ||!symbol2 || symbol1 == symbol2)
+  if (!symbol1 || !symbol2 || symbol1 == symbol2)
     return reported;
 
   if (symbol1->get_size() != symbol2->get_size())
@@ -1180,6 +1182,8 @@ maybe_report_diff_for_symbol(const elf_symbol_sptr&	symbol1,
       out << symbol1->get_version().str()
 	  << " to "
 	  << symbol2->get_version().str();
+
+      reported = true;
     }
 
   if (reported)
