@@ -1,5 +1,5 @@
-/*
- *  Catch v1.12.2
+// SPDX-License-Identifier: BSL-1.0
+/*  Catch v1.12.2
  *  Generated: 2018-05-14 15:10:01.112442
  *  ----------------------------------------------------------
  *  This file has been merged from multiple headers. Please don't edit it directly

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: FSFAP
 # ===========================================================================
 #  http://www.gnu.org/software/autoconf-archive/ax_prog_python_version.html
 # ===========================================================================
