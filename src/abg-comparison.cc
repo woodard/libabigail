@@ -9767,8 +9767,8 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
 	      (stat.num_leaf_var_changes_filtered_out() + 1);
 	}
       if ((*i)->has_local_changes())
-	stat.num_leaf_func_changes
-	  (stat.num_leaf_func_changes() + 1);
+	stat.num_leaf_var_changes
+	  (stat.num_leaf_var_changes() + 1);
     }
 
   stat.num_func_syms_added(added_unrefed_fn_syms_.size());

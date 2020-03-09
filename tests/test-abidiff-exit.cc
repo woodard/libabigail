@@ -120,6 +120,15 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-no-stray-comma-report.txt",
     "output/test-abidiff-exit/test-no-stray-comma-report.txt"
   },
+  {
+    "data/test-abidiff-exit/test-leaf0-v0.o",
+    "data/test-abidiff-exit/test-leaf0-v1.o",
+    "",
+    "--no-show-locs --leaf-changes-only",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    "data/test-abidiff-exit/test-leaf0-report.txt",
+    "output/test-abidiff-exit/test-leaf0-report.txt"
+  },
   {0, 0, 0 ,0,  abigail::tools_utils::ABIDIFF_OK, 0, 0}
 };
 
