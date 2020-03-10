@@ -1602,9 +1602,6 @@ bool
 diff_context::show_relative_offset_changes(void)
 {return priv_->show_relative_offset_changes_;}
 
-  bool
-  show_relative_offset_changes(void);
-
 /// Set a flag saying if the comparison module should only show the
 /// diff stats.
 ///
