@@ -159,7 +159,7 @@ main(int argc, char* argv[])
     }
 
   elf_symbol_sptr sym = syms[0];
-  cout << " found symbol '" << n << "'";
+  cout << "found symbol '" << n << "'";
   if (n != sym->get_name())
     cout << " (" << sym->get_name() << ")";
   cout << ", an instance of "
