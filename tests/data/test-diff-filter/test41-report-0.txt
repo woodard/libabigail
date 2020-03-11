@@ -50,7 +50,6 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [C] 'method bool abigail::xml_writer::write_context::type_ptr_cmp::operator()(const abigail::ir::type_base*, const abigail::ir::type_base*) const' at abg-writer.cc:359:1 has some indirect sub-type changes:
 
 
-
 1 Removed function symbol not referenced by debug info:
 
   _ZN7abigail10xml_writer13write_contextD1Ev

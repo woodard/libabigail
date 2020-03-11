@@ -255,7 +255,6 @@
     'function size_t safer_scalable_msize(void*, typedef size_t (void*)*)'    {safer_scalable_msize}
     'function void* safer_scalable_realloc(void*, size_t, void*)'    {safer_scalable_realloc}
 
-
   27 Added function symbols not referenced by debug info:
 
     _Z10BitScanRevm
@@ -303,7 +302,6 @@
     'function void* calloc(size_t, size_t)'    {__libc_calloc, aliases calloc}
     'function size_t malloc_usable_size(void*)'    {malloc_usable_size}
     'function void* valloc(size_t)'    {__libc_valloc, aliases valloc}
-
 
 ================ end of changes of 'libtbbmalloc_proxy.so.2'===============
 

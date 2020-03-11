@@ -52,6 +52,5 @@
 
     'method void std::vector<ISO9660::Stat*, std::allocator<ISO9660::Stat*> >::_M_realloc_insert<ISO9660::Stat*>(std::vector<ISO9660::Stat*, std::allocator<ISO9660::Stat*> >::iterator, ISO9660::Stat*&&)'    {_ZNSt6vectorIPN7ISO96604StatESaIS2_EE17_M_realloc_insertIJS2_EEEvN9__gnu_cxx17__normal_iteratorIPS2_S4_EEDpOT_}
 
-
 ================ end of changes of 'libiso9660++.so.0.0.0'===============
 

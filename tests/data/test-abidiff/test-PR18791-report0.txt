@@ -198,4 +198,3 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         unqualified underlying type 'struct sigc::trackable' changed, as reported earlier
 
 
-

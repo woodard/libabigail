@@ -333,8 +333,8 @@ leaf_reporter::report(const scope_diff& d,
 
       out << indent << "  '"
 	  << (*dif)->first_subject()->get_pretty_representation()
-          << "' was changed to '"
-          << (*dif)->second_subject()->get_pretty_representation() << "'";
+	  << "' was changed to '"
+	  << (*dif)->second_subject()->get_pretty_representation() << "'";
       report_loc_info((*dif)->second_subject(), *d.context(), out);
       out << ":\n";
 
@@ -1036,7 +1036,6 @@ leaf_reporter::report(const corpus_diff& d,
 
   const diff_context_sptr& ctxt = d.context();
 
-  size_t removed = 0, added = 0;
   const corpus_diff::diff_stats &s =
     const_cast<corpus_diff&>(d).
     apply_filters_and_suppressions_before_reporting();
@@ -1066,6 +1065,7 @@ leaf_reporter::report(const corpus_diff& d,
       else if (s.net_num_func_removed() > 1)
 	out << indent << s.net_num_func_removed() << " Removed functions:\n\n";
 
+      bool emitted = false;
       vector<function_decl*>sorted_deleted_fns;
       sort_string_function_ptr_map(d.priv_->deleted_fns_, sorted_deleted_fns);
       for (vector<function_decl*>::const_iterator i =
@@ -1098,9 +1098,9 @@ leaf_reporter::report(const corpus_diff& d,
 		  << c->get_pretty_representation()
 		  << "\n";
 	    }
-	  ++removed;
+	  emitted = true;
 	}
-      if (removed)
+      if (emitted)
 	out << "\n";
     }
 
@@ -1114,7 +1114,7 @@ leaf_reporter::report(const corpus_diff& d,
 	out << indent << num_changed
 	    << " functions with some sub-type change:\n\n";
 
-      bool changed = false;
+      bool emitted = false;
       vector<function_decl_diff_sptr> sorted_changed_fns;
       sort_string_function_decl_diff_sptr_map(d.priv_->changed_fns_map_,
 					      sorted_changed_fns);
@@ -1167,14 +1167,11 @@ leaf_reporter::report(const corpus_diff& d,
 		}
 	      diff->report(out, indent + "    ");
 	      out << "\n";
-	      changed |= true;
+	      emitted = true;
 	    }
 	}
-      if (changed)
-	{
-	  out << "\n";
-	  changed = false;
-	}
+      if (emitted)
+	out << "\n";
     }
 
   if (ctxt->show_added_fns())
@@ -1184,6 +1181,7 @@ leaf_reporter::report(const corpus_diff& d,
       else if (s.net_num_func_added() > 1)
 	out << indent << s.net_num_func_added()
 	    << " Added functions:\n\n";
+      bool emitted = false;
       vector<function_decl*> sorted_added_fns;
       sort_string_function_ptr_map(d.priv_->added_fns_, sorted_added_fns);
       for (vector<function_decl*>::const_iterator i = sorted_added_fns.begin();
@@ -1219,13 +1217,10 @@ leaf_reporter::report(const corpus_diff& d,
 		  << c->get_pretty_representation()
 		  << "\n";
 	    }
-	  ++added;
+	  emitted = true;
 	}
-      if (added)
-	{
-	  out << "\n";
-	  added = false;
-	}
+      if (emitted)
+	out << "\n";
     }
 
   // Now show the changed types.
