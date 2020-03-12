@@ -22745,25 +22745,25 @@ types_have_similar_structure(const type_base* first, const type_base* second)
   if (const function_type* ty1 = is_function_type(first))
     {
       const function_type* ty2 = is_function_type(second);
-      if (!was_indirect_type)
-	{
-	  if (!types_have_similar_structure(ty1->get_return_type(),
-					    ty2->get_return_type()))
-	    return false;
+      if (!ty2)
+	return false;
 
-	  if (ty1->get_parameters().size() != ty2->get_parameters().size())
-	    return false;
+      if (!types_have_similar_structure(ty1->get_return_type(),
+					ty2->get_return_type()))
+	return false;
 
-	  for (function_type::parameters::const_iterator
-		 i = ty1->get_parameters().begin(),
-		 j = ty2->get_parameters().begin();
-	       (i != ty1->get_parameters().end()
-		&& j != ty2->get_parameters().end());
-	       ++i, ++j)
-	    if (!types_have_similar_structure((*i)->get_type(),
-					      (*j)->get_type()))
-	      return false;
-	}
+      if (ty1->get_parameters().size() != ty2->get_parameters().size())
+	return false;
+
+      for (function_type::parameters::const_iterator
+	     i = ty1->get_parameters().begin(),
+	     j = ty2->get_parameters().begin();
+	   (i != ty1->get_parameters().end()
+	    && j != ty2->get_parameters().end());
+	   ++i, ++j)
+	if (!types_have_similar_structure((*i)->get_type(),
+					  (*j)->get_type()))
+	  return false;
 
       return true;
     }

@@ -120,6 +120,11 @@ test-abidiff-exit/test-leaf1-v0.o \
 test-abidiff-exit/test-leaf1-v1.cc \
 test-abidiff-exit/test-leaf1-v1.o \
 test-abidiff-exit/test-leaf1-report.txt \
+test-abidiff-exit/test-leaf2-v0.cc \
+test-abidiff-exit/test-leaf2-v0.o \
+test-abidiff-exit/test-leaf2-v1.cc \
+test-abidiff-exit/test-leaf2-v1.o \
+test-abidiff-exit/test-leaf2-report.txt \
 test-abidiff-exit/test-leaf3-v0.c \
 test-abidiff-exit/test-leaf3-v0.o \
 test-abidiff-exit/test-leaf3-v1.c \
