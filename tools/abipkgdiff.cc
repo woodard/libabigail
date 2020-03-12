@@ -849,7 +849,7 @@ display_usage(const string& prog_name, ostream& out)
     << " --private-dso                  compare DSOs that are private "
     "to the package as well\n"
     << " --leaf-changes-only|-l  only show leaf changes, "
-    "so no change impact analysis\n"
+    "so no change impact analysis (implies --redundant)\n"
     << " --impacted-interfaces|-i when in leaf mode, show "
     "interfaces impacted by ABI changes\n"
     << " --full-impact|-f  when comparing kernel packages, show the "
@@ -1173,7 +1173,9 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
 {
   ctxt->default_output_stream(&cout);
   ctxt->error_output_stream(&cerr);
-  ctxt->show_redundant_changes(opts.show_redundant_changes);
+  // See comment in abidiff.cc's set_diff_context_from_opts.
+  ctxt->show_redundant_changes(opts.show_redundant_changes
+                               || opts.leaf_changes_only);
   ctxt->show_leaf_changes_only(opts.leaf_changes_only);
   ctxt->show_impacted_interfaces(opts.show_impacted_interfaces);
   ctxt->show_unreachable_types(opts.show_all_types);

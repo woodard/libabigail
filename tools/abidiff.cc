@@ -198,7 +198,7 @@ display_usage(const string& prog_name, ostream& out)
     << " --no-corpus-path  do not take the path to the corpora into account\n"
     << " --fail-no-debug-info  bail out if no debug info was found\n"
     << " --leaf-changes-only|-l  only show leaf changes, "
-    "so no change impact analysis\n"
+    "so no change impact analysis (implies --redundant)\n"
     << " --deleted-fns  display deleted public functions\n"
     << " --changed-fns  display changed public functions\n"
     << " --added-fns  display added public functions\n"
@@ -649,7 +649,19 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
   ctxt->show_added_vars(opts.show_all_vars || opts.show_added_vars);
   ctxt->show_linkage_names(opts.show_linkage_names);
   ctxt->show_locs(opts.show_locs);
-  ctxt->show_redundant_changes(opts.show_redundant_changes);
+  // So when we are showing only leaf changes, we want to show
+  // redundant changes because of this: Suppose several functions have
+  // their return type changed from void* to int*.  We want them all
+  // to be reported.  In that case the change is not redundant.  As
+  // far as user-defined type changes (like struct/class) they are
+  // already put inside a map which makes them be non-redundant, so we
+  // don't have to worry about that case.
+  //
+  // TODO: maybe that in this case we should avoid firing the
+  // redundancy analysis pass altogether.  That could help save a
+  // couple of CPU cycle here and there!
+  ctxt->show_redundant_changes(opts.show_redundant_changes
+                               || opts.leaf_changes_only);
   ctxt->show_symbols_unreferenced_by_debug_info
     (opts.show_symbols_not_referenced_by_debug_info);
   ctxt->show_added_symbols_unreferenced_by_debug_info

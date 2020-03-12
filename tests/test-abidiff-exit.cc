@@ -140,6 +140,15 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-leaf1-report.txt",
     "output/test-abidiff-exit/test-leaf1-report.txt"
   },
+  {
+    "data/test-abidiff-exit/test-leaf3-v0.o",
+    "data/test-abidiff-exit/test-leaf3-v1.o",
+    "",
+    "--leaf-changes-only",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    "data/test-abidiff-exit/test-leaf3-report.txt",
+    "output/test-abidiff-exit/test-leaf3-report.txt"
+  },
   {0, 0, 0 ,0,  abigail::tools_utils::ABIDIFF_OK, 0, 0}
 };
 

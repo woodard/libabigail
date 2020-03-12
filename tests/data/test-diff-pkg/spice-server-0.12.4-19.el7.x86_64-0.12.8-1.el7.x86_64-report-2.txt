@@ -1,5 +1,5 @@
 ================ changes of 'libspice-server.so.1.8.0'===============
-  Functions changes summary: 1 Removed, 6 Changed (73 filtered out), 8 Added functions
+  Functions changes summary: 1 Removed, 79 Changed, 8 Added functions
   Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
   1 Removed function:
@@ -17,7 +17,7 @@
     'function void spice_server_set_playback_rate(SpicePlaybackInstance*, uint32_t)'    {spice_server_set_playback_rate@@SPICE_SERVER_0.12.5}
     'function void spice_server_set_record_rate(SpiceRecordInstance*, uint32_t)'    {spice_server_set_record_rate@@SPICE_SERVER_0.12.5}
 
-  6 functions with some indirect sub-type change:
+  79 functions with some indirect sub-type change:
 
     [C] 'function void spice_qxl_add_memslot(QXLInstance*, QXLDevMemSlot*)' at red_dispatcher.c:879:1 has some indirect sub-type changes:
       parameter 1 of type 'QXLInstance*' has sub-type changes:
@@ -34,7 +34,11 @@
                       in pointed to type 'typedef RedDispatcher' at red_worker.h:87:1:
                         underlying type 'struct RedDispatcher' at red_dispatcher.c:53:1 changed:
                           type size changed from 3264 to 3328 (in bits)
-                          12 data member changes (1 filtered):
+                          13 data member changes:
+                           type of 'QXLInstance* RedDispatcher::qxl' changed:
+                             in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
+                               underlying type 'struct QXLInstance' changed; details are being reported
+
                            type of 'Dispatcher RedDispatcher::dispatcher' changed:
                              underlying type 'struct Dispatcher' at dispatcher.h:22:1 changed:
                                type size changed from 960 to 1024 (in bits)
@@ -47,13 +51,112 @@
                            'int RedDispatcher::x_res' offset changed from 2176 to 2240 (in bits) (by +64 bits)
                            'int RedDispatcher::y_res' offset changed from 2208 to 2272 (in bits) (by +64 bits)
                            'int RedDispatcher::use_hardware_cursor' offset changed from 2240 to 2304 (in bits) (by +64 bits)
-                           'RedDispatcher* RedDispatcher::next' offset changed from 2304 to 2368 (in bits) (by +64 bits)
+                           type of 'RedDispatcher* RedDispatcher::next' changed:
+                             in pointed to type 'typedef RedDispatcher' at red_worker.h:87:1:
+                               underlying type 'struct RedDispatcher' changed; details are being reported
+                           and offset changed from 2304 to 2368 (in bits) (by +64 bits)
                            'Ring RedDispatcher::async_commands' offset changed from 2368 to 2432 (in bits) (by +64 bits)
                            'pthread_mutex_t RedDispatcher::async_lock' offset changed from 2496 to 2560 (in bits) (by +64 bits)
                            'QXLDevSurfaceCreate RedDispatcher::surface_create' offset changed from 2816 to 2880 (in bits) (by +64 bits)
                            'unsigned int RedDispatcher::max_monitors' offset changed from 3200 to 3264 (in bits) (by +64 bits)
 
 
+
+    [C] 'function void spice_qxl_add_memslot_async(QXLInstance*, QXLDevMemSlot*, uint64_t)' at red_dispatcher.c:948:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
+
+    [C] 'function void spice_qxl_create_primary_surface(QXLInstance*, uint32_t, QXLDevSurfaceCreate*)' at red_dispatcher.c:909:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
+
+    [C] 'function void spice_qxl_create_primary_surface_async(QXLInstance*, uint32_t, QXLDevSurfaceCreate*, uint64_t)' at red_dispatcher.c:966:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
+
+    [C] 'function void spice_qxl_del_memslot(QXLInstance*, uint32_t, uint32_t)' at red_dispatcher.c:885:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
+
+    [C] 'function void spice_qxl_destroy_primary_surface(QXLInstance*, uint32_t)' at red_dispatcher.c:903:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
+
+    [C] 'function void spice_qxl_destroy_primary_surface_async(QXLInstance*, uint32_t, uint64_t)' at red_dispatcher.c:960:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
+
+    [C] 'function void spice_qxl_destroy_surface_async(QXLInstance*, uint32_t, uint64_t)' at red_dispatcher.c:973:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
+
+    [C] 'function void spice_qxl_destroy_surface_wait(QXLInstance*, uint32_t)' at red_dispatcher.c:928:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
+
+    [C] 'function void spice_qxl_destroy_surfaces(QXLInstance*)' at red_dispatcher.c:897:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
+
+    [C] 'function void spice_qxl_destroy_surfaces_async(QXLInstance*, uint64_t)' at red_dispatcher.c:954:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
+
+    [C] 'function void spice_qxl_driver_unload(QXLInstance*)' at red_dispatcher.c:998:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
+
+    [C] 'function void spice_qxl_flush_surfaces_async(QXLInstance*, uint64_t)' at red_dispatcher.c:979:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
+
+    [C] 'function void spice_qxl_loadvm_commands(QXLInstance*, QXLCommandExt*, uint32_t)' at red_dispatcher.c:934:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
+
+    [C] 'function void spice_qxl_monitors_config_async(QXLInstance*, QXLPHYSICAL, int, uint64_t)' at red_dispatcher.c:985:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
+
+    [C] 'function void spice_qxl_oom(QXLInstance*)' at red_dispatcher.c:852:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
+
+    [C] 'function void spice_qxl_reset_cursor(QXLInstance*)' at red_dispatcher.c:922:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
+
+    [C] 'function void spice_qxl_reset_image_cache(QXLInstance*)' at red_dispatcher.c:916:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
+
+    [C] 'function void spice_qxl_reset_memslots(QXLInstance*)' at red_dispatcher.c:891:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
+
+    [C] 'function void spice_qxl_set_max_monitors(QXLInstance*, unsigned int)' at red_dispatcher.c:992:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
+
+    [C] 'function void spice_qxl_start(QXLInstance*)' at red_dispatcher.c:858:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
+
+    [C] 'function void spice_qxl_stop(QXLInstance*)' at red_dispatcher.c:864:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
+
+    [C] 'function void spice_qxl_update_area(QXLInstance*, uint32_t, QXLRect*, QXLRect*, uint32_t, uint32_t)' at red_dispatcher.c:870:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
+
+    [C] 'function void spice_qxl_update_area_async(QXLInstance*, uint32_t, QXLRect*, uint32_t, uint64_t)' at red_dispatcher.c:940:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
+
+    [C] 'function void spice_qxl_wakeup(QXLInstance*)' at red_dispatcher.c:846:1 has some indirect sub-type changes:
+      parameter 1 of type 'QXLInstance*' has sub-type changes:
+        pointed to type 'typedef QXLInstance' changed at spice.h:103:1, as reported earlier
 
     [C] 'function int spice_server_add_client(SpiceServer*, int, int)' at reds.c:2391:1 has some indirect sub-type changes:
       parameter 1 of type 'SpiceServer*' has sub-type changes:
@@ -79,10 +182,28 @@
                          'Ring SpiceCharDeviceState::clients' offset changed from 640 to 704 (in bits) (by +64 bits)
                          'uint32_t SpiceCharDeviceState::num_clients' offset changed from 768 to 832 (in bits) (by +64 bits)
                          'uint64_t SpiceCharDeviceState::client_tokens_interval' offset changed from 832 to 896 (in bits) (by +64 bits)
-                         'SpiceCharDeviceInstance* SpiceCharDeviceState::sin' offset changed from 896 to 960 (in bits) (by +64 bits)
+                         type of 'SpiceCharDeviceInstance* SpiceCharDeviceState::sin' changed:
+                           in pointed to type 'typedef SpiceCharDeviceInstance' at spice-char.h:33:1:
+                             underlying type 'struct SpiceCharDeviceInstance' at spice.h:416:1 changed:
+                               type size hasn't changed
+                               1 data member change:
+                                type of 'SpiceCharDeviceState* SpiceCharDeviceInstance::st' changed:
+                                  in pointed to type 'typedef SpiceCharDeviceState' at spice-char.h:34:1:
+                                    underlying type 'struct SpiceCharDeviceState' changed; details are being reported
+
+                         and offset changed from 896 to 960 (in bits) (by +64 bits)
                          'int SpiceCharDeviceState::during_read_from_device' offset changed from 960 to 1024 (in bits) (by +64 bits)
                          'int SpiceCharDeviceState::during_write_to_device' offset changed from 992 to 1056 (in bits) (by +64 bits)
-                         'SpiceCharDeviceCallbacks SpiceCharDeviceState::cbs' offset changed from 1024 to 1088 (in bits) (by +64 bits)
+                         type of 'SpiceCharDeviceCallbacks SpiceCharDeviceState::cbs' changed:
+                           underlying type 'struct SpiceCharDeviceCallbacks' at char_device.h:81:1 changed:
+                             type size hasn't changed
+                             1 data member change:
+                              type of 'SpiceCharDeviceMsgToClient* (SpiceCharDeviceInstance*, void*)* SpiceCharDeviceCallbacks::read_one_msg_from_device' changed:
+                                in pointed to type 'function type SpiceCharDeviceMsgToClient* (SpiceCharDeviceInstance*, void*)':
+                                  parameter 1 of type 'SpiceCharDeviceInstance*' has sub-type changes:
+                                    pointed to type 'typedef SpiceCharDeviceInstance' changed at spice.h:399:1, as reported earlier
+
+                         and offset changed from 1024 to 1088 (in bits) (by +64 bits)
                          'void* SpiceCharDeviceState::opaque' offset changed from 1472 to 1536 (in bits) (by +64 bits)
 
                  no data member changes (3 filtered);
@@ -95,19 +216,23 @@
                     type of 'RedChannel MainChannel::base' changed:
                       underlying type 'struct RedChannel' at red_channel.h:303:1 changed:
                         type size hasn't changed
-                        1 data member changes (2 filtered):
+                        2 data member changes (1 filtered):
                          type of 'ChannelCbs RedChannel::channel_cbs' changed:
                            underlying type 'struct {channel_configure_socket_proc config_socket; channel_disconnect_proc on_disconnect; channel_send_pipe_item_proc send_item; channel_hold_pipe_item_proc hold_item; channel_release_pipe_item_proc release_item; channel_alloc_msg_recv_buf_proc alloc_recv_buf; channel_release_msg_recv_buf_proc release_recv_buf; channel_handle_migrate_flush_mark_proc handle_migrate_flush_mark; channel_handle_migrate_data_proc handle_migrate_data; channel_handle_migrate_data_get_serial_proc handle_migrate_data_get_serial;}' at red_channel.h:195:1 changed:
                              type size hasn't changed
-                             1 data member changes (9 filtered):
-                              type of 'channel_alloc_msg_recv_buf_proc alloc_recv_buf' changed:
-                                underlying type 'uint8_t* (RedChannelClient*, typedef uint16_t, typedef uint32_t)*' changed:
-                                  in pointed to type 'function type uint8_t* (RedChannelClient*, typedef uint16_t, typedef uint32_t)':
+                             10 data member changes:
+                              type of 'channel_configure_socket_proc config_socket' changed:
+                                underlying type 'int (RedChannelClient*)*' changed:
+                                  in pointed to type 'function type int (RedChannelClient*)':
                                     parameter 1 of type 'RedChannelClient*' has sub-type changes:
                                       in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
                                         underlying type 'struct RedChannelClient' at red_channel.h:247:1 changed:
                                           type size hasn't changed
-                                          1 data member changes (3 filtered):
+                                          2 data member changes (2 filtered):
+                                           type of 'RedChannel* RedChannelClient::channel' changed:
+                                             in pointed to type 'typedef RedChannel' at red_channel.h:130:1:
+                                               underlying type 'struct RedChannel' changed; details are being reported
+
                                            type of 'RedsStream* RedChannelClient::stream' changed:
                                              in pointed to type 'typedef RedsStream' at reds_stream.h:31:1:
                                                underlying type 'struct RedsStream' at reds.h:68:1 changed:
@@ -322,10 +447,110 @@
                                                   and name of 'RedsStream::ssl' changed to 'RedsStream::priv' at reds_stream.h:42:1
 
 
+                              type of 'channel_disconnect_proc on_disconnect' changed:
+                                underlying type 'void (RedChannelClient*)*' changed:
+                                  in pointed to type 'function type void (RedChannelClient*)':
+                                    parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                      pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+
+                              type of 'channel_send_pipe_item_proc send_item' changed:
+                                underlying type 'void (RedChannelClient*, PipeItem*)*' changed:
+                                  in pointed to type 'function type void (RedChannelClient*, PipeItem*)':
+                                    parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                      pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+
+                              type of 'channel_hold_pipe_item_proc hold_item' changed:
+                                underlying type 'void (RedChannelClient*, PipeItem*)*' changed:
+                                  in pointed to type 'function type void (RedChannelClient*, PipeItem*)':
+                                    parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                      pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+
+                              type of 'channel_release_pipe_item_proc release_item' changed:
+                                underlying type 'void (RedChannelClient*, PipeItem*, int)*' changed:
+                                  in pointed to type 'function type void (RedChannelClient*, PipeItem*, int)':
+                                    parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                      pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+
+                              type of 'channel_alloc_msg_recv_buf_proc alloc_recv_buf' changed:
+                                underlying type 'uint8_t* (RedChannelClient*, typedef uint16_t, typedef uint32_t)*' changed:
+                                  in pointed to type 'function type uint8_t* (RedChannelClient*, typedef uint16_t, typedef uint32_t)':
+                                    parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                      pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+
+                              type of 'channel_release_msg_recv_buf_proc release_recv_buf' changed:
+                                underlying type 'void (RedChannelClient*, typedef uint16_t, typedef uint32_t, uint8_t*)*' changed:
+                                  in pointed to type 'function type void (RedChannelClient*, typedef uint16_t, typedef uint32_t, uint8_t*)':
+                                    parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                      pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+
+                              type of 'channel_handle_migrate_flush_mark_proc handle_migrate_flush_mark' changed:
+                                underlying type 'int (RedChannelClient*)*' changed:
+                                  in pointed to type 'function type int (RedChannelClient*)':
+                                    parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                      pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+
+                              type of 'channel_handle_migrate_data_proc handle_migrate_data' changed:
+                                underlying type 'int (RedChannelClient*, typedef uint32_t, void*)*' changed:
+                                  in pointed to type 'function type int (RedChannelClient*, typedef uint32_t, void*)':
+                                    parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                      pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+
+                              type of 'channel_handle_migrate_data_get_serial_proc handle_migrate_data_get_serial' changed:
+                                underlying type 'typedef uint64_t (RedChannelClient*, typedef uint32_t, void*)*' changed:
+                                  in pointed to type 'function type typedef uint64_t (RedChannelClient*, typedef uint32_t, void*)':
+                                    parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                      pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+
+
+                         type of 'ClientCbs RedChannel::client_cbs' changed:
+                           underlying type 'struct {channel_client_connect_proc connect; channel_client_disconnect_proc disconnect; channel_client_migrate_proc migrate;}' at red_channel.h:213:1 changed:
+                             type size hasn't changed
+                             3 data member changes:
+                              type of 'channel_client_connect_proc connect' changed:
+                                underlying type 'void (RedChannel*, RedClient*, RedsStream*, int, int, uint32_t*, int, uint32_t*)*' changed:
+                                  in pointed to type 'function type void (RedChannel*, RedClient*, RedsStream*, int, int, uint32_t*, int, uint32_t*)':
+                                    parameter 1 of type 'RedChannel*' has sub-type changes:
+                                      in pointed to type 'typedef RedChannel' at red_channel.h:130:1:
+                                        underlying type 'struct RedChannel' changed; details are being reported
+                                    parameter 3 of type 'RedsStream*' has sub-type changes:
+                                      pointed to type 'typedef RedsStream' changed at red_channel.h:134:1, as reported earlier
+
+                              type of 'channel_client_disconnect_proc disconnect' changed:
+                                underlying type 'void (RedChannelClient*)*' changed:
+                                  in pointed to type 'function type void (RedChannelClient*)':
+                                    parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                      pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+
+                              type of 'channel_client_migrate_proc migrate' changed:
+                                underlying type 'void (RedChannelClient*)*' changed:
+                                  in pointed to type 'function type void (RedChannelClient*)':
+                                    parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                      pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+
 
 
 
             no data member change (1 filtered);
+
+    [C] 'function int spice_server_add_interface(SpiceServer*, SpiceBaseInstance*)' at reds.c:3159:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_add_renderer(SpiceServer*, const char*)' at reds.c:3704:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_add_ssl_client(SpiceServer*, int, int)' at reds.c:2408:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function void spice_server_char_device_wakeup(SpiceCharDeviceInstance*)' at reds.c:3024:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceCharDeviceInstance*' has sub-type changes:
+        pointed to type 'typedef SpiceCharDeviceInstance' changed at spice.h:399:1, as reported earlier
+
+    [C] 'function void spice_server_destroy(SpiceServer*)' at reds.c:3419:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
 
     [C] 'function spice_image_compression_t spice_server_get_image_compression(SpiceServer*)' at reds.c:3618:1 has some indirect sub-type changes:
       return type changed:
@@ -354,6 +579,52 @@
             'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_LZ4' value '7'
             'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_ENUM_END' value '8'
 
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_get_num_clients(SpiceServer*)' at reds.c:845:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_get_peer_info(SpiceServer*, sockaddr*, socklen_t*)' at reds.c:3689:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_get_sock_info(SpiceServer*, sockaddr*, socklen_t*)' at reds.c:3680:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_init(SpiceServer*, SpiceCoreInterface*)' at reds.c:3407:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_is_server_mouse(SpiceServer*)' at reds.c:3698:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_migrate_connect(SpiceServer*, const char*, int, int, const char*)' at reds.c:3791:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_migrate_end(SpiceServer*, int)' at reds.c:3866:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_migrate_info(SpiceServer*, const char*, int, int, const char*)' at reds.c:3842:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_migrate_start(SpiceServer*)' at reds.c:3856:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_migrate_switch(SpiceServer*)' at reds.c:3899:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function SpiceServer* spice_server_new()' at reds.c:3398:1 has some indirect sub-type changes:
+      return type changed:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
 
     [C] 'function void spice_server_playback_get_buffer(SpicePlaybackInstance*, uint32_t**, uint32_t*)' at snd_worker.c:1081:1 has some indirect sub-type changes:
       parameter 1 of type 'SpicePlaybackInstance*' has sub-type changes:
@@ -367,8 +638,85 @@
                    type size changed from 512 to 576 (in bits)
                    1 data member insertion:
                      'uint32_t SpicePlaybackState::frequency', at offset 512 (in bits) at snd_worker.c:159:1
-                   no data member changes (2 filtered);
+                   2 data member changes:
+                    type of 'SndWorker SpicePlaybackState::worker' changed:
+                      type size hasn't changed
+                      3 data member changes:
+                       type of 'RedChannel* SndWorker::base_channel' changed:
+                         pointed to type 'typedef RedChannel' changed at red_channel.h:135:1, as reported earlier
 
+                       type of 'SndChannel* SndWorker::connection' changed:
+                         in pointed to type 'typedef SndChannel' at snd_worker.c:74:1:
+                           underlying type 'struct SndChannel' at snd_worker.c:89:1 changed:
+                             type size hasn't changed
+                             6 data member changes:
+                              type of 'RedsStream* SndChannel::stream' changed:
+                                pointed to type 'typedef RedsStream' changed at red_channel.h:134:1, as reported earlier
+
+                              type of 'SndWorker* SndChannel::worker' changed:
+                                in pointed to type 'typedef SndWorker' at snd_worker.c:80:1:
+                                  underlying type 'struct SndWorker' changed; details are being reported
+
+                              type of 'RedChannelClient* SndChannel::channel_client' changed:
+                                pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+
+                              type of 'snd_channel_handle_message_proc SndChannel::handle_message' changed:
+                                underlying type 'int (SndChannel*, typedef size_t, typedef uint32_t, void*)*' changed:
+                                  in pointed to type 'function type int (SndChannel*, typedef size_t, typedef uint32_t, void*)':
+                                    parameter 1 of type 'SndChannel*' has sub-type changes:
+                                      in pointed to type 'typedef SndChannel' at snd_worker.c:74:1:
+                                        underlying type 'struct SndChannel' changed; details are being reported
+
+                              type of 'snd_channel_on_message_done_proc SndChannel::on_message_done' changed:
+                                underlying type 'void (SndChannel*)*' changed:
+                                  in pointed to type 'function type void (SndChannel*)':
+                                    parameter 1 of type 'SndChannel*' has sub-type changes:
+                                      in pointed to type 'typedef SndChannel' at snd_worker.c:74:1:
+                                        underlying type 'struct SndChannel' changed; details are being reported
+
+                              type of 'snd_channel_cleanup_channel_proc SndChannel::cleanup' changed:
+                                underlying type 'void (SndChannel*)*' changed:
+                                  in pointed to type 'function type void (SndChannel*)':
+                                    parameter 1 of type 'SndChannel*' has sub-type changes:
+                                      in pointed to type 'typedef SndChannel' at snd_worker.c:74:1:
+                                        underlying type 'struct SndChannel' changed; details are being reported
+
+                             no data member change (1 filtered);
+
+                       type of 'SndWorker* SndWorker::next' changed:
+                         in pointed to type 'typedef SndWorker' at snd_worker.c:80:1:
+                           underlying type 'struct SndWorker' changed; details are being reported
+
+
+                    type of 'SpicePlaybackInstance* SpicePlaybackState::sin' changed:
+                      in pointed to type 'typedef SpicePlaybackInstance' at spice-audio.h:33:1:
+                        underlying type 'struct SpicePlaybackInstance' changed; details are being reported
+
+
+
+    [C] 'function void spice_server_playback_put_samples(SpicePlaybackInstance*, uint32_t*)' at snd_worker.c:1100:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpicePlaybackInstance*' has sub-type changes:
+        pointed to type 'typedef SpicePlaybackInstance' changed at spice.h:335:1, as reported earlier
+
+    [C] 'function void spice_server_playback_set_mute(SpicePlaybackInstance*, uint8_t)' at snd_worker.c:1021:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpicePlaybackInstance*' has sub-type changes:
+        pointed to type 'typedef SpicePlaybackInstance' changed at spice.h:335:1, as reported earlier
+
+    [C] 'function void spice_server_playback_set_volume(SpicePlaybackInstance*, uint8_t, uint16_t*)' at snd_worker.c:1003:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpicePlaybackInstance*' has sub-type changes:
+        pointed to type 'typedef SpicePlaybackInstance' changed at spice.h:335:1, as reported earlier
+
+    [C] 'function void spice_server_playback_start(SpicePlaybackInstance*)' at snd_worker.c:1035:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpicePlaybackInstance*' has sub-type changes:
+        pointed to type 'typedef SpicePlaybackInstance' changed at spice.h:335:1, as reported earlier
+
+    [C] 'function void spice_server_playback_stop(SpicePlaybackInstance*)' at snd_worker.c:1054:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpicePlaybackInstance*' has sub-type changes:
+        pointed to type 'typedef SpicePlaybackInstance' changed at spice.h:335:1, as reported earlier
+
+    [C] 'function void spice_server_port_event(SpiceCharDeviceInstance*, uint8_t)' at spicevmc.c:574:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceCharDeviceInstance*' has sub-type changes:
+        pointed to type 'typedef SpiceCharDeviceInstance' changed at spice.h:399:1, as reported earlier
 
     [C] 'function uint32_t spice_server_record_get_samples(SpiceRecordInstance*, uint32_t*, uint32_t)' at snd_worker.c:1331:1 has some indirect sub-type changes:
       parameter 1 of type 'SpiceRecordInstance*' has sub-type changes:
@@ -382,14 +730,130 @@
                    type size changed from 512 to 576 (in bits)
                    1 data member insertion:
                      'uint32_t SpiceRecordState::frequency', at offset 512 (in bits) at snd_worker.c:166:1
-                   no data member changes (2 filtered);
+                   2 data member changes:
+                    type of 'SndWorker SpiceRecordState::worker' changed:
+                      details were reported earlier
 
+                    type of 'SpiceRecordInstance* SpiceRecordState::sin' changed:
+                      in pointed to type 'typedef SpiceRecordInstance' at spice-audio.h:67:1:
+                        underlying type 'struct SpiceRecordInstance' changed; details are being reported
+
+
+
+    [C] 'function void spice_server_record_set_mute(SpiceRecordInstance*, uint8_t)' at snd_worker.c:1279:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceRecordInstance*' has sub-type changes:
+        pointed to type 'typedef SpiceRecordInstance' changed at spice.h:369:1, as reported earlier
+
+    [C] 'function void spice_server_record_set_volume(SpiceRecordInstance*, uint8_t, uint16_t*)' at snd_worker.c:1261:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceRecordInstance*' has sub-type changes:
+        pointed to type 'typedef SpiceRecordInstance' changed at spice.h:369:1, as reported earlier
+
+    [C] 'function void spice_server_record_start(SpiceRecordInstance*)' at snd_worker.c:1293:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceRecordInstance*' has sub-type changes:
+        pointed to type 'typedef SpiceRecordInstance' changed at spice.h:369:1, as reported earlier
+
+    [C] 'function void spice_server_record_stop(SpiceRecordInstance*)' at snd_worker.c:1313:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceRecordInstance*' has sub-type changes:
+        pointed to type 'typedef SpiceRecordInstance' changed at spice.h:369:1, as reported earlier
+
+    [C] 'function void spice_server_set_addr(SpiceServer*, const char*, int)' at reds.c:3455:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_set_agent_copypaste(SpiceServer*, int)' at reds.c:3747:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_set_agent_file_xfer(SpiceServer*, int)' at reds.c:3756:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_set_agent_mouse(SpiceServer*, int)' at reds.c:3739:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_set_channel_security(SpiceServer*, const char*, int)' at reds.c:3648:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_set_compat_version(SpiceServer*, spice_compat_version_t)' at reds.c:3430:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_set_exit_on_disconnect(SpiceServer*, int)' at reds.c:3479:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
 
     [C] 'function int spice_server_set_image_compression(SpiceServer*, spice_image_compression_t)' at reds.c:3602:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
       parameter 2 of type 'typedef spice_image_compression_t' changed:
         typedef name changed from spice_image_compression_t to SpiceImageCompression at enums.h:197:1
-        underlying type 'enum __anonymous_enum__2' at spice.h:471:1 changed:
-          enum type 'enum __anonymous_enum__2' changed at spice.h:471:1, as reported earlier
+        underlying type 'enum __anonymous_enum__2' changed at spice.h:471:1, as reported earlier
+
+    [C] 'function int spice_server_set_jpeg_compression(SpiceServer*, spice_wan_compression_t)' at reds.c:3624:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_set_listen_socket_fd(SpiceServer*, int)' at reds.c:3472:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function void spice_server_set_name(SpiceServer*, const char*)' at reds.c:3517:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_set_noauth(SpiceServer*)' at reds.c:3486:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_set_playback_compression(SpiceServer*, int)' at reds.c:3732:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_set_port(SpiceServer*, int)' at reds.c:3445:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_set_sasl(SpiceServer*, int)' at reds.c:3494:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_set_sasl_appname(SpiceServer*, const char*)' at reds.c:3505:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function void spice_server_set_seamless_migration(SpiceServer*, int)' at reds.c:3941:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_set_streaming_video(SpiceServer*, int)' at reds.c:3720:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_set_ticket(SpiceServer*, const char*, int, int, int)' at reds.c:3529:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_set_tls(SpiceServer*, int, const char*, const char*, const char*, const char*, const char*, const char*)' at reds.c:3564:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function void spice_server_set_uuid(SpiceServer*, const uint8_t*)' at reds.c:3523:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function int spice_server_set_zlib_glz_compression(SpiceServer*, spice_wan_compression_t)' at reds.c:3636:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function void spice_server_vm_start(SpiceServer*)' at reds.c:3911:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+
+    [C] 'function void spice_server_vm_stop(SpiceServer*)' at reds.c:3926:1 has some indirect sub-type changes:
+      parameter 1 of type 'SpiceServer*' has sub-type changes:
+        pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
 
 
 ================ end of changes of 'libspice-server.so.1.8.0'===============
