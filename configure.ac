@@ -120,6 +120,12 @@ AC_ARG_ENABLE(asan,
 	      ENABLE_ASAN=$enableval,
 	      ENABLE_ASAN=no)
 
+AC_ARG_ENABLE(tsan,
+	      AS_HELP_STRING([--enable-tsan=yes|no],
+			     [enable the support of building with -fsanitize=thread)]),
+	      ENABLE_TSAN=$enableval,
+	      ENABLE_TSAN=no)
+
 AC_ARG_ENABLE(ubsan,
 	      AS_HELP_STRING([--enable-ubsan=yes|no],
 			     [enable the support of building with -fsanitize=undefined)]),
@@ -614,6 +620,11 @@ if test x$ENABLE_ASAN = xyes; then
     CXXFLAGS="$CXXFLAGS -fsanitize=address"
 fi
 
+if test x$ENABLE_TSAN = xyes; then
+    CFLAGS="$CFLAGS -fsanitize=thread"
+    CXXFLAGS="$CXXFLAGS -fsanitize=thread"
+fi
+
 if test x$ENABLE_UBSAN = xyes; then
     CFLAGS="$CFLAGS -fsanitize=undefined"
     CXXFLAGS="$CXXFLAGS -fsanitize=undefined"
@@ -907,6 +918,7 @@ AC_MSG_NOTICE([
     Enable python 3				   : ${ENABLE_PYTHON3}
     Enable running tests under Valgrind            : ${enable_valgrind}
     Enable build with -fsanitize=address    	   : ${ENABLE_ASAN}
+    Enable build with -fsanitize=thread    	   : ${ENABLE_TSAN}
     Enable build with -fsanitize=undefined  	   : ${ENABLE_UBSAN}
     Generate html apidoc	                   : ${ENABLE_APIDOC}
     Generate html manual	                   : ${ENABLE_MANUAL}
