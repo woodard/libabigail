@@ -250,7 +250,7 @@ leaf_reporter::report(const fn_parm_diff& d,
   out << " of type '"
       << f->get_type_pretty_representation()
       << "' changed:\n";
-  d.type_diff()->report(out, indent);
+  d.type_diff()->report(out, indent + "  ");
 }
 
 /// Report the changes carried by a @ref function_type_diff node.
