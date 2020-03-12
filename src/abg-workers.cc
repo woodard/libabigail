@@ -114,7 +114,9 @@ struct worker
 struct queue::priv
 {
   // A boolean to say if the user wants to shutdown the worker
-  // threads.
+  // threads. guarded by tasks_todo_mutex.
+  // TODO: once we have std::atomic<bool>, use it and reconsider the
+  // synchronization around its reads and writes
   bool				bring_workers_down;
   // The number of worker threads.
   size_t			num_workers;
@@ -249,11 +251,11 @@ struct queue::priv
     while (!tasks_todo.empty())
       pthread_cond_wait(&tasks_done_cond, &tasks_todo_mutex);
 
+    bring_workers_down = true;
     pthread_mutex_unlock(&tasks_todo_mutex);
 
     // Now that the task queue is empty, drain the workers by waking them up,
     // letting them finish their final task before termination.
-    bring_workers_down = true;
     ABG_ASSERT(pthread_cond_broadcast(&tasks_todo_cond) == 0);
 
     for (std::vector<worker>::const_iterator i = workers.begin();
@@ -388,7 +390,7 @@ queue::task_done_notify::operator()(const task_sptr&/*task_done*/)
 queue::priv*
 worker::wait_to_execute_a_task(queue::priv* p)
 {
-  do
+  while (true)
     {
       pthread_mutex_lock(&p->tasks_todo_mutex);
       // If there is no more tasks to perform and the queue is not to
@@ -426,8 +428,15 @@ worker::wait_to_execute_a_task(queue::priv* p)
 	  pthread_mutex_unlock(&p->tasks_done_mutex);
 	  pthread_cond_signal(&p->tasks_done_cond);
 	}
+
+      // ensure we access bring_workers_down always guarded
+      bool drop_out = false;
+      pthread_mutex_lock(&p->tasks_todo_mutex);
+      drop_out = p->bring_workers_down;
+      pthread_mutex_unlock(&p->tasks_todo_mutex);
+      if (drop_out)
+	break;
     }
-  while (!p->bring_workers_down);
 
   return p;
 }
