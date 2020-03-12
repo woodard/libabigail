@@ -26,7 +26,6 @@ Comparing the ABI of binaries between dbus-glib-0.100.2-2.fc20.i686.rpm and dbus
 
     'function int main(int, char**)'    {main}
 
-
   2 Removed variable symbols not referenced by debug info:
 
     stderr

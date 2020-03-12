@@ -20,7 +20,6 @@ Comparing the ABI of binaries between dbus-glib-0.100.2-2.fc20.x86_64.rpm and db
     'function BaseInfo* base_info_ref(BaseInfo*)'    {base_info_ref}
     'function void base_info_unref(BaseInfo*)'    {base_info_unref}
 
-
 ================ end of changes of 'dbus-binding-tool'===============
 
 
