@@ -35,10 +35,10 @@
       1 data member insertion:
         'typedef gboolean (FlatpakTransaction*, const char*, const char*, const char*, const char*, const char**)* _FlatpakTransactionClass::end_of_lifed_with_rebase', at offset 1408 (in bits) at flatpak-transaction.h:117:1
       4 data member changes (3 filtered):
-       'typedef gboolean (FlatpakTransaction*)* _FlatpakTransactionClass::ready' offset changed from 1408 to 1472 (in bits) (by +64 bits)
-       'typedef gboolean (FlatpakTransaction*, typedef FlatpakTransactionRemoteReason, const char*, const char*, const char*)* _FlatpakTransactionClass::add_new_remote' offset changed from 1472 to 1536 (in bits) (by +64 bits)
-       'typedef gboolean (FlatpakTransaction*, GCancellable*, GError**)* _FlatpakTransactionClass::run' offset changed from 1536 to 1600 (in bits) (by +64 bits)
-       'gpointer _FlatpakTransactionClass::padding[9]' offset changed from 1600 to 1664 (in bits) (by +64 bits)
+        'typedef gboolean (FlatpakTransaction*)* _FlatpakTransactionClass::ready' offset changed from 1408 to 1472 (in bits) (by +64 bits)
+        'typedef gboolean (FlatpakTransaction*, typedef FlatpakTransactionRemoteReason, const char*, const char*, const char*)* _FlatpakTransactionClass::add_new_remote' offset changed from 1472 to 1536 (in bits) (by +64 bits)
+        'typedef gboolean (FlatpakTransaction*, GCancellable*, GError**)* _FlatpakTransactionClass::run' offset changed from 1536 to 1600 (in bits) (by +64 bits)
+        'gpointer _FlatpakTransactionClass::padding[9]' offset changed from 1600 to 1664 (in bits) (by +64 bits)
 
 
   3 added types unreachable from any public interface:

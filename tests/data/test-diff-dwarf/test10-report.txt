@@ -8,18 +8,18 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in referenced type 'struct S':
         type size changed from 1152 to 1280 (in bits)
         2 data member changes:
-         type of 'int S::m0[5][3]' changed:
-           type name changed from 'int[5][3]' to 'int[5][4]'
-           array type size changed from 256 to 288
-           array type subrange 2 changed length from 3 to 4
+          type of 'int S::m0[5][3]' changed:
+            type name changed from 'int[5][3]' to 'int[5][4]'
+            array type size changed from 256 to 288
+            array type subrange 2 changed length from 3 to 4
 
-         type of 'int* S::m1[10]' changed:
-           array element type 'int*' changed: 
-             in pointed to type 'int':
-               type name changed from 'int' to 'char'
-               type size changed from 32 to 8 (in bits)
-           type name changed from 'int*[10]' to 'char*[10]'
-           type size hasn't changed
-         and offset changed from 512 to 640 (in bits) (by +128 bits)
+          type of 'int* S::m1[10]' changed:
+            array element type 'int*' changed: 
+              in pointed to type 'int':
+                type name changed from 'int' to 'char'
+                type size changed from 32 to 8 (in bits)
+            type name changed from 'int*[10]' to 'char*[10]'
+            type size hasn't changed
+          and offset changed from 512 to 640 (in bits) (by +128 bits)
 
 

@@ -16,7 +16,7 @@ Removed/Changed/Added variables summary: 0 Removed, 1 Changed, 0 Added variable
   [C] 'int changed_var' was changed to 'long int changed_var':
     size of symbol changed from 4 to 8
     type of variable changed:
-     type name changed from 'int' to 'long int'
-     type size changed from 32 to 64 (in bits)
+      type name changed from 'int' to 'long int'
+      type size changed from 32 to 64 (in bits)
 
 

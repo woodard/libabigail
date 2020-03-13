@@ -8,11 +8,11 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in pointed to type 'struct S2' at test44-anonymous-data-member-v1.c:11:1:
         type size changed from 128 to 160 (in bits)
         2 data member changes:
-         anonymous data member at offset 32 (in bits) changed from:
-           struct {int b; float c;}
-         to:
-           struct {int b; float c; char e;}
+          anonymous data member at offset 32 (in bits) changed from:
+            struct {int b; float c;}
+          to:
+            struct {int b; float c; char e;}
 
-         'int S2::d' offset changed from 96 to 128 (in bits) (by +32 bits)
+          'int S2::d' offset changed from 96 to 128 (in bits) (by +32 bits)
 
 

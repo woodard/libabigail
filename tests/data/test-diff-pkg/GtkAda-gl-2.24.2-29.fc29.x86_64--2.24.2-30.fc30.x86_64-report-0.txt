@@ -11,17 +11,17 @@
         in unqualified underlying type 'struct gl_h__gluint_vec___XUP' at gl_h.ads:57:1:
           type size hasn't changed
           1 data member change:
-           type of 'gl_h__gluint_vec___XUP::gl_h__gluint_vec___XUB* gl_h__gluint_vec___XUP::P_BOUNDS' changed:
-             in pointed to type 'struct gl_h__gluint_vec___XUP::gl_h__gluint_vec___XUB' at gl_h.ads:57:1:
-               type size hasn't changed
-               2 data member changes:
-                type of 'integer gl_h__gluint_vec___XUP::gl_h__gluint_vec___XUB::LB0' changed:
-                  entity changed from 'integer' to '<range natural___XDLU_0__2147483647>[2147483648]'
-                  type size changed from 32 to 2147483647 (in bits)
+            type of 'gl_h__gluint_vec___XUP::gl_h__gluint_vec___XUB* gl_h__gluint_vec___XUP::P_BOUNDS' changed:
+              in pointed to type 'struct gl_h__gluint_vec___XUP::gl_h__gluint_vec___XUB' at gl_h.ads:57:1:
+                type size hasn't changed
+                2 data member changes:
+                  type of 'integer gl_h__gluint_vec___XUP::gl_h__gluint_vec___XUB::LB0' changed:
+                    entity changed from 'integer' to '<range natural___XDLU_0__2147483647>[2147483648]'
+                    type size changed from 32 to 2147483647 (in bits)
 
-                type of 'integer gl_h__gluint_vec___XUP::gl_h__gluint_vec___XUB::UB0' changed:
-                  entity changed from 'integer' to '<range natural___XDLU_0__2147483647>[2147483648]'
-                  type size changed from 32 to 2147483647 (in bits)
+                  type of 'integer gl_h__gluint_vec___XUP::gl_h__gluint_vec___XUB::UB0' changed:
+                    entity changed from 'integer' to '<range natural___XDLU_0__2147483647>[2147483648]'
+                    type size changed from 32 to 2147483647 (in bits)
 
 
 
@@ -30,17 +30,17 @@
         in unqualified underlying type 'struct gtk__glarea__attributes_array___XUP' at gtk-glarea.ads:48:1:
           type size hasn't changed
           1 data member change:
-           type of 'gtk__glarea__attributes_array___XUP::gtk__glarea__attributes_array___XUB* gtk__glarea__attributes_array___XUP::P_BOUNDS' changed:
-             in pointed to type 'struct gtk__glarea__attributes_array___XUP::gtk__glarea__attributes_array___XUB':
-               type size hasn't changed
-               2 data member changes:
-                type of 'integer gtk__glarea__attributes_array___XUP::gtk__glarea__attributes_array___XUB::LB0' changed:
-                  entity changed from 'integer' to '<range natural___XDLU_0__2147483647>[2147483648]'
-                  type size changed from 32 to 2147483647 (in bits)
+            type of 'gtk__glarea__attributes_array___XUP::gtk__glarea__attributes_array___XUB* gtk__glarea__attributes_array___XUP::P_BOUNDS' changed:
+              in pointed to type 'struct gtk__glarea__attributes_array___XUP::gtk__glarea__attributes_array___XUB':
+                type size hasn't changed
+                2 data member changes:
+                  type of 'integer gtk__glarea__attributes_array___XUP::gtk__glarea__attributes_array___XUB::LB0' changed:
+                    entity changed from 'integer' to '<range natural___XDLU_0__2147483647>[2147483648]'
+                    type size changed from 32 to 2147483647 (in bits)
 
-                type of 'integer gtk__glarea__attributes_array___XUP::gtk__glarea__attributes_array___XUB::UB0' changed:
-                  entity changed from 'integer' to '<range natural___XDLU_0__2147483647>[2147483648]'
-                  type size changed from 32 to 2147483647 (in bits)
+                  type of 'integer gtk__glarea__attributes_array___XUP::gtk__glarea__attributes_array___XUB::UB0' changed:
+                    entity changed from 'integer' to '<range natural___XDLU_0__2147483647>[2147483648]'
+                    type size changed from 32 to 2147483647 (in bits)
 
 
 

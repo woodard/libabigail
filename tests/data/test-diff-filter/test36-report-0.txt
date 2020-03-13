@@ -8,9 +8,9 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in pointed to type 'struct S' at test36-1-v1.c:6:1:
         type size hasn't changed
         1 data member change:
-         type of 'int S::m0' changed:
-           type name changed from 'int' to 'unsigned int'
-           type size hasn't changed
+          type of 'int S::m0' changed:
+            type name changed from 'int' to 'unsigned int'
+            type size hasn't changed
 
 
   [C] 'function int foo_2(S*)' at test36-2-v1.c:13:1 has some indirect sub-type changes:
@@ -18,13 +18,13 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in pointed to type 'struct S' at test36-2-v1.c:6:1:
         type size hasn't changed
         2 data member changes:
-         type of 'int S::m0' changed:
-           type name changed from 'int' to 'unsigned int'
-           type size hasn't changed
+          type of 'int S::m0' changed:
+            type name changed from 'int' to 'unsigned int'
+            type size hasn't changed
 
-         type of 'int S::m1' changed:
-           type name changed from 'int' to 'unsigned int'
-           type size hasn't changed
+          type of 'int S::m1' changed:
+            type name changed from 'int' to 'unsigned int'
+            type size hasn't changed
 
 
 

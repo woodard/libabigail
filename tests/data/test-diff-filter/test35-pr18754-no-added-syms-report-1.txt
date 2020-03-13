@@ -93,9 +93,9 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [C] 'static const char* Engine::m_func_names[6]' was changed to 'static const char* Engine::m_func_names[7]':
     size of symbol changed from 48 to 56
     type of variable changed:
-     type name changed from 'const char*[6]' to 'const char*[7]'
-     array type size changed from 384 to 448
-     array type subrange 1 changed length from 6 to 7
+      type name changed from 'const char*[6]' to 'const char*[7]'
+      array type size changed from 384 to 448
+      array type subrange 1 changed length from 6 to 7
 
 
 7 Removed function symbols not referenced by debug info:

@@ -1300,14 +1300,14 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
       in pointed to type 'struct VarDesc' at offload_common.h:254:1:
         type size hasn't changed
         1 data member changes (1 filtered):
-         type of 'union {struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst;}; uint32_t bits;} VarDesc::flags' changed:
-           type name changed from 'VarDesc::__anonymous_union__2' to 'varDescFlags'
-           type size hasn't changed
-           1 data member changes (1 filtered):
-            anonymous data member at offset 0 (in bytes) changed from:
-              struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst;}
-            to:
-              struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t targetptr; uint32_t preallocated; uint32_t is_pointer; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst; uint32_t always_copy; uint32_t always_delete; uint32_t pin;}
+          type of 'union {struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst;}; uint32_t bits;} VarDesc::flags' changed:
+            type name changed from 'VarDesc::__anonymous_union__2' to 'varDescFlags'
+            type size hasn't changed
+            1 data member changes (1 filtered):
+              anonymous data member at offset 0 (in bytes) changed from:
+                struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst;}
+              to:
+                struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t targetptr; uint32_t preallocated; uint32_t is_pointer; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst; uint32_t always_copy; uint32_t always_delete; uint32_t pin;}
 
 
 
@@ -1318,11 +1318,11 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
           type name changed from 'InitTableEntry' to '__anonymous_struct__2'
           type size hasn't changed
           1 data member change:
-           type of 'void ()* InitTableEntry::func' changed:
-             in pointed to type 'function type void ()':
-               parameter 1 of type 'typedef MyoArena' was added
+            type of 'void ()* InitTableEntry::func' changed:
+              in pointed to type 'function type void ()':
+                parameter 1 of type 'typedef MyoArena' was added
 
-           and name of 'InitTableEntry::func' changed to '__anonymous_struct__2::func' at offload_table.h:295:1
+            and name of 'InitTableEntry::func' changed to '__anonymous_struct__2::func' at offload_table.h:295:1
 
   [C] 'function int __offload_offload(OFFLOAD, const char*, int, int, VarDesc*, VarDesc2*, int, void**, void*, int, void*)' at compiler_if_host.cpp:456:1 has some indirect sub-type changes:
     parameter 1 of type 'typedef OFFLOAD' has sub-type changes:
@@ -1340,97 +1340,97 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
             'bool OffloadDescriptor::m_traceback_called', at offset 0x11c (in bytes) at offload_host.h:360:1
             'OffloadDescriptor::OmpAsyncLastEventType OffloadDescriptor::m_omp_async_last_event_type', at offset 0x120 (in bytes) at offload_host.h:362:1
           8 data member changes (2 filtered):
-           type of 'Engine& OffloadDescriptor::m_device' changed:
-             in referenced type 'struct Engine' at offload_engine.h:395:1:
-               type size changed from 0x158 to 0x2b0 (in bytes)
-               1 data member deletion:
-                 'mutex_t Engine::m_ptr_lock', at offset 0xa8 (in bytes) at offload_engine.h:474:1
-               7 data member insertions:
-                 'PtrDataTable Engine::m_targetptr_set', at offset 0xd0 (in bytes) at offload_engine.h:630:1
-                 'StreamMap Engine::m_stream_map', at offset 0x180 (in bytes) at offload_engine.h:637:1
-                 'mutex_t Engine::m_stream_lock', at offset 0x1b0 (in bytes) at offload_engine.h:638:1
-                 'int Engine::m_num_cores', at offset 0x1d8 (in bytes) at offload_engine.h:639:1
-                 'int Engine::m_num_threads', at offset 0x1dc (in bytes) at offload_engine.h:640:1
-                 'std::bitset<1024ul> Engine::m_cpus', at offset 0x1e0 (in bytes) at offload_engine.h:641:1
-                 'DynLibList Engine::m_dyn_libs', at offset 0x260 (in bytes) at offload_engine.h:644:1
-               4 data member changes:
-                type of 'Engine::PtrSet Engine::m_ptr_set' changed:
-                  entity changed from 'typedef Engine::PtrSet' to compatible type 'class PtrDataTable' at offload_engine.h:163:1
-                    type name changed from 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >' to 'PtrDataTable'
-                    type size changed from 0x30 to 0x58 (in bytes)
-                    1 data member insertion:
-                      'mutex_t PtrDataTable::m_ptr_lock', at offset 0x30 (in bytes) at offload_engine.h:204:1
-                    1 data member change:
-                     type of 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_Rep_type std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_M_t' changed:
-                       typedef name changed from std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_Rep_type to PtrDataTable::PtrSet at offload_engine.h:165:1
-                       underlying type 'class std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >' at stl_tree.h:357:1 changed:
-                         type name changed from 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >' to 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >'
-                         type size hasn't changed
-                         1 data member change:
-                          type of 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true> std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_M_impl' changed:
-                            entity changed from 'struct std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>' to compatible type 'typedef std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_Rep_type' at stl_set.h:115:1
-                              type name changed from 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>' to 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >'
-                              type size hasn't changed
-                              1 base class deletion:
-                                class std::allocator<std::_Rb_tree_node<PtrData> > at allocator.h:95:1
-                              2 data member deletions:
-                                'std::_Rb_tree_node_base std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_header', at offset 0x8 (in bytes) at stl_tree.h:593:1
-                                'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::size_type std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_node_count', at offset 0x28 (in bytes) at stl_tree.h:594:1
-                              1 data member change:
-                               type of 'std::less<PtrData> std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_key_compare' changed:
-                                 type name changed from 'std::less<PtrData>' to 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>'
-                                 type size changed from 0x1 to 0x30 (in bytes)
-                                 1 base class deletion:
-                                   struct std::binary_function<PtrData, PtrData, bool> at stl_function.h:118:1
-                                 1 base class insertion:
-                                   class std::allocator<std::_Rb_tree_node<PtrData> > at allocator.h:95:1
-                                 3 data member insertions:
-                                   'std::less<PtrData> std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_key_compare', at offset 0 (in bytes) at stl_tree.h:592:1
-                                   'std::_Rb_tree_node_base std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_header', at offset 0x8 (in bytes) at stl_tree.h:593:1
-                                   'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::size_type std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_node_count', at offset 0x28 (in bytes) at stl_tree.h:594:1
-                               and name of 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_key_compare' changed to 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_M_impl' at stl_tree.h:633:1
-                          and name of 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_M_impl' changed to 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_M_t' at stl_set.h:116:1
-                     and name of 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_M_t' changed to 'PtrDataTable::list' at offload_engine.h:203:1
+            type of 'Engine& OffloadDescriptor::m_device' changed:
+              in referenced type 'struct Engine' at offload_engine.h:395:1:
+                type size changed from 0x158 to 0x2b0 (in bytes)
+                1 data member deletion:
+                  'mutex_t Engine::m_ptr_lock', at offset 0xa8 (in bytes) at offload_engine.h:474:1
+                7 data member insertions:
+                  'PtrDataTable Engine::m_targetptr_set', at offset 0xd0 (in bytes) at offload_engine.h:630:1
+                  'StreamMap Engine::m_stream_map', at offset 0x180 (in bytes) at offload_engine.h:637:1
+                  'mutex_t Engine::m_stream_lock', at offset 0x1b0 (in bytes) at offload_engine.h:638:1
+                  'int Engine::m_num_cores', at offset 0x1d8 (in bytes) at offload_engine.h:639:1
+                  'int Engine::m_num_threads', at offset 0x1dc (in bytes) at offload_engine.h:640:1
+                  'std::bitset<1024ul> Engine::m_cpus', at offset 0x1e0 (in bytes) at offload_engine.h:641:1
+                  'DynLibList Engine::m_dyn_libs', at offset 0x260 (in bytes) at offload_engine.h:644:1
+                4 data member changes:
+                  type of 'Engine::PtrSet Engine::m_ptr_set' changed:
+                    entity changed from 'typedef Engine::PtrSet' to compatible type 'class PtrDataTable' at offload_engine.h:163:1
+                      type name changed from 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >' to 'PtrDataTable'
+                      type size changed from 0x30 to 0x58 (in bytes)
+                      1 data member insertion:
+                        'mutex_t PtrDataTable::m_ptr_lock', at offset 0x30 (in bytes) at offload_engine.h:204:1
+                      1 data member change:
+                        type of 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_Rep_type std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_M_t' changed:
+                          typedef name changed from std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_Rep_type to PtrDataTable::PtrSet at offload_engine.h:165:1
+                          underlying type 'class std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >' at stl_tree.h:357:1 changed:
+                            type name changed from 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >' to 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >'
+                            type size hasn't changed
+                            1 data member change:
+                              type of 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true> std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_M_impl' changed:
+                                entity changed from 'struct std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>' to compatible type 'typedef std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_Rep_type' at stl_set.h:115:1
+                                  type name changed from 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>' to 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >'
+                                  type size hasn't changed
+                                  1 base class deletion:
+                                    class std::allocator<std::_Rb_tree_node<PtrData> > at allocator.h:95:1
+                                  2 data member deletions:
+                                    'std::_Rb_tree_node_base std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_header', at offset 0x8 (in bytes) at stl_tree.h:593:1
+                                    'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::size_type std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_node_count', at offset 0x28 (in bytes) at stl_tree.h:594:1
+                                  1 data member change:
+                                    type of 'std::less<PtrData> std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_key_compare' changed:
+                                      type name changed from 'std::less<PtrData>' to 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>'
+                                      type size changed from 0x1 to 0x30 (in bytes)
+                                      1 base class deletion:
+                                        struct std::binary_function<PtrData, PtrData, bool> at stl_function.h:118:1
+                                      1 base class insertion:
+                                        class std::allocator<std::_Rb_tree_node<PtrData> > at allocator.h:95:1
+                                      3 data member insertions:
+                                        'std::less<PtrData> std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_key_compare', at offset 0 (in bytes) at stl_tree.h:592:1
+                                        'std::_Rb_tree_node_base std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_header', at offset 0x8 (in bytes) at stl_tree.h:593:1
+                                        'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::size_type std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_node_count', at offset 0x28 (in bytes) at stl_tree.h:594:1
+                                    and name of 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_key_compare' changed to 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_M_impl' at stl_tree.h:633:1
+                              and name of 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_M_impl' changed to 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_M_t' at stl_set.h:116:1
+                        and name of 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_M_t' changed to 'PtrDataTable::list' at offload_engine.h:203:1
 
-                'Engine::SignalMap Engine::m_signal_map' offset changed from 0xd0 to 0x128 (in bytes) (by +0x58 bytes)
-                'mutex_t Engine::m_signal_lock' offset changed from 0x100 to 0x158 (in bytes) (by +0x58 bytes)
-                type of 'coifunction* Engine::m_funcs[6]' changed:
-                  type name changed from 'coifunction*[6]' to 'coifunction*[7]'
-                  array type size changed from 0x180 to 0x1c0
-                  array type subrange 1 changed length from 6 to 7
-                and offset changed from 0x128 to 0x278 (in bytes) (by +0x150 bytes)
+                  'Engine::SignalMap Engine::m_signal_map' offset changed from 0xd0 to 0x128 (in bytes) (by +0x58 bytes)
+                  'mutex_t Engine::m_signal_lock' offset changed from 0x100 to 0x158 (in bytes) (by +0x58 bytes)
+                  type of 'coifunction* Engine::m_funcs[6]' changed:
+                    type name changed from 'coifunction*[6]' to 'coifunction*[7]'
+                    array type size changed from 0x180 to 0x1c0
+                    array type subrange 1 changed length from 6 to 7
+                  and offset changed from 0x128 to 0x278 (in bytes) (by +0x150 bytes)
 
-           'bool OffloadDescriptor::m_is_mandatory' offset changed from 0x28 to 0x29 (in bytes) (by +0x1 bytes)
-           'const bool OffloadDescriptor::m_is_openmp' offset changed from 0x29 to 0x2a (in bytes) (by +0x1 bytes)
-           type of 'OffloadDescriptor::VarExtra* OffloadDescriptor::m_vars_extra' changed:
-             in pointed to type 'struct OffloadDescriptor::VarExtra' at offload_host.h:216:1:
-               type size changed from 0x48 to 0x50 (in bytes)
-               2 data member insertions:
-                 'void* OffloadDescriptor::VarExtra::alloc', at offset 0x28 (in bytes) at offload_host.h:222:1
-                 'OffloadDescriptor::OmpAsyncLastEventType OffloadDescriptor::VarExtra::omp_last_event_type', at offset 0x4c (in bytes) at offload_host.h:227:1
-               4 data member changes (3 filtered):
-                'CeanReadRanges* OffloadDescriptor::VarExtra::read_rng_src' offset changed from 0x28 to 0x30 (in bytes) (by +0x8 bytes)
-                type of 'CeanReadRanges* OffloadDescriptor::VarExtra::read_rng_dst' changed:
-                  in pointed to type 'struct CeanReadRanges' at cean_util.h:58:1:
-                    type size changed from 0x40 to 0x48 (in bytes)
-                    1 data member insertion:
-                      'Arr_Desc* CeanReadRanges::arr_desc', at offset 0 (in bytes) at cean_util.h:59:1
-                    7 data member changes:
-                     'void* CeanReadRanges::ptr' offset changed from 0 to 0x8 (in bytes) (by +0x8 bytes)
-                     'int64_t CeanReadRanges::current_number' offset changed from 0x8 to 0x10 (in bytes) (by +0x8 bytes)
-                     'int64_t CeanReadRanges::range_max_number' offset changed from 0x10 to 0x18 (in bytes) (by +0x8 bytes)
-                     'int64_t CeanReadRanges::range_size' offset changed from 0x18 to 0x20 (in bytes) (by +0x8 bytes)
-                     'int CeanReadRanges::last_noncont_ind' offset changed from 0x20 to 0x28 (in bytes) (by +0x8 bytes)
-                     'int64_t CeanReadRanges::init_offset' offset changed from 0x28 to 0x30 (in bytes) (by +0x8 bytes)
-                     'CeanReadDim CeanReadRanges::Dim[1]' offset changed from 0x30 to 0x38 (in bytes) (by +0x8 bytes)
-                and offset changed from 0x30 to 0x38 (in bytes) (by +0x8 bytes)
-                'int64_t OffloadDescriptor::VarExtra::ptr_arr_offset' offset changed from 0x38 to 0x40 (in bytes) (by +0x8 bytes)
-                'bool OffloadDescriptor::VarExtra::is_arr_ptr_el' offset changed from 0x40 to 0x48 (in bytes) (by +0x8 bytes)
+            'bool OffloadDescriptor::m_is_mandatory' offset changed from 0x28 to 0x29 (in bytes) (by +0x1 bytes)
+            'const bool OffloadDescriptor::m_is_openmp' offset changed from 0x29 to 0x2a (in bytes) (by +0x1 bytes)
+            type of 'OffloadDescriptor::VarExtra* OffloadDescriptor::m_vars_extra' changed:
+              in pointed to type 'struct OffloadDescriptor::VarExtra' at offload_host.h:216:1:
+                type size changed from 0x48 to 0x50 (in bytes)
+                2 data member insertions:
+                  'void* OffloadDescriptor::VarExtra::alloc', at offset 0x28 (in bytes) at offload_host.h:222:1
+                  'OffloadDescriptor::OmpAsyncLastEventType OffloadDescriptor::VarExtra::omp_last_event_type', at offset 0x4c (in bytes) at offload_host.h:227:1
+                4 data member changes (3 filtered):
+                  'CeanReadRanges* OffloadDescriptor::VarExtra::read_rng_src' offset changed from 0x28 to 0x30 (in bytes) (by +0x8 bytes)
+                  type of 'CeanReadRanges* OffloadDescriptor::VarExtra::read_rng_dst' changed:
+                    in pointed to type 'struct CeanReadRanges' at cean_util.h:58:1:
+                      type size changed from 0x40 to 0x48 (in bytes)
+                      1 data member insertion:
+                        'Arr_Desc* CeanReadRanges::arr_desc', at offset 0 (in bytes) at cean_util.h:59:1
+                      7 data member changes:
+                        'void* CeanReadRanges::ptr' offset changed from 0 to 0x8 (in bytes) (by +0x8 bytes)
+                        'int64_t CeanReadRanges::current_number' offset changed from 0x8 to 0x10 (in bytes) (by +0x8 bytes)
+                        'int64_t CeanReadRanges::range_max_number' offset changed from 0x10 to 0x18 (in bytes) (by +0x8 bytes)
+                        'int64_t CeanReadRanges::range_size' offset changed from 0x18 to 0x20 (in bytes) (by +0x8 bytes)
+                        'int CeanReadRanges::last_noncont_ind' offset changed from 0x20 to 0x28 (in bytes) (by +0x8 bytes)
+                        'int64_t CeanReadRanges::init_offset' offset changed from 0x28 to 0x30 (in bytes) (by +0x8 bytes)
+                        'CeanReadDim CeanReadRanges::Dim[1]' offset changed from 0x30 to 0x38 (in bytes) (by +0x8 bytes)
+                  and offset changed from 0x30 to 0x38 (in bytes) (by +0x8 bytes)
+                  'int64_t OffloadDescriptor::VarExtra::ptr_arr_offset' offset changed from 0x38 to 0x40 (in bytes) (by +0x8 bytes)
+                  'bool OffloadDescriptor::VarExtra::is_arr_ptr_el' offset changed from 0x40 to 0x48 (in bytes) (by +0x8 bytes)
 
-           'OffloadHostTimerData* OffloadDescriptor::m_timer_data' offset changed from 0xf8 to 0x100 (in bytes) (by +0x8 bytes)
-           'uint64_t OffloadDescriptor::m_in_datalen' offset changed from 0x100 to 0x108 (in bytes) (by +0x8 bytes)
-           'uint64_t OffloadDescriptor::m_out_datalen' offset changed from 0x108 to 0x110 (in bytes) (by +0x8 bytes)
-           'bool OffloadDescriptor::m_need_runfunction' offset changed from 0x110 to 0x118 (in bytes) (by +0x8 bytes)
+            'OffloadHostTimerData* OffloadDescriptor::m_timer_data' offset changed from 0xf8 to 0x100 (in bytes) (by +0x8 bytes)
+            'uint64_t OffloadDescriptor::m_in_datalen' offset changed from 0x100 to 0x108 (in bytes) (by +0x8 bytes)
+            'uint64_t OffloadDescriptor::m_out_datalen' offset changed from 0x108 to 0x110 (in bytes) (by +0x8 bytes)
+            'bool OffloadDescriptor::m_need_runfunction' offset changed from 0x110 to 0x118 (in bytes) (by +0x8 bytes)
 
   [C] 'function void __offload_register_image(void*)' at offload_host.cpp:5531:1 has some indirect sub-type changes:
     return type changed:
@@ -1513,9 +1513,9 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [C] 'static const char* Engine::m_func_names[6]' was changed to 'static const char* Engine::m_func_names[7]' at offload_engine.h:659:1:
     size of symbol changed from 0x6 to 0x7
     type of variable changed:
-     type name changed from 'const char*[6]' to 'const char*[7]'
-     array type size changed from 0x180 to 0x1c0
-     array type subrange 1 changed length from 6 to 7
+      type name changed from 'const char*[6]' to 'const char*[7]'
+      array type size changed from 0x180 to 0x1c0
+      array type subrange 1 changed length from 6 to 7
 
 
 7 Removed function symbols not referenced by debug info:

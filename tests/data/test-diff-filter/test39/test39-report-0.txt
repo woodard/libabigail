@@ -8,11 +8,11 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in pointed to type 'struct container_type' at test39.h:3:1:
         type size hasn't changed
         1 data member change:
-         type of 'opaque_type* container_type::s' changed:
-           in pointed to type 'struct opaque_type' at test39-b-v1.c:3:1:
-             type size changed from 32 to 64 (in bits)
-             1 data member insertion:
-               'char opaque_type::m1', at offset 32 (in bits) at test39-b-v1.c:6:1
+          type of 'opaque_type* container_type::s' changed:
+            in pointed to type 'struct opaque_type' at test39-b-v1.c:3:1:
+              type size changed from 32 to 64 (in bits)
+              1 data member insertion:
+                'char opaque_type::m1', at offset 32 (in bits) at test39-b-v1.c:6:1
 
 
   [C] 'function long long int foo2(container_type*)' at test39-c-v1.c:10:1 has some indirect sub-type changes:
@@ -20,11 +20,11 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in pointed to type 'struct container_type' at test39.h:3:1:
         type size hasn't changed
         1 data member change:
-         type of 'opaque_type* container_type::s' changed:
-           in pointed to type 'struct opaque_type' at test39-c-v1.c:3:1:
-             type size changed from 32 to 64 (in bits)
-             1 data member insertion:
-               'unsigned char opaque_type::m1', at offset 32 (in bits) at test39-c-v1.c:6:1
+          type of 'opaque_type* container_type::s' changed:
+            in pointed to type 'struct opaque_type' at test39-c-v1.c:3:1:
+              type size changed from 32 to 64 (in bits)
+              1 data member insertion:
+                'unsigned char opaque_type::m1', at offset 32 (in bits) at test39-c-v1.c:6:1
 
 
 

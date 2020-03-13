@@ -1048,7 +1048,7 @@ default_reporter::report(const class_or_union_diff& d,
 	    {
 	      if ((*it)->to_be_reported())
 		{
-		  represent(*it, ctxt, out, indent + " ");
+		  represent(*it, ctxt, out, indent + "  ");
 		  out << "\n";
 		}
 	    }
@@ -1068,7 +1068,7 @@ default_reporter::report(const class_or_union_diff& d,
 	    {
 	      if ((*it)->to_be_reported())
 		{
-		  represent(*it, ctxt, out, indent + " ");
+		  represent(*it, ctxt, out, indent + "  ");
 		  out << "\n";
 		}
 	    }
@@ -1695,7 +1695,7 @@ default_reporter::report(const var_diff& d, ostream& out,
 	{
 	  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(dif, "type");
 	  out << indent << "type of variable changed:\n";
-	  dif->report(out, indent + " ");
+	  dif->report(out, indent + "  ");
 	}
     }
 }

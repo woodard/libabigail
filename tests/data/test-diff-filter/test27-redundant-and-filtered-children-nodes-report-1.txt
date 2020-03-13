@@ -15,8 +15,8 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in referenced type 'struct S':
         type size hasn't changed
         1 data member changes (2 filtered):
-         type of 'S0* S::m0' changed:
-           pointed to type 'struct S0' changed, as reported earlier
+          type of 'S0* S::m0' changed:
+            pointed to type 'struct S0' changed, as reported earlier
 
 
 

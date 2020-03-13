@@ -646,7 +646,7 @@ leaf_reporter::report(const class_or_union_diff& d,
 	    {
 	      if (diff_to_be_reported((*it).get()))
 		{
-		  represent(*it, ctxt, out, indent + " ",
+		  represent(*it, ctxt, out, indent + "  ",
 			    /*local_only=*/true);
 		  out << "\n";
 		  emitted_data_members_changes = true;
@@ -673,7 +673,7 @@ leaf_reporter::report(const class_or_union_diff& d,
 	    {
 	      if (diff_to_be_reported((*it).get()))
 		{
-		  represent(*it, ctxt, out, indent + " ",
+		  represent(*it, ctxt, out, indent + "  ",
 			    /*local_only=*/true);
 		  out << "\n";
 		  emitted_data_members_changes = true;
@@ -980,7 +980,7 @@ leaf_reporter::report(const var_diff& d,
 	{
 	  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(dif, "type");
 	  out << indent << "type of variable changed:\n";
-	  dif->report(out, indent + " ");
+	  dif->report(out, indent + "  ");
 	}
     }
 }

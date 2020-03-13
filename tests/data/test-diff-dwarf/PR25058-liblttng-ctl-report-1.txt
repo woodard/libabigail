@@ -90,24 +90,24 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
       in pointed to type 'struct lttng_event_context':
         type size hasn't changed
         2 data member changes:
-         type of 'lttng_event_context_type lttng_event_context::ctx' changed:
-           type size hasn't changed
-           2 enumerator insertions:
-             'lttng_event_context_type::LTTNG_EVENT_CONTEXT_CALLSTACK_KERNEL' value '20'
-             'lttng_event_context_type::LTTNG_EVENT_CONTEXT_CALLSTACK_USER' value '21'
+          type of 'lttng_event_context_type lttng_event_context::ctx' changed:
+            type size hasn't changed
+            2 enumerator insertions:
+              'lttng_event_context_type::LTTNG_EVENT_CONTEXT_CALLSTACK_KERNEL' value '20'
+              'lttng_event_context_type::LTTNG_EVENT_CONTEXT_CALLSTACK_USER' value '21'
 
 
-         type of 'union {lttng_event_perf_counter_ctx perf_counter; struct {char* provider_name; char* ctx_name;} app_ctx; char padding[288];} lttng_event_context::u' changed:
-           type name changed from '__anonymous_union__4' to '__anonymous_union__5'
-           type size hasn't changed
-           3 data member changes:
-            name of '__anonymous_union__4::app_ctx' changed to '__anonymous_union__5::app_ctx'
-            name of '__anonymous_union__4::padding' changed to '__anonymous_union__5::padding'
-            name of '__anonymous_union__4::perf_counter' changed to '__anonymous_union__5::perf_counter'
-           type changed from:
-             union {lttng_event_perf_counter_ctx perf_counter; struct {char* provider_name; char* ctx_name;} app_ctx; char padding[288];}
-           to:
-             union {lttng_event_perf_counter_ctx perf_counter; struct {char* provider_name; char* ctx_name;} app_ctx; char padding[288];}
+          type of 'union {lttng_event_perf_counter_ctx perf_counter; struct {char* provider_name; char* ctx_name;} app_ctx; char padding[288];} lttng_event_context::u' changed:
+            type name changed from '__anonymous_union__4' to '__anonymous_union__5'
+            type size hasn't changed
+            3 data member changes:
+              name of '__anonymous_union__4::app_ctx' changed to '__anonymous_union__5::app_ctx'
+              name of '__anonymous_union__4::padding' changed to '__anonymous_union__5::padding'
+              name of '__anonymous_union__4::perf_counter' changed to '__anonymous_union__5::perf_counter'
+            type changed from:
+              union {lttng_event_perf_counter_ctx perf_counter; struct {char* provider_name; char* ctx_name;} app_ctx; char padding[288];}
+            to:
+              union {lttng_event_perf_counter_ctx perf_counter; struct {char* provider_name; char* ctx_name;} app_ctx; char padding[288];}
 
   [C] 'function lttng_condition_type lttng_condition_get_type(const lttng_condition*)' has some indirect sub-type changes:
     return type changed:
@@ -123,10 +123,10 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
       in pointed to type 'struct lttng_event':
         type size hasn't changed
         1 data member change:
-         type of 'lttng_event_type lttng_event::type' changed:
-           type size hasn't changed
-           1 enumerator insertion:
-             'lttng_event_type::LTTNG_EVENT_USERSPACE_PROBE' value '6'
+          type of 'lttng_event_type lttng_event::type' changed:
+            type size hasn't changed
+            1 enumerator insertion:
+              'lttng_event_type::LTTNG_EVENT_USERSPACE_PROBE' value '6'
 
 
 
@@ -184,8 +184,8 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
         in pointed to type 'struct lttng_event_field':
           type size hasn't changed
           1 data member change:
-           type of 'lttng_event lttng_event_field::event' changed:
-             details were reported earlier
+            type of 'lttng_event lttng_event_field::event' changed:
+              details were reported earlier
 
 
   [C] 'function int lttng_list_tracepoints(lttng_handle*, lttng_event**)' has some indirect sub-type changes:
@@ -231,101 +231,101 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
       in pointed to type 'struct filter_parser_ctx':
         type size hasn't changed
         1 data member change:
-         type of 'filter_ast* filter_parser_ctx::ast' changed:
-           in pointed to type 'struct filter_ast':
-             type size changed from 704 to 768 (in bits)
-             2 data member changes:
-              type of 'filter_node filter_ast::root' changed:
-                type size changed from 576 to 640 (in bits)
-                2 data member changes:
-                 type of 'filter_node* filter_node::parent' changed:
-                   pointed to type 'struct filter_node' changed; details are being reported
+          type of 'filter_ast* filter_parser_ctx::ast' changed:
+            in pointed to type 'struct filter_ast':
+              type size changed from 704 to 768 (in bits)
+              2 data member changes:
+                type of 'filter_node filter_ast::root' changed:
+                  type size changed from 576 to 640 (in bits)
+                  2 data member changes:
+                    type of 'filter_node* filter_node::parent' changed:
+                      pointed to type 'struct filter_node' changed; details are being reported
 
-                 type of 'union {struct {} unknown; struct {filter_node* child;} root; struct {__anonymous_enum__ type; ast_link_type post_op; ast_link_type pre_op; union {char* string; uint64_t constant; double float_constant; char* identifier; filter_node* child;} u; filter_node* prev; filter_node* next;} expression; struct {op_type type; filter_node* lchild; filter_node* rchild;} op; struct {unary_op_type type; filter_node* child;} unary_op;} filter_node::u' changed:
-                   type size changed from 320 to 384 (in bits)
-                   4 data member changes:
-                    type of 'struct {__anonymous_enum__ type; ast_link_type post_op; ast_link_type pre_op; union {char* string; uint64_t constant; double float_constant; char* identifier; filter_node* child;} u; filter_node* prev; filter_node* next;} expression' changed:
+                    type of 'union {struct {} unknown; struct {filter_node* child;} root; struct {__anonymous_enum__ type; ast_link_type post_op; ast_link_type pre_op; union {char* string; uint64_t constant; double float_constant; char* identifier; filter_node* child;} u; filter_node* prev; filter_node* next;} expression; struct {op_type type; filter_node* lchild; filter_node* rchild;} op; struct {unary_op_type type; filter_node* child;} unary_op;} filter_node::u' changed:
                       type size changed from 320 to 384 (in bits)
-                      1 data member insertion:
-                        'filter_node* next_bracket', at offset 320 (in bits)
-                      5 data member changes:
-                       type of 'ast_link_type post_op' changed:
-                         type size hasn't changed
-                         1 enumerator insertion:
-                           'ast_link_type::AST_LINK_BRACKET' value '3'
+                      4 data member changes:
+                        type of 'struct {__anonymous_enum__ type; ast_link_type post_op; ast_link_type pre_op; union {char* string; uint64_t constant; double float_constant; char* identifier; filter_node* child;} u; filter_node* prev; filter_node* next;} expression' changed:
+                          type size changed from 320 to 384 (in bits)
+                          1 data member insertion:
+                            'filter_node* next_bracket', at offset 320 (in bits)
+                          5 data member changes:
+                            type of 'ast_link_type post_op' changed:
+                              type size hasn't changed
+                              1 enumerator insertion:
+                                'ast_link_type::AST_LINK_BRACKET' value '3'
 
 
-                       type of 'ast_link_type pre_op' changed:
-                         details were reported earlier
+                            type of 'ast_link_type pre_op' changed:
+                              details were reported earlier
 
-                       type of 'union {char* string; uint64_t constant; double float_constant; char* identifier; filter_node* child;} u' changed:
-                         type size hasn't changed
-                         1 data member change:
-                          type of 'filter_node* child' changed:
-                            pointed to type 'struct filter_node' changed; details are being reported
+                            type of 'union {char* string; uint64_t constant; double float_constant; char* identifier; filter_node* child;} u' changed:
+                              type size hasn't changed
+                              1 data member change:
+                                type of 'filter_node* child' changed:
+                                  pointed to type 'struct filter_node' changed; details are being reported
 
-                         type changed from:
-                           union {char* string; uint64_t constant; double float_constant; char* identifier; filter_node* child;}
-                         to:
-                           union {char* string; uint64_t constant; double float_constant; char* identifier; filter_node* child;}
-                       type of 'filter_node* prev' changed:
-                         pointed to type 'struct filter_node' changed; details are being reported
+                              type changed from:
+                                union {char* string; uint64_t constant; double float_constant; char* identifier; filter_node* child;}
+                              to:
+                                union {char* string; uint64_t constant; double float_constant; char* identifier; filter_node* child;}
+                            type of 'filter_node* prev' changed:
+                              pointed to type 'struct filter_node' changed; details are being reported
 
-                       type of 'filter_node* next' changed:
-                         pointed to type 'struct filter_node' changed; details are being reported
-
-
-                    type of 'struct {op_type type; filter_node* lchild; filter_node* rchild;} op' changed:
-                      type size hasn't changed
-                      3 data member changes:
-                       type of 'op_type type' changed:
-                         type size hasn't changed
-                         5 enumerator deletions:
-                           'op_type::AST_OP_RSHIFT' value '6'
-                           'op_type::AST_OP_LSHIFT' value '7'
-                           'op_type::AST_OP_BIN_AND' value '10'
-                           'op_type::AST_OP_BIN_OR' value '11'
-                           'op_type::AST_OP_BIN_XOR' value '12'
-                         5 enumerator insertions:
-                           'op_type::AST_OP_BIT_RSHIFT' value '6'
-                           'op_type::AST_OP_BIT_LSHIFT' value '7'
-                           'op_type::AST_OP_BIT_AND' value '10'
-                           'op_type::AST_OP_BIT_OR' value '11'
-                           'op_type::AST_OP_BIT_XOR' value '12'
+                            type of 'filter_node* next' changed:
+                              pointed to type 'struct filter_node' changed; details are being reported
 
 
-                       type of 'filter_node* lchild' changed:
-                         pointed to type 'struct filter_node' changed; details are being reported
-
-                       type of 'filter_node* rchild' changed:
-                         pointed to type 'struct filter_node' changed; details are being reported
-
-
-                    type of 'struct {filter_node* child;} root' changed:
-                      type size hasn't changed
-                      1 data member change:
-                       type of 'filter_node* child' changed:
-                         pointed to type 'struct filter_node' changed; details are being reported
-
-
-                    type of 'struct {unary_op_type type; filter_node* child;} unary_op' changed:
-                      type size hasn't changed
-                      2 data member changes:
-                       type of 'unary_op_type type' changed:
-                         type size hasn't changed
-                         1 enumerator deletion:
-                           'unary_op_type::AST_UNARY_BIN_NOT' value '4'
-                         1 enumerator insertion:
-                           'unary_op_type::AST_UNARY_BIT_NOT' value '4'
+                        type of 'struct {op_type type; filter_node* lchild; filter_node* rchild;} op' changed:
+                          type size hasn't changed
+                          3 data member changes:
+                            type of 'op_type type' changed:
+                              type size hasn't changed
+                              5 enumerator deletions:
+                                'op_type::AST_OP_RSHIFT' value '6'
+                                'op_type::AST_OP_LSHIFT' value '7'
+                                'op_type::AST_OP_BIN_AND' value '10'
+                                'op_type::AST_OP_BIN_OR' value '11'
+                                'op_type::AST_OP_BIN_XOR' value '12'
+                              5 enumerator insertions:
+                                'op_type::AST_OP_BIT_RSHIFT' value '6'
+                                'op_type::AST_OP_BIT_LSHIFT' value '7'
+                                'op_type::AST_OP_BIT_AND' value '10'
+                                'op_type::AST_OP_BIT_OR' value '11'
+                                'op_type::AST_OP_BIT_XOR' value '12'
 
 
-                       type of 'filter_node* child' changed:
-                         pointed to type 'struct filter_node' changed; details are being reported
+                            type of 'filter_node* lchild' changed:
+                              pointed to type 'struct filter_node' changed; details are being reported
+
+                            type of 'filter_node* rchild' changed:
+                              pointed to type 'struct filter_node' changed; details are being reported
+
+
+                        type of 'struct {filter_node* child;} root' changed:
+                          type size hasn't changed
+                          1 data member change:
+                            type of 'filter_node* child' changed:
+                              pointed to type 'struct filter_node' changed; details are being reported
+
+
+                        type of 'struct {unary_op_type type; filter_node* child;} unary_op' changed:
+                          type size hasn't changed
+                          2 data member changes:
+                            type of 'unary_op_type type' changed:
+                              type size hasn't changed
+                              1 enumerator deletion:
+                                'unary_op_type::AST_UNARY_BIN_NOT' value '4'
+                              1 enumerator insertion:
+                                'unary_op_type::AST_UNARY_BIT_NOT' value '4'
+
+
+                            type of 'filter_node* child' changed:
+                              pointed to type 'struct filter_node' changed; details are being reported
 
 
 
 
-              'cds_list_head filter_ast::allocated_nodes' offset changed from 576 to 640 (in bits) (by +64 bits)
+                'cds_list_head filter_ast::allocated_nodes' offset changed from 576 to 640 (in bits) (by +64 bits)
 
 
   [C] 'function YYSTYPE* lttng_yyget_lval(yyscan_t)' has some indirect sub-type changes:
@@ -334,8 +334,8 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
         underlying type 'union YYSTYPE' changed:
           type size hasn't changed
           1 data member change:
-           type of 'filter_node* YYSTYPE::n' changed:
-             pointed to type 'struct filter_node' changed, as reported earlier
+            type of 'filter_node* YYSTYPE::n' changed:
+              pointed to type 'struct filter_node' changed, as reported earlier
 
           type changed from:
             union YYSTYPE{long long int ll; char c; gc_string* gs; filter_node* n;}

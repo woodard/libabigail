@@ -15,14 +15,14 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
           'struct B0' changed:
             type size hasn't changed
             1 data member change:
-             'char B0::m0' access changed from 'public' to 'private'
+              'char B0::m0' access changed from 'public' to 'private'
 
         1 base class insertion:
           class B1
         1 data member change:
-         type of 'int S::m0' changed:
-           type name changed from 'int' to 'char'
-           type size changed from 32 to 8 (in bits)
-         and offset changed from 32 to 64 (in bits) (by +32 bits), access changed from 'public' to 'private'
+          type of 'int S::m0' changed:
+            type name changed from 'int' to 'char'
+            type size changed from 32 to 8 (in bits)
+          and offset changed from 32 to 64 (in bits) (by +32 bits), access changed from 'public' to 'private'
 
 

@@ -5,7 +5,7 @@ Variables changes summary: 0 Removed, 1 Changed, 0 Added variable
 
   [C] 'const volatile S* const* const* var0' was changed to 'const volatile typedef_of_S* const* const* var0':
     type of variable changed:
-     in pointed to type 'const volatile S* const* const':
-       'const volatile S* const* const' changed to 'const volatile typedef_of_S* const* const'
+      in pointed to type 'const volatile S* const* const':
+        'const volatile S* const* const' changed to 'const volatile typedef_of_S* const* const'
 
 
