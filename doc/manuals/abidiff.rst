@@ -388,7 +388,7 @@ Options
     info, like pure ELF properties.
 
   * ``--leaf-changes-only|-l`` only show leaf changes, so don't show
-    impact analysis report.
+    impact analysis report.  This option implies ``--redundant``.
 
     The typical output of abidiff when comparing two binaries looks
     like this ::

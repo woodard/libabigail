@@ -129,6 +129,17 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-leaf0-report.txt",
     "output/test-abidiff-exit/test-leaf0-report.txt"
   },
+  {
+    "data/test-abidiff-exit/test-leaf1-v0.o",
+    "data/test-abidiff-exit/test-leaf1-v1.o",
+    "",
+    // --redundant - pending a bug fix
+    "--no-show-locs --leaf-changes-only --redundant",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE
+    | abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE,
+    "data/test-abidiff-exit/test-leaf1-report.txt",
+    "output/test-abidiff-exit/test-leaf1-report.txt"
+  },
   {0, 0, 0 ,0,  abigail::tools_utils::ABIDIFF_OK, 0, 0}
 };
 

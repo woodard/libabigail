@@ -1034,16 +1034,15 @@ leaf_reporter::report(const corpus_diff& d,
   if (!d.has_changes())
     return;
 
-  const diff_context_sptr& ctxt = d.context();
-
   const corpus_diff::diff_stats &s =
     const_cast<corpus_diff&>(d).
     apply_filters_and_suppressions_before_reporting();
 
+  const diff_context_sptr& ctxt = d.context();
+
   d.priv_->emit_diff_stats(s, out, indent);
   if (ctxt->show_stats_only())
     return;
-
   out << "\n";
 
   if (ctxt->show_soname_change()
@@ -1058,6 +1057,7 @@ leaf_reporter::report(const corpus_diff& d,
 	<< d.first_corpus()->get_architecture_name() << "' to '"
 	<< d.second_corpus()->get_architecture_name() << "'\n\n";
 
+  /// Report removed/added/changed functions.
   if (ctxt->show_deleted_fns())
     {
       if (s.net_num_func_removed() == 1)
@@ -1102,6 +1102,55 @@ leaf_reporter::report(const corpus_diff& d,
 	}
       if (emitted)
 	out << "\n";
+    }
+
+  if (ctxt->show_added_fns())
+    {
+      if (s.net_num_func_added() == 1)
+        out << indent << "1 Added function:\n\n";
+      else if (s.net_num_func_added() > 1)
+        out << indent << s.net_num_func_added()
+            << " Added functions:\n\n";
+      bool emitted = false;
+      vector<function_decl*> sorted_added_fns;
+      sort_string_function_ptr_map(d.priv_->added_fns_, sorted_added_fns);
+      for (vector<function_decl*>::const_iterator i = sorted_added_fns.begin();
+           i != sorted_added_fns.end();
+           ++i)
+        {
+          if (d.priv_->added_function_is_suppressed(*i))
+            continue;
+
+          out
+            << indent
+            << "  ";
+          out << "[A] ";
+          out << "'"
+              << (*i)->get_pretty_representation()
+              << "'";
+          if (ctxt->show_linkage_names())
+            {
+              out << "    {";
+              show_linkage_name_and_aliases
+                (out, "", *(*i)->get_symbol(),
+                 d.second_corpus()->get_fun_symbol_map());
+              out << "}";
+            }
+          out << "\n";
+          if (is_member_function(*i) && get_member_function_is_virtual(*i))
+            {
+              class_decl_sptr c =
+                is_class_type(is_method_type((*i)->get_type())->get_class_type());
+              out << indent
+                  << "    "
+                  << "note that this adds a new entry to the vtable of "
+                  << c->get_pretty_representation()
+                  << "\n";
+            }
+          emitted = true;
+        }
+      if (emitted)
+        out << "\n";
     }
 
   if (ctxt->show_changed_fns())
@@ -1174,50 +1223,268 @@ leaf_reporter::report(const corpus_diff& d,
 	out << "\n";
     }
 
-  if (ctxt->show_added_fns())
+  // Report removed/added/changed variables.
+  if (ctxt->show_deleted_vars())
     {
-      if (s.net_num_func_added() == 1)
-	out << indent << "1 Added function:\n\n";
-      else if (s.net_num_func_added() > 1)
-	out << indent << s.net_num_func_added()
-	    << " Added functions:\n\n";
+      if (s.net_num_vars_removed() == 1)
+	out << indent << "1 Removed variable:\n\n";
+      else if (s.net_num_vars_removed() > 1)
+	out << indent << s.net_num_vars_removed()
+	    << " Removed variables:\n\n";
+      string n;
       bool emitted = false;
-      vector<function_decl*> sorted_added_fns;
-      sort_string_function_ptr_map(d.priv_->added_fns_, sorted_added_fns);
-      for (vector<function_decl*>::const_iterator i = sorted_added_fns.begin();
-	   i != sorted_added_fns.end();
+      vector<var_decl*> sorted_deleted_vars;
+      sort_string_var_ptr_map(d.priv_->deleted_vars_, sorted_deleted_vars);
+      for (vector<var_decl*>::const_iterator i =
+	     sorted_deleted_vars.begin();
+	   i != sorted_deleted_vars.end();
 	   ++i)
 	{
-	  if (d.priv_->added_function_is_suppressed(*i))
+	  if (d.priv_->deleted_variable_is_suppressed(*i))
 	    continue;
 
-	  out
-	    << indent
-	    << "  ";
-	  out << "[A] ";
+	  n = (*i)->get_pretty_representation();
+
+	  out << indent
+	      << "  ";
+	  out << "[D] ";
 	  out << "'"
-	      << (*i)->get_pretty_representation()
+	      << n
 	      << "'";
 	  if (ctxt->show_linkage_names())
 	    {
 	      out << "    {";
-	      show_linkage_name_and_aliases
-		(out, "", *(*i)->get_symbol(),
-		 d.second_corpus()->get_fun_symbol_map());
+	      show_linkage_name_and_aliases(out, "", *(*i)->get_symbol(),
+					    d.first_corpus()->get_var_symbol_map());
 	      out << "}";
 	    }
 	  out << "\n";
-	  if (is_member_function(*i) && get_member_function_is_virtual(*i))
-	    {
-	      class_decl_sptr c =
-		is_class_type(is_method_type((*i)->get_type())->get_class_type());
-	      out << indent
-		  << "    "
-		  << "note that this adds a new entry to the vtable of "
-		  << c->get_pretty_representation()
-		  << "\n";
-	    }
 	  emitted = true;
+	}
+      if (emitted)
+        out << "\n";
+    }
+
+  if (ctxt->show_added_vars())
+    {
+      if (s.net_num_vars_added() == 1)
+	out << indent << "1 Added variable:\n\n";
+      else if (s.net_num_vars_added() > 1)
+	out << indent << s.net_num_vars_added()
+	    << " Added variables:\n\n";
+      string n;
+      bool emitted = false;
+      vector<var_decl*> sorted_added_vars;
+      sort_string_var_ptr_map(d.priv_->added_vars_, sorted_added_vars);
+      for (vector<var_decl*>::const_iterator i =
+	     sorted_added_vars.begin();
+	   i != sorted_added_vars.end();
+	   ++i)
+	{
+	  if (d.priv_->added_variable_is_suppressed(*i))
+	    continue;
+
+	  n = (*i)->get_pretty_representation();
+
+	  out << indent
+	      << "  ";
+	  out << "[A] ";
+	  out << "'" << n << "'";
+	  if (ctxt->show_linkage_names())
+	    {
+	      out << "    {";
+	      show_linkage_name_and_aliases(out, "", *(*i)->get_symbol(),
+					    d.second_corpus()->get_var_symbol_map());
+	      out << "}";
+	    }
+	  out << "\n";
+	  emitted = true;
+	}
+      if (emitted)
+	out << "\n";
+    }
+
+  if (ctxt->show_changed_vars())
+    {
+      size_t num_changed = s.net_num_leaf_var_changes();
+      if (num_changed == 1)
+	out << indent << "1 Changed variable:\n\n";
+      else if (num_changed > 1)
+	out << indent << num_changed
+	    << " Changed variables:\n\n";
+      string n1, n2;
+      bool emitted = false;
+      for (var_diff_sptrs_type::const_iterator i =
+	     d.priv_->sorted_changed_vars_.begin();
+	   i != d.priv_->sorted_changed_vars_.end();
+	   ++i)
+	{
+	  diff_sptr diff = *i;
+
+	  if (!diff)
+	    continue;
+
+	  if (!diff_to_be_reported(diff.get()))
+            continue;
+
+	  n1 = diff->first_subject()->get_pretty_representation();
+	  n2 = diff->second_subject()->get_pretty_representation();
+
+	  out << indent << "  [C] '" << n1 << "' was changed";
+	  if (n1 != n2)
+	    out << " to '" << n2 << "'";
+	  report_loc_info(diff->second_subject(), *ctxt, out);
+	  out << ":\n";
+	  diff->report(out, indent + "    ");
+	  out << "\n";
+          emitted = true;
+	}
+      if (emitted)
+	out << "\n";
+    }
+
+  // Report removed function symbols not referenced by any debug info.
+  if (ctxt->show_symbols_unreferenced_by_debug_info()
+      && d.priv_->deleted_unrefed_fn_syms_.size())
+    {
+      if (s.net_num_removed_func_syms() == 1)
+	out << indent
+	    << "1 Removed function symbol not referenced by debug info:\n\n";
+      else if (s.net_num_removed_func_syms() > 0)
+	out << indent
+	    << s.net_num_removed_func_syms()
+	    << " Removed function symbols not referenced by debug info:\n\n";
+
+      bool emitted = false;
+      vector<elf_symbol_sptr> sorted_deleted_unrefed_fn_syms;
+      sort_string_elf_symbol_map(d.priv_->deleted_unrefed_fn_syms_,
+				 sorted_deleted_unrefed_fn_syms);
+      for (vector<elf_symbol_sptr>::const_iterator i =
+	     sorted_deleted_unrefed_fn_syms.begin();
+	   i != sorted_deleted_unrefed_fn_syms.end();
+	   ++i)
+	{
+	  if (d.priv_->deleted_unrefed_fn_sym_is_suppressed((*i).get()))
+	    continue;
+
+	  out << indent << "  ";
+	  out << "[D] ";
+
+	  show_linkage_name_and_aliases(out, "", **i,
+					d.first_corpus()->get_fun_symbol_map());
+	  out << "\n";
+          emitted = true;
+	}
+      if (emitted)
+	out << "\n";
+    }
+
+  // Report added function symbols not referenced by any debug info.
+  if (ctxt->show_symbols_unreferenced_by_debug_info()
+      && ctxt->show_added_symbols_unreferenced_by_debug_info()
+      && d.priv_->added_unrefed_fn_syms_.size())
+    {
+      if (s.net_num_added_func_syms() == 1)
+	out << indent
+	    << "1 Added function symbol not referenced by debug info:\n\n";
+      else if (s.net_num_added_func_syms() > 0)
+	out << indent
+	    << s.net_num_added_func_syms()
+	    << " Added function symbols not referenced by debug info:\n\n";
+
+      bool emitted = false;
+      vector<elf_symbol_sptr> sorted_added_unrefed_fn_syms;
+      sort_string_elf_symbol_map(d.priv_->added_unrefed_fn_syms_,
+				 sorted_added_unrefed_fn_syms);
+      for (vector<elf_symbol_sptr>::const_iterator i =
+	     sorted_added_unrefed_fn_syms.begin();
+	   i != sorted_added_unrefed_fn_syms.end();
+	   ++i)
+	{
+	  if (d.priv_->added_unrefed_fn_sym_is_suppressed((*i).get()))
+	    continue;
+
+	  out << indent << "  ";
+	  out << "[A] ";
+	  show_linkage_name_and_aliases(out, "",
+					**i,
+					d.second_corpus()->get_fun_symbol_map());
+	  out << "\n";
+          emitted = true;
+	}
+      if (emitted)
+	out << "\n";
+    }
+
+  // Report removed variable symbols not referenced by any debug info.
+  if (ctxt->show_symbols_unreferenced_by_debug_info()
+      && d.priv_->deleted_unrefed_var_syms_.size())
+    {
+      if (s.net_num_removed_var_syms() == 1)
+	out << indent
+	    << "1 Removed variable symbol not referenced by debug info:\n\n";
+      else if (s.net_num_removed_var_syms() > 0)
+	out << indent
+	    << s.net_num_removed_var_syms()
+	    << " Removed variable symbols not referenced by debug info:\n\n";
+
+      bool emitted = false;
+      vector<elf_symbol_sptr> sorted_deleted_unrefed_var_syms;
+      sort_string_elf_symbol_map(d.priv_->deleted_unrefed_var_syms_,
+				 sorted_deleted_unrefed_var_syms);
+      for (vector<elf_symbol_sptr>::const_iterator i =
+	     sorted_deleted_unrefed_var_syms.begin();
+	   i != sorted_deleted_unrefed_var_syms.end();
+	   ++i)
+	{
+	  if (d.priv_->deleted_unrefed_var_sym_is_suppressed((*i).get()))
+	    continue;
+
+	  out << indent << "  ";
+	  out << "[D] ";
+
+	  show_linkage_name_and_aliases
+	    (out, "", **i,
+	     d.first_corpus()->get_fun_symbol_map());
+
+	  out << "\n";
+          emitted = true;
+	}
+      if (emitted)
+	out << "\n";
+    }
+
+  // Report added variable symbols not referenced by any debug info.
+  if (ctxt->show_symbols_unreferenced_by_debug_info()
+      && ctxt->show_added_symbols_unreferenced_by_debug_info()
+      && d.priv_->added_unrefed_var_syms_.size())
+    {
+      if (s.net_num_added_var_syms() == 1)
+	out << indent
+	    << "1 Added variable symbol not referenced by debug info:\n\n";
+      else if (s.net_num_added_var_syms() > 0)
+	out << indent
+	    << s.net_num_added_var_syms()
+	    << " Added variable symbols not referenced by debug info:\n\n";
+
+      bool emitted = false;
+      vector<elf_symbol_sptr> sorted_added_unrefed_var_syms;
+      sort_string_elf_symbol_map(d.priv_->added_unrefed_var_syms_,
+				 sorted_added_unrefed_var_syms);
+      for (vector<elf_symbol_sptr>::const_iterator i =
+	     sorted_added_unrefed_var_syms.begin();
+	   i != sorted_added_unrefed_var_syms.end();
+	   ++i)
+	{
+	  if (d.priv_->added_unrefed_var_sym_is_suppressed((*i).get()))
+	    continue;
+
+	  out << indent << "  ";
+	  out << "[A] ";
+	  show_linkage_name_and_aliases(out, "", **i,
+					d.second_corpus()->get_fun_symbol_map());
+	  out << "\n";
+          emitted = true;
 	}
       if (emitted)
 	out << "\n";

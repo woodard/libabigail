@@ -9841,7 +9841,7 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
     s.net_num_leaf_func_changes() +
     s.net_num_vars_removed() +
     s.net_num_vars_added() +
-    s.net_num_vars_changed() +
+    s.net_num_leaf_var_changes() +
     s.net_num_leaf_type_changes();
 
   if (!sonames_equal_)

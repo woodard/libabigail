@@ -1761,17 +1761,11 @@ void
 default_reporter::report(const corpus_diff& d, ostream& out,
 			 const string& indent) const
 {
-  size_t total = 0;
   const corpus_diff::diff_stats &s =
     const_cast<corpus_diff&>(d).
     apply_filters_and_suppressions_before_reporting();
 
   const diff_context_sptr& ctxt = d.context();
-
-  /// Report removed/added/changed functions.
-  total = s.net_num_func_removed() + s.net_num_func_added() +
-    s.net_num_func_changed();
-  const unsigned large_num = 100;
 
   d.priv_->emit_diff_stats(s, out, indent);
   if (ctxt->show_stats_only())
@@ -1789,6 +1783,11 @@ default_reporter::report(const corpus_diff& d, ostream& out,
     out << indent << "architecture changed from '"
 	<< d.first_corpus()->get_architecture_name() << "' to '"
 	<< d.second_corpus()->get_architecture_name() << "'\n\n";
+
+  /// Report removed/added/changed functions.
+  size_t total = s.net_num_func_removed() + s.net_num_func_added() +
+    s.net_num_func_changed();
+  const unsigned large_num = 100;
 
   if (ctxt->show_deleted_fns())
     {
@@ -2249,7 +2248,6 @@ default_reporter::report(const corpus_diff& d, ostream& out,
 
   // Report added/removed/changed types not reacheable from public
   // interfaces.
-
   maybe_report_unreachable_type_changes(d, s, indent, out);
 
   d.priv_->maybe_dump_diff_tree();

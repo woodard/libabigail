@@ -157,7 +157,7 @@ Options
     other package formats.
 
   * ``--leaf-changes-only|-l`` only show leaf changes, so don't show
-    impact analysis report.
+    impact analysis report.  This option implies ``--redundant``
 
     The typical output of ``abipkgdiff`` and ``abidiff`` when
     comparing two binaries, that we shall call ``full impact report``,
