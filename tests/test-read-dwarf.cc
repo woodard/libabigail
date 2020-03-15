@@ -265,6 +265,12 @@ InOutSpec in_out_specs[] =
     "",
     "",
   },
+  {
+    "data/test-read-dwarf/test27-bogus-binary.elf",
+    "",
+    "",
+    "",
+  },
   // This should be the last entry.
   {NULL, NULL, NULL, NULL}
 };

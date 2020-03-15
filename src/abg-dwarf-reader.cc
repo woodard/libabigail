@@ -8585,7 +8585,7 @@ public:
   GElf_Addr
   maybe_adjust_et_rel_sym_addr_to_abs_addr(GElf_Addr addr, Elf_Scn *section)
   {
-    if (section == 0)
+    if (!section)
       return addr;
 
     Elf* elf = elf_handle();
@@ -8623,7 +8623,6 @@ public:
   maybe_adjust_et_rel_sym_addr_to_abs_addr(GElf_Sym *sym)
   {
     Elf_Scn *symbol_section = elf_getscn(elf_handle(), sym->st_shndx);
-    ABG_ASSERT(symbol_section);
     GElf_Addr result = sym->st_value;
     result = maybe_adjust_et_rel_sym_addr_to_abs_addr(result, symbol_section);
     return result;
