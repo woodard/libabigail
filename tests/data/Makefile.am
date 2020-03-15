@@ -440,6 +440,8 @@ test-read-dwarf/PR25007-sdhci.ko \
 test-read-dwarf/PR25007-sdhci.ko.abi \
 test-read-dwarf/PR25042-libgdbm-clang-dwarf5.so.6.0.0 \
 test-read-dwarf/PR25042-libgdbm-clang-dwarf5.so.6.0.0.abi \
+test-read-dwarf/test25-bogus-binary.elf \
+test-read-dwarf/test26-bogus-binary.elf \
 \
 test-annotate/test0.abi			\
 test-annotate/test1.abi			\

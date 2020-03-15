@@ -328,6 +328,7 @@ struct test_task : public abigail::workers::task
     abigail::dwarf_reader::status status =
     abigail::dwarf_reader::STATUS_UNKNOWN;
     vector<char**> di_roots;
+    ABG_ASSERT(abigail::tools_utils::file_exists(in_elf_path));
     read_context_sptr ctxt = create_read_context(in_elf_path,
 						 di_roots,
 						 env.get());
