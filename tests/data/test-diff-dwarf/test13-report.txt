@@ -12,7 +12,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
            type name changed from 'int' to 'unsigned int'
            type size hasn't changed
 
-
          type of 'unsigned int S::m2' changed:
            type name changed from 'unsigned int' to 'long long int'
            type size changed from 32 to 64 (in bits)

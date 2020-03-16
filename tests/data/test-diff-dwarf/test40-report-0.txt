@@ -9,7 +9,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         type size changed from 96 to 64 (in bits)
         1 data member deletion:
           'int S2::to_remove', at offset 0 (in bits)
-
         2 data member changes:
          'int S2::m0' offset changed from 32 to 0 (in bits) (by -32 bits)
          'char S2::m1' offset changed from 64 to 32 (in bits) (by -32 bits)
@@ -22,7 +21,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
          type of 'int S3::to_change' changed:
            type name changed from 'int' to 'unsigned int'
            type size hasn't changed
-
 
 
   [C] 'function int foo(S1*)' has some indirect sub-type changes:

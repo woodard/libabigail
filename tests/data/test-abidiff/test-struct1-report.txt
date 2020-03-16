@@ -6,7 +6,6 @@
 
     1 data member deletion:
       'char s0::m1', at offset 96 (in bits)
-
     1 data member insertion:
       'double s0::m01', at offset 128 (in bits)
     2 data member changes:

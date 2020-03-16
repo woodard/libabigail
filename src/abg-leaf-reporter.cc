@@ -78,7 +78,7 @@ report_diffs(const reporter_base& r,
 
 	  string n = (*i)->first_subject()->get_pretty_representation();
 
-	  out << indent << "'" << n ;
+	  out << indent << "'" << n;
 
 	  report_loc_info((*i)->first_subject(),
 			  *(*i)->context(), out);
@@ -428,8 +428,7 @@ leaf_reporter::report(const array_diff& d,
   report_name_size_and_alignment_changes(d.first_array(),
 					 d.second_array(),
 					 d.context(),
-					 out, indent,
-					 /*new line=*/false);
+					 out, indent);
 
   diff_sptr dif = d.element_type_diff();
   if (diff_to_be_reported(dif.get()))
@@ -440,8 +439,6 @@ leaf_reporter::report(const array_diff& d,
 	  << fn << "' changed: \n";
       dif->report(out, indent + "  ");
     }
-
-  report_loc_info(d.second_array(), *d.context(), out);
 
   maybe_report_interfaces_impacted_by_diff(&d, out, indent);
 }
@@ -592,7 +589,6 @@ leaf_reporter::report(const class_or_union_diff& d,
 	  sort_data_members
 	    (d.class_or_union_diff::get_priv()->deleted_data_members_,
 	     sorted_dms);
-	  bool emitted = false;
 	  for (vector<decl_base_sptr>::const_iterator i = sorted_dms.begin();
 	       i != sorted_dms.end();
 	       ++i)
@@ -602,14 +598,8 @@ leaf_reporter::report(const class_or_union_diff& d,
 	      ABG_ASSERT(data_mem);
 	      if (get_member_is_static(data_mem))
 		continue;
-	      if (emitted)
-		out << "\n";
-	      out << indent << "  ";
-	      represent_data_member(data_mem, ctxt, out);
-	      emitted = true;
+	      represent_data_member(data_mem, ctxt, out, indent + "  ");
 	    }
-	  if (emitted)
-	    out << "\n";
 	}
 
       //report insertions
@@ -630,8 +620,7 @@ leaf_reporter::report(const class_or_union_diff& d,
 	      var_decl_sptr data_mem =
 		dynamic_pointer_cast<var_decl>(*i);
 	      ABG_ASSERT(data_mem);
-	      out << indent << "  ";
-	      represent_data_member(data_mem, ctxt, out);
+	      represent_data_member(data_mem, ctxt, out, indent + "  ");
 	    }
 	}
 
@@ -716,10 +705,8 @@ leaf_reporter::report(const class_diff& d,
   class_decl_sptr first = d.first_class_decl(),
     second = d.second_class_decl();
 
-  if (report_name_size_and_alignment_changes(first, second, d.context(),
-					     out, indent,
-					     /*start_with_new_line=*/false))
-    out << "\n";
+  report_name_size_and_alignment_changes(first, second, d.context(),
+					 out, indent);
 
   const diff_context_sptr& ctxt = d.context();
   maybe_report_diff_for_member(first, second, ctxt, out, indent);
@@ -750,10 +737,8 @@ leaf_reporter::report(const union_diff& d,
   // Now report the changes about the differents parts of the type.
   union_decl_sptr first = d.first_union_decl(), second = d.second_union_decl();
 
-  if (report_name_size_and_alignment_changes(first, second, d.context(),
-					     out, indent,
-					     /*start_with_new_line=*/false))
-    out << "\n";
+  report_name_size_and_alignment_changes(first, second, d.context(),
+					 out, indent);
 
   maybe_report_diff_for_member(first, second,d. context(), out, indent);
 
@@ -789,10 +774,7 @@ leaf_reporter::report(const distinct_diff& d,
   report_loc_info(s, *d.context(), out);
   out << "\n";
 
-  if (report_size_and_alignment_changes(f, s, d.context(), out, indent,
-					/*start_with_new_line=*/false))
-    out << "\n";
-
+  report_size_and_alignment_changes(f, s, d.context(), out, indent);
   maybe_report_interfaces_impacted_by_diff(&d, out, indent);
 }
 
@@ -982,11 +964,9 @@ leaf_reporter::report(const var_diff& d,
   decl_base_sptr first = d.first_var(), second = d.second_var();
   string n = first->get_pretty_representation();
 
-  if (report_name_size_and_alignment_changes(first, second,
-					     d.context(),
-					     out, indent,
-					     /*start_with_new_line=*/false))
-    out << "\n";
+  report_name_size_and_alignment_changes(first, second,
+					 d.context(),
+					 out, indent);
 
   maybe_report_diff_for_symbol(d.first_var()->get_symbol(),
 			       d.second_var()->get_symbol(),
@@ -1107,50 +1087,50 @@ leaf_reporter::report(const corpus_diff& d,
   if (ctxt->show_added_fns())
     {
       if (s.net_num_func_added() == 1)
-        out << indent << "1 Added function:\n\n";
+	out << indent << "1 Added function:\n\n";
       else if (s.net_num_func_added() > 1)
-        out << indent << s.net_num_func_added()
-            << " Added functions:\n\n";
+	out << indent << s.net_num_func_added()
+	    << " Added functions:\n\n";
       bool emitted = false;
       vector<function_decl*> sorted_added_fns;
       sort_string_function_ptr_map(d.priv_->added_fns_, sorted_added_fns);
       for (vector<function_decl*>::const_iterator i = sorted_added_fns.begin();
-           i != sorted_added_fns.end();
-           ++i)
-        {
-          if (d.priv_->added_function_is_suppressed(*i))
-            continue;
+	   i != sorted_added_fns.end();
+	   ++i)
+	{
+	  if (d.priv_->added_function_is_suppressed(*i))
+	    continue;
 
-          out
-            << indent
-            << "  ";
-          out << "[A] ";
-          out << "'"
-              << (*i)->get_pretty_representation()
-              << "'";
-          if (ctxt->show_linkage_names())
-            {
-              out << "    {";
-              show_linkage_name_and_aliases
-                (out, "", *(*i)->get_symbol(),
-                 d.second_corpus()->get_fun_symbol_map());
-              out << "}";
-            }
-          out << "\n";
-          if (is_member_function(*i) && get_member_function_is_virtual(*i))
-            {
-              class_decl_sptr c =
-                is_class_type(is_method_type((*i)->get_type())->get_class_type());
-              out << indent
-                  << "    "
-                  << "note that this adds a new entry to the vtable of "
-                  << c->get_pretty_representation()
-                  << "\n";
-            }
-          emitted = true;
-        }
+	  out
+	    << indent
+	    << "  ";
+	  out << "[A] ";
+	  out << "'"
+	      << (*i)->get_pretty_representation()
+	      << "'";
+	  if (ctxt->show_linkage_names())
+	    {
+	      out << "    {";
+	      show_linkage_name_and_aliases
+		(out, "", *(*i)->get_symbol(),
+		 d.second_corpus()->get_fun_symbol_map());
+	      out << "}";
+	    }
+	  out << "\n";
+	  if (is_member_function(*i) && get_member_function_is_virtual(*i))
+	    {
+	      class_decl_sptr c =
+		is_class_type(is_method_type((*i)->get_type())->get_class_type());
+	      out << indent
+		  << "    "
+		  << "note that this adds a new entry to the vtable of "
+		  << c->get_pretty_representation()
+		  << "\n";
+	    }
+	  emitted = true;
+	}
       if (emitted)
-        out << "\n";
+	out << "\n";
     }
 
   if (ctxt->show_changed_fns())
@@ -1262,7 +1242,7 @@ leaf_reporter::report(const corpus_diff& d,
 	  emitted = true;
 	}
       if (emitted)
-        out << "\n";
+	out << "\n";
     }
 
   if (ctxt->show_added_vars())
@@ -1325,7 +1305,7 @@ leaf_reporter::report(const corpus_diff& d,
 	    continue;
 
 	  if (!diff_to_be_reported(diff.get()))
-            continue;
+	    continue;
 
 	  n1 = diff->first_subject()->get_pretty_representation();
 	  n2 = diff->second_subject()->get_pretty_representation();
@@ -1337,7 +1317,7 @@ leaf_reporter::report(const corpus_diff& d,
 	  out << ":\n";
 	  diff->report(out, indent + "    ");
 	  out << "\n";
-          emitted = true;
+	  emitted = true;
 	}
       if (emitted)
 	out << "\n";
@@ -1373,7 +1353,7 @@ leaf_reporter::report(const corpus_diff& d,
 	  show_linkage_name_and_aliases(out, "", **i,
 					d.first_corpus()->get_fun_symbol_map());
 	  out << "\n";
-          emitted = true;
+	  emitted = true;
 	}
       if (emitted)
 	out << "\n";
@@ -1410,7 +1390,7 @@ leaf_reporter::report(const corpus_diff& d,
 					**i,
 					d.second_corpus()->get_fun_symbol_map());
 	  out << "\n";
-          emitted = true;
+	  emitted = true;
 	}
       if (emitted)
 	out << "\n";
@@ -1448,7 +1428,7 @@ leaf_reporter::report(const corpus_diff& d,
 	     d.first_corpus()->get_fun_symbol_map());
 
 	  out << "\n";
-          emitted = true;
+	  emitted = true;
 	}
       if (emitted)
 	out << "\n";
@@ -1484,7 +1464,7 @@ leaf_reporter::report(const corpus_diff& d,
 	  show_linkage_name_and_aliases(out, "", **i,
 					d.second_corpus()->get_fun_symbol_map());
 	  out << "\n";
-          emitted = true;
+	  emitted = true;
 	}
       if (emitted)
 	out << "\n";

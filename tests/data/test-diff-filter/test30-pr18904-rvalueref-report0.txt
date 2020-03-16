@@ -1200,7 +1200,6 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
           '__anonymous_enum__1::c_report_state_stream' value '142'
           '__anonymous_enum__1::c_report_stream' value '143'
           '__anonymous_enum__1::c_unload_library' value '144'
-
         92 enumerator changes:
           '__anonymous_enum__::c_process_get_func_handles' from value '32' to '33'
           '__anonymous_enum__::c_process_wait_shutdown' from value '33' to '34'
@@ -1304,7 +1303,6 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
          type of 'union {struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst;}; uint32_t bits;} VarDesc::flags' changed:
            type name changed from 'VarDesc::__anonymous_union__2' to 'varDescFlags'
            type size hasn't changed
-
            1 data member changes (1 filtered):
             anonymous data member at offset 0 (in bits) changed from:
               struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst;}
@@ -1319,7 +1317,6 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
         entity changed from 'struct InitTableEntry' to compatible type 'typedef InitTableEntry'
           type name changed from 'InitTableEntry' to '__anonymous_struct__2'
           type size hasn't changed
-
           1 data member change:
            type of 'void ()* InitTableEntry::func' changed:
              in pointed to type 'function type void ()':
@@ -1348,7 +1345,6 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
                type size changed from 2752 to 5504 (in bits)
                1 data member deletion:
                  'mutex_t Engine::m_ptr_lock', at offset 1344 (in bits)
-
                7 data member insertions:
                  'PtrDataTable Engine::m_targetptr_set', at offset 1664 (in bits)
                  'StreamMap Engine::m_stream_map', at offset 3072 (in bits)
@@ -1370,20 +1366,16 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
                        underlying type 'class std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >' changed:
                          type name changed from 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >' to 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >'
                          type size hasn't changed
-
                          1 data member change:
                           type of 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true> std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_M_impl' changed:
                             entity changed from 'struct std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>' to compatible type 'typedef std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_Rep_type'
                               type name changed from 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>' to 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >'
                               type size hasn't changed
-
                               1 base class deletion:
                                 class std::allocator<std::_Rb_tree_node<PtrData> >
                               2 data member deletions:
                                 'std::_Rb_tree_node_base std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_header', at offset 64 (in bits)
-
                                 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::size_type std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_node_count', at offset 320 (in bits)
-
                               1 data member change:
                                type of 'std::less<PtrData> std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_key_compare' changed:
                                  type name changed from 'std::less<PtrData>' to 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>'

@@ -31,7 +31,6 @@
         type size hasn't changed
         1 enumerator insertion:
           'tbb::internal::exception_id::eid_bad_tagged_msg_cast' value '20'
-
         1 enumerator change:
           'tbb::internal::exception_id::eid_max' from value '20' to '21' at tbb_exception.h:79:1
 

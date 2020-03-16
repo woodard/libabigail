@@ -100,7 +100,6 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
          type of 'union {lttng_event_perf_counter_ctx perf_counter; struct {char* provider_name; char* ctx_name;} app_ctx; char padding[288];} lttng_event_context::u' changed:
            type name changed from '__anonymous_union__4' to '__anonymous_union__5'
            type size hasn't changed
-
            3 data member changes:
             name of '__anonymous_union__4::app_ctx' changed to '__anonymous_union__5::app_ctx'
             name of '__anonymous_union__4::padding' changed to '__anonymous_union__5::padding'
@@ -171,7 +170,6 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
           type size changed from 35008 to 35072 (in bits)
           1 data member deletion:
             'char lttng_session::padding[12]', at offset 34912 (in bits)
-
           1 data member insertion:
             'union {char padding[12]; void* ptr;} lttng_session::extended', at offset 34944 (in bits)
 
@@ -207,7 +205,6 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
           type size changed from 192 to 128 (in bits)
           1 data member deletion:
             'bool lttng_notification::owns_elements', at offset 128 (in bits)
-
 
   [C] 'function lttng_notification_channel_status lttng_notification_channel_subscribe(lttng_notification_channel*, const lttng_condition*)' has some indirect sub-type changes:
     return type changed:
@@ -289,7 +286,6 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
                            'op_type::AST_OP_BIN_AND' value '10'
                            'op_type::AST_OP_BIN_OR' value '11'
                            'op_type::AST_OP_BIN_XOR' value '12'
-
                          5 enumerator insertions:
                            'op_type::AST_OP_BIT_RSHIFT' value '6'
                            'op_type::AST_OP_BIT_LSHIFT' value '7'
@@ -319,7 +315,6 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
                          type size hasn't changed
                          1 enumerator deletion:
                            'unary_op_type::AST_UNARY_BIN_NOT' value '4'
-
                          1 enumerator insertion:
                            'unary_op_type::AST_UNARY_BIT_NOT' value '4'
 

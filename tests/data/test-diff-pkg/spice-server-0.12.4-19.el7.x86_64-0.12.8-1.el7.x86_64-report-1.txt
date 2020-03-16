@@ -25,7 +25,6 @@
         underlying type 'enum __anonymous_enum__2' at spice.h:471:1 changed:
           type name changed from '__anonymous_enum__2' to 'SpiceImageCompression'
           type size hasn't changed
-
           7 enumerator deletions:
             '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_INVALID' value '0'
             '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_OFF' value '1'
@@ -34,7 +33,6 @@
             '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_QUIC' value '4'
             '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_GLZ' value '5'
             '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_LZ' value '6'
-
           9 enumerator insertions:
             'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_INVALID' value '0'
             'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_OFF' value '1'

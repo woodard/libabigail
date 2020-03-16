@@ -7,6 +7,5 @@ Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
   type size changed from 32 to 64 (in bits)
   1 data member insertion:
     'char leaf::m1', at offset 32 (in bits) at test35-leaf-v1.cc:8:1
-
   one impacted interface:
     function void fn(C&)

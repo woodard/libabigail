@@ -242,16 +242,19 @@ represent(const diff_context& ctxt,
 /// @param ctxt the current diff context.
 ///
 /// @param out the output stream to send the representation to
+///
+/// @param indent the indentation string to use for the change report.
 void
 represent_data_member(var_decl_sptr d,
 		      const diff_context_sptr& ctxt,
-		      ostream& out)
+		      ostream& out,
+		      const string& indent)
 {
   if (!is_data_member(d)
       || (!get_member_is_static(d) && !get_data_member_is_laid_out(d)))
     return;
 
-  out << "'" << d->get_pretty_representation() << "'";
+  out << indent << "'" << d->get_pretty_representation() << "'";
   if (!get_member_is_static(d))
     {
       // Do not emit offset information for data member of a union
@@ -262,8 +265,8 @@ represent_data_member(var_decl_sptr d,
 			    get_data_member_offset(d),
 			    *ctxt, out);
       report_loc_info(d, *ctxt, out);
-      out << "\n";
     }
+  out << "\n";
 }
 
 /// If a given @ref var_diff node carries a data member change in
@@ -441,7 +444,7 @@ represent(const var_diff_sptr	&diff,
 	  out << indent << "while looking at anonymous data member '"
 	      << tr1 << "':\n"
 	      << indent << "the internal name of that anonymous data member"
-	                   "changed from:\n"
+			   "changed from:\n"
 	      << indent << " " << get_type_name(o->get_type()) << "\n"
 	      << indent << "to:\n"
 	      << indent << " " << get_type_name(n->get_type()) << "\n"
@@ -699,23 +702,18 @@ represent(const var_diff_sptr	&diff,
 /// @param out the output stream to report the change to.
 ///
 /// @param indent the string to use for indentation.
-///
-/// @param nl whether to start the first report line with a new line.
-///
-/// @return true iff something was reported.
-bool
+void
 report_size_and_alignment_changes(type_or_decl_base_sptr	first,
 				  type_or_decl_base_sptr	second,
 				  diff_context_sptr		ctxt,
 				  ostream&			out,
-				  const string&		indent,
-				  bool				nl)
+				  const string&			indent)
 {
   type_base_sptr f = dynamic_pointer_cast<type_base>(first),
     s = dynamic_pointer_cast<type_base>(second);
 
   if (!s || !f)
-    return false;
+    return;
 
   class_or_union_sptr first_class = is_class_or_union_type(first),
     second_class = is_class_or_union_type(second);
@@ -726,18 +724,14 @@ report_size_and_alignment_changes(type_or_decl_base_sptr	first,
     // declaration-only form of the second.  And the user asked that
     // this kind of change be filtered out, so do not report any size
     // change due to this.
-    return false;
+    return;
 
-  bool n = false;
   unsigned fs = f->get_size_in_bits(), ss = s->get_size_in_bits(),
     fa = f->get_alignment_in_bits(), sa = s->get_alignment_in_bits();
   array_type_def_sptr first_array = is_array_type(is_type(first)),
     second_array = is_array_type(is_type(second));
   unsigned fdc = first_array ? first_array->get_dimension_count(): 0,
     sdc = second_array ? second_array->get_dimension_count(): 0;
-
-  if (nl)
-    out << "\n";
 
   if (ctxt->get_allowed_category() & SIZE_OR_OFFSET_CHANGE_CATEGORY)
     {
@@ -801,27 +795,23 @@ report_size_and_alignment_changes(type_or_decl_base_sptr	first,
 	    {
 	      out << indent;
 	      show_numerical_change("type size", fs, ss, *ctxt, out);
-	      n = true;
+	      out << "\n";
 	    }
 	} // end if (fs != ss || fdc != sdc)
       else
 	if (ctxt->show_relative_offset_changes())
-	  out << indent << "type size hasn't changed\n";
+	  {
+	    out << indent << "type size hasn't changed\n";
+	  }
     }
   if ((ctxt->get_allowed_category() & SIZE_OR_OFFSET_CHANGE_CATEGORY)
       && (fa != sa))
     {
-      if (n)
-	out << "\n";
       out << indent;
       show_numerical_change("type alignment", fa, sa, *ctxt, out,
 			    /*show_bits_or_bytes=*/false);
-      n = true;
+      out << "\n";
     }
-
-  if (n)
-    return true;
-  return false;
 }
 
 /// @param tod the type or declaration to emit loc info about
@@ -874,17 +864,12 @@ report_loc_info(const type_or_decl_base_sptr& tod,
 /// @param out the output stream to report the change to.
 ///
 /// @param indent the string to use for indentation.
-///
-/// @param nl whether to start the first report line with a new line.
-///
-/// @return true iff something was reported.
-bool
+void
 report_name_size_and_alignment_changes(decl_base_sptr		first,
 				       decl_base_sptr		second,
 				       diff_context_sptr	ctxt,
-				       ostream&		out,
-				       const string&		indent,
-				       bool			nl)
+				       ostream&			out,
+				       const string&		indent)
 {
   string fn = first->get_qualified_name(),
     sn = second->get_qualified_name();
@@ -898,21 +883,17 @@ report_name_size_and_alignment_changes(decl_base_sptr		first,
 	;
       else
 	{
-	  if (nl)
-	    out << "\n";
 	  out << indent;
 	  if (is_type(first))
 	    out << "type";
 	  else
 	    out << "declaration";
 	  out << " name changed from '" << fn << "' to '" << sn << "'";
-	  nl = true;
+	  out << "\n";
 	}
     }
 
-  nl |= report_size_and_alignment_changes(first, second, ctxt,
-					  out, indent, nl);
-  return nl;
+  report_size_and_alignment_changes(first, second, ctxt, out, indent);
 }
 
 /// Output the header preceding the the report for
@@ -1366,14 +1347,10 @@ maybe_report_unreachable_type_changes(const corpus_diff& d,
 /// @param out the output stream to report to.
 ///
 /// @param indent the white space string to use for indentation.
-///
-/// @param new_line_prefix if set to true, it means there is going to
-/// be a new line emitted before the report.
 void
 maybe_report_interfaces_impacted_by_diff(const diff	*d,
 					 ostream	&out,
-					 const string	&indent,
-					 bool		new_line_prefix)
+					 const string	&indent)
 {
   const diff_context_sptr &ctxt = d->context();
   const corpus_diff_sptr &corp_diff = ctxt->get_corpus_diff();
@@ -1394,9 +1371,6 @@ maybe_report_interfaces_impacted_by_diff(const diff	*d,
 
   vector<type_or_decl_base_sptr> sorted_impacted_interfaces;
   sort_artifacts_set(*impacted_artifacts, sorted_impacted_interfaces);
-
-  if (new_line_prefix)
-    out << '\n';
 
   size_t num_impacted_interfaces = impacted_artifacts->size();
   if (num_impacted_interfaces == 1)
@@ -1424,9 +1398,6 @@ maybe_report_interfaces_impacted_by_diff(const diff	*d,
 /// @param out the output stream to report to.
 ///
 /// @param indent the white space string to use for indentation.
-///
-/// @param new_line_prefix if set to true, it means there is going to
-/// be a new line emitted before the report.
 void
 maybe_report_interfaces_impacted_by_diff(const diff_sptr	&d,
 					 ostream		&out,

@@ -22,7 +22,6 @@ Leaf changes summary: 11 artifacts changed (7 filtered out)
   'enum __anonymous_enum__2 at spice.h:471:1' changed:
     type name changed from '__anonymous_enum__2' to 'SpiceImageCompression'
     type size hasn't changed
-
     7 enumerator deletions:
       '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_INVALID' value '0'
       '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_OFF' value '1'
@@ -31,7 +30,6 @@ Leaf changes summary: 11 artifacts changed (7 filtered out)
       '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_QUIC' value '4'
       '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_GLZ' value '5'
       '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_LZ' value '6'
-
     9 enumerator insertions:
       'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_INVALID' value '0'
       'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_OFF' value '1'
@@ -48,7 +46,6 @@ Leaf changes summary: 11 artifacts changed (7 filtered out)
       function int spice_server_set_image_compression(SpiceServer*, spice_image_compression_t)
   'typedef spice_image_compression_t at spice.h:479:1' changed:
     typedef name changed from spice_image_compression_t to SpiceImageCompression at enums.h:197:1
-
     2 impacted interfaces:
       function spice_image_compression_t spice_server_get_image_compression(SpiceServer*)
       function int spice_server_set_image_compression(SpiceServer*, spice_image_compression_t)

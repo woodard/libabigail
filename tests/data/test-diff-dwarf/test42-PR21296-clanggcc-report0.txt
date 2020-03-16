@@ -19,7 +19,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
     return type changed:
       type name changed from 'std::tuple<STR&&>' to 'std::tuple<STR &&>'
       type size hasn't changed
-
       1 base class deletion:
         struct std::_Tuple_impl<0ul, STR&&>
       1 base class insertion:

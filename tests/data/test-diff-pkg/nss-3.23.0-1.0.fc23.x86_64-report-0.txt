@@ -10,7 +10,6 @@
           type size hasn't changed
           1 enumerator insertion:
             '__anonymous_enum__1::SEC_OID_TLS_ECDHE_PSK' value '347'
-
           1 enumerator change:
             '__anonymous_enum__1::SEC_OID_TOTAL' from value '347' to '348' at secoidt.h:34:1
 
@@ -34,7 +33,6 @@
           type size hasn't changed
           1 enumerator insertion:
             '__anonymous_enum__1::ssl_kea_ecdh_psk' value '5'
-
           1 enumerator change:
             '__anonymous_enum__::ssl_kea_size' from value '5' to '6' at sslt.h:40:1
 
@@ -52,7 +50,6 @@
                  type size hasn't changed
                  1 enumerator deletion:
                    '__anonymous_enum__::ssl_auth_rsa' value '1'
-
                  7 enumerator insertions:
                    '__anonymous_enum__::ssl_auth_rsa_decrypt' value '1'
                    '__anonymous_enum__::ssl_auth_ecdh_rsa' value '5'
@@ -114,7 +111,6 @@
                                              type size hasn't changed
                                              1 enumerator insertion:
                                                '__anonymous_enum__1::SEC_OID_TLS_ECDHE_PSK' value '347'
-
                                              1 enumerator change:
                                                '__anonymous_enum__1::SEC_OID_TOTAL' from value '347' to '348' at secoidt.h:34:1
 

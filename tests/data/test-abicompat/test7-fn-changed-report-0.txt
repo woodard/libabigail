@@ -9,7 +9,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       type name changed from 'float' to 'int'
       type size hasn't changed
 
-
   [C] 'function void print(const Student)' has some indirect sub-type changes:
     parameter 1 of type 'const Student' has sub-type changes:
       in unqualified underlying type 'struct Student':

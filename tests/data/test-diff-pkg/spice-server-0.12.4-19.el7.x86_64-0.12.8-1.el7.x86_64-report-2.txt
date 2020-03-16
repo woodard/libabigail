@@ -239,15 +239,10 @@
                                                  type size changed from 1280 to 256 (in bits)
                                                  5 data member deletions:
                                                    'RedsSASL RedsStream::sasl', at offset 256 (in bits) at reds.h:78:1
-
                                                    'SpiceChannelEventInfo* RedsStream::info', at offset 1024 (in bits) at reds.h:85:1
-
                                                    'typedef ssize_t (RedsStream*, void*, typedef size_t)* RedsStream::read', at offset 1088 (in bits) at reds.h:88:1
-
                                                    'typedef ssize_t (RedsStream*, void*, typedef size_t)* RedsStream::write', at offset 1152 (in bits) at reds.h:89:1
-
                                                    'typedef ssize_t (RedsStream*, const iovec*, int)* RedsStream::writev', at offset 1216 (in bits) at reds.h:90:1
-
                                                  1 data member change:
                                                   type of 'SSL* RedsStream::ssl' changed:
                                                     in pointed to type 'typedef SSL' at reds_stream.h:32:1:
@@ -257,193 +252,99 @@
                                                         type size changed from 5504 to 0 (in bits)
                                                         94 data member deletions:
                                                           'int ssl_st::version', at offset 0 (in bits) at ssl.h:1070:1
-
                                                           'int ssl_st::type', at offset 32 (in bits) at ssl.h:1071:1
-
                                                           'const SSL_METHOD* ssl_st::method', at offset 64 (in bits) at ssl.h:1073:1
-
                                                           'BIO* ssl_st::rbio', at offset 128 (in bits) at ssl.h:1080:1
-
                                                           'BIO* ssl_st::wbio', at offset 192 (in bits) at ssl.h:1081:1
-
                                                           'BIO* ssl_st::bbio', at offset 256 (in bits) at ssl.h:1082:1
-
                                                           'int ssl_st::rwstate', at offset 320 (in bits) at ssl.h:1093:1
-
                                                           'int ssl_st::in_handshake', at offset 352 (in bits) at ssl.h:1096:1
-
                                                           'int (SSL*)* ssl_st::handshake_func', at offset 384 (in bits) at ssl.h:1097:1
-
                                                           'int ssl_st::server', at offset 448 (in bits) at ssl.h:1107:1
-
                                                           'int ssl_st::new_session', at offset 480 (in bits) at ssl.h:1109:1
-
                                                           'int ssl_st::quiet_shutdown', at offset 512 (in bits) at ssl.h:1113:1
-
                                                           'int ssl_st::shutdown', at offset 544 (in bits) at ssl.h:1114:1
-
                                                           'int ssl_st::state', at offset 576 (in bits) at ssl.h:1116:1
-
                                                           'int ssl_st::rstate', at offset 608 (in bits) at ssl.h:1117:1
-
                                                           'BUF_MEM* ssl_st::init_buf', at offset 640 (in bits) at ssl.h:1119:1
-
                                                           'void* ssl_st::init_msg', at offset 704 (in bits) at ssl.h:1120:1
-
                                                           'int ssl_st::init_num', at offset 768 (in bits) at ssl.h:1121:1
-
                                                           'int ssl_st::init_off', at offset 800 (in bits) at ssl.h:1122:1
-
                                                           'unsigned char* ssl_st::packet', at offset 832 (in bits) at ssl.h:1125:1
-
                                                           'unsigned int ssl_st::packet_length', at offset 896 (in bits) at ssl.h:1126:1
-
                                                           'ssl2_state_st* ssl_st::s2', at offset 960 (in bits) at ssl.h:1128:1
-
                                                           'ssl3_state_st* ssl_st::s3', at offset 1024 (in bits) at ssl.h:1129:1
-
                                                           'dtls1_state_st* ssl_st::d1', at offset 1088 (in bits) at ssl.h:1130:1
-
                                                           'int ssl_st::read_ahead', at offset 1152 (in bits) at ssl.h:1132:1
-
                                                           'void (int, int, int, void*, typedef size_t, SSL*, void*)* ssl_st::msg_callback', at offset 1216 (in bits) at ssl.h:1136:1
-
                                                           'void* ssl_st::msg_callback_arg', at offset 1280 (in bits) at ssl.h:1137:1
-
                                                           'int ssl_st::hit', at offset 1344 (in bits) at ssl.h:1139:1
-
                                                           'X509_VERIFY_PARAM* ssl_st::param', at offset 1408 (in bits) at ssl.h:1141:1
-
                                                           'stack_st_SSL_CIPHER* ssl_st::cipher_list', at offset 1472 (in bits) at ssl.h:1149:1
-
                                                           'stack_st_SSL_CIPHER* ssl_st::cipher_list_by_id', at offset 1536 (in bits) at ssl.h:1150:1
-
                                                           'int ssl_st::mac_flags', at offset 1600 (in bits) at ssl.h:1154:1
-
                                                           'EVP_CIPHER_CTX* ssl_st::enc_read_ctx', at offset 1664 (in bits) at ssl.h:1155:1
-
                                                           'EVP_MD_CTX* ssl_st::read_hash', at offset 1728 (in bits) at ssl.h:1156:1
-
                                                           'COMP_CTX* ssl_st::expand', at offset 1792 (in bits) at ssl.h:1158:1
-
                                                           'EVP_CIPHER_CTX* ssl_st::enc_write_ctx', at offset 1856 (in bits) at ssl.h:1163:1
-
                                                           'EVP_MD_CTX* ssl_st::write_hash', at offset 1920 (in bits) at ssl.h:1164:1
-
                                                           'COMP_CTX* ssl_st::compress', at offset 1984 (in bits) at ssl.h:1166:1
-
                                                           'cert_st* ssl_st::cert', at offset 2048 (in bits) at ssl.h:1175:1
-
                                                           'unsigned int ssl_st::sid_ctx_length', at offset 2112 (in bits) at ssl.h:1179:1
-
                                                           'unsigned char ssl_st::sid_ctx[32]', at offset 2144 (in bits) at ssl.h:1180:1
-
                                                           'SSL_SESSION* ssl_st::session', at offset 2432 (in bits) at ssl.h:1183:1
-
                                                           'GEN_SESSION_CB ssl_st::generate_session_id', at offset 2496 (in bits) at ssl.h:1186:1
-
                                                           'int ssl_st::verify_mode', at offset 2560 (in bits) at ssl.h:1189:1
-
                                                           'int (int, X509_STORE_CTX*)* ssl_st::verify_callback', at offset 2624 (in bits) at ssl.h:1191:1
-
                                                           'void (const SSL*, int, int)* ssl_st::info_callback', at offset 2688 (in bits) at ssl.h:1193:1
-
                                                           'int ssl_st::error', at offset 2752 (in bits) at ssl.h:1195:1
-
                                                           'int ssl_st::error_code', at offset 2784 (in bits) at ssl.h:1196:1
-
                                                           'KSSL_CTX* ssl_st::kssl_ctx', at offset 2816 (in bits) at ssl.h:1199:1
-
                                                           'unsigned int (SSL*, const char*, char*, unsigned int, unsigned char*, unsigned int)* ssl_st::psk_client_callback', at offset 2880 (in bits) at ssl.h:1203:1
-
                                                           'unsigned int (SSL*, const char*, unsigned char*, unsigned int)* ssl_st::psk_server_callback', at offset 2944 (in bits) at ssl.h:1206:1
-
                                                           'SSL_CTX* ssl_st::ctx', at offset 3008 (in bits) at ssl.h:1210:1
-
                                                           'int ssl_st::debug', at offset 3072 (in bits) at ssl.h:1213:1
-
                                                           'long int ssl_st::verify_result', at offset 3136 (in bits) at ssl.h:1216:1
-
                                                           'CRYPTO_EX_DATA ssl_st::ex_data', at offset 3200 (in bits) at ssl.h:1217:1
-
                                                           'stack_st_X509_NAME* ssl_st::client_CA', at offset 3328 (in bits) at ssl.h:1220:1
-
                                                           'int ssl_st::references', at offset 3392 (in bits) at ssl.h:1222:1
-
                                                           'unsigned long int ssl_st::options', at offset 3456 (in bits) at ssl.h:1223:1
-
                                                           'unsigned long int ssl_st::mode', at offset 3520 (in bits) at ssl.h:1224:1
-
                                                           'long int ssl_st::max_cert_list', at offset 3584 (in bits) at ssl.h:1225:1
-
                                                           'int ssl_st::first_packet', at offset 3648 (in bits) at ssl.h:1226:1
-
                                                           'int ssl_st::client_version', at offset 3680 (in bits) at ssl.h:1227:1
-
                                                           'unsigned int ssl_st::max_send_fragment', at offset 3712 (in bits) at ssl.h:1229:1
-
                                                           'void (SSL*, int, int, unsigned char*, int, void*)* ssl_st::tlsext_debug_cb', at offset 3776 (in bits) at ssl.h:1232:1
-
                                                           'void* ssl_st::tlsext_debug_arg', at offset 3840 (in bits) at ssl.h:1235:1
-
                                                           'char* ssl_st::tlsext_hostname', at offset 3904 (in bits) at ssl.h:1236:1
-
                                                           'int ssl_st::servername_done', at offset 3968 (in bits) at ssl.h:1237:1
-
                                                           'int ssl_st::tlsext_status_type', at offset 4000 (in bits) at ssl.h:1244:1
-
                                                           'int ssl_st::tlsext_status_expected', at offset 4032 (in bits) at ssl.h:1246:1
-
                                                           'stack_st_OCSP_RESPID* ssl_st::tlsext_ocsp_ids', at offset 4096 (in bits) at ssl.h:1248:1
-
                                                           'X509_EXTENSIONS* ssl_st::tlsext_ocsp_exts', at offset 4160 (in bits) at ssl.h:1249:1
-
                                                           'unsigned char* ssl_st::tlsext_ocsp_resp', at offset 4224 (in bits) at ssl.h:1251:1
-
                                                           'int ssl_st::tlsext_ocsp_resplen', at offset 4288 (in bits) at ssl.h:1252:1
-
                                                           'int ssl_st::tlsext_ticket_expected', at offset 4320 (in bits) at ssl.h:1255:1
-
                                                           'size_t ssl_st::tlsext_ecpointformatlist_length', at offset 4352 (in bits) at ssl.h:1257:1
-
                                                           'unsigned char* ssl_st::tlsext_ecpointformatlist', at offset 4416 (in bits) at ssl.h:1258:1
-
                                                           'size_t ssl_st::tlsext_ellipticcurvelist_length', at offset 4480 (in bits) at ssl.h:1259:1
-
                                                           'unsigned char* ssl_st::tlsext_ellipticcurvelist', at offset 4544 (in bits) at ssl.h:1260:1
-
                                                           'void* ssl_st::tlsext_opaque_prf_input', at offset 4608 (in bits) at ssl.h:1264:1
-
                                                           'size_t ssl_st::tlsext_opaque_prf_input_len', at offset 4672 (in bits) at ssl.h:1265:1
-
                                                           'TLS_SESSION_TICKET_EXT* ssl_st::tlsext_session_ticket', at offset 4736 (in bits) at ssl.h:1268:1
-
                                                           'tls_session_ticket_ext_cb_fn ssl_st::tls_session_ticket_ext_cb', at offset 4800 (in bits) at ssl.h:1271:1
-
                                                           'void* ssl_st::tls_session_ticket_ext_cb_arg', at offset 4864 (in bits) at ssl.h:1272:1
-
                                                           'tls_session_secret_cb_fn ssl_st::tls_session_secret_cb', at offset 4928 (in bits) at ssl.h:1275:1
-
                                                           'void* ssl_st::tls_session_secret_cb_arg', at offset 4992 (in bits) at ssl.h:1276:1
-
                                                           'SSL_CTX* ssl_st::initial_ctx', at offset 5056 (in bits) at ssl.h:1278:1
-
                                                           'unsigned char* ssl_st::next_proto_negotiated', at offset 5120 (in bits) at ssl.h:1288:1
-
                                                           'unsigned char ssl_st::next_proto_negotiated_len', at offset 5184 (in bits) at ssl.h:1289:1
-
                                                           'stack_st_SRTP_PROTECTION_PROFILE* ssl_st::srtp_profiles', at offset 5248 (in bits) at ssl.h:1294:1
-
                                                           'SRTP_PROTECTION_PROFILE* ssl_st::srtp_profile', at offset 5312 (in bits) at ssl.h:1295:1
-
                                                           'unsigned int ssl_st::tlsext_heartbeat', at offset 5376 (in bits) at ssl.h:1297:1
-
                                                           'unsigned int ssl_st::tlsext_hb_pending', at offset 5408 (in bits) at ssl.h:1302:1
-
                                                           'unsigned int ssl_st::tlsext_hb_seq', at offset 5440 (in bits) at ssl.h:1303:1
-
                                                           'int ssl_st::renegotiate', at offset 5472 (in bits) at ssl.h:1308:1
-
                                                   and name of 'RedsStream::ssl' changed to 'RedsStream::priv' at reds_stream.h:42:1
 
 
@@ -558,7 +459,6 @@
         underlying type 'enum __anonymous_enum__2' at spice.h:471:1 changed:
           type name changed from '__anonymous_enum__2' to 'SpiceImageCompression'
           type size hasn't changed
-
           7 enumerator deletions:
             '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_INVALID' value '0'
             '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_OFF' value '1'
@@ -567,7 +467,6 @@
             '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_QUIC' value '4'
             '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_GLZ' value '5'
             '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_LZ' value '6'
-
           9 enumerator insertions:
             'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_INVALID' value '0'
             'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_OFF' value '1'

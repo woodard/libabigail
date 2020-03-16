@@ -7,7 +7,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
     return type changed:
       type name changed from 'return_type' to 'other_return_type'
       type size hasn't changed
-
       no data member change (1 filtered);
 
 

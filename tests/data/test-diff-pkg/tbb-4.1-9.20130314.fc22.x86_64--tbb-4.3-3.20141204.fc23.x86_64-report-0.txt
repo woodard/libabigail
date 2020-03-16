@@ -60,7 +60,6 @@
         type size hasn't changed
         1 enumerator insertion:
           'tbb::internal::exception_id::eid_bad_tagged_msg_cast' value '20'
-
         1 enumerator change:
           'tbb::internal::exception_id::eid_max' from value '20' to '21' at tbb_exception.h:79:1
 
@@ -129,7 +128,6 @@
 
 
 
-
                1 member function deletion:
                  'method virtual tbb::task* tbb::internal::generic_scheduler::receive_or_steal_task(tbb::internal::reference_count&, bool)' at scheduler.h:391:1, virtual at voffset 7/7
 
@@ -138,11 +136,8 @@
 
                3 data member deletions:
                  'unsigned int tbb::internal::generic_scheduler::hint_for_push', at offset 896 (in bits) at scheduler.h:171:1
-
                  'volatile intptr_t* tbb::internal::generic_scheduler::my_ref_top_priority', at offset 2560 (in bits) at scheduler.h:433:1
-
                  'volatile uintptr_t* tbb::internal::generic_scheduler::my_ref_reload_epoch', at offset 2752 (in bits) at scheduler.h:443:1
-
                18 data member changes:
                 'uintptr_t tbb::internal::generic_scheduler::my_stealing_threshold' offset changed from 704 to 832 (in bits) (by +128 bits)
                 type of 'tbb::internal::market* tbb::internal::generic_scheduler::my_market' changed:

@@ -48,9 +48,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
                                          struct std::__detail::_List_node_base
                                        2 data member deletions:
                                          'std::__detail::_List_node_base* std::__detail::_List_node_base::_M_next', at offset 0 (in bits)
-
                                          'std::__detail::_List_node_base* std::__detail::_List_node_base::_M_prev', at offset 64 (in bits)
-
                                        1 data member insertion:
                                          'unsigned long int std::_List_node<long unsigned int>::_M_data', at offset 128 (in bits)
                                      and name of 'std::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_List_impl::_M_node' changed to 'std::__cxx11::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_List_impl::_M_node'

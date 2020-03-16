@@ -151,7 +151,8 @@ represent(const diff_context& ctxt,
 void
 represent_data_member(var_decl_sptr d,
 		      const diff_context_sptr& ctxt,
-		      ostream& out);
+		      ostream& out,
+		      const string& indent);
 
 void
 maybe_show_relative_offset_change(const var_diff_sptr &diff,
@@ -170,26 +171,24 @@ represent(const var_diff_sptr	&diff,
 	  const string&	indent = "",
 	  bool			local_only = false);
 
-bool
+void
 report_size_and_alignment_changes(type_or_decl_base_sptr	first,
 				  type_or_decl_base_sptr	second,
 				  diff_context_sptr		ctxt,
 				  ostream&			out,
-				  const string&		indent,
-				  bool				nl);
+				  const string&			indent);
 
 bool
 report_loc_info(const type_or_decl_base_sptr& tod,
 		const diff_context& ctxt,
 		ostream &out);
 
-bool
+void
 report_name_size_and_alignment_changes(decl_base_sptr		first,
 				       decl_base_sptr		second,
 				       diff_context_sptr	ctxt,
 				       ostream&		out,
-				       const string&		indent,
-				       bool			nl);
+				       const string&		indent);
 
 /// Represent the kind of difference we want report_mem_header() to
 /// report.
@@ -244,14 +243,12 @@ maybe_report_unreachable_type_changes(const corpus_diff& d,
 void
 maybe_report_interfaces_impacted_by_diff(const diff		*d,
 					 ostream		&out,
-					 const string		&indent,
-					 bool new_line_prefix = true);
+					 const string		&indent);
 
 void
 maybe_report_interfaces_impacted_by_diff(const diff_sptr	&d,
 					 ostream		&out,
-					 const string		&indent,
-					 bool new_line_prefix = false);
+					 const string		&indent);
 
 } // end namespace comparison
 } // end namespace abigail

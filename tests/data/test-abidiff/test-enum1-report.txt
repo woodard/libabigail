@@ -3,7 +3,6 @@
     type size hasn't changed
     1 enumerator insertion:
       'E::e1' value '1'
-
     1 enumerator change:
       'E::e2' from value '1' to '2'
 
