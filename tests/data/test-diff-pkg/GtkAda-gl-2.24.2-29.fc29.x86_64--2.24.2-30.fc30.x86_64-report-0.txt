@@ -47,21 +47,21 @@
 
   6 Removed variable symbols not referenced by debug info:
 
-    gtk__glarea__C210s
-    gtk__glarea__gtk_glarea_recordB43s
-    gtk__glarea__gtk_glarea_recordE39s
-    gtk__glarea__gtk_glarea_recordH40s
-    gtk__glarea__gtk_glarea_recordR41s
-    gtk__glarea__gtk_glarea_recordR41s___UNC
+    [D] gtk__glarea__C210s
+    [D] gtk__glarea__gtk_glarea_recordB43s
+    [D] gtk__glarea__gtk_glarea_recordE39s
+    [D] gtk__glarea__gtk_glarea_recordH40s
+    [D] gtk__glarea__gtk_glarea_recordR41s
+    [D] gtk__glarea__gtk_glarea_recordR41s___UNC
 
   6 Added variable symbols not referenced by debug info:
 
-    gtk__glarea__C208s
-    gtk__glarea__gtk_glarea_recordB41s
-    gtk__glarea__gtk_glarea_recordE37s
-    gtk__glarea__gtk_glarea_recordH38s
-    gtk__glarea__gtk_glarea_recordR39s
-    gtk__glarea__gtk_glarea_recordR39s___UNC
+    [A] gtk__glarea__C208s
+    [A] gtk__glarea__gtk_glarea_recordB41s
+    [A] gtk__glarea__gtk_glarea_recordE37s
+    [A] gtk__glarea__gtk_glarea_recordH38s
+    [A] gtk__glarea__gtk_glarea_recordR39s
+    [A] gtk__glarea__gtk_glarea_recordR39s___UNC
 
 ================ end of changes of 'libgtkada_gl-2.24.so.2'===============
 

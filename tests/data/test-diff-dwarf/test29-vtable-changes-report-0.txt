@@ -3,6 +3,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 1 Added function:
 
-  'method virtual void S::fn1()'
+  [A] 'method virtual void S::fn1()'
     note that this adds a new entry to the vtable of struct S
 

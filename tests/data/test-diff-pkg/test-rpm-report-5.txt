@@ -5,8 +5,8 @@
 
   2 Removed functions:
 
-    'function BaseInfo* base_info_ref(BaseInfo*)'    {base_info_ref}
-    'function void base_info_unref(BaseInfo*)'    {base_info_unref}
+    [D] 'function BaseInfo* base_info_ref(BaseInfo*)'    {base_info_ref}
+    [D] 'function void base_info_unref(BaseInfo*)'    {base_info_unref}
 
 ================ end of changes of 'dbus-binding-tool'===============
 

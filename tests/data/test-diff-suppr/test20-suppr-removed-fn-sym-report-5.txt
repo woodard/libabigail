@@ -5,10 +5,10 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
 
 1 Removed function symbol not referenced by debug info:
 
-  _Z3foov
+  [D] _Z3foov
 
 2 Added function symbols not referenced by debug info:
 
-  _Z3bazv
-  _Z6foobarv
+  [A] _Z3bazv
+  [A] _Z6foobarv
 

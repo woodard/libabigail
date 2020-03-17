@@ -1752,10 +1752,6 @@ default_reporter::report(const corpus_diff& d, ostream& out,
 	<< d.second_corpus()->get_architecture_name() << "'\n\n";
 
   /// Report removed/added/changed functions.
-  size_t total = s.net_num_func_removed() + s.net_num_func_added() +
-    s.net_num_func_changed();
-  const unsigned large_num = 100;
-
   if (ctxt->show_deleted_fns())
     {
       if (s.net_num_func_removed() == 1)
@@ -1776,8 +1772,7 @@ default_reporter::report(const corpus_diff& d, ostream& out,
 
 	  out << indent
 	      << "  ";
-	  if (total > large_num)
-	    out << "[D] ";
+	  out << "[D] ";
 	  out << "'" << (*i)->get_pretty_representation() << "'";
 	  if (ctxt->show_linkage_names())
 	    {
@@ -1823,8 +1818,7 @@ default_reporter::report(const corpus_diff& d, ostream& out,
 	  out
 	    << indent
 	    << "  ";
-	  if (total > large_num)
-	    out << "[A] ";
+	  out << "[A] ";
 	  out << "'"
 	      << (*i)->get_pretty_representation()
 	      << "'";
@@ -1935,10 +1929,7 @@ default_reporter::report(const corpus_diff& d, ostream& out,
 	out << "\n";
     }
 
-  // Report added/removed/changed variables.
-  total = s.num_vars_removed() + s.num_vars_added() +
-    s.num_vars_changed() - s.num_changed_vars_filtered_out();
-
+  // Report removed/added/changed variables.
   if (ctxt->show_deleted_vars())
     {
       if (s.net_num_vars_removed() == 1)
@@ -1962,8 +1953,7 @@ default_reporter::report(const corpus_diff& d, ostream& out,
 
 	  out << indent
 	      << "  ";
-	  if (total > large_num)
-	    out << "[D] ";
+	  out << "[D] ";
 	  out << "'"
 	      << n
 	      << "'";
@@ -2004,8 +1994,7 @@ default_reporter::report(const corpus_diff& d, ostream& out,
 
 	  out << indent
 	      << "  ";
-	  if (total > large_num)
-	    out << "[A] ";
+	  out << "[A] ";
 	  out << "'" << n << "'";
 	  if (ctxt->show_linkage_names())
 	    {
@@ -2087,8 +2076,7 @@ default_reporter::report(const corpus_diff& d, ostream& out,
 	    continue;
 
 	  out << indent << "  ";
-	  if (s.net_num_removed_func_syms() > large_num)
-	    out << "[D] ";
+	  out << "[D] ";
 
 	  show_linkage_name_and_aliases(out, "", **i,
 					d.first_corpus()->get_fun_symbol_map());
@@ -2125,8 +2113,7 @@ default_reporter::report(const corpus_diff& d, ostream& out,
 	    continue;
 
 	  out << indent << "  ";
-	  if (s.net_num_added_func_syms() > large_num)
-	    out << "[A] ";
+	  out << "[A] ";
 	  show_linkage_name_and_aliases(out, "",
 					**i,
 					d.second_corpus()->get_fun_symbol_map());
@@ -2162,8 +2149,7 @@ default_reporter::report(const corpus_diff& d, ostream& out,
 	    continue;
 
 	  out << indent << "  ";
-	  if (s.num_var_syms_removed() > large_num)
-	    out << "[D] ";
+	  out << "[D] ";
 
 	  show_linkage_name_and_aliases
 	    (out, "", **i,
@@ -2202,8 +2188,7 @@ default_reporter::report(const corpus_diff& d, ostream& out,
 	    continue;
 
 	  out << indent << "  ";
-	  if (s.net_num_added_var_syms() > large_num)
-	    out << "[A] ";
+	  out << "[A] ";
 	  show_linkage_name_and_aliases(out, "", **i,
 					d.second_corpus()->get_fun_symbol_map());
 	  out << "\n";

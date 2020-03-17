@@ -23,7 +23,7 @@
 
   1 Added function:
 
-    'function SECStatus SSL_ConfigServerCert(PRFileDesc*, CERTCertificate*, SECKEYPrivateKey*, const SSLExtraServerCertData*, unsigned int)'    {SSL_ConfigServerCert@@NSS_3.24}
+    [A] 'function SECStatus SSL_ConfigServerCert(PRFileDesc*, CERTCertificate*, SECKEYPrivateKey*, const SSLExtraServerCertData*, unsigned int)'    {SSL_ConfigServerCert@@NSS_3.24}
 
   2 functions with some indirect sub-type change:
 

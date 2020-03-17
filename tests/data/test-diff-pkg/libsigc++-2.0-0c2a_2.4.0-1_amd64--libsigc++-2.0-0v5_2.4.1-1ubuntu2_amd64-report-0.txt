@@ -4,11 +4,11 @@
 
   1 Removed function:
 
-    'method void std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_clear()'    {_ZNSt10_List_baseIN4sigc9slot_baseESaIS1_EE8_M_clearEv}
+    [D] 'method void std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_clear()'    {_ZNSt10_List_baseIN4sigc9slot_baseESaIS1_EE8_M_clearEv}
 
   1 Added function:
 
-    'method void std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_clear()'    {_ZNSt7__cxx1110_List_baseIN4sigc9slot_baseESaIS2_EE8_M_clearEv}
+    [A] 'method void std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_clear()'    {_ZNSt7__cxx1110_List_baseIN4sigc9slot_baseESaIS2_EE8_M_clearEv}
 
   2 functions with some indirect sub-type change:
 

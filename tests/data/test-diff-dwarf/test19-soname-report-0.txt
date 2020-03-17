@@ -6,5 +6,5 @@ SONAME changed from 'libtest19-soname-0' to 'libtest19-soname-1'
 
 1 Added function:
 
-  'function void func1()'
+  [A] 'function void func1()'
 

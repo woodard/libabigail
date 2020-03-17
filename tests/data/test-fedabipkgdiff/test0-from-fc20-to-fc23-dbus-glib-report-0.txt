@@ -6,8 +6,8 @@ Comparing the ABI of binaries between dbus-glib-0.100.2-2.fc20.i686.rpm and dbus
 
   2 Added functions:
 
-    'function DBusGConnection* dbus_g_connection_open_private(const gchar*, GMainContext*, GError**)'    {dbus_g_connection_open_private}
-    'function DBusGConnection* dbus_g_method_invocation_get_g_connection(DBusGMethodInvocation*)'    {dbus_g_method_invocation_get_g_connection}
+    [A] 'function DBusGConnection* dbus_g_connection_open_private(const gchar*, GMainContext*, GError**)'    {dbus_g_connection_open_private}
+    [A] 'function DBusGConnection* dbus_g_method_invocation_get_g_connection(DBusGMethodInvocation*)'    {dbus_g_method_invocation_get_g_connection}
 
 ================ end of changes of 'libdbus-glib-1.so.2.2.2'===============
 
@@ -19,17 +19,17 @@ Comparing the ABI of binaries between dbus-glib-0.100.2-2.fc20.i686.rpm and dbus
 
   2 Removed functions:
 
-    'function BaseInfo* base_info_ref(BaseInfo*)'    {base_info_ref}
-    'function void base_info_unref(BaseInfo*)'    {base_info_unref}
+    [D] 'function BaseInfo* base_info_ref(BaseInfo*)'    {base_info_ref}
+    [D] 'function void base_info_unref(BaseInfo*)'    {base_info_unref}
 
   1 Added function:
 
-    'function int main(int, char**)'    {main}
+    [A] 'function int main(int, char**)'    {main}
 
   2 Removed variable symbols not referenced by debug info:
 
-    stderr
-    stdout
+    [D] stderr
+    [D] stdout
 
 ================ end of changes of 'dbus-binding-tool'===============
 
@@ -42,8 +42,8 @@ Comparing the ABI of binaries between dbus-glib-0.100.2-2.fc20.x86_64.rpm and db
 
   2 Added functions:
 
-    'function DBusGConnection* dbus_g_connection_open_private(const gchar*, GMainContext*, GError**)'    {dbus_g_connection_open_private}
-    'function DBusGConnection* dbus_g_method_invocation_get_g_connection(DBusGMethodInvocation*)'    {dbus_g_method_invocation_get_g_connection}
+    [A] 'function DBusGConnection* dbus_g_connection_open_private(const gchar*, GMainContext*, GError**)'    {dbus_g_connection_open_private}
+    [A] 'function DBusGConnection* dbus_g_method_invocation_get_g_connection(DBusGMethodInvocation*)'    {dbus_g_method_invocation_get_g_connection}
 
 ================ end of changes of 'libdbus-glib-1.so.2.2.2'===============
 
@@ -53,8 +53,8 @@ Comparing the ABI of binaries between dbus-glib-0.100.2-2.fc20.x86_64.rpm and db
 
   2 Removed functions:
 
-    'function BaseInfo* base_info_ref(BaseInfo*)'    {base_info_ref}
-    'function void base_info_unref(BaseInfo*)'    {base_info_unref}
+    [D] 'function BaseInfo* base_info_ref(BaseInfo*)'    {base_info_ref}
+    [D] 'function void base_info_unref(BaseInfo*)'    {base_info_unref}
 
 ================ end of changes of 'dbus-binding-tool'===============
 

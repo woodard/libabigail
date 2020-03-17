@@ -8,8 +8,8 @@ Comparing the ABI of binaries between dbus-glib-0.100.2-2.fc20.x86_64.rpm and db
 
   2 Added function symbols not referenced by debug info:
 
-    dbus_g_connection_open_private
-    dbus_g_method_invocation_get_g_connection
+    [A] dbus_g_connection_open_private
+    [A] dbus_g_method_invocation_get_g_connection
 
 ================ end of changes of 'libdbus-glib-1.so.2.2.2'===============
 
@@ -21,8 +21,8 @@ Comparing the ABI of binaries between dbus-glib-0.100.2-2.fc20.x86_64.rpm and db
 
   2 Removed function symbols not referenced by debug info:
 
-    base_info_ref
-    base_info_unref
+    [D] base_info_ref
+    [D] base_info_unref
 
 ================ end of changes of 'dbus-binding-tool'===============
 

@@ -4,5 +4,5 @@ Variables changes summary: 1 Removed, 0 Changed, 0 Added variable
 
 1 Removed variable:
 
-  'int global_var1'    {global_var1}
+  [D] 'int global_var1'    {global_var1}
 

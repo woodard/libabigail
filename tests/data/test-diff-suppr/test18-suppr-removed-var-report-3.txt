@@ -3,5 +3,5 @@ Variables changes summary: 1 Removed, 0 Changed (1 filtered out), 0 Added variab
 
 1 Removed variable:
 
-  'int var1'    {var1}
+  [D] 'int var1'    {var1}
 

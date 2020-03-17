@@ -6,23 +6,23 @@
 
   17 Added functions:
 
-    'method int tbb::interface7::internal::task_arena_base::internal_current_slot()'    {_ZN3tbb10interface78internal15task_arena_base21internal_current_slotEv}
-    'method void tbb::interface7::internal::task_arena_base::internal_enqueue(tbb::task&, intptr_t) const'    {_ZNK3tbb10interface78internal15task_arena_base16internal_enqueueERNS_4taskEl}
-    'method void tbb::interface7::internal::task_arena_base::internal_execute(tbb::interface7::internal::delegate_base&) const'    {_ZNK3tbb10interface78internal15task_arena_base16internal_executeERNS1_13delegate_baseE}
-    'method void tbb::interface7::internal::task_arena_base::internal_initialize()'    {_ZN3tbb10interface78internal15task_arena_base19internal_initializeEv}
-    'method void tbb::interface7::internal::task_arena_base::internal_terminate()'    {_ZN3tbb10interface78internal15task_arena_base18internal_terminateEv}
-    'method void tbb::interface7::internal::task_arena_base::internal_wait() const'    {_ZNK3tbb10interface78internal15task_arena_base13internal_waitEv}
-    'method void tbb::interface8::internal::x86_rtm_rw_mutex::internal_acquire_reader(tbb::interface8::internal::x86_rtm_rw_mutex::scoped_lock&, bool)'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex23internal_acquire_readerERNS2_11scoped_lockEb}
-    'method void tbb::interface8::internal::x86_rtm_rw_mutex::internal_acquire_writer(tbb::interface8::internal::x86_rtm_rw_mutex::scoped_lock&, bool)'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex23internal_acquire_writerERNS2_11scoped_lockEb}
-    'method void tbb::interface8::internal::x86_rtm_rw_mutex::internal_construct()'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex18internal_constructEv}
-    'method bool tbb::interface8::internal::x86_rtm_rw_mutex::internal_downgrade(tbb::interface8::internal::x86_rtm_rw_mutex::scoped_lock&)'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex18internal_downgradeERNS2_11scoped_lockE}
-    'method void tbb::interface8::internal::x86_rtm_rw_mutex::internal_release(tbb::interface8::internal::x86_rtm_rw_mutex::scoped_lock&)'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex16internal_releaseERNS2_11scoped_lockE}
-    'method bool tbb::interface8::internal::x86_rtm_rw_mutex::internal_try_acquire_writer(tbb::interface8::internal::x86_rtm_rw_mutex::scoped_lock&)'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex27internal_try_acquire_writerERNS2_11scoped_lockE}
-    'method bool tbb::interface8::internal::x86_rtm_rw_mutex::internal_upgrade(tbb::interface8::internal::x86_rtm_rw_mutex::scoped_lock&)'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex16internal_upgradeERNS2_11scoped_lockE}
-    'method void tbb::internal::concurrent_queue_base_v8::internal_push_move(void*)'    {_ZN3tbb8internal24concurrent_queue_base_v818internal_push_moveEPKv}
-    'method bool tbb::internal::concurrent_queue_base_v8::internal_push_move_if_not_full(void*)'    {_ZN3tbb8internal24concurrent_queue_base_v830internal_push_move_if_not_fullEPKv}
-    'method void tbb::internal::concurrent_queue_base_v8::move_content(tbb::internal::concurrent_queue_base_v8&)'    {_ZN3tbb8internal24concurrent_queue_base_v812move_contentERS1_}
-    'method void tbb::task_group_context::capture_fp_settings()'    {_ZN3tbb18task_group_context19capture_fp_settingsEv}
+    [A] 'method int tbb::interface7::internal::task_arena_base::internal_current_slot()'    {_ZN3tbb10interface78internal15task_arena_base21internal_current_slotEv}
+    [A] 'method void tbb::interface7::internal::task_arena_base::internal_enqueue(tbb::task&, intptr_t) const'    {_ZNK3tbb10interface78internal15task_arena_base16internal_enqueueERNS_4taskEl}
+    [A] 'method void tbb::interface7::internal::task_arena_base::internal_execute(tbb::interface7::internal::delegate_base&) const'    {_ZNK3tbb10interface78internal15task_arena_base16internal_executeERNS1_13delegate_baseE}
+    [A] 'method void tbb::interface7::internal::task_arena_base::internal_initialize()'    {_ZN3tbb10interface78internal15task_arena_base19internal_initializeEv}
+    [A] 'method void tbb::interface7::internal::task_arena_base::internal_terminate()'    {_ZN3tbb10interface78internal15task_arena_base18internal_terminateEv}
+    [A] 'method void tbb::interface7::internal::task_arena_base::internal_wait() const'    {_ZNK3tbb10interface78internal15task_arena_base13internal_waitEv}
+    [A] 'method void tbb::interface8::internal::x86_rtm_rw_mutex::internal_acquire_reader(tbb::interface8::internal::x86_rtm_rw_mutex::scoped_lock&, bool)'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex23internal_acquire_readerERNS2_11scoped_lockEb}
+    [A] 'method void tbb::interface8::internal::x86_rtm_rw_mutex::internal_acquire_writer(tbb::interface8::internal::x86_rtm_rw_mutex::scoped_lock&, bool)'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex23internal_acquire_writerERNS2_11scoped_lockEb}
+    [A] 'method void tbb::interface8::internal::x86_rtm_rw_mutex::internal_construct()'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex18internal_constructEv}
+    [A] 'method bool tbb::interface8::internal::x86_rtm_rw_mutex::internal_downgrade(tbb::interface8::internal::x86_rtm_rw_mutex::scoped_lock&)'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex18internal_downgradeERNS2_11scoped_lockE}
+    [A] 'method void tbb::interface8::internal::x86_rtm_rw_mutex::internal_release(tbb::interface8::internal::x86_rtm_rw_mutex::scoped_lock&)'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex16internal_releaseERNS2_11scoped_lockE}
+    [A] 'method bool tbb::interface8::internal::x86_rtm_rw_mutex::internal_try_acquire_writer(tbb::interface8::internal::x86_rtm_rw_mutex::scoped_lock&)'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex27internal_try_acquire_writerERNS2_11scoped_lockE}
+    [A] 'method bool tbb::interface8::internal::x86_rtm_rw_mutex::internal_upgrade(tbb::interface8::internal::x86_rtm_rw_mutex::scoped_lock&)'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex16internal_upgradeERNS2_11scoped_lockE}
+    [A] 'method void tbb::internal::concurrent_queue_base_v8::internal_push_move(void*)'    {_ZN3tbb8internal24concurrent_queue_base_v818internal_push_moveEPKv}
+    [A] 'method bool tbb::internal::concurrent_queue_base_v8::internal_push_move_if_not_full(void*)'    {_ZN3tbb8internal24concurrent_queue_base_v830internal_push_move_if_not_fullEPKv}
+    [A] 'method void tbb::internal::concurrent_queue_base_v8::move_content(tbb::internal::concurrent_queue_base_v8&)'    {_ZN3tbb8internal24concurrent_queue_base_v812move_contentERS1_}
+    [A] 'method void tbb::task_group_context::capture_fp_settings()'    {_ZN3tbb18task_group_context19capture_fp_settingsEv}
 
   8 functions with some indirect sub-type change:
 
@@ -226,9 +226,9 @@
 
   3 Removed variable symbols not referenced by debug info:
 
-    _ZTVN3rml16versioned_objectE
-    _ZTVN3rml6clientE
-    _ZTVN3rml6serverE
+    [D] _ZTVN3rml16versioned_objectE
+    [D] _ZTVN3rml6clientE
+    [D] _ZTVN3rml6serverE
 
 ================ end of changes of 'libtbb.so.2'===============
 
@@ -240,45 +240,45 @@
 
   9 Removed functions:
 
-    'function void* rml::internal::__TBB_internal_calloc(size_t, size_t)'    {__TBB_internal_calloc}
-    'function void rml::internal::__TBB_internal_free(void*)'    {__TBB_internal_free}
-    'function void* rml::internal::__TBB_internal_malloc(size_t)'    {__TBB_internal_malloc}
-    'function int rml::internal::__TBB_internal_posix_memalign(void**, size_t, size_t)'    {__TBB_internal_posix_memalign}
-    'function void* rml::internal::__TBB_internal_realloc(void*, size_t)'    {__TBB_internal_realloc}
-    'function void* safer_scalable_aligned_realloc(void*, size_t, size_t, void*)'    {safer_scalable_aligned_realloc}
-    'function void safer_scalable_free(void*, void (void*)*)'    {safer_scalable_free}
-    'function size_t safer_scalable_msize(void*, typedef size_t (void*)*)'    {safer_scalable_msize}
-    'function void* safer_scalable_realloc(void*, size_t, void*)'    {safer_scalable_realloc}
+    [D] 'function void* rml::internal::__TBB_internal_calloc(size_t, size_t)'    {__TBB_internal_calloc}
+    [D] 'function void rml::internal::__TBB_internal_free(void*)'    {__TBB_internal_free}
+    [D] 'function void* rml::internal::__TBB_internal_malloc(size_t)'    {__TBB_internal_malloc}
+    [D] 'function int rml::internal::__TBB_internal_posix_memalign(void**, size_t, size_t)'    {__TBB_internal_posix_memalign}
+    [D] 'function void* rml::internal::__TBB_internal_realloc(void*, size_t)'    {__TBB_internal_realloc}
+    [D] 'function void* safer_scalable_aligned_realloc(void*, size_t, size_t, void*)'    {safer_scalable_aligned_realloc}
+    [D] 'function void safer_scalable_free(void*, void (void*)*)'    {safer_scalable_free}
+    [D] 'function size_t safer_scalable_msize(void*, typedef size_t (void*)*)'    {safer_scalable_msize}
+    [D] 'function void* safer_scalable_realloc(void*, size_t, void*)'    {safer_scalable_realloc}
 
   27 Added function symbols not referenced by debug info:
 
-    _Z10BitScanRevm
-    _Z10FencedLoadRVKl
-    _Z11FencedStoreRVll
-    _Z15AtomicIncrementRVl
-    _Z15SpinWaitWhileEqRVKll
-    _Z16AtomicFetchStorePVvm
-    _Z21AtomicCompareExchangeRVlll
-    _Z8AtomicOrPVvm
-    _Z8do_yieldv
-    _Z9AtomicAddRVll
-    _Z9AtomicAndPVvm
-    _ZN11MallocMutex11scoped_lockC1ERS_
-    _ZN11MallocMutex11scoped_lockC1ERS_bPb, aliases _ZN11MallocMutex11scoped_lockC2ERS_bPb
-    _ZN11MallocMutex11scoped_lockC2ERS_, aliases _ZN11MallocMutex11scoped_lockC1ERS_
-    _ZN11MallocMutex11scoped_lockC2ERS_bPb
-    _ZN11MallocMutex11scoped_lockD1Ev, aliases _ZN11MallocMutex11scoped_lockD2Ev
-    _ZN11MallocMutex11scoped_lockD2Ev
-    _ZN11MallocMutexC1Ev, aliases _ZN11MallocMutexC2Ev
-    _ZN11MallocMutexC2Ev
-    _ZdlPvS_
-    _ZnwmPv
-    __TBB_malloc_safer_aligned_msize
-    __TBB_malloc_safer_aligned_realloc
-    __TBB_malloc_safer_free
-    __TBB_malloc_safer_msize
-    __TBB_malloc_safer_realloc
-    scalable_allocation_command
+    [A] _Z10BitScanRevm
+    [A] _Z10FencedLoadRVKl
+    [A] _Z11FencedStoreRVll
+    [A] _Z15AtomicIncrementRVl
+    [A] _Z15SpinWaitWhileEqRVKll
+    [A] _Z16AtomicFetchStorePVvm
+    [A] _Z21AtomicCompareExchangeRVlll
+    [A] _Z8AtomicOrPVvm
+    [A] _Z8do_yieldv
+    [A] _Z9AtomicAddRVll
+    [A] _Z9AtomicAndPVvm
+    [A] _ZN11MallocMutex11scoped_lockC1ERS_
+    [A] _ZN11MallocMutex11scoped_lockC1ERS_bPb, aliases _ZN11MallocMutex11scoped_lockC2ERS_bPb
+    [A] _ZN11MallocMutex11scoped_lockC2ERS_, aliases _ZN11MallocMutex11scoped_lockC1ERS_
+    [A] _ZN11MallocMutex11scoped_lockC2ERS_bPb
+    [A] _ZN11MallocMutex11scoped_lockD1Ev, aliases _ZN11MallocMutex11scoped_lockD2Ev
+    [A] _ZN11MallocMutex11scoped_lockD2Ev
+    [A] _ZN11MallocMutexC1Ev, aliases _ZN11MallocMutexC2Ev
+    [A] _ZN11MallocMutexC2Ev
+    [A] _ZdlPvS_
+    [A] _ZnwmPv
+    [A] __TBB_malloc_safer_aligned_msize
+    [A] __TBB_malloc_safer_aligned_realloc
+    [A] __TBB_malloc_safer_free
+    [A] __TBB_malloc_safer_msize
+    [A] __TBB_malloc_safer_realloc
+    [A] scalable_allocation_command
 
 ================ end of changes of 'libtbbmalloc.so.2'===============
 
@@ -288,15 +288,15 @@
 
   1 Removed function:
 
-    'function bool __TBB_internal_find_original_malloc(int, const char**, void**)'    {__TBB_internal_find_original_malloc}
+    [D] 'function bool __TBB_internal_find_original_malloc(int, const char**, void**)'    {__TBB_internal_find_original_malloc}
 
   5 Added functions:
 
-    'function void __libc_free(void*)'    {__libc_free}
-    'function void* __libc_realloc(void*, size_t)'    {__libc_realloc}
-    'function void* calloc(size_t, size_t)'    {__libc_calloc, aliases calloc}
-    'function size_t malloc_usable_size(void*)'    {malloc_usable_size}
-    'function void* valloc(size_t)'    {__libc_valloc, aliases valloc}
+    [A] 'function void __libc_free(void*)'    {__libc_free}
+    [A] 'function void* __libc_realloc(void*, size_t)'    {__libc_realloc}
+    [A] 'function void* calloc(size_t, size_t)'    {__libc_calloc, aliases calloc}
+    [A] 'function size_t malloc_usable_size(void*)'    {malloc_usable_size}
+    [A] 'function void* valloc(size_t)'    {__libc_valloc, aliases valloc}
 
 ================ end of changes of 'libtbbmalloc_proxy.so.2'===============
 

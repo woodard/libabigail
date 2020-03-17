@@ -3,5 +3,5 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 1 Removed function:
 
-  'function void bar()'    {_Z3barv}
+  [D] 'function void bar()'    {_Z3barv}
 

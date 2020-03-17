@@ -4,9 +4,9 @@
 
   3 Added functions:
 
-    'function int _IceTransIsListening(const char*)'    {_IceTransIsListening}
-    'function int _IceTransListen(const char*)'    {_IceTransListen}
-    'function int _IceTransReceived(const char*)'    {_IceTransReceived}
+    [A] 'function int _IceTransIsListening(const char*)'    {_IceTransIsListening}
+    [A] 'function int _IceTransListen(const char*)'    {_IceTransListen}
+    [A] 'function int _IceTransReceived(const char*)'    {_IceTransReceived}
 
   1 function with some indirect sub-type change:
 
@@ -88,7 +88,7 @@
 
   1 Removed variable:
 
-    'const in6_addr in6addr_any'    {in6addr_any}
+    [D] 'const in6_addr in6addr_any'    {in6addr_any}
 
   2 Changed variables:
 

@@ -4,5 +4,5 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 1 Removed function:
 
-  'function void _internal_fun1()'    {_Z4fun1v@@VERSION_1.0}
+  [D] 'function void _internal_fun1()'    {_Z4fun1v@@VERSION_1.0}
 

@@ -4,10 +4,10 @@
 
   4 Added functions:
 
-    'function int dwarf_cu_info(Dwarf_CU*, Dwarf_Half*, uint8_t*, Dwarf_Die*, Dwarf_Die*, uint64_t*, uint8_t*, uint8_t*)'    {dwarf_cu_info@@ELFUTILS_0.171}
-    'function Dwarf_Die* dwarf_die_addr_die(Dwarf*, void*, Dwarf_Die*)'    {dwarf_die_addr_die@@ELFUTILS_0.171}
-    'function int dwarf_get_units(Dwarf*, Dwarf_CU*, Dwarf_CU**, Dwarf_Half*, uint8_t*, Dwarf_Die*, Dwarf_Die*)'    {dwarf_get_units@@ELFUTILS_0.171}
-    'function int dwarf_getabbrevattr_data(Dwarf_Abbrev*, size_t, unsigned int*, unsigned int*, Dwarf_Sword*, Dwarf_Off*)'    {dwarf_getabbrevattr_data@@ELFUTILS_0.171}
+    [A] 'function int dwarf_cu_info(Dwarf_CU*, Dwarf_Half*, uint8_t*, Dwarf_Die*, Dwarf_Die*, uint64_t*, uint8_t*, uint8_t*)'    {dwarf_cu_info@@ELFUTILS_0.171}
+    [A] 'function Dwarf_Die* dwarf_die_addr_die(Dwarf*, void*, Dwarf_Die*)'    {dwarf_die_addr_die@@ELFUTILS_0.171}
+    [A] 'function int dwarf_get_units(Dwarf*, Dwarf_CU*, Dwarf_CU**, Dwarf_Half*, uint8_t*, Dwarf_Die*, Dwarf_Die*)'    {dwarf_get_units@@ELFUTILS_0.171}
+    [A] 'function int dwarf_getabbrevattr_data(Dwarf_Abbrev*, size_t, unsigned int*, unsigned int*, Dwarf_Sword*, Dwarf_Off*)'    {dwarf_getabbrevattr_data@@ELFUTILS_0.171}
 
 ================ end of changes of 'libdw-0.170.so'===============
 

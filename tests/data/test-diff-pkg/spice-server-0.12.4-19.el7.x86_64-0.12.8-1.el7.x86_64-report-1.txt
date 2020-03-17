@@ -4,18 +4,18 @@
 
   1 Removed function:
 
-    'function int spice_server_migrate_client_state(SpiceServer*)'    {spice_server_migrate_client_state@@SPICE_SERVER_0.6.0}
+    [D] 'function int spice_server_migrate_client_state(SpiceServer*)'    {spice_server_migrate_client_state@@SPICE_SERVER_0.6.0}
 
   8 Added functions:
 
-    'function void spice_replay_free(SpiceReplay*)'    {spice_replay_free@@SPICE_SERVER_0.12.6}
-    'function void spice_replay_free_cmd(SpiceReplay*, QXLCommandExt*)'    {spice_replay_free_cmd@@SPICE_SERVER_0.12.6}
-    'function SpiceReplay* spice_replay_new(FILE*, int)'    {spice_replay_new@@SPICE_SERVER_0.12.6}
-    'function QXLCommandExt* spice_replay_next_cmd(SpiceReplay*, QXLWorker*)'    {spice_replay_next_cmd@@SPICE_SERVER_0.12.6}
-    'function uint32_t spice_server_get_best_playback_rate(SpicePlaybackInstance*)'    {spice_server_get_best_playback_rate@@SPICE_SERVER_0.12.5}
-    'function uint32_t spice_server_get_best_record_rate(SpiceRecordInstance*)'    {spice_server_get_best_record_rate@@SPICE_SERVER_0.12.5}
-    'function void spice_server_set_playback_rate(SpicePlaybackInstance*, uint32_t)'    {spice_server_set_playback_rate@@SPICE_SERVER_0.12.5}
-    'function void spice_server_set_record_rate(SpiceRecordInstance*, uint32_t)'    {spice_server_set_record_rate@@SPICE_SERVER_0.12.5}
+    [A] 'function void spice_replay_free(SpiceReplay*)'    {spice_replay_free@@SPICE_SERVER_0.12.6}
+    [A] 'function void spice_replay_free_cmd(SpiceReplay*, QXLCommandExt*)'    {spice_replay_free_cmd@@SPICE_SERVER_0.12.6}
+    [A] 'function SpiceReplay* spice_replay_new(FILE*, int)'    {spice_replay_new@@SPICE_SERVER_0.12.6}
+    [A] 'function QXLCommandExt* spice_replay_next_cmd(SpiceReplay*, QXLWorker*)'    {spice_replay_next_cmd@@SPICE_SERVER_0.12.6}
+    [A] 'function uint32_t spice_server_get_best_playback_rate(SpicePlaybackInstance*)'    {spice_server_get_best_playback_rate@@SPICE_SERVER_0.12.5}
+    [A] 'function uint32_t spice_server_get_best_record_rate(SpiceRecordInstance*)'    {spice_server_get_best_record_rate@@SPICE_SERVER_0.12.5}
+    [A] 'function void spice_server_set_playback_rate(SpicePlaybackInstance*, uint32_t)'    {spice_server_set_playback_rate@@SPICE_SERVER_0.12.5}
+    [A] 'function void spice_server_set_record_rate(SpiceRecordInstance*, uint32_t)'    {spice_server_set_record_rate@@SPICE_SERVER_0.12.5}
 
   2 functions with some indirect sub-type change:
 

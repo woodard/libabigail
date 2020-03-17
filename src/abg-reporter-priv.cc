@@ -1218,7 +1218,6 @@ maybe_report_unreachable_type_changes(const corpus_diff& d,
 				      const string& indent,
 				      ostream& out)
 {
-  const unsigned large_num = 100;
   const diff_context_sptr& ctxt = d.context();
 
   if (!(ctxt->show_unreachable_types()
@@ -1250,10 +1249,7 @@ maybe_report_unreachable_type_changes(const corpus_diff& d,
       if (d.priv_->deleted_unreachable_type_is_suppressed((*i).get()))
 	continue;
 
-      out << indent << "  ";
-      if (s.num_removed_unreachable_types() > large_num)
-	out << "[D] ";
-      out << get_pretty_representation(*i);
+      out << indent << "  [D] '" << get_pretty_representation(*i) << "'";
       report_loc_info(*i, *ctxt, out);
       out << "\n";
       emitted = true;
@@ -1287,12 +1283,7 @@ maybe_report_unreachable_type_changes(const corpus_diff& d,
 
       string repr = diff->first_subject()->get_pretty_representation();
 
-      out << "  ";
-
-      if (sorted_diff_sptrs.size() > large_num)
-	out << "[C] ";
-
-      out << "'" << repr << "' changed:\n";
+      out << indent << "  [C] '" << repr << "' changed:\n";
       diff->report(out, indent + "    ");
       out << "\n";
       emitted = true;
@@ -1324,10 +1315,7 @@ maybe_report_unreachable_type_changes(const corpus_diff& d,
       if (d.priv_->added_unreachable_type_is_suppressed((*i).get()))
 	continue;
 
-      out << indent << "  ";
-      if (s.num_added_unreachable_types() > large_num)
-	out << "[A] ";
-      out << "'" << get_pretty_representation(*i) << "'";
+      out << indent << "  [A] '" << get_pretty_representation(*i) << "'";
       report_loc_info(*i, *ctxt, out);
       out << "\n";
       emitted = true;

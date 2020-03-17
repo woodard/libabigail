@@ -3,5 +3,5 @@ Variables changes summary: 0 Removed, 0 Changed, 1 Added variable
 
 1 Added variable:
 
-  'static char S::m0'
+  [A] 'static char S::m0'
 

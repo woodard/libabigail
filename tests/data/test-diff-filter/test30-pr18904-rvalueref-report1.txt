@@ -1446,67 +1446,67 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
 
 47 Removed variables:
 
-  'typedef COIRESULT (typedef COIBUFFER, typedef COIBUFFER, typedef uint64_t, typedef uint64_t, typedef uint64_t, typedef COI_COPY_TYPE, typedef uint32_t, const COIEVENT*, COIEVENT*)* COI::BufferCopy'
-  'typedef COIRESULT (typedef uint64_t, typedef COI_BUFFER_TYPE, typedef uint32_t, void*, typedef uint32_t, const COIPROCESS*, COIBUFFER*)* COI::BufferCreate'
-  'typedef COIRESULT (typedef uint64_t, typedef COI_BUFFER_TYPE, typedef uint32_t, void*, typedef uint32_t, const COIPROCESS*, COIBUFFER*)* COI::BufferCreateFromMemory'
-  'typedef COIRESULT (typedef COIBUFFER)* COI::BufferDestroy'
-  'typedef COIRESULT (typedef COIBUFFER, uint64_t*)* COI::BufferGetSinkAddress'
-  'typedef COIRESULT (typedef COIBUFFER, typedef uint64_t, typedef uint64_t, typedef COI_MAP_TYPE, typedef uint32_t, const COIEVENT*, COIEVENT*, COIMAPINSTANCE*, void**)* COI::BufferMap'
-  'typedef COIRESULT (typedef COIBUFFER, typedef uint64_t, void*, typedef uint64_t, typedef COI_COPY_TYPE, typedef uint32_t, const COIEVENT*, COIEVENT*)* COI::BufferRead'
-  'typedef COIRESULT (typedef COIBUFFER, typedef COIPROCESS, typedef COI_BUFFER_STATE, typedef COI_BUFFER_MOVE_FLAG, typedef uint32_t, const COIEVENT*, COIEVENT*)* COI::BufferSetState'
-  'typedef COIRESULT (typedef COIMAPINSTANCE, typedef uint32_t, const COIEVENT*, COIEVENT*)* COI::BufferUnmap'
-  'typedef COIRESULT (typedef COIBUFFER, typedef uint64_t, void*, typedef uint64_t, typedef COI_COPY_TYPE, typedef uint32_t, const COIEVENT*, COIEVENT*)* COI::BufferWrite'
-  'typedef COIRESULT (typedef COI_ISA_TYPE, uint32_t*)* COI::EngineGetCount'
-  'typedef COIRESULT (typedef COI_ISA_TYPE, typedef uint32_t, COIENGINE*)* COI::EngineGetHandle'
-  'typedef COIRESULT (typedef uint16_t, const COIEVENT*, typedef int32_t, typedef uint8_t, uint32_t*, uint32_t*)* COI::EventWait'
-  'typedef uint64_t ()* COI::PerfGetCycleFrequency'
-  'typedef COIRESULT (typedef COIPROCESS, uint64_t*, typedef uint32_t, COIPIPELINE*)* COI::PipelineCreate'
-  'typedef COIRESULT (typedef COIPIPELINE)* COI::PipelineDestroy'
-  'typedef COIRESULT (typedef COIPIPELINE, typedef COIFUNCTION, typedef uint32_t, const COIBUFFER*, const COI_ACCESS_FLAGS*, typedef uint32_t, const COIEVENT*, void*, typedef uint16_t, void*, typedef uint16_t, COIEVENT*)* COI::PipelineRunFunction'
-  'typedef COIRESULT (typedef COIENGINE, const char*, void*, typedef uint64_t, int, const char**, typedef uint8_t, const char**, typedef uint8_t, const char*, typedef uint64_t, const char*, const char*, typedef uint64_t, COIPROCESS*)* COI::ProcessCreateFromMemory'
-  'typedef COIRESULT (typedef COIPROCESS, typedef int32_t, typedef uint8_t, int8_t*, uint32_t*)* COI::ProcessDestroy'
-  'typedef COIRESULT (typedef COIPROCESS, typedef uint32_t, const char**, COIFUNCTION*)* COI::ProcessGetFunctionHandles'
-  'typedef COIRESULT (typedef COIPROCESS, void*, typedef uint64_t, const char*, const char*, const char*, typedef uint64_t, typedef uint32_t, COILIBRARY*)* COI::ProcessLoadLibraryFromMemory'
-  'typedef COIRESULT (typedef uint32_t, void**, const uint64_t*, const char**, const uint64_t*)* COI::ProcessRegisterLibraries'
-  'bool COI::is_available'
-  'static const int MicEnvVar::any_card'
-  'FuncList __offload_entries'
-  'FuncList __offload_funcs'
-  'OffloadInitType __offload_init_type'
-  'uint64_t __offload_use_2mb_buffers'
-  'VarList __offload_vars'
-  'int __omp_device_num'
-  'TargetImage* __target_exe'
-  'int console_enabled'
-  'uint64_t cpu_frequency'
-  'uint64_t mic_buffer_size'
-  'Engine* mic_engines'
-  'uint32_t mic_engines_total'
-  'MicEnvVar mic_env_vars'
-  'char* mic_library_path'
-  'char* mic_proxy_fs_root'
-  'bool mic_proxy_io'
-  'uint32_t mic_stack_size'
-  'pthread_key_t mic_thread_key'
-  'int offload_number'
-  'int offload_report_enabled'
-  'int offload_report_level'
-  'const char* prefix'
-  'int timer_enabled'
+  [D] 'typedef COIRESULT (typedef COIBUFFER, typedef COIBUFFER, typedef uint64_t, typedef uint64_t, typedef uint64_t, typedef COI_COPY_TYPE, typedef uint32_t, const COIEVENT*, COIEVENT*)* COI::BufferCopy'
+  [D] 'typedef COIRESULT (typedef uint64_t, typedef COI_BUFFER_TYPE, typedef uint32_t, void*, typedef uint32_t, const COIPROCESS*, COIBUFFER*)* COI::BufferCreate'
+  [D] 'typedef COIRESULT (typedef uint64_t, typedef COI_BUFFER_TYPE, typedef uint32_t, void*, typedef uint32_t, const COIPROCESS*, COIBUFFER*)* COI::BufferCreateFromMemory'
+  [D] 'typedef COIRESULT (typedef COIBUFFER)* COI::BufferDestroy'
+  [D] 'typedef COIRESULT (typedef COIBUFFER, uint64_t*)* COI::BufferGetSinkAddress'
+  [D] 'typedef COIRESULT (typedef COIBUFFER, typedef uint64_t, typedef uint64_t, typedef COI_MAP_TYPE, typedef uint32_t, const COIEVENT*, COIEVENT*, COIMAPINSTANCE*, void**)* COI::BufferMap'
+  [D] 'typedef COIRESULT (typedef COIBUFFER, typedef uint64_t, void*, typedef uint64_t, typedef COI_COPY_TYPE, typedef uint32_t, const COIEVENT*, COIEVENT*)* COI::BufferRead'
+  [D] 'typedef COIRESULT (typedef COIBUFFER, typedef COIPROCESS, typedef COI_BUFFER_STATE, typedef COI_BUFFER_MOVE_FLAG, typedef uint32_t, const COIEVENT*, COIEVENT*)* COI::BufferSetState'
+  [D] 'typedef COIRESULT (typedef COIMAPINSTANCE, typedef uint32_t, const COIEVENT*, COIEVENT*)* COI::BufferUnmap'
+  [D] 'typedef COIRESULT (typedef COIBUFFER, typedef uint64_t, void*, typedef uint64_t, typedef COI_COPY_TYPE, typedef uint32_t, const COIEVENT*, COIEVENT*)* COI::BufferWrite'
+  [D] 'typedef COIRESULT (typedef COI_ISA_TYPE, uint32_t*)* COI::EngineGetCount'
+  [D] 'typedef COIRESULT (typedef COI_ISA_TYPE, typedef uint32_t, COIENGINE*)* COI::EngineGetHandle'
+  [D] 'typedef COIRESULT (typedef uint16_t, const COIEVENT*, typedef int32_t, typedef uint8_t, uint32_t*, uint32_t*)* COI::EventWait'
+  [D] 'typedef uint64_t ()* COI::PerfGetCycleFrequency'
+  [D] 'typedef COIRESULT (typedef COIPROCESS, uint64_t*, typedef uint32_t, COIPIPELINE*)* COI::PipelineCreate'
+  [D] 'typedef COIRESULT (typedef COIPIPELINE)* COI::PipelineDestroy'
+  [D] 'typedef COIRESULT (typedef COIPIPELINE, typedef COIFUNCTION, typedef uint32_t, const COIBUFFER*, const COI_ACCESS_FLAGS*, typedef uint32_t, const COIEVENT*, void*, typedef uint16_t, void*, typedef uint16_t, COIEVENT*)* COI::PipelineRunFunction'
+  [D] 'typedef COIRESULT (typedef COIENGINE, const char*, void*, typedef uint64_t, int, const char**, typedef uint8_t, const char**, typedef uint8_t, const char*, typedef uint64_t, const char*, const char*, typedef uint64_t, COIPROCESS*)* COI::ProcessCreateFromMemory'
+  [D] 'typedef COIRESULT (typedef COIPROCESS, typedef int32_t, typedef uint8_t, int8_t*, uint32_t*)* COI::ProcessDestroy'
+  [D] 'typedef COIRESULT (typedef COIPROCESS, typedef uint32_t, const char**, COIFUNCTION*)* COI::ProcessGetFunctionHandles'
+  [D] 'typedef COIRESULT (typedef COIPROCESS, void*, typedef uint64_t, const char*, const char*, const char*, typedef uint64_t, typedef uint32_t, COILIBRARY*)* COI::ProcessLoadLibraryFromMemory'
+  [D] 'typedef COIRESULT (typedef uint32_t, void**, const uint64_t*, const char**, const uint64_t*)* COI::ProcessRegisterLibraries'
+  [D] 'bool COI::is_available'
+  [D] 'static const int MicEnvVar::any_card'
+  [D] 'FuncList __offload_entries'
+  [D] 'FuncList __offload_funcs'
+  [D] 'OffloadInitType __offload_init_type'
+  [D] 'uint64_t __offload_use_2mb_buffers'
+  [D] 'VarList __offload_vars'
+  [D] 'int __omp_device_num'
+  [D] 'TargetImage* __target_exe'
+  [D] 'int console_enabled'
+  [D] 'uint64_t cpu_frequency'
+  [D] 'uint64_t mic_buffer_size'
+  [D] 'Engine* mic_engines'
+  [D] 'uint32_t mic_engines_total'
+  [D] 'MicEnvVar mic_env_vars'
+  [D] 'char* mic_library_path'
+  [D] 'char* mic_proxy_fs_root'
+  [D] 'bool mic_proxy_io'
+  [D] 'uint32_t mic_stack_size'
+  [D] 'pthread_key_t mic_thread_key'
+  [D] 'int offload_number'
+  [D] 'int offload_report_enabled'
+  [D] 'int offload_report_level'
+  [D] 'const char* prefix'
+  [D] 'int timer_enabled'
 
 11 Added variables:
 
-  'typedef COIRESULT (typedef COIENGINE, typedef uint32_t, COI_ENGINE_INFO*)* COI::EngineGetInfo'
-  'typedef COIRESULT (typedef COIEVENT, void (typedef COIEVENT, typedef COIRESULT, void*)*, void*, typedef uint64_t)* COI::EventRegisterCallback'
-  'typedef COIRESULT (uint64_t*)* COI::PipelineClearCPUMask'
-  'typedef COIRESULT (typedef COIPROCESS, typedef uint32_t, typedef uint8_t, uint64_t*)* COI::PipelineSetCPUMask'
-  'static Stream::StreamMap Stream::all_streams'
-  'static mutex_t Stream::m_stream_lock'
-  'static uint64_t Stream::m_streams_count'
-  'MYOFuncTableList __offload_myo_func_tables'
-  'MYOInitTableList __offload_myo_init_tables'
-  'MYOVarTableList __offload_myo_var_tables'
-  'MYOVarTableList __offload_myo_vtable_tables'
+  [A] 'typedef COIRESULT (typedef COIENGINE, typedef uint32_t, COI_ENGINE_INFO*)* COI::EngineGetInfo'
+  [A] 'typedef COIRESULT (typedef COIEVENT, void (typedef COIEVENT, typedef COIRESULT, void*)*, void*, typedef uint64_t)* COI::EventRegisterCallback'
+  [A] 'typedef COIRESULT (uint64_t*)* COI::PipelineClearCPUMask'
+  [A] 'typedef COIRESULT (typedef COIPROCESS, typedef uint32_t, typedef uint8_t, uint64_t*)* COI::PipelineSetCPUMask'
+  [A] 'static Stream::StreamMap Stream::all_streams'
+  [A] 'static mutex_t Stream::m_stream_lock'
+  [A] 'static uint64_t Stream::m_streams_count'
+  [A] 'MYOFuncTableList __offload_myo_func_tables'
+  [A] 'MYOInitTableList __offload_myo_init_tables'
+  [A] 'MYOVarTableList __offload_myo_var_tables'
+  [A] 'MYOVarTableList __offload_myo_vtable_tables'
 
 1 Changed variable:
 
@@ -1520,90 +1520,90 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
 
 7 Removed function symbols not referenced by debug info:
 
-  _ZN7VarListD1Ev
-  _ZN7VarListD2Ev, aliases _ZN7VarListD1Ev
-  _ZN8FuncListD1Ev
-  _ZN8FuncListD2Ev, aliases _ZN8FuncListD1Ev
-  _ZNSt7__cxx1115basic_stringbufIcSt11char_traitsIcESaIcEED0Ev
-  _ZNSt7__cxx1115basic_stringbufIcSt11char_traitsIcESaIcEED1Ev, aliases _ZNSt7__cxx1115basic_stringbufIcSt11char_traitsIcESaIcEED2Ev
-  _ZNSt7__cxx1115basic_stringbufIcSt11char_traitsIcESaIcEED2Ev
+  [D] _ZN7VarListD1Ev
+  [D] _ZN7VarListD2Ev, aliases _ZN7VarListD1Ev
+  [D] _ZN8FuncListD1Ev
+  [D] _ZN8FuncListD2Ev, aliases _ZN8FuncListD1Ev
+  [D] _ZNSt7__cxx1115basic_stringbufIcSt11char_traitsIcESaIcEED0Ev
+  [D] _ZNSt7__cxx1115basic_stringbufIcSt11char_traitsIcESaIcEED1Ev, aliases _ZNSt7__cxx1115basic_stringbufIcSt11char_traitsIcESaIcEED2Ev
+  [D] _ZNSt7__cxx1115basic_stringbufIcSt11char_traitsIcESaIcEED2Ev
 
 76 Added function symbols not referenced by debug info:
 
-  _ZN12PtrDataTableC1Ev
-  _ZN12PtrDataTableC2Ev, aliases _ZN12PtrDataTableC1Ev
-  _ZN12PtrDataTableD1Ev
-  _ZN12PtrDataTableD2Ev, aliases _ZN12PtrDataTableD1Ev
-  _ZN15MYOVarTableListD1Ev
-  _ZN15MYOVarTableListD2Ev, aliases _ZN15MYOVarTableListD1Ev
-  _ZN16MYOFuncTableListD1Ev, aliases _ZN16MYOFuncTableListD2Ev
-  _ZN16MYOFuncTableListD2Ev
-  _ZN16MYOInitTableListD1Ev, aliases _ZN16MYOInitTableListD2Ev
-  _ZN16MYOInitTableListD2Ev
-  _ZN7PtrDataD1Ev
-  _ZN7PtrDataD2Ev, aliases _ZN7PtrDataD1Ev
-  _ZN9TableListI11MYOVarTableED1Ev
-  _ZN9TableListI11MYOVarTableED2Ev, aliases _ZN9TableListI11MYOVarTableED1Ev
-  _ZN9TableListI12MYOFuncTableED1Ev, aliases _ZN9TableListI12MYOFuncTableED2Ev
-  _ZN9TableListI12MYOFuncTableED2Ev
-  _ZN9TableListI12MYOInitTableED1Ev, aliases _ZN9TableListI12MYOInitTableED2Ev
-  _ZN9TableListI12MYOInitTableED2Ev
-  _ZN9TableListI8VarTableED1Ev
-  _ZN9TableListI8VarTableED2Ev, aliases _ZN9TableListI8VarTableED1Ev
-  _ZN9TableListI9FuncTableED1Ev, aliases _ZN9TableListI9FuncTableED2Ev
-  _ZN9TableListI9FuncTableED2Ev
-  _ZNSt12_Vector_baseIPKN8VarTable5EntryESaIS3_EE12_Vector_implD1Ev, aliases _ZNSt12_Vector_baseIPKN8VarTable5EntryESaIS3_EE12_Vector_implD2Ev
-  _ZNSt12_Vector_baseIPKN8VarTable5EntryESaIS3_EE12_Vector_implD2Ev
-  _ZNSt13_Rb_tree_nodeI7PtrDataEC1Ev
-  _ZNSt13_Rb_tree_nodeI7PtrDataEC2Ev, aliases _ZNSt13_Rb_tree_nodeI7PtrDataEC1Ev
-  _ZNSt13_Rb_tree_nodeI8AutoDataEC1Ev
-  _ZNSt13_Rb_tree_nodeI8AutoDataEC2Ev, aliases _ZNSt13_Rb_tree_nodeI8AutoDataEC1Ev
-  _ZNSt13_Rb_tree_nodeISt4pairIKPKvP17OffloadDescriptorEEC1Ev
-  _ZNSt13_Rb_tree_nodeISt4pairIKPKvP17OffloadDescriptorEEC2Ev, aliases _ZNSt13_Rb_tree_nodeISt4pairIKPKvP17OffloadDescriptorEEC1Ev
-  _ZNSt13_Rb_tree_nodeISt4pairIKmP6StreamEEC1Ev
-  _ZNSt13_Rb_tree_nodeISt4pairIKmP6StreamEEC2Ev, aliases _ZNSt13_Rb_tree_nodeISt4pairIKmP6StreamEEC1Ev
-  _ZNSt18_Rb_tree_node_baseC1Ev, aliases _ZNSt18_Rb_tree_node_baseC2Ev
-  _ZNSt18_Rb_tree_node_baseC2Ev
-  _ZNSt3mapIPKvP17OffloadDescriptorSt4lessIS1_ESaISt4pairIKS1_S3_EEED1Ev
-  _ZNSt3mapIPKvP17OffloadDescriptorSt4lessIS1_ESaISt4pairIKS1_S3_EEED2Ev, aliases _ZNSt3mapIPKvP17OffloadDescriptorSt4lessIS1_ESaISt4pairIKS1_S3_EEED1Ev
-  _ZNSt3mapImP6StreamSt4lessImESaISt4pairIKmS1_EEED1Ev
-  _ZNSt3mapImP6StreamSt4lessImESaISt4pairIKmS1_EEED2Ev, aliases _ZNSt3mapImP6StreamSt4lessImESaISt4pairIKmS1_EEED1Ev
-  _ZNSt3setI7PtrDataSt4lessIS0_ESaIS0_EED1Ev
-  _ZNSt3setI7PtrDataSt4lessIS0_ESaIS0_EED2Ev, aliases _ZNSt3setI7PtrDataSt4lessIS0_ESaIS0_EED1Ev
-  _ZNSt3setI8AutoDataSt4lessIS0_ESaIS0_EED1Ev, aliases _ZNSt3setI8AutoDataSt4lessIS0_ESaIS0_EED2Ev
-  _ZNSt3setI8AutoDataSt4lessIS0_ESaIS0_EED2Ev
-  _ZNSt7__cxx1110_List_baseI11PersistDataSaIS1_EE10_List_implD1Ev
-  _ZNSt7__cxx1110_List_baseI11PersistDataSaIS1_EE10_List_implD2Ev, aliases _ZNSt7__cxx1110_List_baseI11PersistDataSaIS1_EE10_List_implD1Ev
-  _ZNSt7__cxx1110_List_baseI11TargetImageSaIS1_EE10_List_implD1Ev, aliases _ZNSt7__cxx1110_List_baseI11TargetImageSaIS1_EE10_List_implD2Ev
-  _ZNSt7__cxx1110_List_baseI11TargetImageSaIS1_EE10_List_implD2Ev
-  _ZNSt7__cxx1110_List_baseI6DynLibSaIS1_EE10_List_implD1Ev, aliases _ZNSt7__cxx1110_List_baseI6DynLibSaIS1_EE10_List_implD2Ev
-  _ZNSt7__cxx1110_List_baseI6DynLibSaIS1_EE10_List_implD2Ev
-  _ZNSt7__cxx1110_List_baseI8MyoTableSaIS1_EE10_List_implD1Ev
-  _ZNSt7__cxx1110_List_baseI8MyoTableSaIS1_EE10_List_implD2Ev, aliases _ZNSt7__cxx1110_List_baseI8MyoTableSaIS1_EE10_List_implD1Ev
-  _ZNSt7__cxx1110_List_baseIP7PtrDataSaIS2_EE10_List_implD1Ev, aliases _ZNSt7__cxx1110_List_baseIP7PtrDataSaIS2_EE10_List_implD2Ev
-  _ZNSt7__cxx1110_List_baseIP7PtrDataSaIS2_EE10_List_implD2Ev
-  _ZNSt7__cxx1110_List_baseIP9coibufferSaIS2_EE10_List_implD1Ev, aliases _ZNSt7__cxx1110_List_baseIP9coibufferSaIS2_EE10_List_implD2Ev
-  _ZNSt7__cxx1110_List_baseIP9coibufferSaIS2_EE10_List_implD2Ev
-  _ZNSt7__cxx1110_List_baseIPcSaIS1_EE10_List_implD1Ev, aliases _ZNSt7__cxx1110_List_baseIPcSaIS1_EE10_List_implD2Ev
-  _ZNSt7__cxx1110_List_baseIPcSaIS1_EE10_List_implD2Ev
-  _ZNSt7__cxx114listI11PersistDataSaIS1_EED1Ev, aliases _ZNSt7__cxx114listI11PersistDataSaIS1_EED2Ev
-  _ZNSt7__cxx114listI11PersistDataSaIS1_EED2Ev
-  _ZNSt7__cxx114listI6DynLibSaIS1_EED1Ev
-  _ZNSt7__cxx114listI6DynLibSaIS1_EED2Ev, aliases _ZNSt7__cxx114listI6DynLibSaIS1_EED1Ev
-  _ZNSt7__cxx114listIP7PtrDataSaIS2_EED1Ev, aliases _ZNSt7__cxx114listIP7PtrDataSaIS2_EED2Ev
-  _ZNSt7__cxx114listIP7PtrDataSaIS2_EED2Ev
-  _ZNSt7__cxx114listIP9coibufferSaIS2_EED1Ev, aliases _ZNSt7__cxx114listIP9coibufferSaIS2_EED2Ev
-  _ZNSt7__cxx114listIP9coibufferSaIS2_EED2Ev
-  _ZNSt7__cxx114listIPcSaIS1_EED1Ev, aliases _ZNSt7__cxx114listIPcSaIS1_EED2Ev
-  _ZNSt7__cxx114listIPcSaIS1_EED2Ev
-  _ZNSt8_Rb_treeI7PtrDataS0_St9_IdentityIS0_ESt4lessIS0_ESaIS0_EE13_Rb_tree_implIS4_Lb1EED1Ev
-  _ZNSt8_Rb_treeI7PtrDataS0_St9_IdentityIS0_ESt4lessIS0_ESaIS0_EE13_Rb_tree_implIS4_Lb1EED2Ev, aliases _ZNSt8_Rb_treeI7PtrDataS0_St9_IdentityIS0_ESt4lessIS0_ESaIS0_EE13_Rb_tree_implIS4_Lb1EED1Ev
-  _ZNSt8_Rb_treeI8AutoDataS0_St9_IdentityIS0_ESt4lessIS0_ESaIS0_EE13_Rb_tree_implIS4_Lb1EED1Ev
-  _ZNSt8_Rb_treeI8AutoDataS0_St9_IdentityIS0_ESt4lessIS0_ESaIS0_EE13_Rb_tree_implIS4_Lb1EED2Ev, aliases _ZNSt8_Rb_treeI8AutoDataS0_St9_IdentityIS0_ESt4lessIS0_ESaIS0_EE13_Rb_tree_implIS4_Lb1EED1Ev
-  _ZNSt8_Rb_treeIPKvSt4pairIKS1_P17OffloadDescriptorESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE13_Rb_tree_implISA_Lb1EED1Ev, aliases _ZNSt8_Rb_treeIPKvSt4pairIKS1_P17OffloadDescriptorESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE13_Rb_tree_implISA_Lb1EED2Ev
-  _ZNSt8_Rb_treeIPKvSt4pairIKS1_P17OffloadDescriptorESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE13_Rb_tree_implISA_Lb1EED2Ev
-  _ZNSt8_Rb_treeImSt4pairIKmP6StreamESt10_Select1stIS4_ESt4lessImESaIS4_EE13_Rb_tree_implIS8_Lb1EED1Ev
-  _ZNSt8_Rb_treeImSt4pairIKmP6StreamESt10_Select1stIS4_ESt4lessImESaIS4_EE13_Rb_tree_implIS8_Lb1EED2Ev, aliases _ZNSt8_Rb_treeImSt4pairIKmP6StreamESt10_Select1stIS4_ESt4lessImESaIS4_EE13_Rb_tree_implIS8_Lb1EED1Ev
-  _ZNSt8iteratorISt18input_iterator_tagN8VarTable5EntryElPS2_RS2_EC1Ev
-  _ZNSt8iteratorISt18input_iterator_tagN8VarTable5EntryElPS2_RS2_EC2Ev, aliases _ZNSt8iteratorISt18input_iterator_tagN8VarTable5EntryElPS2_RS2_EC1Ev
+  [A] _ZN12PtrDataTableC1Ev
+  [A] _ZN12PtrDataTableC2Ev, aliases _ZN12PtrDataTableC1Ev
+  [A] _ZN12PtrDataTableD1Ev
+  [A] _ZN12PtrDataTableD2Ev, aliases _ZN12PtrDataTableD1Ev
+  [A] _ZN15MYOVarTableListD1Ev
+  [A] _ZN15MYOVarTableListD2Ev, aliases _ZN15MYOVarTableListD1Ev
+  [A] _ZN16MYOFuncTableListD1Ev, aliases _ZN16MYOFuncTableListD2Ev
+  [A] _ZN16MYOFuncTableListD2Ev
+  [A] _ZN16MYOInitTableListD1Ev, aliases _ZN16MYOInitTableListD2Ev
+  [A] _ZN16MYOInitTableListD2Ev
+  [A] _ZN7PtrDataD1Ev
+  [A] _ZN7PtrDataD2Ev, aliases _ZN7PtrDataD1Ev
+  [A] _ZN9TableListI11MYOVarTableED1Ev
+  [A] _ZN9TableListI11MYOVarTableED2Ev, aliases _ZN9TableListI11MYOVarTableED1Ev
+  [A] _ZN9TableListI12MYOFuncTableED1Ev, aliases _ZN9TableListI12MYOFuncTableED2Ev
+  [A] _ZN9TableListI12MYOFuncTableED2Ev
+  [A] _ZN9TableListI12MYOInitTableED1Ev, aliases _ZN9TableListI12MYOInitTableED2Ev
+  [A] _ZN9TableListI12MYOInitTableED2Ev
+  [A] _ZN9TableListI8VarTableED1Ev
+  [A] _ZN9TableListI8VarTableED2Ev, aliases _ZN9TableListI8VarTableED1Ev
+  [A] _ZN9TableListI9FuncTableED1Ev, aliases _ZN9TableListI9FuncTableED2Ev
+  [A] _ZN9TableListI9FuncTableED2Ev
+  [A] _ZNSt12_Vector_baseIPKN8VarTable5EntryESaIS3_EE12_Vector_implD1Ev, aliases _ZNSt12_Vector_baseIPKN8VarTable5EntryESaIS3_EE12_Vector_implD2Ev
+  [A] _ZNSt12_Vector_baseIPKN8VarTable5EntryESaIS3_EE12_Vector_implD2Ev
+  [A] _ZNSt13_Rb_tree_nodeI7PtrDataEC1Ev
+  [A] _ZNSt13_Rb_tree_nodeI7PtrDataEC2Ev, aliases _ZNSt13_Rb_tree_nodeI7PtrDataEC1Ev
+  [A] _ZNSt13_Rb_tree_nodeI8AutoDataEC1Ev
+  [A] _ZNSt13_Rb_tree_nodeI8AutoDataEC2Ev, aliases _ZNSt13_Rb_tree_nodeI8AutoDataEC1Ev
+  [A] _ZNSt13_Rb_tree_nodeISt4pairIKPKvP17OffloadDescriptorEEC1Ev
+  [A] _ZNSt13_Rb_tree_nodeISt4pairIKPKvP17OffloadDescriptorEEC2Ev, aliases _ZNSt13_Rb_tree_nodeISt4pairIKPKvP17OffloadDescriptorEEC1Ev
+  [A] _ZNSt13_Rb_tree_nodeISt4pairIKmP6StreamEEC1Ev
+  [A] _ZNSt13_Rb_tree_nodeISt4pairIKmP6StreamEEC2Ev, aliases _ZNSt13_Rb_tree_nodeISt4pairIKmP6StreamEEC1Ev
+  [A] _ZNSt18_Rb_tree_node_baseC1Ev, aliases _ZNSt18_Rb_tree_node_baseC2Ev
+  [A] _ZNSt18_Rb_tree_node_baseC2Ev
+  [A] _ZNSt3mapIPKvP17OffloadDescriptorSt4lessIS1_ESaISt4pairIKS1_S3_EEED1Ev
+  [A] _ZNSt3mapIPKvP17OffloadDescriptorSt4lessIS1_ESaISt4pairIKS1_S3_EEED2Ev, aliases _ZNSt3mapIPKvP17OffloadDescriptorSt4lessIS1_ESaISt4pairIKS1_S3_EEED1Ev
+  [A] _ZNSt3mapImP6StreamSt4lessImESaISt4pairIKmS1_EEED1Ev
+  [A] _ZNSt3mapImP6StreamSt4lessImESaISt4pairIKmS1_EEED2Ev, aliases _ZNSt3mapImP6StreamSt4lessImESaISt4pairIKmS1_EEED1Ev
+  [A] _ZNSt3setI7PtrDataSt4lessIS0_ESaIS0_EED1Ev
+  [A] _ZNSt3setI7PtrDataSt4lessIS0_ESaIS0_EED2Ev, aliases _ZNSt3setI7PtrDataSt4lessIS0_ESaIS0_EED1Ev
+  [A] _ZNSt3setI8AutoDataSt4lessIS0_ESaIS0_EED1Ev, aliases _ZNSt3setI8AutoDataSt4lessIS0_ESaIS0_EED2Ev
+  [A] _ZNSt3setI8AutoDataSt4lessIS0_ESaIS0_EED2Ev
+  [A] _ZNSt7__cxx1110_List_baseI11PersistDataSaIS1_EE10_List_implD1Ev
+  [A] _ZNSt7__cxx1110_List_baseI11PersistDataSaIS1_EE10_List_implD2Ev, aliases _ZNSt7__cxx1110_List_baseI11PersistDataSaIS1_EE10_List_implD1Ev
+  [A] _ZNSt7__cxx1110_List_baseI11TargetImageSaIS1_EE10_List_implD1Ev, aliases _ZNSt7__cxx1110_List_baseI11TargetImageSaIS1_EE10_List_implD2Ev
+  [A] _ZNSt7__cxx1110_List_baseI11TargetImageSaIS1_EE10_List_implD2Ev
+  [A] _ZNSt7__cxx1110_List_baseI6DynLibSaIS1_EE10_List_implD1Ev, aliases _ZNSt7__cxx1110_List_baseI6DynLibSaIS1_EE10_List_implD2Ev
+  [A] _ZNSt7__cxx1110_List_baseI6DynLibSaIS1_EE10_List_implD2Ev
+  [A] _ZNSt7__cxx1110_List_baseI8MyoTableSaIS1_EE10_List_implD1Ev
+  [A] _ZNSt7__cxx1110_List_baseI8MyoTableSaIS1_EE10_List_implD2Ev, aliases _ZNSt7__cxx1110_List_baseI8MyoTableSaIS1_EE10_List_implD1Ev
+  [A] _ZNSt7__cxx1110_List_baseIP7PtrDataSaIS2_EE10_List_implD1Ev, aliases _ZNSt7__cxx1110_List_baseIP7PtrDataSaIS2_EE10_List_implD2Ev
+  [A] _ZNSt7__cxx1110_List_baseIP7PtrDataSaIS2_EE10_List_implD2Ev
+  [A] _ZNSt7__cxx1110_List_baseIP9coibufferSaIS2_EE10_List_implD1Ev, aliases _ZNSt7__cxx1110_List_baseIP9coibufferSaIS2_EE10_List_implD2Ev
+  [A] _ZNSt7__cxx1110_List_baseIP9coibufferSaIS2_EE10_List_implD2Ev
+  [A] _ZNSt7__cxx1110_List_baseIPcSaIS1_EE10_List_implD1Ev, aliases _ZNSt7__cxx1110_List_baseIPcSaIS1_EE10_List_implD2Ev
+  [A] _ZNSt7__cxx1110_List_baseIPcSaIS1_EE10_List_implD2Ev
+  [A] _ZNSt7__cxx114listI11PersistDataSaIS1_EED1Ev, aliases _ZNSt7__cxx114listI11PersistDataSaIS1_EED2Ev
+  [A] _ZNSt7__cxx114listI11PersistDataSaIS1_EED2Ev
+  [A] _ZNSt7__cxx114listI6DynLibSaIS1_EED1Ev
+  [A] _ZNSt7__cxx114listI6DynLibSaIS1_EED2Ev, aliases _ZNSt7__cxx114listI6DynLibSaIS1_EED1Ev
+  [A] _ZNSt7__cxx114listIP7PtrDataSaIS2_EED1Ev, aliases _ZNSt7__cxx114listIP7PtrDataSaIS2_EED2Ev
+  [A] _ZNSt7__cxx114listIP7PtrDataSaIS2_EED2Ev
+  [A] _ZNSt7__cxx114listIP9coibufferSaIS2_EED1Ev, aliases _ZNSt7__cxx114listIP9coibufferSaIS2_EED2Ev
+  [A] _ZNSt7__cxx114listIP9coibufferSaIS2_EED2Ev
+  [A] _ZNSt7__cxx114listIPcSaIS1_EED1Ev, aliases _ZNSt7__cxx114listIPcSaIS1_EED2Ev
+  [A] _ZNSt7__cxx114listIPcSaIS1_EED2Ev
+  [A] _ZNSt8_Rb_treeI7PtrDataS0_St9_IdentityIS0_ESt4lessIS0_ESaIS0_EE13_Rb_tree_implIS4_Lb1EED1Ev
+  [A] _ZNSt8_Rb_treeI7PtrDataS0_St9_IdentityIS0_ESt4lessIS0_ESaIS0_EE13_Rb_tree_implIS4_Lb1EED2Ev, aliases _ZNSt8_Rb_treeI7PtrDataS0_St9_IdentityIS0_ESt4lessIS0_ESaIS0_EE13_Rb_tree_implIS4_Lb1EED1Ev
+  [A] _ZNSt8_Rb_treeI8AutoDataS0_St9_IdentityIS0_ESt4lessIS0_ESaIS0_EE13_Rb_tree_implIS4_Lb1EED1Ev
+  [A] _ZNSt8_Rb_treeI8AutoDataS0_St9_IdentityIS0_ESt4lessIS0_ESaIS0_EE13_Rb_tree_implIS4_Lb1EED2Ev, aliases _ZNSt8_Rb_treeI8AutoDataS0_St9_IdentityIS0_ESt4lessIS0_ESaIS0_EE13_Rb_tree_implIS4_Lb1EED1Ev
+  [A] _ZNSt8_Rb_treeIPKvSt4pairIKS1_P17OffloadDescriptorESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE13_Rb_tree_implISA_Lb1EED1Ev, aliases _ZNSt8_Rb_treeIPKvSt4pairIKS1_P17OffloadDescriptorESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE13_Rb_tree_implISA_Lb1EED2Ev
+  [A] _ZNSt8_Rb_treeIPKvSt4pairIKS1_P17OffloadDescriptorESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE13_Rb_tree_implISA_Lb1EED2Ev
+  [A] _ZNSt8_Rb_treeImSt4pairIKmP6StreamESt10_Select1stIS4_ESt4lessImESaIS4_EE13_Rb_tree_implIS8_Lb1EED1Ev
+  [A] _ZNSt8_Rb_treeImSt4pairIKmP6StreamESt10_Select1stIS4_ESt4lessImESaIS4_EE13_Rb_tree_implIS8_Lb1EED2Ev, aliases _ZNSt8_Rb_treeImSt4pairIKmP6StreamESt10_Select1stIS4_ESt4lessImESaIS4_EE13_Rb_tree_implIS8_Lb1EED1Ev
+  [A] _ZNSt8iteratorISt18input_iterator_tagN8VarTable5EntryElPS2_RS2_EC1Ev
+  [A] _ZNSt8iteratorISt18input_iterator_tagN8VarTable5EntryElPS2_RS2_EC2Ev, aliases _ZNSt8iteratorISt18input_iterator_tagN8VarTable5EntryElPS2_RS2_EC1Ev
 

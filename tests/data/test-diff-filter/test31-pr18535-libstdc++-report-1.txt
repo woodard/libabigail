@@ -5,25 +5,25 @@ Variable symbols changes summary: 0 Removed, 6 Added variable symbols not refere
 
 13 Added functions:
 
-  'function void __cxxabiv1::__cxa_throw_bad_array_length()'
-  'function void __cxxabiv1::__cxa_throw_bad_array_new_length()'
-  'function void std::__throw_out_of_range_fmt(const char*, ...)'
-  'method virtual const char* std::bad_array_length::what() const'
+  [A] 'function void __cxxabiv1::__cxa_throw_bad_array_length()'
+  [A] 'function void __cxxabiv1::__cxa_throw_bad_array_new_length()'
+  [A] 'function void std::__throw_out_of_range_fmt(const char*, ...)'
+  [A] 'method virtual const char* std::bad_array_length::what() const'
     note that this adds a new entry to the vtable of class std::bad_array_length
-  'method virtual std::bad_array_length::~bad_array_length(int)'
+  [A] 'method virtual std::bad_array_length::~bad_array_length(int)'
     note that this adds a new entry to the vtable of class std::bad_array_length
-  'method virtual std::bad_array_length::~bad_array_length(int)'
+  [A] 'method virtual std::bad_array_length::~bad_array_length(int)'
     note that this adds a new entry to the vtable of class std::bad_array_length
-  'method virtual const char* std::bad_array_new_length::what() const'
+  [A] 'method virtual const char* std::bad_array_new_length::what() const'
     note that this adds a new entry to the vtable of class std::bad_array_new_length
-  'method virtual std::bad_array_new_length::~bad_array_new_length(int)'
+  [A] 'method virtual std::bad_array_new_length::~bad_array_new_length(int)'
     note that this adds a new entry to the vtable of class std::bad_array_new_length
-  'method virtual std::bad_array_new_length::~bad_array_new_length(int)'
+  [A] 'method virtual std::bad_array_new_length::~bad_array_new_length(int)'
     note that this adds a new entry to the vtable of class std::bad_array_new_length
-  'function std::new_handler std::get_new_handler()'
-  'function std::terminate_handler std::get_terminate()'
-  'function std::unexpected_handler std::get_unexpected()'
-  'method std::regex_error::regex_error(std::regex_constants::error_type)'
+  [A] 'function std::new_handler std::get_new_handler()'
+  [A] 'function std::terminate_handler std::get_terminate()'
+  [A] 'function std::unexpected_handler std::get_unexpected()'
+  [A] 'method std::regex_error::regex_error(std::regex_constants::error_type)'
 
 2 functions with some indirect sub-type change:
 
@@ -51,10 +51,10 @@ Variable symbols changes summary: 0 Removed, 6 Added variable symbols not refere
 
 6 Added variable symbols not referenced by debug info:
 
-  _ZTISt16bad_array_length@@CXXABI_1.3.8
-  _ZTISt20bad_array_new_length@@CXXABI_1.3.8
-  _ZTSSt16bad_array_length@@CXXABI_1.3.8
-  _ZTSSt20bad_array_new_length@@CXXABI_1.3.8
-  _ZTVSt16bad_array_length@@CXXABI_1.3.8
-  _ZTVSt20bad_array_new_length@@CXXABI_1.3.8
+  [A] _ZTISt16bad_array_length@@CXXABI_1.3.8
+  [A] _ZTISt20bad_array_new_length@@CXXABI_1.3.8
+  [A] _ZTSSt16bad_array_length@@CXXABI_1.3.8
+  [A] _ZTSSt20bad_array_new_length@@CXXABI_1.3.8
+  [A] _ZTVSt16bad_array_length@@CXXABI_1.3.8
+  [A] _ZTVSt20bad_array_new_length@@CXXABI_1.3.8
 

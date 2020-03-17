@@ -3,11 +3,11 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 1 Removed function:
 
-  'function void fn2(const callback)'
+  [D] 'function void fn2(const callback)'
 
 1 Added function:
 
-  'function void fn2(const callback)'
+  [A] 'function void fn2(const callback)'
 
 3 functions with some indirect sub-type change:
 

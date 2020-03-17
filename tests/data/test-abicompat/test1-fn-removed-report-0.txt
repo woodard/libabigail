@@ -4,5 +4,5 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 1 Removed function:
 
-  'function void fun2()'    {_Z4fun2v}
+  [D] 'function void fun2()'    {_Z4fun2v}
 

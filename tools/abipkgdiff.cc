@@ -2471,7 +2471,7 @@ compare_prepared_userspace_packages(package& first_package,
 	{
 	  string relative_path;
 	  first_package.convert_path_to_relative((*it)->path, relative_path);
-	  cout << "  " << relative_path << ", ";
+	  cout << "  [D] " << relative_path << ", ";
 	  string soname;
 	  get_soname_of_elf_file((*it)->path, soname);
 	  if (!soname.empty())
@@ -2491,7 +2491,7 @@ compare_prepared_userspace_packages(package& first_package,
 	{
 	  string relative_path;
 	  second_package.convert_path_to_relative((*it)->path, relative_path);
-	  cout << "  " << relative_path << ", ";
+	  cout << "  [A] " << relative_path << ", ";
 	  string soname;
 	  get_soname_of_elf_file((*it)->path, soname);
 	  if (!soname.empty())

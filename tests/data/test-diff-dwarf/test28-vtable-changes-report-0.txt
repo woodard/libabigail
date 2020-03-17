@@ -5,9 +5,9 @@ Variable symbols changes summary: 0 Removed, 3 Added variable symbols not refere
 
 2 Added functions:
 
-  'method virtual S::~S(int)'
+  [A] 'method virtual S::~S(int)'
     note that this adds a new entry to the vtable of struct S
-  'method virtual S::~S(int)'
+  [A] 'method virtual S::~S(int)'
     note that this adds a new entry to the vtable of struct S
 
 1 function with some indirect sub-type change:
@@ -19,7 +19,7 @@ Variable symbols changes summary: 0 Removed, 3 Added variable symbols not refere
 
 3 Added variable symbols not referenced by debug info:
 
-  _ZTI1S
-  _ZTS1S
-  _ZTV1S
+  [A] _ZTI1S
+  [A] _ZTS1S
+  [A] _ZTV1S
 

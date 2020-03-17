@@ -5,5 +5,5 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
 
 1 Added function symbol not referenced by debug info:
 
-  bar
+  [A] bar
 

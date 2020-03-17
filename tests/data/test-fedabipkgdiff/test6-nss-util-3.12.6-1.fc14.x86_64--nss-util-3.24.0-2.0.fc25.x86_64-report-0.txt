@@ -8,43 +8,43 @@ Comparing the ABI of binaries between nss-util-3.12.6-1.fc14.x86_64.rpm and nss-
 
   37 Added function symbols not referenced by debug info:
 
-    NSSUTIL_ArgDecodeNumber@@NSSUTIL_3.14
-    NSSUTIL_ArgFetchValue@@NSSUTIL_3.14
-    NSSUTIL_ArgGetLabel@@NSSUTIL_3.14
-    NSSUTIL_ArgGetParamValue@@NSSUTIL_3.14
-    NSSUTIL_ArgHasFlag@@NSSUTIL_3.14
-    NSSUTIL_ArgIsBlank@@NSSUTIL_3.14
-    NSSUTIL_ArgParseCipherFlags@@NSSUTIL_3.14
-    NSSUTIL_ArgParseModuleSpec@@NSSUTIL_3.14
-    NSSUTIL_ArgParseModuleSpecEx@@NSSUTIL_3.21
-    NSSUTIL_ArgParseSlotFlags@@NSSUTIL_3.14
-    NSSUTIL_ArgParseSlotInfo@@NSSUTIL_3.14
-    NSSUTIL_ArgReadLong@@NSSUTIL_3.14
-    NSSUTIL_ArgSkipParameter@@NSSUTIL_3.14
-    NSSUTIL_ArgStrip@@NSSUTIL_3.14
-    NSSUTIL_DoModuleDBFunction@@NSSUTIL_3.14
-    NSSUTIL_DoubleEscape@@NSSUTIL_3.14
-    NSSUTIL_DoubleEscapeSize@@NSSUTIL_3.14
-    NSSUTIL_Escape@@NSSUTIL_3.14
-    NSSUTIL_EscapeSize@@NSSUTIL_3.14
-    NSSUTIL_GetVersion@@NSSUTIL_3.13
-    NSSUTIL_MkModuleSpec@@NSSUTIL_3.14
-    NSSUTIL_MkNSSString@@NSSUTIL_3.14
-    NSSUTIL_MkSlotString@@NSSUTIL_3.14
-    NSSUTIL_Quote@@NSSUTIL_3.14
-    NSSUTIL_QuoteSize@@NSSUTIL_3.14
-    NSS_InitializePRErrorTable@@NSSUTIL_3.13
-    PORT_DestroyCheapArena@@NSSUTIL_3.24
-    PORT_InitCheapArena@@NSSUTIL_3.24
-    PORT_RegExpSearch@@NSSUTIL_3.12.7
-    SECITEM_AllocArray@@NSSUTIL_3.15
-    SECITEM_DupArray@@NSSUTIL_3.15
-    SECITEM_FreeArray@@NSSUTIL_3.15
-    SECITEM_ReallocItemV2@@NSSUTIL_3.15
-    SECITEM_ZfreeArray@@NSSUTIL_3.15
-    _NSSUTIL_EvaluateConfigDir@@NSSUTIL_3.14
-    _NSSUTIL_GetSecmodName@@NSSUTIL_3.14
-    _SGN_VerifyPKCS1DigestInfo@@NSSUTIL_3.17.1
+    [A] NSSUTIL_ArgDecodeNumber@@NSSUTIL_3.14
+    [A] NSSUTIL_ArgFetchValue@@NSSUTIL_3.14
+    [A] NSSUTIL_ArgGetLabel@@NSSUTIL_3.14
+    [A] NSSUTIL_ArgGetParamValue@@NSSUTIL_3.14
+    [A] NSSUTIL_ArgHasFlag@@NSSUTIL_3.14
+    [A] NSSUTIL_ArgIsBlank@@NSSUTIL_3.14
+    [A] NSSUTIL_ArgParseCipherFlags@@NSSUTIL_3.14
+    [A] NSSUTIL_ArgParseModuleSpec@@NSSUTIL_3.14
+    [A] NSSUTIL_ArgParseModuleSpecEx@@NSSUTIL_3.21
+    [A] NSSUTIL_ArgParseSlotFlags@@NSSUTIL_3.14
+    [A] NSSUTIL_ArgParseSlotInfo@@NSSUTIL_3.14
+    [A] NSSUTIL_ArgReadLong@@NSSUTIL_3.14
+    [A] NSSUTIL_ArgSkipParameter@@NSSUTIL_3.14
+    [A] NSSUTIL_ArgStrip@@NSSUTIL_3.14
+    [A] NSSUTIL_DoModuleDBFunction@@NSSUTIL_3.14
+    [A] NSSUTIL_DoubleEscape@@NSSUTIL_3.14
+    [A] NSSUTIL_DoubleEscapeSize@@NSSUTIL_3.14
+    [A] NSSUTIL_Escape@@NSSUTIL_3.14
+    [A] NSSUTIL_EscapeSize@@NSSUTIL_3.14
+    [A] NSSUTIL_GetVersion@@NSSUTIL_3.13
+    [A] NSSUTIL_MkModuleSpec@@NSSUTIL_3.14
+    [A] NSSUTIL_MkNSSString@@NSSUTIL_3.14
+    [A] NSSUTIL_MkSlotString@@NSSUTIL_3.14
+    [A] NSSUTIL_Quote@@NSSUTIL_3.14
+    [A] NSSUTIL_QuoteSize@@NSSUTIL_3.14
+    [A] NSS_InitializePRErrorTable@@NSSUTIL_3.13
+    [A] PORT_DestroyCheapArena@@NSSUTIL_3.24
+    [A] PORT_InitCheapArena@@NSSUTIL_3.24
+    [A] PORT_RegExpSearch@@NSSUTIL_3.12.7
+    [A] SECITEM_AllocArray@@NSSUTIL_3.15
+    [A] SECITEM_DupArray@@NSSUTIL_3.15
+    [A] SECITEM_FreeArray@@NSSUTIL_3.15
+    [A] SECITEM_ReallocItemV2@@NSSUTIL_3.15
+    [A] SECITEM_ZfreeArray@@NSSUTIL_3.15
+    [A] _NSSUTIL_EvaluateConfigDir@@NSSUTIL_3.14
+    [A] _NSSUTIL_GetSecmodName@@NSSUTIL_3.14
+    [A] _SGN_VerifyPKCS1DigestInfo@@NSSUTIL_3.17.1
 
 ================ end of changes of 'libnssutil3.so'===============
 

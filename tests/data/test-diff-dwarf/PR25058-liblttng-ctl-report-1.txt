@@ -352,7 +352,7 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
 
 3 Added variables:
 
-  'const char* const mi_lttng_element_command_disable_rotation'
-  'const char* const mi_lttng_element_command_enable_rotation'
-  'const char* const mi_lttng_element_command_rotate'
+  [A] 'const char* const mi_lttng_element_command_disable_rotation'
+  [A] 'const char* const mi_lttng_element_command_enable_rotation'
+  [A] 'const char* const mi_lttng_element_command_rotate'
 

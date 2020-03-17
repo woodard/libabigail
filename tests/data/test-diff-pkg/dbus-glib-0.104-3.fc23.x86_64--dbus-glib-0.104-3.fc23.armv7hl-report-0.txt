@@ -9,20 +9,20 @@
 
   5 Added function symbols not referenced by debug info:
 
-    __libc_csu_fini
-    __libc_csu_init
-    base_info_ref
-    base_info_unref
-    main
+    [A] __libc_csu_fini
+    [A] __libc_csu_init
+    [A] base_info_ref
+    [A] base_info_unref
+    [A] main
 
   2 Removed variable symbols not referenced by debug info:
 
-    stderr
-    stdout
+    [D] stderr
+    [D] stdout
 
 ================ end of changes of 'dbus-binding-tool'===============
 
 Removed binaries:
-  /usr/lib64/libdbus-glib-1.so.2.3.2, SONAME: libdbus-glib-1.so.2
+  [D] /usr/lib64/libdbus-glib-1.so.2.3.2, SONAME: libdbus-glib-1.so.2
 Added binaries:
-  /usr/lib/libdbus-glib-1.so.2.3.2, SONAME: libdbus-glib-1.so.2
+  [A] /usr/lib/libdbus-glib-1.so.2.3.2, SONAME: libdbus-glib-1.so.2

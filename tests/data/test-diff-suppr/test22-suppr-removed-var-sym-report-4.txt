@@ -5,9 +5,9 @@ Variable symbols changes summary: 1 Removed (1 filtered out), 1 Added variable s
 
 1 Removed variable symbol not referenced by debug info:
 
-  global_var1
+  [D] global_var1
 
 1 Added variable symbol not referenced by debug info:
 
-  global_var3
+  [A] global_var3
 

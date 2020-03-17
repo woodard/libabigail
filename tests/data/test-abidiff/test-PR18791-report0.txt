@@ -3,11 +3,11 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 1 Removed function:
 
-  'method void std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_clear()'
+  [D] 'method void std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_clear()'
 
 1 Added function:
 
-  'method void std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_clear()'
+  [A] 'method void std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_clear()'
 
 17 functions with some indirect sub-type change:
 

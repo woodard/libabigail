@@ -5,6 +5,6 @@ Variable symbols changes summary: 0 Removed, 2 Added variable symbols not refere
 
 2 Added variable symbols not referenced by debug info:
 
-  global_var1
-  global_var2
+  [A] global_var1
+  [A] global_var2
 
