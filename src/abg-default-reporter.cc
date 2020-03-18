@@ -444,7 +444,7 @@ default_reporter::report(const reference_diff& d, ostream& out,
   enum change_kind k = ir::NO_CHANGE_KIND;
   equals(*d.first_reference(), *d.second_reference(), &k);
 
-  if ((k & LOCAL_CHANGE_KIND) && !(k & SUBTYPE_CHANGE_KIND))
+  if ((k & ALL_LOCAL_CHANGES_MASK) && !(k & SUBTYPE_CHANGE_KIND))
     report_local_reference_type_changes(d, out, indent);
 
   if (k & SUBTYPE_CHANGE_KIND)

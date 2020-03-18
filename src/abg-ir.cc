@@ -14179,7 +14179,7 @@ equals(const array_type_def::subrange_type& l,
 	{
 	  if (!types_have_similar_structure(l.get_underlying_type().get(),
 					    r.get_underlying_type().get()))
-	    *k |= LOCAL_CHANGE_KIND;
+	    *k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
 	  else
 	    *k |= SUBTYPE_CHANGE_KIND;
 	}
@@ -14906,10 +14906,9 @@ enum_has_non_name_change(const enum_type_decl& l,
       if (k)
 	{
 	  if (!l.decl_base::operator==(r))
-	    *k |= LOCAL_NON_TYPE_CHANGE_KIND;
+	    *k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
 	  if (!l.type_base::operator==(r))
-	    *k |=  LOCAL_TYPE_CHANGE_KIND;
-	  *k |= LOCAL_CHANGE_KIND;
+	    *k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
 	}
       else
 	{
@@ -14987,10 +14986,9 @@ equals(const enum_type_decl& l, const enum_type_decl& r, change_kind* k)
       if (k)
 	{
 	  if (!l.decl_base::operator==(r))
-	    *k |= LOCAL_NON_TYPE_CHANGE_KIND;
+	    *k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
 	  if (!l.type_base::operator==(r))
-	    *k |= LOCAL_TYPE_CHANGE_KIND;
-	  *k |= LOCAL_CHANGE_KIND;
+	    *k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
 	}
       else
 	return false;
@@ -17558,11 +17556,10 @@ equals(const function_decl::parameter& l,
       if (k)
 	{
 	  if (l.get_index() != r.get_index())
-	    *k |= LOCAL_NON_TYPE_CHANGE_KIND;
+	    *k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
 	  if (l.get_variadic_marker() != r.get_variadic_marker()
 	      || !!l.get_type() != !!r.get_type())
-	    *k |= LOCAL_TYPE_CHANGE_KIND;
-	  *k |= LOCAL_CHANGE_KIND;
+	    *k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
 	}
       else
 	return false;
@@ -20337,7 +20334,7 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	    {
 	      if (!types_have_similar_structure((*b0)->get_base_class().get(),
 						(*b1)->get_base_class().get()))
-		*k |= LOCAL_CHANGE_KIND;
+		*k |= LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
 	      else
 		*k |= SUBTYPE_CHANGE_KIND;
 	      break;
@@ -20398,7 +20395,7 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	  {
 	    result = false;
 	    if (k)
-	      *k |= LOCAL_NON_TYPE_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
+	      *k |= LOCAL_CHANGE_KIND | LOCAL_NON_TYPE_CHANGE_KIND;
 	    RETURN(result);
 	  }
 
