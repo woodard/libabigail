@@ -2025,7 +2025,7 @@ lookup_symbol_from_gnu_hash_tab(const environment*		env,
   // filter, in bits.
   int c = get_elf_class_size_in_bytes(elf_handle) * 8;
   int n =  (h1 / c) % ht.bf_nwords;
-  unsigned char bitmask = (1ul << (h1 % c)) | (1ul << (h2 % c));
+  GElf_Word bitmask = (1ul << (h1 % c)) | (1ul << (h2 % c));
 
   // Test if the symbol is *NOT* present in this ELF file.
   if ((bloom_word_at(elf_handle, ht.bloom_filter, n) & bitmask) != bitmask)
