@@ -2713,7 +2713,7 @@ distinct_diff::has_local_changes() const
 {
   // Changes on a distinct_diff are all local.
   if (has_changes())
-    return LOCAL_CHANGE_KIND | LOCAL_TYPE_CHANGE_KIND;
+    return LOCAL_TYPE_CHANGE_KIND;
   return NO_CHANGE_KIND;
 }
 
