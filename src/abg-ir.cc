@@ -5249,7 +5249,7 @@ peel_typedef_type(const type_base* type)
 {
   const typedef_decl* t = is_typedef(type);
   if (!t)
-    return t;
+    return type;
 
   return peel_typedef_type(t->get_underlying_type()).get();
 }
