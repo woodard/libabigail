@@ -13573,10 +13573,10 @@ reference_type_def::reference_type_def(const type_base_sptr	pointed_to,
       decl_base_sptr pto = dynamic_pointer_cast<decl_base>(pointed_to);
       string name;
       if (pto)
-        {
-          set_visibility(pto->get_visibility());
-          name = string(pto->get_name()) + "&";
-        }
+	{
+	  set_visibility(pto->get_visibility());
+	  name = string(pto->get_name()) + "&";
+	}
       else
 	name = string(get_type_name(is_function_type(pointed_to),
 				    /*qualified_name=*/true)) + "&";
@@ -22669,11 +22669,10 @@ types_have_similar_structure(const type_base* first, const type_base* second)
 
       if (!was_indirect_type)
 	{
-	  if (!was_indirect_type)
-	    if ((ty1->get_size_in_bits() != ty2->get_size_in_bits())
-		|| (ty1->get_non_static_data_members().size()
-		    != ty2->get_non_static_data_members().size()))
-	      return false;
+	  if ((ty1->get_size_in_bits() != ty2->get_size_in_bits())
+	      || (ty1->get_non_static_data_members().size()
+		  != ty2->get_non_static_data_members().size()))
+	    return false;
 
 	  for (class_or_union::data_members::const_iterator
 		 i = ty1->get_non_static_data_members().begin(),
