@@ -1850,20 +1850,27 @@ get_elf_class_size_in_bytes(Elf* elf_handle)
 }
 
 /// Get a given word of a bloom filter, referred to by the index of
-/// the word.  The word size depends on the current elf class and this
-/// function abstracts that nicely.
+/// the word.
+///
+/// The bloom word size depends on the current elf class (32 bits for
+/// an ELFCLASS32 or 64 bits for an ELFCLASS64 one) and this function
+/// abstracts that nicely.
 ///
 /// @param elf_handle the elf handle to use.
 ///
 /// @param bloom_filter the bloom filter to consider.
 ///
 /// @param index the index of the bloom filter to return.
-static GElf_Word
+///
+/// @return a 64 bits work containing the bloom word found at index @p
+/// index.  Note that if we are looking at an ELFCLASS32 binary, the 4
+/// most significant bytes of the result are going to be zero.
+static Elf64_Xword
 bloom_word_at(Elf*		elf_handle,
 	      Elf32_Word*	bloom_filter,
 	      size_t		index)
 {
-  GElf_Word result = 0;
+  Elf64_Xword result = 0;
   GElf_Ehdr h;
   ABG_ASSERT(gelf_getehdr(elf_handle, &h));
   int c;
@@ -1876,7 +1883,7 @@ bloom_word_at(Elf*		elf_handle,
       break ;
     case ELFCLASS64:
       {
-	GElf_Word* f= reinterpret_cast<GElf_Word*>(bloom_filter);
+	Elf64_Xword* f= reinterpret_cast<Elf64_Xword*>(bloom_filter);
 	result = f[index];
       }
       break;
@@ -2025,7 +2032,12 @@ lookup_symbol_from_gnu_hash_tab(const environment*		env,
   // filter, in bits.
   int c = get_elf_class_size_in_bytes(elf_handle) * 8;
   int n =  (h1 / c) % ht.bf_nwords;
-  GElf_Word bitmask = (1ul << (h1 % c)) | (1ul << (h2 % c));
+  // The bitmask of the bloom filter has a size of either 32-bits on
+  // ELFCLASS32 binaries or 64-bits on ELFCLASS64 binaries.  So we
+  // need a 64-bits type to hold the bitmap, hence the Elf64_Xword
+  // type used here.  When dealing with 32bits binaries, the upper
+  // bits of the bitmask will be zero anyway.
+  Elf64_Xword bitmask = (1ul << (h1 % c)) | (1ul << (h2 % c));
 
   // Test if the symbol is *NOT* present in this ELF file.
   if ((bloom_word_at(elf_handle, ht.bloom_filter, n) & bitmask) != bitmask)

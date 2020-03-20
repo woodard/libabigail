@@ -1324,6 +1324,8 @@ test-lookup-syms/test02-report.txt	\
 test-lookup-syms/test1.c		\
 test-lookup-syms/test1.version-script	\
 test-lookup-syms/test1.so		\
+test-lookup-syms/test1-32bits.so	\
+test-lookup-syms/test1.c.compiling.txt  \
 test-lookup-syms/test1-1-report.txt	\
 test-lookup-syms/test1-2-report.txt	\
 test-lookup-syms/test1-3-report.txt	\

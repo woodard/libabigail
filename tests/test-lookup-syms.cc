@@ -74,6 +74,13 @@ InOutSpec in_out_specs[] =
     "output/test-lookup-syms/test1-1-report.txt"
   },
   {
+    "data/test-lookup-syms/test1-32bits.so",
+    "foo",
+    "",
+    "data/test-lookup-syms/test1-1-report.txt",
+    "output/test-lookup-syms/test1-1-report.txt"
+  },
+  {
     "data/test-lookup-syms/test1.so",
     "_foo1",
     "--no-absolute-path",
