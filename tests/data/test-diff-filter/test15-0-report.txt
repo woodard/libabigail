@@ -10,4 +10,3 @@ Variables changes summary: 0 Removed, 1 Changed (1 filtered out), 0 Added variab
         1 data member insertion:
           'unsigned int S::m2', at offset 64 (in bits)
 
-

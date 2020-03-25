@@ -10,4 +10,3 @@ Variables changes summary: 0 Removed, 1 Changed, 0 Added variable
         1 data member insertion:
           'char S::m1', at offset 32 (in bits)
 
-

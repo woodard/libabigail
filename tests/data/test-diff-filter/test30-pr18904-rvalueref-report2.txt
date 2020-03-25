@@ -1309,8 +1309,6 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
               to:
                 struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t targetptr; uint32_t preallocated; uint32_t is_pointer; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst; uint32_t always_copy; uint32_t always_delete; uint32_t pin;}
 
-
-
   [C] 'function void __offload_myoRegisterTables(InitTableEntry*, SharedTableEntry*, FptrTableEntry*)' at offload_myo_host.cpp:691:1 has some indirect sub-type changes:
     parameter 1 of type 'InitTableEntry*' changed:
       in pointed to type 'struct InitTableEntry' at offload_table.h:296:1:
@@ -1391,7 +1389,6 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
                                     and name of 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_key_compare' changed to 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_M_impl' at stl_tree.h:633:1
                               and name of 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_M_impl' changed to 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_M_t' at stl_set.h:116:1
                         and name of 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_M_t' changed to 'PtrDataTable::list' at offload_engine.h:203:1
-
                   'Engine::SignalMap Engine::m_signal_map' offset changed from 0xd0 to 0x128 (in bytes) (by +0x58 bytes)
                   'mutex_t Engine::m_signal_lock' offset changed from 0x100 to 0x158 (in bytes) (by +0x58 bytes)
                   type of 'coifunction* Engine::m_funcs[6]' changed:
@@ -1399,7 +1396,6 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
                     array type size changed from 0x180 to 0x1c0
                     array type subrange 1 changed length from 6 to 7
                   and offset changed from 0x128 to 0x278 (in bytes) (by +0x150 bytes)
-
             'bool OffloadDescriptor::m_is_mandatory' offset changed from 0x28 to 0x29 (in bytes) (by +0x1 bytes)
             'const bool OffloadDescriptor::m_is_openmp' offset changed from 0x29 to 0x2a (in bytes) (by +0x1 bytes)
             type of 'OffloadDescriptor::VarExtra* OffloadDescriptor::m_vars_extra' changed:
@@ -1426,7 +1422,6 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
                   and offset changed from 0x30 to 0x38 (in bytes) (by +0x8 bytes)
                   'int64_t OffloadDescriptor::VarExtra::ptr_arr_offset' offset changed from 0x38 to 0x40 (in bytes) (by +0x8 bytes)
                   'bool OffloadDescriptor::VarExtra::is_arr_ptr_el' offset changed from 0x40 to 0x48 (in bytes) (by +0x8 bytes)
-
             'OffloadHostTimerData* OffloadDescriptor::m_timer_data' offset changed from 0xf8 to 0x100 (in bytes) (by +0x8 bytes)
             'uint64_t OffloadDescriptor::m_in_datalen' offset changed from 0x100 to 0x108 (in bytes) (by +0x8 bytes)
             'uint64_t OffloadDescriptor::m_out_datalen' offset changed from 0x108 to 0x110 (in bytes) (by +0x8 bytes)
@@ -1516,7 +1511,6 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
       type name changed from 'const char*[6]' to 'const char*[7]'
       array type size changed from 0x180 to 0x1c0
       array type subrange 1 changed length from 6 to 7
-
 
 7 Removed function symbols not referenced by debug info:
 

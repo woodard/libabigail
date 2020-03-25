@@ -46,7 +46,6 @@
                                         in pointed to type 'char':
                                           entity changed from 'char' to 'const char'
                                           type size hasn't changed
-
                                   type of 'typedef XtransConnInfo (_Xtransport*, char*, char*, char*)* _Xtransport::OpenCOTSServer' changed:
                                     in pointed to type 'function type typedef XtransConnInfo (_Xtransport*, char*, char*, char*)':
                                       parameter 2 of type 'char*' changed:
@@ -61,7 +60,6 @@
                                         in pointed to type 'char':
                                           entity changed from 'char' to 'const char'
                                           type size hasn't changed
-
                                   type of 'typedef XtransConnInfo (_Xtransport*, char*, char*, char*)* _Xtransport::OpenCLTSServer' changed:
                                     in pointed to type 'function type typedef XtransConnInfo (_Xtransport*, char*, char*, char*)':
                                       parameter 2 of type 'char*' changed:
@@ -76,14 +74,9 @@
                                         in pointed to type 'char':
                                           entity changed from 'char' to 'const char'
                                           type size hasn't changed
-
-
-
-
               type of '_IcePingWait* _IceConn::ping_waits' changed:
                 in pointed to type 'struct _IcePingWait' at ICEconn.h:48:1:
                   entity changed from 'struct _IcePingWait' to compatible type 'typedef _IcePingWait' at ICEconn.h:48:1
-
 
 
   1 Removed variable:
@@ -100,7 +93,6 @@
             type size hasn't changed
         type name changed from 'char*[1]' to 'const char*[1]'
         type size hasn't changed
-
     [C] '_IceWatchProc* _IceWatchProcs' was changed at globals.h:39:1:
       type of variable changed:
         in pointed to type 'struct _IceWatchProc' at ICElibint.h:322:1:
@@ -110,8 +102,6 @@
               type of '_IceWatchedConnection* _IceWatchProc::watched_connections' changed:
                 in pointed to type 'struct _IceWatchedConnection' at ICElibint.h:315:1:
                   entity changed from 'struct _IceWatchedConnection' to compatible type 'typedef _IceWatchedConnection' at ICElibint.h:315:1
-
-
 
 ================ end of changes of 'libICE.so.6.3.0'===============
 

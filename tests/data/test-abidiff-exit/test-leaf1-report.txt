@@ -18,7 +18,6 @@ Removed/Changed/Added variables summary: 1 Removed, 1 Changed, 1 Added variable
       type name changed from 'int' to 'long int'
       type size changed from 32 to 64 (in bits)
 
-
 1 Removed variable:
 
   [D] 'int deleted_var'    {deleted_var}
@@ -35,7 +34,6 @@ Removed/Changed/Added variables summary: 1 Removed, 1 Changed, 1 Added variable
       type name changed from 'int' to 'long int'
       type size changed from 32 to 64 (in bits)
 
-
 'struct changed' changed:
   type size changed from 32 to 64 (in bits)
   there are data member changes:
@@ -43,4 +41,3 @@ Removed/Changed/Added variables summary: 1 Removed, 1 Changed, 1 Added variable
       type name changed from 'int' to 'long int'
       type size changed from 32 to 64 (in bits)
     and size changed from 32 to 64 (in bits) (by +32 bits)
-

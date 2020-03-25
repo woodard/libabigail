@@ -86,7 +86,6 @@ report_diffs(const reporter_base& r,
 	  out << "' changed:\n";
 
 	  (*i)->get_canonical_diff()->report(out, indent + "  ");
-	  out << "\n";
 	  started_to_emit = true;
 	}
     }
@@ -648,7 +647,6 @@ leaf_reporter::report(const class_or_union_diff& d,
 		{
 		  represent(*it, ctxt, out, indent + "  ",
 			    /*local_only=*/true);
-		  out << "\n";
 		  emitted_data_members_changes = true;
 		}
 	    }
@@ -675,7 +673,6 @@ leaf_reporter::report(const class_or_union_diff& d,
 		{
 		  represent(*it, ctxt, out, indent + "  ",
 			    /*local_only=*/true);
-		  out << "\n";
 		  emitted_data_members_changes = true;
 		}
 	    }
@@ -1195,7 +1192,6 @@ leaf_reporter::report(const corpus_diff& d,
 		    }
 		}
 	      diff->report(out, indent + "    ");
-	      out << "\n";
 	      emitted = true;
 	    }
 	}
@@ -1316,7 +1312,6 @@ leaf_reporter::report(const corpus_diff& d,
 	  report_loc_info(diff->second_subject(), *ctxt, out);
 	  out << ":\n";
 	  diff->report(out, indent + "    ");
-	  out << "\n";
 	  emitted = true;
 	}
       if (emitted)

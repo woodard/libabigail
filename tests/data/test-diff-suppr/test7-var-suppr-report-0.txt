@@ -11,7 +11,6 @@ Variables changes summary: 0 Removed, 2 Changed, 0 Added variables
           'char S0::inserted_member', at offset 0 (in bits)
         1 data member change:
           'int S0::m0' offset changed from 0 to 32 (in bits) (by +32 bits)
-
   [C] 'S1* var1' was changed:
     type of variable changed:
       in pointed to type 'struct S1':
@@ -20,5 +19,4 @@ Variables changes summary: 0 Removed, 2 Changed, 0 Added variables
           'char S1::inserted_member', at offset 0 (in bits)
         1 data member change:
           'int S1::m0' offset changed from 0 to 32 (in bits) (by +32 bits)
-
 

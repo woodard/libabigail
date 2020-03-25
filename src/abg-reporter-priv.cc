@@ -689,6 +689,8 @@ represent(const var_diff_sptr	&diff,
 	out << "now becomes static";
       emitted = true;
     }
+  if (emitted)
+    out << "\n";
 }
 
 /// Report the size and alignment changes of a type.
@@ -1372,9 +1374,7 @@ maybe_report_interfaces_impacted_by_diff(const diff	*d,
        it != sorted_impacted_interfaces.end();
        ++it)
     {
-      if (it != sorted_impacted_interfaces.begin())
-	out << '\n';
-      out << cur_indent << get_pretty_representation(*it);
+      out << cur_indent << get_pretty_representation(*it) << "\n";
     }
 }
 

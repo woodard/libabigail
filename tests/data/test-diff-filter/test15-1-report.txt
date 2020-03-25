@@ -9,9 +9,7 @@ Variables changes summary: 0 Removed, 2 Changed, 0 Added variables
         type size changed from 64 to 96 (in bits)
         1 data member insertion:
           'unsigned int S::m2', at offset 64 (in bits)
-
   [C] 'S* var2' was changed:
     type of variable changed:
       pointed to type 'struct S' changed, as reported earlier
-
 

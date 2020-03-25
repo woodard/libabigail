@@ -8,7 +8,6 @@
         type name changed from 'char' to 'unsigned int'
         type size changed from 8 to 32 (in bits)
         type alignment changed from 8 to 32
-
   's0&' changed:
     referenced type 'class s0' changed, as reported earlier
 1 changed declaration:

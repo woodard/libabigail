@@ -35,16 +35,13 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
             in referenced type 'function type int ()':
               parameter 1 of type 'double' was added
 
-
           type of 'int ()& S::fnref1' changed:
             in referenced type 'function type int ()':
               entity changed from 'function type int ()' to 'int*'
               type size hasn't changed
-
           type of 'int ()& S::fnref2' changed:
             in referenced type 'function type int ()':
               entity changed from 'function type int ()' to 'int'
               type size changed from 64 to 32 (in bits)
-
 
 

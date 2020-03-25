@@ -41,7 +41,6 @@
                         type size hasn't changed
                         1 data member change:
                           'tbb::spin_mutex tbb::internal::concurrent_monitor::mutex_ec' offset changed from 0 to 8 (in bits) (by +8 bits)
-
                       type of 'tbb::internal::micro_queue tbb::internal::concurrent_queue_rep::array[8]' changed:
                         array element type 'struct tbb::internal::micro_queue' changed: 
                           type size hasn't changed
@@ -50,10 +49,7 @@
                               type size hasn't changed
                               1 base class insertion:
                                 class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
-
                         type size hasn't changed
-
-
 
     [C] 'function void tbb::internal::throw_exception_v4(tbb::internal::exception_id)' at tbb_misc.cpp:119:1 has some indirect sub-type changes:
       parameter 1 of type 'enum tbb::internal::exception_id' has sub-type changes:
@@ -82,7 +78,6 @@
               type name changed from 'char[80]' to 'char[72]'
               array type size changed from 640 to 576
               array type subrange 1 changed length from 80 to 72
-
             type of 'tbb::internal::generic_scheduler* tbb::task_group_context::my_owner' changed:
               in pointed to type 'class tbb::internal::generic_scheduler' at scheduler.h:110:1:
                 type size changed from 3136 to 3072 (in bits)
@@ -111,8 +106,6 @@
                                   struct tbb::internal::padded<tbb::internal::arena_slot_line1, 128ul> at tbb_stddef.h:251:1
                                   struct tbb::internal::padded<tbb::internal::arena_slot_line2, 128ul> at tbb_stddef.h:251:1
                               type size hasn't changed
-
-
                       type of 'tbb::internal::mail_inbox tbb::internal::scheduler_state::my_inbox' changed:
                         type size hasn't changed
                         1 data member change:
@@ -125,8 +118,6 @@
                                 struct tbb::internal::padded<tbb::internal::unpadded_mail_outbox, 128ul> at tbb_stddef.h:251:1
                               1 data member deletion:
                                 'char tbb::internal::mail_outbox::pad[104]', at offset 136 (in bits) at mailbox.h:114:1
-
-
 
                 1 member function deletion:
                   'method virtual tbb::task* tbb::internal::generic_scheduler::receive_or_steal_task(tbb::internal::reference_count&, bool)' at scheduler.h:391:1, virtual at voffset 7/7
@@ -163,7 +154,6 @@
                                       type name changed from 'unsigned char' to 'long int'
                                       type size changed from 8 to 64 (in bits)
                                 and name of 'tbb::spin_mutex::flag' changed to 'tbb::spin_rw_mutex_v3::state' at spin_rw_mutex.h:224:1
-
                         'intptr_t tbb::internal::market::my_global_top_priority' offset changed from 384 to 448 (in bits) (by +64 bits)
                         'intptr_t tbb::internal::market::my_global_bottom_priority' offset changed from 448 to 512 (in bits) (by +64 bits)
                         'uintptr_t tbb::internal::market::my_global_reload_epoch' offset changed from 512 to 576 (in bits) (by +64 bits)
@@ -174,7 +164,6 @@
                               type of 'tbb::internal::intrusive_list_base<tbb::internal::intrusive_list<tbb::internal::arena>, tbb::internal::arena>::iterator tbb::internal::market::priority_level_info::next_arena' changed:
                                 entity changed from 'class tbb::internal::intrusive_list_base<tbb::internal::intrusive_list<tbb::internal::arena>, tbb::internal::arena>::iterator' to 'tbb::internal::arena*'
                                 type size hasn't changed
-
                           type size hasn't changed
                         and offset changed from 576 to 640 (in bits) (by +64 bits)
                         'uintptr_t tbb::internal::market::my_arenas_aba_epoch' offset changed from 1536 to 1600 (in bits) (by +64 bits)
@@ -196,7 +185,6 @@
                   'volatile bool tbb::internal::generic_scheduler::my_pool_reshuffling_pending' offset changed from 2880 to 2816 (in bits) (by -64 bits)
                   'tbb::atomic<long unsigned int> tbb::internal::generic_scheduler::my_nonlocal_ctx_list_update' offset changed from 2944 to 2880 (in bits) (by -64 bits)
                   '__cilk_tbb_unwatch_thunk tbb::internal::generic_scheduler::my_cilk_unwatch_thunk' offset changed from 3008 to 2944 (in bits) (by -64 bits)
-
 
     [C] 'method void tbb::queuing_mutex::scoped_lock::acquire(tbb::queuing_mutex&)' at queuing_mutex.h:84:1 has some indirect sub-type changes:
       parameter 1 of type 'tbb::queuing_mutex&' has sub-type changes:

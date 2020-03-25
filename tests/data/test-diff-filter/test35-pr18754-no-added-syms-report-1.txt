@@ -97,7 +97,6 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
       array type size changed from 384 to 448
       array type subrange 1 changed length from 6 to 7
 
-
 7 Removed function symbols not referenced by debug info:
 
   [D] _ZN7VarListD1Ev

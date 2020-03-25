@@ -60,11 +60,7 @@
                                                     and name of 'std::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_List_impl::_M_node' changed to 'std::__cxx11::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_List_impl::_M_node'
                                                 and name of 'std::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_M_impl' changed to 'std::__cxx11::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_M_impl'
 
-
                                       'bool sigc::internal::trackable_callback_list::clearing_' offset changed from 128 to 192 (in bits) (by +64 bits)
-
-
-
 
 
     [C] 'method sigc::internal::signal_impl* sigc::signal_base::impl() const' has some indirect sub-type changes:
@@ -86,7 +82,6 @@
                       1 data member change:
                         name of 'std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl::_M_node' changed to 'std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl::_M_node'
                     and name of 'std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_impl' changed to 'std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_impl'
-
 
 
 

@@ -13,7 +13,6 @@
         type name changed from 'int' to 'char'
         type size changed from 32 to 8 (in bits)
         type alignment changed from 32 to 8
-
       'unsigned int s0::m2' offset changed from 128 to 192 (in bits) (by +64 bits)
   'const s0' changed:
     unqualified underlying type 'class s0' changed, as reported earlier

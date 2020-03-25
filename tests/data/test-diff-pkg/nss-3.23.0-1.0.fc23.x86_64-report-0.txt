@@ -61,7 +61,6 @@
 
 
 
-
   1 Changed variable:
 
     [C] 'const PRUint16 SSL_ImplementedCiphers[74]' was changed to 'const PRUint16 SSL_ImplementedCiphers[69]' at sslenum.c:51:1:
@@ -70,7 +69,6 @@
         type name changed from 'PRUint16[74]' to 'const PRUint16[69]'
         array type size changed from 1184 to 1104
         array type subrange 1 changed length from 74 to 69
-
 
 ================ end of changes of 'libssl3.so'===============
 
@@ -113,11 +111,6 @@
                                                     '__anonymous_enum__1::SEC_OID_TLS_ECDHE_PSK' value '347'
                                                   1 enumerator change:
                                                     '__anonymous_enum__1::SEC_OID_TOTAL' from value '347' to '348' at secoidt.h:34:1
-
-
-
-
-
 
 
 

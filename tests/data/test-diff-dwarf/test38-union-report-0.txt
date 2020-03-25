@@ -14,3 +14,4 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         to:
           union some_union_type{char m1; S m2;}
 
+

@@ -19,4 +19,3 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
             pointed to type 'struct S0' changed, as reported earlier
 
 
-

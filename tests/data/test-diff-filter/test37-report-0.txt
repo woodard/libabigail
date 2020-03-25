@@ -12,7 +12,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
             type name changed from 'int' to 'char'
             type size changed from 32 to 8 (in bits)
 
-
   [C] 'function void f2(B&)' at test37-v1.cc:23:1 has some indirect sub-type changes:
     parameter 1 of type 'B&' has sub-type changes:
       in referenced type 'struct B' at test37-v1.cc:8:1:
@@ -22,7 +21,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
             type name changed from 'int' to 'char'
             type size changed from 32 to 8 (in bits)
 
-
   [C] 'function void f3(C&)' at test37-v1.cc:27:1 has some indirect sub-type changes:
     parameter 1 of type 'C&' has sub-type changes:
       in referenced type 'struct C' at test37-v1.cc:13:1:
@@ -31,6 +29,5 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
           type of 'int C::m0' changed:
             type name changed from 'int' to 'char'
             type size changed from 32 to 8 (in bits)
-
 
 

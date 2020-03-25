@@ -11,4 +11,3 @@ Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
       type size changed from 64 to 192 (in bits)
     and size changed from 64 to 192 (in bits) (by +128 bits)
     'perf_domain* root_domain::pd' offset changed from 14528 to 14656 (in bits) (by +128 bits)
-

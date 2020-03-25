@@ -13,12 +13,10 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
           'char S1::m1' offset changed from 64 to 40 (in bits) (by -24 bits)
         1 data member change:
           anonymous data member struct {int m0; char m01;} at offset 0 (in bits) became data member 'int S1::m0'
-
   [C] 'function void foo(S0&)' has some indirect sub-type changes:
     parameter 1 of type 'S0&' has sub-type changes:
       in referenced type 'struct S0':
         type size hasn't changed
         1 data member change:
           data member int S0::m0 at offset 0 (in bits) became anonymous data member 'union {int m0; char m01;}'
-
 

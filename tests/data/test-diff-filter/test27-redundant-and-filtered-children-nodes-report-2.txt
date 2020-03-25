@@ -23,14 +23,11 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         3 data member changes:
           type of 'S0* S::m0' changed:
             pointed to type 'struct S0' changed, as reported earlier
-
           type of 'S1* S::m1' changed:
             in pointed to type 'struct S1':
               entity changed from 'struct S1' to compatible type 'typedef S1Renamed'
-
           type of 'S2* S::m2' changed:
             in pointed to type 'struct S2':
               entity changed from 'struct S2' to compatible type 'typedef S2Renamed'
-
 
 

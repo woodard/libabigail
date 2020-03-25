@@ -6,4 +6,3 @@ Variables changes summary: 0 Removed, 1 Changed, 0 Added variable
   [C] 'long int buggy_symbol' was changed:
     size of symbol changed from 8 to 64
 
-

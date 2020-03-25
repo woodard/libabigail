@@ -17,7 +17,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
               type name changed from 'int' to 'char'
               type size changed from 32 to 8 (in bits)
 
-
   [C] 'function int* foo1(S1&)' at test45-basic-type-change-v1.cc:28:1 has some indirect sub-type changes:
     return type changed:
       in pointed to type 'int':
@@ -32,7 +31,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
               type name changed from 'int' to 'char'
               type size changed from 32 to 8 (in bits)
 
-
   [C] 'function const int foo2(S2&)' at test45-basic-type-change-v1.cc:32:1 has some indirect sub-type changes:
     return type changed:
       'const int' changed to 'const char'
@@ -44,7 +42,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
             in pointed to type 'int':
               type name changed from 'int' to 'char'
               type size changed from 32 to 8 (in bits)
-
 
   [C] 'function int foo3(S2&)' at test45-basic-type-change-v1.cc:36:1 has some indirect sub-type changes:
     return type changed:

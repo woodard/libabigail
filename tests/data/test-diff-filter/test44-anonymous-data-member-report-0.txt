@@ -12,7 +12,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
             struct {int b; float c;}
           to:
             struct {int b; float c; char e;}
-
           'int S2::d' offset changed from 96 to 128 (in bits) (by +32 bits)
 
 

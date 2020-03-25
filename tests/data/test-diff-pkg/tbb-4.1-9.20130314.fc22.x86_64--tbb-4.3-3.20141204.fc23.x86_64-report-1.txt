@@ -54,7 +54,6 @@
               array type size changed from 640 to 576
               array type subrange 1 changed length from 80 to 72
 
-
     [C] 'method void tbb::queuing_mutex::scoped_lock::acquire(tbb::queuing_mutex&)' at queuing_mutex.h:84:1 has some indirect sub-type changes:
       parameter 1 of type 'tbb::queuing_mutex&' has sub-type changes:
         in referenced type 'class tbb::queuing_mutex' at queuing_mutex.h:45:1:

@@ -22,7 +22,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
             type name changed from 'int' to 'unsigned int'
             type size hasn't changed
 
-
   [C] 'function int foo(S1*)' has some indirect sub-type changes:
     parameter 1 of type 'S1*' has sub-type changes:
       in pointed to type 'struct S1':

@@ -18,12 +18,9 @@
                   type of 'integer gl_h__gluint_vec___XUP::gl_h__gluint_vec___XUB::LB0' changed:
                     entity changed from 'integer' to '<range natural___XDLU_0__2147483647>[2147483648]'
                     type size changed from 32 to 2147483647 (in bits)
-
                   type of 'integer gl_h__gluint_vec___XUP::gl_h__gluint_vec___XUB::UB0' changed:
                     entity changed from 'integer' to '<range natural___XDLU_0__2147483647>[2147483648]'
                     type size changed from 32 to 2147483647 (in bits)
-
-
 
     [C] 'function gtk__glarea__gtk_glarea gtk__glarea__gtk_new(gtk__glarea__gtk_glarea, const gtk__glarea__attributes_array___XUP)' at gtk-glarea.adb:63:1 has some indirect sub-type changes:
       parameter 2 of type 'const gtk__glarea__attributes_array___XUP' has sub-type changes:
@@ -37,12 +34,9 @@
                   type of 'integer gtk__glarea__attributes_array___XUP::gtk__glarea__attributes_array___XUB::LB0' changed:
                     entity changed from 'integer' to '<range natural___XDLU_0__2147483647>[2147483648]'
                     type size changed from 32 to 2147483647 (in bits)
-
                   type of 'integer gtk__glarea__attributes_array___XUP::gtk__glarea__attributes_array___XUB::UB0' changed:
                     entity changed from 'integer' to '<range natural___XDLU_0__2147483647>[2147483648]'
                     type size changed from 32 to 2147483647 (in bits)
-
-
 
 
   6 Removed variable symbols not referenced by debug info:

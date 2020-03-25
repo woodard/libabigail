@@ -54,10 +54,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
                                           and name of 'std::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_List_impl::_M_node' changed to 'std::__cxx11::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_List_impl::_M_node'
                                       and name of 'std::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_M_impl' changed to 'std::__cxx11::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_M_impl'
 
-
                             'bool sigc::internal::trackable_callback_list::clearing_' offset changed from 128 to 192 (in bits) (by +64 bits)
-
-
 
 
   [C] 'method sigc::connection& sigc::connection::operator=(const sigc::connection&)' has some indirect sub-type changes:
@@ -67,7 +64,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         1 data member change:
           type of 'sigc::slot_base* sigc::connection::slot_' changed:
             pointed to type 'class sigc::slot_base' changed, as reported earlier
-
     parameter 1 of type 'const sigc::connection&' has sub-type changes:
       in referenced type 'const sigc::connection':
         unqualified underlying type 'struct sigc::connection' changed, as reported earlier
@@ -136,7 +132,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
                   and name of 'std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_impl' changed to 'std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_impl'
 
 
-
   [C] 'method sigc::signal_base::iterator_type sigc::signal_base::insert(sigc::signal_base::iterator_type, const sigc::slot_base&)' has some indirect sub-type changes:
     return type changed:
       underlying type 'typedef sigc::internal::signal_impl::iterator_type' changed, as reported earlier
@@ -157,7 +152,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         1 data member change:
           type of 'sigc::internal::signal_impl* sigc::signal_base::impl_' changed:
             pointed to type 'struct sigc::internal::signal_impl' changed, as reported earlier
-
     parameter 1 of type 'const sigc::signal_base&' has sub-type changes:
       in referenced type 'const sigc::signal_base':
         unqualified underlying type 'struct sigc::signal_base' changed, as reported earlier

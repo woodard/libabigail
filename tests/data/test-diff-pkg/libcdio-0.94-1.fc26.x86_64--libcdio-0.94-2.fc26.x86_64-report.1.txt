@@ -15,7 +15,6 @@
                   type size hasn't changed
                   1 data member change:
                     'unsigned int cdio_dvd_disckey::agid' offset changed from 30 to 22 (in bits) (by -8 bits)
-
               type of 'cdio_dvd_physical_t physical' changed:
                 underlying type 'struct cdio_dvd_physical' at dvd.h:86:1 changed:
                   type size hasn't changed
@@ -34,8 +33,6 @@
                             'unsigned int cdio_dvd_layer::layer_type' offset changed from 28 to 12 (in bits) (by -16 bits)
                             'unsigned int cdio_dvd_layer::min_rate' offset changed from 28 to 20 (in bits) (by -8 bits)
                       type size hasn't changed
-
-
 
     [C] 'function discmode_t mmc_get_dvd_struct_physical_private(void*, mmc_run_cmd_fn_t, cdio_dvd_struct_t*)' at mmc.c:450:1 has some indirect sub-type changes:
       parameter 3 of type 'cdio_dvd_struct_t*' has sub-type changes:

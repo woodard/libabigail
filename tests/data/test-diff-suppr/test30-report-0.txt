@@ -29,4 +29,3 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
                 'int S::priv_type::member1', at offset 64 (in bits) at test30-pub-lib-v1.cc:18:1
 
 
-

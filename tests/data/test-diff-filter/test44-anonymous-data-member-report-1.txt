@@ -12,4 +12,3 @@ Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
       struct {int b; float c; char e;}
     size changed from 64 to 96 (in bits) (by +32 bits)
     'int S2::d' offset changed from 96 to 128 (in bits) (by +32 bits)
-

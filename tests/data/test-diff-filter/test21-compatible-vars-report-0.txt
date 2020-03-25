@@ -8,4 +8,3 @@ Variables changes summary: 0 Removed, 1 Changed, 0 Added variable
       in pointed to type 'const volatile S* const* const':
         'const volatile S* const* const' changed to 'const volatile typedef_of_S* const* const'
 
-
