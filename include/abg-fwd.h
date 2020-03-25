@@ -1293,11 +1293,13 @@ function_decl_is_less_than(const function_decl&f, const function_decl &s);
 
 bool
 types_have_similar_structure(const type_base_sptr& first,
-			     const type_base_sptr& second);
+			     const type_base_sptr& second,
+			     bool indirect_type = false);
 
 bool
 types_have_similar_structure(const type_base* first,
-			     const type_base* second);
+			     const type_base* second,
+			     bool indirect_type = false);
 
 } // end namespace ir
 

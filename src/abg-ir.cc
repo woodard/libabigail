@@ -22563,33 +22563,14 @@ function_decl_is_less_than(const function_decl &f, const function_decl &s)
 /// Test if two types have similar structures, even though they are
 /// (or can be) different.
 ///
-/// Two indirect types (pointers, references, qualified, typedefs)
-/// have similar structure if their underlying types are of the same
-/// kind and have the same name.  In this indirect types case, the
-/// size of the underlying type does not matter.
+/// const and volatile qualifiers are completely ignored.
 ///
-/// Two direct types (i.e, non indirect) have a similar structure if
-/// they have the same kind, name and size.  Two class types have
-/// similar structure if they have the same name, size, and if their
-/// data members have similar types.
+/// typedef are resolved to their definitions; their names are ignored.
 ///
-/// @param first the first type to consider.
-///
-/// @param second the second type to consider.
-///
-/// @return true iff @p first and @p second have similar structures.
-bool
-types_have_similar_structure(const type_base_sptr& first,
-			     const type_base_sptr& second)
-{return types_have_similar_structure(first.get(), second.get());}
-
-/// Test if two types have similar structures, even though they are
-/// (or can be) different.
-///
-/// Two indirect types (pointers, references, qualified, typedefs)
-/// have similar structure if their underlying types are of the same
-/// kind and have the same name.  In this indirect types case, the
-/// size of the underlying type does not matter.
+/// Two indirect types (pointers or references) have similar structure
+/// if their underlying types are of the same kind and have the same
+/// name.  In the indirect types case, the size of the underlying type
+/// does not matter.
 ///
 /// Two direct types (i.e, non indirect) have a similar structure if
 /// they have the same kind, name and size.  Two class types have
@@ -22600,9 +22581,43 @@ types_have_similar_structure(const type_base_sptr& first,
 ///
 /// @param second the second type to consider.
 ///
+/// @param indirect_type whether to do an indirect comparison
+///
 /// @return true iff @p first and @p second have similar structures.
 bool
-types_have_similar_structure(const type_base* first, const type_base* second)
+types_have_similar_structure(const type_base_sptr& first,
+			     const type_base_sptr& second,
+			     bool indirect_type)
+{return types_have_similar_structure(first.get(), second.get(), indirect_type);}
+
+/// Test if two types have similar structures, even though they are
+/// (or can be) different.
+///
+/// const and volatile qualifiers are completely ignored.
+///
+/// typedef are resolved to their definitions; their names are ignored.
+///
+/// Two indirect types (pointers or references) have similar structure
+/// if their underlying types are of the same kind and have the same
+/// name.  In the indirect types case, the size of the underlying type
+/// does not matter.
+///
+/// Two direct types (i.e, non indirect) have a similar structure if
+/// they have the same kind, name and size.  Two class types have
+/// similar structure if they have the same name, size, and if the
+/// types of their data members have similar types.
+///
+/// @param first the first type to consider.
+///
+/// @param second the second type to consider.
+///
+/// @param indirect_type whether to do an indirect comparison
+///
+/// @return true iff @p first and @p second have similar structures.
+bool
+types_have_similar_structure(const type_base* first,
+			     const type_base* second,
+			     bool indirect_type)
 {
   if (!!first != !!second)
     return false;
@@ -22610,33 +22625,39 @@ types_have_similar_structure(const type_base* first, const type_base* second)
   if (!first)
     return false;
 
-  if (is_typedef(first) || is_qualified_type(first))
-    first = peel_qualified_or_typedef_type(first);
+  // Treat typedefs purely as type aliases and ignore CV-qualifiers.
+  first = peel_qualified_or_typedef_type(first);
+  second = peel_qualified_or_typedef_type(second);
 
-  if (is_typedef(second) || is_qualified_type(second))
-    second = peel_qualified_or_typedef_type(second);
-
-  bool was_indirect_type = (is_pointer_type(first)
-			    || is_pointer_type(second)
-			    || is_reference_type(first)
-			    || is_reference_type(second));
-
-  if (was_indirect_type)
-    {
-      first = peel_typedef_pointer_or_reference_type(first);
-      second = peel_typedef_pointer_or_reference_type(second);
-    }
-
+  // Eliminate all but N of the N^2 comparison cases. This also guarantees the
+  // various ty2 below cannot be null.
   if (typeid(*first) != typeid(*second))
     return false;
+
+  // Peel off matching pointers.
+  if (const pointer_type_def* ty1 = is_pointer_type(first))
+    {
+      const pointer_type_def* ty2 = is_pointer_type(second);
+      return types_have_similar_structure(ty1->get_pointed_to_type(),
+					  ty2->get_pointed_to_type(),
+					  true);
+    }
+
+  // Peel off matching references.
+  if (const reference_type_def* ty1 = is_reference_type(first))
+    {
+      const reference_type_def* ty2 = is_reference_type(second);
+      if (ty1->is_lvalue() != ty2->is_lvalue())
+	return false;
+      return types_have_similar_structure(ty1->get_pointed_to_type(),
+					  ty2->get_pointed_to_type(),
+					  true);
+    }
 
   if (const type_decl* ty1 = is_type_decl(first))
     {
       const type_decl* ty2 = is_type_decl(second);
-      if (ty2 == 0)
-	return false;
-
-      if (!was_indirect_type)
+      if (!indirect_type)
 	if (ty1->get_size_in_bits() != ty2->get_size_in_bits())
 	  return false;
 
@@ -22646,10 +22667,7 @@ types_have_similar_structure(const type_base* first, const type_base* second)
   if (const enum_type_decl* ty1 = is_enum_type(first))
     {
       const enum_type_decl* ty2 = is_enum_type(second);
-      if (ty2 == 0)
-	return false;
-
-      if (!was_indirect_type)
+      if (!indirect_type)
 	if (ty1->get_size_in_bits() != ty2->get_size_in_bits())
 	  return false;
 
@@ -22660,14 +22678,11 @@ types_have_similar_structure(const type_base* first, const type_base* second)
   if (const class_decl* ty1 = is_class_type(first))
     {
       const class_decl* ty2 = is_class_type(second);
-      if (ty2 == 0)
-	return false;
-
       if (!ty1->get_is_anonymous() && !ty2->get_is_anonymous()
 	  && ty1->get_name() != ty2->get_name())
 	return false;
 
-      if (!was_indirect_type)
+      if (!indirect_type)
 	{
 	  if ((ty1->get_size_in_bits() != ty2->get_size_in_bits())
 	      || (ty1->get_non_static_data_members().size()
@@ -22684,7 +22699,8 @@ types_have_similar_structure(const type_base* first, const type_base* second)
 	      var_decl_sptr dm1 = *i;
 	      var_decl_sptr dm2 = *j;
 	      if (!types_have_similar_structure(dm1->get_type().get(),
-						dm2->get_type().get()))
+						dm2->get_type().get(),
+						indirect_type))
 		return false;
 	    }
 	}
@@ -22695,14 +22711,11 @@ types_have_similar_structure(const type_base* first, const type_base* second)
   if (const union_decl* ty1 = is_union_type(first))
     {
       const union_decl* ty2 = is_union_type(second);
-      if (ty2 == 0)
-	return false;
-
       if (!ty1->get_is_anonymous() && !ty2->get_is_anonymous()
 	  && ty1->get_name() != ty2->get_name())
 	return false;
 
-      if (!was_indirect_type)
+      if (!indirect_type)
 	return ty1->get_size_in_bits() == ty2->get_size_in_bits();
 
       return true;
@@ -22711,13 +22724,13 @@ types_have_similar_structure(const type_base* first, const type_base* second)
   if (const array_type_def* ty1 = is_array_type(first))
     {
       const array_type_def* ty2 = is_array_type(second);
-
-      if (!was_indirect_type)
-	if (ty1->get_size_in_bits() != ty2->get_size_in_bits()
-	    || ty1->get_dimension_count() != ty2->get_dimension_count()
-	    || !types_have_similar_structure(ty1->get_element_type(),
-					     ty2->get_element_type()))
-	  return false;
+      // TODO: Handle uint32_t[10] vs uint64_t[5] better.
+      if (ty1->get_size_in_bits() != ty2->get_size_in_bits()
+	  || ty1->get_dimension_count() != ty2->get_dimension_count()
+	  || !types_have_similar_structure(ty1->get_element_type(),
+					   ty2->get_element_type(),
+					   indirect_type))
+	return false;
 
       return true;
     }
@@ -22725,14 +22738,12 @@ types_have_similar_structure(const type_base* first, const type_base* second)
   if (const array_type_def::subrange_type *ty1 = is_subrange_type(first))
     {
       const array_type_def::subrange_type *ty2 = is_subrange_type(second);
-      if (!ty2)
-	return false;
-
       if (ty1->get_upper_bound() != ty2->get_upper_bound()
 	  || ty1->get_lower_bound() != ty2->get_lower_bound()
 	  || ty1->get_language() != ty2->get_language()
 	  || !types_have_similar_structure(ty1->get_underlying_type(),
-					  ty2->get_underlying_type()))
+					   ty2->get_underlying_type(),
+					   indirect_type))
 	return false;
 
       return true;
@@ -22741,11 +22752,9 @@ types_have_similar_structure(const type_base* first, const type_base* second)
   if (const function_type* ty1 = is_function_type(first))
     {
       const function_type* ty2 = is_function_type(second);
-      if (!ty2)
-	return false;
-
       if (!types_have_similar_structure(ty1->get_return_type(),
-					ty2->get_return_type()))
+					ty2->get_return_type(),
+					indirect_type))
 	return false;
 
       if (ty1->get_parameters().size() != ty2->get_parameters().size())
@@ -22758,7 +22767,8 @@ types_have_similar_structure(const type_base* first, const type_base* second)
 	    && j != ty2->get_parameters().end());
 	   ++i, ++j)
 	if (!types_have_similar_structure((*i)->get_type(),
-					  (*j)->get_type()))
+					  (*j)->get_type(),
+					  indirect_type))
 	  return false;
 
       return true;
