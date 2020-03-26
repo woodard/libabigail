@@ -34,7 +34,6 @@
         1 enumerator change:
           'tbb::internal::exception_id::eid_max' from value '20' to '21' at tbb_exception.h:79:1
 
-
     [C] 'method void tbb::mutex::scoped_lock::internal_acquire(tbb::mutex&)' at mutex.h:129:1 has some indirect sub-type changes:
       parameter 1 of type 'tbb::mutex&' has sub-type changes:
         in referenced type 'class tbb::mutex' at mutex.h:40:1:

@@ -40,7 +40,6 @@ Leaf changes summary: 11 artifacts changed (7 filtered out)
       'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_LZ' value '6'
       'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_LZ4' value '7'
       'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_ENUM_END' value '8'
-
     2 impacted interfaces:
       function spice_image_compression_t spice_server_get_image_compression(SpiceServer*)
       function int spice_server_set_image_compression(SpiceServer*, spice_image_compression_t)

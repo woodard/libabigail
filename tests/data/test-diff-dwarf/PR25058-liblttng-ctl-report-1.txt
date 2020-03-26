@@ -95,7 +95,6 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
             2 enumerator insertions:
               'lttng_event_context_type::LTTNG_EVENT_CONTEXT_CALLSTACK_KERNEL' value '20'
               'lttng_event_context_type::LTTNG_EVENT_CONTEXT_CALLSTACK_USER' value '21'
-
           type of 'union {lttng_event_perf_counter_ctx perf_counter; struct {char* provider_name; char* ctx_name;} app_ctx; char padding[288];} lttng_event_context::u' changed:
             type name changed from '__anonymous_union__4' to '__anonymous_union__5'
             type size hasn't changed
@@ -116,7 +115,6 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
         'lttng_condition_type::LTTNG_CONDITION_TYPE_SESSION_ROTATION_ONGOING' value '103'
         'lttng_condition_type::LTTNG_CONDITION_TYPE_SESSION_ROTATION_COMPLETED' value '104'
 
-
   [C] 'function int lttng_disable_event_ext(lttng_handle*, lttng_event*, const char*, const char*)' has some indirect sub-type changes:
     parameter 2 of type 'lttng_event*' has sub-type changes:
       in pointed to type 'struct lttng_event':
@@ -126,7 +124,6 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
             type size hasn't changed
             1 enumerator insertion:
               'lttng_event_type::LTTNG_EVENT_USERSPACE_PROBE' value '6'
-
 
   [C] 'function int lttng_enable_event(lttng_handle*, lttng_event*, const char*)' has some indirect sub-type changes:
     parameter 2 of type 'lttng_event*' has sub-type changes:
@@ -195,7 +192,6 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
       type size hasn't changed
       1 enumerator insertion:
         'lttng_notification_channel_status::LTTNG_NOTIFICATION_CHANNEL_STATUS_INTERRUPTED' value '2'
-
     parameter 2 of type 'lttng_notification**' has sub-type changes:
       in pointed to type 'lttng_notification*':
         in pointed to type 'struct lttng_notification':
@@ -249,7 +245,6 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
                               type size hasn't changed
                               1 enumerator insertion:
                                 'ast_link_type::AST_LINK_BRACKET' value '3'
-
                             type of 'ast_link_type pre_op' changed:
                               details were reported earlier
                             type of 'union {char* string; uint64_t constant; double float_constant; char* identifier; filter_node* child;} u' changed:
@@ -282,7 +277,6 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
                                 'op_type::AST_OP_BIT_AND' value '10'
                                 'op_type::AST_OP_BIT_OR' value '11'
                                 'op_type::AST_OP_BIT_XOR' value '12'
-
                             type of 'filter_node* lchild' changed:
                               pointed to type 'struct filter_node' changed; details are being reported
                             type of 'filter_node* rchild' changed:
@@ -301,7 +295,6 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
                                 'unary_op_type::AST_UNARY_BIN_NOT' value '4'
                               1 enumerator insertion:
                                 'unary_op_type::AST_UNARY_BIT_NOT' value '4'
-
                             type of 'filter_node* child' changed:
                               pointed to type 'struct filter_node' changed; details are being reported
                 'cds_list_head filter_ast::allocated_nodes' offset changed from 576 to 640 (in bits) (by +64 bits)

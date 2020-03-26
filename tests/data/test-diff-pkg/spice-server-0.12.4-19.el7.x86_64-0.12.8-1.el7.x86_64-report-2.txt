@@ -450,7 +450,6 @@
             'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_LZ' value '6'
             'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_LZ4' value '7'
             'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_ENUM_END' value '8'
-
       parameter 1 of type 'SpiceServer*' has sub-type changes:
         pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
 

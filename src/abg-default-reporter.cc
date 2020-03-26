@@ -170,8 +170,6 @@ default_reporter::report(const enum_diff& d, ostream& out,
 	}
     }
 
-  out << "\n";
-
   if (d.context()->show_leaf_changes_only())
     maybe_report_interfaces_impacted_by_diff(&d, out, indent);
 
@@ -979,7 +977,7 @@ default_reporter::report(const class_or_union_diff& d,
 	  diff->report(out, indent + "    ");
 	  emitted = true;
 	}
-      if (numchanges)
+      if (emitted)
 	out << "\n";
     }
 

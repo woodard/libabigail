@@ -11,7 +11,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       1 enumerator change:
         'EnumType1::eenum_count' from value '3' to '4' at test41-enumerator-changes-v1.cc:10:1
 
-
   [C] 'function void foo(EnumType0)' at test41-enumerator-changes-v1.cc:20:1 has some indirect sub-type changes:
     parameter 1 of type 'enum EnumType0' has sub-type changes:
       type size hasn't changed
@@ -19,5 +18,4 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         'EnumType0::e3_inserted' value '3'
       1 enumerator change:
         'EnumType0::enum_count' from value '3' to '4' at test41-enumerator-changes-v1.cc:1:1
-
 

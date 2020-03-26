@@ -1294,7 +1294,6 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
           '__anonymous_enum__::c_report_myorelease' from value '122' to '126' at liboffload_error_codes.h:38:1
           '__anonymous_enum__::c_coipipe_max_number' from value '123' to '133' at liboffload_error_codes.h:38:1
 
-
   [C] 'method bool OffloadDescriptor::setup_descriptors(VarDesc*, VarDesc2*, int, int, void*)' at offload_host.h:157:1 has some indirect sub-type changes:
     parameter 1 of type 'VarDesc*' has sub-type changes:
       in pointed to type 'struct VarDesc' at offload_common.h:254:1:
