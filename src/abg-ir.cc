@@ -22724,7 +22724,7 @@ types_have_similar_structure(const type_base* first,
   if (const array_type_def* ty1 = is_array_type(first))
     {
       const array_type_def* ty2 = is_array_type(second);
-      // TODO: Handle uint32_t[10] vs uint64_t[5] better.
+      // TODO: Handle int[5][2] vs int[2][5] better.
       if (ty1->get_size_in_bits() != ty2->get_size_in_bits()
 	  || ty1->get_dimension_count() != ty2->get_dimension_count()
 	  || !types_have_similar_structure(ty1->get_element_type(),
