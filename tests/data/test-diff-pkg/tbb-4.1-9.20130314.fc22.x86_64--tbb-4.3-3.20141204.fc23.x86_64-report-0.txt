@@ -211,7 +211,6 @@
       parameter 1 of type 'tbb::spin_mutex&' has sub-type changes:
         referenced type 'class tbb::spin_mutex' changed at spin_mutex.h:47:1, as reported earlier
 
-
   3 Removed variable symbols not referenced by debug info:
 
     [D] _ZTVN3rml16versioned_objectE

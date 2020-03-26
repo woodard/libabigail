@@ -11,6 +11,5 @@
           1 data member insertion:
             'int S1::mem2', at offset 0 (in bits)
 
-
 ================ end of changes of 'libobj-v0.so'===============
 

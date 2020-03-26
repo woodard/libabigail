@@ -11,6 +11,5 @@
           1 data member insertion:
             'char S::mem1', at offset 32 (in bits) at obj-v0.cc:7:1
 
-
 ================ end of changes of 'libobj-v0.so'===============
 

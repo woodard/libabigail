@@ -18,4 +18,3 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
           type of 'S0* S::m0' changed:
             pointed to type 'struct S0' changed, as reported earlier
 
-

@@ -51,6 +51,5 @@
         underlying type 'enum __anonymous_enum__2' at spice.h:471:1 changed:
           enum type 'enum __anonymous_enum__2' changed at spice.h:471:1, as reported earlier
 
-
 ================ end of changes of 'libspice-server.so.1.8.0'===============
 

@@ -10,4 +10,3 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         1 data member insertion:
           'int to_keep::member1', at offset 0 (in bits)
 
-

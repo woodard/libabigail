@@ -78,7 +78,6 @@
                 in pointed to type 'struct _IcePingWait' at ICEconn.h:48:1:
                   entity changed from 'struct _IcePingWait' to compatible type 'typedef _IcePingWait' at ICEconn.h:48:1
 
-
   1 Removed variable:
 
     [D] 'const in6_addr in6addr_any'    {in6addr_any}
@@ -93,6 +92,7 @@
             type size hasn't changed
         type name changed from 'char*[1]' to 'const char*[1]'
         type size hasn't changed
+
     [C] '_IceWatchProc* _IceWatchProcs' was changed at globals.h:39:1:
       type of variable changed:
         in pointed to type 'struct _IceWatchProc' at ICElibint.h:322:1:

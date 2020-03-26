@@ -1257,10 +1257,7 @@ maybe_report_unreachable_type_changes(const corpus_diff& d,
       emitted = true;
     }
   if (emitted)
-    {
-      out << "\n";
-      emitted = false;
-    }
+    out << "\n";
 
   // Handle changed unreachable types!
   if (s.net_num_changed_unreachable_types() == 1)
@@ -1274,7 +1271,6 @@ maybe_report_unreachable_type_changes(const corpus_diff& d,
   diff_sptrs_type sorted_diff_sptrs;
   sort_string_diff_sptr_map(d.priv_->changed_unreachable_types_,
 			    sorted_diff_sptrs);
-  emitted =  true;
   for (diff_sptrs_type::const_iterator i = sorted_diff_sptrs.begin();
        i != sorted_diff_sptrs.end();
        ++i)
@@ -1287,14 +1283,10 @@ maybe_report_unreachable_type_changes(const corpus_diff& d,
 
       out << indent << "  [C] '" << repr << "' changed:\n";
       diff->report(out, indent + "    ");
+      // Extra spacing.
       out << "\n";
-      emitted = true;
     }
-  if (emitted)
-    {
-      out << "\n";
-      emitted = false;
-    }
+  // Changed types have extra spacing already. No new line here.
 
   // Handle added unreachable types.
   if (s.net_num_added_unreachable_types() == 1)
@@ -1323,10 +1315,7 @@ maybe_report_unreachable_type_changes(const corpus_diff& d,
       emitted = true;
     }
   if (emitted)
-    {
-      out << "\n";
-      emitted = false;
-    }
+    out << "\n";
 }
 
 /// If a given diff node impacts some public interfaces, then report

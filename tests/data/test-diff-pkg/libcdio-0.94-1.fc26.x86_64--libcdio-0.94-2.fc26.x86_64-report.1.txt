@@ -38,7 +38,6 @@
       parameter 3 of type 'cdio_dvd_struct_t*' has sub-type changes:
         pointed to type 'typedef cdio_dvd_struct_t' changed at dvd.h:130:1, as reported earlier
 
-
 ================ end of changes of 'libcdio.so.16.0.0'===============
 
 ================ changes of 'libiso9660++.so.0.0.0'===============

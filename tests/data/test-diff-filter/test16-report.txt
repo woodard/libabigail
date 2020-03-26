@@ -12,4 +12,3 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         1 data member change:
           'S* S::m2' offset changed from 0 to 64 (in bits) (by +64 bits)
 
-

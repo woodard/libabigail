@@ -14,7 +14,6 @@
             '__anonymous_enum__1::SEC_OID_TOTAL' from value '347' to '348' at secoidt.h:34:1
 
 
-
 ================ end of changes of 'libnss3.so'===============
 
 ================ changes of 'libssl3.so'===============
@@ -58,7 +57,6 @@
                     '__anonymous_enum__::ssl_auth_rsa_pss' value '8'
                     '__anonymous_enum__::ssl_auth_psk' value '9'
                     '__anonymous_enum__::ssl_auth_size' value '10'
-
 
 
   1 Changed variable:
@@ -111,7 +109,6 @@
                                                     '__anonymous_enum__1::SEC_OID_TLS_ECDHE_PSK' value '347'
                                                   1 enumerator change:
                                                     '__anonymous_enum__1::SEC_OID_TOTAL' from value '347' to '348' at secoidt.h:34:1
-
 
 
 ================ end of changes of 'libsmime3.so'===============

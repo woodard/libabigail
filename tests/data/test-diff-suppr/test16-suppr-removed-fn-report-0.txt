@@ -14,4 +14,3 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         1 data member insertion:
           'unsigned int S::bar', at offset 32 (in bits)
 
-

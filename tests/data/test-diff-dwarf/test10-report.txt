@@ -21,4 +21,3 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
             type size hasn't changed
           and offset changed from 512 to 640 (in bits) (by +128 bits)
 
-

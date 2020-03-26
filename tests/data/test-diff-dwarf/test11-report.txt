@@ -18,4 +18,3 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
             array type subrange 2 changed length from 4 to 5
           and offset changed from 480 to 576 (in bits) (by +96 bits)
 
-

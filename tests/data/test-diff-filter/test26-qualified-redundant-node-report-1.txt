@@ -20,4 +20,3 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
                   in pointed to type 'FooStruct::Embedded*':
                     pointed to type 'struct FooStruct::Embedded' changed, as reported earlier
 
-

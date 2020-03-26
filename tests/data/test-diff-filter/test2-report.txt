@@ -24,4 +24,3 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
           'E0 C0::m0' offset changed from 0 to 8 (in bits) (by +8 bits)
           'E1 C0::m1' offset changed from 8 to 16 (in bits) (by +8 bits)
 
-

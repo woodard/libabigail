@@ -38,7 +38,6 @@
                     entity changed from 'integer' to '<range natural___XDLU_0__2147483647>[2147483648]'
                     type size changed from 32 to 2147483647 (in bits)
 
-
   6 Removed variable symbols not referenced by debug info:
 
     [D] gtk__glarea__C210s

@@ -84,6 +84,5 @@
                     and name of 'std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_impl' changed to 'std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_impl'
 
 
-
 ================ end of changes of 'libsigc-2.0.so.0.0.0'===============
 

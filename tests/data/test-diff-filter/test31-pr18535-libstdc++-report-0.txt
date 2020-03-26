@@ -48,7 +48,6 @@ Variable symbols changes summary: 0 Removed, 6 Added variable symbols not refere
         'std::regex_constants::error_type::_S_error_last' value '13'
 
 
-
 6 Added variable symbols not referenced by debug info:
 
   [A] _ZTISt16bad_array_length@@CXXABI_1.3.8

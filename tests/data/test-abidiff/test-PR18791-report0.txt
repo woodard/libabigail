@@ -189,4 +189,3 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in referenced type 'const sigc::trackable':
         unqualified underlying type 'struct sigc::trackable' changed, as reported earlier
 
-

@@ -1140,7 +1140,6 @@ leaf_reporter::report(const corpus_diff& d,
 	out << indent << num_changed
 	    << " functions with some sub-type change:\n\n";
 
-      bool emitted = false;
       vector<function_decl_diff_sptr> sorted_changed_fns;
       sort_string_function_decl_diff_sptr_map(d.priv_->changed_fns_map_,
 					      sorted_changed_fns);
@@ -1192,11 +1191,11 @@ leaf_reporter::report(const corpus_diff& d,
 		    }
 		}
 	      diff->report(out, indent + "    ");
-	      emitted = true;
+	      // Extra spacing.
+	      out << "\n";
 	    }
 	}
-      if (emitted)
-	out << "\n";
+      // Changed functions have extra spacing already. No new line here.
     }
 
   // Report removed/added/changed variables.
@@ -1289,7 +1288,6 @@ leaf_reporter::report(const corpus_diff& d,
 	out << indent << num_changed
 	    << " Changed variables:\n\n";
       string n1, n2;
-      bool emitted = false;
       for (var_diff_sptrs_type::const_iterator i =
 	     d.priv_->sorted_changed_vars_.begin();
 	   i != d.priv_->sorted_changed_vars_.end();
@@ -1312,10 +1310,10 @@ leaf_reporter::report(const corpus_diff& d,
 	  report_loc_info(diff->second_subject(), *ctxt, out);
 	  out << ":\n";
 	  diff->report(out, indent + "    ");
-	  emitted = true;
+	  // Extra spacing.
+	  out << "\n";
 	}
-      if (emitted)
-	out << "\n";
+      // Changed variables have extra spacing already. No new line here.
     }
 
   // Report removed function symbols not referenced by any debug info.

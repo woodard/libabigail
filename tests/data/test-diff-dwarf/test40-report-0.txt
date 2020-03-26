@@ -32,4 +32,3 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
           'int S1::m0' offset changed from 0 to 64 (in bits) (by +64 bits)
           'char S1::m1' offset changed from 32 to 96 (in bits) (by +64 bits)
 
-

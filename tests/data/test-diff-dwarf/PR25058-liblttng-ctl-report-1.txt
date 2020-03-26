@@ -327,7 +327,6 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
     parameter 1 of type 'YYSTYPE*' has sub-type changes:
       pointed to type 'typedef YYSTYPE' changed, as reported earlier
 
-
 3 Added variables:
 
   [A] 'const char* const mi_lttng_element_command_disable_rotation'

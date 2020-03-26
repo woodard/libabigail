@@ -13,4 +13,3 @@ SONAME changed from 'test48-soname-abixml-v0' to 'test48-soname-abixml-v1'
         1 data member insertion:
           'char S::m1', at offset 32 (in bits) at test48-soname-abixml-v1.c:4:1
 
-

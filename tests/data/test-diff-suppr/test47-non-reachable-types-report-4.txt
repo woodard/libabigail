@@ -13,4 +13,3 @@ Unreachable types summary: 1 removed, 1 changed, 0 added (1 filtered out) types
     1 data member insertion:
       'char unreachable_struct2::m2', at offset 32 (in bits) at test-v1.c:9:1
 
-

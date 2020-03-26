@@ -82,7 +82,6 @@
           1 base class insertion:
             class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
 
-
   3 Removed variable symbols not referenced by debug info:
 
     [D] _ZTVN3rml16versioned_objectE

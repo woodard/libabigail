@@ -712,6 +712,5 @@
       parameter 1 of type 'SpiceServer*' has sub-type changes:
         pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
 
-
 ================ end of changes of 'libspice-server.so.1.8.0'===============
 

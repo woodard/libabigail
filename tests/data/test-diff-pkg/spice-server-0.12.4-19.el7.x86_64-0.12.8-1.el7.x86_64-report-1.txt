@@ -50,6 +50,5 @@
         typedef name changed from spice_image_compression_t to SpiceImageCompression at enums.h:197:1
         underlying type 'enum __anonymous_enum__2' changed at spice.h:471:1, as reported earlier
 
-
 ================ end of changes of 'libspice-server.so.1.8.0'===============
 
