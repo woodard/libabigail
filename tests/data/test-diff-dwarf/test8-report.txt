@@ -16,7 +16,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
             type size hasn't changed
             1 data member change:
               'char B0::m0' access changed from 'public' to 'private'
-
         1 base class insertion:
           class B1
         1 data member change:

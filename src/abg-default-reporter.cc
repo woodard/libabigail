@@ -1338,7 +1338,6 @@ default_reporter::report(const class_diff& d, ostream& out,
 	}
 
       // Report changes.
-      bool emitted = false;
       size_t num_filtered = d.get_priv()->count_filtered_bases();
       if (numchanges)
 	{
@@ -1359,10 +1358,7 @@ default_reporter::report(const class_diff& d, ostream& out,
 	      report_loc_info(o->get_base_class(), *d.context(), out);
 	      out << " changed:\n";
 	      diff->report(out, indent + "    ");
-	      emitted = true;
 	    }
-	  if (emitted)
-	    out << "\n";
 	}
 
       //Report insertions.
@@ -1372,20 +1368,16 @@ default_reporter::report(const class_diff& d, ostream& out,
 	  report_mem_header(out, numins, 0, ins_kind,
 			    "base class", indent);
 
-	  bool emitted = false;
 	  for (class_decl::base_specs::const_iterator i =
 		 d.get_priv()->sorted_inserted_bases_.begin();
 	       i != d.get_priv()->sorted_inserted_bases_.end();
 	       ++i)
 	    {
 	      class_decl_sptr b = (*i)->get_base_class();
-	      if (emitted)
-		out << "\n";
 	      out << indent << "  " << b->get_pretty_representation();
 	      report_loc_info(b, *ctxt, out);
-	      emitted = true;
+	      out << "\n";
 	    }
-	  out << "\n";
 	}
     }
 

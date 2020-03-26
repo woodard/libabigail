@@ -118,7 +118,6 @@
                                 struct tbb::internal::padded<tbb::internal::unpadded_mail_outbox, 128ul> at tbb_stddef.h:251:1
                               1 data member deletion:
                                 'char tbb::internal::mail_outbox::pad[104]', at offset 136 (in bits) at mailbox.h:114:1
-
                 1 member function deletion:
                   'method virtual tbb::task* tbb::internal::generic_scheduler::receive_or_steal_task(tbb::internal::reference_count&, bool)' at scheduler.h:391:1, virtual at voffset 7/7
 
