@@ -38460,7 +38460,7 @@
 
     </array-type-def>
     <!-- void*[20][32] -->
-    <array-type-def dimensions='2' type-id='type-id-17' size-in-bits='3328' id='type-id-434'>
+    <array-type-def dimensions='2' type-id='type-id-17' size-in-bits='40960' id='type-id-434'>
       <!-- <anonymous range>[20] -->
       <subrange length='20' type-id='type-id-3' id='type-id-10'/>
 

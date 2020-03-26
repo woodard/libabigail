@@ -39,6 +39,8 @@
 #include "abg-suppression-priv.h"
 
 #include "abg-internal.h"
+#include "abg-tools-utils.h"
+
 // <headers defining libabigail's API go under here>
 ABG_BEGIN_EXPORT_DECLARATIONS
 
@@ -4075,13 +4077,40 @@ build_array_type_def(read_context&	ctxt,
 	  != ar_type->get_element_type()->get_alignment_in_bits()))
     return nil;
 
-  if (has_size_in_bits)
-    if (size_in_bits != ar_type->get_size_in_bits())
-      {
-	ABG_ASSERT(size_in_bits == (size_t) -1
-	       || ar_type->get_element_type()->get_size_in_bits() == (size_t)-1
-	       || ar_type->get_element_type()->get_size_in_bits() == 0);
-      }
+  if (has_size_in_bits && size_in_bits != (size_t) -1
+      && size_in_bits != ar_type->get_size_in_bits())
+    {
+      // We have a potential discrepancy between calculated and recorded sizes.
+      size_t element_size = ar_type->get_element_type()->get_size_in_bits();
+      if (element_size && element_size != (size_t)-1)
+	{
+	  // Older versions miscalculated multidimensional array sizes.
+	  size_t bad_count = 0;
+	  for (vector<array_type_def::subrange_sptr>::const_iterator i =
+		 subranges.begin();
+	       i != subranges.end();
+	       ++i)
+	    bad_count += (*i)->get_length();
+	  if (size_in_bits == bad_count * element_size)
+	    {
+	      static bool reported = false;
+	      if (!reported)
+		{
+		  std::cerr << "notice: Found incorrectly calculated array "
+			    << "sizes in XML - this is benign.\nOlder versions "
+			    << "of libabigail miscalculated multidimensional "
+			    << "array sizes." << std::endl;
+		  reported = true;
+		}
+	    }
+	  else
+	    {
+	      std::cerr << "error: Found incorrectly calculated array size in "
+			<< "XML (id=\"" << id <<  "\")." << std::endl;
+	      ABG_ASSERT_NOT_REACHED;
+	    }
+	}
+    }
 
   if (ctxt.push_and_key_type_decl(ar_type, id, add_to_current_scope))
     {

@@ -2381,9 +2381,6 @@ public:
   set_element_type(const type_base_sptr& element_type);
 
   virtual void
-  append_subrange(subrange_sptr sub);
-
-  virtual void
   append_subranges(const std::vector<subrange_sptr>& subs);
 
   virtual int

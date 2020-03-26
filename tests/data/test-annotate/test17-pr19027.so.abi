@@ -1296,7 +1296,7 @@
 
     </array-type-def>
     <!-- hb_codepoint_t[2][5] -->
-    <array-type-def dimensions='2' type-id='type-id-64' size-in-bits='224' id='type-id-65'>
+    <array-type-def dimensions='2' type-id='type-id-64' size-in-bits='320' id='type-id-65'>
       <!-- <anonymous range>[2] -->
       <subrange length='2' type-id='type-id-4' id='type-id-8'/>
 

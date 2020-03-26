@@ -26,7 +26,7 @@
     </data-member>
   </class-decl>
   <type-decl name='double' size-in-bits='64' alignment-in-bits='64' id='type-id-11'/>
-  <array-type-def dimensions='2' type-id='type-id-11' size-in-bits='512' alignment-in-bits='64' id='type-id-9'>
+  <array-type-def dimensions='2' type-id='type-id-11' size-in-bits='960' alignment-in-bits='64' id='type-id-9'>
     <subrange length='5' id='type-id-12'/>
 
     <subrange length='3' id='type-id-13'/>

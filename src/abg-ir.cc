@@ -14558,6 +14558,10 @@ array_type_def::get_element_type() const
 /// re-compute the canonical type of the array, if one has already
 /// been computed.
 ///
+/// The intended use of this method is to permit in-place adjustment
+/// of the element type's qualifiers. In particular, the size of the
+/// element type should not be changed.
+///
 /// @param element_type the new element type to set.
 void
 array_type_def::set_element_type(const type_base_sptr& element_type)
@@ -14565,29 +14569,25 @@ array_type_def::set_element_type(const type_base_sptr& element_type)
   priv_->element_type_ = element_type;
 }
 
-// Append a single subrange @param sub.
-void
-array_type_def::append_subrange(subrange_sptr sub)
-{
-  priv_->subranges_.push_back(sub);
-  size_t s = get_size_in_bits();
-  s += sub->get_length() * get_element_type()->get_size_in_bits();
-  set_size_in_bits(s);
-  string r = get_pretty_representation();
-  const environment* env = get_environment();
-  ABG_ASSERT(env);
-  set_name(env->intern(r));
-}
-
 /// Append subranges from the vector @param subs to the current
 /// vector of subranges.
 void
 array_type_def::append_subranges(const std::vector<subrange_sptr>& subs)
 {
+  size_t s = get_element_type()->get_size_in_bits();
+
   for (std::vector<shared_ptr<subrange_type> >::const_iterator i = subs.begin();
        i != subs.end();
        ++i)
-    append_subrange(*i);
+    {
+      priv_->subranges_.push_back(*i);
+      s *= (*i)->get_length();
+    }
+
+  const environment* env = get_environment();
+  ABG_ASSERT(env);
+  set_name(env->intern(get_pretty_representation()));
+  set_size_in_bits(s);
 }
 
 /// @return true if one of the sub-ranges of the array is infinite, or

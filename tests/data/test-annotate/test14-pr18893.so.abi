@@ -5047,7 +5047,7 @@
 
     </array-type-def>
     <!-- REAL[40][4] -->
-    <array-type-def dimensions='2' type-id='type-id-122' size-in-bits='1408' id='type-id-156'>
+    <array-type-def dimensions='2' type-id='type-id-122' size-in-bits='5120' id='type-id-156'>
       <!-- <anonymous range>[40] -->
       <subrange length='40' type-id='type-id-32' id='type-id-126'/>
 
@@ -9621,7 +9621,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libnurbs/internals/backend.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
     <!-- REAL[3][4] -->
-    <array-type-def dimensions='2' type-id='type-id-122' size-in-bits='224' id='type-id-292'>
+    <array-type-def dimensions='2' type-id='type-id-122' size-in-bits='384' id='type-id-292'>
       <!-- <anonymous range>[3] -->
       <subrange length='3' type-id='type-id-32' id='type-id-35'/>
 
@@ -10572,7 +10572,7 @@
 
     </array-type-def>
     <!-- REAL[5][5] -->
-    <array-type-def dimensions='2' type-id='type-id-122' size-in-bits='320' id='type-id-321'>
+    <array-type-def dimensions='2' type-id='type-id-122' size-in-bits='800' id='type-id-321'>
       <!-- <anonymous range>[5] -->
       <subrange length='5' type-id='type-id-32' id='type-id-320'/>
 
@@ -13394,7 +13394,7 @@
 
     </array-type-def>
     <!-- REAL[2][5] -->
-    <array-type-def dimensions='2' type-id='type-id-122' size-in-bits='224' id='type-id-379'>
+    <array-type-def dimensions='2' type-id='type-id-122' size-in-bits='320' id='type-id-379'>
       <!-- <anonymous range>[2] -->
       <subrange length='2' type-id='type-id-32' id='type-id-191'/>
 
