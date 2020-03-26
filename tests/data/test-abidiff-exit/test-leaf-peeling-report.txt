@@ -12,13 +12,11 @@ Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
     and size changed from 32 to 64 (in bits) (by +32 bits)
 
 
-
 'struct ops1 at test-leaf-peeling.0.cc:5:1' changed:
   type size hasn't changed
   there are data member changes:
     type 'int*' of 'ops1::x' changed:
       pointer type changed from: 'int*' to: 'int**'
-
 
 
 
@@ -28,11 +26,9 @@ Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
     'foo ops2::y[10]' size changed from 320 to 640 (in bits) (by +320 bits)
 
 
-
 'struct ops3 at test-leaf-peeling.0.cc:13:1' changed:
   type size hasn't changed
   there are data member changes:
     type 'void (int&)*' of 'ops3::spong' changed:
       pointer type changed from: 'void (int&)*' to: 'void (int&&)*'
-
 
