@@ -412,7 +412,9 @@ represent(const var_diff_sptr	&diff,
   var_decl_sptr o = diff->first_var();
   var_decl_sptr n = diff->second_var();
 
+  // Has the main diff text been output?
   bool emitted = false;
+  // Are we continuing on a new line? (implies emitted)
   bool begin_with_and = false;
   string name1 = o->get_qualified_name();
   string name2 = n->get_qualified_name();
@@ -435,6 +437,9 @@ represent(const var_diff_sptr	&diff,
 	      << indent << "  " << tr1 << "\n"
 	      << indent << "to:\n"
 	      << indent << "  " << tr2 << "\n";
+
+	  begin_with_and = true;
+	  emitted = true;
 	}
       else if (get_type_name(t1) != get_type_name(t2)
 	       && is_decl(t1) && is_decl(t2)
@@ -451,7 +456,11 @@ represent(const var_diff_sptr	&diff,
 	      << indent << " This is usually due to "
 	      << "an anonymous member type being added or removed from "
 	      << "the containing type\n";
+
+	  begin_with_and = true;
+	  emitted = true;
 	}
+      // TODO: else ...?
     }
   else if (filtering::has_anonymous_data_member_change(diff))
     {
@@ -468,7 +477,7 @@ represent(const var_diff_sptr	&diff,
 			      *ctxt, out);
 	  out << " became data member '"
 	      << n->get_pretty_representation()
-	      << "'";
+	      << "'\n";
 	}
       else
 	{
@@ -482,8 +491,11 @@ represent(const var_diff_sptr	&diff,
 			      *ctxt, out);
 	  out << " became anonymous data member '"
 	      << n->get_pretty_representation()
-	      << "'";
+	      << "'\n";
 	}
+
+      begin_with_and = true;
+      emitted = true;
     }
   else if (diff_sptr d = diff->type_diff())
     {
@@ -522,7 +534,9 @@ represent(const var_diff_sptr	&diff,
 		out << indent << "  details were reported earlier\n";
 	      else
 		d->report(out, indent + "  ");
+
 	      begin_with_and = true;
+	      emitted = true;
 	    }
 	}
     }
@@ -535,12 +549,15 @@ represent(const var_diff_sptr	&diff,
 	;
       else
 	{
-	  out << indent;
 	  if (begin_with_and)
 	    {
-	      out << "and ";
+	      out << indent << "and ";
 	      begin_with_and = false;
 	    }
+	  else if (!emitted)
+	    out << indent;
+	  else
+	    out << ", ";
 	  out << "name of '" << name1 << "' changed to '" << name2 << "'";
 	  report_loc_info(n, *ctxt, out);
 	  emitted = true;
@@ -689,7 +706,22 @@ represent(const var_diff_sptr	&diff,
 	out << "now becomes static";
       emitted = true;
     }
-  if (emitted)
+
+  if (begin_with_and)
+    // do nothing as begin_with_and implies emitted
+    ;
+  else if (!emitted)
+    // We appear to have fallen off the edge of the map.
+    out << indent << "'" << pretty_representation
+	<< "' has *some* difference - please report as a bug";
+  else
+    {
+      // do nothing
+      ;
+    }
+  emitted = true;
+
+  if (!begin_with_and)
     out << "\n";
 }
 
@@ -956,7 +988,7 @@ report_mem_header(ostream& out,
 
   if (num_filtered)
     out << " (" << num_filtered << " filtered)";
-  out << colon_or_semi_colon << '\n';
+  out << colon_or_semi_colon << "\n";
 }
 
 /// Output the header preceding the the report for

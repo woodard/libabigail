@@ -19,7 +19,6 @@ Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
       pointer type changed from: 'int*' to: 'int**'
 
 
-
 'struct ops2 at test-leaf-peeling-v0.cc:9:1' changed:
   type size changed from 320 to 640 (in bits)
   there are data member changes:
@@ -33,7 +32,6 @@ Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
       pointer type changed from: 'void (int&)*' to: 'void (int&&)*'
 
 
-
 'struct ops4 at test-leaf-peeling-v0.cc:17:1' changed:
   type size hasn't changed
   there are data member changes:
@@ -42,10 +40,8 @@ Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
       type size hasn't changed
 
 
-
 'struct ops5 at test-leaf-peeling-v0.cc:21:1' changed:
   type size hasn't changed
   there are data member changes:
     type 'int*' of 'ops5::x' changed:
       pointer type changed from: 'int*' to: 'int***'
-

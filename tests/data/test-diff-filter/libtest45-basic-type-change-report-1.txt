@@ -29,7 +29,6 @@ Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
       pointer type changed from: 'int*' to: 'char*'
 
 
-
 'struct S1 at test45-basic-type-change-v0.cc:13:1' changed:
   type size hasn't changed
   there are data member changes:
@@ -37,10 +36,8 @@ Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
       pointer type changed from: 'int*' to: 'char*'
 
 
-
 'struct S2 at test45-basic-type-change-v0.cc:18:1' changed:
   type size hasn't changed
   there are data member changes:
     type 'int*' of 'S2::m0' changed:
       pointer type changed from: 'int*' to: 'char*'
-
