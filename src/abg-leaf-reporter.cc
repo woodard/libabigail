@@ -74,7 +74,7 @@ report_diffs(const reporter_base& r,
       if (r.diff_to_be_reported((*i)->get_canonical_diff()))
 	{
 	  if (started_to_emit)
-	    out << "\n\n";
+	    out << "\n";
 
 	  string n = (*i)->first_subject()->get_pretty_representation();
 
