@@ -14,7 +14,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
     name of symbol changed from _ZN3STRD1Ev to _ZN3STRD2Ev
     parameter 1 of type 'int' was removed
 
-
   [C] 'function std::tuple<STR&&> my_forward_as_tuple<STR>(STR&&)' has some indirect sub-type changes:
     return type changed:
       type name changed from 'std::tuple<STR&&>' to 'std::tuple<STR &&>'

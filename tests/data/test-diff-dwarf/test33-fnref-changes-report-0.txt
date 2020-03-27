@@ -34,7 +34,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
           type of 'int ()& S::fnref0' changed:
             in referenced type 'function type int ()':
               parameter 1 of type 'double' was added
-
           type of 'int ()& S::fnref1' changed:
             in referenced type 'function type int ()':
               entity changed from 'function type int ()' to 'int*'

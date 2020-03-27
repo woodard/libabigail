@@ -33,7 +33,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         type of 'int ()* S::fnptr0' changed:
           in pointed to type 'function type int ()':
             parameter 1 of type 'double' was added
-
         type of 'int ()* S::fnptr1' changed:
           in pointed to type 'function type int ()':
             entity changed from 'function type int ()' to 'void'

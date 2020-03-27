@@ -1318,7 +1318,6 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
             type of 'void ()* InitTableEntry::func' changed:
               in pointed to type 'function type void ()':
                 parameter 1 of type 'typedef MyoArena' was added
-
             and name of 'InitTableEntry::func' changed to '__anonymous_struct__2::func'
 
   [C] 'function int __offload_offload(OFFLOAD, const char*, int, int, VarDesc*, VarDesc2*, int, void**, void*, int, void*)' has some indirect sub-type changes:

@@ -552,7 +552,6 @@ default_reporter::report_local_function_type_changes(const function_type_diff& d
   // this shouldn't be as straightforward.
 
   // Report about the parameters that got removed.
-  bool emitted = false;
   for (vector<function_decl::parameter_sptr>::const_iterator i =
 	 d.priv_->sorted_deleted_parms_.begin();
        i != d.priv_->sorted_deleted_parms_.end();
@@ -561,13 +560,9 @@ default_reporter::report_local_function_type_changes(const function_type_diff& d
       out << indent << "parameter " << (*i)->get_index()
 	  << " of type '" << (*i)->get_type_pretty_representation()
 	  << "' was removed\n";
-      emitted = true;
     }
-  if (emitted)
-    out << "\n";
 
   // Report about the parameters that got added
-  emitted = false;
   for (vector<function_decl::parameter_sptr>::const_iterator i =
 	 d.priv_->sorted_added_parms_.begin();
        i != d.priv_->sorted_added_parms_.end();
@@ -576,11 +571,7 @@ default_reporter::report_local_function_type_changes(const function_type_diff& d
       out << indent << "parameter " << (*i)->get_index()
 	  << " of type '" << (*i)->get_type_pretty_representation()
 	  << "' was added\n";
-      emitted = true;
     }
-
-  if (emitted)
-    out << "\n";
 }
 
 /// Build and emit a textual report about a @ref function_type_diff.
