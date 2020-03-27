@@ -894,7 +894,6 @@ default_reporter::report(const class_or_union_diff& d,
       if (numdels)
 	report_mem_header(out, numdels, num_filtered, del_kind,
 			  "member function", indent);
-      bool emitted = false;
       for (string_member_function_sptr_map::const_iterator i =
 	     d.get_priv()->deleted_member_functions_.begin();
 	   i != d.get_priv()->deleted_member_functions_.end();
@@ -905,16 +904,10 @@ default_reporter::report(const class_or_union_diff& d,
 	      && !get_member_function_is_virtual(i->second))
 	    continue;
 
-	  if (emitted
-	      && i != d.get_priv()->deleted_member_functions_.begin())
-	    out << "\n";
 	  method_decl_sptr mem_fun = i->second;
 	  out << indent << "  ";
 	  represent(*ctxt, mem_fun, out);
-	  emitted = true;
 	}
-      if (emitted)
-	out << "\n";
 
       // report insertions;
       int numins = d.get_priv()->inserted_member_functions_.size();
@@ -922,7 +915,6 @@ default_reporter::report(const class_or_union_diff& d,
       if (numins)
 	report_mem_header(out, numins, num_filtered, ins_kind,
 			  "member function", indent);
-      emitted = false;
       for (string_member_function_sptr_map::const_iterator i =
 	     d.get_priv()->inserted_member_functions_.begin();
 	   i != d.get_priv()->inserted_member_functions_.end();
@@ -933,16 +925,10 @@ default_reporter::report(const class_or_union_diff& d,
 	      && !get_member_function_is_virtual(i->second))
 	    continue;
 
-	  if (emitted
-	      && i != d.get_priv()->inserted_member_functions_.begin())
-	    out << "\n";
 	  method_decl_sptr mem_fun = i->second;
 	  out << indent << "  ";
 	  represent(*ctxt, mem_fun, out);
-	  emitted = true;
 	}
-      if (emitted)
-	out << "\n";
 
       // report member function with sub-types changes
       int numchanges = d.get_priv()->sorted_changed_member_functions_.size();
@@ -950,7 +936,6 @@ default_reporter::report(const class_or_union_diff& d,
       if (numchanges)
 	report_mem_header(out, numchanges, num_filtered, change_kind,
 			  "member function", indent);
-      emitted = false;
       for (function_decl_diff_sptrs_type::const_iterator i =
 	     d.get_priv()->sorted_changed_member_functions_.begin();
 	   i != d.get_priv()->sorted_changed_member_functions_.end();
@@ -970,15 +955,9 @@ default_reporter::report(const class_or_union_diff& d,
 
 	  string repr =
 	    (*i)->first_function_decl()->get_pretty_representation();
-	  if (emitted
-	      && i != d.get_priv()->sorted_changed_member_functions_.begin())
-	    out << "\n";
 	  out << indent << "  '" << repr << "' has some sub-type changes:\n";
 	  diff->report(out, indent + "    ");
-	  emitted = true;
 	}
-      if (emitted)
-	out << "\n";
     }
 
   // data members
@@ -1090,14 +1069,12 @@ default_reporter::report(const class_or_union_diff& d,
 	       i != d.class_or_union_diff::get_priv()->deleted_member_types_.end();
 	       ++i)
 	    {
-	      if (i != d.class_or_union_diff::get_priv()->deleted_member_types_.begin())
-		out << "\n";
 	      decl_base_sptr mem_type = i->second;
 	      out << indent << "  '"
 		  << mem_type->get_pretty_representation()
-		  << "'";
+		  << "'\n";
 	    }
-	  out << "\n\n";
+	  out << "\n";
 	}
       // report changes
       if (numchanges)
@@ -1135,7 +1112,6 @@ default_reporter::report(const class_or_union_diff& d,
 	  report_mem_header(out, numins, 0, ins_kind,
 			    "member type", indent);
 
-	  bool emitted = false;
 	  for (vector<insertion>::const_iterator i = e.insertions().begin();
 	       i != e.insertions().end();
 	       ++i)
@@ -1146,8 +1122,6 @@ default_reporter::report(const class_or_union_diff& d,
 		   j != i->inserted_indexes().end();
 		   ++j)
 		{
-		  if (emitted)
-		    out << "\n";
 		  mem_type = second->get_member_types()[*j];
 		  if (!d.class_or_union_diff::get_priv()->
 		      member_type_has_changed(get_type_declaration(mem_type)))
@@ -1155,12 +1129,11 @@ default_reporter::report(const class_or_union_diff& d,
 		      out << indent << "  '"
 			  << get_type_declaration(mem_type)->
 			get_pretty_representation()
-			  << "'";
-		      emitted = true;
+			  << "'\n";
 		    }
 		}
 	    }
-	  out << "\n\n";
+	  out << "\n";
 	}
     }
 
@@ -1176,23 +1149,18 @@ default_reporter::report(const class_or_union_diff& d,
 	   i != e.deletions().end();
 	   ++i)
 	{
-	  if (i != e.deletions().begin())
-	    out << "\n";
 	  member_function_template_sptr mem_fn_tmpl =
 	    first->get_member_function_templates()[i->index()];
 	  out << indent << "  '"
 	      << mem_fn_tmpl->as_function_tdecl()->get_pretty_representation()
-	      << "'";
+	      << "'\n";
 	}
-      if (numdels)
-	out << "\n\n";
 
       // report insertions
       int numins = e.num_insertions();
       if (numins)
 	report_mem_header(out, numins, 0, ins_kind,
 			  "member function template", indent);
-      bool emitted = false;
       for (vector<insertion>::const_iterator i = e.insertions().begin();
 	   i != e.insertions().end();
 	   ++i)
@@ -1203,18 +1171,13 @@ default_reporter::report(const class_or_union_diff& d,
 	       j != i->inserted_indexes().end();
 	       ++j)
 	    {
-	      if (emitted)
-		out << "\n";
 	      mem_fn_tmpl = second->get_member_function_templates()[*j];
 	      out << indent << "  '"
 		  << mem_fn_tmpl->as_function_tdecl()->
 		get_pretty_representation()
-		  << "'";
-	      emitted = true;
+		  << "'\n";
 	    }
 	}
-      if (numins)
-	out << "\n\n";
     }
 
   // member class templates.
@@ -1229,23 +1192,18 @@ default_reporter::report(const class_or_union_diff& d,
 	   i != e.deletions().end();
 	   ++i)
 	{
-	  if (i != e.deletions().begin())
-	    out << "\n";
 	  member_class_template_sptr mem_cls_tmpl =
 	    first->get_member_class_templates()[i->index()];
 	  out << indent << "  '"
 	      << mem_cls_tmpl->as_class_tdecl()->get_pretty_representation()
-	      << "'";
+	      << "'\n";
 	}
-      if (numdels)
-	out << "\n\n";
 
       // report insertions
       int numins = e.num_insertions();
       if (numins)
 	report_mem_header(out, numins, 0, ins_kind,
 			  "member class template", indent);
-      bool emitted = false;
       for (vector<insertion>::const_iterator i = e.insertions().begin();
 	   i != e.insertions().end();
 	   ++i)
@@ -1256,18 +1214,13 @@ default_reporter::report(const class_or_union_diff& d,
 	       j != i->inserted_indexes().end();
 	       ++j)
 	    {
-	      if (emitted)
-		out << "\n";
 	      mem_cls_tmpl = second->get_member_class_templates()[*j];
 	      out << indent << "  '"
 		  << mem_cls_tmpl->as_class_tdecl()
 		->get_pretty_representation()
-		  << "'";
-	      emitted = true;
+		  << "'\n";
 	    }
 	}
-      if (numins)
-	out << "\n\n";
     }
 }
 

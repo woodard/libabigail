@@ -135,6 +135,11 @@ test-abidiff-exit/test-leaf-peeling-v0.o \
 test-abidiff-exit/test-leaf-peeling-v1.cc \
 test-abidiff-exit/test-leaf-peeling-v1.o \
 test-abidiff-exit/test-leaf-peeling-report.txt \
+test-abidiff-exit/test-leaf-cxx-members-v0.cc \
+test-abidiff-exit/test-leaf-cxx-members-v0.o \
+test-abidiff-exit/test-leaf-cxx-members-v1.cc \
+test-abidiff-exit/test-leaf-cxx-members-v1.o \
+test-abidiff-exit/test-leaf-cxx-members-report.txt \
 \
 test-diff-dwarf/test0-v0.cc		\
 test-diff-dwarf/test0-v0.o			\

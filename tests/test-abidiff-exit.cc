@@ -167,6 +167,16 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-leaf-peeling-report.txt",
     "output/test-abidiff-exit/test-leaf-peeling-report.txt"
   },
+  {
+    "data/test-abidiff-exit/test-leaf-cxx-members-v0.o",
+    "data/test-abidiff-exit/test-leaf-cxx-members-v1.o",
+    "",
+    "--leaf-changes-only",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE
+    | abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE,
+    "data/test-abidiff-exit/test-leaf-cxx-members-report.txt",
+    "output/test-abidiff-exit/test-leaf-cxx-members-report.txt"
+  },
   {0, 0, 0 ,0,  abigail::tools_utils::ABIDIFF_OK, 0, 0}
 };
 

@@ -489,7 +489,6 @@ leaf_reporter::report(const class_or_union_diff& d,
       if (numdels)
 	report_mem_header(out, numdels, num_filtered, del_kind,
 			  "member function", indent);
-      bool emitted = false;
       for (string_member_function_sptr_map::const_iterator i =
 	     d.get_priv()->deleted_member_functions_.begin();
 	   i != d.get_priv()->deleted_member_functions_.end();
@@ -500,16 +499,10 @@ leaf_reporter::report(const class_or_union_diff& d,
 	      && !get_member_function_is_virtual(i->second))
 	    continue;
 
-	  if (emitted
-	      && i != d.get_priv()->deleted_member_functions_.begin())
-	    out << "\n";
 	  method_decl_sptr mem_fun = i->second;
 	  out << indent << "  ";
 	  represent(*ctxt, mem_fun, out);
-	  emitted = true;
 	}
-      if (emitted)
-	out << "\n";
 
       // report insertions;
       int numins = d.get_priv()->inserted_member_functions_.size();
@@ -517,7 +510,6 @@ leaf_reporter::report(const class_or_union_diff& d,
       if (numins)
 	report_mem_header(out, numins, num_filtered, ins_kind,
 			  "member function", indent);
-      emitted = false;
       for (string_member_function_sptr_map::const_iterator i =
 	     d.get_priv()->inserted_member_functions_.begin();
 	   i != d.get_priv()->inserted_member_functions_.end();
@@ -528,22 +520,15 @@ leaf_reporter::report(const class_or_union_diff& d,
 	      && !get_member_function_is_virtual(i->second))
 	    continue;
 
-	  if (emitted
-	      && i != d.get_priv()->inserted_member_functions_.begin())
-	    out << "\n";
 	  method_decl_sptr mem_fun = i->second;
 	  out << indent << "  ";
 	  represent(*ctxt, mem_fun, out);
-	  emitted = true;
 	}
-      if (emitted)
-	out << "\n";
 
       // report member function with sub-types changes
       int numchanges = d.get_priv()->sorted_changed_member_functions_.size();
       if (numchanges)
 	report_mem_header(out, change_kind, "member function", indent);
-      emitted = false;
       for (function_decl_diff_sptrs_type::const_iterator i =
 	     d.get_priv()->sorted_changed_member_functions_.begin();
 	   i != d.get_priv()->sorted_changed_member_functions_.end();
@@ -563,15 +548,9 @@ leaf_reporter::report(const class_or_union_diff& d,
 
 	  string repr =
 	    (*i)->first_function_decl()->get_pretty_representation();
-	  if (emitted
-	      && i != d.get_priv()->sorted_changed_member_functions_.begin())
-	    out << "\n";
 	  out << indent << "  '" << repr << "' has some changes:\n";
 	  diff->report(out, indent + "    ");
-	  emitted = true;
 	}
-      if (numchanges)
-	out << "\n";
     }
 
   // data members
