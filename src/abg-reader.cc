@@ -3003,24 +3003,24 @@ build_elf_symbol_db(read_context& ctxt,
     {
       if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(x->first, "alias"))
 	{
-      string alias_id = CHAR_STR(s);
+	  string alias_id = CHAR_STR(s);
 
-      // Symbol aliases can be multiple separated by comma(,), split them
-      std::vector<std::string> elems;
-      std::stringstream aliases(alias_id);
-      std::string item;
-      while (std::getline(aliases, item, ','))
-        elems.push_back(item);
-      for (std::vector<string>::iterator alias = elems.begin();
-           alias != elems.end(); ++alias)
-        {
-          string_elf_symbol_sptr_map_type::const_iterator i =
-          id_sym_map.find(*alias);
-          ABG_ASSERT(i != id_sym_map.end());
-          ABG_ASSERT(i->second->is_main_symbol());
+	  // Symbol aliases can be multiple separated by comma(,), split them
+	  std::vector<std::string> elems;
+	  std::stringstream aliases(alias_id);
+	  std::string item;
+	  while (std::getline(aliases, item, ','))
+	    elems.push_back(item);
+	  for (std::vector<string>::iterator alias = elems.begin();
+	       alias != elems.end(); ++alias)
+	    {
+	      string_elf_symbol_sptr_map_type::const_iterator i =
+	      id_sym_map.find(*alias);
+	      ABG_ASSERT(i != id_sym_map.end());
+	      ABG_ASSERT(i->second->is_main_symbol());
 
-          x->second->get_main_symbol()->add_alias(i->second);
-        }
+	      x->second->get_main_symbol()->add_alias(i->second);
+	    }
 	}
     }
 
@@ -4019,12 +4019,12 @@ build_array_type_def(read_context&	ctxt,
     {
       size_in_bits = strtoull(CHAR_STR(s), &endptr, 0);
       if (*endptr != '\0')
-        {
-          if (!strcmp(CHAR_STR(s), "infinite"))
-            size_in_bits = (size_t) -1;
-          else
-            return nil;
-        }
+	{
+	  if (!strcmp(CHAR_STR(s), "infinite"))
+	    size_in_bits = (size_t) -1;
+	  else
+	    return nil;
+	}
       has_size_in_bits = true;
     }
 
@@ -4032,7 +4032,7 @@ build_array_type_def(read_context&	ctxt,
     {
       alignment_in_bits = strtoull(CHAR_STR(s), &endptr, 0);
       if (*endptr != '\0')
-        return nil;
+	return nil;
     }
 
   string id;
