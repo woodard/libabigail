@@ -170,7 +170,7 @@ public:
   report(const enum_diff& d, ostream& out,
 	 const string& indent = "") const;
 
-  bool
+  void
   report_local_typedef_changes(const typedef_diff &d,
 			       ostream& out,
 			       const string& indent) const;

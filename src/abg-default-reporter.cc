@@ -183,18 +183,14 @@ default_reporter::report(const enum_diff& d, ostream& out,
 /// @param out the output stream to report to.
 ///
 /// @param indent the white space string to use for indentation.
-///
-/// @return true iff the caller needs to emit a newline to the output
-/// stream before emitting anything else.
-bool
+void
 default_reporter::report_local_typedef_changes(const typedef_diff &d,
 					       ostream& out,
 					       const string& indent) const
 {
   if (!d.to_be_reported())
-    return false;
+    return;
 
-  bool emit_nl = false;
   typedef_decl_sptr f = d.first_typedef_decl(), s = d.second_typedef_decl();
 
   maybe_report_diff_for_member(f, s, d.context(), out, indent);
@@ -211,10 +207,7 @@ default_reporter::report_local_typedef_changes(const typedef_diff &d,
 	  << s->get_qualified_name();
       report_loc_info(s, *d.context(), out);
       out << "\n";
-      emit_nl = true;
     }
-
-  return emit_nl;
 }
 
 /// Reports the difference between the two subjects of the diff in a
@@ -235,7 +228,7 @@ default_reporter::report(const typedef_diff& d,
 
   typedef_decl_sptr f = d.first_typedef_decl(), s = d.second_typedef_decl();
 
-  bool emit_nl = report_local_typedef_changes(d, out, indent);
+  report_local_typedef_changes(d, out, indent);
 
   diff_sptr dif = d.underlying_type_diff();
   if (dif && dif->has_changes())
@@ -250,7 +243,6 @@ default_reporter::report(const typedef_diff& d,
 	  report_loc_info(dif->first_subject(), *d.context(), out);
 	  out << " changed:\n";
 	  dif->report(out, indent + "  ");
-	  emit_nl = false;
 	}
       else
 	{
@@ -274,13 +266,9 @@ default_reporter::report(const typedef_diff& d,
 	      dif->report(out, indent + "  ");
 	      if (c & REDUNDANT_CATEGORY)
 		dif->set_category(c | REDUNDANT_CATEGORY);
-	      emit_nl = false;
 	    }
 	}
     }
-
-  if (emit_nl)
-    out << "\n";
 
   d.reported_once(true);
 }

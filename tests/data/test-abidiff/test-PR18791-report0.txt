@@ -74,7 +74,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
     return type changed:
       underlying type 'typedef std::list<sigc::slot_base, std::allocator<sigc::slot_base> >::iterator' changed:
         typedef name changed from std::list<sigc::slot_base, std::allocator<sigc::slot_base> >::iterator to std::__cxx11::list<sigc::slot_base, std::allocator<sigc::slot_base> >::iterator
-
     parameter 1 of type 'const sigc::slot_base&' has sub-type changes:
       in referenced type 'const sigc::slot_base':
         unqualified underlying type 'class sigc::slot_base' changed, as reported earlier
