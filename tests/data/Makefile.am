@@ -1479,7 +1479,6 @@ test-diff-pkg/dirpkg-2-dir2/dir.abignore \
 test-diff-pkg/dirpkg-2-dir2/libobj-v0.so \
 test-diff-pkg/dirpkg-2-dir2/obj-v0.cc \
 test-diff-pkg/dirpkg-2-report-0.txt \
-test-diff-pkg/dirpkg-2-report-1.txt \
 test-diff-pkg/dirpkg-3-dir1/libobj-v0.so \
 test-diff-pkg/dirpkg-3-dir1/obj-v0.cc \
 test-diff-pkg/dirpkg-3-dir2/.abignore \
