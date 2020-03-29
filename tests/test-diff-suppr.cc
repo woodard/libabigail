@@ -349,6 +349,16 @@ InOutSpec in_out_specs[] =
     "output/test-diff-suppr/test6-fn-suppr-report-3.txt",
   },
   {
+    "data/test-diff-suppr/libtest6-fn-suppr-v0.so",
+    "data/test-diff-suppr/libtest6-fn-suppr-v1.so",
+    "",
+    "",
+    "data/test-diff-suppr/test6-fn-suppr-3.suppr",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test6-fn-suppr-report-4.txt",
+    "output/test-diff-suppr/test6-fn-suppr-report-4.txt",
+  },
+  {
     "data/test-diff-suppr/libtest7-var-suppr-v0.so",
     "data/test-diff-suppr/libtest7-var-suppr-v1.so",
     "",
@@ -739,6 +749,16 @@ InOutSpec in_out_specs[] =
     "output/test-diff-suppr/test16-suppr-removed-fn-report-4.txt"
   },
   {
+    "data/test-diff-suppr/test16-suppr-removed-fn-v0.o",
+    "data/test-diff-suppr/test16-suppr-removed-fn-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/test16-suppr-removed-fn-4.suppr",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test16-suppr-removed-fn-report-5.txt",
+    "output/test-diff-suppr/test16-suppr-removed-fn-report-5.txt"
+  },
+  {
     "data/test-diff-suppr/test17-suppr-added-var-v0.o",
     "data/test-diff-suppr/test17-suppr-added-var-v1.o",
     "",
@@ -1089,6 +1109,16 @@ InOutSpec in_out_specs[] =
     "output/test-diff-suppr/test22-suppr-removed-var-sym-report-4.txt"
   },
   {
+    "data/test-diff-suppr/test22-suppr-removed-var-sym-v0.o",
+    "data/test-diff-suppr/test22-suppr-removed-var-sym-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/test22-suppr-removed-var-sym-4.suppr",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test22-suppr-removed-var-sym-report-5.txt",
+    "output/test-diff-suppr/test22-suppr-removed-var-sym-report-5.txt"
+  },
+  {
     "data/test-diff-suppr/libtest23-alias-filter-v0.so",
     "data/test-diff-suppr/libtest23-alias-filter-v1.so ",
     "",
@@ -1127,6 +1157,16 @@ InOutSpec in_out_specs[] =
     "--no-default-suppression --no-show-locs --no-redundant",
     "data/test-diff-suppr/test23-alias-filter-report-3.txt",
     "output/test-diff-suppr/test23-alias-filter-report-3.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest23-alias-filter-v0.so",
+    "data/test-diff-suppr/libtest23-alias-filter-v1.so ",
+    "",
+    "",
+    "data/test-diff-suppr/test23-alias-filter-3.suppr",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test23-alias-filter-report-4.txt",
+    "output/test-diff-suppr/test23-alias-filter-report-4.txt"
   },
   {
     "data/test-diff-suppr/libtest23-alias-filter-v0.so",
