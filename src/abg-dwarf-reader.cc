@@ -5849,11 +5849,15 @@ public:
 	     << elf_path()
 	     << "\n";
 	cerr << "    # late canonicalized types: "
-	     << num_canonicalized
-	     << " (" << num_canonicalized * 100 / total << "%)\n"
+             << num_canonicalized;
+        if (total)
+          cerr << " (" << num_canonicalized * 100 / total << "%)";
+        cerr << "\n"
 	     << "    # missed canonicalization opportunities: "
-	     << num_missed
-	     << " (" << num_missed * 100 / total << "%)\n";
+             << num_missed;
+        if (total)
+          cerr << " (" << num_missed * 100 / total << "%)";
+        cerr << "\n";
       }
 
   }
