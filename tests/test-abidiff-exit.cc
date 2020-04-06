@@ -133,8 +133,7 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-leaf-more-v0.o",
     "data/test-abidiff-exit/test-leaf-more-v1.o",
     "",
-    // --redundant - pending a bug fix
-    "--no-show-locs --leaf-changes-only --redundant",
+    "--no-show-locs --leaf-changes-only",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE
     | abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE,
     "data/test-abidiff-exit/test-leaf-more-report.txt",
