@@ -121,42 +121,42 @@ InOutSpec in_out_specs[] =
     "output/test-abidiff-exit/test-no-stray-comma-report.txt"
   },
   {
-    "data/test-abidiff-exit/test-leaf0-v0.o",
-    "data/test-abidiff-exit/test-leaf0-v1.o",
+    "data/test-abidiff-exit/test-leaf-stats-v0.o",
+    "data/test-abidiff-exit/test-leaf-stats-v1.o",
     "",
     "--no-show-locs --leaf-changes-only",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
-    "data/test-abidiff-exit/test-leaf0-report.txt",
-    "output/test-abidiff-exit/test-leaf0-report.txt"
+    "data/test-abidiff-exit/test-leaf-stats-report.txt",
+    "output/test-abidiff-exit/test-leaf-stats-report.txt"
   },
   {
-    "data/test-abidiff-exit/test-leaf1-v0.o",
-    "data/test-abidiff-exit/test-leaf1-v1.o",
+    "data/test-abidiff-exit/test-leaf-more-v0.o",
+    "data/test-abidiff-exit/test-leaf-more-v1.o",
     "",
     // --redundant - pending a bug fix
     "--no-show-locs --leaf-changes-only --redundant",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE
     | abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE,
-    "data/test-abidiff-exit/test-leaf1-report.txt",
-    "output/test-abidiff-exit/test-leaf1-report.txt"
+    "data/test-abidiff-exit/test-leaf-more-report.txt",
+    "output/test-abidiff-exit/test-leaf-more-report.txt"
   },
   {
-    "data/test-abidiff-exit/test-leaf2-v0.o",
-    "data/test-abidiff-exit/test-leaf2-v1.o",
+    "data/test-abidiff-exit/test-leaf-fun-type-v0.o",
+    "data/test-abidiff-exit/test-leaf-fun-type-v1.o",
     "",
     "--no-show-locs --leaf-changes-only",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
-    "data/test-abidiff-exit/test-leaf2-report.txt",
-    "output/test-abidiff-exit/test-leaf2-report.txt"
+    "data/test-abidiff-exit/test-leaf-fun-type-report.txt",
+    "output/test-abidiff-exit/test-leaf-fun-type-report.txt"
   },
   {
-    "data/test-abidiff-exit/test-leaf3-v0.o",
-    "data/test-abidiff-exit/test-leaf3-v1.o",
+    "data/test-abidiff-exit/test-leaf-redundant-v0.o",
+    "data/test-abidiff-exit/test-leaf-redundant-v1.o",
     "",
     "--leaf-changes-only",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
-    "data/test-abidiff-exit/test-leaf3-report.txt",
-    "output/test-abidiff-exit/test-leaf3-report.txt"
+    "data/test-abidiff-exit/test-leaf-redundant-report.txt",
+    "output/test-abidiff-exit/test-leaf-redundant-report.txt"
   },
   {
     "data/test-abidiff-exit/test-leaf-peeling-v0.o",
