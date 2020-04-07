@@ -36,28 +36,9 @@ To send us patches or just drop by to say Hi, please send an email to
 our mailing list at the address 'libabigail <at> sourceware <dot>
 org'.  The archives of the mailing list can be read <a
 href="https://sourceware.org/ml/libabigail">online</a>.  To send us an
-email, you first need to register to the mailing list by feeling the
-form below.
-
-\htmlonly
-
-<form method="get" action="http://sourceware.org/cgi-bin/ml-request">
-  Mailing list name:
-  <input type="text" name="listname" value="libabigail" size="10"/>
-<br>
-  Your e-mail address:
-  <input type="text" name="username" size="14"/>
- <br>
-  <input type="checkbox" name="digest"/>Digest version
-  <tt>&nbsp;</tt>
-  <select name="operation">
-    <option value="subscribe">subscribe</option>
-    <option value="unsubscribe">unsubscribe</option>
-  </select>
-  <tt>&nbsp;</tt>
- <input type="Submit" name="submit" value="Send in the request"/>
-</form>
-\endhtmlonly
+email, you first need to register to the mailing list by feeling
+<a href="https://sourceware.org/mailman/listinfo/libabigail">this
+form</a>.
 
 \section bugs Bug reports
 
