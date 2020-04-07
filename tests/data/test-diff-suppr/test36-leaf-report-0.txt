@@ -16,7 +16,6 @@ Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
   type size changed from 64 to 96 (in bits)
   there are data member changes:
     type 'struct leaf1' of 'leaf2::member0' changed, as reported earlier
-    and size changed from 32 to 64 (in bits) (by +32 bits)
     'char leaf2::member1' offset changed from 32 to 64 (in bits) (by +32 bits)
   3 impacted interfaces:
     function void interface1(struct_type*)

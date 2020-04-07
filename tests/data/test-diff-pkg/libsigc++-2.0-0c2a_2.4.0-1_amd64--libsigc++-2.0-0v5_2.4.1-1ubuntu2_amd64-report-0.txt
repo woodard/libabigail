@@ -78,7 +78,7 @@
                       type name changed from 'std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl' to 'std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl'
                       type size changed from 128 to 192 (in bits)
                       1 data member change:
-                        name of 'std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl::_M_node' changed to 'std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl::_M_node'
+                        name of 'std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl::_M_node' changed to 'std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl::_M_node', size changed from 128 to 192 (in bits) (by +64 bits)
                     and name of 'std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_impl' changed to 'std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_impl'
 
 ================ end of changes of 'libsigc-2.0.so.0.0.0'===============

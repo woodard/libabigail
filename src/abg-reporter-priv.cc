@@ -411,15 +411,25 @@ represent(const var_diff_sptr	&diff,
 
   var_decl_sptr o = diff->first_var();
   var_decl_sptr n = diff->second_var();
+  string name1 = o->get_qualified_name();
+  string name2 = n->get_qualified_name();
+  uint64_t size1 = get_var_size_in_bits(o);
+  uint64_t size2 = get_var_size_in_bits(n);
+  uint64_t offset1 = get_data_member_offset(o);
+  uint64_t offset2 = get_data_member_offset(n);
 
   // Has the main diff text been output?
   bool emitted = false;
   // Are we continuing on a new line? (implies emitted)
   bool begin_with_and = false;
-  string name1 = o->get_qualified_name();
-  string name2 = n->get_qualified_name();
-  string pretty_representation = o->get_pretty_representation();
+  // Have we reported a size change already?
+  bool size_reported = false;
+  // Are we reporting a change to an anonymous member?
   bool is_strict_anonymous_data_member_change = false;
+
+  string pretty_representation = o->get_pretty_representation();
+  bool show_size_offset_changes = ctxt->get_allowed_category()
+				  & SIZE_OR_OFFSET_CHANGE_CATEGORY;
 
   if (is_anonymous_data_member(o) && is_anonymous_data_member(n))
     {
@@ -430,8 +440,7 @@ represent(const var_diff_sptr	&diff,
       if (tr1 != tr2)
 	{
 	  show_offset_or_size(indent + "anonymous data member at offset",
-			      get_data_member_offset(o),
-			      *ctxt, out);
+			      offset1, *ctxt, out);
 
 	  out << " changed from:\n"
 	      << indent << "  " << tr1 << "\n"
@@ -460,7 +469,6 @@ represent(const var_diff_sptr	&diff,
 	  begin_with_and = true;
 	  emitted = true;
 	}
-      // TODO: else ...?
     }
   else if (filtering::has_anonymous_data_member_change(diff))
     {
@@ -472,9 +480,7 @@ represent(const var_diff_sptr	&diff,
 	    + o->get_pretty_representation()
 	    + " at offset";
 
-	  show_offset_or_size(indent + repr,
-			      get_data_member_offset(o),
-			      *ctxt, out);
+	  show_offset_or_size(indent + repr, offset1, *ctxt, out);
 	  out << " became data member '"
 	      << n->get_pretty_representation()
 	      << "'\n";
@@ -486,9 +492,7 @@ represent(const var_diff_sptr	&diff,
 	    + o->get_pretty_representation()
 	    + " at offset";
 
-	  show_offset_or_size(indent + repr,
-			      get_data_member_offset(o),
-			      *ctxt, out);
+	  show_offset_or_size(indent + repr, offset1, *ctxt, out);
 	  out << " became anonymous data member '"
 	      << n->get_pretty_representation()
 	      << "'\n";
@@ -499,11 +503,16 @@ represent(const var_diff_sptr	&diff,
     }
   else if (diff_sptr d = diff->type_diff())
     {
-      if (local_only && d->has_local_changes())
+      if (ctxt->get_reporter()->diff_to_be_reported(d.get()))
 	{
-	  out << indent << "type '" << get_pretty_representation(o->get_type())
-	      << "' of '" << o->get_qualified_name()
-	      << "' changed";
+	  if (local_only)
+	    out << indent << "type '"
+		<< get_pretty_representation(o->get_type())
+		<< "' of '" << o->get_qualified_name()
+		<< "' changed";
+	  else
+	    out << indent
+		<< "type of '" << pretty_representation << "' changed";
 
 	  if (d->currently_reporting())
 	    out << ", as being reported\n";
@@ -517,26 +526,7 @@ represent(const var_diff_sptr	&diff,
 
 	  begin_with_and = true;
 	  emitted = true;
-	}
-      else
-	{
-	  if (ctxt->get_reporter()->diff_to_be_reported(d.get()))
-	    {
-	      out << indent
-		  << "type of '" << pretty_representation << "' changed";
-	      if (d->currently_reporting())
-		out << ", as being reported\n";
-	      else if (d->reported_once())
-		out << ", as reported earlier\n";
-	      else
-		{
-		  out << ":\n";
-		  d->report(out, indent + "  ");
-		}
-
-	      begin_with_and = true;
-	      emitted = true;
-	    }
+	  size_reported = true;
 	}
     }
 
@@ -581,9 +571,9 @@ represent(const var_diff_sptr	&diff,
 	out << "now becomes laid out";
       emitted = true;
     }
-  if ((ctxt->get_allowed_category() & SIZE_OR_OFFSET_CHANGE_CATEGORY))
+  if (show_size_offset_changes)
     {
-      if (get_data_member_offset(o) != get_data_member_offset(n))
+      if (offset1 != offset2)
 	{
 	  if (begin_with_and)
 	    {
@@ -592,26 +582,20 @@ represent(const var_diff_sptr	&diff,
 	    }
 	  else if (!emitted)
 	    {
+	      out << indent;
 	      if (is_strict_anonymous_data_member_change)
-		out << indent;
-	      else
-		out << indent << "'" << pretty_representation << "' ";
+		out << "anonymous data member ";
+	      out << "'" << pretty_representation << "' ";
 	    }
 	  else
 	    out << ", ";
 
-	  show_numerical_change("offset",
-				get_data_member_offset(o),
-				get_data_member_offset(n),
-				*ctxt, out);
+	  show_numerical_change("offset", offset1, offset2, *ctxt, out);
 	  maybe_show_relative_offset_change(diff, *ctxt, out);
-
 	  emitted = true;
 	}
-      if (// If we are not displaying only local changes, we must
-	  // have indicated the type size change already.
-	  local_only
-	  && (get_var_size_in_bits(o) != get_var_size_in_bits(n)))
+
+      if (!size_reported && size1 != size2)
 	{
 	  if (begin_with_and)
 	    {
@@ -620,18 +604,15 @@ represent(const var_diff_sptr	&diff,
 	    }
 	  else if (!emitted)
 	    {
+	      out << indent;
 	      if (is_strict_anonymous_data_member_change)
-		out << indent;
-	      else
-		out << indent << "'" << pretty_representation << "' ";
+		out << "anonymous data member ";
+	      out << "'" << pretty_representation << "' ";
 	    }
 	  else
 	    out << ", ";
 
-	  show_numerical_change("size",
-				get_var_size_in_bits(o),
-				get_var_size_in_bits(n),
-				*ctxt, out);
+	  show_numerical_change("size", size1, size2, *ctxt, out);
 	  maybe_show_relative_size_change(diff, *ctxt, out);
 	  emitted = true;
 	}

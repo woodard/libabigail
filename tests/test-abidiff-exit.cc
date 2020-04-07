@@ -176,6 +176,24 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-leaf-cxx-members-report.txt",
     "output/test-abidiff-exit/test-leaf-cxx-members-report.txt"
   },
+  {
+    "data/test-abidiff-exit/test-member-size-v0.o",
+    "data/test-abidiff-exit/test-member-size-v1.o",
+    "",
+    "",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    "data/test-abidiff-exit/test-member-size-report0.txt",
+    "output/test-abidiff-exit/test-member-size-report0.txt"
+  },
+  {
+    "data/test-abidiff-exit/test-member-size-v0.o",
+    "data/test-abidiff-exit/test-member-size-v1.o",
+    "",
+    "--leaf-changes-only",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    "data/test-abidiff-exit/test-member-size-report1.txt",
+    "output/test-abidiff-exit/test-member-size-report1.txt"
+  },
   {0, 0, 0 ,0,  abigail::tools_utils::ABIDIFF_OK, 0, 0}
 };
 

@@ -140,6 +140,12 @@ test-abidiff-exit/test-leaf-cxx-members-v0.o \
 test-abidiff-exit/test-leaf-cxx-members-v1.cc \
 test-abidiff-exit/test-leaf-cxx-members-v1.o \
 test-abidiff-exit/test-leaf-cxx-members-report.txt \
+test-abidiff-exit/test-member-size-v0.cc \
+test-abidiff-exit/test-member-size-v0.o \
+test-abidiff-exit/test-member-size-v1.cc \
+test-abidiff-exit/test-member-size-v1.o \
+test-abidiff-exit/test-member-size-report0.txt \
+test-abidiff-exit/test-member-size-report1.txt \
 \
 test-diff-dwarf/test0-v0.cc		\
 test-diff-dwarf/test0-v0.o			\

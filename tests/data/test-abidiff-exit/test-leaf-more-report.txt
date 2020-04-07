@@ -40,4 +40,3 @@ Removed/Changed/Added variables summary: 1 Removed, 1 Changed, 1 Added variable
     type 'int' of 'changed::foo' changed:
       type name changed from 'int' to 'long int'
       type size changed from 32 to 64 (in bits)
-    and size changed from 32 to 64 (in bits) (by +32 bits)
