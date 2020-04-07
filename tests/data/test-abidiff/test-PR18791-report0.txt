@@ -123,8 +123,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
                     type name changed from 'std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl' to 'std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl'
                     type size changed from 128 to 192 (in bits)
                     1 data member change:
-                      type of 'std::__detail::_List_node_base std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl::_M_node' changed:
-                        details were reported earlier
+                      type of 'std::__detail::_List_node_base std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl::_M_node' changed, as reported earlier
                       and name of 'std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl::_M_node' changed to 'std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl::_M_node'
                   and name of 'std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_impl' changed to 'std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_impl'
 

@@ -68,14 +68,14 @@
 	{								\
 	  string _name_ = _diff_->first_subject()->get_pretty_representation(); \
 	  if (_diff_->currently_reporting())				\
-	    out << indent << INTRO_TEXT << " '" << _name_ << "' changed; " \
-	      "details are being reported\n";				\
+	    out << indent << INTRO_TEXT << " '" << _name_		\
+		<< "' changed, as being reported\n";			\
 	  else								\
 	    {								\
 	      out << indent << INTRO_TEXT << " '"			\
-	      << _name_ << "' changed";				\
+	      << _name_ << "' changed";					\
 	      report_loc_info(D->first_subject(), *d.context(), out);	\
-	      out << ", as reported earlier\n";			\
+	      out << ", as reported earlier\n";				\
 	    }								\
 	  return ;							\
 	}								\

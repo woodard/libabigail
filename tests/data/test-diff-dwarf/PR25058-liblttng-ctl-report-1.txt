@@ -179,8 +179,7 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
         in pointed to type 'struct lttng_event_field':
           type size hasn't changed
           1 data member change:
-            type of 'lttng_event lttng_event_field::event' changed:
-              details were reported earlier
+            type of 'lttng_event lttng_event_field::event' changed, as reported earlier
 
   [C] 'function int lttng_list_tracepoints(lttng_handle*, lttng_event**)' has some indirect sub-type changes:
     parameter 2 of type 'lttng_event**' has sub-type changes:
@@ -232,7 +231,7 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
                   type size changed from 576 to 640 (in bits)
                   2 data member changes:
                     type of 'filter_node* filter_node::parent' changed:
-                      pointed to type 'struct filter_node' changed; details are being reported
+                      pointed to type 'struct filter_node' changed, as being reported
                     type of 'union {struct {} unknown; struct {filter_node* child;} root; struct {__anonymous_enum__ type; ast_link_type post_op; ast_link_type pre_op; union {char* string; uint64_t constant; double float_constant; char* identifier; filter_node* child;} u; filter_node* prev; filter_node* next;} expression; struct {op_type type; filter_node* lchild; filter_node* rchild;} op; struct {unary_op_type type; filter_node* child;} unary_op;} filter_node::u' changed:
                       type size changed from 320 to 384 (in bits)
                       4 data member changes:
@@ -245,21 +244,20 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
                               type size hasn't changed
                               1 enumerator insertion:
                                 'ast_link_type::AST_LINK_BRACKET' value '3'
-                            type of 'ast_link_type pre_op' changed:
-                              details were reported earlier
+                            type of 'ast_link_type pre_op' changed, as reported earlier
                             type of 'union {char* string; uint64_t constant; double float_constant; char* identifier; filter_node* child;} u' changed:
                               type size hasn't changed
                               1 data member change:
                                 type of 'filter_node* child' changed:
-                                  pointed to type 'struct filter_node' changed; details are being reported
+                                  pointed to type 'struct filter_node' changed, as being reported
                               type changed from:
                                 union {char* string; uint64_t constant; double float_constant; char* identifier; filter_node* child;}
                               to:
                                 union {char* string; uint64_t constant; double float_constant; char* identifier; filter_node* child;}
                             type of 'filter_node* prev' changed:
-                              pointed to type 'struct filter_node' changed; details are being reported
+                              pointed to type 'struct filter_node' changed, as being reported
                             type of 'filter_node* next' changed:
-                              pointed to type 'struct filter_node' changed; details are being reported
+                              pointed to type 'struct filter_node' changed, as being reported
                         type of 'struct {op_type type; filter_node* lchild; filter_node* rchild;} op' changed:
                           type size hasn't changed
                           3 data member changes:
@@ -278,14 +276,14 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
                                 'op_type::AST_OP_BIT_OR' value '11'
                                 'op_type::AST_OP_BIT_XOR' value '12'
                             type of 'filter_node* lchild' changed:
-                              pointed to type 'struct filter_node' changed; details are being reported
+                              pointed to type 'struct filter_node' changed, as being reported
                             type of 'filter_node* rchild' changed:
-                              pointed to type 'struct filter_node' changed; details are being reported
+                              pointed to type 'struct filter_node' changed, as being reported
                         type of 'struct {filter_node* child;} root' changed:
                           type size hasn't changed
                           1 data member change:
                             type of 'filter_node* child' changed:
-                              pointed to type 'struct filter_node' changed; details are being reported
+                              pointed to type 'struct filter_node' changed, as being reported
                         type of 'struct {unary_op_type type; filter_node* child;} unary_op' changed:
                           type size hasn't changed
                           2 data member changes:
@@ -296,7 +294,7 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
                               1 enumerator insertion:
                                 'unary_op_type::AST_UNARY_BIT_NOT' value '4'
                             type of 'filter_node* child' changed:
-                              pointed to type 'struct filter_node' changed; details are being reported
+                              pointed to type 'struct filter_node' changed, as being reported
                 'cds_list_head filter_ast::allocated_nodes' offset changed from 576 to 640 (in bits) (by +64 bits)
 
   [C] 'function YYSTYPE* lttng_yyget_lval(yyscan_t)' has some indirect sub-type changes:

@@ -37,7 +37,7 @@
                             13 data member changes:
                               type of 'QXLInstance* RedDispatcher::qxl' changed:
                                 in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
-                                  underlying type 'struct QXLInstance' changed; details are being reported
+                                  underlying type 'struct QXLInstance' changed, as being reported
                               type of 'Dispatcher RedDispatcher::dispatcher' changed:
                                 underlying type 'struct Dispatcher' at dispatcher.h:22:1 changed:
                                   type size changed from 960 to 1024 (in bits)
@@ -51,7 +51,7 @@
                               'int RedDispatcher::use_hardware_cursor' offset changed from 2240 to 2304 (in bits) (by +64 bits)
                               type of 'RedDispatcher* RedDispatcher::next' changed:
                                 in pointed to type 'typedef RedDispatcher' at red_worker.h:87:1:
-                                  underlying type 'struct RedDispatcher' changed; details are being reported
+                                  underlying type 'struct RedDispatcher' changed, as being reported
                               and offset changed from 2304 to 2368 (in bits) (by +64 bits)
                               'Ring RedDispatcher::async_commands' offset changed from 2368 to 2432 (in bits) (by +64 bits)
                               'pthread_mutex_t RedDispatcher::async_lock' offset changed from 2496 to 2560 (in bits) (by +64 bits)
@@ -185,7 +185,7 @@
                                   1 data member change:
                                     type of 'SpiceCharDeviceState* SpiceCharDeviceInstance::st' changed:
                                       in pointed to type 'typedef SpiceCharDeviceState' at spice-char.h:34:1:
-                                        underlying type 'struct SpiceCharDeviceState' changed; details are being reported
+                                        underlying type 'struct SpiceCharDeviceState' changed, as being reported
                             and offset changed from 896 to 960 (in bits) (by +64 bits)
                             'int SpiceCharDeviceState::during_read_from_device' offset changed from 960 to 1024 (in bits) (by +64 bits)
                             'int SpiceCharDeviceState::during_write_to_device' offset changed from 992 to 1056 (in bits) (by +64 bits)
@@ -223,7 +223,7 @@
                                               2 data member changes (2 filtered):
                                                 type of 'RedChannel* RedChannelClient::channel' changed:
                                                   in pointed to type 'typedef RedChannel' at red_channel.h:130:1:
-                                                    underlying type 'struct RedChannel' changed; details are being reported
+                                                    underlying type 'struct RedChannel' changed, as being reported
                                                 type of 'RedsStream* RedChannelClient::stream' changed:
                                                   in pointed to type 'typedef RedsStream' at reds_stream.h:31:1:
                                                     underlying type 'struct RedsStream' at reds.h:68:1 changed:
@@ -391,7 +391,7 @@
                                       in pointed to type 'function type void (RedChannel*, RedClient*, RedsStream*, int, int, uint32_t*, int, uint32_t*)':
                                         parameter 1 of type 'RedChannel*' has sub-type changes:
                                           in pointed to type 'typedef RedChannel' at red_channel.h:130:1:
-                                            underlying type 'struct RedChannel' changed; details are being reported
+                                            underlying type 'struct RedChannel' changed, as being reported
                                         parameter 3 of type 'RedsStream*' has sub-type changes:
                                           pointed to type 'typedef RedsStream' changed at red_channel.h:134:1, as reported earlier
                                   type of 'channel_client_disconnect_proc disconnect' changed:
@@ -524,7 +524,7 @@
                                     pointed to type 'typedef RedsStream' changed at red_channel.h:134:1, as reported earlier
                                   type of 'SndWorker* SndChannel::worker' changed:
                                     in pointed to type 'typedef SndWorker' at snd_worker.c:80:1:
-                                      underlying type 'struct SndWorker' changed; details are being reported
+                                      underlying type 'struct SndWorker' changed, as being reported
                                   type of 'RedChannelClient* SndChannel::channel_client' changed:
                                     pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
                                   type of 'snd_channel_handle_message_proc SndChannel::handle_message' changed:
@@ -532,26 +532,26 @@
                                       in pointed to type 'function type int (SndChannel*, typedef size_t, typedef uint32_t, void*)':
                                         parameter 1 of type 'SndChannel*' has sub-type changes:
                                           in pointed to type 'typedef SndChannel' at snd_worker.c:74:1:
-                                            underlying type 'struct SndChannel' changed; details are being reported
+                                            underlying type 'struct SndChannel' changed, as being reported
                                   type of 'snd_channel_on_message_done_proc SndChannel::on_message_done' changed:
                                     underlying type 'void (SndChannel*)*' changed:
                                       in pointed to type 'function type void (SndChannel*)':
                                         parameter 1 of type 'SndChannel*' has sub-type changes:
                                           in pointed to type 'typedef SndChannel' at snd_worker.c:74:1:
-                                            underlying type 'struct SndChannel' changed; details are being reported
+                                            underlying type 'struct SndChannel' changed, as being reported
                                   type of 'snd_channel_cleanup_channel_proc SndChannel::cleanup' changed:
                                     underlying type 'void (SndChannel*)*' changed:
                                       in pointed to type 'function type void (SndChannel*)':
                                         parameter 1 of type 'SndChannel*' has sub-type changes:
                                           in pointed to type 'typedef SndChannel' at snd_worker.c:74:1:
-                                            underlying type 'struct SndChannel' changed; details are being reported
+                                            underlying type 'struct SndChannel' changed, as being reported
                                 no data member change (1 filtered);
                           type of 'SndWorker* SndWorker::next' changed:
                             in pointed to type 'typedef SndWorker' at snd_worker.c:80:1:
-                              underlying type 'struct SndWorker' changed; details are being reported
+                              underlying type 'struct SndWorker' changed, as being reported
                       type of 'SpicePlaybackInstance* SpicePlaybackState::sin' changed:
                         in pointed to type 'typedef SpicePlaybackInstance' at spice-audio.h:33:1:
-                          underlying type 'struct SpicePlaybackInstance' changed; details are being reported
+                          underlying type 'struct SpicePlaybackInstance' changed, as being reported
 
     [C] 'function void spice_server_playback_put_samples(SpicePlaybackInstance*, uint32_t*)' at snd_worker.c:1100:1 has some indirect sub-type changes:
       parameter 1 of type 'SpicePlaybackInstance*' has sub-type changes:
@@ -590,11 +590,10 @@
                     1 data member insertion:
                       'uint32_t SpiceRecordState::frequency', at offset 512 (in bits) at snd_worker.c:166:1
                     2 data member changes:
-                      type of 'SndWorker SpiceRecordState::worker' changed:
-                        details were reported earlier
+                      type of 'SndWorker SpiceRecordState::worker' changed, as reported earlier
                       type of 'SpiceRecordInstance* SpiceRecordState::sin' changed:
                         in pointed to type 'typedef SpiceRecordInstance' at spice-audio.h:67:1:
-                          underlying type 'struct SpiceRecordInstance' changed; details are being reported
+                          underlying type 'struct SpiceRecordInstance' changed, as being reported
 
     [C] 'function void spice_server_record_set_mute(SpiceRecordInstance*, uint8_t)' at snd_worker.c:1279:1 has some indirect sub-type changes:
       parameter 1 of type 'SpiceRecordInstance*' has sub-type changes:

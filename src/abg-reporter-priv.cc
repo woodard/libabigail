@@ -506,13 +506,9 @@ represent(const var_diff_sptr	&diff,
 	      << "' changed";
 
 	  if (d->currently_reporting())
-	    {
-	      out << " as being reported\n";
-	    }
+	    out << ", as being reported\n";
 	  else if (d->reported_once())
-	    {
-	      out << " as reported earlier\n";
-	    }
+	    out << ", as reported earlier\n";
 	  else
 	    {
 	      out << ":\n";
@@ -527,13 +523,16 @@ represent(const var_diff_sptr	&diff,
 	  if (ctxt->get_reporter()->diff_to_be_reported(d.get()))
 	    {
 	      out << indent
-		  << "type of '" << pretty_representation << "' changed:\n";
+		  << "type of '" << pretty_representation << "' changed";
 	      if (d->currently_reporting())
-		out << indent << "  details are being reported\n";
+		out << ", as being reported\n";
 	      else if (d->reported_once())
-		out << indent << "  details were reported earlier\n";
+		out << ", as reported earlier\n";
 	      else
-		d->report(out, indent + "  ");
+		{
+		  out << ":\n";
+		  d->report(out, indent + "  ");
+		}
 
 	      begin_with_and = true;
 	      emitted = true;
@@ -716,8 +715,7 @@ represent(const var_diff_sptr	&diff,
 	<< "' has *some* difference - please report as a bug";
   else
     {
-      // do nothing
-      ;
+      ;// do nothing
     }
   emitted = true;
 
