@@ -1,3 +1,4 @@
+// See comments in -v1.c file.
 struct changed {
   int foo = 0;
 };

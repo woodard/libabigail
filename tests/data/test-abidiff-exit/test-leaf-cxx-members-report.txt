@@ -15,28 +15,27 @@ Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
 
 1 function with some sub-type change:
 
-  [C] 'method virtual int ops::changed_fn()' at test-leaf-cxx-members-v1.cc:6:1 has some sub-type changes:
+  [C] 'method virtual int ops::changed_fn()' at test-leaf-cxx-members-v1.cc:5:1 has some sub-type changes:
     return type changed:
       type name changed from 'int' to 'long int'
       type size changed from 32 to 64 (in bits)
 
-'struct ops at test-leaf-cxx-members-v0.cc:1:1' changed:
+'struct ops at test-leaf-cxx-members-v0.cc:2:1' changed:
   type size changed from 128 to 192 (in bits)
   1 member function deletion:
-    'method virtual int ops::deleted_fn()' at test-leaf-cxx-members-v0.cc:3:1, virtual at voffset 0/1    {_ZN3ops10deleted_fnEv}
+    'method virtual int ops::deleted_fn()' at test-leaf-cxx-members-v0.cc:6:1, virtual at voffset 1/1    {_ZN3ops10deleted_fnEv}
   1 member function insertion:
-    'method virtual long int ops::added_fn()' at test-leaf-cxx-members-v1.cc:3:1, virtual at voffset 0/1    {_ZN3ops8added_fnEv}
+    'method virtual long int ops::added_fn()' at test-leaf-cxx-members-v1.cc:11:1, virtual at voffset 1/1    {_ZN3ops8added_fnEv}
   there are member function changes:
     'method virtual int ops::changed_fn()' has some changes:
       return type changed:
         type name changed from 'int' to 'long int'
         type size changed from 32 to 64 (in bits)
+  1 data member deletion:
+    'int ops::deleted_var', at offset 96 (in bits) at test-leaf-cxx-members-v0.cc:5:1
+  1 data member insertion:
+    'long int ops::added_var', at offset 128 (in bits) at test-leaf-cxx-members-v1.cc:10:1
   there are data member changes:
-    type 'int' of 'ops::deleted_var' changed:
-      type name changed from 'int' to 'long int'
-      type size changed from 32 to 64 (in bits)
-    and name of 'ops::deleted_var' changed to 'ops::added_var' at test-leaf-cxx-members-v1.cc:2:1
     type 'int' of 'ops::changed_var' changed:
       type name changed from 'int' to 'long int'
       type size changed from 32 to 64 (in bits)
-    and offset changed from 96 to 128 (in bits) (by +32 bits)
