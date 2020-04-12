@@ -86,6 +86,7 @@ struct options
   abg_compat::shared_ptr<char>	di_root_path;
   vector<string>		suppression_paths;
   string			headers_dir;
+  vector<string>		header_files;
 
   options()
     : display_version(false),
@@ -106,6 +107,8 @@ display_usage(const string& prog_name, ostream& out)
     << "  --version|-v  display program version information and exit\n"
     << "  --debug-info-dir <path> the path under which to look for "
     << "  --headers-dir|--hd <patch> the path to headers of the elf file\n"
+    "debug info for the elf <abi-file>\n"
+    << "  --header-file|--hf <path> the path to one header of the elf file\n"
     "debug info for the elf <abi-file>\n"
     << "  --suppressions|--suppr <path> specify a suppression file\n"
     << "  --diff  for xml inputs, perform a text diff between "
@@ -159,6 +162,15 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  if (j >= argc)
 	    return false;
 	  opts.headers_dir = argv[j];
+	  ++i;
+	}
+      else if (!strcmp(argv[i], "--header-file")
+	       || !strcmp(argv[i], "--hf"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    return false;
+	  opts.header_files.push_back(argv[j]);
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--suppressions")
@@ -240,7 +252,8 @@ set_suppressions(ReadContextType& read_ctxt, const options& opts)
     read_suppressions(*i, supprs);
 
   suppression_sptr suppr =
-    abigail::tools_utils::gen_suppr_spec_from_headers(opts.headers_dir);
+    abigail::tools_utils::gen_suppr_spec_from_headers(opts.headers_dir,
+						      opts.header_files);
   if (suppr)
     supprs.push_back(suppr);
 

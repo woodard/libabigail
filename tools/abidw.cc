@@ -88,6 +88,7 @@ struct options
   vector<char*>	di_root_paths;
   vector<char**>	prepared_di_root_paths;
   string		headers_dir;
+  vector<string>	header_files;
   string		vmlinux;
   vector<string>	suppression_paths;
   vector<string>	kabi_whitelist_paths;
@@ -149,6 +150,7 @@ display_usage(const string& prog_name, ostream& out)
     << "  --version|-v  display program version information and exit\n"
     << "  --debug-info-dir|-d <dir-path>  look for debug info under 'dir-path'\n"
     << "  --headers-dir|--hd <path> the path to headers of the elf file\n"
+    << "  --header-file|--hf <path> the path one header of the elf file\n"
     << "  --out-file <file-path>  write the output to 'file-path'\n"
     << "  --noout  do not emit anything after reading the binary\n"
     << "  --suppressions|--suppr <path> specify a suppression file\n"
@@ -215,6 +217,15 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  if (j >= argc)
 	    return false;
 	  opts.headers_dir = argv[j];
+	  ++i;
+	}
+      else if (!strcmp(argv[i], "--header-file")
+	       || !strcmp(argv[i], "--hf"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    return false;
+	  opts.header_files.push_back(argv[j]);
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--out-file"))
@@ -349,6 +360,24 @@ maybe_check_suppression_files(const options& opts)
   return true;
 }
 
+/// Check that the header files supplied are present.
+/// If not, emit an error on stderr.
+///
+/// @param opts the options instance to use.
+///
+/// @return true if all header files are present, false otherwise.
+static bool
+maybe_check_header_files(const options& opts)
+{
+  for (vector<string>::const_iterator file = opts.header_files.begin();
+       file != opts.header_files.end();
+       ++file)
+    if (!check_file(*file, cerr, "abidw"))
+      return false;
+
+  return true;
+}
+
 /// Set suppression specifications to the @p read_context used to load
 /// the ABI corpus from the ELF/DWARF file.
 ///
@@ -371,7 +400,8 @@ set_suppressions(read_context& read_ctxt, options& opts)
     read_suppressions(*i, supprs);
 
   suppression_sptr suppr =
-    abigail::tools_utils::gen_suppr_spec_from_headers(opts.headers_dir);
+    abigail::tools_utils::gen_suppr_spec_from_headers(opts.headers_dir,
+						      opts.header_files);
   if (suppr)
     supprs.push_back(suppr);
 
@@ -719,6 +749,9 @@ main(int argc, char* argv[])
   prepare_di_root_paths(opts);
 
   if (!maybe_check_suppression_files(opts))
+    return 1;
+
+  if (!maybe_check_header_files(opts))
     return 1;
 
   abigail::tools_utils::file_type type =

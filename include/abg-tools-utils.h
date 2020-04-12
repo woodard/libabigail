@@ -83,8 +83,13 @@ string trim_white_space(const string&);
 string trim_leading_string(const string& from, const string& to_trim);
 void convert_char_stars_to_char_star_stars(const vector<char*>&,
 					   vector<char**>&);
+
 suppr::type_suppression_sptr
 gen_suppr_spec_from_headers(const string& hdrs_root_dir);
+
+suppr::type_suppression_sptr
+gen_suppr_spec_from_headers(const string& hdrs_root_dir,
+			    const vector<string>& hdr_files);
 
 suppr::suppressions_type
 gen_suppr_spec_from_kernel_abi_whitelists

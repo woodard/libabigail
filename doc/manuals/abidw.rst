@@ -132,6 +132,12 @@ Options
     library that the tool has to consider.  The tool will thus filter
     out types that are not defined in public headers.
 
+  * ``--header-file | --hf`` <header-file-path>
+
+    Specifies where to find one of the public headers of the abi file
+    that the tool has to consider.  The tool will thus filter out
+    types that are not defined in public headers.
+
   * ``--no-linux-kernel-mode``
 
     Without this option, if abipkgiff detects that the binaries it is

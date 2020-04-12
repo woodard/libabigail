@@ -1787,6 +1787,43 @@ make_path_absolute_to_be_freed(const char*p)
   return result;
 }
 
+/// This is a sub-routine of gen_suppr_spec_from_headers and
+/// handle_fts_entry.
+///
+/// It setups a type suppression which is meant to keep types defined
+/// in a given file and suppress all other types.
+///
+/// @param file_path the path to the file that defines types that are
+/// meant to be kept by the type suppression.  All other types defined
+/// in other files are to be suppressed.  Note that this file path is
+/// added to the vector returned by
+/// type_suppression::get_source_locations_to_keep()
+///
+/// @param suppr the type suppression to setup.  If this smart pointer
+/// is nil then a new instance @ref type_suppression is created and
+/// this variable is made to point to it.
+static void
+handle_file_entry(const string& file_path,
+		  type_suppression_sptr& suppr)
+{
+  if (!suppr)
+    {
+      suppr.reset(new type_suppression(get_private_types_suppr_spec_label(),
+				       /*type_name_regexp=*/"",
+				       /*type_name=*/""));
+
+      // Types that are defined in system headers are usually
+      // OK to be considered as public types.
+      suppr->set_source_location_to_keep_regex_str("^/usr/include/");
+      suppr->set_is_artificial(true);
+    }
+
+  // And types that are defined in header files that are under
+  // the header directory file we are looking are to be
+  // considered public types too.
+  suppr->get_source_locations_to_keep().insert(file_path);
+}
+
 /// This is a sub-routine of gen_suppr_spec_from_headers.
 ///
 /// @param entry if this file represents a regular (or symlink) file,
@@ -1815,28 +1852,58 @@ handle_fts_entry(const FTSENT *entry,
       if (string_ends_with(fname, ".h")
 	  || string_ends_with(fname, ".hpp")
 	  || string_ends_with(fname, ".hxx"))
-	{
-	  if (!suppr)
-	    {
-	      suppr.reset(new type_suppression(get_private_types_suppr_spec_label(),
-					       /*type_name_regexp=*/"",
-					       /*type_name=*/""));
-
-	      // Types that are defined in system headers are usually
-	      // OK to be considered as public types.
-	      suppr->set_source_location_to_keep_regex_str("^/usr/include/");
-	      suppr->set_is_artificial(true);
-	    }
-	  // And types that are defined in header files that are under
-	  // the header directory file we are looking are to be
-	  // considered public types too.
-	  suppr->get_source_locations_to_keep().insert(fname);
-	}
+	handle_file_entry (fname, suppr);
     }
 }
 
 /// Generate a type suppression specification that suppresses ABI
-/// changes for types defines in source files that are *NOT* in a give
+/// changes for types defined in source files that are neither in a
+/// given header root dir, not in a set of header files.
+///
+/// @param headers_root_dir ABI changes in types defined in files
+/// *NOT* found in this directory tree are going be suppressed.
+///
+/// @param header_files a set of additional header files that define
+/// types that are to be kept (not supressed) by the returned type
+/// suppression.
+///
+/// @return the resulting type suppression generated, if any file was
+/// found in the directory tree @p headers_root_dir.
+type_suppression_sptr
+gen_suppr_spec_from_headers(const string& headers_root_dir,
+			    const vector<string>& header_files)
+{
+  type_suppression_sptr result;
+
+  if (headers_root_dir.empty() && header_files.empty())
+    // We were given no headers root dir and no header files
+    // so the resulting suppression specification shall be empty.
+    return result;
+
+  if (!headers_root_dir.empty())
+    {
+      char* paths[] = {const_cast<char*>(headers_root_dir.c_str()), 0};
+
+      FTS *file_hierarchy = fts_open(paths, FTS_LOGICAL|FTS_NOCHDIR, NULL);
+      if (!file_hierarchy)
+	return result;
+
+      FTSENT *entry;
+      while ((entry = fts_read(file_hierarchy)))
+	handle_fts_entry(entry, result);
+      fts_close(file_hierarchy);
+    }
+
+  for (vector<string>::const_iterator file = header_files.begin();
+       file != header_files.end();
+       ++file)
+    handle_file_entry(*file, result);
+
+  return result;
+}
+
+/// Generate a type suppression specification that suppresses ABI
+/// changes for types defined in source files that are not in a given
 /// header root dir.
 ///
 /// @param headers_root_dir ABI changes in types defined in files
@@ -1847,24 +1914,9 @@ handle_fts_entry(const FTSENT *entry,
 type_suppression_sptr
 gen_suppr_spec_from_headers(const string& headers_root_dir)
 {
-  type_suppression_sptr result;
-
-  if (headers_root_dir.empty())
-    // We were given no headers root dir so the resulting suppression
-    // specification shall be empty.
-    return result;
-
-  char* paths[] = {const_cast<char*>(headers_root_dir.c_str()), 0};
-
-  FTS *file_hierarchy = fts_open(paths, FTS_LOGICAL|FTS_NOCHDIR, NULL);
-  if (!file_hierarchy)
-    return result;
-
-  FTSENT *entry;
-  while ((entry = fts_read(file_hierarchy)))
-    handle_fts_entry(entry, result);
-  fts_close(file_hierarchy);
-  return result;
+  // We don't list individual files, just look under the headers_path.
+  vector<string> header_files;
+  return gen_suppr_spec_from_headers(headers_root_dir, header_files);
 }
 
 /// Generate a suppression specification from kernel abi whitelist

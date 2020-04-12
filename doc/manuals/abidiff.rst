@@ -104,9 +104,21 @@ Options
     library that the tool has to consider.  The tool will thus filter
     out ABI changes on types that are not defined in public headers.
 
+  * ``--header-file1 | --hf1`` <header-file-path-1>
+
+    Specifies where to find one public header of the first shared
+    library that the tool has to consider.  The tool will thus filter
+    out ABI changes on types that are not defined in public headers.
+
   * ``--headers-dir2 | --hd2`` <headers-directory-path-1>
 
     Specifies where to find the public headers of the second shared
+    library that the tool has to consider.  The tool will thus filter
+    out ABI changes on types that are not defined in public headers.
+
+  * ``--header-file2 | --hf2`` <header-file-path-2>
+
+    Specifies where to find one public header of the second shared
     library that the tool has to consider.  The tool will thus filter
     out ABI changes on types that are not defined in public headers.
 
@@ -141,13 +153,13 @@ Options
 
   * ``--drop-private-types``
 
-    This option is to be used with the ``--headers-dir1`` and
-    ``--headers-dir2`` options.  With this option, types that are
-    *NOT* defined in the headers are entirely dropped from the
-    internal representation build by Libabigail to represent the ABI.
-    They thus don't have to be filtered out from the final ABI change
-    report because they are not even present in Libabigail's
-    representation.
+    This option is to be used with the ``--headers-dir1``,
+    ``header-file1``, ``header-file2`` and ``--headers-dir2`` options.
+    With this option, types that are *NOT* defined in the headers are
+    entirely dropped from the internal representation build by
+    Libabigail to represent the ABI.  They thus don't have to be
+    filtered out from the final ABI change report because they are not
+    even present in Libabigail's representation.
 
     Without this option however, those private types are kept in the
     internal representation and later filtered out from the report.
@@ -218,9 +230,10 @@ Options
 
     This option might incur some serious performance degradation as
     the number of types analyzed can be huge.  However, if paired with
-    the ``--headers-dir{1,2}`` options, the additional non-reachable
-    types analyzed are restricted to those defined in public headers
-    files, thus hopefully making the performance hit acceptable.
+    the ``--headers-dir{1,2}`` and/or ``header-file{1,2}`` options,
+    the additional non-reachable types analyzed are restricted to
+    those defined in public headers files, thus hopefully making the
+    performance hit acceptable.
 
     Also, using this option alongside suppression specifications (by
     also using the ``--suppressions`` option) might help keep the number of

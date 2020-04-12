@@ -76,6 +76,12 @@ Options
     library that the tool has to consider.  The tool will thus filter
     out types that are not defined in public headers.
 
+  * ``--header-file | --hf`` <header-file-path>
+
+    Specifies where to find one of the public headers of the abi file
+    that the tool has to consider.  The tool will thus filter out
+    types that are not defined in public headers.
+
   * ``--stdin | --``
 
     Read the input content from standard input.
