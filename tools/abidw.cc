@@ -109,6 +109,7 @@ struct options
   bool			abidiff;
   bool			annotate;
   bool			do_log;
+  bool			drop_private_types;
 
   options()
     : display_version(),
@@ -126,7 +127,8 @@ struct options
       show_locs(true),
       abidiff(),
       annotate(),
-      do_log()
+      do_log(),
+      drop_private_types(false)
   {}
 
   ~options()
@@ -158,6 +160,7 @@ display_usage(const string& prog_name, ostream& out)
     << "  --no-corpus-path  do not take the path to the corpora into account\n"
     << "  --no-show-locs  do not show location information\n"
     << "  --short-locs  only print filenames rather than paths\n"
+    << "  --drop-private-types  drop private types from representation\n"
     << "  --no-comp-dir-path  do not show compilation path information\n"
     << "  --check-alternate-debug-info <elf-path>  check alternate debug info "
     "of <elf-path>\n"
@@ -294,6 +297,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	}
       else if (!strcmp(argv[i], "--load-all-types"))
 	opts.load_all_types = true;
+      else if (!strcmp(argv[i], "--drop-private-types"))
+	opts.drop_private_types = true;
       else if (!strcmp(argv[i], "--no-linux-kernel-mode"))
 	opts.linux_kernel_mode = false;
       else if (!strcmp(argv[i], "--abidiff"))
@@ -403,7 +408,11 @@ set_suppressions(read_context& read_ctxt, options& opts)
     abigail::tools_utils::gen_suppr_spec_from_headers(opts.headers_dir,
 						      opts.header_files);
   if (suppr)
-    supprs.push_back(suppr);
+    {
+      if (opts.drop_private_types)
+	suppr->set_drops_artifact_from_ir(true);
+      supprs.push_back(suppr);
+    }
 
   using abigail::tools_utils::gen_suppr_spec_from_kernel_abi_whitelists;
   const suppressions_type& wl_suppr =

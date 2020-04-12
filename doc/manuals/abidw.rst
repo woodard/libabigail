@@ -138,6 +138,14 @@ Options
     that the tool has to consider.  The tool will thus filter out
     types that are not defined in public headers.
 
+  * ``--drop-private-types``
+
+    This option is to be used with the ``--headers-dir`` and/or
+    ``header-file`` options.  With this option, types that are *NOT*
+    defined in the headers are entirely dropped from the internal
+    representation build by Libabigail to represent the ABI and will
+    not end up in the abi XML file.
+
   * ``--no-linux-kernel-mode``
 
     Without this option, if abipkgiff detects that the binaries it is
