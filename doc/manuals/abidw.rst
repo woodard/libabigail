@@ -146,6 +146,13 @@ Options
     representation build by Libabigail to represent the ABI and will
     not end up in the abi XML file.
 
+  * ``--drop-undefined-syms``
+
+    With this option functions or variables for which the (exported)
+    ELF symbol is undefined are dropped from the internal
+    representation build by Libabigail to represent the ABI and will
+    not end up in the abi XML file.
+
   * ``--no-linux-kernel-mode``
 
     Without this option, if abipkgiff detects that the binaries it is

@@ -3259,6 +3259,7 @@ public:
   string			elf_architecture_;
   corpus::exported_decls_builder* exported_decls_builder_;
   options_type			options_;
+  bool				drop_undefined_syms_;
   read_context();
 
 public:
@@ -3427,6 +3428,7 @@ public:
     options_.env = environment;
     options_.load_in_linux_kernel_mode = linux_kernel_mode;
     options_.load_all_types = load_all_types;
+    drop_undefined_syms_ = false;
     load_in_linux_kernel_mode(linux_kernel_mode);
   }
 
@@ -3517,6 +3519,23 @@ public:
   void
   env(ir::environment* env)
   {options_.env = env;}
+
+  /// Getter for the flag that tells us if we are dropping functions
+  /// and variables that have undefined symbols.
+  ///
+  /// @return true iff we are dropping functions and variables that have
+  /// undefined symbols.
+  bool
+  drop_undefined_syms() const
+  {return drop_undefined_syms_;}
+
+  /// Setter for the flag that tells us if we are dropping functions
+  /// and variables that have undefined symbols.
+  ///
+  /// @param f the new value of the flag.
+  void
+  drop_undefined_syms(bool f)
+  {drop_undefined_syms_ = f;}
 
   /// Getter of the suppression specifications to be used during
   /// ELF/DWARF parsing.
@@ -9493,6 +9512,18 @@ get_show_stats(read_context& ctxt)
 void
 set_show_stats(read_context& ctxt, bool f)
 {ctxt.show_stats(f);}
+
+/// Setter of the "drop_undefined_syms" flag.
+///
+/// This flag tells if we should drop functions or variables
+/// with undefined symbols.
+///
+/// @param ctxt the read context to consider for this flag.
+///
+/// @param f the value of the flag.
+void
+set_drop_undefined_syms(read_context& ctxt, bool f)
+{ctxt.drop_undefined_syms(f);}
 
 /// Setter of the "do_log" flag.
 ///
@@ -16682,8 +16713,15 @@ function_is_suppressed(const read_context& ctxt,
     flinkage_name = fname;
   string qualified_name = build_qualified_name(scope, fname);
 
-  // A non-member function which symbol is not exported is suppressed.
-  if (!is_class_type(scope) && !die_is_declaration_only(function_die))
+  // A non-member non-static function which symbol is not exported is
+  // suppressed.
+  //
+  // Note that if the non-member non-static function has an undefined
+  // symbol, by default, it's not suppressed.  Unless we are asked to
+  // drop undefined symbols too.
+  if (!is_class_type(scope)
+      && (!die_is_declaration_only(function_die)
+	  || ctxt.drop_undefined_syms()))
     {
       Dwarf_Addr fn_addr;
       if (!ctxt.get_function_address(function_die, fn_addr))
@@ -16789,15 +16827,11 @@ variable_is_suppressed(const read_context& ctxt,
     linkage_name = name;
   string qualified_name = build_qualified_name(scope, name);
 
-  // If a non member variable that is a declaration (has no exported
-  // symbol), is not the specification of another concrete variable,
-  // then it's suppressed.  This is a size optimization; it removes
-  // useless declaration-only variables from the IR.
-  //
-  // Otherwise, if a non-member variable is the specification of
-  // another concrete variable, then this function looks at
-  // suppression specification specifications to know if its
-  // suppressed.
+  // If a non member variable that is a declaration (has no defined
+  // and exported symbol) and is not the specification of another
+  // concrete variable, then it's suppressed.  This is a size
+  // optimization; it removes useless declaration-only variables from
+  // the IR.
   if (!is_class_type(scope) && !is_required_decl_spec)
     {
       Dwarf_Addr var_addr = 0;

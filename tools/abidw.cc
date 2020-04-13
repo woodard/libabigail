@@ -110,6 +110,7 @@ struct options
   bool			annotate;
   bool			do_log;
   bool			drop_private_types;
+  bool			drop_undefined_syms;
 
   options()
     : display_version(),
@@ -128,7 +129,8 @@ struct options
       abidiff(),
       annotate(),
       do_log(),
-      drop_private_types(false)
+      drop_private_types(false),
+      drop_undefined_syms(false)
   {}
 
   ~options()
@@ -161,6 +163,7 @@ display_usage(const string& prog_name, ostream& out)
     << "  --no-show-locs  do not show location information\n"
     << "  --short-locs  only print filenames rather than paths\n"
     << "  --drop-private-types  drop private types from representation\n"
+    << "  --drop-undefined-syms  drop undefined symbols from representation\n"
     << "  --no-comp-dir-path  do not show compilation path information\n"
     << "  --check-alternate-debug-info <elf-path>  check alternate debug info "
     "of <elf-path>\n"
@@ -299,6 +302,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.load_all_types = true;
       else if (!strcmp(argv[i], "--drop-private-types"))
 	opts.drop_private_types = true;
+      else if (!strcmp(argv[i], "--drop-undefined-syms"))
+	opts.drop_undefined_syms = true;
       else if (!strcmp(argv[i], "--no-linux-kernel-mode"))
 	opts.linux_kernel_mode = false;
       else if (!strcmp(argv[i], "--abidiff"))
@@ -785,6 +790,7 @@ main(int argc, char* argv[])
 						opts.load_all_types,
 						opts.linux_kernel_mode);
       read_context& ctxt = *c;
+      set_drop_undefined_syms(ctxt, opts.drop_undefined_syms);
       set_show_stats(ctxt, opts.show_stats);
       set_suppressions(ctxt, opts);
       abigail::dwarf_reader::set_do_log(ctxt, opts.do_log);

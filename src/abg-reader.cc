@@ -131,6 +131,7 @@ private:
   corpus::exported_decls_builder*			m_exported_decls_builder;
   suppr::suppressions_type				m_supprs;
   bool							m_tracking_non_reachable_types;
+  bool							m_drop_undefined_syms;
 
   read_context();
 
@@ -141,7 +142,8 @@ public:
       m_reader(reader),
       m_corp_node(),
       m_exported_decls_builder(),
-      m_tracking_non_reachable_types()
+      m_tracking_non_reachable_types(),
+      m_drop_undefined_syms()
   {}
 
   /// Getter for the flag that tells us if we are tracking types that
@@ -161,6 +163,23 @@ public:
   void
   tracking_non_reachable_types(bool f)
   {m_tracking_non_reachable_types = f;}
+
+  /// Getter for the flag that tells us if we are dropping functions
+  /// and variables that have undefined symbols.
+  ///
+  /// @return true iff we are dropping functions and variables that have
+  /// undefined symbols.
+  bool
+  drop_undefined_syms() const
+  {return m_drop_undefined_syms;}
+
+  /// Setter for the flag that tells us if we are dropping functions
+  /// and variables that have undefined symbols.
+  ///
+  /// @param f the new value of the flag.
+  void
+  drop_undefined_syms(bool f)
+  {m_drop_undefined_syms = f;}
 
   /// Getter of the path to the ABI file.
   ///
