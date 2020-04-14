@@ -409,14 +409,21 @@ represent(const var_diff_sptr	&diff,
   if (!ctxt->get_reporter()->diff_to_be_reported(diff.get()))
     return;
 
-  var_decl_sptr o = diff->first_var();
-  var_decl_sptr n = diff->second_var();
-  string name1 = o->get_qualified_name();
-  string name2 = n->get_qualified_name();
-  uint64_t size1 = get_var_size_in_bits(o);
-  uint64_t size2 = get_var_size_in_bits(n);
-  uint64_t offset1 = get_data_member_offset(o);
-  uint64_t offset2 = get_data_member_offset(n);
+  const var_decl_sptr o = diff->first_var();
+  const var_decl_sptr n = diff->second_var();
+  const bool o_anon = !!is_anonymous_data_member(o);
+  const bool n_anon = !!is_anonymous_data_member(n);
+  const bool is_strict_anonymous_data_member_change = o_anon && n_anon;
+  const string o_name = o->get_qualified_name();
+  const string n_name = n->get_qualified_name();
+  const uint64_t o_size = get_var_size_in_bits(o);
+  const uint64_t n_size = get_var_size_in_bits(n);
+  const uint64_t o_offset = get_data_member_offset(o);
+  const uint64_t n_offset = get_data_member_offset(n);
+  const string o_pretty_representation = o->get_pretty_representation();
+  // no n_pretty_representation here as it's only needed in a couple of places
+  const bool show_size_offset_changes = ctxt->get_allowed_category()
+					& SIZE_OR_OFFSET_CHANGE_CATEGORY;
 
   // Has the main diff text been output?
   bool emitted = false;
@@ -424,44 +431,36 @@ represent(const var_diff_sptr	&diff,
   bool begin_with_and = false;
   // Have we reported a size change already?
   bool size_reported = false;
-  // Are we reporting a change to an anonymous member?
-  bool is_strict_anonymous_data_member_change = false;
 
-  string pretty_representation = o->get_pretty_representation();
-  bool show_size_offset_changes = ctxt->get_allowed_category()
-				  & SIZE_OR_OFFSET_CHANGE_CATEGORY;
-
-  if (is_anonymous_data_member(o) && is_anonymous_data_member(n))
+  if (is_strict_anonymous_data_member_change)
     {
-      is_strict_anonymous_data_member_change = true;
-      string tr1 = o->get_pretty_representation();
-      string tr2 = n->get_pretty_representation();
-      type_base_sptr t1 = o->get_type(), t2 = n->get_type();
-      if (tr1 != tr2)
+      const string n_pretty_representation = n->get_pretty_representation();
+      const type_base_sptr o_type = o->get_type(), n_type = n->get_type();
+      if (o_pretty_representation != n_pretty_representation)
 	{
 	  show_offset_or_size(indent + "anonymous data member at offset",
-			      offset1, *ctxt, out);
+			      o_offset, *ctxt, out);
 
 	  out << " changed from:\n"
-	      << indent << "  " << tr1 << "\n"
+	      << indent << "  " << o_pretty_representation << "\n"
 	      << indent << "to:\n"
-	      << indent << "  " << tr2 << "\n";
+	      << indent << "  " << n_pretty_representation << "\n";
 
 	  begin_with_and = true;
 	  emitted = true;
 	}
-      else if (get_type_name(t1) != get_type_name(t2)
-	       && is_decl(t1) && is_decl(t2)
-	       && is_decl(t1)->get_is_anonymous()
-	       && is_decl(t2)->get_is_anonymous())
+      else if (get_type_name(o_type) != get_type_name(n_type)
+	       && is_decl(o_type) && is_decl(n_type)
+	       && is_decl(o_type)->get_is_anonymous()
+	       && is_decl(n_type)->get_is_anonymous())
 	{
 	  out << indent << "while looking at anonymous data member '"
-	      << tr1 << "':\n"
+	      << o_pretty_representation << "':\n"
 	      << indent << "the internal name of that anonymous data member"
 			   "changed from:\n"
-	      << indent << " " << get_type_name(o->get_type()) << "\n"
+	      << indent << " " << get_type_name(o_type) << "\n"
 	      << indent << "to:\n"
-	      << indent << " " << get_type_name(n->get_type()) << "\n"
+	      << indent << " " << get_type_name(n_type) << "\n"
 	      << indent << " This is usually due to "
 	      << "an anonymous member type being added or removed from "
 	      << "the containing type\n";
@@ -472,36 +471,20 @@ represent(const var_diff_sptr	&diff,
     }
   else if (filtering::has_anonymous_data_member_change(diff))
     {
+      ABG_ASSERT(o_anon != n_anon);
       // So we are looking at a non-anonymous data member change from
-      // or to anonymous data member.
-      if (is_anonymous_data_member(o))
-	{
-	  string repr = "anonymous data member "
-	    + o->get_pretty_representation()
-	    + " at offset";
-
-	  show_offset_or_size(indent + repr, offset1, *ctxt, out);
-	  out << " became data member '"
-	      << n->get_pretty_representation()
-	      << "'\n";
-	}
-      else
-	{
-	  ABG_ASSERT(is_anonymous_data_member(n));
-	  string repr = "data member "
-	    + o->get_pretty_representation()
-	    + " at offset";
-
-	  show_offset_or_size(indent + repr, offset1, *ctxt, out);
-	  out << " became anonymous data member '"
-	      << n->get_pretty_representation()
-	      << "'\n";
-	}
+      // or to an anonymous data member.
+      const string n_pretty_representation = n->get_pretty_representation();
+      out << indent << (o_anon ? "anonymous " : "")
+	  << "data member " << o_pretty_representation;
+      show_offset_or_size(" at offset", o_offset, *ctxt, out);
+      out << " became " << (n_anon ? "anonymous " : "")
+	  << "data member '" << n_pretty_representation << "'\n";
 
       begin_with_and = true;
       emitted = true;
     }
-  else if (diff_sptr d = diff->type_diff())
+  else if (const diff_sptr d = diff->type_diff())
     {
       if (ctxt->get_reporter()->diff_to_be_reported(d.get()))
 	{
@@ -512,7 +495,7 @@ represent(const var_diff_sptr	&diff,
 		<< "' changed";
 	  else
 	    out << indent
-		<< "type of '" << pretty_representation << "' changed";
+		<< "type of '" << o_pretty_representation << "' changed";
 
 	  if (d->currently_reporting())
 	    out << ", as being reported\n";
@@ -530,7 +513,7 @@ represent(const var_diff_sptr	&diff,
 	}
     }
 
-  if (!filtering::has_anonymous_data_member_change(diff) && name1 != name2)
+  if (!filtering::has_anonymous_data_member_change(diff) && o_name != n_name)
     {
       if (filtering::has_harmless_name_change(o, n)
 	  && !(ctxt->get_allowed_category()
@@ -547,7 +530,7 @@ represent(const var_diff_sptr	&diff,
 	    out << indent;
 	  else
 	    out << ", ";
-	  out << "name of '" << name1 << "' changed to '" << name2 << "'";
+	  out << "name of '" << o_name << "' changed to '" << n_name << "'";
 	  report_loc_info(n, *ctxt, out);
 	  emitted = true;
 	}
@@ -562,7 +545,7 @@ represent(const var_diff_sptr	&diff,
 	  begin_with_and = false;
 	}
       else if (!emitted)
-	out << indent << "'" << pretty_representation << "' ";
+	out << indent << "'" << o_pretty_representation << "' ";
       else
 	out << ", ";
       if (get_data_member_is_laid_out(o))
@@ -573,7 +556,7 @@ represent(const var_diff_sptr	&diff,
     }
   if (show_size_offset_changes)
     {
-      if (offset1 != offset2)
+      if (o_offset != n_offset)
 	{
 	  if (begin_with_and)
 	    {
@@ -585,17 +568,17 @@ represent(const var_diff_sptr	&diff,
 	      out << indent;
 	      if (is_strict_anonymous_data_member_change)
 		out << "anonymous data member ";
-	      out << "'" << pretty_representation << "' ";
+	      out << "'" << o_pretty_representation << "' ";
 	    }
 	  else
 	    out << ", ";
 
-	  show_numerical_change("offset", offset1, offset2, *ctxt, out);
+	  show_numerical_change("offset", o_offset, n_offset, *ctxt, out);
 	  maybe_show_relative_offset_change(diff, *ctxt, out);
 	  emitted = true;
 	}
 
-      if (!size_reported && size1 != size2)
+      if (!size_reported && o_size != n_size)
 	{
 	  if (begin_with_and)
 	    {
@@ -607,12 +590,12 @@ represent(const var_diff_sptr	&diff,
 	      out << indent;
 	      if (is_strict_anonymous_data_member_change)
 		out << "anonymous data member ";
-	      out << "'" << pretty_representation << "' ";
+	      out << "'" << o_pretty_representation << "' ";
 	    }
 	  else
 	    out << ", ";
 
-	  show_numerical_change("size", size1, size2, *ctxt, out);
+	  show_numerical_change("size", o_size, n_size, *ctxt, out);
 	  maybe_show_relative_size_change(diff, *ctxt, out);
 	  emitted = true;
 	}
@@ -625,7 +608,7 @@ represent(const var_diff_sptr	&diff,
 	  begin_with_and = false;
 	}
       else if (!emitted)
-	out << indent << "'" << pretty_representation << "' ";
+	out << indent << "'" << o_pretty_representation << "' ";
       else
 	out << ", ";
       out << "elf binding changed from " << o->get_binding()
@@ -640,7 +623,7 @@ represent(const var_diff_sptr	&diff,
 	  begin_with_and = false;
 	}
       else if (!emitted)
-	out << indent << "'" << pretty_representation << "' ";
+	out << indent << "'" << o_pretty_representation << "' ";
       else
 	out << ", ";
       out << "visibility changed from " << o->get_visibility()
@@ -657,7 +640,7 @@ represent(const var_diff_sptr	&diff,
 	  begin_with_and = false;
 	}
       else if (!emitted)
-	out << indent << "'" << pretty_representation << "' ";
+	out << indent << "'" << o_pretty_representation << "' ";
       else
 	out << ", ";
 
@@ -676,7 +659,7 @@ represent(const var_diff_sptr	&diff,
 	  begin_with_and = false;
 	}
       else if (!emitted)
-	out << indent << "'" << pretty_representation << "' ";
+	out << indent << "'" << o_pretty_representation << "' ";
       else
 	out << ", ";
 
@@ -692,7 +675,7 @@ represent(const var_diff_sptr	&diff,
     ;
   else if (!emitted)
     // We appear to have fallen off the edge of the map.
-    out << indent << "'" << pretty_representation
+    out << indent << "'" << o_pretty_representation
 	<< "' has *some* difference - please report as a bug";
   else
     {
