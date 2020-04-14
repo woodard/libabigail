@@ -680,7 +680,7 @@ struct variable_suppression::priv
       {
 	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	if (regcomp(r.get(), symbol_name_not_regex_str_.c_str(),
-		    REG_EXTENDED == 0) == 0)
+		    REG_EXTENDED) == 0)
 	  symbol_name_not_regex_ = r;
       }
     return symbol_name_not_regex_;
