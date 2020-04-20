@@ -36,11 +36,13 @@
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
+#include "abg-cxx-compat.h"
 #include "abg-tools-utils.h"
+#include "abg-workers.h"
 #include "test-utils.h"
 
-using std::string;
-using std::cerr;
+using abigail::tests::get_src_dir;
+using abigail::tests::get_build_dir;
 
 /// This is an aggregate that specifies where a test shall get its
 /// input from and where it shall write its ouput to.
@@ -526,7 +528,7 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test11-add-data-member-0.suppr",
     "--no-default-suppression --no-show-locs --no-redundant",
     "data/test-diff-suppr/test11-add-data-member-report-1.txt",
-    "output/test-diff-suppr/test11-add-data-member-report-1.txt"
+    "output/test-diff-suppr/test11-add-data-member-report-1_0.txt"
   },
   {
     "data/test-diff-suppr/libtest11-add-data-member-v0.so",
@@ -536,7 +538,7 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test11-add-data-member-1.suppr",
     "--no-default-suppression --no-show-locs --no-redundant",
     "data/test-diff-suppr/test11-add-data-member-report-1.txt",
-    "output/test-diff-suppr/test11-add-data-member-report-1.txt"
+    "output/test-diff-suppr/test11-add-data-member-report-1_1.txt"
   },
   {
     "data/test-diff-suppr/libtest11-add-data-member-v0.so",
@@ -546,7 +548,7 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test11-add-data-member-2.suppr",
     "--no-default-suppression --no-show-locs --no-redundant",
     "data/test-diff-suppr/test11-add-data-member-report-1.txt",
-    "output/test-diff-suppr/test11-add-data-member-report-1.txt"
+    "output/test-diff-suppr/test11-add-data-member-report-1_2.txt"
   },
   {
     "data/test-diff-suppr/libtest11-add-data-member-v0.so",
@@ -556,7 +558,7 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test11-add-data-member-3.suppr",
     "--no-default-suppression --no-show-locs --no-redundant",
     "data/test-diff-suppr/test11-add-data-member-report-1.txt",
-    "output/test-diff-suppr/test11-add-data-member-report-1.txt"
+    "output/test-diff-suppr/test11-add-data-member-report-1_3.txt"
   },
   {
     "data/test-diff-suppr/libtest11-add-data-member-v0.so",
@@ -566,7 +568,7 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test11-add-data-member-4.suppr",
     "--no-default-suppression --no-show-locs --no-redundant",
     "data/test-diff-suppr/test11-add-data-member-report-1.txt",
-    "output/test-diff-suppr/test11-add-data-member-report-1.txt"
+    "output/test-diff-suppr/test11-add-data-member-report-1_4.txt"
   },
   {
     "data/test-diff-suppr/libtest12-add-data-member-v0.so",
@@ -1323,16 +1325,6 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest24-soname-v1.so",
     "",
     "",
-    "data/test-diff-suppr/test24-soname-suppr-13.txt",
-    "--no-default-suppression --no-show-locs --no-redundant",
-    "data/test-diff-suppr/test24-soname-report-13.txt",
-    "output/test-diff-suppr/test24-soname-report-13.txt"
-  },
-  {
-    "data/test-diff-suppr/libtest24-soname-v0.so",
-    "data/test-diff-suppr/libtest24-soname-v1.so",
-    "",
-    "",
     "data/test-diff-suppr/test24-soname-suppr-14.txt",
     "--no-default-suppression --no-show-locs --no-redundant",
     "data/test-diff-suppr/test24-soname-report-14.txt",
@@ -1846,7 +1838,7 @@ InOutSpec in_out_specs[] =
     "",
     "--no-default-suppression",
     "data/test-diff-suppr/test44-suppr-sym-name-not-regexp-report-1.txt",
-    "output/test-diff-suppr/test44-suppr-sym-name-not-regexp-report-1.txt"
+    "output/test-diff-suppr/test44-suppr-sym-name-not-regexp-report-1_abi.txt"
   },
   {
     "data/test-diff-suppr/test44-suppr-sym-name-not-regexp-v0.o.abi",
@@ -1856,7 +1848,7 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test44-suppr-sym-name-not-regexp.suppr.txt",
     "--no-default-suppression",
     "data/test-diff-suppr/test44-suppr-sym-name-not-regexp-report-2.txt",
-    "output/test-diff-suppr/test44-suppr-sym-name-not-regexp-report-2.txt"
+    "output/test-diff-suppr/test44-suppr-sym-name-not-regexp-report-2_abi.txt"
   },
   {
     "data/test-diff-suppr/test45-abi.xml",
@@ -1986,7 +1978,7 @@ InOutSpec in_out_specs[] =
     "",
     "--no-default-suppression --non-reachable-types",
     "data/test-diff-suppr/test47-non-reachable-types-report-1.txt",
-    "output/test-diff-suppr/test47-non-reachable-types-report-1.txt"
+    "output/test-diff-suppr/test47-non-reachable-types-report-1_alltypes.txt"
   },
   {
     "data/test-diff-suppr/test47-non-reachable-types-v0.o.alltypes.abixml",
@@ -2026,7 +2018,7 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest48-soname-abixml-suppr-2.txt",
     "--no-default-suppression",
     "data/test-diff-suppr/libtest48-soname-abixml-report-1.txt",
-    "output/test-diff-suppr/libtest48-soname-abixml-report-1.txt"
+    "output/test-diff-suppr/libtest48-soname-abixml-report-1_suppr2.txt"
   },
   {
     "data/test-diff-suppr/libtest48-soname-abixml-v0.so",
@@ -2036,7 +2028,7 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest48-soname-abixml-suppr-3.txt",
     "--no-default-suppression",
     "data/test-diff-suppr/libtest48-soname-abixml-report-2.txt",
-    "output/test-diff-suppr/libtest48-soname-abixml-report-2.txt"
+    "output/test-diff-suppr/libtest48-soname-abixml-report-2_suppr3.txt"
   },
   {
     "data/test-diff-suppr/libtest48-soname-abixml-v0.so",
@@ -2046,99 +2038,184 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest48-soname-abixml-suppr-4.txt",
     "--no-default-suppression",
     "data/test-diff-suppr/libtest48-soname-abixml-report-1.txt",
-    "output/test-diff-suppr/libtest48-soname-abixml-report-1.txt"
+    "output/test-diff-suppr/libtest48-soname-abixml-report-1_suppr4.txt"
   },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}
 };
 
-int
-main()
+/// The task that performs the tests.
+struct test_task : public abigail::workers::task
 {
-  using abigail::tests::get_src_dir;
-  using abigail::tests::get_build_dir;
-  using abigail::tools_utils::ensure_parent_dir_created;
-  using abigail::tools_utils::abidiff_status;
+  const InOutSpec&   spec;
+  const std::string& in_base_path;
+  const std::string& out_base_path;
 
-  bool is_ok = true;
-  string in_elfv0_path, in_elfv1_path, headers_dir1, headers_dir2,
-    in_suppression_path, abidiff_options, abidiff, cmd,
-    ref_diff_report_path, out_diff_report_path;
+  bool		     is_ok;
+  std::string	     error_message;
 
-    for (InOutSpec* s = in_out_specs; s->in_elfv0_path; ++s)
+  test_task(const InOutSpec&   s,
+	    const std::string& in_base_path,
+	    const std::string& out_base_path)
+    : spec(s),
+      in_base_path(in_base_path),
+      out_base_path(out_base_path),
+      is_ok(true)
+  {}
+
+  virtual void
+  perform()
+  {
+    using abigail::tools_utils::ensure_parent_dir_created;
+    using abigail::tools_utils::abidiff_status;
+
+    const std::string in_elfv0_path = in_base_path + spec.in_elfv0_path;
+    const std::string in_elfv1_path = in_base_path + spec.in_elfv1_path;
+
+    std::string in_suppression_path;
+    if (spec.in_suppr_path && strcmp(spec.in_suppr_path, ""))
+      in_suppression_path = in_base_path + spec.in_suppr_path;
+
+    const std::string ref_diff_report_path =
+	in_base_path + spec.in_report_path;
+    const std::string out_diff_report_path =
+	out_base_path + spec.out_report_path;
+
+    std::string headers_dir1;
+    if (spec.headers_dir1 && strcmp(spec.headers_dir1, ""))
+      headers_dir1 = spec.headers_dir1;
+
+    std::string headers_dir2;
+    if (spec.headers_dir2 && strcmp(spec.headers_dir2, ""))
+      headers_dir2 = spec.headers_dir2;
+
+    if (!ensure_parent_dir_created(out_diff_report_path))
       {
-	in_elfv0_path = string(get_src_dir()) + "/tests/" + s->in_elfv0_path;
-	in_elfv1_path = string(get_src_dir()) + "/tests/" + s->in_elfv1_path;
-	if (s->in_suppr_path && strcmp(s->in_suppr_path, ""))
-	  in_suppression_path =
-	    string(get_src_dir()) + "/tests/" + s->in_suppr_path;
-	else
-	  in_suppression_path.clear();
-
-	abidiff_options = s->abidiff_options;
-
-	ref_diff_report_path =
-	  string(get_src_dir()) + "/tests/" + s->in_report_path;
-	out_diff_report_path =
-	  string(get_build_dir()) + "/tests/" + s->out_report_path;
-
-	if (s->headers_dir1 && strcmp(s->headers_dir1, ""))
-	  headers_dir1 = s->headers_dir1;
-	else
-	  headers_dir1.clear();
-
-	if (s->headers_dir2 && strcmp(s->headers_dir2, ""))
-	  headers_dir2 = s->headers_dir2;
-	else
-	  headers_dir2.clear();
-
-	if (!ensure_parent_dir_created(out_diff_report_path))
-	  {
-	    cerr << "could not create parent directory for "
-		 << out_diff_report_path;
-	    is_ok = false;
-	    continue;
-	  }
-
-	abidiff = string(get_build_dir()) + "/tools/abidiff";
-	abidiff += " " + abidiff_options;
-
-	if (!in_suppression_path.empty())
-	  abidiff += " --suppressions " + in_suppression_path;
-
-	if (!headers_dir1.empty())
-	  abidiff +=
-	    " --hd1 " + string(get_src_dir()) + "/tests/" + headers_dir1;
-
-	if (!headers_dir2.empty())
-	  abidiff +=
-	    " --hd2 " + string(get_src_dir()) + "/tests/" + headers_dir2;
-
-	cmd = abidiff + " " + in_elfv0_path + " " + in_elfv1_path;
-	cmd += " > " + out_diff_report_path;
-
-	bool bidiff_ok = true;
-	int code = system(cmd.c_str());
-	if (!WIFEXITED(code))
-	  bidiff_ok = false;
-	else
-	  {
-	    abigail::tools_utils::abidiff_status status =
-	      static_cast<abidiff_status>(WEXITSTATUS(code));
-	    if (abigail::tools_utils::abidiff_status_has_error(status))
-	      bidiff_ok = false;
-	  }
-
-	if (bidiff_ok)
-	  {
-	    cmd = "diff -u " + ref_diff_report_path
-	      + " " + out_diff_report_path;
-	    if (system(cmd.c_str()))
-	      is_ok = false;
-	  }
-	else
-	  is_ok = false;
+	error_message =
+	    "could not create parent directory for " + out_diff_report_path;
+	is_ok = false;
+	return;
       }
 
-    return !is_ok;
+    std::string abidiff = std::string(get_build_dir()) + "/tools/abidiff" + " "
+			  + spec.abidiff_options;
+
+    if (!in_suppression_path.empty())
+      abidiff += " --suppressions " + in_suppression_path;
+
+    if (!headers_dir1.empty())
+      abidiff += " --hd1 " + in_base_path + headers_dir1;
+
+    if (!headers_dir2.empty())
+      abidiff += " --hd2 " + in_base_path + headers_dir2;
+
+    const std::string cmd = abidiff + " " + in_elfv0_path + " " + in_elfv1_path
+			    + " > " + out_diff_report_path;
+
+    bool bidiff_ok = true;
+    int	 code = system(cmd.c_str());
+    if (!WIFEXITED(code))
+      bidiff_ok = false;
+    else
+      {
+	abigail::tools_utils::abidiff_status status =
+	    static_cast<abidiff_status>(WEXITSTATUS(code));
+	if (abigail::tools_utils::abidiff_status_has_error(status))
+	  bidiff_ok = false;
+      }
+
+    if (bidiff_ok)
+      {
+	const std::string diff_cmd =
+	    "diff -u " + ref_diff_report_path + " " + out_diff_report_path;
+	if (system(diff_cmd.c_str()))
+	  is_ok = false;
+      }
+    else
+      is_ok = false;
+  }
+};
+
+
+int
+main(int argc, char *argv[])
+{
+  bool no_parallel = false;
+
+  if (argc == 2)
+    {
+      if (argv[1] == std::string("--no-parallel"))
+	no_parallel = true;
+      else
+	{
+	  std::cerr << "unrecognized option\n";
+	  std::cerr << "usage: " << argv[0] << " [--no-parallel]\n";
+	  return 1;
+	}
+    }
+
+  /// Create a task queue.  The max number of worker threads of the
+  /// queue is the number of the concurrent threads supported by the
+  /// processor of the machine this code runs on.  But if
+  /// --no-parallel was provided then the number of worker threads
+  /// equals 1.
+  const size_t num_tests = sizeof(in_out_specs) / sizeof (InOutSpec) - 1;
+  const size_t num_workers = (no_parallel
+			? 1
+			: std::min(abigail::workers::get_number_of_threads(),
+				   num_tests));
+  abigail::workers::queue task_queue(num_workers);
+
+  const std::string in_base_path = std::string(get_src_dir()) + "/tests/";
+  const std::string out_base_path = std::string(get_build_dir()) + "/tests/";
+
+  // output paths need to be unique to avoid collisions during parallel testing
+  abg_compat::unordered_set<std::string> out_paths;
+  bool non_unique_output_paths = false;
+  for (InOutSpec* s = in_out_specs; s->in_elfv0_path; ++s) {
+	if (!out_paths.insert(s->out_report_path).second) {
+	    std::cerr << "Non-unique output path: " << s->out_report_path
+		      << '\n';
+	    non_unique_output_paths = true;
+	}
+  }
+  if (non_unique_output_paths)
+    return 1;
+
+  for (InOutSpec* s = in_out_specs; s->in_elfv0_path; ++s)
+    {
+      abg_compat::shared_ptr<test_task> t(
+	  new test_task(*s, in_base_path, out_base_path));
+      ABG_ASSERT(task_queue.schedule_task(t));
+    }
+
+  /// Wait for all worker threads to finish their job, and wind down.
+  task_queue.wait_for_workers_to_complete();
+
+  // Now walk the results and print whatever error messages need to be printed.
+  const std::vector<abigail::workers::task_sptr>& completed_tasks =
+      task_queue.get_completed_tasks();
+
+  ABG_ASSERT(completed_tasks.size() == num_tests);
+
+  bool is_ok = true;
+  for (std::vector<abigail::workers::task_sptr>::const_iterator ti =
+	 completed_tasks.begin();
+       ti != completed_tasks.end();
+       ++ti)
+    {
+      abg_compat::shared_ptr<test_task> t =
+	  abg_compat::dynamic_pointer_cast<test_task>(*ti);
+      if (!t->is_ok)
+	{
+	  is_ok = false;
+	  if (!t->error_message.empty())
+	    std::cerr << t->error_message << '\n';
+	  else
+	    std::cerr << "FAIL: test with output '" << t->spec.out_report_path
+		      << "' failed!\n";
+	}
+    }
+
+  return !is_ok;
 }
