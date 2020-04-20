@@ -4,5 +4,5 @@
   # member named 'member0'.  That would be the type named
   # leaf_to_filter.
 
-  name_regexp = *.
+  name_regexp = .*
   has_data_member_inserted_between = {offset_after(member0), end}
