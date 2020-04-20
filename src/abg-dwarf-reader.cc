@@ -7460,17 +7460,7 @@ public:
 
 	    if (load_fun_map && symbol->is_public())
 	      {
-		{
-		  string_elf_symbols_map_type::iterator it =
-		    fun_syms_->find(symbol->get_name());
-		  if (it == fun_syms_->end())
-		    {
-		      (*fun_syms_)[symbol->get_name()] = elf_symbols();
-		      it = fun_syms_->find(symbol->get_name());
-		    }
-		  string name = symbol->get_name();
-		  it->second.push_back(symbol);
-		}
+		(*fun_syms_)[symbol->get_name()].push_back(symbol);
 
 		{
 		  GElf_Addr symbol_value =
@@ -7572,16 +7562,7 @@ public:
 		}
 	      }
 	    else if (load_undefined_fun_map && !symbol->is_defined())
-	      {
-		string_elf_symbols_map_type::iterator it =
-		  undefined_fun_syms_->find(symbol->get_name());
-		if (it == undefined_fun_syms_->end())
-		  {
-		    (*undefined_fun_syms_)[symbol->get_name()] = elf_symbols();
-		    it = undefined_fun_syms_->find(symbol->get_name());
-		  }
-		it->second.push_back(symbol);
-	      }
+	      (*undefined_fun_syms_)[symbol->get_name()].push_back(symbol);
 	  }
 	else if ((load_var_map || load_undefined_var_map)
 		 && (GELF_ST_TYPE(sym->st_info) == STT_OBJECT
@@ -7598,17 +7579,7 @@ public:
 
 	    if (load_var_map && symbol->is_public())
 	      {
-		{
-		  string_elf_symbols_map_type::iterator it =
-		    var_syms_->find(symbol->get_name());
-		  if (it == var_syms_->end())
-		    {
-		      (*var_syms_)[symbol->get_name()] = elf_symbols();
-		      it = var_syms_->find(symbol->get_name());
-		    }
-		  string name = symbol->get_name();
-		  it->second.push_back(symbol);
-		}
+		(*var_syms_)[symbol->get_name()].push_back(symbol);
 
 		if (symbol->is_common_symbol())
 		  {
@@ -7641,16 +7612,7 @@ public:
 		  }
 	      }
 	    else if (load_undefined_var_map && !symbol->is_defined())
-	      {
-		string_elf_symbols_map_type::iterator it =
-		  undefined_var_syms_->find(symbol->get_name());
-		if (it == undefined_var_syms_->end())
-		  {
-		    (*undefined_var_syms_)[symbol->get_name()] = elf_symbols();
-		    it = undefined_var_syms_->find(symbol->get_name());
-		  }
-		it->second.push_back(symbol);
-	      }
+	      (*undefined_var_syms_)[symbol->get_name()].push_back(symbol);
 	  }
       }
     return true;
