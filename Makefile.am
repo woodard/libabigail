@@ -82,3 +82,9 @@ tarball-and-all: tag-and-all
 
 tag-and-all: distcheck
 	$(MAKE) tag-release-only
+
+# the default for GZIP_ENV is --best, which is pretty slow for check runs
+# distcheck-fast therefore compresses with --fast instead
+distcheck-fast:
+	$(MAKE) distcheck GZIP_ENV="--fast"
+
