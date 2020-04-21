@@ -46,6 +46,7 @@ runtestabidiffexit		\
 runtestini			\
 runtesttoolsutils		\
 runtestkmiwhitelist		\
+runtestelfhelpers		\
 $(CXX11_TESTS)
 
 if ENABLE_RUNNING_TESTS_WITH_PY3
@@ -142,6 +143,9 @@ runtesttoolsutils_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
 runtestkmiwhitelist_SOURCES = test-kmi-whitelist.cc
 runtestkmiwhitelist_LDADD = libtestutils.la libcatch.la $(top_builddir)/src/libabigail.la
 
+runtestelfhelpers_SOURCES = test-elf-helpers.cc
+runtestelfhelpers_LDADD = libcatch.la $(top_builddir)/src/libabigail.la
+
 runtestsvg_SOURCES=test-svg.cc
 runtestsvg_LDADD=$(top_builddir)/src/libabigail.la
 
@@ -172,7 +176,7 @@ runtestfedabipkgdiffpy3.sh$(EXEEXT):
 runtestdefaultsupprspy3_sh_SOURCES =
 runtestdefaultsupprspy3.sh$(EXEEXT):
 
-AM_CPPFLAGS=-I${abs_top_srcdir}/include \
+AM_CPPFLAGS=-I${abs_top_srcdir}/include -I${abs_top_srcdir}/src \
 -I${abs_top_builddir}/include -I${abs_top_srcdir}/tools -fPIC
 
 clean-local: clean-local-check

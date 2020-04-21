@@ -39,6 +39,8 @@ abg-config.cc				\
 abg-ini.cc				\
 abg-workers.cc				\
 abg-tools-utils.cc			\
+abg-elf-helpers.h			\
+abg-elf-helpers.cc			\
 $(CXX11_SOURCES)
 
 libabigail_la_LIBADD = $(DEPS_LIBS)
