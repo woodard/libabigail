@@ -178,6 +178,19 @@ Options
    In the emitted ABI representation, do not show file, line or column
    where ABI artifacts are defined.
 
+  * ``--no-parameter-names``
+
+    In the emitted ABI representation, do not show names of function
+    parameters, just the types.
+
+  * ``--named-type-ids``
+
+    Without this option ids used to reference types in the XML file
+    use simple numbers.  With this option the ids used are derived
+    from the type name to make it easier to see which type is
+    referenced and make the XML file more stable in case new types are
+    added (without this option that might mean all id numbers change).
+
   * ``--check-alternate-debug-info-base-name`` <*elf-path*>
 
 

@@ -173,6 +173,7 @@ class write_context
   bool					m_write_architecture;
   bool					m_write_corpus_path;
   bool					m_write_comp_dir;
+  bool					m_write_parameter_names;
   bool					m_short_locs;
   mutable type_ptr_map			m_type_id_map;
   mutable type_ptr_set_type		m_emitted_type_set;
@@ -208,6 +209,7 @@ public:
       m_write_architecture(true),
       m_write_corpus_path(true),
       m_write_comp_dir(true),
+      m_write_parameter_names(true),
       m_short_locs(false)
   {}
 
@@ -305,6 +307,20 @@ public:
   void
   set_short_locs(bool f)
   {m_short_locs = f;}
+
+  /// Getter of the parameter-names option.
+  ///
+  /// @return true iff parameter names shall be emitted
+  bool
+  get_write_parameter_names() const
+  {return m_write_parameter_names;}
+
+  /// Setter of the parameter-names option
+  ///
+  /// @param f the new value of the flag.
+  void
+  set_write_parameter_names(bool f)
+  {m_write_parameter_names = f;}
 
   /// Getter of the "show-locs" option.
   ///
@@ -2033,6 +2049,18 @@ void
 set_short_locs(write_context& ctxt, bool flag)
 {ctxt.set_short_locs(flag);}
 
+/// Set the 'parameter-names' flag.
+///
+/// When this flag is set then the XML writer will emit the names of
+/// function parameters.
+///
+/// @param ctxt the context to set this flag on to.
+///
+/// @param flag the new value of the 'parameter-names' flag.
+void
+set_write_parameter_names(write_context& ctxt, bool flag)
+{ctxt.set_write_parameter_names(flag);}
+
 /// Serialize the canonical types of a given scope.
 ///
 /// @param scope the scope to consider.
@@ -3146,7 +3174,7 @@ write_function_decl(const function_decl_sptr& decl, write_context& ctxt,
 	    << "'";
 	  ctxt.record_type_as_referenced(parm_type);
 
-	  if (!(*pi)->get_name().empty())
+	  if (ctxt.get_write_parameter_names() && !(*pi)->get_name().empty())
 	    o << " name='" << (*pi)->get_name() << "'";
 	}
       write_is_artificial(*pi, o);
