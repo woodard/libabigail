@@ -500,6 +500,257 @@ Elf_Scn*
 find_data1_section(Elf* elf_handle)
 {return find_section(elf_handle, ".data1", SHT_PROGBITS);}
 
+/// Return the SHT_GNU_versym, SHT_GNU_verdef and SHT_GNU_verneed
+/// sections that are involved in symbol versionning.
+///
+/// @param elf_handle the elf handle to use.
+///
+/// @param versym_section the SHT_GNU_versym section found.  If the
+/// section wasn't found, this is set to nil.
+///
+/// @param verdef_section the SHT_GNU_verdef section found.  If the
+/// section wasn't found, this is set to nil.
+///
+/// @param verneed_section the SHT_GNU_verneed section found.  If the
+/// section wasn't found, this is set to nil.
+///
+/// @return true iff at least one of the sections where found.
+bool
+get_symbol_versionning_sections(Elf*		elf_handle,
+				Elf_Scn*&	versym_section,
+				Elf_Scn*&	verdef_section,
+				Elf_Scn*&	verneed_section)
+{
+  Elf_Scn* section = NULL;
+  GElf_Shdr mem;
+  Elf_Scn* versym = NULL, *verdef = NULL, *verneed = NULL;
+
+  while ((section = elf_nextscn(elf_handle, section)) != NULL)
+    {
+      GElf_Shdr* h = gelf_getshdr(section, &mem);
+      if (h->sh_type == SHT_GNU_versym)
+	versym = section;
+      else if (h->sh_type == SHT_GNU_verdef)
+	verdef = section;
+      else if (h->sh_type == SHT_GNU_verneed)
+	verneed = section;
+    }
+
+  if (versym || verdef || verneed)
+    {
+      // At least one the versionning sections was found.  Return it.
+      versym_section = versym;
+      verdef_section = verdef;
+      verneed_section = verneed;
+      return true;
+    }
+
+  return false;
+}
+
+/// Get the version definition (from the SHT_GNU_verdef section) of a
+/// given symbol represented by a pointer to GElf_Versym.
+///
+/// @param elf_hande the elf handle to use.
+///
+/// @param versym the symbol to get the version definition for.
+///
+/// @param verdef_section the SHT_GNU_verdef section.
+///
+/// @param version the resulting version definition.  This is set iff
+/// the function returns true.
+///
+/// @return true upon successful completion, false otherwise.
+bool
+get_version_definition_for_versym(Elf*			 elf_handle,
+				  GElf_Versym*		 versym,
+				  Elf_Scn*		 verdef_section,
+				  elf_symbol::version&	 version)
+{
+  Elf_Data* verdef_data = elf_getdata(verdef_section, NULL);
+  GElf_Verdef verdef_mem;
+  GElf_Verdef* verdef = gelf_getverdef(verdef_data, 0, &verdef_mem);
+  size_t vd_offset = 0;
+
+  for (;; vd_offset += verdef->vd_next)
+    {
+      for (;verdef != 0;)
+	{
+	  if (verdef->vd_ndx == (*versym & 0x7fff))
+	    // Found the version of the symbol.
+	    break;
+	  vd_offset += verdef->vd_next;
+	  verdef = (verdef->vd_next == 0
+		    ? 0
+		    : gelf_getverdef(verdef_data, vd_offset, &verdef_mem));
+	}
+
+      if (verdef != 0)
+	{
+	  GElf_Verdaux verdaux_mem;
+	  GElf_Verdaux *verdaux = gelf_getverdaux(verdef_data,
+						  vd_offset + verdef->vd_aux,
+						  &verdaux_mem);
+	  GElf_Shdr header_mem;
+	  GElf_Shdr* verdef_section_header = gelf_getshdr(verdef_section,
+							  &header_mem);
+	  size_t verdef_stridx = verdef_section_header->sh_link;
+	  version.str(elf_strptr(elf_handle, verdef_stridx, verdaux->vda_name));
+	  if (*versym & 0x8000)
+	    version.is_default(false);
+	  else
+	    version.is_default(true);
+	  return true;
+	}
+      if (!verdef || verdef->vd_next == 0)
+	break;
+    }
+  return false;
+}
+
+/// Get the version needed (from the SHT_GNU_verneed section) to
+/// resolve an undefined symbol represented by a pointer to
+/// GElf_Versym.
+///
+/// @param elf_hande the elf handle to use.
+///
+/// @param versym the symbol to get the version definition for.
+///
+/// @param verneed_section the SHT_GNU_verneed section.
+///
+/// @param version the resulting version definition.  This is set iff
+/// the function returns true.
+///
+/// @return true upon successful completion, false otherwise.
+bool
+get_version_needed_for_versym(Elf*			elf_handle,
+			      GElf_Versym*		versym,
+			      Elf_Scn*			verneed_section,
+			      elf_symbol::version&	version)
+{
+  if (versym == 0 || elf_handle == 0 || verneed_section == 0)
+    return false;
+
+  size_t vn_offset = 0;
+  Elf_Data* verneed_data = elf_getdata(verneed_section, NULL);
+  GElf_Verneed verneed_mem;
+  GElf_Verneed* verneed = gelf_getverneed(verneed_data, 0, &verneed_mem);
+
+  for (;verneed; vn_offset += verneed->vn_next)
+    {
+      size_t vna_offset = vn_offset;
+      GElf_Vernaux vernaux_mem;
+      GElf_Vernaux *vernaux = gelf_getvernaux(verneed_data,
+					      vn_offset + verneed->vn_aux,
+					      &vernaux_mem);
+      for (;vernaux != 0 && verneed;)
+	{
+	  if (vernaux->vna_other == *versym)
+	    // Found the version of the symbol.
+	    break;
+	  vna_offset += verneed->vn_next;
+	  verneed = (verneed->vn_next == 0
+		     ? 0
+		     : gelf_getverneed(verneed_data, vna_offset, &verneed_mem));
+	}
+
+      if (verneed != 0 && vernaux != 0 && vernaux->vna_other == *versym)
+	{
+	  GElf_Shdr header_mem;
+	  GElf_Shdr* verneed_section_header = gelf_getshdr(verneed_section,
+							   &header_mem);
+	  size_t verneed_stridx = verneed_section_header->sh_link;
+	  version.str(elf_strptr(elf_handle,
+				 verneed_stridx,
+				 vernaux->vna_name));
+	  if (*versym & 0x8000)
+	    version.is_default(false);
+	  else
+	    version.is_default(true);
+	  return true;
+	}
+
+      if (!verneed || verneed->vn_next == 0)
+	break;
+    }
+  return false;
+}
+
+/// Return the version for a symbol that is at a given index in its
+/// SHT_SYMTAB section.
+///
+/// @param elf_handle the elf handle to use.
+///
+/// @param symbol_index the index of the symbol to consider.
+///
+/// @param get_def_version if this is true, it means that that we want
+/// the version for a defined symbol; in that case, the version is
+/// looked for in a section of type SHT_GNU_verdef.  Otherwise, if
+/// this parameter is false, this means that we want the version for
+/// an undefined symbol; in that case, the version is the needed one
+/// for the symbol to be resolved; so the version is looked fo in a
+/// section of type SHT_GNU_verneed.
+///
+/// @param version the version found for symbol at @p symbol_index.
+///
+/// @return true iff a version was found for symbol at index @p
+/// symbol_index.
+bool
+get_version_for_symbol(Elf*			elf_handle,
+		       size_t			symbol_index,
+		       bool			get_def_version,
+		       elf_symbol::version&	version)
+{
+  Elf_Scn *versym_section = NULL,
+    *verdef_section = NULL,
+    *verneed_section = NULL;
+
+  if (!get_symbol_versionning_sections(elf_handle,
+				       versym_section,
+				       verdef_section,
+				       verneed_section))
+    return false;
+
+  GElf_Versym versym_mem;
+  Elf_Data* versym_data = (versym_section)
+    ? elf_getdata(versym_section, NULL)
+    : NULL;
+  GElf_Versym* versym = (versym_data)
+    ? gelf_getversym(versym_data, symbol_index, &versym_mem)
+    : NULL;
+
+  if (versym == 0 || *versym <= 1)
+    // I got these value from the code of readelf.c in elfutils.
+    // Apparently, if the symbol version entry has these values, the
+    // symbol must be discarded. This is not documented in the
+    // official specification.
+    return false;
+
+  if (get_def_version)
+    {
+      if (*versym == 0x8001)
+	// I got this value from the code of readelf.c in elfutils
+	// too.  It's not really documented in the official
+	// specification.
+	return false;
+
+      if (verdef_section
+	  && get_version_definition_for_versym(elf_handle, versym,
+					       verdef_section, version))
+	return true;
+    }
+  else
+    {
+      if (verneed_section
+	  && get_version_needed_for_versym(elf_handle, versym,
+					   verneed_section, version))
+	return true;
+    }
+
+  return false;
+}
+
+
 
 } // end namespace elf_helpers
 } // end namespace abigail

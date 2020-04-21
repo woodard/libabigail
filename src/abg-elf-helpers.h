@@ -96,6 +96,34 @@ find_data_section(Elf* elf_handle);
 Elf_Scn*
 find_data1_section(Elf* elf_handle);
 
+bool
+get_symbol_versionning_sections(Elf*		elf_handle,
+				Elf_Scn*&	versym_section,
+				Elf_Scn*&	verdef_section,
+				Elf_Scn*&	verneed_section);
+
+//
+// Helpers for symbol versioning
+//
+
+bool
+get_version_definition_for_versym(Elf*			 elf_handle,
+				  GElf_Versym*		 versym,
+				  Elf_Scn*		 verdef_section,
+				  elf_symbol::version&	 version);
+
+bool
+get_version_needed_for_versym(Elf*			elf_handle,
+			      GElf_Versym*		versym,
+			      Elf_Scn*			verneed_section,
+			      elf_symbol::version&	version);
+
+bool
+get_version_for_symbol(Elf*			elf_handle,
+		       size_t			symbol_index,
+		       bool			get_def_version,
+		       elf_symbol::version&	version);
+
 } // end namespace elf_helpers
 } // end namespace abigail
 
