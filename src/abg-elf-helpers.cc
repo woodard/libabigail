@@ -558,7 +558,7 @@ get_symbol_versionning_sections(Elf*		elf_handle,
 Elf_Scn*
 find_ksymtab_strings_section(Elf *elf_handle)
 {
-  if (binary_is_linux_kernel(elf_handle))
+  if (is_linux_kernel(elf_handle))
     return find_section(elf_handle, "__ksymtab_strings", SHT_PROGBITS);
   return 0;
 }
@@ -773,7 +773,7 @@ get_version_for_symbol(Elf*			elf_handle,
 /// @return true iff the binary denoted by @p elf_handle is a Linux
 /// kernel module.
 bool
-binary_is_linux_kernel_module(Elf *elf_handle)
+is_linux_kernel_module(Elf *elf_handle)
 {
   return (find_section(elf_handle, ".modinfo", SHT_PROGBITS)
 	  && find_section(elf_handle,
@@ -789,12 +789,12 @@ binary_is_linux_kernel_module(Elf *elf_handle)
 /// @return true iff the binary denoted by @p elf_handle is a Linux
 /// kernel binary
 bool
-binary_is_linux_kernel(Elf *elf_handle)
+is_linux_kernel(Elf *elf_handle)
 {
   return (find_section(elf_handle,
 		       "__ksymtab_strings",
 		       SHT_PROGBITS)
-	  || binary_is_linux_kernel_module(elf_handle));
+	  || is_linux_kernel_module(elf_handle));
 }
 
 } // end namespace elf_helpers

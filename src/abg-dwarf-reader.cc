@@ -5938,7 +5938,7 @@ public:
 
     address_set_sptr set;
     bool looking_at_linux_kernel_binary =
-      load_in_linux_kernel_mode() && is_linux_kernel_binary();
+      load_in_linux_kernel_mode() && is_linux_kernel(elf_handle());
 
     if (looking_at_linux_kernel_binary)
       {
@@ -5978,7 +5978,7 @@ public:
 
     address_set_sptr set;
     bool looking_at_linux_kernel_binary =
-      load_in_linux_kernel_mode() && is_linux_kernel_binary();
+      load_in_linux_kernel_mode() && is_linux_kernel(elf_handle());
 
     if (looking_at_linux_kernel_binary)
       {
@@ -6919,7 +6919,7 @@ public:
 	  {
 	    // Since Linux kernel modules are relocatable, we can first try
 	    // using a heuristic based on relocations to guess the ksymtab format.
-	    if (is_linux_kernel_module())
+	    if (is_linux_kernel_module(elf_handle()))
 	     {
 	       ksymtab_format_ = get_ksymtab_format_module();
 	       if (ksymtab_format_ != UNDEFINED_KSYMTAB_FORMAT)
@@ -7466,7 +7466,7 @@ public:
 						 load_undefined_fun_map,
 						 load_undefined_var_map))
 	  {
-	    if (load_in_linux_kernel_mode() && is_linux_kernel_binary())
+	    if (load_in_linux_kernel_mode() && is_linux_kernel(elf_handle()))
 	      return load_linux_specific_exported_symbol_maps();
 	    return true;
 	  }
@@ -8164,30 +8164,6 @@ public:
   void
   load_in_linux_kernel_mode(bool f)
   {options_.load_in_linux_kernel_mode = f;}
-
-  /// Guess if the current binary is a Linux Kernel or a Linux Kernel module.
-  ///
-  /// To guess that, the function looks for the presence of the
-  /// special "__ksymtab_strings" section in the binary.
-  ///
-  bool
-  is_linux_kernel_binary() const
-  {
-    return find_section(elf_handle(), "__ksymtab_strings", SHT_PROGBITS)
-	   || is_linux_kernel_module();
-  }
-
-  /// Guess if the current binary is a Linux Kernel module.
-  ///
-  /// To guess that, the function looks for the presence of the special
-  /// ".modinfo" and ".gnu.linkonce.this_module" sections in the binary.
-  ///
-  bool
-  is_linux_kernel_module() const
-  {
-    return find_section(elf_handle(), ".modinfo", SHT_PROGBITS)
-	   && find_section(elf_handle(), ".gnu.linkonce.this_module", SHT_PROGBITS);
-  }
 
   /// Getter of the "show_stats" flag.
   ///
@@ -16321,7 +16297,7 @@ read_debug_info_into_corpus(read_context& ctxt)
   // First set some mundane properties of the corpus gathered from
   // ELF.
   ctxt.current_corpus()->set_path(ctxt.elf_path());
-  if (ctxt.is_linux_kernel_binary())
+  if (is_linux_kernel(ctxt.elf_handle()))
     ctxt.current_corpus()->set_origin(corpus::LINUX_KERNEL_BINARY_ORIGIN);
   else
     ctxt.current_corpus()->set_origin(corpus::DWARF_ORIGIN);
@@ -16334,7 +16310,8 @@ read_debug_info_into_corpus(read_context& ctxt)
   // Set symbols information to the corpus.
   if (!get_ignore_symbol_table(ctxt))
     {
-      if (ctxt.load_in_linux_kernel_mode() && ctxt.is_linux_kernel_binary())
+      if (ctxt.load_in_linux_kernel_mode()
+	  && is_linux_kernel(ctxt.elf_handle()))
 	{
 	  string_elf_symbols_map_sptr exported_fn_symbols_map
 	    (new string_elf_symbols_map_type);

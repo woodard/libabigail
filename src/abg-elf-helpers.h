@@ -132,10 +132,10 @@ get_version_for_symbol(Elf*			elf_handle,
 //
 
 bool
-binary_is_linux_kernel_module(Elf *elf_handle);
+is_linux_kernel_module(Elf *elf_handle);
 
 bool
-binary_is_linux_kernel(Elf *elf_handle);
+is_linux_kernel(Elf *elf_handle);
 
 
 } // end namespace elf_helpers
