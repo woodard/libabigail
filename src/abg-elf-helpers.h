@@ -174,6 +174,9 @@ is_executable(Elf* elf_handle);
 bool
 is_dso(Elf* elf_handle);
 
+GElf_Addr
+maybe_adjust_et_rel_sym_addr_to_abs_addr(Elf* elf_handle, GElf_Sym* sym);
+
 } // end namespace elf_helpers
 } // end namespace abigail
 

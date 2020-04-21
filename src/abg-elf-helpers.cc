@@ -987,5 +987,45 @@ is_dso(Elf* elf_handle)
   return elf_header.e_type == ET_DYN;
 }
 
+/// Translate a section-relative symbol address (i.e, symbol value)
+/// into an absolute symbol address by adding the address of the
+/// section the symbol belongs to, to the address value.
+///
+/// This is useful when looking at symbol values coming from
+/// relocatable files (of ET_REL kind).  If the binary is not
+/// ET_REL, then the function does nothing and returns the input
+/// address unchanged.
+///
+/// @param elf_handle the elf handle for the binary to consider.
+///
+/// @param sym the symbol whose address to possibly needs to be
+/// translated.
+///
+/// @return the section-relative address, translated into an
+/// absolute address, if @p sym is from an ET_REL binary.
+/// Otherwise, return the address of @p sym, unchanged.
+GElf_Addr
+maybe_adjust_et_rel_sym_addr_to_abs_addr(Elf* elf_handle, GElf_Sym* sym)
+{
+  Elf_Scn*  symbol_section = elf_getscn(elf_handle, sym->st_shndx);
+  GElf_Addr addr = sym->st_value;
+
+  if (!symbol_section)
+    return addr;
+
+  GElf_Ehdr elf_header;
+  if (!gelf_getehdr(elf_handle, &elf_header))
+    return addr;
+
+  if (elf_header.e_type != ET_REL)
+    return addr;
+
+  GElf_Shdr section_header;
+  if (!gelf_getshdr(symbol_section, &section_header))
+    return addr;
+
+  return addr + section_header.sh_addr;
+}
+
 } // end namespace elf_helpers
 } // end namespace abigail
