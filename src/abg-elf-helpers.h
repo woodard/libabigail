@@ -63,8 +63,8 @@ find_section(Elf*		elf_handle,
 	     const std::string& name,
 	     Elf64_Word		section_type);
 
-bool
-find_symbol_table_section(Elf* elf_handle, Elf_Scn*& symtab);
+Elf_Scn*
+find_symbol_table_section(Elf* elf_handle);
 
 bool
 find_symbol_table_section_index(Elf* elf_handle, size_t& symtab_index);
@@ -96,6 +96,9 @@ find_data_section(Elf* elf_handle);
 Elf_Scn*
 find_data1_section(Elf* elf_handle);
 
+Elf_Scn*
+find_opd_section(Elf* elf_handle);
+
 bool
 get_symbol_versionning_sections(Elf*		elf_handle,
 				Elf_Scn*&	versym_section,
@@ -103,7 +106,16 @@ get_symbol_versionning_sections(Elf*		elf_handle,
 				Elf_Scn*&	verneed_section);
 
 Elf_Scn*
+find_ksymtab_section(Elf* elf_handle);
+
+Elf_Scn*
+find_ksymtab_gpl_section(Elf* elf_handle);
+
+Elf_Scn*
 find_ksymtab_strings_section(Elf *elf_handle);
+
+Elf_Scn*
+find_relocation_section(Elf* elf_handle, Elf_Scn* target_section);
 
 //
 // Helpers for symbol versioning
@@ -137,6 +149,12 @@ is_linux_kernel_module(Elf *elf_handle);
 bool
 is_linux_kernel(Elf *elf_handle);
 
+//
+// Misc Helpers
+//
+
+bool
+get_binary_load_address(Elf* elf_handle, GElf_Addr& load_address);
 
 } // end namespace elf_helpers
 } // end namespace abigail

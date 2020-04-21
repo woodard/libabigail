@@ -541,53 +541,6 @@ compare_dies(const read_context& ctxt,
 	     bool update_canonical_dies_on_the_fly);
 
 
-/// Get the address at which a given binary is loaded in memory⋅
-///
-/// @param elf_handle the elf handle for the binary to consider.
-///
-/// @param load_address the address where the binary is loaded.  This
-/// is set by the function iff it returns true.
-///
-/// @return true if the function could get the binary load address
-/// and assign @p load_address to it.
-static bool
-get_binary_load_address(Elf *elf_handle,
-			GElf_Addr &load_address)
-{
-  GElf_Ehdr eh_mem;
-  GElf_Ehdr *elf_header = gelf_getehdr(elf_handle, &eh_mem);
-  size_t num_segments = elf_header->e_phnum;
-  GElf_Phdr *program_header = 0;
-  GElf_Addr result;
-  bool found_loaded_segment = false;
-  GElf_Phdr ph_mem;
-
-  for (unsigned i = 0; i < num_segments; ++i)
-    {
-      program_header = gelf_getphdr(elf_handle, i, &ph_mem);
-      if (program_header && program_header->p_type == PT_LOAD)
-	{
-	  if (!found_loaded_segment)
-	    {
-	      result = program_header->p_vaddr;
-	      found_loaded_segment = true;
-	    }
-
-	  if (program_header->p_vaddr < result)
-	    // The resulting load address we want is the lowest
-	    // load address of all the loaded segments.
-	    result = program_header->p_vaddr;
-	}
-    }
-
-  if (found_loaded_segment)
-    {
-      load_address = result;
-      return true;
-    }
-  return false;
-}
-
 /// Find the file name of the alternate debug info file.
 ///
 /// @param elf_module the elf module to consider.
@@ -2253,7 +2206,7 @@ public:
   // The "Official procedure descriptor section, aka .opd", used in
   // ppc64 elf v1 binaries.  This section contains the procedure
   // descriptors on that platform.
-  Elf_Scn*			opd_section_;
+  mutable Elf_Scn*		opd_section_;
   /// The format of the special __ksymtab section from the linux
   /// kernel binary.
   mutable ksymtab_format	ksymtab_format_;
@@ -2269,11 +2222,11 @@ public:
   /// from the linux kernel.  The latter is used to store references
   /// to symbols exported using the EXPORT_SYMBOL_GPL macro from the
   /// linux kernel.
-  Elf_Scn*			ksymtab_section_;
-  Elf_Scn*			ksymtab_reloc_section_;
-  Elf_Scn*			ksymtab_gpl_section_;
-  Elf_Scn*			ksymtab_gpl_reloc_section_;
-  Elf_Scn*			ksymtab_strings_section_;
+  mutable Elf_Scn*		ksymtab_section_;
+  mutable Elf_Scn*		ksymtab_reloc_section_;
+  mutable Elf_Scn*		ksymtab_gpl_section_;
+  mutable Elf_Scn*		ksymtab_gpl_reloc_section_;
+  mutable Elf_Scn*		ksymtab_strings_section_;
   Elf_Scn*			versym_section_;
   Elf_Scn*			verdef_section_;
   Elf_Scn*			verneed_section_;
@@ -5281,8 +5234,7 @@ public:
   find_symbol_table_section() const
   {
     if (!symtab_section_)
-      dwarf_reader::find_symbol_table_section(elf_handle(),
-					      const_cast<read_context*>(this)->symtab_section_);
+      symtab_section_ = elf_helpers::find_symbol_table_section(elf_handle());
     return symtab_section_;
   }
 
@@ -5295,8 +5247,7 @@ public:
   find_opd_section() const
   {
     if (!opd_section_)
-      const_cast<read_context*>(this)->opd_section_=
-	find_section(elf_handle(), ".opd", SHT_PROGBITS);
+      opd_section_ = elf_helpers::find_opd_section(elf_handle());
     return opd_section_;
   }
 
@@ -5308,55 +5259,8 @@ public:
   find_ksymtab_section() const
   {
     if (!ksymtab_section_)
-      const_cast<read_context*>(this)->ksymtab_section_ =
-	find_section(elf_handle(), "__ksymtab", SHT_PROGBITS);
+      ksymtab_section_ = elf_helpers::find_ksymtab_section(elf_handle());
     return ksymtab_section_;
-  }
-
-  /// Return the .rel{a,} section corresponding to a given section.
-  ///
-  /// @param target_section the section to search the relocation section for
-  ///
-  /// @return the .rel{a,} section if found, null otherwise.
-  Elf_Scn*
-  find_relocation_section(Elf_Scn* target_section) const
-  {
-    if (target_section)
-      {
-	// the relo section we are searching for has this index as sh_info
-	size_t target_index = elf_ndxscn(target_section);
-
-	// now iterate over all the sections, look for relocation sections and
-	// find the one that points to the section we are searching for
-	Elf_Scn*  section = 0;
-	GElf_Shdr header_mem, *header;
-	while ((section = elf_nextscn(elf_handle(), section)) != 0)
-	  {
-	    header = gelf_getshdr(section, &header_mem);
-	    if (header == NULL
-		|| (header->sh_type != SHT_RELA && header->sh_type != SHT_REL))
-	      continue;
-
-	    if (header->sh_info == target_index)
-	      return section;
-	  }
-      }
-    return NULL;
-  }
-
-  /// Return the .rel{a,}__ksymtab section of a linux kernel ELF file (either
-  /// a vmlinux binary or a kernel module).
-  ///
-  /// @return the .rel{a,}__ksymtab section if found, nil otherwise.
-  Elf_Scn*
-  find_ksymtab_reloc_section() const
-  {
-    if (!ksymtab_reloc_section_)
-      {
-	const_cast<read_context*>(this)->ksymtab_reloc_section_
-	    = find_relocation_section(find_ksymtab_section());
-      }
-    return ksymtab_reloc_section_;
   }
 
   /// Return the __ksymtab_gpl section of a linux kernel ELF file
@@ -5367,9 +5271,22 @@ public:
   find_ksymtab_gpl_section() const
   {
     if (!ksymtab_gpl_section_)
-      const_cast<read_context*>(this)->ksymtab_gpl_section_ =
-	find_section(elf_handle(), "__ksymtab_gpl", SHT_PROGBITS);
+      ksymtab_gpl_section_ =
+	elf_helpers::find_ksymtab_gpl_section(elf_handle());
     return ksymtab_gpl_section_;
+  }
+
+  /// Return the .rel{a,}__ksymtab section of a linux kernel ELF file (either
+  /// a vmlinux binary or a kernel module).
+  ///
+  /// @return the .rel{a,}__ksymtab section if found, nil otherwise.
+  Elf_Scn*
+  find_ksymtab_reloc_section() const
+  {
+    if (!ksymtab_reloc_section_)
+	ksymtab_reloc_section_ =
+	  find_relocation_section(elf_handle(), find_ksymtab_section());
+    return ksymtab_reloc_section_;
   }
 
   /// Return the .rel{a,}__ksymtab_gpl section of a linux kernel ELF file
@@ -5380,10 +5297,8 @@ public:
   find_ksymtab_gpl_reloc_section() const
   {
     if (!ksymtab_gpl_reloc_section_)
-      {
-	const_cast<read_context*>(this)->ksymtab_gpl_reloc_section_
-	    = find_relocation_section(find_ksymtab_gpl_section());
-      }
+	ksymtab_gpl_reloc_section_ =
+	  find_relocation_section(elf_handle(), find_ksymtab_gpl_section());
     return ksymtab_gpl_reloc_section_;
   }
 
@@ -5395,7 +5310,7 @@ public:
   find_ksymtab_strings_section() const
   {
     if (!ksymtab_strings_section_)
-      const_cast<read_context*>(this)->ksymtab_strings_section_ =
+      ksymtab_strings_section_ =
 	dwarf_reader::find_ksymtab_strings_section(elf_handle());
     return ksymtab_strings_section_;
   }

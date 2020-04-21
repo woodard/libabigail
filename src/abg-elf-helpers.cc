@@ -357,9 +357,9 @@ find_section(Elf* elf_handle, const std::string& name, Elf64_Word section_type)
 ///
 /// @param symtab the symbol table found.
 ///
-/// @return true iff the symbol table is found.
-bool
-find_symbol_table_section(Elf* elf_handle, Elf_Scn*& symtab)
+/// @return the symbol table section
+Elf_Scn*
+find_symbol_table_section(Elf* elf_handle)
 {
   Elf_Scn* section = 0, *dynsym = 0, *sym_tab = 0;
   while ((section = elf_nextscn(elf_handle, section)) != 0)
@@ -378,12 +378,11 @@ find_symbol_table_section(Elf* elf_handle, Elf_Scn*& symtab)
       GElf_Ehdr* elf_header = gelf_getehdr(elf_handle, &eh_mem);
       if (elf_header->e_type == ET_REL
 	  || elf_header->e_type == ET_EXEC)
-	symtab = sym_tab ? sym_tab : dynsym;
+	return sym_tab ? sym_tab : dynsym;
       else
-	symtab = dynsym ? dynsym : sym_tab;
-      return true;
+	return dynsym ? dynsym : sym_tab;
     }
-  return false;
+  return NULL;
 }
 
 /// Find the index (in the section headers table) of the symbol table
@@ -402,8 +401,9 @@ find_symbol_table_section(Elf* elf_handle, Elf_Scn*& symtab)
 bool
 find_symbol_table_section_index(Elf* elf_handle, size_t& symtab_index)
 {
-  Elf_Scn* section = 0;
-  if (!find_symbol_table_section(elf_handle, section))
+  Elf_Scn* section = find_symbol_table_section(elf_handle);
+
+  if (!section)
     return false;
 
   symtab_index = elf_ndxscn(section);
@@ -500,6 +500,17 @@ Elf_Scn*
 find_data1_section(Elf* elf_handle)
 {return find_section(elf_handle, ".data1", SHT_PROGBITS);}
 
+/// Return the "Official Procedure descriptors section."  This
+/// section is named .opd, and is usually present only on PPC64
+/// ELFv1 binaries.
+///
+/// @param elf_handle the elf handle to consider.
+///
+/// @return the .opd section, if found.  Return nil otherwise.
+Elf_Scn*
+find_opd_section(Elf* elf_handle)
+{return find_section(elf_handle, ".opd", SHT_PROGBITS);}
+
 /// Return the SHT_GNU_versym, SHT_GNU_verdef and SHT_GNU_verneed
 /// sections that are involved in symbol versionning.
 ///
@@ -548,6 +559,26 @@ get_symbol_versionning_sections(Elf*		elf_handle,
   return false;
 }
 
+/// Return the __ksymtab section of a linux kernel ELF file (either
+/// a vmlinux binary or a kernel module).
+///
+/// @param elf_handle the elf handle to consider.
+///
+/// @return the __ksymtab section if found, nil otherwise.
+Elf_Scn*
+find_ksymtab_section(Elf* elf_handle)
+{return find_section(elf_handle, "__ksymtab", SHT_PROGBITS);}
+
+/// Return the __ksymtab_gpl section of a linux kernel ELF file (either
+/// a vmlinux binary or a kernel module).
+///
+/// @param elf_handle the elf handle to consider.
+///
+/// @return the __ksymtab section if found, nil otherwise.
+Elf_Scn*
+find_ksymtab_gpl_section(Elf* elf_handle)
+{return find_section(elf_handle, "__ksymtab_gpl", SHT_PROGBITS);}
+
 /// Find the __ksymtab_strings section of a Linux kernel binary.
 ///
 /// @param elf_handle the elf handle to use.
@@ -561,6 +592,39 @@ find_ksymtab_strings_section(Elf *elf_handle)
   if (is_linux_kernel(elf_handle))
     return find_section(elf_handle, "__ksymtab_strings", SHT_PROGBITS);
   return 0;
+}
+
+/// Return the .rel{a,} section corresponding to a given section.
+///
+/// @param elf_handle the elf handle to consider.
+///
+/// @param target_section the section to search the relocation section for
+///
+/// @return the .rel{a,} section if found, null otherwise.
+Elf_Scn*
+find_relocation_section(Elf* elf_handle, Elf_Scn* target_section)
+{
+  if (target_section)
+    {
+      // the relo section we are searching for has this index as sh_info
+      size_t target_index = elf_ndxscn(target_section);
+
+      // now iterate over all the sections, look for relocation sections and
+      // find the one that points to the section we are searching for
+      Elf_Scn*	section = 0;
+      GElf_Shdr header_mem, *header;
+      while ((section = elf_nextscn(elf_handle, section)) != 0)
+	{
+	  header = gelf_getshdr(section, &header_mem);
+	  if (header == NULL
+	      || (header->sh_type != SHT_RELA && header->sh_type != SHT_REL))
+	    continue;
+
+	  if (header->sh_info == target_index)
+	    return section;
+	}
+    }
+  return NULL;
 }
 
 /// Get the version definition (from the SHT_GNU_verdef section) of a
@@ -796,6 +860,53 @@ is_linux_kernel(Elf *elf_handle)
 		       SHT_PROGBITS)
 	  || is_linux_kernel_module(elf_handle));
 }
+
+/// Get the address at which a given binary is loaded in memory⋅
+///
+/// @param elf_handle the elf handle for the binary to consider.
+///
+/// @param load_address the address where the binary is loaded.  This
+/// is set by the function iff it returns true.
+///
+/// @return true if the function could get the binary load address
+/// and assign @p load_address to it.
+bool
+get_binary_load_address(Elf* elf_handle, GElf_Addr& load_address)
+{
+  GElf_Ehdr elf_header;
+  gelf_getehdr(elf_handle, &elf_header);
+  size_t num_segments = elf_header.e_phnum;
+  GElf_Phdr *program_header = NULL;
+  GElf_Addr result;
+  bool found_loaded_segment = false;
+  GElf_Phdr ph_mem;
+
+  for (unsigned i = 0; i < num_segments; ++i)
+    {
+      program_header = gelf_getphdr(elf_handle, i, &ph_mem);
+      if (program_header && program_header->p_type == PT_LOAD)
+	{
+	  if (!found_loaded_segment)
+	    {
+	      result = program_header->p_vaddr;
+	      found_loaded_segment = true;
+	    }
+
+	  if (program_header->p_vaddr < result)
+	    // The resulting load address we want is the lowest
+	    // load address of all the loaded segments.
+	    result = program_header->p_vaddr;
+	}
+    }
+
+  if (found_loaded_segment)
+    {
+      load_address = result;
+      return true;
+    }
+  return false;
+}
+
 
 } // end namespace elf_helpers
 } // end namespace abigail
