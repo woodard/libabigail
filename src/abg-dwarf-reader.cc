@@ -5692,10 +5692,10 @@ public:
     if (!elf_handle())
       return fn_desc_address;
 
-    if (!elf_architecture_is_ppc64())
+    if (!architecture_is_ppc64(elf_handle()))
       return fn_desc_address;
 
-    bool is_big_endian = elf_architecture_is_big_endian();
+    bool is_big_endian = architecture_is_big_endian(elf_handle());
 
     Elf_Scn *opd_section = find_opd_section();
     if (!opd_section)
@@ -5971,7 +5971,7 @@ public:
   {
     if (!fun_entry_addr_sym_map_ && !fun_addr_sym_map_)
       maybe_load_symbol_maps();
-    if (elf_architecture_is_ppc64())
+    if (architecture_is_ppc64(elf_handle()))
       return fun_entry_addr_sym_map_;
     return fun_addr_sym_map_;
   }
@@ -6327,79 +6327,6 @@ public:
   elf_architecture() const
   {return elf_architecture_;}
 
-  /// Return the size of a word for the current architecture.
-  /// @return the size of a word.
-  unsigned char
-  architecture_word_size() const
-  {
-    unsigned char word_size = 0;
-    GElf_Ehdr eh_mem;
-    GElf_Ehdr* elf_header = gelf_getehdr(elf_handle(), &eh_mem);
-    if (elf_header->e_ident[EI_CLASS] == ELFCLASS32)
-      word_size = 4;
-    else if (elf_header->e_ident[EI_CLASS] == ELFCLASS64)
-      word_size = 8;
-    else
-      ABG_ASSERT_NOT_REACHED;
-    return word_size;
-  }
-
-  /// Test if the architecture of the current binary is ppc64.
-  ///
-  /// @return true iff the architecture of the current binary is ppc64.
-  bool
-  elf_architecture_is_ppc64() const
-  {
-    GElf_Ehdr eh_mem;
-    GElf_Ehdr* elf_header = gelf_getehdr(elf_handle(), &eh_mem);
-
-    return (elf_header && elf_header->e_machine == EM_PPC64);
-  }
-
-  /// Test if the endianness of the current binary is Big Endian.
-  ///
-  /// https://en.wikipedia.org/wiki/Endianness.
-  ///
-  /// @return true iff the current binary is Big Endian.
-  bool
-  elf_architecture_is_big_endian() const
-  {
-    GElf_Ehdr eh_mem;
-    GElf_Ehdr* elf_header = gelf_getehdr(elf_handle(), &eh_mem);
-
-    bool is_big_endian = (elf_header->e_ident[EI_DATA] == ELFDATA2MSB);
-
-    if (!is_big_endian)
-      ABG_ASSERT(elf_header->e_ident[EI_DATA] == ELFDATA2LSB);
-
-    return is_big_endian;
-  }
-
-  /// Test if the current elf file being read is an executable.
-  ///
-  /// @return true iff the current elf file being read is an
-  /// executable.
-  bool
-  current_elf_file_is_executable() const
-  {
-    GElf_Ehdr eh_mem;
-    GElf_Ehdr* elf_header = gelf_getehdr(elf_handle(), &eh_mem);
-    return elf_header->e_type == ET_EXEC;
-  }
-
-  /// Test if the current elf file being read is a dynamic shared
-  /// object.
-  ///
-  /// @return true iff the current elf file being read is a
-  /// dynamic shared object.
-  bool
-  current_elf_file_is_dso() const
-  {
-    GElf_Ehdr eh_mem;
-    GElf_Ehdr* elf_header = gelf_getehdr(elf_handle(), &eh_mem);
-    return elf_header->e_type == ET_DYN;
-  }
-
   /// Getter for the map of global variables symbol address -> global
   /// variable symbol index.
   ///
@@ -6463,7 +6390,7 @@ public:
     GElf_Ehdr elf_header;
     ABG_ASSERT(gelf_getehdr(elf_handle(), &elf_header));
 
-    bool is_ppc64 = elf_architecture_is_ppc64();
+    bool is_ppc64 = architecture_is_ppc64(elf_handle());
 
     for (size_t i = 0; i < nb_syms; ++i)
       {
@@ -6680,7 +6607,7 @@ public:
   {
     Elf_Data*	    elf_data = elf_rawdata(section, 0);
     uint8_t*	    bytes = reinterpret_cast<uint8_t*>(elf_data->d_buf);
-    bool	    is_big_endian = elf_architecture_is_big_endian();
+    bool	    is_big_endian = architecture_is_big_endian(elf_handle());
     elf_symbol_sptr symbol;
     GElf_Addr	    symbol_address = 0;
 
@@ -6688,7 +6615,7 @@ public:
     if (position_relative_relocations)
       symbol_value_size = sizeof(int32_t);
     else
-      symbol_value_size = architecture_word_size();
+      symbol_value_size = get_architecture_word_size(elf_handle());
 
     const int read_offset = (symbol_offset * symbol_value_size);
     bytes += read_offset;
@@ -6878,7 +6805,7 @@ public:
     if (format == UNDEFINED_KSYMTAB_FORMAT)
       ;
     else if (format == PRE_V4_19_KSYMTAB_FORMAT)
-      result = architecture_word_size();
+      result = get_architecture_word_size(elf_handle());
     else if (format == V4_19_KSYMTAB_FORMAT)
       result = 4;
     else
@@ -7057,7 +6984,7 @@ public:
     //
     // Lets thus walk the array of entries, and let's read just the
     // symbol address part of each entry.
-    bool is_big_endian = elf_architecture_is_big_endian();
+    bool is_big_endian = architecture_is_big_endian(elf_handle());
     elf_symbol_sptr symbol;
     unsigned char symbol_value_size = get_ksymtab_symbol_value_size();
 
@@ -7359,7 +7286,7 @@ public:
     if (!fun_addr_sym_map_)
       fun_addr_sym_map_.reset(new addr_elf_symbol_sptr_map_type);
 
-    if (!fun_entry_addr_sym_map_ && elf_architecture_is_ppc64())
+    if (!fun_entry_addr_sym_map_ && architecture_is_ppc64(elf_handle()))
       fun_entry_addr_sym_map_.reset(new addr_elf_symbol_sptr_map_type);
 
     if (!var_syms_)

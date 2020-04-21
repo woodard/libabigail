@@ -140,6 +140,15 @@ get_version_for_symbol(Elf*			elf_handle,
 		       elf_symbol::version&	version);
 
 //
+// Architecture specific helpers
+//
+bool
+architecture_is_ppc64(Elf* elf_handle);
+
+bool
+architecture_is_big_endian(Elf* elf_handle);
+
+//
 // Helpers for Linux Kernel Binaries
 //
 
@@ -155,6 +164,15 @@ is_linux_kernel(Elf *elf_handle);
 
 bool
 get_binary_load_address(Elf* elf_handle, GElf_Addr& load_address);
+
+unsigned char
+get_architecture_word_size(Elf* elf_handle);
+
+bool
+is_executable(Elf* elf_handle);
+
+bool
+is_dso(Elf* elf_handle);
 
 } // end namespace elf_helpers
 } // end namespace abigail

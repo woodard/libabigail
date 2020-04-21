@@ -829,6 +829,40 @@ get_version_for_symbol(Elf*			elf_handle,
   return false;
 }
 
+/// Test if the architecture of the current binary is ppc64.
+///
+/// @param elf_handle the ELF handle to consider.
+///
+/// @return true iff the architecture of the current binary is ppc64.
+bool
+architecture_is_ppc64(Elf* elf_handle)
+{
+  GElf_Ehdr  eh_mem;
+  GElf_Ehdr* elf_header = gelf_getehdr(elf_handle, &eh_mem);
+  return (elf_header && elf_header->e_machine == EM_PPC64);
+}
+
+/// Test if the endianness of the current binary is Big Endian.
+///
+/// https://en.wikipedia.org/wiki/Endianness.
+///
+/// @param elf_handle the ELF handle to consider.
+///
+/// @return true iff the current binary is Big Endian.
+bool
+architecture_is_big_endian(Elf* elf_handle)
+{
+  GElf_Ehdr  elf_header;
+  gelf_getehdr(elf_handle, &elf_header);
+
+  bool is_big_endian = (elf_header.e_ident[EI_DATA] == ELFDATA2MSB);
+
+  if (!is_big_endian)
+    ABG_ASSERT(elf_header.e_ident[EI_DATA] == ELFDATA2LSB);
+
+  return is_big_endian;
+}
+
 /// Test if the ELF binary denoted by a given ELF handle is a Linux
 /// Kernel Module.
 ///
@@ -907,6 +941,51 @@ get_binary_load_address(Elf* elf_handle, GElf_Addr& load_address)
   return false;
 }
 
+/// Return the size of a word for the current architecture.
+///
+/// @param elf_handle the ELF handle to consider.
+///
+/// @return the size of a word.
+unsigned char
+get_architecture_word_size(Elf* elf_handle)
+{
+  unsigned char word_size = 0;
+  GElf_Ehdr	elf_header;
+  gelf_getehdr(elf_handle, &elf_header);
+  if (elf_header.e_ident[EI_CLASS] == ELFCLASS32)
+    word_size = 4;
+  else if (elf_header.e_ident[EI_CLASS] == ELFCLASS64)
+    word_size = 8;
+  else
+    ABG_ASSERT_NOT_REACHED;
+  return word_size;
+}
+
+/// Test if the elf file being read is an executable.
+///
+/// @param elf_handle the ELF handle to consider.
+///
+/// @return true iff the elf file being read is an / executable.
+bool
+is_executable(Elf* elf_handle)
+{
+  GElf_Ehdr  elf_header;
+  gelf_getehdr(elf_handle, &elf_header);
+  return elf_header.e_type == ET_EXEC;
+}
+
+/// Test if the elf file being read is a dynamic shared / object.
+///
+/// @param elf_handle the ELF handle to consider.
+///
+/// @return true iff the elf file being read is a / dynamic shared object.
+bool
+is_dso(Elf* elf_handle)
+{
+  GElf_Ehdr  elf_header;
+  gelf_getehdr(elf_handle, &elf_header);
+  return elf_header.e_type == ET_DYN;
+}
 
 } // end namespace elf_helpers
 } // end namespace abigail
