@@ -102,6 +102,9 @@ get_symbol_versionning_sections(Elf*		elf_handle,
 				Elf_Scn*&	verdef_section,
 				Elf_Scn*&	verneed_section);
 
+Elf_Scn*
+find_ksymtab_strings_section(Elf *elf_handle);
+
 //
 // Helpers for symbol versioning
 //
@@ -123,6 +126,17 @@ get_version_for_symbol(Elf*			elf_handle,
 		       size_t			symbol_index,
 		       bool			get_def_version,
 		       elf_symbol::version&	version);
+
+//
+// Helpers for Linux Kernel Binaries
+//
+
+bool
+binary_is_linux_kernel_module(Elf *elf_handle);
+
+bool
+binary_is_linux_kernel(Elf *elf_handle);
+
 
 } // end namespace elf_helpers
 } // end namespace abigail
