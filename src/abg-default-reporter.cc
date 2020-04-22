@@ -859,7 +859,7 @@ default_reporter::report(const class_or_union_diff& d,
 	  : " and is now a defined type";
 
 	out << indent << "type " << first->get_pretty_representation()
-	    << was << is_now;
+	    << was << is_now << "\n";
 	return;
       }
 
