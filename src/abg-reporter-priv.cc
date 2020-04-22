@@ -714,12 +714,11 @@ report_size_and_alignment_changes(type_or_decl_base_sptr	first,
   class_or_union_sptr first_class = is_class_or_union_type(first),
     second_class = is_class_or_union_type(second);
 
-  if (filtering::has_class_decl_only_def_change(first_class, second_class)
-      && !(ctxt->get_allowed_category() & CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY))
+  if (filtering::has_class_decl_only_def_change(first_class, second_class))
     // So these two classes differ only by the fact that one is the
-    // declaration-only form of the second.  And the user asked that
-    // this kind of change be filtered out, so do not report any size
-    // change due to this.
+    // declaration-only form of the second.  The declaration-only class
+    // is of unknown size (recorded as 0) and it is not meaningful to
+    // report a size change.
     return;
 
   unsigned fs = f->get_size_in_bits(), ss = s->get_size_in_bits(),
