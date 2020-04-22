@@ -194,6 +194,15 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-member-size-report1.txt",
     "output/test-abidiff-exit/test-member-size-report1.txt"
   },
+  {
+    "data/test-abidiff-exit/test-decl-struct-v0.o",
+    "data/test-abidiff-exit/test-decl-struct-v1.o",
+    "",
+    "--harmless",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    "data/test-abidiff-exit/test-decl-struct-report.txt",
+    "output/test-abidiff-exit/test-decl-struct-report.txt"
+  },
   {0, 0, 0 ,0,  abigail::tools_utils::ABIDIFF_OK, 0, 0}
 };
 
