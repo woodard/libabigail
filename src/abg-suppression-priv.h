@@ -31,6 +31,7 @@
 #include "abg-fwd.h"
 #include "abg-suppression.h"
 #include "abg-sptr-utils.h"
+#include "abg-regex.h"
 
 namespace abigail
 {
@@ -47,13 +48,13 @@ class suppression_base::priv
   bool					drops_artifact_;
   string				label_;
   string				file_name_regex_str_;
-  mutable sptr_utils::regex_t_sptr	file_name_regex_;
+  mutable regex::regex_t_sptr		file_name_regex_;
   string				file_name_not_regex_str_;
-  mutable sptr_utils::regex_t_sptr	file_name_not_regex_;
+  mutable regex::regex_t_sptr		file_name_not_regex_;
   string				soname_regex_str_;
-  mutable sptr_utils::regex_t_sptr	soname_regex_;
+  mutable regex::regex_t_sptr		soname_regex_;
   string				soname_not_regex_str_;
-  mutable sptr_utils::regex_t_sptr	soname_not_regex_;
+  mutable regex::regex_t_sptr		soname_not_regex_;
 
 public:
   priv()
@@ -87,14 +88,14 @@ public:
   ///
   /// If the 'file_name_regex' property of @ref suppression_base is
   /// empty then this method returns nil.
-  const sptr_utils::regex_t_sptr&
+  const regex::regex_t_sptr&
   get_file_name_regex() const
   {
     if (!file_name_regex_)
       {
 	if (!file_name_regex_str_.empty())
 	  {
-	    sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
+	    regex::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	    if (regcomp(r.get(),
 			file_name_regex_str_.c_str(),
 			REG_EXTENDED) == 0)
@@ -112,14 +113,14 @@ public:
   ///
   /// If the 'file_name_not_regex' property of @ref suppression_base
   /// is empty then this method returns nil.
-  const sptr_utils::regex_t_sptr&
+  const regex::regex_t_sptr&
   get_file_name_not_regex() const
   {
     if (!file_name_not_regex_)
       {
 	if (!file_name_not_regex_str_.empty())
 	  {
-	    sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
+	    regex::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	    if (regcomp(r.get(),
 			file_name_not_regex_str_.c_str(),
 			REG_EXTENDED) == 0)
@@ -137,14 +138,14 @@ public:
   ///
   /// If the 'soname_regex' property of @ref suppression_base is empty
   /// then this method returns nil.
-  const sptr_utils::regex_t_sptr&
+  const regex::regex_t_sptr&
   get_soname_regex() const
   {
     if (!soname_regex_)
       {
 	if (!soname_regex_str_.empty())
 	  {
-	    sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
+	    regex::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	    if (regcomp(r.get(),
 			soname_regex_str_.c_str(),
 			REG_EXTENDED) == 0)
@@ -162,14 +163,14 @@ public:
   ///
   /// If the 'soname_not_regex' property of @ref suppression_base is
   /// empty then this method returns nil.
-  const sptr_utils::regex_t_sptr&
+  const regex::regex_t_sptr&
   get_soname_not_regex() const
   {
     if (!soname_not_regex_)
       {
 	if (!soname_not_regex_str_.empty())
 	  {
-	    sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
+	    regex::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	    if (regcomp(r.get(),
 			soname_not_regex_str_.c_str(),
 			REG_EXTENDED) == 0)
@@ -192,14 +193,14 @@ public:
   matches_soname(const string& soname) const
   {
     bool has_regexp = false;
-    if (sptr_utils::regex_t_sptr regexp = get_soname_regex())
+    if (regex::regex_t_sptr regexp = get_soname_regex())
       {
 	has_regexp = true;
 	if (regexec(regexp.get(), soname.c_str(), 0, NULL, 0) != 0)
 	  return false;
       }
 
-    if (sptr_utils::regex_t_sptr regexp = get_soname_not_regex())
+    if (regex::regex_t_sptr regexp = get_soname_not_regex())
       {
 	has_regexp = true;
 	if (regexec(regexp.get(), soname.c_str(), 0, NULL, 0) == 0)
@@ -227,7 +228,7 @@ public:
   {
     bool has_regexp = false;
 
-    if (sptr_utils::regex_t_sptr regexp = get_file_name_regex())
+    if (regex::regex_t_sptr regexp = get_file_name_regex())
       {
 	has_regexp = true;
 	if (regexec(regexp.get(), binary_name.c_str(),
@@ -235,7 +236,7 @@ public:
 	  return false;
       }
 
-    if (sptr_utils::regex_t_sptr regexp = get_file_name_not_regex())
+    if (regex::regex_t_sptr regexp = get_file_name_not_regex())
       {
 	has_regexp = true;
 	if (regexec(regexp.get(), binary_name.c_str(),
@@ -263,7 +264,7 @@ class function_suppression::parameter_spec::priv
   size_t				index_;
   string				type_name_;
   string				type_name_regex_str_;
-  mutable sptr_utils::regex_t_sptr	type_name_regex_;
+  mutable regex::regex_t_sptr		type_name_regex_;
 
   priv()
     : index_()
@@ -277,12 +278,12 @@ class function_suppression::parameter_spec::priv
     : index_(i), type_name_(tn), type_name_regex_str_(tn_regex)
   {}
 
-  const sptr_utils::regex_t_sptr
+  const regex::regex_t_sptr
   get_type_name_regex() const
   {
     if (!type_name_regex_ && !type_name_regex_str_.empty())
       {
-	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
+	regex::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	if (regcomp(r.get(),
 		    type_name_regex_str_.c_str(),
 		    REG_EXTENDED) == 0)
@@ -302,21 +303,21 @@ struct function_suppression::priv
   change_kind				change_kind_;
   string				name_;
   string				name_regex_str_;
-  mutable sptr_utils::regex_t_sptr	name_regex_;
+  mutable regex::regex_t_sptr		name_regex_;
   string				name_not_regex_str_;
-  mutable sptr_utils::regex_t_sptr	name_not_regex_;
+  mutable regex::regex_t_sptr		name_not_regex_;
   string				return_type_name_;
   string				return_type_regex_str_;
-  mutable sptr_utils::regex_t_sptr	return_type_regex_;
+  mutable regex::regex_t_sptr		return_type_regex_;
   parameter_specs_type			parm_specs_;
   string				symbol_name_;
   string				symbol_name_regex_str_;
-  mutable sptr_utils::regex_t_sptr	symbol_name_regex_;
+  mutable regex::regex_t_sptr		symbol_name_regex_;
   string				symbol_name_not_regex_str_;
-  mutable sptr_utils::regex_t_sptr	symbol_name_not_regex_;
+  mutable regex::regex_t_sptr		symbol_name_not_regex_;
   string				symbol_version_;
   string				symbol_version_regex_str_;
-  mutable sptr_utils::regex_t_sptr	symbol_version_regex_;
+  mutable regex::regex_t_sptr		symbol_version_regex_;
   bool					allow_other_aliases_;
 
   priv():
@@ -356,12 +357,12 @@ struct function_suppression::priv
   ///
   /// @return a pointer to the regular expression object of
   /// function_suppression::priv::name_regex_str_..
-  const sptr_utils::regex_t_sptr
+  const regex::regex_t_sptr
   get_name_regex() const
   {
     if (!name_regex_ && !name_regex_str_.empty())
       {
-	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
+	regex::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	if (regcomp(r.get(),
 		    name_regex_str_.c_str(),
 		    REG_EXTENDED) == 0)
@@ -379,12 +380,12 @@ struct function_suppression::priv
   ///
   /// @return a pointer to the regular expression object of
   /// function_suppression::priv::name_not_regex_str_..
-  const sptr_utils::regex_t_sptr
+  const regex::regex_t_sptr
   get_name_not_regex() const
   {
     if (!name_not_regex_ && !name_not_regex_str_.empty())
       {
-	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
+	regex::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	if (regcomp(r.get(),
 		    name_not_regex_str_.c_str(),
 		    REG_EXTENDED) == 0)
@@ -402,12 +403,12 @@ struct function_suppression::priv
   ///
   /// @return a pointer to the regular expression object of
   /// function_suppression::priv::return_type_regex_str_.
-  const sptr_utils::regex_t_sptr
+  const regex::regex_t_sptr
   get_return_type_regex() const
   {
     if (!return_type_regex_ && !return_type_regex_str_.empty())
       {
-	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
+	regex::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	if (regcomp(r.get(),
 		    return_type_regex_str_.c_str(),
 		    REG_EXTENDED) == 0)
@@ -425,12 +426,12 @@ struct function_suppression::priv
   ///
   /// @return a pointer to the regular expression object of
   /// function_suppression::priv::symbol_name_regex_str_.
-  const sptr_utils::regex_t_sptr
+  const regex::regex_t_sptr
   get_symbol_name_regex() const
   {
     if (!symbol_name_regex_ && !symbol_name_regex_str_.empty())
       {
-	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
+	regex::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	if (regcomp(r.get(),
 		    symbol_name_regex_str_.c_str(),
 		    REG_EXTENDED) == 0)
@@ -448,12 +449,12 @@ struct function_suppression::priv
   ///
   /// @return a pointer to the regular expression object of
   /// function_suppression::priv::symbol_name_not_regex_str_.
-  const sptr_utils::regex_t_sptr
+  const regex::regex_t_sptr
   get_symbol_name_not_regex() const
   {
     if (!symbol_name_not_regex_ && !symbol_name_not_regex_str_.empty())
       {
-	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
+	regex::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	if (regcomp(r.get(),
 		    symbol_name_not_regex_str_.c_str(),
 		    REG_EXTENDED) == 0)
@@ -471,12 +472,12 @@ struct function_suppression::priv
   ///
   /// @return a pointer to the regular expression object of
   /// function_suppression::priv::symbol_version_regex_str_.
-  const sptr_utils::regex_t_sptr
+  const regex::regex_t_sptr
   get_symbol_version_regex() const
   {
     if (!symbol_version_regex_ && ! symbol_version_regex_str_.empty())
       {
-	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
+	regex::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	if (regcomp(r.get(),
 		    symbol_version_regex_str_.c_str(),
 		    REG_EXTENDED) == 0)
@@ -561,20 +562,20 @@ struct variable_suppression::priv
   change_kind				change_kind_;
   string				name_;
   string				name_regex_str_;
-  mutable sptr_utils::regex_t_sptr	name_regex_;
+  mutable regex::regex_t_sptr		name_regex_;
   string				name_not_regex_str_;
-  mutable sptr_utils::regex_t_sptr	name_not_regex_;
+  mutable regex::regex_t_sptr		name_not_regex_;
   string				symbol_name_;
   string				symbol_name_regex_str_;
-  mutable sptr_utils::regex_t_sptr	symbol_name_regex_;
+  mutable regex::regex_t_sptr		symbol_name_regex_;
   string				symbol_name_not_regex_str_;
-  mutable sptr_utils::regex_t_sptr	symbol_name_not_regex_;
+  mutable regex::regex_t_sptr		symbol_name_not_regex_;
   string				symbol_version_;
   string				symbol_version_regex_str_;
-  mutable sptr_utils::regex_t_sptr	symbol_version_regex_;
+  mutable regex::regex_t_sptr		symbol_version_regex_;
   string				type_name_;
   string				type_name_regex_str_;
-  mutable sptr_utils::regex_t_sptr	type_name_regex_;
+  mutable regex::regex_t_sptr		type_name_regex_;
 
   priv(const string& name,
        const string& name_regex_str,
@@ -604,12 +605,12 @@ struct variable_suppression::priv
   ///
   /// @return a pointer to the regular expression object of
   /// variable_suppression::priv::name_regex_str_.
-  const sptr_utils::regex_t_sptr
+  const regex::regex_t_sptr
   get_name_regex() const
   {
     if (!name_regex_ && !name_regex_str_.empty())
       {
-	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
+	regex::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	if (regcomp(r.get(),
 		    name_regex_str_.c_str(),
 		    REG_EXTENDED) == 0)
@@ -627,12 +628,12 @@ struct variable_suppression::priv
   ///
   /// @return a pointer to the regular expression object of
   /// variable_suppression::priv::name_not_regex_str_..
-  const sptr_utils::regex_t_sptr
+  const regex::regex_t_sptr
   get_name_not_regex() const
   {
     if (!name_not_regex_ && !name_not_regex_str_.empty())
       {
-	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
+	regex::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	if (regcomp(r.get(),
 		    name_not_regex_str_.c_str(),
 		    REG_EXTENDED) == 0)
@@ -650,12 +651,12 @@ struct variable_suppression::priv
   ///
   /// @return a pointer to the regular expression object of
   /// variable_suppression::priv::symbol_name_regex_str_.
-  const sptr_utils::regex_t_sptr
+  const regex::regex_t_sptr
   get_symbol_name_regex() const
   {
     if (!symbol_name_regex_ && !symbol_name_regex_str_.empty())
       {
-	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
+	regex::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	if (regcomp(r.get(),
 		    symbol_name_regex_str_.c_str(),
 		    REG_EXTENDED) == 0)
@@ -673,12 +674,12 @@ struct variable_suppression::priv
   ///
   /// @return a pointer to the regular expression object of
   /// variable_suppression::priv::symbol_name_not_regex_str_.
-  const sptr_utils::regex_t_sptr
+  const regex::regex_t_sptr
   get_symbol_name_not_regex() const
   {
     if (!symbol_name_not_regex_ && !symbol_name_not_regex_str_.empty())
       {
-	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
+	regex::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	if (regcomp(r.get(), symbol_name_not_regex_str_.c_str(),
 		    REG_EXTENDED) == 0)
 	  symbol_name_not_regex_ = r;
@@ -695,12 +696,12 @@ struct variable_suppression::priv
   ///
   /// @return a pointer to the regular expression object of
   /// variable_suppression::priv::symbol_version_regex_str_.
-  const sptr_utils::regex_t_sptr
+  const regex::regex_t_sptr
   get_symbol_version_regex()  const
   {
     if (!symbol_version_regex_ && !symbol_version_regex_str_.empty())
       {
-	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
+	regex::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	if (regcomp(r.get(),
 		    symbol_version_regex_str_.c_str(),
 		    REG_EXTENDED) == 0)
@@ -718,12 +719,12 @@ struct variable_suppression::priv
   ///
   /// @return a pointer to the regular expression object of
   /// variable_suppression::priv::type_name_regex_str_.
-  const sptr_utils::regex_t_sptr
+  const regex::regex_t_sptr
   get_type_name_regex() const
   {
     if (!type_name_regex_ && !type_name_regex_str_.empty())
       {
-	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
+	regex::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	if (regcomp(r.get(),
 		    type_name_regex_str_.c_str(),
 		    REG_EXTENDED) == 0)
@@ -766,18 +767,18 @@ variable_is_suppressed(const ReadContextType&	ctxt,
 class type_suppression::priv
 {
   string				type_name_regex_str_;
-  mutable sptr_utils::regex_t_sptr	type_name_regex_;
+  mutable regex::regex_t_sptr		type_name_regex_;
   string				type_name_;
   string				type_name_not_regex_str_;
-  mutable sptr_utils::regex_t_sptr	type_name_not_regex_;
+  mutable regex::regex_t_sptr		type_name_not_regex_;
   bool					consider_type_kind_;
   type_suppression::type_kind		type_kind_;
   bool					consider_reach_kind_;
   type_suppression::reach_kind		reach_kind_;
   type_suppression::insertion_ranges	insertion_ranges_;
-  unordered_set<string>		source_locations_to_keep_;
+  unordered_set<string>			source_locations_to_keep_;
   string				source_location_to_keep_regex_str_;
-  mutable sptr_utils::regex_t_sptr	source_location_to_keep_regex_;
+  mutable regex::regex_t_sptr		source_location_to_keep_regex_;
   mutable vector<string>		changed_enumerator_names_;
 
   priv();
@@ -805,14 +806,14 @@ public:
   ///
   /// If the 'type_name_regex' property of @ref type_suppression is
   /// empty then this method returns nil.
-  const sptr_utils::regex_t_sptr
+  const regex::regex_t_sptr
   get_type_name_regex() const
   {
     if (!type_name_regex_)
       {
 	if (!type_name_regex_str_.empty())
 	  {
-	    sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
+	    regex::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	    if (regcomp(r.get(),
 			type_name_regex_str_.c_str(),
 			REG_EXTENDED) == 0)
@@ -826,7 +827,7 @@ public:
   ///
   /// @param r the new type_name_regex object.
   void
-  set_type_name_regex(sptr_utils::regex_t_sptr r)
+  set_type_name_regex(regex::regex_t_sptr r)
   {type_name_regex_ = r;}
 
   /// Get the regular expression object associated to the
@@ -837,14 +838,14 @@ public:
   ///
   /// If the 'type_name_not_regex' property of @ref type_suppression is
   /// empty then this method returns nil.
-  const sptr_utils::regex_t_sptr
+  const regex::regex_t_sptr
   get_type_name_not_regex() const
   {
     if (!type_name_not_regex_)
       {
 	if (!type_name_not_regex_str_.empty())
 	  {
-	    sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
+	    regex::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	    if (regcomp(r.get(),
 			type_name_not_regex_str_.c_str(),
 			REG_EXTENDED) == 0)
@@ -858,7 +859,7 @@ public:
   ///
   /// @param r the new type_name_not_regex object.
   void
-  set_type_name_not_regex(sptr_utils::regex_t_sptr r)
+  set_type_name_not_regex(regex::regex_t_sptr r)
   {type_name_not_regex_ = r;}
 
   /// Getter for the string that denotes the 'type_name_not_regex'
@@ -882,14 +883,14 @@ public:
   /// Getter for the source_location_to_keep_regex object.
   ///
   /// This function builds the regex if it's not yet built.
-  const sptr_utils::regex_t_sptr
+  const regex::regex_t_sptr
   get_source_location_to_keep_regex() const
   {
     if (!source_location_to_keep_regex_)
       {
 	if (!source_location_to_keep_regex_str_.empty())
 	  {
-	    sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
+	    regex::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	    if (regcomp(r.get(),
 			source_location_to_keep_regex_str_.c_str(),
 			REG_EXTENDED) == 0)
@@ -903,7 +904,7 @@ public:
   ///
   /// @param r the new regex object.
   void
-  set_source_location_to_keep_regex(sptr_utils::regex_t_sptr r)
+  set_source_location_to_keep_regex(regex::regex_t_sptr r)
   {source_location_to_keep_regex_ = r;}
 
   friend class type_suppression;

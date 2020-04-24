@@ -24,6 +24,7 @@ abg-cxx-compat.h	\
 abg-version.h		\
 abg-viz-common.h	\
 abg-viz-dot.h		\
-abg-viz-svg.h		
+abg-viz-svg.h		\
+abg-regex.h
 
 EXTRA_DIST = abg-version.h.in

@@ -67,7 +67,7 @@ using zip_utils::open_archive;
 using zip_utils::open_file_in_archive;
 #endif // WITH_ZIP_ARCHIVE
 
-using sptr_utils::regex_t_sptr;
+using regex::regex_t_sptr;
 
 /// Constructor of @ref corpus::exported_decls_builder.
 ///

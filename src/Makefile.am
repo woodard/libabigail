@@ -13,7 +13,6 @@ endif
 
 libabigail_la_SOURCES =			\
 abg-internal.h				\
-abg-sptr-utils.cc			\
 abg-traverse.cc				\
 abg-ir-priv.h				\
 abg-ir.cc				\
@@ -41,6 +40,7 @@ abg-workers.cc				\
 abg-tools-utils.cc			\
 abg-elf-helpers.h			\
 abg-elf-helpers.cc			\
+abg-regex.cc				\
 $(CXX11_SOURCES)
 
 libabigail_la_LIBADD = $(DEPS_LIBS)

@@ -30,6 +30,7 @@
 #define __ABG_CORPUS_PRIV_H__
 
 #include "abg-sptr-utils.h"
+#include "abg-regex.h"
 #include "abg-internal.h"
 
 namespace abigail
@@ -42,7 +43,7 @@ namespace sptr_utils
 namespace ir
 {
 
-using sptr_utils::regex_t_sptr;
+using regex::regex_t_sptr;
 
 /// A convenience typedef for std::vector<regex_t_sptr>.
 typedef vector<regex_t_sptr> regex_t_sptrs_type;
