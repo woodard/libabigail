@@ -27,6 +27,9 @@
 
 #include <regex.h>
 
+#include <string>
+#include <vector>
+
 #include "abg-cxx-compat.h"
 #include "abg-sptr-utils.h"
 
@@ -54,6 +57,9 @@ struct regex_t_deleter
     delete r;
   }
 };//end struct regex_deleter
+
+std::string
+generate_from_strings(const std::vector<std::string>& strs);
 
 }// end namespace regex
 

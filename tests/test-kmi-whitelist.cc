@@ -96,7 +96,7 @@ TEST_CASE("WhitelistWithASingleEntry", "[whitelists]")
   suppressions_type suppr
       = gen_suppr_spec_from_kernel_abi_whitelists(abi_whitelist_paths);
   REQUIRE(!suppr.empty());
-  test_suppressions_are_consistent(suppr, "^test_symbol$");
+  test_suppressions_are_consistent(suppr, "^(test_symbol)$");
 }
 
 TEST_CASE("WhitelistWithADuplicateEntry", "[whitelists]")
@@ -106,7 +106,7 @@ TEST_CASE("WhitelistWithADuplicateEntry", "[whitelists]")
   suppressions_type suppr
       = gen_suppr_spec_from_kernel_abi_whitelists(abi_whitelist_paths);
   REQUIRE(!suppr.empty());
-  test_suppressions_are_consistent(suppr, "^test_symbol$");
+  test_suppressions_are_consistent(suppr, "^(test_symbol)$");
 }
 
 TEST_CASE("TwoWhitelists", "[whitelists]")
@@ -118,7 +118,7 @@ TEST_CASE("TwoWhitelists", "[whitelists]")
       gen_suppr_spec_from_kernel_abi_whitelists(abi_whitelist_paths);
   REQUIRE(!suppr.empty());
   test_suppressions_are_consistent(suppr,
-				   "^test_another_symbol$|^test_symbol$");
+				   "^(test_another_symbol|test_symbol)$");
 }
 
 TEST_CASE("TwoWhitelistsWithDuplicates", "[whitelists]")
@@ -130,7 +130,7 @@ TEST_CASE("TwoWhitelistsWithDuplicates", "[whitelists]")
       = gen_suppr_spec_from_kernel_abi_whitelists(abi_whitelist_paths);
   REQUIRE(!suppr.empty());
   test_suppressions_are_consistent(suppr,
-				   "^test_another_symbol$|^test_symbol$");
+				   "^(test_another_symbol|test_symbol)$");
 }
 
 TEST_CASE("WhitelistWithTwoSections", "[whitelists]")
@@ -140,5 +140,5 @@ TEST_CASE("WhitelistWithTwoSections", "[whitelists]")
   suppressions_type suppr
       = gen_suppr_spec_from_kernel_abi_whitelists(abi_whitelist_paths);
   REQUIRE(!suppr.empty());
-  test_suppressions_are_consistent(suppr, "^test_symbol1$|^test_symbol2$");
+  test_suppressions_are_consistent(suppr, "^(test_symbol1|test_symbol2)$");
 }

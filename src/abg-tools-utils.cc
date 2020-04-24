@@ -61,6 +61,8 @@
 #include "abg-dwarf-reader.h"
 #include "abg-internal.h"
 #include "abg-cxx-compat.h"
+#include "abg-regex.h"
+
 // <headers defining libabigail's API go under here>
 ABG_BEGIN_EXPORT_DECLARATIONS
 
@@ -2002,13 +2004,7 @@ gen_suppr_spec_from_kernel_abi_whitelists
 
       // Build a regular expression representing the union of all
       // the function and variable names expressed in the white list.
-      std::stringstream regex_ss;
-      regex_ss << "^";
-      std::copy(whitelisted_names.begin(), whitelisted_names.end(),
-		std::ostream_iterator<std::string>(regex_ss, "$|^"));
-      regex_ss.seekp(0, std::ios::end);
-      const std::string& regex =
-	  regex_ss.str().substr(0, static_cast<size_t>(regex_ss.tellp()) - 2);
+      const std::string regex = regex::generate_from_strings(whitelisted_names);
 
       // Build a suppression specification which *keeps* functions
       // whose ELF symbols match the regular expression contained
