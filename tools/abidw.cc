@@ -99,6 +99,7 @@ struct options
   bool			write_architecture;
   bool			write_corpus_path;
   bool			write_comp_dir;
+  bool			write_elf_needed;
   bool			write_parameter_names;
   bool			short_locs;
   bool			load_all_types;
@@ -120,6 +121,7 @@ struct options
       write_architecture(true),
       write_corpus_path(true),
       write_comp_dir(true),
+      write_elf_needed(true),
       write_parameter_names(true),
       short_locs(false),
       load_all_types(),
@@ -167,6 +169,7 @@ display_usage(const string& prog_name, ostream& out)
     << "  --drop-private-types  drop private types from representation\n"
     << "  --drop-undefined-syms  drop undefined symbols from representation\n"
     << "  --no-comp-dir-path  do not show compilation path information\n"
+    << "  --no-elf-needed  do not show the DT_NEEDED information\n"
     << "  --no-parameter-names  do not show names of function parameters\n"
     << "  --check-alternate-debug-info <elf-path>  check alternate debug info "
     "of <elf-path>\n"
@@ -288,6 +291,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.short_locs = true;
       else if (!strcmp(argv[i], "--no-comp-dir-path"))
 	opts.write_comp_dir = false;
+      else if (!strcmp(argv[i], "--no-elf-needed"))
+	opts.write_elf_needed = false;
       else if (!strcmp(argv[i], "--no-parameter-names"))
 	opts.write_parameter_names = false;
       else if (!strcmp(argv[i], "--check-alternate-debug-info")

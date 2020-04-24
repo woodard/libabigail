@@ -146,6 +146,11 @@ Options
     representation build by Libabigail to represent the ABI and will
     not end up in the abi XML file.
 
+  * ``--no-elf-needed``
+
+    Do not include the list of DT_NEEDED dependency names in the
+    corpus.
+
   * ``--drop-undefined-syms``
 
     With this option functions or variables for which the (exported)
