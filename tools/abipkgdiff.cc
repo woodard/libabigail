@@ -346,7 +346,6 @@ private:
   vector<package_sptr>			debug_info_packages_;
   package_sptr				devel_package_;
   package_sptr				kabi_whitelist_package_;
-  suppressions_type			private_types_suppressions_;
   vector<string>			elf_file_paths_;
   set<string>				public_dso_sonames_;
 
@@ -554,24 +553,6 @@ public:
   kabi_whitelist_package(const package_sptr& p)
   {kabi_whitelist_package_ = p;}
 
-  /// Getter of the specifications to suppress change reports about
-  /// private types.
-  ///
-  /// @return the vector of specifications to suppress change reports
-  /// about private types.
-  const suppressions_type&
-  private_types_suppressions() const
-  {return private_types_suppressions_;}
-
-  /// Getter of the specifications to suppress change reports about
-  /// private types.
-  ///
-  /// @return the vector of specifications to suppress change reports
-  /// about private types.
-  suppressions_type&
-  private_types_suppressions()
-  {return private_types_suppressions_;}
-
   /// Getter of the path to the elf files of the package.
   ///
   /// @return the path tothe elf files of the package.
@@ -727,10 +708,10 @@ struct compare_args
 {
   const elf_file		elf1;
   const string&		debug_dir1;
-  const suppressions_type&	private_types_suppr1;
+  const suppressions_type	private_types_suppr1;
   const elf_file		elf2;
   const string&		debug_dir2;
-  const suppressions_type&	private_types_suppr2;
+  const suppressions_type	private_types_suppr2;
   const options&		opts;
 
   /// Constructor for compare_args, which is used to pass
@@ -1496,28 +1477,25 @@ compare(const elf_file& elf1,
 /// out types that are deemed private to the package we are looking
 /// at.
 ///
-/// If the function succeeds, the generated private type suppressions
-/// are available by invoking the
-/// package::private_types_suppressions() accessor of the @p pkg
-/// parameter.
+/// If the function succeeds, it returns a non-empty vector of
+/// suppression specifications.
 ///
 /// @param pkg the main package we are looking at.
 ///
 /// @param opts the options of the current program.
 ///
-/// @return true iff suppression specifications were generated for
-/// types private to the package.
-static bool
-maybe_create_private_types_suppressions(package& pkg, const options &opts)
+/// @return a vector of suppression_sptr.  If no suppressions
+/// specification were constructed, the returned vector is empty.
+static suppressions_type
+create_private_types_suppressions(const package& pkg, const options &opts)
 {
-  if (!pkg.private_types_suppressions().empty())
-    return false;
+  suppressions_type supprs;
 
   package_sptr devel_pkg = pkg.devel_package();
   if (!devel_pkg
       || !file_exists(devel_pkg->extracted_dir_path())
       || !is_dir(devel_pkg->extracted_dir_path()))
-    return false;
+    return supprs;
 
   string headers_path = devel_pkg->extracted_dir_path();
   if (devel_pkg->type() == abigail::tools_utils::FILE_TYPE_RPM
@@ -1527,7 +1505,7 @@ maybe_create_private_types_suppressions(package& pkg, const options &opts)
     headers_path += "/usr/include";
 
   if (!is_dir(headers_path))
-    return false;
+    return supprs;
 
   suppression_sptr suppr =
     gen_suppr_spec_from_headers(headers_path);
@@ -1536,10 +1514,10 @@ maybe_create_private_types_suppressions(package& pkg, const options &opts)
     {
       if (opts.drop_private_types)
 	suppr->set_drops_artifact_from_ir(true);
-      pkg.private_types_suppressions().push_back(suppr);
+      supprs.push_back(suppr);
     }
 
-  return bool(suppr);
+  return supprs;
 }
 
 /// If the user wants to avoid comparing DSOs that are private to this
@@ -2197,10 +2175,7 @@ extract_package_and_map_its_content(const package_sptr &pkg, options &opts)
     is_ok = create_maps_of_package_content(*pkg, opts);
 
   if (is_ok)
-    {
-      maybe_create_private_types_suppressions(*pkg, opts);
-      maybe_handle_kabi_whitelist_pkg(*pkg, opts);
-    }
+    maybe_handle_kabi_whitelist_pkg(*pkg, opts);
 
   return is_ok;
 }
@@ -2397,11 +2372,12 @@ compare_prepared_userspace_packages(package& first_package,
 	      compare_args_sptr args
 		(new compare_args(*it->second,
 				  debug_dir1,
-				  first_package.private_types_suppressions(),
+				  create_private_types_suppressions
+				  (first_package, opts),
 				  *iter->second,
 				  debug_dir2,
-				  second_package.private_types_suppressions(),
-				  opts));
+				  create_private_types_suppressions
+				  (second_package, opts), opts));
 	      compare_task_sptr t(new compare_task(args));
 	      compare_tasks.push_back(t);
 	    }
