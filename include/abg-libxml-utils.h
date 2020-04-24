@@ -23,7 +23,10 @@
 #ifndef __ABG_LIBXML_UTILS_H__
 #define __ABG_LIBXML_UTILS_H__
 
+#include <libxml/xmlreader.h>
+
 #include <istream>
+
 #include "abg-sptr-utils.h"
 #include "abg-cxx-compat.h"
 
@@ -36,8 +39,12 @@ namespace xml
 
 using sptr_utils::build_sptr;
 using abg_compat::shared_ptr;
-using sptr_utils::reader_sptr;
-using sptr_utils::xml_char_sptr;
+
+/// A convenience typedef for a shared pointer of xmlTextReader.
+typedef shared_ptr<xmlTextReader> reader_sptr;
+
+/// A convenience typedef for a shared pointer of xmlChar.
+typedef shared_ptr<xmlChar> xml_char_sptr;
 
 /// This functor is used to instantiate a shared_ptr for the
 /// xmlTextReader.
@@ -121,5 +128,15 @@ std::string
 unescape_xml_comment(const std::string& str);
 
 }//end namespace xml
+
+/// Specialization of sptr_utils::build_sptr for xmlTextReader
+template<>
+xml::reader_sptr
+sptr_utils::build_sptr<xmlTextReader>(xmlTextReader *p);
+
+/// Specialization of build_str for xmlChar.
+template<>
+xml::xml_char_sptr sptr_utils::build_sptr<xmlChar>(xmlChar *p);
+
 }//end namespace abigail
 #endif //__ABG_LIBXML_UTILS_H__
