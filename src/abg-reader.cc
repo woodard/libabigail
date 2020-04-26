@@ -1166,6 +1166,8 @@ static bool	read_is_struct(xmlNodePtr, bool&);
 static bool	read_is_anonymous(xmlNodePtr, bool&);
 static bool	read_elf_symbol_type(xmlNodePtr, elf_symbol::type&);
 static bool	read_elf_symbol_binding(xmlNodePtr, elf_symbol::binding&);
+static bool	read_elf_symbol_visibility(xmlNodePtr,
+					   elf_symbol::visibility&);
 
 static namespace_decl_sptr
 build_namespace_decl(read_context&, const xmlNodePtr, bool);
@@ -2743,7 +2745,7 @@ read_elf_symbol_binding(xmlNodePtr node, elf_symbol::binding& b)
 ///
 /// @return true iff the function completed successfully.
 static bool
-read_elf_symbol_binding(xmlNodePtr node, elf_symbol::visibility& v)
+read_elf_symbol_visibility(xmlNodePtr node, elf_symbol::visibility& v)
 {
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "visibility"))
     {
@@ -2883,7 +2885,7 @@ build_elf_symbol(read_context& ctxt, const xmlNodePtr node,
   read_elf_symbol_binding(node, binding);
 
   elf_symbol::visibility visibility = elf_symbol::DEFAULT_VISIBILITY;
-  read_elf_symbol_binding(node, visibility);
+  read_elf_symbol_visibility(node, visibility);
 
   elf_symbol::version version(version_string, is_default_version);
 
