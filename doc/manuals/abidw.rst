@@ -188,6 +188,15 @@ Options
     In the emitted ABI representation, do not show names of function
     parameters, just the types.
 
+  * ``--no-write-default-sizes``
+
+    In the XML ABI representation, do not write the size-in-bits for
+    pointer type definitions, reference type definitions, function
+    declarations and function types when they are equal to the default
+    address size of the translation unit.  Note that libabigail before
+    1.8 will not set the default size and will interpret types without
+    a size-in-bits attribute as zero sized.
+
   * ``--named-type-ids``
 
     Without this option ids used to reference types in the XML file

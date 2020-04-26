@@ -66,6 +66,9 @@ void
 set_write_elf_needed(write_context& ctxt, bool flag);
 
 void
+set_write_default_sizes(write_context& ctxt, bool flag);
+
+void
 set_short_locs(write_context& ctxt, bool flag);
 
 void
@@ -92,6 +95,7 @@ set_common_options(write_context& ctxt, const OPTS& opts)
   set_write_elf_needed(ctxt, opts.write_elf_needed);
   set_write_parameter_names(ctxt, opts.write_parameter_names);
   set_short_locs(ctxt, opts.short_locs);
+  set_write_default_sizes(ctxt, opts.default_sizes);
 }
 
 void

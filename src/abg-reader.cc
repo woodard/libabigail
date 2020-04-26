@@ -3154,7 +3154,7 @@ build_function_decl(read_context&	ctxt,
   decl_base::binding bind = decl_base::BINDING_NONE;
   read_binding(node, bind);
 
-  size_t size = 0, align = 0;
+  size_t size = ctxt.get_translation_unit()->get_address_size(), align = 0;
   read_size_and_alignment(node, size, align);
 
   location loc;
@@ -3677,11 +3677,9 @@ build_pointer_type_def(read_context&	ctxt,
       return result;
     }
 
-  size_t size_in_bits = 0, alignment_in_bits = 0;
-  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "size-in-bits"))
-    size_in_bits = atoi(CHAR_STR(s));
-  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "alignment-in-bits"))
-    alignment_in_bits = atoi(CHAR_STR(s));
+  size_t size_in_bits = ctxt.get_translation_unit()->get_address_size();
+  size_t alignment_in_bits = 0;
+  read_size_and_alignment(node, size_in_bits, alignment_in_bits);
 
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
@@ -3765,11 +3763,9 @@ build_reference_type_def(read_context&		ctxt,
       return result;
     }
 
-  size_t size_in_bits = 0, alignment_in_bits = 0;
-  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "size-in-bits"))
-    size_in_bits = atoi(CHAR_STR(s));
-  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "alignment-in-bits"))
-    alignment_in_bits = atoi(CHAR_STR(s));
+  size_t size_in_bits = ctxt.get_translation_unit()->get_address_size();
+  size_t alignment_in_bits = 0;
+  read_size_and_alignment(node, size_in_bits, alignment_in_bits);
 
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
@@ -3834,7 +3830,7 @@ build_function_type(read_context&	ctxt,
 
   bool is_method_t = !method_class_id.empty();
 
-  size_t size = 0, align = 0;
+  size_t size = ctxt.get_translation_unit()->get_address_size(), align = 0;
   read_size_and_alignment(node, size, align);
 
   environment* env = ctxt.get_environment();

@@ -102,6 +102,7 @@ struct options
   bool			write_elf_needed;
   bool			write_parameter_names;
   bool			short_locs;
+  bool			default_sizes;
   bool			load_all_types;
   bool			linux_kernel_mode;
   bool			corpus_group_for_linux;
@@ -124,6 +125,7 @@ struct options
       write_elf_needed(true),
       write_parameter_names(true),
       short_locs(false),
+      default_sizes(true),
       load_all_types(),
       linux_kernel_mode(true),
       corpus_group_for_linux(false),
@@ -170,6 +172,8 @@ display_usage(const string& prog_name, ostream& out)
     << "  --drop-undefined-syms  drop undefined symbols from representation\n"
     << "  --no-comp-dir-path  do not show compilation path information\n"
     << "  --no-elf-needed  do not show the DT_NEEDED information\n"
+    << "  --no-write-default-sizes  do not emit pointer size when it equals"
+    " the default address size of the translation unit\n"
     << "  --no-parameter-names  do not show names of function parameters\n"
     << "  --check-alternate-debug-info <elf-path>  check alternate debug info "
     "of <elf-path>\n"
@@ -293,6 +297,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.write_comp_dir = false;
       else if (!strcmp(argv[i], "--no-elf-needed"))
 	opts.write_elf_needed = false;
+      else if (!strcmp(argv[i], "--no-write-default-sizes"))
+	opts.default_sizes = false;
       else if (!strcmp(argv[i], "--no-parameter-names"))
 	opts.write_parameter_names = false;
       else if (!strcmp(argv[i], "--check-alternate-debug-info")

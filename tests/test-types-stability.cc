@@ -102,6 +102,14 @@ struct test_task : public abigail::workers::task
 	error_message = "IR stability issue detected for binary " + elf_path;
 	is_ok = false;
       }
+
+    cmd = abidw + " --abidiff --no-write-default-sizes " + elf_path;
+    if (system(cmd.c_str()))
+      {
+	error_message = "IR stability issue detected for binary " + elf_path
+	  + " with --no-write-default-sizes";
+	is_ok = false;
+      }
   }
 }; // end struct test_task
 

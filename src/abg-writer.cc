@@ -176,6 +176,7 @@ class write_context
   bool					m_write_elf_needed;
   bool					m_write_parameter_names;
   bool					m_short_locs;
+  bool					m_write_default_sizes;
   mutable type_ptr_map			m_type_id_map;
   mutable type_ptr_set_type		m_emitted_type_set;
   type_ptr_set_type			m_emitted_decl_only_set;
@@ -212,7 +213,8 @@ public:
       m_write_comp_dir(true),
       m_write_elf_needed(true),
       m_write_parameter_names(true),
-      m_short_locs(false)
+      m_short_locs(false),
+      m_write_default_sizes(true)
   {}
 
   /// Getter of the environment we are operating from.
@@ -281,6 +283,20 @@ public:
   void
   set_write_elf_needed(bool f)
   {m_write_elf_needed = f;}
+
+  /// Getter of the default-sizes option.
+  ///
+  /// @return true iff default size-in-bits needs to be emitted
+  bool
+  get_write_default_sizes()
+  {return m_write_default_sizes;}
+
+  /// Setter of the default-sizes option.
+  ///
+  /// @param f the new value of the flag.
+  void
+  set_write_default_sizes(bool f)
+  {m_write_default_sizes = f;}
 
   /// Getter of the write-corpus-path option.
   ///
@@ -809,7 +825,9 @@ static bool write_is_non_reachable(const type_base_sptr&, ostream&);
 static bool write_tracking_non_reachable_types(const corpus_sptr&, ostream&);
 static void write_array_size_and_alignment(const array_type_def_sptr,
 					   ostream&);
-static void write_size_and_alignment(const type_base_sptr, ostream&);
+static void write_size_and_alignment(const type_base_sptr, ostream&,
+				     size_t default_size = 0,
+				     size_t default_alignment = 0);
 static void write_access(access_specifier, ostream&);
 static void write_layout_offset(var_decl_sptr, ostream&);
 static void write_layout_offset(class_decl::base_spec_sptr, ostream&);
@@ -1396,15 +1414,24 @@ write_tracking_non_reachable_types(const corpus_sptr& corpus,
 /// @param decl the type to consider.
 ///
 /// @param o the output stream to serialize to.
+///
+/// @param default_size size in bits that is the default for the type.
+///                     No size-in-bits attribute is written if it
+///                     would be the default value.
+///
+/// @param default_alignment alignment in bits that is the default for
+///                     the type.  No alignment-in-bits attribute is
+///                     written if it would be the default value.
 static void
-write_size_and_alignment(const shared_ptr<type_base> decl, ostream& o)
+write_size_and_alignment(const shared_ptr<type_base> decl, ostream& o,
+			 size_t default_size, size_t default_alignment)
 {
   size_t size_in_bits = decl->get_size_in_bits();
-  if (size_in_bits)
+  if (size_in_bits != default_size)
     o << " size-in-bits='" << size_in_bits << "'";
 
   size_t alignment_in_bits = decl->get_alignment_in_bits();
-  if (alignment_in_bits)
+  if (alignment_in_bits != default_alignment)
     o << " alignment-in-bits='" << alignment_in_bits << "'";
 }
 
@@ -2089,6 +2116,21 @@ void
 set_write_elf_needed(write_context& ctxt, bool flag)
 {ctxt.set_write_elf_needed(flag);}
 
+/// Set the 'default-sizes' flag.
+///
+/// When this flag is set then the XML writer will emit default
+/// size-in-bits attributes for pointer type definitions, reference
+/// type definitions, function declarations and function types even
+/// when they are equal to the default address size of the translation
+/// unit.
+///
+/// @param ctxt the context to set this flag on to.
+///
+/// @param flag the new value of the 'default-sizes' flag.
+void
+set_write_default_sizes(write_context& ctxt, bool flag)
+{ctxt.set_write_default_sizes(flag);}
+
 /// Serialize the canonical types of a given scope.
 ///
 /// @param scope the scope to consider.
@@ -2545,7 +2587,11 @@ write_pointer_type_def(const pointer_type_def_sptr&	decl,
 
   ctxt.record_type_as_referenced(pointed_to_type);
 
-  write_size_and_alignment(decl, o);
+  write_size_and_alignment(decl, o,
+			   (ctxt.get_write_default_sizes()
+			    ? 0
+			    : decl->get_translation_unit()->get_address_size()),
+			   0);
 
   string i = id;
   if (i.empty())
@@ -2623,7 +2669,11 @@ write_reference_type_def(const reference_type_def_sptr&	decl,
   if (function_type_sptr f = is_function_type(decl->get_pointed_to_type()))
     ctxt.record_type_as_referenced(f);
 
-  write_size_and_alignment(decl, o);
+  write_size_and_alignment(decl, o,
+			   (ctxt.get_write_default_sizes()
+			    ? 0
+			    : decl->get_translation_unit()->get_address_size()),
+			   0);
 
   string i = id;
   if (i.empty())
@@ -3171,7 +3221,11 @@ write_function_decl(const function_decl_sptr& decl, write_context& ctxt,
 
   write_binding(decl, o);
 
-  write_size_and_alignment(decl->get_type(), o);
+  write_size_and_alignment(decl->get_type(), o,
+			   (ctxt.get_write_default_sizes()
+			    ? 0
+			    : decl->get_translation_unit()->get_address_size()),
+			   0);
   write_elf_symbol_reference(decl->get_symbol(), o);
 
   o << ">\n";
@@ -3251,7 +3305,11 @@ write_function_type(const function_type_sptr& fn_type,
 
   o << "<function-type";
 
-  write_size_and_alignment(fn_type, o);
+  write_size_and_alignment(fn_type, o,
+			   (ctxt.get_write_default_sizes()
+			    ? 0
+			    : fn_type->get_translation_unit()->get_address_size()),
+			   0);
 
   if (method_type_sptr method_type = is_method_type(fn_type))
     {
