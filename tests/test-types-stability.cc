@@ -70,7 +70,8 @@ const char* elf_paths[] =
 /// passed to the constructor of the task.
 struct test_task : public abigail::workers::task
 {
-  string path;
+  const string path;
+  const bool no_default_sizes;
   string error_message;
   bool is_ok;
 
@@ -78,8 +79,9 @@ struct test_task : public abigail::workers::task
   ///
   /// @param elf_path the path to the elf binary on which we are
   /// supposed to launch abidw --abidiff.
-  test_task(const string& elf_path)
+  test_task(const string& elf_path, bool no_default_sizes)
     : path(elf_path),
+      no_default_sizes(no_default_sizes),
       is_ok(true)
   {}
 
@@ -96,18 +98,14 @@ struct test_task : public abigail::workers::task
 
     string abidw = string(get_build_dir()) + "/tools/abidw";
     string elf_path = string(get_src_dir()) + "/tests/" + path;
-    string cmd = abidw + " --abidiff " + elf_path;
+    string cmd = abidw + " --abidiff "
+		 + (no_default_sizes ? "--no-write-default-sizes " : "")
+		 + elf_path;
     if (system(cmd.c_str()))
       {
-	error_message = "IR stability issue detected for binary " + elf_path;
-	is_ok = false;
-      }
-
-    cmd = abidw + " --abidiff --no-write-default-sizes " + elf_path;
-    if (system(cmd.c_str()))
-      {
-	error_message = "IR stability issue detected for binary " + elf_path
-	  + " with --no-write-default-sizes";
+	error_message =
+	    "IR stability issue detected for binary " + elf_path
+	    + (no_default_sizes ? " with --no-write-default-sizes" : "");
 	is_ok = false;
       }
   }
@@ -129,7 +127,7 @@ main()
   /// Create a task queue.  The max number of worker threads of the
   /// queue is the number of the concurrent threads supported by the
   /// processor of the machine this code runs on.
-  const size_t num_tests = sizeof(elf_paths) / sizeof (char*) - 1;
+  const size_t num_tests = (sizeof(elf_paths) / sizeof(char*) - 1) * 2;
   size_t num_workers = std::min(get_number_of_threads(), num_tests);
   queue task_queue(num_workers);
 
@@ -138,7 +136,10 @@ main()
   /// a worker thread that starts working on the task.
   for (const char** p = elf_paths; p && *p; ++p)
     {
-      test_task_sptr t(new test_task(*p));
+      test_task_sptr t(new test_task(*p, false));
+      ABG_ASSERT(task_queue.schedule_task(t));
+
+      t.reset(new test_task(*p, true));
       ABG_ASSERT(task_queue.schedule_task(t));
     }
 
