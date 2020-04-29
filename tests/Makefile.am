@@ -24,29 +24,33 @@ FEDABIPKGDIFF_TEST += runtestfedabipkgdiff.py
 endif
 endif
 
+# rather expensive tests (keep in this order), > 1s runtime
 TESTS=				\
-$(FEDABIPKGDIFF_TEST) 		\
-runtestreaddwarf		\
-runtestannotate			\
-runtestcanonicalizetypes.sh	\
-runtestdiffpkg			\
-runtestdifffilter		\
-$(ZIP_ARCHIVE_TESTS)		\
 runtestdiffsuppr		\
-runtestreadwrite		\
-runtestabidiff			\
-runtestdiffdwarfabixml		\
-runtestabicompat		\
 runtesttypesstability		\
-runtestdiffdwarf		\
-runtestlookupsyms		\
-runtestaltdwarf			\
-runtestcorediff			\
+runtestdiffpkg			\
+runtestannotate			\
+runtestdifffilter		\
+runtestreaddwarf
+
+# rather cheap tests
+TESTS+=				\
+runtestabicompat		\
+runtestabidiff			\
 runtestabidiffexit		\
-runtestini			\
-runtesttoolsutils		\
-runtestkmiwhitelist		\
+runtestaltdwarf			\
+runtestcanonicalizetypes.sh	\
+runtestcorediff			\
+runtestdiffdwarf		\
+runtestdiffdwarfabixml		\
 runtestelfhelpers		\
+runtestini			\
+runtestkmiwhitelist		\
+runtestlookupsyms		\
+runtestreadwrite		\
+runtesttoolsutils		\
+$(FEDABIPKGDIFF_TEST) 		\
+$(ZIP_ARCHIVE_TESTS)		\
 $(CXX11_TESTS)
 
 if ENABLE_RUNNING_TESTS_WITH_PY3
