@@ -427,6 +427,87 @@ const type_maps&
 corpus::priv::get_types() const
 {return types_;}
 
+/// Return a sorted vector of function symbols for this corpus.
+///
+/// Note that the first time this function is called, the symbols are
+/// sorted and cached.  Subsequent invocations of this function return
+/// the cached vector that was built previously.
+///
+/// @return the sorted list of function symbols.
+const elf_symbols&
+corpus::priv::get_sorted_fun_symbols() const
+{
+  if (!sorted_fun_symbols)
+    {
+      auto filter = symtab_->make_filter();
+      filter.set_functions();
+      sorted_fun_symbols = elf_symbols(symtab_->begin(filter), symtab_->end());
+    }
+  return *sorted_fun_symbols;
+}
+
+/// Getter for a sorted vector of the function symbols undefined in
+/// this corpus.
+///
+/// @return a vector of the function symbols undefined in this corpus,
+/// sorted by name and then version.
+const elf_symbols&
+corpus::priv::get_sorted_undefined_fun_symbols() const
+{
+  if (!sorted_undefined_fun_symbols)
+    {
+      auto filter = symtab_->make_filter();
+      filter.set_functions();
+      filter.set_undefined_symbols();
+      filter.set_public_symbols(false);
+
+      sorted_undefined_fun_symbols =
+	elf_symbols(symtab_->begin(filter), symtab_->end());
+    }
+  return *sorted_undefined_fun_symbols;
+}
+
+/// Getter for the sorted vector of variable symbols for this corpus.
+///
+/// Note that the first time this function is called, it computes the
+/// sorted vector, caches the result and returns it.  Subsequent
+/// invocations of this function just return the cached vector.
+///
+/// @return the sorted vector of variable symbols for this corpus.
+const elf_symbols&
+corpus::priv::get_sorted_var_symbols() const
+{
+  if (!sorted_var_symbols)
+    {
+      auto filter = symtab_->make_filter();
+      filter.set_variables();
+
+      sorted_var_symbols = elf_symbols(symtab_->begin(filter), symtab_->end());
+    }
+  return *sorted_var_symbols;
+}
+
+/// Getter for a sorted vector of the variable symbols undefined in
+/// this corpus.
+///
+/// @return a vector of the variable symbols undefined in this corpus,
+/// sorted by name and then version.
+const elf_symbols&
+corpus::priv::get_sorted_undefined_var_symbols() const
+{
+  if (!sorted_undefined_var_symbols)
+    {
+      auto filter = symtab_->make_filter();
+      filter.set_variables();
+      filter.set_undefined_symbols();
+      filter.set_public_symbols(false);
+
+      sorted_undefined_var_symbols =
+	  elf_symbols(symtab_->begin(filter), symtab_->end());
+    }
+  return *sorted_undefined_var_symbols;
+}
+
 /// Getter of the set of pretty representation of types that are
 /// reachable from public interfaces (global functions and variables).
 ///
@@ -985,44 +1066,6 @@ const string_elf_symbols_map_type&
 corpus::get_undefined_fun_symbol_map() const
 {return *get_undefined_fun_symbol_map_sptr();}
 
-/// Functor to sort instances of @ref elf_symbol.
-struct elf_symbol_comp_functor
-{
-
-  /// Return true if the first argument is less than the second one.
-  ///
-  /// @param l the first parameter to consider.
-  ///
-  /// @param r the second parameter to consider.
-  ///
-  /// @return true if @p l is less than @p r
-  bool
-  operator()(elf_symbol& l, elf_symbol& r)
-  {return (l.get_id_string() < r.get_id_string());}
-
-  /// Return true if the first argument is less than the second one.
-  ///
-  /// @param l the first parameter to consider.
-  ///
-  /// @param r the second parameter to consider.
-  ///
-  /// @return true if @p l is less than @p r
-  bool
-  operator()(elf_symbol* l, elf_symbol* r)
-  {return operator()(*l, *r);}
-
-  /// Return true if the first argument is less than the second one.
-  ///
-  /// @param l the first parameter to consider.
-  ///
-  /// @param r the second parameter to consider.
-  ///
-  /// @return true if @p l is less than @p r
-  bool
-  operator()(elf_symbol_sptr l, elf_symbol_sptr r)
-  {return operator()(*l, *r);}
-}; // end struct elf_symbol_comp_functor
-
 /// Return a sorted vector of function symbols for this corpus.
 ///
 /// Note that the first time this function is called, the symbols are
@@ -1032,27 +1075,7 @@ struct elf_symbol_comp_functor
 /// @return the sorted list of function symbols.
 const elf_symbols&
 corpus::get_sorted_fun_symbols() const
-{
-  if (priv_->sorted_fun_symbols.empty()
-      && !get_fun_symbol_map().empty())
-    {
-      priv_->sorted_fun_symbols.reserve(get_fun_symbol_map().size());
-      for (string_elf_symbols_map_type::const_iterator i =
-	     get_fun_symbol_map().begin();
-	   i != get_fun_symbol_map().end();
-	   ++i)
-	for (elf_symbols::const_iterator s = i->second.begin();
-	     s != i->second.end();
-	     ++s)
-	  priv_->sorted_fun_symbols.push_back(*s);
-
-      elf_symbol_comp_functor comp;
-      std::sort(priv_->sorted_fun_symbols.begin(),
-		priv_->sorted_fun_symbols.end(),
-		comp);
-    }
-  return priv_->sorted_fun_symbols;
-}
+{return priv_->get_sorted_fun_symbols();}
 
 /// Getter for a sorted vector of the function symbols undefined in
 /// this corpus.
@@ -1061,28 +1084,27 @@ corpus::get_sorted_fun_symbols() const
 /// sorted by name and then version.
 const elf_symbols&
 corpus::get_sorted_undefined_fun_symbols() const
-{
-  if (priv_->sorted_undefined_fun_symbols.empty()
-      && !get_undefined_fun_symbol_map().empty())
-    {
-      priv_->sorted_undefined_fun_symbols.reserve
-	(get_undefined_fun_symbol_map().size());
-      for (string_elf_symbols_map_type::const_iterator i =
-	     get_undefined_fun_symbol_map().begin();
-	   i != get_undefined_fun_symbol_map().end();
-	   ++i)
-	for (elf_symbols::const_iterator s = i->second.begin();
-	     s != i->second.end();
-	     ++s)
-	  priv_->sorted_undefined_fun_symbols.push_back(*s);
+{return priv_->get_sorted_undefined_fun_symbols();}
 
-      elf_symbol_comp_functor comp;
-      std::sort(priv_->sorted_undefined_fun_symbols.begin(),
-		priv_->sorted_undefined_fun_symbols.end(),
-		comp);
-    }
-  return priv_->sorted_undefined_fun_symbols;
-}
+/// Getter for the sorted vector of variable symbols for this corpus.
+///
+/// Note that the first time this function is called, it computes the
+/// sorted vector, caches the result and returns it.  Subsequent
+/// invocations of this function just return the cached vector.
+///
+/// @return the sorted vector of variable symbols for this corpus.
+const elf_symbols&
+corpus::get_sorted_var_symbols() const
+{return priv_->get_sorted_var_symbols();}
+
+/// Getter for a sorted vector of the variable symbols undefined in
+/// this corpus.
+///
+/// @return a vector of the variable symbols undefined in this corpus,
+/// sorted by name and then version.
+const elf_symbols&
+corpus::get_sorted_undefined_var_symbols() const
+{return priv_->get_sorted_undefined_var_symbols();}
 
 /// Getter for the variable symbols map.
 ///
@@ -1121,65 +1143,6 @@ corpus::get_undefined_var_symbol_map_sptr() const
 const string_elf_symbols_map_type&
 corpus::get_undefined_var_symbol_map() const
 {return *get_undefined_var_symbol_map_sptr();}
-
-/// Getter for the sorted vector of variable symbols for this corpus.
-///
-/// Note that the first time this function is called, it computes the
-/// sorted vector, caches the result and returns it.  Subsequent
-/// invocations of this function just return the cached vector.
-///
-/// @return the sorted vector of variable symbols for this corpus.
-const elf_symbols&
-corpus::get_sorted_var_symbols() const
-{
-  if (priv_->sorted_var_symbols.empty()
-      && !get_var_symbol_map().empty())
-    {
-      priv_->sorted_var_symbols.reserve(get_var_symbol_map().size());
-      for (string_elf_symbols_map_type::const_iterator i =
-	     get_var_symbol_map().begin();
-	   i != get_var_symbol_map().end();
-	   ++i)
-	for (elf_symbols::const_iterator s = i->second.begin();
-	     s != i->second.end(); ++s)
-	  priv_->sorted_var_symbols.push_back(*s);
-
-      elf_symbol_comp_functor comp;
-      std::sort(priv_->sorted_var_symbols.begin(),
-		priv_->sorted_var_symbols.end(),
-		comp);
-    }
-  return priv_->sorted_var_symbols;
-}
-
-/// Getter for a sorted vector of the variable symbols undefined in
-/// this corpus.
-///
-/// @return a vector of the variable symbols undefined in this corpus,
-/// sorted by name and then version.
-const elf_symbols&
-corpus::get_sorted_undefined_var_symbols() const
-{
-  if (priv_->sorted_undefined_var_symbols.empty()
-      && !get_undefined_var_symbol_map().empty())
-    {
-      priv_->sorted_undefined_var_symbols.reserve
-	(get_undefined_var_symbol_map().size());
-      for (string_elf_symbols_map_type::const_iterator i =
-	     get_undefined_var_symbol_map().begin();
-	   i != get_undefined_var_symbol_map().end();
-	   ++i)
-	for (elf_symbols::const_iterator s = i->second.begin();
-	     s != i->second.end(); ++s)
-	  priv_->sorted_undefined_var_symbols.push_back(*s);
-
-      elf_symbol_comp_functor comp;
-      std::sort(priv_->sorted_undefined_var_symbols.begin(),
-		priv_->sorted_undefined_var_symbols.end(),
-		comp);
-    }
-  return priv_->sorted_undefined_var_symbols;
-}
 
 /// Look in the function symbols map for a symbol with a given name.
 ///

@@ -686,13 +686,9 @@ struct corpus::priv
   vector<var_decl*>				vars;
   string_elf_symbols_map_sptr			var_symbol_map;
   string_elf_symbols_map_sptr			undefined_var_symbol_map;
-  elf_symbols					sorted_var_symbols;
-  elf_symbols					sorted_undefined_var_symbols;
   symtab_reader::symtab_sptr			symtab_;
   string_elf_symbols_map_sptr			fun_symbol_map;
   string_elf_symbols_map_sptr			undefined_fun_symbol_map;
-  elf_symbols					sorted_fun_symbols;
-  elf_symbols					sorted_undefined_fun_symbols;
   elf_symbols					unrefed_fun_symbols;
   elf_symbols					unrefed_var_symbols;
   // The type maps contained in this data member are populated if the
@@ -714,6 +710,11 @@ struct corpus::priv
 private:
   priv();
 
+  mutable abg_compat::optional<elf_symbols> sorted_var_symbols;
+  mutable abg_compat::optional<elf_symbols> sorted_undefined_var_symbols;
+  mutable abg_compat::optional<elf_symbols> sorted_fun_symbols;
+  mutable abg_compat::optional<elf_symbols> sorted_undefined_fun_symbols;
+
 public:
   priv(const string &	p,
        environment*	e)
@@ -732,6 +733,18 @@ public:
 
   const type_maps&
   get_types() const;
+
+  const elf_symbols&
+  get_sorted_fun_symbols() const;
+
+  const elf_symbols&
+  get_sorted_undefined_fun_symbols() const;
+
+  const elf_symbols&
+  get_sorted_var_symbols() const;
+
+  const elf_symbols&
+  get_sorted_undefined_var_symbols() const;
 
   unordered_set<interned_string, hash_interned_string>*
   get_public_types_pretty_representations();

@@ -1669,26 +1669,43 @@ write_elf_symbol_visibility(elf_symbol::visibility v, ostream& o)
 ///
 /// @return true upon successful completion.
 static bool
-write_elf_symbol_aliases(const elf_symbol& sym, ostream& o)
+write_elf_symbol_aliases(const elf_symbol& sym, ostream& out)
 {
   if (!sym.is_main_symbol() || !sym.has_aliases())
     return false;
 
-  bool emitted = false;
-  o << " alias='";
-  for (elf_symbol_sptr s = sym.get_next_alias();
-       !s->is_main_symbol();
+
+  std::vector<std::string> aliases;
+  for (elf_symbol_sptr s = sym.get_next_alias(); s && !s->is_main_symbol();
        s = s->get_next_alias())
     {
-      if (s->get_next_alias()->is_main_symbol())
-	o << s->get_id_string() << "'";
-      else
-	o << s->get_id_string() << ",";
+      if (!s->is_public())
+	continue;
 
-      emitted = true;
+      if (s->is_suppressed())
+	continue;
+
+      if (sym.is_in_ksymtab() != s->is_in_ksymtab())
+	continue;
+
+      aliases.push_back(s->get_id_string());
     }
 
-  return emitted;
+  if (!aliases.empty())
+    {
+      out << " alias='";
+      std::string separator;
+      for (const auto& alias : aliases)
+	{
+	  out << separator << alias;
+	  separator = ",";
+	}
+
+      out << "'";
+      return true;
+    }
+
+  return false;
 }
 
 /// Write an XML attribute for the reference to a symbol for the
