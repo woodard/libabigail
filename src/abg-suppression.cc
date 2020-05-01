@@ -771,6 +771,11 @@ type_suppression::suppresses_diff(const diff* diff) const
       && (klass_diff->first_class_decl()->get_size_in_bits()
 	  <= klass_diff->second_class_decl()->get_size_in_bits()))
     {
+      const class_decl_sptr& first_type_decl = klass_diff->first_class_decl();
+      const class_decl_sptr& second_type_decl = klass_diff->second_class_decl();
+      size_t first_type_size = first_type_decl->get_size_in_bits();
+      size_t second_type_size = second_type_decl->get_size_in_bits();
+
       for (string_decl_base_sptr_map::const_iterator m =
 	     klass_diff->inserted_data_members().begin();
 	   m != klass_diff->inserted_data_members().end();
@@ -778,10 +783,6 @@ type_suppression::suppresses_diff(const diff* diff) const
 	{
 	  decl_base_sptr member = m->second;
 	  size_t dm_offset = get_data_member_offset(member);
-	  size_t first_type_size =
-	    klass_diff->first_class_decl()->get_size_in_bits();
-	  size_t second_type_size =
-	    klass_diff->second_class_decl()->get_size_in_bits();
 	  bool matched = false;
 
 	  for (insertion_ranges::const_iterator i =
@@ -792,14 +793,10 @@ type_suppression::suppresses_diff(const diff* diff) const
 	      type_suppression::insertion_range_sptr range = *i;
 	      ssize_t range_begin_val = 0,range_end_val = 0;
 	      if (!type_suppression::insertion_range::eval_boundary
-		  (range->begin(),
-		   klass_diff->first_class_decl(),
-		   range_begin_val))
+		  (range->begin(), first_type_decl, range_begin_val))
 		break;
 	      if (!type_suppression::insertion_range::eval_boundary
-		  (range->end(),
-		   klass_diff->first_class_decl(),
-		   range_end_val))
+		  (range->end(), first_type_decl, range_end_val))
 		break;
 
 	      unsigned range_begin =
