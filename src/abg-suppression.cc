@@ -97,7 +97,7 @@ suppression_base::get_drops_artifact_from_ir() const
 /// specification is to avoid adding the matched ABI artifact to the
 /// internal representation.
 void
-suppression_base::set_drops_artifact_from_ir(bool f) const
+suppression_base::set_drops_artifact_from_ir(bool f)
 {priv_->drops_artifact_ = f;}
 
 /// Test is the suppression specification is artificial.

@@ -71,7 +71,7 @@ public:
   get_drops_artifact_from_ir() const;
 
   void
-  set_drops_artifact_from_ir(bool) const;
+  set_drops_artifact_from_ir(bool);
 
   bool
   get_is_artificial() const;
