@@ -2442,7 +2442,7 @@ read_static(xmlNodePtr node, bool& is_static)
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "static"))
     {
       string b = CHAR_STR(s);
-      is_static = (b == "yes") ? true : false;
+      is_static = b == "yes";
       return true;
     }
   return false;
@@ -2567,7 +2567,7 @@ read_is_artificial(xmlNodePtr node, bool& is_artificial)
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "is-artificial"))
     {
       string is_artificial_str = CHAR_STR(s) ? CHAR_STR(s) : "";
-      is_artificial = (is_artificial_str == "yes") ? true : false;
+      is_artificial = is_artificial_str == "yes";
       return true;
     }
   return false;
@@ -3071,7 +3071,7 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
       xml::build_sptr(xmlGetProp(node, BAD_CAST("is-variadic"))))
     {
       is_variadic_str = CHAR_STR(s) ? CHAR_STR(s) : "";
-      is_variadic = (is_variadic_str == "yes") ? true : false;
+      is_variadic = is_variadic_str == "yes";
     }
 
   bool is_artificial = false;
@@ -3146,7 +3146,7 @@ build_function_decl(read_context&	ctxt,
   string inline_prop;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "declared-inline"))
     inline_prop = CHAR_STR(s);
-  bool declared_inline = inline_prop == "yes" ? true : false;
+  bool declared_inline = inline_prop == "yes";
 
   decl_base::visibility vis = decl_base::VISIBILITY_NONE;
   read_visibility(node, vis);
@@ -3583,17 +3583,17 @@ build_qualified_type_decl(read_context&	ctxt,
   string const_str;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "const"))
     const_str = CHAR_STR(s);
-  bool const_cv = const_str == "yes" ? true : false;
+  bool const_cv = const_str == "yes";
 
   string volatile_str;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "volatile"))
     volatile_str = CHAR_STR(s);
-  bool volatile_cv = volatile_str == "yes" ? true : false;
+  bool volatile_cv = volatile_str == "yes";
 
   string restrict_str;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "restrict"))
     restrict_str = CHAR_STR(s);
-  bool restrict_cv = restrict_str == "yes" ? true : false;
+  bool restrict_cv = restrict_str == "yes";
 
   qualified_type_def::CV cv = qualified_type_def::CV_NONE;
   if (const_cv)
@@ -3743,7 +3743,7 @@ build_reference_type_def(read_context&		ctxt,
   string kind;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "kind"))
     kind = CHAR_STR(s); // this should be either "lvalue" or "rvalue".
-  bool is_lvalue = kind == "lvalue" ? true : false;
+  bool is_lvalue = kind == "lvalue";
 
   string type_id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))

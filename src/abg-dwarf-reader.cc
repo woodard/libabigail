@@ -14779,7 +14779,7 @@ build_reference_type(read_context&	ctxt,
   // of the current translation unit.
   ABG_ASSERT((size_t) ctxt.cur_transl_unit()->get_address_size() == size);
 
-  bool is_lvalue = (tag == DW_TAG_reference_type) ? true : false;
+  bool is_lvalue = tag == DW_TAG_reference_type;
 
   result.reset(new reference_type_def(utype, is_lvalue, size,
 				      /*alignment=*/0,

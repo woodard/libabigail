@@ -377,7 +377,7 @@ corpus::priv::build_unreferenced_symbols_tables()
 	    string sym_id = (*s)->get_id_string();
 	    if (refed_funs.find(sym_id) == refed_funs.end())
 	      {
-		bool keep = sym_id_fns_to_keep.empty() ? true : false;
+		bool keep = sym_id_fns_to_keep.empty();
 		for (vector<string>::const_iterator i =
 		       sym_id_fns_to_keep.begin();
 		     i != sym_id_fns_to_keep.end();
@@ -416,7 +416,7 @@ corpus::priv::build_unreferenced_symbols_tables()
 	    string sym_id = (*s)->get_id_string();
 	    if (refed_vars.find(sym_id) == refed_vars.end())
 	      {
-		bool keep = sym_id_vars_to_keep.empty() ? true : false;
+		bool keep = sym_id_vars_to_keep.empty();
 		for (vector<string>::const_iterator i =
 		       sym_id_vars_to_keep.begin();
 		     i != sym_id_vars_to_keep.end();
