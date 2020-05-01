@@ -498,7 +498,6 @@ void
 type_suppression::set_consider_type_kind(bool f)
 {priv_->consider_type_kind_ = f;}
 
-
 /// Setter of the kind of type this suppression is about.
 ///
 /// Note that this will be considered during evaluation of the
@@ -802,7 +801,6 @@ type_suppression::suppresses_diff(const diff* diff) const
 		   klass_diff->first_class_decl(),
 		   range_end_val))
 		break;
-
 
 	      unsigned range_begin =
 		(range_begin_val < 0) ? first_type_size : range_begin_val;
@@ -1254,7 +1252,6 @@ type_suppression::insertion_range::end() const
 type_suppression::insertion_range::integer_boundary_sptr
 type_suppression::insertion_range::create_integer_boundary(int value)
 {return integer_boundary_sptr(new integer_boundary(value));}
-
 
 /// Create a function call expression boundary.
 ///
@@ -3117,7 +3114,7 @@ read_parameter_spec_from_string(const string& str)
   if (str[cur] == '/')
     {
       is_regex = true;
-      ++ cur;
+      ++cur;
     }
 
   // look for the type name (regex)
@@ -3949,7 +3946,6 @@ variable_suppression::suppresses_variable_symbol(const elf_symbol* sym,
   else
     no_symbol_name = true;
 
-
   // Consider the symbol version.
   if (!get_symbol_version().empty())
     {
@@ -4373,7 +4369,6 @@ read_file_suppression(const ini::config::section& section)
 file_suppression_sptr
 is_file_suppression(const suppression_sptr s)
 {return dynamic_pointer_cast<file_suppression>(s);}
-
 
 /// Test if a given file path is "suppressed" by at least one file
 /// suppression specification among a vector of suppression
