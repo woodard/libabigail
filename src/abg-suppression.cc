@@ -1159,10 +1159,10 @@ bool
 type_suppression::suppresses_type(const type_base_sptr& type) const
 {
   if (!suppression_matches_type_no_name(*this, type))
-    return false;;
+    return false;
 
   if (!suppression_matches_type_name(*this, get_name(type)))
-    return false;;
+    return false;
 
   return true;
 }

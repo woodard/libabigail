@@ -7711,7 +7711,7 @@ is_compatible_with_class_type(const type_base_sptr& t)
   // CPU usage toll in exchange for finer filtering?
 
   // type_base_sptr ty = strip_typedef(t);
-  type_base_sptr ty = peel_typedef_type(t);;
+  type_base_sptr ty = peel_typedef_type(t);
   return is_class_type(ty);
 }
 
@@ -15203,7 +15203,7 @@ enum_type_decl::enumerator::set_name(const string& n)
 {
   const environment* env = get_environment();
   ABG_ASSERT(env);
-  priv_->name_ = env->intern(n);;
+  priv_->name_ = env->intern(n);
 }
 
 /// Getter for the value of @ref enum_type_decl::enumerator.

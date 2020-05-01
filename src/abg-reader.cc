@@ -2064,7 +2064,7 @@ read_corpus_from_input(read_context& ctxt)
       ctxt.set_corpus_node(node);
     }
 
-  return ctxt.get_corpus();;
+  return ctxt.get_corpus();
 }
 
 /// Parse the input XML document containing an ABI corpus group,
@@ -3836,7 +3836,7 @@ build_function_type(read_context&	ctxt,
   environment* env = ctxt.get_environment();
   ABG_ASSERT(env);
   std::vector<shared_ptr<function_decl::parameter> > parms;
-  type_base_sptr return_type = env->get_void_type();;
+  type_base_sptr return_type = env->get_void_type();
 
   class_decl_sptr method_class_type;
   if (is_method_t)

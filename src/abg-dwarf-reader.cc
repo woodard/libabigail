@@ -13548,8 +13548,7 @@ finish_member_function_reading(Dwarf_Die*		  die,
     if (!f->get_parameters().empty())
       first_parm = f->get_parameters()[0];
 
-    bool is_artificial =
-      first_parm && first_parm->get_is_artificial();;
+    bool is_artificial = first_parm && first_parm->get_is_artificial();
     pointer_type_def_sptr this_ptr_type;
     type_base_sptr other_klass;
 

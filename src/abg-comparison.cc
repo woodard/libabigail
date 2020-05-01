@@ -1320,7 +1320,7 @@ diff_context::mark_diff_as_visited(const diff* d)
   ABG_ASSERT(canonical);
 
    size_t canonical_ptr_value = reinterpret_cast<size_t>(canonical);
-   size_t diff_ptr_value = reinterpret_cast<size_t>(d);;
+   size_t diff_ptr_value = reinterpret_cast<size_t>(d);
    priv_->visited_diff_nodes_[canonical_ptr_value] = diff_ptr_value;
 }
 
@@ -3676,7 +3676,7 @@ array_diff::has_local_changes() const
   ir::change_kind k = ir::NO_CHANGE_KIND;
   if (!equals(*first_array(), *second_array(), &k))
     return k & ir::ALL_LOCAL_CHANGES_MASK;
-  return ir::NO_CHANGE_KIND;;
+  return ir::NO_CHANGE_KIND;
 }
 
 /// Report the diff in a serialized form.
@@ -5204,7 +5204,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 
     vector<string> to_delete;
     corpus_sptr f = context()->get_first_corpus(),
-      s = context()->get_second_corpus();;
+      s = context()->get_second_corpus();
     if (s)
       for (string_member_function_sptr_map::const_iterator i =
 	     deleted_member_fns().begin();

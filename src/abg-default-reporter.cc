@@ -1713,7 +1713,7 @@ default_reporter::report(const corpus_diff& d, ostream& out,
 		  << c->get_pretty_representation()
 		  << "\n";
 	    }
-	  emitted = true;;
+	  emitted = true;
 	}
       if (emitted)
 	out << "\n";

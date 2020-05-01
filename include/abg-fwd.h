@@ -991,7 +991,7 @@ type_decl_sptr
 lookup_basic_type(const string&, const translation_unit&);
 
 type_decl_sptr
-lookup_basic_type(const type_decl&, const corpus&);;
+lookup_basic_type(const type_decl&, const corpus&);
 
 type_decl_sptr
 lookup_basic_type(const string&, const corpus&);

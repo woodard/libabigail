@@ -2046,7 +2046,7 @@ display_edit_script(const edit_script& es,
   else if (es.num_deletions() == 1)
     {
       out << "1 deletion:\n"
-	  << "\t happened at index: ";;
+	  << "\t happened at index: ";
     }
   else
     {
