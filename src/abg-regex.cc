@@ -23,11 +23,21 @@
 /// Some specialization for shared pointer utility templates.
 ///
 
+#include "config.h"
+
 #include <sstream>
 #include <ostream>
 
+#include "abg-internal.h"
+
+// <headers defining libabigail's API go under here>
+ABG_BEGIN_EXPORT_DECLARATIONS
+
 #include "abg-regex.h"
 #include "abg-sptr-utils.h"
+
+ABG_END_EXPORT_DECLARATIONS
+// </headers defining libabigail's API>
 
 namespace abigail
 {
@@ -102,6 +112,36 @@ generate_from_strings(const std::vector<std::string>& strs)
     os << "|" << escape(*i++);
   os << ")$";
   return os.str();
+}
+
+/// Compile a regex from a string.
+///
+/// The result is held in a shared pointer. This will be null if regex
+/// compilation fails.
+///
+/// @param str the string representation of the regex.
+///
+/// @return shared pointer holder of a compiled regex object.
+regex_t_sptr
+compile(const std::string& str)
+{
+  regex_t_sptr r = sptr_utils::build_sptr(new regex_t);
+  if (regcomp(r.get(), str.c_str(), REG_EXTENDED))
+    r.reset();
+  return r;
+}
+
+/// See if a string matches a regex.
+///
+/// @param r a shared pointer holder of a compiled regex object.
+///
+/// @param str a string.
+///
+/// @return whether there was a match.
+bool
+match(const regex_t_sptr& r, const std::string& str)
+{
+  return !regexec(r.get(), str.c_str(), 0, NULL, 0);
 }
 
 }//end namespace regex
