@@ -1542,10 +1542,10 @@ read_suppression_reach_kind(const string& input)
 static type_suppression_sptr
 read_type_suppression(const ini::config::section& section)
 {
-  type_suppression_sptr nil;
+  type_suppression_sptr result;
 
   if (section.get_name() != "suppress_type")
-    return nil;
+    return result;
 
   ini::simple_property_sptr drop_artifact =
     is_simple_property(section.find_property("drop_artifact"));
@@ -1669,7 +1669,7 @@ read_type_suppression(const ini::config::section& section)
 	       type_suppression::insertion_range::create_fn_call_expr_boundary(ini::read_function_call_expr(ins_point)))
 	begin = expr;
       else
-	return nil;
+	return result;
 
       end = type_suppression::insertion_range::create_integer_boundary(-1);
       type_suppression::insertion_range_sptr insert_range
@@ -1712,7 +1712,7 @@ read_type_suppression(const ini::config::section& section)
 		   type_suppression::insertion_range::create_fn_call_expr_boundary(ini::read_function_call_expr(str)))
 	    begin = expr;
 	  else
-	    return nil;
+	    return result;
 
 	  str = val->get_content()[1];
 	  if (str == "end")
@@ -1725,7 +1725,7 @@ read_type_suppression(const ini::config::section& section)
 		   type_suppression::insertion_range::create_fn_call_expr_boundary(ini::read_function_call_expr(str)))
 	    end = expr;
 	  else
-	    return nil;
+	    return result;
 
 	  type_suppression::insertion_range_sptr insert_range
 	    (new type_suppression::insertion_range(begin, end));
@@ -1736,7 +1736,7 @@ read_type_suppression(const ini::config::section& section)
 	// the 'has_data_member_inserted_between' property has a wrong
 	// value type, so let's discard the endire [suppress_type]
 	// section.
-	return nil;
+	return result;
     }
 
   // Support has_data_members_inserted_between
@@ -1787,7 +1787,7 @@ read_type_suppression(const ini::config::section& section)
 		   type_suppression::insertion_range::create_fn_call_expr_boundary(ini::read_function_call_expr(str)))
 	    begin = expr;
 	  else
-	    return nil;
+	    return result;
 
 	  str = list_value->get_content()[1];
 	  if (str == "end")
@@ -1800,7 +1800,7 @@ read_type_suppression(const ini::config::section& section)
 		   type_suppression::insertion_range::create_fn_call_expr_boundary(ini::read_function_call_expr(str)))
 	    end = expr;
 	  else
-	    return nil;
+	    return result;
 
 	  type_suppression::insertion_range_sptr insert_range
 	    (new type_suppression::insertion_range(begin, end));
@@ -1808,7 +1808,7 @@ read_type_suppression(const ini::config::section& section)
 	  consider_data_member_insertion = true;
 	}
       if (!is_well_formed)
-	return nil;
+	return result;
     }
 
   /// Support 'changed_enumerators = foo, bar, baz'
@@ -1846,59 +1846,58 @@ read_type_suppression(const ini::config::section& section)
       && !consider_type_kind
       && srcloc_not_regexp_str.empty()
       && srcloc_not_in.empty())
-    return nil;
+    return result;
 
-  type_suppression_sptr suppr(new type_suppression(label_str,
-						   name_regex_str,
-						   name_str));
+  result.reset(new type_suppression(label_str, name_regex_str, name_str));
+
   if (consider_type_kind)
     {
-      suppr->set_consider_type_kind(true);
-      suppr->set_type_kind(type_kind);
+      result->set_consider_type_kind(true);
+      result->set_type_kind(type_kind);
     }
 
   if (consider_reach_kind)
     {
-      suppr->set_consider_reach_kind(true);
-      suppr->set_reach_kind(reach_kind);
+      result->set_consider_reach_kind(true);
+      result->set_reach_kind(reach_kind);
     }
 
   if (consider_data_member_insertion)
-    suppr->set_data_member_insertion_ranges(insert_ranges);
+    result->set_data_member_insertion_ranges(insert_ranges);
 
   if (!name_not_regex_str.empty())
-    suppr->set_type_name_not_regex_str(name_not_regex_str);
+    result->set_type_name_not_regex_str(name_not_regex_str);
 
   if (!file_name_regex_str.empty())
-    suppr->set_file_name_regex_str(file_name_regex_str);
+    result->set_file_name_regex_str(file_name_regex_str);
 
   if (!file_name_not_regex_str.empty())
-    suppr->set_file_name_not_regex_str(file_name_not_regex_str);
+    result->set_file_name_not_regex_str(file_name_not_regex_str);
 
   if (!soname_regex_str.empty())
-    suppr->set_soname_regex_str(soname_regex_str);
+    result->set_soname_regex_str(soname_regex_str);
 
   if (!soname_not_regex_str.empty())
-    suppr->set_soname_not_regex_str(soname_not_regex_str);
+    result->set_soname_not_regex_str(soname_not_regex_str);
 
   if (!srcloc_not_in.empty())
-    suppr->set_source_locations_to_keep(srcloc_not_in);
+    result->set_source_locations_to_keep(srcloc_not_in);
 
   if (!srcloc_not_regexp_str.empty())
-    suppr->set_source_location_to_keep_regex_str(srcloc_not_regexp_str);
+    result->set_source_location_to_keep_regex_str(srcloc_not_regexp_str);
 
   if ((drop_artifact_str == "yes" || drop_artifact_str == "true")
       && ((!name_regex_str.empty()
 	   || !name_str.empty()
 	   || !srcloc_not_regexp_str.empty()
 	   || !srcloc_not_in.empty())))
-    suppr->set_drops_artifact_from_ir(true);
+    result->set_drops_artifact_from_ir(true);
 
-  if (suppr->get_type_kind() == type_suppression::ENUM_TYPE_KIND
+  if (result->get_type_kind() == type_suppression::ENUM_TYPE_KIND
       && !changed_enumerator_names.empty())
-    suppr->set_changed_enumerator_names(changed_enumerator_names);
+    result->set_changed_enumerator_names(changed_enumerator_names);
 
-  return suppr;
+  return result;
 }
 
 // <function_suppression stuff>
@@ -3153,10 +3152,10 @@ read_parameter_spec_from_string(const string& str)
 static function_suppression_sptr
 read_function_suppression(const ini::config::section& section)
 {
-  function_suppression_sptr nil;
+  function_suppression_sptr result;
 
   if (section.get_name() != "suppress_function")
-    return nil;
+    return result;
 
   ini::simple_property_sptr drop_artifact =
     is_simple_property(section.find_property("drop_artifact"));
@@ -3284,7 +3283,6 @@ read_function_suppression(const ini::config::section& section)
 	  parms.push_back(parm);
       }
 
-  function_suppression_sptr result;
   if (!label_str.empty()
       || !name.empty()
       || !name_regex_str.empty()
@@ -3301,6 +3299,7 @@ read_function_suppression(const ini::config::section& section)
       || !sym_version.empty()
       || !sym_ver_regex_str.empty()
       || !parms.empty())
+
     result.reset(new function_suppression(label_str, name,
 					  name_regex_str,
 					  return_type_name,
@@ -4337,6 +4336,7 @@ read_file_suppression(const ini::config::section& section)
       && soname_regex_str.empty()
       && soname_not_regex_str.empty())
     return result;
+
   result.reset(new file_suppression(label_str,
 				    file_name_regex_str,
 				    file_name_not_regex_str));
