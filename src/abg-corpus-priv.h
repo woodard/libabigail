@@ -123,8 +123,8 @@ public:
 	     i != fns_suppress_regexps_.end();
 	     ++i)
 	  {
-	    regex_t_sptr r = sptr_utils::build_sptr(new regex_t);
-	    if (regcomp(r.get(), i->c_str(), REG_EXTENDED) == 0)
+	    regex_t_sptr r = regex::compile(*i);
+	    if (r)
 	      compiled_fns_suppress_regexp_.push_back(r);
 	  }
       }
@@ -145,8 +145,8 @@ public:
 	     i != fns_keep_regexps_.end();
 	     ++i)
 	  {
-	    regex_t_sptr r = sptr_utils::build_sptr(new regex_t);
-	    if (regcomp(r.get(), i->c_str(), REG_EXTENDED) == 0)
+	    regex_t_sptr r = regex::compile(*i);
+	    if (r)
 	      compiled_fns_keep_regexps_.push_back(r);
 	  }
       }
@@ -167,8 +167,8 @@ public:
 	     i != vars_suppress_regexps_.end();
 	     ++i)
 	  {
-	    regex_t_sptr r = sptr_utils::build_sptr(new regex_t);
-	    if (regcomp(r.get(), i->c_str(), REG_EXTENDED) == 0)
+	    regex_t_sptr r = regex::compile(*i);
+	    if (r)
 	      compiled_vars_suppress_regexp_.push_back(r);
 	  }
       }
@@ -189,8 +189,8 @@ public:
 	     i != vars_keep_regexps_.end();
 	     ++i)
 	  {
-	    regex_t_sptr r = sptr_utils::build_sptr(new regex_t);
-	    if (regcomp(r.get(), i->c_str(), REG_EXTENDED) == 0)
+	    regex_t_sptr r = regex::compile(*i);
+	    if (r)
 	      compiled_vars_keep_regexps_.push_back(r);
 	  }
       }
