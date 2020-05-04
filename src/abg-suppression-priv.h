@@ -160,14 +160,14 @@ public:
     if (regex::regex_t_sptr regexp = get_soname_regex())
       {
 	has_regexp = true;
-	if (regexec(regexp.get(), soname.c_str(), 0, NULL, 0) != 0)
+	if (!regex::match(regexp, soname))
 	  return false;
       }
 
     if (regex::regex_t_sptr regexp = get_soname_not_regex())
       {
 	has_regexp = true;
-	if (regexec(regexp.get(), soname.c_str(), 0, NULL, 0) == 0)
+	if (regex::match(regexp, soname))
 	  return false;
       }
 
@@ -195,16 +195,14 @@ public:
     if (regex::regex_t_sptr regexp = get_file_name_regex())
       {
 	has_regexp = true;
-	if (regexec(regexp.get(), binary_name.c_str(),
-	  0, NULL, 0) != 0)
+	if (!regex::match(regexp, binary_name))
 	  return false;
       }
 
     if (regex::regex_t_sptr regexp = get_file_name_not_regex())
       {
 	has_regexp = true;
-	if (regexec(regexp.get(), binary_name.c_str(),
-	  0, NULL, 0) == 0)
+	if (regex::match(regexp, binary_name))
 	  return false;
       }
 

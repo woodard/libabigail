@@ -521,7 +521,7 @@ public:
 	   compiled_regex_fns_suppress().begin();
 	 i != compiled_regex_fns_suppress().end();
 	 ++i)
-      if (regexec(i->get(), frep.c_str(), 0, NULL, 0) == 0)
+      if (regex::match(*i, frep))
 	{
 	  keep = false;
 	  break;
@@ -554,7 +554,7 @@ public:
 	     compiled_regex_fns_keep().begin();
 	   i != compiled_regex_fns_keep().end();
 	   ++i)
-	if (regexec(i->get(), frep.c_str(), 0, NULL, 0) == 0)
+	if (regex::match(*i, frep))
 	  {
 	    keep = true;
 	    break;
@@ -628,7 +628,7 @@ public:
 	   compiled_regex_vars_suppress().begin();
 	 i != compiled_regex_vars_suppress().end();
 	 ++i)
-      if (regexec(i->get(), frep.c_str(), 0, NULL, 0) == 0)
+      if (regex::match(*i, frep))
 	{
 	  keep = false;
 	  break;
@@ -662,7 +662,7 @@ public:
 	       compiled_regex_vars_keep().begin();
 	     i != compiled_regex_vars_keep().end();
 	     ++i)
-	  if (regexec(i->get(), frep.c_str(), 0, NULL, 0) == 0)
+	  if (regex::match(*i, frep))
 	    {
 	      keep = true;
 	      break;
