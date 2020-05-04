@@ -69,6 +69,7 @@ std::string
 generate_from_strings(const std::vector<std::string>& strs)
 {
   if (strs.empty())
+    // This cute-looking regex does not match any string.
     return "^_^";
   std::ostringstream os;
   std::vector<std::string>::const_iterator i = strs.begin();
