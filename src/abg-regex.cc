@@ -24,8 +24,9 @@
 ///
 
 #include <sstream>
-#include "abg-sptr-utils.h"
+
 #include "abg-regex.h"
+#include "abg-sptr-utils.h"
 
 namespace abigail
 {

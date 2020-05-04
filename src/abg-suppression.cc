@@ -26,6 +26,7 @@
 /// libabigail.
 
 #include <algorithm>
+
 #include "abg-cxx-compat.h"
 #include "abg-internal.h"
 

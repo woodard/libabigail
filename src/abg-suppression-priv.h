@@ -29,9 +29,9 @@
 #define __ABG_SUPPRESSION_PRIV_H__
 
 #include "abg-fwd.h"
-#include "abg-suppression.h"
-#include "abg-sptr-utils.h"
 #include "abg-regex.h"
+#include "abg-sptr-utils.h"
+#include "abg-suppression.h"
 
 namespace abigail
 {

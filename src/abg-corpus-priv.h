@@ -29,9 +29,9 @@
 #ifndef __ABG_CORPUS_PRIV_H__
 #define __ABG_CORPUS_PRIV_H__
 
-#include "abg-sptr-utils.h"
-#include "abg-regex.h"
 #include "abg-internal.h"
+#include "abg-regex.h"
+#include "abg-sptr-utils.h"
 
 namespace abigail
 {

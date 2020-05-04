@@ -21,23 +21,25 @@
 /// @file
 
 #include "config.h"
+
+#include <algorithm>
+#include <cassert>
 #include <cstdio>
 #include <cstring>
-#include <cassert>
 #include <stdexcept>
-#include <algorithm>
 
 #include "abg-cxx-compat.h"
 #include "abg-internal.h"
+
 // <headers defining libabigail's API go under here>
 ABG_BEGIN_EXPORT_DECLARATIONS
 
-#include "abg-sptr-utils.h"
-#include "abg-ir.h"
 #include "abg-corpus.h"
+#include "abg-ir.h"
 #include "abg-reader.h"
-#include "abg-writer.h"
+#include "abg-sptr-utils.h"
 #include "abg-tools-utils.h"
+#include "abg-writer.h"
 
 #if WITH_ZIP_ARCHIVE
 #include "abg-libzip-utils.h"
