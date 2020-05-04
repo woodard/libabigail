@@ -129,14 +129,18 @@ unescape_xml_comment(const std::string& str);
 
 }//end namespace xml
 
+namespace sptr_utils
+{
 /// Specialization of sptr_utils::build_sptr for xmlTextReader
 template<>
 xml::reader_sptr
-sptr_utils::build_sptr<xmlTextReader>(xmlTextReader *p);
+build_sptr<xmlTextReader>(xmlTextReader *p);
 
 /// Specialization of build_str for xmlChar.
 template<>
-xml::xml_char_sptr sptr_utils::build_sptr<xmlChar>(xmlChar *p);
+xml::xml_char_sptr
+build_sptr<xmlChar>(xmlChar *p);
+}// end namespace sptr_utils
 
 }//end namespace abigail
 #endif //__ABG_LIBXML_UTILS_H__

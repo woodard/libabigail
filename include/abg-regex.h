@@ -63,6 +63,8 @@ generate_from_strings(const std::vector<std::string>& strs);
 
 }// end namespace regex
 
+namespace sptr_utils
+{
 /// Specialization of sptr_utils::build_sptr for regex_t.
 ///
 /// This is used to wrap a pointer to regex_t into a
@@ -73,7 +75,7 @@ generate_from_strings(const std::vector<std::string>& strs);
 /// @return the shared_ptr<regex_t> that wraps @p p.
 template<>
 regex::regex_t_sptr
-sptr_utils::build_sptr<regex_t>(regex_t *p);
+build_sptr<regex_t>(regex_t *p);
 
 /// Specialization of sptr_utils::build_sptr for regex_t.
 ///
@@ -82,7 +84,9 @@ sptr_utils::build_sptr<regex_t>(regex_t *p);
 /// @return the shared_ptr<regex_t> wrapping the newly created regex_t*
 template<>
 regex::regex_t_sptr
-sptr_utils::build_sptr<regex_t>();
+build_sptr<regex_t>();
+
+}// end namespace sptr_utils
 
 }// end namespace abigail
 
