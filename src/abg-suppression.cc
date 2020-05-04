@@ -3126,13 +3126,15 @@ read_parameter_spec_from_string(const string& str)
 
   if (!index_str.empty() || !type_name.empty())
     {
-      function_suppression::parameter_spec* p;
+      std::string type_name_regex;
       if (is_regex)
-	p = new function_suppression::parameter_spec(atoi(index_str.c_str()),
-						     "", type_name);
-      else
-	p = new function_suppression::parameter_spec(atoi(index_str.c_str()),
-						     type_name, "");
+	{
+	  type_name_regex = type_name;
+	  type_name.clear();
+	}
+      function_suppression::parameter_spec* p =
+	new function_suppression::parameter_spec(atoi(index_str.c_str()),
+						 type_name, type_name_regex);
       result.reset(p);
     }
 
