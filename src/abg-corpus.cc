@@ -291,132 +291,6 @@ struct comp_elf_symbols_functor
 
 // <corpus stuff>
 
-
-/// Build the tables of symbols that are not referenced by any
-/// function or variables of corpus::get_functions() or
-/// corpus::get_variables().
-///
-/// Note that this function considers the list of function and
-/// variable symbols to keep, that is provided by
-/// corpus::get_sym_ids_of_fns_to_keep() and
-/// corpus::get_sym_ids_of_vars_to_keep().  If a given unreferenced
-/// function or variable symbol is not in the list of variable and
-/// function symbols to keep, then that symbol is dropped and will not
-/// be part of the resulting table of unreferenced symbol that is
-/// built.
-///
-/// The built tables are accessible from
-/// corpus::get_unreferenced_function_symbols() and
-/// corpus::get_unreferenced_variable_symbols().
-void
-corpus::priv::build_unreferenced_symbols_tables()
-{
-  unordered_map<string, bool> refed_funs, refed_vars;
-  elf_symbol_sptr sym;
-
-  for (vector<function_decl*>::const_iterator f = fns.begin();
-       f != fns.end();
-       ++f)
-    if ((sym = (*f)->get_symbol()))
-      {
-	refed_funs[sym->get_id_string()] = true;
-	for (elf_symbol_sptr a = sym->get_next_alias();
-	     a && !a->is_main_symbol();
-	     a = a->get_next_alias())
-	  refed_funs[a->get_id_string()] = true;
-      }
-
-  for (vector<var_decl*>::const_iterator v = vars.begin();
-       v != vars.end();
-       ++v)
-    if ((sym = (*v)->get_symbol()))
-      {
-	refed_vars[sym->get_id_string()] = true;
-	for (elf_symbol_sptr a = sym->get_next_alias();
-	     a && !a->is_main_symbol();
-	     a = a->get_next_alias())
-	  refed_vars[a->get_id_string()] = true;
-      }
-
-  if (fun_symbol_map)
-    {
-      // Let's assume that the size of the unreferenced symbols vector
-      // is roughly smaller than the size of the symbol table.
-      unrefed_fun_symbols.reserve(fun_symbol_map->size());
-      for (string_elf_symbols_map_type::const_iterator i
-	     = fun_symbol_map->begin();
-	   i != fun_symbol_map->end();
-	   ++i)
-	for (elf_symbols::const_iterator s = i->second.begin();
-	     s != i->second.end();
-	     ++s)
-	  {
-	    string sym_id = (*s)->get_id_string();
-	    if (refed_funs.find(sym_id) == refed_funs.end())
-	      {
-		bool keep = sym_id_fns_to_keep.empty();
-		for (vector<string>::const_iterator i =
-		       sym_id_fns_to_keep.begin();
-		     i != sym_id_fns_to_keep.end();
-		     ++i)
-		  {
-		    if (*i == sym_id)
-		      {
-			keep = true;
-			break;
-		      }
-		  }
-		if (keep)
-		  unrefed_fun_symbols.push_back(*s);
-	      }
-	  }
-
-      comp_elf_symbols_functor comp;
-      std::sort(unrefed_fun_symbols.begin(),
-		unrefed_fun_symbols.end(),
-		comp);
-    }
-
-  if (var_symbol_map)
-    {
-      // Let's assume that the size of the unreferenced symbols vector
-      // is roughly smaller than the size of the symbol table.
-      unrefed_var_symbols.reserve(var_symbol_map->size());
-      for (string_elf_symbols_map_type::const_iterator i
-	     = var_symbol_map->begin();
-	   i != var_symbol_map->end();
-	   ++i)
-	for (elf_symbols::const_iterator s = i->second.begin();
-	     s != i->second.end();
-	     ++s)
-	  {
-	    string sym_id = (*s)->get_id_string();
-	    if (refed_vars.find(sym_id) == refed_vars.end())
-	      {
-		bool keep = sym_id_vars_to_keep.empty();
-		for (vector<string>::const_iterator i =
-		       sym_id_vars_to_keep.begin();
-		     i != sym_id_vars_to_keep.end();
-		     ++i)
-		  {
-		    if (*i == sym_id)
-		      {
-			keep = true;
-			break;
-		      }
-		  }
-		if (keep)
-		  unrefed_var_symbols.push_back(*s);
-	      }
-	  }
-
-      comp_elf_symbols_functor comp;
-      std::sort(unrefed_var_symbols.begin(),
-		unrefed_var_symbols.end(),
-		comp);
-    }
-}
-
 /// Get the maps that associate a name to a certain kind of type.
 type_maps&
 corpus::priv::get_types()
@@ -467,6 +341,61 @@ corpus::priv::get_sorted_undefined_fun_symbols() const
   return *sorted_undefined_fun_symbols;
 }
 
+/// Return a list of symbols that are not referenced by any function of
+/// corpus::get_functions().
+///
+/// Note that this function considers the list of function symbols to keep,
+/// that is provided by corpus::get_sym_ids_of_fns_to_keep(). If a given
+/// unreferenced function symbol is not in the list of functions to keep, then
+/// that symbol is dropped and will not be part of the resulting table of
+/// unreferenced symbol that is built.
+///
+/// @return list of symbols that are not referenced by any function
+const elf_symbols&
+corpus::priv::get_unreferenced_function_symbols() const
+{
+  if (!unrefed_fun_symbols)
+    {
+      unrefed_fun_symbols = elf_symbols();
+      if (symtab_)
+	{
+	  unordered_map<string, bool> refed_funs;
+
+	  for (const auto& function : fns)
+	    if (elf_symbol_sptr sym = function->get_symbol())
+	      {
+		refed_funs[sym->get_id_string()] = true;
+		for (elf_symbol_sptr a = sym->get_next_alias();
+		     a && !a->is_main_symbol(); a = a->get_next_alias())
+		  refed_funs[a->get_id_string()] = true;
+	      }
+
+	  auto filter = symtab_->make_filter();
+	  filter.set_functions();
+	  for (const auto& symbol :
+	       symtab_reader::filtered_symtab(*symtab_, filter))
+	    {
+	      const std::string sym_id = symbol->get_id_string();
+	      if (refed_funs.find(sym_id) == refed_funs.end())
+		{
+		  bool keep = sym_id_fns_to_keep.empty();
+		  for (const auto& id : sym_id_fns_to_keep)
+		    {
+		      if (id == sym_id)
+			{
+			  keep = true;
+			  break;
+			}
+		    }
+		  if (keep)
+		    unrefed_fun_symbols->push_back(symbol);
+		}
+	    }
+	}
+    }
+  return *unrefed_fun_symbols;
+}
+
 /// Getter for the sorted vector of variable symbols for this corpus.
 ///
 /// Note that the first time this function is called, it computes the
@@ -507,6 +436,61 @@ corpus::priv::get_sorted_undefined_var_symbols() const
     }
   return *sorted_undefined_var_symbols;
 }
+
+/// Return a list of symbols that are not referenced by any variable of
+/// corpus::get_variables().
+///
+/// Note that this function considers the list of variable symbols to keep,
+/// that is provided by corpus::get_sym_ids_of_vars_to_keep(). If a given
+/// unreferenced variable symbol is not in the list of variable to keep, then
+/// that symbol is dropped and will not be part of the resulting table of
+/// unreferenced symbol that is built.
+///
+/// @return list of symbols that are not referenced by any variable
+const elf_symbols&
+corpus::priv::get_unreferenced_variable_symbols() const
+{
+  if (!unrefed_var_symbols)
+    {
+      unrefed_var_symbols = elf_symbols();
+      if (symtab_)
+	{
+	  unordered_map<string, bool> refed_vars;
+	  for (const auto& variable : vars)
+	    if (elf_symbol_sptr sym = variable->get_symbol())
+	      {
+		refed_vars[sym->get_id_string()] = true;
+		for (elf_symbol_sptr a = sym->get_next_alias();
+		     a && !a->is_main_symbol(); a = a->get_next_alias())
+		  refed_vars[a->get_id_string()] = true;
+	      }
+
+	  auto filter = symtab_->make_filter();
+	  filter.set_variables();
+	  for (const auto& symbol :
+	       symtab_reader::filtered_symtab(*symtab_, filter))
+	    {
+	      const std::string sym_id = symbol->get_id_string();
+	      if (refed_vars.find(sym_id) == refed_vars.end())
+		{
+		  bool keep = sym_id_vars_to_keep.empty();
+		  for (const auto& id : sym_id_vars_to_keep)
+		    {
+		      if (id == sym_id)
+			{
+			  keep = true;
+			  break;
+			}
+		    }
+		  if (keep)
+		    unrefed_var_symbols->push_back(symbol);
+		}
+	    }
+	}
+    }
+  return *unrefed_var_symbols;
+}
+
 
 /// Getter of the set of pretty representation of types that are
 /// reachable from public interfaces (global functions and variables).
@@ -1386,12 +1370,7 @@ corpus::sort_variables()
 /// function exported by the current corpus.
 const elf_symbols&
 corpus::get_unreferenced_function_symbols() const
-{
-  if (priv_->unrefed_fun_symbols.empty()
-      && priv_->unrefed_var_symbols.empty())
-    priv_->build_unreferenced_symbols_tables();
-  return priv_->unrefed_fun_symbols;
-}
+{return priv_->get_unreferenced_function_symbols();}
 
 /// Getter of the set of variable symbols that are not referenced by
 /// any variable exported by the current corpus.
@@ -1404,12 +1383,7 @@ corpus::get_unreferenced_function_symbols() const
 /// variable exported by the current corpus.
 const elf_symbols&
 corpus::get_unreferenced_variable_symbols() const
-{
-    if (priv_->unrefed_fun_symbols.empty()
-      && priv_->unrefed_var_symbols.empty())
-    priv_->build_unreferenced_symbols_tables();
-  return priv_->unrefed_var_symbols;
-}
+{return priv_->get_unreferenced_variable_symbols();}
 
 /// Accessor for the regex patterns describing the functions to drop
 /// from the public decl table.
