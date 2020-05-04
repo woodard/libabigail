@@ -1074,8 +1074,7 @@ static elf_symbol_sptr
 build_elf_symbol(read_context&, const xmlNodePtr, bool);
 
 static elf_symbol_sptr
-build_elf_symbol_from_reference(read_context&, const xmlNodePtr,
-				bool);
+build_elf_symbol_from_reference(read_context&, const xmlNodePtr);
 
 static string_elf_symbols_map_sptr
 build_elf_symbol_db(read_context&, const xmlNodePtr, bool);
@@ -2845,8 +2844,7 @@ build_elf_symbol(read_context& ctxt, const xmlNodePtr node,
 ///
 /// @return a shared pointer the resutling elf_symbol.
 static elf_symbol_sptr
-build_elf_symbol_from_reference(read_context& ctxt, const xmlNodePtr node,
-				bool function_symbol)
+build_elf_symbol_from_reference(read_context& ctxt, const xmlNodePtr node)
 {
   elf_symbol_sptr nil;
 
@@ -2865,20 +2863,12 @@ build_elf_symbol_from_reference(read_context& ctxt, const xmlNodePtr node,
       if (name.empty())
 	return nil;
 
-      string_elf_symbols_map_sptr sym_db =
-	(function_symbol)
-	? ctxt.get_corpus()->get_fun_symbol_map_sptr()
-	: ctxt.get_corpus()->get_var_symbol_map_sptr();
+      const elf_symbols& symbols =
+	  ctxt.get_corpus()->get_symtab()->lookup_symbol(name);
 
-      string_elf_symbols_map_type::const_iterator i = sym_db->find(name);
-      if (i != sym_db->end())
-	{
-	  for (elf_symbols::const_iterator s = i->second.begin();
-	       s != i->second.end();
-	       ++s)
-	    if ((*s)->get_id_string() == sym_id)
-	      return *s;
-	}
+      for (const auto& symbol : symbols)
+	if (symbol->get_id_string() == sym_id)
+	  return symbol;
     }
 
   return nil;
@@ -3129,8 +3119,7 @@ build_function_decl(read_context&	ctxt,
 
   ctxt.push_decl_to_current_scope(fn_decl, add_to_current_scope);
 
-  elf_symbol_sptr sym = build_elf_symbol_from_reference(ctxt, node,
-							/*function_sym=*/true);
+  elf_symbol_sptr sym = build_elf_symbol_from_reference(ctxt, node);
   if (sym)
     fn_decl->set_symbol(sym);
 
@@ -3361,8 +3350,7 @@ build_var_decl(read_context&	ctxt,
 				  locus, mangled_name,
 				  vis, bind));
 
-  elf_symbol_sptr sym = build_elf_symbol_from_reference(ctxt, node,
-							/*function_sym=*/false);
+  elf_symbol_sptr sym = build_elf_symbol_from_reference(ctxt, node);
   if (sym)
     decl->set_symbol(sym);
 
