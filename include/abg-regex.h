@@ -58,6 +58,16 @@ struct regex_t_deleter
   }
 };//end struct regex_deleter
 
+/// A class to hold a reference to a string to regex escape.
+struct escape
+{
+  escape(const std::string& str) : ref(str) { }
+  const std::string& ref;
+};
+
+std::ostream&
+operator<<(std::ostream& os, const escape& esc);
+
 std::string
 generate_from_strings(const std::vector<std::string>& strs);
 

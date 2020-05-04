@@ -24,6 +24,7 @@
 ///
 
 #include <sstream>
+#include <ostream>
 
 #include "abg-regex.h"
 #include "abg-sptr-utils.h"
@@ -57,6 +58,29 @@ sptr_utils::build_sptr<regex_t>()
 namespace regex
 {
 
+/// Escape regex special charaters in input string.
+///
+/// @param os the output stream being written to.
+///
+/// @param esc the regex_escape object holding a reference to the string
+/// needing to be escaped.
+///
+/// @return the output stream.
+std::ostream&
+operator<<(std::ostream& os, const escape& esc)
+{
+  // ']' and '}' are only conditionally special, so could be removed.
+  static const std::string specials = "^.[]$()|*+?{}\\";
+  const std::string& str = esc.ref;
+  for (std::string::const_iterator i = str.begin(); i != str.end(); ++i)
+    {
+      if (specials.find(*i) != std::string::npos)
+	os << '\\';
+      os << *i;
+    }
+  return os;
+}
+
 /// Generate a regex pattern equivalent to testing set membership.
 ///
 /// A string will match the resulting pattern regex, if and only if it
@@ -73,9 +97,9 @@ generate_from_strings(const std::vector<std::string>& strs)
     return "^_^";
   std::ostringstream os;
   std::vector<std::string>::const_iterator i = strs.begin();
-  os << "^(" << *i++;
+  os << "^(" << escape(*i++);
   while (i != strs.end())
-    os << "|" << *i++;
+    os << "|" << escape(*i++);
   os << ")$";
   return os.str();
 }
