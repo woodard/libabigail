@@ -632,30 +632,6 @@ public:
     return true;
   }
 
-  /// Associate an ID with a type.
-  ///
-  /// If ID is an id for an existing type, this function replaces the
-  /// exising type with the new DEFINITION type passe in argument.
-  ///
-  /// @param definition the type to associate witht he ID.
-  ///
-  /// @param id the ID to associate to the type.
-  ///
-  /// @return true upon successful completion, false otherwise.  Note
-  /// that this returns false if the was already associate to an ID
-  /// before.
-  bool
-  key_replacement_of_type_decl(shared_ptr<type_base> definition,
-			       const string& id)
-  {
-    const_types_map_it i = m_types_map.find(id);
-    if (i != m_types_map.end())
-      m_types_map.erase(i);
-    key_type_decl(definition, id);
-
-    return true;
-  }
-
   /// Associate an ID to a function template.
   ///
   /// @param fn_tmpl_decl the function template to consider.
