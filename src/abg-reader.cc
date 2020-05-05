@@ -617,17 +617,7 @@ public:
     if (!type)
       return false;
 
-    type_base_sptr t = type;
-
-    types_map_it i = m_types_map.find(id);
-    if (i != m_types_map.end())
-      i->second.push_back(type);
-    else
-      {
-	vector<type_base_sptr> types;
-	types.push_back(type);
-	m_types_map[id] = types;
-      }
+    m_types_map[id].push_back(type);
 
     return true;
   }
@@ -2984,15 +2974,7 @@ build_elf_symbol_db(read_context& ctxt,
   for (string_elf_symbol_sptr_map_type::const_iterator i = id_sym_map.begin();
        i != id_sym_map.end();
        ++i)
-    {
-      it = map->find(i->second->get_name());
-      if (it == map->end())
-	{
-	  (*map)[i->second->get_name()] = elf_symbols();
-	  it = map->find(i->second->get_name());
-	}
-      it->second.push_back(i->second);
-    }
+    (*map)[i->second->get_name()].push_back(i->second);
 
   // Now build the alias relations
   for (xml_node_ptr_elf_symbol_sptr_map_type::const_iterator x =
