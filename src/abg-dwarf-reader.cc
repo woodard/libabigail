@@ -2150,26 +2150,6 @@ public:
   // ppc64 elf v1 binaries.  This section contains the procedure
   // descriptors on that platform.
   mutable Elf_Scn*		opd_section_;
-  /// The format of the special __ksymtab section from the linux
-  /// kernel binary.
-  mutable ksymtab_format	ksymtab_format_;
-  /// The size of one entry of the __ksymtab section.
-  mutable size_t		ksymtab_entry_size_;
-  /// The number of entries in the __ksymtab section.
-  mutable size_t		nb_ksymtab_entries_;
-  /// The number of entries in the __ksymtab_gpl section.
-  mutable size_t		nb_ksymtab_gpl_entries_;
-  /// The special __ksymtab and __ksymtab_gpl sections from linux
-  /// kernel or module binaries.  The former is used to store
-  /// references to symbols exported using the EXPORT_SYMBOL macro
-  /// from the linux kernel.  The latter is used to store references
-  /// to symbols exported using the EXPORT_SYMBOL_GPL macro from the
-  /// linux kernel.
-  mutable Elf_Scn*		ksymtab_section_;
-  mutable Elf_Scn*		ksymtab_reloc_section_;
-  mutable Elf_Scn*		ksymtab_gpl_section_;
-  mutable Elf_Scn*		ksymtab_gpl_reloc_section_;
-  mutable Elf_Scn*		ksymtab_strings_section_;
   Dwarf_Die*			cur_tu_die_;
   mutable dwarf_expr_eval_context	dwarf_expr_eval_context_;
   // A set of maps (one per kind of die source) that associates a decl
@@ -2253,10 +2233,6 @@ public:
   string_elf_symbols_map_sptr	var_syms_;
   string_elf_symbols_map_sptr	undefined_fun_syms_;
   string_elf_symbols_map_sptr	undefined_var_syms_;
-  address_set_sptr		linux_exported_fn_syms_;
-  address_set_sptr		linux_exported_var_syms_;
-  address_set_sptr		linux_exported_gpl_fn_syms_;
-  address_set_sptr		linux_exported_gpl_var_syms_;
   vector<string>		dt_needed_;
   string			dt_soname_;
   string			elf_architecture_;
@@ -2355,15 +2331,6 @@ public:
     elf_path_ = elf_path;
     symtab_section_ = 0;
     opd_section_ = 0;
-    ksymtab_format_ = UNDEFINED_KSYMTAB_FORMAT;
-    ksymtab_entry_size_ = 0;
-    nb_ksymtab_entries_ = 0;
-    nb_ksymtab_gpl_entries_ = 0;
-    ksymtab_section_ = 0;
-    ksymtab_reloc_section_ = 0;
-    ksymtab_gpl_section_ = 0;
-    ksymtab_gpl_reloc_section_ = 0;
-    ksymtab_strings_section_ = 0;
     cur_tu_die_ =  0;
     exported_decls_builder_ = 0;
 
@@ -2409,10 +2376,6 @@ public:
     var_syms_.reset();
     undefined_fun_syms_.reset();
     undefined_var_syms_.reset();
-    linux_exported_fn_syms_.reset();
-    linux_exported_var_syms_.reset();
-    linux_exported_gpl_fn_syms_.reset();
-    linux_exported_gpl_var_syms_.reset();
     dt_needed_.clear();
     dt_soname_.clear();
     elf_architecture_.clear();
@@ -5373,97 +5336,6 @@ public:
     return opd_section_;
   }
 
-  /// Return the __ksymtab section of a linux kernel ELF file (either
-  /// a vmlinux binary or a kernel module).
-  ///
-  /// @return the __ksymtab section if found, nil otherwise.
-  Elf_Scn*
-  find_ksymtab_section() const
-  {
-    if (!ksymtab_section_)
-      ksymtab_section_ = elf_helpers::find_ksymtab_section(elf_handle());
-    return ksymtab_section_;
-  }
-
-  /// Return the __ksymtab_gpl section of a linux kernel ELF file
-  /// (either a vmlinux binary or a kernel module).
-  ///
-  /// @return the __ksymtab_gpl section if found, nil otherwise.
-  Elf_Scn*
-  find_ksymtab_gpl_section() const
-  {
-    if (!ksymtab_gpl_section_)
-      ksymtab_gpl_section_ =
-	elf_helpers::find_ksymtab_gpl_section(elf_handle());
-    return ksymtab_gpl_section_;
-  }
-
-  /// Return the .rel{a,}__ksymtab section of a linux kernel ELF file (either
-  /// a vmlinux binary or a kernel module).
-  ///
-  /// @return the .rel{a,}__ksymtab section if found, nil otherwise.
-  Elf_Scn*
-  find_ksymtab_reloc_section() const
-  {
-    if (!ksymtab_reloc_section_)
-	ksymtab_reloc_section_ =
-	  find_relocation_section(elf_handle(), find_ksymtab_section());
-    return ksymtab_reloc_section_;
-  }
-
-  /// Return the .rel{a,}__ksymtab_gpl section of a linux kernel ELF file
-  /// (either a vmlinux binary or a kernel module).
-  ///
-  /// @return the .rel{a,}__ksymtab_gpl section if found, nil otherwise.
-  Elf_Scn*
-  find_ksymtab_gpl_reloc_section() const
-  {
-    if (!ksymtab_gpl_reloc_section_)
-	ksymtab_gpl_reloc_section_ =
-	  find_relocation_section(elf_handle(), find_ksymtab_gpl_section());
-    return ksymtab_gpl_reloc_section_;
-  }
-
-  /// Return the __ksymtab_strings section of a linux kernel ELF file
-  /// (either a vmlinux binary or a kernel module).
-  ///
-  /// @return the __ksymtab_strings section if found, nil otherwise.
-  Elf_Scn*
-  find_ksymtab_strings_section() const
-  {
-    if (!ksymtab_strings_section_)
-      ksymtab_strings_section_ =
-	dwarf_reader::find_ksymtab_strings_section(elf_handle());
-    return ksymtab_strings_section_;
-  }
-
-  /// Return either a __ksymtab or a __ksymtab_gpl section, in case
-  /// only the __ksymtab_gpl exists.
-  ///
-  /// @return the __ksymtab section if it exists, or the
-  /// __ksymtab_gpl; or NULL if neither is found.
-  Elf_Scn*
-  find_any_ksymtab_section() const
-  {
-    Elf_Scn *result = find_ksymtab_section();
-    if (!result)
-      result = find_ksymtab_gpl_section();
-    return result;
-  }
-
-  /// Return either a .rel{a,}__ksymtab or a .rel{a,}__ksymtab_gpl section
-  ///
-  /// @return the .rel{a,}__ksymtab section if it exists, or the
-  /// .rel{a,}__ksymtab_gpl; or NULL if neither is found.
-  Elf_Scn*
-  find_any_ksymtab_reloc_section() const
-  {
-    Elf_Scn *result = find_ksymtab_reloc_section();
-    if (!result)
-      result = find_ksymtab_gpl_reloc_section();
-    return result;
-  }
-
   /// Lookup an elf symbol, referred to by its index, from the .symtab
   /// section.
   ///
@@ -5559,7 +5431,7 @@ public:
     elf_symbol::visibility vis =
       stv_to_elf_symbol_visibility(GELF_ST_VISIBILITY(native_sym.st_other));
 
-    Elf_Scn *strings_section = find_ksymtab_strings_section();
+    Elf_Scn* strings_section = find_ksymtab_strings_section(elf_handle());
     size_t strings_ndx = strings_section
       ? elf_ndxscn(strings_section)
       : 0;
@@ -5721,92 +5593,6 @@ public:
     return result;
   }
 
-  /// Given the address of the beginning of a function, lookup the
-  /// symbol of the function, build an instance of @ref elf_symbol out
-  /// of it and return it.
-  ///
-  /// @param symbol_start_addr the address of the beginning of the
-  /// function to consider.
-  ///
-  /// @param sym the resulting symbol.  This is set iff the function
-  /// returns true.
-  ///
-  /// @return the elf symbol found at address @p symbol_start_addr, or
-  /// nil if none was found.
-  elf_symbol_sptr
-  lookup_elf_fn_symbol_from_address(GElf_Addr symbol_start_addr) const
-  {
-    addr_elf_symbol_sptr_map_type::const_iterator i,
-      nil = fun_entry_addr_sym_map().end();
-
-    if ((i = fun_entry_addr_sym_map().find(symbol_start_addr)) == nil)
-      return elf_symbol_sptr();
-
-    return i->second;
-  }
-
-  /// Given the address of a global variable, lookup the symbol of the
-  /// variable, build an instance of @ref elf_symbol out of it and
-  /// return it.
-  ///
-  /// @param symbol_start_addr the address of the beginning of the
-  /// variable to consider.
-  ///
-  /// @param the symbol found, iff the function returns true.
-  ///
-  /// @return the elf symbol found or nil if none was found.
-  elf_symbol_sptr
-  lookup_elf_var_symbol_from_address(GElf_Addr symbol_start_addr) const
-  {
-    addr_elf_symbol_sptr_map_type::const_iterator i,
-      nil = var_addr_sym_map().end();
-
-    if ((i = var_addr_sym_map().find(symbol_start_addr)) == nil)
-      return elf_symbol_sptr();
-
-    return i->second;
-  }
-
-  /// Lookup an elf symbol, knowing its address.
-  ///
-  /// This function first looks for a function symbol having this
-  /// address; if it doesn't find any, then it looks for a variable
-  /// symbol.
-  ///
-  /// @param symbol_addr the address of the symbol of the symbol we
-  /// are looking for.  Note that the address is a relative offset
-  /// starting from the beginning of the .text section.  Addresses
-  /// that are presen in the symbol table (the one named .symtab).
-  ///
-  /// @return the elf symbol if found, or nil otherwise.
-  elf_symbol_sptr
-  lookup_elf_symbol_from_address(GElf_Addr symbol_addr) const
-  {
-    elf_symbol_sptr result = lookup_elf_fn_symbol_from_address(symbol_addr);
-    if (!result)
-      result = lookup_elf_var_symbol_from_address(symbol_addr);
-    return result;
-  }
-
-  /// Look in the symbol tables of the underying elf file and see if
-  /// we find a symbol of a given name of function type.
-  ///
-  /// @param sym_name the name of the symbol to look for.
-  ///
-  /// @param syms the public function symbols that were found, with
-  /// the name @p sym_name.
-  ///
-  /// @return true iff the symbol was found.
-  bool
-  lookup_public_function_symbol_from_elf(const string&			sym_name,
-					 vector<elf_symbol_sptr>&	syms)
-  {
-    return dwarf_reader::lookup_public_function_symbol_from_elf(env(),
-								elf_handle(),
-								sym_name,
-								syms);
-  }
-
   /// Test if a given function symbol has been exported.
   ///
   /// @param symbol_address the address of the symbol we are looking
@@ -5909,20 +5695,6 @@ public:
     return fun_addr_sym_map_;
   }
 
-  /// Getter for a pointer to the map that associates the address of
-  /// an entry point of a function with the symbol of that function.
-  ///
-  /// Note that on non-"PPC64 ELFv1" binaries, this map is the same as
-  /// the one that assciates the address of a function with the symbol
-  /// of that function.
-  ///
-  /// @return a pointer to the map that associates the address of an
-  /// entry point of a function with the symbol of that function.
-  const addr_elf_symbol_sptr_map_sptr&
-  fun_entry_addr_sym_map_sptr() const
-  {return const_cast<read_context*>(this)->fun_entry_addr_sym_map_sptr();}
-
-
   /// Getter for the map that associates the address of an entry point
   /// of a function with the symbol of that function.
   ///
@@ -5935,19 +5707,6 @@ public:
   addr_elf_symbol_sptr_map_type&
   fun_entry_addr_sym_map()
   {return *fun_entry_addr_sym_map_sptr();}
-
-  /// Getter for the map that associates the address of an entry point
-  /// of a function with the symbol of that function.
-  ///
-  /// Note that on non-"PPC64 ELFv1" binaries, this map is the same as
-  /// the one that assciates the address of a function with the symbol
-  /// of that function.
-  ///
-  /// @return the map that associates the address of an entry point of
-  /// a function with the symbol of that function.
-  const addr_elf_symbol_sptr_map_type&
-  fun_entry_addr_sym_map() const
-  { return *fun_entry_addr_sym_map_sptr();}
 
   /// Getter for the map of function symbols (name -> sym).
   ///
@@ -6013,130 +5772,6 @@ public:
     return undefined_var_syms_;
   }
 
-  /// Getter for the set of addresses of function symbols that are
-  /// explicitely exported, for a linux kernel (module) binary.  These
-  /// are the addresses of function symbols present in the __ksymtab
-  /// section
-  address_set_sptr&
-  linux_exported_fn_syms()
-  {return linux_exported_fn_syms_;}
-
-  /// Getter for the set of addresses of functions that are
-  /// explicitely exported, for a linux kernel (module) binary.  These
-  /// are the addresses of function symbols present in the __ksymtab
-  /// section.
-  ///
-  /// @return the set of addresses of exported function symbols.
-  const address_set_sptr&
-  linux_exported_fn_syms() const
-  {return const_cast<read_context*>(this)->linux_exported_fn_syms();}
-
-  /// Create an empty set of addresses of functions exported from a
-  /// linux kernel (module) binary, or return the one that already
-  /// exists.
-  ///
-  /// @return the set of addresses of exported function symbols.
-  address_set_sptr&
-  create_or_get_linux_exported_fn_syms()
-  {
-    if (!linux_exported_fn_syms_)
-      linux_exported_fn_syms_.reset(new address_set_type);
-    return linux_exported_fn_syms_;
-  }
-
-  /// Getter for the set of addresses of v ariables that are
-  /// explicitely exported, for a linux kernel (module) binary.  These
-  /// are the addresses of variable symbols present in the __ksymtab
-  /// section.
-  ///
-  /// @return the set of addresses of exported variable symbols.
-  address_set_sptr&
-  linux_exported_var_syms()
-  {return linux_exported_var_syms_;}
-
-  /// Getter for the set of addresses of variables that are
-  /// explicitely exported, for a linux kernel (module) binary.  These
-  /// are the addresses of variable symbols present in the __ksymtab
-  /// section.
-  ///
-  /// @return the set of addresses of exported variable symbols.
-  const address_set_sptr&
-  linux_exported_var_syms() const
-  {return const_cast<read_context*>(this)->linux_exported_var_syms();}
-
-
-  /// Create an empty set of addresses of variables exported from a
-  /// linux kernel (module) binary, or return the one that already
-  /// exists.
-  ///
-  /// @return the set of addresses of exported variable symbols.
-  address_set_sptr&
-  create_or_get_linux_exported_var_syms()
-  {
-    if (!linux_exported_var_syms_)
-      linux_exported_var_syms_.reset(new address_set_type);
-    return linux_exported_var_syms_;
-  }
-
-
-  /// Getter for the set of addresses of function symbols that are
-  /// explicitely exported as GPL, for a linux kernel (module) binary.
-  /// These are the addresses of function symbols present in the
-  /// __ksymtab_gpl section.
-  address_set_sptr&
-  linux_exported_gpl_fn_syms()
-  {return linux_exported_gpl_fn_syms_;}
-
-  /// Getter for the set of addresses of function symbols that are
-  /// explicitely exported as GPL, for a linux kernel (module) binary.
-  /// These are the addresses of function symbols present in the
-  /// __ksymtab_gpl section.
-  const address_set_sptr&
-  linux_exported_gpl_fn_syms() const
-  {return const_cast<read_context*>(this)->linux_exported_gpl_fn_syms();}
-
-  /// Create an empty set of addresses of GPL functions exported from
-  /// a linux kernel (module) binary, or return the one that already
-  /// exists.
-  ///
-  /// @return the set of addresses of exported function symbols.
-  address_set_sptr&
-  create_or_get_linux_exported_gpl_fn_syms()
-  {
-    if (!linux_exported_gpl_fn_syms_)
-      linux_exported_gpl_fn_syms_.reset(new address_set_type);
-    return linux_exported_gpl_fn_syms_;
-  }
-
-  /// Getter for the set of addresses of variable symbols that are
-  /// explicitely exported as GPL, for a linux kernel (module) binary.
-  /// These are the addresses of variable symbols present in the
-  /// __ksymtab_gpl section.
-  address_set_sptr&
-  linux_exported_gpl_var_syms()
-  {return linux_exported_gpl_var_syms_;}
-
-  /// Getter for the set of addresses of variable symbols that are
-  /// explicitely exported as GPL, for a linux kernel (module) binary.
-  /// These are the addresses of variable symbols present in the
-  /// __ksymtab_gpl section.
-  const address_set_sptr&
-  linux_exported_gpl_var_syms() const
-  {return const_cast<read_context*>(this)->linux_exported_gpl_var_syms();}
-
-  /// Create an empty set of addresses of GPL variables exported from
-  /// a linux kernel (module) binary, or return the one that already
-  /// exists.
-  ///
-  /// @return the set of addresses of exported variable symbols.
-  address_set_sptr&
-  create_or_get_linux_exported_gpl_var_syms()
-  {
-    if (!linux_exported_gpl_var_syms_)
-      linux_exported_gpl_var_syms_.reset(new address_set_type);
-    return linux_exported_gpl_var_syms_;
-  }
-
   /// Getter for the ELF dt_needed tag.
   const vector<string>&
   dt_needed() const
@@ -6151,28 +5786,6 @@ public:
   const string&
   elf_architecture() const
   {return elf_architecture_;}
-
-  /// Getter for the map of global variables symbol address -> global
-  /// variable symbol index.
-  ///
-  /// @return the map.  Note that this initializes the map once when
-  /// its nedded.
-  const addr_elf_symbol_sptr_map_type&
-  var_addr_sym_map() const
-  {return const_cast<read_context*>(this)->var_addr_sym_map();}
-
-  /// Getter for the map of global variables symbol address -> global
-  /// variable symbol index.
-  ///
-  /// @return the map.  Note that this initializes the map once when
-  /// its nedded.
-  addr_elf_symbol_sptr_map_type&
-  var_addr_sym_map()
-  {
-    if (!var_addr_sym_map_)
-      maybe_load_symbol_maps();
-    return *var_addr_sym_map_;
-  }
 
   /// Load the maps address -> function symbol, address -> variable
   /// symbol and the maps of function and variable undefined symbols.
@@ -6404,364 +6017,6 @@ public:
     return true;
   }
 
-  /// Try reading the first __ksymtab section entry.
-  ///
-  /// We lookup the symbol from the raw section passed as an argument. For
-  /// that, consider endianess and adjust for potential Elf relocations before
-  /// looking up the symbol in the .symtab section.
-  //
-  /// Optionally, support position relative relocations by considering the
-  /// ksymtab entry as 32 bit and applying the relocation relative to the
-  /// section header (i.e. the symbol position as we are reading the first
-  /// symbol).
-  ///
-  /// @param section the ksymtab section to consider.
-  ///
-  /// @param position_relative_relocations if true, then consider that
-  /// the section designated by @p section contains position-relative
-  /// relocated symbol addresses.
-  ///
-  /// @param symbol_offset if different from zero
-  /// If symbol_offset is != 0, adjust the position we consider the section
-  /// start. That is useful to read the ksymtab with a slight offset.
-  ///
-  /// Note, this function does not support relocatable ksymtab entries (as for
-  /// example in kernel modules). Using this function for ksymtabs where
-  /// relocations need to be applied for the entries we are reading here, will
-  /// yield wrong results.
-  ///
-  /// @return the symbol resulting from the lookup of the symbol address we
-  /// got from reading the first entry of the ksymtab or null if no such entry
-  /// could be found.
-  elf_symbol_sptr
-  try_reading_first_ksymtab_entry(Elf_Scn* section,
-				  bool position_relative_relocations,
-				  int  symbol_offset = 0) const
-  {
-    Elf_Data*	    elf_data = elf_rawdata(section, 0);
-    uint8_t*	    bytes = reinterpret_cast<uint8_t*>(elf_data->d_buf);
-    bool	    is_big_endian = architecture_is_big_endian(elf_handle());
-    elf_symbol_sptr symbol;
-    GElf_Addr	    symbol_address = 0;
-
-    unsigned char symbol_value_size;
-    if (position_relative_relocations)
-      symbol_value_size = sizeof(int32_t);
-    else
-      symbol_value_size = get_architecture_word_size(elf_handle());
-
-    const int read_offset = (symbol_offset * symbol_value_size);
-    bytes += read_offset;
-
-    if (position_relative_relocations)
-      {
-	int32_t offset = 0;
-	ABG_ASSERT(read_int_from_array_of_bytes(bytes, symbol_value_size,
-						is_big_endian, offset));
-	GElf_Shdr section_header;
-	gelf_getshdr(section, &section_header);
-	// the actual symbol address is relative to its position. Since we do
-	// not know the position, we take the beginning of the section, add the
-	// read_offset that we might have and finally apply the offset we
-	// read from the section.
-	symbol_address = section_header.sh_addr + read_offset + offset;
-      }
-    else
-      ABG_ASSERT(read_int_from_array_of_bytes(bytes, symbol_value_size,
-					      is_big_endian, symbol_address));
-
-    symbol_address = maybe_adjust_fn_sym_address(symbol_address);
-    symbol = lookup_elf_symbol_from_address(symbol_address);
-    return symbol;
-  }
-
-  /// Try reading the first __ksymtab section entry as if it is in the
-  /// pre-v4_19 format, that is without position relative relocations.
-  ///
-  /// @return the symbol resulting from the lookup of the symbol
-  /// address we got from reading the first entry of the ksymtab
-  /// section assuming the pre-v4.19 format. If null, it means the
-  /// __ksymtab section is not in the pre-v4.19 format.
-  elf_symbol_sptr
-  try_reading_first_ksymtab_entry_using_pre_v4_19_format() const
-  {
-    Elf_Scn *section = find_any_ksymtab_section();
-    return try_reading_first_ksymtab_entry(section, false);
-  }
-
-  /// Try reading the first __ksymtab section entry as if it is in the
-  /// v4_19 format, that is with position relative relocations.
-  ///
-  /// @return the symbol resulting from the lookup of the symbol
-  /// address we got from reading the first entry of the ksymtab
-  /// section assuming the v4.19 format. If null, it means the
-  /// __ksymtab section is not in the v4.19 format.
-  elf_symbol_sptr
-  try_reading_first_ksymtab_entry_using_v4_19_format() const
-  {
-    Elf_Scn *section = find_any_ksymtab_section();
-    return try_reading_first_ksymtab_entry(section, true);
-  }
-
-  /// Try to determine the format of the __ksymtab and __ksymtab_gpl
-  /// sections of Linux kernel modules.
-  ///
-  /// This is important because we need to know the format of these
-  /// sections to be able to read from them.
-  ///
-  /// @return the format the __ksymtab[_gpl] sections.
-  enum ksymtab_format
-  get_ksymtab_format_module() const
-  {
-    Elf_Scn *section = find_any_ksymtab_reloc_section();
-
-    ABG_ASSERT(section);
-
-    // Libdwfl has a weird quirk where, in the process of obtaining an Elf
-    // descriptor via dwfl_module_getelf(), it will apply all relocations it
-    // knows how to and it will zero the relocation info after applying it. If
-    // the .rela__ksymtab* section contained only simple (absolute) relocations,
-    // they will have been all applied and sh_size will be 0. For arches that
-    // support relative ksymtabs, simple relocations only appear in pre-4.19
-    // kernel modules.
-    GElf_Shdr section_mem;
-    GElf_Shdr *section_shdr = gelf_getshdr(section, &section_mem);
-    if (section_shdr->sh_size == 0)
-      return PRE_V4_19_KSYMTAB_FORMAT;
-
-    bool is_relasec = (section_shdr->sh_type == SHT_RELA);
-
-    // If we still have a normal non-zeroed relocation section, we can guess
-    // what format the ksymtab is in depending on what types of relocs it
-    // contains.
-
-    uint64_t type;
-    Elf_Data *section_data = elf_getdata(section, 0);
-    if (is_relasec)
-      {
-	GElf_Rela rela;
-	gelf_getrela(section_data, 0, &rela);
-	type = GELF_R_TYPE(rela.r_info);
-      }
-    else
-      {
-	GElf_Rel rel;
-	gelf_getrel(section_data, 0, &rel);
-	type = GELF_R_TYPE(rel.r_info);
-      }
-
-    // Sigh, I dislike the arch-dependent code here, but this seems to be a
-    // reliable heuristic for kernel modules for now. Relative ksymtabs only
-    // supported on x86 and arm64 as of v4.19.
-    ksymtab_format format;
-    switch (type)
-      {
-      case R_X86_64_64: // Same as R_386_32, fallthrough
-#ifdef HAVE_R_AARCH64_ABS64_MACRO
-      case R_AARCH64_ABS64:
-#endif
-	format = PRE_V4_19_KSYMTAB_FORMAT;
-	break;
-      case R_X86_64_PC32: // Same as R_386_PC32, fallthrough
-#ifdef HAVE_R_AARCH64_PREL32_MACRO
-      case R_AARCH64_PREL32:
-#endif
-	format = V4_19_KSYMTAB_FORMAT;
-	break;
-      default:
-	// Fall back to other methods of determining the ksymtab format.
-	format = UNDEFINED_KSYMTAB_FORMAT;
-	break;
-      }
-    return format;
-  }
-
-  /// Determine the format of the __ksymtab and __ksymtab_gpl
-  /// sections.
-  ///
-  /// This is important because we need the know the format of these
-  /// sections to be able to read from them.
-  ///
-  /// @return the format the __ksymtab[_gpl] sections.
-  enum ksymtab_format
-  get_ksymtab_format() const
-  {
-    if (!find_any_ksymtab_section())
-      ksymtab_format_ = UNDEFINED_KSYMTAB_FORMAT;
-    else
-      {
-	if (ksymtab_format_ == UNDEFINED_KSYMTAB_FORMAT)
-	  {
-	    // Since Linux kernel modules are relocatable, we can first try
-	    // using a heuristic based on relocations to guess the ksymtab format.
-	    if (is_linux_kernel_module(elf_handle()))
-	     {
-	       ksymtab_format_ = get_ksymtab_format_module();
-	       if (ksymtab_format_ != UNDEFINED_KSYMTAB_FORMAT)
-		  return ksymtab_format_;
-	     }
-
-	    // If it's not a kernel module or we couldn't determine its format
-	    // with relocations, fall back to the heuristics below.
-
-	    // OK this is a dirty little heuristic to determine the
-	    // format of the ksymtab section.
-	    //
-	    // We try to read the first ksymtab entry assuming a
-	    // pre-v4.19 format.  If that succeeds then we are in the
-	    // pr-v4.19 format.  Otherwise, try reading it assuming a
-	    // v4.19 format.  For now, we just support
-	    // PRE_V4_19_KSYMTAB_FORMAT and V4_19_KSYMTAB_FORMAT.
-	    if (try_reading_first_ksymtab_entry_using_pre_v4_19_format())
-	      ksymtab_format_ = PRE_V4_19_KSYMTAB_FORMAT;
-	    else if (try_reading_first_ksymtab_entry_using_v4_19_format())
-	      ksymtab_format_ = V4_19_KSYMTAB_FORMAT;
-	    else
-	      // If a new format emerges, then we need to add its
-	      // support above.
-	      ABG_ASSERT_NOT_REACHED;
-	  }
-      }
-    return ksymtab_format_;
-  }
-
-  /// Getter of the size of the symbol value part of an entry of the
-  /// ksymtab section.
-  ///
-  /// @return the size of the symbol value part of the entry of the
-  /// ksymtab section.
-  unsigned char
-  get_ksymtab_symbol_value_size() const
-  {
-    unsigned char result = 0;
-    ksymtab_format format = get_ksymtab_format();
-    if (format == UNDEFINED_KSYMTAB_FORMAT)
-      ;
-    else if (format == PRE_V4_19_KSYMTAB_FORMAT)
-      result = get_architecture_word_size(elf_handle());
-    else if (format == V4_19_KSYMTAB_FORMAT)
-      result = 4;
-    else
-      ABG_ASSERT_NOT_REACHED;
-
-    return result;
-  }
-
-  /// Getter of the size of one entry of the ksymtab section.
-  ///
-  /// @return the size of one entry of the ksymtab section.
-  unsigned char
-  get_ksymtab_entry_size() const
-  {
-    if (ksymtab_entry_size_ == 0)
-      {
-	const unsigned char symbol_size = get_ksymtab_symbol_value_size();
-	Elf_Scn*	    ksymtab = find_any_ksymtab_section();
-	if (ksymtab)
-	  {
-	    GElf_Shdr ksymtab_shdr;
-	    gelf_getshdr(ksymtab, &ksymtab_shdr);
-
-	    // ksymtab entries have the following layout
-	    //
-	    // struct {
-	    //  T symbol_address;  // .symtab entry
-	    //  T name_address;    // .strtab entry
-	    // }
-	    //
-	    // with T being a suitable type to represent the absolute,
-	    // relocatable or position relative value of the address. T's size
-	    // is determined by get_ksymtab_symbol_value_size().
-	    //
-	    // Since Kernel v5.4, the entries have the following layout
-	    //
-	    // struct {
-	    //  T symbol_address;  // .symtab entry
-	    //  T name_address;    // .strtab entry
-	    //  T namespace;       // .strtab entry
-	    // }
-	    //
-	    // To determine the ksymtab entry size, find the next entry that
-	    // refers to a valid .symtab entry. The offset to that one is what
-	    // we are searching for.
-	    for (unsigned entries = 2; entries <= 3; ++entries)
-	      {
-		const unsigned candidate_size = entries * symbol_size;
-
-		// if there is exactly one entry, section size == entry size
-		// (this looks like an optimization, but in fact it prevents
-		// from illegal reads if there is actually only one entry)
-		if (ksymtab_shdr.sh_size == candidate_size)
-		  {
-		    ksymtab_entry_size_ = candidate_size;
-		    break;
-		  }
-
-		// otherwise check whether the symbol following the candidate
-		// number of entries is a valid ELF symbol. For that we read
-		// the ksymtab with the given offset and if the symbol is
-		// valid, we found our entry size.
-		const ksymtab_format format = get_ksymtab_format();
-		if (try_reading_first_ksymtab_entry
-		    (ksymtab, format == V4_19_KSYMTAB_FORMAT, entries))
-		  {
-		    ksymtab_entry_size_ = candidate_size;
-		    break;
-		  }
-	      }
-	    ABG_ASSERT(ksymtab_entry_size_ != 0);
-	  }
-      }
-
-    return ksymtab_entry_size_;
-  }
-
-  /// Getter of the number of entries that are present in the ksymtab
-  /// section.
-  ///
-  /// @return the number of entries that are present in the ksymtab
-  /// section.
-  size_t
-  get_nb_ksymtab_entries() const
-  {
-    if (nb_ksymtab_entries_ == 0)
-      {
-	Elf_Scn *section = find_ksymtab_section();
-	if (section)
-	  {
-	    GElf_Shdr header_mem;
-	    GElf_Shdr *section_header = gelf_getshdr(section, &header_mem);
-	    size_t entry_size = get_ksymtab_entry_size();
-	    ABG_ASSERT(entry_size);
-	    nb_ksymtab_entries_ = section_header->sh_size / entry_size;
-	  }
-      }
-    return nb_ksymtab_entries_;
-  }
-
-  /// Getter of the number of entries that are present in the
-  /// ksymtab_gpl section.
-  ///
-  /// @return the number of entries that are present in the
-  /// ksymtab_gpl section.
-  size_t
-  get_nb_ksymtab_gpl_entries()
-  {
-    if (nb_ksymtab_gpl_entries_ == 0)
-      {
-	Elf_Scn *section = find_ksymtab_gpl_section();
-	if (section)
-	  {
-	    GElf_Shdr header_mem;
-	    GElf_Shdr *section_header = gelf_getshdr(section, &header_mem);
-	    size_t entry_size = get_ksymtab_entry_size();
-	    ABG_ASSERT(entry_size);
-	    nb_ksymtab_gpl_entries_ = section_header->sh_size / entry_size;
-	  }
-      }
-    return nb_ksymtab_gpl_entries_;
-  }
-
   /// Test if a given ELF symbol was suppressed by a suppression
   /// specification.
   ///
@@ -6775,328 +6030,6 @@ public:
 	    && suppr::is_elf_symbol_suppressed(*this,
 					       symbol->get_name(),
 					       symbol->get_type()));
-  }
-
-  /// Populate the symbol map by reading exported symbols from the
-  /// ksymtab directly.
-  ///
-  /// @param section the ksymtab section to read from
-  ///
-  /// @param exported_fns_set the set of exported functions
-  ///
-  /// @param exported_vars_set the set of exported variables
-  ///
-  /// @param nb_entries the number of ksymtab entries to read
-  ///
-  /// @return true upon successful completion, false otherwise.
-  bool
-  populate_symbol_map_from_ksymtab(Elf_Scn *section,
-                                   address_set_sptr exported_fns_set,
-                                   address_set_sptr exported_vars_set,
-                                   size_t nb_entries)
-  {
-    // The data of the section.
-    Elf_Data *elf_data = elf_rawdata(section, 0);
-
-    // An array-of-bytes view of the elf data above.  Something we can
-    // actually program with.  Phew.
-    uint8_t *bytes = reinterpret_cast<uint8_t*>(elf_data->d_buf);
-
-    // This is where to store an address of a symbol that we read from
-    // the section.
-    GElf_Addr symbol_address = 0, adjusted_symbol_address = 0;
-
-    // So the section is an array of entries.  Each entry describes a
-    // symbol.  Each entry is made of two words.
-    //
-    // The first word is the address of a symbol.  The second one is
-    // the address of a static global variable symbol which value is
-    // the string representing the symbol name.  That string is in the
-    // __ksymtab_strings section.  Here, we are only interested in the
-    // first entry.
-    //
-    // Lets thus walk the array of entries, and let's read just the
-    // symbol address part of each entry.
-    bool is_big_endian = architecture_is_big_endian(elf_handle());
-    elf_symbol_sptr symbol;
-    unsigned char symbol_value_size = get_ksymtab_symbol_value_size();
-
-    for (size_t i = 0, entry_offset = 0;
-	 i < nb_entries;
-	 ++i, entry_offset = get_ksymtab_entry_size() * i)
-      {
-	symbol_address = 0;
-	ABG_ASSERT(read_int_from_array_of_bytes(&bytes[entry_offset],
-						symbol_value_size,
-						is_big_endian,
-						symbol_address));
-
-	// Starting from linux kernel v4.19, it can happen that the
-	// address value read from the ksymtab[_gpl] section might
-	// need some decoding to get the real symbol address that has
-	// a meaning in the .symbol section.
-	symbol_address =
-	  maybe_adjust_sym_address_from_v4_19_ksymtab(symbol_address,
-						      entry_offset, section);
-
-	// We might also want to adjust the symbol address, depending
-	// on if we are looking at an ET_REL, an executable or a
-	// shared object binary.
-	adjusted_symbol_address = maybe_adjust_fn_sym_address(symbol_address);
-
-	if (adjusted_symbol_address == 0)
-	  // The resulting symbol address is zero, not sure this
-	  // valid; ignore it.
-	  continue;
-
-	// OK now the symbol address should be in a suitable form to
-	// be used to look the symbol up in the usual .symbol section
-	// (aka ELF symbol table).
-	symbol = lookup_elf_symbol_from_address(adjusted_symbol_address);
-	if (!symbol)
-	  {
-	    adjusted_symbol_address =
-	      maybe_adjust_var_sym_address(symbol_address);
-	    symbol = lookup_elf_symbol_from_address(adjusted_symbol_address);
-	    if (!symbol)
-	      // This must be a symbol that is of type neither FUNC
-	      // (function) nor OBJECT (variable).  There are for intance,
-	      // symbols of type 'NOTYPE' in the ksymtab symbol table.  I
-	      // am not sure what those are.
-	      continue;
-	  }
-
-	// If the symbol was suppressed by a suppression
-	// specification then drop it on the floor.
-	if (is_elf_symbol_suppressed(symbol))
-	  continue;
-
-	address_set_sptr set;
-	if (symbol->is_function())
-	  {
-	    ABG_ASSERT(lookup_elf_fn_symbol_from_address
-		       (adjusted_symbol_address));
-	    set = exported_fns_set;
-	  }
-	else if (symbol->is_variable())
-	  {
-	    ABG_ASSERT(lookup_elf_var_symbol_from_address
-		       (adjusted_symbol_address));
-	    set = exported_vars_set;
-	  }
-	else
-	  ABG_ASSERT_NOT_REACHED;
-	set->insert(adjusted_symbol_address);
-      }
-    return true;
-  }
-
-  /// Populate the symbol map by extracting the exported symbols from a
-  /// ksymtab rela section.
-  ///
-  /// @param section the ksymtab section to read from
-  ///
-  /// @param exported_fns_set the set of exported functions
-  ///
-  /// @param exported_vars_set the set of exported variables
-  ///
-  /// @return true upon successful completion, false otherwise.
-  bool
-  populate_symbol_map_from_ksymtab_reloc(Elf_Scn *reloc_section,
-                                         address_set_sptr exported_fns_set,
-                                         address_set_sptr exported_vars_set)
-  {
-    GElf_Shdr reloc_section_mem;
-    GElf_Shdr *reloc_section_shdr = gelf_getshdr(reloc_section,
-						 &reloc_section_mem);
-    size_t reloc_count =
-      reloc_section_shdr->sh_size / reloc_section_shdr->sh_entsize;
-
-    Elf_Data *reloc_section_data = elf_getdata(reloc_section, 0);
-
-    bool is_relasec = (reloc_section_shdr->sh_type == SHT_RELA);
-    elf_symbol_sptr symbol;
-    GElf_Sym native_symbol;
-    for (unsigned int i = 0; i < reloc_count; i++)
-      {
-	if (is_relasec)
-	  {
-	    GElf_Rela rela;
-	    gelf_getrela(reloc_section_data, i, &rela);
-	    symbol = lookup_elf_symbol_from_index(GELF_R_SYM(rela.r_info),
-						  native_symbol);
-	  }
-	else
-	  {
-	    GElf_Rel rel;
-	    gelf_getrel(reloc_section_data, i, &rel);
-	    symbol = lookup_elf_symbol_from_index(GELF_R_SYM(rel.r_info),
-						  native_symbol);
-	  }
-
-	ABG_ASSERT(symbol);
-
-        // If the symbol is a linux string constant then ignore it.
-	if (symbol->get_is_linux_string_cst())
-	  continue;
-
-	if (!symbol->is_function() && !symbol->is_variable())
-	  {
-	    if (do_log())
-	      {
-		if (symbol->get_type() == elf_symbol::NOTYPE_TYPE)
-		  cerr << "skipping NOTYPE symbol "
-		       << symbol->get_name()
-		       << " shndx: "
-		       << symbol->get_index()
-		       << " @"
-		       << elf_path()
-		       << "\n";
-		else if (symbol->get_type() == elf_symbol::SECTION_TYPE)
-		  cerr << "skipping SECTION symbol "
-		       << "shndx: "
-		       << symbol->get_index()
-		       << " @"
-		       << elf_path()
-		       << "\n";
-	       }
-	    continue;
-	  }
-
-	// If the symbol was suppressed by a suppression
-	// specification then drop it on the floor.
-	if (is_elf_symbol_suppressed(symbol))
-	  continue;
-
-	// If we are looking at an ET_REL (relocatable) binary, then
-	// the symbol value of native_symbol is relative to the
-	// section that symbol is defined in.  We need to translate it
-	// into an absolute (okay, binary-relative, rather) address.
-	GElf_Addr symbol_address =
-	  maybe_adjust_et_rel_sym_addr_to_abs_addr(elf_handle(),
-						   &native_symbol);
-
-	address_set_sptr set;
-	if (symbol->is_function())
-	  {
-	    ABG_ASSERT(lookup_elf_fn_symbol_from_address(symbol_address));
-	    set = exported_fns_set;
-	  }
-	else if (symbol->is_variable())
-	  {
-	    ABG_ASSERT(lookup_elf_var_symbol_from_address(symbol_address));
-	    set = exported_vars_set;
-	  }
-	else
-	  ABG_ASSERT_NOT_REACHED;
-	set->insert(symbol_address);
-      }
-    return true;
-  }
-
-  /// Load a given kernel symbol table.
-  ///
-  /// One can thus retrieve the resulting symbols by using the
-  /// accessors read_context::linux_exported_fn_syms(),
-  /// read_context::linux_exported_var_syms(),
-  /// read_context::linux_exported_gpl_fn_syms(), or
-  /// read_context::linux_exported_gpl_var_syms().
-  ///
-  /// @param kind the kind of kernel symbol table to load.
-  ///
-  /// @return true upon successful completion, false otherwise.
-  bool
-  load_kernel_symbol_table(kernel_symbol_table_kind kind)
-  {
-    Elf_Scn *section = 0, *reloc_section = 0;
-    address_set_sptr linux_exported_fns_set, linux_exported_vars_set;
-
-    switch (kind)
-      {
-      case KERNEL_SYMBOL_TABLE_KIND_UNDEFINED:
-	break;
-      case KERNEL_SYMBOL_TABLE_KIND_KSYMTAB:
-	section = find_ksymtab_section();
-	reloc_section = find_ksymtab_reloc_section();
-	linux_exported_fns_set = create_or_get_linux_exported_fn_syms();
-	linux_exported_vars_set = create_or_get_linux_exported_var_syms();
-	break;
-      case KERNEL_SYMBOL_TABLE_KIND_KSYMTAB_GPL:
-	section = find_ksymtab_gpl_section();
-	reloc_section = find_ksymtab_gpl_reloc_section();
-	linux_exported_fns_set = create_or_get_linux_exported_gpl_fn_syms();
-	linux_exported_vars_set = create_or_get_linux_exported_gpl_var_syms();
-	break;
-      }
-
-    if (!linux_exported_vars_set || !linux_exported_fns_set || !section)
-      return false;
-
-    ksymtab_format format = get_ksymtab_format();
-
-    // Although pre-v4.19 kernel modules can have a relocation section for the
-    // __ksymtab section, libdwfl zeroes the rela section after applying
-    // "simple" absolute relocations via dwfl_module_getelf(). For v4.19 and
-    // above, we get PC-relative relocations so dwfl_module_getelf() doesn't
-    // apply those relocations and we're safe to read the relocation section to
-    // determine which exported symbols are in the ksymtab.
-    if (!reloc_section || format == PRE_V4_19_KSYMTAB_FORMAT)
-      {
-	size_t nb_entries = 0;
-	if (kind == KERNEL_SYMBOL_TABLE_KIND_KSYMTAB)
-	  nb_entries = get_nb_ksymtab_entries();
-	else if (kind == KERNEL_SYMBOL_TABLE_KIND_KSYMTAB_GPL)
-	  nb_entries = get_nb_ksymtab_gpl_entries();
-
-	if (!nb_entries)
-	  return false;
-
-	return populate_symbol_map_from_ksymtab(
-	    section, linux_exported_fns_set, linux_exported_vars_set,
-	    nb_entries);
-      }
-    else
-      return populate_symbol_map_from_ksymtab_reloc(reloc_section,
-                                                    linux_exported_fns_set,
-                                                    linux_exported_vars_set);
-  }
-
-  /// Load the special __ksymtab section. This is for linux kernel
-  /// (module) files.
-  ///
-  /// @return true upon successful completion, false otherwise.
-  bool
-  load_ksymtab_symbols()
-  {
-    return load_kernel_symbol_table(KERNEL_SYMBOL_TABLE_KIND_KSYMTAB);
-  }
-
-  /// Load the special __ksymtab_gpl section. This is for linux kernel
-  /// (module) files.
-  ///
-  /// @return true upon successful completion, false otherwise.
-  bool
-  load_ksymtab_gpl_symbols()
-  {
-    return load_kernel_symbol_table(KERNEL_SYMBOL_TABLE_KIND_KSYMTAB_GPL);
-  }
-
-  /// Load linux kernel (module) specific exported symbol sections.
-  ///
-  /// @return true upon successful completion, false otherwise.
-  bool
-  load_linux_specific_exported_symbol_maps()
-  {
-    bool loaded = false;
-    if (!linux_exported_fn_syms_
-	|| !linux_exported_var_syms_)
-      loaded |= load_ksymtab_symbols();
-
-    if (!linux_exported_gpl_fn_syms_
-	|| !linux_exported_gpl_var_syms_)
-      loaded |= load_ksymtab_gpl_symbols();
-
-    return loaded;
   }
 
   /// Load the maps of function symbol address -> function symbol,
@@ -7141,11 +6074,7 @@ public:
 						 load_var_map,
 						 load_undefined_fun_map,
 						 load_undefined_var_map))
-	  {
-	    if (load_in_linux_kernel_mode() && is_linux_kernel(elf_handle()))
-	      return load_linux_specific_exported_symbol_maps();
 	    return true;
-	  }
 	return false;
       }
     return true;
@@ -7223,36 +6152,6 @@ public:
   {
     load_dt_soname_and_needed();
     load_elf_architecture();
-  }
-
-  /// Convert the value of the symbol address part of a post V4.19
-  /// ksymtab entry (that contains place-relative addresses) into its
-  /// corresponding symbol value in the .symtab section.  The value of
-  /// the symbol in .symtab equals to addr_offset + address-of-ksymtab
-  /// + addr.
-  ///
-  /// @param addr the address read from the ksymtab section.
-  ///
-  /// @param addr_offset the offset at which @p addr was read.
-  ///
-  /// @param ksymtab_section the kymstab section @p addr was read
-  /// from.
-  GElf_Addr
-  maybe_adjust_sym_address_from_v4_19_ksymtab(GElf_Addr addr,
-					      size_t addr_offset,
-					      Elf_Scn *ksymtab_section) const
-  {
-    GElf_Addr result = addr;
-
-    if (get_ksymtab_format() == V4_19_KSYMTAB_FORMAT)
-      {
-	int32_t offset = addr;
-	GElf_Shdr mem;
-	GElf_Shdr *section_header = gelf_getshdr(ksymtab_section, &mem);
-	result = offset + section_header->sh_addr + addr_offset;
-      }
-
-    return result;
   }
 
   /// This is a sub-routine of maybe_adjust_fn_sym_address and
@@ -16176,34 +15075,6 @@ build_function_decl(read_context&	ctxt,
   return result;
 }
 
-/// Add a set of addresses (representing function symbols) to a
-/// function symbol name -> symbol map.
-///
-/// For a given symbol address, the function retrieves the name of the
-/// symbol as well as the symbol itself and inserts an entry {symbol
-/// name, symbol} into a map of symbol name -> symbol map.
-///
-/// @param syms the set of symbol addresses to consider.
-///
-/// @param map the map to populate.
-///
-/// @param ctxt the context in which we are loading a given ELF file.
-static void
-add_fn_symbols_to_map(address_set_type& syms,
-		      string_elf_symbols_map_type& map,
-		      read_context& ctxt)
-{
-  for (address_set_type::iterator i = syms.begin(); i != syms.end(); ++i)
-    {
-      elf_symbol_sptr sym = ctxt.lookup_elf_fn_symbol_from_address(*i);
-      ABG_ASSERT(sym);
-      string_elf_symbols_map_type::iterator it =
-	ctxt.fun_syms().find(sym->get_name());
-      ABG_ASSERT(it != ctxt.fun_syms().end());
-      map.insert(*it);
-    }
-}
-
 /// Add a symbol to a symbol map.
 ///
 /// @param sym the symbol to add.
@@ -16225,34 +15096,6 @@ add_symbol_to_map(const elf_symbol_sptr& sym,
     }
   else
     it->second.push_back(sym);
-}
-
-/// Add a set of addresses (representing variable symbols) to a
-/// variable symbol name -> symbol map.
-///
-/// For a given symbol address, the variable retrieves the name of the
-/// symbol as well as the symbol itself and inserts an entry {symbol
-/// name, symbol} into a map of symbol name -> symbol map.
-///
-/// @param syms the set of symbol addresses to consider.
-///
-/// @param map the map to populate.
-///
-/// @param ctxt the context in which we are loading a given ELF file.
-static void
-add_var_symbols_to_map(address_set_type& syms,
-		       string_elf_symbols_map_type& map,
-		       read_context& ctxt)
-{
-  for (address_set_type::iterator i = syms.begin(); i != syms.end(); ++i)
-    {
-      elf_symbol_sptr sym = ctxt.lookup_elf_var_symbol_from_address(*i);
-      ABG_ASSERT(sym);
-      string_elf_symbols_map_type::iterator it =
-	ctxt.var_syms().find(sym->get_name());
-      ABG_ASSERT(it != ctxt.var_syms().end());
-      map.insert(*it);
-    }
 }
 
 /// Read all @ref abigail::translation_unit possible from the debug info
@@ -16298,22 +15141,24 @@ read_debug_info_into_corpus(read_context& ctxt)
 	{
 	  string_elf_symbols_map_sptr exported_fn_symbols_map
 	    (new string_elf_symbols_map_type);
-	  add_fn_symbols_to_map(*ctxt.linux_exported_fn_syms(),
-				*exported_fn_symbols_map,
-				ctxt);
-	  add_fn_symbols_to_map(*ctxt.linux_exported_gpl_fn_syms(),
-				*exported_fn_symbols_map,
-				ctxt);
+	  auto filter = ctxt.symtab()->make_filter();
+	  filter.set_functions();
+
+	  for (const auto& symbol :
+		 symtab_reader::filtered_symtab(*ctxt.symtab(), filter))
+	    (*exported_fn_symbols_map)[symbol->get_name()].push_back(symbol);
+
 	  ctxt.current_corpus()->set_fun_symbol_map(exported_fn_symbols_map);
 
 	  string_elf_symbols_map_sptr exported_var_symbols_map
 	    (new string_elf_symbols_map_type);
-	  add_var_symbols_to_map(*ctxt.linux_exported_var_syms(),
-				 *exported_var_symbols_map,
-				 ctxt);
-	  add_var_symbols_to_map(*ctxt.linux_exported_gpl_var_syms(),
-				 *exported_var_symbols_map,
-				 ctxt);
+	  filter = ctxt.symtab()->make_filter();
+	  filter.set_variables();
+	  for (const auto& symbol:
+		 symtab_reader::filtered_symtab(*ctxt.symtab(),
+						filter))
+	    (*exported_var_symbols_map)[symbol->get_name()].push_back(symbol);
+
 	  ctxt.current_corpus()->set_var_symbol_map(exported_var_symbols_map);
 	}
       else
