@@ -13995,8 +13995,9 @@ add_or_update_class_type(read_context&	 ctxt,
 		continue;
 
 	      // If the variable is already a member of this class,
-	      // move on.
-	      if (lookup_var_decl_in_scope(n, result))
+	      // move on.  If it's an anonymous data member, we need
+	      // to handle it differently.  We'll do that later below.
+	      if (!n.empty() && lookup_var_decl_in_scope(n, result))
 		continue;
 
 	      int64_t offset_in_bits = 0;
@@ -14023,8 +14024,10 @@ add_or_update_class_type(read_context&	 ctxt,
 	      // The call to build_ir_node_from_die above could have
 	      // triggered the adding of a data member named 'n' into
 	      // result.  So let's check again if the variable is
-	      // already a member of this class.
-	      if (lookup_var_decl_in_scope(n, result))
+	      // already a member of this class.  Here again, if it's
+	      // an anonymous data member, we need to handle it
+	      // differently.  We'll do that later below.
+	      if (!n.empty() && lookup_var_decl_in_scope(n, result))
 		continue;
 
 	      if (!is_static)
@@ -14040,6 +14043,10 @@ add_or_update_class_type(read_context&	 ctxt,
 	      die_access_specifier(&child, access);
 
 	      var_decl_sptr dm(new var_decl(n, t, loc, m));
+	      if (n.empty() && result->find_data_member(dm))
+		// dm is an anonymous data member that was already
+		// present in the current class so let's not add it.
+		continue;
 	      result->add_data_member(dm, access, is_laid_out,
 				      is_static, offset_in_bits);
 	      ABG_ASSERT(has_scope(dm));

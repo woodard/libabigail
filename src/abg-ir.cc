@@ -15860,7 +15860,9 @@ var_decl::get_pretty_representation(bool internal, bool qualified_name) const
     }
   else
     {
-      if (is_anonymous_data_member(this))
+      if (/*The current var_decl is to be used as an anonymous data
+	    member.  */
+	  get_name().empty())
 	{
 	  // Display the anonymous data member in a way that
 	  // makes sense.
@@ -15901,6 +15903,30 @@ var_decl::get_pretty_representation(bool internal, bool qualified_name) const
 	}
     }
   return result;
+}
+
+/// Get a name that is valid even for an anonymous data member.
+///
+/// If the current @ref var_decl is an anonymous data member, then
+/// return its pretty representation. As of now, that pretty
+/// representation is actually its flat representation as returned by
+/// get_class_or_union_flat_representation().
+///
+/// Otherwise, just return the name of the current @ref var_decl.
+///
+/// @param qualified if true, return the qualified name.  This doesn't
+/// have an effet if the current @ref var_decl represents an anonymous
+/// data member.
+string
+var_decl::get_anon_dm_reliable_name(bool qualified) const
+{
+  string name;
+  if (is_anonymous_data_member(this))
+    name = get_pretty_representation(true, qualified);
+  else
+    name = get_name();
+
+  return name;
 }
 
 /// This implements the ir_traversable_base::traverse pure virtual
@@ -18495,8 +18521,73 @@ class_or_union::find_data_member(const string& name) const
        ++i)
     if ((*i)->get_name() == name)
       return *i;
+
+  // We haven't found a data member with the name 'name'.  Let's look
+  // closer again, this time in our anonymous data members.
+  for (data_members::const_iterator i = get_data_members().begin();
+       i != get_data_members().end();
+       ++i)
+    if (is_anonymous_data_member(*i))
+      {
+	class_or_union_sptr type = is_class_or_union_type((*i)->get_type());
+	ABG_ASSERT(type);
+	if (var_decl_sptr data_member = type->find_data_member(name))
+	  return data_member;
+      }
+
   return var_decl_sptr();
 }
+
+/// Find an anonymous data member in the class.
+///
+/// @param v the anonymous data member to find.
+///
+/// @return the anonymous data member found, or nil if none was found.
+const var_decl_sptr
+class_or_union::find_anonymous_data_member(const var_decl_sptr& v) const
+{
+  if (!v->get_name().empty())
+    return var_decl_sptr();
+
+  for (data_members::const_iterator it = get_non_static_data_members().begin();
+       it != get_non_static_data_members().end();
+       ++it)
+    {
+      if (is_anonymous_data_member(*it))
+	if ((*it)->get_pretty_representation(true, true)
+	    == v->get_pretty_representation(true, true))
+	  return *it;
+    }
+
+  return var_decl_sptr();
+}
+
+/// Find a given data member.
+///
+/// This function takes a @ref var_decl as an argument.  If it has a
+/// non-empty name, then it tries to find a data member which has the
+/// same name as the argument.
+///
+/// If it has an empty name, then the @ref var_decl is considered as
+/// an anonymous data member.  In that case, this function tries to
+/// find an anonymous data member which type equals that of the @ref
+/// var_decl argument.
+///
+/// @param v this carries either the name of the data member we need
+/// to look for, or the type of the anonymous data member we are
+/// looking for.
+const var_decl_sptr
+class_or_union::find_data_member(const var_decl_sptr& v) const
+{
+  if (!v)
+    return var_decl_sptr();
+
+  if (v->get_name().empty())
+    return find_anonymous_data_member(v);
+
+  return find_data_member(v->get_name());
+}
+
 
 /// Get the non-static data memebers of this @ref class_or_union.
 ///
@@ -22800,15 +22891,7 @@ lookup_data_member(const type_base* type,
   if (!cou)
     return 0;
 
-  for (class_or_union::data_members::const_iterator i =
-	 cou->get_data_members().begin();
-       i != cou->get_data_members().end();
-       ++i)
-    {
-      if ((*i)->get_name() == dm_name)
-	return i->get();
-    }
-  return 0;
+  return cou->find_data_member(dm_name).get();
 }
 
 /// Get the function parameter designated by its index.

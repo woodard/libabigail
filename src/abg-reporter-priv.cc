@@ -432,6 +432,19 @@ represent(const var_diff_sptr	&diff,
   // Have we reported a size change already?
   bool size_reported = false;
 
+  //----------------------------------------------------------------
+  // First we'll try to emit a report about the type change of this
+  // var_decl_diff.
+  //
+  // In the context of that type change report, we need to keep in
+  // mind that because we want to emit specific (useful) reports about
+  // anonymous data member changes, we'll try to detect the various
+  // scenarii that involve anonymous data member changes.
+  //
+  // Then, as a fallback method, we'll emit a more generic type change
+  // report for the other generic type changes.
+  //----------------------------------------------------------------
+
   if (is_strict_anonymous_data_member_change)
     {
       const string n_pretty_representation = n->get_pretty_representation();
@@ -484,34 +497,53 @@ represent(const var_diff_sptr	&diff,
       begin_with_and = true;
       emitted = true;
     }
-  else if (const diff_sptr d = diff->type_diff())
-    {
-      if (ctxt->get_reporter()->diff_to_be_reported(d.get()))
-	{
-	  if (local_only)
-	    out << indent << "type '"
-		<< get_pretty_representation(o->get_type())
-		<< "' of '" << o->get_qualified_name()
-		<< "' changed";
-	  else
-	    out << indent
-		<< "type of '" << o_pretty_representation << "' changed";
 
-	  if (d->currently_reporting())
-	    out << ", as being reported\n";
-	  else if (d->reported_once())
-	    out << ", as reported earlier\n";
-	  else
-	    {
-	      out << ":\n";
-	      d->report(out, indent + "  ");
-	    }
+  //
+  // If we haven't succeeded in emitting a specific type change report
+  // (mainly related to anonymous data data member changes) then let's
+  // try to emit a more generic report about the type change.
+  //
+  // This is the fallback method outlined in the comment at the
+  // beginning of this section.
+  //
+  if (!emitted)
+    if (const diff_sptr d = diff->type_diff())
+      {
+	if (ctxt->get_reporter()->diff_to_be_reported(d.get()))
+	  {
+	    if (local_only)
+	      out << indent << "type '"
+		  << get_pretty_representation(o->get_type())
+		  << "' of '"
+		  << (o_anon ?
+		      string("anonymous data member")
+		      : o->get_qualified_name())
+		  << "' changed";
+	    else
+	      out << indent
+		  << "type of '"<< (o_anon ? "anonymous data member ": "")
+		  << o_pretty_representation << "' changed";
 
-	  begin_with_and = true;
-	  emitted = true;
-	  size_reported = true;
-	}
-    }
+	    if (d->currently_reporting())
+	      out << ", as being reported\n";
+	    else if (d->reported_once())
+	      out << ", as reported earlier\n";
+	    else
+	      {
+		out << ":\n";
+		d->report(out, indent + "  ");
+	      }
+
+	    begin_with_and = true;
+	    emitted = true;
+	    size_reported = true;
+	  }
+      }
+
+  //
+  // Okay, now we are done with report type changes.  Let's report the
+  // other potential kinds of changes.
+  //
 
   if (!filtering::has_anonymous_data_member_change(diff) && o_name != n_name)
     {

@@ -2766,6 +2766,9 @@ public:
   get_pretty_representation(bool internal = false,
 			    bool qualified_name = true) const;
 
+  string
+  get_anon_dm_reliable_name(bool qualified = true) const;
+
   virtual bool
   traverse(ir_node_visitor& v);
 
@@ -3831,6 +3834,12 @@ public:
 
   const var_decl_sptr
   find_data_member(const string&) const;
+
+  const var_decl_sptr
+  find_data_member(const var_decl_sptr&) const;
+
+  const var_decl_sptr
+  find_anonymous_data_member(const var_decl_sptr&) const;
 
   const data_members&
   get_non_static_data_members() const;

@@ -4646,7 +4646,7 @@ build_class_decl(read_context&		ctxt,
 	      if (var_decl_sptr v =
 		  build_var_decl(ctxt, p, /*add_to_cur_scope=*/false))
 		{
-		  if (decl->find_data_member(v->get_name()))
+		  if (decl->find_data_member(v))
 		    {
 		      // We are in updating mode and the current
 		      // version of this class already has this data

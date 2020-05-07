@@ -107,6 +107,14 @@
         <!-- struct {int m;} -->
         <var-decl name='' type-id='type-id-8' visibility='default'/>
       </data-member>
+      <data-member access='public' layout-offset-in-bits='32'>
+        <!-- struct {char bar;} -->
+        <var-decl name='' type-id='type-id-9' visibility='default'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='40'>
+        <!-- struct {char baz;} -->
+        <var-decl name='' type-id='type-id-10' visibility='default'/>
+      </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- S::__anonymous_enum__ S::e1 -->
         <var-decl name='e1' type-id='type-id-11' visibility='default' filepath='/home/dodji/git/libabigail/fixes/tests/data/test-annotate/test-anonymous-members-0.cc' line='18' column='1'/>
@@ -118,6 +126,14 @@
       <data-member access='public' layout-offset-in-bits='128'>
         <!-- S::__anonymous_enum__2 S::e3 -->
         <var-decl name='e3' type-id='type-id-13' visibility='default' filepath='/home/dodji/git/libabigail/fixes/tests/data/test-annotate/test-anonymous-members-0.cc' line='22' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='160'>
+        <!-- union {int a; char b;} -->
+        <var-decl name='' type-id='type-id-14' visibility='default'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='192'>
+        <!-- union {unsigned int c; double d;} -->
+        <var-decl name='' type-id='type-id-15' visibility='default'/>
       </data-member>
     </class-decl>
     <!-- S& -->

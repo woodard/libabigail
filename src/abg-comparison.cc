@@ -4664,11 +4664,13 @@ class_or_union_diff::ensure_lookup_tables_populated(void) const
 	 ++it)
       {
 	unsigned i = it->index();
-	decl_base_sptr d = first_class_or_union()->get_non_static_data_members()[i];
-	string name = d->get_name();
+	var_decl_sptr data_member =
+	  is_var_decl(first_class_or_union()->get_non_static_data_members()[i]);
+	string name = data_member->get_anon_dm_reliable_name();
+
 	ABG_ASSERT(priv_->deleted_data_members_.find(name)
-	       == priv_->deleted_data_members_.end());
-	priv_->deleted_data_members_[name] = d;
+		   == priv_->deleted_data_members_.end());
+	priv_->deleted_data_members_[name] = data_member;
       }
 
     for (vector<insertion>::const_iterator it = e.insertions().begin();
@@ -4683,8 +4685,8 @@ class_or_union_diff::ensure_lookup_tables_populated(void) const
 	    unsigned i = *iit;
 	    decl_base_sptr d =
 	      second_class_or_union()->get_non_static_data_members()[i];
-	    var_decl_sptr dm = is_var_decl(d);
-	    string name = dm->get_name();
+	    var_decl_sptr added_dm = is_var_decl(d);
+	    string name = added_dm->get_anon_dm_reliable_name();
 	    ABG_ASSERT(priv_->inserted_data_members_.find(name)
 		   == priv_->inserted_data_members_.end());
 	    string_decl_base_sptr_map::const_iterator j =
@@ -4695,7 +4697,7 @@ class_or_union_diff::ensure_lookup_tables_populated(void) const
 		  {
 		    var_decl_sptr old_dm = is_var_decl(j->second);
 		    priv_->subtype_changed_dm_[name]=
-		      compute_diff(old_dm, dm, context());
+		      compute_diff(old_dm, added_dm, context());
 		  }
 		priv_->deleted_data_members_.erase(j);
 	      }
@@ -4749,9 +4751,9 @@ class_or_union_diff::ensure_lookup_tables_populated(void) const
 	priv_->deleted_dm_by_offset_.erase(i->first);
 	priv_->inserted_dm_by_offset_.erase(i->first);
 	priv_->deleted_data_members_.erase
-	  (i->second->first_var()->get_name());
+	  (i->second->first_var()->get_anon_dm_reliable_name());
 	priv_->inserted_data_members_.erase
-	  (i->second->second_var()->get_name());
+	  (i->second->second_var()->get_anon_dm_reliable_name());
       }
   }
   sort_string_data_member_diff_sptr_map(priv_->subtype_changed_dm_,

@@ -214,7 +214,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
     parameter 1 of type 'VarDesc*' has sub-type changes:
       in pointed to type 'struct VarDesc':
         type size hasn't changed
-        1 data member changes (1 filtered):
+        1 data member changes (2 filtered):
           type of 'union {struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst;}; uint32_t bits;} VarDesc::flags' changed:
             type name changed from 'VarDesc::__anonymous_union__2' to 'varDescFlags'
             type size hasn't changed
