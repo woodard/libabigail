@@ -4955,6 +4955,36 @@ const string_member_function_sptr_map&
 class_or_union_diff::inserted_member_fns() const
 {return get_priv()->inserted_member_functions_;}
 
+/// Getter of the sorted vector of data members that got replaced by
+/// another data member.
+///
+/// @return sorted vector of changed data member.
+const var_diff_sptrs_type&
+class_or_union_diff::sorted_changed_data_members() const
+{return get_priv()->sorted_changed_dm_;}
+
+/// Count the number of /filtered/ data members that got replaced by
+/// another data member.
+///
+/// @return the number of changed data member that got filtered out.
+size_t
+class_or_union_diff::count_filtered_changed_data_members(bool local) const
+{return get_priv()->count_filtered_changed_dm(local);}
+
+/// Getter of the sorted vector of data members with a (sub-)type change.
+///
+/// @return sorted vector of changed data member.
+const var_diff_sptrs_type&
+class_or_union_diff::sorted_subtype_changed_data_members() const
+{return get_priv()->sorted_subtype_changed_dm_;}
+
+/// Count the number of /filtered/ data members with a sub-type change.
+///
+/// @return the number of changed data member that got filtered out.
+size_t
+class_or_union_diff::count_filtered_subtype_changed_data_members(bool local) const
+{return get_priv()->count_filtered_subtype_changed_dm(local);}
+
 /// @return the edit script of the member function templates of the two
 /// @ref class_or_union.
 const edit_script&

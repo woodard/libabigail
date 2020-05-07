@@ -159,11 +159,11 @@
         in pointed to type 'typedef SpiceServer' at spice-server.h:38:1:
           underlying type 'struct RedsState' at reds-private.h:127:1 changed:
             type size hasn't changed
-            2 data member changes (1 filtered):
+            2 data member changes (2 filtered):
               type of 'VDIPortState RedsState::agent_state' changed:
                 underlying type 'struct VDIPortState' at reds-private.h:46:1 changed:
                   type size hasn't changed
-                  1 data member change:
+                  1 data member changes (3 filtered):
                     type of 'SpiceCharDeviceState* VDIPortState::base' changed:
                       in pointed to type 'typedef SpiceCharDeviceState' at spice-char.h:34:1:
                         underlying type 'struct SpiceCharDeviceState' at char_device.c:47:1 changed:
@@ -199,7 +199,6 @@
                                         pointed to type 'typedef SpiceCharDeviceInstance' changed at spice.h:399:1, as reported earlier
                             and offset changed from 1024 to 1088 (in bits) (by +64 bits)
                             'void* SpiceCharDeviceState::opaque' offset changed from 1472 to 1536 (in bits) (by +64 bits)
-                  no data member changes (3 filtered);
               type of 'MainChannel* RedsState::main_channel' changed:
                 in pointed to type 'typedef MainChannel' at main_channel.h:48:1:
                   underlying type 'struct MainChannel' at main_channel.h:36:1 changed:
@@ -404,7 +403,6 @@
                                       in pointed to type 'function type void (RedChannelClient*)':
                                         parameter 1 of type 'RedChannelClient*' has sub-type changes:
                                           pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
-            no data member change (1 filtered);
 
     [C] 'function int spice_server_add_interface(SpiceServer*, SpiceBaseInstance*)' at reds.c:3159:1 has some indirect sub-type changes:
       parameter 1 of type 'SpiceServer*' has sub-type changes:
@@ -519,7 +517,7 @@
                             in pointed to type 'typedef SndChannel' at snd_worker.c:74:1:
                               underlying type 'struct SndChannel' at snd_worker.c:89:1 changed:
                                 type size hasn't changed
-                                6 data member changes:
+                                6 data member changes (1 filtered):
                                   type of 'RedsStream* SndChannel::stream' changed:
                                     pointed to type 'typedef RedsStream' changed at red_channel.h:134:1, as reported earlier
                                   type of 'SndWorker* SndChannel::worker' changed:
@@ -545,7 +543,6 @@
                                         parameter 1 of type 'SndChannel*' has sub-type changes:
                                           in pointed to type 'typedef SndChannel' at snd_worker.c:74:1:
                                             underlying type 'struct SndChannel' changed, as being reported
-                                no data member change (1 filtered);
                           type of 'SndWorker* SndWorker::next' changed:
                             in pointed to type 'typedef SndWorker' at snd_worker.c:80:1:
                               underlying type 'struct SndWorker' changed, as being reported

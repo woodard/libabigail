@@ -1598,6 +1598,18 @@ public:
   const string_member_function_sptr_map&
   inserted_member_fns() const;
 
+  const var_diff_sptrs_type&
+  sorted_changed_data_members() const;
+
+  size_t
+  count_filtered_changed_data_members(bool local_only = false) const;
+
+  const var_diff_sptrs_type&
+  sorted_subtype_changed_data_members() const;
+
+  size_t
+  count_filtered_subtype_changed_data_members(bool local_only = false) const;
+
   const edit_script&
   member_fn_tmpls_changes() const;
 
