@@ -1415,5 +1415,88 @@ bool
 reporter_base::diff_to_be_reported(const diff *d) const
 {return d && d->to_be_reported();}
 
-} // namespace comparison
+/// Report about data members replaced by an anonymous data member
+/// without changing the overall bit-layout of the class or union in
+/// an ABI-meaningful way.
+///
+/// @param d the diff to consider.
+///
+/// @param out the output stream to emit the change report to.
+///
+/// @param indent the indentation string to use.
+void
+maybe_report_data_members_replaced_by_anon_dm(const class_or_union_diff &d,
+					      ostream			&out,
+					      const string		indent)
+{
+  const diff_context_sptr& ctxt = d.context();
+
+  if ((ctxt->get_allowed_category() & HARMLESS_DATA_MEMBER_CHANGE_CATEGORY)
+      && !d.data_members_replaced_by_adms().empty())
+    {
+      // Let's detect all the data members that are replaced by
+      // members of the same anonymous data member and report them
+      // in one go.
+      changed_var_sptrs_type::const_iterator i, j;
+      i = d.ordered_data_members_replaced_by_adms().begin();
+      // This contains the data members replaced by the same
+      // anonymous data member.
+      vector<var_decl_sptr> dms_replaced_by_same_anon_dm;
+      // This contains the anonymous data member that replaced the
+      // data members in the variable above.
+      var_decl_sptr anonymous_data_member;
+
+      while (i != d.ordered_data_members_replaced_by_adms().end())
+	{
+	  anonymous_data_member = i->second;
+	  // Let's look forward to see if the subsequent data
+	  // members were replaced by members of
+	  // anonymous_data_member.
+	  for (j = i;
+	       j != d.ordered_data_members_replaced_by_adms().end();
+	       ++j)
+	    {
+	      if (*i->second == *j->second)
+		dms_replaced_by_same_anon_dm.push_back(j->first);
+	      else
+		break;
+	    }
+
+	  bool several_data_members_replaced =
+	    dms_replaced_by_same_anon_dm.size() > 1;
+
+	  out << indent << "data member";
+	  if (several_data_members_replaced)
+	    out << "s";
+
+	  bool first_data_member = true;
+	  for (vector<var_decl_sptr>::const_iterator it =
+		 dms_replaced_by_same_anon_dm.begin();
+	       it != dms_replaced_by_same_anon_dm.end();
+	       ++it)
+	    {
+	      string name = (*it)->get_qualified_name();
+	      if (!first_data_member)
+		out << ",";
+	      out << " '" << name << "'";
+	      first_data_member = false;
+	    }
+
+	  if (several_data_members_replaced)
+	    out << " were ";
+	  else
+	    out << " was ";
+
+	  out << "replaced by anonymous data member:\n"
+	      << indent + "  "
+	      << "'"
+	      << i->second->get_pretty_representation()
+	      << "'\n";
+
+	  i = j;
+	}
+    }
+}
+
+} // Namespace comparison
 } // end namespace abigail

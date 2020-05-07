@@ -250,6 +250,12 @@ maybe_report_interfaces_impacted_by_diff(const diff_sptr	&d,
 					 ostream		&out,
 					 const string		&indent);
 
+void
+maybe_report_data_members_replaced_by_anon_dm(const class_or_union_diff &d,
+					      ostream			&out,
+					      const string		indent);
+
+
 } // end namespace comparison
 } // end namespace abigail
 

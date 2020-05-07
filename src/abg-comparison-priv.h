@@ -502,6 +502,13 @@ struct class_or_union_diff::priv
   // member bar at offset N.
   unsigned_var_diff_sptr_map changed_dm_;
   var_diff_sptrs_type sorted_changed_dm_;
+
+  // This is a data structure to represent data members that have been
+  // replaced by anonymous data members.  It's a map that associates
+  // the name of the data member to the anonymous data member that
+  // replaced it.
+  string_decl_base_sptr_map dms_replaced_by_adms_;
+  mutable changed_var_sptrs_type dms_replaced_by_adms_ordered_;
   string_member_function_sptr_map deleted_member_functions_;
   string_member_function_sptr_map inserted_member_functions_;
   string_function_decl_diff_sptr_map changed_member_functions_;
@@ -549,18 +556,18 @@ struct class_or_union_diff::priv
 /// offset.
 struct data_member_comp
 {
-  /// @param f the first data member to take into account.
-  ///
-  /// @param s the second data member to take into account.
-  ///
-  /// @return true iff f is before s.
-  bool
-  operator()(const decl_base_sptr& f,
-	     const decl_base_sptr& s) const
-  {
-    var_decl_sptr first_dm = is_data_member(f);
-    var_decl_sptr second_dm = is_data_member(s);
 
+  /// Compare two data members.
+  ///
+  /// First look at their offset and then their name.
+  ///
+  /// @parm first_dm the first data member to consider.
+  ///
+  /// @param second_dm the second data member to consider.
+  bool
+  compare_data_members(const var_decl_sptr& first_dm,
+		       const var_decl_sptr& second_dm) const
+  {
     ABG_ASSERT(first_dm);
     ABG_ASSERT(second_dm);
 
@@ -577,6 +584,40 @@ struct data_member_comp
     // But in case the two data members are at the same offset, then
     // sort them lexicographically.
     return first_dm_name < second_dm_name;
+  }
+
+  /// Compare two data members.
+  ///
+  /// First look at their offset and then their name.
+  ///
+  /// @parm first_dm the first data member to consider.
+  ///
+  /// @param second_dm the second data member to consider.
+  bool
+  operator()(const decl_base_sptr& f,
+	     const decl_base_sptr& s) const
+  {
+    var_decl_sptr first_dm = is_data_member(f);
+    var_decl_sptr second_dm = is_data_member(s);
+
+    return compare_data_members(first_dm, second_dm);
+  }
+
+  /// Compare two data members.
+  ///
+  /// First look at their offset and then their name.
+  ///
+  /// @parm first_dm the first data member to consider.
+  ///
+  /// @param second_dm the second data member to consider.
+  bool
+  operator()(const changed_var_sptr& f,
+	     const changed_var_sptr& s) const
+  {
+    var_decl_sptr first_dm = is_data_member(is_decl(f.first));
+    var_decl_sptr second_dm = is_data_member(is_decl(s.first));
+
+    return compare_data_members(first_dm, second_dm);
   }
 };//end struct data_member_comp
 
@@ -1345,6 +1386,9 @@ sort_changed_enumerators(const string_changed_enumerator_map& enumerators_map,
 void
 sort_data_members(const string_decl_base_sptr_map &data_members,
 		  vector<decl_base_sptr>& sorted);
+
+void
+sort_changed_data_members(changed_var_sptrs_type& input);
 
 void
 sort_string_function_ptr_map(const string_function_ptr_map& map,

@@ -1016,6 +1016,10 @@ default_reporter::report(const class_or_union_diff& d,
 	    if ((*it)->to_be_reported())
 	      represent(*it, ctxt, out, indent + "  ");
 	}
+
+      // Report about data members replaced by an anonymous union data
+      // member.
+      maybe_report_data_members_replaced_by_anon_dm(d, out, indent);
     }
 
   // member types

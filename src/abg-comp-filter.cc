@@ -533,6 +533,25 @@ non_static_data_member_added_or_removed(const diff* diff)
     (dynamic_cast<const class_diff*>(diff));
 }
 
+/// Test if a @ref class_or_union_diff has a data member replaced by
+/// an anonymous data member in a harmless way.  That means, the new
+/// anonymous data member somehow contains the replaced data member
+/// and it doesn't break the layout of the containing class.
+///
+/// @param diff the diff node to consider.
+///
+/// @return true iff the @ref class_or_union_diff has a data member
+/// harmlessly replaced by an anonymous data member.
+bool
+has_data_member_replaced_by_anon_dm(const diff* diff)
+{
+  const class_or_union_diff *c = is_class_or_union_diff(diff);
+
+  if (!c)
+    return false;
+  return !c->data_members_replaced_by_adms().empty();
+}
+
 /// Test if a class_diff node has static members added or removed.
 ///
 /// @param diff the diff node to consider.
@@ -1520,6 +1539,9 @@ categorize_harmless_diff_node(diff *d, bool pre)
       if (static_data_member_added_or_removed(d)
 	  || static_data_member_type_size_changed(f, s))
 	category |= STATIC_DATA_MEMBER_CHANGE_CATEGORY;
+
+      if (has_data_member_replaced_by_anon_dm(d))
+	category |= HARMLESS_DATA_MEMBER_CHANGE_CATEGORY;
 
       if ((has_enumerator_insertion(d)
 	   && !has_harmful_enum_change(d))

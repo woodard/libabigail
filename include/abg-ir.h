@@ -1601,8 +1601,8 @@ public:
   friend void
   set_member_function_is_virtual(function_decl&, bool);
 
+  friend class class_or_union;
   friend class class_decl;
-
   friend class scope_decl;
 };// end class decl_base
 
@@ -2637,61 +2637,45 @@ public:
 class dm_context_rel : public context_rel
 {
 protected:
-  bool is_laid_out_;
-  size_t offset_in_bits_;
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
 
 public:
-  dm_context_rel()
-    : context_rel(),
-      is_laid_out_(!is_static_),
-      offset_in_bits_(0)
-  {}
+  dm_context_rel();
 
   dm_context_rel(scope_decl* s,
 		 bool is_laid_out,
 		 size_t offset_in_bits,
 		 access_specifier a,
-		 bool is_static)
-    : context_rel(s, a, is_static),
-      is_laid_out_(is_laid_out),
-      offset_in_bits_(offset_in_bits)
-  {}
+		 bool is_static);
 
-  dm_context_rel(scope_decl* s)
-    : context_rel(s),
-      is_laid_out_(!is_static_),
-      offset_in_bits_(0)
-  {}
+  dm_context_rel(scope_decl* s);
 
   bool
-  get_is_laid_out() const
-  {return is_laid_out_;}
+  get_is_laid_out() const;
 
   void
-  set_is_laid_out(bool f)
-  {is_laid_out_ = f;}
+  set_is_laid_out(bool f);
 
   size_t
-  get_offset_in_bits() const
-  {return offset_in_bits_;}
+  get_offset_in_bits() const;
 
   void
-  set_offset_in_bits(size_t o)
-  {offset_in_bits_ = o;}
+  set_offset_in_bits(size_t o);
+
+  const var_decl*
+  get_anonymous_data_member() const;
+
+  void
+  set_anonymous_data_member(var_decl *);
 
   bool
-  operator==(const dm_context_rel& o) const
-  {
-    if (!context_rel::operator==(o))
-      return false;
-
-    return (is_laid_out_ == o.is_laid_out_
-	    && offset_in_bits_ == o.offset_in_bits_);
-  }
+  operator==(const dm_context_rel& o) const;
 
   bool
-  operator!=(const dm_context_rel& o) const
-  {return !operator==(o);}
+  operator!=(const dm_context_rel& o) const;
 
   virtual ~dm_context_rel();
 };// end class class_decl::dm_context_rel
@@ -2782,6 +2766,12 @@ public:
 
   friend uint64_t
   get_data_member_offset(const var_decl& m);
+
+  friend uint64_t
+  get_absolute_data_member_offset(const var_decl& m);
+
+  friend uint64_t
+  get_absolute_data_member_offset(const var_decl_sptr& m);
 
   friend void
   set_data_member_is_laid_out(var_decl_sptr m, bool l);
@@ -3730,6 +3720,9 @@ protected:
 
   virtual void
   remove_member_decl(decl_base_sptr);
+
+  void
+  maybe_fixup_members_of_anon_data_member(var_decl_sptr& anon_dm);
 
 public:
   /// Hasher.

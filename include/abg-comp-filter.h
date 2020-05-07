@@ -89,6 +89,9 @@ has_anonymous_data_member_change(const diff *d);
 bool
 has_anonymous_data_member_change(const diff_sptr &d);
 
+bool
+has_data_member_replaced_by_anon_dm(const diff* diff);
+
 struct filter_base;
 /// Convenience typedef for a shared pointer to filter_base
 typedef shared_ptr<filter_base> filter_base_sptr;

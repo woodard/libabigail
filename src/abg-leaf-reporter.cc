@@ -631,6 +631,10 @@ leaf_reporter::report(const class_or_union_diff& d,
 	    if (diff_to_be_reported((*it).get()))
 	      represent(*it, ctxt, out, indent + "  ", /*local_only=*/true);
 	}
+
+      // Report about data members replaced by an anonymous union data
+      // member.
+      maybe_report_data_members_replaced_by_anon_dm(d, out, indent);
     }
 }
 

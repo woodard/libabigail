@@ -257,6 +257,15 @@ typedef unordered_map<string, var_decl*> string_var_ptr_map;
 /// the changed variable.
 typedef std::pair<var_decl*, var_decl*> changed_var_ptr;
 
+/// Convenience typedef for a pair of @ref var_decl_sptr representing
+/// a @ref var_decl change.  The first member of the pair represents
+/// the initial variable and the second member represents the changed
+/// variable.
+typedef std::pair<var_decl_sptr, var_decl_sptr> changed_var_sptr;
+
+/// Convenience typedef for a vector of @changed_var_sptr.gg381
+typedef vector<changed_var_sptr> changed_var_sptrs_type;
+
 /// Convenience typedef for a map whose key is a string and whose
 /// value is an @ref elf_symbol_sptr.
 typedef unordered_map<string, elf_symbol_sptr> string_elf_symbol_map;
@@ -375,61 +384,69 @@ enum diff_category
   /// alias change that is harmless.
   HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY = 1 << 6,
 
+  /// This means that a diff node in the sub-tree carries a harmless
+  /// union change.
   HARMLESS_UNION_CHANGE_CATEGORY = 1 << 7,
+
+  /// This means that a diff node in the sub-tree carries a harmless
+  /// data member change.  An example of harmless data member change
+  /// is an anonymous data member that replaces a given data member
+  /// without locally changing the layout.
+  HARMLESS_DATA_MEMBER_CHANGE_CATEGORY = 1 << 8,
 
   /// This means that a diff node was marked as suppressed by a
   /// user-provided suppression specification.
-  SUPPRESSED_CATEGORY = 1 << 8,
+  SUPPRESSED_CATEGORY = 1 << 9,
 
   /// This means that a diff node was warked as being for a private
   /// type.  That is, the diff node is meant to be suppressed by a
   /// suppression specification that was auto-generated to filter out
   /// changes to private types.
-  PRIVATE_TYPE_CATEGORY = 1 << 9,
+  PRIVATE_TYPE_CATEGORY = 1 << 10,
 
   /// This means the diff node (or at least one of its descendant
   /// nodes) carries a change that modifies the size of a type or an
   /// offset of a type member.  Removal or changes of enumerators in a
   /// enum fall in this category too.
-  SIZE_OR_OFFSET_CHANGE_CATEGORY = 1 << 10,
+  SIZE_OR_OFFSET_CHANGE_CATEGORY = 1 << 11,
 
   /// This means that a diff node in the sub-tree carries an
   /// incompatible change to a vtable.
-  VIRTUAL_MEMBER_CHANGE_CATEGORY = 1 << 11,
+  VIRTUAL_MEMBER_CHANGE_CATEGORY = 1 << 12,
 
   /// A diff node in this category is redundant.  That means it's
   /// present as a child of a other nodes in the diff tree.
-  REDUNDANT_CATEGORY = 1 << 12,
+  REDUNDANT_CATEGORY = 1 << 13,
 
   /// This means that a diff node in the sub-tree carries a class type
   /// that was declaration-only and that is now defined, or vice
   /// versa.
-  CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY = 1 << 13,
+  CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY = 1 << 14,
 
   /// A diff node in this category is a function parameter type which
   /// top cv-qualifiers change.
-  FN_PARM_TYPE_TOP_CV_CHANGE_CATEGORY = 1 << 14,
+  FN_PARM_TYPE_TOP_CV_CHANGE_CATEGORY = 1 << 15,
 
   /// A diff node in this category has a function parameter type with a
   /// cv-qualifiers change.
-  FN_PARM_TYPE_CV_CHANGE_CATEGORY = 1 << 15,
+  FN_PARM_TYPE_CV_CHANGE_CATEGORY = 1 << 16,
 
   /// A diff node in this category is a function return type with a
   /// cv-qualifier change.
-  FN_RETURN_TYPE_CV_CHANGE_CATEGORY = 1 << 16,
+  FN_RETURN_TYPE_CV_CHANGE_CATEGORY = 1 << 17,
 
   /// A diff node in this category is for a variable which type holds
   /// a cv-qualifier change.
-  VAR_TYPE_CV_CHANGE_CATEGORY = 1 << 17,
+  VAR_TYPE_CV_CHANGE_CATEGORY = 1 << 18,
 
   /// A diff node in this category carries a change from void pointer
   /// to non-void pointer.
-  VOID_PTR_TO_PTR_CHANGE_CATEGORY = 1 << 18,
+  VOID_PTR_TO_PTR_CHANGE_CATEGORY = 1 << 19,
 
   /// A diff node in this category carries a change in the size of the
   /// array type of a global variable, but the ELF size of the
   /// variable didn't change.
-  BENIGN_INFINITE_ARRAY_CHANGE_CATEGORY = 1 << 19,
+  BENIGN_INFINITE_ARRAY_CHANGE_CATEGORY = 1 << 20,
   /// A special enumerator that is the logical 'or' all the
   /// enumerators above.
   ///
@@ -444,6 +461,7 @@ enum diff_category
   | HARMLESS_ENUM_CHANGE_CATEGORY
   | HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY
   | HARMLESS_UNION_CHANGE_CATEGORY
+  | HARMLESS_DATA_MEMBER_CHANGE_CATEGORY
   | SUPPRESSED_CATEGORY
   | PRIVATE_TYPE_CATEGORY
   | SIZE_OR_OFFSET_CHANGE_CATEGORY
@@ -1609,6 +1627,12 @@ public:
 
   size_t
   count_filtered_subtype_changed_data_members(bool local_only = false) const;
+
+  const string_decl_base_sptr_map&
+  data_members_replaced_by_adms() const;
+
+  const changed_var_sptrs_type&
+  ordered_data_members_replaced_by_adms() const;
 
   const edit_script&
   member_fn_tmpls_changes() const;

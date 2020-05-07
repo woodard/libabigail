@@ -223,6 +223,9 @@ class var_decl;
 /// Convenience typedef for a shared pointer on a @ref var_decl
 typedef shared_ptr<var_decl> var_decl_sptr;
 
+/// Convenience typedef for a weak pointer on a @ref var_decl
+typedef weak_ptr<var_decl> var_decl_wptr;
+
 typedef unordered_map<interned_string,
 		      var_decl*,
 		      hash_interned_string> istring_var_decl_ptr_map_type;
@@ -614,6 +617,9 @@ is_data_member(const decl_base *);
 var_decl*
 is_data_member(const decl_base *);
 
+const var_decl_sptr
+get_next_data_member(const class_or_union_sptr&, const var_decl_sptr&);
+
 bool
 is_anonymous_data_member(const decl_base&);
 
@@ -638,7 +644,14 @@ is_anonymous_data_member(const var_decl*);
 bool
 is_anonymous_data_member(const var_decl&);
 
-const class_or_union*
+const var_decl_sptr
+get_first_non_anonymous_data_member(const var_decl_sptr);
+
+var_decl_sptr
+find_data_member_from_anonymous_data_member(const var_decl_sptr&,
+					    const string&);
+
+class_or_union*
 anonymous_data_member_to_class_or_union(const var_decl*);
 
 class_or_union_sptr
@@ -676,6 +689,9 @@ get_data_member_offset(const var_decl_sptr);
 
 uint64_t
 get_data_member_offset(const decl_base_sptr);
+
+uint64_t
+get_absolute_data_member_offset(const var_decl&);
 
 uint64_t
 get_var_size_in_bits(const var_decl_sptr&);
