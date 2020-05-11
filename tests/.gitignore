@@ -11,25 +11,6 @@ output/
 
 mockfedabipkgdiff
 printdifftree
-runtestabicompat
-runtestabidiff
-runtestabidiffexit
-runtestaltdwarf
-runtestannotate
-runtestcorediff
-runtestdiffdwarf
-runtestdiffdwarfabixml
-runtestdifffilter
-runtestdiffpkg
-runtestdiffsuppr
-runtestelfhelpers
-runtestini
-runtestkmiwhitelist
-runtestlookupsyms
-runtestreaddwarf
-runtestreadwrite
-runtestsvg
-runtesttoolsutils
-runtesttypesstability
+runtest*
 testdiff2
 testirwalker
