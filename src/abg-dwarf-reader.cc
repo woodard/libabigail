@@ -2146,10 +2146,6 @@ public:
   mutable Elf*			elf_handle_;
   string			elf_path_;
   mutable Elf_Scn*		symtab_section_;
-  // The "Official procedure descriptor section, aka .opd", used in
-  // ppc64 elf v1 binaries.  This section contains the procedure
-  // descriptors on that platform.
-  mutable Elf_Scn*		opd_section_;
   Dwarf_Die*			cur_tu_die_;
   mutable dwarf_expr_eval_context	dwarf_expr_eval_context_;
   // A set of maps (one per kind of die source) that associates a decl
@@ -2330,7 +2326,6 @@ public:
     elf_handle_ = 0;
     elf_path_ = elf_path;
     symtab_section_ = 0;
-    opd_section_ = 0;
     cur_tu_die_ =  0;
     exported_decls_builder_ = 0;
 
@@ -5323,19 +5318,6 @@ public:
     return symtab_section_;
   }
 
-  /// Return the "Official Procedure descriptors section."  This
-  /// section is named .opd, and is usually present only on PPC64
-  /// ELFv1 binaries.
-  ///
-  /// @return the .opd section, if found.  Return nil otherwise.
-  Elf_Scn*
-  find_opd_section() const
-  {
-    if (!opd_section_)
-      opd_section_ = elf_helpers::find_opd_section(elf_handle());
-    return opd_section_;
-  }
-
   /// Lookup an elf symbol, referred to by its index, from the .symtab
   /// section.
   ///
@@ -5445,152 +5427,6 @@ public:
 			 sym_is_defined, sym_is_common, ver, vis,
 			 native_sym.st_shndx == strings_ndx);
     return sym;
-  }
-
-  /// Read 8 bytes and convert their value into an uint64_t.
-  ///
-  /// @param bytes the array of bytes to read the next 8 bytes from.
-  /// Note that this array must be at least 8 bytes long.
-  ///
-  /// @param result where to store the resuting uint64_t that was read.
-  ///
-  /// @param is_big_endian if true, read the 8 bytes in Big Endian
-  /// mode, otherwise, read them in Little Endian.
-  ///
-  /// @param true if the 8 bytes could be read, false otherwise.
-  bool
-  read_uint64_from_array_of_bytes(const uint8_t	*bytes,
-				  bool			is_big_endian,
-				  uint64_t		&result) const
-  {
-    return read_int_from_array_of_bytes(bytes, 8, is_big_endian, result);
-  }
-
-  /// Read N bytes and convert their value into an integer type T.
-  ///
-  /// Note that N cannot be bigger than 8 for now. The type passed needs to be
-  /// at least of the size of number_of_bytes.
-  ///
-  /// @param bytes the array of bytes to read the next 8 bytes from.
-  /// Note that this array must be at least 8 bytes long.
-  ///
-  /// @param number_of_bytes the number of bytes to read.  This number
-  /// cannot be bigger than 8.
-  ///
-  /// @param is_big_endian if true, read the 8 bytes in Big Endian
-  /// mode, otherwise, read them in Little Endian.
-  ///
-  /// @param result where to store the resuting integer that was read.
-  ///
-  ///
-  /// @param true if the 8 bytes could be read, false otherwise.
-  template<typename T>
-  bool
-  read_int_from_array_of_bytes(const uint8_t	*bytes,
-			       unsigned char	number_of_bytes,
-			       bool		is_big_endian,
-			       T		&result) const
-  {
-    if (!bytes)
-      return false;
-
-    ABG_ASSERT(number_of_bytes <= 8);
-    ABG_ASSERT(number_of_bytes <= sizeof(T));
-
-    T res = 0;
-
-    const uint8_t *cur = bytes;
-    if (is_big_endian)
-      {
-	// In Big Endian, the most significant byte is at the lowest
-	// address.
-	const uint8_t* msb = cur;
-	res = *msb;
-
-	// Now read the remaining least significant bytes.
-	for (uint i = 1; i < number_of_bytes; ++i)
-	  res = (res << 8) | ((T)msb[i]);
-      }
-    else
-      {
-	// In Little Endian, the least significant byte is at the
-	// lowest address.
-	const uint8_t* lsb = cur;
-	res = *lsb;
-	// Now read the remaining most significant bytes.
-	for (uint i = 1; i < number_of_bytes; ++i)
-	  res = res | (((T)lsb[i]) << i * 8);
-      }
-
-    result = res;
-    return true;
-  }
-
-  /// Lookup the address of the function entry point that corresponds
-  /// to the address of a given function descriptor.
-  ///
-  /// On PPC64, a function pointer is the address of a function
-  /// descriptor.  Function descriptors are located in the .opd
-  /// section.  Each function descriptor is a triplet of three
-  /// addresses, each one on 64 bits.  Among those three address only
-  /// the first one is of any interest to us: the address of the entry
-  /// point of the function.
-  ///
-  /// This function returns the address of the entry point of the
-  /// function whose descriptor's address is given.
-  ///
-  /// http://refspecs.linuxfoundation.org/ELF/ppc64/PPC-elf64abi.html#FUNC-DES
-  ///
-  /// https://www.ibm.com/developerworks/community/blogs/5894415f-be62-4bc0-81c5-3956e82276f3/entry/deeply_understand_64_bit_powerpc_elf_abi_function_descriptors?lang=en
-  ///
-  /// @param fn_desc_address the address of the function descriptor to
-  /// consider.
-  ///
-  /// @return the address of the entry point of the function whose
-  /// descriptor has the address @p fn_desc_address.  If there is no
-  /// .opd section (e.g because we are not on ppc64) or more generally
-  /// if the function descriptor could not be found then this function
-  /// just returns the address of the fuction descriptor.
-  GElf_Addr
-  lookup_ppc64_elf_fn_entry_point_address(GElf_Addr fn_desc_address) const
-  {
-    if (!elf_handle())
-      return fn_desc_address;
-
-    if (!architecture_is_ppc64(elf_handle()))
-      return fn_desc_address;
-
-    bool is_big_endian = architecture_is_big_endian(elf_handle());
-
-    Elf_Scn *opd_section = find_opd_section();
-    if (!opd_section)
-      return fn_desc_address;
-
-    GElf_Shdr header_mem;
-    // The section header of the .opd section.
-    GElf_Shdr *opd_sheader = gelf_getshdr(opd_section, &header_mem);
-
-    // The offset of the function descriptor entry, in the .opd
-    // section.
-    size_t fn_desc_offset = fn_desc_address - opd_sheader->sh_addr;
-    Elf_Data *elf_data = elf_rawdata(opd_section, 0);
-
-    // Ensure that the opd_section has at least 8 bytes, starting from
-    // the offset we want read the data from.
-    if (elf_data->d_size <= fn_desc_offset + 8)
-      return fn_desc_address;
-
-    // A pointer to the data of the .opd section, that we can actually
-    // do something with.
-    uint8_t * bytes = (uint8_t*) elf_data->d_buf;
-
-    // The resulting address we are looking for is going to be formed
-    // in this variable.
-    GElf_Addr result = 0;
-    ABG_ASSERT(read_uint64_from_array_of_bytes(bytes + fn_desc_offset,
-					   is_big_endian, result));
-
-    return result;
   }
 
   /// Test if a given function symbol has been exported.
@@ -5911,13 +5747,15 @@ public:
 		      // symbol that are in the .opd section.
 		      GElf_Addr fn_desc_addr = sym->st_value;
 		      GElf_Addr fn_entry_point_addr =
-			lookup_ppc64_elf_fn_entry_point_address(fn_desc_addr);
+			lookup_ppc64_elf_fn_entry_point_address(elf_handle(),
+								fn_desc_addr);
 		      addr_elf_symbol_sptr_map_type::const_iterator it2 =
 			fun_entry_addr_sym_map().find(fn_entry_point_addr);
 
 		      if (it2 == fun_entry_addr_sym_map().end())
 			fun_entry_addr_sym_map()[fn_entry_point_addr] = symbol;
-		      else if (address_is_in_opd_section(fn_desc_addr))
+		      else if (address_is_in_opd_section(elf_handle(),
+							 fn_desc_addr))
 			{
 			  // Either
 			  //
@@ -6080,24 +5918,6 @@ public:
     return true;
   }
 
-  /// Return true if an address is in the ".opd" section that is
-  /// present on the ppc64 platform.
-  ///
-  /// @param addr the address to consider.
-  ///
-  /// @return true iff @p addr is designates a word that is in the
-  /// ".opd" section.
-  bool
-  address_is_in_opd_section(Dwarf_Addr addr)
-  {
-    Elf_Scn * opd_section = find_opd_section();
-    if (!opd_section)
-      return false;
-    if (address_is_in_section(addr, opd_section))
-      return true;
-    return false;
-  }
-
   /// Load the symbol maps if necessary.
   ///
   /// @return true iff the symbol maps has been loaded by this
@@ -6246,26 +6066,6 @@ public:
       addr = maybe_adjust_address_for_exec_or_dyn(addr);
 
     return addr;
-  }
-
-  /// Test if a given address is in a given section.
-  ///
-  /// @param addr the address to consider.
-  ///
-  /// @param section the section to consider.
-  bool
-  address_is_in_section(Dwarf_Addr addr, Elf_Scn* section) const
-  {
-    if (!section)
-      return false;
-
-    GElf_Shdr sheader_mem;
-    GElf_Shdr* sheader = gelf_getshdr(section, &sheader_mem);
-
-    if (sheader->sh_addr <= addr && addr <= sheader->sh_addr + sheader->sh_size)
-      return true;
-
-    return false;
   }
 
   /// For a relocatable (*.o) elf file, this function expects an
