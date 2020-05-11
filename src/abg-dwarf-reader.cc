@@ -6028,26 +6028,6 @@ public:
 
   /// Getter for the map of function symbols (name -> sym).
   ///
-  /// @return a shared pointer to the map of function symbols.
-  string_elf_symbols_map_sptr&
-  fun_syms_sptr()
-  {
-    maybe_load_symbol_maps();
-    return fun_syms_;
-  }
-
-  /// Getter for the map of function symbols (name -> sym).
-  ///
-  /// @return a reference to the map of function symbols.
-  const string_elf_symbols_map_type&
-  fun_syms() const
-  {
-    maybe_load_symbol_maps();
-    return *fun_syms_;
-  }
-
-  /// Getter for the map of function symbols (name -> sym).
-  ///
   /// @return a reference to the map of function symbols.
   string_elf_symbols_map_type&
   fun_syms()
@@ -6064,26 +6044,6 @@ public:
   {
     maybe_load_symbol_maps();
     return var_syms_;
-  }
-
-  /// Getter for the map of variable symbols (name -> sym)
-  ///
-  /// @return a shared pointer to the map of variable symbols.
-  string_elf_symbols_map_sptr
-  var_syms_sptr()
-  {
-    maybe_load_symbol_maps();
-    return var_syms_;
-  }
-
-  /// Getter for the map of variable symbols (name -> sym)
-  ///
-  /// @return a reference to the map of variable symbols.
-  const string_elf_symbols_map_type&
-  var_syms() const
-  {
-    maybe_load_symbol_maps();
-    return *var_syms_;
   }
 
   /// Getter for the map of variable symbols (name -> sym)
@@ -6108,40 +6068,6 @@ public:
     return undefined_fun_syms_;
   }
 
-  /// Getter for the map of undefined function symbols (name -> vector
-  /// of symbols).
-  ///
-  /// @return a (smart) pointer to the map of undefined function
-  /// symbols.
-  string_elf_symbols_map_sptr&
-  undefined_fun_syms_sptr()
-  {
-    maybe_load_symbol_maps();
-    return undefined_fun_syms_;
-  }
-
-  /// Getter for the map of undefined function symbols (name -> vector
-  /// of symbols).
-  ///
-  /// @return a reference to the map of undefined function symbols.
-  const string_elf_symbols_map_type&
-  undefined_fun_syms() const
-  {
-    maybe_load_symbol_maps();
-    return *undefined_fun_syms_;
-  }
-
-  /// Getter for the map of undefined function symbols (name -> vector
-  /// of symbols).
-  ///
-  /// @return a reference to the map of undefined function symbols.
-  string_elf_symbols_map_type&
-  undefined_fun_syms()
-  {
-    maybe_load_symbol_maps();
-    return *undefined_fun_syms_;
-  }
-
   /// Getter for the map of undefined variable symbols (name -> vector
   /// of symbols).
   ///
@@ -6152,40 +6078,6 @@ public:
   {
     maybe_load_symbol_maps();
     return undefined_var_syms_;
-  }
-
-  /// Getter for the map of undefined variable symbols (name -> vector
-  /// of symbols).
-  ///
-  /// @return a (smart) pointer to the map of undefined variable
-  /// symbols.
-  string_elf_symbols_map_sptr&
-  undefined_var_syms_sptr()
-  {
-    maybe_load_symbol_maps();
-    return undefined_var_syms_;
-  }
-
-  /// Getter for the map of undefined variable symbols (name -> vector
-  /// of symbols).
-  ///
-  /// @return a reference to the map of undefined variable symbols.
-  const string_elf_symbols_map_type&
-  undefined_var_syms() const
-  {
-    maybe_load_symbol_maps();
-    return *undefined_var_syms_;
-  }
-
-  /// Getter for the map of undefined variable symbols (name -> vector
-  /// of symbols).
-  ///
-  /// @return a reference to the map of undefined variable symbols.
-  string_elf_symbols_map_type&
-  undefined_var_syms()
-  {
-    maybe_load_symbol_maps();
-    return *undefined_var_syms_;
   }
 
   /// Getter for the set of addresses of function symbols that are
