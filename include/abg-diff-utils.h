@@ -1591,8 +1591,8 @@ compute_diff(RandomAccessOutputIterator a_base,
       point px, pu;
       snake_end_points(snak, px, pu);
       compute_diff<RandomAccessOutputIterator,
-		   EqualityFunctor>(a_base, a_begin, a_base + px.x() + 1,
-				    b_base, b_begin, b_base + px.y() + 1,
+		   EqualityFunctor>(a_base, a_begin, a_base + (px.x() + 1),
+				    b_base, b_begin, b_base + (px.y() + 1),
 				    lcs, tmp_ses0, tmp_ses_len0);
 
       lcs.insert(lcs.end(), trace.begin(), trace.end());
@@ -1600,8 +1600,8 @@ compute_diff(RandomAccessOutputIterator a_base,
       int tmp_ses_len1 = 0;
       edit_script tmp_ses1;
       compute_diff<RandomAccessOutputIterator,
-		   EqualityFunctor>(a_base, a_base + pu.x() + 1, a_end,
-				    b_base, b_base + pu.y() + 1, b_end,
+		   EqualityFunctor>(a_base, a_base + (pu.x() + 1), a_end,
+				    b_base, b_base + (pu.y() + 1), b_end,
 				    lcs, tmp_ses1, tmp_ses_len1);
       ABG_ASSERT(tmp_ses0.length() + tmp_ses1.length() == d);
       ABG_ASSERT(tmp_ses_len0 + tmp_ses_len1 == d);
