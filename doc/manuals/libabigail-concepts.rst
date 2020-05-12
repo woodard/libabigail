@@ -205,7 +205,11 @@ files, then no comparison is performed.
 Note that for the ``[suppress_file]`` directive to work, at least one
 of the following properties must be provided:
 
-    ``file_name_regexp``, ``file_name_not_regexp``.
+    ``file_name_regexp``, ``file_name_not_regexp``, ``soname_regexp``,
+    ``soname_not_regexp``.
+
+If none of the above properties are provided, then the
+``[suppress_file]`` directive is simply ignored.
 
 The potential properties of this sections are listed below:
 
@@ -273,7 +277,7 @@ of the following properties must be provided:
   ``name_not_regexp``, ``type_kind``, ``source_location_not_in``,
   ``source_location_not_regexp``.
 
-If none of the following properties are provided, then the
+If none of the above properties are provided, then the
 ``[suppress_type]`` directive is simply ignored.
 
 The potential properties of this sections are listed below:
@@ -623,11 +627,11 @@ one of the following properties must be provided:
   ``label``, ``file_name_regexp``, ``file_name_not_regexp``,
   ``soname_regexp``, ``soname_not_regexp``, ``name``, ``name_regexp``,
   ``name_not_regexp``, ``parameter``, ``return_type_name``,
-  ``symbol_name``, ``symbol_name_regexp``,
-  ``symbol_name_not_regexp``,``symbol_version``,
+  ``return_type_regexp``, ``symbol_name``, ``symbol_name_regexp``,
+  ``symbol_name_not_regexp``, ``symbol_version``,
   ``symbol_version_regexp``.
 
-If none of the following properties are provided, then the
+If none of the above properties are provided, then the
 ``[suppress_function]`` directive is simply ignored.
 
 The potential properties of this sections are:
@@ -911,11 +915,12 @@ one of the following properties must be provided:
 
   ``label``, ``file_name_regexp``, ``file_name_not_regexp``,
   ``soname_regexp``, ``soname_not_regexp``, ``name``, ``name_regexp``,
-  ``symbol_name``, ``symbol_name_regexp``, ``symbol_name_not_regexp``,
-  ``symbol_version``, ``symbol_version_regexp``.
+  ``name_not_regexp``, ``symbol_name``, ``symbol_name_regexp``,
+  ``symbol_name_not_regexp``, ``symbol_version``,
+  ``symbol_version_regexp``, ``type_name``, ``type_name_regexp``.
 
-If none of the following properties are provided, then the
-``[suppres_variable]`` directive is simply ignored.
+If none of the above properties are provided, then the
+``[suppress_variable]`` directive is simply ignored.
 
 The potential properties of this sections are:
 
