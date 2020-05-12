@@ -11580,12 +11580,14 @@ struct suppression_categorization_visitor : public diff_node_visitor
 	      // the user asked and suppress the function altogether,
 	      if (function_type_diff_sptr fn_type_diff = fn_diff->type_diff())
 		if (fn_type_diff->is_suppressed())
-		  d->add_to_category(SUPPRESSED_CATEGORY);
-	    // If a node was suppressed, all the other nodes of its class
-	    // of equivalence are suppressed too.
-	    diff *canonical_diff = d->get_canonical_diff();
-	    if (canonical_diff != d)
-	      canonical_diff->add_to_category(SUPPRESSED_CATEGORY);
+		  {
+		    d->add_to_category(SUPPRESSED_CATEGORY);
+		    // If a node was suppressed, all the other nodes
+		    // of its class of equivalence are suppressed too.
+		    diff *canonical_diff = d->get_canonical_diff();
+		    if (canonical_diff != d)
+		      canonical_diff->add_to_category(SUPPRESSED_CATEGORY);
+		  }
 	  }
       }
   }
