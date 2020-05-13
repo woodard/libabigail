@@ -151,6 +151,13 @@ test-abidiff-exit/test-decl-struct-v0.o \
 test-abidiff-exit/test-decl-struct-v1.c \
 test-abidiff-exit/test-decl-struct-v1.o \
 test-abidiff-exit/test-decl-struct-report.txt \
+test-abidiff-exit/test-fun-param-report.txt \
+test-abidiff-exit/test-fun-param-v0.abi \
+test-abidiff-exit/test-fun-param-v0.c \
+test-abidiff-exit/test-fun-param-v0.o \
+test-abidiff-exit/test-fun-param-v1.abi \
+test-abidiff-exit/test-fun-param-v1.c \
+test-abidiff-exit/test-fun-param-v1.o \
 \
 test-diff-dwarf/test0-v0.cc		\
 test-diff-dwarf/test0-v0.o			\

@@ -16411,13 +16411,13 @@ function_type::get_cached_name(bool internal) const
 {
   if (internal)
     {
-      if (priv_->internal_cached_name_.empty())
+      if (!get_naked_canonical_type() || priv_->internal_cached_name_.empty())
 	priv_->internal_cached_name_ = get_function_type_name(this, internal);
 
       return priv_->internal_cached_name_;
     }
 
-  if (priv_->cached_name_.empty())
+  if (!get_naked_canonical_type() || priv_->cached_name_.empty())
     priv_->cached_name_ = get_function_type_name(this, internal);
 
   return priv_->cached_name_;

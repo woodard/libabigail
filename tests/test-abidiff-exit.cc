@@ -203,6 +203,15 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-decl-struct-report.txt",
     "output/test-abidiff-exit/test-decl-struct-report.txt"
   },
+  {
+    "data/test-abidiff-exit/test-fun-param-v0.abi",
+    "data/test-abidiff-exit/test-fun-param-v1.abi",
+    "",
+    "",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    "data/test-abidiff-exit/test-fun-param-report.txt",
+    "output/test-abidiff-exit/test-fun-param-report.txt"
+  },
   {0, 0, 0 ,0,  abigail::tools_utils::ABIDIFF_OK, 0, 0}
 };
 
