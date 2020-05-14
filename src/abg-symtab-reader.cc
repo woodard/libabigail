@@ -100,9 +100,17 @@ const elf_symbol_sptr&
 symtab::lookup_symbol(GElf_Addr symbol_addr) const
 {
   static const elf_symbol_sptr empty_result;
-  const auto it = addr_symbol_map_.find(symbol_addr);
-  if (it != addr_symbol_map_.end())
-      return it->second;
+  const auto addr_it = addr_symbol_map_.find(symbol_addr);
+  if (addr_it != addr_symbol_map_.end())
+    return addr_it->second;
+  else
+    {
+      // check for a potential entry address mapping instead,
+      // relevant for ppc ELFv1 binaries
+      const auto entry_it = entry_addr_symbol_map_.find(symbol_addr);
+      if (entry_it != entry_addr_symbol_map_.end())
+	return entry_it->second;
+    }
   return empty_result;
 }
 
@@ -227,6 +235,7 @@ symtab::load_(Elf*	       elf_handle,
   std::unordered_set<std::string> exported_kernel_symbols;
 
   const bool is_arm32 = elf_helpers::architecture_is_arm32(elf_handle);
+  const bool is_ppc64 = elf_helpers::architecture_is_ppc64(elf_handle);
 
   for (size_t i = 0; i < number_syms; ++i)
     {
@@ -338,11 +347,17 @@ symtab::load_(Elf*	       elf_handle,
 	      elf_helpers::maybe_adjust_et_rel_sym_addr_to_abs_addr(elf_handle,
 								    sym);
 
-	  if (symbol_sptr->is_function() && is_arm32)
-	    // Clear bit zero of ARM32 addresses as per "ELF for the Arm
-	    // Architecture" section 5.5.3.
-	    // https://static.docs.arm.com/ihi0044/g/aaelf32.pdf
-	    symbol_value &= ~1;
+	  if (symbol_sptr->is_function())
+	    {
+	      if (is_arm32)
+		// Clear bit zero of ARM32 addresses as per "ELF for the Arm
+		// Architecture" section 5.5.3.
+		// https://static.docs.arm.com/ihi0044/g/aaelf32.pdf
+		symbol_value &= ~1;
+	      else if (is_ppc64)
+		update_function_entry_address_symbol_map(elf_handle, sym,
+							 symbol_sptr);
+	    }
 
 	  const auto result =
 	    addr_symbol_map_.emplace(symbol_value, symbol_sptr);
@@ -411,6 +426,87 @@ symtab::load_(string_elf_symbols_map_sptr function_symbol_map,
   std::sort(symbols_.begin(), symbols_.end(), symbol_sort);
 
   return true;
+}
+
+/// Update the function entry symbol map to later allow lookups of this symbol
+/// by entry address as well. This is relevant for ppc64 ELFv1 binaries.
+///
+/// For ppc64 ELFv1 binaries, we need to build a function entry point address
+/// -> function symbol map. This is in addition to the function pointer ->
+/// symbol map.  This is because on ppc64 ELFv1, a function pointer is
+/// different from a function entry point address.
+///
+/// On ppc64 ELFv1, the DWARF DIE of a function references the address of the
+/// entry point of the function symbol; whereas the value of the function
+/// symbol is the function pointer. As these addresses are different, if I we
+/// want to get to the symbol of a function from its entry point address (as
+/// referenced by DWARF function DIEs) we must have the two maps I mentionned
+/// right above.
+///
+/// In other words, we need a map that associates a function entry point
+/// address with the symbol of that function, to be able to get the function
+/// symbol that corresponds to a given function DIE, on ppc64.
+///
+/// The value of the function pointer (the value of the symbol) usually refers
+/// to the offset of a table in the .opd section.  But sometimes, for a symbol
+/// named "foo", the corresponding symbol named ".foo" (note the dot before
+/// foo) which value is the entry point address of the function; that entry
+/// point address refers to a region in the .text section.
+///
+/// So we are only interested in values of the symbol that are in the .opd
+/// section.
+///
+/// @param elf_handle the ELF handle to operate on
+///
+/// @param native_symbol the native Elf symbol to update the entry for
+///
+/// @param symbol_sptr the internal symbol to associte the entry address with
+void
+symtab::update_function_entry_address_symbol_map(
+  Elf* elf_handle, GElf_Sym* native_symbol, const elf_symbol_sptr& symbol_sptr)
+{
+  const GElf_Addr fn_desc_addr = native_symbol->st_value;
+  const GElf_Addr fn_entry_point_addr =
+    elf_helpers::lookup_ppc64_elf_fn_entry_point_address(elf_handle,
+							 fn_desc_addr);
+
+  const std::pair<addr_symbol_map_type::const_iterator, bool>& result =
+    entry_addr_symbol_map_.emplace(fn_entry_point_addr, symbol_sptr);
+
+  const addr_symbol_map_type::const_iterator it = result.first;
+  const bool was_inserted = result.second;
+  if (!was_inserted
+      && elf_helpers::address_is_in_opd_section(elf_handle, fn_desc_addr))
+    {
+      // Either
+      //
+      // 'symbol' must have been registered as an alias for
+      // it->second->get_main_symbol()
+      //
+      // Or
+      //
+      // if the name of 'symbol' is foo, then the name of it2->second is
+      // ".foo". That is, foo is the name of the symbol when it refers to the
+      // function descriptor in the .opd section and ".foo" is an internal name
+      // for the address of the entry point of foo.
+      //
+      // In the latter case, we just want to keep a reference to "foo" as .foo
+      // is an internal name.
+
+      const bool two_symbols_alias =
+	it->second->get_main_symbol()->does_alias(*symbol_sptr);
+      const bool symbol_is_foo_and_prev_symbol_is_dot_foo =
+	(it->second->get_name() == std::string(".") + symbol_sptr->get_name());
+
+      ABG_ASSERT(two_symbols_alias
+		 || symbol_is_foo_and_prev_symbol_is_dot_foo);
+
+      if (symbol_is_foo_and_prev_symbol_is_dot_foo)
+	// Let's just keep a reference of the symbol that the user sees in the
+	// source code (the one named foo). The symbol which name is prefixed
+	// with a "dot" is an artificial one.
+	entry_addr_symbol_map_[fn_entry_point_addr] = symbol_sptr;
+    }
 }
 
 } // end namespace symtab_reader

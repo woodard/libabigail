@@ -276,12 +276,20 @@ private:
   typedef std::unordered_map<GElf_Addr, elf_symbol_sptr> addr_symbol_map_type;
   addr_symbol_map_type addr_symbol_map_;
 
+  /// Lookup map function entry address -> symbol
+  addr_symbol_map_type entry_addr_symbol_map_;
+
   bool
   load_(Elf* elf_handle, ir::environment* env, symbol_predicate is_suppressed);
 
   bool
   load_(string_elf_symbols_map_sptr function_symbol_map,
        string_elf_symbols_map_sptr variables_symbol_map);
+
+  void
+  update_function_entry_address_symbol_map(Elf*	     elf_handle,
+					   GElf_Sym* native_symbol,
+					   const elf_symbol_sptr& symbol_sptr);
 };
 
 /// Helper class to allow range-for loops on symtabs for C++11 and later code.
