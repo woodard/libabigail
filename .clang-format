@@ -5,6 +5,7 @@ AlwaysBreakAfterReturnType: All
 BreakConstructorInitializers: BeforeColon
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
 ConstructorInitializerIndentWidth: 2
+ContinuationIndentWidth: 2
 BinPackParameters: false
 BreakStringLiterals: false
 PointerAlignment: Left
