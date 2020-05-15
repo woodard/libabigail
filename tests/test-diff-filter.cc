@@ -708,7 +708,8 @@ main()
 	{
 	  is_ok = false;
 	  if (!t->diff_cmd.empty())
-	    system(t->diff_cmd.c_str());
+	    if (system(t->diff_cmd.c_str()) == -1)
+	      cerr << "execution of '" << t->diff_cmd << "' failed\n";
 	  if (!t->error_message.empty())
 	    cerr << t->error_message << '\n';
 	}

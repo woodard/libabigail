@@ -3060,7 +3060,8 @@ public:
 			Dwarf_Die &canonical_die,
 			bool die_as_type) const
   {
-    die_source source;
+    die_source source = NO_DEBUG_INFO_DIE_SOURCE;
+
     ABG_ASSERT(get_die_source(die, source));
 
     Dwarf_Off die_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(die));
@@ -3298,7 +3299,7 @@ public:
 			       size_t where,
 			       bool die_as_type) const
   {
-    die_source source;
+    die_source source = NO_DEBUG_INFO_DIE_SOURCE;
     ABG_ASSERT(get_die_source(die, source));
 
     offset_offset_map_type &canonical_dies =
@@ -3521,7 +3522,7 @@ public:
 			size_t where_offset,
 			bool do_associate_by_repr = false)
   {
-    die_source source;
+    die_source source = NO_DEBUG_INFO_DIE_SOURCE;
     ABG_ASSERT(get_die_source(die, source));
 
     die_artefact_map_type& m =
@@ -4151,7 +4152,7 @@ public:
 			   Dwarf_Off canonical_die_offset,
 			   bool die_as_type) const
   {
-    die_source source;
+    die_source source = NO_DEBUG_INFO_DIE_SOURCE;
     ABG_ASSERT(get_die_source(die, source));
 
     Dwarf_Off die_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(die));
@@ -4732,7 +4733,7 @@ public:
   schedule_type_for_late_canonicalization(const Dwarf_Die *die)
   {
     Dwarf_Off o;
-    die_source source;
+    die_source source = NO_DEBUG_INFO_DIE_SOURCE;
 
     Dwarf_Die equiv_die;
     ABG_ASSERT(get_canonical_die(die, equiv_die,
@@ -11860,7 +11861,8 @@ compare_dies(const read_context& ctxt,
   Dwarf_Off l_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(l)),
     r_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(r));
   Dwarf_Off l_canonical_die_offset = 0, r_canonical_die_offset = 0;
-  die_source l_die_source, r_die_source;
+  die_source l_die_source = NO_DEBUG_INFO_DIE_SOURCE,
+    r_die_source = NO_DEBUG_INFO_DIE_SOURCE;
   ABG_ASSERT(ctxt.get_die_source(l, l_die_source));
   ABG_ASSERT(ctxt.get_die_source(r, r_die_source));
 
@@ -12700,7 +12702,7 @@ get_scope_for_die(read_context& ctxt,
 		  bool		called_for_public_decl,
 		  size_t	where_offset)
 {
-  die_source source_of_die;
+  die_source source_of_die = NO_DEBUG_INFO_DIE_SOURCE;
   ABG_ASSERT(ctxt.get_die_source(die, source_of_die));
 
   if (is_c_language(ctxt.cur_transl_unit()->get_language()))
@@ -14141,7 +14143,7 @@ add_or_update_union_type(read_context&	ctxt,
   if (tag != DW_TAG_union_type)
     return result;
 
-  die_source source;
+  die_source source = NO_DEBUG_INFO_DIE_SOURCE;
   ABG_ASSERT(ctxt.get_die_source(die, source));
   {
     die_class_or_union_map_type::const_iterator i =
@@ -16232,7 +16234,7 @@ read_debug_info_into_corpus(read_context& ctxt)
 static void
 maybe_canonicalize_type(const Dwarf_Die *die, read_context& ctxt)
 {
-  die_source source;
+  die_source source = NO_DEBUG_INFO_DIE_SOURCE;
   ABG_ASSERT(ctxt.get_die_source(die, source));
 
   size_t die_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(die));
@@ -16445,7 +16447,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	return result;
     }
 
-  die_source source_of_die;
+  die_source source_of_die = NO_DEBUG_INFO_DIE_SOURCE;
   ABG_ASSERT(ctxt.get_die_source(die, source_of_die));
 
   if ((result = ctxt.lookup_decl_from_die_offset(dwarf_dieoffset(die),
