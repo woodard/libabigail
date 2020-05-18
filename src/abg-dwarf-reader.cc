@@ -2184,11 +2184,6 @@ public:
   mutable Elf_Scn*		ksymtab_gpl_section_;
   mutable Elf_Scn*		ksymtab_gpl_reloc_section_;
   mutable Elf_Scn*		ksymtab_strings_section_;
-  Elf_Scn*			versym_section_;
-  Elf_Scn*			verdef_section_;
-  Elf_Scn*			verneed_section_;
-  bool				symbol_versionning_sections_loaded_;
-  bool				symbol_versionning_sections_found_;
   Dwarf_Die*			cur_tu_die_;
   mutable dwarf_expr_eval_context	dwarf_expr_eval_context_;
   // A set of maps (one per kind of die source) that associates a decl
@@ -2379,11 +2374,6 @@ public:
     ksymtab_gpl_section_ = 0;
     ksymtab_gpl_reloc_section_ = 0;
     ksymtab_strings_section_ = 0;
-    versym_section_ = 0;
-    verdef_section_ = 0;
-    verneed_section_ = 0;
-    symbol_versionning_sections_loaded_ = 0;
-    symbol_versionning_sections_found_ = 0;
     cur_tu_die_ =  0;
     exported_decls_builder_ = 0;
 
@@ -5173,110 +5163,6 @@ public:
     return result;
   }
 
-  /// Return the SHT_GNU_versym, SHT_GNU_verdef and SHT_GNU_verneed
-  /// sections that are involved in symbol versionning.
-  ///
-  /// @param versym_section the SHT_GNU_versym section found.
-  ///
-  /// @param verdef_section the SHT_GNU_verdef section found.
-  ///
-  /// @param verneed_section the SHT_GNU_verneed section found.
-  ///
-  /// @return true iff the sections where found.
-  bool
-  get_symbol_versionning_sections(Elf_Scn*&	versym_section,
-				  Elf_Scn*&	verdef_section,
-				  Elf_Scn*&	verneed_section)
-  {
-    if (!symbol_versionning_sections_loaded_)
-      {
-	symbol_versionning_sections_found_ =
-	  dwarf_reader::get_symbol_versionning_sections(elf_handle(),
-							versym_section_,
-							verdef_section_,
-							verneed_section_);
-	symbol_versionning_sections_loaded_ = true;
-      }
-
-    versym_section = versym_section_;
-    verdef_section = verdef_section_;
-    verneed_section = verneed_section_;
-    return symbol_versionning_sections_found_;
-  }
-
-  /// Return the version for a symbol that is at a given index in its
-  /// SHT_SYMTAB section.
-  ///
-  /// The first invocation of this function caches the results and
-  /// subsequent invocations just return the cached results.
-  ///
-  /// @param symbol_index the index of the symbol to consider.
-  ///
-  /// @param get_def_version if this is true, it means that that we want
-  /// the version for a defined symbol; in that case, the version is
-  /// looked for in a section of type SHT_GNU_verdef.  Otherwise, if
-  /// this parameter is false, this means that we want the version for
-  /// an undefined symbol; in that case, the version is the needed one
-  /// for the symbol to be resolved; so the version is looked fo in a
-  /// section of type SHT_GNU_verneed.
-  ///
-  /// @param version the version found for symbol at @p symbol_index.
-  ///
-  /// @return true iff a version was found for symbol at index @p
-  /// symbol_index.
-  bool
-  get_version_for_symbol(size_t		symbol_index,
-			 bool			get_def_version,
-			 elf_symbol::version&	version)
-  {
-    Elf_Scn *versym_section = NULL,
-      *verdef_section = NULL,
-      *verneed_section = NULL;
-
-    if (!get_symbol_versionning_sections(versym_section,
-					 verdef_section,
-					 verneed_section))
-      return false;
-
-    GElf_Versym versym_mem;
-    Elf_Data* versym_data = (versym_section)
-      ? elf_getdata(versym_section, NULL)
-      : NULL;
-    GElf_Versym* versym = (versym_data)
-      ? gelf_getversym(versym_data, symbol_index, &versym_mem)
-      : NULL;
-
-    if (versym == 0 || *versym <= 1)
-      // I got these value from the code of readelf.c in elfutils.
-      // Apparently, if the symbol version entry has these values, the
-      // symbol must be discarded. This is not documented in the
-      // official specification.
-      return false;
-
-    if (get_def_version)
-      {
-	if (*versym == 0x8001)
-	  // I got this value from the code of readelf.c in elfutils
-	  // too.  It's not really documented in the official
-	  // specification.
-	  return false;
-
-	if (verdef_section
-	    && get_version_definition_for_versym(elf_handle(), versym,
-						 verdef_section, version))
-	  return true;
-      }
-    else
-      {
-	if (verneed_section
-	    && get_version_needed_for_versym(elf_handle(), versym,
-					     verneed_section, version))
-	  return true;
-      }
-
-    return false;
-  }
-
   /// Lookup an elf symbol, referred to by its index, from the .symtab
   /// section.
   ///
@@ -5366,9 +5252,8 @@ public:
       name_str = "";
 
     elf_symbol::version ver;
-    get_version_for_symbol(symbol_index,
-			   sym_is_defined,
-			   ver);
+    elf_helpers::get_version_for_symbol(elf_handle(), symbol_index,
+					sym_is_defined, ver);
 
     elf_symbol::visibility vis =
       stv_to_elf_symbol_visibility(GELF_ST_VISIBILITY(native_sym.st_other));
