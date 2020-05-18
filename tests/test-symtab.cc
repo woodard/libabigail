@@ -52,8 +52,9 @@ read_corpus(const std::string path, corpus_sptr& result)
 
   environment_sptr	    env(new environment);
   const std::vector<char**> debug_info_root_paths;
-  read_context_sptr	    ctxt =
-      create_read_context(absolute_path, debug_info_root_paths, env.get());
+  read_context_sptr	    ctxt = create_read_context(
+      absolute_path, debug_info_root_paths, env.get(),
+      /* load_all_type = */ true, /* linux_kernel_mode = */ true);
 
   dwarf_reader::status status = dwarf_reader::STATUS_UNKNOWN;
   result = read_corpus_from_elf(*ctxt, status);
@@ -105,7 +106,7 @@ assert_symbol_count(const std::string& path,
   const dwarf_reader::status status = read_corpus(path, corpus_ptr);
   REQUIRE(corpus_ptr);
 
-  REQUIRE(status == dwarf_reader::STATUS_OK);
+  REQUIRE((status & dwarf_reader::STATUS_OK));
   const corpus& corpus = *corpus_ptr;
 
   if (function_symbols != N)
@@ -202,4 +203,91 @@ TEST_CASE("Symtab::SimpleSymtabs", "[symtab, basic]")
     const std::string  binary = "basic/one_function_one_variable_undefined.so";
     const corpus_sptr& corpus = assert_symbol_count(binary, 0, 0, 1, 1);
   }
+}
+
+static const char* kernel_versions[] = { "4.14", "4.19", "5.4", "5.6" };
+static const size_t nr_kernel_versions =
+    sizeof(kernel_versions) / sizeof(kernel_versions[0]);
+
+TEST_CASE("Symtab::SimpleKernelSymtabs", "[symtab, basic, kernel, ksymtab]")
+{
+  for (size_t i = 0; i < nr_kernel_versions; ++i)
+    {
+      const std::string base_path =
+	  "kernel-" + std::string(kernel_versions[i]) + "/";
+
+      GIVEN("The binaries in " + base_path)
+      {
+
+	GIVEN("a kernel module with no exported symbols")
+	{
+	  // TODO: should pass, but does currently not as empty tables are
+	  // treated
+	  //       like the error case, but this is an edge case anyway.
+	  // assert_symbol_count(base_path + "empty.so");
+	}
+
+	GIVEN("a kernel module with a single exported function")
+	{
+	  const std::string	 binary = base_path + "single_function.ko";
+	  const corpus_sptr&	 corpus = assert_symbol_count(binary, 1, 0);
+	  const elf_symbol_sptr& symbol =
+	      corpus->lookup_function_symbol("exported_function");
+	  REQUIRE(symbol);
+	  CHECK(!corpus->lookup_variable_symbol("exported_function"));
+	  CHECK(symbol == corpus->lookup_function_symbol(*symbol));
+	  CHECK(symbol != corpus->lookup_variable_symbol(*symbol));
+	}
+
+	GIVEN("a kernel module with a single GPL exported function")
+	{
+	  const std::string	 binary = base_path + "single_function_gpl.ko";
+	  const corpus_sptr&	 corpus = assert_symbol_count(binary, 1, 0);
+	  const elf_symbol_sptr& symbol =
+	      corpus->lookup_function_symbol("exported_function_gpl");
+	  REQUIRE(symbol);
+	  CHECK(!corpus->lookup_variable_symbol("exported_function_gpl"));
+	  CHECK(symbol == corpus->lookup_function_symbol(*symbol));
+	  CHECK(symbol != corpus->lookup_variable_symbol(*symbol));
+	}
+
+	GIVEN("a binary with a single exported variable")
+	{
+	  const std::string	 binary = base_path + "single_variable.ko";
+	  const corpus_sptr&	 corpus = assert_symbol_count(binary, 0, 1);
+	  const elf_symbol_sptr& symbol =
+	      corpus->lookup_variable_symbol("exported_variable");
+	  REQUIRE(symbol);
+	  CHECK(!corpus->lookup_function_symbol("exported_variable"));
+	  CHECK(symbol == corpus->lookup_variable_symbol(*symbol));
+	  CHECK(symbol != corpus->lookup_function_symbol(*symbol));
+	}
+
+	GIVEN("a binary with a single GPL exported variable")
+	{
+	  const std::string	 binary = base_path + "single_variable_gpl.ko";
+	  const corpus_sptr&	 corpus = assert_symbol_count(binary, 0, 1);
+	  const elf_symbol_sptr& symbol =
+	      corpus->lookup_variable_symbol("exported_variable_gpl");
+	  REQUIRE(symbol);
+	  CHECK(!corpus->lookup_function_symbol("exported_variable_gpl"));
+	  CHECK(symbol == corpus->lookup_variable_symbol(*symbol));
+	  CHECK(symbol != corpus->lookup_function_symbol(*symbol));
+	}
+
+	GIVEN("a binary with one function and one variable (GPL) exported")
+	{
+	  const std::string  binary = base_path + "one_of_each.ko";
+	  const corpus_sptr& corpus = assert_symbol_count(binary, 2, 2);
+	  CHECK(corpus->lookup_function_symbol("exported_function"));
+	  CHECK(!corpus->lookup_variable_symbol("exported_function"));
+	  CHECK(corpus->lookup_function_symbol("exported_function_gpl"));
+	  CHECK(!corpus->lookup_variable_symbol("exported_function_gpl"));
+	  CHECK(corpus->lookup_variable_symbol("exported_variable"));
+	  CHECK(!corpus->lookup_function_symbol("exported_variable"));
+	  CHECK(corpus->lookup_variable_symbol("exported_variable_gpl"));
+	  CHECK(!corpus->lookup_function_symbol("exported_variable_gpl"));
+	}
+      }
+    }
 }
