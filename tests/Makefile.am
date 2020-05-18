@@ -49,6 +49,7 @@ runtestini			\
 runtestkmiwhitelist		\
 runtestlookupsyms		\
 runtestreadwrite		\
+runtestsymtab			\
 runtesttoolsutils		\
 $(FEDABIPKGDIFF_TEST) 		\
 $(ZIP_ARCHIVE_TESTS)		\
@@ -153,6 +154,9 @@ runtestelfhelpers_LDADD = libcatch.la $(top_builddir)/src/libabigail.la
 
 runtestcxxcompat_SOURCES = test-cxx-compat.cc
 runtestcxxcompat_LDADD = libcatch.la $(top_builddir)/src/libabigail.la
+
+runtestsymtab_SOURCES = test-symtab.cc
+runtestsymtab_LDADD = libtestutils.la libcatch.la $(top_builddir)/src/libabigail.la
 
 runtestsvg_SOURCES=test-svg.cc
 runtestsvg_LDADD=$(top_builddir)/src/libabigail.la

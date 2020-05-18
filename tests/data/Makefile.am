@@ -1748,4 +1748,24 @@ test-ini/test01-equal-in-property-string.abignore \
 test-kmi-whitelist/whitelist-with-single-entry \
 test-kmi-whitelist/whitelist-with-another-single-entry \
 test-kmi-whitelist/whitelist-with-duplicate-entry \
-test-kmi-whitelist/whitelist-with-two-sections
+test-kmi-whitelist/whitelist-with-two-sections \
+\
+test-symtab/basic/Makefile \
+test-symtab/basic/empty.c \
+test-symtab/basic/empty.so \
+test-symtab/basic/link_against_me.c \
+test-symtab/basic/link_against_me.so \
+test-symtab/basic/no_debug_info.c \
+test-symtab/basic/no_debug_info.so \
+test-symtab/basic/one_function_one_variable.c \
+test-symtab/basic/one_function_one_variable.so \
+test-symtab/basic/one_function_one_variable_undefined.c \
+test-symtab/basic/one_function_one_variable_undefined.so \
+test-symtab/basic/single_function.c \
+test-symtab/basic/single_function.so \
+test-symtab/basic/single_undefined_function.c \
+test-symtab/basic/single_undefined_function.so \
+test-symtab/basic/single_undefined_variable.c \
+test-symtab/basic/single_undefined_variable.so \
+test-symtab/basic/single_variable.c \
+test-symtab/basic/single_variable.so
