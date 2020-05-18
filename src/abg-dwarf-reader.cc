@@ -1449,44 +1449,6 @@ lookup_public_function_symbol_from_elf(const environment*		env,
   return found;
 }
 
-/// Look into the symbol tables of the underlying elf file and see if
-/// we find a given public (global or weak) symbol of variable type.
-///
-/// @param env the environment we are operating from.
-///
-/// @param elf the elf handle to use for the query.
-///
-/// @param symname the variable symbol to look for.
-///
-/// @param var_syms the vector of public variable symbols found, if any.
-///
-/// @return true iff symbol @p symname was found.
-static bool
-lookup_public_variable_symbol_from_elf(const environment*		env,
-				       Elf*				elf,
-				       const string&			symname,
-				       vector<elf_symbol_sptr>&	var_syms)
-{
-  vector<elf_symbol_sptr> syms_found;
-  bool found = false;
-
-  if (lookup_symbol_from_elf(env, elf, symname, /*demangle=*/false, syms_found))
-    {
-      for (vector<elf_symbol_sptr>::const_iterator i = syms_found.begin();
-	   i != syms_found.end();
-	   ++i)
-	if ((*i)->is_variable()
-	    && ((*i)->get_binding() == elf_symbol::GLOBAL_BINDING
-		|| (*i)->get_binding() == elf_symbol::WEAK_BINDING))
-	  {
-	    var_syms.push_back(*i);
-	    found = true;
-	  }
-    }
-
-  return found;
-}
-
 /// Get data tag information of an ELF file by looking up into its
 /// dynamic segment
 ///
@@ -2197,11 +2159,6 @@ public:
   Dwfl_Module*			elf_module_;
   mutable Elf*			elf_handle_;
   string			elf_path_;
-  mutable Elf_Scn*		bss_section_;
-  mutable Elf_Scn*		text_section_;
-  mutable Elf_Scn*		rodata_section_;
-  mutable Elf_Scn*		data_section_;
-  mutable Elf_Scn*		data1_section_;
   mutable Elf_Scn*		symtab_section_;
   // The "Official procedure descriptor section, aka .opd", used in
   // ppc64 elf v1 binaries.  This section contains the procedure
@@ -2411,11 +2368,6 @@ public:
     elf_module_ = 0;
     elf_handle_ = 0;
     elf_path_ = elf_path;
-    bss_section_ = 0;
-    text_section_ = 0;
-    rodata_section_ = 0;
-    data_section_ = 0;
-    data1_section_ = 0;
     symtab_section_ = 0;
     opd_section_ = 0;
     ksymtab_format_ = UNDEFINED_KSYMTAB_FORMAT;
@@ -2541,27 +2493,6 @@ public:
     die_pretty_type_repr_maps_.clear();
     clear_types_to_canonicalize();
   }
-
-  /// Getter of the options of the read context.
-  ///
-  /// @return the options of the read context.
-  options_type&
-  options()
-  {return options_;}
-
-  /// Getter of the options of the read context.
-  ///
-  /// @return the options of the read context.
-  const options_type&
-  options() const
-  {return options_;}
-
-  /// Getter of the options of the read context.
-  ///
-  /// @return the options of the read context.
-  void
-  options(const options_type& o)
-  {options_ = o;}
 
   /// Getter for the current environment.
   ///
@@ -2873,96 +2804,6 @@ public:
   const string&
   elf_path() const
   {return elf_path_;}
-
-  /// Return the bss section of the ELF file we are reading.
-  ///
-  /// The first time this function is called, the ELF file is scanned
-  /// to look for the section we are looking for.  Once the section is
-  /// found, it's cached.
-  ///
-  /// Subsequent calls to this function just return the cached
-  /// version.
-  ///
-  /// @return the bss section.
-  Elf_Scn*
-  bss_section() const
-  {
-    if (!bss_section_)
-      bss_section_ = find_bss_section(elf_handle());
-    return bss_section_;
-  }
-
-  /// Return the text section of the ELF file we are reading.
-  ///
-  /// The first time this function is called, the ELF file is scanned
-  /// to look for the section we are looking for.  Once the section is
-  /// found, it's cached.
-  ///
-  /// Subsequent calls to this function just return the cached
-  /// version.
-  ///
-  /// return the text section.
-  Elf_Scn*
-  text_section() const
-  {
-    if (!text_section_)
-      text_section_ = find_text_section(elf_handle());
-    return text_section_;
-  }
-
-  /// Return the rodata section of the ELF file we are reading.
-  ///
-  /// The first time this function is called, the ELF file is scanned
-  /// to look for the section we are looking for.  Once the section is
-  /// found, it's cached.
-  ///
-  /// Subsequent calls to this function just return the cached
-  /// version.
-  ///
-  /// return the rodata section.
-  Elf_Scn*
-  rodata_section() const
-  {
-    if (!rodata_section_)
-      rodata_section_ =find_rodata_section(elf_handle());
-    return rodata_section_;
-  }
-
-  /// Return the data section of the ELF file we are reading.
-  ///
-  /// The first time this function is called, the ELF file is scanned
-  /// to look for the section we are looking for.  Once the section is
-  /// found, it's cached.
-  ///
-  /// Subsequent calls to this function just return the cached
-  /// version.
-  ///
-  /// return the data section.
-  Elf_Scn*
-  data_section() const
-  {
-    if (!data_section_)
-      data_section_ = find_data_section(elf_handle());
-    return data_section_;
-  }
-
-  /// Return the data1 section of the ELF file we are reading.
-  ///
-  /// The first time this function is called, the ELF file is scanned
-  /// to look for the section we are looking for.  Once the section is
-  /// found, it's cached.
-  ///
-  /// Subsequent calls to this function just return the cached
-  /// version.
-  ///
-  /// return the data1 section.
-  Elf_Scn*
-  data1_section() const
-  {
-    if (!data1_section_)
-      data1_section_ = find_data1_section(elf_handle());
-    return data1_section_;
-  }
 
   const Dwarf_Die*
   cur_tu_die() const
@@ -3541,8 +3382,6 @@ public:
 
     m[die_offset] = decl;
   }
-
-public:
 
   /// Lookup the decl for a given DIE.
   ///
@@ -5214,15 +5053,6 @@ public:
   var_decls_to_re_add_to_tree()
   {return var_decls_to_add_;}
 
-  /// Return the type of the current elf file.
-  ///
-  /// @return the type of the current elf file.
-  elf_type
-  get_elf_file_type()
-  {
-    return elf_file_type(elf_handle());
-  }
-
   /// The section containing the symbol table from the current ELF
   /// file.
   ///
@@ -5445,30 +5275,6 @@ public:
       }
 
     return false;
-  }
-
-  /// Look into the symbol tables of the underlying elf file and see
-  /// if we find a given symbol.
-  ///
-  /// @param symbol_name the name of the symbol to look for.
-  ///
-  /// @param demangle if true, demangle the symbols found in the symbol
-  /// tables.
-  ///
-  /// @param syms the vector of symbols with the name @p symbol_name
-  /// that were found.
-  ///
-  /// @return true iff the symbol was found.
-  bool
-  lookup_symbol_from_elf(const string&			symbol_name,
-			 bool				demangle,
-			 vector<elf_symbol_sptr>&	syms) const
-  {
-    return dwarf_reader::lookup_symbol_from_elf(env(),
-						elf_handle(),
-						symbol_name,
-						demangle,
-						syms);
   }
 
   /// Lookup an elf symbol, referred to by its index, from the .symtab
@@ -5815,25 +5621,6 @@ public:
 								syms);
   }
 
-  /// Look in the symbol tables of the underying elf file and see if
-  /// we find a symbol of a given name of variable type.
-  ///
-  /// @param sym_name the name of the symbol to look for.
-  ///
-  /// @param syms the variable symbols that were found, with the name
-  /// @p sym_name.
-  ///
-  /// @return true iff the symbol was found.
-  bool
-  lookup_public_variable_symbol_from_elf(const string&		  sym_name,
-					 vector<elf_symbol_sptr>& syms)
-  {
-    return dwarf_reader::lookup_public_variable_symbol_from_elf(env(),
-								elf_handle(),
-								sym_name,
-								syms);
-  }
-
   /// Test if a given function symbol has been exported.
   ///
   /// @param symbol_address the address of the symbol we are looking
@@ -5912,50 +5699,6 @@ public:
       }
 
     return symbol;
-  }
-
-  /// Getter for the map of function address -> symbol.
-  ///
-  /// @return the function address -> symbol map.
-  const addr_elf_symbol_sptr_map_sptr
-  fun_addr_sym_map_sptr() const
-  {
-    maybe_load_symbol_maps();
-    return fun_addr_sym_map_;
-  }
-
-  /// Getter for the map of function address -> symbol.
-  ///
-  /// @return the function address -> symbol map.
-  addr_elf_symbol_sptr_map_sptr
-  fun_addr_sym_map_sptr()
-  {
-    maybe_load_symbol_maps();
-    return fun_addr_sym_map_;
-  }
-
-  /// Getter for the map of function symbol address -> function symbol
-  /// index.
-  ///
-  /// @return the map.  Note that this initializes the map once when
-  /// its nedded.
-  const addr_elf_symbol_sptr_map_type&
-  fun_addr_sym_map() const
-  {
-    maybe_load_symbol_maps();
-    return *fun_addr_sym_map_;
-  }
-
-  /// Getter for the map of function symbol address -> function symbol
-  /// index.
-  ///
-  /// @return the map.  Note that this initializes the map once when
-  /// its nedded.
-  addr_elf_symbol_sptr_map_type&
-  fun_addr_sym_map()
-  {
-    maybe_load_symbol_maps();
-    return *fun_addr_sym_map_;
   }
 
   /// Getter for a pointer to the map that associates the address of
@@ -7431,37 +7174,6 @@ public:
     return false;
   }
 
-  /// Get the section which a global variable address comes from.
-  ///
-  /// @param var_addr the address for the variable.
-  ///
-  /// @return the ELF section the @p var_addr comes from, or nil if no
-  /// section was found for that variable address.
-  Elf_Scn*
-  get_data_section_for_variable_address(Dwarf_Addr var_addr) const
-  {
-    // There are several potential 'data sections" from which a
-    // variable address can come from: .data, .data1 and .rodata.
-    // Let's try to try them all in sequence.
-
-    Elf_Scn* data_scn = bss_section();
-    if (!address_is_in_section(var_addr, data_scn))
-      {
-	data_scn = data_section();
-	if (!address_is_in_section(var_addr, data_scn))
-	  {
-	    data_scn = data1_section();
-	    if (!address_is_in_section(var_addr, data_scn))
-	      {
-		data_scn = rodata_section();
-		if (!address_is_in_section(var_addr, data_scn))
-		  return 0;
-	      }
-	  }
-      }
-    return data_scn;
-  }
-
   /// For a relocatable (*.o) elf file, this function expects an
   /// absolute address, representing a global variable symbol.  It
   /// then extracts the address of the {.data,.data1,.rodata,.bss}
@@ -7645,26 +7357,6 @@ public:
   /// @return true iff the suppression specification @p s matches the
   /// function whose linkage name is @p fn_linkage_name.
   bool
-  suppression_matches_function_sym_name(const suppr::function_suppression_sptr& s,
-					const string& fn_linkage_name) const
-  {
-    if (!s)
-      return false;
-    return suppression_matches_function_sym_name(*s,fn_linkage_name);
-  }
-
-  /// Test whether if a given function suppression matches a function
-  /// designated by a regular expression that describes its linkage
-  /// name (symbol name).
-  ///
-  /// @param s the suppression specification to evaluate to see if it
-  /// matches a given function linkage name
-  ///
-  /// @param fn_linkage_name the linkage name of the function of interest.
-  ///
-  /// @return true iff the suppression specification @p s matches the
-  /// function whose linkage name is @p fn_linkage_name.
-  bool
   suppression_matches_function_sym_name(const suppr::function_suppression& s,
 					const string& fn_linkage_name) const
   {
@@ -7672,26 +7364,6 @@ public:
       return false;
 
     return suppr::suppression_matches_function_sym_name(s, fn_linkage_name);
-  }
-
-  /// Test whether if a given function suppression matches a function
-  /// designated by a regular expression that describes its name.
-  ///
-  /// @param s the suppression specification to evaluate to see if it
-  /// matches a given function name.
-  ///
-  /// @param fn_name the name of the function of interest.  Note that
-  /// this name must be *non* qualified.
-  ///
-  /// @return true iff the suppression specification @p s matches the
-  /// function whose name is @p fn_name.
-  bool
-  suppression_matches_function_name(const suppr::function_suppression_sptr& s,
-				    const string& fn_name) const
-  {
-    if (!s)
-      return false;
-    return suppression_matches_function_name(*s, fn_name);
   }
 
   /// Test whether if a given function suppression matches a function
@@ -7774,27 +7446,6 @@ public:
 
     return suppr::suppression_matches_type_name_or_location(s, type_name,
 							    type_location);
-  }
-
-  /// Test if a type suppression specification matches the name of a
-  /// type within a given scope.
-  ///
-  /// @param s the type suppression specification to consider.
-  ///
-  /// @param type_scope the type scope to consider.
-  ///
-  /// @param type the type to consider.
-  ///
-  /// @return true iff the type suppression specification matches a
-  /// the name of type @p type.
-  bool
-  suppression_matches_type_name(const suppr::type_suppression&	s,
-				const scope_decl*		type_scope,
-				const type_base_sptr&		type) const
-  {
-    if (!suppression_can_match(s))
-      return false;
-    return suppr::suppression_matches_type_name(s, type_scope, type);
   }
 
   /// Getter of the exported decls builder object.
