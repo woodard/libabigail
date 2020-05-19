@@ -2740,7 +2740,32 @@ struct type_topo_comp
 	if (s1 == s2)
 	  if (qualified_type_def * q = is_qualified_type(f))
 	    if (q->get_cv_quals() == qualified_type_def::CV_NONE)
-	      return true;
+	      if (!is_qualified_type(s))
+		// We are looking at two types that are the result of
+		// an optimization that happens during the IR
+		// construction.  Namely, type f is a cv-qualified
+		// type with no qualifier (no const, no volatile, no
+		// nothing, we call it an empty-qualified type).
+		// These are the result of an optimization which
+		// removes "redundant qualifiers" from some types.
+		// For instance, consider a "const reference".  The
+		// const there is redundant because a reference is
+		// always const.  So as a result of the optimizaton
+		// that type is going to be transformed into an
+		// empty-qualified reference. If we don't make that
+		// optimization, then we risk having spurious change
+		// reports down the road.  But then, as a consequence
+		// of that optimization, we need to sort the
+		// empty-qualified type and its non-qualified variant
+		// e.g, to ensure stability in the abixml output; both
+		// types are logically equal, but here, we decide that
+		// the empty-qualified one is topologically "less
+		// than" the non-qualified counterpart.
+		//
+		// So here, type f is an empty-qualified type and type
+		// s is its non-qualified variant.  We decide that f
+		// is topologically less than s.
+		return true;
 	return (s1 < s2);
       }
 
