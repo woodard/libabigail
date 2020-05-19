@@ -1,1 +1,1 @@
-// empty!
+void exported_function(){}

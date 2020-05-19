@@ -53,14 +53,9 @@ TEST_CASE("Symtab::Empty", "[symtab, basic]")
   const std::string	     binary = "basic/empty.so";
   corpus_sptr		     corpus_ptr;
   const dwarf_reader::status status = read_corpus(binary, corpus_ptr);
-  REQUIRE(corpus_ptr);
+  REQUIRE(!corpus_ptr);
 
-  REQUIRE((status & dwarf_reader::STATUS_OK));
-
-  // TODO: Those two assertions are currently not met. Empty symtabs are
-  //       currently treated like the error case.
-  // REQUIRE((status & dwarf_reader::STATUS_OK));
-  // REQUIRE((status & dwarf_reader::STATUS_NO_SYMBOLS_FOUND));
+  REQUIRE((status & dwarf_reader::STATUS_NO_SYMBOLS_FOUND));
 }
 
 TEST_CASE("Symtab::NoDebugInfo", "[symtab, basic]")

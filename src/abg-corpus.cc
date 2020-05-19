@@ -23,6 +23,7 @@ ABG_BEGIN_EXPORT_DECLARATIONS
 #include "abg-ir.h"
 #include "abg-reader.h"
 #include "abg-sptr-utils.h"
+#include "abg-symtab-reader.h"
 #include "abg-tools-utils.h"
 #include "abg-writer.h"
 
@@ -895,6 +896,20 @@ corpus::operator==(const corpus& other) const
   return (i == get_translation_units().end()
 	  && j == other.get_translation_units().end());
 }
+
+/// Setter for the symtab object.
+///
+/// @param symtab a shared pointer to the new symtab object
+void
+corpus::set_symtab(symtab_reader::symtab_sptr symtab)
+{priv_->symtab_ = symtab;}
+
+/// Getter for the symtab object.
+///
+/// @return a shared pointer to the symtab object
+const symtab_reader::symtab_sptr&
+corpus::get_symtab() const
+{return priv_->symtab_;}
 
 /// Setter of the function symbols map.
 ///

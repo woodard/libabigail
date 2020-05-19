@@ -17,6 +17,7 @@
 #include "abg-internal.h"
 #include "abg-regex.h"
 #include "abg-sptr-utils.h"
+#include "abg-symtab-reader.h"
 
 namespace abigail
 {
@@ -687,6 +688,7 @@ struct corpus::priv
   string_elf_symbols_map_sptr			undefined_var_symbol_map;
   elf_symbols					sorted_var_symbols;
   elf_symbols					sorted_undefined_var_symbols;
+  symtab_reader::symtab_sptr			symtab_;
   string_elf_symbols_map_sptr			fun_symbol_map;
   string_elf_symbols_map_sptr			undefined_fun_symbol_map;
   elf_symbols					sorted_fun_symbols;

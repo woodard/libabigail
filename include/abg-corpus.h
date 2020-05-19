@@ -166,6 +166,12 @@ public:
   operator==(const corpus&) const;
 
   void
+  set_symtab(symtab_reader::symtab_sptr);
+
+  const symtab_reader::symtab_sptr&
+  get_symtab() const;
+
+  void
   set_fun_symbol_map(string_elf_symbols_map_sptr);
 
   void
