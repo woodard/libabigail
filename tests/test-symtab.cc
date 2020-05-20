@@ -89,17 +89,19 @@ assert_symbol_count(const std::string& path,
   REQUIRE((status & dwarf_reader::STATUS_OK));
   const corpus& corpus = *corpus_ptr;
 
+  size_t total_symbols = 0;
+
   if (function_symbols != N)
     {
       CHECK(corpus.get_sorted_fun_symbols().size() == function_symbols);
       CHECK(corpus.get_fun_symbol_map().size() == function_symbols);
-      CHECK(corpus.get_fun_symbol_map_sptr()->size() == function_symbols);
+      total_symbols += function_symbols;
     }
   if (variable_symbols != N)
     {
       CHECK(corpus.get_sorted_var_symbols().size() == variable_symbols);
       CHECK(corpus.get_var_symbol_map().size() == variable_symbols);
-      CHECK(corpus.get_var_symbol_map_sptr()->size() == variable_symbols);
+      total_symbols += variable_symbols;
     }
   if (undefined_variable_symbols != N)
     {
@@ -107,8 +109,7 @@ assert_symbol_count(const std::string& path,
 	    == undefined_function_symbols);
       CHECK(corpus.get_undefined_fun_symbol_map().size()
 	    == undefined_function_symbols);
-      CHECK(corpus.get_undefined_fun_symbol_map_sptr()->size()
-	    == undefined_function_symbols);
+      total_symbols += undefined_function_symbols;
     }
   if (undefined_function_symbols != N)
     {
@@ -116,9 +117,11 @@ assert_symbol_count(const std::string& path,
 	    == undefined_variable_symbols);
       CHECK(corpus.get_undefined_var_symbol_map().size()
 	    == undefined_variable_symbols);
-      CHECK(corpus.get_undefined_var_symbol_map_sptr()->size()
-	    == undefined_variable_symbols);
+      total_symbols += undefined_variable_symbols;
     }
+
+  // assert the corpus reports being empty consistently with the symbol count
+  CHECK(corpus.is_empty() == (total_symbols == 0));
 
   return corpus_ptr;
 }

@@ -14934,49 +14934,6 @@ read_debug_info_into_corpus(read_context& ctxt)
 
   // Set symbols information to the corpus.
   ctxt.current_corpus()->set_symtab(ctxt.symtab());
-  if (!get_ignore_symbol_table(ctxt))
-    {
-      if (ctxt.load_in_linux_kernel_mode()
-	  && is_linux_kernel(ctxt.elf_handle()))
-	{
-	  string_elf_symbols_map_sptr exported_fn_symbols_map
-	    (new string_elf_symbols_map_type);
-	  auto filter = ctxt.symtab()->make_filter();
-	  filter.set_functions();
-
-	  for (const auto& symbol :
-		 symtab_reader::filtered_symtab(*ctxt.symtab(), filter))
-	    (*exported_fn_symbols_map)[symbol->get_name()].push_back(symbol);
-
-	  ctxt.current_corpus()->set_fun_symbol_map(exported_fn_symbols_map);
-
-	  string_elf_symbols_map_sptr exported_var_symbols_map
-	    (new string_elf_symbols_map_type);
-	  filter = ctxt.symtab()->make_filter();
-	  filter.set_variables();
-	  for (const auto& symbol:
-		 symtab_reader::filtered_symtab(*ctxt.symtab(),
-						filter))
-	    (*exported_var_symbols_map)[symbol->get_name()].push_back(symbol);
-
-	  ctxt.current_corpus()->set_var_symbol_map(exported_var_symbols_map);
-	}
-      else
-	{
-	  ctxt.current_corpus()->set_fun_symbol_map(ctxt.fun_syms_sptr());
-	  ctxt.current_corpus()->set_var_symbol_map(ctxt.var_syms_sptr());
-	}
-
-      ctxt.current_corpus()->set_undefined_fun_symbol_map
-	(ctxt.undefined_fun_syms_sptr());
-      ctxt.current_corpus()->set_undefined_var_symbol_map
-	(ctxt.undefined_var_syms_sptr());
-    }
-  else
-    {
-      ctxt.current_corpus()->set_fun_symbol_map(ctxt.fun_syms_sptr());
-      ctxt.current_corpus()->set_var_symbol_map(ctxt.var_syms_sptr());
-    }
 
   // Get out now if no debug info is found.
   if (!ctxt.dwarf())

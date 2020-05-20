@@ -171,26 +171,8 @@ public:
   const symtab_reader::symtab_sptr&
   get_symtab() const;
 
-  void
-  set_fun_symbol_map(string_elf_symbols_map_sptr);
-
-  void
-  set_undefined_fun_symbol_map(string_elf_symbols_map_sptr);
-
-  void
-  set_var_symbol_map(string_elf_symbols_map_sptr);
-
-  void
-  set_undefined_var_symbol_map(string_elf_symbols_map_sptr);
-
-  const string_elf_symbols_map_sptr
-  get_fun_symbol_map_sptr() const;
-
   virtual const string_elf_symbols_map_type&
   get_fun_symbol_map() const;
-
-  const string_elf_symbols_map_sptr
-  get_undefined_fun_symbol_map_sptr() const;
 
   const string_elf_symbols_map_type&
   get_undefined_fun_symbol_map() const;
@@ -201,14 +183,8 @@ public:
   const elf_symbols&
   get_sorted_undefined_fun_symbols() const;
 
-  const string_elf_symbols_map_sptr
-  get_var_symbol_map_sptr() const;
-
   virtual const string_elf_symbols_map_type&
   get_var_symbol_map() const;
-
-  const string_elf_symbols_map_sptr
-  get_undefined_var_symbol_map_sptr() const;
 
   const string_elf_symbols_map_type&
   get_undefined_var_symbol_map() const;

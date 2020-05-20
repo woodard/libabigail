@@ -1932,17 +1932,6 @@ read_corpus_from_input(read_context& ctxt)
       // are nil, due to potential suppression specifications.  That's
       // fine.
       corp.set_symtab(symtab_reader::symtab::load(fn_sym_db, var_sym_db));
-
-      if (fn_sym_db)
-	{
-	  corp.set_fun_symbol_map(fn_sym_db);
-	  fn_sym_db.reset();
-	}
-      if (var_sym_db)
-	{
-	  corp.set_var_symbol_map(var_sym_db);
-	  var_sym_db.reset();
-	}
     }
 
   ctxt.get_environment()->canonicalization_is_done(false);
