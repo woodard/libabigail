@@ -1,4 +1,4 @@
-# Copyright (C) 2013 Free Software Foundation, Inc.
+# Copyright (C) 2013-2020 Red Hat, Inc
 # 
 # This file is part of the GNU Application Binary Interface Generic
 # Analysis and Instrumentation Library (libabigail).  This library is
@@ -20,6 +20,8 @@
 # and a copy of the GCC Runtime Library Exception along with this
 # program; see the files COPYING3 and COPYING.RUNTIME respectively.
 # If not, see <http://www.gnu.org/licenses/>.
+#
+#// Author: Dodji Seketeli <dodji@redhat.com>
 
 # ABIGAIL_INIT
 #
