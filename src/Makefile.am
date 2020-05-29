@@ -1,3 +1,4 @@
+## SPDX-License-Identifier: LGPL-3.0-or-later
 lib_LTLIBRARIES=libabigail.la
 libabigaildir=$(libdir)
 

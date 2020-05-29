@@ -1,3 +1,4 @@
+## SPDX-License-Identifier: LGPL-3.0-or-later
 SUBDIRS = manuals
 
 EXTRA_DIST = api/libabigail.doxy website/libabigail-website.doxy

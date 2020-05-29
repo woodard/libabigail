@@ -1,4 +1,5 @@
 #!/bin/python
+# SPDX-License-Identifier: LGPL-3.0-or-later
 
 # This program generates the copy commands you should use to update
 # the reference data for tests <build-dir>/tests/runtest* that emit an

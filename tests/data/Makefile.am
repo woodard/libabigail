@@ -1,4 +1,4 @@
-
+## SPDX-License-Identifier: LGPL-3.0-or-later
 EXTRA_DIST = \
 test-read-write/test0.xml	\
 test-read-write/test1.xml	\

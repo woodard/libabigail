@@ -1,3 +1,4 @@
+## SPDX-License-Identifier: LGPL-3.0-or-later
 SUBDIRS = include src tools tests doc bash-completion
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 headers = config.h

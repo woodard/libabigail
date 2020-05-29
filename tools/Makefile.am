@@ -1,3 +1,4 @@
+## SPDX-License-Identifier: LGPL-3.0-or-later
 h=$(abs_srcdir)
 
 if ENABLE_ZIP_ARCHIVE

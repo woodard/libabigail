@@ -1,3 +1,4 @@
+## SPDX-License-Identifier: LGPL-3.0-or-later
 pkginclude_HEADERS =	\
 abg-sptr-utils.h	\
 abg-interned-str.h	\
