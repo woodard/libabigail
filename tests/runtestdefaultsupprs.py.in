@@ -1,5 +1,5 @@
 #!/usr/bin/env @PYTHON@
-# SPDX-License-Identifier: LGPL-3.0-or-later
+# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
 '''Runs tests for the default suppression specifications of libabigail.
 

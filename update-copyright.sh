@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: LGPL-3.0-or-later
+# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
 oldyear=2019
 newyear=2020

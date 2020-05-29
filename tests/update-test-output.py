@@ -1,5 +1,5 @@
 #!/bin/python
-# SPDX-License-Identifier: LGPL-3.0-or-later
+# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
 # This program generates the copy commands you should use to update
 # the reference data for tests <build-dir>/tests/runtest* that emit an

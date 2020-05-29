@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: LGPL-3.0-or-later
+# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 #
 # This file contains default system-wide suppression specifications to
 # be used by Abigail tools[1] to filter out specific ABI change

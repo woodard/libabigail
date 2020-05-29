@@ -1,4 +1,4 @@
-## SPDX-License-Identifier: LGPL-3.0-or-later
+## SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 SUBDIRS = manuals
 
 EXTRA_DIST = api/libabigail.doxy website/libabigail-website.doxy

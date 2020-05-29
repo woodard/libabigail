@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-with-GCC-exception
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- mode: C++ -*-
 //
 // Copyright (C) 2013-2019 Red Hat, Inc.

@@ -1,4 +1,4 @@
-## SPDX-License-Identifier: LGPL-3.0-or-later
+## SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 SUBDIRS = include src tools tests doc bash-completion
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 headers = config.h
