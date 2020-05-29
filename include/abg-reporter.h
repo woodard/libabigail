@@ -35,7 +35,6 @@
 namespace abigail
 {
 
-using std::ostream;
 using abg_compat::shared_ptr;
 
 namespace comparison
@@ -75,79 +74,80 @@ public:
   virtual bool diff_to_be_reported(const diff *d) const;
 
   virtual void
-  report(const type_decl_diff& d, ostream& out,
-	 const string& indent = "") const = 0;
+  report(const type_decl_diff& d, std::ostream& out,
+	 const std::string& indent = "") const = 0;
 
   virtual void
-  report(const enum_diff& d, ostream& out,
-	 const string& indent = "") const = 0;
+  report(const enum_diff& d, std::ostream& out,
+	 const std::string& indent = "") const = 0;
 
   virtual void
-  report(const typedef_diff& d, ostream& out,
-	 const string& indent = "") const = 0;
+  report(const typedef_diff& d, std::ostream& out,
+	 const std::string& indent = "") const = 0;
 
   virtual void
-  report(const qualified_type_diff& d, ostream& out,
-	 const string& indent = "") const = 0;
+  report(const qualified_type_diff& d, std::ostream& out,
+	 const std::string& indent = "") const = 0;
 
   virtual void
-  report(const distinct_diff& d, ostream& out,
-	 const string& indent = "") const = 0;
+  report(const distinct_diff& d, std::ostream& out,
+	 const std::string& indent = "") const = 0;
 
   virtual void
-  report(const pointer_diff& d, ostream& out,
-	 const string& indent = "") const = 0;
+  report(const pointer_diff& d, std::ostream& out,
+	 const std::string& indent = "") const = 0;
 
   virtual void
-  report(const reference_diff& d, ostream& out,
-	 const string& indent = "") const = 0;
+  report(const reference_diff& d, std::ostream& out,
+	 const std::string& indent = "") const = 0;
 
   virtual void
-  report(const array_diff& d, ostream& out,
-	 const string& indent = "") const = 0;
+  report(const array_diff& d, std::ostream& out,
+	 const std::string& indent = "") const = 0;
 
   virtual void
-  report(const base_diff& d, ostream& out,
-	 const string& indent = "") const = 0;
+  report(const base_diff& d, std::ostream& out,
+	 const std::string& indent = "") const = 0;
 
   virtual void
-  report(const class_or_union_diff& d, ostream& out,
-	 const string& indent = "") const = 0;
+  report(const class_or_union_diff& d, std::ostream& out,
+	 const std::string& indent = "") const = 0;
 
   virtual void
-  report(const class_diff& d, ostream& out,
-	 const string& indent = "") const = 0;
+  report(const class_diff& d, std::ostream& out,
+	 const std::string& indent = "") const = 0;
 
   virtual void
-  report(const union_diff& d, ostream& out,
-	 const string& indent = "") const = 0;
+  report(const union_diff& d, std::ostream& out,
+	 const std::string& indent = "") const = 0;
 
   virtual void
-  report(const scope_diff& d, ostream& out,
-	 const string& indent = "") const = 0;
+  report(const scope_diff& d, std::ostream& out,
+	 const std::string& indent = "") const = 0;
 
   virtual void
-  report(const fn_parm_diff& d, ostream& out,
-	 const string& indent = "") const = 0;
+  report(const fn_parm_diff& d, std::ostream& out,
+	 const std::string& indent = "") const = 0;
 
   virtual void
-  report(const function_type_diff& d, ostream& out,
-	 const string& indent = "") const = 0;
+  report(const function_type_diff& d, std::ostream& out,
+	 const std::string& indent = "") const = 0;
 
   virtual void
-  report(const function_decl_diff& d, ostream& out,
-	 const string& indent = "") const = 0;
+  report(const function_decl_diff& d, std::ostream& out,
+	 const std::string& indent = "") const = 0;
 
   virtual void
-  report(const var_diff& d, ostream& out, const string& indent = "") const = 0;
+  report(const var_diff& d, std::ostream& out,
+	 const std::string& indent = "") const = 0;
 
   virtual void
-  report(const translation_unit_diff& d, ostream& out,
-	 const string& indent = "") const = 0;
+  report(const translation_unit_diff& d, std::ostream& out,
+	 const std::string& indent = "") const = 0;
 
   virtual void
-  report(const corpus_diff& d, ostream& out,
-	 const string& indent = "") const = 0;
+  report(const corpus_diff& d, std::ostream& out,
+	 const std::string& indent = "") const = 0;
 
   virtual ~reporter_base() {}
 }; //end class reporter_base
@@ -163,92 +163,100 @@ class default_reporter : public reporter_base
 public:
 
   virtual void
-  report(const type_decl_diff& d, ostream& out,
-	 const string& indent = "") const;
+  report(const type_decl_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const enum_diff& d, ostream& out,
-	 const string& indent = "") const;
+  report(const enum_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   void
   report_local_typedef_changes(const typedef_diff &d,
-			       ostream& out,
-			       const string& indent) const;
+			       std::ostream& out,
+			       const std::string& indent) const;
 
   virtual void
-  report(const typedef_diff& d, ostream& out,
-	 const string& indent = "") const;
+  report(const typedef_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   bool
   report_local_qualified_type_changes(const qualified_type_diff& d,
-				      ostream& out,
-				      const string& indent) const;
+				      std::ostream& out,
+				      const std::string& indent) const;
 
   virtual void
-  report(const qualified_type_diff& d, ostream& out,
-	 const string& indent = "") const;
+  report(const qualified_type_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const pointer_diff& d, ostream& out, const string& indent = "") const;
+  report(const pointer_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   void
   report_local_reference_type_changes(const reference_diff& d,
-				      ostream& out,
-				      const string& indent) const;
+				      std::ostream& out,
+				      const std::string& indent) const;
 
   virtual void
-  report(const reference_diff& d, ostream& out,
-	 const string& indent = "") const;
+  report(const reference_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const fn_parm_diff& d, ostream& out,
-	 const string& indent = "") const;
+  report(const fn_parm_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   void
   report_local_function_type_changes(const function_type_diff& d,
-				     ostream& out,
-				     const string& indent) const;
+				     std::ostream& out,
+				     const std::string& indent) const;
 
   virtual void
-  report(const function_type_diff& d, ostream& out,
-	 const string& indent = "") const;
+  report(const function_type_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const array_diff& d, ostream& out, const string& indent = "") const;
+  report(const array_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const base_diff& d, ostream& out, const string& indent = "") const;
+  report(const base_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const scope_diff& d, ostream& out, const string& indent = "") const;
+  report(const scope_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const class_or_union_diff& d, ostream& out,
-	 const string& indent = "") const;
+  report(const class_or_union_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const class_diff& d, ostream& out, const string& indent = "") const;
+  report(const class_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const union_diff& d, ostream& out, const string& indent = "") const;
+  report(const union_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const distinct_diff& d, ostream& out, const string& indent = "") const;
+  report(const distinct_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const function_decl_diff& d, ostream& out,
-	 const string& indent = "") const;
+  report(const function_decl_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const var_diff& d, ostream& out, const string& indent = "") const;
+  report(const var_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const translation_unit_diff& d, ostream& out,
-	 const string& indent = "") const;
+  report(const translation_unit_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const corpus_diff& d, ostream& out,
-	 const string& indent = "") const;
+  report(const corpus_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 }; // end class default_reporter
 
 /// A reporter that only reports leaf changes
@@ -259,67 +267,72 @@ public:
   virtual bool diff_to_be_reported(const diff *d) const;
 
   void
-  report_changes_from_diff_maps(const diff_maps&,
-				ostream& out,
-				const string& indent) const;
+  report_changes_from_diff_maps(const diff_maps&, std::ostream& out,
+				const std::string& indent) const;
 
   virtual void
-  report(const typedef_diff& d, ostream& out,
-	 const string& indent = "") const;
+  report(const typedef_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const qualified_type_diff& d, ostream& out,
-	 const string& indent = "") const;
+  report(const qualified_type_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const pointer_diff& d, ostream& out,
-	 const string& indent = "") const;
+  report(const pointer_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const reference_diff& d, ostream& out,
-	 const string& indent = "") const;
+  report(const reference_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const fn_parm_diff& d, ostream& out,
-	 const string& indent = "") const;
+  report(const fn_parm_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const function_type_diff& d, ostream& out,
-	 const string& indent = "") const;
+  report(const function_type_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const array_diff& d, ostream& out, const string& indent = "") const;
+  report(const array_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const scope_diff& d, ostream& out, const string& indent = "") const;
+  report(const scope_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const class_or_union_diff& d, ostream& out,
-	 const string& indent = "") const;
+  report(const class_or_union_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const class_diff& d, ostream& out, const string& indent = "") const;
+  report(const class_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const union_diff& d, ostream& out, const string& indent = "") const;
+  report(const union_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const distinct_diff& d, ostream& out, const string& indent = "") const;
+  report(const distinct_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const function_decl_diff& d, ostream& out,
-	 const string& indent = "") const;
+  report(const function_decl_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const var_diff& d, ostream& out, const string& indent = "") const;
+  report(const var_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const translation_unit_diff& d, ostream& out,
-	 const string& indent = "") const;
+  report(const translation_unit_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 
   virtual void
-  report(const corpus_diff& d, ostream& out,
-	 const string& indent = "") const;
+  report(const corpus_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
 }; // end class leaf_reporter
 
 } // end namespace comparison
