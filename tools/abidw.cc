@@ -814,8 +814,6 @@ main(int argc, char* argv[])
       set_show_stats(ctxt, opts.show_stats);
       set_suppressions(ctxt, opts);
       abigail::dwarf_reader::set_do_log(ctxt, opts.do_log);
-      if (!opts.kabi_whitelist_supprs.empty())
-	set_ignore_symbol_table(ctxt, true);
 
       if (opts.check_alt_debug_info_path)
 	{

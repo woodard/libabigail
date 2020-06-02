@@ -2564,12 +2564,6 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
 		      << t
 		      << "\n";
 
-	  // If we have been given a whitelist of functions and
-	  // variable symbols to look at, then we can avoid loading
-	  // and analyzing the ELF symbol table.
-	  bool do_ignore_symbol_table = !kabi_wl_paths.empty();
-	  set_ignore_symbol_table(*ctxt, do_ignore_symbol_table);
-
 	  group.reset(new corpus_group(env.get(), root));
 
 	  set_read_context_corpus_group(*ctxt, group);
@@ -2608,13 +2602,6 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
 	      reset_read_context(ctxt, *m, di_roots, env.get(),
 				 /*read_all_types=*/false,
 				 /*linux_kernel_mode=*/true);
-
-	      // If we have been given a whitelist of functions and
-	      // variable symbols to look at, then we can avoid loading
-	      // and analyzing the ELF symbol table.
-	      bool do_ignore_symbol_table = !kabi_wl_paths.empty();
-
-	      set_ignore_symbol_table(*ctxt, do_ignore_symbol_table);
 
 	      load_generate_apply_suppressions(*ctxt, suppr_paths,
 					       kabi_wl_paths, supprs);

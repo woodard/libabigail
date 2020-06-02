@@ -181,12 +181,6 @@ void
 set_do_log(read_context& ctxt, bool f);
 
 void
-set_ignore_symbol_table(read_context &ctxt, bool f);
-
-bool
-get_ignore_symbol_table(const read_context &ctxt);
-
-void
 set_environment(read_context& ctxt,
 		ir::environment*);
 

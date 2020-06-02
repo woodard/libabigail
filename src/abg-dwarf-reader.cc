@@ -284,10 +284,6 @@ static bool
 operator<(const imported_unit_point& l, const imported_unit_point& r)
 {return l.offset_of_import < r.offset_of_import;}
 
-static void
-add_symbol_to_map(const elf_symbol_sptr& sym,
-		  string_elf_symbols_map_type& map);
-
 static bool
 get_parent_die(const read_context&	ctxt,
 	       const Dwarf_Die*	die,
@@ -1907,92 +1903,6 @@ struct dwarf_expr_eval_context
 // </location expression evaluation types>
 // ---------------------------------------
 
-/// An enum for the diffent kinds of linux kernel specific symbol
-/// tables.
-enum kernel_symbol_table_kind
-{
-  /// This is for an undefined kind of kernel symbol table.
-  KERNEL_SYMBOL_TABLE_KIND_UNDEFINED,
-
-  /// The __ksymtab symbol table.
-  KERNEL_SYMBOL_TABLE_KIND_KSYMTAB,
-
-  /// The __ksymtab_gpl symbol table.
-  KERNEL_SYMBOL_TABLE_KIND_KSYMTAB_GPL
-};
-
-/// An enum which specifies the format of the kernel symbol table
-/// (__ksymtab or __ksymtab_gpl).
-enum ksymtab_format
-{
-  /// This enumerator means that no __ksymtab format has been
-  /// determined yet.
-  UNDEFINED_KSYMTAB_FORMAT,
-
-  /// Before Linux v4.19, the format of the __ksymtab (and the
-  /// __ksymtab_gpl) section was the following.
-  ///
-  /// It's an array of entries.  Each entry describes a symbol.  Each
-  /// entry is made of two words.  each is of the word size of the
-  /// architecture. (8-bytes on a 64 bits arch and 4-bytes on a 32
-  /// bits arch) The first word is the address of a symbol.  The
-  /// second one is the address of a static global variable symbol
-  /// which value is the string representing the symbol name.  That
-  /// string is in the __ksymtab_strings section.
-  ///
-  /// So we are mostly interested in the symbol address part of each
-  /// entry.
-  ///
-  /// Thus this enumerator means that we have the pre v4.19 __ksymtab
-  /// section format.
-  PRE_V4_19_KSYMTAB_FORMAT,
-
-  /// Since, Linux v4.19, the format of the __ksymtab section has
-  /// changed.  The commit that changed is
-  /// https://github.com/torvalds/linux/commit/7290d58095712a89f845e1bca05334796dd49ed2.
-  ///
-  /// The __ksymtab and __ksymtab_gpl sections each are an array of
-  /// entries.  Each entry describes a symbol.  Each entry is made of
-  /// two words.  Each word is 4-bytes length.  The first word is the
-  /// 'place-relative' address of a symbol.  The second one is the
-  /// 'place-relative' address of a static global variable symbol
-  /// which value is the string representing the symbol name.  That
-  /// string is in the __ksymtab_strings section.
-  ///
-  /// Below is the description of what a "place-relative address"
-  /// means.  For that, we are going to define the meaning of four
-  /// values: 'N', 'S', 'O', and 'A'.
-  ///
-  /// *** 'N' and '0' ***
-  /// Suppose 'N' is the value of the number stored at offset 'O' (big
-  /// oh, not zero) in the __ksymtab section.
-  ///
-  /// *** 'S'***
-  /// That N designates a symbol in the symtab section which value is
-  /// S.  So S is the symbol value (in the .symtab symbol table)
-  /// referred to by the number N found at offset 'O'.
-  ///
-  /// *** 'A' ***
-  /// Also, suppose the __ksymtab section will be loaded at memory
-  /// address A, as indicated by the 'address' field of the section
-  /// header describing the __ksymtab section.
-  ///
-  /// So here is the formula that gives us S, from N:
-  ///
-  ///     S = N + O + A.
-  ///
-  /// Storing addresses this way does away with the need to have
-  /// relocations for the __ksymtab section.  So in effect, vmlinux
-  /// binaries implementing this new format of __ksymtab won't have
-  /// any .rela__ksymtab relocation section for the __ksymtab section
-  /// in particular (nor any relocation section at all).
-  ///
-  ///
-  /// Note that we are mostly interested in the symbol address part of
-  /// each entry.
-  V4_19_KSYMTAB_FORMAT
-}; // end enum ksymtab_format
-
 /// The context used to build ABI corpus from debug info in DWARF
 /// format.
 ///
@@ -2011,7 +1921,6 @@ public:
     environment*	env;
     bool		load_in_linux_kernel_mode;
     bool		load_all_types;
-    bool		ignore_symbol_table;
     bool		show_stats;
     bool		do_log;
 
@@ -2019,7 +1928,6 @@ public:
       : env(),
 	load_in_linux_kernel_mode(),
 	load_all_types(),
-	ignore_symbol_table(),
 	show_stats(),
 	do_log()
     {}
@@ -2216,19 +2124,6 @@ public:
   offset_offset_map_type	alternate_die_parent_map_;
   offset_offset_map_type	type_section_die_parent_map_;
   list<var_decl_sptr>		var_decls_to_add_;
-  addr_elf_symbol_sptr_map_sptr fun_addr_sym_map_;
-  // On PPC64, the function entry point address is different from the
-  // GElf_Sym::st_value value, which is the address of the descriptor
-  // of the function.  The map below thus associates the address of
-  // the entry point to the function symbol.  If we are not on ppc64,
-  // then this map ought to be empty.  Only the fun_addr_sym_map_ is
-  // used in that case.  On ppc64, though, both maps are used.
-  addr_elf_symbol_sptr_map_sptr fun_entry_addr_sym_map_;
-  string_elf_symbols_map_sptr	fun_syms_;
-  addr_elf_symbol_sptr_map_sptr var_addr_sym_map_;
-  string_elf_symbols_map_sptr	var_syms_;
-  string_elf_symbols_map_sptr	undefined_fun_syms_;
-  string_elf_symbols_map_sptr	undefined_var_syms_;
   vector<string>		dt_needed_;
   string			dt_soname_;
   string			elf_architecture_;
@@ -2364,13 +2259,6 @@ public:
     alternate_die_parent_map_.clear();
     type_section_die_parent_map_.clear();
     var_decls_to_add_.clear();
-    fun_addr_sym_map_.reset();
-    fun_entry_addr_sym_map_.reset();
-    fun_syms_.reset();
-    var_addr_sym_map_.reset();
-    var_syms_.reset();
-    undefined_fun_syms_.reset();
-    undefined_var_syms_.reset();
     dt_needed_.clear();
     dt_soname_.clear();
     elf_architecture_.clear();
@@ -5347,88 +5235,6 @@ public:
     return true;
   }
 
-  /// Given the index of a symbol into the symbol table of an ELF
-  /// file, look the symbol up, build an instace of @ref elf_symbol
-  /// and return it.
-  ///
-  /// @param symbol_index the index of the symbol into the symbol
-  /// table of the current elf file.
-  ///
-  /// @return the elf symbol found or nil if none was found.
-  elf_symbol_sptr
-  lookup_elf_symbol_from_index(size_t symbol_index)
-  {
-    GElf_Sym s;
-    elf_symbol_sptr result =
-      lookup_elf_symbol_from_index(symbol_index, s);
-    return result;
-  }
-
-  /// Lookup an ELF symbol given its index into the .symtab section.
-  ///
-  /// This function returns both the native symbol (from libelf) and
-  /// the @p abigail::ir::elf_symbol instance, which is the
-  /// libabigail-specific representation of the symbol.
-  ///
-  /// @param symbol_index the index of the symbol to look for.
-  ///
-  /// @param native_sym output parameter.  This is set to the native
-  /// ELF symbol found iff the function returns a non-nil value.
-  ///
-  /// @return an instance of libabigail::ir::elf_symbol representing
-  /// the ELF symbol found, iff one was found.  Otherwise, returns
-  /// nil.
-  elf_symbol_sptr
-  lookup_elf_symbol_from_index(size_t symbol_index,
-			       GElf_Sym &native_sym)
-  {
-    if (!lookup_native_elf_symbol_from_index(symbol_index, native_sym))
-      return elf_symbol_sptr();
-
-    Elf_Scn* symtab_section = find_symbol_table_section();
-    if (!symtab_section)
-      return elf_symbol_sptr();
-
-    GElf_Shdr header_mem;
-    GElf_Shdr* symtab_sheader = gelf_getshdr(symtab_section,
-					     &header_mem);
-
-    Elf_Data* symtab = elf_getdata(symtab_section, 0);
-    ABG_ASSERT(symtab);
-
-    bool sym_is_defined = native_sym.st_shndx != SHN_UNDEF;
-    bool sym_is_common = native_sym.st_shndx == SHN_COMMON; // this occurs in
-							    // relocatable
-							    // files.
-    const char* name_str = elf_strptr(elf_handle(),
-				      symtab_sheader->sh_link,
-				      native_sym.st_name);
-    if (name_str == 0)
-      name_str = "";
-
-    elf_symbol::version ver;
-    elf_helpers::get_version_for_symbol(elf_handle(), symbol_index,
-					sym_is_defined, ver);
-
-    elf_symbol::visibility vis =
-      stv_to_elf_symbol_visibility(GELF_ST_VISIBILITY(native_sym.st_other));
-
-    Elf_Scn* strings_section = find_ksymtab_strings_section(elf_handle());
-    size_t strings_ndx = strings_section
-      ? elf_ndxscn(strings_section)
-      : 0;
-
-    elf_symbol_sptr sym =
-      elf_symbol::create(env(), symbol_index, native_sym.st_size,
-			 name_str, stt_to_elf_symbol_type
-			 (GELF_ST_TYPE(native_sym.st_info)),
-			 stb_to_elf_symbol_binding
-			 (GELF_ST_BIND(native_sym.st_info)),
-			 sym_is_defined, sym_is_common, ver, vis,
-			 native_sym.st_shndx == strings_ndx);
-    return sym;
-  }
-
   /// Test if a given function symbol has been exported.
   ///
   /// @param symbol_address the address of the symbol we are looking
@@ -5512,102 +5318,6 @@ public:
     return symtab_;
   }
 
-  /// Getter for a pointer to the map that associates the address of
-  /// an entry point of a function with the symbol of that function.
-  ///
-  /// Note that on non-"PPC64 ELFv1" binaries, this map is the same as
-  /// the one that assciates the address of a function with the symbol
-  /// of that function.
-  ///
-  /// @return a pointer to the map that associates the address of an
-  /// entry point of a function with the symbol of that function.
-  addr_elf_symbol_sptr_map_sptr&
-  fun_entry_addr_sym_map_sptr()
-  {
-    if (!fun_entry_addr_sym_map_ && !fun_addr_sym_map_)
-      maybe_load_symbol_maps();
-    if (architecture_is_ppc64(elf_handle()))
-      return fun_entry_addr_sym_map_;
-    return fun_addr_sym_map_;
-  }
-
-  /// Getter for the map that associates the address of an entry point
-  /// of a function with the symbol of that function.
-  ///
-  /// Note that on non-"PPC64 ELFv1" binaries, this map is the same as
-  /// the one that assciates the address of a function with the symbol
-  /// of that function.
-  ///
-  /// @return the map that associates the address of an entry point of
-  /// a function with the symbol of that function.
-  addr_elf_symbol_sptr_map_type&
-  fun_entry_addr_sym_map()
-  {return *fun_entry_addr_sym_map_sptr();}
-
-  /// Getter for the map of function symbols (name -> sym).
-  ///
-  /// @return a shared pointer to the map of function symbols.
-  const string_elf_symbols_map_sptr&
-  fun_syms_sptr() const
-  {
-    maybe_load_symbol_maps();
-    return fun_syms_;
-  }
-
-  /// Getter for the map of function symbols (name -> sym).
-  ///
-  /// @return a reference to the map of function symbols.
-  string_elf_symbols_map_type&
-  fun_syms()
-  {
-    maybe_load_symbol_maps();
-    return *fun_syms_;
-  }
-
-  /// Getter for the map of variable symbols (name -> sym)
-  ///
-  /// @return a shared pointer to the map of variable symbols.
-  const string_elf_symbols_map_sptr
-  var_syms_sptr() const
-  {
-    maybe_load_symbol_maps();
-    return var_syms_;
-  }
-
-  /// Getter for the map of variable symbols (name -> sym)
-  ///
-  /// @return a reference to the map of variable symbols.
-  string_elf_symbols_map_type&
-  var_syms()
-  {
-    maybe_load_symbol_maps();
-    return *var_syms_;
-  }
-
-  /// Getter for the map of undefined function symbols (name -> vector
-  /// of symbols).
-  ///
-  /// @return a (smart) pointer to the map of undefined function
-  /// symbols.
-  const string_elf_symbols_map_sptr&
-  undefined_fun_syms_sptr() const
-  {
-    maybe_load_symbol_maps();
-    return undefined_fun_syms_;
-  }
-
-  /// Getter for the map of undefined variable symbols (name -> vector
-  /// of symbols).
-  ///
-  /// @return a (smart) pointer to the map of undefined variable
-  /// symbols.
-  const string_elf_symbols_map_sptr&
-  undefined_var_syms_sptr() const
-  {
-    maybe_load_symbol_maps();
-    return undefined_var_syms_;
-  }
-
   /// Getter for the ELF dt_needed tag.
   const vector<string>&
   dt_needed() const
@@ -5623,238 +5333,6 @@ public:
   elf_architecture() const
   {return elf_architecture_;}
 
-  /// Load the maps address -> function symbol, address -> variable
-  /// symbol and the maps of function and variable undefined symbols.
-  ///
-  /// @param load_fun_map whether to load the address to function map.
-  ///
-  /// @param load_var_map whether to laod the address to variable map.
-  ///
-  /// @param load_undefined_fun_map whether to load the undefined
-  /// function map.
-  ///
-  /// @param load_undefined_var_map whether to laod the undefined
-  /// variable map.
-  ///
-  /// @return return true iff the maps have be loaded.
-  bool
-  load_symbol_maps_from_symtab_section(bool load_fun_map,
-				       bool load_var_map,
-				       bool load_undefined_fun_map,
-				       bool load_undefined_var_map)
-  {
-    Elf_Scn* symtab_section = find_symbol_table_section();
-    if (!symtab_section)
-      return false;
-
-    GElf_Shdr header_mem;
-    GElf_Shdr* symtab_sheader = gelf_getshdr(symtab_section,
-					     &header_mem);
-
-    // check for bogus section header
-    if (symtab_sheader->sh_entsize == 0)
-      return false;
-
-    size_t nb_syms = symtab_sheader->sh_size / symtab_sheader->sh_entsize;
-
-    Elf_Data* symtab = elf_getdata(symtab_section, 0);
-    if (!symtab)
-      return false;
-
-    GElf_Ehdr elf_header;
-    ABG_ASSERT(gelf_getehdr(elf_handle(), &elf_header));
-
-    bool is_ppc64 = architecture_is_ppc64(elf_handle());
-    bool is_arm32 = architecture_is_arm32(elf_handle());
-
-    for (size_t i = 0; i < nb_syms; ++i)
-      {
-	GElf_Sym* sym, sym_mem;
-	sym = gelf_getsym(symtab, i, &sym_mem);
-	ABG_ASSERT(sym);
-
-	if ((load_fun_map || load_undefined_fun_map)
-	    && (GELF_ST_TYPE(sym->st_info) == STT_FUNC
-		|| GELF_ST_TYPE(sym->st_info) == STT_GNU_IFUNC))
-	  {
-	    elf_symbol_sptr symbol = lookup_elf_symbol_from_index(i);
-	    ABG_ASSERT(symbol);
-	    ABG_ASSERT(symbol->is_function());
-
-	    // If the symbol was suppressed by a suppression
-	    // specification then drop it on the floor.
-	    if (is_elf_symbol_suppressed(symbol))
-	      continue;
-
-	    if (load_fun_map && symbol->is_public())
-	      {
-		(*fun_syms_)[symbol->get_name()].push_back(symbol);
-
-		{
-		  GElf_Addr symbol_value =
-		      maybe_adjust_et_rel_sym_addr_to_abs_addr(elf_handle(),
-							       sym);
-
-		  if (is_arm32)
-		    // Clear bit zero of ARM32 addresses as per "ELF for the Arm
-		    // Architecture" section 5.5.3.
-		    // https://static.docs.arm.com/ihi0044/g/aaelf32.pdf
-		    symbol_value &= ~1;
-		  addr_elf_symbol_sptr_map_type::const_iterator it =
-		    fun_addr_sym_map_->find(symbol_value);
-		  if (it == fun_addr_sym_map_->end())
-		    (*fun_addr_sym_map_)[symbol_value] = symbol;
-		  else //if (sym->st_value != 0)
-		    it->second->get_main_symbol()->add_alias(symbol);
-
-		  if (is_ppc64)
-		    {
-		      // For ppc64 ELFv1 binaries, we need to build a
-		      // function entry point address -> function
-		      // symbol map.  This is in addition to the
-		      // function pointer -> symbol map.  This is
-		      // because on ppc64 ELFv1, a function pointer is
-		      // different from a function entry point
-		      // address.
-		      //
-		      // On ppc64 ELFv1, the DWARF DIE of a function
-		      // references the address of the entry point of
-		      // the function symbol; whereas the value of the
-		      // function symbol is the function pointer.  As
-		      // these addresses are different, if I we want
-		      // to get to the symbol of a function from its
-		      // entry point address (as referenced by DWARF
-		      // function DIEs) we must have the two maps I
-		      // mentionned right above.
-		      //
-		      // In other words, we need a map that associates
-		      // a function enty point address with the symbol
-		      // of that function, to be able to get the
-		      // function symbol that corresponds to a given
-		      // function DIE, on ppc64.
-		      //
-		      // The value of the function pointer (the value
-		      // of the symbol) usually refers to the offset
-		      // of a table in the .opd section.  But
-		      // sometimes, for a symbol named "foo", the
-		      // corresponding symbol named ".foo" (note the
-		      // dot before foo) which value is the entry
-		      // point address of the function; that entry
-		      // point address refers to a region in the .text
-		      // section.
-		      //
-		      // So we are only interested in values of the
-		      // symbol that are in the .opd section.
-		      GElf_Addr fn_desc_addr = sym->st_value;
-		      GElf_Addr fn_entry_point_addr =
-			lookup_ppc64_elf_fn_entry_point_address(elf_handle(),
-								fn_desc_addr);
-		      addr_elf_symbol_sptr_map_type::const_iterator it2 =
-			fun_entry_addr_sym_map().find(fn_entry_point_addr);
-
-		      if (it2 == fun_entry_addr_sym_map().end())
-			fun_entry_addr_sym_map()[fn_entry_point_addr] = symbol;
-		      else if (address_is_in_opd_section(elf_handle(),
-							 fn_desc_addr))
-			{
-			  // Either
-			  //
-			  // 'symbol' must have been registered as an
-			  // alias for it2->second->get_main_symbol(),
-			  // right before the "if (ppc64)" statement.
-			  //
-			  // Or
-			  //
-			  // if the name of 'symbol' is foo, then the
-			  // name of it2->second is ".foo".  That is,
-			  // foo is the name of the symbol when it
-			  // refers to the function descriptor in the
-			  // .opd section and ".foo" is an internal
-			  // name for the address of the entry point
-			  // of foo.
-			  //
-			  // In the latter case, we just want to keep
-			  // a refernce to "foo" as .foo is an
-			  // internal name.
-
-			  bool two_symbols_alias =
-			    it2->second->get_main_symbol()->does_alias(*symbol);
-			  bool symbol_is_foo_and_prev_symbol_is_dot_foo =
-			    (it2->second->get_name()
-			     == string(".") + symbol->get_name());
-
-			  ABG_ASSERT(two_symbols_alias
-				 || symbol_is_foo_and_prev_symbol_is_dot_foo);
-
-			  if (symbol_is_foo_and_prev_symbol_is_dot_foo)
-			    // Let's just keep a reference of the
-			    // symbol that the user sees in the source
-			    // code (the one named foo).  The symbol
-			    // which name is prefixed with a "dot" is
-			    // an artificial one.
-			    fun_entry_addr_sym_map()[fn_entry_point_addr] = symbol;
-			}
-		    }
-		}
-	      }
-	    else if (load_undefined_fun_map && !symbol->is_defined())
-	      (*undefined_fun_syms_)[symbol->get_name()].push_back(symbol);
-	  }
-	else if ((load_var_map || load_undefined_var_map)
-		 && (GELF_ST_TYPE(sym->st_info) == STT_OBJECT
-		     || GELF_ST_TYPE(sym->st_info) == STT_TLS)
-		 // If the symbol is for an OBJECT, the index of the
-		 // section it refers to cannot be absolute.
-		 // Otherwise that OBJECT is not a variable.
-		 && (sym->st_shndx != SHN_ABS
-		     || GELF_ST_TYPE(sym->st_info) != STT_OBJECT ))
-	  {
-	    elf_symbol_sptr symbol = lookup_elf_symbol_from_index(i);
-	    ABG_ASSERT(symbol);
-	    ABG_ASSERT(symbol->is_variable());
-
-	    if (load_var_map && symbol->is_public())
-	      {
-		(*var_syms_)[symbol->get_name()].push_back(symbol);
-
-		if (symbol->is_common_symbol())
-		  {
-		    string_elf_symbols_map_type::iterator it =
-		      var_syms_->find(symbol->get_name());
-		    ABG_ASSERT(it != var_syms_->end());
-		    const elf_symbols& common_sym_instances = it->second;
-		    ABG_ASSERT(!common_sym_instances.empty());
-		    if (common_sym_instances.size() > 1)
-		      {
-			elf_symbol_sptr main_common_sym =
-			  common_sym_instances[0];
-			ABG_ASSERT(main_common_sym->get_name()
-			       == symbol->get_name());
-			ABG_ASSERT(main_common_sym->is_common_symbol());
-			ABG_ASSERT(symbol.get() != main_common_sym.get());
-			main_common_sym->add_common_instance(symbol);
-		      }
-		  }
-		else
-		  {
-		    GElf_Addr symbol_value =
-			maybe_adjust_et_rel_sym_addr_to_abs_addr(elf_handle(),
-								 sym);
-		    addr_elf_symbol_sptr_map_type::const_iterator it =
-		      var_addr_sym_map_->find(symbol_value);
-		    if (it == var_addr_sym_map_->end())
-		      (*var_addr_sym_map_)[symbol_value] = symbol;
-		    else
-		      it->second->get_main_symbol()->add_alias(symbol);
-		  }
-	      }
-	    else if (load_undefined_var_map && !symbol->is_defined())
-	      (*undefined_var_syms_)[symbol->get_name()].push_back(symbol);
-	  }
-      }
-    return true;
-  }
-
   /// Test if a given ELF symbol was suppressed by a suppression
   /// specification.
   ///
@@ -5868,71 +5346,6 @@ public:
 	    && suppr::is_elf_symbol_suppressed(*this,
 					       symbol->get_name(),
 					       symbol->get_type()));
-  }
-
-  /// Load the maps of function symbol address -> function symbol,
-  /// global variable symbol address -> variable symbol and also the
-  /// maps of function and variable undefined symbols.
-  ///
-  /// All these maps are loaded only if they are not loaded already.
-  ///
-  /// @return true iff everything went fine.
-  bool
-  load_symbol_maps()
-  {
-    bool load_fun_map = !fun_addr_sym_map_ ;
-    bool load_var_map = !var_addr_sym_map_;
-    bool load_undefined_fun_map = !undefined_fun_syms_;
-    bool load_undefined_var_map = !undefined_var_syms_;
-
-    if (!fun_syms_)
-      fun_syms_.reset(new string_elf_symbols_map_type);
-
-    if (!fun_addr_sym_map_)
-      fun_addr_sym_map_.reset(new addr_elf_symbol_sptr_map_type);
-
-    if (!fun_entry_addr_sym_map_ && architecture_is_ppc64(elf_handle()))
-      fun_entry_addr_sym_map_.reset(new addr_elf_symbol_sptr_map_type);
-
-    if (!var_syms_)
-      var_syms_.reset(new string_elf_symbols_map_type);
-
-    if (!var_addr_sym_map_)
-      var_addr_sym_map_.reset(new addr_elf_symbol_sptr_map_type);
-
-    if (!undefined_fun_syms_)
-      undefined_fun_syms_.reset(new string_elf_symbols_map_type);
-
-    if (!undefined_var_syms_)
-      undefined_var_syms_.reset(new string_elf_symbols_map_type);
-
-    if (!options_.ignore_symbol_table)
-      {
-	if (load_symbol_maps_from_symtab_section(load_fun_map,
-						 load_var_map,
-						 load_undefined_fun_map,
-						 load_undefined_var_map))
-	    return true;
-	return false;
-      }
-    return true;
-  }
-
-  /// Load the symbol maps if necessary.
-  ///
-  /// @return true iff the symbol maps has been loaded by this
-  /// invocation.
-  bool
-  maybe_load_symbol_maps() const
-  {
-    if (!fun_addr_sym_map_
-	|| !var_addr_sym_map_
-	|| !fun_syms_
-	|| !var_syms_
-	|| !undefined_fun_syms_
-	|| !undefined_var_syms_)
-      return const_cast<read_context*>(this)->load_symbol_maps();
-    return false;
   }
 
   /// Load the DT_NEEDED and DT_SONAME elf TAGS.
@@ -6824,46 +6237,6 @@ set_drop_undefined_syms(read_context& ctxt, bool f)
 void
 set_do_log(read_context& ctxt, bool f)
 {ctxt.do_log(f);}
-
-/// Setter of the "set_ignore_symbol_table" flag.
-///
-/// This flag tells if we should load information about ELF symbol
-/// tables.  Not loading the symbol tables is a speed optimization
-/// that is done when the set of symbols we care about is provided
-/// off-hand.  This is the case when we are supposed to analyze a
-/// Linux kernel binary.  In that case, because we have the white list
-/// of functions/variable symbols we care about, we don't need to
-/// analyze the symbol table; things are thus faster in that case.
-///
-/// By default, the symbol table is analyzed so this boolean is set to
-/// false.
-///
-/// @param ctxt the read context to consider.
-///
-/// @param f the new value of the flag.
-void
-set_ignore_symbol_table(read_context &ctxt, bool f)
-{ctxt.options_.ignore_symbol_table = f;}
-
-/// Getter of the "set_ignore_symbol_table" flag.
-///
-/// This flag tells if we should load information about ELF symbol
-/// tables.  Not loading the symbol tables is a speed optimization
-/// that is done when the set of symbols we care about is provided
-/// off-hand.  This is the case when we are supposed to analyze a
-/// Linux kernel binary.  In that case, because we have the white list
-/// of functions/variable symbols we care about, we don't need to
-/// analyze the symbol table; things are thus faster in that case.
-///
-/// By default, the symbol table is analyzed so this boolean is set to
-/// false.
-///
-/// @param ctxt the read context to consider.
-///
-/// @return the value of the flag.
-bool
-get_ignore_symbol_table(const read_context& ctxt)
-{return ctxt.options_.ignore_symbol_table;}
 
 /// Test if a given DIE is anonymous
 ///
@@ -14245,33 +13618,6 @@ build_or_get_var_decl_if_not_suppressed(read_context&	ctxt,
   return var;
 }
 
-/// Create a variable symbol with a given name.
-///
-/// @param sym_name the name of the variable symbol.
-///
-/// @param env the environment to create the default symbol in.
-///
-/// @return the newly created symbol.
-static elf_symbol_sptr
-create_default_var_sym(const string& sym_name, const environment *env)
-{
-  elf_symbol::version ver;
-  elf_symbol::visibility vis = elf_symbol::DEFAULT_VISIBILITY;
-  elf_symbol_sptr result =
-    elf_symbol::create(env,
-		       /*symbol index=*/ 0,
-		       /*symbol size=*/ 0,
-		       sym_name,
-		       /*symbol type=*/ elf_symbol::OBJECT_TYPE,
-		       /*symbol binding=*/ elf_symbol::GLOBAL_BINDING,
-		       /*symbol is defined=*/ true,
-		       /*symbol is common=*/ false,
-		       /*symbol version=*/ ver,
-		       /*symbol_visibility=*/vis,
-		       /*is_linux_string_cst=*/false);
-  return result;
-}
-
 /// Build a @ref var_decl out of a DW_TAG_variable DIE.
 ///
 /// @param ctxt the read context to use.
@@ -14343,23 +13689,9 @@ build_var_decl(read_context&	ctxt,
   if (!result->get_symbol())
     {
       elf_symbol_sptr var_sym;
-      if (get_ignore_symbol_table(ctxt))
-	{
-	  string var_name =
-	    result->get_linkage_name().empty()
-	    ? result->get_name()
-	    : result->get_linkage_name();
-
-	  var_sym = create_default_var_sym(var_name, ctxt.env());
-	  ABG_ASSERT(var_sym);
-	  add_symbol_to_map(var_sym, ctxt.var_syms());
-	}
-      else
-	{
-	  Dwarf_Addr var_addr;
-	  if (ctxt.get_variable_address(die, var_addr))
-	    var_sym = var_sym = ctxt.variable_symbol_is_exported(var_addr);
-	}
+      Dwarf_Addr      var_addr;
+      if (ctxt.get_variable_address(die, var_addr))
+	var_sym = ctxt.variable_symbol_is_exported(var_addr);
 
       if (var_sym)
 	{
@@ -14423,15 +13755,9 @@ function_is_suppressed(const read_context& ctxt,
       Dwarf_Addr fn_addr;
       if (!ctxt.get_function_address(function_die, fn_addr))
 	return true;
-      if (!get_ignore_symbol_table(ctxt))
-	{
-	  // We were not instructed to ignore (avoid loading) the
-	  // symbol table, so we can rely on its presence to see if
-	  // the address corresponds to the address of an exported
-	  // function symbol.
-	  if (!ctxt.function_symbol_is_exported(fn_addr))
-	    return true;
-	}
+
+      if (!ctxt.function_symbol_is_exported(fn_addr))
+	return true;
     }
 
   return suppr::function_is_suppressed(ctxt, qualified_name,
@@ -14538,15 +13864,9 @@ variable_is_suppressed(const read_context& ctxt,
       Dwarf_Addr var_addr = 0;
       if (!ctxt.get_variable_address(variable_die, var_addr))
 	return true;
-      if (!get_ignore_symbol_table(ctxt))
-	{
-	  // We were not instructed to ignore (avoid loading) the
-	  // symbol table, so we can rely on its presence to see if
-	  // the address corresponds to the address of an exported
-	  // variable symbol.
-	  if (!ctxt.variable_symbol_is_exported(var_addr))
-	    return true;
-	}
+
+      if (!ctxt.variable_symbol_is_exported(var_addr))
+	return true;
     }
 
   return suppr::variable_is_suppressed(ctxt, qualified_name,
@@ -14829,23 +14149,9 @@ build_function_decl(read_context&	ctxt,
   if (!result->get_symbol())
     {
       elf_symbol_sptr fn_sym;
-      if (get_ignore_symbol_table(ctxt))
-	{
-	  string fn_name =
-	    result->get_linkage_name().empty()
-	    ? result->get_name()
-	    : result->get_linkage_name();
-
-	  fn_sym = create_default_fn_sym(fn_name, ctxt.env());
-	  ABG_ASSERT(fn_sym);
-	  add_symbol_to_map(fn_sym, ctxt.fun_syms());
-	}
-      else
-	{
-	  Dwarf_Addr fn_addr;
-	  if (ctxt.get_function_address(die, fn_addr))
-	    fn_sym = ctxt.function_symbol_is_exported(fn_addr);
-	}
+      Dwarf_Addr      fn_addr;
+      if (ctxt.get_function_address(die, fn_addr))
+	fn_sym = ctxt.function_symbol_is_exported(fn_addr);
 
       if (fn_sym && !ctxt.symbol_already_belongs_to_a_function(fn_sym))
 	{
@@ -14873,29 +14179,6 @@ build_function_decl(read_context&	ctxt,
     // names and no elf symbol that need to be fixed up.
     ctxt.die_function_decl_with_no_symbol_map().erase(die_offset);
   return result;
-}
-
-/// Add a symbol to a symbol map.
-///
-/// @param sym the symbol to add.
-///
-/// @param map the symbol map to add the symbol into.
-static void
-add_symbol_to_map(const elf_symbol_sptr& sym,
-		  string_elf_symbols_map_type& map)
-{
-  if (!sym)
-    return;
-
-  string_elf_symbols_map_type::iterator it = map.find(sym->get_name());
-  if (it == map.end())
-    {
-      elf_symbols syms;
-      syms.push_back(sym);
-      map[sym->get_name()] = syms;
-    }
-  else
-    it->second.push_back(sym);
 }
 
 /// Read all @ref abigail::translation_unit possible from the debug info
@@ -16219,13 +15502,6 @@ read_corpus_from_elf(read_context& ctxt, status& status)
   }
 
   ctxt.load_elf_properties();  // DT_SONAME, DT_NEEDED, architecture
-
-  if (!get_ignore_symbol_table(ctxt))
-    {
-      // Read the symbols for publicly defined decls
-      if (!ctxt.load_symbol_maps())
-	status |= STATUS_NO_SYMBOLS_FOUND;
-    }
 
   if (!ctxt.symtab() || !ctxt.symtab()->has_symbols())
     status |= STATUS_NO_SYMBOLS_FOUND;
