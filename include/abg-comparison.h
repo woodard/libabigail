@@ -382,7 +382,7 @@ enum diff_category
 
   /// This means that a diff node in the sub-tree carries an a symbol
   /// alias change that is harmless.
-  HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY = 1 << 6,
+  HARMLESS_SYMBOL_ALIAS_CHANGE_CATEGORY = 1 << 6,
 
   /// This means that a diff node in the sub-tree carries a harmless
   /// union change.
@@ -459,7 +459,7 @@ enum diff_category
   | NON_VIRT_MEM_FUN_CHANGE_CATEGORY
   | STATIC_DATA_MEMBER_CHANGE_CATEGORY
   | HARMLESS_ENUM_CHANGE_CATEGORY
-  | HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY
+  | HARMLESS_SYMBOL_ALIAS_CHANGE_CATEGORY
   | HARMLESS_UNION_CHANGE_CATEGORY
   | HARMLESS_DATA_MEMBER_CHANGE_CATEGORY
   | SUPPRESSED_CATEGORY

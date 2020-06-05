@@ -1549,7 +1549,7 @@ categorize_harmless_diff_node(diff *d, bool pre)
 	category |= HARMLESS_ENUM_CHANGE_CATEGORY;
 
       if (function_name_changed_but_not_symbol(d))
-	category |= HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY;
+	category |= HARMLESS_SYMBOL_ALIAS_CHANGE_CATEGORY;
 
       if (has_fn_parm_type_top_cv_qual_change(d))
 	category |= FN_PARM_TYPE_TOP_CV_CHANGE_CATEGORY;

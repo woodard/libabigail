@@ -289,7 +289,7 @@ create_diff_context(const options& opts)
      | abigail::comparison::NON_VIRT_MEM_FUN_CHANGE_CATEGORY
      | abigail::comparison::STATIC_DATA_MEMBER_CHANGE_CATEGORY
      | abigail::comparison::HARMLESS_ENUM_CHANGE_CATEGORY
-     | abigail::comparison::HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY);
+     | abigail::comparison::HARMLESS_SYMBOL_ALIAS_CHANGE_CATEGORY);
 
   // Load suppression specifications, if there are any.
   suppressions_type supprs;

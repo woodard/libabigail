@@ -2954,7 +2954,7 @@ get_default_harmless_categories_bitmap()
 	  | abigail::comparison::NON_VIRT_MEM_FUN_CHANGE_CATEGORY
 	  | abigail::comparison::STATIC_DATA_MEMBER_CHANGE_CATEGORY
 	  | abigail::comparison::HARMLESS_ENUM_CHANGE_CATEGORY
-	  | abigail::comparison::HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY
+	  | abigail::comparison::HARMLESS_SYMBOL_ALIAS_CHANGE_CATEGORY
 	  | abigail::comparison::HARMLESS_UNION_CHANGE_CATEGORY
 	  | abigail::comparison::HARMLESS_DATA_MEMBER_CHANGE_CATEGORY
 	  | abigail::comparison::CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY
@@ -3052,11 +3052,11 @@ operator<<(ostream& o, diff_category c)
       emitted_a_category |= true;
     }
 
-  if (c & HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY)
+  if (c & HARMLESS_SYMBOL_ALIAS_CHANGE_CATEGORY)
     {
       if (emitted_a_category)
 	o << "|";
-      o << "HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY";
+      o << "HARMLESS_SYMBOL_ALIAS_CHANGE_CATEGORY";
       emitted_a_category |= true;
     }
 
@@ -3064,7 +3064,7 @@ operator<<(ostream& o, diff_category c)
     {
       if (emitted_a_category)
 	o << "|";
-      o << "HARMLESS_UNION_CHANGE_CATEORY";
+      o << "HARMLESS_UNION_CHANGE_CATEGORY";
       emitted_a_category |= true;
     }
 
