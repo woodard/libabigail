@@ -72,8 +72,6 @@
 #include <assert.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include <elf.h>
-#include <elfutils/libdw.h>
 
 // If fts.h is included before config.h, its indirect inclusions may
 // not give us the right LFS aliases of these functions, so map them
