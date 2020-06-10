@@ -212,6 +212,33 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-fun-param-report.txt",
     "output/test-abidiff-exit/test-fun-param-report.txt"
   },
+  {
+    "data/test-abidiff-exit/test-decl-enum-v0.o",
+    "data/test-abidiff-exit/test-decl-enum-v1.o",
+    "",
+    "--harmless",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    "data/test-abidiff-exit/test-decl-enum-report.txt",
+    "output/test-abidiff-exit/test-decl-enum-report.txt"
+  },
+  {
+    "data/test-abidiff-exit/test-decl-enum-v0.o",
+    "data/test-abidiff-exit/test-decl-enum-v1.o",
+    "",
+    "",
+    abigail::tools_utils::ABIDIFF_OK,
+    "data/test-abidiff-exit/test-decl-enum-report-2.txt",
+    "output/test-abidiff-exit/test-decl-enum-report-2.txt"
+  },
+  {
+    "data/test-abidiff-exit/test-decl-enum-v0.o",
+    "data/test-abidiff-exit/test-decl-enum-v1.o",
+    "",
+    "--leaf-changes-only",
+    abigail::tools_utils::ABIDIFF_OK,
+    "data/test-abidiff-exit/test-decl-enum-report-3.txt",
+    "output/test-abidiff-exit/test-decl-enum-report-3.txt"
+  },
   {0, 0, 0 ,0,  abigail::tools_utils::ABIDIFF_OK, 0, 0}
 };
 

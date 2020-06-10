@@ -158,6 +158,13 @@ test-abidiff-exit/test-fun-param-v0.o \
 test-abidiff-exit/test-fun-param-v1.abi \
 test-abidiff-exit/test-fun-param-v1.c \
 test-abidiff-exit/test-fun-param-v1.o \
+test-abidiff-exit/test-decl-enum-v0.c \
+test-abidiff-exit/test-decl-enum-v0.o \
+test-abidiff-exit/test-decl-enum-v1.c \
+test-abidiff-exit/test-decl-enum-v1.o \
+test-abidiff-exit/test-decl-enum-report.txt \
+test-abidiff-exit/test-decl-enum-report-2.txt \
+test-abidiff-exit/test-decl-enum-report-3.txt \
 \
 test-diff-dwarf/test0-v0.cc		\
 test-diff-dwarf/test0-v0.o			\
