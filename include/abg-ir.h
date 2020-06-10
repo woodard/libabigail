@@ -1553,6 +1553,27 @@ public:
   void
   set_visibility(visibility v);
 
+  const decl_base_sptr
+  get_earlier_declaration() const;
+
+  void
+  set_earlier_declaration(const decl_base_sptr&);
+
+  const decl_base_sptr
+  get_definition_of_declaration() const;
+
+  void
+  set_definition_of_declaration(const decl_base_sptr&);
+
+  const decl_base*
+  get_naked_definition_of_declaration() const;
+
+  bool
+  get_is_declaration_only() const;
+
+  void
+  set_is_declaration_only(bool f);
+
   friend type_base_sptr
   canonicalize(type_base_sptr);
 
@@ -3776,27 +3797,6 @@ public:
   void
   set_naming_typedef(const typedef_decl_sptr&);
 
-  bool
-  get_is_declaration_only() const;
-
-  void
-  set_is_declaration_only(bool f);
-
-  void
-  set_definition_of_declaration(class_or_union_sptr);
-
-  const class_or_union_sptr
-  get_definition_of_declaration() const;
-
-  const class_or_union*
-  get_naked_definition_of_declaration() const;
-
-  decl_base_sptr
-  get_earlier_declaration() const;
-
-  void
-  set_earlier_declaration(decl_base_sptr declaration);
-
  void
   insert_member_type(type_base_sptr t,
 		     declarations::iterator before);
@@ -4019,12 +4019,6 @@ public:
 
   class_decl(const environment* env, const string& name, bool is_struct,
 	     bool is_declaration_only = true);
-
-  const class_decl_sptr
-  get_definition_of_declaration() const;
-
-  const class_decl*
-  get_naked_definition_of_declaration() const;
 
   virtual string
   get_pretty_representation(bool internal = false,

@@ -3416,6 +3416,10 @@ struct decl_base::priv
     interned_string	scoped_name_;
   interned_string	linkage_name_;
   visibility		visibility_;
+  decl_base_sptr	declaration_;
+  decl_base_wptr	definition_of_declaration_;
+  decl_base*		naked_definition_of_declaration_;
+  bool			is_declaration_only_;
 
   priv()
     : in_pub_sym_tab_(false),
@@ -3423,7 +3427,9 @@ struct decl_base::priv
       is_artificial_(false),
       has_anonymous_parent_(false),
       context_(),
-      visibility_(VISIBILITY_DEFAULT)
+      visibility_(VISIBILITY_DEFAULT),
+      naked_definition_of_declaration_(),
+      is_declaration_only_(false)
   {}
 
   priv(interned_string name, const location& locus,
@@ -3434,7 +3440,9 @@ struct decl_base::priv
       name_(name),
       qualified_name_(name),
       linkage_name_(linkage_name),
-      visibility_(vis)
+      visibility_(vis),
+      naked_definition_of_declaration_(),
+      is_declaration_only_(false)
   {
     is_anonymous_ = name_.empty();
     has_anonymous_parent_ = false;
@@ -3446,7 +3454,9 @@ struct decl_base::priv
       has_anonymous_parent_(false),
       location_(l),
       context_(),
-      visibility_(VISIBILITY_DEFAULT)
+      visibility_(VISIBILITY_DEFAULT),
+      naked_definition_of_declaration_(),
+      is_declaration_only_(false)
   {}
 
   ~priv()
@@ -3881,6 +3891,80 @@ const interned_string&
 decl_base::get_scoped_name() const
 {return priv_->scoped_name_;}
 
+/// If this @ref decl_base is a definition, get its earlier
+/// declaration.
+///
+/// @return the earlier declaration of the class, if any.
+const decl_base_sptr
+decl_base::get_earlier_declaration() const
+{return priv_->declaration_;}
+
+/// set the earlier declaration of this @ref decl_base definition.
+///
+/// @param d the earlier declaration to set.  Note that it's set only
+/// if it's a pure declaration.
+void
+decl_base::set_earlier_declaration(const decl_base_sptr& d)
+{
+  if (d && d->get_is_declaration_only())
+    priv_->declaration_ = d;
+}
+
+
+/// If this @ref decl_base is declaration-only, get its definition, if
+/// any.
+///
+/// @return the definition of this decl-only @ref decl_base.
+const decl_base_sptr
+decl_base::get_definition_of_declaration() const
+{return priv_->definition_of_declaration_.lock();}
+
+///  If this @ref decl_base is declaration-only, get its definition,
+///  if any.
+///
+/// Note that this function doesn't return a smart pointer, but rather
+/// the underlying pointer managed by the smart pointer.  So it's as
+/// fast as possible.  This getter is to be used in code paths that
+/// are proven to be performance hot spots; especially, when comparing
+/// sensitive types like enums, classes or unions.  Those are compared
+/// extremely frequently and thus, their access to the definition of
+/// declaration must be fast.
+///
+/// @return the definition of the declaration.
+const decl_base*
+decl_base::get_naked_definition_of_declaration() const
+{return priv_->naked_definition_of_declaration_;}
+
+/// Test if a @ref decl_base is a declaration-only decl.
+///
+/// @return true iff the current @ref decl_base is declaration-only.
+bool
+decl_base::get_is_declaration_only() const
+{return priv_->is_declaration_only_;}
+
+/// Set a flag saying if the @ref enum_type_decl is a declaration-only
+/// @ref enum_type_decl.
+///
+/// @param f true if the @ref enum_type_decl is a declaration-only
+/// @ref enum_type_decl.
+void
+decl_base::set_is_declaration_only(bool f)
+{
+  bool update_types_lookup_map = !f && priv_->is_declaration_only_;
+
+  priv_->is_declaration_only_ = f;
+
+  if (update_types_lookup_map)
+    if (scope_decl* s = get_scope())
+      {
+	scope_decl::declarations::iterator i;
+	if (s->find_iterator_for_member(this, i))
+	  maybe_update_types_lookup_map(*i);
+	else
+	  ABG_ASSERT_NOT_REACHED;
+      }
+}
+
 change_kind
 operator|(change_kind l, change_kind r)
 {
@@ -4236,7 +4320,7 @@ operator!=(const type_base_sptr& l, const type_base_sptr& r)
 
 /// Tests if a declaration has got a scope.
 ///
-/// @param d the decalaration to consider.
+/// @param d the declaration to consider.
 ///
 /// @return true if the declaration has got a scope, false otherwise.
 bool
@@ -4245,7 +4329,7 @@ has_scope(const decl_base& d)
 
 /// Tests if a declaration has got a scope.
 ///
-/// @param d the decalaration to consider.
+/// @param d the declaration to consider.
 ///
 /// @return true if the declaration has got a scope, false otherwise.
 bool
@@ -6686,7 +6770,7 @@ get_location(const decl_base_sptr& decl)
       if (class_or_union_sptr c = is_class_or_union_type(decl))
 	if (c->get_is_declaration_only() && c->get_definition_of_declaration())
 	  {
-	    c = c->get_definition_of_declaration();
+	    c = is_class_or_union_type(c->get_definition_of_declaration());
 	    loc = c->get_location();
 	  }
     }
@@ -7925,6 +8009,40 @@ typedef_decl*
 is_typedef(type_base* t)
 {return dynamic_cast<typedef_decl*>(t);}
 
+/// Test if a type is an enum. This function looks through typedefs.
+///
+/// @parm t the type to consider.
+///
+/// @return the enum_decl if @p t is an @ref enum_decl or null
+/// otherwise.
+enum_type_decl_sptr
+is_compatible_with_enum_type(const type_base_sptr& t)
+{
+  if (!t)
+    return enum_type_decl_sptr();
+
+  // Normally we should strip typedefs entirely, but this is
+  // potentially costly, especially on binaries with huge changesets
+  // like the Linux Kernel.  So we just get the leaf types for now.
+  //
+  // Maybe there should be an option by which users accepts to pay the
+  // CPU usage toll in exchange for finer filtering?
+
+  // type_base_sptr ty = strip_typedef(t);
+  type_base_sptr ty = peel_typedef_type(t);;
+  return is_enum_type(ty);
+}
+
+/// Test if a type is an enum. This function looks through typedefs.
+///
+/// @parm t the type to consider.
+///
+/// @return the enum_decl if @p t is an @ref enum_decl or null
+/// otherwise.
+enum_type_decl_sptr
+is_compatible_with_enum_type(const decl_base_sptr& t)
+{return is_compatible_with_enum_type(is_type(t));}
+
 /// Test if a decl is an enum_type_decl
 ///
 /// @param d the decl to test for.
@@ -8267,27 +8385,22 @@ is_method_type(type_or_decl_base* t)
 /// If a class (or union) is a decl-only class, get its definition.
 /// Otherwise, just return the initial class.
 ///
-/// @param the_klass the class (or union) to consider.
+/// @param the_class the class (or union) to consider.
+///
+/// @return either the definition of the class, or the class itself.
+class_or_union*
+look_through_decl_only_class(class_or_union* the_class)
+{return is_class_or_union_type(look_through_decl_only(the_class));}
+
+/// If a class (or union) is a decl-only class, get its definition.
+/// Otherwise, just return the initial class.
+///
+/// @param the_class the class (or union) to consider.
 ///
 /// @return either the definition of the class, or the class itself.
 class_or_union_sptr
 look_through_decl_only_class(const class_or_union& the_class)
-{
-  class_or_union_sptr klass;
-  if (the_class.get_is_declaration_only())
-    klass = the_class.get_definition_of_declaration();
-
-  if (!klass)
-    return klass;
-
-  while (klass
-	 && klass->get_is_declaration_only()
-	 && klass->get_definition_of_declaration())
-    klass = klass->get_definition_of_declaration();
-
-  ABG_ASSERT(klass);
-  return klass;
-}
+{return is_class_or_union_type(look_through_decl_only(the_class));}
 
 /// If a class (or union) is a decl-only class, get its definition.
 /// Otherwise, just return the initial class.
@@ -8297,13 +8410,83 @@ look_through_decl_only_class(const class_or_union& the_class)
 /// @return either the definition of the class, or the class itself.
 class_or_union_sptr
 look_through_decl_only_class(class_or_union_sptr klass)
-{
-  if (!klass)
-    return klass;
+{return is_class_or_union_type(look_through_decl_only(klass));}
 
-  class_or_union_sptr result = look_through_decl_only_class(*klass);
+/// If an enum is a decl-only enum, get its definition.
+/// Otherwise, just return the initial enum.
+///
+/// @param the_enum the enum to consider.
+///
+/// @return either the definition of the enum, or the enum itself.
+enum_type_decl_sptr
+look_through_decl_only_enum(const enum_type_decl& the_enum)
+{return is_enum_type(look_through_decl_only(the_enum));}
+
+/// If an enum is a decl-only enum, get its definition.
+/// Otherwise, just return the initial enum.
+///
+/// @param enom the enum to consider.
+///
+/// @return either the definition of the enum, or the enum itself.
+enum_type_decl_sptr
+look_through_decl_only_enum(enum_type_decl_sptr enom)
+{return is_enum_type(look_through_decl_only(enom));}
+
+/// If a decl is decl-only get its definition.  Otherwise, just return nil.
+///
+/// @param d the decl to consider.
+///
+/// @return either the definition of the decl, or nil.
+decl_base_sptr
+look_through_decl_only(const decl_base& d)
+{
+  decl_base_sptr decl;
+  if (d.get_is_declaration_only())
+    decl = d.get_definition_of_declaration();
+
+  if (!decl)
+    return decl;
+
+  while (decl->get_is_declaration_only()
+	 && decl->get_definition_of_declaration())
+    decl = decl->get_definition_of_declaration();
+
+  return decl;
+}
+
+/// If a decl is decl-only enum, get its definition.  Otherwise, just
+/// return the initial decl.
+///
+/// @param d the decl to consider.
+///
+/// @return either the definition of the enum, or the decl itself.
+decl_base*
+look_through_decl_only(decl_base* d)
+{
+  if (!d)
+    return d;
+
+  decl_base* result = look_through_decl_only(*d).get();
   if (!result)
-    result = klass;
+    result = d;
+
+  return result;
+}
+
+/// If a decl is decl-only get its definition.  Otherwise, just return nil.
+///
+/// @param d the decl to consider.
+///
+/// @return either the definition of the decl, or nil.
+decl_base_sptr
+look_through_decl_only(const decl_base_sptr& d)
+{
+  if (!d)
+    return d;
+
+  decl_base_sptr result = look_through_decl_only(*d);
+  if (!result)
+    result = d;
 
   return result;
 }
@@ -8784,7 +8967,7 @@ lookup_union_type_per_location(const string& loc, const corpus& corp)
   return lookup_union_type_per_location(env->intern(loc), corp);
 }
 
-/// Lookup a enum type from a translation unit.
+/// Lookup an enum type from a translation unit.
 ///
 /// This is done by looking the type up in the type map that is
 /// maintained in the translation unit.  So this is as fast as
@@ -8802,7 +8985,7 @@ lookup_enum_type(const interned_string& type_name, const translation_unit& tu)
 					    tu.get_types().enum_types());
 }
 
-/// Lookup a enum type from a translation unit.
+/// Lookup an enum type from a translation unit.
 ///
 /// This is done by looking the type up in the type map that is
 /// maintained in the translation unit.  So this is as fast as
@@ -10004,7 +10187,7 @@ lookup_class_type(const interned_string& qualified_name, const corpus& corp)
 ///
 /// @param corp the corpus to look into.
 ///
-/// @return the vector of class types that which name is @p qualified_name.
+/// @return the vector of class types named @p qualified_name.
 const type_base_wptrs_type *
 lookup_class_types(const interned_string& qualified_name, const corpus& corp)
 {
@@ -10103,7 +10286,7 @@ lookup_union_type(const string& type_name, const corpus& corp)
   return lookup_union_type(s, corp);
 }
 
-/// Look into a given corpus to find a enum type which has the same
+/// Look into a given corpus to find an enum type which has the same
 /// qualified name as a given enum type.
 ///
 /// If the per-corpus type map is non-empty (because the corpus allows
@@ -10164,6 +10347,37 @@ lookup_enum_type(const interned_string& qualified_name, const corpus& corp)
     result = lookup_enum_type_through_translation_units(qualified_name, corp);
 
   return result;
+}
+
+/// Look into a given corpus to find the enum type*s* that have a
+/// given qualified name.
+///
+/// @param qualified_name the qualified name of the type to look for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the vector of enum types that which name is @p qualified_name.
+const type_base_wptrs_type *
+lookup_enum_types(const interned_string& qualified_name, const corpus& corp)
+{
+  const istring_type_base_wptrs_map_type& m = corp.get_types().enum_types();
+
+  return lookup_types_in_map(qualified_name, m);
+}
+
+/// Look into a given corpus to find the enum type*s* that have a
+/// given qualified name.
+///
+/// @param qualified_name the qualified name of the type to look for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the vector of enum types that which name is @p qualified_name.
+const type_base_wptrs_type*
+lookup_enum_types(const string& qualified_name, const corpus& corp)
+{
+  interned_string s = corp.get_environment()->intern(qualified_name);
+  return lookup_enum_types(s, corp);
 }
 
 /// Look up an @ref enum_type_decl from a given corpus, by its location.
@@ -10767,7 +10981,8 @@ maybe_update_types_lookup_map<class_decl>(const class_decl_sptr& class_type,
   bool update_qname_map = true;
   if (type->get_is_declaration_only())
     {
-      if (class_decl_sptr def = class_type->get_definition_of_declaration())
+      if (class_decl_sptr def =
+	  is_class_type(class_type->get_definition_of_declaration()))
 	type = def;
       else
 	update_qname_map = false;
@@ -11683,10 +11898,8 @@ types_defined_same_linux_kernel_corpus_public(const type_base& t1,
 
   // Look through declaration-only types.  That is, get the associated
   // definition type.
-  if (c1 && c1->get_is_declaration_only())
-    c1 = c1->get_definition_of_declaration().get();
-  if (c2 && c2->get_is_declaration_only())
-    c2 = c2->get_definition_of_declaration().get();
+  c1 = look_through_decl_only_class(c1);
+  c2 = look_through_decl_only_class(c2);
 
   if (c1 && c2)
     {
@@ -12077,6 +12290,23 @@ canonicalize(type_base_sptr t)
 
   t->on_canonical_type_set();
   return canonical;
+}
+
+
+/// Set the definition of this declaration-only @ref decl_base.
+///
+/// @param d the new definition to set.
+void
+decl_base::set_definition_of_declaration(const decl_base_sptr& d)
+{
+  ABG_ASSERT(get_is_declaration_only());
+  priv_->definition_of_declaration_ = d;
+  priv_->definition_of_declaration_ = d;
+  if (type_base *t = is_type(this))
+    if (type_base_sptr canonical_type = is_type(d)->get_canonical_type())
+      t->priv_->canonical_type = canonical_type;
+
+  priv_->naked_definition_of_declaration_ = const_cast<decl_base*>(d.get());
 }
 
 /// The constructor of @ref type_base.
@@ -14978,7 +15208,6 @@ class enum_type_decl::priv
   priv();
 
 public:
-
   priv(type_base_sptr underlying_type,
        enumerators& enumerators)
     : underlying_type_(underlying_type),
@@ -17987,9 +18216,6 @@ function_decl::parameter::get_pretty_representation(bool internal,
 struct class_or_union::priv
 {
   typedef_decl_wptr		naming_typedef_;
-  decl_base_sptr		declaration_;
-  class_or_union_wptr		definition_of_declaration_;
-  class_or_union*		naked_definition_of_declaration_;
   member_types			member_types_;
   data_members			data_members_;
   data_members			non_static_data_members_;
@@ -18001,21 +18227,16 @@ struct class_or_union::priv
   string_mem_fn_ptr_map_type	signature_2_mem_fn_map_;
   member_function_templates	member_function_templates_;
   member_class_templates	member_class_templates_;
-  bool				is_declaration_only_;
 
   priv()
-    : naked_definition_of_declaration_(),
-      is_declaration_only_(false)
   {}
 
   priv(class_or_union::member_types& mbr_types,
        class_or_union::data_members& data_mbrs,
        class_or_union::member_functions& mbr_fns)
-    : naked_definition_of_declaration_(),
-      member_types_(mbr_types),
+    : member_types_(mbr_types),
       data_members_(data_mbrs),
-      member_functions_(mbr_fns),
-      is_declaration_only_(false)
+      member_functions_(mbr_fns)
   {
     for (data_members::const_iterator i = data_members_.begin();
 	 i != data_members_.end();
@@ -18023,11 +18244,6 @@ struct class_or_union::priv
       if (!get_member_is_static(*i))
 	non_static_data_members_.push_back(*i);
   }
-
-  priv(bool is_declaration_only)
-    : naked_definition_of_declaration_(),
-      is_declaration_only_(is_declaration_only)
-  {}
 
   /// Mark a class or union or union as being currently compared using
   /// the class_or_union== operator.
@@ -18244,8 +18460,10 @@ class_or_union::class_or_union(const environment* env, const string& name,
     decl_base(env, name, location(), name),
     type_base(env, 0, 0),
     scope_type_decl(env, name, 0, 0, location()),
-    priv_(new priv(is_declaration_only))
-{}
+    priv_(new priv)
+{
+  set_is_declaration_only(is_declaration_only);
+}
 
 /// This implements the ir_traversable_base::traverse pure virtual
 /// function.
@@ -18465,7 +18683,8 @@ size_t
 class_or_union::get_alignment_in_bits() const
 {
   if (get_is_declaration_only() && get_definition_of_declaration())
-    return get_definition_of_declaration()->get_alignment_in_bits();
+    return is_class_or_union_type
+      (get_definition_of_declaration())->get_alignment_in_bits();
 
    return type_base::get_alignment_in_bits();
 }
@@ -18480,7 +18699,8 @@ void
 class_or_union::set_alignment_in_bits(size_t a)
 {
   if (get_is_declaration_only() && get_definition_of_declaration())
-    get_definition_of_declaration()->set_alignment_in_bits(a);
+    is_class_or_union_type
+      (get_definition_of_declaration()) ->set_alignment_in_bits(a);
   else
     type_base::set_alignment_in_bits(a);
 }
@@ -18495,7 +18715,8 @@ void
 class_or_union::set_size_in_bits(size_t s)
 {
   if (get_is_declaration_only() && get_definition_of_declaration())
-    get_definition_of_declaration()->set_size_in_bits(s);
+    is_class_or_union_type
+      (get_definition_of_declaration())->set_size_in_bits(s);
   else
     type_base::set_size_in_bits(s);
 }
@@ -18510,42 +18731,12 @@ size_t
 class_or_union::get_size_in_bits() const
 {
   if (get_is_declaration_only() && get_definition_of_declaration())
-    return get_definition_of_declaration()->get_size_in_bits();
+    return is_class_or_union_type
+      (get_definition_of_declaration())->get_size_in_bits();
 
   return type_base::get_size_in_bits();
 }
 
-/// Test if a @ref class_or_union is a declaration-only @ref
-/// class_or_union.
-///
-/// @return true iff the current @ref class_or_union is a
-/// declaration-only @ref class_or_union.
-bool
-class_or_union::get_is_declaration_only() const
-{return priv_->is_declaration_only_;}
-
-/// Set a flag saying if the @ref class_or_union is a declaration-only
-/// @ref class_or_union.
-///
-/// @param f true if the @ref class_or_union is a decalaration-only
-/// @ref class_or_union.
-void
-class_or_union::set_is_declaration_only(bool f)
-{
-  bool update_types_lookup_map = !f && priv_->is_declaration_only_;
-
-  priv_->is_declaration_only_ = f;
-
-  if (update_types_lookup_map)
-    if (scope_decl* s = get_scope())
-      {
-	declarations::iterator i;
-	if (s->find_iterator_for_member(this, i))
-	  maybe_update_types_lookup_map(*i);
-	else
-	  ABG_ASSERT_NOT_REACHED;
-      }
-}
 
 /// Getter for the naming typedef of the current class.
 ///
@@ -18575,64 +18766,6 @@ void
 class_or_union::set_naming_typedef(const typedef_decl_sptr& typedef_type)
 {
   priv_->naming_typedef_ = typedef_type;
-}
-
-/// Set the definition of this declaration-only @ref class_or_union.
-///
-/// @param d the new definition to set.
-void
-class_or_union::set_definition_of_declaration(class_or_union_sptr d)
-{
-  ABG_ASSERT(get_is_declaration_only());
-  priv_->definition_of_declaration_ = d;
-  if (d->get_canonical_type())
-    type_base::priv_->canonical_type = d->get_canonical_type();
-
-  priv_->naked_definition_of_declaration_ = d.get();
-}
-
-/// If this @ref class_or_union_sptr is declaration-only, get its
-/// definition, if any.
-///
-/// @return the definition of this decl-only class.
-const class_or_union_sptr
-class_or_union::get_definition_of_declaration() const
-{return priv_->definition_of_declaration_.lock();}
-
-///  If this @ref class_or_union is declaration-only, get its
-///  definition, if any.
-///
-/// Note that this function doesn't return a smart pointer, but rather
-/// the underlying pointer managed by the smart pointer.  So it's as
-/// fast as possible.  This getter is to be used in code paths that
-/// are proven to be performance hot spots; especially, when comparing
-/// sensitive types like class or unions.  Those are compared
-/// extremely frequently and thus, their access to the definition of
-/// declaration must be fast.
-///
-/// @return the definition of the class.
-const class_or_union*
-class_or_union::get_naked_definition_of_declaration() const
-{return priv_->naked_definition_of_declaration_;}
-
-/// If this @ref class_or_union_sptr is a definitin, get its earlier
-/// declaration.
-///
-/// @return the earlier declaration of the class, if any.
-decl_base_sptr
-class_or_union::get_earlier_declaration() const
-{return priv_->declaration_;}
-
-/// set the earlier declaration of this @ref class_or_union definition.
-///
-/// @param declaration the earlier declaration to set.  Note that it's
-/// set only if it's a pure declaration.
-void
-class_or_union::set_earlier_declaration(decl_base_sptr declaration)
-{
-  class_or_union_sptr cl = dynamic_pointer_cast<class_or_union>(declaration);
-  if (cl && cl->get_is_declaration_only())
-    priv_->declaration_ = declaration;
 }
 
 /// Get the member types of this @ref class_or_union.
@@ -19082,15 +19215,16 @@ class_or_union::operator==(const decl_base& other) const
   if (!canonical_type
       && get_is_declaration_only()
       && get_naked_definition_of_declaration())
-    canonical_type =
-      get_naked_definition_of_declaration()->get_naked_canonical_type();
+    canonical_type = is_class_or_union_type
+      (get_naked_definition_of_declaration())->get_naked_canonical_type();
 
   // Likewise for the other class.
   if (!other_canonical_type
       && op->get_is_declaration_only()
       && op->get_naked_definition_of_declaration())
     other_canonical_type =
-      op->get_naked_definition_of_declaration()->get_naked_canonical_type();
+      is_class_or_union_type
+      (op->get_naked_definition_of_declaration())->get_naked_canonical_type();
 
   if (canonical_type && other_canonical_type)
     return canonical_type == other_canonical_type;
@@ -19161,11 +19295,11 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
   if (l_is_decl_only || r_is_decl_only)
     {
       const class_or_union* def1 = l_is_decl_only
-	? l.get_naked_definition_of_declaration()
+	? is_class_or_union_type(l.get_naked_definition_of_declaration())
 	: &l;
 
       const class_or_union* def2 = r_is_decl_only
-	? r.get_naked_definition_of_declaration()
+	? is_class_or_union_type(r.get_naked_definition_of_declaration())
 	: &r;
 
       if (!def1 || !def2)
@@ -19783,30 +19917,6 @@ class_decl::on_canonical_type_set()
        ++i)
     sort_virtual_member_functions(i->second);
 }
-
-///  If this @ref class_decl is declaration-only, get its definition,
-///  if any.
-///
-/// @return the definition of the class.
-const class_decl_sptr
-class_decl::get_definition_of_declaration() const
-{return is_class_type(class_or_union::get_definition_of_declaration());}
-
-///  If this @ref class_decl is declaration-only, get its definition,
-///  if any.
-///
-/// Note that this function doesn't return a smart pointer, but rather
-/// the underlying pointer managed by the smart pointer.  So it's as
-/// fast as possible.  This getter is to be used in code paths that
-/// are proven to be performance hot spots; especially, when comparing
-/// sensitive types like class or unions.  Those are compared
-/// extremely frequently and thus, their access to the definition of
-/// declaration must be fast.
-///
-/// @return the definition of the class.
-const class_decl*
-class_decl::get_naked_definition_of_declaration() const
-{return is_class_type(class_or_union::get_naked_definition_of_declaration());}
 
 /// Set the "is-struct" flag of the class.
 ///
@@ -20938,14 +21048,16 @@ class_decl::operator==(const decl_base& other) const
       && get_is_declaration_only()
       && get_naked_definition_of_declaration())
     canonical_type =
-      get_naked_definition_of_declaration()->get_naked_canonical_type();
+      is_class_type
+      (get_naked_definition_of_declaration())->get_naked_canonical_type();
 
   // Likewise for the other class.
   if (!other_canonical_type
       && op->get_is_declaration_only()
       && op->get_naked_definition_of_declaration())
     other_canonical_type =
-      op->get_naked_definition_of_declaration()->get_naked_canonical_type();
+      is_class_type
+      (op->get_naked_definition_of_declaration())->get_naked_canonical_type();
 
   if (canonical_type && other_canonical_type)
     return canonical_type == other_canonical_type;
@@ -23035,7 +23147,8 @@ hash_type(const type_base *t)
 	// The is a declaration-only class, so it has no canonical
 	// type; but then it's class definition has one.  Let's
 	// use that one.
-	return hash_type(cl->get_naked_definition_of_declaration());
+	return hash_type
+	  (is_class_type(cl->get_naked_definition_of_declaration()));
       else
 	{
 	  // The class really has no canonical type, let's use the

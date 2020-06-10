@@ -635,7 +635,8 @@ class_or_union::hash::operator()(const class_or_union& t) const
   if (t.get_is_declaration_only())
     {
       ABG_ASSERT(t.get_definition_of_declaration());
-      size_t v = operator()(*t.get_definition_of_declaration());
+      size_t v = operator()
+	(*is_class_or_union_type(t.get_definition_of_declaration()));
       return v;
     }
 

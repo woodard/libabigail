@@ -2827,13 +2827,15 @@ try_to_diff<class_decl>(const type_or_decl_base_sptr first,
 
       if (f->get_is_declaration_only())
 	{
-	  class_decl_sptr f2 = f->get_definition_of_declaration();
+	  class_decl_sptr f2 =
+	    is_class_type (f->get_definition_of_declaration());
 	  if (f2)
 	    f = f2;
 	}
       if (s->get_is_declaration_only())
 	{
-	  class_decl_sptr s2 = s->get_definition_of_declaration();
+	  class_decl_sptr s2 =
+	    is_class_type(s->get_definition_of_declaration());
 	  if (s2)
 	    s = s2;
 	}
@@ -10953,8 +10955,8 @@ struct leaf_diff_node_marker_visitor : public diff_node_visitor
 	// typedef change which underlying type is an anonymous
 	// struct/union.
 	&& !is_anonymous_class_or_union_diff(d)
-	// Don't show decl-only-ness changes of classes either.
-	&& !filtering::has_class_decl_only_def_change(d)
+	// Don't show decl-only-ness changes either.
+	&& !filtering::has_decl_only_def_change(d)
 	// Sometime, we can encounter artifacts of bogus DWARF that
 	// yield a diff node for a decl-only class (and empty class
 	// with the is_declaration flag set) that carries a non-zero

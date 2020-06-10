@@ -99,6 +99,25 @@ default_reporter::report(const enum_diff& d, ostream& out,
   enum_type_decl_sptr first = d.first_enum(), second = d.second_enum();
 
   const diff_context_sptr& ctxt = d.context();
+
+  // Report enum decl-only <-> definition changes.
+  if (ctxt->get_allowed_category() & TYPE_DECL_ONLY_DEF_CHANGE_CATEGORY)
+    if (filtering::has_enum_decl_only_def_change(first, second))
+      {
+	string was =
+	  first->get_is_declaration_only()
+	  ? " was a declaration-only enum type"
+	  : " was a defined enum type";
+
+	string is_now =
+	  second->get_is_declaration_only()
+	  ? " and is now a declaration-only enum type"
+	  : " and is now a defined enum type";
+
+	out << indent << "enum type " << name << was << is_now << "\n";
+	return;
+      }
+
   report_name_size_and_alignment_changes(first, second, ctxt,
 					 out, indent);
   maybe_report_diff_for_member(first, second, ctxt, out, indent);

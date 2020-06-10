@@ -118,6 +118,25 @@ there_is_a_decl_only_class(const class_decl_sptr& class1,
   return false;
 }
 
+/// Test if there is a enum that is declaration-only among the two
+/// enums in parameter.
+///
+/// @param enum1 the first enum to consider.
+///
+/// @param enum2 the second enum to consider.
+///
+/// @return true if either enums are declaration-only, false
+/// otherwise.
+static bool
+there_is_a_decl_only_enum(const enum_type_decl_sptr& enum1,
+			  const enum_type_decl_sptr& enum2)
+{
+  if ((enum1 && enum1->get_is_declaration_only())
+      || (enum2 && enum2->get_is_declaration_only()))
+    return true;
+  return false;
+}
+
 /// Test if the diff involves a declaration-only class.
 ///
 /// @param diff the class diff to consider.
@@ -146,7 +165,9 @@ type_size_changed(const type_base_sptr f, const type_base_sptr s)
       || f->get_size_in_bits() == 0
       || s->get_size_in_bits() == 0
       || there_is_a_decl_only_class(is_compatible_with_class_type(f),
-				    is_compatible_with_class_type(s)))
+				    is_compatible_with_class_type(s))
+      || there_is_a_decl_only_enum(is_compatible_with_enum_type(f),
+				   is_compatible_with_enum_type(s)))
     return false;
 
   return f->get_size_in_bits() != s->get_size_in_bits();
@@ -893,10 +914,8 @@ is_decl_only_class_with_size_change(const class_or_union_sptr& first,
   if (!first || !second)
     return false;
 
-  class_or_union_sptr f =
-    look_through_decl_only_class(first);
-  class_or_union_sptr s =
-    look_through_decl_only_class(second);
+  class_or_union_sptr f = look_through_decl_only_class(first);
+  class_or_union_sptr s = look_through_decl_only_class(second);
 
   return is_decl_only_class_with_size_change(*f, *s);
 }
@@ -929,6 +948,57 @@ is_decl_only_class_with_size_change(const diff *diff)
   return is_decl_only_class_with_size_change(f, s);
 }
 
+/// Test if two @ref decl_base_sptr are different just by the
+/// fact that one is decl-only and the other one is defined.
+///
+/// @param first the first decl to consider.
+///
+/// @param second the second decl to consider.
+///
+/// @return true iff the two arguments are different just by the fact
+/// that one is decl-only and the other one is defined.
+bool
+has_decl_only_def_change(const decl_base_sptr& first,
+			 const decl_base_sptr& second)
+{
+  if (!first || !second)
+    return false;
+
+  decl_base_sptr f =
+    look_through_decl_only(first);
+  decl_base_sptr s =
+    look_through_decl_only(second);
+
+  if (f->get_qualified_name() != s->get_qualified_name())
+    return false;
+
+  return f->get_is_declaration_only() != s->get_is_declaration_only();
+}
+
+/// Test if a diff carries a change in which the two decls are
+/// different by the fact that one is a decl-only and the other one is
+/// defined.
+///
+/// @param diff the diff node to consider.
+///
+/// @return true if the diff carries a change in which the two decls
+/// are different by the fact that one is a decl-only and the other
+/// one is defined.
+bool
+has_decl_only_def_change(const diff *d)
+{
+  if (!d)
+    return false;
+
+  decl_base_sptr f =
+    look_through_decl_only(is_decl(d->first_subject()));
+  decl_base_sptr s =
+    look_through_decl_only(is_decl(d->second_subject()));
+
+  return has_decl_only_def_change(f, s);
+}
+
+
 /// Test if two @ref class_or_union_sptr are different just by the
 /// fact that one is decl-only and the other one is defined.
 ///
@@ -953,7 +1023,32 @@ has_class_decl_only_def_change(const class_or_union_sptr& first,
   if (f->get_qualified_name() != s->get_qualified_name())
     return false;
 
-  return (f->get_is_declaration_only() != s->get_is_declaration_only());
+  return f->get_is_declaration_only() != s->get_is_declaration_only();
+}
+
+/// Test if two @ref enum_sptr are different just by the
+/// fact that one is decl-only and the other one is defined.
+///
+/// @param first the first enum to consider.
+///
+/// @param second the second enum to consider.
+///
+/// @return true iff the two arguments are different just by the fact
+/// that one is decl-only and the other one is defined.
+bool
+has_enum_decl_only_def_change(const enum_type_decl_sptr& first,
+			      const enum_type_decl_sptr& second)
+{
+  if (!first || !second)
+    return false;
+
+  enum_type_decl_sptr f = look_through_decl_only_enum(first);
+  enum_type_decl_sptr s = look_through_decl_only_enum(second);
+
+  if (f->get_qualified_name() != s->get_qualified_name())
+    return false;
+
+  return f->get_is_declaration_only() != s->get_is_declaration_only();
 }
 
 /// Test if a class_or_union_diff carries a change in which the two
@@ -978,6 +1073,28 @@ has_class_decl_only_def_change(const diff *diff)
     look_through_decl_only_class(d->second_class_or_union());
 
   return has_class_decl_only_def_change(f, s);
+}
+
+/// Test if a enum_diff carries a change in which the two enums are
+/// different by the fact that one is a decl-only and the other one is
+/// defined.
+///
+/// @param diff the diff node to consider.
+///
+/// @return true if the enum_diff carries a change in which the two
+/// enums are different by the fact that one is a decl-only and the
+/// other one is defined.
+bool
+has_enum_decl_only_def_change(const diff *diff)
+{
+  const enum_diff *d = dynamic_cast<const enum_diff*>(diff);
+  if (!d)
+    return false;
+
+  enum_type_decl_sptr f = look_through_decl_only_enum(d->first_enum());
+  enum_type_decl_sptr s = look_through_decl_only_enum(d->second_enum());
+
+  return has_enum_decl_only_def_change(f, s);
 }
 
 /// Test if a diff node carries a basic type name change.
@@ -1517,7 +1634,8 @@ categorize_harmless_diff_node(diff *d, bool pre)
       decl_base_sptr f = is_decl(d->first_subject()),
 	s = is_decl(d->second_subject());
 
-      if (has_class_decl_only_def_change(d))
+      if (has_class_decl_only_def_change(d)
+	  || has_enum_decl_only_def_change(d))
 	category |= TYPE_DECL_ONLY_DEF_CHANGE_CATEGORY;
 
       if (access_changed(f, s))
@@ -1608,6 +1726,7 @@ categorize_harmful_diff_node(diff *d, bool pre)
       //
       // TODO: be more specific -- not all size changes are harmful.
       if (!has_class_decl_only_def_change(d)
+	  && !has_enum_decl_only_def_change(d)
 	  && (type_size_changed(f, s)
 	      || data_member_offset_changed(f, s)
 	      || non_static_data_member_type_size_changed(f, s)

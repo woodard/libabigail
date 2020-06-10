@@ -12315,7 +12315,8 @@ get_scope_for_die(read_context& ctxt,
   class_decl_sptr cl = dynamic_pointer_cast<class_decl>(d);
   if (cl && cl->get_is_declaration_only())
     {
-      scope_decl_sptr scop (cl->get_definition_of_declaration());
+      scope_decl_sptr scop  =
+	dynamic_pointer_cast<scope_decl>(cl->get_definition_of_declaration());
       if (scop)
 	s = scop;
       else

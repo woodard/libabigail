@@ -65,11 +65,25 @@ bool
 is_decl_only_class_with_size_change(const diff *diff);
 
 bool
+has_decl_only_def_change(const decl_base_sptr& first,
+			 const decl_base_sptr& second);
+
+bool
+has_decl_only_def_change(const diff *d);
+
+bool
 has_class_decl_only_def_change(const class_or_union_sptr& first,
 			       const class_or_union_sptr& second);
 
 bool
+has_enum_decl_only_def_change(const enum_type_decl_sptr& first,
+			      const enum_type_decl_sptr& second);
+
+bool
 has_class_decl_only_def_change(const diff *diff);
+
+bool
+has_enum_decl_only_def_change(const diff *diff);
 
 bool
 has_basic_type_name_change(const diff *);

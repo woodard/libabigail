@@ -155,6 +155,12 @@ class enum_type_decl;
 /// Convenience typedef for shared pointer to a @ref enum_type_decl.
 typedef shared_ptr<enum_type_decl> enum_type_decl_sptr;
 
+/// Convenience typedef for a vector of @ref enum_type_decl_sptr
+typedef vector<enum_type_decl_sptr> enums_type;
+
+/// Convenience typedef for a weak pointer to a @ref decl_base.
+typedef weak_ptr<decl_base> decl_base_wptr;
+
 class class_or_union;
 
 typedef shared_ptr<class_or_union> class_or_union_sptr;
@@ -424,6 +430,12 @@ typedef_decl*
 is_typedef(type_base*);
 
 enum_type_decl_sptr
+is_compatible_with_enum_type(const type_base_sptr&);
+
+enum_type_decl_sptr
+is_compatible_with_enum_type(const decl_base_sptr&);
+
+enum_type_decl_sptr
 is_enum_type(const type_or_decl_base_sptr&);
 
 const enum_type_decl*
@@ -512,6 +524,24 @@ look_through_decl_only_class(const class_or_union&);
 
 class_or_union_sptr
 look_through_decl_only_class(class_or_union_sptr);
+
+class_or_union*
+look_through_decl_only_class(class_or_union*);
+
+enum_type_decl_sptr
+look_through_decl_only_enum(const enum_type_decl&);
+
+enum_type_decl_sptr
+look_through_decl_only_enum(enum_type_decl_sptr);
+
+decl_base_sptr
+look_through_decl_only(const decl_base&);
+
+decl_base*
+look_through_decl_only(decl_base*);
+
+decl_base_sptr
+look_through_decl_only(const decl_base_sptr&);
 
 var_decl*
 is_var_decl(const type_or_decl_base*);
@@ -1084,6 +1114,12 @@ lookup_enum_type(const string&, const corpus&);
 
 enum_type_decl_sptr
 lookup_enum_type(const interned_string&, const corpus&);
+
+const type_base_wptrs_type*
+lookup_enum_types(const interned_string&, const corpus&);
+
+const type_base_wptrs_type*
+lookup_enum_types(const string&, const corpus&);
 
 enum_type_decl_sptr
 lookup_enum_type_per_location(const interned_string&, const corpus&);
