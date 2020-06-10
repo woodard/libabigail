@@ -270,7 +270,7 @@
     <type-decl name='long long int' size-in-bits='64' id='type-id-16'/>
     <type-decl name='long long unsigned int' size-in-bits='64' id='type-id-17'/>
     <type-decl name='sizetype' size-in-bits='64' id='type-id-5'/>
-    <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' id='type-id-18'/>
+    <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' is-declaration-only='yes' id='type-id-18'/>
     <type-decl name='unsigned char' size-in-bits='8' id='type-id-19'/>
     <type-decl name='unsigned int' size-in-bits='32' id='type-id-20'/>
     <type-decl name='unsigned long int' size-in-bits='64' id='type-id-21'/>
@@ -500,7 +500,7 @@
         <class-decl name='basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' size-in-bits='256' visibility='default' is-declaration-only='yes' id='type-id-87'>
 
             <member-type access='private'>
-              <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-144'>
+              <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-144'>
                 <underlying-type type-id='type-id-18'/>
               </enum-decl>
             </member-type>
@@ -969,7 +969,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-165'>
+      <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-165'>
         <underlying-type type-id='type-id-18'/>
       </enum-decl>
       <typedef-decl name='memory_order' type-id='type-id-165' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/atomic_base.h' line='63' column='1' id='type-id-164'/>
@@ -1140,7 +1140,7 @@
       <class-decl name='__anonymous_struct__2' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
 
           <member-type access='private'>
-            <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-173'>
+            <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-173'>
               <underlying-type type-id='type-id-18'/>
             </enum-decl>
           </member-type>
@@ -3877,7 +3877,7 @@
       <class-decl name='__anonymous_struct__17' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
 
           <member-type access='private'>
-            <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-215'>
+            <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-215'>
               <underlying-type type-id='type-id-18'/>
             </enum-decl>
           </member-type>
@@ -4400,7 +4400,7 @@
       <class-decl name='__anonymous_struct__6' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
 
           <member-type access='private'>
-            <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-230'>
+            <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-230'>
               <underlying-type type-id='type-id-18'/>
             </enum-decl>
           </member-type>
@@ -5355,7 +5355,7 @@
         <class-decl name='__anonymous_struct__3' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
 
             <member-type access='private'>
-              <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-287'>
+              <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-287'>
                 <underlying-type type-id='type-id-18'/>
               </enum-decl>
             </member-type>
@@ -5408,7 +5408,7 @@
       <class-decl name='__anonymous_struct__1' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
 
           <member-type access='private'>
-            <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-288'>
+            <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-288'>
               <underlying-type type-id='type-id-18'/>
             </enum-decl>
           </member-type>
@@ -5426,7 +5426,7 @@
       <class-decl name='__anonymous_struct__8' is-anonymous='yes' naming-typedef-id='type-id-285' visibility='default' is-declaration-only='yes' id='type-id-24'>
 
           <member-type access='private'>
-            <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-289'>
+            <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-289'>
               <underlying-type type-id='type-id-18'/>
             </enum-decl>
           </member-type>
@@ -7102,14 +7102,14 @@
         <class-decl name='__anonymous_struct__2' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
 
             <member-type access='private'>
-              <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-351'>
+              <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-351'>
                 <underlying-type type-id='type-id-18'/>
               </enum-decl>
             </member-type>
         </class-decl>
       </namespace-decl>
       <namespace-decl name='FTDCBSONUtil'>
-        <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-333'>
+        <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-333'>
           <underlying-type type-id='type-id-18'/>
         </enum-decl>
       </namespace-decl>
@@ -7271,7 +7271,7 @@
       <class-decl name='__anonymous_struct__19' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
 
           <member-type access='private'>
-            <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-352'>
+            <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-352'>
               <underlying-type type-id='type-id-18'/>
             </enum-decl>
           </member-type>
@@ -7455,7 +7455,7 @@
           <class-decl name='__anonymous_struct__1' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
         </member-type>
       </class-decl>
-      <enum-decl name='__anonymous_enum__1' is-anonymous='yes' id='type-id-375'>
+      <enum-decl name='__anonymous_enum__1' is-anonymous='yes' is-declaration-only='yes' id='type-id-375'>
         <underlying-type type-id='type-id-18'/>
       </enum-decl>
       <typedef-decl name='streamsize' type-id='type-id-157' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/postypes.h' line='98' column='1' id='type-id-170'/>
@@ -7904,7 +7904,7 @@
         <class-decl name='__anonymous_struct__' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
 
             <member-type access='private'>
-              <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-381'>
+              <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-381'>
                 <underlying-type type-id='type-id-18'/>
               </enum-decl>
             </member-type>
@@ -7985,7 +7985,7 @@
       <class-decl name='__anonymous_struct__11' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
 
           <member-type access='private'>
-            <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-382'>
+            <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-382'>
               <underlying-type type-id='type-id-18'/>
             </enum-decl>
           </member-type>
@@ -8679,7 +8679,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-408'>
+      <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-408'>
         <underlying-type type-id='type-id-18'/>
       </enum-decl>
       <class-decl name='__anonymous_struct__14' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
@@ -8808,7 +8808,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <enum-decl name='__anonymous_enum__1' is-anonymous='yes' id='type-id-409'>
+      <enum-decl name='__anonymous_enum__1' is-anonymous='yes' is-declaration-only='yes' id='type-id-409'>
         <underlying-type type-id='type-id-18'/>
       </enum-decl>
       <class-decl name='__anonymous_struct__23' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
@@ -8863,7 +8863,7 @@
       <class-decl name='__anonymous_struct__26' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
 
           <member-type access='private'>
-            <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-410'>
+            <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-410'>
               <underlying-type type-id='type-id-18'/>
             </enum-decl>
           </member-type>

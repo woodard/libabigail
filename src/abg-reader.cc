@@ -3457,6 +3457,9 @@ build_type_decl(read_context&		ctxt,
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "alignment-in-bits"))
     alignment_in_bits = atoi(CHAR_STR(s));
 
+  bool is_decl_only = false;
+  read_is_declaration_only(node, is_decl_only);
+
   location loc;
   read_location(ctxt, node, loc);
 
@@ -3479,6 +3482,7 @@ build_type_decl(read_context&		ctxt,
   type_decl_sptr decl(new type_decl(env, name, size_in_bits,
 				    alignment_in_bits, loc));
   decl->set_is_anonymous(is_anonymous);
+  decl->set_is_declaration_only(is_decl_only);
   if (ctxt.push_and_key_type_decl(decl, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, decl);
@@ -4161,6 +4165,9 @@ build_enum_type_decl(read_context&	ctxt,
   location loc;
   read_location(ctxt, node, loc);
 
+  bool is_decl_only = false;
+  read_is_declaration_only(node, is_decl_only);
+
   bool is_anonymous = false;
   read_is_anonymous(node, is_anonymous);
 
@@ -4221,6 +4228,7 @@ build_enum_type_decl(read_context&	ctxt,
 					   enums, linkage_name));
   t->set_is_anonymous(is_anonymous);
   t->set_is_artificial(is_artificial);
+  t->set_is_declaration_only(is_decl_only);
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, t);
@@ -4487,8 +4495,7 @@ build_class_decl(read_context&		ctxt,
 
   if (!def_id.empty())
     {
-      class_decl_sptr d =
-	dynamic_pointer_cast<class_decl>(ctxt.get_type_decl(def_id));
+      decl_base_sptr d = is_decl(ctxt.get_type_decl(def_id));
       if (d && d->get_is_declaration_only())
 	{
 	  is_def_of_decl = true;
@@ -4506,7 +4513,7 @@ build_class_decl(read_context&		ctxt,
       // previous_declaration.
       //
       // Let's link them.
-      decl->set_earlier_declaration(previous_declaration);
+      decl->set_earlier_declaration(is_decl(previous_declaration));
       for (vector<type_base_sptr>::const_iterator i = types_ptr->begin();
 	   i != types_ptr->end();
 	   ++i)

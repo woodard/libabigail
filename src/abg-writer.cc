@@ -876,8 +876,7 @@ static void write_elf_symbol_binding(elf_symbol::binding, ostream&);
 static bool write_elf_symbol_aliases(const elf_symbol&, ostream&);
 static bool write_elf_symbol_reference(const elf_symbol&, ostream&);
 static bool write_elf_symbol_reference(const elf_symbol_sptr, ostream&);
-static void write_class_or_union_is_declaration_only(const class_or_union_sptr&,
-						     ostream&);
+static void write_is_declaration_only(const decl_base_sptr&, ostream&);
 static void write_is_struct(const class_decl_sptr&, ostream&);
 static void write_is_anonymous(const decl_base_sptr&, ostream&);
 static void write_naming_typedef(const class_decl_sptr&, write_context&);
@@ -1777,18 +1776,16 @@ write_cdtor_const_static(bool is_ctor,
     o << " const='yes'";
 }
 
-/// Serialize the attribute "is-declaration-only", if the class or
-/// union has its 'is_declaration_only property set.
+/// Serialize the attribute "is-declaration-only", if the
+/// decl_base_sptr has its 'is_declaration_only property set.
 ///
-/// @param t the pointer to instance of @ref class_or_union to
-/// consider.
+/// @param t the pointer to instance of @ref decl_base to consider.
 ///
 /// @param o the output stream to serialize to.
 static void
-write_class_or_union_is_declaration_only(const class_or_union_sptr& t,
-					 ostream& o)
+write_is_declaration_only(const decl_base_sptr& d, ostream& o)
 {
-  if (t->get_is_declaration_only())
+  if (d->get_is_declaration_only())
     o << " is-declaration-only='yes'";
 }
 
@@ -2459,6 +2456,8 @@ write_type_decl(const type_decl_sptr& d, write_context& ctxt, unsigned indent)
 
   write_size_and_alignment(d, o);
 
+  write_is_declaration_only(d, o);
+
   write_location(d, ctxt);
 
   o << " id='" << ctxt.get_id_for_type(d) << "'" <<  "/>";
@@ -2938,6 +2937,7 @@ write_enum_type_decl(const enum_type_decl_sptr& decl,
     o << " linkage-name='" << decl->get_linkage_name() << "'";
 
   write_location(decl, ctxt);
+  write_is_declaration_only(decl, o);
 
   string i = id;
   if (i.empty())
@@ -3475,7 +3475,7 @@ write_class_decl_opening_tag(const class_decl_sptr&	decl,
 
   write_location(decl, ctxt);
 
-  write_class_or_union_is_declaration_only(decl, o);
+  write_is_declaration_only(decl, o);
 
   if (decl->get_earlier_declaration())
     {
@@ -3549,7 +3549,7 @@ write_union_decl_opening_tag(const union_decl_sptr&	decl,
 
   write_location(decl, ctxt);
 
-  write_class_or_union_is_declaration_only(decl, o);
+  write_is_declaration_only(decl, o);
 
   string i = id;
   if (i.empty())
