@@ -12803,14 +12803,14 @@ build_enum_type(read_context&	ctxt,
   location loc;
   die_loc_and_name(ctxt, die, loc, name, linkage_name);
 
-  bool enum_is_anonymous = false;
+  bool is_anonymous = false;
   // If the enum is anonymous, let's give it a name.
   if (name.empty())
     {
       name = get_internal_anonymous_die_prefix_name(die);
       ABG_ASSERT(!name.empty());
       // But we remember that the type is anonymous.
-      enum_is_anonymous = true;
+      is_anonymous = true;
 
       if (size_t s = scope->get_num_anonymous_member_enums())
 	name = build_internal_anonymous_die_name(name, s);
@@ -12822,7 +12822,7 @@ build_enum_type(read_context&	ctxt,
   // representation (name) and location can be later detected as being
   // for the same type.
 
-  if (!enum_is_anonymous)
+  if (!is_anonymous)
     {
       if (use_odr)
 	{
@@ -12855,6 +12855,7 @@ build_enum_type(read_context&	ctxt,
   uint64_t size = 0;
   if (die_unsigned_constant_attribute(die, DW_AT_byte_size, size))
     size *= 8;
+  bool is_artificial = die_is_artificial(die);
 
   // for now we consider that underlying types of enums are all anonymous
   bool enum_underlying_type_is_anonymous= true;
@@ -12887,8 +12888,6 @@ build_enum_type(read_context&	ctxt,
       while (dwarf_siblingof(&child, &child) == 0);
     }
 
-  bool is_artificial = die_is_artificial(die);
-
   // DWARF up to version 4 (at least) doesn't seem to carry the
   // underlying type, so let's create an artificial one here, which
   // sole purpose is to be passed to the constructor of the
@@ -12904,7 +12903,7 @@ build_enum_type(read_context&	ctxt,
   t = dynamic_pointer_cast<type_decl>(d);
   ABG_ASSERT(t);
   result.reset(new enum_type_decl(name, loc, t, enms, linkage_name));
-  result->set_is_anonymous(enum_is_anonymous);
+  result->set_is_anonymous(is_anonymous);
   result->set_is_artificial(is_artificial);
   ctxt.associate_die_to_type(die, result, where_offset);
   return result;
