@@ -152,7 +152,7 @@ typedef weak_ptr<typedef_decl> typedef_decl_wptr;
 
 class enum_type_decl;
 
-/// Convenience typedef for shared pointer on enum_type_decl.
+/// Convenience typedef for shared pointer to a @ref enum_type_decl.
 typedef shared_ptr<enum_type_decl> enum_type_decl_sptr;
 
 class class_or_union;

@@ -3132,7 +3132,7 @@ operator<<(ostream& o, diff_category c)
       emitted_a_category |= true;
     }
 
-    if (c & FN_RETURN_TYPE_CV_CHANGE_CATEGORY)
+  if (c & FN_RETURN_TYPE_CV_CHANGE_CATEGORY)
     {
       if (emitted_a_category)
 	o << "|";
@@ -3140,7 +3140,7 @@ operator<<(ostream& o, diff_category c)
       emitted_a_category |= true;
     }
 
-   if (c & VAR_TYPE_CV_CHANGE_CATEGORY)
+  if (c & VAR_TYPE_CV_CHANGE_CATEGORY)
     {
       if (emitted_a_category)
 	o << "|";
@@ -3148,7 +3148,7 @@ operator<<(ostream& o, diff_category c)
       emitted_a_category |= true;
     }
 
-    if (c & VOID_PTR_TO_PTR_CHANGE_CATEGORY)
+  if (c & VOID_PTR_TO_PTR_CHANGE_CATEGORY)
     {
       if (emitted_a_category)
 	o << "|";
@@ -3156,7 +3156,7 @@ operator<<(ostream& o, diff_category c)
       emitted_a_category |= true;
     }
 
-    if (c & BENIGN_INFINITE_ARRAY_CHANGE_CATEGORY)
+  if (c & BENIGN_INFINITE_ARRAY_CHANGE_CATEGORY)
     {
       if (emitted_a_category)
 	o << "|";
