@@ -24,7 +24,7 @@
 
     </array-type-def>
     <type-decl name='double' size-in-bits='64' id='type-id-10'/>
-    <array-type-def dimensions='2' type-id='type-id-10' size-in-bits='512' id='type-id-11'>
+    <array-type-def dimensions='2' type-id='type-id-10' size-in-bits='960' id='type-id-11'>
       <subrange length='5' type-id='type-id-4' id='type-id-12'/>
 
       <subrange length='3' type-id='type-id-4' id='type-id-13'/>
