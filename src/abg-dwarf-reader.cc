@@ -2106,8 +2106,7 @@ public:
     ContainerType&
     get_container(const read_context& ctxt, const Dwarf_Die *die)
     {
-      die_source source = NO_DEBUG_INFO_DIE_SOURCE;
-      ABG_ASSERT(ctxt.get_die_source(die, source));
+      const die_source source = ctxt.get_die_source(die);
       return get_container(source);
     }
 
@@ -2891,9 +2890,7 @@ public:
 			Dwarf_Die &canonical_die,
 			bool die_as_type) const
   {
-    die_source source = NO_DEBUG_INFO_DIE_SOURCE;
-
-    ABG_ASSERT(get_die_source(die, source));
+    const die_source source = get_die_source(die);
 
     Dwarf_Off die_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(die));
 
@@ -3021,8 +3018,7 @@ public:
 		    size_t where,
 		    bool die_as_type) const
   {
-    die_source source;
-    ABG_ASSERT(get_die_source(die, source));
+    const die_source source = get_die_source(die);
 
     offset_offset_map_type &canonical_dies =
       die_as_type
@@ -3130,8 +3126,7 @@ public:
 			       size_t where,
 			       bool die_as_type) const
   {
-    die_source source = NO_DEBUG_INFO_DIE_SOURCE;
-    ABG_ASSERT(get_die_source(die, source));
+    const die_source source = get_die_source(die);
 
     offset_offset_map_type &canonical_dies =
       die_as_type
@@ -3240,16 +3235,15 @@ public:
   ///
   /// @param die the DIE to get the source of.
   ///
-  /// @param source out parameter.  The function sets this parameter
-  /// to the source of the DIE @p iff it returns true.
-  ///
-  /// @return true iff the source of the DIE could be determined and
-  /// returned.
-  bool
-  get_die_source(const Dwarf_Die *die, die_source &source) const
+  /// @return the source of the DIE if it could be determined,
+  /// NO_DEBUG_INFO_DIE_SOURCE otherwise.
+  die_source
+  get_die_source(const Dwarf_Die *die) const
   {
+    die_source source = NO_DEBUG_INFO_DIE_SOURCE;
     ABG_ASSERT(die);
-    return get_die_source(*die, source);
+    ABG_ASSERT(get_die_source(*die, source));
+    return source;
   }
 
   /// Get the source of the DIE.
@@ -3353,8 +3347,7 @@ public:
 			size_t where_offset,
 			bool do_associate_by_repr = false)
   {
-    die_source source = NO_DEBUG_INFO_DIE_SOURCE;
-    ABG_ASSERT(get_die_source(die, source));
+    const die_source source = get_die_source(die);
 
     die_artefact_map_type& m =
       decl_die_artefact_maps().get_container(source);
@@ -3981,8 +3974,7 @@ public:
 			   Dwarf_Off canonical_die_offset,
 			   bool die_as_type) const
   {
-    die_source source = NO_DEBUG_INFO_DIE_SOURCE;
-    ABG_ASSERT(get_die_source(die, source));
+    const die_source source = get_die_source(die);
 
     Dwarf_Off die_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(die));
 
@@ -4562,14 +4554,13 @@ public:
   schedule_type_for_late_canonicalization(const Dwarf_Die *die)
   {
     Dwarf_Off o;
-    die_source source = NO_DEBUG_INFO_DIE_SOURCE;
 
     Dwarf_Die equiv_die;
     ABG_ASSERT(get_canonical_die(die, equiv_die,
 				  /*where=*/0,
 				 /*die_as_type=*/true));
 
-    ABG_ASSERT(get_die_source(&equiv_die, source));
+    const die_source source = get_die_source(&equiv_die);
     o = dwarf_dieoffset(&equiv_die);
 
     const die_artefact_map_type& m =
@@ -11397,10 +11388,8 @@ compare_dies(const read_context& ctxt,
   Dwarf_Off l_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(l)),
     r_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(r));
   Dwarf_Off l_canonical_die_offset = 0, r_canonical_die_offset = 0;
-  die_source l_die_source = NO_DEBUG_INFO_DIE_SOURCE,
-    r_die_source = NO_DEBUG_INFO_DIE_SOURCE;
-  ABG_ASSERT(ctxt.get_die_source(l, l_die_source));
-  ABG_ASSERT(ctxt.get_die_source(r, r_die_source));
+  const die_source l_die_source = ctxt.get_die_source(l);
+  const die_source r_die_source = ctxt.get_die_source(r);
 
   // If 'l' and 'r' already have canonical DIEs, then just compare the
   // offsets of their canonical DIEs.
@@ -11847,10 +11836,9 @@ compare_dies(const read_context& ctxt,
       //
       // In case 'r' has no canonical DIE, then compute it, and then
       // propagate that canonical DIE to 'r'.
-      die_source l_source = NO_DEBUG_INFO_DIE_SOURCE,
-	r_source = NO_DEBUG_INFO_DIE_SOURCE;
-      ABG_ASSERT(ctxt.get_die_source(l, l_source));
-      ABG_ASSERT(ctxt.get_die_source(r, r_source));
+      const die_source l_source = ctxt.get_die_source(l);
+      const die_source r_source = ctxt.get_die_source(r);
+
       if (!l_has_canonical_die_offset
 	  // A DIE can be equivalent only to another DIE of the same
 	  // source.
@@ -12102,8 +12090,7 @@ get_parent_die(const read_context&	ctxt,
 {
   ABG_ASSERT(ctxt.dwarf());
 
-  die_source source = NO_DEBUG_INFO_DIE_SOURCE;
-  ABG_ASSERT(ctxt.get_die_source(die, source));
+  const die_source source = ctxt.get_die_source(die);
 
   const offset_offset_map_type& m = ctxt.die_parent_map(source);
   offset_offset_map_type::const_iterator i =
@@ -12238,8 +12225,7 @@ get_scope_for_die(read_context& ctxt,
 		  bool		called_for_public_decl,
 		  size_t	where_offset)
 {
-  die_source source_of_die = NO_DEBUG_INFO_DIE_SOURCE;
-  ABG_ASSERT(ctxt.get_die_source(die, source_of_die));
+  const die_source source_of_die = ctxt.get_die_source(die);
 
   if (is_c_language(ctxt.cur_transl_unit()->get_language()))
     {
@@ -12694,9 +12680,6 @@ build_namespace_decl_and_add_to_ir(read_context&	ctxt,
 
   if (!die)
     return result;
-
-  die_source source;
-  ABG_ASSERT(ctxt.get_die_source(die, source));
 
   unsigned tag = dwarf_tag(die);
   if (tag != DW_TAG_namespace && tag != DW_TAG_module)
@@ -13308,8 +13291,7 @@ add_or_update_class_type(read_context&	 ctxt,
   if (!die)
     return result;
 
-  die_source source;
-  ABG_ASSERT(ctxt.get_die_source(die, source));
+  const die_source source = ctxt.get_die_source(die);
 
   unsigned tag = dwarf_tag(die);
 
@@ -13686,8 +13668,7 @@ add_or_update_union_type(read_context&	ctxt,
   if (tag != DW_TAG_union_type)
     return result;
 
-  die_source source = NO_DEBUG_INFO_DIE_SOURCE;
-  ABG_ASSERT(ctxt.get_die_source(die, source));
+  const die_source source = ctxt.get_die_source(die);
   {
     die_class_or_union_map_type::const_iterator i =
       ctxt.die_wip_classes_map(source).find(dwarf_dieoffset(die));
@@ -13912,9 +13893,6 @@ build_qualified_type(read_context&	ctxt,
   if (!die)
     return result;
 
-  die_source source;
-  ABG_ASSERT(ctxt.get_die_source(die, source));
-
   unsigned tag = dwarf_tag(die);
 
   if (tag != DW_TAG_const_type
@@ -14090,9 +14068,6 @@ build_pointer_type_def(read_context&	ctxt,
   if (!die)
     return result;
 
-  die_source source;
-  ABG_ASSERT(ctxt.get_die_source(die, source));
-
   unsigned tag = dwarf_tag(die);
   if (tag != DW_TAG_pointer_type)
     return result;
@@ -14173,9 +14148,6 @@ build_reference_type(read_context&	ctxt,
 
   if (!die)
     return result;
-
-  die_source source;
-  ABG_ASSERT(ctxt.get_die_source(die, source));
 
   unsigned tag = dwarf_tag(die);
   if (tag != DW_TAG_reference_type
@@ -14258,8 +14230,7 @@ build_function_type(read_context&	ctxt,
   ABG_ASSERT(dwarf_tag(die) == DW_TAG_subroutine_type
 	     || dwarf_tag(die) == DW_TAG_subprogram);
 
-  die_source source;
-  ABG_ASSERT(ctxt.get_die_source(die, source));
+  const die_source source = ctxt.get_die_source(die);
 
   decl_base_sptr type_decl;
 
@@ -14462,9 +14433,6 @@ build_subrange_type(read_context&	ctxt,
   if (!die)
     return result;
 
-  die_source source;
-  ABG_ASSERT(ctxt.get_die_source(die, source));
-
   unsigned tag = dwarf_tag(const_cast<Dwarf_Die*>(die));
   if (tag != DW_TAG_subrange_type)
     return result;
@@ -14639,9 +14607,6 @@ build_array_type(read_context&	ctxt,
   if (!die)
     return result;
 
-  die_source source;
-  ABG_ASSERT(ctxt.get_die_source(die, source));
-
   unsigned tag = dwarf_tag(die);
   if (tag != DW_TAG_array_type)
     return result;
@@ -14703,9 +14668,6 @@ build_typedef_type(read_context&	ctxt,
 
   if (!die)
     return result;
-
-  die_source source;
-  ABG_ASSERT(ctxt.get_die_source(die, source));
 
   unsigned tag = dwarf_tag(die);
   if (tag != DW_TAG_typedef)
@@ -14874,9 +14836,6 @@ build_var_decl(read_context&	ctxt,
 
   if (!die_is_public_decl(die))
     return result;
-
-  die_source source;
-  ABG_ASSERT(ctxt.get_die_source(die, source));
 
   type_base_sptr type;
   Dwarf_Die type_die;
@@ -15310,9 +15269,6 @@ build_function_decl(read_context&	ctxt,
   if (!die)
     return result;
   ABG_ASSERT(dwarf_tag(die) == DW_TAG_subprogram);
-
-  die_source source;
-  ABG_ASSERT(ctxt.get_die_source(die, source));
 
   if (!die_is_public_decl(die))
     return result;
@@ -15777,8 +15733,7 @@ read_debug_info_into_corpus(read_context& ctxt)
 static void
 maybe_canonicalize_type(const Dwarf_Die *die, read_context& ctxt)
 {
-  die_source source = NO_DEBUG_INFO_DIE_SOURCE;
-  ABG_ASSERT(ctxt.get_die_source(die, source));
+  const die_source source = ctxt.get_die_source(die);
 
   size_t die_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(die));
   type_base_sptr t = ctxt.lookup_type_from_die(die);
@@ -15990,8 +15945,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	return result;
     }
 
-  die_source source_of_die = NO_DEBUG_INFO_DIE_SOURCE;
-  ABG_ASSERT(ctxt.get_die_source(die, source_of_die));
+  const die_source source_of_die = ctxt.get_die_source(die);
 
   if ((result = ctxt.lookup_decl_from_die_offset(dwarf_dieoffset(die),
 						 source_of_die)))
