@@ -869,7 +869,7 @@ string_is_ascii(const string& str)
 ///
 /// "if the hexadecimal value for a universal-character-name [...]  or
 ///  string literal corresponds to a control character (in either of
-///  the ranges 0x00–0x1F or 0x7F–0x9F, both inclusive) [...] the
+///  the ranges 0x00-0x1F or 0x7F-0x9F, both inclusive) [...] the
 ///  program is ill-formed."
 ///
 /// @param str the string to consider.

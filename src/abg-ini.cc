@@ -267,14 +267,14 @@ struct property_value::priv
 
 /// Default constructor for the @ref property_value type.
 ///
-/// @param kind the of @êef property_value that is being constructed.
+/// @param kind the of @ref property_value that is being constructed.
 property_value::property_value()
   : priv_(new priv(ABSTRACT_PROPERTY_VALUE))
 {}
 
 /// Constructor for the @ref property_value type.
 ///
-/// @param kind the of @êef property_value that is being constructed.
+/// @param kind the of @ref property_value that is being constructed.
 property_value::property_value(value_kind kind)
   : priv_(new priv(kind))
 {}

@@ -12504,9 +12504,9 @@ integral_type::base_type
 integral_type::get_base_type() const
 {return base_;}
 
-/// Getter of the modifiers bitmap of the @êef integral_type.
+/// Getter of the modifiers bitmap of the @ref integral_type.
 ///
-/// @return the modifiers bitmap of the @êef integral_type.
+/// @return the modifiers bitmap of the @ref integral_type.
 integral_type::modifiers_type
 integral_type::get_modifiers() const
 {return modifiers_;}

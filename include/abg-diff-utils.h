@@ -1122,7 +1122,7 @@ is_match_point(RandomAccessOutputIterator a_begin,
 /// section 4b in the paper.  As the paper says, "The idea for doing
 /// so is to simultaneously run the basic algorithm in both the
 /// forward and reverse directions until furthest reaching forward and
-/// reverse paths starting at opposing corners ‘‘overlap’’."
+/// reverse paths starting at opposing corners 'overlap'."
 ///
 /// @tparm RandomAccessOutputIterator the type of iterators passed to
 /// this function.  It must be a random access output iterator kind.

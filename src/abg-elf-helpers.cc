@@ -895,7 +895,7 @@ is_linux_kernel(Elf *elf_handle)
 	  || is_linux_kernel_module(elf_handle));
 }
 
-/// Get the address at which a given binary is loaded in memory⋅
+/// Get the address at which a given binary is loaded in memory.
 ///
 /// @param elf_handle the elf handle for the binary to consider.
 ///
