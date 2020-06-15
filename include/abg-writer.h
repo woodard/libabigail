@@ -38,6 +38,13 @@ namespace xml_writer
 
 using namespace abigail::ir;
 
+/// The style of type id the XML writer will output.
+enum type_id_style_kind
+{
+  SEQUENCE_TYPE_ID_STYLE,
+  HASH_TYPE_ID_STYLE
+};
+
 class write_context;
 
 /// A convenience typedef for a shared pointer to write_context.
@@ -74,6 +81,9 @@ set_short_locs(write_context& ctxt, bool flag);
 void
 set_write_parameter_names(write_context& ctxt, bool flag);
 
+void
+set_type_id_style(write_context& ctxt, type_id_style_kind style);
+
 /// A convenience generic function to set common options (usually used
 /// by Libabigail tools) from a generic options carrying-object, into
 /// a given @ref write_context.
@@ -96,6 +106,7 @@ set_common_options(write_context& ctxt, const OPTS& opts)
   set_write_parameter_names(ctxt, opts.write_parameter_names);
   set_short_locs(ctxt, opts.short_locs);
   set_write_default_sizes(ctxt, opts.default_sizes);
+  set_type_id_style(ctxt, opts.type_id_style);
 }
 
 void

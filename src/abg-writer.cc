@@ -27,6 +27,7 @@
 
 #include "config.h"
 #include <assert.h>
+#include <iomanip>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -44,6 +45,7 @@ ABG_BEGIN_EXPORT_DECLARATIONS
 #include "abg-config.h"
 #include "abg-corpus.h"
 #include "abg-diff-utils.h"
+#include "abg-hash.h"
 #include "abg-sptr-utils.h"
 
 #if WITH_ZIP_ARCHIVE
@@ -177,7 +179,9 @@ class write_context
   bool					m_write_parameter_names;
   bool					m_short_locs;
   bool					m_write_default_sizes;
+  type_id_style_kind			m_type_id_style;
   mutable type_ptr_map			m_type_id_map;
+  mutable unordered_set<uint32_t>	m_used_type_id_hashes;
   mutable type_ptr_set_type		m_emitted_type_set;
   type_ptr_set_type			m_emitted_decl_only_set;
   // A map of types that are referenced by emitted pointers,
@@ -214,7 +218,8 @@ public:
       m_write_elf_needed(true),
       m_write_parameter_names(true),
       m_short_locs(false),
-      m_write_default_sizes(true)
+      m_write_default_sizes(true),
+      m_type_id_style(SEQUENCE_TYPE_ID_STYLE)
   {}
 
   /// Getter of the environment we are operating from.
@@ -374,6 +379,24 @@ public:
   set_show_locs(bool f)
   {m_show_locs = f;}
 
+  /// Getter of the "type-id-style" option.
+  ///
+  /// This option controls the kind of type ids used in XML output.
+  ///
+  /// @return the value of the "type-id-style" option.
+  type_id_style_kind
+  get_type_id_style() const
+  {return m_type_id_style;}
+
+  /// Setter of the "type-id-style" option.
+  ///
+  /// This option controls the kind of type ids used in XML output.
+  ///
+  /// @param style the new value of the "type-id-style" option.
+  void
+  set_type_id_style(type_id_style_kind style)
+  {m_type_id_style = style;}
+
   /// Getter of the @ref id_manager.
   ///
   /// @return the @ref id_manager used by the current instance of @ref
@@ -421,14 +444,29 @@ public:
       c = const_cast<type_base*>(t);
 
     type_ptr_map::const_iterator it = m_type_id_map.find(c);
-    if (it == m_type_id_map.end())
+    if (it != m_type_id_map.end())
+      return it->second;
+
+    switch (m_type_id_style)
       {
-	interned_string id =
-	  get_id_manager().get_id_with_prefix("type-id-");
-	m_type_id_map[c] = id;
-	return id;
+      case SEQUENCE_TYPE_ID_STYLE:
+        {
+          interned_string id = get_id_manager().get_id_with_prefix("type-id-");
+          return m_type_id_map[c] = id;
+        }
+      case HASH_TYPE_ID_STYLE:
+        {
+          interned_string pretty = c->get_cached_pretty_representation(true);
+          size_t hash = hashing::fnv_hash(*pretty.raw());
+          while (!m_used_type_id_hashes.insert(hash).second)
+            ++hash;
+          std::ostringstream os;
+          os << std::hex << std::setfill('0') << std::setw(8) << hash;
+          return m_type_id_map[c] = c->get_environment()->intern(os.str());
+        }
       }
-    return it->second;
+    ABG_ASSERT_NOT_REACHED;
+    return interned_string();
   }
 
   string
@@ -2130,6 +2168,17 @@ set_write_elf_needed(write_context& ctxt, bool flag)
 void
 set_write_default_sizes(write_context& ctxt, bool flag)
 {ctxt.set_write_default_sizes(flag);}
+
+/// Set the 'type-id-style' property.
+///
+/// This property controls the kind of type ids used in XML output.
+///
+/// @param ctxt the context to set this property on.
+///
+/// @param style the new value of the 'type-id-style' property.
+void
+set_type_id_style(write_context& ctxt, type_id_style_kind style)
+{ctxt.set_type_id_style(style);}
 
 /// Serialize the canonical types of a given scope.
 ///

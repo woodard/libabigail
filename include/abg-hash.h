@@ -23,7 +23,9 @@
 #ifndef __ABG_HASH_H__
 #define __ABG_HASH_H__
 
+#include <stdint.h>
 #include <cstddef>
+#include <string>
 
 namespace abigail
 {
@@ -34,6 +36,9 @@ namespace hashing
   /// This is copied from tree.c in GCC.
   std::size_t
   combine_hashes(std::size_t, std::size_t);
+
+  uint32_t
+  fnv_hash(const std::string& str);
 }//end namespace hashing
 }//end namespace abigail
 

@@ -46,7 +46,11 @@ using abigail::dwarf_reader::read_corpus_from_elf;
 using abigail::dwarf_reader::read_context;
 using abigail::dwarf_reader::read_context_sptr;
 using abigail::dwarf_reader::create_read_context;
+using abigail::xml_writer::SEQUENCE_TYPE_ID_STYLE;
+using abigail::xml_writer::HASH_TYPE_ID_STYLE;
 using abigail::xml_writer::create_write_context;
+using abigail::xml_writer::set_type_id_style;
+using abigail::xml_writer::type_id_style_kind;
 using abigail::xml_writer::write_context_sptr;
 using abigail::xml_writer::write_corpus;
 
@@ -56,6 +60,7 @@ struct InOutSpec
 {
   const char* in_elf_path;
   const char* in_suppr_spec_path;
+  type_id_style_kind type_id_style;
   const char* in_abi_path;
   const char* out_abi_path;
 };// end struct InOutSpec
@@ -66,174 +71,266 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test0",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test0.abi",
     "output/test-read-dwarf/test0.abi"
   },
   {
+    "data/test-read-dwarf/test0",
+    "",
+    HASH_TYPE_ID_STYLE,
+    "data/test-read-dwarf/test0.hash.abi",
+    "output/test-read-dwarf/test0.hash.abi"
+  },
+  {
     "data/test-read-dwarf/test1",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test1.abi",
     "output/test-read-dwarf/test1.abi"
   },
   {
+    "data/test-read-dwarf/test1",
+    "",
+    HASH_TYPE_ID_STYLE,
+    "data/test-read-dwarf/test1.hash.abi",
+    "output/test-read-dwarf/test1.hash.abi"
+  },
+  {
     "data/test-read-dwarf/test2.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test2.so.abi",
     "output/test-read-dwarf/test2.so.abi"
   },
   {
+    "data/test-read-dwarf/test2.so",
+    "",
+    HASH_TYPE_ID_STYLE,
+    "data/test-read-dwarf/test2.so.hash.abi",
+    "output/test-read-dwarf/test2.so.hash.abi"
+  },
+  {
     "data/test-read-dwarf/test3.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test3.so.abi",
     "output/test-read-dwarf/test3.so.abi"
   },
   {
+    "data/test-read-dwarf/test3.so",
+    "",
+    HASH_TYPE_ID_STYLE,
+    "data/test-read-dwarf/test3.so.hash.abi",
+    "output/test-read-dwarf/test3.so.hash.abi"
+  },
+  {
     "data/test-read-dwarf/test4.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test4.so.abi",
     "output/test-read-dwarf/test4.so.abi"
   },
   {
+    "data/test-read-dwarf/test4.so",
+    "",
+    HASH_TYPE_ID_STYLE,
+    "data/test-read-dwarf/test4.so.hash.abi",
+    "output/test-read-dwarf/test4.so.hash.abi"
+  },
+  {
     "data/test-read-dwarf/test5.o",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test5.o.abi",
     "output/test-read-dwarf/test5.o.abi"
   },
   {
+    "data/test-read-dwarf/test5.o",
+    "",
+    HASH_TYPE_ID_STYLE,
+    "data/test-read-dwarf/test5.o.hash.abi",
+    "output/test-read-dwarf/test5.o.hash.abi"
+  },
+  {
     "data/test-read-dwarf/test6.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test6.so.abi",
     "output/test-read-dwarf/test6.so.abi"
   },
   {
+    "data/test-read-dwarf/test6.so",
+    "",
+    HASH_TYPE_ID_STYLE,
+    "data/test-read-dwarf/test6.so.hash.abi",
+    "output/test-read-dwarf/test6.so.hash.abi"
+  },
+  {
     "data/test-read-dwarf/test7.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test7.so.abi",
     "output/test-read-dwarf/test7.so.abi"
   },
   {
+    "data/test-read-dwarf/test7.so",
+    "",
+    HASH_TYPE_ID_STYLE,
+    "data/test-read-dwarf/test7.so.hash.abi",
+    "output/test-read-dwarf/test7.so.hash.abi"
+  },
+  {
     "data/test-read-dwarf/test8-qualified-this-pointer.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test8-qualified-this-pointer.so.abi",
     "output/test-read-dwarf/test8-qualified-this-pointer.so.abi"
   },
   {
+    "data/test-read-dwarf/test8-qualified-this-pointer.so",
+    "",
+    HASH_TYPE_ID_STYLE,
+    "data/test-read-dwarf/test8-qualified-this-pointer.so.hash.abi",
+    "output/test-read-dwarf/test8-qualified-this-pointer.so.hash.abi"
+  },
+  {
     "data/test-read-dwarf/test9-pr18818-clang.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test9-pr18818-clang.so.abi",
     "output/test-read-dwarf/test9-pr18818-clang.so.abi"
   },
   {
     "data/test-read-dwarf/test10-pr18818-gcc.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test10-pr18818-gcc.so.abi",
     "output/test-read-dwarf/test10-pr18818-gcc.so.abi"
   },
   {
     "data/test-read-dwarf/test11-pr18828.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test11-pr18828.so.abi",
     "output/test-read-dwarf/test11-pr18828.so.abi",
   },
   {
     "data/test-read-dwarf/test12-pr18844.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test12-pr18844.so.abi",
     "output/test-read-dwarf/test12-pr18844.so.abi",
   },
   {
     "data/test-read-dwarf/test13-pr18894.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test13-pr18894.so.abi",
     "output/test-read-dwarf/test13-pr18894.so.abi",
   },
   {
     "data/test-read-dwarf/test14-pr18893.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test14-pr18893.so.abi",
     "output/test-read-dwarf/test14-pr18893.so.abi",
   },
   {
     "data/test-read-dwarf/test15-pr18892.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test15-pr18892.so.abi",
     "output/test-read-dwarf/test15-pr18892.so.abi",
   },
   {
     "data/test-read-dwarf/test16-pr18904.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test16-pr18904.so.abi",
     "output/test-read-dwarf/test16-pr18904.so.abi",
   },
   {
     "data/test-read-dwarf/test17-pr19027.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test17-pr19027.so.abi",
     "output/test-read-dwarf/test17-pr19027.so.abi",
   },
   {
     "data/test-read-dwarf/test18-pr19037-libvtkRenderingLIC-6.1.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test18-pr19037-libvtkRenderingLIC-6.1.so.abi",
     "output/test-read-dwarf/test18-pr19037-libvtkRenderingLIC-6.1.so.abi",
   },
   {
     "data/test-read-dwarf/test19-pr19023-libtcmalloc_and_profiler.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test19-pr19023-libtcmalloc_and_profiler.so.abi",
     "output/test-read-dwarf/test19-pr19023-libtcmalloc_and_profiler.so.abi",
   },
   {
     "data/test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so.abi",
     "output/test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so.abi",
   },
   {
     "data/test-read-dwarf/test21-pr19092.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test21-pr19092.so.abi",
     "output/test-read-dwarf/test21-pr19092.so.abi",
   },
   {
     "data/test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so.abi",
     "output/test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so.abi",
   },
   {
     "data/test-read-dwarf/libtest23.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/libtest23.so.abi",
     "output/test-read-dwarf/libtest23.so.abi",
   },
   {
     "data/test-read-dwarf/libtest24-drop-fns.so",
     "data/test-read-dwarf/test24-drop-fns-0.suppr",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/libtest24-drop-fns.so.abi",
     "output/test-read-dwarf/libtest24-drop-fns.so.abi",
   },
   {
     "data/test-read-dwarf/libtest24-drop-fns.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/libtest24-drop-fns-2.so.abi",
     "output/test-read-dwarf/libtest24-drop-fns-2.so.abi",
   },
   {
     "data/test-read-dwarf/PR22015-libboost_iostreams.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/PR22015-libboost_iostreams.so.abi",
     "output/test-read-dwarf/PR22015-libboost_iostreams.so.abi",
   },
   {
     "data/test-read-dwarf/PR22122-libftdc.so",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/PR22122-libftdc.so.abi",
     "output/test-read-dwarf/PR22122-libftdc.so.abi",
   },
   {
     "data/test-read-dwarf/PR24378-fn-is-not-scope.o",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/PR24378-fn-is-not-scope.abi",
     "output/test-read-dwarf/PR24378-fn-is-not-scope.abi",
   },
@@ -241,6 +338,7 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/PR25007-sdhci.ko",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/PR25007-sdhci.ko.abi",
     "output/test-read-dwarf/PR25007-sdhci.ko.abi",
   },
@@ -249,6 +347,7 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/PR25042-libgdbm-clang-dwarf5.so.6.0.0",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/PR25042-libgdbm-clang-dwarf5.so.6.0.0.abi",
     "output/test-read-dwarf/PR25042-libgdbm-clang-dwarf5.so.6.0.0.abi",
   },
@@ -256,23 +355,26 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test25-bogus-binary.elf",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "",
     "",
   },
   {
     "data/test-read-dwarf/test26-bogus-binary.elf",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "",
     "",
   },
   {
     "data/test-read-dwarf/test27-bogus-binary.elf",
     "",
+    SEQUENCE_TYPE_ID_STYLE,
     "",
     "",
   },
   // This should be the last entry.
-  {NULL, NULL, NULL, NULL}
+  {NULL, NULL, SEQUENCE_TYPE_ID_STYLE, NULL, NULL}
 };
 
 using abigail::suppr::suppression_sptr;
@@ -377,8 +479,9 @@ struct test_task : public abigail::workers::task
 	is_ok = false;
 	return;
       }
-    const write_context_sptr write_ctxt
+    write_context_sptr write_ctxt
 	= create_write_context(corp->get_environment(), of);
+    set_type_id_style(*write_ctxt, spec.type_id_style);
     is_ok = write_corpus(*write_ctxt, corp, /*indent=*/0);
     of.close();
 

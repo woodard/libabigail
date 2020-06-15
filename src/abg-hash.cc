@@ -60,6 +60,36 @@ combine_hashes(size_t val1, size_t val2)
   return val2;
 }
 
+/// Compute a stable string hash.
+///
+/// std::hash has no portability or stability guarantees so is
+/// unsuitable where reproducibility is a requirement such as in XML
+/// output.
+///
+/// This is the 32-bit FNV-1a algorithm. The algorithm, reference code
+/// and constants are all unencumbered. It is fast and has reasonable
+/// distribution properties.
+///
+/// https://en.wikipedia.org/wiki/Fowler-Noll-Vo_hash_function
+///
+/// @param str the string to hash.
+///
+/// @return an unsigned 32 bit hash value.
+uint32_t
+fnv_hash(const std::string& str)
+{
+  const uint32_t prime = 0x01000193;
+  const uint32_t offset_basis = 0x811c9dc5;
+  uint32_t hash = offset_basis;
+  for (std::string::const_iterator i = str.begin(); i != str.end(); ++i)
+    {
+      uint8_t byte = *i;
+      hash = hash ^ byte;
+      hash = hash * prime;
+    }
+  return hash;
+}
+
 }//end namespace hashing
 
 using std::list;

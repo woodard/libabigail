@@ -70,7 +70,10 @@ using abigail::comparison::corpus_diff_sptr;
 using abigail::comparison::compute_diff;
 using abigail::comparison::diff_context_sptr;
 using abigail::comparison::diff_context;
+using abigail::xml_writer::SEQUENCE_TYPE_ID_STYLE;
+using abigail::xml_writer::HASH_TYPE_ID_STYLE;
 using abigail::xml_writer::create_write_context;
+using abigail::xml_writer::type_id_style_kind;
 using abigail::xml_writer::write_context_sptr;
 using abigail::xml_writer::write_corpus;
 using abigail::xml_reader::read_corpus_from_native_xml_file;
@@ -114,6 +117,7 @@ struct options
   bool			do_log;
   bool			drop_private_types;
   bool			drop_undefined_syms;
+  type_id_style_kind	type_id_style;
 
   options()
     : display_version(),
@@ -136,7 +140,8 @@ struct options
       annotate(),
       do_log(),
       drop_private_types(false),
-      drop_undefined_syms(false)
+      drop_undefined_syms(false),
+      type_id_style(SEQUENCE_TYPE_ID_STYLE)
   {}
 
   ~options()
@@ -175,6 +180,7 @@ display_usage(const string& prog_name, ostream& out)
     << "  --no-write-default-sizes  do not emit pointer size when it equals"
     " the default address size of the translation unit\n"
     << "  --no-parameter-names  do not show names of function parameters\n"
+    << "  --type-id-style (sequence|hash)  type-id style (sequence(default): type-id-number; hash: hexdigits\n"
     << "  --check-alternate-debug-info <elf-path>  check alternate debug info "
     "of <elf-path>\n"
     << "  --check-alternate-debug-info-base-name <elf-path>  check alternate "
@@ -301,6 +307,18 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.default_sizes = false;
       else if (!strcmp(argv[i], "--no-parameter-names"))
 	opts.write_parameter_names = false;
+      else if (!strcmp(argv[i], "--type-id-style"))
+        {
+          ++i;
+          if (i >= argc)
+            return false;
+          if (!strcmp(argv[i], "sequence"))
+            opts.type_id_style = SEQUENCE_TYPE_ID_STYLE;
+          else if (!strcmp(argv[i], "hash"))
+            opts.type_id_style = HASH_TYPE_ID_STYLE;
+          else
+            return false;
+        }
       else if (!strcmp(argv[i], "--check-alternate-debug-info")
 	       || !strcmp(argv[i], "--check-alternate-debug-info-base-name"))
 	{

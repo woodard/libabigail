@@ -197,13 +197,14 @@ Options
     1.8 will not set the default size and will interpret types without
     a size-in-bits attribute as zero sized.
 
-  * ``--named-type-ids``
+  * ``--type-id-style`` ( ``sequence`` | ``hash`` )
 
-    Without this option ids used to reference types in the XML file
-    use simple numbers.  With this option the ids used are derived
-    from the type name to make it easier to see which type is
-    referenced and make the XML file more stable in case new types are
-    added (without this option that might mean all id numbers change).
+    This option controls how types are idenfied in the generated XML
+    files.  The default ``sequence`` style just numbers (with
+    ``type-id-`` as prefix) the types in the order they are
+    encountered.  The ``hash`` style uses a (stable, portable) hash of
+    libabigail's internal type names and is intended to make the XML
+    files easier to diff.
 
   * ``--check-alternate-debug-info-base-name`` <*elf-path*>
 
