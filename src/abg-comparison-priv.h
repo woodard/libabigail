@@ -305,11 +305,7 @@ public:
   /// @returnt a smart pointer to the diff context.
   diff_context_sptr
   get_context() const
-  {
-    if (ctxt_.expired())
-      return diff_context_sptr();
-    return diff_context_sptr(ctxt_);
-  }
+  {return ctxt_.lock();}
 
   /// Check if a given categorization of a diff node should make it be
   /// filtered out.
@@ -1372,7 +1368,7 @@ struct corpus_diff::diff_stats::priv
 
   diff_context_sptr
   ctxt()
-  {return ctxt_.expired() ? diff_context_sptr() : diff_context_sptr(ctxt_);}
+  {return ctxt_.lock();}
 }; // end class corpus_diff::diff_stats::priv
 
 void

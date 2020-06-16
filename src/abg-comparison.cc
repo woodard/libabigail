@@ -3355,15 +3355,17 @@ var_diff::second_var() const
 diff_sptr
 var_diff::type_diff() const
 {
-  if (priv_->type_diff_.expired())
+  if (diff_sptr result = priv_->type_diff_.lock())
+    return result;
+  else
     {
-      diff_sptr d = compute_diff(first_var()->get_type(),
-				       second_var()->get_type(),
-				       context());
-      context()->keep_diff_alive(d);
-      priv_->type_diff_ = d;
+      result = compute_diff(first_var()->get_type(),
+			    second_var()->get_type(),
+			    context());
+      context()->keep_diff_alive(result);
+      priv_->type_diff_ = result;
+      return result;
     }
-  return diff_sptr(priv_->type_diff_);
 }
 
 /// Return true iff the diff node has a change.
@@ -8901,11 +8903,7 @@ corpus_diff::diff_stats::net_num_leaf_var_changes() const
 /// @return a smart pointer to the context associate with the corpus.
 diff_context_sptr
 corpus_diff::priv::get_context()
-{
-  if (ctxt_.expired())
-    return diff_context_sptr();
-  return diff_context_sptr(ctxt_);
-}
+{return ctxt_.lock();}
 
 /// Tests if the lookup tables are empty.
 ///
