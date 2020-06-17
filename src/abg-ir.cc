@@ -11913,26 +11913,19 @@ type_base::get_canonical_type_for(type_base_sptr t)
 	  // Compare types by considering that decl-only classes don't
 	  // equal their definition.
 	  env->decl_only_class_equals_definition(false);
-	  if (types_defined_same_linux_kernel_corpus_public(**it, *t))
-	    {
-	      result = *it;
-	      break;
-	    }
-	  if (*it == t)
-	    {
-	      // Restore the state of the on-the-fly-canonicalization
-	      // and the
-	      // decl-only-class-being-equal-to-a-matching-definition
-	      // flags, as we are getting out of the loop.
-	      env->do_on_the_fly_canonicalization(false);
-	      env->decl_only_class_equals_definition
-		(saved_decl_only_class_equals_definition);
-	      result = *it;
-	      break;
-	    }
+	  bool equal = types_defined_same_linux_kernel_corpus_public(**it, *t)
+		       || *it == t;
+	  // Restore the state of the on-the-fly-canonicalization and
+	  // the decl-only-class-being-equal-to-a-matching-definition
+	  // flags.
 	  env->do_on_the_fly_canonicalization(false);
 	  env->decl_only_class_equals_definition
 	    (saved_decl_only_class_equals_definition);
+	  if (equal)
+	    {
+	      result = *it;
+	      break;
+	    }
 	}
       if (!result)
 	{
