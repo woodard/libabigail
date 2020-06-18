@@ -5095,11 +5095,11 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <!-- std::basic_ostream<char, std::char_traits<char> >& std::basic_ostream<char, std::char_traits<char> >::operator<<(void ()*) -->
+          <!-- std::basic_ostream<char, std::char_traits<char> >& std::basic_ostream<char, std::char_traits<char> >::operator<<(std::basic_ostream<char, std::char_traits<char> >& (std::basic_ostream<char, std::char_traits<char> >&)*) -->
           <function-decl name='operator&lt;&lt;' mangled-name='_ZNSolsEPFRSoS_E' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ostream' line='108' column='1' visibility='default' binding='global' size-in-bits='64'>
             <!-- implicit parameter of type 'std::basic_ostream<char, std::char_traits<char> >*' -->
             <parameter type-id='type-id-215' is-artificial='yes'/>
-            <!-- parameter of type 'void ()*' -->
+            <!-- parameter of type 'std::basic_ostream<char, std::char_traits<char> >& (std::basic_ostream<char, std::char_traits<char> >&)*' -->
             <parameter type-id='type-id-276'/>
             <!-- std::basic_ostream<char, std::char_traits<char> >& -->
             <return type-id='type-id-214'/>
@@ -8298,7 +8298,7 @@
     <qualified-type-def type-id='type-id-65' const='yes' id='type-id-307'/>
     <!-- const vtkWeakPointer<vtkImageDataLIC2D>* -->
     <pointer-type-def type-id='type-id-307' size-in-bits='64' id='type-id-300'/>
-    <!-- void ()* -->
+    <!-- std::basic_ostream<char, std::char_traits<char> >& (std::basic_ostream<char, std::char_traits<char> >&)* -->
     <pointer-type-def type-id='type-id-308' size-in-bits='64' id='type-id-276'/>
     <!-- vtkImageDataLIC2D& -->
     <reference-type-def kind='lvalue' type-id='type-id-108' size-in-bits='64' id='type-id-301'/>

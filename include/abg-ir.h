@@ -1392,6 +1392,9 @@ protected:
   peek_qualified_name() const;
 
   void
+  clear_qualified_name();
+
+  void
   set_qualified_name(const interned_string&) const;
 
   const interned_string&
@@ -2024,6 +2027,7 @@ class qualified_type_def : public virtual type_base, public virtual decl_base
 
 protected:
   string build_name(bool, bool internal = false) const;
+  virtual void on_canonical_type_set();
 
 public:
 
@@ -2126,6 +2130,9 @@ class pointer_type_def : public virtual type_base, public virtual decl_base
   // Forbidden.
   pointer_type_def();
 
+protected:
+  virtual void on_canonical_type_set();
+
 public:
 
   /// A hasher for instances of pointer_type_def
@@ -2179,6 +2186,9 @@ class reference_type_def : public virtual type_base, public virtual decl_base
 
   // Forbidden.
   reference_type_def();
+
+protected:
+  virtual void on_canonical_type_set();
 
 public:
 
@@ -3067,6 +3077,9 @@ class function_type : public virtual type_base
 {
   struct priv;
   typedef shared_ptr<priv> priv_sptr;
+
+protected:
+  virtual void on_canonical_type_set();
 
 public:
   /// Hasher for an instance of function_type

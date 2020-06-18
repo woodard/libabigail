@@ -36663,7 +36663,7 @@
         <var-decl name='normalization_preference' type-id='type-id-1939' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-private.hh' line='114' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='448'>
-        <!-- bool ()* hb_ot_complex_shaper_t::decompose -->
+        <!-- bool (const hb_ot_shape_normalize_context_t*, typedef hb_codepoint_t, hb_codepoint_t*, hb_codepoint_t*)* hb_ot_complex_shaper_t::decompose -->
         <var-decl name='decompose' type-id='type-id-1940' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-private.hh' line='123' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='512'>
@@ -36785,7 +36785,7 @@
         <var-decl name='unicode' type-id='type-id-86' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-normalize-private.hh' line='57' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
-        <!-- bool ()* hb_ot_shape_normalize_context_t::decompose -->
+        <!-- bool (const hb_ot_shape_normalize_context_t*, typedef hb_codepoint_t, hb_codepoint_t*, hb_codepoint_t*)* hb_ot_shape_normalize_context_t::decompose -->
         <var-decl name='decompose' type-id='type-id-1940' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-normalize-private.hh' line='61' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
@@ -36802,7 +36802,7 @@
       <enumerator name='HB_OT_SHAPE_ZERO_WIDTH_MARKS_BY_GDEF_LATE' value='3'/>
       <enumerator name='HB_OT_SHAPE_ZERO_WIDTH_MARKS_DEFAULT' value='1'/>
     </enum-decl>
-    <!-- bool ()* -->
+    <!-- bool (const hb_ot_shape_normalize_context_t*, typedef hb_codepoint_t, hb_codepoint_t*, hb_codepoint_t*)* -->
     <pointer-type-def type-id='type-id-1949' size-in-bits='64' id='type-id-1940'/>
     <!-- bool (const hb_ot_shape_normalize_context_t*, typedef hb_codepoint_t, typedef hb_codepoint_t, hb_codepoint_t*)* -->
     <pointer-type-def type-id='type-id-1950' size-in-bits='64' id='type-id-1941'/>

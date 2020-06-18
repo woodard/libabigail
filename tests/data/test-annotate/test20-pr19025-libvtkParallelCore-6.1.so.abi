@@ -6555,7 +6555,7 @@
     <pointer-type-def type-id='type-id-260' size-in-bits='64' id='type-id-339'/>
     <!-- std::basic_ostream<char, std::char_traits<char> >& -->
     <reference-type-def kind='lvalue' type-id='type-id-340' size-in-bits='64' id='type-id-341'/>
-    <!-- void ()* -->
+    <!-- std::basic_ostream<char, std::char_traits<char> >& (std::basic_ostream<char, std::char_traits<char> >&)* -->
     <pointer-type-def type-id='type-id-342' size-in-bits='64' id='type-id-343'/>
     <!-- std::basic_ostream<char, std::char_traits<char> >* -->
     <pointer-type-def type-id='type-id-340' size-in-bits='64' id='type-id-344'/>
@@ -7693,11 +7693,11 @@
       <!-- struct std::basic_ostream<char, std::char_traits<char> > -->
       <class-decl name='basic_ostream&lt;char, std::char_traits&lt;char&gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-340'>
         <member-function access='public'>
-          <!-- std::basic_ostream<char, std::char_traits<char> >& std::basic_ostream<char, std::char_traits<char> >::operator<<(void ()*) -->
+          <!-- std::basic_ostream<char, std::char_traits<char> >& std::basic_ostream<char, std::char_traits<char> >::operator<<(std::basic_ostream<char, std::char_traits<char> >& (std::basic_ostream<char, std::char_traits<char> >&)*) -->
           <function-decl name='operator&lt;&lt;' mangled-name='_ZNSolsEPFRSoS_E' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ostream' line='108' column='1' visibility='default' binding='global' size-in-bits='64'>
             <!-- implicit parameter of type 'std::basic_ostream<char, std::char_traits<char> >*' -->
             <parameter type-id='type-id-344' is-artificial='yes'/>
-            <!-- parameter of type 'void ()*' -->
+            <!-- parameter of type 'std::basic_ostream<char, std::char_traits<char> >& (std::basic_ostream<char, std::char_traits<char> >&)*' -->
             <parameter type-id='type-id-343'/>
             <!-- std::basic_ostream<char, std::char_traits<char> >& -->
             <return type-id='type-id-341'/>

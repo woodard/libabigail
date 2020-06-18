@@ -3535,6 +3535,15 @@ const interned_string&
 decl_base::peek_qualified_name() const
 {return priv_->qualified_name_;}
 
+/// Clear the qualified name of this decl.
+///
+/// This is useful to ensure that the cache for the qualified name of
+/// the decl is refreshed right after type canonicalization, for
+/// instance.
+void
+decl_base::clear_qualified_name()
+{priv_->qualified_name_.clear();}
+
 /// Setter for the qualified name.
 ///
 /// @param n the new qualified name.
@@ -13105,6 +13114,17 @@ qualified_type_def::build_name(bool fully_qualified, bool internal) const
 				    fully_qualified, internal);
 }
 
+/// This function is automatically invoked whenever an instance of
+/// this type is canonicalized.
+///
+/// It's an overload of the virtual type_base::on_canonical_type_set.
+///
+/// We put here what is thus meant to be executed only at the point of
+/// type canonicalization.
+void
+qualified_type_def::on_canonical_type_set()
+{clear_qualified_name();}
+
 /// Constructor of the qualified_type_def
 ///
 /// @param type the underlying type
@@ -13502,6 +13522,17 @@ struct pointer_type_def::priv
   {}
 }; //end struct pointer_type_def
 
+/// This function is automatically invoked whenever an instance of
+/// this type is canonicalized.
+///
+/// It's an overload of the virtual type_base::on_canonical_type_set.
+///
+/// We put here what is thus meant to be executed only at the point of
+/// type canonicalization.
+void
+pointer_type_def::on_canonical_type_set()
+{clear_qualified_name();}
+
 pointer_type_def::pointer_type_def(const type_base_sptr&	pointed_to,
 				   size_t			size_in_bits,
 				   size_t			align_in_bits,
@@ -13782,6 +13813,17 @@ operator!=(const pointer_type_def_sptr& l, const pointer_type_def_sptr& r)
 // </pointer_type_def definitions>
 
 // <reference_type_def definitions>
+
+/// This function is automatically invoked whenever an instance of
+/// this type is canonicalized.
+///
+/// It's an overload of the virtual type_base::on_canonical_type_set.
+///
+/// We put here what is thus meant to be executed only at the point of
+/// type canonicalization.
+void
+reference_type_def::on_canonical_type_set()
+{clear_qualified_name();}
 
 reference_type_def::reference_type_def(const type_base_sptr	pointed_to,
 				       bool			lvalue,
@@ -16231,6 +16273,20 @@ struct function_type::priv
     return (c.find(fn_type_name) != c.end());
   }
 };// end struc function_type::priv
+
+/// This function is automatically invoked whenever an instance of
+/// this type is canonicalized.
+///
+/// It's an overload of the virtual type_base::on_canonical_type_set.
+///
+/// We put here what is thus meant to be executed only at the point of
+/// type canonicalization.
+void
+function_type::on_canonical_type_set()
+{
+  priv_->cached_name_.clear();
+  priv_->internal_cached_name_.clear();
+}
 
 /// The most straightforward constructor for the function_type class.
 ///
