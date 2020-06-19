@@ -1280,9 +1280,6 @@ type_or_void(const type_base_sptr, const environment*);
 type_base_sptr
 canonicalize(type_base_sptr);
 
-type_base_sptr
-re_canonicalize(type_base_sptr);
-
 type_base*
 type_has_non_canonicalized_subtype(type_base_sptr t);
 

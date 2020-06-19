@@ -12079,22 +12079,6 @@ canonicalize(type_base_sptr t)
   return canonical;
 }
 
-/// Re-compute the canonical type of a type which already has one.
-///
-/// This does what @ref canonicalize does, but clears out the
-/// previously computed canonical type first.
-///
-/// @param t the type to compute the canonical type for.
-///
-/// @return the newly computed canonical type.
-type_base_sptr
-re_canonicalize(type_base_sptr t)
-{
-  t->priv_->canonical_type.reset();
-  t->priv_->naked_canonical_type = 0;
-  return canonicalize(t);
-}
-
 /// The constructor of @ref type_base.
 ///
 /// @param s the size of the type, in bits.

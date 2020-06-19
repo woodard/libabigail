@@ -1556,9 +1556,6 @@ public:
   friend type_base_sptr
   canonicalize(type_base_sptr);
 
-  friend type_base_sptr
-  re_canonicalize(type_base_sptr);
-
   friend bool
   equals(const decl_base&, const decl_base&, change_kind*);
 
@@ -1822,8 +1819,6 @@ public:
   type_base(const environment* e, size_t s, size_t a);
 
   friend type_base_sptr canonicalize(type_base_sptr);
-
-  friend type_base_sptr re_canonicalize(type_base_sptr);
 
   type_base_sptr
   get_canonical_type() const;
