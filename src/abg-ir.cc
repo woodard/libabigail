@@ -2635,8 +2635,8 @@ struct environment::priv
   mutable vector<type_base_sptr> sorted_canonical_types_;
   type_base_sptr		 void_type_;
   type_base_sptr		 variadic_marker_type_;
-  interned_string_set_type	 classes_being_compared_;
-  interned_string_set_type	 fn_types_being_compared_;
+  unordered_set<const class_or_union*>	classes_being_compared_;
+  unordered_set<const function_type*>	fn_types_being_compared_;
   vector<type_base_sptr>	 extra_live_types_;
   interned_string_pool		 string_pool_;
   bool				 canonicalization_is_done_;
@@ -16457,8 +16457,7 @@ struct function_type::priv
   {
     const environment* env = type.get_environment();
     ABG_ASSERT(env);
-    interned_string fn_type_name = type.get_cached_name(/*internal=*/true);
-    env->priv_->fn_types_being_compared_.insert(fn_type_name);
+    env->priv_->fn_types_being_compared_.insert(&type);
   }
 
   /// If a given @ref function_type was marked as being compared, this
@@ -16471,8 +16470,7 @@ struct function_type::priv
   {
     const environment* env = type.get_environment();
     ABG_ASSERT(env);
-    interned_string fn_type_name = type.get_cached_name(/*internal=*/true);
-    env->priv_->fn_types_being_compared_.erase(fn_type_name);
+    env->priv_->fn_types_being_compared_.erase(&type);
   }
 
   /// Tests if a @ref function_type is currently being compared.
@@ -16485,9 +16483,7 @@ struct function_type::priv
   {
     const environment* env = type.get_environment();
     ABG_ASSERT(env);
-    interned_string fn_type_name = type.get_cached_name(/*internal=*/true);
-    interned_string_set_type& c = env->priv_->fn_types_being_compared_;
-    return (c.find(fn_type_name) != c.end());
+    return env->priv_->fn_types_being_compared_.count(&type);
   }
 };// end struc function_type::priv
 
@@ -18261,7 +18257,7 @@ struct class_or_union::priv
   {
     const environment* env = klass.get_environment();
     ABG_ASSERT(env);
-    env->priv_->classes_being_compared_.insert(klass.get_qualified_name());
+    env->priv_->classes_being_compared_.insert(&klass);
   }
 
   /// Mark a class or union as being currently compared using the
@@ -18309,7 +18305,7 @@ struct class_or_union::priv
   {
     const environment* env = klass.get_environment();
     ABG_ASSERT(env);
-    env->priv_->classes_being_compared_.erase(klass.get_qualified_name());
+    env->priv_->classes_being_compared_.erase(&klass);
   }
 
   /// If the instance of class_or_union has been previously marked as
@@ -18335,8 +18331,7 @@ struct class_or_union::priv
   {
     const environment* env = klass.get_environment();
     ABG_ASSERT(env);
-    interned_string_set_type& c = env->priv_->classes_being_compared_;
-    return (c.find(klass.get_qualified_name()) != c.end());
+    return env->priv_->classes_being_compared_.count(&klass);
   }
 
   /// Test if a given instance of class_or_union is being currently

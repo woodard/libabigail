@@ -43,6 +43,477 @@
                                   type size changed from 960 to 1024 (in bits)
                                   1 data member insertion:
                                     'dispatcher_handle_any_message Dispatcher::any_handler', at offset 960 (in bits) at dispatcher.h:56:1
+                                  1 data member change:
+                                    type of 'SpiceCoreInterface* Dispatcher::recv_core' changed:
+                                      in pointed to type 'typedef SpiceCoreInterface' at spice-core.h:56:1:
+                                        underlying type 'struct SpiceCoreInterface' at spice.h:82:1 changed:
+                                          type size hasn't changed
+                                          3 data member changes:
+                                            type of 'SpiceWatch* (int, int, typedef SpiceWatchFunc, void*)* SpiceCoreInterface::watch_add' changed:
+                                              in pointed to type 'function type SpiceWatch* (int, int, typedef SpiceWatchFunc, void*)':
+                                                return type changed:
+                                                  in pointed to type 'typedef SpiceWatch' at spice-core.h:68:1:
+                                                    underlying type 'struct SpiceWatch' at red_worker.c:268:1 changed:
+                                                      type size hasn't changed
+                                                      1 data member change:
+                                                        type of 'RedWorker* SpiceWatch::worker' changed:
+                                                          in pointed to type 'struct RedWorker' at red_worker.c:932:1:
+                                                            type size changed from 15520192 to 14876992 (in bits)
+                                                            1 data member deletion:
+                                                              'uint32_t RedWorker::preload_group_id', at offset 15379968 (in bits) at red_worker.c:992:1
+                                                            1 data member insertion:
+                                                              'FILE* RedWorker::record_fd', at offset 14876928 (in bits) at red_worker.c:1037:1
+                                                            37 data member changes (2 filtered):
+                                                              type of 'DisplayChannel* RedWorker::display_channel' changed:
+                                                                in pointed to type 'typedef DisplayChannel' at red_worker.c:434:1:
+                                                                  underlying type 'struct DisplayChannel' at red_worker.c:715:1 changed:
+                                                                    type size hasn't changed
+                                                                    1 data member change:
+                                                                      type of 'CommonChannel DisplayChannel::common' changed:
+                                                                        underlying type 'struct CommonChannel' at red_worker.c:650:1 changed:
+                                                                          type size hasn't changed
+                                                                          2 data member changes:
+                                                                            type of 'RedChannel CommonChannel::base' changed:
+                                                                              underlying type 'struct RedChannel' at red_channel.h:303:1 changed:
+                                                                                type size hasn't changed
+                                                                                3 data member changes:
+                                                                                  type of 'SpiceCoreInterface* RedChannel::core' changed:
+                                                                                    in pointed to type 'typedef SpiceCoreInterface':
+                                                                                      entity changed from 'typedef SpiceCoreInterface' to 'const SpiceCoreInterface'
+                                                                                      type size hasn't changed
+                                                                                  type of 'ChannelCbs RedChannel::channel_cbs' changed:
+                                                                                    underlying type 'struct {channel_configure_socket_proc config_socket; channel_disconnect_proc on_disconnect; channel_send_pipe_item_proc send_item; channel_hold_pipe_item_proc hold_item; channel_release_pipe_item_proc release_item; channel_alloc_msg_recv_buf_proc alloc_recv_buf; channel_release_msg_recv_buf_proc release_recv_buf; channel_handle_migrate_flush_mark_proc handle_migrate_flush_mark; channel_handle_migrate_data_proc handle_migrate_data; channel_handle_migrate_data_get_serial_proc handle_migrate_data_get_serial;}' at red_channel.h:195:1 changed:
+                                                                                      type size hasn't changed
+                                                                                      10 data member changes:
+                                                                                        type of 'channel_configure_socket_proc config_socket' changed:
+                                                                                          underlying type 'int (RedChannelClient*)*' changed:
+                                                                                            in pointed to type 'function type int (RedChannelClient*)':
+                                                                                              parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                                                                                in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
+                                                                                                  underlying type 'struct RedChannelClient' at red_channel.h:247:1 changed:
+                                                                                                    type size hasn't changed
+                                                                                                    3 data member changes (2 filtered):
+                                                                                                      type of 'RedChannel* RedChannelClient::channel' changed:
+                                                                                                        in pointed to type 'typedef RedChannel' at red_channel.h:130:1:
+                                                                                                          underlying type 'struct RedChannel' changed, as being reported
+                                                                                                      type of 'RedClient* RedChannelClient::client' changed:
+                                                                                                        in pointed to type 'typedef RedClient' at red_channel.h:132:1:
+                                                                                                          underlying type 'struct RedClient' at red_channel.h:561:1 changed:
+                                                                                                            type size hasn't changed
+                                                                                                            1 data member change:
+                                                                                                              type of 'MainChannelClient* RedClient::mcc' changed:
+                                                                                                                in pointed to type 'typedef MainChannelClient' at red_channel.h:133:1:
+                                                                                                                  underlying type 'struct MainChannelClient' at main_channel.c:145:1 changed:
+                                                                                                                    type size hasn't changed
+                                                                                                                    1 data member change:
+                                                                                                                      type of 'RedChannelClient MainChannelClient::base' changed:
+                                                                                                                        underlying type 'struct RedChannelClient' changed, as being reported
+                                                                                                      type of 'RedsStream* RedChannelClient::stream' changed:
+                                                                                                        in pointed to type 'typedef RedsStream' at reds_stream.h:31:1:
+                                                                                                          underlying type 'struct RedsStream' at reds.h:68:1 changed:
+                                                                                                            type size changed from 1280 to 256 (in bits)
+                                                                                                            5 data member deletions:
+                                                                                                              'RedsSASL RedsStream::sasl', at offset 256 (in bits) at reds.h:78:1
+                                                                                                              'SpiceChannelEventInfo* RedsStream::info', at offset 1024 (in bits) at reds.h:85:1
+                                                                                                              'typedef ssize_t (RedsStream*, void*, typedef size_t)* RedsStream::read', at offset 1088 (in bits) at reds.h:88:1
+                                                                                                              'typedef ssize_t (RedsStream*, void*, typedef size_t)* RedsStream::write', at offset 1152 (in bits) at reds.h:89:1
+                                                                                                              'typedef ssize_t (RedsStream*, const iovec*, int)* RedsStream::writev', at offset 1216 (in bits) at reds.h:90:1
+                                                                                                            2 data member changes:
+                                                                                                              type of 'SSL* RedsStream::ssl' changed:
+                                                                                                                in pointed to type 'typedef SSL' at reds_stream.h:32:1:
+                                                                                                                  typedef name changed from SSL to RedsStreamPrivate at reds_stream.h:32:1
+                                                                                                                  underlying type 'struct ssl_st' at ssl.h:1065:1 changed:
+                                                                                                                    type name changed from 'ssl_st' to 'RedsStreamPrivate'
+                                                                                                                    type size changed from 5504 to 0 (in bits)
+                                                                                                                    94 data member deletions:
+                                                                                                                      'int ssl_st::version', at offset 0 (in bits) at ssl.h:1070:1
+                                                                                                                      'int ssl_st::type', at offset 32 (in bits) at ssl.h:1071:1
+                                                                                                                      'const SSL_METHOD* ssl_st::method', at offset 64 (in bits) at ssl.h:1073:1
+                                                                                                                      'BIO* ssl_st::rbio', at offset 128 (in bits) at ssl.h:1080:1
+                                                                                                                      'BIO* ssl_st::wbio', at offset 192 (in bits) at ssl.h:1081:1
+                                                                                                                      'BIO* ssl_st::bbio', at offset 256 (in bits) at ssl.h:1082:1
+                                                                                                                      'int ssl_st::rwstate', at offset 320 (in bits) at ssl.h:1093:1
+                                                                                                                      'int ssl_st::in_handshake', at offset 352 (in bits) at ssl.h:1096:1
+                                                                                                                      'int (SSL*)* ssl_st::handshake_func', at offset 384 (in bits) at ssl.h:1097:1
+                                                                                                                      'int ssl_st::server', at offset 448 (in bits) at ssl.h:1107:1
+                                                                                                                      'int ssl_st::new_session', at offset 480 (in bits) at ssl.h:1109:1
+                                                                                                                      'int ssl_st::quiet_shutdown', at offset 512 (in bits) at ssl.h:1113:1
+                                                                                                                      'int ssl_st::shutdown', at offset 544 (in bits) at ssl.h:1114:1
+                                                                                                                      'int ssl_st::state', at offset 576 (in bits) at ssl.h:1116:1
+                                                                                                                      'int ssl_st::rstate', at offset 608 (in bits) at ssl.h:1117:1
+                                                                                                                      'BUF_MEM* ssl_st::init_buf', at offset 640 (in bits) at ssl.h:1119:1
+                                                                                                                      'void* ssl_st::init_msg', at offset 704 (in bits) at ssl.h:1120:1
+                                                                                                                      'int ssl_st::init_num', at offset 768 (in bits) at ssl.h:1121:1
+                                                                                                                      'int ssl_st::init_off', at offset 800 (in bits) at ssl.h:1122:1
+                                                                                                                      'unsigned char* ssl_st::packet', at offset 832 (in bits) at ssl.h:1125:1
+                                                                                                                      'unsigned int ssl_st::packet_length', at offset 896 (in bits) at ssl.h:1126:1
+                                                                                                                      'ssl2_state_st* ssl_st::s2', at offset 960 (in bits) at ssl.h:1128:1
+                                                                                                                      'ssl3_state_st* ssl_st::s3', at offset 1024 (in bits) at ssl.h:1129:1
+                                                                                                                      'dtls1_state_st* ssl_st::d1', at offset 1088 (in bits) at ssl.h:1130:1
+                                                                                                                      'int ssl_st::read_ahead', at offset 1152 (in bits) at ssl.h:1132:1
+                                                                                                                      'void (int, int, int, void*, typedef size_t, SSL*, void*)* ssl_st::msg_callback', at offset 1216 (in bits) at ssl.h:1136:1
+                                                                                                                      'void* ssl_st::msg_callback_arg', at offset 1280 (in bits) at ssl.h:1137:1
+                                                                                                                      'int ssl_st::hit', at offset 1344 (in bits) at ssl.h:1139:1
+                                                                                                                      'X509_VERIFY_PARAM* ssl_st::param', at offset 1408 (in bits) at ssl.h:1141:1
+                                                                                                                      'stack_st_SSL_CIPHER* ssl_st::cipher_list', at offset 1472 (in bits) at ssl.h:1149:1
+                                                                                                                      'stack_st_SSL_CIPHER* ssl_st::cipher_list_by_id', at offset 1536 (in bits) at ssl.h:1150:1
+                                                                                                                      'int ssl_st::mac_flags', at offset 1600 (in bits) at ssl.h:1154:1
+                                                                                                                      'EVP_CIPHER_CTX* ssl_st::enc_read_ctx', at offset 1664 (in bits) at ssl.h:1155:1
+                                                                                                                      'EVP_MD_CTX* ssl_st::read_hash', at offset 1728 (in bits) at ssl.h:1156:1
+                                                                                                                      'COMP_CTX* ssl_st::expand', at offset 1792 (in bits) at ssl.h:1158:1
+                                                                                                                      'EVP_CIPHER_CTX* ssl_st::enc_write_ctx', at offset 1856 (in bits) at ssl.h:1163:1
+                                                                                                                      'EVP_MD_CTX* ssl_st::write_hash', at offset 1920 (in bits) at ssl.h:1164:1
+                                                                                                                      'COMP_CTX* ssl_st::compress', at offset 1984 (in bits) at ssl.h:1166:1
+                                                                                                                      'cert_st* ssl_st::cert', at offset 2048 (in bits) at ssl.h:1175:1
+                                                                                                                      'unsigned int ssl_st::sid_ctx_length', at offset 2112 (in bits) at ssl.h:1179:1
+                                                                                                                      'unsigned char ssl_st::sid_ctx[32]', at offset 2144 (in bits) at ssl.h:1180:1
+                                                                                                                      'SSL_SESSION* ssl_st::session', at offset 2432 (in bits) at ssl.h:1183:1
+                                                                                                                      'GEN_SESSION_CB ssl_st::generate_session_id', at offset 2496 (in bits) at ssl.h:1186:1
+                                                                                                                      'int ssl_st::verify_mode', at offset 2560 (in bits) at ssl.h:1189:1
+                                                                                                                      'int (int, X509_STORE_CTX*)* ssl_st::verify_callback', at offset 2624 (in bits) at ssl.h:1191:1
+                                                                                                                      'void (const SSL*, int, int)* ssl_st::info_callback', at offset 2688 (in bits) at ssl.h:1193:1
+                                                                                                                      'int ssl_st::error', at offset 2752 (in bits) at ssl.h:1195:1
+                                                                                                                      'int ssl_st::error_code', at offset 2784 (in bits) at ssl.h:1196:1
+                                                                                                                      'KSSL_CTX* ssl_st::kssl_ctx', at offset 2816 (in bits) at ssl.h:1199:1
+                                                                                                                      'unsigned int (SSL*, const char*, char*, unsigned int, unsigned char*, unsigned int)* ssl_st::psk_client_callback', at offset 2880 (in bits) at ssl.h:1203:1
+                                                                                                                      'unsigned int (SSL*, const char*, unsigned char*, unsigned int)* ssl_st::psk_server_callback', at offset 2944 (in bits) at ssl.h:1206:1
+                                                                                                                      'SSL_CTX* ssl_st::ctx', at offset 3008 (in bits) at ssl.h:1210:1
+                                                                                                                      'int ssl_st::debug', at offset 3072 (in bits) at ssl.h:1213:1
+                                                                                                                      'long int ssl_st::verify_result', at offset 3136 (in bits) at ssl.h:1216:1
+                                                                                                                      'CRYPTO_EX_DATA ssl_st::ex_data', at offset 3200 (in bits) at ssl.h:1217:1
+                                                                                                                      'stack_st_X509_NAME* ssl_st::client_CA', at offset 3328 (in bits) at ssl.h:1220:1
+                                                                                                                      'int ssl_st::references', at offset 3392 (in bits) at ssl.h:1222:1
+                                                                                                                      'unsigned long int ssl_st::options', at offset 3456 (in bits) at ssl.h:1223:1
+                                                                                                                      'unsigned long int ssl_st::mode', at offset 3520 (in bits) at ssl.h:1224:1
+                                                                                                                      'long int ssl_st::max_cert_list', at offset 3584 (in bits) at ssl.h:1225:1
+                                                                                                                      'int ssl_st::first_packet', at offset 3648 (in bits) at ssl.h:1226:1
+                                                                                                                      'int ssl_st::client_version', at offset 3680 (in bits) at ssl.h:1227:1
+                                                                                                                      'unsigned int ssl_st::max_send_fragment', at offset 3712 (in bits) at ssl.h:1229:1
+                                                                                                                      'void (SSL*, int, int, unsigned char*, int, void*)* ssl_st::tlsext_debug_cb', at offset 3776 (in bits) at ssl.h:1232:1
+                                                                                                                      'void* ssl_st::tlsext_debug_arg', at offset 3840 (in bits) at ssl.h:1235:1
+                                                                                                                      'char* ssl_st::tlsext_hostname', at offset 3904 (in bits) at ssl.h:1236:1
+                                                                                                                      'int ssl_st::servername_done', at offset 3968 (in bits) at ssl.h:1237:1
+                                                                                                                      'int ssl_st::tlsext_status_type', at offset 4000 (in bits) at ssl.h:1244:1
+                                                                                                                      'int ssl_st::tlsext_status_expected', at offset 4032 (in bits) at ssl.h:1246:1
+                                                                                                                      'stack_st_OCSP_RESPID* ssl_st::tlsext_ocsp_ids', at offset 4096 (in bits) at ssl.h:1248:1
+                                                                                                                      'X509_EXTENSIONS* ssl_st::tlsext_ocsp_exts', at offset 4160 (in bits) at ssl.h:1249:1
+                                                                                                                      'unsigned char* ssl_st::tlsext_ocsp_resp', at offset 4224 (in bits) at ssl.h:1251:1
+                                                                                                                      'int ssl_st::tlsext_ocsp_resplen', at offset 4288 (in bits) at ssl.h:1252:1
+                                                                                                                      'int ssl_st::tlsext_ticket_expected', at offset 4320 (in bits) at ssl.h:1255:1
+                                                                                                                      'size_t ssl_st::tlsext_ecpointformatlist_length', at offset 4352 (in bits) at ssl.h:1257:1
+                                                                                                                      'unsigned char* ssl_st::tlsext_ecpointformatlist', at offset 4416 (in bits) at ssl.h:1258:1
+                                                                                                                      'size_t ssl_st::tlsext_ellipticcurvelist_length', at offset 4480 (in bits) at ssl.h:1259:1
+                                                                                                                      'unsigned char* ssl_st::tlsext_ellipticcurvelist', at offset 4544 (in bits) at ssl.h:1260:1
+                                                                                                                      'void* ssl_st::tlsext_opaque_prf_input', at offset 4608 (in bits) at ssl.h:1264:1
+                                                                                                                      'size_t ssl_st::tlsext_opaque_prf_input_len', at offset 4672 (in bits) at ssl.h:1265:1
+                                                                                                                      'TLS_SESSION_TICKET_EXT* ssl_st::tlsext_session_ticket', at offset 4736 (in bits) at ssl.h:1268:1
+                                                                                                                      'tls_session_ticket_ext_cb_fn ssl_st::tls_session_ticket_ext_cb', at offset 4800 (in bits) at ssl.h:1271:1
+                                                                                                                      'void* ssl_st::tls_session_ticket_ext_cb_arg', at offset 4864 (in bits) at ssl.h:1272:1
+                                                                                                                      'tls_session_secret_cb_fn ssl_st::tls_session_secret_cb', at offset 4928 (in bits) at ssl.h:1275:1
+                                                                                                                      'void* ssl_st::tls_session_secret_cb_arg', at offset 4992 (in bits) at ssl.h:1276:1
+                                                                                                                      'SSL_CTX* ssl_st::initial_ctx', at offset 5056 (in bits) at ssl.h:1278:1
+                                                                                                                      'unsigned char* ssl_st::next_proto_negotiated', at offset 5120 (in bits) at ssl.h:1288:1
+                                                                                                                      'unsigned char ssl_st::next_proto_negotiated_len', at offset 5184 (in bits) at ssl.h:1289:1
+                                                                                                                      'stack_st_SRTP_PROTECTION_PROFILE* ssl_st::srtp_profiles', at offset 5248 (in bits) at ssl.h:1294:1
+                                                                                                                      'SRTP_PROTECTION_PROFILE* ssl_st::srtp_profile', at offset 5312 (in bits) at ssl.h:1295:1
+                                                                                                                      'unsigned int ssl_st::tlsext_heartbeat', at offset 5376 (in bits) at ssl.h:1297:1
+                                                                                                                      'unsigned int ssl_st::tlsext_hb_pending', at offset 5408 (in bits) at ssl.h:1302:1
+                                                                                                                      'unsigned int ssl_st::tlsext_hb_seq', at offset 5440 (in bits) at ssl.h:1303:1
+                                                                                                                      'int ssl_st::renegotiate', at offset 5472 (in bits) at ssl.h:1308:1
+                                                                                                              and name of 'RedsStream::ssl' changed to 'RedsStream::priv' at reds_stream.h:42:1
+                                                                                                              type of 'SpiceWatch* RedsStream::watch' changed:
+                                                                                                                in pointed to type 'typedef SpiceWatch' at spice-core.h:68:1:
+                                                                                                                  underlying type 'struct SpiceWatch' changed, as being reported
+                                                                                        type of 'channel_disconnect_proc on_disconnect' changed:
+                                                                                          underlying type 'void (RedChannelClient*)*' changed:
+                                                                                            in pointed to type 'function type void (RedChannelClient*)':
+                                                                                              parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                                                                                pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+                                                                                        type of 'channel_send_pipe_item_proc send_item' changed:
+                                                                                          underlying type 'void (RedChannelClient*, PipeItem*)*' changed:
+                                                                                            in pointed to type 'function type void (RedChannelClient*, PipeItem*)':
+                                                                                              parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                                                                                pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+                                                                                        type of 'channel_hold_pipe_item_proc hold_item' changed:
+                                                                                          underlying type 'void (RedChannelClient*, PipeItem*)*' changed:
+                                                                                            in pointed to type 'function type void (RedChannelClient*, PipeItem*)':
+                                                                                              parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                                                                                pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+                                                                                        type of 'channel_release_pipe_item_proc release_item' changed:
+                                                                                          underlying type 'void (RedChannelClient*, PipeItem*, int)*' changed:
+                                                                                            in pointed to type 'function type void (RedChannelClient*, PipeItem*, int)':
+                                                                                              parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                                                                                pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+                                                                                        type of 'channel_alloc_msg_recv_buf_proc alloc_recv_buf' changed:
+                                                                                          underlying type 'uint8_t* (RedChannelClient*, typedef uint16_t, typedef uint32_t)*' changed:
+                                                                                            in pointed to type 'function type uint8_t* (RedChannelClient*, typedef uint16_t, typedef uint32_t)':
+                                                                                              parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                                                                                pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+                                                                                        type of 'channel_release_msg_recv_buf_proc release_recv_buf' changed:
+                                                                                          underlying type 'void (RedChannelClient*, typedef uint16_t, typedef uint32_t, uint8_t*)*' changed:
+                                                                                            in pointed to type 'function type void (RedChannelClient*, typedef uint16_t, typedef uint32_t, uint8_t*)':
+                                                                                              parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                                                                                pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+                                                                                        type of 'channel_handle_migrate_flush_mark_proc handle_migrate_flush_mark' changed:
+                                                                                          underlying type 'int (RedChannelClient*)*' changed:
+                                                                                            in pointed to type 'function type int (RedChannelClient*)':
+                                                                                              parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                                                                                pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+                                                                                        type of 'channel_handle_migrate_data_proc handle_migrate_data' changed:
+                                                                                          underlying type 'int (RedChannelClient*, typedef uint32_t, void*)*' changed:
+                                                                                            in pointed to type 'function type int (RedChannelClient*, typedef uint32_t, void*)':
+                                                                                              parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                                                                                pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+                                                                                        type of 'channel_handle_migrate_data_get_serial_proc handle_migrate_data_get_serial' changed:
+                                                                                          underlying type 'typedef uint64_t (RedChannelClient*, typedef uint32_t, void*)*' changed:
+                                                                                            in pointed to type 'function type typedef uint64_t (RedChannelClient*, typedef uint32_t, void*)':
+                                                                                              parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                                                                                pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+                                                                                  type of 'ClientCbs RedChannel::client_cbs' changed:
+                                                                                    underlying type 'struct {channel_client_connect_proc connect; channel_client_disconnect_proc disconnect; channel_client_migrate_proc migrate;}' at red_channel.h:213:1 changed:
+                                                                                      type size hasn't changed
+                                                                                      3 data member changes:
+                                                                                        type of 'channel_client_connect_proc connect' changed:
+                                                                                          underlying type 'void (RedChannel*, RedClient*, RedsStream*, int, int, uint32_t*, int, uint32_t*)*' changed:
+                                                                                            in pointed to type 'function type void (RedChannel*, RedClient*, RedsStream*, int, int, uint32_t*, int, uint32_t*)':
+                                                                                              parameter 1 of type 'RedChannel*' has sub-type changes:
+                                                                                                in pointed to type 'typedef RedChannel' at red_channel.h:130:1:
+                                                                                                  underlying type 'struct RedChannel' changed, as being reported
+                                                                                              parameter 2 of type 'RedClient*' has sub-type changes:
+                                                                                                pointed to type 'typedef RedClient' changed at red_channel.h:137:1, as reported earlier
+                                                                                              parameter 3 of type 'RedsStream*' has sub-type changes:
+                                                                                                pointed to type 'typedef RedsStream' changed at red_channel.h:134:1, as reported earlier
+                                                                                        type of 'channel_client_disconnect_proc disconnect' changed:
+                                                                                          underlying type 'void (RedChannelClient*)*' changed:
+                                                                                            in pointed to type 'function type void (RedChannelClient*)':
+                                                                                              parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                                                                                pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+                                                                                        type of 'channel_client_migrate_proc migrate' changed:
+                                                                                          underlying type 'void (RedChannelClient*)*' changed:
+                                                                                            in pointed to type 'function type void (RedChannelClient*)':
+                                                                                              parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                                                                                pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+                                                                            type of 'RedWorker* CommonChannel::worker' changed:
+                                                                              pointed to type 'struct RedWorker' changed, as being reported
+                                                              type of 'CursorChannel* RedWorker::cursor_channel' changed:
+                                                                in pointed to type 'typedef CursorChannel' at red_worker.c:774:1:
+                                                                  underlying type 'struct CursorChannel' at red_worker.c:750:1 changed:
+                                                                    type size hasn't changed
+                                                                    1 data member change:
+                                                                      type of 'CommonChannel CursorChannel::common' changed, as reported earlier
+                                                              type of 'QXLInstance* RedWorker::qxl' changed:
+                                                                in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
+                                                                  underlying type 'struct QXLInstance' at spice.h:259:1 changed:
+                                                                    type size hasn't changed
+                                                                    1 data member change:
+                                                                      type of 'QXLState* QXLInstance::st' changed:
+                                                                        in pointed to type 'typedef QXLState' at spice-qxl.h:35:1:
+                                                                          underlying type 'struct QXLState' at reds.h:93:1 changed:
+                                                                            type size hasn't changed
+                                                                            1 data member change:
+                                                                              type of 'RedDispatcher* QXLState::dispatcher' changed:
+                                                                                pointed to type 'struct RedDispatcher' changed, as being reported
+                                                              type of 'RedDispatcher* RedWorker::red_dispatcher' changed:
+                                                                in pointed to type 'typedef RedDispatcher':
+                                                                  entity changed from 'typedef RedDispatcher' to compatible type 'struct RedDispatcher'
+                                                                    details are being reported
+                                                              type of 'SpiceWatch RedWorker::watches[20]' changed:
+                                                                array element type 'struct SpiceWatch' changed: 
+                                                                  details are being reported
+                                                                type size hasn't changed
+                                                              type of 'MonitorsConfig* RedWorker::monitors_config' changed:
+                                                                in pointed to type 'typedef MonitorsConfig' at red_worker.c:361:1:
+                                                                  underlying type 'struct MonitorsConfig' at red_worker.c:344:1 changed:
+                                                                    type size hasn't changed
+                                                                    1 data member change:
+                                                                      type of 'RedWorker* MonitorsConfig::worker' changed:
+                                                                        pointed to type 'struct RedWorker' changed, as being reported
+                                                              type of '_Drawable RedWorker::drawables[1000]' changed:
+                                                                array element type 'typedef _Drawable' changed: 
+                                                                  underlying type 'struct _Drawable' at red_worker.c:874:1 changed:
+                                                                    type size changed from 3200 to 2560 (in bits)
+                                                                    1 data member change:
+                                                                      type of 'union {Drawable drawable; _Drawable* next;} _Drawable::u' changed:
+                                                                        type size changed from 3200 to 2560 (in bits)
+                                                                        2 data member changes:
+                                                                          type of 'Drawable drawable' changed:
+                                                                            underlying type 'struct Drawable' at red_worker.c:838:1 changed:
+                                                                              type size changed from 3200 to 2560 (in bits)
+                                                                              2 data member deletions:
+                                                                                'uint8_t* Drawable::backed_surface_data', at offset 2368 (in bits) at red_worker.c:864:1
+                                                                                'DependItem Drawable::pipe_depend_items[3]', at offset 2432 (in bits) at red_worker.c:865:1
+                                                                              6 data member changes (1 filtered):
+                                                                                type of 'Stream* Drawable::stream' changed:
+                                                                                  in pointed to type 'typedef Stream' at red_worker.c:443:1:
+                                                                                    underlying type 'struct Stream' at red_worker.c:433:1 changed:
+                                                                                      type size changed from 896 to 832 (in bits)
+                                                                                      2 data member deletions:
+                                                                                        'SpiceTimer* Stream::input_fps_timer', at offset 640 (in bits) at red_worker.c:444:1
+                                                                                        'uint64_t Stream::input_fps_timer_start', at offset 768 (in bits) at red_worker.c:446:1
+                                                                                      1 data member insertion:
+                                                                                        'uint64_t Stream::input_fps_start_time', at offset 704 (in bits) at red_worker.c:456:1
+                                                                                      4 data member changes:
+                                                                                        type of 'Drawable* Stream::current' changed:
+                                                                                          in pointed to type 'typedef Drawable' at red_worker.c:432:1:
+                                                                                            underlying type 'struct Drawable' changed, as being reported
+                                                                                        type of 'Stream* Stream::next' changed:
+                                                                                          in pointed to type 'typedef Stream' at red_worker.c:443:1:
+                                                                                            underlying type 'struct Stream' changed, as being reported
+                                                                                        'uint32_t Stream::num_input_frames' offset changed from 704 to 640 (in bits) (by -64 bits)
+                                                                                        'uint32_t Stream::input_fps' offset changed from 832 to 768 (in bits) (by -64 bits)
+                                                                                type of 'Stream* Drawable::sized_stream' changed:
+                                                                                  pointed to type 'typedef Stream' changed at red_worker.c:432:1, as reported earlier
+                                                                                type of 'DependItem Drawable::depend_items[3]' changed:
+                                                                                  array element type 'typedef DependItem' changed: 
+                                                                                    underlying type 'struct DependItem' at red_worker.c:825:1 changed:
+                                                                                      type size hasn't changed
+                                                                                      1 data member change:
+                                                                                        type of 'Drawable* DependItem::drawable' changed:
+                                                                                          in pointed to type 'typedef Drawable' at red_worker.c:432:1:
+                                                                                            underlying type 'struct Drawable' changed, as being reported
+                                                                                  type size hasn't changed
+                                                                                'int Drawable::surface_id' offset changed from 3008 to 2368 (in bits) (by -640 bits)
+                                                                                'int Drawable::surfaces_dest[3]' offset changed from 3040 to 2400 (in bits) (by -640 bits)
+                                                                                'uint32_t Drawable::process_commands_generation' offset changed from 3136 to 2496 (in bits) (by -640 bits)
+                                                                          type of '_Drawable* next' changed:
+                                                                            in pointed to type 'typedef _Drawable' at red_worker.c:865:1:
+                                                                              underlying type 'struct _Drawable' changed, as being reported
+                                                                array type size changed from 3200000 to 2560000
+                                                              type of '_Drawable* RedWorker::free_drawables' changed:
+                                                                pointed to type 'typedef _Drawable' changed at red_worker.c:873:1, as reported earlier
+                                                              and offset changed from 15366720 to 14726720 (in bits) (by -640000 bits)
+                                                              '_CursorItem RedWorker::cursor_items[100]' offset changed from 15366784 to 14726784 (in bits) (by -640000 bits)
+                                                              '_CursorItem* RedWorker::free_cursor_items' offset changed from 15379584 to 14739584 (in bits) (by -640000 bits)
+                                                              'RedMemSlotInfo RedWorker::mem_slots' offset changed from 15379648 to 14739648 (in bits) (by -640000 bits)
+                                                              'ImageCache RedWorker::image_cache' offset changed from 15380032 to 14739968 (in bits) (by -640064 bits)
+                                                              type of 'spice_image_compression_t RedWorker::image_compression' changed:
+                                                                typedef name changed from spice_image_compression_t to SpiceImageCompression at enums.h:197:1
+                                                                underlying type 'enum __anonymous_enum__2' at spice.h:471:1 changed:
+                                                                  type name changed from '__anonymous_enum__2' to 'SpiceImageCompression'
+                                                                  type size hasn't changed
+                                                                  7 enumerator deletions:
+                                                                    '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_INVALID' value '0'
+                                                                    '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_OFF' value '1'
+                                                                    '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_AUTO_GLZ' value '2'
+                                                                    '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_AUTO_LZ' value '3'
+                                                                    '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_QUIC' value '4'
+                                                                    '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_GLZ' value '5'
+                                                                    '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_LZ' value '6'
+                                                                  9 enumerator insertions:
+                                                                    'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_INVALID' value '0'
+                                                                    'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_OFF' value '1'
+                                                                    'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_AUTO_GLZ' value '2'
+                                                                    'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_AUTO_LZ' value '3'
+                                                                    'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_QUIC' value '4'
+                                                                    'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_GLZ' value '5'
+                                                                    'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_LZ' value '6'
+                                                                    'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_LZ4' value '7'
+                                                                    'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_ENUM_END' value '8'
+                                                              and offset changed from 15445824 to 14805760 (in bits) (by -640064 bits)
+                                                              'spice_wan_compression_t RedWorker::jpeg_state' offset changed from 15445856 to 14805792 (in bits) (by -640064 bits)
+                                                              'spice_wan_compression_t RedWorker::zlib_glz_state' offset changed from 15445888 to 14805824 (in bits) (by -640064 bits)
+                                                              'uint32_t RedWorker::mouse_mode' offset changed from 15445920 to 14805856 (in bits) (by -640064 bits)
+                                                              'uint32_t RedWorker::streaming_video' offset changed from 15445952 to 14805888 (in bits) (by -640064 bits)
+                                                              type of 'Stream RedWorker::streams_buf[50]' changed:
+                                                                array element type 'typedef Stream' changed: 
+                                                                  underlying type 'struct Stream' changed at red_worker.c:433:1, as reported earlier
+                                                                array type size changed from 44800 to 41600
+                                                              and offset changed from 15446016 to 14805952 (in bits) (by -640064 bits)
+                                                              type of 'Stream* RedWorker::free_streams' changed:
+                                                                pointed to type 'typedef Stream' changed at red_worker.c:432:1, as reported earlier
+                                                              and offset changed from 15490816 to 14847552 (in bits) (by -643264 bits)
+                                                              'Ring RedWorker::streams' offset changed from 15490880 to 14847616 (in bits) (by -643264 bits)
+                                                              'ItemTrace RedWorker::items_trace[8]' offset changed from 15491008 to 14847744 (in bits) (by -643264 bits)
+                                                              'uint32_t RedWorker::next_item_trace' offset changed from 15494080 to 14850816 (in bits) (by -643264 bits)
+                                                              'uint64_t RedWorker::streams_size_total' offset changed from 15494144 to 14850880 (in bits) (by -643264 bits)
+                                                              type of 'QuicData RedWorker::quic_data' changed:
+                                                                underlying type 'struct {QuicUsrContext usr; EncoderData data;}' at red_worker.c:577:1 changed:
+                                                                  type size hasn't changed
+                                                                  1 data member change:
+                                                                    type of 'EncoderData data' changed:
+                                                                      underlying type 'struct {DisplayChannelClient* dcc; RedCompressBuf* bufs_head; RedCompressBuf* bufs_tail; jmp_buf jmp_env; union {struct {SpiceChunks* chunks; int next; int stride; int reverse;} lines_data; struct {RedCompressBuf* next; int size_left;} compressed_data;} u; char message_buf[512];}' at red_worker.c:557:1 changed:
+                                                                        type size hasn't changed
+                                                                        1 data member change:
+                                                                          type of 'DisplayChannelClient* dcc' changed:
+                                                                            in pointed to type 'typedef DisplayChannelClient' at red_worker.c:435:1:
+                                                                              underlying type 'struct DisplayChannelClient' at red_worker.c:672:1 changed:
+                                                                                type size hasn't changed
+                                                                                5 data member changes:
+                                                                                  type of 'CommonChannelClient DisplayChannelClient::common' changed:
+                                                                                    underlying type 'struct CommonChannelClient' at red_worker.c:662:1 changed:
+                                                                                      type size hasn't changed
+                                                                                      2 data member changes:
+                                                                                        type of 'RedChannelClient CommonChannelClient::base' changed, as reported earlier
+                                                                                        type of 'RedWorker* CommonChannelClient::worker' changed:
+                                                                                          pointed to type 'struct RedWorker' changed, as being reported
+                                                                                  type of 'PixmapCache* DisplayChannelClient::pixmap_cache' changed:
+                                                                                    in pointed to type 'typedef PixmapCache' at red_worker.c:527:1:
+                                                                                      underlying type 'struct PixmapCache' at red_worker.c:518:1 changed:
+                                                                                        type size hasn't changed
+                                                                                        1 data member change:
+                                                                                          type of 'RedClient* PixmapCache::client' changed:
+                                                                                            pointed to type 'typedef RedClient' changed at red_channel.h:137:1, as reported earlier
+                                                                                  type of 'GlzSharedDictionary* DisplayChannelClient::glz_dict' changed:
+                                                                                    in pointed to type 'typedef GlzSharedDictionary' at red_worker.c:663:1:
+                                                                                      underlying type 'struct GlzSharedDictionary' at red_worker.c:638:1 changed:
+                                                                                        type size hasn't changed
+                                                                                        1 data member change:
+                                                                                          type of 'RedClient* GlzSharedDictionary::client' changed:
+                                                                                            pointed to type 'typedef RedClient' changed at red_channel.h:137:1, as reported earlier
+                                                                                  type of 'GlzData DisplayChannelClient::glz_data' changed:
+                                                                                    underlying type 'struct {GlzEncoderUsrContext usr; EncoderData data;}' at red_worker.c:587:1 changed:
+                                                                                      type size hasn't changed
+                                                                                      1 data member change:
+                                                                                        type of 'EncoderData data' changed:
+                                                                                          underlying type 'struct {DisplayChannelClient* dcc; RedCompressBuf* bufs_head; RedCompressBuf* bufs_tail; jmp_buf jmp_env; union {struct {SpiceChunks* chunks; int next; int stride; int reverse;} lines_data; struct {RedCompressBuf* next; int size_left;} compressed_data;} u; char message_buf[512];}' changed, as being reported
+                                                                                  type of 'StreamAgent DisplayChannelClient::stream_agents[50]' changed:
+                                                                                    array element type 'typedef StreamAgent' changed: 
+                                                                                      underlying type 'struct StreamAgent' at red_worker.c:464:1 changed:
+                                                                                        type size hasn't changed
+                                                                                        2 data member changes:
+                                                                                          type of 'Stream* StreamAgent::stream' changed:
+                                                                                            pointed to type 'typedef Stream' changed at red_worker.c:432:1, as reported earlier
+                                                                                          type of 'DisplayChannelClient* StreamAgent::dcc' changed:
+                                                                                            in pointed to type 'typedef DisplayChannelClient' at red_worker.c:435:1:
+                                                                                              underlying type 'struct DisplayChannelClient' changed, as being reported
+                                                                                    type size hasn't changed
+                                                              and offset changed from 15494208 to 14850944 (in bits) (by -643264 bits)
+                                                              'QuicContext* RedWorker::quic' offset changed from 15500736 to 14857472 (in bits) (by -643264 bits)
+                                                              type of 'LzData RedWorker::lz_data' changed:
+                                                                underlying type 'struct {LzUsrContext usr; EncoderData data;}' at red_worker.c:582:1 changed:
+                                                                  type size hasn't changed
+                                                                  1 data member change:
+                                                                    type of 'EncoderData data' changed, as reported earlier
+                                                              and offset changed from 15500800 to 14857536 (in bits) (by -643264 bits)
+                                                              'LzContext* RedWorker::lz' offset changed from 15507328 to 14864064 (in bits) (by -643264 bits)
+                                                              type of 'JpegData RedWorker::jpeg_data' changed:
+                                                                underlying type 'struct {JpegEncoderUsrContext usr; EncoderData data;}' at red_worker.c:592:1 changed:
+                                                                  type size hasn't changed
+                                                                  1 data member change:
+                                                                    type of 'EncoderData data' changed, as reported earlier
+                                                              and offset changed from 15507392 to 14864128 (in bits) (by -643264 bits)
+                                                              'JpegEncoderContext* RedWorker::jpeg' offset changed from 15513600 to 14870336 (in bits) (by -643264 bits)
+                                                              type of 'ZlibData RedWorker::zlib_data' changed:
+                                                                underlying type 'struct {ZlibEncoderUsrContext usr; EncoderData data;}' at red_worker.c:597:1 changed:
+                                                                  type size hasn't changed
+                                                                  1 data member change:
+                                                                    type of 'EncoderData data' changed, as reported earlier
+                                                              and offset changed from 15513664 to 14870400 (in bits) (by -643264 bits)
+                                                              'ZlibEncoder* RedWorker::zlib' offset changed from 15519872 to 14876608 (in bits) (by -643264 bits)
+                                                              'uint32_t RedWorker::process_commands_generation' offset changed from 15519936 to 14876672 (in bits) (by -643264 bits)
+                                                              'StatNodeRef RedWorker::stat' offset changed from 15519968 to 14876704 (in bits) (by -643264 bits)
+                                                              'uint64_t* RedWorker::wakeup_counter' offset changed from 15520000 to 14876736 (in bits) (by -643264 bits)
+                                                              'uint64_t* RedWorker::command_counter' offset changed from 15520064 to 14876800 (in bits) (by -643264 bits)
+                                                              'int RedWorker::driver_cap_monitors_config' offset changed from 15520128 to 14876864 (in bits) (by -643264 bits)
+                                                              'int RedWorker::set_client_capabilities_pending' offset changed from 15520160 to 14876896 (in bits) (by -643264 bits)
+                                            type of 'void (SpiceWatch*, int)* SpiceCoreInterface::watch_update_mask' changed:
+                                              in pointed to type 'function type void (SpiceWatch*, int)':
+                                                parameter 1 of type 'SpiceWatch*' has sub-type changes:
+                                                  pointed to type 'typedef SpiceWatch' changed at spice.h:61:1, as reported earlier
+                                            type of 'void (SpiceWatch*)* SpiceCoreInterface::watch_remove' changed:
+                                              in pointed to type 'function type void (SpiceWatch*)':
+                                                parameter 1 of type 'SpiceWatch*' has sub-type changes:
+                                                  pointed to type 'typedef SpiceWatch' changed at spice.h:61:1, as reported earlier
                               'pthread_t RedDispatcher::worker_thread' offset changed from 2048 to 2112 (in bits) (by +64 bits)
                               'uint32_t RedDispatcher::pending' offset changed from 2112 to 2176 (in bits) (by +64 bits)
                               'int RedDispatcher::primary_active' offset changed from 2144 to 2208 (in bits) (by +64 bits)
@@ -159,11 +630,15 @@
         in pointed to type 'typedef SpiceServer' at spice-server.h:38:1:
           underlying type 'struct RedsState' at reds-private.h:127:1 changed:
             type size hasn't changed
-            2 data member changes (2 filtered):
+            5 data member changes (2 filtered):
+              type of 'SpiceWatch* RedsState::listen_watch' changed:
+                pointed to type 'typedef SpiceWatch' changed at spice.h:61:1, as reported earlier
+              type of 'SpiceWatch* RedsState::secure_listen_watch' changed:
+                pointed to type 'typedef SpiceWatch' changed at spice.h:61:1, as reported earlier
               type of 'VDIPortState RedsState::agent_state' changed:
                 underlying type 'struct VDIPortState' at reds-private.h:46:1 changed:
                   type size hasn't changed
-                  1 data member changes (3 filtered):
+                  2 data member changes (3 filtered):
                     type of 'SpiceCharDeviceState* VDIPortState::base' changed:
                       in pointed to type 'typedef SpiceCharDeviceState' at spice-char.h:34:1:
                         underlying type 'struct SpiceCharDeviceState' at char_device.c:47:1 changed:
@@ -171,7 +646,14 @@
                           1 data member insertion:
                             'uint64_t SpiceCharDeviceState::cur_pool_size', at offset 384 (in bits) at char_device.c:57:1
                           12 data member changes:
-                            'SpiceCharDeviceWriteBuffer* SpiceCharDeviceState::cur_write_buf' offset changed from 384 to 448 (in bits) (by +64 bits)
+                            type of 'SpiceCharDeviceWriteBuffer* SpiceCharDeviceState::cur_write_buf' changed:
+                              in pointed to type 'typedef SpiceCharDeviceWriteBuffer' at char_device.h:94:1:
+                                underlying type 'struct SpiceCharDeviceWriteBuffer' at char_device.h:66:1 changed:
+                                  type size hasn't changed
+                                  1 data member change:
+                                    type of 'RedClient* SpiceCharDeviceWriteBuffer::client' changed:
+                                      pointed to type 'typedef RedClient' changed at red_channel.h:137:1, as reported earlier
+                            and offset changed from 384 to 448 (in bits) (by +64 bits)
                             'uint8_t* SpiceCharDeviceState::cur_write_buf_pos' offset changed from 448 to 512 (in bits) (by +64 bits)
                             'SpiceTimer* SpiceCharDeviceState::write_to_dev_timer' offset changed from 512 to 576 (in bits) (by +64 bits)
                             'uint64_t SpiceCharDeviceState::num_self_tokens' offset changed from 576 to 640 (in bits) (by +64 bits)
@@ -192,217 +674,39 @@
                             type of 'SpiceCharDeviceCallbacks SpiceCharDeviceState::cbs' changed:
                               underlying type 'struct SpiceCharDeviceCallbacks' at char_device.h:81:1 changed:
                                 type size hasn't changed
-                                1 data member change:
+                                4 data member changes:
                                   type of 'SpiceCharDeviceMsgToClient* (SpiceCharDeviceInstance*, void*)* SpiceCharDeviceCallbacks::read_one_msg_from_device' changed:
                                     in pointed to type 'function type SpiceCharDeviceMsgToClient* (SpiceCharDeviceInstance*, void*)':
                                       parameter 1 of type 'SpiceCharDeviceInstance*' has sub-type changes:
                                         pointed to type 'typedef SpiceCharDeviceInstance' changed at spice.h:399:1, as reported earlier
+                                  type of 'void (SpiceCharDeviceMsgToClient*, RedClient*, void*)* SpiceCharDeviceCallbacks::send_msg_to_client' changed:
+                                    in pointed to type 'function type void (SpiceCharDeviceMsgToClient*, RedClient*, void*)':
+                                      parameter 2 of type 'RedClient*' has sub-type changes:
+                                        pointed to type 'typedef RedClient' changed at red_channel.h:137:1, as reported earlier
+                                  type of 'void (RedClient*, typedef uint32_t, void*)* SpiceCharDeviceCallbacks::send_tokens_to_client' changed:
+                                    in pointed to type 'function type void (RedClient*, typedef uint32_t, void*)':
+                                      parameter 1 of type 'RedClient*' has sub-type changes:
+                                        pointed to type 'typedef RedClient' changed at red_channel.h:137:1, as reported earlier
+                                  type of 'void (RedClient*, void*)* SpiceCharDeviceCallbacks::remove_client' changed:
+                                    in pointed to type 'function type void (RedClient*, void*)':
+                                      parameter 1 of type 'RedClient*' has sub-type changes:
+                                        pointed to type 'typedef RedClient' changed at red_channel.h:137:1, as reported earlier
                             and offset changed from 1024 to 1088 (in bits) (by +64 bits)
                             'void* SpiceCharDeviceState::opaque' offset changed from 1472 to 1536 (in bits) (by +64 bits)
+                    type of 'SpiceCharDeviceWriteBuffer* VDIPortState::recv_from_client_buf' changed:
+                      pointed to type 'typedef SpiceCharDeviceWriteBuffer' changed at char_device.h:77:1, as reported earlier
               type of 'MainChannel* RedsState::main_channel' changed:
                 in pointed to type 'typedef MainChannel' at main_channel.h:48:1:
                   underlying type 'struct MainChannel' at main_channel.h:36:1 changed:
                     type size hasn't changed
                     1 data member change:
-                      type of 'RedChannel MainChannel::base' changed:
-                        underlying type 'struct RedChannel' at red_channel.h:303:1 changed:
-                          type size hasn't changed
-                          2 data member changes (1 filtered):
-                            type of 'ChannelCbs RedChannel::channel_cbs' changed:
-                              underlying type 'struct {channel_configure_socket_proc config_socket; channel_disconnect_proc on_disconnect; channel_send_pipe_item_proc send_item; channel_hold_pipe_item_proc hold_item; channel_release_pipe_item_proc release_item; channel_alloc_msg_recv_buf_proc alloc_recv_buf; channel_release_msg_recv_buf_proc release_recv_buf; channel_handle_migrate_flush_mark_proc handle_migrate_flush_mark; channel_handle_migrate_data_proc handle_migrate_data; channel_handle_migrate_data_get_serial_proc handle_migrate_data_get_serial;}' at red_channel.h:195:1 changed:
-                                type size hasn't changed
-                                10 data member changes:
-                                  type of 'channel_configure_socket_proc config_socket' changed:
-                                    underlying type 'int (RedChannelClient*)*' changed:
-                                      in pointed to type 'function type int (RedChannelClient*)':
-                                        parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                          in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
-                                            underlying type 'struct RedChannelClient' at red_channel.h:247:1 changed:
-                                              type size hasn't changed
-                                              2 data member changes (2 filtered):
-                                                type of 'RedChannel* RedChannelClient::channel' changed:
-                                                  in pointed to type 'typedef RedChannel' at red_channel.h:130:1:
-                                                    underlying type 'struct RedChannel' changed, as being reported
-                                                type of 'RedsStream* RedChannelClient::stream' changed:
-                                                  in pointed to type 'typedef RedsStream' at reds_stream.h:31:1:
-                                                    underlying type 'struct RedsStream' at reds.h:68:1 changed:
-                                                      type size changed from 1280 to 256 (in bits)
-                                                      5 data member deletions:
-                                                        'RedsSASL RedsStream::sasl', at offset 256 (in bits) at reds.h:78:1
-                                                        'SpiceChannelEventInfo* RedsStream::info', at offset 1024 (in bits) at reds.h:85:1
-                                                        'typedef ssize_t (RedsStream*, void*, typedef size_t)* RedsStream::read', at offset 1088 (in bits) at reds.h:88:1
-                                                        'typedef ssize_t (RedsStream*, void*, typedef size_t)* RedsStream::write', at offset 1152 (in bits) at reds.h:89:1
-                                                        'typedef ssize_t (RedsStream*, const iovec*, int)* RedsStream::writev', at offset 1216 (in bits) at reds.h:90:1
-                                                      1 data member change:
-                                                        type of 'SSL* RedsStream::ssl' changed:
-                                                          in pointed to type 'typedef SSL' at reds_stream.h:32:1:
-                                                            typedef name changed from SSL to RedsStreamPrivate at reds_stream.h:32:1
-                                                            underlying type 'struct ssl_st' at ssl.h:1065:1 changed:
-                                                              type name changed from 'ssl_st' to 'RedsStreamPrivate'
-                                                              type size changed from 5504 to 0 (in bits)
-                                                              94 data member deletions:
-                                                                'int ssl_st::version', at offset 0 (in bits) at ssl.h:1070:1
-                                                                'int ssl_st::type', at offset 32 (in bits) at ssl.h:1071:1
-                                                                'const SSL_METHOD* ssl_st::method', at offset 64 (in bits) at ssl.h:1073:1
-                                                                'BIO* ssl_st::rbio', at offset 128 (in bits) at ssl.h:1080:1
-                                                                'BIO* ssl_st::wbio', at offset 192 (in bits) at ssl.h:1081:1
-                                                                'BIO* ssl_st::bbio', at offset 256 (in bits) at ssl.h:1082:1
-                                                                'int ssl_st::rwstate', at offset 320 (in bits) at ssl.h:1093:1
-                                                                'int ssl_st::in_handshake', at offset 352 (in bits) at ssl.h:1096:1
-                                                                'int (SSL*)* ssl_st::handshake_func', at offset 384 (in bits) at ssl.h:1097:1
-                                                                'int ssl_st::server', at offset 448 (in bits) at ssl.h:1107:1
-                                                                'int ssl_st::new_session', at offset 480 (in bits) at ssl.h:1109:1
-                                                                'int ssl_st::quiet_shutdown', at offset 512 (in bits) at ssl.h:1113:1
-                                                                'int ssl_st::shutdown', at offset 544 (in bits) at ssl.h:1114:1
-                                                                'int ssl_st::state', at offset 576 (in bits) at ssl.h:1116:1
-                                                                'int ssl_st::rstate', at offset 608 (in bits) at ssl.h:1117:1
-                                                                'BUF_MEM* ssl_st::init_buf', at offset 640 (in bits) at ssl.h:1119:1
-                                                                'void* ssl_st::init_msg', at offset 704 (in bits) at ssl.h:1120:1
-                                                                'int ssl_st::init_num', at offset 768 (in bits) at ssl.h:1121:1
-                                                                'int ssl_st::init_off', at offset 800 (in bits) at ssl.h:1122:1
-                                                                'unsigned char* ssl_st::packet', at offset 832 (in bits) at ssl.h:1125:1
-                                                                'unsigned int ssl_st::packet_length', at offset 896 (in bits) at ssl.h:1126:1
-                                                                'ssl2_state_st* ssl_st::s2', at offset 960 (in bits) at ssl.h:1128:1
-                                                                'ssl3_state_st* ssl_st::s3', at offset 1024 (in bits) at ssl.h:1129:1
-                                                                'dtls1_state_st* ssl_st::d1', at offset 1088 (in bits) at ssl.h:1130:1
-                                                                'int ssl_st::read_ahead', at offset 1152 (in bits) at ssl.h:1132:1
-                                                                'void (int, int, int, void*, typedef size_t, SSL*, void*)* ssl_st::msg_callback', at offset 1216 (in bits) at ssl.h:1136:1
-                                                                'void* ssl_st::msg_callback_arg', at offset 1280 (in bits) at ssl.h:1137:1
-                                                                'int ssl_st::hit', at offset 1344 (in bits) at ssl.h:1139:1
-                                                                'X509_VERIFY_PARAM* ssl_st::param', at offset 1408 (in bits) at ssl.h:1141:1
-                                                                'stack_st_SSL_CIPHER* ssl_st::cipher_list', at offset 1472 (in bits) at ssl.h:1149:1
-                                                                'stack_st_SSL_CIPHER* ssl_st::cipher_list_by_id', at offset 1536 (in bits) at ssl.h:1150:1
-                                                                'int ssl_st::mac_flags', at offset 1600 (in bits) at ssl.h:1154:1
-                                                                'EVP_CIPHER_CTX* ssl_st::enc_read_ctx', at offset 1664 (in bits) at ssl.h:1155:1
-                                                                'EVP_MD_CTX* ssl_st::read_hash', at offset 1728 (in bits) at ssl.h:1156:1
-                                                                'COMP_CTX* ssl_st::expand', at offset 1792 (in bits) at ssl.h:1158:1
-                                                                'EVP_CIPHER_CTX* ssl_st::enc_write_ctx', at offset 1856 (in bits) at ssl.h:1163:1
-                                                                'EVP_MD_CTX* ssl_st::write_hash', at offset 1920 (in bits) at ssl.h:1164:1
-                                                                'COMP_CTX* ssl_st::compress', at offset 1984 (in bits) at ssl.h:1166:1
-                                                                'cert_st* ssl_st::cert', at offset 2048 (in bits) at ssl.h:1175:1
-                                                                'unsigned int ssl_st::sid_ctx_length', at offset 2112 (in bits) at ssl.h:1179:1
-                                                                'unsigned char ssl_st::sid_ctx[32]', at offset 2144 (in bits) at ssl.h:1180:1
-                                                                'SSL_SESSION* ssl_st::session', at offset 2432 (in bits) at ssl.h:1183:1
-                                                                'GEN_SESSION_CB ssl_st::generate_session_id', at offset 2496 (in bits) at ssl.h:1186:1
-                                                                'int ssl_st::verify_mode', at offset 2560 (in bits) at ssl.h:1189:1
-                                                                'int (int, X509_STORE_CTX*)* ssl_st::verify_callback', at offset 2624 (in bits) at ssl.h:1191:1
-                                                                'void (const SSL*, int, int)* ssl_st::info_callback', at offset 2688 (in bits) at ssl.h:1193:1
-                                                                'int ssl_st::error', at offset 2752 (in bits) at ssl.h:1195:1
-                                                                'int ssl_st::error_code', at offset 2784 (in bits) at ssl.h:1196:1
-                                                                'KSSL_CTX* ssl_st::kssl_ctx', at offset 2816 (in bits) at ssl.h:1199:1
-                                                                'unsigned int (SSL*, const char*, char*, unsigned int, unsigned char*, unsigned int)* ssl_st::psk_client_callback', at offset 2880 (in bits) at ssl.h:1203:1
-                                                                'unsigned int (SSL*, const char*, unsigned char*, unsigned int)* ssl_st::psk_server_callback', at offset 2944 (in bits) at ssl.h:1206:1
-                                                                'SSL_CTX* ssl_st::ctx', at offset 3008 (in bits) at ssl.h:1210:1
-                                                                'int ssl_st::debug', at offset 3072 (in bits) at ssl.h:1213:1
-                                                                'long int ssl_st::verify_result', at offset 3136 (in bits) at ssl.h:1216:1
-                                                                'CRYPTO_EX_DATA ssl_st::ex_data', at offset 3200 (in bits) at ssl.h:1217:1
-                                                                'stack_st_X509_NAME* ssl_st::client_CA', at offset 3328 (in bits) at ssl.h:1220:1
-                                                                'int ssl_st::references', at offset 3392 (in bits) at ssl.h:1222:1
-                                                                'unsigned long int ssl_st::options', at offset 3456 (in bits) at ssl.h:1223:1
-                                                                'unsigned long int ssl_st::mode', at offset 3520 (in bits) at ssl.h:1224:1
-                                                                'long int ssl_st::max_cert_list', at offset 3584 (in bits) at ssl.h:1225:1
-                                                                'int ssl_st::first_packet', at offset 3648 (in bits) at ssl.h:1226:1
-                                                                'int ssl_st::client_version', at offset 3680 (in bits) at ssl.h:1227:1
-                                                                'unsigned int ssl_st::max_send_fragment', at offset 3712 (in bits) at ssl.h:1229:1
-                                                                'void (SSL*, int, int, unsigned char*, int, void*)* ssl_st::tlsext_debug_cb', at offset 3776 (in bits) at ssl.h:1232:1
-                                                                'void* ssl_st::tlsext_debug_arg', at offset 3840 (in bits) at ssl.h:1235:1
-                                                                'char* ssl_st::tlsext_hostname', at offset 3904 (in bits) at ssl.h:1236:1
-                                                                'int ssl_st::servername_done', at offset 3968 (in bits) at ssl.h:1237:1
-                                                                'int ssl_st::tlsext_status_type', at offset 4000 (in bits) at ssl.h:1244:1
-                                                                'int ssl_st::tlsext_status_expected', at offset 4032 (in bits) at ssl.h:1246:1
-                                                                'stack_st_OCSP_RESPID* ssl_st::tlsext_ocsp_ids', at offset 4096 (in bits) at ssl.h:1248:1
-                                                                'X509_EXTENSIONS* ssl_st::tlsext_ocsp_exts', at offset 4160 (in bits) at ssl.h:1249:1
-                                                                'unsigned char* ssl_st::tlsext_ocsp_resp', at offset 4224 (in bits) at ssl.h:1251:1
-                                                                'int ssl_st::tlsext_ocsp_resplen', at offset 4288 (in bits) at ssl.h:1252:1
-                                                                'int ssl_st::tlsext_ticket_expected', at offset 4320 (in bits) at ssl.h:1255:1
-                                                                'size_t ssl_st::tlsext_ecpointformatlist_length', at offset 4352 (in bits) at ssl.h:1257:1
-                                                                'unsigned char* ssl_st::tlsext_ecpointformatlist', at offset 4416 (in bits) at ssl.h:1258:1
-                                                                'size_t ssl_st::tlsext_ellipticcurvelist_length', at offset 4480 (in bits) at ssl.h:1259:1
-                                                                'unsigned char* ssl_st::tlsext_ellipticcurvelist', at offset 4544 (in bits) at ssl.h:1260:1
-                                                                'void* ssl_st::tlsext_opaque_prf_input', at offset 4608 (in bits) at ssl.h:1264:1
-                                                                'size_t ssl_st::tlsext_opaque_prf_input_len', at offset 4672 (in bits) at ssl.h:1265:1
-                                                                'TLS_SESSION_TICKET_EXT* ssl_st::tlsext_session_ticket', at offset 4736 (in bits) at ssl.h:1268:1
-                                                                'tls_session_ticket_ext_cb_fn ssl_st::tls_session_ticket_ext_cb', at offset 4800 (in bits) at ssl.h:1271:1
-                                                                'void* ssl_st::tls_session_ticket_ext_cb_arg', at offset 4864 (in bits) at ssl.h:1272:1
-                                                                'tls_session_secret_cb_fn ssl_st::tls_session_secret_cb', at offset 4928 (in bits) at ssl.h:1275:1
-                                                                'void* ssl_st::tls_session_secret_cb_arg', at offset 4992 (in bits) at ssl.h:1276:1
-                                                                'SSL_CTX* ssl_st::initial_ctx', at offset 5056 (in bits) at ssl.h:1278:1
-                                                                'unsigned char* ssl_st::next_proto_negotiated', at offset 5120 (in bits) at ssl.h:1288:1
-                                                                'unsigned char ssl_st::next_proto_negotiated_len', at offset 5184 (in bits) at ssl.h:1289:1
-                                                                'stack_st_SRTP_PROTECTION_PROFILE* ssl_st::srtp_profiles', at offset 5248 (in bits) at ssl.h:1294:1
-                                                                'SRTP_PROTECTION_PROFILE* ssl_st::srtp_profile', at offset 5312 (in bits) at ssl.h:1295:1
-                                                                'unsigned int ssl_st::tlsext_heartbeat', at offset 5376 (in bits) at ssl.h:1297:1
-                                                                'unsigned int ssl_st::tlsext_hb_pending', at offset 5408 (in bits) at ssl.h:1302:1
-                                                                'unsigned int ssl_st::tlsext_hb_seq', at offset 5440 (in bits) at ssl.h:1303:1
-                                                                'int ssl_st::renegotiate', at offset 5472 (in bits) at ssl.h:1308:1
-                                                        and name of 'RedsStream::ssl' changed to 'RedsStream::priv' at reds_stream.h:42:1
-                                  type of 'channel_disconnect_proc on_disconnect' changed:
-                                    underlying type 'void (RedChannelClient*)*' changed:
-                                      in pointed to type 'function type void (RedChannelClient*)':
-                                        parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                          pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
-                                  type of 'channel_send_pipe_item_proc send_item' changed:
-                                    underlying type 'void (RedChannelClient*, PipeItem*)*' changed:
-                                      in pointed to type 'function type void (RedChannelClient*, PipeItem*)':
-                                        parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                          pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
-                                  type of 'channel_hold_pipe_item_proc hold_item' changed:
-                                    underlying type 'void (RedChannelClient*, PipeItem*)*' changed:
-                                      in pointed to type 'function type void (RedChannelClient*, PipeItem*)':
-                                        parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                          pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
-                                  type of 'channel_release_pipe_item_proc release_item' changed:
-                                    underlying type 'void (RedChannelClient*, PipeItem*, int)*' changed:
-                                      in pointed to type 'function type void (RedChannelClient*, PipeItem*, int)':
-                                        parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                          pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
-                                  type of 'channel_alloc_msg_recv_buf_proc alloc_recv_buf' changed:
-                                    underlying type 'uint8_t* (RedChannelClient*, typedef uint16_t, typedef uint32_t)*' changed:
-                                      in pointed to type 'function type uint8_t* (RedChannelClient*, typedef uint16_t, typedef uint32_t)':
-                                        parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                          pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
-                                  type of 'channel_release_msg_recv_buf_proc release_recv_buf' changed:
-                                    underlying type 'void (RedChannelClient*, typedef uint16_t, typedef uint32_t, uint8_t*)*' changed:
-                                      in pointed to type 'function type void (RedChannelClient*, typedef uint16_t, typedef uint32_t, uint8_t*)':
-                                        parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                          pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
-                                  type of 'channel_handle_migrate_flush_mark_proc handle_migrate_flush_mark' changed:
-                                    underlying type 'int (RedChannelClient*)*' changed:
-                                      in pointed to type 'function type int (RedChannelClient*)':
-                                        parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                          pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
-                                  type of 'channel_handle_migrate_data_proc handle_migrate_data' changed:
-                                    underlying type 'int (RedChannelClient*, typedef uint32_t, void*)*' changed:
-                                      in pointed to type 'function type int (RedChannelClient*, typedef uint32_t, void*)':
-                                        parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                          pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
-                                  type of 'channel_handle_migrate_data_get_serial_proc handle_migrate_data_get_serial' changed:
-                                    underlying type 'typedef uint64_t (RedChannelClient*, typedef uint32_t, void*)*' changed:
-                                      in pointed to type 'function type typedef uint64_t (RedChannelClient*, typedef uint32_t, void*)':
-                                        parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                          pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
-                            type of 'ClientCbs RedChannel::client_cbs' changed:
-                              underlying type 'struct {channel_client_connect_proc connect; channel_client_disconnect_proc disconnect; channel_client_migrate_proc migrate;}' at red_channel.h:213:1 changed:
-                                type size hasn't changed
-                                3 data member changes:
-                                  type of 'channel_client_connect_proc connect' changed:
-                                    underlying type 'void (RedChannel*, RedClient*, RedsStream*, int, int, uint32_t*, int, uint32_t*)*' changed:
-                                      in pointed to type 'function type void (RedChannel*, RedClient*, RedsStream*, int, int, uint32_t*, int, uint32_t*)':
-                                        parameter 1 of type 'RedChannel*' has sub-type changes:
-                                          in pointed to type 'typedef RedChannel' at red_channel.h:130:1:
-                                            underlying type 'struct RedChannel' changed, as being reported
-                                        parameter 3 of type 'RedsStream*' has sub-type changes:
-                                          pointed to type 'typedef RedsStream' changed at red_channel.h:134:1, as reported earlier
-                                  type of 'channel_client_disconnect_proc disconnect' changed:
-                                    underlying type 'void (RedChannelClient*)*' changed:
-                                      in pointed to type 'function type void (RedChannelClient*)':
-                                        parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                          pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
-                                  type of 'channel_client_migrate_proc migrate' changed:
-                                    underlying type 'void (RedChannelClient*)*' changed:
-                                      in pointed to type 'function type void (RedChannelClient*)':
-                                        parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                          pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+                      type of 'RedChannel MainChannel::base' changed, as reported earlier
+              type of 'RedsClientMonitorsConfig RedsState::client_monitors_config' changed:
+                underlying type 'struct RedsClientMonitorsConfig' at reds-private.h:120:1 changed:
+                  type size hasn't changed
+                  1 data member change:
+                    type of 'MainChannelClient* RedsClientMonitorsConfig::mcc' changed:
+                      pointed to type 'typedef MainChannelClient' changed at red_channel.h:138:1, as reported earlier
 
     [C] 'function int spice_server_add_interface(SpiceServer*, SpiceBaseInstance*)' at reds.c:3159:1 has some indirect sub-type changes:
       parameter 1 of type 'SpiceServer*' has sub-type changes:
@@ -427,27 +731,7 @@
     [C] 'function spice_image_compression_t spice_server_get_image_compression(SpiceServer*)' at reds.c:3618:1 has some indirect sub-type changes:
       return type changed:
         typedef name changed from spice_image_compression_t to SpiceImageCompression at enums.h:197:1
-        underlying type 'enum __anonymous_enum__2' at spice.h:471:1 changed:
-          type name changed from '__anonymous_enum__2' to 'SpiceImageCompression'
-          type size hasn't changed
-          7 enumerator deletions:
-            '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_INVALID' value '0'
-            '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_OFF' value '1'
-            '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_AUTO_GLZ' value '2'
-            '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_AUTO_LZ' value '3'
-            '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_QUIC' value '4'
-            '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_GLZ' value '5'
-            '__anonymous_enum__2::SPICE_IMAGE_COMPRESS_LZ' value '6'
-          9 enumerator insertions:
-            'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_INVALID' value '0'
-            'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_OFF' value '1'
-            'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_AUTO_GLZ' value '2'
-            'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_AUTO_LZ' value '3'
-            'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_QUIC' value '4'
-            'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_GLZ' value '5'
-            'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_LZ' value '6'
-            'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_LZ4' value '7'
-            'SpiceImageCompression::SPICE_IMAGE_COMPRESSION_ENUM_END' value '8'
+        underlying type 'enum __anonymous_enum__2' changed at spice.h:471:1, as reported earlier
       parameter 1 of type 'SpiceServer*' has sub-type changes:
         pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
 
@@ -466,6 +750,8 @@
     [C] 'function int spice_server_init(SpiceServer*, SpiceCoreInterface*)' at reds.c:3407:1 has some indirect sub-type changes:
       parameter 1 of type 'SpiceServer*' has sub-type changes:
         pointed to type 'typedef SpiceServer' changed at spice.h:440:1, as reported earlier
+      parameter 2 of type 'SpiceCoreInterface*' has sub-type changes:
+        pointed to type 'typedef SpiceCoreInterface' changed at spice.h:49:1, as reported earlier
 
     [C] 'function int spice_server_is_server_mouse(SpiceServer*)' at reds.c:3698:1 has some indirect sub-type changes:
       parameter 1 of type 'SpiceServer*' has sub-type changes:

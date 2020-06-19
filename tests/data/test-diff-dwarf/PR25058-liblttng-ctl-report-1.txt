@@ -1,4 +1,4 @@
-Functions changes summary: 0 Removed, 25 Changed, 79 Added functions
+Functions changes summary: 0 Removed, 50 Changed, 79 Added functions
 Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
 
 79 Added functions:
@@ -83,7 +83,39 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
   [A] 'function const char* lttng_userspace_probe_location_tracepoint_get_probe_name(const lttng_userspace_probe_location*)'
   [A] 'function const char* lttng_userspace_probe_location_tracepoint_get_provider_name(const lttng_userspace_probe_location*)'
 
-25 functions with some indirect sub-type change:
+50 functions with some indirect sub-type change:
+
+  [C] 'function void lttng_action_destroy(lttng_action*)' has some indirect sub-type changes:
+    parameter 1 of type 'lttng_action*' has sub-type changes:
+      in pointed to type 'struct lttng_action':
+        type size hasn't changed
+        2 data member changes:
+          type of 'action_serialize_cb lttng_action::serialize' changed:
+            underlying type 'typedef ssize_t (lttng_action*, char*)*' changed:
+              in pointed to type 'function type typedef ssize_t (lttng_action*, char*)':
+                return type changed:
+                  entity changed from 'typedef ssize_t' to compatible type 'int'
+                    type name changed from 'long int' to 'int'
+                    type size changed from 64 to 32 (in bits)
+                parameter 1 of type 'lttng_action*' has sub-type changes:
+                  pointed to type 'struct lttng_action' changed, as being reported
+                parameter 2 of type 'char*' changed:
+                  in pointed to type 'char':
+                    entity changed from 'char' to 'struct lttng_dynamic_buffer'
+                    type size changed from 8 to 192 (in bits)
+          type of 'action_destroy_cb lttng_action::destroy' changed:
+            underlying type 'void (lttng_action*)*' changed:
+              in pointed to type 'function type void (lttng_action*)':
+                parameter 1 of type 'lttng_action*' has sub-type changes:
+                  pointed to type 'struct lttng_action' changed, as being reported
+
+  [C] 'function lttng_action_type lttng_action_get_type(lttng_action*)' has some indirect sub-type changes:
+    parameter 1 of type 'lttng_action*' has sub-type changes:
+      pointed to type 'struct lttng_action' changed, as reported earlier
+
+  [C] 'function lttng_action* lttng_action_notify_create()' has some indirect sub-type changes:
+    return type changed:
+      pointed to type 'struct lttng_action' changed, as reported earlier
 
   [C] 'function int lttng_add_context(lttng_handle*, lttng_event_context*, const char*, const char*)' has some indirect sub-type changes:
     parameter 2 of type 'lttng_event_context*' has sub-type changes:
@@ -107,13 +139,111 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
             to:
               union {lttng_event_perf_counter_ctx perf_counter; struct {char* provider_name; char* ctx_name;} app_ctx; char padding[288];}
 
+  [C] 'function lttng_condition_status lttng_condition_buffer_usage_get_channel_name(const lttng_condition*, const char**)' has some indirect sub-type changes:
+    parameter 1 of type 'const lttng_condition*' has sub-type changes:
+      in pointed to type 'const lttng_condition':
+        in unqualified underlying type 'struct lttng_condition':
+          type size hasn't changed
+          5 data member changes:
+            type of 'lttng_condition_type lttng_condition::type' changed:
+              type size hasn't changed
+              3 enumerator insertions:
+                'lttng_condition_type::LTTNG_CONDITION_TYPE_SESSION_CONSUMED_SIZE' value '100'
+                'lttng_condition_type::LTTNG_CONDITION_TYPE_SESSION_ROTATION_ONGOING' value '103'
+                'lttng_condition_type::LTTNG_CONDITION_TYPE_SESSION_ROTATION_COMPLETED' value '104'
+            type of 'condition_validate_cb lttng_condition::validate' changed:
+              underlying type 'bool (const lttng_condition*)*' changed:
+                in pointed to type 'function type bool (const lttng_condition*)':
+                  parameter 1 of type 'const lttng_condition*' has sub-type changes:
+                    in pointed to type 'const lttng_condition':
+                      unqualified underlying type 'struct lttng_condition' changed, as being reported
+            type of 'condition_serialize_cb lttng_condition::serialize' changed:
+              underlying type 'typedef ssize_t (const lttng_condition*, char*)*' changed:
+                in pointed to type 'function type typedef ssize_t (const lttng_condition*, char*)':
+                  return type changed:
+                    entity changed from 'typedef ssize_t' to compatible type 'int'
+                      type name changed from 'long int' to 'int'
+                      type size changed from 64 to 32 (in bits)
+                  parameter 1 of type 'const lttng_condition*' has sub-type changes:
+                    in pointed to type 'const lttng_condition':
+                      unqualified underlying type 'struct lttng_condition' changed, as being reported
+                  parameter 2 of type 'char*' changed:
+                    in pointed to type 'char':
+                      entity changed from 'char' to 'struct lttng_dynamic_buffer'
+                      type size changed from 8 to 192 (in bits)
+            type of 'condition_equal_cb lttng_condition::equal' changed:
+              underlying type 'bool (const lttng_condition*, const lttng_condition*)*' changed:
+                in pointed to type 'function type bool (const lttng_condition*, const lttng_condition*)':
+                  parameter 1 of type 'const lttng_condition*' has sub-type changes:
+                    in pointed to type 'const lttng_condition':
+                      unqualified underlying type 'struct lttng_condition' changed, as being reported
+                  parameter 2 of type 'const lttng_condition*' has sub-type changes:
+                    in pointed to type 'const lttng_condition':
+                      unqualified underlying type 'struct lttng_condition' changed, as being reported
+            type of 'condition_destroy_cb lttng_condition::destroy' changed:
+              underlying type 'void (lttng_condition*)*' changed:
+                in pointed to type 'function type void (lttng_condition*)':
+                  parameter 1 of type 'lttng_condition*' has sub-type changes:
+                    pointed to type 'struct lttng_condition' changed, as being reported
+
+  [C] 'function lttng_condition_status lttng_condition_buffer_usage_get_domain_type(const lttng_condition*, lttng_domain_type*)' has some indirect sub-type changes:
+    parameter 1 of type 'const lttng_condition*' has sub-type changes:
+      in pointed to type 'const lttng_condition':
+        unqualified underlying type 'struct lttng_condition' changed, as reported earlier
+
+  [C] 'function lttng_condition_status lttng_condition_buffer_usage_get_session_name(const lttng_condition*, const char**)' has some indirect sub-type changes:
+    parameter 1 of type 'const lttng_condition*' has sub-type changes:
+      in pointed to type 'const lttng_condition':
+        unqualified underlying type 'struct lttng_condition' changed, as reported earlier
+
+  [C] 'function lttng_condition_status lttng_condition_buffer_usage_get_threshold(const lttng_condition*, uint64_t*)' has some indirect sub-type changes:
+    parameter 1 of type 'const lttng_condition*' has sub-type changes:
+      in pointed to type 'const lttng_condition':
+        unqualified underlying type 'struct lttng_condition' changed, as reported earlier
+
+  [C] 'function lttng_condition_status lttng_condition_buffer_usage_get_threshold_ratio(const lttng_condition*, double*)' has some indirect sub-type changes:
+    parameter 1 of type 'const lttng_condition*' has sub-type changes:
+      in pointed to type 'const lttng_condition':
+        unqualified underlying type 'struct lttng_condition' changed, as reported earlier
+
+  [C] 'function lttng_condition* lttng_condition_buffer_usage_high_create()' has some indirect sub-type changes:
+    return type changed:
+      pointed to type 'struct lttng_condition' changed, as reported earlier
+
+  [C] 'function lttng_condition* lttng_condition_buffer_usage_low_create()' has some indirect sub-type changes:
+    return type changed:
+      pointed to type 'struct lttng_condition' changed, as reported earlier
+
+  [C] 'function lttng_condition_status lttng_condition_buffer_usage_set_channel_name(lttng_condition*, const char*)' has some indirect sub-type changes:
+    parameter 1 of type 'lttng_condition*' has sub-type changes:
+      pointed to type 'struct lttng_condition' changed, as reported earlier
+
+  [C] 'function lttng_condition_status lttng_condition_buffer_usage_set_domain_type(lttng_condition*, lttng_domain_type)' has some indirect sub-type changes:
+    parameter 1 of type 'lttng_condition*' has sub-type changes:
+      pointed to type 'struct lttng_condition' changed, as reported earlier
+
+  [C] 'function lttng_condition_status lttng_condition_buffer_usage_set_session_name(lttng_condition*, const char*)' has some indirect sub-type changes:
+    parameter 1 of type 'lttng_condition*' has sub-type changes:
+      pointed to type 'struct lttng_condition' changed, as reported earlier
+
+  [C] 'function lttng_condition_status lttng_condition_buffer_usage_set_threshold(lttng_condition*, uint64_t)' has some indirect sub-type changes:
+    parameter 1 of type 'lttng_condition*' has sub-type changes:
+      pointed to type 'struct lttng_condition' changed, as reported earlier
+
+  [C] 'function lttng_condition_status lttng_condition_buffer_usage_set_threshold_ratio(lttng_condition*, double)' has some indirect sub-type changes:
+    parameter 1 of type 'lttng_condition*' has sub-type changes:
+      pointed to type 'struct lttng_condition' changed, as reported earlier
+
+  [C] 'function void lttng_condition_destroy(lttng_condition*)' has some indirect sub-type changes:
+    parameter 1 of type 'lttng_condition*' has sub-type changes:
+      pointed to type 'struct lttng_condition' changed, as reported earlier
+
   [C] 'function lttng_condition_type lttng_condition_get_type(const lttng_condition*)' has some indirect sub-type changes:
     return type changed:
-      type size hasn't changed
-      3 enumerator insertions:
-        'lttng_condition_type::LTTNG_CONDITION_TYPE_SESSION_CONSUMED_SIZE' value '100'
-        'lttng_condition_type::LTTNG_CONDITION_TYPE_SESSION_ROTATION_ONGOING' value '103'
-        'lttng_condition_type::LTTNG_CONDITION_TYPE_SESSION_ROTATION_COMPLETED' value '104'
+      enum type 'enum lttng_condition_type' changed, as reported earlier
+    parameter 1 of type 'const lttng_condition*' has sub-type changes:
+      in pointed to type 'const lttng_condition':
+        unqualified underlying type 'struct lttng_condition' changed, as reported earlier
 
   [C] 'function int lttng_disable_event_ext(lttng_handle*, lttng_event*, const char*, const char*)' has some indirect sub-type changes:
     parameter 2 of type 'lttng_event*' has sub-type changes:
@@ -137,9 +267,49 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
     parameter 2 of type 'lttng_event*' has sub-type changes:
       pointed to type 'struct lttng_event' changed, as reported earlier
 
+  [C] 'function lttng_evaluation_status lttng_evaluation_buffer_usage_get_usage(const lttng_evaluation*, uint64_t*)' has some indirect sub-type changes:
+    parameter 1 of type 'const lttng_evaluation*' has sub-type changes:
+      in pointed to type 'const lttng_evaluation':
+        in unqualified underlying type 'struct lttng_evaluation':
+          type size hasn't changed
+          3 data member changes:
+            type of 'lttng_condition_type lttng_evaluation::type' changed, as reported earlier
+            type of 'evaluation_serialize_cb lttng_evaluation::serialize' changed:
+              underlying type 'typedef ssize_t (lttng_evaluation*, char*)*' changed:
+                in pointed to type 'function type typedef ssize_t (lttng_evaluation*, char*)':
+                  return type changed:
+                    entity changed from 'typedef ssize_t' to compatible type 'int'
+                      type name changed from 'long int' to 'int'
+                      type size changed from 64 to 32 (in bits)
+                  parameter 1 of type 'lttng_evaluation*' changed:
+                    in pointed to type 'struct lttng_evaluation':
+                      entity changed from 'struct lttng_evaluation' to 'const lttng_evaluation'
+                      type size hasn't changed
+                  parameter 2 of type 'char*' changed:
+                    in pointed to type 'char':
+                      entity changed from 'char' to 'struct lttng_dynamic_buffer'
+                      type size changed from 8 to 192 (in bits)
+            type of 'evaluation_destroy_cb lttng_evaluation::destroy' changed:
+              underlying type 'void (lttng_evaluation*)*' changed:
+                in pointed to type 'function type void (lttng_evaluation*)':
+                  parameter 1 of type 'lttng_evaluation*' has sub-type changes:
+                    pointed to type 'struct lttng_evaluation' changed, as being reported
+
+  [C] 'function lttng_evaluation_status lttng_evaluation_buffer_usage_get_usage_ratio(const lttng_evaluation*, double*)' has some indirect sub-type changes:
+    parameter 1 of type 'const lttng_evaluation*' has sub-type changes:
+      in pointed to type 'const lttng_evaluation':
+        unqualified underlying type 'struct lttng_evaluation' changed, as reported earlier
+
+  [C] 'function void lttng_evaluation_destroy(lttng_evaluation*)' has some indirect sub-type changes:
+    parameter 1 of type 'lttng_evaluation*' has sub-type changes:
+      pointed to type 'struct lttng_evaluation' changed, as reported earlier
+
   [C] 'function lttng_condition_type lttng_evaluation_get_type(const lttng_evaluation*)' has some indirect sub-type changes:
     return type changed:
       enum type 'enum lttng_condition_type' changed, as reported earlier
+    parameter 1 of type 'const lttng_evaluation*' has sub-type changes:
+      in pointed to type 'const lttng_evaluation':
+        unqualified underlying type 'struct lttng_evaluation' changed, as reported earlier
 
   [C] 'function int lttng_event_get_exclusion_name(lttng_event*, size_t, const char**)' has some indirect sub-type changes:
     parameter 1 of type 'lttng_event*' has sub-type changes:
@@ -197,26 +367,81 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
           type size changed from 192 to 128 (in bits)
           1 data member deletion:
             'bool lttng_notification::owns_elements', at offset 128 (in bits)
+          2 data member changes:
+            type of 'lttng_condition* lttng_notification::condition' changed:
+              pointed to type 'struct lttng_condition' changed, as reported earlier
+            type of 'lttng_evaluation* lttng_notification::evaluation' changed:
+              pointed to type 'struct lttng_evaluation' changed, as reported earlier
 
   [C] 'function lttng_notification_channel_status lttng_notification_channel_subscribe(lttng_notification_channel*, const lttng_condition*)' has some indirect sub-type changes:
     return type changed:
       enum type 'enum lttng_notification_channel_status' changed, as reported earlier
+    parameter 2 of type 'const lttng_condition*' has sub-type changes:
+      in pointed to type 'const lttng_condition':
+        unqualified underlying type 'struct lttng_condition' changed, as reported earlier
 
   [C] 'function lttng_notification_channel_status lttng_notification_channel_unsubscribe(lttng_notification_channel*, const lttng_condition*)' has some indirect sub-type changes:
     return type changed:
       enum type 'enum lttng_notification_channel_status' changed, as reported earlier
+    parameter 2 of type 'const lttng_condition*' has sub-type changes:
+      in pointed to type 'const lttng_condition':
+        unqualified underlying type 'struct lttng_condition' changed, as reported earlier
 
   [C] 'function void lttng_notification_destroy(lttng_notification*)' has some indirect sub-type changes:
     parameter 1 of type 'lttng_notification*' has sub-type changes:
       pointed to type 'struct lttng_notification' changed, as reported earlier
 
   [C] 'function const lttng_condition* lttng_notification_get_condition(lttng_notification*)' has some indirect sub-type changes:
+    return type changed:
+      in pointed to type 'const lttng_condition':
+        unqualified underlying type 'struct lttng_condition' changed, as reported earlier
     parameter 1 of type 'lttng_notification*' has sub-type changes:
       pointed to type 'struct lttng_notification' changed, as reported earlier
 
   [C] 'function const lttng_evaluation* lttng_notification_get_evaluation(lttng_notification*)' has some indirect sub-type changes:
+    return type changed:
+      in pointed to type 'const lttng_evaluation':
+        unqualified underlying type 'struct lttng_evaluation' changed, as reported earlier
     parameter 1 of type 'lttng_notification*' has sub-type changes:
       pointed to type 'struct lttng_notification' changed, as reported earlier
+
+  [C] 'function int lttng_register_trigger(lttng_trigger*)' has some indirect sub-type changes:
+    parameter 1 of type 'lttng_trigger*' has sub-type changes:
+      in pointed to type 'struct lttng_trigger':
+        type size hasn't changed
+        2 data member changes:
+          type of 'lttng_condition* lttng_trigger::condition' changed:
+            pointed to type 'struct lttng_condition' changed, as reported earlier
+          type of 'lttng_action* lttng_trigger::action' changed:
+            pointed to type 'struct lttng_action' changed, as reported earlier
+
+  [C] 'function lttng_trigger* lttng_trigger_create(lttng_condition*, lttng_action*)' has some indirect sub-type changes:
+    return type changed:
+      pointed to type 'struct lttng_trigger' changed, as reported earlier
+    parameter 1 of type 'lttng_condition*' has sub-type changes:
+      pointed to type 'struct lttng_condition' changed, as reported earlier
+    parameter 2 of type 'lttng_action*' has sub-type changes:
+      pointed to type 'struct lttng_action' changed, as reported earlier
+
+  [C] 'function void lttng_trigger_destroy(lttng_trigger*)' has some indirect sub-type changes:
+    parameter 1 of type 'lttng_trigger*' has sub-type changes:
+      pointed to type 'struct lttng_trigger' changed, as reported earlier
+
+  [C] 'function lttng_action* lttng_trigger_get_action(lttng_trigger*)' has some indirect sub-type changes:
+    return type changed:
+      pointed to type 'struct lttng_action' changed, as reported earlier
+    parameter 1 of type 'lttng_trigger*' has sub-type changes:
+      pointed to type 'struct lttng_trigger' changed, as reported earlier
+
+  [C] 'function lttng_condition* lttng_trigger_get_condition(lttng_trigger*)' has some indirect sub-type changes:
+    return type changed:
+      pointed to type 'struct lttng_condition' changed, as reported earlier
+    parameter 1 of type 'lttng_trigger*' has sub-type changes:
+      pointed to type 'struct lttng_trigger' changed, as reported earlier
+
+  [C] 'function int lttng_unregister_trigger(lttng_trigger*)' has some indirect sub-type changes:
+    parameter 1 of type 'lttng_trigger*' has sub-type changes:
+      pointed to type 'struct lttng_trigger' changed, as reported earlier
 
   [C] 'function filter_parser_ctx* lttng_yyget_extra(yyscan_t)' has some indirect sub-type changes:
     return type changed:
