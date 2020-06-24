@@ -11769,20 +11769,31 @@ type_base::get_canonical_type_for(type_base_sptr t)
   bool decl_only_class_equals_definition =
     (odr_is_relevant(*t) || env->decl_only_class_equals_definition());
 
+  class_or_union_sptr class_or_union = is_class_or_union_type(t);
+
   // Look through declaration-only classes
   if (decl_only_class_equals_definition)
-    if (class_or_union_sptr cl = is_class_or_union_type(t))
+    if (class_or_union)
       {
-	cl = look_through_decl_only_class(cl);
-	if (cl->get_is_declaration_only())
+	class_or_union = look_through_decl_only_class(class_or_union);
+	if (class_or_union->get_is_declaration_only())
 	  return type_base_sptr();
 	else
-	  t = cl;
+	  t = class_or_union;
       }
 
   class_decl_sptr is_class = is_class_type(t);
   if (t->get_canonical_type())
     return t->get_canonical_type();
+
+  // For classes and union, ensure that an anonymous class doesn't
+  // have a linkage name.  If it does in the future, then me must be
+  // mindful that the linkage name respects the type identity
+  // constraints which states that "if two linkage names are different
+  // then the two types are different".
+  ABG_ASSERT(!class_or_union
+	     || !class_or_union->get_is_anonymous()
+	     || class_or_union->get_linkage_name().empty());
 
   translation_unit::language lang = t->get_translation_unit()->get_language();
 
@@ -19606,6 +19617,66 @@ class_decl::class_decl(const environment* env, const string& name,
   runtime_type_instance(this);
 }
 
+/// A Constructor for instances of @ref class_decl
+///
+/// @param env the environment we are operating from.
+///
+/// @param name the identifier of the class.
+///
+/// @param size_in_bits the size of an instance of class_decl, expressed
+/// in bits
+///
+/// @param align_in_bits the alignment of an instance of class_decl,
+/// expressed in bits.
+///
+/// @param locus the source location of declaration point this class.
+///
+/// @param vis the visibility of instances of class_decl.
+///
+/// @param bases the vector of base classes for this instance of class_decl.
+///
+/// @param mbrs the vector of member types of this instance of
+/// class_decl.
+///
+/// @param data_mbrs the vector of data members of this instance of
+/// class_decl.
+///
+/// @param mbr_fns the vector of member functions of this instance of
+/// class_decl.
+///
+/// @param is_anonymous whether the newly created instance is
+/// anonymous.
+class_decl::class_decl(const environment* env, const string& name,
+		       size_t size_in_bits, size_t align_in_bits,
+		       bool is_struct, const location& locus,
+		       visibility vis, base_specs& bases,
+		       member_types& mbr_types, data_members& data_mbrs,
+		       member_functions& mbr_fns, bool is_anonymous)
+  : type_or_decl_base(env,
+		      CLASS_TYPE
+		      | ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE
+		      | ABSTRACT_SCOPE_TYPE_DECL
+		      | ABSTRACT_SCOPE_DECL),
+    decl_base(env, name, locus,
+	      // If the class is anonymous then by default it won't
+	      // have a linkage name.  Also, the anonymous class does
+	      // have an internal-only unique name that is generally
+	      // not taken into account when comparing classes; such a
+	      // unique internal-only name, when used as a linkage
+	      // name might introduce spurious comparison false
+	      // negatives.
+	      /*linkage_name=*/is_anonymous ? string() : name,
+	      vis),
+    type_base(env, size_in_bits, align_in_bits),
+    class_or_union(env, name, size_in_bits, align_in_bits,
+		   locus, vis, mbr_types, data_mbrs, mbr_fns),
+    priv_(new priv(is_struct, bases))
+{
+  runtime_type_instance(this);
+  set_is_anonymous(is_anonymous);
+}
+
 /// A constructor for instances of class_decl.
 ///
 /// @param env the environment we are operating from.
@@ -19638,6 +19709,53 @@ class_decl::class_decl(const environment* env, const string& name,
     priv_(new priv(is_struct))
 {
   runtime_type_instance(this);
+}
+
+/// A constructor for instances of @ref class_decl.
+///
+/// @param env the environment we are operating from.
+///
+/// @param name the name of the class.
+///
+/// @param size_in_bits the size of an instance of class_decl, expressed
+/// in bits
+///
+/// @param align_in_bits the alignment of an instance of class_decl,
+/// expressed in bits.
+///
+/// @param locus the source location of declaration point this class.
+///
+/// @param vis the visibility of instances of class_decl.
+///
+/// @param is_anonymous whether the newly created instance is
+/// anonymous.
+class_decl:: class_decl(const environment* env, const string& name,
+			size_t size_in_bits, size_t align_in_bits,
+			bool is_struct, const location& locus,
+			visibility vis, bool is_anonymous)
+  : type_or_decl_base(env,
+		      CLASS_TYPE
+		      | ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE
+		      | ABSTRACT_SCOPE_TYPE_DECL
+		      | ABSTRACT_SCOPE_DECL),
+    decl_base(env, name, locus,
+	      // If the class is anonymous then by default it won't
+	      // have a linkage name.  Also, the anonymous class does
+	      // have an internal-only unique name that is generally
+	      // not taken into account when comparing classes; such a
+	      // unique internal-only name, when used as a linkage
+	      // name might introduce spurious comparison false
+	      // negatives.
+	      /*linkage_name=*/ is_anonymous ? string() : name,
+	      vis),
+    type_base(env, size_in_bits, align_in_bits),
+    class_or_union(env, name, size_in_bits, align_in_bits,
+		   locus, vis),
+  priv_(new priv(is_struct))
+{
+  runtime_type_instance(this);
+  set_is_anonymous(is_anonymous);
 }
 
 /// A constuctor for instances of class_decl that represent a
@@ -21457,6 +21575,53 @@ union_decl::union_decl(const environment* env, const string& name,
 /// @param locus the location of the type.
 ///
 /// @param vis the visibility of instances of @ref union_decl.
+///
+/// @param mbr_types the member types of the union.
+///
+/// @param data_mbrs the data members of the union.
+///
+/// @param member_fns the member functions of the union.
+///
+/// @param is_anonymous whether the newly created instance is
+/// anonymous.
+union_decl::union_decl(const environment* env, const string& name,
+		       size_t size_in_bits, const location& locus,
+		       visibility vis, member_types& mbr_types,
+		       data_members& data_mbrs, member_functions& member_fns,
+		       bool is_anonymous)
+  : type_or_decl_base(env,
+		      UNION_TYPE
+		      | ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE),
+    decl_base(env, name, locus,
+	      // If the class is anonymous then by default it won't
+	      // have a linkage name.  Also, the anonymous class does
+	      // have an internal-only unique name that is generally
+	      // not taken into account when comparing classes; such a
+	      // unique internal-only name, when used as a linkage
+	      // name might introduce spurious comparison false
+	      // negatives.
+	      /*linkage_name=*/is_anonymous ? string() : name,
+	      vis),
+    type_base(env, size_in_bits, 0),
+    class_or_union(env, name, size_in_bits, 0,
+		   locus, vis, mbr_types, data_mbrs, member_fns)
+{
+  runtime_type_instance(this);
+  set_is_anonymous(is_anonymous);
+}
+
+/// Constructor for the @ref union_decl type.
+///
+/// @param env the @ref environment we are operating from.
+///
+/// @param name the name of the union type.
+///
+/// @param size_in_bits the size of the union, in bits.
+///
+/// @param locus the location of the type.
+///
+/// @param vis the visibility of instances of @ref union_decl.
 union_decl::union_decl(const environment* env, const string& name,
 		       size_t size_in_bits, const location& locus,
 		       visibility vis)
@@ -21472,6 +21637,47 @@ union_decl::union_decl(const environment* env, const string& name,
 		   0, locus, vis)
 {
   runtime_type_instance(this);
+}
+
+/// Constructor for the @ref union_decl type.
+///
+/// @param env the @ref environment we are operating from.
+///
+/// @param name the name of the union type.
+///
+/// @param size_in_bits the size of the union, in bits.
+///
+/// @param locus the location of the type.
+///
+/// @param vis the visibility of instances of @ref union_decl.
+///
+/// @param is_anonymous whether the newly created instance is
+/// anonymous.
+union_decl::union_decl(const environment* env, const string& name,
+		       size_t size_in_bits, const location& locus,
+		       visibility vis, bool is_anonymous)
+  : type_or_decl_base(env,
+		      UNION_TYPE
+		      | ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE
+		      | ABSTRACT_SCOPE_TYPE_DECL
+		      | ABSTRACT_SCOPE_DECL),
+    decl_base(env, name, locus,
+	      // If the class is anonymous then by default it won't
+	      // have a linkage name.  Also, the anonymous class does
+	      // have an internal-only unique name that is generally
+	      // not taken into account when comparing classes; such a
+	      // unique internal-only name, when used as a linkage
+	      // name might introduce spurious comparison false
+	      // negatives.
+	      /*linkage_name=*/is_anonymous ? string() : name,
+	      vis),
+    type_base(env, size_in_bits, 0),
+    class_or_union(env, name, size_in_bits,
+		   0, locus, vis)
+{
+  runtime_type_instance(this);
+  set_is_anonymous(is_anonymous);
 }
 
 /// Constructor for the @ref union_decl type.

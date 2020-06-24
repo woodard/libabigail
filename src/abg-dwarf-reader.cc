@@ -13401,8 +13401,8 @@ add_or_update_class_type(read_context&	 ctxt,
     {
       result.reset(new class_decl(ctxt.env(), name, size,
 				  /*alignment=*/0, is_struct, loc,
-				  decl_base::VISIBILITY_DEFAULT));
-      result->set_is_anonymous(is_anonymous);
+				  decl_base::VISIBILITY_DEFAULT,
+				  is_anonymous));
 
       if (is_declaration_only)
 	result->set_is_declaration_only(true);
@@ -13741,9 +13741,9 @@ add_or_update_union_type(read_context&	ctxt,
     }
   else
     {
-      result.reset(new union_decl(ctxt.env(), name, size,
-				  loc, decl_base::VISIBILITY_DEFAULT));
-      result->set_is_anonymous(is_anonymous);
+      result.reset(new union_decl(ctxt.env(), name, size, loc,
+				  decl_base::VISIBILITY_DEFAULT,
+				  is_anonymous));
       if (is_declaration_only)
 	result->set_is_declaration_only(true);
       result = is_union_type(add_decl_to_scope(result, scope));

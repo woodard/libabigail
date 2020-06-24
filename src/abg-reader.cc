@@ -4475,8 +4475,7 @@ build_class_decl(read_context&		ctxt,
       else
 	decl.reset(new class_decl(env, name, size_in_bits, alignment_in_bits,
 				  is_struct, loc, vis, bases, mbrs,
-				  data_mbrs, mbr_functions));
-      decl->set_is_anonymous(is_anonymous);
+				  data_mbrs, mbr_functions, is_anonymous));
     }
 
   decl->set_is_artificial(is_artificial);
@@ -4882,8 +4881,8 @@ build_union_decl(read_context& ctxt,
 				  size_in_bits,
 				  loc, vis, mbrs,
 				  data_mbrs,
-				  mbr_functions));
-      decl->set_is_anonymous(is_anonymous);
+				  mbr_functions,
+				  is_anonymous));
     }
 
   decl->set_is_artificial(is_artificial);

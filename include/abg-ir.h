@@ -4008,7 +4008,19 @@ public:
 
   class_decl(const environment* env, const string& name,
 	     size_t size_in_bits, size_t align_in_bits,
+	     bool is_struct, const location& locus,
+	     visibility vis, base_specs& bases,
+	     member_types& mbrs, data_members& data_mbrs,
+	     member_functions& member_fns, bool is_anonymous);
+
+  class_decl(const environment* env, const string& name,
+	     size_t size_in_bits, size_t align_in_bits,
 	     bool is_struct, const location& locus, visibility vis);
+
+  class_decl(const environment* env, const string& name,
+	     size_t size_in_bits, size_t align_in_bits,
+	     bool is_struct, const location& locus,
+	     visibility vis, bool is_anonymous);
 
   class_decl(const environment* env, const string& name, bool is_struct,
 	     bool is_declaration_only = true);
@@ -4217,7 +4229,17 @@ public:
 
   union_decl(const environment* env, const string& name,
 	     size_t size_in_bits, const location& locus,
+	     visibility vis, member_types& mbrs,
+	     data_members& data_mbrs, member_functions& member_fns,
+	     bool is_anonymous);
+
+  union_decl(const environment* env, const string& name,
+	     size_t size_in_bits, const location& locus,
 	     visibility vis);
+
+  union_decl(const environment* env, const string& name,
+	     size_t size_in_bits, const location& locus,
+	     visibility vis, bool is_anonymous);
 
   union_decl(const environment* env, const string& name,
 	     bool is_declaration_only = true);
