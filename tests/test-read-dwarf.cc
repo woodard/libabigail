@@ -110,6 +110,46 @@ InOutSpec in_out_specs[] =
     "data/test-read-dwarf/test3.so.hash.abi",
     "output/test-read-dwarf/test3.so.hash.abi"
   },
+  // suppress all except the main symbol of a group of aliases
+  {
+    "data/test-read-dwarf/test3.so",
+    "data/test-read-dwarf/test3-alias-1.suppr",
+    HASH_TYPE_ID_STYLE,
+    "data/test-read-dwarf/test3-alias-1.so.hash.abi",
+    "output/test-read-dwarf/test3-alias-1.so.hash.abi"
+  },
+  // suppress the main symbol of a group of aliases
+  {
+    "data/test-read-dwarf/test3.so",
+    "data/test-read-dwarf/test3-alias-2.suppr",
+    HASH_TYPE_ID_STYLE,
+    "data/test-read-dwarf/test3-alias-2.so.hash.abi",
+    "output/test-read-dwarf/test3-alias-2.so.hash.abi"
+  },
+  // suppress all except one non main symbol of a group of aliases
+  {
+    "data/test-read-dwarf/test3.so",
+    "data/test-read-dwarf/test3-alias-3.suppr",
+    HASH_TYPE_ID_STYLE,
+    "data/test-read-dwarf/test3-alias-3.so.hash.abi",
+    "output/test-read-dwarf/test3-alias-3.so.hash.abi"
+  },
+  // suppress all symbols of a group of aliases
+  {
+    "data/test-read-dwarf/test3.so",
+    "data/test-read-dwarf/test3-alias-4.suppr",
+    HASH_TYPE_ID_STYLE,
+    "data/test-read-dwarf/test3-alias-4.so.hash.abi",
+    "output/test-read-dwarf/test3-alias-4.so.hash.abi"
+  },
+  // suppress the main symbols with alias (function+variable) in .o file
+  {
+    "data/test-read-dwarf/test-suppressed-alias.o",
+    "data/test-read-dwarf/test-suppressed-alias.suppr",
+    HASH_TYPE_ID_STYLE,
+    "data/test-read-dwarf/test-suppressed-alias.o.abi",
+    "output/test-read-dwarf/test-suppressed-alias.o.abi",
+  },
   {
     "data/test-read-dwarf/test4.so",
     "",

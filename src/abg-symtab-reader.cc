@@ -409,16 +409,22 @@ symtab::load_(string_elf_symbols_map_sptr function_symbol_map,
   if (function_symbol_map)
     for (const auto& symbol_map_entry : *function_symbol_map)
       {
-	symbols_.insert(symbols_.end(), symbol_map_entry.second.begin(),
-			symbol_map_entry.second.end());
+	for (const auto& symbol : symbol_map_entry.second)
+	  {
+	    if (!symbol->is_suppressed())
+	      symbols_.push_back(symbol);
+	  }
 	ABG_ASSERT(name_symbol_map_.insert(symbol_map_entry).second);
       }
 
   if (variables_symbol_map)
     for (const auto& symbol_map_entry : *variables_symbol_map)
       {
-	symbols_.insert(symbols_.end(), symbol_map_entry.second.begin(),
-			symbol_map_entry.second.end());
+	for (const auto& symbol : symbol_map_entry.second)
+	  {
+	    if (!symbol->is_suppressed())
+	      symbols_.push_back(symbol);
+	  }
 	ABG_ASSERT(name_symbol_map_.insert(symbol_map_entry).second);
       }
 

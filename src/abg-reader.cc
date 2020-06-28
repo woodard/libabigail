@@ -2807,7 +2807,8 @@ build_elf_symbol(read_context& ctxt, const xmlNodePtr node,
 
   elf_symbol::version version(version_string, is_default_version);
 
-  if (drop_if_suppressed && suppr::is_elf_symbol_suppressed(ctxt, name, type))
+  const bool is_suppressed = suppr::is_elf_symbol_suppressed(ctxt, name, type);
+  if (drop_if_suppressed && is_suppressed)
     return elf_symbol_sptr();
 
   const environment* env = ctxt.get_environment();
@@ -2816,6 +2817,8 @@ build_elf_symbol(read_context& ctxt, const xmlNodePtr node,
 					 is_defined, is_common,
 					 version, visibility,
 					 /*is_linux_string_cst=*/false);
+
+  e->set_is_suppressed(is_suppressed);
   return e;
 }
 
@@ -2902,7 +2905,7 @@ build_elf_symbol_db(read_context& ctxt,
   elf_symbol_sptr sym;
   for (xmlNodePtr n = node->children; n; n = n->next)
     {
-      if ((sym = build_elf_symbol(ctxt, n, /*drop_if_suppress=*/true)))
+      if ((sym = build_elf_symbol(ctxt, n, /*drop_if_suppress=*/false)))
 	{
 	  id_sym_map[sym->get_id_string()] = sym;
 	  xml_node_ptr_elf_symbol_map[n] = sym;

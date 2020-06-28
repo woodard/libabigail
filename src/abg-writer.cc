@@ -1719,7 +1719,10 @@ write_elf_symbol_aliases(const elf_symbol& sym, ostream& out)
 static bool
 write_elf_symbol_reference(const elf_symbol& sym, ostream& o)
 {
-  o << " elf-symbol-id='" << sym.get_id_string() << "'";
+  auto actual_sym = &sym;
+  while (actual_sym->is_suppressed() && actual_sym->has_aliases())
+    actual_sym = actual_sym->get_next_alias().get();
+  o << " elf-symbol-id='" << actual_sym->get_id_string() << "'";
   return true;
 }
 

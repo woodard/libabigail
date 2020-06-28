@@ -197,6 +197,9 @@ test-abidiff-exit/test-non-leaf-array-v0.o \
 test-abidiff-exit/test-non-leaf-array-v1.c \
 test-abidiff-exit/test-non-leaf-array-v1.o \
 test-abidiff-exit/test-non-leaf-array-report.txt \
+test-abidiff-exit/test-missing-alias-report.txt \
+test-abidiff-exit/test-missing-alias.abi \
+test-abidiff-exit/test-missing-alias.suppr \
 \
 test-diff-dwarf/test0-v0.cc		\
 test-diff-dwarf/test0-v0.o			\
@@ -450,6 +453,14 @@ test-read-dwarf/test3.c		\
 test-read-dwarf/test3.so		\
 test-read-dwarf/test3.so.abi		\
 test-read-dwarf/test3.so.hash.abi	\
+test-read-dwarf/test3-alias-1.so.hash.abi \
+test-read-dwarf/test3-alias-1.suppr \
+test-read-dwarf/test3-alias-2.so.hash.abi \
+test-read-dwarf/test3-alias-2.suppr \
+test-read-dwarf/test3-alias-3.so.hash.abi \
+test-read-dwarf/test3-alias-3.suppr \
+test-read-dwarf/test3-alias-4.so.hash.abi \
+test-read-dwarf/test3-alias-4.suppr \
 test-read-dwarf/test4.c		\
 test-read-dwarf/test4.so		\
 test-read-dwarf/test4.so.abi		\
@@ -535,6 +546,10 @@ test-read-dwarf/test-PR26568-1.o.abi \
 test-read-dwarf/test-PR26568-2.o.abi \
 test-read-dwarf/test-libandroid.so \
 test-read-dwarf/test-libandroid.so.abi \
+test-read-dwarf/test-suppressed-alias.c \
+test-read-dwarf/test-suppressed-alias.o \
+test-read-dwarf/test-suppressed-alias.o.abi \
+test-read-dwarf/test-suppressed-alias.suppr \
 \
 test-annotate/test0.abi			\
 test-annotate/test1.abi			\
