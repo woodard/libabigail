@@ -11,11 +11,14 @@
 
 #include <iostream>
 #include <limits>
+#include <string>
 #include <vector>
 
 #include "abg-corpus.h"
 #include "abg-dwarf-reader.h"
+#include "abg-fwd.h"
 #include "abg-ir.h"
+#include "abg-tools-utils.h"
 #include "lib/catch.hpp"
 #include "test-utils.h"
 
@@ -26,20 +29,34 @@ using dwarf_reader::read_context_sptr;
 using dwarf_reader::read_corpus_from_elf;
 using ir::environment;
 using ir::environment_sptr;
+using suppr::suppressions_type;
 
 static const std::string test_data_dir =
     std::string(abigail::tests::get_src_dir()) + "/tests/data/test-symtab/";
 
 dwarf_reader::status
-read_corpus(const std::string path, corpus_sptr& result)
+read_corpus(const std::string&		    path,
+	    corpus_sptr&		    result,
+	    const std::vector<std::string>& whitelist_paths =
+		std::vector<std::string>())
 {
   const std::string& absolute_path = test_data_dir + path;
 
   environment_sptr	    env(new environment);
   const std::vector<char**> debug_info_root_paths;
-  read_context_sptr	    ctxt = create_read_context(
-      absolute_path, debug_info_root_paths, env.get(),
-      /* load_all_type = */ true, /* linux_kernel_mode = */ true);
+  read_context_sptr	    ctxt =
+      create_read_context(absolute_path, debug_info_root_paths, env.get(),
+			  /* load_all_type = */ true,
+			  /* linux_kernel_mode = */ true);
+
+  if (!whitelist_paths.empty())
+    {
+      const suppressions_type& wl_suppr =
+	tools_utils::gen_suppr_spec_from_kernel_abi_whitelists(
+	  whitelist_paths);
+      REQUIRE_FALSE(wl_suppr.empty());
+      dwarf_reader::add_read_context_suppressions(*ctxt, wl_suppr);
+    }
 
   dwarf_reader::status status = dwarf_reader::STATUS_UNKNOWN;
   result = read_corpus_from_elf(*ctxt, status);
@@ -80,10 +97,13 @@ assert_symbol_count(const std::string& path,
 		    size_t	       function_symbols = 0,
 		    size_t	       variable_symbols = 0,
 		    size_t	       undefined_function_symbols = 0,
-		    size_t	       undefined_variable_symbols = 0)
+		    size_t	       undefined_variable_symbols = 0,
+		    const std::vector<std::string>& whitelist_paths =
+			std::vector<std::string>())
 {
   corpus_sptr		     corpus_ptr;
-  const dwarf_reader::status status = read_corpus(path, corpus_ptr);
+  const dwarf_reader::status status =
+    read_corpus(path, corpus_ptr, whitelist_paths);
   REQUIRE(corpus_ptr);
 
   REQUIRE((status & dwarf_reader::STATUS_OK));
@@ -185,6 +205,76 @@ TEST_CASE("Symtab::SimpleSymtabs", "[symtab, basic]")
   {
     const std::string  binary = "basic/one_function_one_variable_undefined.so";
     const corpus_sptr corpus = assert_symbol_count(binary, 0, 0, 1, 1);
+  }
+}
+
+TEST_CASE("Symtab::SymtabWithWhitelist", "[symtab, whitelist]")
+{
+  GIVEN("a binary with one function and one variable exported")
+  {
+    const std::string binary = "basic/one_function_one_variable.so";
+
+    GIVEN("we read the binary without any whitelists")
+    {
+      const corpus_sptr& corpus = assert_symbol_count(binary, 1, 1);
+      CHECK(corpus->lookup_function_symbol("exported_function"));
+      CHECK(!corpus->lookup_variable_symbol("exported_function"));
+      CHECK(corpus->lookup_variable_symbol("exported_variable"));
+      CHECK(!corpus->lookup_function_symbol("exported_variable"));
+    }
+
+    GIVEN("we read the binary with all symbols on the whitelists")
+    {
+      std::vector<std::string> whitelists;
+      whitelists.push_back(test_data_dir
+			   + "basic/one_function_one_variable_all.whitelist");
+      const corpus_sptr& corpus =
+	assert_symbol_count(binary, 1, 1, 0, 0, whitelists);
+      CHECK(corpus->lookup_function_symbol("exported_function"));
+      CHECK(!corpus->lookup_variable_symbol("exported_function"));
+      CHECK(corpus->lookup_variable_symbol("exported_variable"));
+      CHECK(!corpus->lookup_function_symbol("exported_variable"));
+    }
+
+    GIVEN("we read the binary with only irrelevant symbols whitelisted")
+    {
+      std::vector<std::string> whitelists;
+      whitelists.push_back(
+	test_data_dir
+	+ "basic/one_function_one_variable_irrelevant.whitelist");
+
+      corpus_sptr		 corpus_ptr;
+      const dwarf_reader::status status =
+	read_corpus(binary, corpus_ptr, whitelists);
+      REQUIRE(!corpus_ptr);
+      REQUIRE((status & dwarf_reader::STATUS_NO_SYMBOLS_FOUND));
+    }
+
+    GIVEN("we read the binary with only the function whitelisted")
+    {
+      std::vector<std::string> whitelists;
+      whitelists.push_back(
+	test_data_dir + "basic/one_function_one_variable_function.whitelist");
+      const corpus_sptr& corpus =
+	assert_symbol_count(binary, 1, 0, 0, 0, whitelists);
+      CHECK(corpus->lookup_function_symbol("exported_function"));
+      CHECK(!corpus->lookup_variable_symbol("exported_function"));
+      CHECK(!corpus->lookup_variable_symbol("exported_variable"));
+      CHECK(!corpus->lookup_function_symbol("exported_variable"));
+    }
+
+    GIVEN("we read the binary with only the variable whitelisted")
+    {
+      std::vector<std::string> whitelists;
+      whitelists.push_back(
+	test_data_dir + "basic/one_function_one_variable_variable.whitelist");
+      const corpus_sptr& corpus =
+	assert_symbol_count(binary, 0, 1, 0, 0, whitelists);
+      CHECK(!corpus->lookup_function_symbol("exported_function"));
+      CHECK(!corpus->lookup_variable_symbol("exported_function"));
+      CHECK(corpus->lookup_variable_symbol("exported_variable"));
+      CHECK(!corpus->lookup_function_symbol("exported_variable"));
+    }
   }
 }
 

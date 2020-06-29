@@ -1894,6 +1894,10 @@ test-symtab/basic/no_debug_info.c \
 test-symtab/basic/no_debug_info.so \
 test-symtab/basic/one_function_one_variable.c \
 test-symtab/basic/one_function_one_variable.so \
+test-symtab/basic/one_function_one_variable_variable.whitelist \
+test-symtab/basic/one_function_one_variable_function.whitelist \
+test-symtab/basic/one_function_one_variable_irrelevant.whitelist \
+test-symtab/basic/one_function_one_variable_all.whitelist \
 test-symtab/basic/one_function_one_variable_undefined.c \
 test-symtab/basic/one_function_one_variable_undefined.so \
 test-symtab/basic/single_function.c \
