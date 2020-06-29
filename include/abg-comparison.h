@@ -418,10 +418,9 @@ enum diff_category
   /// present as a child of a other nodes in the diff tree.
   REDUNDANT_CATEGORY = 1 << 13,
 
-  /// This means that a diff node in the sub-tree carries a class type
-  /// that was declaration-only and that is now defined, or vice
-  /// versa.
-  CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY = 1 << 14,
+  /// This means that a diff node in the sub-tree carries a type that
+  /// was declaration-only and that is now defined, or vice versa.
+  TYPE_DECL_ONLY_DEF_CHANGE_CATEGORY = 1 << 14,
 
   /// A diff node in this category is a function parameter type which
   /// top cv-qualifiers change.
@@ -447,6 +446,7 @@ enum diff_category
   /// array type of a global variable, but the ELF size of the
   /// variable didn't change.
   BENIGN_INFINITE_ARRAY_CHANGE_CATEGORY = 1 << 20,
+
   /// A special enumerator that is the logical 'or' all the
   /// enumerators above.
   ///
@@ -467,7 +467,7 @@ enum diff_category
   | SIZE_OR_OFFSET_CHANGE_CATEGORY
   | VIRTUAL_MEMBER_CHANGE_CATEGORY
   | REDUNDANT_CATEGORY
-  | CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY
+  | TYPE_DECL_ONLY_DEF_CHANGE_CATEGORY
   | FN_PARM_TYPE_TOP_CV_CHANGE_CATEGORY
   | FN_PARM_TYPE_CV_CHANGE_CATEGORY
   | FN_RETURN_TYPE_CV_CHANGE_CATEGORY

@@ -846,7 +846,7 @@ default_reporter::report(const class_or_union_diff& d,
   const diff_context_sptr& ctxt = d.context();
 
   // Report class decl-only <-> definition change.
-  if (ctxt->get_allowed_category() & CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY)
+  if (ctxt->get_allowed_category() & TYPE_DECL_ONLY_DEF_CHANGE_CATEGORY)
     if (filtering::has_class_decl_only_def_change(first, second))
       {
 	string was =

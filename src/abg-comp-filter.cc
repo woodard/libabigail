@@ -1518,7 +1518,7 @@ categorize_harmless_diff_node(diff *d, bool pre)
 	s = is_decl(d->second_subject());
 
       if (has_class_decl_only_def_change(d))
-	category |= CLASS_DECL_ONLY_DEF_CHANGE_CATEGORY;
+	category |= TYPE_DECL_ONLY_DEF_CHANGE_CATEGORY;
 
       if (access_changed(f, s))
 	category |= ACCESS_CHANGE_CATEGORY;
