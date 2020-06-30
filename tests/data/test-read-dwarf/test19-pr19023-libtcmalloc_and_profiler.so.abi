@@ -553,11 +553,11 @@
     <elf-symbol name='_ZSt16__introsort_loopIPN16HeapProfileTable8Snapshot5EntryElEvT_S4_T0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZSt16__introsort_loopIPP17HeapProfileBucketlPFbP16HeapProfileStatsS4_EEvT_S7_T0_T1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_ERKS6_PKS3_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZdaPv' type='func-type' binding='global-binding' visibility='default-visibility' alias='tc_deletearray' is-defined='yes'/>
-    <elf-symbol name='_ZdaPvRKSt9nothrow_t' type='func-type' binding='global-binding' visibility='default-visibility' alias='tc_deletearray_nothrow' is-defined='yes'/>
-    <elf-symbol name='_ZdlPv' type='func-type' binding='global-binding' visibility='default-visibility' alias='tc_delete' is-defined='yes'/>
+    <elf-symbol name='_ZdaPv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZdaPvRKSt9nothrow_t' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZdlPv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZdlPvRKSt9nothrow_t' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_Znam' type='func-type' binding='global-binding' visibility='default-visibility' alias='tc_newarray' is-defined='yes'/>
+    <elf-symbol name='_Znam' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZnamRKSt9nothrow_t' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_Znwm' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZnwmRKSt9nothrow_t' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
@@ -566,53 +566,53 @@
     <elf-symbol name='__libc_free' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='__libc_malloc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='__libc_memalign' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='__libc_pvalloc' type='func-type' binding='global-binding' visibility='default-visibility' alias='tc_pvalloc,pvalloc' is-defined='yes'/>
+    <elf-symbol name='__libc_pvalloc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='__libc_realloc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='__libc_valloc' type='func-type' binding='global-binding' visibility='default-visibility' alias='valloc,tc_valloc' is-defined='yes'/>
+    <elf-symbol name='__libc_valloc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='__posix_memalign' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_fini' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_init' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='calloc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='cfree' type='func-type' binding='global-binding' visibility='default-visibility' alias='tc_cfree,__libc_cfree' is-defined='yes'/>
+    <elf-symbol name='cfree' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='free' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='mallinfo' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='malloc' type='func-type' binding='global-binding' visibility='default-visibility' alias='tc_malloc,__libc_malloc' is-defined='yes'/>
+    <elf-symbol name='malloc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='malloc_size' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='malloc_stats' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='malloc_usable_size' type='func-type' binding='global-binding' visibility='default-visibility' alias='malloc_size,tc_malloc_size' is-defined='yes'/>
+    <elf-symbol name='malloc_usable_size' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='mallopt' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='memalign' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='mmap' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='mmap64' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='mremap' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='munmap' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='posix_memalign' type='func-type' binding='global-binding' visibility='default-visibility' alias='tc_posix_memalign,__posix_memalign' is-defined='yes'/>
+    <elf-symbol name='posix_memalign' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='pvalloc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='realloc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='sbrk' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='tc_calloc' type='func-type' binding='global-binding' visibility='default-visibility' alias='calloc,__libc_calloc' is-defined='yes'/>
-    <elf-symbol name='tc_cfree' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='tc_delete' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='tc_cfree' type='func-type' binding='global-binding' visibility='default-visibility' alias='__libc_cfree,cfree' is-defined='yes'/>
+    <elf-symbol name='tc_delete' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZdlPv' is-defined='yes'/>
     <elf-symbol name='tc_delete_nothrow' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZdlPvRKSt9nothrow_t' is-defined='yes'/>
-    <elf-symbol name='tc_deletearray' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='tc_deletearray_nothrow' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='tc_deletearray' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZdaPv' is-defined='yes'/>
+    <elf-symbol name='tc_deletearray_nothrow' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZdaPvRKSt9nothrow_t' is-defined='yes'/>
     <elf-symbol name='tc_free' type='func-type' binding='global-binding' visibility='default-visibility' alias='free,__libc_free' is-defined='yes'/>
     <elf-symbol name='tc_mallinfo' type='func-type' binding='global-binding' visibility='default-visibility' alias='mallinfo' is-defined='yes'/>
-    <elf-symbol name='tc_malloc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='tc_malloc_size' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='tc_malloc' type='func-type' binding='global-binding' visibility='default-visibility' alias='__libc_malloc,malloc' is-defined='yes'/>
+    <elf-symbol name='tc_malloc_size' type='func-type' binding='global-binding' visibility='default-visibility' alias='malloc_usable_size,malloc_size' is-defined='yes'/>
     <elf-symbol name='tc_malloc_skip_new_handler' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='tc_malloc_stats' type='func-type' binding='global-binding' visibility='default-visibility' alias='malloc_stats' is-defined='yes'/>
     <elf-symbol name='tc_mallopt' type='func-type' binding='global-binding' visibility='default-visibility' alias='mallopt' is-defined='yes'/>
     <elf-symbol name='tc_memalign' type='func-type' binding='global-binding' visibility='default-visibility' alias='memalign,__libc_memalign' is-defined='yes'/>
     <elf-symbol name='tc_new' type='func-type' binding='global-binding' visibility='default-visibility' alias='_Znwm' is-defined='yes'/>
     <elf-symbol name='tc_new_nothrow' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZnwmRKSt9nothrow_t' is-defined='yes'/>
-    <elf-symbol name='tc_newarray' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='tc_newarray' type='func-type' binding='global-binding' visibility='default-visibility' alias='_Znam' is-defined='yes'/>
     <elf-symbol name='tc_newarray_nothrow' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZnamRKSt9nothrow_t' is-defined='yes'/>
-    <elf-symbol name='tc_posix_memalign' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='tc_pvalloc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='tc_posix_memalign' type='func-type' binding='global-binding' visibility='default-visibility' alias='__posix_memalign,posix_memalign' is-defined='yes'/>
+    <elf-symbol name='tc_pvalloc' type='func-type' binding='global-binding' visibility='default-visibility' alias='pvalloc,__libc_pvalloc' is-defined='yes'/>
     <elf-symbol name='tc_realloc' type='func-type' binding='global-binding' visibility='default-visibility' alias='__libc_realloc,realloc' is-defined='yes'/>
     <elf-symbol name='tc_set_new_mode' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='tc_valloc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='tc_valloc' type='func-type' binding='global-binding' visibility='default-visibility' alias='__libc_valloc,valloc' is-defined='yes'/>
     <elf-symbol name='tc_version' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='valloc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
@@ -15241,7 +15241,7 @@
       <parameter type-id='type-id-1' name='value' filepath='src/tcmalloc.cc' line='1720' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-decl name='tc_malloc_size' mangled-name='malloc_usable_size' filepath='src/tcmalloc.cc' line='1730' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='malloc_usable_size'>
+    <function-decl name='tc_malloc_size' mangled-name='tc_malloc_size' filepath='src/tcmalloc.cc' line='1730' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='tc_malloc_size'>
       <parameter type-id='type-id-58' name='ptr' filepath='src/tcmalloc.cc' line='1730' column='1'/>
       <return type-id='type-id-62'/>
     </function-decl>
@@ -15251,17 +15251,17 @@
     <function-decl name='tc_mallinfo' mangled-name='tc_mallinfo' filepath='src/tcmalloc.cc' line='1725' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='tc_mallinfo'>
       <return type-id='type-id-1624'/>
     </function-decl>
-    <function-decl name='tc_posix_memalign' mangled-name='posix_memalign' filepath='src/tcmalloc.cc' line='1676' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='posix_memalign'>
+    <function-decl name='tc_posix_memalign' mangled-name='tc_posix_memalign' filepath='src/tcmalloc.cc' line='1676' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='tc_posix_memalign'>
       <parameter type-id='type-id-151' name='result_ptr' filepath='src/tcmalloc.cc' line='1677' column='1'/>
       <parameter type-id='type-id-62' name='align' filepath='src/tcmalloc.cc' line='1677' column='1'/>
       <parameter type-id='type-id-62' name='size' filepath='src/tcmalloc.cc' line='1677' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-decl name='tc_pvalloc' mangled-name='__libc_pvalloc' filepath='src/tcmalloc.cc' line='1704' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__libc_pvalloc'>
+    <function-decl name='tc_pvalloc' mangled-name='tc_pvalloc' filepath='src/tcmalloc.cc' line='1704' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='tc_pvalloc'>
       <parameter type-id='type-id-62'/>
       <return type-id='type-id-58'/>
     </function-decl>
-    <function-decl name='tc_valloc' mangled-name='__libc_valloc' filepath='src/tcmalloc.cc' line='1696' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__libc_valloc'>
+    <function-decl name='tc_valloc' mangled-name='tc_valloc' filepath='src/tcmalloc.cc' line='1696' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='tc_valloc'>
       <parameter type-id='type-id-62'/>
       <return type-id='type-id-58'/>
     </function-decl>
@@ -15275,7 +15275,7 @@
       <parameter type-id='type-id-1666'/>
       <return type-id='type-id-58'/>
     </function-decl>
-    <function-decl name='tc_newarray' mangled-name='_Znam' filepath='src/tcmalloc.cc' line='1641' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Znam'>
+    <function-decl name='tc_newarray' mangled-name='tc_newarray' filepath='src/tcmalloc.cc' line='1641' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='tc_newarray'>
       <parameter type-id='type-id-62'/>
       <return type-id='type-id-58'/>
     </function-decl>
@@ -15288,7 +15288,7 @@
       <parameter type-id='type-id-62'/>
       <return type-id='type-id-58'/>
     </function-decl>
-    <function-decl name='tc_malloc' mangled-name='malloc' filepath='src/tcmalloc.cc' line='1573' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='malloc'>
+    <function-decl name='tc_malloc' mangled-name='tc_malloc' filepath='src/tcmalloc.cc' line='1573' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='tc_malloc'>
       <parameter type-id='type-id-62'/>
       <return type-id='type-id-58'/>
     </function-decl>
@@ -15305,11 +15305,11 @@
       <parameter type-id='type-id-62'/>
       <return type-id='type-id-58'/>
     </function-decl>
-    <function-decl name='tc_cfree' mangled-name='cfree' filepath='src/tcmalloc.cc' line='1591' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='cfree'>
+    <function-decl name='tc_cfree' mangled-name='tc_cfree' filepath='src/tcmalloc.cc' line='1591' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='tc_cfree'>
       <parameter type-id='type-id-58'/>
       <return type-id='type-id-60'/>
     </function-decl>
-    <function-decl name='tc_delete' mangled-name='_ZdlPv' filepath='src/tcmalloc.cc' line='1628' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZdlPv'>
+    <function-decl name='tc_delete' mangled-name='tc_delete' filepath='src/tcmalloc.cc' line='1628' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='tc_delete'>
       <parameter type-id='type-id-58'/>
       <return type-id='type-id-60'/>
     </function-decl>
@@ -15318,11 +15318,11 @@
       <parameter type-id='type-id-1666'/>
       <return type-id='type-id-60'/>
     </function-decl>
-    <function-decl name='tc_deletearray' mangled-name='_ZdaPv' filepath='src/tcmalloc.cc' line='1659' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZdaPv'>
+    <function-decl name='tc_deletearray' mangled-name='tc_deletearray' filepath='src/tcmalloc.cc' line='1659' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='tc_deletearray'>
       <parameter type-id='type-id-58'/>
       <return type-id='type-id-60'/>
     </function-decl>
-    <function-decl name='tc_deletearray_nothrow' mangled-name='_ZdaPvRKSt9nothrow_t' filepath='src/tcmalloc.cc' line='1664' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZdaPvRKSt9nothrow_t'>
+    <function-decl name='tc_deletearray_nothrow' mangled-name='tc_deletearray_nothrow' filepath='src/tcmalloc.cc' line='1664' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='tc_deletearray_nothrow'>
       <parameter type-id='type-id-58' name='p' filepath='src/tcmalloc.cc' line='1636' column='1'/>
       <parameter type-id='type-id-1666'/>
       <return type-id='type-id-60'/>

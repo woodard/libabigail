@@ -1778,14 +1778,14 @@ elf_symbol::set_is_suppressed(bool is_suppressed)
 ///@return the main symbol.
 const elf_symbol_sptr
 elf_symbol::get_main_symbol() const
-{return elf_symbol_sptr(priv_->main_symbol_);}
+{return priv_->main_symbol_.lock();}
 
 /// Get the main symbol of an alias chain.
 ///
 ///@return the main symbol.
 elf_symbol_sptr
 elf_symbol::get_main_symbol()
-{return elf_symbol_sptr(priv_->main_symbol_);}
+{return priv_->main_symbol_.lock();}
 
 /// Tests whether this symbol is the main symbol.
 ///
@@ -1860,6 +1860,49 @@ elf_symbol::add_alias(const elf_symbol_sptr& alias)
 
   alias->priv_->next_alias_ = get_main_symbol();
   alias->priv_->main_symbol_ = get_main_symbol();
+}
+
+/// Update the main symbol for a group of aliased symbols
+///
+/// If after the construction of the symbols (in order of discovery), the
+/// actual main symbol can be identified (e.g. as the symbol that actually is
+/// defined in the code), this method offers a way of updating the main symbol
+/// through one of the aliased symbols.
+///
+/// For that, locate the new main symbol by name and update all references to
+/// the main symbol among the group of aliased symbols.
+///
+/// @param name the name of the main symbol
+///
+/// @return the new main elf_symbol
+elf_symbol_sptr
+elf_symbol::update_main_symbol(const std::string& name)
+{
+  ABG_ASSERT(is_main_symbol());
+  if (!has_aliases() || get_name() == name)
+    return get_main_symbol();
+
+  // find the new main symbol
+  elf_symbol_sptr new_main;
+  // we've already checked this; check the rest of the aliases
+  for (elf_symbol_sptr a = get_next_alias(); a.get() != this;
+       a = a->get_next_alias())
+    if (a->get_name() == name)
+      {
+	new_main = a;
+	break;
+      }
+
+  if (!new_main)
+    return get_main_symbol();
+
+  // now update all main symbol references
+  priv_->main_symbol_ = new_main;
+  for (elf_symbol_sptr a = get_next_alias(); a.get() != this;
+       a = a->get_next_alias())
+    a->priv_->main_symbol_ = new_main;
+
+  return new_main;
 }
 
 /// Return true if the symbol is a common one.

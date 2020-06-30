@@ -1886,6 +1886,8 @@ test-kmi-whitelist/whitelist-with-duplicate-entry \
 test-kmi-whitelist/whitelist-with-two-sections \
 \
 test-symtab/basic/Makefile \
+test-symtab/basic/aliases.c \
+test-symtab/basic/aliases.so \
 test-symtab/basic/empty.c \
 test-symtab/basic/empty.so \
 test-symtab/basic/link_against_me.c \

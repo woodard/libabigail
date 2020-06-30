@@ -428,6 +428,37 @@ symtab::load_(string_elf_symbols_map_sptr function_symbol_map,
   return true;
 }
 
+/// Notify the symtab about the name of the main symbol at a given address.
+///
+/// From just alone the symtab we can't guess the main symbol of a bunch of
+/// aliased symbols that all point to the same address. During processing of
+/// additional information (such as DWARF), this information becomes apparent
+/// and we can adjust the addr->symbol lookup map as well as the alias
+/// reference of the symbol objects.
+///
+/// @param addr the addr that we are updating the main symbol for
+/// @param name the name of the main symbol
+void
+symtab::update_main_symbol(GElf_Addr addr, const std::string& name)
+{
+  // get one symbol (i.e. the current main symbol)
+  elf_symbol_sptr symbol = lookup_symbol(addr);
+
+  // The caller might not know whether the addr is associated to an ELF symbol
+  // that we care about. E.g. the addr could be associated to an ELF symbol,
+  // but not one in .dynsym when looking at a DSO. Hence, early exit if the
+  // lookup failed.
+  if (!symbol)
+    return;
+
+  // determine the new main symbol by attempting an update
+  elf_symbol_sptr new_main = symbol->update_main_symbol(name);
+
+  // also update the default symbol we return when looked up by address
+  if (new_main)
+    addr_symbol_map_[addr] = new_main;
+}
+
 /// Update the function entry symbol map to later allow lookups of this symbol
 /// by entry address as well. This is relevant for ppc64 ELFv1 binaries.
 ///

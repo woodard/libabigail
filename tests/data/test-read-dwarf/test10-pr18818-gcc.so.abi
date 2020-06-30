@@ -36,8 +36,8 @@
     <elf-symbol name='_ZN5boost10filesystem14symlink_statusERKNS0_4pathERNS_6system10error_codeE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem15directory_entry16replace_filenameERKNS0_4pathENS0_11file_statusES5_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem15directory_entry6assignERKNS0_4pathENS0_11file_statusES5_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem15directory_entryC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem15directory_entryC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem15directory_entryC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem15directory_entryC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem15directory_entryC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem15directory_entryC1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem15directory_entryD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem15directory_entryD2Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem15directory_entryD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem15is_regular_fileENS0_11file_statusE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -45,24 +45,24 @@
     <elf-symbol name='_ZN5boost10filesystem16filesystem_error5m_impC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem16filesystem_error5m_impD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem16filesystem_error5m_impD2Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem16filesystem_error5m_impD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem16filesystem_errorC1ERKSsNS_6system10error_codeE' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem16filesystem_errorC2ERKSsNS_6system10error_codeE' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem16filesystem_errorC1ERKSsNS_6system10error_codeE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem16filesystem_errorC1ERKSsRKNS0_4pathENS_6system10error_codeE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem16filesystem_errorC1ERKSsRKNS0_4pathES6_NS_6system10error_codeE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem16filesystem_errorC2ERKSsNS_6system10error_codeE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem16filesystem_errorC2ERKSsNS_6system10error_codeE' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem16filesystem_errorC1ERKSsNS_6system10error_codeE' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem16filesystem_errorC2ERKSsRKNS0_4pathENS_6system10error_codeE' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem16filesystem_errorC1ERKSsRKNS0_4pathENS_6system10error_codeE' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem16filesystem_errorC2ERKSsRKNS0_4pathES6_NS_6system10error_codeE' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem16filesystem_errorC1ERKSsRKNS0_4pathES6_NS_6system10error_codeE' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem16filesystem_errorD0Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem16filesystem_errorD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem16filesystem_errorD2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem16filesystem_errorD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem16filesystem_errorD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem16filesystem_errorD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem16filesystem_errorD1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem18create_directoriesERKNS0_4pathERNS_6system10error_codeE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem18directory_iterator9incrementERNS_6system10error_codeE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem18directory_iterator9incrementEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem18directory_iteratorC1ERKNS0_4pathE' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem18directory_iteratorC2ERKNS0_4pathE' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem18directory_iteratorC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem18directory_iteratorC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem18directory_iteratorC2ERKNS0_4pathE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem18directory_iteratorC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem18directory_iteratorD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem18directory_iteratorD2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem18directory_iteratorD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem18directory_iteratorC1ERKNS0_4pathE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem18directory_iteratorC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem18directory_iteratorC2ERKNS0_4pathE' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem18directory_iteratorC1ERKNS0_4pathE' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem18directory_iteratorC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem18directory_iteratorC1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem18directory_iteratorD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem18directory_iteratorD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem18directory_iteratorD1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem18portable_file_nameERKSs' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem19permissions_presentENS0_11file_statusE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem19portable_posix_nameERKSs' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
@@ -88,16 +88,16 @@
     <elf-symbol name='_ZN5boost10filesystem4path8iteratorC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem4path8iteratorD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem4path8iteratorD2Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem4path8iteratorD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4pathC1EPKc' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem4pathC2EPKc' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4pathC1ERKS1_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem4pathC2ERKS1_' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4pathC1EPKc' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4pathC1ERKS1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem4pathC1ERKSs' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4pathC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem4pathC2Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4pathC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem4pathC1IPKcEET_S5_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem4pathC1ISbIwSt11char_traitsIwESaIwEEEERKT_PNS_9enable_ifINS0_11path_traits11is_pathableINS_5decayIS7_E4typeEEEvE4typeE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4pathC2EPKc' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4pathC2ERKS1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4pathC2EPKc' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem4pathC1EPKc' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4pathC2ERKS1_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem4pathC1ERKS1_' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem4pathC2ERKSs' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem4pathC1ERKSs' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem4pathC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem4pathC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem4pathC1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem4pathC2IPKcEET_S5_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem4pathC1IPKcEET_S5_' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem4pathC2ISbIwSt11char_traitsIwESaIwEEEERKT_PNS_9enable_ifINS0_11path_traits11is_pathableINS_5decayIS7_E4typeEEEvE4typeE' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem4pathC1ISbIwSt11char_traitsIwESaIwEEEERKT_PNS_9enable_ifINS0_11path_traits11is_pathableINS_5decayIS7_E4typeEEEvE4typeE' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem4pathD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem4pathD2Ev' is-defined='yes'/>
@@ -109,10 +109,10 @@
     <elf-symbol name='_ZN5boost10filesystem4pathdVERKS1_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem6detail10equivalentERKNS0_4pathES4_PNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem6detail10remove_allERKNS0_4pathEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail11dir_itr_impC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem6detail11dir_itr_impC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail11dir_itr_impC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail11dir_itr_impD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem6detail11dir_itr_impD2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10filesystem6detail11dir_itr_impD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail11dir_itr_impC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail11dir_itr_impC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem6detail11dir_itr_impC1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail11dir_itr_impD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10filesystem6detail11dir_itr_impD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10filesystem6detail11dir_itr_impD1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem6detail11lex_compareENS0_4path8iteratorES3_S3_S3_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem6detail11permissionsERKNS0_4pathENS0_5permsEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10filesystem6detail11resize_fileERKNS0_4pathEmPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
@@ -167,30 +167,30 @@
     <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEE4swapERS4_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEE5resetEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEE5resetIS3_EEvPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEEC2Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEEC1IS3_EEPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEEC1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEEC2IS3_EEPT_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEEC1IS3_EEPT_' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEED1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEE4swapERS4_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEE5resetEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEEC2Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEEC1IS3_EEPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEEC1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEEC2IS3_EEPT_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEEC1IS3_EEPT_' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEED2Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost12noncopyable_11noncopyableC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost12noncopyable_11noncopyableC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost12noncopyable_11noncopyableC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost12noncopyable_11noncopyableC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost12noncopyable_11noncopyableC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost12noncopyable_11noncopyableC1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost12scoped_arrayIcEC1EPc' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost12scoped_arrayIcEC2EPc' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost12scoped_arrayIcEC1EPc' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost12scoped_arrayIcED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost12scoped_arrayIcED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost12scoped_arrayIcED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost12scoped_arrayIcED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost12scoped_arrayIcED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost12scoped_arrayIcED1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost12scoped_arrayIwEC1EPw' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost12scoped_arrayIwEC2EPw' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost12scoped_arrayIwEC1EPw' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost12scoped_arrayIwED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost12scoped_arrayIwED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost12scoped_arrayIwED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost12scoped_arrayIwED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost12scoped_arrayIwED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost12scoped_arrayIwED1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost14checked_deleteINS_10filesystem16filesystem_error5m_impEEEvPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost14checked_deleteINS_10filesystem6detail11dir_itr_impEEEvPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost15iterator_facadeINS_10filesystem18directory_iteratorENS1_15directory_entryENS_25single_pass_traversal_tagERS3_lE7derivedEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -213,27 +213,27 @@
     <elf-symbol name='_ZN5boost20iterator_core_access9incrementINS_10filesystem18directory_iteratorEEEvRT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost20iterator_core_access9incrementINS_10filesystem4path8iteratorEEEvRT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6detail12shared_count4swapERS1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail12shared_countC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6detail12shared_countC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail12shared_countC1INS_10filesystem16filesystem_error5m_impEEEPT_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6detail12shared_countC2INS_10filesystem16filesystem_error5m_impEEEPT_' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail12shared_countC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail12shared_countC1INS_10filesystem16filesystem_error5m_impEEEPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6detail12shared_countC1INS_10filesystem6detail11dir_itr_impEEEPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail12shared_countC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail12shared_countC2INS_10filesystem16filesystem_error5m_impEEEPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail12shared_countC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6detail12shared_countC1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail12shared_countC2INS_10filesystem16filesystem_error5m_impEEEPT_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6detail12shared_countC1INS_10filesystem16filesystem_error5m_impEEEPT_' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6detail12shared_countC2INS_10filesystem6detail11dir_itr_impEEEPT_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6detail12shared_countC1INS_10filesystem6detail11dir_itr_impEEEPT_' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail12shared_countD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6detail12shared_countD2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail12shared_countD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail12shared_countD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail12shared_countD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6detail12shared_countD1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6detail15sp_counted_base12weak_releaseEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6detail15sp_counted_base7destroyEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6detail15sp_counted_base7releaseEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail15sp_counted_baseC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6detail15sp_counted_baseC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail15sp_counted_baseC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail15sp_counted_baseC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail15sp_counted_baseC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6detail15sp_counted_baseC1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6detail15sp_counted_baseD0Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6detail15sp_counted_baseD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6detail15sp_counted_baseD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6detail15sp_counted_baseD1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEE11get_deleterERKSt9type_info' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEE19get_untyped_deleterEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEE7disposeEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEC1EPS4_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEC2EPS4_' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEC2EPS4_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEC1EPS4_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEC2EPS4_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEC1EPS4_' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEED0Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEED2Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -254,24 +254,24 @@
     <elf-symbol name='_ZN5boost6system10error_code21unspecified_bool_trueEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6system10error_code5clearEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6system10error_code6assignEiRKNS0_14error_categoryE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6system10error_codeC1EiRKNS0_14error_categoryE' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6system10error_codeC2EiRKNS0_14error_categoryE' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6system10error_codeC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6system10error_codeC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6system10error_codeC2EiRKNS0_14error_categoryE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6system10error_codeC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6system10error_codeC1EiRKNS0_14error_categoryE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6system10error_codeC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6system10error_codeC2EiRKNS0_14error_categoryE' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6system10error_codeC1EiRKNS0_14error_categoryE' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6system10error_codeC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6system10error_codeC1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6system12system_errorC1ENS0_10error_codeERKSs' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6system12system_errorC1EiRKNS0_14error_categoryEPKc' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6system12system_errorC2EiRKNS0_14error_categoryEPKc' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6system12system_errorC1EiRKNS0_14error_categoryEPKc' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6system12system_errorC2ENS0_10error_codeERKSs' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6system12system_errorC1ENS0_10error_codeERKSs' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6system12system_errorC2EiRKNS0_14error_categoryEPKc' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6system12system_errorC2EiRKNS0_14error_categoryEPKc' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6system12system_errorC1EiRKNS0_14error_categoryEPKc' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6system12system_errorD0Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6system12system_errorD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6system12system_errorD2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6system12system_errorD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6system12system_errorD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6system12system_errorD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6system12system_errorD1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6system14error_categoryC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6system14error_categoryC2Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6system14error_categoryC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6system14error_categoryD0Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6system14error_categoryD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6system14error_categoryD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6system14error_categoryD1Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6system15error_conditionC1EiRKNS0_14error_categoryE' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6system15error_conditionC2EiRKNS0_14error_categoryE' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost6system15error_conditionC2EiRKNS0_14error_categoryE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6system15error_conditionC1EiRKNS0_14error_categoryE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost6system15error_conditionC2EiRKNS0_14error_categoryE' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost6system15error_conditionC1EiRKNS0_14error_categoryE' is-defined='yes'/>
     <elf-symbol name='_ZN5boost6systemeqERKNS0_15error_conditionES3_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boosteqINS_10filesystem18directory_iteratorENS1_15directory_entryENS_25single_pass_traversal_tagERS3_lS2_S3_S4_S5_lEENS_6detail23enable_if_interoperableIT_T4_NS_3mpl6apply2INS6_12always_bool2ES8_S9_E4typeEE4typeERKNS_15iterator_facadeIS8_T0_T1_T2_T3_EERKNSH_IS9_T5_T6_T7_T8_EE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boosteqINS_10filesystem4path8iteratorEKS2_NS_27bidirectional_traversal_tagERS4_lS3_S4_S5_S6_lEENS_6detail23enable_if_interoperableIT_T4_NS_3mpl6apply2INS7_12always_bool2ES9_SA_E4typeEE4typeERKNS_15iterator_facadeIS9_T0_T1_T2_T3_EERKNSI_ISA_T5_T6_T7_T8_EE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -282,8 +282,8 @@
     <elf-symbol name='_ZN9__gnu_cxx17__is_null_pointerIcEEbPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN9__gnu_cxx17__normal_iteratorIPKcSsEC1ERKS2_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN9__gnu_cxx17__normal_iteratorIPKcSsEC2ERKS2_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx17__normal_iteratorIPKcSsEC1ERKS2_' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx17__normal_iteratorIPcSsEC1ERKS1_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx17__normal_iteratorIPcSsEC2ERKS1_' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx17__normal_iteratorIPcSsEC2ERKS1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx17__normal_iteratorIPcSsEC1ERKS1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx17__normal_iteratorIPcSsEC2ERKS1_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx17__normal_iteratorIPcSsEC1ERKS1_' is-defined='yes'/>
     <elf-symbol name='_ZNK5boost10filesystem11file_status11permissionsEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNK5boost10filesystem11file_status4typeEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNK5boost10filesystem15directory_entry12m_get_statusEPNS_6system10error_codeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
@@ -362,9 +362,9 @@
     <elf-symbol name='_ZNSs6appendIPKcEERSsT_S3_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSs6appendIPcEERSsT_S2_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSsC1IPKcEET_S2_RKSaIcE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSsC1IPcEET_S1_RKSaIcE' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSsC2IPcEET_S1_RKSaIcE' is-defined='yes'/>
+    <elf-symbol name='_ZNSsC1IPcEET_S1_RKSaIcE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSsC2IPKcEET_S2_RKSaIcE' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSsC1IPKcEET_S2_RKSaIcE' is-defined='yes'/>
-    <elf-symbol name='_ZNSsC2IPcEET_S1_RKSaIcE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSsC2IPcEET_S1_RKSaIcE' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSsC1IPcEET_S1_RKSaIcE' is-defined='yes'/>
     <elf-symbol name='_ZNSt11char_traitsIcE7compareEPKcS2_m' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt14numeric_limitsIwE3maxEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZSt10__distanceIPKcENSt15iterator_traitsIT_E15difference_typeES3_S3_St26random_access_iterator_tag' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -1025,7 +1025,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='basic_string&lt;char*&gt;' mangled-name='_ZNSsC2IPcEET_S1_RKSaIcE' filepath='/usr/include/c++/4.9/bits/basic_string.tcc' line='227' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSsC1IPcEET_S1_RKSaIcE'>
+          <function-decl name='basic_string&lt;char*&gt;' mangled-name='_ZNSsC2IPcEET_S1_RKSaIcE' filepath='/usr/include/c++/4.9/bits/basic_string.tcc' line='227' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSsC2IPcEET_S1_RKSaIcE'>
             <parameter type-id='type-id-173' is-artificial='yes'/>
             <parameter type-id='type-id-42'/>
             <parameter type-id='type-id-42'/>
@@ -1536,7 +1536,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='__normal_iterator' mangled-name='_ZN9__gnu_cxx17__normal_iteratorIPcSsEC2ERKS1_' filepath='/usr/include/c++/4.9/bits/stl_iterator.h' line='728' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx17__normal_iteratorIPcSsEC1ERKS1_'>
+          <function-decl name='__normal_iterator' mangled-name='_ZN9__gnu_cxx17__normal_iteratorIPcSsEC2ERKS1_' filepath='/usr/include/c++/4.9/bits/stl_iterator.h' line='728' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx17__normal_iteratorIPcSsEC2ERKS1_'>
             <parameter type-id='type-id-76' is-artificial='yes'/>
             <parameter type-id='type-id-90'/>
             <return type-id='type-id-27'/>
@@ -1627,7 +1627,7 @@
             </function-decl>
           </member-function>
           <member-function access='protected' constructor='yes'>
-            <function-decl name='noncopyable' mangled-name='_ZN5boost12noncopyable_11noncopyableC2Ev' filepath='src/third_party/boost-1.56.0/boost/core/noncopyable.hpp' line='27' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost12noncopyable_11noncopyableC1Ev'>
+            <function-decl name='noncopyable' mangled-name='_ZN5boost12noncopyable_11noncopyableC2Ev' filepath='src/third_party/boost-1.56.0/boost/core/noncopyable.hpp' line='27' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost12noncopyable_11noncopyableC2Ev'>
               <parameter type-id='type-id-81' is-artificial='yes'/>
               <return type-id='type-id-27'/>
             </function-decl>
@@ -1660,7 +1660,7 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='error_condition' mangled-name='_ZN5boost6system15error_conditionC2EiRKNS0_14error_categoryE' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='236' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system15error_conditionC1EiRKNS0_14error_categoryE'>
+            <function-decl name='error_condition' mangled-name='_ZN5boost6system15error_conditionC2EiRKNS0_14error_categoryE' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='236' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system15error_conditionC2EiRKNS0_14error_categoryE'>
               <parameter type-id='type-id-87' is-artificial='yes'/>
               <parameter type-id='type-id-15'/>
               <parameter type-id='type-id-104'/>
@@ -1705,13 +1705,13 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='error_code' mangled-name='_ZN5boost6system10error_codeC2Ev' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='322' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system10error_codeC1Ev'>
+            <function-decl name='error_code' mangled-name='_ZN5boost6system10error_codeC2Ev' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='322' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system10error_codeC2Ev'>
               <parameter type-id='type-id-85' is-artificial='yes'/>
               <return type-id='type-id-27'/>
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='error_code' mangled-name='_ZN5boost6system10error_codeC2EiRKNS0_14error_categoryE' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='323' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system10error_codeC1EiRKNS0_14error_categoryE'>
+            <function-decl name='error_code' mangled-name='_ZN5boost6system10error_codeC2EiRKNS0_14error_categoryE' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='323' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system10error_codeC2EiRKNS0_14error_categoryE'>
               <parameter type-id='type-id-85' is-artificial='yes'/>
               <parameter type-id='type-id-15'/>
               <parameter type-id='type-id-104'/>
@@ -1750,7 +1750,7 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='error_code' mangled-name='_ZN5boost6system10error_codeC2EiRKNS0_14error_categoryE' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='323' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system10error_codeC1EiRKNS0_14error_categoryE'>
+            <function-decl name='error_code' mangled-name='_ZN5boost6system10error_codeC2EiRKNS0_14error_categoryE' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='323' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system10error_codeC2EiRKNS0_14error_categoryE'>
               <parameter type-id='type-id-85' is-artificial='yes'/>
               <parameter type-id='type-id-15'/>
               <parameter type-id='type-id-104'/>
@@ -1758,7 +1758,7 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='error_code' mangled-name='_ZN5boost6system10error_codeC2EiRKNS0_14error_categoryE' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='323' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system10error_codeC1EiRKNS0_14error_categoryE'>
+            <function-decl name='error_code' mangled-name='_ZN5boost6system10error_codeC2EiRKNS0_14error_categoryE' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='323' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system10error_codeC2EiRKNS0_14error_categoryE'>
               <parameter type-id='type-id-85' is-artificial='yes'/>
               <parameter type-id='type-id-15'/>
               <parameter type-id='type-id-104'/>
@@ -3242,7 +3242,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='shared_ptr' mangled-name='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEEC2Ev' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/shared_ptr.hpp' line='334' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEEC1Ev'>
+          <function-decl name='shared_ptr' mangled-name='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEEC2Ev' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/shared_ptr.hpp' line='334' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEEC2Ev'>
             <parameter type-id='type-id-340' is-artificial='yes'/>
             <return type-id='type-id-27'/>
           </function-decl>
@@ -3372,7 +3372,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~scoped_array' mangled-name='_ZN5boost12scoped_arrayIcED2Ev' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/scoped_array.hpp' line='64' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost12scoped_arrayIcED1Ev'>
+          <function-decl name='~scoped_array' mangled-name='_ZN5boost12scoped_arrayIcED2Ev' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/scoped_array.hpp' line='64' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost12scoped_arrayIcED2Ev'>
             <parameter type-id='type-id-335' is-artificial='yes'/>
             <parameter type-id='type-id-15' is-artificial='yes'/>
             <return type-id='type-id-27'/>
@@ -3392,7 +3392,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~scoped_array' mangled-name='_ZN5boost12scoped_arrayIcED2Ev' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/scoped_array.hpp' line='64' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost12scoped_arrayIcED1Ev'>
+          <function-decl name='~scoped_array' mangled-name='_ZN5boost12scoped_arrayIcED2Ev' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/scoped_array.hpp' line='64' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost12scoped_arrayIcED2Ev'>
             <parameter type-id='type-id-335' is-artificial='yes'/>
             <parameter type-id='type-id-15' is-artificial='yes'/>
             <return type-id='type-id-27'/>
@@ -3535,7 +3535,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='shared_ptr' mangled-name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEEC2Ev' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/shared_ptr.hpp' line='334' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEEC1Ev'>
+          <function-decl name='shared_ptr' mangled-name='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEEC2Ev' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/shared_ptr.hpp' line='334' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10shared_ptrINS_10filesystem16filesystem_error5m_impEEC2Ev'>
             <parameter type-id='type-id-348' is-artificial='yes'/>
             <return type-id='type-id-27'/>
           </function-decl>
@@ -3701,13 +3701,13 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='shared_count' mangled-name='_ZN5boost6detail12shared_countC2Ev' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/detail/shared_count.hpp' line='114' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6detail12shared_countC1Ev'>
+            <function-decl name='shared_count' mangled-name='_ZN5boost6detail12shared_countC2Ev' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/detail/shared_count.hpp' line='114' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6detail12shared_countC2Ev'>
               <parameter type-id='type-id-274' is-artificial='yes'/>
               <return type-id='type-id-27'/>
             </function-decl>
           </member-function>
           <member-function access='public' destructor='yes'>
-            <function-decl name='~shared_count' mangled-name='_ZN5boost6detail12shared_countD2Ev' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/detail/shared_count.hpp' line='441' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6detail12shared_countD1Ev'>
+            <function-decl name='~shared_count' mangled-name='_ZN5boost6detail12shared_countD2Ev' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/detail/shared_count.hpp' line='441' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6detail12shared_countD2Ev'>
               <parameter type-id='type-id-274' is-artificial='yes'/>
               <parameter type-id='type-id-15' is-artificial='yes'/>
               <return type-id='type-id-27'/>
@@ -3728,7 +3728,7 @@
             </function-decl>
           </member-function>
           <member-function access='public'>
-            <function-decl name='shared_count&lt;boost::filesystem::filesystem_error::m_imp&gt;' mangled-name='_ZN5boost6detail12shared_countC2INS_10filesystem16filesystem_error5m_impEEEPT_' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/detail/shared_count.hpp' line='121' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6detail12shared_countC1INS_10filesystem16filesystem_error5m_impEEEPT_'>
+            <function-decl name='shared_count&lt;boost::filesystem::filesystem_error::m_imp&gt;' mangled-name='_ZN5boost6detail12shared_countC2INS_10filesystem16filesystem_error5m_impEEEPT_' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/detail/shared_count.hpp' line='121' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6detail12shared_countC2INS_10filesystem16filesystem_error5m_impEEEPT_'>
               <parameter type-id='type-id-274' is-artificial='yes'/>
               <parameter type-id='type-id-310'/>
               <return type-id='type-id-27'/>
@@ -3756,7 +3756,7 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='sp_counted_base' mangled-name='_ZN5boost6detail15sp_counted_baseC2Ev' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/detail/sp_counted_base_gcc_x86.hpp' line='109' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6detail15sp_counted_baseC1Ev'>
+            <function-decl name='sp_counted_base' mangled-name='_ZN5boost6detail15sp_counted_baseC2Ev' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/detail/sp_counted_base_gcc_x86.hpp' line='109' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6detail15sp_counted_baseC2Ev'>
               <parameter type-id='type-id-278' is-artificial='yes'/>
               <return type-id='type-id-27'/>
             </function-decl>
@@ -3965,7 +3965,7 @@
             </function-decl>
           </member-function>
           <member-function access='public'>
-            <function-decl name='sp_counted_impl_p' mangled-name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEC2EPS4_' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/detail/sp_counted_impl.hpp' line='66' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEC1EPS4_'>
+            <function-decl name='sp_counted_impl_p' mangled-name='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEC2EPS4_' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/detail/sp_counted_impl.hpp' line='66' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEC2EPS4_'>
               <parameter type-id='type-id-284' is-artificial='yes'/>
               <parameter type-id='type-id-310'/>
               <return type-id='type-id-27'/>
@@ -4041,7 +4041,7 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='directory_entry' mangled-name='_ZN5boost10filesystem15directory_entryC2Ev' filepath='src/third_party/boost-1.56.0/boost/filesystem/operations.hpp' line='676' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem15directory_entryC1Ev'>
+            <function-decl name='directory_entry' mangled-name='_ZN5boost10filesystem15directory_entryC2Ev' filepath='src/third_party/boost-1.56.0/boost/filesystem/operations.hpp' line='676' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem15directory_entryC2Ev'>
               <parameter type-id='type-id-297' is-artificial='yes'/>
               <return type-id='type-id-27'/>
             </function-decl>
@@ -4168,20 +4168,20 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='path' mangled-name='_ZN5boost10filesystem4pathC2Ev' filepath='src/third_party/boost-1.56.0/boost/filesystem/path.hpp' line='130' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem4pathC1Ev'>
+            <function-decl name='path' mangled-name='_ZN5boost10filesystem4pathC2Ev' filepath='src/third_party/boost-1.56.0/boost/filesystem/path.hpp' line='130' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem4pathC2Ev'>
               <parameter type-id='type-id-315' is-artificial='yes'/>
               <return type-id='type-id-27'/>
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='path' mangled-name='_ZN5boost10filesystem4pathC2ERKS1_' filepath='src/third_party/boost-1.56.0/boost/filesystem/path.hpp' line='132' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem4pathC1ERKS1_'>
+            <function-decl name='path' mangled-name='_ZN5boost10filesystem4pathC2ERKS1_' filepath='src/third_party/boost-1.56.0/boost/filesystem/path.hpp' line='132' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem4pathC2ERKS1_'>
               <parameter type-id='type-id-315' is-artificial='yes'/>
               <parameter type-id='type-id-401'/>
               <return type-id='type-id-27'/>
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='path' mangled-name='_ZN5boost10filesystem4pathC2EPKc' filepath='src/third_party/boost-1.56.0/boost/filesystem/path.hpp' line='150' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem4pathC1EPKc'>
+            <function-decl name='path' mangled-name='_ZN5boost10filesystem4pathC2EPKc' filepath='src/third_party/boost-1.56.0/boost/filesystem/path.hpp' line='150' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem4pathC2EPKc'>
               <parameter type-id='type-id-315' is-artificial='yes'/>
               <parameter type-id='type-id-419'/>
               <return type-id='type-id-27'/>
@@ -4276,20 +4276,20 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='path' mangled-name='_ZN5boost10filesystem4pathC2Ev' filepath='src/third_party/boost-1.56.0/boost/filesystem/path.hpp' line='130' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem4pathC1Ev'>
+            <function-decl name='path' mangled-name='_ZN5boost10filesystem4pathC2Ev' filepath='src/third_party/boost-1.56.0/boost/filesystem/path.hpp' line='130' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem4pathC2Ev'>
               <parameter type-id='type-id-315' is-artificial='yes'/>
               <return type-id='type-id-27'/>
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='path' mangled-name='_ZN5boost10filesystem4pathC2ERKS1_' filepath='src/third_party/boost-1.56.0/boost/filesystem/path.hpp' line='132' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem4pathC1ERKS1_'>
+            <function-decl name='path' mangled-name='_ZN5boost10filesystem4pathC2ERKS1_' filepath='src/third_party/boost-1.56.0/boost/filesystem/path.hpp' line='132' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem4pathC2ERKS1_'>
               <parameter type-id='type-id-315' is-artificial='yes'/>
               <parameter type-id='type-id-401'/>
               <return type-id='type-id-27'/>
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='path' mangled-name='_ZN5boost10filesystem4pathC2EPKc' filepath='src/third_party/boost-1.56.0/boost/filesystem/path.hpp' line='150' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem4pathC1EPKc'>
+            <function-decl name='path' mangled-name='_ZN5boost10filesystem4pathC2EPKc' filepath='src/third_party/boost-1.56.0/boost/filesystem/path.hpp' line='150' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem4pathC2EPKc'>
               <parameter type-id='type-id-315' is-artificial='yes'/>
               <parameter type-id='type-id-419'/>
               <return type-id='type-id-27'/>
@@ -4461,7 +4461,7 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='path' mangled-name='_ZN5boost10filesystem4pathC2EPKc' filepath='src/third_party/boost-1.56.0/boost/filesystem/path.hpp' line='150' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem4pathC1EPKc'>
+            <function-decl name='path' mangled-name='_ZN5boost10filesystem4pathC2EPKc' filepath='src/third_party/boost-1.56.0/boost/filesystem/path.hpp' line='150' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem4pathC2EPKc'>
               <parameter type-id='type-id-315' is-artificial='yes'/>
               <parameter type-id='type-id-419'/>
               <return type-id='type-id-27'/>
@@ -4629,20 +4629,20 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='directory_iterator' mangled-name='_ZN5boost10filesystem18directory_iteratorC2Ev' filepath='src/third_party/boost-1.56.0/boost/filesystem/operations.hpp' line='787' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem18directory_iteratorC1Ev'>
+            <function-decl name='directory_iterator' mangled-name='_ZN5boost10filesystem18directory_iteratorC2Ev' filepath='src/third_party/boost-1.56.0/boost/filesystem/operations.hpp' line='787' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem18directory_iteratorC2Ev'>
               <parameter type-id='type-id-302' is-artificial='yes'/>
               <return type-id='type-id-27'/>
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='directory_iterator' mangled-name='_ZN5boost10filesystem18directory_iteratorC2ERKNS0_4pathE' filepath='src/third_party/boost-1.56.0/boost/filesystem/operations.hpp' line='791' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem18directory_iteratorC1ERKNS0_4pathE'>
+            <function-decl name='directory_iterator' mangled-name='_ZN5boost10filesystem18directory_iteratorC2ERKNS0_4pathE' filepath='src/third_party/boost-1.56.0/boost/filesystem/operations.hpp' line='791' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem18directory_iteratorC2ERKNS0_4pathE'>
               <parameter type-id='type-id-302' is-artificial='yes'/>
               <parameter type-id='type-id-401'/>
               <return type-id='type-id-27'/>
             </function-decl>
           </member-function>
           <member-function access='public' destructor='yes'>
-            <function-decl name='~directory_iterator' mangled-name='_ZN5boost10filesystem18directory_iteratorD2Ev' filepath='src/third_party/boost-1.56.0/boost/filesystem/operations.hpp' line='799' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem18directory_iteratorD1Ev'>
+            <function-decl name='~directory_iterator' mangled-name='_ZN5boost10filesystem18directory_iteratorD2Ev' filepath='src/third_party/boost-1.56.0/boost/filesystem/operations.hpp' line='799' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem18directory_iteratorD2Ev'>
               <parameter type-id='type-id-302' is-artificial='yes'/>
               <parameter type-id='type-id-15' is-artificial='yes'/>
               <return type-id='type-id-27'/>
@@ -4722,7 +4722,7 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='filesystem_error' mangled-name='_ZN5boost10filesystem16filesystem_errorC2ERKSsNS_6system10error_codeE' filepath='src/third_party/boost-1.56.0/boost/filesystem/operations.hpp' line='76' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem16filesystem_errorC1ERKSsNS_6system10error_codeE'>
+            <function-decl name='filesystem_error' mangled-name='_ZN5boost10filesystem16filesystem_errorC2ERKSsNS_6system10error_codeE' filepath='src/third_party/boost-1.56.0/boost/filesystem/operations.hpp' line='76' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem16filesystem_errorC2ERKSsNS_6system10error_codeE'>
               <parameter type-id='type-id-307' is-artificial='yes'/>
               <parameter type-id='type-id-506'/>
               <parameter type-id='type-id-84'/>
@@ -4763,7 +4763,7 @@
             </function-decl>
           </member-function>
           <member-function access='public' destructor='yes' vtable-offset='-1'>
-            <function-decl name='~filesystem_error' mangled-name='_ZN5boost10filesystem16filesystem_errorD2Ev' filepath='src/third_party/boost-1.56.0/boost/filesystem/operations.hpp' line='114' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem16filesystem_errorD1Ev'>
+            <function-decl name='~filesystem_error' mangled-name='_ZN5boost10filesystem16filesystem_errorD2Ev' filepath='src/third_party/boost-1.56.0/boost/filesystem/operations.hpp' line='114' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem16filesystem_errorD2Ev'>
               <parameter type-id='type-id-307' is-artificial='yes'/>
               <parameter type-id='type-id-15' is-artificial='yes'/>
               <return type-id='type-id-27'/>
@@ -4829,13 +4829,13 @@
               </function-decl>
             </member-function>
             <member-function access='public' constructor='yes'>
-              <function-decl name='dir_itr_imp' mangled-name='_ZN5boost10filesystem6detail11dir_itr_impC2Ev' filepath='src/third_party/boost-1.56.0/boost/filesystem/operations.hpp' line='750' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem6detail11dir_itr_impC1Ev'>
+              <function-decl name='dir_itr_imp' mangled-name='_ZN5boost10filesystem6detail11dir_itr_impC2Ev' filepath='src/third_party/boost-1.56.0/boost/filesystem/operations.hpp' line='750' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem6detail11dir_itr_impC2Ev'>
                 <parameter type-id='type-id-291' is-artificial='yes'/>
                 <return type-id='type-id-27'/>
               </function-decl>
             </member-function>
             <member-function access='public' destructor='yes'>
-              <function-decl name='~dir_itr_imp' mangled-name='_ZN5boost10filesystem6detail11dir_itr_impD2Ev' filepath='src/third_party/boost-1.56.0/boost/filesystem/operations.hpp' line='756' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem6detail11dir_itr_impD1Ev'>
+              <function-decl name='~dir_itr_imp' mangled-name='_ZN5boost10filesystem6detail11dir_itr_impD2Ev' filepath='src/third_party/boost-1.56.0/boost/filesystem/operations.hpp' line='756' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem6detail11dir_itr_impD2Ev'>
                 <parameter type-id='type-id-291' is-artificial='yes'/>
                 <parameter type-id='type-id-15' is-artificial='yes'/>
                 <return type-id='type-id-27'/>
@@ -5204,7 +5204,7 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='system_error' mangled-name='_ZN5boost6system12system_errorC2EiRKNS0_14error_categoryEPKc' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='43' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorC1EiRKNS0_14error_categoryEPKc'>
+            <function-decl name='system_error' mangled-name='_ZN5boost6system12system_errorC2EiRKNS0_14error_categoryEPKc' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='43' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorC2EiRKNS0_14error_categoryEPKc'>
               <parameter type-id='type-id-355' is-artificial='yes'/>
               <parameter type-id='type-id-15'/>
               <parameter type-id='type-id-104'/>
@@ -5213,7 +5213,7 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='system_error' mangled-name='_ZN5boost6system12system_errorC2EiRKNS0_14error_categoryEPKc' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='43' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorC1EiRKNS0_14error_categoryEPKc'>
+            <function-decl name='system_error' mangled-name='_ZN5boost6system12system_errorC2EiRKNS0_14error_categoryEPKc' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='43' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorC2EiRKNS0_14error_categoryEPKc'>
               <parameter type-id='type-id-355' is-artificial='yes'/>
               <parameter type-id='type-id-15'/>
               <parameter type-id='type-id-104'/>
@@ -5264,35 +5264,35 @@
             </function-decl>
           </member-function>
           <member-function access='public' destructor='yes' vtable-offset='-1'>
-            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD2Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD1Ev'>
+            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD2Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD2Ev'>
               <parameter type-id='type-id-355' is-artificial='yes'/>
               <parameter type-id='type-id-15' is-artificial='yes'/>
               <return type-id='type-id-27'/>
             </function-decl>
           </member-function>
           <member-function access='public' destructor='yes' vtable-offset='-1'>
-            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD2Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD1Ev'>
+            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD2Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD2Ev'>
               <parameter type-id='type-id-355' is-artificial='yes'/>
               <parameter type-id='type-id-15' is-artificial='yes'/>
               <return type-id='type-id-27'/>
             </function-decl>
           </member-function>
           <member-function access='public' destructor='yes' vtable-offset='-1'>
-            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD2Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD1Ev'>
+            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD2Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD2Ev'>
               <parameter type-id='type-id-355' is-artificial='yes'/>
               <parameter type-id='type-id-15' is-artificial='yes'/>
               <return type-id='type-id-27'/>
             </function-decl>
           </member-function>
           <member-function access='public' destructor='yes' vtable-offset='-1'>
-            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD2Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD1Ev'>
+            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD2Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD2Ev'>
               <parameter type-id='type-id-355' is-artificial='yes'/>
               <parameter type-id='type-id-15' is-artificial='yes'/>
               <return type-id='type-id-27'/>
             </function-decl>
           </member-function>
           <member-function access='public' destructor='yes' vtable-offset='-1'>
-            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD2Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD1Ev'>
+            <function-decl name='~system_error' mangled-name='_ZN5boost6system12system_errorD2Ev' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorD2Ev'>
               <parameter type-id='type-id-355' is-artificial='yes'/>
               <parameter type-id='type-id-15' is-artificial='yes'/>
               <return type-id='type-id-27'/>
@@ -5791,7 +5791,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~scoped_array' mangled-name='_ZN5boost12scoped_arrayIwED2Ev' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/scoped_array.hpp' line='64' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost12scoped_arrayIwED1Ev'>
+          <function-decl name='~scoped_array' mangled-name='_ZN5boost12scoped_arrayIwED2Ev' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/scoped_array.hpp' line='64' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost12scoped_arrayIwED2Ev'>
             <parameter type-id='type-id-661' is-artificial='yes'/>
             <parameter type-id='type-id-15' is-artificial='yes'/>
             <return type-id='type-id-27'/>

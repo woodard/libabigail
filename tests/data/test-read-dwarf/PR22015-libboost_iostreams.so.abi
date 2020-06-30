@@ -36,13 +36,13 @@
     <elf-symbol name='_ZN5boost9iostreams15file_descriptorC1EPKcSt13_Ios_Openmode' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams15file_descriptorC1ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt13_Ios_Openmode' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams15file_descriptorC1ERKS1_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost9iostreams15file_descriptorC1EiNS0_21file_descriptor_flagsE' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams15file_descriptorC2EiNS0_21file_descriptor_flagsE' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost9iostreams15file_descriptorC1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams15file_descriptorC2Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost9iostreams15file_descriptorC1EiNS0_21file_descriptor_flagsE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost9iostreams15file_descriptorC1Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams15file_descriptorC2EPKcSt13_Ios_Openmode' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams15file_descriptorC1EPKcSt13_Ios_Openmode' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams15file_descriptorC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt13_Ios_Openmode' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams15file_descriptorC1ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt13_Ios_Openmode' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams15file_descriptorC2ERKS1_' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams15file_descriptorC1ERKS1_' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost9iostreams15file_descriptorC2EiNS0_21file_descriptor_flagsE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost9iostreams15file_descriptorC2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost9iostreams15file_descriptorC2EiNS0_21file_descriptor_flagsE' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams15file_descriptorC1EiNS0_21file_descriptor_flagsE' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost9iostreams15file_descriptorC2Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams15file_descriptorC1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams16mapped_file_sinkC1ERKS1_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams16mapped_file_sinkC2ERKS1_' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams16mapped_file_sinkC1ERKS1_' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams18mapped_file_source4initEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
@@ -50,31 +50,31 @@
     <elf-symbol name='_ZN5boost9iostreams18mapped_file_source9alignmentEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams18mapped_file_source9open_implERKNS0_24basic_mapped_file_paramsINS0_6detail4pathEEE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams18mapped_file_sourceC1ERKS1_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost9iostreams18mapped_file_sourceC1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams18mapped_file_sourceC2Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost9iostreams18mapped_file_sourceC1Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams18mapped_file_sourceC2ERKS1_' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams18mapped_file_sourceC1ERKS1_' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost9iostreams18mapped_file_sourceC2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost9iostreams18mapped_file_sourceC2Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams18mapped_file_sourceC1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams20file_descriptor_sink4openEPKcSt13_Ios_Openmode' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams20file_descriptor_sink4openERKNS0_6detail4pathESt13_Ios_Openmode' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams20file_descriptor_sink4openERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt13_Ios_Openmode' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams20file_descriptor_sink4openEiNS0_21file_descriptor_flagsE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams20file_descriptor_sinkC1EPKcSt13_Ios_Openmode' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams20file_descriptor_sinkC1ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt13_Ios_Openmode' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost9iostreams20file_descriptor_sinkC1ERKS1_' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams20file_descriptor_sinkC2ERKS1_' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost9iostreams20file_descriptor_sinkC1EiNS0_21file_descriptor_flagsE' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams20file_descriptor_sinkC2EiNS0_21file_descriptor_flagsE' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost9iostreams20file_descriptor_sinkC1ERKS1_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost9iostreams20file_descriptor_sinkC1EiNS0_21file_descriptor_flagsE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams20file_descriptor_sinkC2EPKcSt13_Ios_Openmode' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams20file_descriptor_sinkC1EPKcSt13_Ios_Openmode' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams20file_descriptor_sinkC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt13_Ios_Openmode' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams20file_descriptor_sinkC1ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt13_Ios_Openmode' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost9iostreams20file_descriptor_sinkC2ERKS1_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost9iostreams20file_descriptor_sinkC2EiNS0_21file_descriptor_flagsE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost9iostreams20file_descriptor_sinkC2ERKS1_' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams20file_descriptor_sinkC1ERKS1_' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost9iostreams20file_descriptor_sinkC2EiNS0_21file_descriptor_flagsE' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams20file_descriptor_sinkC1EiNS0_21file_descriptor_flagsE' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams22file_descriptor_source4openEPKcSt13_Ios_Openmode' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams22file_descriptor_source4openERKNS0_6detail4pathESt13_Ios_Openmode' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams22file_descriptor_source4openERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt13_Ios_Openmode' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams22file_descriptor_source4openEiNS0_21file_descriptor_flagsE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams22file_descriptor_sourceC1EPKcSt13_Ios_Openmode' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost9iostreams22file_descriptor_sourceC1ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt13_Ios_Openmode' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams22file_descriptor_sourceC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt13_Ios_Openmode' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost9iostreams22file_descriptor_sourceC1ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt13_Ios_Openmode' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams22file_descriptor_sourceC1ERKS1_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams22file_descriptor_sourceC1EiNS0_21file_descriptor_flagsE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams22file_descriptor_sourceC2EPKcSt13_Ios_Openmode' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams22file_descriptor_sourceC1EPKcSt13_Ios_Openmode' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost9iostreams22file_descriptor_sourceC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt13_Ios_Openmode' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost9iostreams22file_descriptor_sourceC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt13_Ios_Openmode' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams22file_descriptor_sourceC1ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt13_Ios_Openmode' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams22file_descriptor_sourceC2ERKS1_' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams22file_descriptor_sourceC1ERKS1_' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams22file_descriptor_sourceC2EiNS0_21file_descriptor_flagsE' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams22file_descriptor_sourceC1EiNS0_21file_descriptor_flagsE' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams6detail14system_failureB5cxx11EPKc' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -90,8 +90,8 @@
     <elf-symbol name='_ZN5boost9iostreams6detail16mapped_file_impl9open_fileENS0_24basic_mapped_file_paramsINS1_4pathEEE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams6detail16mapped_file_implC1Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams6detail16mapped_file_implC2Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams6detail16mapped_file_implC1Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost9iostreams6detail16mapped_file_implD1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams6detail16mapped_file_implD2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost9iostreams6detail16mapped_file_implD2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost9iostreams6detail16mapped_file_implD1Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost9iostreams6detail16mapped_file_implD2Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams6detail16mapped_file_implD1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams6detail20file_descriptor_impl10close_implEbb' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams6detail20file_descriptor_impl14invalid_handleEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams6detail20file_descriptor_impl4openERKNS1_4pathESt13_Ios_Openmode' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
@@ -100,8 +100,8 @@
     <elf-symbol name='_ZN5boost9iostreams6detail20file_descriptor_impl4seekElSt12_Ios_Seekdir' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams6detail20file_descriptor_impl5closeEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams6detail20file_descriptor_impl5writeEPKcl' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost9iostreams6detail20file_descriptor_implC1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams6detail20file_descriptor_implC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost9iostreams6detail20file_descriptor_implC2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost9iostreams6detail20file_descriptor_implC1Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost9iostreams6detail20file_descriptor_implC2Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams6detail20file_descriptor_implC1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams6detail20file_descriptor_implD1Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams6detail20file_descriptor_implD2Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams6detail20file_descriptor_implD1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams6detail23mapped_file_params_base9normalizeEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
@@ -506,13 +506,13 @@
             <var-decl name='pimpl_' type-id='type-id-110' visibility='default' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/file_descriptor.hpp' line='143' column='1'/>
           </data-member>
           <member-function access='public' constructor='yes'>
-            <function-decl name='file_descriptor' mangled-name='_ZN5boost9iostreams15file_descriptorC2Ev' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/file_descriptor.hpp' line='58' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost9iostreams15file_descriptorC1Ev'>
+            <function-decl name='file_descriptor' mangled-name='_ZN5boost9iostreams15file_descriptorC2Ev' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/file_descriptor.hpp' line='58' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost9iostreams15file_descriptorC2Ev'>
               <parameter type-id='type-id-101' is-artificial='yes'/>
               <return type-id='type-id-19'/>
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='file_descriptor' mangled-name='_ZN5boost9iostreams15file_descriptorC2EiNS0_21file_descriptor_flagsE' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/file_descriptor.hpp' line='61' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost9iostreams15file_descriptorC1EiNS0_21file_descriptor_flagsE'>
+            <function-decl name='file_descriptor' mangled-name='_ZN5boost9iostreams15file_descriptorC2EiNS0_21file_descriptor_flagsE' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/file_descriptor.hpp' line='61' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost9iostreams15file_descriptorC2EiNS0_21file_descriptor_flagsE'>
               <parameter type-id='type-id-101' is-artificial='yes'/>
               <parameter type-id='type-id-252'/>
               <parameter type-id='type-id-254'/>
@@ -656,7 +656,7 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='file_descriptor_source' mangled-name='_ZN5boost9iostreams22file_descriptor_sourceC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt13_Ios_Openmode' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/file_descriptor.hpp' line='183' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost9iostreams22file_descriptor_sourceC1ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt13_Ios_Openmode'>
+            <function-decl name='file_descriptor_source' mangled-name='_ZN5boost9iostreams22file_descriptor_sourceC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt13_Ios_Openmode' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/file_descriptor.hpp' line='183' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost9iostreams22file_descriptor_sourceC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt13_Ios_Openmode'>
               <parameter type-id='type-id-107' is-artificial='yes'/>
               <parameter type-id='type-id-201'/>
               <parameter type-id='type-id-255'/>
@@ -723,7 +723,7 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='file_descriptor_sink' mangled-name='_ZN5boost9iostreams20file_descriptor_sinkC2EiNS0_21file_descriptor_flagsE' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/file_descriptor.hpp' line='251' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost9iostreams20file_descriptor_sinkC1EiNS0_21file_descriptor_flagsE'>
+            <function-decl name='file_descriptor_sink' mangled-name='_ZN5boost9iostreams20file_descriptor_sinkC2EiNS0_21file_descriptor_flagsE' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/file_descriptor.hpp' line='251' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost9iostreams20file_descriptor_sinkC2EiNS0_21file_descriptor_flagsE'>
               <parameter type-id='type-id-105' is-artificial='yes'/>
               <parameter type-id='type-id-260'/>
               <parameter type-id='type-id-254'/>
@@ -747,7 +747,7 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='file_descriptor_sink' mangled-name='_ZN5boost9iostreams20file_descriptor_sinkC2ERKS1_' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/file_descriptor.hpp' line='279' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost9iostreams20file_descriptor_sinkC1ERKS1_'>
+            <function-decl name='file_descriptor_sink' mangled-name='_ZN5boost9iostreams20file_descriptor_sinkC2ERKS1_' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/file_descriptor.hpp' line='279' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost9iostreams20file_descriptor_sinkC2ERKS1_'>
               <parameter type-id='type-id-105' is-artificial='yes'/>
               <parameter type-id='type-id-170'/>
               <return type-id='type-id-19'/>
@@ -816,7 +816,7 @@
               </function-decl>
             </member-function>
             <member-function access='public' constructor='yes'>
-              <function-decl name='file_descriptor_impl' mangled-name='_ZN5boost9iostreams6detail20file_descriptor_implC2Ev' filepath='src/third_party/boost-1.60.0/libs/iostreams/src/file_descriptor.cpp' line='59' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost9iostreams6detail20file_descriptor_implC1Ev'>
+              <function-decl name='file_descriptor_impl' mangled-name='_ZN5boost9iostreams6detail20file_descriptor_implC2Ev' filepath='src/third_party/boost-1.60.0/libs/iostreams/src/file_descriptor.cpp' line='59' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost9iostreams6detail20file_descriptor_implC2Ev'>
                 <parameter type-id='type-id-89' is-artificial='yes'/>
                 <return type-id='type-id-19'/>
               </function-decl>
@@ -1418,7 +1418,7 @@
             <var-decl name='pimpl_' type-id='type-id-116' visibility='default' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/mapped_file.hpp' line='218' column='1'/>
           </data-member>
           <member-function access='public' constructor='yes'>
-            <function-decl name='mapped_file_source' mangled-name='_ZN5boost9iostreams18mapped_file_sourceC2Ev' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/mapped_file.hpp' line='170' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost9iostreams18mapped_file_sourceC1Ev'>
+            <function-decl name='mapped_file_source' mangled-name='_ZN5boost9iostreams18mapped_file_sourceC2Ev' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/mapped_file.hpp' line='170' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost9iostreams18mapped_file_sourceC2Ev'>
               <parameter type-id='type-id-109' is-artificial='yes'/>
               <return type-id='type-id-19'/>
             </function-decl>
@@ -1582,7 +1582,7 @@
               </function-decl>
             </member-function>
             <member-function access='public' destructor='yes'>
-              <function-decl name='~mapped_file_impl' mangled-name='_ZN5boost9iostreams6detail16mapped_file_implD2Ev' filepath='src/third_party/boost-1.60.0/libs/iostreams/src/mapped_file.cpp' line='53' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost9iostreams6detail16mapped_file_implD1Ev'>
+              <function-decl name='~mapped_file_impl' mangled-name='_ZN5boost9iostreams6detail16mapped_file_implD2Ev' filepath='src/third_party/boost-1.60.0/libs/iostreams/src/mapped_file.cpp' line='53' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost9iostreams6detail16mapped_file_implD2Ev'>
                 <parameter type-id='type-id-92' is-artificial='yes'/>
                 <return type-id='type-id-19'/>
               </function-decl>

@@ -40,24 +40,24 @@
     <elf-symbol name='_ZN10mongoutils3str6streamlsIA42_cEERS1_RKT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN10mongoutils3str6streamlsIA50_cEERS1_RKT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN10mongoutils3str6streamlsIiEERS1_RKT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost13intrusive_ptrIN5mongo12SharedBuffer6HolderEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost13intrusive_ptrIN5mongo12SharedBuffer6HolderEEC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost13intrusive_ptrIN5mongo12SharedBuffer6HolderEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost13intrusive_ptrIN5mongo12SharedBuffer6HolderEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost13intrusive_ptrIN5mongo12SharedBuffer6HolderEED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost13intrusive_ptrIN5mongo12SharedBuffer6HolderEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost13intrusive_ptrIN5mongo12SharedBuffer6HolderEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost13intrusive_ptrIN5mongo12SharedBuffer6HolderEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost13intrusive_ptrIN5mongo12SharedBuffer6HolderEEC1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost13intrusive_ptrIN5mongo12SharedBuffer6HolderEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost13intrusive_ptrIN5mongo12SharedBuffer6HolderEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5boost13intrusive_ptrIN5mongo12SharedBuffer6HolderEED1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo10AtomicWordIjE16fetchAndSubtractEj' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo10AtomicWordIjE16subtractAndFetchEj' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo10StringDataC1EPKc' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo10StringDataC2EPKc' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo10StringDataC1EPKc' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo10StringDataC1ERKSs' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo10StringDataC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo10StringDataC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo10StringDataC2EPKc' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo10StringDataC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo10StringDataC2EPKc' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo10StringDataC1EPKc' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo10StringDataC2ERKSs' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo10StringDataC1ERKSs' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo10StringDataC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo10StringDataC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo10StringDataC1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo11DBException10addContextERKSs' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo11DBExceptionC1ERKSsi' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo11DBExceptionC2ERKSsi' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo11DBExceptionC1ERKSsi' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo11DBExceptionD0Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo11DBExceptionD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo11DBExceptionD2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo11DBExceptionD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo11DBExceptionD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo11DBExceptionD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo11DBExceptionD1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEE12reserveBytesEi' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEE13appendNumImplIcEEvT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEE13appendNumImplIiEEvT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -71,22 +71,22 @@
     <elf-symbol name='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEE9appendNumEc' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEE9appendNumEi' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEE9appendStrENS_10StringDataEb' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEEC1Ei' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEEC2Ei' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEEC2Ei' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEEC1Ei' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEEC2Ei' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEEC1Ei' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEED1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo12LittleEndianIcEC1Ec' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo12LittleEndianIcEC2Ec' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo12LittleEndianIcEC1Ec' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo12LittleEndianIiEC1Ei' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo12LittleEndianIiEC2Ei' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo12LittleEndianIiEC2Ei' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo12SharedBufferC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo12SharedBufferC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo12SharedBufferC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo12LittleEndianIiEC1Ei' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo12LittleEndianIiEC2Ei' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo12LittleEndianIiEC1Ei' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo12SharedBufferC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo12SharedBufferC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo12SharedBufferC1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo12SharedBufferD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo12SharedBufferD2Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo12SharedBufferD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo13ConstDataViewC1EPKc' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo13ConstDataViewC2EPKc' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo13ConstDataViewC2EPKc' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo13ExceptionInfoC1ERKSsi' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo13ExceptionInfoC2ERKSsi' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo13ExceptionInfoC2ERKSsi' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo13ConstDataViewC1EPKc' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo13ConstDataViewC2EPKc' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo13ConstDataViewC1EPKc' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo13ExceptionInfoC1ERKSsi' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo13ExceptionInfoC2ERKSsi' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo13ExceptionInfoC1ERKSsi' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo13ExceptionInfoD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo13ExceptionInfoD2Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo13ExceptionInfoD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo14BSONObjBuilder11appendArrayENS_10StringDataERKNS_7BSONObjE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -97,16 +97,16 @@
     <elf-symbol name='_ZN5mongo14BSONObjBuilder6appendENS_10StringDataEi' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo14BSONObjBuilder6appendISsEERS0_NS_10StringDataERKSt6vectorIT_SaIS5_EE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo14BSONObjBuilder6numStrEi' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo14BSONObjBuilderC1Ei' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo14BSONObjBuilderC2Ei' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo14BSONObjBuilderC2Ei' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo14BSONObjBuilderD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo14BSONObjBuilderD2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo14BSONObjBuilderD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo14BSONObjBuilderC1Ei' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo14BSONObjBuilderC2Ei' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo14BSONObjBuilderC1Ei' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo14BSONObjBuilderD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo14BSONObjBuilderD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo14BSONObjBuilderD1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo14addSASLOptionsEPNS_17optionenvironment13OptionSectionE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo15BSONSizeTracker3gotEi' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo15tagLittleEndianIcEENS_12LittleEndianIT_EES2_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo15tagLittleEndianIiEENS_12LittleEndianIT_EES2_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo16SASLGlobalParamsC1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo16SASLGlobalParamsC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo16SASLGlobalParamsC2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo16SASLGlobalParamsC1Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo16SASLGlobalParamsC2Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo16SASLGlobalParamsC1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo16SASLGlobalParamsD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo16SASLGlobalParamsD2Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo16SASLGlobalParamsD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo16TrivialAllocator4FreeEPv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -115,8 +115,8 @@
     <elf-symbol name='_ZN5mongo16storeSASLOptionsERKNS_17optionenvironment11EnvironmentE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo17StringBuilderImplINS_16TrivialAllocatorEE5SBNUMIiEERS2_T_iPKc' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo17StringBuilderImplINS_16TrivialAllocatorEE6appendENS_10StringDataE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo17StringBuilderImplINS_16TrivialAllocatorEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo17StringBuilderImplINS_16TrivialAllocatorEEC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo17StringBuilderImplINS_16TrivialAllocatorEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo17StringBuilderImplINS_16TrivialAllocatorEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo17StringBuilderImplINS_16TrivialAllocatorEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo17StringBuilderImplINS_16TrivialAllocatorEEC1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo17StringBuilderImplINS_16TrivialAllocatorEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo17StringBuilderImplINS_16TrivialAllocatorEED2Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo17StringBuilderImplINS_16TrivialAllocatorEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo17StringBuilderImplINS_16TrivialAllocatorEElsENS_10StringDataE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -130,11 +130,11 @@
     <elf-symbol name='_ZN5mongo17optionenvironment17OptionDescriptionD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo17optionenvironment5ValueD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo17optionenvironment5ValueD2Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo17optionenvironment5ValueD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo18AssertionExceptionC1ERKSsi' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo18AssertionExceptionC2ERKSsi' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo18AssertionExceptionC2ERKSsi' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo18AssertionExceptionC1ERKSsi' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo18AssertionExceptionC2ERKSsi' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo18AssertionExceptionC1ERKSsi' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo18AssertionExceptionD0Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo18AssertionExceptionD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo18AssertionExceptionD2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo18AssertionExceptionD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo18AssertionExceptionD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo18AssertionExceptionD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo18AssertionExceptionD1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo21MsgAssertionExceptionC1EiRKSs' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo21MsgAssertionExceptionC2EiRKSs' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo21MsgAssertionExceptionC1EiRKSs' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo21MsgAssertionExceptionD0Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -145,20 +145,20 @@
     <elf-symbol name='_ZN5mongo23ExportedServerParameterISsE3setERKSs' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo23ExportedServerParameterISsE6appendEPNS_16OperationContextERNS_14BSONObjBuilderERKSs' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo23ExportedServerParameterISsE8validateERKSs' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo23ExportedServerParameterISsEC1EPNS_18ServerParameterSetERKSsPSsbb' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo23ExportedServerParameterISsEC2EPNS_18ServerParameterSetERKSsPSsbb' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo23ExportedServerParameterISsEC2EPNS_18ServerParameterSetERKSsPSsbb' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo23ExportedServerParameterISsEC1EPNS_18ServerParameterSetERKSsPSsbb' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo23ExportedServerParameterISsEC2EPNS_18ServerParameterSetERKSsPSsbb' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo23ExportedServerParameterISsEC1EPNS_18ServerParameterSetERKSsPSsbb' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo23ExportedServerParameterISsED0Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo23ExportedServerParameterISsED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo23ExportedServerParameterISsED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo23ExportedServerParameterISsED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo23ExportedServerParameterISsED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo23ExportedServerParameterISsED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo23ExportedServerParameterISsED1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEE3setERKNS_11BSONElementE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEE3setERKS3_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEE6appendEPNS_16OperationContextERNS_14BSONObjBuilderERKSs' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEE8validateERKS3_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEEC1EPNS_18ServerParameterSetERKSsPS3_bb' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEEC2EPNS_18ServerParameterSetERKSsPS3_bb' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEEC2EPNS_18ServerParameterSetERKSsPS3_bb' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEEC1EPNS_18ServerParameterSetERKSsPS3_bb' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEEC2EPNS_18ServerParameterSetERKSsPS3_bb' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEEC1EPNS_18ServerParameterSetERKSsPS3_bb' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEED0Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEED1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo23ExportedServerParameterIiE3setERKNS_11BSONElementE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo23ExportedServerParameterIiE3setERKi' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo23ExportedServerParameterIiE6appendEPNS_16OperationContextERNS_14BSONObjBuilderERKSs' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -171,8 +171,8 @@
     <elf-symbol name='_ZN5mongo25BSONObjBuilderValueStreamD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo25BSONObjBuilderValueStreamD2Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo25BSONObjBuilderValueStreamD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo36ExportedScramIterationCountParameter8validateERKi' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo36ExportedScramIterationCountParameterC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo36ExportedScramIterationCountParameterC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo36ExportedScramIterationCountParameterC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo36ExportedScramIterationCountParameterC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo36ExportedScramIterationCountParameterC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo36ExportedScramIterationCountParameterC1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo36ExportedScramIterationCountParameterD0Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo36ExportedScramIterationCountParameterD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo36ExportedScramIterationCountParameterD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo36ExportedScramIterationCountParameterD1Ev' is-defined='yes'/>
@@ -183,11 +183,11 @@
     <elf-symbol name='_ZN5mongo6Status9ErrorInfoD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo6Status9ErrorInfoD2Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo6Status9ErrorInfoD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo6StatusC1EOS0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo6StatusC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo6StatusC2Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo6StatusC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo6StatusC2EOS0_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo6StatusC1EOS0_' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo6StatusC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo6StatusD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo6StatusD2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo6StatusD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo6StatusC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo6StatusC1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo6StatusD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo6StatusD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo6StatusD1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo6endian14littleToNativeIiEET_S2_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo6endian14nativeToLittleIcEET_S2_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo6endian14nativeToLittleIiEET_S2_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -205,8 +205,8 @@
     <elf-symbol name='_ZN5mongo6logger16LogstreamBuilderlsEPKc' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo6logger16LogstreamBuilderlsERKSs' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo7BSONObj4initEPKc' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo7BSONObjC1EPKc' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo7BSONObjC2EPKc' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo7BSONObjC2EPKc' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo7BSONObjC1EPKc' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo7BSONObjC2EPKc' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo7BSONObjC1EPKc' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo7BSONObjD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN5mongo7BSONObjD2Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo7BSONObjD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo8DataType10unsafeLoadINS_12LittleEndianIiEEEEvPT_PKcPm' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -232,44 +232,44 @@
     <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISsE10deallocateEPSsm' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISsE7destroyISsEEvPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISsE8allocateEmPKv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISsE9constructISsISsEEEvPT_DpOT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISsE9constructISsJSsEEEvPT_DpOT0_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx13new_allocatorISsE9constructISsISsEEEvPT_DpOT0_' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISsEC1ERKS1_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx13new_allocatorISsEC2ERKS1_' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISsEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx13new_allocatorISsEC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISsEC2ERKS1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISsEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISsED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx13new_allocatorISsED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISsED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISsE9constructISsISsEEEvPT_DpOT0_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx13new_allocatorISsE9constructISsJSsEEEvPT_DpOT0_' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISsE9constructISsJSsEEEvPT_DpOT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISsEC1ERKS1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISsEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISsEC2ERKS1_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx13new_allocatorISsEC1ERKS1_' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISsEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx13new_allocatorISsEC1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISsED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISsED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx13new_allocatorISsED1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEE10deallocateEPS5_m' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEE7destroyIS5_EEvPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEEC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEEC1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEED1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEE10deallocateEPS5_m' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEE7destroyIS5_EEvPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEEC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEEC1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEED1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt10shared_ptrIN5mongo17optionenvironment10ConstraintEEE10deallocateEPS5_m' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt10shared_ptrIN5mongo17optionenvironment10ConstraintEEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt10shared_ptrIN5mongo17optionenvironment10ConstraintEEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx13new_allocatorISt10shared_ptrIN5mongo17optionenvironment10ConstraintEEED1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKSsSsEEE10deallocateEPS5_m' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKSsSsEEE7destroyIS4_EEvPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKSsSsEEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKSsSsEEEC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKSsSsEEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKSsSsEEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKSsSsEEED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKSsSsEEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKSsSsEEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKSsSsEEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKSsSsEEEC1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKSsSsEEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKSsSsEEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKSsSsEEED1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN9__gnu_cxx14__alloc_traitsISaISsEE15_S_always_equalEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN9__gnu_cxx14__alloc_traitsISaISsEE27_S_propagate_on_copy_assignEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN9__gnu_cxx16__aligned_bufferISt4pairIKSsSsEE6_M_ptrEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN9__gnu_cxx16__aligned_bufferISt4pairIKSsSsEE7_M_addrEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx17__normal_iteratorIPKSsSt6vectorISsSaISsEEEC1ERKS2_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx17__normal_iteratorIPKSsSt6vectorISsSaISsEEEC2ERKS2_' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx17__normal_iteratorIPKSsSt6vectorISsSaISsEEEC2ERKS2_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx17__normal_iteratorIPKSsSt6vectorISsSaISsEEEC1ERKS2_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx17__normal_iteratorIPKSsSt6vectorISsSaISsEEEC2ERKS2_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx17__normal_iteratorIPKSsSt6vectorISsSaISsEEEC1ERKS2_' is-defined='yes'/>
     <elf-symbol name='_ZN9__gnu_cxx17__normal_iteratorIPKSsSt6vectorISsSaISsEEEppEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx17__normal_iteratorIPSsSt6vectorISsSaISsEEEC1ERKS1_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx17__normal_iteratorIPSsSt6vectorISsSaISsEEEC2ERKS1_' is-defined='yes'/>
-    <elf-symbol name='_ZN9__gnu_cxx17__normal_iteratorIPSsSt6vectorISsSaISsEEEC2ERKS1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx17__normal_iteratorIPSsSt6vectorISsSaISsEEEC1ERKS1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN9__gnu_cxx17__normal_iteratorIPSsSt6vectorISsSaISsEEEC2ERKS1_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZN9__gnu_cxx17__normal_iteratorIPSsSt6vectorISsSaISsEEEC1ERKS1_' is-defined='yes'/>
     <elf-symbol name='_ZN9__gnu_cxx17__normal_iteratorIPSsSt6vectorISsSaISsEEEppEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN9__gnu_cxxneIPKSsSt6vectorISsSaISsEEEEbRKNS_17__normal_iteratorIT_T0_EESB_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN9__gnu_cxxneIPSsSt6vectorISsSaISsEEEEbRKNS_17__normal_iteratorIT_T0_EESA_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -326,25 +326,25 @@
     <elf-symbol name='_ZNKSt9_Any_data9_M_accessEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNKSt9_Any_data9_M_accessIPFN5mongo6StatusEPNS1_18InitializerContextEEEERKT_v' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSaISsEC1ERKS_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSaISsEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSaISsEC2Ev' is-defined='yes'/>
+    <elf-symbol name='_ZNSaISsEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSaISsEC2ERKS_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSaISsEC1ERKS_' is-defined='yes'/>
-    <elf-symbol name='_ZNSaISsEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSaISsED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSaISsED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSaISsED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSaISsEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSaISsEC1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZNSaISsED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSaISsED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSaISsED1Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSaISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSaISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSaISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEEC1Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSaISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSaISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSaISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEED1Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSaISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSaISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEEC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSaISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSaISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSaISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSaISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSaISt10shared_ptrIN5mongo17optionenvironment10ConstraintEEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSaISt10shared_ptrIN5mongo17optionenvironment10ConstraintEEED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSaISt10shared_ptrIN5mongo17optionenvironment10ConstraintEEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSaISt13_Rb_tree_nodeISt4pairIKSsSsEEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSaISt13_Rb_tree_nodeISt4pairIKSsSsEEEC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSaISt13_Rb_tree_nodeISt4pairIKSsSsEEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSaISt13_Rb_tree_nodeISt4pairIKSsSsEEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSaISt13_Rb_tree_nodeISt4pairIKSsSsEEED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSaISt13_Rb_tree_nodeISt4pairIKSsSsEEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSaISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSaISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSaISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEEC1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZNSaISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSaISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSaISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEED1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZNSaISt10shared_ptrIN5mongo17optionenvironment10ConstraintEEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSaISt10shared_ptrIN5mongo17optionenvironment10ConstraintEEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSaISt10shared_ptrIN5mongo17optionenvironment10ConstraintEEED1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZNSaISt13_Rb_tree_nodeISt4pairIKSsSsEEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSaISt13_Rb_tree_nodeISt4pairIKSsSsEEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSaISt13_Rb_tree_nodeISt4pairIKSsSsEEEC1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZNSaISt13_Rb_tree_nodeISt4pairIKSsSsEEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSaISt13_Rb_tree_nodeISt4pairIKSsSsEEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSaISt13_Rb_tree_nodeISt4pairIKSsSsEEED1Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt10_Head_baseILm0EPN5mongo14BSONObjBuilderELb0EE7_M_headERS3_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt10_Head_baseILm0EPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEELb0EE7_M_headERKS6_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt10_Head_baseILm1ESt14default_deleteIN5mongo14BSONObjBuilderEELb1EE7_M_headERS4_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -352,30 +352,30 @@
     <elf-symbol name='_ZNSt10_Iter_baseIN9__gnu_cxx17__normal_iteratorIPKSsSt6vectorISsSaISsEEEELb1EE7_S_baseES7_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt10_Iter_baseIN9__gnu_cxx17__normal_iteratorIPSsSt6vectorISsSaISsEEEELb1EE7_S_baseES6_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt10_Iter_baseIPSsLb0EE7_S_baseES0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EE10_List_implC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EE10_List_implC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EE10_List_implC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EE10_List_implC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EE10_List_implC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EE10_List_implC1Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EE10_List_implD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EE10_List_implD2Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EE10_List_implD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EE11_M_put_nodeEPSt10_List_nodeIS2_E' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EE21_M_get_Node_allocatorEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EE7_M_initEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EE8_M_clearEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EEC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EE10_List_implC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EE10_List_implC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EE10_List_implC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EEC1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EED1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EE10_List_implC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EE10_List_implC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EE10_List_implC1Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EE10_List_implD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EE10_List_implD2Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EE10_List_implD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EE11_M_put_nodeEPSt10_List_nodeIS2_E' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EE21_M_get_Node_allocatorEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EE7_M_initEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EE8_M_clearEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EEC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EEC1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EED1Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt10_List_nodeIN5mongo17optionenvironment13OptionSectionEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt10_List_nodeIN5mongo17optionenvironment13OptionSectionEED2Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt10_List_nodeIN5mongo17optionenvironment13OptionSectionEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEED2Ev' is-defined='yes'/>
@@ -383,12 +383,12 @@
     <elf-symbol name='_ZNSt10shared_ptrIN5mongo17optionenvironment10ConstraintEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt10shared_ptrIN5mongo17optionenvironment10ConstraintEED2Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt10shared_ptrIN5mongo17optionenvironment10ConstraintEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt10unique_ptrIN5mongo14BSONObjBuilderESt14default_deleteIS1_EE11get_deleterEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt10unique_ptrIN5mongo14BSONObjBuilderESt14default_deleteIS1_EED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt10unique_ptrIN5mongo14BSONObjBuilderESt14default_deleteIS1_EED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt10unique_ptrIN5mongo14BSONObjBuilderESt14default_deleteIS1_EED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt11_Tuple_implILm0EIPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEE7_M_headERS5_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt11_Tuple_implILm0EIPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEESt14default_deleteIS4_EEE7_M_headERKS8_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt11_Tuple_implILm0EJPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEE7_M_headERS5_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt11_Tuple_implILm0EIPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEE7_M_headERS5_' is-defined='yes'/>
-    <elf-symbol name='_ZNSt11_Tuple_implILm0EJPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEESt14default_deleteIS4_EEE7_M_headERKS8_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt11_Tuple_implILm0EIPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEESt14default_deleteIS4_EEE7_M_headERKS8_' is-defined='yes'/>
+    <elf-symbol name='_ZNSt10unique_ptrIN5mongo14BSONObjBuilderESt14default_deleteIS1_EED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt10unique_ptrIN5mongo14BSONObjBuilderESt14default_deleteIS1_EED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt10unique_ptrIN5mongo14BSONObjBuilderESt14default_deleteIS1_EED1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZNSt11_Tuple_implILm0EIPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEE7_M_headERS5_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt11_Tuple_implILm0EJPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEE7_M_headERS5_' is-defined='yes'/>
+    <elf-symbol name='_ZNSt11_Tuple_implILm0EIPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEESt14default_deleteIS4_EEE7_M_headERKS8_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt11_Tuple_implILm0EJPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEESt14default_deleteIS4_EEE7_M_headERKS8_' is-defined='yes'/>
+    <elf-symbol name='_ZNSt11_Tuple_implILm0EJPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEE7_M_headERS5_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt11_Tuple_implILm0EJPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEESt14default_deleteIS4_EEE7_M_headERKS8_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt11_Tuple_implILm1EISt14default_deleteIN5mongo14BSONObjBuilderEEEE7_M_headERS4_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt11_Tuple_implILm1EJSt14default_deleteIN5mongo14BSONObjBuilderEEEE7_M_headERS4_' is-defined='yes'/>
     <elf-symbol name='_ZNSt11_Tuple_implILm1EJSt14default_deleteIN5mongo14BSONObjBuilderEEEE7_M_headERS4_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt11__copy_moveILb0ELb0ESt26random_access_iterator_tagE8__copy_mIPKSsPSsEET0_T_S7_S6_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -398,31 +398,31 @@
     <elf-symbol name='_ZNSt12_Destroy_auxILb0EE9__destroyIPSt10shared_ptrIN5mongo17optionenvironment10ConstraintEEEEvT_S8_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEE11_M_allocateEm' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEE12_Vector_impl12_M_swap_dataERS2_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEE12_Vector_implC1ERKS0_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt12_Vector_baseISsSaISsEE12_Vector_implC2ERKS0_' is-defined='yes'/>
-    <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEE12_Vector_implC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt12_Vector_baseISsSaISsEE12_Vector_implC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEE12_Vector_implC2ERKS0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEE12_Vector_implC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEE12_Vector_implC1ERKS0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEE12_Vector_implC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEE12_Vector_implC2ERKS0_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt12_Vector_baseISsSaISsEE12_Vector_implC1ERKS0_' is-defined='yes'/>
+    <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEE12_Vector_implC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt12_Vector_baseISsSaISsEE12_Vector_implC1Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEE12_Vector_implD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt12_Vector_baseISsSaISsEE12_Vector_implD2Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEE12_Vector_implD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEE13_M_deallocateEPSsm' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEE19_M_get_Tp_allocatorEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEEC1ERKS0_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt12_Vector_baseISsSaISsEEC2ERKS0_' is-defined='yes'/>
-    <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt12_Vector_baseISsSaISsEEC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEEC2ERKS0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt12_Vector_baseISsSaISsEED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEEC1ERKS0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEEC2ERKS0_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt12_Vector_baseISsSaISsEEC1ERKS0_' is-defined='yes'/>
+    <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt12_Vector_baseISsSaISsEEC1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt12_Vector_baseISsSaISsEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt12_Vector_baseISsSaISsEED1Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt12_Vector_baseISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EE12_Vector_implD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt12_Vector_baseISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EE12_Vector_implD2Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt12_Vector_baseISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EE12_Vector_implD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt12_Vector_baseISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EE13_M_deallocateEPS4_m' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt12_Vector_baseISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EE19_M_get_Tp_allocatorEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt12_Vector_baseISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt12_Vector_baseISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt12_Vector_baseISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt12__shared_ptrIN5mongo17optionenvironment10ConstraintELN9__gnu_cxx12_Lock_policyE2EED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt12__shared_ptrIN5mongo17optionenvironment10ConstraintELN9__gnu_cxx12_Lock_policyE2EED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt12__shared_ptrIN5mongo17optionenvironment10ConstraintELN9__gnu_cxx12_Lock_policyE2EED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt12_Vector_baseISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt12_Vector_baseISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt12_Vector_baseISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EED1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZNSt12__shared_ptrIN5mongo17optionenvironment10ConstraintELN9__gnu_cxx12_Lock_policyE2EED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt12__shared_ptrIN5mongo17optionenvironment10ConstraintELN9__gnu_cxx12_Lock_policyE2EED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt12__shared_ptrIN5mongo17optionenvironment10ConstraintELN9__gnu_cxx12_Lock_policyE2EED1Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt13_Rb_tree_nodeISt4pairIKSsSsEE9_M_valptrEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt13move_iteratorIPSsEC1ES0_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt13move_iteratorIPSsEC2ES0_' is-defined='yes'/>
-    <elf-symbol name='_ZNSt13move_iteratorIPSsEC2ES0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt13move_iteratorIPSsEC1ES0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt13move_iteratorIPSsEC2ES0_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt13move_iteratorIPSsEC1ES0_' is-defined='yes'/>
     <elf-symbol name='_ZNSt13move_iteratorIPSsEppEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt14_Function_base13_Base_managerIPFN5mongo6StatusEPNS1_18InitializerContextEEE10_M_destroyERSt9_Any_dataSt17integral_constantIbLb1EE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt14_Function_base13_Base_managerIPFN5mongo6StatusEPNS1_18InitializerContextEEE10_M_managerERSt9_Any_dataRKS8_St18_Manager_operation' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -431,34 +431,34 @@
     <elf-symbol name='_ZNSt14_Function_base13_Base_managerIPFN5mongo6StatusEPNS1_18InitializerContextEEE15_M_init_functorERSt9_Any_dataOS6_St17integral_constantIbLb1EE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt14_Function_base13_Base_managerIPFN5mongo6StatusEPNS1_18InitializerContextEEE21_M_not_empty_functionIS5_EEbRKPT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt14_Function_base13_Base_managerIPFN5mongo6StatusEPNS1_18InitializerContextEEE8_M_cloneERSt9_Any_dataRKS8_St17integral_constantIbLb1EE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt14_Function_baseC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt14_Function_baseC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt14_Function_baseC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt14_Function_baseD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt14_Function_baseD2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt14_Function_baseD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt14_Function_baseC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt14_Function_baseC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt14_Function_baseC1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZNSt14_Function_baseD1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt14_Function_baseD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt14_Function_baseD1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EED1Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt14unary_functionIPN5mongo18InitializerContextENS0_6StatusEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt14unary_functionIPN5mongo18InitializerContextENS0_6StatusEEC2Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt14unary_functionIPN5mongo18InitializerContextENS0_6StatusEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt16allocator_traitsISaISsEE10_S_destroyISsEENSt9enable_ifIXsrSt6__and_IINS1_16__destroy_helperIT_E4typeEEE5valueEvE4typeERS0_PS6_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt16allocator_traitsISaISsEE10_S_destroyISsEENSt9enable_ifIXsrSt6__and_IJNS1_16__destroy_helperIT_E4typeEEE5valueEvE4typeERS0_PS6_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt16allocator_traitsISaISsEE10_S_destroyISsEENSt9enable_ifIXsrSt6__and_IINS1_16__destroy_helperIT_E4typeEEE5valueEvE4typeERS0_PS6_' is-defined='yes'/>
+    <elf-symbol name='_ZNSt16allocator_traitsISaISsEE10_S_destroyISsEENSt9enable_ifIXsrSt6__and_IINS1_16__destroy_helperIT_E4typeEEE5valueEvE4typeERS0_PS6_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt16allocator_traitsISaISsEE10_S_destroyISsEENSt9enable_ifIXsrSt6__and_IJNS1_16__destroy_helperIT_E4typeEEE5valueEvE4typeERS0_PS6_' is-defined='yes'/>
+    <elf-symbol name='_ZNSt16allocator_traitsISaISsEE10_S_destroyISsEENSt9enable_ifIXsrSt6__and_IJNS1_16__destroy_helperIT_E4typeEEE5valueEvE4typeERS0_PS6_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt16allocator_traitsISaISsEE10deallocateERS0_PSsm' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt16allocator_traitsISaISsEE11_S_max_sizeIKS0_vEEmRT_i' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt16allocator_traitsISaISsEE12_S_constructISsISsEEENSt9enable_ifIXsrSt6__and_IINS1_18__construct_helperIT_IDpT0_EE4typeEEE5valueEvE4typeERS0_PS6_DpOS7_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt16allocator_traitsISaISsEE12_S_constructISsJSsEEENSt9enable_ifIXsrSt6__and_IJNS1_18__construct_helperIT_JDpT0_EE4typeEEE5valueEvE4typeERS0_PS6_DpOS7_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt16allocator_traitsISaISsEE12_S_constructISsISsEEENSt9enable_ifIXsrSt6__and_IINS1_18__construct_helperIT_IDpT0_EE4typeEEE5valueEvE4typeERS0_PS6_DpOS7_' is-defined='yes'/>
+    <elf-symbol name='_ZNSt16allocator_traitsISaISsEE12_S_constructISsISsEEENSt9enable_ifIXsrSt6__and_IINS1_18__construct_helperIT_IDpT0_EE4typeEEE5valueEvE4typeERS0_PS6_DpOS7_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt16allocator_traitsISaISsEE12_S_constructISsJSsEEENSt9enable_ifIXsrSt6__and_IJNS1_18__construct_helperIT_JDpT0_EE4typeEEE5valueEvE4typeERS0_PS6_DpOS7_' is-defined='yes'/>
+    <elf-symbol name='_ZNSt16allocator_traitsISaISsEE12_S_constructISsJSsEEENSt9enable_ifIXsrSt6__and_IJNS1_18__construct_helperIT_JDpT0_EE4typeEEE5valueEvE4typeERS0_PS6_DpOS7_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt16allocator_traitsISaISsEE7destroyISsEEvRS0_PT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt16allocator_traitsISaISsEE8allocateERS0_m' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt16allocator_traitsISaISsEE8max_sizeERKS0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt16allocator_traitsISaISsEE9constructISsISsEEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERS0_PT_DpOS3_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt16allocator_traitsISaISsEE9constructISsJSsEEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERS0_PT_DpOS3_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt16allocator_traitsISaISsEE9constructISsISsEEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERS0_PT_DpOS3_' is-defined='yes'/>
+    <elf-symbol name='_ZNSt16allocator_traitsISaISsEE9constructISsISsEEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERS0_PT_DpOS3_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt16allocator_traitsISaISsEE9constructISsJSsEEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERS0_PT_DpOS3_' is-defined='yes'/>
+    <elf-symbol name='_ZNSt16allocator_traitsISaISsEE9constructISsJSsEEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERS0_PT_DpOS3_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt16allocator_traitsISaISt10shared_ptrIN5mongo17optionenvironment10ConstraintEEEE10deallocateERS5_PS4_m' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt16allocator_traitsISaISt13_Rb_tree_nodeISt4pairIKSsSsEEEE10_S_destroyIS3_EENSt9enable_ifIXsrSt6__and_IINS6_16__destroy_helperIT_E4typeEEE5valueEvE4typeERS5_PSB_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt16allocator_traitsISaISt13_Rb_tree_nodeISt4pairIKSsSsEEEE10_S_destroyIS3_EENSt9enable_ifIXsrSt6__and_IJNS6_16__destroy_helperIT_E4typeEEE5valueEvE4typeERS5_PSB_' is-defined='yes'/>
     <elf-symbol name='_ZNSt16allocator_traitsISaISt13_Rb_tree_nodeISt4pairIKSsSsEEEE10_S_destroyIS3_EENSt9enable_ifIXsrSt6__and_IJNS6_16__destroy_helperIT_E4typeEEE5valueEvE4typeERS5_PSB_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt16allocator_traitsISaISt13_Rb_tree_nodeISt4pairIKSsSsEEEE10deallocateERS5_PS4_m' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt16allocator_traitsISaISt13_Rb_tree_nodeISt4pairIKSsSsEEEE7destroyIS3_EEvRS5_PT_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt17_Function_handlerIFN5mongo6StatusEPNS0_18InitializerContextEEPS4_E9_M_invokeERKSt9_Any_dataS3_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt17_Rb_tree_iteratorISt4pairIKSsSsEEC1EPSt13_Rb_tree_nodeIS2_E' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt17_Rb_tree_iteratorISt4pairIKSsSsEEC2EPSt13_Rb_tree_nodeIS2_E' is-defined='yes'/>
-    <elf-symbol name='_ZNSt17_Rb_tree_iteratorISt4pairIKSsSsEEC2EPSt13_Rb_tree_nodeIS2_E' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt17_Rb_tree_iteratorISt4pairIKSsSsEEC1EPSt13_Rb_tree_nodeIS2_E' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt17_Rb_tree_iteratorISt4pairIKSsSsEEC2EPSt13_Rb_tree_nodeIS2_E' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt17_Rb_tree_iteratorISt4pairIKSsSsEEC1EPSt13_Rb_tree_nodeIS2_E' is-defined='yes'/>
     <elf-symbol name='_ZNSt17_Rb_tree_iteratorISt4pairIKSsSsEEppEi' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt20__uninitialized_copyILb0EE13__uninit_copyIN9__gnu_cxx17__normal_iteratorIPKSsSt6vectorISsSaISsEEEEPSsEET0_T_SC_SB_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt20__uninitialized_copyILb0EE13__uninit_copyIPSsS2_EET0_T_S4_S3_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -469,12 +469,12 @@
     <elf-symbol name='_ZNSt31_Maybe_unary_or_binary_functionIN5mongo6StatusEJPNS0_18InitializerContextEEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt3mapISsSsSt4lessISsESaISt4pairIKSsSsEEE3endEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt3mapISsSsSt4lessISsESaISt4pairIKSsSsEEE5beginEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt3mapISsSsSt4lessISsESaISt4pairIKSsSsEEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt3mapISsSsSt4lessISsESaISt4pairIKSsSsEEEC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt3mapISsSsSt4lessISsESaISt4pairIKSsSsEEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt3mapISsSsSt4lessISsESaISt4pairIKSsSsEEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt3mapISsSsSt4lessISsESaISt4pairIKSsSsEEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt3mapISsSsSt4lessISsESaISt4pairIKSsSsEEEC1Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt3mapISsSsSt4lessISsESaISt4pairIKSsSsEEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt3mapISsSsSt4lessISsESaISt4pairIKSsSsEEED2Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt3mapISsSsSt4lessISsESaISt4pairIKSsSsEEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt4listIN5mongo17optionenvironment13OptionSectionESaIS2_EEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt4listIN5mongo17optionenvironment13OptionSectionESaIS2_EEC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt4listIN5mongo17optionenvironment13OptionSectionESaIS2_EEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt4listIN5mongo17optionenvironment13OptionSectionESaIS2_EEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt4listIN5mongo17optionenvironment13OptionSectionESaIS2_EEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt4listIN5mongo17optionenvironment13OptionSectionESaIS2_EEC1Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt4listIN5mongo17optionenvironment13OptionSectionESaIS2_EED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt4listIN5mongo17optionenvironment13OptionSectionESaIS2_EED2Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt4listIN5mongo17optionenvironment13OptionSectionESaIS2_EED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt4listIN5mongo17optionenvironment17OptionDescriptionESaIS2_EEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -494,20 +494,20 @@
     <elf-symbol name='_ZNSt6vectorISsSaISsEE5beginEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt6vectorISsSaISsEE5clearEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt6vectorISsSaISsEE9push_backEOSs' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt6vectorISsSaISsEEC1ERKS0_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt6vectorISsSaISsEEC2ERKS0_' is-defined='yes'/>
-    <elf-symbol name='_ZNSt6vectorISsSaISsEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt6vectorISsSaISsEEC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt6vectorISsSaISsEEC2ERKS0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt6vectorISsSaISsEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt6vectorISsSaISsEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt6vectorISsSaISsEED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt6vectorISsSaISsEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt6vectorISsSaISsEEC1ERKS0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt6vectorISsSaISsEEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt6vectorISsSaISsEEC2ERKS0_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt6vectorISsSaISsEEC1ERKS0_' is-defined='yes'/>
+    <elf-symbol name='_ZNSt6vectorISsSaISsEEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt6vectorISsSaISsEEC1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZNSt6vectorISsSaISsEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt6vectorISsSaISsEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt6vectorISsSaISsEED1Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt6vectorISsSaISsEEaSEOS1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt6vectorISsSaISsEEaSERKS1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt6vectorISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt6vectorISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt6vectorISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt6vectorISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt6vectorISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt6vectorISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EED1Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EE11_M_put_nodeEPSt13_Rb_tree_nodeIS2_E' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EE13_Rb_tree_implIS6_Lb1EE13_M_initializeEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EE13_Rb_tree_implIS6_Lb1EEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EE13_Rb_tree_implIS6_Lb1EEC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EE13_Rb_tree_implIS6_Lb1EEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EE13_Rb_tree_implIS6_Lb1EEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EE13_Rb_tree_implIS6_Lb1EEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EE13_Rb_tree_implIS6_Lb1EEC1Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EE13_Rb_tree_implIS6_Lb1EED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EE13_Rb_tree_implIS6_Lb1EED2Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EE13_Rb_tree_implIS6_Lb1EED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EE15_M_destroy_nodeEPSt13_Rb_tree_nodeIS2_E' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -518,33 +518,33 @@
     <elf-symbol name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EE8_M_beginEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EE8_M_eraseEPSt13_Rb_tree_nodeIS2_E' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EE8_S_rightEPSt18_Rb_tree_node_base' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EEC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EED2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt8functionIFN5mongo6StatusEPNS0_18InitializerContextEEEC1IPS4_vEET_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt8functionIFN5mongo6StatusEPNS0_18InitializerContextEEEC2IPS4_vEET_' is-defined='yes'/>
-    <elf-symbol name='_ZNSt8functionIFN5mongo6StatusEPNS0_18InitializerContextEEEC2IPS4_vEET_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EEC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EEC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EEC1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EED1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZNSt8functionIFN5mongo6StatusEPNS0_18InitializerContextEEEC1IPS4_vEET_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt8functionIFN5mongo6StatusEPNS0_18InitializerContextEEEC2IPS4_vEET_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt8functionIFN5mongo6StatusEPNS0_18InitializerContextEEEC1IPS4_vEET_' is-defined='yes'/>
     <elf-symbol name='_ZNSt8functionIFN5mongo6StatusEPNS0_18InitializerContextEEED1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt8functionIFN5mongo6StatusEPNS0_18InitializerContextEEED2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt8functionIFN5mongo6StatusEPNS0_18InitializerContextEEED1Ev' is-defined='yes'/>
     <elf-symbol name='_ZNSt9_Any_data9_M_accessEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt9_Any_data9_M_accessIPFN5mongo6StatusEPNS1_18InitializerContextEEEERT_v' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt9_Any_data9_M_accessIPKSt9type_infoEERT_v' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZNSt9_Any_data9_M_accessIPPFN5mongo6StatusEPNS1_18InitializerContextEEEERT_v' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZNSt9exceptionC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt9exceptionC2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZNSt9exceptionC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZSt10_ConstructISsIRKSsEEvPT_DpOT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZSt10_ConstructISsIRSsEEvPT_DpOT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZSt10_ConstructISsISsEEvPT_DpOT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZSt10_ConstructISsJRKSsEEvPT_DpOT0_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZSt10_ConstructISsIRKSsEEvPT_DpOT0_' is-defined='yes'/>
-    <elf-symbol name='_ZSt10_ConstructISsJRSsEEvPT_DpOT0_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZSt10_ConstructISsIRSsEEvPT_DpOT0_' is-defined='yes'/>
-    <elf-symbol name='_ZSt10_ConstructISsJSsEEvPT_DpOT0_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZSt10_ConstructISsISsEEvPT_DpOT0_' is-defined='yes'/>
+    <elf-symbol name='_ZNSt9exceptionC1Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZNSt9exceptionC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZNSt9exceptionC1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZSt10_ConstructISsIRKSsEEvPT_DpOT0_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZSt10_ConstructISsJRKSsEEvPT_DpOT0_' is-defined='yes'/>
+    <elf-symbol name='_ZSt10_ConstructISsIRSsEEvPT_DpOT0_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZSt10_ConstructISsJRSsEEvPT_DpOT0_' is-defined='yes'/>
+    <elf-symbol name='_ZSt10_ConstructISsISsEEvPT_DpOT0_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZSt10_ConstructISsJSsEEvPT_DpOT0_' is-defined='yes'/>
+    <elf-symbol name='_ZSt10_ConstructISsJRKSsEEvPT_DpOT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZSt10_ConstructISsJRSsEEvPT_DpOT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZSt10_ConstructISsJSsEEvPT_DpOT0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZSt11__addressofIKPFN5mongo6StatusEPNS0_18InitializerContextEEEPT_RS7_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZSt11__addressofISsEPT_RS0_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZSt11__addressofISt10shared_ptrIN5mongo17optionenvironment10ConstraintEEEPT_RS5_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZSt12__get_helperILm0EPN5mongo14BSONObjBuilderEISt14default_deleteIS1_EEENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EIS6_DpT1_EE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZSt12__get_helperILm0EPN5mongo14BSONObjBuilderEJSt14default_deleteIS1_EEENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EJS6_DpT1_EE' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZSt12__get_helperILm0EPN5mongo14BSONObjBuilderEISt14default_deleteIS1_EEENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EIS6_DpT1_EE' is-defined='yes'/>
-    <elf-symbol name='_ZSt12__get_helperILm0EPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEEISt14default_deleteIS4_EEENSt11__add_c_refIT0_E4typeERKSt11_Tuple_implIXT_EIS9_DpT1_EE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZSt12__get_helperILm0EPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEEJSt14default_deleteIS4_EEENSt11__add_c_refIT0_E4typeERKSt11_Tuple_implIXT_EJS9_DpT1_EE' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZSt12__get_helperILm0EPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEEISt14default_deleteIS4_EEENSt11__add_c_refIT0_E4typeERKSt11_Tuple_implIXT_EIS9_DpT1_EE' is-defined='yes'/>
+    <elf-symbol name='_ZSt12__get_helperILm0EPN5mongo14BSONObjBuilderEISt14default_deleteIS1_EEENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EIS6_DpT1_EE' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZSt12__get_helperILm0EPN5mongo14BSONObjBuilderEJSt14default_deleteIS1_EEENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EJS6_DpT1_EE' is-defined='yes'/>
+    <elf-symbol name='_ZSt12__get_helperILm0EPN5mongo14BSONObjBuilderEJSt14default_deleteIS1_EEENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EJS6_DpT1_EE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZSt12__get_helperILm0EPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEEISt14default_deleteIS4_EEENSt11__add_c_refIT0_E4typeERKSt11_Tuple_implIXT_EIS9_DpT1_EE' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZSt12__get_helperILm0EPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEEJSt14default_deleteIS4_EEENSt11__add_c_refIT0_E4typeERKSt11_Tuple_implIXT_EJS9_DpT1_EE' is-defined='yes'/>
+    <elf-symbol name='_ZSt12__get_helperILm0EPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEEJSt14default_deleteIS4_EEENSt11__add_c_refIT0_E4typeERKSt11_Tuple_implIXT_EJS9_DpT1_EE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZSt12__get_helperILm1ESt14default_deleteIN5mongo14BSONObjBuilderEEIEENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EIS5_DpT1_EE' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZSt12__get_helperILm1ESt14default_deleteIN5mongo14BSONObjBuilderEEJEENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EJS5_DpT1_EE' is-defined='yes'/>
     <elf-symbol name='_ZSt12__get_helperILm1ESt14default_deleteIN5mongo14BSONObjBuilderEEJEENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EJS5_DpT1_EE' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZSt12__miter_baseIN9__gnu_cxx17__normal_iteratorIPKSsSt6vectorISsSaISsEEEEENSt11_Miter_baseIT_E13iterator_typeES9_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -568,12 +568,12 @@
     <elf-symbol name='_ZSt22__uninitialized_copy_aISt13move_iteratorIPSsES1_SsET0_T_S4_S3_RSaIT1_E' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZSt32__make_move_if_noexcept_iteratorIPSsSt13move_iteratorIS0_EET0_T_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZSt34__uninitialized_move_if_noexcept_aIPSsS0_SaISsEET0_T_S3_S2_RT1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZSt3getILm0EIPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIIDpT0_EEE4typeEE4typeERSA_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZSt3getILm0EIPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIIDpT0_EEE4typeEE4typeERSA_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZSt3getILm0EJPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIJDpT0_EEE4typeEE4typeERSA_' is-defined='yes'/>
     <elf-symbol name='_ZSt3getILm0EIPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEESt14default_deleteIS4_EEENSt11__add_c_refINSt13tuple_elementIXT_ESt5tupleIIDpT0_EEE4typeEE4typeERKSD_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZSt3getILm0EJPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEESt14default_deleteIS4_EEENSt11__add_c_refINSt13tuple_elementIXT_ESt5tupleIJDpT0_EEE4typeEE4typeERKSD_' is-defined='yes'/>
-    <elf-symbol name='_ZSt3getILm0EJPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIJDpT0_EEE4typeEE4typeERSA_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZSt3getILm0EIPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIIDpT0_EEE4typeEE4typeERSA_' is-defined='yes'/>
+    <elf-symbol name='_ZSt3getILm0EJPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIJDpT0_EEE4typeEE4typeERSA_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZSt3getILm0EJPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEESt14default_deleteIS4_EEENSt11__add_c_refINSt13tuple_elementIXT_ESt5tupleIJDpT0_EEE4typeEE4typeERKSD_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZSt3getILm1EIPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIIDpT0_EEE4typeEE4typeERSA_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZSt3getILm1EJPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIJDpT0_EEE4typeEE4typeERSA_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZSt3getILm1EIPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIIDpT0_EEE4typeEE4typeERSA_' is-defined='yes'/>
+    <elf-symbol name='_ZSt3getILm1EIPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIIDpT0_EEE4typeEE4typeERSA_' type='func-type' binding='weak-binding' visibility='default-visibility' alias='_ZSt3getILm1EJPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIJDpT0_EEE4typeEE4typeERSA_' is-defined='yes'/>
+    <elf-symbol name='_ZSt3getILm1EJPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIJDpT0_EEE4typeEE4typeERSA_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZSt3maxImERKT_S2_S2_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZSt4copyIN9__gnu_cxx17__normal_iteratorIPKSsSt6vectorISsSaISsEEEENS1_IPSsS6_EEET0_T_SB_SA_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZSt4copyIPSsS0_ET0_T_S2_S1_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -3510,7 +3510,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='list' mangled-name='_ZNSt4listIN5mongo17optionenvironment13OptionSectionESaIS2_EEC2Ev' filepath='/usr/include/c++/4.9/bits/stl_list.h' line='533' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt4listIN5mongo17optionenvironment13OptionSectionESaIS2_EEC1Ev'>
+          <function-decl name='list' mangled-name='_ZNSt4listIN5mongo17optionenvironment13OptionSectionESaIS2_EEC2Ev' filepath='/usr/include/c++/4.9/bits/stl_list.h' line='533' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt4listIN5mongo17optionenvironment13OptionSectionESaIS2_EEC2Ev'>
             <parameter type-id='type-id-2118' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
@@ -3544,7 +3544,7 @@
               </function-decl>
             </member-function>
             <member-function access='public' constructor='yes'>
-              <function-decl name='_List_impl' mangled-name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EE10_List_implC2Ev' filepath='/usr/include/c++/4.9/bits/stl_list.h' line='324' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EE10_List_implC1Ev'>
+              <function-decl name='_List_impl' mangled-name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EE10_List_implC2Ev' filepath='/usr/include/c++/4.9/bits/stl_list.h' line='324' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EE10_List_implC2Ev'>
                 <parameter type-id='type-id-1773' is-artificial='yes'/>
                 <return type-id='type-id-57'/>
               </function-decl>
@@ -3591,14 +3591,14 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~_List_base' mangled-name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EED2Ev' filepath='/usr/include/c++/4.9/bits/stl_list.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EED1Ev'>
+          <function-decl name='~_List_base' mangled-name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EED2Ev' filepath='/usr/include/c++/4.9/bits/stl_list.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EED2Ev'>
             <parameter type-id='type-id-1770' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='_List_base' mangled-name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EEC2Ev' filepath='/usr/include/c++/4.9/bits/stl_list.h' line='368' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EEC1Ev'>
+          <function-decl name='_List_base' mangled-name='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EEC2Ev' filepath='/usr/include/c++/4.9/bits/stl_list.h' line='368' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt10_List_baseIN5mongo17optionenvironment13OptionSectionESaIS2_EEC2Ev'>
             <parameter type-id='type-id-1770' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
@@ -3829,7 +3829,7 @@
               </function-decl>
             </member-function>
             <member-function access='public' constructor='yes'>
-              <function-decl name='_List_impl' mangled-name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EE10_List_implC2Ev' filepath='/usr/include/c++/4.9/bits/stl_list.h' line='324' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EE10_List_implC1Ev'>
+              <function-decl name='_List_impl' mangled-name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EE10_List_implC2Ev' filepath='/usr/include/c++/4.9/bits/stl_list.h' line='324' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EE10_List_implC2Ev'>
                 <parameter type-id='type-id-1766' is-artificial='yes'/>
                 <return type-id='type-id-57'/>
               </function-decl>
@@ -3876,14 +3876,14 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~_List_base' mangled-name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EED2Ev' filepath='/usr/include/c++/4.9/bits/stl_list.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EED1Ev'>
+          <function-decl name='~_List_base' mangled-name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EED2Ev' filepath='/usr/include/c++/4.9/bits/stl_list.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EED2Ev'>
             <parameter type-id='type-id-1763' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='_List_base' mangled-name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EEC2Ev' filepath='/usr/include/c++/4.9/bits/stl_list.h' line='368' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EEC1Ev'>
+          <function-decl name='_List_base' mangled-name='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EEC2Ev' filepath='/usr/include/c++/4.9/bits/stl_list.h' line='368' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt10_List_baseIN5mongo17optionenvironment17OptionDescriptionESaIS2_EEC2Ev'>
             <parameter type-id='type-id-1763' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
@@ -3937,14 +3937,14 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~allocator' mangled-name='_ZNSaISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEED2Ev' filepath='/usr/include/c++/4.9/bits/allocator.h' line='121' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSaISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEED1Ev'>
+          <function-decl name='~allocator' mangled-name='_ZNSaISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEED2Ev' filepath='/usr/include/c++/4.9/bits/allocator.h' line='121' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSaISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEED2Ev'>
             <parameter type-id='type-id-2015' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='allocator' mangled-name='_ZNSaISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEEC2Ev' filepath='/usr/include/c++/4.9/bits/allocator.h' line='113' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSaISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEEC1Ev'>
+          <function-decl name='allocator' mangled-name='_ZNSaISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEEC2Ev' filepath='/usr/include/c++/4.9/bits/allocator.h' line='113' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSaISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEEC2Ev'>
             <parameter type-id='type-id-2015' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
@@ -4064,13 +4064,13 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='vector' mangled-name='_ZNSt6vectorISsSaISsEEC2Ev' filepath='/usr/include/c++/4.9/bits/stl_vector.h' line='253' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt6vectorISsSaISsEEC1Ev'>
+          <function-decl name='vector' mangled-name='_ZNSt6vectorISsSaISsEEC2Ev' filepath='/usr/include/c++/4.9/bits/stl_vector.h' line='253' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt6vectorISsSaISsEEC2Ev'>
             <parameter type-id='type-id-2260' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~vector' mangled-name='_ZNSt6vectorISsSaISsEED2Ev' filepath='/usr/include/c++/4.9/bits/stl_vector.h' line='423' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt6vectorISsSaISsEED1Ev'>
+          <function-decl name='~vector' mangled-name='_ZNSt6vectorISsSaISsEED2Ev' filepath='/usr/include/c++/4.9/bits/stl_vector.h' line='423' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt6vectorISsSaISsEED2Ev'>
             <parameter type-id='type-id-2260' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
@@ -4131,7 +4131,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='vector' mangled-name='_ZNSt6vectorISsSaISsEEC2ERKS0_' filepath='/usr/include/c++/4.9/bits/stl_vector.h' line='264' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt6vectorISsSaISsEEC1ERKS0_'>
+          <function-decl name='vector' mangled-name='_ZNSt6vectorISsSaISsEEC2ERKS0_' filepath='/usr/include/c++/4.9/bits/stl_vector.h' line='264' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt6vectorISsSaISsEEC2ERKS0_'>
             <parameter type-id='type-id-2260' is-artificial='yes'/>
             <parameter type-id='type-id-1504'/>
             <return type-id='type-id-57'/>
@@ -4241,13 +4241,13 @@
               </function-decl>
             </member-function>
             <member-function access='public' constructor='yes'>
-              <function-decl name='_Vector_impl' mangled-name='_ZNSt12_Vector_baseISsSaISsEE12_Vector_implC2Ev' filepath='/usr/include/c++/4.9/bits/stl_vector.h' line='86' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt12_Vector_baseISsSaISsEE12_Vector_implC1Ev'>
+              <function-decl name='_Vector_impl' mangled-name='_ZNSt12_Vector_baseISsSaISsEE12_Vector_implC2Ev' filepath='/usr/include/c++/4.9/bits/stl_vector.h' line='86' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt12_Vector_baseISsSaISsEE12_Vector_implC2Ev'>
                 <parameter type-id='type-id-1911' is-artificial='yes'/>
                 <return type-id='type-id-57'/>
               </function-decl>
             </member-function>
             <member-function access='public' constructor='yes'>
-              <function-decl name='_Vector_impl' mangled-name='_ZNSt12_Vector_baseISsSaISsEE12_Vector_implC2ERKS0_' filepath='/usr/include/c++/4.9/bits/stl_vector.h' line='90' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt12_Vector_baseISsSaISsEE12_Vector_implC1ERKS0_'>
+              <function-decl name='_Vector_impl' mangled-name='_ZNSt12_Vector_baseISsSaISsEE12_Vector_implC2ERKS0_' filepath='/usr/include/c++/4.9/bits/stl_vector.h' line='90' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt12_Vector_baseISsSaISsEE12_Vector_implC2ERKS0_'>
                 <parameter type-id='type-id-1911' is-artificial='yes'/>
                 <parameter type-id='type-id-971'/>
                 <return type-id='type-id-57'/>
@@ -4332,13 +4332,13 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='_Vector_base' mangled-name='_ZNSt12_Vector_baseISsSaISsEEC2Ev' filepath='/usr/include/c++/4.9/bits/stl_vector.h' line='124' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt12_Vector_baseISsSaISsEEC1Ev'>
+          <function-decl name='_Vector_base' mangled-name='_ZNSt12_Vector_baseISsSaISsEEC2Ev' filepath='/usr/include/c++/4.9/bits/stl_vector.h' line='124' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt12_Vector_baseISsSaISsEEC2Ev'>
             <parameter type-id='type-id-1904' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~_Vector_base' mangled-name='_ZNSt12_Vector_baseISsSaISsEED2Ev' filepath='/usr/include/c++/4.9/bits/stl_vector.h' line='159' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt12_Vector_baseISsSaISsEED1Ev'>
+          <function-decl name='~_Vector_base' mangled-name='_ZNSt12_Vector_baseISsSaISsEED2Ev' filepath='/usr/include/c++/4.9/bits/stl_vector.h' line='159' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt12_Vector_baseISsSaISsEED2Ev'>
             <parameter type-id='type-id-1904' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
@@ -4378,7 +4378,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='_Vector_base' mangled-name='_ZNSt12_Vector_baseISsSaISsEEC2ERKS0_' filepath='/usr/include/c++/4.9/bits/stl_vector.h' line='127' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt12_Vector_baseISsSaISsEEC1ERKS0_'>
+          <function-decl name='_Vector_base' mangled-name='_ZNSt12_Vector_baseISsSaISsEEC2ERKS0_' filepath='/usr/include/c++/4.9/bits/stl_vector.h' line='127' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt12_Vector_baseISsSaISsEEC2ERKS0_'>
             <parameter type-id='type-id-1904' is-artificial='yes'/>
             <parameter type-id='type-id-974'/>
             <return type-id='type-id-57'/>
@@ -4431,7 +4431,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~allocator' mangled-name='_ZNSaISsED2Ev' filepath='/usr/include/c++/4.9/bits/allocator.h' line='121' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSaISsED1Ev'>
+          <function-decl name='~allocator' mangled-name='_ZNSaISsED2Ev' filepath='/usr/include/c++/4.9/bits/allocator.h' line='121' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSaISsED2Ev'>
             <parameter type-id='type-id-2027' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
@@ -4445,7 +4445,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='allocator' mangled-name='_ZNSaISsEC2Ev' filepath='/usr/include/c++/4.9/bits/allocator.h' line='113' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSaISsEC1Ev'>
+          <function-decl name='allocator' mangled-name='_ZNSaISsEC2Ev' filepath='/usr/include/c++/4.9/bits/allocator.h' line='113' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSaISsEC2Ev'>
             <parameter type-id='type-id-2027' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
@@ -4500,7 +4500,7 @@
           <typedef-decl name='rebind_alloc' type-id='type-id-2445' filepath='/usr/include/c++/4.9/bits/alloc_traits.h' line='197' column='1' id='type-id-2444'/>
         </member-type>
         <member-function access='public' static='yes'>
-          <function-decl name='construct&lt;std::basic_string&lt;char&gt;, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' mangled-name='_ZNSt16allocator_traitsISaISsEE9constructISsISsEEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERS0_PT_DpOS3_' filepath='/usr/include/c++/4.9/bits/alloc_traits.h' line='397' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt16allocator_traitsISaISsEE9constructISsJSsEEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERS0_PT_DpOS3_'>
+          <function-decl name='construct&lt;std::basic_string&lt;char&gt;, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' mangled-name='_ZNSt16allocator_traitsISaISsEE9constructISsISsEEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERS0_PT_DpOS3_' filepath='/usr/include/c++/4.9/bits/alloc_traits.h' line='397' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt16allocator_traitsISaISsEE9constructISsISsEEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERS0_PT_DpOS3_'>
             <parameter type-id='type-id-2026' name='__a' filepath='/usr/include/c++/4.9/bits/alloc_traits.h' line='397' column='1'/>
             <parameter type-id='type-id-2072' name='__p' filepath='/usr/include/c++/4.9/bits/alloc_traits.h' line='397' column='1'/>
             <return type-id='type-id-57'/>
@@ -4515,7 +4515,7 @@
           </function-decl>
         </member-function>
         <member-function access='private' static='yes'>
-          <function-decl name='_S_construct&lt;std::basic_string&lt;char&gt;, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' mangled-name='_ZNSt16allocator_traitsISaISsEE12_S_constructISsISsEEENSt9enable_ifIXsrSt6__and_IINS1_18__construct_helperIT_IDpT0_EE4typeEEE5valueEvE4typeERS0_PS6_DpOS7_' filepath='/usr/include/c++/4.9/bits/alloc_traits.h' line='252' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt16allocator_traitsISaISsEE12_S_constructISsJSsEEENSt9enable_ifIXsrSt6__and_IJNS1_18__construct_helperIT_JDpT0_EE4typeEEE5valueEvE4typeERS0_PS6_DpOS7_'>
+          <function-decl name='_S_construct&lt;std::basic_string&lt;char&gt;, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' mangled-name='_ZNSt16allocator_traitsISaISsEE12_S_constructISsISsEEENSt9enable_ifIXsrSt6__and_IINS1_18__construct_helperIT_IDpT0_EE4typeEEE5valueEvE4typeERS0_PS6_DpOS7_' filepath='/usr/include/c++/4.9/bits/alloc_traits.h' line='252' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt16allocator_traitsISaISsEE12_S_constructISsISsEEENSt9enable_ifIXsrSt6__and_IINS1_18__construct_helperIT_IDpT0_EE4typeEEE5valueEvE4typeERS0_PS6_DpOS7_'>
             <parameter type-id='type-id-2026' name='__a' filepath='/usr/include/c++/4.9/bits/alloc_traits.h' line='397' column='1'/>
             <parameter type-id='type-id-2072' name='__p' filepath='/usr/include/c++/4.9/bits/alloc_traits.h' line='397' column='1'/>
             <return type-id='type-id-57'/>
@@ -4536,7 +4536,7 @@
           </function-decl>
         </member-function>
         <member-function access='private' static='yes'>
-          <function-decl name='_S_destroy&lt;std::basic_string&lt;char&gt; &gt;' mangled-name='_ZNSt16allocator_traitsISaISsEE10_S_destroyISsEENSt9enable_ifIXsrSt6__and_IINS1_16__destroy_helperIT_E4typeEEE5valueEvE4typeERS0_PS6_' filepath='/usr/include/c++/4.9/bits/alloc_traits.h' line='281' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt16allocator_traitsISaISsEE10_S_destroyISsEENSt9enable_ifIXsrSt6__and_IJNS1_16__destroy_helperIT_E4typeEEE5valueEvE4typeERS0_PS6_'>
+          <function-decl name='_S_destroy&lt;std::basic_string&lt;char&gt; &gt;' mangled-name='_ZNSt16allocator_traitsISaISsEE10_S_destroyISsEENSt9enable_ifIXsrSt6__and_IINS1_16__destroy_helperIT_E4typeEEE5valueEvE4typeERS0_PS6_' filepath='/usr/include/c++/4.9/bits/alloc_traits.h' line='281' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt16allocator_traitsISaISsEE10_S_destroyISsEENSt9enable_ifIXsrSt6__and_IINS1_16__destroy_helperIT_E4typeEEE5valueEvE4typeERS0_PS6_'>
             <parameter type-id='type-id-2026' name='__a' filepath='/usr/include/c++/4.9/bits/alloc_traits.h' line='397' column='1'/>
             <parameter type-id='type-id-2072' name='__p' filepath='/usr/include/c++/4.9/bits/alloc_traits.h' line='397' column='1'/>
             <return type-id='type-id-57'/>
@@ -4722,7 +4722,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='map' mangled-name='_ZNSt3mapISsSsSt4lessISsESaISt4pairIKSsSsEEEC2Ev' filepath='/usr/include/c++/4.9/bits/stl_map.h' line='162' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt3mapISsSsSt4lessISsESaISt4pairIKSsSsEEEC1Ev'>
+          <function-decl name='map' mangled-name='_ZNSt3mapISsSsSt4lessISsESaISt4pairIKSsSsEEEC2Ev' filepath='/usr/include/c++/4.9/bits/stl_map.h' line='162' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt3mapISsSsSt4lessISsESaISt4pairIKSsSsEEEC2Ev'>
             <parameter type-id='type-id-2132' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
@@ -4776,7 +4776,7 @@
               </function-decl>
             </member-function>
             <member-function access='public'>
-              <function-decl name='_Rb_tree_impl' mangled-name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EE13_Rb_tree_implIS6_Lb1EEC2Ev' filepath='/usr/include/c++/4.9/bits/stl_tree.h' line='461' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EE13_Rb_tree_implIS6_Lb1EEC1Ev'>
+              <function-decl name='_Rb_tree_impl' mangled-name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EE13_Rb_tree_implIS6_Lb1EEC2Ev' filepath='/usr/include/c++/4.9/bits/stl_tree.h' line='461' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EE13_Rb_tree_implIS6_Lb1EEC2Ev'>
                 <parameter type-id='type-id-1816' is-artificial='yes'/>
                 <return type-id='type-id-57'/>
               </function-decl>
@@ -4901,14 +4901,14 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~_Rb_tree' mangled-name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EED2Ev' filepath='/usr/include/c++/4.9/bits/stl_tree.h' line='714' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EED1Ev'>
+          <function-decl name='~_Rb_tree' mangled-name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EED2Ev' filepath='/usr/include/c++/4.9/bits/stl_tree.h' line='714' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EED2Ev'>
             <parameter type-id='type-id-1809' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='_Rb_tree' mangled-name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EEC2Ev' filepath='/usr/include/c++/4.9/bits/stl_tree.h' line='664' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EEC1Ev'>
+          <function-decl name='_Rb_tree' mangled-name='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EEC2Ev' filepath='/usr/include/c++/4.9/bits/stl_tree.h' line='664' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt8_Rb_treeISsSt4pairIKSsSsESt10_Select1stIS2_ESt4lessISsESaIS2_EEC2Ev'>
             <parameter type-id='type-id-1809' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
@@ -5003,14 +5003,14 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~allocator' mangled-name='_ZNSaISt13_Rb_tree_nodeISt4pairIKSsSsEEED2Ev' filepath='/usr/include/c++/4.9/bits/allocator.h' line='121' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSaISt13_Rb_tree_nodeISt4pairIKSsSsEEED1Ev'>
+          <function-decl name='~allocator' mangled-name='_ZNSaISt13_Rb_tree_nodeISt4pairIKSsSsEEED2Ev' filepath='/usr/include/c++/4.9/bits/allocator.h' line='121' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSaISt13_Rb_tree_nodeISt4pairIKSsSsEEED2Ev'>
             <parameter type-id='type-id-2022' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='allocator' mangled-name='_ZNSaISt13_Rb_tree_nodeISt4pairIKSsSsEEEC2Ev' filepath='/usr/include/c++/4.9/bits/allocator.h' line='113' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSaISt13_Rb_tree_nodeISt4pairIKSsSsEEEC1Ev'>
+          <function-decl name='allocator' mangled-name='_ZNSaISt13_Rb_tree_nodeISt4pairIKSsSsEEEC2Ev' filepath='/usr/include/c++/4.9/bits/allocator.h' line='113' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSaISt13_Rb_tree_nodeISt4pairIKSsSsEEEC2Ev'>
             <parameter type-id='type-id-2022' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
@@ -5250,7 +5250,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='_Rb_tree_iterator' mangled-name='_ZNSt17_Rb_tree_iteratorISt4pairIKSsSsEEC2EPSt13_Rb_tree_nodeIS2_E' filepath='/usr/include/c++/4.9/bits/stl_tree.h' line='189' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt17_Rb_tree_iteratorISt4pairIKSsSsEEC1EPSt13_Rb_tree_nodeIS2_E'>
+          <function-decl name='_Rb_tree_iterator' mangled-name='_ZNSt17_Rb_tree_iteratorISt4pairIKSsSsEEC2EPSt13_Rb_tree_nodeIS2_E' filepath='/usr/include/c++/4.9/bits/stl_tree.h' line='189' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt17_Rb_tree_iteratorISt4pairIKSsSsEEC2EPSt13_Rb_tree_nodeIS2_E'>
             <parameter type-id='type-id-1819' is-artificial='yes'/>
             <parameter type-id='type-id-2510'/>
             <return type-id='type-id-57'/>
@@ -5475,7 +5475,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~vector' mangled-name='_ZNSt6vectorISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EED2Ev' filepath='/usr/include/c++/4.9/bits/stl_vector.h' line='423' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt6vectorISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EED1Ev'>
+          <function-decl name='~vector' mangled-name='_ZNSt6vectorISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EED2Ev' filepath='/usr/include/c++/4.9/bits/stl_vector.h' line='423' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt6vectorISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EED2Ev'>
             <parameter type-id='type-id-2266' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
@@ -5587,7 +5587,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~_Vector_base' mangled-name='_ZNSt12_Vector_baseISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EED2Ev' filepath='/usr/include/c++/4.9/bits/stl_vector.h' line='159' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt12_Vector_baseISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EED1Ev'>
+          <function-decl name='~_Vector_base' mangled-name='_ZNSt12_Vector_baseISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EED2Ev' filepath='/usr/include/c++/4.9/bits/stl_vector.h' line='159' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt12_Vector_baseISt10shared_ptrIN5mongo17optionenvironment10ConstraintEESaIS4_EED2Ev'>
             <parameter type-id='type-id-1914' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
@@ -5647,7 +5647,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~allocator' mangled-name='_ZNSaISt10shared_ptrIN5mongo17optionenvironment10ConstraintEEED2Ev' filepath='/usr/include/c++/4.9/bits/allocator.h' line='121' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSaISt10shared_ptrIN5mongo17optionenvironment10ConstraintEEED1Ev'>
+          <function-decl name='~allocator' mangled-name='_ZNSaISt10shared_ptrIN5mongo17optionenvironment10ConstraintEEED2Ev' filepath='/usr/include/c++/4.9/bits/allocator.h' line='121' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSaISt10shared_ptrIN5mongo17optionenvironment10ConstraintEEED2Ev'>
             <parameter type-id='type-id-2037' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
@@ -5728,7 +5728,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~__shared_ptr' mangled-name='_ZNSt12__shared_ptrIN5mongo17optionenvironment10ConstraintELN9__gnu_cxx12_Lock_policyE2EED2Ev' filepath='/usr/include/c++/4.9/bits/shared_ptr_base.h' line='914' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt12__shared_ptrIN5mongo17optionenvironment10ConstraintELN9__gnu_cxx12_Lock_policyE2EED1Ev'>
+          <function-decl name='~__shared_ptr' mangled-name='_ZNSt12__shared_ptrIN5mongo17optionenvironment10ConstraintELN9__gnu_cxx12_Lock_policyE2EED2Ev' filepath='/usr/include/c++/4.9/bits/shared_ptr_base.h' line='914' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt12__shared_ptrIN5mongo17optionenvironment10ConstraintELN9__gnu_cxx12_Lock_policyE2EED2Ev'>
             <parameter type-id='type-id-1997' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
@@ -7256,7 +7256,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~__shared_count' mangled-name='_ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EED2Ev' filepath='/usr/include/c++/4.9/bits/shared_ptr_base.h' line='663' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EED1Ev'>
+          <function-decl name='~__shared_count' mangled-name='_ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EED2Ev' filepath='/usr/include/c++/4.9/bits/shared_ptr_base.h' line='663' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EED2Ev'>
             <parameter type-id='type-id-1994' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
@@ -8548,7 +8548,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~unique_ptr' mangled-name='_ZNSt10unique_ptrIN5mongo14BSONObjBuilderESt14default_deleteIS1_EED2Ev' filepath='/usr/include/c++/4.9/bits/unique_ptr.h' line='232' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt10unique_ptrIN5mongo14BSONObjBuilderESt14default_deleteIS1_EED1Ev'>
+          <function-decl name='~unique_ptr' mangled-name='_ZNSt10unique_ptrIN5mongo14BSONObjBuilderESt14default_deleteIS1_EED2Ev' filepath='/usr/include/c++/4.9/bits/unique_ptr.h' line='232' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt10unique_ptrIN5mongo14BSONObjBuilderESt14default_deleteIS1_EED2Ev'>
             <parameter type-id='type-id-2217' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
@@ -8627,7 +8627,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' static='yes'>
-          <function-decl name='_M_head' mangled-name='_ZNSt11_Tuple_implILm0EIPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEE7_M_headERS5_' filepath='/usr/include/c++/4.9/tuple' line='241' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt11_Tuple_implILm0EJPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEE7_M_headERS5_'>
+          <function-decl name='_M_head' mangled-name='_ZNSt11_Tuple_implILm0EIPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEE7_M_headERS5_' filepath='/usr/include/c++/4.9/tuple' line='241' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt11_Tuple_implILm0EIPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEE7_M_headERS5_'>
             <parameter type-id='type-id-1838' name='__t' filepath='/usr/include/c++/4.9/tuple' line='241' column='1'/>
             <return type-id='type-id-1574'/>
           </function-decl>
@@ -8848,7 +8848,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' static='yes'>
-          <function-decl name='_M_head' mangled-name='_ZNSt11_Tuple_implILm0EIPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEESt14default_deleteIS4_EEE7_M_headERKS8_' filepath='/usr/include/c++/4.9/tuple' line='244' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt11_Tuple_implILm0EJPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEESt14default_deleteIS4_EEE7_M_headERKS8_'>
+          <function-decl name='_M_head' mangled-name='_ZNSt11_Tuple_implILm0EIPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEESt14default_deleteIS4_EEE7_M_headERKS8_' filepath='/usr/include/c++/4.9/tuple' line='244' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt11_Tuple_implILm0EIPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEESt14default_deleteIS4_EEE7_M_headERKS8_'>
             <parameter type-id='type-id-892' name='__t' filepath='/usr/include/c++/4.9/tuple' line='244' column='1'/>
             <return type-id='type-id-2066'/>
           </function-decl>
@@ -9064,7 +9064,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='move_iterator' mangled-name='_ZNSt13move_iteratorIPSsEC2ES0_' filepath='/usr/include/c++/4.9/bits/stl_iterator.h' line='967' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt13move_iteratorIPSsEC1ES0_'>
+          <function-decl name='move_iterator' mangled-name='_ZNSt13move_iteratorIPSsEC2ES0_' filepath='/usr/include/c++/4.9/bits/stl_iterator.h' line='967' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt13move_iteratorIPSsEC2ES0_'>
             <parameter type-id='type-id-2139' is-artificial='yes'/>
             <parameter type-id='type-id-2842'/>
             <return type-id='type-id-57'/>
@@ -9278,13 +9278,13 @@
           </function-decl>
         </member-function>
         <member-function access='public' constructor='yes'>
-          <function-decl name='_Function_base' mangled-name='_ZNSt14_Function_baseC2Ev' filepath='/usr/include/c++/4.9/functional' line='1993' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt14_Function_baseC1Ev'>
+          <function-decl name='_Function_base' mangled-name='_ZNSt14_Function_baseC2Ev' filepath='/usr/include/c++/4.9/functional' line='1993' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt14_Function_baseC2Ev'>
             <parameter type-id='type-id-1730' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~_Function_base' mangled-name='_ZNSt14_Function_baseD2Ev' filepath='/usr/include/c++/4.9/functional' line='1995' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt14_Function_baseD1Ev'>
+          <function-decl name='~_Function_base' mangled-name='_ZNSt14_Function_baseD2Ev' filepath='/usr/include/c++/4.9/functional' line='1995' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt14_Function_baseD2Ev'>
             <parameter type-id='type-id-1730' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
@@ -9864,7 +9864,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='function&lt;mongo::Status (*)(mongo::InitializerContext*), void&gt;' mangled-name='_ZNSt8functionIFN5mongo6StatusEPNS0_18InitializerContextEEEC2IPS4_vEET_' filepath='/usr/include/c++/4.9/functional' line='2418' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt8functionIFN5mongo6StatusEPNS0_18InitializerContextEEEC1IPS4_vEET_'>
+          <function-decl name='function&lt;mongo::Status (*)(mongo::InitializerContext*), void&gt;' mangled-name='_ZNSt8functionIFN5mongo6StatusEPNS0_18InitializerContextEEEC2IPS4_vEET_' filepath='/usr/include/c++/4.9/functional' line='2418' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt8functionIFN5mongo6StatusEPNS0_18InitializerContextEEEC2IPS4_vEET_'>
             <parameter type-id='type-id-2098' is-artificial='yes'/>
             <parameter type-id='type-id-235'/>
             <return type-id='type-id-57'/>
@@ -10983,7 +10983,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' constructor='yes'>
-          <function-decl name='exception' mangled-name='_ZNSt9exceptionC2Ev' filepath='/usr/include/c++/4.9/exception' line='63' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt9exceptionC1Ev'>
+          <function-decl name='exception' mangled-name='_ZNSt9exceptionC2Ev' filepath='/usr/include/c++/4.9/exception' line='63' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt9exceptionC2Ev'>
             <parameter type-id='type-id-2095' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
@@ -11153,11 +11153,11 @@
         <parameter type-id='type-id-2071' name='__rhs' filepath='/usr/include/c++/4.9/bits/basic_string.h' line='2456' column='1'/>
         <return type-id='type-id-37'/>
       </function-decl>
-      <function-decl name='__get_helper&lt;0ul, mongo::BSONObjBuilder*, std::default_delete&lt;mongo::BSONObjBuilder&gt; &gt;' mangled-name='_ZSt12__get_helperILm0EPN5mongo14BSONObjBuilderEISt14default_deleteIS1_EEENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EIS6_DpT1_EE' filepath='/usr/include/c++/4.9/tuple' line='745' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt12__get_helperILm0EPN5mongo14BSONObjBuilderEJSt14default_deleteIS1_EEENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EJS6_DpT1_EE'>
+      <function-decl name='__get_helper&lt;0ul, mongo::BSONObjBuilder*, std::default_delete&lt;mongo::BSONObjBuilder&gt; &gt;' mangled-name='_ZSt12__get_helperILm0EPN5mongo14BSONObjBuilderEISt14default_deleteIS1_EEENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EIS6_DpT1_EE' filepath='/usr/include/c++/4.9/tuple' line='745' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt12__get_helperILm0EPN5mongo14BSONObjBuilderEISt14default_deleteIS1_EEENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EIS6_DpT1_EE'>
         <parameter type-id='type-id-1838' name='__t' filepath='/usr/include/c++/4.9/tuple' line='745' column='1'/>
         <return type-id='type-id-2323'/>
       </function-decl>
-      <function-decl name='get&lt;0ul, mongo::BSONObjBuilder*, std::default_delete&lt;mongo::BSONObjBuilder&gt; &gt;' mangled-name='_ZSt3getILm0EIPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIIDpT0_EEE4typeEE4typeERSA_' filepath='/usr/include/c++/4.9/tuple' line='758' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt3getILm0EJPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIJDpT0_EEE4typeEE4typeERSA_'>
+      <function-decl name='get&lt;0ul, mongo::BSONObjBuilder*, std::default_delete&lt;mongo::BSONObjBuilder&gt; &gt;' mangled-name='_ZSt3getILm0EIPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIIDpT0_EEE4typeEE4typeERSA_' filepath='/usr/include/c++/4.9/tuple' line='758' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt3getILm0EIPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIIDpT0_EEE4typeEE4typeERSA_'>
         <parameter type-id='type-id-2206' name='__t' filepath='/usr/include/c++/4.9/tuple' line='758' column='1'/>
         <return type-id='type-id-2323'/>
       </function-decl>
@@ -11178,7 +11178,7 @@
         <parameter type-id='type-id-241' name='__t' filepath='/usr/include/c++/4.9/bits/move.h' line='101' column='1'/>
         <return type-id='type-id-2171'/>
       </function-decl>
-      <function-decl name='__get_helper&lt;0ul, std::basic_ostringstream&lt;char&gt;*, std::default_delete&lt;std::basic_ostringstream&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' mangled-name='_ZSt12__get_helperILm0EPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEEISt14default_deleteIS4_EEENSt11__add_c_refIT0_E4typeERKSt11_Tuple_implIXT_EIS9_DpT1_EE' filepath='/usr/include/c++/4.9/tuple' line='750' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt12__get_helperILm0EPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEEJSt14default_deleteIS4_EEENSt11__add_c_refIT0_E4typeERKSt11_Tuple_implIXT_EJS9_DpT1_EE'>
+      <function-decl name='__get_helper&lt;0ul, std::basic_ostringstream&lt;char&gt;*, std::default_delete&lt;std::basic_ostringstream&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' mangled-name='_ZSt12__get_helperILm0EPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEEISt14default_deleteIS4_EEENSt11__add_c_refIT0_E4typeERKSt11_Tuple_implIXT_EIS9_DpT1_EE' filepath='/usr/include/c++/4.9/tuple' line='750' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt12__get_helperILm0EPSt19basic_ostringstreamIcSt11char_traitsIcESaIcEEISt14default_deleteIS4_EEENSt11__add_c_refIT0_E4typeERKSt11_Tuple_implIXT_EIS9_DpT1_EE'>
         <parameter type-id='type-id-892' name='__t' filepath='/usr/include/c++/4.9/tuple' line='750' column='1'/>
         <return type-id='type-id-2836'/>
       </function-decl>
@@ -11190,7 +11190,7 @@
         <parameter type-id='type-id-1851' name='__t' filepath='/usr/include/c++/4.9/tuple' line='745' column='1'/>
         <return type-id='type-id-2838'/>
       </function-decl>
-      <function-decl name='get&lt;1ul, mongo::BSONObjBuilder*, std::default_delete&lt;mongo::BSONObjBuilder&gt; &gt;' mangled-name='_ZSt3getILm1EIPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIIDpT0_EEE4typeEE4typeERSA_' filepath='/usr/include/c++/4.9/tuple' line='758' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt3getILm1EJPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIJDpT0_EEE4typeEE4typeERSA_'>
+      <function-decl name='get&lt;1ul, mongo::BSONObjBuilder*, std::default_delete&lt;mongo::BSONObjBuilder&gt; &gt;' mangled-name='_ZSt3getILm1EIPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIIDpT0_EEE4typeEE4typeERSA_' filepath='/usr/include/c++/4.9/tuple' line='758' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt3getILm1EIPN5mongo14BSONObjBuilderESt14default_deleteIS1_EEENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIIDpT0_EEE4typeEE4typeERSA_'>
         <parameter type-id='type-id-2206' name='__t' filepath='/usr/include/c++/4.9/tuple' line='758' column='1'/>
         <return type-id='type-id-2838'/>
       </function-decl>
@@ -11265,7 +11265,7 @@
         <parameter type-id='type-id-2072'/>
         <return type-id='type-id-57'/>
       </function-decl>
-      <function-decl name='_Construct&lt;std::basic_string&lt;char&gt;, const std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;&amp;&gt;' mangled-name='_ZSt10_ConstructISsIRKSsEEvPT_DpOT0_' filepath='/usr/include/c++/4.9/bits/stl_construct.h' line='74' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt10_ConstructISsJRKSsEEvPT_DpOT0_'>
+      <function-decl name='_Construct&lt;std::basic_string&lt;char&gt;, const std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;&amp;&gt;' mangled-name='_ZSt10_ConstructISsIRKSsEEvPT_DpOT0_' filepath='/usr/include/c++/4.9/bits/stl_construct.h' line='74' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt10_ConstructISsIRKSsEEvPT_DpOT0_'>
         <parameter type-id='type-id-2072'/>
         <return type-id='type-id-57'/>
       </function-decl>
@@ -11315,7 +11315,7 @@
         <parameter type-id='type-id-1331' name='__y' filepath='/usr/include/c++/4.9/bits/stl_iterator.h' line='1067' column='1'/>
         <return type-id='type-id-1'/>
       </function-decl>
-      <function-decl name='_Construct&lt;std::basic_string&lt;char&gt;, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' mangled-name='_ZSt10_ConstructISsISsEEvPT_DpOT0_' filepath='/usr/include/c++/4.9/bits/stl_construct.h' line='74' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt10_ConstructISsJSsEEvPT_DpOT0_'>
+      <function-decl name='_Construct&lt;std::basic_string&lt;char&gt;, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' mangled-name='_ZSt10_ConstructISsISsEEvPT_DpOT0_' filepath='/usr/include/c++/4.9/bits/stl_construct.h' line='74' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt10_ConstructISsISsEEvPT_DpOT0_'>
         <parameter type-id='type-id-2072'/>
         <return type-id='type-id-57'/>
       </function-decl>
@@ -11424,7 +11424,7 @@
         <parameter type-id='type-id-2178' name='__t' filepath='/usr/include/c++/4.9/bits/move.h' line='76' column='1'/>
         <return type-id='type-id-2068'/>
       </function-decl>
-      <function-decl name='_Construct&lt;std::basic_string&lt;char&gt;, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;&amp;&gt;' mangled-name='_ZSt10_ConstructISsIRSsEEvPT_DpOT0_' filepath='/usr/include/c++/4.9/bits/stl_construct.h' line='74' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt10_ConstructISsJRSsEEvPT_DpOT0_'>
+      <function-decl name='_Construct&lt;std::basic_string&lt;char&gt;, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;&amp;&gt;' mangled-name='_ZSt10_ConstructISsIRSsEEvPT_DpOT0_' filepath='/usr/include/c++/4.9/bits/stl_construct.h' line='74' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt10_ConstructISsIRSsEEvPT_DpOT0_'>
         <parameter type-id='type-id-2072'/>
         <return type-id='type-id-57'/>
       </function-decl>
@@ -11460,7 +11460,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='__normal_iterator' mangled-name='_ZN9__gnu_cxx17__normal_iteratorIPKSsSt6vectorISsSaISsEEEC2ERKS2_' filepath='/usr/include/c++/4.9/bits/stl_iterator.h' line='728' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx17__normal_iteratorIPKSsSt6vectorISsSaISsEEEC1ERKS2_'>
+          <function-decl name='__normal_iterator' mangled-name='_ZN9__gnu_cxx17__normal_iteratorIPKSsSt6vectorISsSaISsEEEC2ERKS2_' filepath='/usr/include/c++/4.9/bits/stl_iterator.h' line='728' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx17__normal_iteratorIPKSsSt6vectorISsSaISsEEEC2ERKS2_'>
             <parameter type-id='type-id-136' is-artificial='yes'/>
             <parameter type-id='type-id-1153'/>
             <return type-id='type-id-57'/>
@@ -11515,7 +11515,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='__normal_iterator' mangled-name='_ZN9__gnu_cxx17__normal_iteratorIPSsSt6vectorISsSaISsEEEC2ERKS1_' filepath='/usr/include/c++/4.9/bits/stl_iterator.h' line='728' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx17__normal_iteratorIPSsSt6vectorISsSaISsEEEC1ERKS1_'>
+          <function-decl name='__normal_iterator' mangled-name='_ZN9__gnu_cxx17__normal_iteratorIPSsSt6vectorISsSaISsEEEC2ERKS1_' filepath='/usr/include/c++/4.9/bits/stl_iterator.h' line='728' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx17__normal_iteratorIPSsSt6vectorISsSaISsEEEC2ERKS1_'>
             <parameter type-id='type-id-140' is-artificial='yes'/>
             <parameter type-id='type-id-2074'/>
             <return type-id='type-id-57'/>
@@ -11727,7 +11727,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEED2Ev' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='86' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEED1Ev'>
+          <function-decl name='~new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEED2Ev' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='86' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEED2Ev'>
             <parameter type-id='type-id-166' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
@@ -11749,7 +11749,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEEC2Ev' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='79' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEEC1Ev'>
+          <function-decl name='new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEEC2Ev' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='79' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment13OptionSectionEEEC2Ev'>
             <parameter type-id='type-id-166' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
@@ -11829,7 +11829,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEED2Ev' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='86' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEED1Ev'>
+          <function-decl name='~new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEED2Ev' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='86' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEED2Ev'>
             <parameter type-id='type-id-163' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
@@ -11851,7 +11851,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEEC2Ev' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='79' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEEC1Ev'>
+          <function-decl name='new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEEC2Ev' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='79' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIN5mongo17optionenvironment17OptionDescriptionEEEC2Ev'>
             <parameter type-id='type-id-163' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
@@ -11894,21 +11894,21 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISsED2Ev' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='86' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISsED1Ev'>
+          <function-decl name='~new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISsED2Ev' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='86' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISsED2Ev'>
             <parameter type-id='type-id-180' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISsEC2ERKS1_' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='81' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISsEC1ERKS1_'>
+          <function-decl name='new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISsEC2ERKS1_' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='81' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISsEC2ERKS1_'>
             <parameter type-id='type-id-180' is-artificial='yes'/>
             <parameter type-id='type-id-332'/>
             <return type-id='type-id-57'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISsEC2Ev' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='79' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISsEC1Ev'>
+          <function-decl name='new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISsEC2Ev' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='79' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISsEC2Ev'>
             <parameter type-id='type-id-180' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
@@ -11922,7 +11922,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='construct&lt;std::basic_string&lt;char&gt;, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' mangled-name='_ZN9__gnu_cxx13new_allocatorISsE9constructISsISsEEEvPT_DpOT0_' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='119' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISsE9constructISsJSsEEEvPT_DpOT0_'>
+          <function-decl name='construct&lt;std::basic_string&lt;char&gt;, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' mangled-name='_ZN9__gnu_cxx13new_allocatorISsE9constructISsISsEEEvPT_DpOT0_' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='119' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISsE9constructISsISsEEEvPT_DpOT0_'>
             <parameter type-id='type-id-181' name='this' is-artificial='yes'/>
             <parameter type-id='type-id-2072' name='__p' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='119' column='1'/>
             <return type-id='type-id-57'/>
@@ -12063,14 +12063,14 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKSsSsEEED2Ev' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='86' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKSsSsEEED1Ev'>
+          <function-decl name='~new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKSsSsEEED2Ev' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='86' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKSsSsEEED2Ev'>
             <parameter type-id='type-id-175' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKSsSsEEEC2Ev' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='79' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKSsSsEEEC1Ev'>
+          <function-decl name='new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKSsSsEEEC2Ev' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='79' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKSsSsEEEC2Ev'>
             <parameter type-id='type-id-175' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
@@ -13032,13 +13032,13 @@
           </function-decl>
         </member-function>
         <member-function access='public' constructor='yes'>
-          <function-decl name='StringData' mangled-name='_ZN5mongo10StringDataC2Ev' filepath='src/mongo/base/string_data.h' line='56' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo10StringDataC1Ev'>
+          <function-decl name='StringData' mangled-name='_ZN5mongo10StringDataC2Ev' filepath='src/mongo/base/string_data.h' line='56' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo10StringDataC2Ev'>
             <parameter type-id='type-id-1640' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
         </member-function>
         <member-function access='public' constructor='yes'>
-          <function-decl name='StringData' mangled-name='_ZN5mongo10StringDataC2EPKc' filepath='src/mongo/base/string_data.h' line='62' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo10StringDataC1EPKc'>
+          <function-decl name='StringData' mangled-name='_ZN5mongo10StringDataC2EPKc' filepath='src/mongo/base/string_data.h' line='62' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo10StringDataC2EPKc'>
             <parameter type-id='type-id-1640' is-artificial='yes'/>
             <parameter type-id='type-id-85'/>
             <return type-id='type-id-57'/>
@@ -13144,7 +13144,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~Status' mangled-name='_ZN5mongo6StatusD2Ev' filepath='src/mongo/base/status.h' line='80' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo6StatusD1Ev'>
+          <function-decl name='~Status' mangled-name='_ZN5mongo6StatusD2Ev' filepath='src/mongo/base/status.h' line='80' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo6StatusD2Ev'>
             <parameter type-id='type-id-1632' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
@@ -13163,7 +13163,7 @@
           </function-decl>
         </member-function>
         <member-function access='private' constructor='yes'>
-          <function-decl name='Status' mangled-name='_ZN5mongo6StatusC2Ev' filepath='src/mongo/base/status.h' line='121' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo6StatusC1Ev'>
+          <function-decl name='Status' mangled-name='_ZN5mongo6StatusC2Ev' filepath='src/mongo/base/status.h' line='121' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo6StatusC2Ev'>
             <parameter type-id='type-id-1632' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
@@ -13417,7 +13417,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' constructor='yes'>
-          <function-decl name='SharedBuffer' mangled-name='_ZN5mongo12SharedBufferC2Ev' filepath='src/mongo/util/shared_buffer.h' line='39' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo12SharedBufferC1Ev'>
+          <function-decl name='SharedBuffer' mangled-name='_ZN5mongo12SharedBufferC2Ev' filepath='src/mongo/util/shared_buffer.h' line='39' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo12SharedBufferC2Ev'>
             <parameter type-id='type-id-1627' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
@@ -13471,7 +13471,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' constructor='yes'>
-          <function-decl name='BSONObj' mangled-name='_ZN5mongo7BSONObjC2EPKc' filepath='src/mongo/bson/bsonobj.h' line='111' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo7BSONObjC1EPKc'>
+          <function-decl name='BSONObj' mangled-name='_ZN5mongo7BSONObjC2EPKc' filepath='src/mongo/bson/bsonobj.h' line='111' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo7BSONObjC2EPKc'>
             <parameter type-id='type-id-1569' is-artificial='yes'/>
             <parameter type-id='type-id-85'/>
             <return type-id='type-id-57'/>
@@ -13550,7 +13550,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='StringBuilderImpl' mangled-name='_ZN5mongo17StringBuilderImplINS_16TrivialAllocatorEEC2Ev' filepath='src/mongo/bson/util/builder.h' line='354' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo17StringBuilderImplINS_16TrivialAllocatorEEC1Ev'>
+          <function-decl name='StringBuilderImpl' mangled-name='_ZN5mongo17StringBuilderImplINS_16TrivialAllocatorEEC2Ev' filepath='src/mongo/bson/util/builder.h' line='354' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo17StringBuilderImplINS_16TrivialAllocatorEEC2Ev'>
             <parameter type-id='type-id-1638' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
@@ -13630,7 +13630,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~_BufBuilder' mangled-name='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEED2Ev' filepath='src/mongo/bson/util/builder.h' line='138' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEED1Ev'>
+          <function-decl name='~_BufBuilder' mangled-name='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEED2Ev' filepath='src/mongo/bson/util/builder.h' line='138' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEED2Ev'>
             <parameter type-id='type-id-1646' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
             <return type-id='type-id-57'/>
@@ -13645,7 +13645,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='_BufBuilder' mangled-name='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEEC2Ei' filepath='src/mongo/bson/util/builder.h' line='127' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEEC1Ei'>
+          <function-decl name='_BufBuilder' mangled-name='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEEC2Ei' filepath='src/mongo/bson/util/builder.h' line='127' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEEC2Ei'>
             <parameter type-id='type-id-1646' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
             <return type-id='type-id-57'/>
@@ -14005,7 +14005,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' constructor='yes'>
-          <function-decl name='ConstDataView' mangled-name='_ZN5mongo13ConstDataViewC2EPKc' filepath='src/mongo/base/data_view.h' line='43' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo13ConstDataViewC1EPKc'>
+          <function-decl name='ConstDataView' mangled-name='_ZN5mongo13ConstDataViewC2EPKc' filepath='src/mongo/base/data_view.h' line='43' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo13ConstDataViewC2EPKc'>
             <parameter type-id='type-id-1588' is-artificial='yes'/>
             <parameter type-id='type-id-3182'/>
             <return type-id='type-id-57'/>
@@ -14058,7 +14058,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='LittleEndian' mangled-name='_ZN5mongo12LittleEndianIiEC2Ei' filepath='src/mongo/base/data_type_endian.h' line='58' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo12LittleEndianIiEC1Ei'>
+          <function-decl name='LittleEndian' mangled-name='_ZN5mongo12LittleEndianIiEC2Ei' filepath='src/mongo/base/data_type_endian.h' line='58' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo12LittleEndianIiEC2Ei'>
             <parameter type-id='type-id-1610' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
             <return type-id='type-id-57'/>
@@ -14375,14 +14375,14 @@
           </function-decl>
         </member-function>
         <member-function access='public' constructor='yes'>
-          <function-decl name='BSONObjBuilder' mangled-name='_ZN5mongo14BSONObjBuilderC2Ei' filepath='src/mongo/bson/bsonobjbuilder.h' line='64' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo14BSONObjBuilderC1Ei'>
+          <function-decl name='BSONObjBuilder' mangled-name='_ZN5mongo14BSONObjBuilderC2Ei' filepath='src/mongo/bson/bsonobjbuilder.h' line='64' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo14BSONObjBuilderC2Ei'>
             <parameter type-id='type-id-1571' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
             <return type-id='type-id-57'/>
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~BSONObjBuilder' mangled-name='_ZN5mongo14BSONObjBuilderD2Ev' filepath='src/mongo/bson/bsonobjbuilder.h' line='115' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo14BSONObjBuilderD1Ev'>
+          <function-decl name='~BSONObjBuilder' mangled-name='_ZN5mongo14BSONObjBuilderD2Ev' filepath='src/mongo/bson/bsonobjbuilder.h' line='115' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo14BSONObjBuilderD2Ev'>
             <parameter type-id='type-id-1571' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
             <return type-id='type-id-57'/>
@@ -14702,7 +14702,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' constructor='yes'>
-          <function-decl name='ExceptionInfo' mangled-name='_ZN5mongo13ExceptionInfoC2ERKSsi' filepath='src/mongo/util/assert_util.h' line='79' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo13ExceptionInfoC1ERKSsi'>
+          <function-decl name='ExceptionInfo' mangled-name='_ZN5mongo13ExceptionInfoC2ERKSsi' filepath='src/mongo/util/assert_util.h' line='79' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo13ExceptionInfoC2ERKSsi'>
             <parameter type-id='type-id-1597' is-artificial='yes'/>
             <parameter type-id='type-id-1385'/>
             <parameter type-id='type-id-29'/>
@@ -14736,7 +14736,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' constructor='yes'>
-          <function-decl name='AssertionException' mangled-name='_ZN5mongo18AssertionExceptionC2ERKSsi' filepath='src/mongo/util/assert_util.h' line='155' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo18AssertionExceptionC1ERKSsi'>
+          <function-decl name='AssertionException' mangled-name='_ZN5mongo18AssertionExceptionC2ERKSsi' filepath='src/mongo/util/assert_util.h' line='155' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo18AssertionExceptionC2ERKSsi'>
             <parameter type-id='type-id-1552' is-artificial='yes'/>
             <parameter type-id='type-id-1385'/>
             <parameter type-id='type-id-29'/>
@@ -14758,7 +14758,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes' vtable-offset='-1'>
-          <function-decl name='~AssertionException' mangled-name='_ZN5mongo18AssertionExceptionD2Ev' filepath='src/mongo/util/assert_util.h' line='157' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo18AssertionExceptionD1Ev'>
+          <function-decl name='~AssertionException' mangled-name='_ZN5mongo18AssertionExceptionD2Ev' filepath='src/mongo/util/assert_util.h' line='157' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo18AssertionExceptionD2Ev'>
             <parameter type-id='type-id-1552' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
@@ -14800,7 +14800,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' constructor='yes'>
-          <function-decl name='SASLGlobalParams' mangled-name='_ZN5mongo16SASLGlobalParamsC2Ev' filepath='src/mongo/db/auth/sasl_options.h' line='52' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo16SASLGlobalParamsC1Ev'>
+          <function-decl name='SASLGlobalParams' mangled-name='_ZN5mongo16SASLGlobalParamsC2Ev' filepath='src/mongo/db/auth/sasl_options.h' line='52' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo16SASLGlobalParamsC2Ev'>
             <parameter type-id='type-id-1619' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
@@ -14815,7 +14815,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' constructor='yes'>
-          <function-decl name='ExportedScramIterationCountParameter' mangled-name='_ZN5mongo36ExportedScramIterationCountParameterC2Ev' filepath='src/mongo/db/auth/sasl_options.cpp' line='179' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo36ExportedScramIterationCountParameterC1Ev'>
+          <function-decl name='ExportedScramIterationCountParameter' mangled-name='_ZN5mongo36ExportedScramIterationCountParameterC2Ev' filepath='src/mongo/db/auth/sasl_options.cpp' line='179' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo36ExportedScramIterationCountParameterC2Ev'>
             <parameter type-id='type-id-1599' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
@@ -14945,7 +14945,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='ExportedServerParameter' mangled-name='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEEC2EPNS_18ServerParameterSetERKSsPS3_bb' filepath='src/mongo/db/server_parameters.h' line='121' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEEC1EPNS_18ServerParameterSetERKSsPS3_bb'>
+          <function-decl name='ExportedServerParameter' mangled-name='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEEC2EPNS_18ServerParameterSetERKSsPS3_bb' filepath='src/mongo/db/server_parameters.h' line='121' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEEC2EPNS_18ServerParameterSetERKSsPS3_bb'>
             <parameter type-id='type-id-1602' is-artificial='yes'/>
             <parameter type-id='type-id-1624'/>
             <parameter type-id='type-id-1385'/>
@@ -14970,7 +14970,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes' vtable-offset='-1'>
-          <function-decl name='~ExportedServerParameter' mangled-name='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEED2Ev' filepath='src/mongo/db/server_parameters.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEED1Ev'>
+          <function-decl name='~ExportedServerParameter' mangled-name='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEED2Ev' filepath='src/mongo/db/server_parameters.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo23ExportedServerParameterISt6vectorISsSaISsEEED2Ev'>
             <parameter type-id='type-id-1602' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
@@ -15037,7 +15037,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='ExportedServerParameter' mangled-name='_ZN5mongo23ExportedServerParameterISsEC2EPNS_18ServerParameterSetERKSsPSsbb' filepath='src/mongo/db/server_parameters.h' line='121' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo23ExportedServerParameterISsEC1EPNS_18ServerParameterSetERKSsPSsbb'>
+          <function-decl name='ExportedServerParameter' mangled-name='_ZN5mongo23ExportedServerParameterISsEC2EPNS_18ServerParameterSetERKSsPSsbb' filepath='src/mongo/db/server_parameters.h' line='121' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo23ExportedServerParameterISsEC2EPNS_18ServerParameterSetERKSsPSsbb'>
             <parameter type-id='type-id-1601' is-artificial='yes'/>
             <parameter type-id='type-id-1624'/>
             <parameter type-id='type-id-1385'/>
@@ -15062,7 +15062,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes' vtable-offset='-1'>
-          <function-decl name='~ExportedServerParameter' mangled-name='_ZN5mongo23ExportedServerParameterISsED2Ev' filepath='src/mongo/db/server_parameters.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo23ExportedServerParameterISsED1Ev'>
+          <function-decl name='~ExportedServerParameter' mangled-name='_ZN5mongo23ExportedServerParameterISsED2Ev' filepath='src/mongo/db/server_parameters.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo23ExportedServerParameterISsED2Ev'>
             <parameter type-id='type-id-1601' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
@@ -16032,7 +16032,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes' vtable-offset='-1'>
-          <function-decl name='~DBException' mangled-name='_ZN5mongo11DBExceptionD2Ev' filepath='src/mongo/util/assert_util.h' line='109' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo11DBExceptionD1Ev'>
+          <function-decl name='~DBException' mangled-name='_ZN5mongo11DBExceptionD2Ev' filepath='src/mongo/util/assert_util.h' line='109' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo11DBExceptionD2Ev'>
             <parameter type-id='type-id-1589' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>
@@ -16161,13 +16161,13 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='intrusive_ptr' mangled-name='_ZN5boost13intrusive_ptrIN5mongo12SharedBuffer6HolderEEC2Ev' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/intrusive_ptr.hpp' line='62' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost13intrusive_ptrIN5mongo12SharedBuffer6HolderEEC1Ev'>
+          <function-decl name='intrusive_ptr' mangled-name='_ZN5boost13intrusive_ptrIN5mongo12SharedBuffer6HolderEEC2Ev' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/intrusive_ptr.hpp' line='62' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost13intrusive_ptrIN5mongo12SharedBuffer6HolderEEC2Ev'>
             <parameter type-id='type-id-206' is-artificial='yes'/>
             <return type-id='type-id-57'/>
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~intrusive_ptr' mangled-name='_ZN5boost13intrusive_ptrIN5mongo12SharedBuffer6HolderEED2Ev' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/intrusive_ptr.hpp' line='95' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost13intrusive_ptrIN5mongo12SharedBuffer6HolderEED1Ev'>
+          <function-decl name='~intrusive_ptr' mangled-name='_ZN5boost13intrusive_ptrIN5mongo12SharedBuffer6HolderEED2Ev' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/intrusive_ptr.hpp' line='95' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost13intrusive_ptrIN5mongo12SharedBuffer6HolderEED2Ev'>
             <parameter type-id='type-id-206' is-artificial='yes'/>
             <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-57'/>

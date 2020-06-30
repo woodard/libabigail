@@ -278,6 +278,53 @@ TEST_CASE("Symtab::SymtabWithWhitelist", "[symtab, whitelist]")
   }
 }
 
+TEST_CASE("Symtab::AliasedFunctionSymbols", "[symtab, functions, aliases]")
+{
+  const std::string  binary = "basic/aliases.so";
+  const corpus_sptr& corpus = assert_symbol_count(binary, 5, 5);
+
+  // The main symbol is not necessarily the one that is aliased to in the
+  // code So, this can't be decided by just looking at ELF. Hence acquire the
+  // main symbol.
+  const elf_symbol_sptr& main_symbol =
+    corpus->lookup_function_symbol("exported_function")->get_main_symbol();
+  REQUIRE(main_symbol);
+
+  // But since we know that 'exported_function' is the main symbol and this
+  // can be discovered from DWARF
+  CHECK(corpus->lookup_function_symbol("exported_function")->is_main_symbol());
+
+  CHECK(corpus->lookup_function_symbol("exported_function")
+	  ->get_number_of_aliases() == 4);
+
+  CHECK(main_symbol->has_aliases());
+  CHECK(main_symbol->get_number_of_aliases() == 4);
+  CHECK(main_symbol->get_main_symbol() == main_symbol);
+}
+
+TEST_CASE("Symtab::AliasedVariableSymbols", "[symtab, variables, aliases]")
+{
+  const std::string  binary = "basic/aliases.so";
+  const corpus_sptr& corpus = assert_symbol_count(binary, 5, 5);
+  // The main symbol is not necessarily the one that is aliased to in the
+  // code So, this can't be decided by just looking at ELF. Hence acquire the
+  // main symbol.
+  const elf_symbol_sptr& main_symbol =
+    corpus->lookup_variable_symbol("exported_variable")->get_main_symbol();
+  REQUIRE(main_symbol);
+
+  // But since we know that 'exported_function' is the main symbol and this
+  // can be discovered from DWARF
+  CHECK(corpus->lookup_variable_symbol("exported_variable")->is_main_symbol());
+
+  CHECK(corpus->lookup_variable_symbol("exported_variable")
+	  ->get_number_of_aliases() == 4);
+
+  CHECK(main_symbol->has_aliases());
+  CHECK(main_symbol->get_number_of_aliases() == 4);
+  CHECK(main_symbol->get_main_symbol() == main_symbol);
+}
+
 static const char* kernel_versions[] = { "4.14", "4.19", "5.4", "5.6" };
 static const size_t nr_kernel_versions =
     sizeof(kernel_versions) / sizeof(kernel_versions[0]);

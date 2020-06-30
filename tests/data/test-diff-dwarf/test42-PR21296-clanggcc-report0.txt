@@ -1,10 +1,8 @@
-Functions changes summary: 3 Removed, 8 Changed, 0 Added functions
+Functions changes summary: 1 Removed, 8 Changed, 0 Added functions
 Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
-3 Removed functions:
+1 Removed function:
 
-  [D] 'method STR::STR(const char*)'
-  [D] 'method STR::~STR()'
   [D] 'method void std::_Tuple_impl<1ul>::_Tuple_impl()'
 
 8 functions with some indirect sub-type change:

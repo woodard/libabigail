@@ -151,8 +151,8 @@
     <elf-symbol name='_ZN5mongo15FTDCFileManager6rotateEPNS_6ClientE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo15FTDCFileManagerC1EPKNS_10FTDCConfigERKN5boost10filesystem4pathEPNS_23FTDCCollectorCollectionE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo15FTDCFileManagerC2EPKNS_10FTDCConfigERKN5boost10filesystem4pathEPNS_23FTDCCollectorCollectionE' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo15FTDCFileManagerC1EPKNS_10FTDCConfigERKN5boost10filesystem4pathEPNS_23FTDCCollectorCollectionE' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo15FTDCFileManagerD1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo15FTDCFileManagerD2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo15FTDCFileManagerD2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo15FTDCFileManagerD1Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo15FTDCFileManagerD2Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo15FTDCFileManagerD1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo16FTDCDecompressor10uncompressENS_14ConstDataRangeE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo16FTDCDecompressorD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo17StringBuilderImplINS_21SharedBufferAllocatorEE14appendIntegralIiEERS2_T_i' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -4809,7 +4809,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
-          <function-decl name='~FTDCFileManager' mangled-name='_ZN5mongo15FTDCFileManagerD2Ev' filepath='src/mongo/db/ftdc/file_manager.h' line='58' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo15FTDCFileManagerD1Ev'>
+          <function-decl name='~FTDCFileManager' mangled-name='_ZN5mongo15FTDCFileManagerD2Ev' filepath='src/mongo/db/ftdc/file_manager.h' line='58' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo15FTDCFileManagerD2Ev'>
             <parameter type-id='type-id-126' is-artificial='yes'/>
             <return type-id='type-id-26'/>
           </function-decl>

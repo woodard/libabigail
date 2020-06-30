@@ -250,6 +250,9 @@ public:
   load(string_elf_symbols_map_sptr function_symbol_map,
        string_elf_symbols_map_sptr variables_symbol_map);
 
+  void
+  update_main_symbol(GElf_Addr addr, const std::string& name);
+
 private:
   /// Default constructor. Private to enforce creation by factory methods.
   symtab();

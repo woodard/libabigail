@@ -186,20 +186,18 @@
 ================ end of changes of 'libtbbmalloc.so.2'===============
 
 ================ changes of 'libtbbmalloc_proxy.so.2'===============
-  Functions changes summary: 1 Removed, 0 Changed, 5 Added functions
+  Functions changes summary: 1 Removed, 0 Changed, 3 Added functions
   Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
   1 Removed function:
 
     [D] 'function bool __TBB_internal_find_original_malloc(int, const char**, void**)'    {__TBB_internal_find_original_malloc}
 
-  5 Added functions:
+  3 Added functions:
 
     [A] 'function void __libc_free(void*)'    {__libc_free}
     [A] 'function void* __libc_realloc(void*, size_t)'    {__libc_realloc}
-    [A] 'function void* calloc(size_t, size_t)'    {__libc_calloc, aliases calloc}
     [A] 'function size_t malloc_usable_size(void*)'    {malloc_usable_size}
-    [A] 'function void* valloc(size_t)'    {__libc_valloc, aliases valloc}
 
 ================ end of changes of 'libtbbmalloc_proxy.so.2'===============
 

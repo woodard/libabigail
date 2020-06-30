@@ -13691,7 +13691,13 @@ build_var_decl(read_context&	ctxt,
       elf_symbol_sptr var_sym;
       Dwarf_Addr      var_addr;
       if (ctxt.get_variable_address(die, var_addr))
-	var_sym = ctxt.variable_symbol_is_exported(var_addr);
+	{
+	  ctxt.symtab()->update_main_symbol(var_addr,
+					    result->get_linkage_name().empty()
+					      ? result->get_name()
+					      : result->get_linkage_name());
+	  var_sym = ctxt.variable_symbol_is_exported(var_addr);
+	}
 
       if (var_sym)
 	{
@@ -14151,7 +14157,13 @@ build_function_decl(read_context&	ctxt,
       elf_symbol_sptr fn_sym;
       Dwarf_Addr      fn_addr;
       if (ctxt.get_function_address(die, fn_addr))
-	fn_sym = ctxt.function_symbol_is_exported(fn_addr);
+	{
+	  ctxt.symtab()->update_main_symbol(fn_addr,
+					    result->get_linkage_name().empty()
+					      ? result->get_name()
+					      : result->get_linkage_name());
+	  fn_sym = ctxt.function_symbol_is_exported(fn_addr);
+	}
 
       if (fn_sym && !ctxt.symbol_already_belongs_to_a_function(fn_sym))
 	{

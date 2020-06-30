@@ -231,47 +231,47 @@
     <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor5Event14_signal_inlockEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor5Event17waitUntilSignaledEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor5Event6signalEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor5EventC1EPS1_RKSt14_List_iteratorINS_8executor12TaskExecutor11EventHandleEE' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo4repl19ReplicationExecutor5EventC2EPS1_RKSt14_List_iteratorINS_8executor12TaskExecutor11EventHandleEE' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor5EventC2EPS1_RKSt14_List_iteratorINS_8executor12TaskExecutor11EventHandleEE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor5EventC1EPS1_RKSt14_List_iteratorINS_8executor12TaskExecutor11EventHandleEE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor5EventC2EPS1_RKSt14_List_iteratorINS_8executor12TaskExecutor11EventHandleEE' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo4repl19ReplicationExecutor5EventC1EPS1_RKSt14_List_iteratorINS_8executor12TaskExecutor11EventHandleEE' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor5EventD0Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor5EventD1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo4repl19ReplicationExecutor5EventD2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor5EventD2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor5EventD1Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor5EventD2Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo4repl19ReplicationExecutor5EventD1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor6cancelERKNS_8executor12TaskExecutor14CallbackHandleE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor7getWorkEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor7onEventERKNS_8executor12TaskExecutor11EventHandleERKSt8functionIFvRKNS3_12CallbackArgsEEE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor7startupEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor8Callback17waitForCompletionEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor8Callback6cancelEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor8CallbackC1EPS1_St8functionIFvRKNS_8executor12TaskExecutor12CallbackArgsEEERKSt14_List_iteratorINS1_8WorkItemEERKNS6_11EventHandleE' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo4repl19ReplicationExecutor8CallbackC2EPS1_St8functionIFvRKNS_8executor12TaskExecutor12CallbackArgsEEERKSt14_List_iteratorINS1_8WorkItemEERKNS6_11EventHandleE' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor8CallbackC2EPS1_St8functionIFvRKNS_8executor12TaskExecutor12CallbackArgsEEERKSt14_List_iteratorINS1_8WorkItemEERKNS6_11EventHandleE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor8CallbackC1EPS1_St8functionIFvRKNS_8executor12TaskExecutor12CallbackArgsEEERKSt14_List_iteratorINS1_8WorkItemEERKNS6_11EventHandleE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor8CallbackC2EPS1_St8functionIFvRKNS_8executor12TaskExecutor12CallbackArgsEEERKSt14_List_iteratorINS1_8WorkItemEERKNS6_11EventHandleE' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo4repl19ReplicationExecutor8CallbackC1EPS1_St8functionIFvRKNS_8executor12TaskExecutor12CallbackArgsEEERKSt14_List_iteratorINS1_8WorkItemEERKNS6_11EventHandleE' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor8CallbackD0Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor8CallbackD1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo4repl19ReplicationExecutor8CallbackD2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor8CallbackD2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor8WorkItemC1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo4repl19ReplicationExecutor8WorkItemC2Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor8CallbackD1Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor8CallbackD2Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo4repl19ReplicationExecutor8CallbackD1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor8WorkItemC1Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor8WorkItemC2EOS2_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor8WorkItemC2ERKS2_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor8WorkItemC2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor8WorkItemC2Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo4repl19ReplicationExecutor8WorkItemC1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor8WorkItemD2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor8WorkItemaSEOS2_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor8shutdownEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo4repl19ReplicationExecutor9makeEventEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutorC1EPNS_8executor16NetworkInterfaceEPNS0_16StorageInterfaceEl' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo4repl19ReplicationExecutorC2EPNS_8executor16NetworkInterfaceEPNS0_16StorageInterfaceEl' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutorC2EPNS_8executor16NetworkInterfaceEPNS0_16StorageInterfaceEl' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutorC1EPNS_8executor16NetworkInterfaceEPNS0_16StorageInterfaceEl' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutorC2EPNS_8executor16NetworkInterfaceEPNS0_16StorageInterfaceEl' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo4repl19ReplicationExecutorC1EPNS_8executor16NetworkInterfaceEPNS0_16StorageInterfaceEl' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo4repl19ReplicationExecutorD0Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutorD1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo4repl19ReplicationExecutorD2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutorD2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutorD1Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo4repl19ReplicationExecutorD2Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo4repl19ReplicationExecutorD1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo4repl19ScatterGatherRunner16_processResponseERKNS_8executor12TaskExecutor25RemoteCommandCallbackArgsEPS1_' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo4repl19ScatterGatherRunner34_signalSufficientResponsesReceivedEPNS0_19ReplicationExecutorE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo4repl19ScatterGatherRunner3runEPNS0_19ReplicationExecutorE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo4repl19ScatterGatherRunner5startEPNS0_19ReplicationExecutorERKSt8functionIFvvEE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo4repl19ScatterGatherRunner6cancelEPNS0_19ReplicationExecutorE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo4repl19ScatterGatherRunnerC1EPNS0_22ScatterGatherAlgorithmE' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo4repl19ScatterGatherRunnerC2EPNS0_22ScatterGatherAlgorithmE' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo4repl19ScatterGatherRunnerC2EPNS0_22ScatterGatherAlgorithmE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo4repl19ScatterGatherRunnerD1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo4repl19ScatterGatherRunnerD2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo4repl19ScatterGatherRunnerD2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo4repl19ScatterGatherRunnerC1EPNS0_22ScatterGatherAlgorithmE' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo4repl19ScatterGatherRunnerC2EPNS0_22ScatterGatherAlgorithmE' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo4repl19ScatterGatherRunnerC1EPNS0_22ScatterGatherAlgorithmE' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo4repl19ScatterGatherRunnerD1Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo4repl19ScatterGatherRunnerD2Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo4repl19ScatterGatherRunnerD1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo4repl22ScatterGatherAlgorithmD0Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo4repl22ScatterGatherAlgorithmD1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo4repl22ScatterGatherAlgorithmD2Ev' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo4repl22ScatterGatherAlgorithmD2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo4repl22ScatterGatherAlgorithmD1Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo4repl22ScatterGatherAlgorithmD2Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5mongo4repl22ScatterGatherAlgorithmD1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo6Date_tC2Ev' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo6Date_tpLINSt6chrono8durationIlSt5ratioILl1ELl1000EEEEEERS0_T_' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5mongo6Status2OKEv' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
@@ -19191,7 +19191,7 @@
                 <var-decl name='isNetworkOperation' type-id='type-id-1' visibility='default' filepath='src/mongo/db/repl/replication_executor.h' line='370' column='1'/>
               </data-member>
               <member-function access='public' constructor='yes'>
-                <function-decl name='WorkItem' mangled-name='_ZN5mongo4repl19ReplicationExecutor8WorkItemC2Ev' filepath='src/mongo/db/repl/replication_executor.h' line='365' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl19ReplicationExecutor8WorkItemC1Ev'>
+                <function-decl name='WorkItem' mangled-name='_ZN5mongo4repl19ReplicationExecutor8WorkItemC2Ev' filepath='src/mongo/db/repl/replication_executor.h' line='365' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl19ReplicationExecutor8WorkItemC2Ev'>
                   <parameter type-id='type-id-1689' is-artificial='yes'/>
                   <return type-id='type-id-60'/>
                 </function-decl>
@@ -19217,7 +19217,7 @@
                 <var-decl name='_waiters' type-id='type-id-1690' visibility='default' filepath='src/mongo/db/repl/replication_executor.h' line='401' column='1'/>
               </data-member>
               <member-function access='public' constructor='yes'>
-                <function-decl name='Event' mangled-name='_ZN5mongo4repl19ReplicationExecutor5EventC2EPS1_RKSt14_List_iteratorINS_8executor12TaskExecutor11EventHandleEE' filepath='src/mongo/db/repl/replication_executor.h' line='383' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl19ReplicationExecutor5EventC1EPS1_RKSt14_List_iteratorINS_8executor12TaskExecutor11EventHandleEE'>
+                <function-decl name='Event' mangled-name='_ZN5mongo4repl19ReplicationExecutor5EventC2EPS1_RKSt14_List_iteratorINS_8executor12TaskExecutor11EventHandleEE' filepath='src/mongo/db/repl/replication_executor.h' line='383' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl19ReplicationExecutor5EventC2EPS1_RKSt14_List_iteratorINS_8executor12TaskExecutor11EventHandleEE'>
                   <parameter type-id='type-id-1686' is-artificial='yes'/>
                   <parameter type-id='type-id-1678'/>
                   <parameter type-id='type-id-1268'/>
@@ -19231,7 +19231,7 @@
                 </function-decl>
               </member-function>
               <member-function access='public' destructor='yes' vtable-offset='0'>
-                <function-decl name='~Event' mangled-name='_ZN5mongo4repl19ReplicationExecutor5EventD0Ev' filepath='src/mongo/db/repl/replication_executor.h' line='384' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl19ReplicationExecutor5EventD1Ev'>
+                <function-decl name='~Event' mangled-name='_ZN5mongo4repl19ReplicationExecutor5EventD0Ev' filepath='src/mongo/db/repl/replication_executor.h' line='384' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl19ReplicationExecutor5EventD2Ev'>
                   <parameter type-id='type-id-1686' is-artificial='yes'/>
                   <return type-id='type-id-60'/>
                 </function-decl>
@@ -19281,7 +19281,7 @@
                 <var-decl name='_finishedEvent' type-id='type-id-423' visibility='default' filepath='src/mongo/db/repl/replication_executor.h' line='347' column='1'/>
               </data-member>
               <member-function access='public' constructor='yes'>
-                <function-decl name='Callback' mangled-name='_ZN5mongo4repl19ReplicationExecutor8CallbackC2EPS1_St8functionIFvRKNS_8executor12TaskExecutor12CallbackArgsEEERKSt14_List_iteratorINS1_8WorkItemEERKNS6_11EventHandleE' filepath='src/mongo/db/repl/replication_executor.h' line='331' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl19ReplicationExecutor8CallbackC1EPS1_St8functionIFvRKNS_8executor12TaskExecutor12CallbackArgsEEERKSt14_List_iteratorINS1_8WorkItemEERKNS6_11EventHandleE'>
+                <function-decl name='Callback' mangled-name='_ZN5mongo4repl19ReplicationExecutor8CallbackC2EPS1_St8functionIFvRKNS_8executor12TaskExecutor12CallbackArgsEEERKSt14_List_iteratorINS1_8WorkItemEERKNS6_11EventHandleE' filepath='src/mongo/db/repl/replication_executor.h' line='331' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl19ReplicationExecutor8CallbackC2EPS1_St8functionIFvRKNS_8executor12TaskExecutor12CallbackArgsEEERKSt14_List_iteratorINS1_8WorkItemEERKNS6_11EventHandleE'>
                   <parameter type-id='type-id-1684' is-artificial='yes'/>
                   <parameter type-id='type-id-1678'/>
                   <parameter type-id='type-id-417'/>
@@ -19291,7 +19291,7 @@
                 </function-decl>
               </member-function>
               <member-function access='public' destructor='yes' vtable-offset='0'>
-                <function-decl name='~Callback' mangled-name='_ZN5mongo4repl19ReplicationExecutor8CallbackD0Ev' filepath='src/mongo/db/repl/replication_executor.h' line='335' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl19ReplicationExecutor8CallbackD1Ev'>
+                <function-decl name='~Callback' mangled-name='_ZN5mongo4repl19ReplicationExecutor8CallbackD0Ev' filepath='src/mongo/db/repl/replication_executor.h' line='335' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl19ReplicationExecutor8CallbackD2Ev'>
                   <parameter type-id='type-id-1684' is-artificial='yes'/>
                   <return type-id='type-id-60'/>
                 </function-decl>
@@ -19378,7 +19378,7 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='ReplicationExecutor' mangled-name='_ZN5mongo4repl19ReplicationExecutorC2EPNS_8executor16NetworkInterfaceEPNS0_16StorageInterfaceEl' filepath='src/mongo/db/repl/replication_executor.h' line='101' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl19ReplicationExecutorC1EPNS_8executor16NetworkInterfaceEPNS0_16StorageInterfaceEl'>
+            <function-decl name='ReplicationExecutor' mangled-name='_ZN5mongo4repl19ReplicationExecutorC2EPNS_8executor16NetworkInterfaceEPNS0_16StorageInterfaceEl' filepath='src/mongo/db/repl/replication_executor.h' line='101' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl19ReplicationExecutorC2EPNS_8executor16NetworkInterfaceEPNS0_16StorageInterfaceEl'>
               <parameter type-id='type-id-1678' is-artificial='yes'/>
               <parameter type-id='type-id-1619'/>
               <parameter type-id='type-id-1694'/>
@@ -19511,7 +19511,7 @@
             </function-decl>
           </member-function>
           <member-function access='public' destructor='yes' vtable-offset='0'>
-            <function-decl name='~ReplicationExecutor' mangled-name='_ZN5mongo4repl19ReplicationExecutorD0Ev' filepath='src/mongo/db/repl/replication_executor.h' line='108' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl19ReplicationExecutorD1Ev'>
+            <function-decl name='~ReplicationExecutor' mangled-name='_ZN5mongo4repl19ReplicationExecutorD0Ev' filepath='src/mongo/db/repl/replication_executor.h' line='108' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl19ReplicationExecutorD2Ev'>
               <parameter type-id='type-id-1678' is-artificial='yes'/>
               <return type-id='type-id-60'/>
             </function-decl>
@@ -23762,14 +23762,14 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='ScatterGatherRunner' mangled-name='_ZN5mongo4repl19ScatterGatherRunnerC2EPNS0_22ScatterGatherAlgorithmE' filepath='src/mongo/db/repl/scatter_gather_runner.h' line='58' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl19ScatterGatherRunnerC1EPNS0_22ScatterGatherAlgorithmE'>
+            <function-decl name='ScatterGatherRunner' mangled-name='_ZN5mongo4repl19ScatterGatherRunnerC2EPNS0_22ScatterGatherAlgorithmE' filepath='src/mongo/db/repl/scatter_gather_runner.h' line='58' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl19ScatterGatherRunnerC2EPNS0_22ScatterGatherAlgorithmE'>
               <parameter type-id='type-id-3646' is-artificial='yes'/>
               <parameter type-id='type-id-3682'/>
               <return type-id='type-id-60'/>
             </function-decl>
           </member-function>
           <member-function access='public' destructor='yes'>
-            <function-decl name='~ScatterGatherRunner' mangled-name='_ZN5mongo4repl19ScatterGatherRunnerD2Ev' filepath='src/mongo/db/repl/scatter_gather_runner.h' line='60' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl19ScatterGatherRunnerD1Ev'>
+            <function-decl name='~ScatterGatherRunner' mangled-name='_ZN5mongo4repl19ScatterGatherRunnerD2Ev' filepath='src/mongo/db/repl/scatter_gather_runner.h' line='60' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl19ScatterGatherRunnerD2Ev'>
               <parameter type-id='type-id-3646' is-artificial='yes'/>
               <return type-id='type-id-60'/>
             </function-decl>
@@ -24442,7 +24442,7 @@
             </function-decl>
           </member-function>
           <member-function access='protected' destructor='yes' vtable-offset='0'>
-            <function-decl name='~ScatterGatherAlgorithm' mangled-name='_ZN5mongo4repl22ScatterGatherAlgorithmD0Ev' filepath='src/mongo/db/repl/scatter_gather_algorithm.h' line='76' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl22ScatterGatherAlgorithmD1Ev'>
+            <function-decl name='~ScatterGatherAlgorithm' mangled-name='_ZN5mongo4repl22ScatterGatherAlgorithmD0Ev' filepath='src/mongo/db/repl/scatter_gather_algorithm.h' line='76' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl22ScatterGatherAlgorithmD2Ev'>
               <parameter type-id='type-id-3682' is-artificial='yes'/>
               <return type-id='type-id-60'/>
             </function-decl>
@@ -25563,7 +25563,7 @@
             </function-decl>
           </member-function>
           <member-function access='protected' destructor='yes' vtable-offset='0'>
-            <function-decl name='~ScatterGatherAlgorithm' mangled-name='_ZN5mongo4repl22ScatterGatherAlgorithmD0Ev' filepath='src/mongo/db/repl/scatter_gather_algorithm.h' line='76' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl22ScatterGatherAlgorithmD1Ev'>
+            <function-decl name='~ScatterGatherAlgorithm' mangled-name='_ZN5mongo4repl22ScatterGatherAlgorithmD0Ev' filepath='src/mongo/db/repl/scatter_gather_algorithm.h' line='76' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl22ScatterGatherAlgorithmD2Ev'>
               <parameter type-id='type-id-3682' is-artificial='yes'/>
               <return type-id='type-id-60'/>
             </function-decl>
@@ -28277,14 +28277,14 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='ScatterGatherRunner' mangled-name='_ZN5mongo4repl19ScatterGatherRunnerC2EPNS0_22ScatterGatherAlgorithmE' filepath='src/mongo/db/repl/scatter_gather_runner.h' line='58' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl19ScatterGatherRunnerC1EPNS0_22ScatterGatherAlgorithmE'>
+            <function-decl name='ScatterGatherRunner' mangled-name='_ZN5mongo4repl19ScatterGatherRunnerC2EPNS0_22ScatterGatherAlgorithmE' filepath='src/mongo/db/repl/scatter_gather_runner.h' line='58' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl19ScatterGatherRunnerC2EPNS0_22ScatterGatherAlgorithmE'>
               <parameter type-id='type-id-3646' is-artificial='yes'/>
               <parameter type-id='type-id-3682'/>
               <return type-id='type-id-60'/>
             </function-decl>
           </member-function>
           <member-function access='public' destructor='yes'>
-            <function-decl name='~ScatterGatherRunner' mangled-name='_ZN5mongo4repl19ScatterGatherRunnerD2Ev' filepath='src/mongo/db/repl/scatter_gather_runner.h' line='60' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl19ScatterGatherRunnerD1Ev'>
+            <function-decl name='~ScatterGatherRunner' mangled-name='_ZN5mongo4repl19ScatterGatherRunnerD2Ev' filepath='src/mongo/db/repl/scatter_gather_runner.h' line='60' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo4repl19ScatterGatherRunnerD2Ev'>
               <parameter type-id='type-id-3646' is-artificial='yes'/>
               <return type-id='type-id-60'/>
             </function-decl>

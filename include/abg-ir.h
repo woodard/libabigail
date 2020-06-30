@@ -959,6 +959,9 @@ public:
   is_main_symbol() const;
 
   elf_symbol_sptr
+  update_main_symbol(const std::string&);
+
+  elf_symbol_sptr
   get_next_alias() const;
 
   bool
