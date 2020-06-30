@@ -1,41 +1,41 @@
 <abi-corpus version='2.0' path='data/test-read-dwarf/PR25007-sdhci.ko'>
   <elf-function-symbols>
-    <elf-symbol name='__sdhci_add_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='__sdhci_read_caps' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_add_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_adma_write_desc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_alloc_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_calc_clk' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_cleanup_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_cqe_disable' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_cqe_enable' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_cqe_irq' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_dumpregs' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_enable_clk' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_enable_sdio_irq' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_enable_v4_mode' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_end_tuning' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_execute_tuning' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_free_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_remove_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_request' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_reset' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_reset_tuning' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_resume_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_runtime_resume_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_runtime_suspend_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_send_command' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_send_tuning' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_set_bus_width' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_set_clock' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_set_ios' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_set_power' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_set_power_noreg' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_set_uhs_signaling' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_setup_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_start_signal_voltage_switch' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_start_tuning' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='sdhci_suspend_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='__sdhci_add_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x74ae518'/>
+    <elf-symbol name='__sdhci_read_caps' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x711f65c'/>
+    <elf-symbol name='sdhci_add_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x7bfb1b1a'/>
+    <elf-symbol name='sdhci_adma_write_desc' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x61fdb22'/>
+    <elf-symbol name='sdhci_alloc_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0xfeefe08b'/>
+    <elf-symbol name='sdhci_calc_clk' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0xbfcabe7e'/>
+    <elf-symbol name='sdhci_cleanup_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x380506bd'/>
+    <elf-symbol name='sdhci_cqe_disable' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x69b1936e'/>
+    <elf-symbol name='sdhci_cqe_enable' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x5ebbc838'/>
+    <elf-symbol name='sdhci_cqe_irq' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x1e31bffd'/>
+    <elf-symbol name='sdhci_dumpregs' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0xda29e2bd'/>
+    <elf-symbol name='sdhci_enable_clk' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x3862257d'/>
+    <elf-symbol name='sdhci_enable_sdio_irq' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x143583bc'/>
+    <elf-symbol name='sdhci_enable_v4_mode' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0xe3843e2e'/>
+    <elf-symbol name='sdhci_end_tuning' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0xe6d3b6ee'/>
+    <elf-symbol name='sdhci_execute_tuning' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x452bd7b7'/>
+    <elf-symbol name='sdhci_free_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x4626d735'/>
+    <elf-symbol name='sdhci_remove_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x6be911b2'/>
+    <elf-symbol name='sdhci_request' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x762121fa'/>
+    <elf-symbol name='sdhci_reset' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x1a38d936'/>
+    <elf-symbol name='sdhci_reset_tuning' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0xd0ca49ae'/>
+    <elf-symbol name='sdhci_resume_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x2e5157bf'/>
+    <elf-symbol name='sdhci_runtime_resume_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x62e5c15d'/>
+    <elf-symbol name='sdhci_runtime_suspend_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x4526a0d1'/>
+    <elf-symbol name='sdhci_send_command' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x1512952'/>
+    <elf-symbol name='sdhci_send_tuning' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x213a51d7'/>
+    <elf-symbol name='sdhci_set_bus_width' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x67f74689'/>
+    <elf-symbol name='sdhci_set_clock' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x5825825c'/>
+    <elf-symbol name='sdhci_set_ios' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0xddc78000'/>
+    <elf-symbol name='sdhci_set_power' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0xc9e167b5'/>
+    <elf-symbol name='sdhci_set_power_noreg' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x60affb80'/>
+    <elf-symbol name='sdhci_set_uhs_signaling' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x4015e747'/>
+    <elf-symbol name='sdhci_setup_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0xc5d73caf'/>
+    <elf-symbol name='sdhci_start_signal_voltage_switch' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0xcb9c7748'/>
+    <elf-symbol name='sdhci_start_tuning' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x39f40b95'/>
+    <elf-symbol name='sdhci_suspend_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0xa6de7a42'/>
   </elf-function-symbols>
   <abi-instr address-size='64' path='/ws/android/kernel/aosp/common-mainline/common/drivers/mmc/host/sdhci.c' comp-dir-path='/ws/android/kernel/aosp/common-mainline/out/android-mainline/common' language='LANG_C89'>
     <type-decl name='__ARRAY_SIZE_TYPE__' size-in-bits='64' id='type-id-1'/>

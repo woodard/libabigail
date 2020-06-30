@@ -844,6 +844,7 @@ private:
 	     visibility		vi,
 	     bool		is_linux_string_cst = false,
 	     bool		is_in_ksymtab = false,
+	     uint64_t		crc = 0,
 	     bool		is_suppressed = false);
 
   elf_symbol(const elf_symbol&);
@@ -869,6 +870,7 @@ public:
 	 visibility	    vi,
 	 bool		    is_linux_string_cst = false,
 	 bool		    is_in_ksymtab = false,
+	 uint64_t	    crc = 0,
 	 bool		    is_suppressed = false);
 
   const environment*
@@ -942,6 +944,12 @@ public:
 
   void
   set_is_in_ksymtab(bool is_in_ksymtab);
+
+  uint64_t
+  get_crc() const;
+
+  void
+  set_crc(uint64_t crc);
 
   bool
   is_suppressed() const;

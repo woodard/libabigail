@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <fstream>
 #include <iomanip>
+#include <ios>
 #include <iostream>
 #include <memory>
 #include <sstream>
@@ -3055,6 +3056,11 @@ write_elf_symbol(const elf_symbol_sptr&	sym,
 
   if (sym->is_common_symbol())
     o << " is-common='yes'";
+
+  if (sym->get_crc() != 0)
+    o << " crc='"
+      << std::hex << std::showbase << sym->get_crc() << "'"
+      << std::dec << std::noshowbase;
 
   o << "/>\n";
 

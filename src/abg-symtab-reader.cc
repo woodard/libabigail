@@ -12,6 +12,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <unordered_map>
 #include <unordered_set>
 
 #include "abg-elf-helpers.h"
@@ -233,6 +234,7 @@ symtab::load_(Elf*	       elf_handle,
 
   const bool is_kernel = elf_helpers::is_linux_kernel(elf_handle);
   std::unordered_set<std::string> exported_kernel_symbols;
+  std::unordered_map<std::string, uint64_t> crc_values;
 
   const bool is_arm32 = elf_helpers::architecture_is_arm32(elf_handle);
   const bool is_ppc64 = elf_helpers::architecture_is_ppc64(elf_handle);
@@ -279,6 +281,11 @@ symtab::load_(Elf*	       elf_handle,
       if (is_kernel && name.rfind("__ksymtab_", 0) == 0)
 	{
 	  ABG_ASSERT(exported_kernel_symbols.insert(name.substr(10)).second);
+	  continue;
+	}
+      if (is_kernel && name.rfind("__crc_", 0) == 0)
+	{
+	  ABG_ASSERT(crc_values.emplace(name.substr(6), sym->st_value).second);
 	  continue;
 	}
 
@@ -382,6 +389,17 @@ symtab::load_(Elf*	       elf_handle,
 	  if (elf_symbol->is_public())
 	    elf_symbol->set_is_in_ksymtab(true);
       has_ksymtab_entries_ = true;
+    }
+
+  // Now add the CRC values
+  for (const auto& crc_entry : crc_values)
+    {
+      const auto r = name_symbol_map_.find(crc_entry.first);
+      if (r == name_symbol_map_.end())
+	continue;
+
+      for (const auto& symbol : r->second)
+	symbol->set_crc(crc_entry.second);
     }
 
   // sort the symbols for deterministic output

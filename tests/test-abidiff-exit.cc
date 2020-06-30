@@ -393,6 +393,17 @@ InOutSpec in_out_specs[] =
     "output/test-abidiff-exit/test-non-leaf-array-report.txt"
   },
   {
+    "data/test-abidiff-exit/test-crc-v0.abi",
+    "data/test-abidiff-exit/test-crc-v1.abi",
+    "",
+    "",
+    "",
+    "",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    "data/test-abidiff-exit/test-crc-report.txt",
+    "output/test-abidiff-exit/test-crc-report.txt"
+  },
+  {
     "data/test-abidiff-exit/test-missing-alias.abi",
     "data/test-abidiff-exit/test-missing-alias.abi",
     "data/test-abidiff-exit/test-missing-alias.suppr",

@@ -77,7 +77,7 @@ static InOutSpec specs[] =
   {
     "data/test-abidiff/test-PR18166-libtirpc.so.abi",
     "data/test-abidiff/test-PR18166-libtirpc.so.abi",
-    "data/test-abidiff/test-PR18166-libtirpc.so.report.txt",
+    "data/test-abidiff/empty-report.txt",
     "output/test-abidiff/test-PR18166-libtirpc.so.report.txt"
   },
   {
@@ -89,26 +89,44 @@ static InOutSpec specs[] =
   {
     "data/test-abidiff/test-PR24552-v0.abi",
     "data/test-abidiff/test-PR24552-v1.abi",
-    "data/test-abidiff/test-PR24552-report0.txt",
+    "data/test-abidiff/empty-report.txt",
     "output/test-abidiff/test-PR24552-report0.txt"
   },
   {
     "data/test-abidiff/test-empty-corpus-0.xml",
     "data/test-abidiff/test-empty-corpus-0.xml",
-    "data/test-abidiff/test-empty-corpus-report.txt",
-    "output/test-abidiff/test-empty-corpus-report.txt"
+    "data/test-abidiff/empty-report.txt",
+    "output/test-abidiff/test-empty-corpus-report-0.txt"
   },
   {
     "data/test-abidiff/test-empty-corpus-1.xml",
     "data/test-abidiff/test-empty-corpus-1.xml",
-    "data/test-abidiff/test-empty-corpus-report.txt",
-    "output/test-abidiff/test-empty-corpus-report.txt"
+    "data/test-abidiff/empty-report.txt",
+    "output/test-abidiff/test-empty-corpus-report-1.txt"
   },
   {
     "data/test-abidiff/test-empty-corpus-2.xml",
     "data/test-abidiff/test-empty-corpus-2.xml",
-    "data/test-abidiff/test-empty-corpus-report.txt",
-    "output/test-abidiff/test-empty-corpus-report.txt"
+    "data/test-abidiff/empty-report.txt",
+    "output/test-abidiff/test-empty-corpus-report-1.txt"
+  },
+  {
+    "data/test-abidiff/test-crc-0.xml",
+    "data/test-abidiff/test-crc-1.xml",
+    "data/test-abidiff/empty-report.txt",
+    "output/test-abidiff/test-crc-report-0-1.txt"
+  },
+  {
+    "data/test-abidiff/test-crc-1.xml",
+    "data/test-abidiff/test-crc-0.xml",
+    "data/test-abidiff/empty-report.txt",
+    "output/test-abidiff/test-crc-report-1-0.txt"
+  },
+  {
+    "data/test-abidiff/test-crc-1.xml",
+    "data/test-abidiff/test-crc-2.xml",
+    "data/test-abidiff/test-crc-report.txt",
+    "output/test-abidiff/test-crc-report-1-2.txt"
   },
   // This should be the last entry.
   {0, 0, 0, 0}

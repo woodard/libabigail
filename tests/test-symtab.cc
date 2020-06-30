@@ -411,3 +411,18 @@ TEST_CASE("Symtab::SimpleKernelSymtabs", "[symtab, basic, kernel, ksymtab]")
       }
     }
 }
+
+TEST_CASE("Symtab::KernelSymtabsWithCRC", "[symtab, crc, kernel, ksymtab]")
+{
+  const std::string base_path = "kernel-modversions/";
+
+  GIVEN("a binary with one function and one variable (GPL) exported")
+  {
+    const std::string  binary = base_path + "one_of_each.ko";
+    const corpus_sptr& corpus = assert_symbol_count(binary, 2, 2);
+    CHECK(corpus->lookup_function_symbol("exported_function")->get_crc() != 0);
+    CHECK(corpus->lookup_function_symbol("exported_function_gpl")->get_crc() != 0);
+    CHECK(corpus->lookup_variable_symbol("exported_variable")->get_crc() != 0);
+    CHECK(corpus->lookup_variable_symbol("exported_variable_gpl")->get_crc() != 0);
+  }
+}

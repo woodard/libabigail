@@ -42,8 +42,7 @@ emit_num_value(uint64_t value, const diff_context& ctxt, ostream& out)
     out << std::hex << std::showbase ;
   else
     out << std::dec;
-  out << value;
-  out << std::dec << std::noshowbase;
+  out << value << std::dec << std::noshowbase;
 }
 
 /// Convert a bits value into a byte value if the current diff context
@@ -1184,6 +1183,21 @@ maybe_report_diff_for_symbol(const elf_symbol_sptr&	symbol1,
       out << symbol1->get_version().str()
 	  << " to "
 	  << symbol2->get_version().str();
+
+      reported = true;
+    }
+
+  if (symbol1->get_crc() != 0 && symbol2->get_crc() != 0
+      && symbol1->get_crc() != symbol2->get_crc())
+    {
+      if (reported)
+	out << ",\n" << indent << "its CRC (modversions) changed from ";
+      else
+	out << "\n" << indent << "CRC value (modversions) changed from ";
+
+      out << std::showbase << std::hex
+	  << symbol1->get_crc() << " to " << symbol2->get_crc()
+	  << std::noshowbase << std::dec;
 
       reported = true;
     }

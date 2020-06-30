@@ -35,6 +35,7 @@ test-read-write/test28-without-std-fns-ref.xml \
 test-read-write/test28-drop-std-vars.abignore \
 test-read-write/test28-without-std-vars-ref.xml \
 test-read-write/test28-without-std-vars.xml \
+test-read-write/test-crc.xml \
 \
 test-write-read-archive/test0.xml \
 test-write-read-archive/test1.xml \
@@ -57,6 +58,7 @@ test-core-diff/report11.txt \
 test-core-diff/report12.txt \
 test-core-diff/report13.txt \
 \
+test-abidiff/empty-report.txt			\
 test-abidiff/test-enum0-v0.cc.bi		\
 test-abidiff/test-enum0-v1.cc.bi		\
 test-abidiff/test-enum0-report.txt		\
@@ -77,17 +79,18 @@ test-abidiff/test-var0-v1.cc.bi		\
 test-abidiff/test-var0-report.txt	\
 test-abidiff/test-PR18166-libtirpc.so \
 test-abidiff/test-PR18166-libtirpc.so.abi \
-test-abidiff/test-PR18166-libtirpc.so.report.txt \
 test-abidiff/test-PR18791-report0.txt   \
 test-abidiff/test-PR18791-v0.so.abi     \
 test-abidiff/test-PR18791-v1.so.abi     \
-test-abidiff/test-PR24552-report0.txt	\
 test-abidiff/test-PR24552-v0.abi	\
 test-abidiff/test-PR24552-v1.abi	\
 test-abidiff/test-empty-corpus-0.xml		\
 test-abidiff/test-empty-corpus-1.xml		\
 test-abidiff/test-empty-corpus-2.xml		\
-test-abidiff/test-empty-corpus-report.txt	\
+test-abidiff/test-crc-0.xml \
+test-abidiff/test-crc-1.xml \
+test-abidiff/test-crc-2.xml \
+test-abidiff/test-crc-report.txt \
 \
 test-abidiff-exit/test1-voffset-change-report0.txt \
 test-abidiff-exit/test1-voffset-change-report1.txt \
@@ -197,6 +200,9 @@ test-abidiff-exit/test-non-leaf-array-v0.o \
 test-abidiff-exit/test-non-leaf-array-v1.c \
 test-abidiff-exit/test-non-leaf-array-v1.o \
 test-abidiff-exit/test-non-leaf-array-report.txt \
+test-abidiff-exit/test-crc-report.txt \
+test-abidiff-exit/test-crc-v0.abi \
+test-abidiff-exit/test-crc-v1.abi \
 test-abidiff-exit/test-missing-alias-report.txt \
 test-abidiff-exit/test-missing-alias.abi \
 test-abidiff-exit/test-missing-alias.suppr \
@@ -1984,4 +1990,7 @@ test-symtab/kernel-5.6/single_function_gpl.ko \
 test-symtab/kernel-5.6/single_variable.c \
 test-symtab/kernel-5.6/single_variable.ko \
 test-symtab/kernel-5.6/single_variable_gpl.c \
-test-symtab/kernel-5.6/single_variable_gpl.ko
+test-symtab/kernel-5.6/single_variable_gpl.ko \
+test-symtab/kernel-modversions/Makefile \
+test-symtab/kernel-modversions/one_of_each.c \
+test-symtab/kernel-modversions/one_of_each.ko
