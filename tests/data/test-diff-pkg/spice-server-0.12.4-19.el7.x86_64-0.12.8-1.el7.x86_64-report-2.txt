@@ -318,7 +318,7 @@
                                                                   entity changed from 'typedef RedDispatcher' to compatible type 'struct RedDispatcher'
                                                                     details are being reported
                                                               type of 'SpiceWatch RedWorker::watches[20]' changed:
-                                                                array element type 'struct SpiceWatch' changed: 
+                                                                array element type 'struct SpiceWatch' changed:
                                                                   details are being reported
                                                                 type size hasn't changed
                                                               type of 'MonitorsConfig* RedWorker::monitors_config' changed:
@@ -329,7 +329,7 @@
                                                                       type of 'RedWorker* MonitorsConfig::worker' changed:
                                                                         pointed to type 'struct RedWorker' changed, as being reported
                                                               type of '_Drawable RedWorker::drawables[1000]' changed:
-                                                                array element type 'typedef _Drawable' changed: 
+                                                                array element type 'typedef _Drawable' changed:
                                                                   underlying type 'struct _Drawable' at red_worker.c:874:1 changed:
                                                                     type size changed from 3200 to 2560 (in bits)
                                                                     1 data member change:
@@ -364,7 +364,7 @@
                                                                                 type of 'Stream* Drawable::sized_stream' changed:
                                                                                   pointed to type 'typedef Stream' changed at red_worker.c:432:1, as reported earlier
                                                                                 type of 'DependItem Drawable::depend_items[3]' changed:
-                                                                                  array element type 'typedef DependItem' changed: 
+                                                                                  array element type 'typedef DependItem' changed:
                                                                                     underlying type 'struct DependItem' at red_worker.c:825:1 changed:
                                                                                       type size hasn't changed
                                                                                       1 data member change:
@@ -415,7 +415,7 @@
                                                               'uint32_t RedWorker::mouse_mode' offset changed from 15445920 to 14805856 (in bits) (by -640064 bits)
                                                               'uint32_t RedWorker::streaming_video' offset changed from 15445952 to 14805888 (in bits) (by -640064 bits)
                                                               type of 'Stream RedWorker::streams_buf[50]' changed:
-                                                                array element type 'typedef Stream' changed: 
+                                                                array element type 'typedef Stream' changed:
                                                                   underlying type 'struct Stream' changed at red_worker.c:433:1, as reported earlier
                                                                 array type size changed from 44800 to 41600
                                                               and offset changed from 15446016 to 14805952 (in bits) (by -640064 bits)
@@ -467,7 +467,7 @@
                                                                                         type of 'EncoderData data' changed:
                                                                                           underlying type 'struct {DisplayChannelClient* dcc; RedCompressBuf* bufs_head; RedCompressBuf* bufs_tail; jmp_buf jmp_env; union {struct {SpiceChunks* chunks; int next; int stride; int reverse;} lines_data; struct {RedCompressBuf* next; int size_left;} compressed_data;} u; char message_buf[512];}' changed, as being reported
                                                                                   type of 'StreamAgent DisplayChannelClient::stream_agents[50]' changed:
-                                                                                    array element type 'typedef StreamAgent' changed: 
+                                                                                    array element type 'typedef StreamAgent' changed:
                                                                                       underlying type 'struct StreamAgent' at red_worker.c:464:1 changed:
                                                                                         type size hasn't changed
                                                                                         2 data member changes:

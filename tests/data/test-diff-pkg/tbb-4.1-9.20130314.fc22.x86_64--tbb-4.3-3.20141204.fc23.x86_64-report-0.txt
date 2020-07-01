@@ -42,7 +42,7 @@
                         1 data member change:
                           'tbb::spin_mutex tbb::internal::concurrent_monitor::mutex_ec' offset changed from 0 to 8 (in bits) (by +8 bits)
                       type of 'tbb::internal::micro_queue tbb::internal::concurrent_queue_rep::array[8]' changed:
-                        array element type 'struct tbb::internal::micro_queue' changed: 
+                        array element type 'struct tbb::internal::micro_queue' changed:
                           type size hasn't changed
                           1 data member change:
                             type of 'tbb::spin_mutex tbb::internal::micro_queue::page_mutex' changed:
@@ -96,7 +96,7 @@
                             struct tbb::internal::padded<tbb::internal::arena_base, 128ul> at tbb_stddef.h:251:1
                           1 data member change:
                             type of 'tbb::internal::arena_slot tbb::internal::arena::my_slots[1]' changed:
-                              array element type 'struct tbb::internal::arena_slot' changed: 
+                              array element type 'struct tbb::internal::arena_slot' changed:
                                 type size hasn't changed
                                 2 base class deletions:
                                   struct tbb::internal::padded<tbb::internal::arena_slot_line1> at tbb_stddef.h:261:1
@@ -154,7 +154,7 @@
                         'intptr_t tbb::internal::market::my_global_bottom_priority' offset changed from 448 to 512 (in bits) (by +64 bits)
                         'uintptr_t tbb::internal::market::my_global_reload_epoch' offset changed from 512 to 576 (in bits) (by +64 bits)
                         type of 'tbb::internal::market::priority_level_info tbb::internal::market::my_priority_levels[3]' changed:
-                          array element type 'struct tbb::internal::market::priority_level_info' changed: 
+                          array element type 'struct tbb::internal::market::priority_level_info' changed:
                             type size hasn't changed
                             1 data member change:
                               type of 'tbb::internal::intrusive_list_base<tbb::internal::intrusive_list<tbb::internal::arena>, tbb::internal::arena>::iterator tbb::internal::market::priority_level_info::next_arena' changed:

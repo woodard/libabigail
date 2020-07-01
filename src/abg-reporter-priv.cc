@@ -470,7 +470,7 @@ represent(const var_diff_sptr	&diff,
 	  out << indent << "while looking at anonymous data member '"
 	      << o_pretty_representation << "':\n"
 	      << indent << "the internal name of that anonymous data member"
-			   "changed from:\n"
+			   " changed from:\n"
 	      << indent << " " << get_type_name(o_type) << "\n"
 	      << indent << "to:\n"
 	      << indent << " " << get_type_name(n_type) << "\n"

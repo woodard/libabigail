@@ -86,7 +86,7 @@
 
     [C] 'char* _IceAuthNames[1]' was changed to 'const char* _IceAuthNames[1]' at globals.h:37:1:
       type of variable changed:
-        array element type 'char*' changed: 
+        array element type 'char*' changed:
           in pointed to type 'char':
             entity changed from 'char' to 'const char'
             type size hasn't changed

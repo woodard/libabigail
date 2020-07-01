@@ -13,7 +13,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
             array type size changed from 480 to 640
             array type subrange 2 changed length from 3 to 4
           type of 'int* S::m1[10]' changed:
-            array element type 'int*' changed: 
+            array element type 'int*' changed:
               in pointed to type 'int':
                 type name changed from 'int' to 'char'
                 type size changed from 32 to 8 (in bits)

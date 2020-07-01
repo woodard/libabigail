@@ -651,7 +651,7 @@ default_reporter::report(const array_diff& d, ostream& out,
       string fn = ir::get_pretty_representation(is_type(dif->first_subject()));
       // report array element type changes
       out << indent << "array element type '"
-	  << fn << "' changed: \n";
+	  << fn << "' changed:\n";
       dif->report(out, indent + "  ");
     }
 

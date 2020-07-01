@@ -5,7 +5,7 @@ Variables changes summary: 0 Removed, 1 Changed, 0 Added variable
 
   [C] 'S a[2]' was changed to 'typedef_of_S a[2]':
     type of variable changed:
-      array element type 'struct S' changed: 
+      array element type 'struct S' changed:
         entity changed from 'struct S' to compatible type 'typedef typedef_of_S'
       type name changed from 'S[2]' to 'typedef_of_S[2]'
       type size hasn't changed

@@ -20,7 +20,7 @@
                   type size hasn't changed
                   1 data member change:
                     type of 'cdio_dvd_layer_t cdio_dvd_physical::layer[4]' changed:
-                      array element type 'typedef cdio_dvd_layer_t' changed: 
+                      array element type 'typedef cdio_dvd_layer_t' changed:
                         underlying type 'struct cdio_dvd_layer' at dvd.h:65:1 changed:
                           type size hasn't changed
                           8 data member changes:
