@@ -10104,7 +10104,6 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
 	out << " (" << num_filtered << " filtered out)";
       out << "\n";
 
-
       out << indent << "Changed leaf types summary: "
 	  << s.net_num_leaf_type_changes();
       if (s.num_leaf_type_changes_filtered_out())
@@ -10142,7 +10141,6 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
 
       // variables changes summary
       out << indent << "Removed/Changed/Added variables summary: ";
-
       out << s.net_num_vars_removed() << " Removed";
       if (s.num_removed_vars_filtered_out())
 	out << " (" << s.num_removed_vars_filtered_out()
@@ -10185,7 +10183,7 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
 	out << " (" << s.num_changed_func_filtered_out() << " filtered out)";
       out << ", ";
 
-      out << s.net_num_func_added()<< " Added";
+      out << s.net_num_func_added() << " Added";
       if (s.num_added_func_filtered_out())
 	out << " (" << s.num_added_func_filtered_out() << " filtered out)";
       if (total_nb_function_changes <= 1)
@@ -10199,7 +10197,6 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
 	+ s.num_vars_changed() + s.num_vars_added();
 
       out << indent << "Variables changes summary: ";
-
       out << s.net_num_vars_removed() << " Removed";
       if (s.num_removed_vars_filtered_out())
 	out << " (" << s.num_removed_vars_filtered_out()
@@ -10226,7 +10223,7 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
   // functions/variables.
   if (ctxt->show_unreachable_types())
     {
-      size_t total_nb_variable_changes =
+      size_t total_nb_unreachable_type_changes =
 	s.num_removed_unreachable_types()
 	+ s.num_changed_unreachable_types()
 	+ s.num_added_unreachable_types();
@@ -10252,7 +10249,7 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
       if (s.num_added_unreachable_types_filtered_out())
 	out << " (" << s.num_added_unreachable_types_filtered_out()
 	    << " filtered out)";
-      if (total_nb_variable_changes <= 1)
+      if (total_nb_unreachable_type_changes <= 1)
 	out << " type";
       else
 	out << " types";
@@ -10813,7 +10810,7 @@ corpus_diff::has_incompatible_changes() const
 	  || stats.net_num_func_removed() != 0
 	  || (stats.num_func_with_virtual_offset_changes() != 0
 	      // If all reports about functions with sub-type changes
-	      // have been suppressd, then even those about functions
+	      // have been suppressed, then even those about functions
 	      // that are virtual don't matter anymore because the
 	      // user willingly requested to shut them down
 	      && stats.net_num_func_changed() != 0)
