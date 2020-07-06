@@ -450,20 +450,20 @@ public:
     switch (m_type_id_style)
       {
       case SEQUENCE_TYPE_ID_STYLE:
-        {
-          interned_string id = get_id_manager().get_id_with_prefix("type-id-");
-          return m_type_id_map[c] = id;
-        }
+	{
+	  interned_string id = get_id_manager().get_id_with_prefix("type-id-");
+	  return m_type_id_map[c] = id;
+	}
       case HASH_TYPE_ID_STYLE:
-        {
-          interned_string pretty = c->get_cached_pretty_representation(true);
-          size_t hash = hashing::fnv_hash(*pretty.raw());
-          while (!m_used_type_id_hashes.insert(hash).second)
-            ++hash;
-          std::ostringstream os;
-          os << std::hex << std::setfill('0') << std::setw(8) << hash;
-          return m_type_id_map[c] = c->get_environment()->intern(os.str());
-        }
+	{
+	  interned_string pretty = c->get_cached_pretty_representation(true);
+	  size_t hash = hashing::fnv_hash(pretty);
+	  while (!m_used_type_id_hashes.insert(hash).second)
+	    ++hash;
+	  std::ostringstream os;
+	  os << std::hex << std::setfill('0') << std::setw(8) << hash;
+	  return m_type_id_map[c] = c->get_environment()->intern(os.str());
+	}
       }
     ABG_ASSERT_NOT_REACHED;
     return interned_string();
