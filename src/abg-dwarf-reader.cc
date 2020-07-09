@@ -16047,8 +16047,7 @@ maybe_canonicalize_type(const Dwarf_Die *die, read_context& ctxt)
   if (!t)
     return;
 
-  type_base_sptr peeled_type =
-    peel_typedef_pointer_or_reference_type(t, /*peel_qual_types=*/false);
+  type_base_sptr peeled_type = peel_typedef_pointer_or_reference_type(t);
   if (is_class_type(peeled_type)
       || is_union_type(peeled_type)
       || is_function_type(peeled_type)
@@ -16101,8 +16100,7 @@ maybe_canonicalize_type(const type_base_sptr& t,
   if (!t)
     return;
 
-  type_base_sptr peeled_type =
-    peel_typedef_pointer_or_reference_type(t, /*peel_qual_types=*/false);
+  type_base_sptr peeled_type = peel_typedef_pointer_or_reference_type(t);
   if (is_class_type(peeled_type)
       || is_union_type(peeled_type)
       || is_function_type(peeled_type)

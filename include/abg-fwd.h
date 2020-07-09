@@ -849,12 +849,10 @@ type_base*
 peel_qualified_or_typedef_type(const type_base* type);
 
 type_base_sptr
-peel_typedef_pointer_or_reference_type(const type_base_sptr,
-				       bool peel_qualified_type = true);
+peel_typedef_pointer_or_reference_type(const type_base_sptr);
 
 type_base*
-peel_typedef_pointer_or_reference_type(const type_base* type,
-				       bool peel_qualified_type = true);
+peel_typedef_pointer_or_reference_type(const type_base* type);
 
 type_base*
 peel_pointer_or_reference_type(const type_base *type,

@@ -1184,10 +1184,8 @@ is_mostly_distinct_diff(const diff *d)
   type_base_sptr first = is_type(td->first_subject());
   type_base_sptr second = is_type(td->second_subject());
 
-  first = peel_typedef_pointer_or_reference_type(first,
-						 /*peel_qualified_type=*/false);
-  second = peel_typedef_pointer_or_reference_type(second,
-						  /*peel_qual_type=*/false);
+  first = peel_typedef_pointer_or_reference_type(first);
+  second = peel_typedef_pointer_or_reference_type(second);
   ABG_ASSERT(first && second);
 
   return distinct_diff::entities_are_of_distinct_kinds(first, second);
