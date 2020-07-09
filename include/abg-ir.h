@@ -1674,8 +1674,7 @@ protected:
   add_member_decl(const decl_base_sptr& member);
 
   virtual decl_base_sptr
-  insert_member_decl(const decl_base_sptr& member,
-		     declarations::iterator before);
+  insert_member_decl(decl_base_sptr member, declarations::iterator before);
 
   virtual void
   remove_member_decl(decl_base_sptr member);

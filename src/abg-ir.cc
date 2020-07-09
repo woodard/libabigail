@@ -6162,7 +6162,7 @@ scope_decl::add_member_decl(const decl_base_sptr& member)
 /// @param before an interator pointing to the element before which
 /// the new member should be inserted.
 decl_base_sptr
-scope_decl::insert_member_decl(const decl_base_sptr& member,
+scope_decl::insert_member_decl(decl_base_sptr member,
 			       declarations::iterator before)
 {
   ABG_ASSERT(!member->get_scope());
