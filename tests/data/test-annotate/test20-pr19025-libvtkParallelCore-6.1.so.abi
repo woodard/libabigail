@@ -753,11 +753,6 @@
     <elf-symbol name='_ZTVN15vtkCommunicator9OperationE' size='48' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkCommunicator.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
-
-
-
-
-
     <!-- bool -->
     <type-decl name='bool' size-in-bits='8' id='type-id-1'/>
     <!-- char -->
@@ -766,25 +761,21 @@
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='8' id='type-id-3'>
       <!-- <anonymous range>[1] -->
       <subrange length='1' type-id='type-id-4' id='type-id-5'/>
-
     </array-type-def>
     <!-- char[20] -->
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='160' id='type-id-6'>
       <!-- <anonymous range>[20] -->
       <subrange length='20' type-id='type-id-4' id='type-id-7'/>
-
     </array-type-def>
     <!-- char[40] -->
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='320' id='type-id-8'>
       <!-- <anonymous range>[40] -->
       <subrange length='40' type-id='type-id-4' id='type-id-9'/>
-
     </array-type-def>
     <!-- char[4] -->
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='32' id='type-id-10'>
       <!-- <anonymous range>[4] -->
       <subrange length='4' type-id='type-id-4' id='type-id-11'/>
-
     </array-type-def>
     <!-- struct typedef __va_list_tag __va_list_tag -->
     <class-decl name='typedef __va_list_tag __va_list_tag' size-in-bits='192' is-struct='yes' visibility='default' id='type-id-12'>
@@ -811,7 +802,6 @@
     <array-type-def dimensions='1' type-id='type-id-15' size-in-bits='192' id='type-id-16'>
       <!-- <anonymous range>[3] -->
       <subrange length='3' type-id='type-id-4' id='type-id-17'/>
-
     </array-type-def>
     <!-- float -->
     <type-decl name='float' size-in-bits='32' id='type-id-18'/>
@@ -1097,11 +1087,9 @@
     </class-decl>
     <!-- class vtkMultiProcessStream -->
     <class-decl name='vtkMultiProcessStream' size-in-bits='128' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessStream.h' line='35' column='1' id='type-id-51'>
-
         <member-type access='private'>
           <!-- struct vtkMultiProcessStream::vtkInternals -->
           <class-decl name='vtkInternals' size-in-bits='640' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessStream.cxx' line='23' column='1' id='type-id-52'>
-
               <member-type access='public'>
                 <!-- enum vtkMultiProcessStream::vtkInternals::Types -->
                 <enum-decl name='Types' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessStream.cxx' line='28' column='1' id='type-id-53'>
@@ -1118,7 +1106,6 @@
                   <enumerator name='stream_value' value='9'/>
                 </enum-decl>
               </member-type>
-
               <member-type access='public'>
                 <!-- typedef std::deque<unsigned char, std::allocator<unsigned char> > vtkMultiProcessStream::vtkInternals::DataType -->
                 <typedef-decl name='DataType' type-id='type-id-55' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessStream.cxx' line='25' column='1' id='type-id-54'/>
@@ -1746,7 +1733,6 @@
     <typedef-decl name='mbstate_t' type-id='type-id-94' filepath='/usr/include/wchar.h' line='106' column='1' id='type-id-95'/>
     <!-- struct __mbstate_t -->
     <class-decl name='__mbstate_t' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/include/wchar.h' line='84' column='1' id='type-id-94'>
-
         <member-type access='public'>
           <!-- union {unsigned int __wch; char __wchb[4];} -->
           <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='87' column='1' id='type-id-96'>
@@ -2468,7 +2454,6 @@
     <class-decl name='vtkCommunicator' size-in-bits='576' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkCommunicator.h' line='45' column='1' id='type-id-116'>
     <!-- class vtkObject -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-117'/>
-
         <member-type access='private'>
           <!-- enum vtkCommunicator::Tags -->
           <enum-decl name='Tags' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkCommunicator.h' line='65' column='1' id='type-id-118'>
@@ -2482,7 +2467,6 @@
             <enumerator name='BARRIER_TAG' value='16'/>
           </enum-decl>
         </member-type>
-
         <member-type access='private'>
           <!-- enum vtkCommunicator::StandardOperations -->
           <enum-decl name='StandardOperations' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkCommunicator.h' line='76' column='1' id='type-id-119'>
@@ -6104,7 +6088,6 @@
     </class-decl>
     <!-- class vtkSmartPointerBase -->
     <class-decl name='vtkSmartPointerBase' size-in-bits='64' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkSmartPointerBase.h' line='30' column='1' id='type-id-161'>
-
         <member-type access='protected'>
           <!-- class vtkSmartPointerBase::NoReference -->
           <class-decl name='NoReference' size-in-bits='8' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkSmartPointerBase.h' line='73' column='1' id='type-id-185'/>
@@ -6727,10 +6710,8 @@
     <pointer-type-def type-id='type-id-388' size-in-bits='64' id='type-id-389'/>
     <!-- namespace std -->
     <namespace-decl name='std'>
-
       <!-- class std::ios_base -->
       <class-decl name='ios_base' visibility='default' is-declaration-only='yes' id='type-id-354'>
-
           <member-type access='private'>
             <!-- class std::ios_base::Init -->
             <class-decl name='Init' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='538' column='1' id='type-id-356'>
@@ -6883,7 +6864,6 @@
       </class-decl>
       <!-- struct std::_Resetiosflags -->
       <class-decl name='_Resetiosflags' size-in-bits='32' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iomanip' line='49' column='1' id='type-id-390'>
-
           <member-type access='public'>
             <!-- typedef std::_Ios_Fmtflags std::_Resetiosflags::fmtflags -->
             <typedef-decl name='fmtflags' type-id='type-id-391' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='263' column='1' id='type-id-232'/>
@@ -6918,7 +6898,6 @@
       </enum-decl>
       <!-- struct std::basic_ios<char, std::char_traits<char> > -->
       <class-decl name='basic_ios&lt;char, std::char_traits&lt;char&gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-260'>
-
           <member-type access='public'>
             <!-- typedef std::_Ios_Iostate std::basic_ios<char, std::char_traits<char> >::iostate -->
             <typedef-decl name='iostate' type-id='type-id-392' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='338' column='1' id='type-id-263'/>
@@ -6993,12 +6972,10 @@
       </enum-decl>
       <!-- class std::__basic_file<char> -->
       <class-decl name='__basic_file&lt;char&gt;' size-in-bits='128' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/x86_64-redhat-linux/bits/basic_file.h' line='53' column='1' id='type-id-240'>
-
           <member-type access='private'>
             <!-- typedef std::_Ios_Openmode std::__basic_file<char>::openmode -->
             <typedef-decl name='openmode' type-id='type-id-393' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='369' column='1' id='type-id-243'/>
           </member-type>
-
           <member-type access='private'>
             <!-- typedef std::_Ios_Seekdir std::__basic_file<char>::seekdir -->
             <typedef-decl name='seekdir' type-id='type-id-394' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='401' column='1' id='type-id-245'/>
@@ -7321,7 +7298,6 @@
       </function-decl>
       <!-- struct std::__miter_base<const vtkCommunicator::ReduceVoidArray::VTK_TT*, false> -->
       <class-decl name='__miter_base&lt;const vtkCommunicator::ReduceVoidArray::VTK_TT*, false&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='285' column='1' is-declaration-only='yes' id='type-id-399'>
-
           <member-type access='public'>
             <!-- typedef long long int std::__miter_base<const vtkCommunicator::ReduceVoidArray::VTK_TT*, false>::VTK_TT -->
             <typedef-decl name='VTK_TT' type-id='type-id-22' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkCommunicator.cxx' line='1342' column='1' id='type-id-247'/>
@@ -7666,7 +7642,6 @@
       </function-decl>
       <!-- class std::ctype<char> -->
       <class-decl name='ctype&lt;char&gt;' visibility='default' is-declaration-only='yes' id='type-id-276'>
-
           <member-type access='private'>
             <!-- typedef char std::ctype<char>::char_type -->
             <typedef-decl name='char_type' type-id='type-id-2' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/locale_facets.h' line='679' column='1' id='type-id-400'/>
@@ -7834,7 +7809,6 @@
       <typedef-decl name='ostream' type-id='type-id-340' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iosfwd' line='130' column='1' id='type-id-358'/>
       <!-- struct std::basic_string<char, std::char_traits<char>, std::allocator<char> > -->
       <class-decl name='basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stringfwd.h' line='52' column='1' id='type-id-265'>
-
           <member-type access='private'>
             <!-- struct std::basic_string<char, std::char_traits<char>, std::allocator<char> >::_Rep -->
             <class-decl name='_Rep' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='148' column='1' id='type-id-349'>
@@ -7987,7 +7961,6 @@
               </member-function>
             </class-decl>
           </member-type>
-
           <member-type access='private'>
             <!-- struct std::basic_string<char, std::char_traits<char>, std::allocator<char> >::_Alloc_hider -->
             <class-decl name='_Alloc_hider' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='258' column='1' id='type-id-347'>
@@ -8012,7 +7985,6 @@
               </member-function>
             </class-decl>
           </member-type>
-
           <member-type access='private'>
             <!-- struct std::basic_string<char, std::char_traits<char>, std::allocator<char> >::_Rep_base -->
             <class-decl name='_Rep_base' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='141' column='1' id='type-id-402'>
@@ -10326,7 +10298,6 @@
       </class-decl>
       <!-- struct std::_Vector_base<unsigned char, std::allocator<unsigned char> > -->
       <class-decl name='_Vector_base&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt;' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='70' column='1' id='type-id-237'>
-
           <member-type access='public'>
             <!-- struct std::_Vector_base<unsigned char, std::allocator<unsigned char> >::_Vector_impl -->
             <class-decl name='_Vector_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='75' column='1' id='type-id-326'>
@@ -10561,7 +10532,6 @@
       </class-decl>
       <!-- struct std::_Vector_base<long long int, std::allocator<long long int> > -->
       <class-decl name='_Vector_base&lt;long long int, std::allocator&lt;long long int&gt; &gt;' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='70' column='1' id='type-id-234'>
-
           <member-type access='public'>
             <!-- struct std::_Vector_base<long long int, std::allocator<long long int> >::_Vector_impl -->
             <class-decl name='_Vector_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='75' column='1' id='type-id-323'>
@@ -11643,12 +11613,10 @@
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;const long long int*, std::vector&lt;long long int, std::allocator&lt;long long int&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-443'/>
       <!-- struct std::char_traits<char> -->
       <class-decl name='char_traits&lt;char&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='238' column='1' is-declaration-only='yes' id='type-id-444'>
-
           <member-type access='public'>
             <!-- typedef char std::char_traits<char>::char_type -->
             <typedef-decl name='char_type' type-id='type-id-2' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='239' column='1' id='type-id-269'/>
           </member-type>
-
           <member-type access='public'>
             <!-- typedef int std::char_traits<char>::int_type -->
             <typedef-decl name='int_type' type-id='type-id-19' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='240' column='1' id='type-id-273'/>
@@ -13063,7 +13031,6 @@
       <!-- long long unsigned int -->
       <return type-id='type-id-23'/>
     </function-decl>
-
     <!-- char* setlocale(int, const char*) -->
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='125' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'int' -->
@@ -13324,7 +13291,6 @@
       <!-- int -->
       <return type-id='type-id-19'/>
     </function-decl>
-
     <!-- int atexit(void ()*) -->
     <function-decl name='atexit' filepath='/usr/include/stdlib.h' line='518' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'void ()*' -->
@@ -13644,7 +13610,6 @@
     </class-decl>
     <!-- class vtkOStreamWrapper -->
     <class-decl name='vtkOStreamWrapper' visibility='default' is-declaration-only='yes' id='type-id-450'>
-
         <member-type access='private'>
           <!-- struct vtkOStreamWrapper::EndlType -->
           <class-decl name='EndlType' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkOStreamWrapper.h' line='58' column='1' id='type-id-302'/>
@@ -13661,7 +13626,6 @@
     </class-decl>
     <!-- class vtkDataArrayTemplate<char> -->
     <class-decl name='vtkDataArrayTemplate&lt;char&gt;' visibility='default' is-declaration-only='yes' id='type-id-371'>
-
         <member-type access='private'>
           <!-- enum vtkDataArrayTemplate<char>::DeleteMethod -->
           <enum-decl name='DeleteMethod' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkDataArrayTemplate.h' line='254' column='1' id='type-id-451'>
@@ -13970,17 +13934,12 @@
     <pointer-type-def type-id='type-id-456' size-in-bits='64' id='type-id-454'/>
     <!-- vtkDummyCommunicator* -->
     <pointer-type-def type-id='type-id-452' size-in-bits='64' id='type-id-453'/>
-
-
-
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkDummyController.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
     <!-- struct vtkMultiProcessController -->
     <class-decl name='vtkMultiProcessController' size-in-bits='896' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessController.h' line='63' column='1' id='type-id-457'>
     <!-- class vtkObject -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-117'/>
-
         <member-type access='public'>
           <!-- enum vtkMultiProcessController::Errors -->
           <enum-decl name='Errors' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessController.h' line='296' column='1' id='type-id-458'>
@@ -13990,7 +13949,6 @@
             <enumerator name='RMI_ARG_ERROR' value='2'/>
           </enum-decl>
         </member-type>
-
         <member-type access='public'>
           <!-- enum vtkMultiProcessController::Consts -->
           <enum-decl name='Consts' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessController.h' line='303' column='1' id='type-id-459'>
@@ -13999,7 +13957,6 @@
             <enumerator name='INVALID_SOURCE' value='-2'/>
           </enum-decl>
         </member-type>
-
         <member-type access='public'>
           <!-- enum vtkMultiProcessController::Tags -->
           <enum-decl name='Tags' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessController.h' line='309' column='1' id='type-id-460'>
@@ -14010,11 +13967,9 @@
             <enumerator name='XML_WRITER_DATA_INFO' value='4'/>
           </enum-decl>
         </member-type>
-
         <member-type access='private'>
           <!-- class vtkMultiProcessController::vtkInternal -->
           <class-decl name='vtkInternal' size-in-bits='960' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessController.cxx' line='45' column='1' id='type-id-461'>
-
               <member-type access='private'>
                 <!-- class vtkMultiProcessController::vtkInternal::vtkRMICallback -->
                 <class-decl name='vtkRMICallback' size-in-bits='192' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessController.cxx' line='51' column='1' id='type-id-462'>
@@ -14032,7 +13987,6 @@
                   </data-member>
                 </class-decl>
               </member-type>
-
               <member-type access='private'>
                 <!-- typedef vtksys::hash_map<int, std::vector<vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator<vtkMultiProcessController::vtkInternal::vtkRMICallback> >, vtksys::hash<int>, std::equal_to<int>, std::allocator<char> > vtkMultiProcessController::vtkInternal::RMICallbackMap -->
                 <typedef-decl name='RMICallbackMap' type-id='type-id-465' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessController.cxx' line='61' column='1' id='type-id-464'/>
@@ -16975,10 +16929,6 @@
     <pointer-type-def type-id='type-id-480' size-in-bits='64' id='type-id-481'/>
     <!-- vtkMultiProcessController* -->
     <pointer-type-def type-id='type-id-457' size-in-bits='64' id='type-id-471'/>
-
-
-
-
     <!-- void (void*, void*, int, int) -->
     <function-type size-in-bits='64' id='type-id-485'>
       <!-- parameter of type 'void*' -->
@@ -17257,10 +17207,6 @@
     <pointer-type-def type-id='type-id-498' size-in-bits='64' id='type-id-491'/>
     <!-- vtkStringArray* -->
     <pointer-type-def type-id='type-id-499' size-in-bits='64' id='type-id-490'/>
-
-
-
-
     <!-- void* memchr(void*, int, size_t) -->
     <function-decl name='memchr' mangled-name='*memchr' filepath='/usr/include/string.h' line='88' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'void*' -->
@@ -17799,7 +17745,6 @@
     <typedef-decl name='vtkProcessFunctionType' type-id='type-id-506' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessController.h' line='53' column='1' id='type-id-468'/>
     <!-- class vtkWeakPointerBase -->
     <class-decl name='vtkWeakPointerBase' size-in-bits='64' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkWeakPointerBase.h' line='31' column='1' id='type-id-507'>
-
         <member-type access='protected'>
           <!-- class vtkWeakPointerBase::NoReference -->
           <class-decl name='NoReference' size-in-bits='8' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkWeakPointerBase.h' line='70' column='1' id='type-id-508'/>
@@ -18994,7 +18939,6 @@
     <pointer-type-def type-id='type-id-841' size-in-bits='64' id='type-id-974'/>
     <!-- namespace std -->
     <namespace-decl name='std'>
-
       <!-- void std::__fill_a<std::_Bit_type*, int>(std::_Bit_type*, std::_Bit_type*, const int&) -->
       <function-decl name='__fill_a&lt;std::_Bit_type*, int&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='697' column='1' visibility='default' binding='global' size-in-bits='64'>
         <!-- parameter of type 'std::_Bit_type*' -->
@@ -19021,17 +18965,14 @@
       <class-decl name='_Bit_iterator' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_bvector.h' line='186' column='1' id='type-id-630'>
       <!-- struct std::_Bit_iterator_base -->
         <base-class access='public' layout-offset-in-bits='0' type-id='type-id-634'/>
-
           <member-type access='public'>
             <!-- typedef std::_Bit_reference std::_Bit_iterator::reference -->
             <typedef-decl name='reference' type-id='type-id-638' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_bvector.h' line='187' column='1' id='type-id-975'/>
           </member-type>
-
           <member-type access='public'>
             <!-- typedef std::_Bit_reference* std::_Bit_iterator::pointer -->
             <typedef-decl name='pointer' type-id='type-id-853' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_bvector.h' line='188' column='1' id='type-id-976'/>
           </member-type>
-
           <member-type access='public'>
             <!-- typedef std::_Bit_iterator std::_Bit_iterator::iterator -->
             <typedef-decl name='iterator' type-id='type-id-630' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_bvector.h' line='189' column='1' id='type-id-849'/>
@@ -20137,7 +20078,6 @@
       </class-decl>
       <!-- struct std::_Vector_base<vtksys::_Hashtable_node<std::pair<const int, void (*)(vtkMultiProcessController*, void*)> >*, std::allocator<vtksys::_Hashtable_node<std::pair<const int, void (*)(vtkMultiProcessController*, void*)> >*> > -->
       <class-decl name='_Vector_base&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;*, std::allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void (*)(vtkMultiProcessController*, void*)&gt; &gt;*&gt; &gt;' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='70' column='1' id='type-id-666'>
-
           <member-type access='public'>
             <!-- struct std::_Vector_base<vtksys::_Hashtable_node<std::pair<const int, void (*)(vtkMultiProcessController*, void*)> >*, std::allocator<vtksys::_Hashtable_node<std::pair<const int, void (*)(vtkMultiProcessController*, void*)> >*> >::_Vector_impl -->
             <class-decl name='_Vector_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='75' column='1' id='type-id-877'>
@@ -20966,7 +20906,6 @@
       </class-decl>
       <!-- struct std::_Vector_base<vtksys::_Hashtable_node<std::pair<const int, void*> >*, std::allocator<vtksys::_Hashtable_node<std::pair<const int, void*> >*> > -->
       <class-decl name='_Vector_base&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt;*, std::allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, void*&gt; &gt;*&gt; &gt;' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='70' column='1' id='type-id-669'>
-
           <member-type access='public'>
             <!-- struct std::_Vector_base<vtksys::_Hashtable_node<std::pair<const int, void*> >*, std::allocator<vtksys::_Hashtable_node<std::pair<const int, void*> >*> >::_Vector_impl -->
             <class-decl name='_Vector_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='75' column='1' id='type-id-880'>
@@ -21795,7 +21734,6 @@
       </class-decl>
       <!-- struct std::_Vector_base<vtksys::_Hashtable_node<std::pair<const int, std::vector<vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator<vtkMultiProcessController::vtkInternal::vtkRMICallback> > > >*, std::allocator<vtksys::_Hashtable_node<std::pair<const int, std::vector<vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator<vtkMultiProcessController::vtkInternal::vtkRMICallback> > > >*> > -->
       <class-decl name='_Vector_base&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;*, std::allocator&lt;vtksys::_Hashtable_node&lt;std::pair&lt;const int, std::vector&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt; &gt; &gt;*&gt; &gt;' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='70' column='1' id='type-id-663'>
-
           <member-type access='public'>
             <!-- struct std::_Vector_base<vtksys::_Hashtable_node<std::pair<const int, std::vector<vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator<vtkMultiProcessController::vtkInternal::vtkRMICallback> > > >*, std::allocator<vtksys::_Hashtable_node<std::pair<const int, std::vector<vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator<vtkMultiProcessController::vtkInternal::vtkRMICallback> > > >*> >::_Vector_impl -->
             <class-decl name='_Vector_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='75' column='1' id='type-id-874'>
@@ -22764,22 +22702,18 @@
       <class-decl name='_Bit_const_iterator' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_bvector.h' line='268' column='1' id='type-id-627'>
       <!-- struct std::_Bit_iterator_base -->
         <base-class access='public' layout-offset-in-bits='0' type-id='type-id-634'/>
-
           <member-type access='public'>
             <!-- typedef bool std::_Bit_const_iterator::reference -->
             <typedef-decl name='reference' type-id='type-id-1' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_bvector.h' line='269' column='1' id='type-id-1006'/>
           </member-type>
-
           <member-type access='public'>
             <!-- typedef bool std::_Bit_const_iterator::const_reference -->
             <typedef-decl name='const_reference' type-id='type-id-1' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_bvector.h' line='270' column='1' id='type-id-1007'/>
           </member-type>
-
           <member-type access='public'>
             <!-- typedef const bool* std::_Bit_const_iterator::pointer -->
             <typedef-decl name='pointer' type-id='type-id-626' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_bvector.h' line='271' column='1' id='type-id-1008'/>
           </member-type>
-
           <member-type access='public'>
             <!-- typedef std::_Bit_const_iterator std::_Bit_const_iterator::const_iterator -->
             <typedef-decl name='const_iterator' type-id='type-id-627' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_bvector.h' line='272' column='1' id='type-id-846'/>
@@ -24477,7 +24411,6 @@
       </class-decl>
       <!-- struct std::_Bvector_base<std::allocator<bool> > -->
       <class-decl name='_Bvector_base&lt;std::allocator&lt;bool&gt; &gt;' size-in-bits='320' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_bvector.h' line='375' column='1' id='type-id-643'>
-
           <member-type access='public'>
             <!-- struct std::_Bvector_base<std::allocator<bool> >::_Bvector_impl -->
             <class-decl name='_Bvector_impl' size-in-bits='320' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_bvector.h' line='381' column='1' id='type-id-855'>
@@ -25044,7 +24977,6 @@
       </class-decl>
       <!-- struct std::_Vector_base<vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator<vtkMultiProcessController::vtkInternal::vtkRMICallback> > -->
       <class-decl name='_Vector_base&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator&lt;vtkMultiProcessController::vtkInternal::vtkRMICallback&gt; &gt;' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='70' column='1' id='type-id-660'>
-
           <member-type access='public'>
             <!-- struct std::_Vector_base<vtkMultiProcessController::vtkInternal::vtkRMICallback, std::allocator<vtkMultiProcessController::vtkInternal::vtkRMICallback> >::_Vector_impl -->
             <class-decl name='_Vector_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='75' column='1' id='type-id-871'>
@@ -25234,7 +25166,6 @@
       </class-decl>
       <!-- struct std::_Vector_base<int, std::allocator<int> > -->
       <class-decl name='_Vector_base&lt;int, std::allocator&lt;int&gt; &gt;' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='70' column='1' id='type-id-657'>
-
           <member-type access='public'>
             <!-- struct std::_Vector_base<int, std::allocator<int> >::_Vector_impl -->
             <class-decl name='_Vector_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='75' column='1' id='type-id-868'>
@@ -25534,7 +25465,6 @@
       </class-decl>
       <!-- class std::_List_base<int, std::allocator<int> > -->
       <class-decl name='_List_base&lt;int, std::allocator&lt;int&gt; &gt;' size-in-bits='128' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_list.h' line='278' column='1' id='type-id-646'>
-
           <member-type access='protected'>
             <!-- struct std::_List_base<int, std::allocator<int> >::_List_impl -->
             <class-decl name='_List_impl' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_list.h' line='300' column='1' id='type-id-858'>
@@ -32430,8 +32360,6 @@
       <!-- class __gnu_cxx::__normal_iterator<const int*, std::vector<int, std::allocator<int> > > -->
       <class-decl name='__normal_iterator&lt;const int*, std::vector&lt;int, std::allocator&lt;int&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-1035'/>
     </namespace-decl>
-
-
     <!-- class vtkOutputWindow -->
     <class-decl name='vtkOutputWindow' visibility='default' is-declaration-only='yes' id='type-id-937'/>
     <!-- void (vtkMultiProcessController*, void*) -->
@@ -32449,7 +32377,6 @@
     <array-type-def dimensions='1' type-id='type-id-39' size-in-bits='256' id='type-id-403'>
       <!-- <anonymous range>[4] -->
       <subrange length='4' type-id='type-id-4' id='type-id-11'/>
-
     </array-type-def>
     <!-- __gnu_cxx::__normal_iterator<const unsigned char*, std::vector<unsigned char, std::allocator<unsigned char> > >& -->
     <reference-type-def kind='lvalue' type-id='type-id-409' size-in-bits='64' id='type-id-448'/>
@@ -32527,7 +32454,6 @@
     <pointer-type-def type-id='type-id-58' size-in-bits='64' id='type-id-430'/>
     <!-- namespace std -->
     <namespace-decl name='std'>
-
       <!-- struct std::_Deque_iterator<unsigned char, unsigned char&, unsigned char*> -->
       <class-decl name='_Deque_iterator&lt;unsigned char, unsigned char&amp;, unsigned char*&gt;' size-in-bits='256' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='95' column='1' id='type-id-417'>
         <data-member access='public' layout-offset-in-bits='0'>
@@ -34267,7 +34193,6 @@
       </class-decl>
       <!-- class std::_Deque_base<unsigned char, std::allocator<unsigned char> > -->
       <class-decl name='_Deque_base&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt;' size-in-bits='640' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='362' column='1' id='type-id-1052'>
-
           <member-type access='protected'>
             <!-- enum std::_Deque_base<unsigned char, std::allocator<unsigned char> >::__anonymous_enum__ -->
             <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='465' column='1' id='type-id-1082'>
@@ -34275,7 +34200,6 @@
               <enumerator name='_S_initial_map_size' value='8'/>
             </enum-decl>
           </member-type>
-
           <member-type access='protected'>
             <!-- struct std::_Deque_base<unsigned char, std::allocator<unsigned char> >::_Deque_impl -->
             <class-decl name='_Deque_impl' size-in-bits='640' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='412' column='1' id='type-id-1070'>
@@ -34766,8 +34690,6 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkProcess.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
     <!-- const vtkProcess -->
@@ -34776,10 +34698,6 @@
     <reference-type-def kind='lvalue' type-id='type-id-1091' size-in-bits='64' id='type-id-502'/>
     <!-- const vtkProcess* -->
     <pointer-type-def type-id='type-id-1091' size-in-bits='64' id='type-id-501'/>
-
-
-
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkProcessGroup.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
     <!-- const vtkProcessGroup -->
@@ -34790,7 +34708,6 @@
     <pointer-type-def type-id='type-id-1092' size-in-bits='64' id='type-id-504'/>
     <!-- namespace std -->
     <namespace-decl name='std'>
-
       <!-- int* std::__copy_move_a<false, int*, int*>(int*, int*, int*) -->
       <function-decl name='__copy_move_a&lt;false, int*, int*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
         <!-- parameter of type 'int*' -->
@@ -34837,16 +34754,12 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-
-
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketCommunicator.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
     <!-- class vtkSocketCommunicator -->
     <class-decl name='vtkSocketCommunicator' size-in-bits='1088' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketCommunicator.h' line='55' column='1' id='type-id-1094'>
     <!-- class vtkCommunicator -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-116'/>
-
         <member-type access='private'>
           <!-- enum vtkSocketCommunicator::ErrorIds -->
           <enum-decl name='ErrorIds' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketCommunicator.h' line='259' column='1' id='type-id-1095'>
@@ -34856,16 +34769,13 @@
             <enumerator name='SwapNotSet' value='2'/>
           </enum-decl>
         </member-type>
-
         <member-type access='private'>
           <!-- class vtkSocketCommunicator::vtkMessageBuffer -->
           <class-decl name='vtkMessageBuffer' size-in-bits='384' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketCommunicator.cxx' line='37' column='1' id='type-id-1096'>
-
               <member-type access='private'>
                 <!-- typedef std::map<int, std::list<std::vector<char, std::allocator<char> >, std::allocator<std::vector<char, std::allocator<char> > > >, std::less<int>, std::allocator<std::pair<const int, std::list<std::vector<char, std::allocator<char> >, std::allocator<std::vector<char, std::allocator<char> > > > > > > vtkSocketCommunicator::vtkMessageBuffer::BufferType -->
                 <typedef-decl name='BufferType' type-id='type-id-1098' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketCommunicator.cxx' line='41' column='1' id='type-id-1097'/>
               </member-type>
-
               <member-type access='private'>
                 <!-- typedef std::vector<char, std::allocator<char> > vtkSocketCommunicator::vtkMessageBuffer::MessageType -->
                 <typedef-decl name='MessageType' type-id='type-id-1100' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketCommunicator.cxx' line='39' column='1' id='type-id-1099'/>
@@ -35778,17 +35688,14 @@
     <class-decl name='vtkStdString' size-in-bits='64' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkStdString.h' line='40' column='1' id='type-id-1110'>
     <!-- struct std::basic_string<char, std::char_traits<char>, std::allocator<char> > -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-265'/>
-
         <member-type access='private'>
           <!-- typedef std::string vtkStdString::StdString -->
           <typedef-decl name='StdString' type-id='type-id-280' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkStdString.h' line='42' column='1' id='type-id-1111'/>
         </member-type>
-
         <member-type access='private'>
           <!-- typedef std::char_traits<char>::char_type vtkStdString::value_type -->
           <typedef-decl name='value_type' type-id='type-id-269' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkStdString.h' line='43' column='1' id='type-id-1112'/>
         </member-type>
-
         <member-type access='private'>
           <!-- typedef size_t vtkStdString::size_type -->
           <typedef-decl name='size_type' type-id='type-id-39' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkStdString.h' line='47' column='1' id='type-id-1113'/>
@@ -36265,7 +36172,6 @@
     <pointer-type-def type-id='type-id-1110' size-in-bits='64' id='type-id-1114'/>
     <!-- namespace std -->
     <namespace-decl name='std'>
-
       <!-- std::_Ios_Iostate std::operator&(std::_Ios_Iostate, std::_Ios_Iostate) -->
       <function-decl name='operator&amp;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='162' column='1' visibility='default' binding='global' size-in-bits='64'>
         <!-- parameter of type 'enum std::_Ios_Iostate' -->
@@ -37491,7 +37397,6 @@
       </function-decl>
       <!-- class std::_Rb_tree<int, std::pair<const int, std::list<std::vector<char, std::allocator<char> >, std::allocator<std::vector<char, std::allocator<char> > > > >, std::_Select1st<std::pair<const int, std::list<std::vector<char, std::allocator<char> >, std::allocator<std::vector<char, std::allocator<char> > > > > >, std::less<int>, std::allocator<std::pair<const int, std::list<std::vector<char, std::allocator<char> >, std::allocator<std::vector<char, std::allocator<char> > > > > > > -->
       <class-decl name='_Rb_tree&lt;int, std::pair&lt;const int, std::list&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;, std::_Select1st&lt;std::pair&lt;const int, std::list&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt; &gt;, std::less&lt;int&gt;, std::allocator&lt;std::pair&lt;const int, std::list&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt; &gt; &gt;' size-in-bits='384' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='323' column='1' id='type-id-1182'>
-
           <member-type access='protected'>
             <!-- struct std::_Rb_tree<int, std::pair<const int, std::list<std::vector<char, std::allocator<char> >, std::allocator<std::vector<char, std::allocator<char> > > > >, std::_Select1st<std::pair<const int, std::list<std::vector<char, std::allocator<char> >, std::allocator<std::vector<char, std::allocator<char> > > > > >, std::less<int>, std::allocator<std::pair<const int, std::list<std::vector<char, std::allocator<char> >, std::allocator<std::vector<char, std::allocator<char> > > > > > >::_Rb_tree_impl<std::less<int>, false> -->
             <class-decl name='_Rb_tree_impl&lt;std::less&lt;int&gt;, false&gt;' size-in-bits='384' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='427' column='1' id='type-id-1252'>
@@ -38419,12 +38324,10 @@
       </class-decl>
       <!-- struct std::_Rb_tree_node_base -->
       <class-decl name='_Rb_tree_node_base' size-in-bits='256' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='88' column='1' id='type-id-1198'>
-
           <member-type access='public'>
             <!-- typedef std::_Rb_tree_node_base* std::_Rb_tree_node_base::_Base_ptr -->
             <typedef-decl name='_Base_ptr' type-id='type-id-1260' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='89' column='1' id='type-id-1296'/>
           </member-type>
-
           <member-type access='public'>
             <!-- typedef const std::_Rb_tree_node_base* std::_Rb_tree_node_base::_Const_Base_ptr -->
             <typedef-decl name='_Const_Base_ptr' type-id='type-id-1200' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='90' column='1' id='type-id-1297'/>
@@ -39834,7 +39737,6 @@
       <typedef-decl name='ofstream' type-id='type-id-1272' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iosfwd' line='138' column='1' id='type-id-1278'/>
       <!-- class std::_List_base<std::vector<char, std::allocator<char> >, std::allocator<std::vector<char, std::allocator<char> > > > -->
       <class-decl name='_List_base&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::vector&lt;char, std::allocator&lt;char&gt; &gt; &gt; &gt;' size-in-bits='128' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_list.h' line='278' column='1' id='type-id-1165'>
-
           <member-type access='protected'>
             <!-- struct std::_List_base<std::vector<char, std::allocator<char> >, std::allocator<std::vector<char, std::allocator<char> > > >::_List_impl -->
             <class-decl name='_List_impl' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_list.h' line='300' column='1' id='type-id-1242'>
@@ -40167,7 +40069,6 @@
       </class-decl>
       <!-- struct std::_Vector_base<char, std::allocator<char> > -->
       <class-decl name='_Vector_base&lt;char, std::allocator&lt;char&gt; &gt;' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='70' column='1' id='type-id-1204'>
-
           <member-type access='public'>
             <!-- struct std::_Vector_base<char, std::allocator<char> >::_Vector_impl -->
             <class-decl name='_Vector_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='75' column='1' id='type-id-1263'>
@@ -41151,8 +41052,6 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-
-
     <!-- class vtkSocket -->
     <class-decl name='vtkSocket' visibility='default' is-declaration-only='yes' id='type-id-1289'>
       <member-function access='private'>
@@ -41452,10 +41351,6 @@
     <pointer-type-def type-id='type-id-1317' size-in-bits='64' id='type-id-1315'/>
     <!-- vtkSocketController* -->
     <pointer-type-def type-id='type-id-1313' size-in-bits='64' id='type-id-1314'/>
-
-
-
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSubCommunicator.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
     <!-- class vtkSubCommunicator -->
@@ -41651,17 +41546,12 @@
     <pointer-type-def type-id='type-id-1322' size-in-bits='64' id='type-id-1320'/>
     <!-- vtkSubCommunicator* -->
     <pointer-type-def type-id='type-id-1318' size-in-bits='64' id='type-id-1319'/>
-
-
-
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSubGroup.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
     <!-- int[20] -->
     <array-type-def dimensions='1' type-id='type-id-19' size-in-bits='640' id='type-id-1323'>
       <!-- <anonymous range>[20] -->
       <subrange length='20' type-id='type-id-4' id='type-id-7'/>
-
     </array-type-def>
     <!-- class vtkSubGroup -->
     <class-decl name='vtkSubGroup' size-in-bits='3520' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSubGroup.h' line='49' column='1' id='type-id-1324'>
@@ -42286,7 +42176,6 @@
     <pointer-type-def type-id='type-id-1324' size-in-bits='64' id='type-id-1325'/>
     <!-- namespace std -->
     <namespace-decl name='std'>
-
       <!-- void std::__unguarded_linear_insert<int*, int>(int*, int) -->
       <function-decl name='__unguarded_linear_insert&lt;int*, int&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algo.h' line='2063' column='1' visibility='default' binding='global' size-in-bits='64'>
         <!-- parameter of type 'int*' -->
@@ -42482,8 +42371,5 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-
-
-
   </abi-instr>
 </abi-corpus>

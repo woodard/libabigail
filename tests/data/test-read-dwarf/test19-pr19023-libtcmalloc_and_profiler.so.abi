@@ -795,12 +795,6 @@
     <elf-symbol name='sys_alloc' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='src/base/atomicops-internals-x86.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
-
-
-
-
-
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/base/dynamic_annotations.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C89'>
     <function-decl name='RunningOnValgrind' mangled-name='RunningOnValgrind' filepath='src/base/dynamic_annotations.c' line='152' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='RunningOnValgrind'>
@@ -811,10 +805,8 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/base/elf_mem_image.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
-
     <array-type-def dimensions='1' type-id='type-id-3' size-in-bits='128' id='type-id-4'>
       <subrange length='16' type-id='type-id-5' id='type-id-6'/>
-
     </array-type-def>
     <class-decl name='Elf64_Sym' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/include/elf.h' line='389' column='1' id='type-id-7'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -972,9 +964,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-49' size-in-bits='64' id='type-id-50'/>
     <pointer-type-def type-id='type-id-49' size-in-bits='64' id='type-id-51'/>
     <namespace-decl name='base'>
-
       <class-decl name='ElfMemImage' size-in-bits='576' visibility='default' filepath='./src/base/elf_mem_image.h' line='56' column='1' id='type-id-23'>
-
           <member-type access='private'>
             <class-decl name='SymbolInfo' size-in-bits='256' is-struct='yes' visibility='default' filepath='./src/base/elf_mem_image.h' line='64' column='1' id='type-id-25'>
               <data-member access='public' layout-offset-in-bits='0'>
@@ -991,7 +981,6 @@
               </data-member>
             </class-decl>
           </member-type>
-
           <member-type access='private'>
             <class-decl name='SymbolIterator' size-in-bits='384' visibility='default' filepath='./src/base/elf_mem_image.h' line='73' column='1' id='type-id-27'>
               <data-member access='private' layout-offset-in-bits='0'>
@@ -1196,10 +1185,6 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-
-
-
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/base/linuxthreads.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <typedef-decl name='ListAllProcessThreadsCallBack' type-id='type-id-58' filepath='./src/base/thread_lister.h' line='48' column='1' id='type-id-59'/>
@@ -1207,7 +1192,6 @@
     <typedef-decl name='__pid_t' type-id='type-id-1' filepath='/usr/include/bits/types.h' line='143' column='1' id='type-id-60'/>
     <pointer-type-def type-id='type-id-62' size-in-bits='64' id='type-id-58'/>
     <pointer-type-def type-id='type-id-61' size-in-bits='64' id='type-id-63'/>
-
     <function-decl name='TCMalloc_ListAllProcessThreads' mangled-name='TCMalloc_ListAllProcessThreads' filepath='src/base/linuxthreads.cc' line='551' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='TCMalloc_ListAllProcessThreads'>
       <parameter type-id='type-id-53' name='parameter' filepath='src/base/linuxthreads.cc' line='551' column='1'/>
       <parameter type-id='type-id-59' name='callback' filepath='src/base/linuxthreads.cc' line='552' column='1'/>
@@ -1228,15 +1212,10 @@
     </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/base/logging.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
-
-
-
-
     <namespace-decl name='FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead'>
       <var-decl name='FLAGS_verbose' type-id='type-id-65' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead13FLAGS_verboseE' visibility='default' filepath='./src/base/logging.h' line='76' column='1' elf-symbol-id='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead13FLAGS_verboseE'/>
       <var-decl name='FLAGS_noverbose' type-id='type-id-66' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead15FLAGS_noverboseE' visibility='default' filepath='src/base/logging.cc' line='40' column='1' elf-symbol-id='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead15FLAGS_noverboseE'/>
     </namespace-decl>
-
     <function-decl name='RawClose' mangled-name='_Z8RawClosei' filepath='src/base/logging.cc' line='104' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z8RawClosei'>
       <parameter type-id='type-id-67'/>
       <return type-id='type-id-56'/>
@@ -1253,20 +1232,12 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/base/low_level_alloc.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
-
     <array-type-def dimensions='1' type-id='type-id-68' size-in-bits='1920' id='type-id-69'>
       <subrange length='30' type-id='type-id-5' id='type-id-70'/>
-
     </array-type-def>
     <pointer-type-def type-id='type-id-71' size-in-bits='64' id='type-id-68'/>
-
-
-
-
-
     <namespace-decl name='low_level_alloc_internal'>
       <class-decl name='AllocList' size-in-bits='2240' is-struct='yes' visibility='default' filepath='src/base/low_level_alloc.cc' line='67' column='1' id='type-id-71'>
-
           <member-type access='public'>
             <class-decl name='Header' size-in-bits='256' is-struct='yes' visibility='default' filepath='src/base/low_level_alloc.cc' line='68' column='1' id='type-id-72'>
               <data-member access='public' layout-offset-in-bits='0'>
@@ -1294,7 +1265,6 @@
         </data-member>
       </class-decl>
     </namespace-decl>
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/base/spinlock.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <class-decl name='CycleClock' size-in-bits='8' is-struct='yes' visibility='default' filepath='./src/base/cycleclock.h' line='79' column='1' id='type-id-75'>
@@ -1305,19 +1275,12 @@
       </member-function>
     </class-decl>
     <namespace-decl name='base'>
-
-
       <function-decl name='SubmitSpinLockProfileData' mangled-name='_ZN4base25SubmitSpinLockProfileDataEPKvl' filepath='./src/base/synchronization_profiling.h' line='48' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN4base25SubmitSpinLockProfileDataEPKvl'>
         <parameter type-id='type-id-53'/>
         <parameter type-id='type-id-76'/>
         <return type-id='type-id-56'/>
       </function-decl>
     </namespace-decl>
-
-
-
-
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/base/spinlock_internal.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <qualified-type-def type-id='type-id-77' const='yes' id='type-id-78'/>
@@ -1360,21 +1323,15 @@
         </function-decl>
       </namespace-decl>
     </namespace-decl>
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/base/sysinfo.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
-
-
     <array-type-def dimensions='1' type-id='type-id-66' size-in-bits='80' id='type-id-83'>
       <subrange length='10' type-id='type-id-5' id='type-id-84'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-66' size-in-bits='40960' id='type-id-85'>
       <subrange length='5120' type-id='type-id-5' id='type-id-86'/>
-
     </array-type-def>
     <class-decl name='ProcMapsIterator' size-in-bits='640' visibility='default' filepath='./src/base/sysinfo.h' line='102' column='1' id='type-id-87'>
-
         <member-type access='private'>
           <class-decl name='Buffer' size-in-bits='40960' is-struct='yes' visibility='default' filepath='./src/base/sysinfo.h' line='104' column='1' id='type-id-88'>
             <data-member access='public' static='yes'>
@@ -1520,11 +1477,6 @@
     <pointer-type-def type-id='type-id-95' size-in-bits='64' id='type-id-99'/>
     <pointer-type-def type-id='type-id-76' size-in-bits='64' id='type-id-98'/>
     <pointer-type-def type-id='type-id-94' size-in-bits='64' id='type-id-96'/>
-
-
-
-
-
     <function-decl name='HasPosixThreads' mangled-name='_Z15HasPosixThreadsv' filepath='src/base/sysinfo.cc' line='518' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z15HasPosixThreadsv'>
       <return type-id='type-id-55'/>
     </function-decl>
@@ -1551,7 +1503,6 @@
       <parameter type-id='type-id-52' name='name' filepath='src/base/sysinfo.cc' line='122' column='1'/>
       <return type-id='type-id-52'/>
     </function-decl>
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/base/vdso_support.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <pointer-type-def type-id='type-id-102' size-in-bits='64' id='type-id-103'/>
@@ -1575,11 +1526,9 @@
         </member-function>
       </class-decl>
       <class-decl name='VDSOSupport' size-in-bits='576' visibility='default' filepath='./src/base/vdso_support.h' line='72' column='1' id='type-id-104'>
-
           <member-type access='private'>
             <typedef-decl name='SymbolInfo' type-id='type-id-25' filepath='./src/base/vdso_support.h' line='76' column='1' id='type-id-106'/>
           </member-type>
-
           <member-type access='private'>
             <typedef-decl name='SymbolIterator' type-id='type-id-27' filepath='./src/base/vdso_support.h' line='77' column='1' id='type-id-111'/>
           </member-type>
@@ -1659,10 +1608,6 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-
-
-
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/central_freelist.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <reference-type-def kind='lvalue' type-id='type-id-112' size-in-bits='64' id='type-id-113'/>
@@ -1671,7 +1616,6 @@
     <qualified-type-def type-id='type-id-117' const='yes' id='type-id-118'/>
     <pointer-type-def type-id='type-id-118' size-in-bits='64' id='type-id-119'/>
     <namespace-decl name='std'>
-
       <function-decl name='max&lt;int&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='209' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-113'/>
         <parameter type-id='type-id-113'/>
@@ -1683,11 +1627,7 @@
         <return type-id='type-id-116'/>
       </function-decl>
     </namespace-decl>
-
-
-
     <namespace-decl name='tcmalloc'>
-
       <function-decl name='DLL_IsEmpty' filepath='src/span.h' line='90' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-119'/>
         <return type-id='type-id-55'/>
@@ -1710,7 +1650,6 @@
         <return type-id='type-id-53'/>
       </function-decl>
     </namespace-decl>
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/heap-checker-bcad.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <class-decl name='HeapLeakCheckerGlobalPrePost' size-in-bits='8' visibility='default' filepath='src/heap-checker-bcad.cc' line='60' column='1' id='type-id-121'>
@@ -1732,26 +1671,17 @@
       </member-function>
     </class-decl>
     <pointer-type-def type-id='type-id-121' size-in-bits='64' id='type-id-122'/>
-
-
-
-
     <var-decl name='heap_leak_checker_bcad_variable' type-id='type-id-55' mangled-name='heap_leak_checker_bcad_variable' visibility='default' filepath='src/heap-checker-bcad.cc' line='53' column='1' elf-symbol-id='heap_leak_checker_bcad_variable'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/heap-checker.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
-
-
     <array-type-def dimensions='1' type-id='type-id-66' size-in-bits='infinite' id='type-id-123'>
       <subrange length='infinite' id='type-id-124'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-57' size-in-bits='256' id='type-id-125'>
       <subrange length='4' type-id='type-id-5' id='type-id-126'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-53' size-in-bits='2048' id='type-id-127'>
       <subrange length='32' type-id='type-id-5' id='type-id-128'/>
-
     </array-type-def>
     <class-decl name='AllocObject' size-in-bits='192' is-struct='yes' visibility='default' filepath='src/heap-checker.cc' line='356' column='1' id='type-id-129'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -1978,7 +1908,6 @@
       </member-function>
     </class-decl>
     <class-decl name='GoogleInitializer' size-in-bits='128' visibility='default' filepath='src/base/googleinit.h' line='39' column='1' id='type-id-151'>
-
         <member-type access='private'>
           <typedef-decl name='VoidFunction' type-id='type-id-153' filepath='src/base/googleinit.h' line='41' column='1' id='type-id-152'/>
         </member-type>
@@ -2006,7 +1935,6 @@
       </member-function>
     </class-decl>
     <class-decl name='MemoryRegionMap' size-in-bits='8' visibility='default' filepath='src/memory_region_map.h' line='69' column='1' id='type-id-157'>
-
         <member-type access='private'>
           <class-decl name='RegionCmp' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/memory_region_map.h' line='245' column='1' id='type-id-158'>
             <member-function access='public'>
@@ -2019,7 +1947,6 @@
             </member-function>
           </class-decl>
         </member-type>
-
         <member-type access='private'>
           <class-decl name='Region' size-in-bits='2304' is-struct='yes' visibility='default' filepath='src/memory_region_map.h' line='137' column='1' id='type-id-161'>
             <data-member access='public' layout-offset-in-bits='0'>
@@ -2100,7 +2027,6 @@
             </member-function>
           </class-decl>
         </member-type>
-
         <member-type access='private'>
           <class-decl name='MyAllocator' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/memory_region_map.h' line='252' column='1' id='type-id-164'>
             <member-function access='public' static='yes'>
@@ -2118,11 +2044,9 @@
             </member-function>
           </class-decl>
         </member-type>
-
         <member-type access='private'>
           <typedef-decl name='RegionSet' type-id='type-id-166' filepath='src/memory_region_map.h' line='263' column='1' id='type-id-165'/>
         </member-type>
-
         <member-type access='private'>
           <union-decl name='RegionSetRep' size-in-bits='384' visibility='default' filepath='src/memory_region_map.cc' line='177' column='1' id='type-id-167'>
             <data-member access='private'>
@@ -2139,7 +2063,6 @@
             </member-function>
           </union-decl>
         </member-type>
-
         <member-type access='private'>
           <class-decl name='LockHolder' size-in-bits='8' visibility='default' filepath='src/memory_region_map.h' line='126' column='1' id='type-id-171'>
             <member-function access='private' constructor='yes'>
@@ -2171,7 +2094,6 @@
             </member-function>
           </class-decl>
         </member-type>
-
         <member-type access='private'>
           <typedef-decl name='RegionIterator' type-id='type-id-175' filepath='src/memory_region_map.h' line='268' column='1' id='type-id-174'/>
         </member-type>
@@ -2385,10 +2307,8 @@
       </member-function>
     </class-decl>
     <class-decl name='HeapProfileTable' size-in-bits='832' visibility='default' filepath='src/heap-profile-table.h' line='51' column='1' id='type-id-187'>
-
         <member-type access='private'>
           <class-decl name='AllocValue' size-in-bits='128' is-struct='yes' visibility='default' filepath='src/heap-profile-table.h' line='190' column='1' id='type-id-188'>
-
               <member-type access='private'>
                 <typedef-decl name='Bucket' type-id='type-id-190' filepath='src/heap-profile-table.h' line='187' column='1' id='type-id-189'/>
               </member-type>
@@ -2448,10 +2368,8 @@
             </member-function>
           </class-decl>
         </member-type>
-
         <member-type access='private'>
           <class-decl name='DumpArgs' size-in-bits='128' is-struct='yes' visibility='default' filepath='src/heap-profile-table.h' line='242' column='1' id='type-id-194'>
-
               <member-type access='public'>
                 <typedef-decl name='Stats' type-id='type-id-141' filepath='src/heap-profile-table.h' line='63' column='1' id='type-id-195'/>
               </member-type>
@@ -2471,10 +2389,8 @@
             </member-function>
           </class-decl>
         </member-type>
-
         <member-type access='private'>
           <class-decl name='Snapshot' size-in-bits='768' is-struct='yes' visibility='default' filepath='src/heap-profile-table.h' line='347' column='1' id='type-id-198'>
-
               <member-type access='private'>
                 <class-decl name='Entry' size-in-bits='128' is-struct='yes' visibility='default' filepath='src/heap-profile-table.cc' line='514' column='1' id='type-id-199'>
                   <data-member access='public' layout-offset-in-bits='0'>
@@ -2501,7 +2417,6 @@
                   </member-function>
                 </class-decl>
               </member-type>
-
               <member-type access='private'>
                 <class-decl name='ReportState' size-in-bits='384' is-struct='yes' visibility='default' filepath='src/heap-profile-table.cc' line='528' column='1' id='type-id-203'>
                   <data-member access='public' layout-offset-in-bits='0'>
@@ -2590,7 +2505,6 @@
             </member-function>
           </class-decl>
         </member-type>
-
         <member-type access='private'>
           <class-decl name='AddNonLiveArgs' size-in-bits='128' is-struct='yes' visibility='default' filepath='src/heap-profile-table.h' line='305' column='1' id='type-id-214'>
             <data-member access='public' layout-offset-in-bits='0'>
@@ -2601,7 +2515,6 @@
             </data-member>
           </class-decl>
         </member-type>
-
         <member-type access='private'>
           <class-decl name='AllocInfo' size-in-bits='192' is-struct='yes' visibility='default' filepath='src/heap-profile-table.h' line='66' column='1' id='type-id-215'>
             <data-member access='public' layout-offset-in-bits='0'>
@@ -2621,7 +2534,6 @@
             </data-member>
           </class-decl>
         </member-type>
-
         <member-type access='private'>
           <class-decl name='AllocContextInfo' size-in-bits='320' is-struct='yes' visibility='default' filepath='src/heap-profile-table.h' line='77' column='1' id='type-id-216'>
             <base-class access='public' layout-offset-in-bits='0' type-id='type-id-141'/>
@@ -2633,27 +2545,21 @@
             </data-member>
           </class-decl>
         </member-type>
-
         <member-type access='private'>
           <typedef-decl name='Allocator' type-id='type-id-217' filepath='src/heap-profile-table.h' line='83' column='1' id='type-id-209'/>
         </member-type>
-
         <member-type access='private'>
           <typedef-decl name='DeAllocator' type-id='type-id-218' filepath='src/heap-profile-table.h' line='84' column='1' id='type-id-210'/>
         </member-type>
-
         <member-type access='private'>
           <typedef-decl name='AllocationMap' type-id='type-id-219' filepath='src/heap-profile-table.h' line='224' column='1' id='type-id-205'/>
         </member-type>
-
         <member-type access='private'>
           <typedef-decl name='AllocIterator' type-id='type-id-221' filepath='src/heap-profile-table.h' line='138' column='1' id='type-id-220'/>
         </member-type>
-
         <member-type access='private'>
           <typedef-decl name='AllocContextIterator' type-id='type-id-223' filepath='src/heap-profile-table.h' line='147' column='1' id='type-id-222'/>
         </member-type>
-
         <member-type access='private'>
           <class-decl name='BufferArgs' size-in-bits='128' is-struct='yes' visibility='default' filepath='src/heap-profile-table.h' line='227' column='1' id='type-id-224'>
             <data-member access='public' layout-offset-in-bits='0'>
@@ -2945,7 +2851,6 @@
       </member-function>
     </class-decl>
     <class-decl name='LowLevelAlloc' size-in-bits='8' visibility='default' filepath='src/base/low_level_alloc.h' line='44' column='1' id='type-id-237'>
-
         <member-type access='private'>
           <class-decl name='Arena' size-in-bits='2560' is-struct='yes' visibility='default' filepath='src/base/low_level_alloc.cc' line='184' column='1' id='type-id-238'>
             <data-member access='public' layout-offset-in-bits='0'>
@@ -3023,7 +2928,6 @@
       </member-function>
     </class-decl>
     <class-decl name='HeapLeakChecker' size-in-bits='448' visibility='default' filepath='src/gperftools/heap-checker.h' line='78' column='1' id='type-id-239'>
-
         <member-type access='private'>
           <class-decl name='Disabler' size-in-bits='8' visibility='default' filepath='./src/gperftools/heap-checker.h' line='175' column='1' id='type-id-240'>
             <member-function access='private' constructor='yes'>
@@ -3055,7 +2959,6 @@
             </member-function>
           </class-decl>
         </member-type>
-
         <member-type access='private'>
           <enum-decl name='ShouldSymbolize' filepath='./src/gperftools/heap-checker.h' line='225' column='1' id='type-id-243'>
             <underlying-type type-id='type-id-133'/>
@@ -3063,7 +2966,6 @@
             <enumerator name='DO_NOT_SYMBOLIZE' value='1'/>
           </enum-decl>
         </member-type>
-
         <member-type access='private'>
           <enum-decl name='ProcMapsTask' filepath='./src/gperftools/heap-checker.h' line='295' column='1' id='type-id-244'>
             <underlying-type type-id='type-id-133'/>
@@ -3071,7 +2973,6 @@
             <enumerator name='DISABLE_LIBRARY_ALLOCS' value='1'/>
           </enum-decl>
         </member-type>
-
         <member-type access='private'>
           <enum-decl name='ProcMapsResult' filepath='./src/gperftools/heap-checker.h' line='301' column='1' id='type-id-245'>
             <underlying-type type-id='type-id-133'/>
@@ -3080,7 +2981,6 @@
             <enumerator name='NO_SHARED_LIBS_IN_PROC_MAPS' value='2'/>
           </enum-decl>
         </member-type>
-
         <member-type access='private'>
           <class-decl name='RangeValue' size-in-bits='128' is-struct='yes' visibility='default' filepath='src/heap-checker.cc' line='404' column='1' id='type-id-246'>
             <data-member access='public' layout-offset-in-bits='0'>
@@ -4492,7 +4392,6 @@
     <typedef-decl name='MallocHook_MmapHook' type-id='type-id-366' filepath='./src/gperftools/malloc_hook_c.h' line='99' column='1' id='type-id-367'/>
     <typedef-decl name='MallocHook_SbrkHook' type-id='type-id-368' filepath='./src/gperftools/malloc_hook_c.h' line='144' column='1' id='type-id-369'/>
     <class-decl name='HeapCleaner' size-in-bits='8' visibility='default' filepath='./src/gperftools/heap-checker.h' line='403' column='1' id='type-id-370'>
-
         <member-type access='private'>
           <typedef-decl name='void_function' type-id='type-id-153' filepath='./src/gperftools/heap-checker.h' line='405' column='1' id='type-id-371'/>
         </member-type>
@@ -4917,7 +4816,6 @@
     <qualified-type-def type-id='type-id-120' const='yes' id='type-id-712'/>
     <reference-type-def kind='lvalue' type-id='type-id-712' size-in-bits='64' id='type-id-713'/>
     <namespace-decl name='std'>
-
       <function-decl name='swap&lt;AllocObject*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/move.h' line='76' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-376'/>
         <parameter type-id='type-id-376'/>
@@ -5202,7 +5100,6 @@
         <return type-id='type-id-462'/>
       </function-decl>
       <class-decl name='basic_string&lt;char, std::char_traits&lt;char&gt;, STL_Allocator&lt;char, HeapLeakChecker::Allocator&gt; &gt;' size-in-bits='64' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='105' column='1' id='type-id-555'>
-
           <member-type access='private'>
             <class-decl name='_Alloc_hider' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='258' column='1' id='type-id-665'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-279'/>
@@ -5219,7 +5116,6 @@
               </member-function>
             </class-decl>
           </member-type>
-
           <member-type access='private'>
             <class-decl name='_Rep' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='148' column='1' id='type-id-559'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-719'/>
@@ -5320,7 +5216,6 @@
               </member-function>
             </class-decl>
           </member-type>
-
           <member-type access='private'>
             <class-decl name='_Rep_base' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='141' column='1' id='type-id-719'>
               <data-member access='public' layout-offset-in-bits='0'>
@@ -6407,7 +6302,6 @@
         <return type-id='type-id-701'/>
       </function-decl>
       <class-decl name='_Vector_base&lt;AllocObject, STL_Allocator&lt;AllocObject, HeapLeakChecker::Allocator&gt; &gt;' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='70' column='1' id='type-id-543'>
-
           <member-type access='public'>
             <class-decl name='_Vector_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='75' column='1' id='type-id-653'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-134'/>
@@ -6903,11 +6797,9 @@
         </member-function>
       </class-decl>
       <class-decl name='_Rb_tree_node_base' size-in-bits='256' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='88' column='1' id='type-id-531'>
-
           <member-type access='public'>
             <typedef-decl name='_Base_ptr' type-id='type-id-650' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='89' column='1' id='type-id-730'/>
           </member-type>
-
           <member-type access='public'>
             <typedef-decl name='_Const_Base_ptr' type-id='type-id-533' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='90' column='1' id='type-id-731'/>
           </member-type>
@@ -7048,7 +6940,6 @@
         </member-function>
       </class-decl>
       <class-decl name='_Rb_tree&lt;std::basic_string&lt;char, std::char_traits&lt;char&gt;, STL_Allocator&lt;char, HeapLeakChecker::Allocator&gt; &gt;, std::pair&lt;const std::basic_string&lt;char, std::char_traits&lt;char&gt;, STL_Allocator&lt;char, HeapLeakChecker::Allocator&gt; &gt;, std::vector&lt;AllocObject, STL_Allocator&lt;AllocObject, HeapLeakChecker::Allocator&gt; &gt; &gt;, std::_Select1st&lt;std::pair&lt;const std::basic_string&lt;char, std::char_traits&lt;char&gt;, STL_Allocator&lt;char, HeapLeakChecker::Allocator&gt; &gt;, std::vector&lt;AllocObject, STL_Allocator&lt;AllocObject, HeapLeakChecker::Allocator&gt; &gt; &gt; &gt;, std::less&lt;std::basic_string&lt;char, std::char_traits&lt;char&gt;, STL_Allocator&lt;char, HeapLeakChecker::Allocator&gt; &gt; &gt;, STL_Allocator&lt;std::pair&lt;const std::basic_string&lt;char, std::char_traits&lt;char&gt;, STL_Allocator&lt;char, HeapLeakChecker::Allocator&gt; &gt;, std::vector&lt;AllocObject, STL_Allocator&lt;AllocObject, HeapLeakChecker::Allocator&gt; &gt; &gt;, HeapLeakChecker::Allocator&gt; &gt;' size-in-bits='384' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='323' column='1' id='type-id-478'>
-
           <member-type access='protected'>
             <class-decl name='_Rb_tree_impl&lt;std::less&lt;std::basic_string&lt;char, std::char_traits&lt;char&gt;, STL_Allocator&lt;char, HeapLeakChecker::Allocator&gt; &gt; &gt;, false&gt;' size-in-bits='384' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='427' column='1' id='type-id-630'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-288'/>
@@ -7827,7 +7718,6 @@
         </member-function>
       </class-decl>
       <class-decl name='_Rb_tree&lt;long unsigned int, std::pair&lt;const long unsigned int, HeapLeakChecker::RangeValue&gt;, std::_Select1st&lt;std::pair&lt;const long unsigned int, HeapLeakChecker::RangeValue&gt; &gt;, std::less&lt;long unsigned int&gt;, STL_Allocator&lt;std::pair&lt;const long unsigned int, HeapLeakChecker::RangeValue&gt;, HeapLeakChecker::Allocator&gt; &gt;' size-in-bits='384' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='323' column='1' id='type-id-470'>
-
           <member-type access='protected'>
             <class-decl name='_Rb_tree_impl&lt;std::less&lt;long unsigned int&gt;, false&gt;' size-in-bits='384' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='427' column='1' id='type-id-622'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-304'/>
@@ -8583,7 +8473,6 @@
         </member-function>
       </class-decl>
       <class-decl name='_Rb_tree&lt;long unsigned int, long unsigned int, std::_Identity&lt;long unsigned int&gt;, std::less&lt;long unsigned int&gt;, STL_Allocator&lt;long unsigned int, HeapLeakChecker::Allocator&gt; &gt;' size-in-bits='384' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='323' column='1' id='type-id-466'>
-
           <member-type access='protected'>
             <class-decl name='_Rb_tree_impl&lt;std::less&lt;long unsigned int&gt;, false&gt;' size-in-bits='384' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='427' column='1' id='type-id-618'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-320'/>
@@ -9273,7 +9162,6 @@
         </member-function>
       </class-decl>
       <class-decl name='_Rb_tree&lt;long unsigned int, std::pair&lt;const long unsigned int, long unsigned int&gt;, std::_Select1st&lt;std::pair&lt;const long unsigned int, long unsigned int&gt; &gt;, std::less&lt;long unsigned int&gt;, STL_Allocator&lt;std::pair&lt;const long unsigned int, long unsigned int&gt;, HeapLeakChecker::Allocator&gt; &gt;' size-in-bits='384' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='323' column='1' id='type-id-474'>
-
           <member-type access='protected'>
             <class-decl name='_Rb_tree_impl&lt;std::less&lt;long unsigned int&gt;, false&gt;' size-in-bits='384' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='427' column='1' id='type-id-626'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-336'/>
@@ -9976,7 +9864,6 @@
       </class-decl>
       <class-decl name='unary_function&lt;std::pair&lt;const long unsigned int, long unsigned int&gt;, const long unsigned int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' is-declaration-only='yes' id='type-id-752'/>
       <class-decl name='_Vector_base&lt;void*, STL_Allocator&lt;void*, HeapLeakChecker::Allocator&gt; &gt;' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='70' column='1' id='type-id-549'>
-
           <member-type access='public'>
             <class-decl name='_Vector_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='75' column='1' id='type-id-659'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-144'/>
@@ -10106,7 +9993,6 @@
       </class-decl>
       <class-decl name='unary_function&lt;std::pair&lt;const std::basic_string&lt;char, std::char_traits&lt;char&gt;, STL_Allocator&lt;char, HeapLeakChecker::Allocator&gt; &gt;, std::vector&lt;AllocObject, STL_Allocator&lt;AllocObject, HeapLeakChecker::Allocator&gt; &gt; &gt;, const std::basic_string&lt;char, std::char_traits&lt;char&gt;, STL_Allocator&lt;char, HeapLeakChecker::Allocator&gt; &gt; &gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_function.h' line='101' column='1' is-declaration-only='yes' id='type-id-754'/>
       <class-decl name='_Vector_base&lt;void (*)(), std::allocator&lt;void (*)()&gt; &gt;' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='70' column='1' id='type-id-546'>
-
           <member-type access='public'>
             <class-decl name='_Vector_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='75' column='1' id='type-id-656'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-552'/>
@@ -10200,11 +10086,9 @@
         </member-function>
       </class-decl>
       <class-decl name='char_traits&lt;char&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='238' column='1' is-declaration-only='yes' id='type-id-755'>
-
           <member-type access='public'>
             <typedef-decl name='char_type' type-id='type-id-66' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='239' column='1' id='type-id-565'/>
           </member-type>
-
           <member-type access='public'>
             <typedef-decl name='int_type' type-id='type-id-1' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='240' column='1' id='type-id-569'/>
           </member-type>
@@ -12690,7 +12574,6 @@
       <class-decl name='__normal_iterator&lt;void (* const*)(), std::vector&lt;void (*)(), std::allocator&lt;void (*)()&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-759'/>
       <class-decl name='__normal_iterator&lt;void* const*, std::vector&lt;void*, STL_Allocator&lt;void*, HeapLeakChecker::Allocator&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-766'/>
     </namespace-decl>
-
     <namespace-decl name='base'>
       <namespace-decl name='internal'>
         <class-decl name='HookList&lt;void (*)(const void*, const void*, size_t, int, int, int, off_t)&gt;' size-in-bits='576' is-struct='yes' visibility='default' filepath='src/malloc_hook-inl.h' line='59' column='1' id='type-id-403'>
@@ -12804,7 +12687,6 @@
           </member-function>
         </class-decl>
       </namespace-decl>
-
     </namespace-decl>
     <namespace-decl name='FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead'>
       <var-decl name='FLAGS_heap_check_pointer_source_alignment' type-id='type-id-65' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead41FLAGS_heap_check_pointer_source_alignmentE' visibility='default' filepath='src/heap-checker.cc' line='190' column='1' elf-symbol-id='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead41FLAGS_heap_check_pointer_source_alignmentE'/>
@@ -12844,7 +12726,6 @@
       <var-decl name='FLAGS_heap_check_max_pointer_offset' type-id='type-id-76' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead35FLAGS_heap_check_max_pointer_offsetE' visibility='default' filepath='src/heap-checker.cc' line='204' column='1' elf-symbol-id='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead35FLAGS_heap_check_max_pointer_offsetE'/>
       <var-decl name='FLAGS_noheap_check_max_pointer_offset' type-id='type-id-66' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead37FLAGS_noheap_check_max_pointer_offsetE' visibility='default' filepath='src/heap-checker.cc' line='209' column='1' elf-symbol-id='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead37FLAGS_noheap_check_max_pointer_offsetE'/>
     </namespace-decl>
-
     <namespace-decl name='tcmalloc'>
       <namespace-decl name='commandlineflags'>
         <function-decl name='StringToInt' filepath='./src/base/commandlineflags.h' line='125' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -13004,7 +12885,6 @@
     <pointer-type-def type-id='type-id-864' size-in-bits='64' id='type-id-274'/>
     <pointer-type-def type-id='type-id-865' size-in-bits='64' id='type-id-277'/>
     <namespace-decl name='std'>
-
       <function-decl name='__equal_aux&lt;const void* const*, const void**&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='822' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-150'/>
         <parameter type-id='type-id-150'/>
@@ -13281,7 +13161,6 @@
         <return type-id='type-id-56'/>
       </function-decl>
       <class-decl name='_Rb_tree&lt;HeapProfileTable::Bucket*, std::pair&lt;HeapProfileTable::Bucket* const, HeapProfileTable::Snapshot::Entry&gt;, std::_Select1st&lt;std::pair&lt;HeapProfileTable::Bucket* const, HeapProfileTable::Snapshot::Entry&gt; &gt;, std::less&lt;HeapProfileTable::Bucket*&gt;, std::allocator&lt;std::pair&lt;HeapProfileTable::Bucket* const, HeapProfileTable::Snapshot::Entry&gt; &gt; &gt;' size-in-bits='384' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='323' column='1' id='type-id-805'>
-
           <member-type access='protected'>
             <class-decl name='_Rb_tree_impl&lt;std::less&lt;HeapProfileTable::Bucket*&gt;, false&gt;' size-in-bits='384' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='427' column='1' id='type-id-843'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-824'/>
@@ -14616,8 +14495,6 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-
-
     <namespace-decl name='FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead'>
       <var-decl name='FLAGS_heap_check_max_leaks' type-id='type-id-65' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead26FLAGS_heap_check_max_leaksE' visibility='default' filepath='src/heap-profile-table.cc' line='87' column='1' elf-symbol-id='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead26FLAGS_heap_check_max_leaksE'/>
       <var-decl name='FLAGS_noheap_check_max_leaks' type-id='type-id-66' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead28FLAGS_noheap_check_max_leaksE' visibility='default' filepath='src/heap-profile-table.cc' line='89' column='1' elf-symbol-id='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead28FLAGS_noheap_check_max_leaksE'/>
@@ -14629,7 +14506,6 @@
         <parameter type-id='type-id-795'/>
         <return type-id='type-id-1'/>
       </function-decl>
-
     </namespace-decl>
     <namespace-decl name='FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead'>
       <var-decl name='FLAGS_cleanup_old_heap_profiles' type-id='type-id-55' mangled-name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead31FLAGS_cleanup_old_heap_profilesE' visibility='default' filepath='src/heap-profile-table.cc' line='83' column='1' elf-symbol-id='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead31FLAGS_cleanup_old_heap_profilesE'/>
@@ -14687,11 +14563,6 @@
       </member-function>
     </class-decl>
     <pointer-type-def type-id='type-id-882' size-in-bits='64' id='type-id-883'/>
-
-
-
-
-
     <namespace-decl name='FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead'>
       <var-decl name='FLAGS_heap_profile_allocation_interval' type-id='type-id-76' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead38FLAGS_heap_profile_allocation_intervalE' visibility='default' filepath='src/heap-profiler.cc' line='95' column='1' elf-symbol-id='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead38FLAGS_heap_profile_allocation_intervalE'/>
       <var-decl name='FLAGS_noheap_profile_allocation_interval' type-id='type-id-66' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead40FLAGS_noheap_profile_allocation_intervalE' visibility='default' filepath='src/heap-profiler.cc' line='99' column='1' elf-symbol-id='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead40FLAGS_noheap_profile_allocation_intervalE'/>
@@ -14710,8 +14581,6 @@
       <var-decl name='FLAGS_only_mmap_profile' type-id='type-id-55' mangled-name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead23FLAGS_only_mmap_profileE' visibility='default' filepath='src/heap-profiler.cc' line='122' column='1' elf-symbol-id='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead23FLAGS_only_mmap_profileE'/>
       <var-decl name='FLAGS_noonly_mmap_profile' type-id='type-id-66' mangled-name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead25FLAGS_noonly_mmap_profileE' visibility='default' filepath='src/heap-profiler.cc' line='125' column='1' elf-symbol-id='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead25FLAGS_noonly_mmap_profileE'/>
     </namespace-decl>
-
-
     <function-decl name='HeapProfilerDump' mangled-name='HeapProfilerDump' filepath='src/heap-profiler.cc' line='533' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='HeapProfilerDump'>
       <parameter type-id='type-id-52' name='reason' filepath='src/heap-profiler.cc' line='533' column='1'/>
       <return type-id='type-id-56'/>
@@ -14731,10 +14600,8 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/internal_logging.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
-
     <array-type-def dimensions='1' type-id='type-id-66' size-in-bits='1600' id='type-id-884'>
       <subrange length='200' type-id='type-id-5' id='type-id-885'/>
-
     </array-type-def>
     <qualified-type-def type-id='type-id-886' const='yes' id='type-id-887'/>
     <reference-type-def kind='lvalue' type-id='type-id-887' size-in-bits='64' id='type-id-888'/>
@@ -14780,11 +14647,6 @@
       </class-decl>
       <var-decl name='log_message_writer' type-id='type-id-892' mangled-name='_ZN8tcmalloc18log_message_writerE' visibility='default' filepath='src/internal_logging.cc' line='63' column='1' elf-symbol-id='_ZN8tcmalloc18log_message_writerE'/>
     </namespace-decl>
-
-
-
-
-
     <function-type size-in-bits='64' id='type-id-891'>
       <parameter type-id='type-id-52'/>
       <parameter type-id='type-id-1'/>
@@ -14800,12 +14662,6 @@
     </enum-decl>
     <pointer-type-def type-id='type-id-894' size-in-bits='64' id='type-id-259'/>
     <pointer-type-def type-id='type-id-895' size-in-bits='64' id='type-id-896'/>
-
-
-
-
-
-
     <function-decl name='MallocExtension_GetOwnership' mangled-name='MallocExtension_GetOwnership' filepath='src/malloc_extension.cc' line='375' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='MallocExtension_GetOwnership'>
       <parameter type-id='type-id-53' name='p' filepath='src/malloc_extension.cc' line='375' column='1'/>
       <return type-id='type-id-893'/>
@@ -14868,7 +14724,6 @@
       <return type-id='type-id-1'/>
     </function-decl>
     <class-decl name='MallocExtension' size-in-bits='64' visibility='default' filepath='src/gperftools/malloc_extension.h' line='90' column='1' is-declaration-only='yes' id='type-id-894'>
-
         <member-type access='private'>
           <enum-decl name='Ownership' filepath='./src/gperftools/malloc_extension.h' line='315' column='1' id='type-id-898'>
             <underlying-type type-id='type-id-133'/>
@@ -14877,7 +14732,6 @@
             <enumerator name='kNotOwned' value='2'/>
           </enum-decl>
         </member-type>
-
         <member-type access='private'>
           <class-decl name='FreeListInfo' size-in-bits='256' is-struct='yes' visibility='default' filepath='./src/gperftools/malloc_extension.h' line='333' column='1' id='type-id-899'>
             <data-member access='public' layout-offset-in-bits='0'>
@@ -14894,7 +14748,6 @@
             </data-member>
           </class-decl>
         </member-type>
-
         <member-type access='private'>
           <typedef-decl name='RangeFunction' type-id='type-id-900' filepath='src/gperftools/malloc_extension.h' line='143' column='1' id='type-id-895'/>
         </member-type>
@@ -15131,7 +14984,6 @@
     <pointer-type-def type-id='type-id-911' size-in-bits='64' id='type-id-944'/>
     <pointer-type-def type-id='type-id-945' size-in-bits='64' id='type-id-946'/>
     <namespace-decl name='std'>
-
       <function-decl name='__copy_move_a&lt;false, void**, void**&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-120'/>
         <parameter type-id='type-id-120'/>
@@ -15151,8 +15003,6 @@
         <return type-id='type-id-120'/>
       </function-decl>
     </namespace-decl>
-
-
     <namespace-decl name='base'>
       <namespace-decl name='internal'>
         <class-decl name='HookList&lt;void (*)(const void*, size_t, int, int, int, off_t)&gt;' size-in-bits='576' is-struct='yes' visibility='default' filepath='src/malloc_hook-inl.h' line='59' column='1' id='type-id-921'>
@@ -15453,8 +15303,6 @@
         </function-decl>
       </namespace-decl>
     </namespace-decl>
-
-
     <function-decl name='mmap' mangled-name='mmap' filepath='src/malloc_hook_mmap_linux.h' line='169' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='mmap'>
       <parameter type-id='type-id-53' name='start' filepath='src/malloc_hook_mmap_linux.h' line='169' column='1'/>
       <parameter type-id='type-id-57' name='length' filepath='src/malloc_hook_mmap_linux.h' line='169' column='1'/>
@@ -15655,10 +15503,6 @@
   <abi-instr version='1.0' address-size='64' path='src/maybe_threads.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <pointer-type-def type-id='type-id-953' size-in-bits='64' id='type-id-954'/>
     <pointer-type-def type-id='type-id-955' size-in-bits='64' id='type-id-956'/>
-
-
-
-
     <function-decl name='perftools_pthread_once' mangled-name='_Z22perftools_pthread_oncePiPFvvE' filepath='src/maybe_threads.cc' line='128' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z22perftools_pthread_oncePiPFvvE'>
       <parameter type-id='type-id-956' name='ctl' filepath='src/maybe_threads.cc' line='128' column='1'/>
       <parameter type-id='type-id-153' name='init_routine' filepath='src/maybe_threads.cc' line='129' column='1'/>
@@ -15734,12 +15578,6 @@
       </member-function>
     </class-decl>
     <pointer-type-def type-id='type-id-957' size-in-bits='64' id='type-id-959'/>
-
-
-
-
-
-
     <namespace-decl name='FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead'>
       <var-decl name='FLAGS_memfs_malloc_path' type-id='type-id-783' mangled-name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead23FLAGS_memfs_malloc_pathE' visibility='default' filepath='src/memfs_malloc.cc' line='70' column='1' elf-symbol-id='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead23FLAGS_memfs_malloc_pathE'/>
       <var-decl name='FLAGS_nomemfs_malloc_path' type-id='type-id-66' mangled-name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead25FLAGS_nomemfs_malloc_pathE' visibility='default' filepath='src/memfs_malloc.cc' line='73' column='1' elf-symbol-id='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead25FLAGS_nomemfs_malloc_pathE'/>
@@ -15756,7 +15594,6 @@
       <var-decl name='FLAGS_memfs_malloc_map_private' type-id='type-id-55' mangled-name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead30FLAGS_memfs_malloc_map_privateE' visibility='default' filepath='src/memfs_malloc.cc' line='85' column='1' elf-symbol-id='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead30FLAGS_memfs_malloc_map_privateE'/>
       <var-decl name='FLAGS_nomemfs_malloc_map_private' type-id='type-id-66' mangled-name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead32FLAGS_nomemfs_malloc_map_privateE' visibility='default' filepath='src/memfs_malloc.cc' line='87' column='1' elf-symbol-id='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead32FLAGS_nomemfs_malloc_map_privateE'/>
     </namespace-decl>
-
     <class-decl name='SysAllocator' size-in-bits='64' visibility='default' filepath='src/gperftools/malloc_extension.h' line='75' column='1' is-declaration-only='yes' id='type-id-958'>
       <member-function access='private' constructor='yes'>
         <function-decl name='SysAllocator' filepath='./src/gperftools/malloc_extension.h' line='77' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -15785,13 +15622,10 @@
   <abi-instr version='1.0' address-size='64' path='src/memory_region_map.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-190' size-in-bits='8960' id='type-id-179'>
       <subrange length='20' type-id='type-id-5' id='type-id-960'/>
-
     </array-type-def>
     <array-type-def dimensions='2' type-id='type-id-53' size-in-bits='40960' id='type-id-180'>
       <subrange length='20' type-id='type-id-5' id='type-id-960'/>
-
       <subrange length='32' type-id='type-id-5' id='type-id-128'/>
-
     </array-type-def>
     <class-decl name='STL_Allocator&lt;std::_Rb_tree_node&lt;MemoryRegionMap::Region&gt;, MemoryRegionMap::MyAllocator&gt;' size-in-bits='8' visibility='default' filepath='src/base/stl_allocator.h' line='60' column='1' id='type-id-961'>
       <member-function access='private'>
@@ -16015,7 +15849,6 @@
     <pointer-type-def type-id='type-id-166' size-in-bits='64' id='type-id-997'/>
     <pointer-type-def type-id='type-id-998' size-in-bits='64' id='type-id-184'/>
     <namespace-decl name='std'>
-
       <function-decl name='__equal_aux&lt;const void**, const void**&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='822' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-120'/>
         <parameter type-id='type-id-120'/>
@@ -16253,7 +16086,6 @@
         </member-function>
       </class-decl>
       <class-decl name='_Rb_tree&lt;MemoryRegionMap::Region, MemoryRegionMap::Region, std::_Identity&lt;MemoryRegionMap::Region&gt;, MemoryRegionMap::RegionCmp, STL_Allocator&lt;MemoryRegionMap::Region, MemoryRegionMap::MyAllocator&gt; &gt;' size-in-bits='384' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='323' column='1' id='type-id-979'>
-
           <member-type access='protected'>
             <class-decl name='_Rb_tree_impl&lt;MemoryRegionMap::RegionCmp, true&gt;' size-in-bits='384' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='427' column='1' id='type-id-990'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-961'/>
@@ -16891,10 +16723,7 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-
-
     <namespace-decl name='base'>
-
       <namespace-decl name='subtle'>
         <function-decl name='NoBarrier_Load' filepath='./src/base/atomicops-internals-x86.h' line='163' column='1' visibility='default' binding='global' size-in-bits='64'>
           <parameter type-id='type-id-81'/>
@@ -16902,17 +16731,12 @@
         </function-decl>
       </namespace-decl>
     </namespace-decl>
-
     <function-type size-in-bits='64' id='type-id-998'>
       <parameter type-id='type-id-160'/>
       <return type-id='type-id-56'/>
     </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/page_heap.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
-
-
-
-
     <namespace-decl name='tcmalloc'>
       <namespace-decl name='commandlineflags'>
         <function-decl name='StringToDouble' filepath='src/base/commandlineflags.h' line='139' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -16948,7 +16772,6 @@
     <typedef-decl name='timer_t' type-id='type-id-1010' filepath='/usr/include/time.h' line='104' column='1' id='type-id-1008'/>
     <typedef-decl name='__timer_t' type-id='type-id-53' filepath='/usr/include/bits/types.h' line='161' column='1' id='type-id-1010'/>
     <class-decl name='ProfileHandler' size-in-bits='448' visibility='default' filepath='src/profile-handler.cc' line='84' column='1' id='type-id-1011'>
-
         <member-type access='private'>
           <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='src/profile-handler.cc' line='166' column='1' id='type-id-1012'>
             <underlying-type type-id='type-id-133'/>
@@ -16958,11 +16781,9 @@
             <enumerator name='TIMERS_SEPARATE' value='3'/>
           </enum-decl>
         </member-type>
-
         <member-type access='private'>
           <typedef-decl name='CallbackList' type-id='type-id-1014' filepath='src/profile-handler.cc' line='199' column='1' id='type-id-1013'/>
         </member-type>
-
         <member-type access='private'>
           <typedef-decl name='CallbackIterator' type-id='type-id-1016' filepath='src/profile-handler.cc' line='200' column='1' id='type-id-1015'/>
         </member-type>
@@ -17190,9 +17011,7 @@
     <pointer-type-def type-id='type-id-1014' size-in-bits='64' id='type-id-1073'/>
     <pointer-type-def type-id='type-id-1007' size-in-bits='64' id='type-id-1009'/>
     <pointer-type-def type-id='type-id-1074' size-in-bits='64' id='type-id-1005'/>
-
     <namespace-decl name='std'>
-
       <class-decl name='_List_iterator&lt;ProfileHandlerToken*&gt;' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_list.h' line='114' column='1' id='type-id-1016'>
         <data-member access='public' layout-offset-in-bits='0'>
           <var-decl name='_M_node' type-id='type-id-1068' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_list.h' line='179' column='1'/>
@@ -17641,7 +17460,6 @@
         </member-function>
       </class-decl>
       <class-decl name='_List_base&lt;ProfileHandlerToken*, std::allocator&lt;ProfileHandlerToken*&gt; &gt;' size-in-bits='128' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_list.h' line='278' column='1' id='type-id-1040'>
-
           <member-type access='protected'>
             <class-decl name='_List_impl' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_list.h' line='300' column='1' id='type-id-1060'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-1053'/>
@@ -17942,9 +17760,6 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-
-
-
     <function-decl name='ProfileHandlerGetState' mangled-name='ProfileHandlerGetState' filepath='src/profile-handler.cc' line='658' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='ProfileHandlerGetState'>
       <parameter type-id='type-id-1020' name='state' filepath='src/profile-handler.cc' line='658' column='1'/>
       <return type-id='type-id-56'/>
@@ -17973,32 +17788,21 @@
     </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/profiledata.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
-
-
-
-
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/profiler.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
-
     <array-type-def dimensions='1' type-id='type-id-1078' size-in-bits='4096' id='type-id-1079'>
       <subrange length='64' type-id='type-id-5' id='type-id-1080'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1081' size-in-bits='16896' id='type-id-1082'>
       <subrange length='4' type-id='type-id-5' id='type-id-126'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-66' size-in-bits='8192' id='type-id-1083'>
       <subrange length='1024' type-id='type-id-5' id='type-id-1084'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='896' id='type-id-1085'>
       <subrange length='28' type-id='type-id-5' id='type-id-1086'/>
-
     </array-type-def>
     <class-decl name='ProfileData' size-in-bits='448' visibility='default' filepath='src/profiledata.h' line='79' column='1' id='type-id-1087'>
-
         <member-type access='private'>
           <class-decl name='Options' size-in-bits='32' visibility='default' filepath='src/profiledata.h' line='88' column='1' id='type-id-1088'>
             <data-member access='private' layout-offset-in-bits='0'>
@@ -18025,7 +17829,6 @@
             </member-function>
           </class-decl>
         </member-type>
-
         <member-type access='private'>
           <class-decl name='State' size-in-bits='8384' is-struct='yes' visibility='default' filepath='src/profiledata.h' line='81' column='1' id='type-id-1091'>
             <data-member access='public' layout-offset-in-bits='0'>
@@ -18042,10 +17845,8 @@
             </data-member>
           </class-decl>
         </member-type>
-
         <member-type access='private'>
           <class-decl name='Entry' size-in-bits='4224' is-struct='yes' visibility='default' filepath='src/profiledata.h' line='154' column='1' id='type-id-1081'>
-
               <member-type access='private'>
                 <typedef-decl name='Slot' type-id='type-id-130' filepath='src/profiledata.h' line='151' column='1' id='type-id-1078'/>
               </member-type>
@@ -18060,7 +17861,6 @@
             </data-member>
           </class-decl>
         </member-type>
-
         <member-type access='private'>
           <class-decl name='Bucket' size-in-bits='16896' is-struct='yes' visibility='default' filepath='src/profiledata.h' line='161' column='1' id='type-id-1093'>
             <data-member access='public' layout-offset-in-bits='0'>
@@ -18213,7 +18013,6 @@
     </class-decl>
     <typedef-decl name='time_t' type-id='type-id-1103' filepath='/usr/include/time.h' line='76' column='1' id='type-id-1092'/>
     <class-decl name='siginfo' size-in-bits='1024' is-struct='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='52' column='1' id='type-id-1104'>
-
         <member-type access='public'>
           <union-decl name='__anonymous_union__' size-in-bits='896' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='59' column='1' id='type-id-1105'>
             <member-type access='private'>
@@ -18466,16 +18265,10 @@
     <pointer-type-def type-id='type-id-1128' size-in-bits='64' id='type-id-1118'/>
     <pointer-type-def type-id='type-id-1129' size-in-bits='64' id='type-id-1116'/>
     <pointer-type-def type-id='type-id-1122' size-in-bits='64' id='type-id-1021'/>
-
-
-
-
-
     <namespace-decl name='FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead'>
       <var-decl name='FLAGS_cpu_profiler_unittest' type-id='type-id-55' mangled-name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead27FLAGS_cpu_profiler_unittestE' visibility='default' filepath='src/profiler.cc' line='74' column='1' elf-symbol-id='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead27FLAGS_cpu_profiler_unittestE'/>
       <var-decl name='FLAGS_nocpu_profiler_unittest' type-id='type-id-66' mangled-name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead29FLAGS_nocpu_profiler_unittestE' visibility='default' filepath='src/profiler.cc' line='78' column='1' elf-symbol-id='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead29FLAGS_nocpu_profiler_unittestE'/>
     </namespace-decl>
-
     <function-decl name='ProfilerEnable' mangled-name='ProfilerEnable' filepath='src/profiler.cc' line='430' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='ProfilerEnable'>
       <return type-id='type-id-56'/>
     </function-decl>
@@ -18572,24 +18365,15 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-
-
-
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/sampler.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
-
-
     <namespace-decl name='std'>
-
       <function-decl name='min&lt;double&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='186' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-1135'/>
         <parameter type-id='type-id-1135'/>
         <return type-id='type-id-1135'/>
       </function-decl>
     </namespace-decl>
-
-
     <namespace-decl name='FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead'>
       <var-decl name='FLAGS_tcmalloc_sample_parameter' type-id='type-id-76' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead31FLAGS_tcmalloc_sample_parameterE' visibility='default' filepath='src/sampler.cc' line='52' column='1' elf-symbol-id='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead31FLAGS_tcmalloc_sample_parameterE'/>
       <var-decl name='FLAGS_notcmalloc_sample_parameter' type-id='type-id-66' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead33FLAGS_notcmalloc_sample_parameterE' visibility='default' filepath='src/sampler.cc' line='55' column='1' elf-symbol-id='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead33FLAGS_notcmalloc_sample_parameterE'/>
@@ -18624,10 +18408,6 @@
         <return type-id='type-id-1136'/>
       </function-decl>
     </namespace-decl>
-
-
-
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/stack_trace_table.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <qualified-type-def type-id='type-id-1139' const='yes' id='type-id-1140'/>
@@ -18643,7 +18423,6 @@
     <pointer-type-def type-id='type-id-1152' size-in-bits='64' id='type-id-1153'/>
     <namespace-decl name='tcmalloc'>
       <class-decl name='StackTraceTable' size-in-bits='192' visibility='default' filepath='src/stack_trace_table.h' line='47' column='1' id='type-id-1145'>
-
           <member-type access='private'>
             <class-decl name='Bucket' size-in-bits='2304' is-struct='yes' visibility='default' filepath='src/stack_trace_table.h' line='65' column='1' id='type-id-1148'>
               <data-member access='public' layout-offset-in-bits='0'>
@@ -18723,19 +18502,8 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-
-
-
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/stacktrace.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
-
-
-
-
-
-
-
     <function-decl name='GetStackFrames' mangled-name='_Z14GetStackFramesPPvPiii' filepath='src/stacktrace.cc' line='220' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z14GetStackFramesPPvPiii'>
       <parameter type-id='type-id-120' name='result' filepath='src/stacktrace.cc' line='220' column='1'/>
       <parameter type-id='type-id-897' name='sizes' filepath='src/stacktrace.cc' line='220' column='1'/>
@@ -18766,16 +18534,9 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/static_vars.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
-
-
-
-
-
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/symbolize.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <class-decl name='SymbolTable' size-in-bits='448' visibility='default' filepath='src/symbolize.h' line='50' column='1' id='type-id-1154'>
-
         <member-type access='private'>
           <typedef-decl name='SymbolMap' type-id='type-id-1156' filepath='src/symbolize.h' line='72' column='1' id='type-id-1155'/>
         </member-type>
@@ -18877,9 +18638,7 @@
     <pointer-type-def type-id='type-id-1201' size-in-bits='64' id='type-id-1221'/>
     <pointer-type-def type-id='type-id-1222' size-in-bits='64' id='type-id-1223'/>
     <namespace-decl name='std'>
-
       <class-decl name='_Rb_tree&lt;const void*, std::pair&lt;const void* const, const char*&gt;, std::_Select1st&lt;std::pair&lt;const void* const, const char*&gt; &gt;, std::less&lt;const void*&gt;, std::allocator&lt;std::pair&lt;const void* const, const char*&gt; &gt; &gt;' size-in-bits='384' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='323' column='1' id='type-id-1169'>
-
           <member-type access='protected'>
             <class-decl name='_Rb_tree_impl&lt;std::less&lt;const void*&gt;, false&gt;' size-in-bits='384' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='427' column='1' id='type-id-1207'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-1188'/>
@@ -20124,9 +19883,6 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-
-
-
     <namespace-decl name='tcmalloc'>
       <function-decl name='DumpProcSelfMaps' mangled-name='_ZN8tcmalloc16DumpProcSelfMapsEi' filepath='src/base/sysinfo.h' line='233' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN8tcmalloc16DumpProcSelfMapsEi'>
         <parameter type-id='type-id-67'/>
@@ -20139,18 +19895,14 @@
     </namespace-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/system-alloc.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
-
     <array-type-def dimensions='1' type-id='type-id-902' size-in-bits='128' id='type-id-1231'>
       <subrange length='2' type-id='type-id-5' id='type-id-1232'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-55' size-in-bits='16' id='type-id-1233'>
       <subrange length='2' type-id='type-id-5' id='type-id-1232'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-52' size-in-bits='128' id='type-id-1234'>
       <subrange length='2' type-id='type-id-5' id='type-id-1232'/>
-
     </array-type-def>
     <class-decl name='MmapSysAllocator' size-in-bits='64' visibility='default' filepath='src/system-alloc.cc' line='158' column='1' id='type-id-1235'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-958'/>
@@ -20249,12 +20001,6 @@
     <pointer-type-def type-id='type-id-1241' size-in-bits='64' id='type-id-1242'/>
     <pointer-type-def type-id='type-id-1235' size-in-bits='64' id='type-id-1236'/>
     <pointer-type-def type-id='type-id-1237' size-in-bits='64' id='type-id-1238'/>
-
-
-
-
-
-
     <namespace-decl name='FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead'>
       <var-decl name='FLAGS_malloc_devmem_start' type-id='type-id-65' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead25FLAGS_malloc_devmem_startE' visibility='default' filepath='src/system-alloc.cc' line='130' column='1' elf-symbol-id='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead25FLAGS_malloc_devmem_startE'/>
       <var-decl name='FLAGS_nomalloc_devmem_start' type-id='type-id-66' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead27FLAGS_nomalloc_devmem_startE' visibility='default' filepath='src/system-alloc.cc' line='133' column='1' elf-symbol-id='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead27FLAGS_nomalloc_devmem_startE'/>
@@ -20296,39 +20042,22 @@
     <var-decl name='TCMalloc_SystemTaken' type-id='type-id-57' mangled-name='TCMalloc_SystemTaken' visibility='default' filepath='src/system-alloc.cc' line='127' column='1' elf-symbol-id='TCMalloc_SystemTaken'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/tcmalloc.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
-
-
-
-
-
-
-
-
-
-
-
-
     <array-type-def dimensions='1' type-id='type-id-781' size-in-bits='512' id='type-id-782'>
       <subrange length='8' type-id='type-id-5' id='type-id-1243'/>
-
     </array-type-def>
     <type-decl name='bool' size-in-bits='8' id='type-id-55'/>
     <type-decl name='char' size-in-bits='8' id='type-id-66'/>
     <array-type-def dimensions='1' type-id='type-id-66' size-in-bits='8' id='type-id-1244'>
       <subrange length='1' type-id='type-id-5' id='type-id-1245'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-66' size-in-bits='160' id='type-id-1246'>
       <subrange length='20' type-id='type-id-5' id='type-id-960'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-66' size-in-bits='384' id='type-id-168'>
       <subrange length='48' type-id='type-id-5' id='type-id-1247'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-66' size-in-bits='32' id='type-id-1248'>
       <subrange length='4' type-id='type-id-5' id='type-id-126'/>
-
     </array-type-def>
     <class-decl name='typedef __va_list_tag __va_list_tag' size-in-bits='192' is-struct='yes' visibility='default' id='type-id-1249'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -20347,17 +20076,14 @@
     <type-decl name='double' size-in-bits='64' id='type-id-2'/>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='65536' id='type-id-1250'>
       <subrange length='1024' type-id='type-id-5' id='type-id-1084'/>
-
     </array-type-def>
     <type-decl name='float' size-in-bits='32' id='type-id-1251'/>
     <type-decl name='int' size-in-bits='32' id='type-id-1'/>
     <array-type-def dimensions='1' type-id='type-id-76' size-in-bits='8192' id='type-id-1252'>
       <subrange length='128' type-id='type-id-5' id='type-id-1253'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='2816' id='type-id-1254'>
       <subrange length='88' type-id='type-id-5' id='type-id-1255'/>
-
     </array-type-def>
     <type-decl name='long double' size-in-bits='128' id='type-id-1256'/>
     <type-decl name='long int' size-in-bits='64' id='type-id-285'/>
@@ -20366,29 +20092,23 @@
     <type-decl name='signed char' size-in-bits='8' id='type-id-1259'/>
     <array-type-def dimensions='1' type-id='type-id-57' size-in-bits='5632' id='type-id-1260'>
       <subrange length='88' type-id='type-id-5' id='type-id-1255'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1261' size-in-bits='8192' id='type-id-1262'>
       <subrange length='64' type-id='type-id-5' id='type-id-1080'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1263' size-in-bits='856064' id='type-id-1264'>
       <subrange length='88' type-id='type-id-5' id='type-id-1255'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1265' size-in-bits='98304' id='type-id-1266'>
       <subrange length='128' type-id='type-id-5' id='type-id-1253'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1267' size-in-bits='16896' id='type-id-1268'>
       <subrange length='88' type-id='type-id-5' id='type-id-1255'/>
-
     </array-type-def>
     <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-133'/>
     <type-decl name='unsigned char' size-in-bits='8' id='type-id-3'/>
     <array-type-def dimensions='1' type-id='type-id-3' size-in-bits='17352' id='type-id-1269'>
       <subrange length='2169' type-id='type-id-5' id='type-id-1270'/>
-
     </array-type-def>
     <type-decl name='unsigned int' size-in-bits='32' id='type-id-1123'/>
     <type-decl name='unsigned long int' size-in-bits='64' id='type-id-5'/>
@@ -20396,11 +20116,9 @@
     <type-decl name='void' id='type-id-56'/>
     <array-type-def dimensions='1' type-id='type-id-53' size-in-bits='1984' id='type-id-1271'>
       <subrange length='31' type-id='type-id-5' id='type-id-1272'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1273' size-in-bits='4194304' id='type-id-1274'>
       <subrange length='65536' type-id='type-id-5' id='type-id-1275'/>
-
     </array-type-def>
     <type-decl name='wchar_t' size-in-bits='32' id='type-id-1276'/>
     <typedef-decl name='size_t' type-id='type-id-5' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/include/stddef.h' line='211' column='1' id='type-id-57'/>
@@ -20498,21 +20216,18 @@
       </data-member>
     </class-decl>
     <class-decl name='SpinLock' size-in-bits='32' visibility='default' filepath='./src/base/spinlock.h' line='48' column='1' id='type-id-176'>
-
         <member-type access='private'>
           <enum-decl name='__anonymous_enum__2' is-anonymous='yes' filepath='./src/base/spinlock.h' line='116' column='1' id='type-id-1287'>
             <underlying-type type-id='type-id-133'/>
             <enumerator name='kSpinLockSleeper' value='2'/>
           </enum-decl>
         </member-type>
-
         <member-type access='private'>
           <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='src/base/spinlock.h' line='114' column='1' id='type-id-1288'>
             <underlying-type type-id='type-id-133'/>
             <enumerator name='kSpinLockFree' value='0'/>
           </enum-decl>
         </member-type>
-
         <member-type access='private'>
           <enum-decl name='__anonymous_enum__1' is-anonymous='yes' filepath='src/base/spinlock.h' line='115' column='1' id='type-id-1289'>
             <underlying-type type-id='type-id-133'/>
@@ -20835,7 +20550,6 @@
     <typedef-decl name='__off64_t' type-id='type-id-285' filepath='/usr/include/bits/types.h' line='142' column='1' id='type-id-951'/>
     <typedef-decl name='mbstate_t' type-id='type-id-1309' filepath='/usr/include/wchar.h' line='106' column='1' id='type-id-1310'/>
     <class-decl name='__mbstate_t' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/include/wchar.h' line='84' column='1' id='type-id-1309'>
-
         <member-type access='public'>
           <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='87' column='1' id='type-id-1311'>
             <data-member access='private'>
@@ -20992,43 +20706,33 @@
       </member-function>
     </class-decl>
     <class-decl name='MallocHook' size-in-bits='8' visibility='default' filepath='./src/gperftools/malloc_hook.h' line='98' column='1' id='type-id-1317'>
-
         <member-type access='private'>
           <typedef-decl name='PreMmapHook' type-id='type-id-905' filepath='./src/gperftools/malloc_hook.h' line='126' column='1' id='type-id-1318'/>
         </member-type>
-
         <member-type access='private'>
           <typedef-decl name='MmapReplacement' type-id='type-id-907' filepath='./src/gperftools/malloc_hook.h' line='150' column='1' id='type-id-1319'/>
         </member-type>
-
         <member-type access='private'>
           <typedef-decl name='MunmapReplacement' type-id='type-id-909' filepath='./src/gperftools/malloc_hook.h' line='192' column='1' id='type-id-1320'/>
         </member-type>
-
         <member-type access='private'>
           <typedef-decl name='MunmapHook' type-id='type-id-910' filepath='./src/gperftools/malloc_hook.h' line='204' column='1' id='type-id-1321'/>
         </member-type>
-
         <member-type access='private'>
           <typedef-decl name='MremapHook' type-id='type-id-912' filepath='./src/gperftools/malloc_hook.h' line='214' column='1' id='type-id-1322'/>
         </member-type>
-
         <member-type access='private'>
           <typedef-decl name='PreSbrkHook' type-id='type-id-914' filepath='./src/gperftools/malloc_hook.h' line='234' column='1' id='type-id-1323'/>
         </member-type>
-
         <member-type access='private'>
           <typedef-decl name='NewHook' type-id='type-id-364' filepath='./src/gperftools/malloc_hook.h' line='102' column='1' id='type-id-1324'/>
         </member-type>
-
         <member-type access='private'>
           <typedef-decl name='DeleteHook' type-id='type-id-365' filepath='./src/gperftools/malloc_hook.h' line='113' column='1' id='type-id-1325'/>
         </member-type>
-
         <member-type access='private'>
           <typedef-decl name='MmapHook' type-id='type-id-367' filepath='./src/gperftools/malloc_hook.h' line='168' column='1' id='type-id-1326'/>
         </member-type>
-
         <member-type access='private'>
           <typedef-decl name='SbrkHook' type-id='type-id-369' filepath='./src/gperftools/malloc_hook.h' line='247' column='1' id='type-id-1327'/>
         </member-type>
@@ -21375,7 +21079,6 @@
     <typedef-decl name='intptr_t' type-id='type-id-285' filepath='/usr/include/stdint.h' line='120' column='1' id='type-id-73'/>
     <class-decl name='TCMallocImplementation' size-in-bits='128' visibility='default' filepath='src/tcmalloc.cc' line='562' column='1' id='type-id-1331'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-894'/>
-
         <member-type access='private'>
           <typedef-decl name='RangeFunction' type-id='type-id-900' filepath='./src/gperftools/malloc_extension.h' line='143' column='1' id='type-id-1332'/>
         </member-type>
@@ -21729,7 +21432,6 @@
     <pointer-type-def type-id='type-id-1276' size-in-bits='64' id='type-id-1484'/>
     <pointer-type-def type-id='type-id-1484' size-in-bits='64' id='type-id-1485'/>
     <namespace-decl name='std'>
-
       <function-decl name='_Destroy&lt;MallocExtension::FreeListInfo*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='119' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-1340'/>
         <parameter type-id='type-id-1340'/>
@@ -21842,7 +21544,6 @@
         </member-function>
       </class-decl>
       <class-decl name='_Vector_base&lt;MallocExtension::FreeListInfo, std::allocator&lt;MallocExtension::FreeListInfo&gt; &gt;' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='70' column='1' id='type-id-1380'>
-
           <member-type access='public'>
             <class-decl name='_Vector_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='75' column='1' id='type-id-1430'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-1383'/>
@@ -22496,7 +22197,6 @@
         </member-function>
       </class-decl>
       <class-decl name='basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stringfwd.h' line='52' column='1' id='type-id-726'>
-
           <member-type access='private'>
             <class-decl name='_Rep' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='148' column='1' id='type-id-562'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-1496'/>
@@ -22597,7 +22297,6 @@
               </member-function>
             </class-decl>
           </member-type>
-
           <member-type access='private'>
             <class-decl name='_Alloc_hider' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='258' column='1' id='type-id-1439'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-1386'/>
@@ -22614,7 +22313,6 @@
               </member-function>
             </class-decl>
           </member-type>
-
           <member-type access='private'>
             <class-decl name='_Rep_base' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='141' column='1' id='type-id-1496'>
               <data-member access='public' layout-offset-in-bits='0'>
@@ -23681,7 +23379,6 @@
       <class-decl name='nothrow_t' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/new' line='67' column='1' is-declaration-only='yes' id='type-id-1395'/>
     </namespace-decl>
     <class-decl name='MallocExtension' size-in-bits='64' visibility='default' filepath='src/gperftools/malloc_extension.h' line='90' column='1' is-declaration-only='yes' id='type-id-894'>
-
         <member-type access='private'>
           <enum-decl name='Ownership' filepath='./src/gperftools/malloc_extension.h' line='315' column='1' id='type-id-898'>
             <underlying-type type-id='type-id-133'/>
@@ -23690,7 +23387,6 @@
             <enumerator name='kNotOwned' value='2'/>
           </enum-decl>
         </member-type>
-
         <member-type access='private'>
           <class-decl name='FreeListInfo' size-in-bits='256' is-struct='yes' visibility='default' filepath='./src/gperftools/malloc_extension.h' line='333' column='1' id='type-id-899'>
             <data-member access='public' layout-offset-in-bits='0'>
@@ -23707,7 +23403,6 @@
             </data-member>
           </class-decl>
         </member-type>
-
         <member-type access='private'>
           <typedef-decl name='RangeFunction' type-id='type-id-900' filepath='src/gperftools/malloc_extension.h' line='143' column='1' id='type-id-895'/>
         </member-type>
@@ -24171,7 +23866,6 @@
       <class-decl name='__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-1497'/>
       <class-decl name='__normal_iterator&lt;const char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-1498'/>
     </namespace-decl>
-
     <function-decl name='atexit' filepath='/usr/include/stdlib.h' line='518' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-153'/>
       <return type-id='type-id-1'/>
@@ -24798,7 +24492,6 @@
         <enumerator name='LINKER_INITIALIZED' value='0'/>
       </enum-decl>
       <class-decl name='MallocRange' size-in-bits='256' is-struct='yes' visibility='default' filepath='./src/gperftools/malloc_extension.h' line='399' column='1' id='type-id-1351'>
-
           <member-type access='public'>
             <enum-decl name='Type' filepath='./src/gperftools/malloc_extension.h' line='400' column='1' id='type-id-1501'>
               <underlying-type type-id='type-id-133'/>
@@ -24834,7 +24527,6 @@
         <enumerator name='kCrashWithStats' value='2'/>
       </enum-decl>
       <class-decl name='LogItem' size-in-bits='128' visibility='default' filepath='src/internal_logging.h' line='70' column='1' id='type-id-886'>
-
           <member-type access='private'>
             <enum-decl name='Tag' filepath='src/internal_logging.h' line='83' column='1' id='type-id-1503'>
               <underlying-type type-id='type-id-133'/>
@@ -24845,7 +24537,6 @@
               <enumerator name='kEnd' value='4'/>
             </enum-decl>
           </member-type>
-
           <member-type access='private'>
             <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='src/internal_logging.h' line='91' column='1' id='type-id-1504'>
               <data-member access='private'>
@@ -25150,7 +24841,6 @@
         </data-member>
       </class-decl>
       <class-decl name='CentralFreeList' size-in-bits='9344' visibility='default' filepath='src/central_freelist.h' line='50' column='1' id='type-id-1446'>
-
           <member-type access='private'>
             <class-decl name='TCEntry' size-in-bits='128' is-struct='yes' visibility='default' filepath='src/central_freelist.h' line='97' column='1' id='type-id-1261'>
               <data-member access='public' layout-offset-in-bits='0'>
@@ -25482,7 +25172,6 @@
         </data-member>
       </class-decl>
       <class-decl name='PageHeap' size-in-bits='4293888' visibility='default' filepath='src/page_heap.h' line='104' column='1' id='type-id-1403'>
-
           <member-type access='private'>
             <class-decl name='Stats' size-in-bits='256' is-struct='yes' visibility='default' filepath='src/page_heap.h' line='145' column='1' id='type-id-1330'>
               <data-member access='public' layout-offset-in-bits='0'>
@@ -25505,7 +25194,6 @@
               </member-function>
             </class-decl>
           </member-type>
-
           <member-type access='private'>
             <class-decl name='SmallSpanStats' size-in-bits='16384' is-struct='yes' visibility='default' filepath='src/page_heap.h' line='155' column='1' id='type-id-1453'>
               <data-member access='public' layout-offset-in-bits='0'>
@@ -25516,7 +25204,6 @@
               </data-member>
             </class-decl>
           </member-type>
-
           <member-type access='private'>
             <class-decl name='LargeSpanStats' size-in-bits='192' is-struct='yes' visibility='default' filepath='src/page_heap.h' line='164' column='1' id='type-id-1451'>
               <data-member access='public' layout-offset-in-bits='0'>
@@ -25530,7 +25217,6 @@
               </data-member>
             </class-decl>
           </member-type>
-
           <member-type access='private'>
             <class-decl name='SpanList' size-in-bits='768' is-struct='yes' visibility='default' filepath='src/page_heap.h' line='232' column='1' id='type-id-1265'>
               <data-member access='public' layout-offset-in-bits='0'>
@@ -25541,11 +25227,9 @@
               </data-member>
             </class-decl>
           </member-type>
-
           <member-type access='private'>
             <typedef-decl name='PageMap' type-id='type-id-1278' filepath='src/page_heap.h' line='224' column='1' id='type-id-1507'/>
           </member-type>
-
           <member-type access='private'>
             <typedef-decl name='PageMapCache' type-id='type-id-1299' filepath='src/page_heap.h' line='225' column='1' id='type-id-1508'/>
           </member-type>
@@ -25816,7 +25500,6 @@
         </member-function>
       </class-decl>
       <class-decl name='ThreadCache' size-in-bits='17408' visibility='default' filepath='src/thread_cache.h' line='66' column='1' id='type-id-1415'>
-
           <member-type access='private'>
             <class-decl name='FreeList' size-in-bits='192' visibility='default' filepath='src/thread_cache.h' line='132' column='1' id='type-id-1267'>
               <data-member access='private' layout-offset-in-bits='0'>
@@ -25929,7 +25612,6 @@
               </member-function>
             </class-decl>
           </member-type>
-
           <member-type access='private'>
             <class-decl name='ThreadLocalData' size-in-bits='128' is-struct='yes' visibility='default' filepath='src/thread_cache.h' line='262' column='1' id='type-id-1509'>
               <data-member access='public' layout-offset-in-bits='0'>
@@ -25940,7 +25622,6 @@
               </data-member>
             </class-decl>
           </member-type>
-
           <member-type access='private'>
             <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='src/thread_cache.h' line='69' column='1' id='type-id-1510'>
               <underlying-type type-id='type-id-133'/>
@@ -26317,8 +25998,6 @@
       <var-decl name='FLAGS_tcmalloc_large_alloc_report_threshold' type-id='type-id-76' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead43FLAGS_tcmalloc_large_alloc_report_thresholdE' visibility='default' filepath='src/tcmalloc.cc' line='183' column='1' elf-symbol-id='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead43FLAGS_tcmalloc_large_alloc_report_thresholdE'/>
       <var-decl name='FLAGS_notcmalloc_large_alloc_report_threshold' type-id='type-id-66' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead45FLAGS_notcmalloc_large_alloc_report_thresholdE' visibility='default' filepath='src/tcmalloc.cc' line='195' column='1' elf-symbol-id='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead45FLAGS_notcmalloc_large_alloc_report_thresholdE'/>
     </namespace-decl>
-
-
     <class-decl name='SysAllocator' size-in-bits='64' visibility='default' filepath='src/gperftools/malloc_extension.h' line='75' column='1' is-declaration-only='yes' id='type-id-958'>
       <member-function access='private' constructor='yes'>
         <function-decl name='SysAllocator' filepath='./src/gperftools/malloc_extension.h' line='77' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -26508,9 +26187,7 @@
       </function-decl>
       <var-decl name='threadcache_allocator' type-id='type-id-1412' mangled-name='_ZN8tcmalloc21threadcache_allocatorE' visibility='default' filepath='src/thread_cache.cc' line='67' column='1' elf-symbol-id='_ZN8tcmalloc21threadcache_allocatorE'/>
     </namespace-decl>
-
     <namespace-decl name='std'>
-
       <function-decl name='max&lt;double&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='209' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-1135'/>
         <parameter type-id='type-id-1135'/>
@@ -26522,7 +26199,5 @@
         <return type-id='type-id-113'/>
       </function-decl>
     </namespace-decl>
-
-
   </abi-instr>
 </abi-corpus>

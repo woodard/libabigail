@@ -207,26 +207,19 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='gdbmclose.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
-
-
-
     <type-decl name='__ARRAY_SIZE_TYPE__' size-in-bits='64' id='type-id-21'/>
     <array-type-def dimensions='1' type-id='type-id-14' size-in-bits='128' id='type-id-22'>
       <subrange length='1' type-id='type-id-21' id='type-id-23'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-14' size-in-bits='768' id='type-id-24'>
       <subrange length='6' type-id='type-id-21' id='type-id-25'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-26' size-in-bits='192' id='type-id-27'>
       <subrange length='1' type-id='type-id-21' id='type-id-23'/>
-
     </array-type-def>
     <type-decl name='char' size-in-bits='8' id='type-id-28'/>
     <array-type-def dimensions='1' type-id='type-id-28' size-in-bits='32' id='type-id-29'>
       <subrange length='4' type-id='type-id-21' id='type-id-30'/>
-
     </array-type-def>
     <type-decl name='int' size-in-bits='32' id='type-id-8'/>
     <type-decl name='long int' size-in-bits='64' id='type-id-31'/>
@@ -516,14 +509,11 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='gdbmdump.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
-
     <array-type-def dimensions='1' type-id='type-id-28' size-in-bits='8' id='type-id-62'>
       <subrange length='1' type-id='type-id-21' id='type-id-23'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-28' size-in-bits='160' id='type-id-63'>
       <subrange length='20' type-id='type-id-21' id='type-id-64'/>
-
     </array-type-def>
     <class-decl name='_IO_codecvt' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-65'/>
     <class-decl name='_IO_marker' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-66'/>
@@ -737,10 +727,8 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='gdbmload.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
-
     <array-type-def dimensions='1' type-id='type-id-80' size-in-bits='256' id='type-id-81'>
       <subrange length='2' type-id='type-id-21' id='type-id-82'/>
-
     </array-type-def>
     <type-decl name='unsigned char' size-in-bits='8' id='type-id-1'/>
     <class-decl name='dump_file' size-in-bits='896' is-struct='yes' visibility='default' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmload.c' line='30' column='1' id='type-id-83'>

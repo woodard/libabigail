@@ -136,12 +136,10 @@
     <elf-symbol name='_ZTSN5boost9exceptionE' size='19' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='src/third_party/boost-1.60.0/libs/iostreams/src/file_descriptor.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
-
     <type-decl name='bool' size-in-bits='8' id='type-id-1'/>
     <type-decl name='char' size-in-bits='8' id='type-id-2'/>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='32' id='type-id-3'>
       <subrange length='4' type-id='type-id-4' id='type-id-5'/>
-
     </array-type-def>
     <class-decl name='__va_list_tag' size-in-bits='192' is-struct='yes' visibility='default' id='type-id-6'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -180,7 +178,6 @@
       </data-member>
     </class-decl>
     <class-decl name='__anonymous_struct__1' size-in-bits='64' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-22' visibility='default' filepath='/usr/include/wchar.h' line='82' column='1' id='type-id-23'>
-
         <member-type access='public'>
           <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='85' column='1' id='type-id-24'>
             <data-member access='private'>
@@ -438,7 +435,6 @@
             <return type-id='type-id-214'/>
           </function-decl>
           <class-decl name='file_descriptor_impl' size-in-bits='64' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.60.0/libs/iostreams/src/file_descriptor.cpp' line='50' column='1' id='type-id-86'>
-
               <member-type access='public'>
                 <enum-decl name='flags' filepath='src/third_party/boost-1.60.0/libs/iostreams/src/file_descriptor.cpp' line='52' column='1' id='type-id-249'>
                   <underlying-type type-id='type-id-16'/>
@@ -653,11 +649,9 @@
         </namespace-decl>
         <typedef-decl name='stream_offset' type-id='type-id-25' filepath='src/third_party/boost-1.60.0/boost/iostreams/positioning.hpp' line='36' column='1' id='type-id-253'/>
         <class-decl name='file_descriptor' size-in-bits='128' visibility='default' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/file_descriptor.hpp' line='46' column='1' id='type-id-99'>
-
             <member-type access='private'>
               <typedef-decl name='handle_type' type-id='type-id-250' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/file_descriptor.hpp' line='50' column='1' id='type-id-256'/>
             </member-type>
-
             <member-type access='private'>
               <typedef-decl name='char_type' type-id='type-id-2' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/file_descriptor.hpp' line='51' column='1' id='type-id-101'/>
             </member-type>
@@ -797,7 +791,6 @@
         </enum-decl>
         <class-decl name='file_descriptor_source' size-in-bits='128' visibility='default' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/file_descriptor.hpp' line='146' column='1' id='type-id-105'>
           <base-class access='private' layout-offset-in-bits='0' type-id='type-id-99'/>
-
             <member-type access='private'>
               <typedef-decl name='handle_type' type-id='type-id-11' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/file_descriptor.hpp' line='151' column='1' id='type-id-258'/>
             </member-type>
@@ -873,7 +866,6 @@
         </class-decl>
         <class-decl name='file_descriptor_sink' size-in-bits='128' visibility='default' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/file_descriptor.hpp' line='228' column='1' id='type-id-103'>
           <base-class access='private' layout-offset-in-bits='0' type-id='type-id-99'/>
-
             <member-type access='private'>
               <typedef-decl name='handle_type' type-id='type-id-11' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/file_descriptor.hpp' line='233' column='1' id='type-id-259'/>
             </member-type>
@@ -1014,7 +1006,6 @@
         <class-decl name='clone_impl&lt;boost::exception_detail::error_info_injector&lt;std::ios_base::failure&gt; &gt;' size-in-bits='640' visibility='default' filepath='src/third_party/boost-1.60.0/boost/exception/exception.hpp' line='442' column='1' id='type-id-75'>
           <base-class access='public' layout-offset-in-bits='0' type-id='type-id-79'/>
           <base-class access='public' layout-offset-in-bits='192' is-virtual='yes' type-id='type-id-73'/>
-
             <member-type access='private'>
               <class-decl name='clone_tag' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.60.0/boost/exception/exception.hpp' line='446' column='1' id='type-id-260'/>
             </member-type>
@@ -1142,25 +1133,21 @@
       </class-decl>
       <namespace-decl name='detail'>
         <class-decl name='sp_element&lt;boost::iostreams::detail::file_descriptor_impl&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='76' column='1' id='type-id-261'>
-
             <member-type access='public'>
               <typedef-decl name='type' type-id='type-id-86' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='78' column='1' id='type-id-262'/>
             </member-type>
         </class-decl>
         <class-decl name='sp_dereference&lt;boost::iostreams::detail::file_descriptor_impl&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='101' column='1' id='type-id-263'>
-
             <member-type access='public'>
               <typedef-decl name='type' type-id='type-id-87' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='103' column='1' id='type-id-264'/>
             </member-type>
         </class-decl>
         <class-decl name='sp_member_access&lt;boost::iostreams::detail::file_descriptor_impl&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='150' column='1' id='type-id-265'>
-
             <member-type access='public'>
               <typedef-decl name='type' type-id='type-id-88' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='152' column='1' id='type-id-266'/>
             </member-type>
         </class-decl>
         <class-decl name='sp_array_access&lt;boost::iostreams::detail::file_descriptor_impl&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='175' column='1' id='type-id-267'>
-
             <member-type access='public'>
               <typedef-decl name='type' type-id='type-id-18' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='177' column='1' id='type-id-268'/>
             </member-type>
@@ -1223,7 +1210,6 @@
         </class-decl>
       </namespace-decl>
       <class-decl name='shared_ptr&lt;boost::iostreams::detail::file_descriptor_impl&gt;' size-in-bits='128' visibility='default' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='336' column='1' id='type-id-109'>
-
           <member-type access='private'>
             <typedef-decl name='element_type' type-id='type-id-262' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='345' column='1' id='type-id-113'/>
           </member-type>
@@ -1370,7 +1356,6 @@
           </function-decl>
         </member-function>
       </class-decl>
-
       <function-decl name='throw_exception&lt;std::ios_base::failure&gt;' mangled-name='_ZN5boost15throw_exceptionINSt8ios_base7failureB5cxx11EEEvRKT_' filepath='src/third_party/boost-1.60.0/boost/throw_exception.hpp' line='62' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost15throw_exceptionINSt8ios_base7failureB5cxx11EEEvRKT_'>
         <parameter type-id='type-id-216' name='e' filepath='src/third_party/boost-1.60.0/boost/throw_exception.hpp' line='62' column='1'/>
         <return type-id='type-id-18'/>
@@ -1387,17 +1372,13 @@
         <class-decl name='basic_string&lt;wchar_t, std::char_traits&lt;wchar_t&gt;, std::allocator&lt;wchar_t&gt; &gt;' size-in-bits='256' visibility='default' is-declaration-only='yes' id='type-id-271'/>
         <typedef-decl name='wstring' type-id='type-id-271' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stringfwd.h' line='78' column='1' id='type-id-201'/>
       </namespace-decl>
-
-
       <namespace-decl name='_V2'>
         <class-decl name='error_category' size-in-bits='64' visibility='default' is-declaration-only='yes' id='type-id-194'/>
       </namespace-decl>
       <class-decl name='ios_base' size-in-bits='1728' visibility='default' is-declaration-only='yes' id='type-id-272'>
-
           <member-type access='private'>
             <typedef-decl name='openmode' type-id='type-id-273' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/ios_base.h' line='429' column='1' id='type-id-251'/>
           </member-type>
-
           <member-type access='private'>
             <typedef-decl name='seekdir' type-id='type-id-274' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/ios_base.h' line='461' column='1' id='type-id-254'/>
           </member-type>
@@ -1648,15 +1629,12 @@
       <namespace-decl name='iostreams'>
         <namespace-decl name='detail'>
           <class-decl name='mapped_file_impl' size-in-bits='1088' visibility='default' filepath='src/third_party/boost-1.60.0/libs/iostreams/src/mapped_file.cpp' line='45' column='1' id='type-id-89'>
-
               <member-type access='private'>
                 <typedef-decl name='size_type' type-id='type-id-178' filepath='src/third_party/boost-1.60.0/libs/iostreams/src/mapped_file.cpp' line='47' column='1' id='type-id-158'/>
               </member-type>
-
               <member-type access='private'>
                 <typedef-decl name='param_type' type-id='type-id-175' filepath='src/third_party/boost-1.60.0/libs/iostreams/src/mapped_file.cpp' line='48' column='1' id='type-id-92'/>
               </member-type>
-
               <member-type access='private'>
                 <typedef-decl name='mapmode' type-id='type-id-281' filepath='src/third_party/boost-1.60.0/libs/iostreams/src/mapped_file.cpp' line='49' column='1' id='type-id-280'/>
               </member-type>
@@ -1822,11 +1800,9 @@
         </namespace-decl>
         <class-decl name='mapped_file_source' size-in-bits='128' visibility='default' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/mapped_file.hpp' line='149' column='1' id='type-id-107'>
           <base-class access='public' layout-offset-in-bits='0' type-id='type-id-282'/>
-
             <member-type access='private'>
               <typedef-decl name='size_type' type-id='type-id-276' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/mapped_file.hpp' line='165' column='1' id='type-id-178'/>
             </member-type>
-
             <member-type access='private'>
               <class-decl name='safe_bool_helper' size-in-bits='32' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/mapped_file.hpp' line='151' column='1' id='type-id-283'>
                 <data-member access='public' layout-offset-in-bits='0'>
@@ -1834,11 +1810,9 @@
                 </data-member>
               </class-decl>
             </member-type>
-
             <member-type access='private'>
               <typedef-decl name='iterator' type-id='type-id-43' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/mapped_file.hpp' line='166' column='1' id='type-id-284'/>
             </member-type>
-
             <member-type access='private'>
               <typedef-decl name='param_type' type-id='type-id-84' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/mapped_file.hpp' line='154' column='1' id='type-id-175'/>
             </member-type>
@@ -1942,7 +1916,6 @@
           </member-function>
         </class-decl>
         <class-decl name='mapped_file_base' size-in-bits='8' visibility='default' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/mapped_file.hpp' line='47' column='1' id='type-id-282'>
-
             <member-type access='private'>
               <enum-decl name='mapmode' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/mapped_file.hpp' line='49' column='1' id='type-id-281'>
                 <underlying-type type-id='type-id-16'/>
@@ -1980,19 +1953,15 @@
         </class-decl>
         <class-decl name='mapped_file' size-in-bits='192' visibility='default' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/mapped_file.hpp' line='223' column='1' id='type-id-285'>
           <base-class access='public' layout-offset-in-bits='0' type-id='type-id-282'/>
-
             <member-type access='private'>
               <typedef-decl name='size_type' type-id='type-id-178' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/mapped_file.hpp' line='237' column='1' id='type-id-286'/>
             </member-type>
-
             <member-type access='private'>
               <typedef-decl name='delegate_type' type-id='type-id-107' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/mapped_file.hpp' line='225' column='1' id='type-id-287'/>
             </member-type>
-
             <member-type access='private'>
               <typedef-decl name='iterator' type-id='type-id-121' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/mapped_file.hpp' line='238' column='1' id='type-id-288'/>
             </member-type>
-
             <member-type access='private'>
               <typedef-decl name='const_iterator' type-id='type-id-43' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/mapped_file.hpp' line='239' column='1' id='type-id-289'/>
             </member-type>
@@ -2136,11 +2105,8 @@
           </member-function>
         </class-decl>
       </namespace-decl>
-
       <namespace-decl name='detail'>
-
         <class-decl name='sp_element&lt;boost::iostreams::detail::mapped_file_impl&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='76' column='1' id='type-id-298'>
-
             <member-type access='public'>
               <typedef-decl name='type' type-id='type-id-89' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='78' column='1' id='type-id-299'/>
             </member-type>
@@ -2420,19 +2386,16 @@
         </class-decl>
         <class-decl name='sp_nothrow_tag' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/detail/shared_count.hpp' line='71' column='1' id='type-id-300'/>
         <class-decl name='sp_dereference&lt;boost::iostreams::detail::mapped_file_impl&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='101' column='1' id='type-id-303'>
-
             <member-type access='public'>
               <typedef-decl name='type' type-id='type-id-90' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='103' column='1' id='type-id-304'/>
             </member-type>
         </class-decl>
         <class-decl name='sp_member_access&lt;boost::iostreams::detail::mapped_file_impl&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='150' column='1' id='type-id-305'>
-
             <member-type access='public'>
               <typedef-decl name='type' type-id='type-id-91' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='152' column='1' id='type-id-306'/>
             </member-type>
         </class-decl>
         <class-decl name='sp_array_access&lt;boost::iostreams::detail::mapped_file_impl&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='175' column='1' id='type-id-307'>
-
             <member-type access='public'>
               <typedef-decl name='type' type-id='type-id-18' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='177' column='1' id='type-id-308'/>
             </member-type>
@@ -2491,7 +2454,6 @@
         </class-decl>
       </namespace-decl>
       <class-decl name='shared_ptr&lt;boost::iostreams::detail::mapped_file_impl&gt;' size-in-bits='128' visibility='default' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='336' column='1' id='type-id-115'>
-
           <member-type access='private'>
             <typedef-decl name='element_type' type-id='type-id-299' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='345' column='1' id='type-id-119'/>
           </member-type>
@@ -2641,12 +2603,6 @@
       <namespace-decl name='core'>
         <typedef-decl name='typeinfo' type-id='type-id-277' filepath='src/third_party/boost-1.60.0/boost/core/typeinfo.hpp' line='134' column='1' id='type-id-302'/>
       </namespace-decl>
-
-
-
-
-
-
     </namespace-decl>
     <function-decl name='clearerr' filepath='/usr/include/stdio.h' line='826' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-52'/>
@@ -3378,7 +3334,6 @@
       <parameter type-id='type-id-11'/>
       <return type-id='type-id-15'/>
     </function-decl>
-
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='124' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-11'/>
       <parameter type-id='type-id-43'/>
@@ -3634,7 +3589,6 @@
       <parameter type-id='type-id-43'/>
       <return type-id='type-id-121'/>
     </function-decl>
-
     <function-decl name='clock' filepath='/usr/include/time.h' line='189' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-49'/>
     </function-decl>
@@ -3674,7 +3628,6 @@
       <parameter type-id='type-id-221'/>
       <return type-id='type-id-32'/>
     </function-decl>
-
     <function-decl name='acos' filepath='/usr/include/x86_64-linux-gnu/bits/mathcalls.h' line='54' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-9'/>
       <return type-id='type-id-9'/>
@@ -4258,10 +4211,5 @@
     <qualified-type-def type-id='type-id-286' const='yes' id='type-id-290'/>
     <qualified-type-def type-id='type-id-295' const='yes' id='type-id-315'/>
     <reference-type-def kind='lvalue' type-id='type-id-315' size-in-bits='64' id='type-id-297'/>
-
-
-
-
-
   </abi-instr>
 </abi-corpus>

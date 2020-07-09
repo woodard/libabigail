@@ -452,10 +452,8 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='dbus-connection.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
-
     <array-type-def dimensions='1' type-id='type-id-33' size-in-bits='320' id='type-id-34'>
       <subrange length='10' type-id='type-id-27' id='type-id-35'/>
-
     </array-type-def>
     <class-decl name='DBusCMutex' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-36'/>
     <class-decl name='DBusCondVar' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-37'/>
@@ -1628,15 +1626,11 @@
     </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='dbus-server.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
-
-
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='128' id='type-id-152'>
       <subrange length='16' type-id='type-id-27' id='type-id-153'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-16' size-in-bits='128' id='type-id-154'>
       <subrange length='4' type-id='type-id-27' id='type-id-155'/>
-
     </array-type-def>
     <class-decl name='DBusServer' size-in-bits='1216' is-struct='yes' visibility='default' filepath='../dbus/dbus-server-protected.h' line='57' column='1' id='type-id-156'>
       <data-member access='public' layout-offset-in-bits='0'>

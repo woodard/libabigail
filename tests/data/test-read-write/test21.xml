@@ -2,7 +2,6 @@
   <type-decl name='int' size-in-bits='32' alignment-in-bits='32' id='type-id-1'/>
   <type-decl name='void' alignment-in-bits='8' id='type-id-2'/>
   <class-decl name='S' size-in-bits='32' alignment-in-bits='32' visibility='default' filepath='simple-class-0.C' line='5' column='8' id='type-id-3'>
-
       <member-type access='public'>
         <typedef-decl name='S' type-id='type-id-3' filepath='simple-class-0.C' line='6' column='1' id='type-id-4'/>
       </member-type>

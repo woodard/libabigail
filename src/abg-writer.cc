@@ -1228,7 +1228,7 @@ annotate(const function_decl::parameter_sptr&	parm,
 	<< xml::escape_xml_comment(get_pretty_representation(parm->get_type()));
     }
 
-  o << "' -->\n" ;
+  o << "' -->\n";
 
   return true;
 }
@@ -1956,15 +1956,11 @@ write_decl_in_scope(const decl_base_sptr&	decl,
   stack<string> closing_tags;
   stack<unsigned> closing_indents;
   unsigned indent = initial_indent;
-  bool wrote_context = false;
   for (list<scope_decl*>::const_iterator i = scopes.begin();
        i != scopes.end();
        ++i)
     {
       ABG_ASSERT(!is_global_scope(*i));
-
-      if (i != scopes.begin())
-	o << "\n";
 
       // A type scope is either a namespace ...
       if (namespace_decl* n = is_namespace(*i))
@@ -1972,7 +1968,7 @@ write_decl_in_scope(const decl_base_sptr&	decl,
 	  do_indent(o, indent);
 	  o << "<namespace-decl name='"
 	    << xml::escape_xml_string(n->get_name())
-	    << "'>";
+	    << "'>\n";
 	  closing_tags.push("</namespace-decl>");
 	  closing_indents.push(indent);
 	}
@@ -2009,19 +2005,14 @@ write_decl_in_scope(const decl_base_sptr&	decl,
 	// We should never reach this point.
 	abort();
       indent += c.get_xml_element_indent();
-      wrote_context = true;
     }
-
-  if (wrote_context)
-    o << "\n";
 
   write_decl(decl, ctxt, indent);
 
   while (!closing_tags.empty())
     {
-      o << "\n";
       do_indent(o, closing_indents.top());
-      o << closing_tags.top();
+      o << closing_tags.top() << "\n";
       closing_tags.pop();
       closing_indents.pop();
     }
@@ -2198,14 +2189,12 @@ write_canonical_types_of_scope(const scope_decl	&scope,
   const type_base_sptrs_type &canonical_types =
     scope.get_sorted_canonical_types();
 
-  ostream& o = ctxt.get_ostream();
   const config& c = ctxt.get_config();
 
   for (type_base_sptrs_type::const_iterator i = canonical_types.begin();
        i != canonical_types.end();
        ++i)
     {
-      o << "\n";
       if (is_member_type)
 	write_member_type(*i, ctxt, indent + c.get_xml_element_indent());
       else
@@ -2261,11 +2250,11 @@ write_translation_unit(write_context&	       ctxt,
 
   if (tu.is_empty())
     {
-      o << "/>";
+      o << "/>\n";
       return true;
     }
 
-  o << ">";
+  o << ">\n";
 
   write_canonical_types_of_scope(*tu.get_global_scope(),
 				 ctxt, indent);
@@ -2284,18 +2273,14 @@ write_translation_unit(write_context&	       ctxt,
 	    if (class_type->get_is_declaration_only()
 		&& !class_type->is_empty()
 		&& !ctxt.type_is_emitted(class_type))
-	    {
-	      o << "\n";
 	      write_type(class_type, ctxt,
 			 indent + c.get_xml_element_indent());
-	    }
 	  continue;
 	}
 
       if (decl_base_sptr d = is_decl(*i))
 	if (ctxt.decl_is_emitted(d))
 	  continue;
-      o << "\n";
       write_decl(*i, ctxt, indent + c.get_xml_element_indent());
     }
 
@@ -2358,16 +2343,12 @@ write_translation_unit(write_context&	       ctxt,
 	      if (decl_base* d = get_type_declaration(*i))
 		{
 		  decl_base_sptr decl(d, noop_deleter());
-		  o << "\n";
 		  write_decl_in_scope(decl, ctxt,
 				      indent + c.get_xml_element_indent());
 		}
 	      else if (function_type_sptr fn_type = is_function_type(t))
-		{
-		  o << "\n";
-		  write_function_type(fn_type, ctxt,
-				      indent + c.get_xml_element_indent());
-		}
+		write_function_type(fn_type, ctxt,
+				    indent + c.get_xml_element_indent());
 	      else
 		ABG_ASSERT_NOT_REACHED;
 	    }
@@ -2415,11 +2396,9 @@ write_translation_unit(write_context&	       ctxt,
 	continue;
 
       ABG_ASSERT(fn_type);
-      o << "\n";
       write_function_type(fn_type, ctxt, indent + c.get_xml_element_indent());
     }
 
-  o << "\n";
   do_indent(o, indent);
   o << "</abi-instr>\n";
 
@@ -2460,7 +2439,7 @@ write_type_decl(const type_decl_sptr& d, write_context& ctxt, unsigned indent)
 
   write_location(d, ctxt);
 
-  o << " id='" << ctxt.get_id_for_type(d) << "'" <<  "/>";
+  o << " id='" << ctxt.get_id_for_type(d) << "'" <<  "/>\n";
 
   ctxt.record_type_as_emitted(d);
 
@@ -2494,7 +2473,7 @@ write_namespace_decl(const namespace_decl_sptr& decl,
 
   o << "<namespace-decl name='"
     << xml::escape_xml_string(decl->get_name())
-    << "'>";
+    << "'>\n";
 
   typedef scope_decl::declarations		declarations;
   typedef declarations::const_iterator const_iterator;
@@ -2507,13 +2486,11 @@ write_namespace_decl(const namespace_decl_sptr& decl,
 	  // This type has already been emitted to the current
 	  // translation unit so do not emit it again.
 	  continue;
-      o << "\n";
       write_decl(*i, ctxt, indent + c.get_xml_element_indent());
     }
 
-  o << "\n";
   do_indent(o, indent);
-  o << "</namespace-decl>";
+  o << "</namespace-decl>\n";
 
   return true;
 }
@@ -2572,7 +2549,7 @@ write_qualified_type_def(const qualified_type_def_sptr&	decl,
   if (i.empty())
     i = ctxt.get_id_for_type(decl);
 
-  o<< " id='" << i << "'/>";
+  o << " id='" << i << "'/>\n";
 
   ctxt.record_type_as_emitted(decl);
 
@@ -2648,7 +2625,7 @@ write_pointer_type_def(const pointer_type_def_sptr&	decl,
   o << " id='" << i << "'";
 
   write_location(static_pointer_cast<decl_base>(decl), ctxt);
-  o << "/>";
+  o << "/>\n";
 
   ctxt.record_type_as_emitted(decl);
 
@@ -2730,7 +2707,7 @@ write_reference_type_def(const reference_type_def_sptr&	decl,
 
   write_location(static_pointer_cast<decl_base>(decl), ctxt);
 
-  o << "/>";
+  o << "/>\n";
 
   ctxt.record_type_as_emitted(decl);
 
@@ -2856,7 +2833,7 @@ write_array_type_def(const array_type_def_sptr&	decl,
   write_location(static_pointer_cast<decl_base>(decl), ctxt);
 
   if (!decl->get_dimension_count())
-    o << "/>";
+    o << "/>\n";
   else
     {
       o << ">\n";
@@ -2869,11 +2846,10 @@ write_array_type_def(const array_type_def_sptr&	decl,
 	  unsigned local_indent =
 	    indent + ctxt.get_config().get_xml_element_indent();
 	  write_array_subrange_type(*si, ctxt, local_indent);
-	  o << "\n";
 	}
 
       do_indent(o, indent);
-      o << "</array-type-def>";
+      o << "</array-type-def>\n";
     }
 
   ctxt.record_type_as_emitted(decl);
@@ -2963,7 +2939,7 @@ write_enum_type_decl(const enum_type_decl_sptr& decl,
     }
 
   do_indent(o, indent);
-  o << "</enum-decl>";
+  o << "</enum-decl>\n";
 
   ctxt.record_type_as_emitted(decl);
 
@@ -3040,7 +3016,7 @@ write_elf_symbol(const elf_symbol_sptr&	sym,
   if (sym->is_common_symbol())
     o << " is-common='yes'";
 
-  o << "/>";
+  o << "/>\n";
 
   return true;
 }
@@ -3063,14 +3039,9 @@ write_elf_symbols_table(const elf_symbols&	syms,
   if (syms.empty())
     return false;
 
-  ostream& o = ctxt.get_ostream();
-
   unordered_map<string, bool> emitted_syms;
   for (elf_symbols::const_iterator it = syms.begin(); it != syms.end(); ++it)
-    {
-      write_elf_symbol(*it, ctxt, indent);
-      o << "\n";
-    }
+    write_elf_symbol(*it, ctxt, indent);
 
   return true;
 }
@@ -3099,10 +3070,8 @@ write_elf_needed(const vector<string>&	needed,
        i != needed.end();
        ++i)
     {
-      if (i != needed.begin())
-	o << "\n";
       do_indent(o, indent);
-      o << "<dependency name='" << *i << "'/>";
+      o << "<dependency name='" << *i << "'/>\n";
     }
   return true;
 }
@@ -3154,7 +3123,7 @@ write_typedef_decl(const typedef_decl_sptr&	decl,
   if (i.empty())
     i = ctxt.get_id_for_type(decl);
 
-  o << " id='" << i << "'/>";
+  o << " id='" << i << "'/>\n";
 
   ctxt.record_type_as_emitted(decl);
 
@@ -3221,7 +3190,7 @@ write_var_decl(const var_decl_sptr& decl, write_context& ctxt,
 
   write_elf_symbol_reference(decl->get_symbol(), o);
 
-  o << "/>";
+  o << "/>\n";
 
   ctxt.record_decl_as_emitted(decl);
 
@@ -3323,7 +3292,7 @@ write_function_decl(const function_decl_sptr& decl, write_context& ctxt,
     }
 
   do_indent(o, indent);
-  o << "</function-decl>";
+  o << "</function-decl>\n";
 
   ctxt.record_decl_as_emitted(decl);
 
@@ -3374,8 +3343,8 @@ write_function_type(const function_type_sptr& fn_type,
   interned_string id = ctxt.get_id_for_type(fn_type);
 
   o << " id='"
-    <<  id << "'";
-  o << ">\n";
+    <<  id << "'"
+    << ">\n";
 
   type_base_sptr parm_type;
   for (vector<function_decl::parameter_sptr>::const_iterator pi =
@@ -3420,7 +3389,7 @@ write_function_type(const function_type_sptr& fn_type,
     }
 
   do_indent(o, indent);
-  o << "</function-type>";
+  o << "</function-type>\n";
 
   ctxt.record_type_as_emitted(fn_type);
   return true;
@@ -3490,15 +3459,10 @@ write_class_decl_opening_tag(const class_decl_sptr&	decl,
     i = ctxt.get_id_for_type(decl);
   o << " id='" << i << "'";
 
-  if (!prepare_to_handle_members)
-    o << ">\n";
+  if (prepare_to_handle_members && decl->has_no_base_nor_member())
+    o << "/>\n";
   else
-    {
-      if (decl->has_no_base_nor_member())
-	o << "/>";
-      else
-	o << ">\n";
-    }
+    o << ">\n";
 
   return true;
 }
@@ -3556,15 +3520,10 @@ write_union_decl_opening_tag(const union_decl_sptr&	decl,
     i = ctxt.get_id_for_type(decl);
   o << " id='" << i << "'";
 
-  if (!prepare_to_handle_members)
-    o << ">\n";
+  if (prepare_to_handle_members && decl->has_no_member())
+    o << "/>\n";
   else
-    {
-      if (decl->has_no_member())
-	o << "/>";
-      else
-	o << ">\n";
-    }
+    o << ">\n";
 
   return true;
 }
@@ -3658,7 +3617,6 @@ write_class_decl(const class_decl_sptr& decl,
 
 	  write_var_decl(*data, ctxt, is_static,
 			 get_indent_to_level(ctxt, indent, 2));
-	  o << "\n";
 
 	  do_indent_to_level(ctxt, indent, 1);
 	  o << "</data-member>\n";
@@ -3690,7 +3648,6 @@ write_class_decl(const class_decl_sptr& decl,
 	  write_function_decl(fn, ctxt,
 			      /*skip_first_parameter=*/false,
 			      get_indent_to_level(ctxt, indent, 2));
-	  o << "\n";
 
 	  do_indent_to_level(ctxt, indent, 1);
 	  o << "</member-function>\n";
@@ -3719,7 +3676,6 @@ write_class_decl(const class_decl_sptr& decl,
 	  write_function_decl(fn, ctxt,
 			      /*skip_first_parameter=*/false,
 			      get_indent_to_level(ctxt, indent, 2));
-	  o << "\n";
 
 	  do_indent_to_level(ctxt, indent, 1);
 	  o << "</member-function>\n";
@@ -3740,7 +3696,6 @@ write_class_decl(const class_decl_sptr& decl,
 	  o << ">\n";
 	  write_function_tdecl((*fn)->as_function_tdecl(), ctxt,
 			       get_indent_to_level(ctxt, indent, 2));
-	  o << "\n";
 	  do_indent(o, nb_ws);
 	  o << "</member-template>\n";
 	}
@@ -3758,14 +3713,13 @@ write_class_decl(const class_decl_sptr& decl,
 	  o << ">\n";
 	  write_class_tdecl((*cl)->as_class_tdecl(), ctxt,
 			    get_indent_to_level(ctxt, indent, 2));
-	  o << "\n";
 	  do_indent(o, nb_ws);
 	  o << "</member-template>\n";
 	}
 
       do_indent_to_level(ctxt, indent, 0);
 
-      o << "</class-decl>";
+      o << "</class-decl>\n";
     }
 
   // We allow several *declarations* of the same class in the corpus,
@@ -3845,7 +3799,6 @@ write_union_decl(const union_decl_sptr& decl,
 
 	  write_var_decl(*data, ctxt, is_static,
 			 get_indent_to_level(ctxt, indent, 2));
-	  o << "\n";
 
 	  do_indent_to_level(ctxt, indent, 1);
 	  o << "</data-member>\n";
@@ -3877,7 +3830,6 @@ write_union_decl(const union_decl_sptr& decl,
 	  write_function_decl(fn, ctxt,
 			      /*skip_first_parameter=*/false,
 			      get_indent_to_level(ctxt, indent, 2));
-	  o << "\n";
 
 	  do_indent_to_level(ctxt, indent, 1);
 	  o << "</member-function>\n";
@@ -3898,7 +3850,6 @@ write_union_decl(const union_decl_sptr& decl,
 	  o << ">\n";
 	  write_function_tdecl((*fn)->as_function_tdecl(), ctxt,
 			       get_indent_to_level(ctxt, indent, 2));
-	  o << "\n";
 	  do_indent(o, nb_ws);
 	  o << "</member-template>\n";
 	}
@@ -3916,14 +3867,13 @@ write_union_decl(const union_decl_sptr& decl,
 	  o << ">\n";
 	  write_class_tdecl((*cl)->as_class_tdecl(), ctxt,
 			    get_indent_to_level(ctxt, indent, 2));
-	  o << "\n";
 	  do_indent(o, nb_ws);
 	  o << "</member-template>\n";
 	}
 
       do_indent_to_level(ctxt, indent, 0);
 
-      o << "</union-decl>";
+      o << "</union-decl>\n";
     }
 
   // We allow several *declarations* of the same union in the corpus,
@@ -3965,7 +3915,7 @@ write_member_type_opening_tag(const type_base_sptr& t,
 
   o << "<member-type";
   write_access(decl, o);
-  o << ">";
+  o << ">\n";
 
   return true;
 }
@@ -3991,7 +3941,6 @@ write_member_type(const type_base_sptr& t, write_context& ctxt, unsigned indent)
   ostream& o = ctxt.get_ostream();
 
   write_member_type_opening_tag(t, ctxt, indent);
-  o << "\n";
 
   string id = ctxt.get_id_for_type(t);
 
@@ -4012,7 +3961,6 @@ write_member_type(const type_base_sptr& t, write_context& ctxt, unsigned indent)
 			     id, ctxt, nb_ws)
 	 || write_class_decl(dynamic_pointer_cast<class_decl>(t),
 			     id, ctxt, nb_ws));
-  o << "\n";
 
   do_indent_to_level(ctxt, indent, 0);
   o << "</member-type>\n";
@@ -4055,7 +4003,7 @@ write_type_tparameter(const type_tparameter_sptr	decl,
 
   write_location(decl, ctxt);
 
-  o << "/>";
+  o << "/>\n";
 
   ctxt.record_type_as_emitted(decl);
 
@@ -4092,7 +4040,7 @@ write_non_type_tparameter(
 
   write_location(decl, ctxt);
 
-  o << "/>";
+  o << "/>\n";
 
   return true;
 }
@@ -4136,13 +4084,10 @@ write_template_tparameter (const template_tparameter_sptr	decl,
 	 decl->get_template_parameters().begin();
        p != decl->get_template_parameters().end();
        ++p)
-    {
-      write_template_parameter(decl, ctxt, nb_spaces);
-      o <<"\n";
-    }
+    write_template_parameter(decl, ctxt, nb_spaces);
 
   do_indent_to_level(ctxt, indent, 0);
-  o << "</template-template-parameter>";
+  o << "</template-template-parameter>\n";
 
   ctxt.record_type_as_emitted(decl);
 
@@ -4186,10 +4131,8 @@ write_type_composition
    (dynamic_pointer_cast<qualified_type_def>(decl->get_composed_type()),
     ctxt, nb_spaces));
 
-  o << "\n";
-
   do_indent_to_level(ctxt, indent, 0);
-  o << "</template-parameter-type-composition>";
+  o << "</template-parameter-type-composition>\n";
 
   return true;
 }
@@ -4233,17 +4176,12 @@ write_template_parameters(const shared_ptr<template_decl> tmpl,
   if (!tmpl)
     return;
 
-  ostream &o = ctxt.get_ostream();
-
   unsigned nb_spaces = get_indent_to_level(ctxt, indent, 1);
   for (list<shared_ptr<template_parameter> >::const_iterator p =
 	 tmpl->get_template_parameters().begin();
        p != tmpl->get_template_parameters().end();
        ++p)
-    {
-      write_template_parameter(*p, ctxt, nb_spaces);
-      o << "\n";
-    }
+    write_template_parameter(*p, ctxt, nb_spaces);
 }
 
 /// Serialize an instance of function_tdecl.
@@ -4279,11 +4217,10 @@ write_function_tdecl(const shared_ptr<function_tdecl> decl,
   write_function_decl(decl->get_pattern(), ctxt,
 		      /*skip_first_parameter=*/false,
 		      get_indent_to_level(ctxt, indent, 1));
-  o << "\n";
 
   do_indent_to_level(ctxt, indent, 0);
 
-  o << "</function-template-decl>";
+  o << "</function-template-decl>\n";
 
   return true;
 }
@@ -4322,11 +4259,10 @@ write_class_tdecl(const shared_ptr<class_tdecl> decl,
 
   write_class_decl(decl->get_pattern(), ctxt,
 		   get_indent_to_level(ctxt, indent, 1));
-  o << "\n";
 
   do_indent_to_level(ctxt, indent, 0);
 
-  o << "</class-template-decl>";
+  o << "</class-template-decl>\n";
 
   return true;
 }
@@ -4591,7 +4527,6 @@ write_corpus(write_context&	ctxt,
       out << "<elf-needed>\n";
       write_elf_needed(corpus->get_needed(), ctxt,
 		       get_indent_to_level(ctxt, indent, 2));
-      out << "\n";
       do_indent_to_level(ctxt, indent, 1);
       out << "</elf-needed>\n";
     }
@@ -4712,7 +4647,6 @@ dump(const decl_base_sptr d, std::ostream& o, const bool annotate)
   xml_writer::write_context ctxt(d->get_environment(), o);
   xml_writer::set_annotate(ctxt, annotate);
   write_decl(d, ctxt, /*indent=*/0);
-  o << "\n";
 }
 
 /// Serialize a pointer to decl_base to stderr.
@@ -4757,7 +4691,6 @@ dump(const var_decl_sptr v, std::ostream& o, const bool annotate)
   xml_writer::write_context ctxt(v->get_environment(), o);
   xml_writer::set_annotate(ctxt, annotate);
   write_var_decl(v, ctxt, /*linkage_name*/true, /*indent=*/0);
-  cerr << "\n";
 }
 
 /// Serialize a pointer to var_decl to stderr.
@@ -4782,7 +4715,6 @@ dump(const translation_unit& t, std::ostream& o, const bool annotate)
   xml_writer::write_context ctxt(t.get_environment(), o);
   xml_writer::set_annotate(ctxt, annotate);
   write_translation_unit(ctxt, t, /*indent=*/0);
-  o << "\n";
 }
 
 /// Serialize an instance of @ref translation_unit to stderr.

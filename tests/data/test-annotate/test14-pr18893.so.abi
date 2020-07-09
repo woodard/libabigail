@@ -127,19 +127,15 @@
     <elf-symbol name='gluUnProject4' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
   <abi-instr version='1.0' address-size='64' path='libnurbs/interface/glcurveval.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
-
-
     <!-- REAL[160] -->
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='5120' id='type-id-2'>
       <!-- <anonymous range>[160] -->
       <subrange length='160' type-id='type-id-3' id='type-id-4'/>
-
     </array-type-def>
     <!-- REAL[40] -->
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='1280' id='type-id-5'>
       <!-- <anonymous range>[40] -->
       <subrange length='40' type-id='type-id-3' id='type-id-6'/>
-
     </array-type-def>
     <!-- struct BasicCurveEvaluator -->
     <class-decl name='BasicCurveEvaluator' size-in-bits='64' is-struct='yes' visibility='default' filepath='libnurbs/internals/basiccrveval.h' line='43' column='1' id='type-id-7'>
@@ -857,7 +853,6 @@
     <pointer-type-def type-id='type-id-36' size-in-bits='64' id='type-id-21'/>
     <!-- class CachingEvaluator -->
     <class-decl name='CachingEvaluator' size-in-bits='64' visibility='default' filepath='libnurbs/internals/cachingeval.h' line='39' column='1' is-declaration-only='yes' id='type-id-8'>
-
         <member-type access='private'>
           <!-- enum CachingEvaluator::ServiceMode -->
           <enum-decl name='ServiceMode' filepath='libnurbs/internals/cachingeval.h' line='42' column='1' id='type-id-37'>
@@ -2898,12 +2893,10 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libnurbs/interface/glrenderer.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
-
     <!-- GLfloat[4] -->
     <array-type-def dimensions='1' type-id='type-id-33' size-in-bits='128' id='type-id-61'>
       <!-- <anonymous range>[4] -->
       <subrange length='4' type-id='type-id-3' id='type-id-62'/>
-
     </array-type-def>
     <!-- typedef void (typedef GLenum)* errorCallbackType -->
     <typedef-decl name='errorCallbackType' type-id='type-id-16' filepath='libnurbs/interface/glrenderer.h' line='46' column='1' id='type-id-41'/>
@@ -3672,52 +3665,42 @@
     <pointer-type-def type-id='type-id-61' size-in-bits='64' id='type-id-46'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libnurbs/interface/glsurfeval.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
-
-
     <!-- GLint[2] -->
     <array-type-def dimensions='1' type-id='type-id-60' size-in-bits='64' id='type-id-50'>
       <!-- <anonymous range>[2] -->
       <subrange length='2' type-id='type-id-3' id='type-id-88'/>
-
     </array-type-def>
     <!-- REAL[2] -->
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='64' id='type-id-89'>
       <!-- <anonymous range>[2] -->
       <subrange length='2' type-id='type-id-3' id='type-id-88'/>
-
     </array-type-def>
     <!-- REAL[3] -->
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='96' id='type-id-90'>
       <!-- <anonymous range>[3] -->
       <subrange length='3' type-id='type-id-3' id='type-id-91'/>
-
     </array-type-def>
     <!-- REAL[40][4] -->
     <array-type-def dimensions='2' type-id='type-id-1' size-in-bits='5120' id='type-id-52'>
       <!-- <anonymous range>[40] -->
       <subrange length='40' type-id='type-id-3' id='type-id-6'/>
-
       <!-- <anonymous range>[4] -->
       <subrange length='4' type-id='type-id-3' id='type-id-62'/>
-
     </array-type-def>
     <!-- REAL[6400] -->
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='204800' id='type-id-53'>
       <!-- <anonymous range>[6400] -->
       <subrange length='6400' type-id='type-id-3' id='type-id-92'/>
-
     </array-type-def>
     <!-- StoredVertex*[3] -->
     <array-type-def dimensions='1' type-id='type-id-93' size-in-bits='192' id='type-id-49'>
       <!-- <anonymous range>[3] -->
       <subrange length='3' type-id='type-id-3' id='type-id-91'/>
-
     </array-type-def>
     <!-- long int[2] -->
     <array-type-def dimensions='1' type-id='type-id-12' size-in-bits='128' id='type-id-94'>
       <!-- <anonymous range>[2] -->
       <subrange length='2' type-id='type-id-3' id='type-id-88'/>
-
     </array-type-def>
     <!-- class StoredVertex -->
     <class-decl name='StoredVertex' size-in-bits='256' visibility='default' filepath='libnurbs/interface/glsurfeval.h' line='84' column='1' id='type-id-95'>
@@ -4414,14 +4397,12 @@
   <abi-instr version='1.0' address-size='64' path='libnurbs/interface/insurfeval.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libnurbs/internals/arc.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
-
     <!-- char -->
     <type-decl name='char' size-in-bits='8' id='type-id-106'/>
     <!-- char*[32] -->
     <array-type-def dimensions='1' type-id='type-id-107' size-in-bits='2048' id='type-id-108'>
       <!-- <anonymous range>[32] -->
       <subrange length='32' type-id='type-id-3' id='type-id-109'/>
-
     </array-type-def>
     <!-- struct Arc -->
     <class-decl name='Arc' size-in-bits='448' is-struct='yes' visibility='default' filepath='libnurbs/internals/arc.h' line='55' column='1' id='type-id-110'>
@@ -4758,7 +4739,6 @@
     </class-decl>
     <!-- class Pool -->
     <class-decl name='Pool' size-in-bits='2496' visibility='default' filepath='libnurbs/internals/bufpool.h' line='50' column='1' id='type-id-68'>
-
         <member-type access='protected'>
           <!-- enum Pool::Magic -->
           <enum-decl name='Magic' filepath='libnurbs/internals/bufpool.h' line='70' column='1' id='type-id-120'>
@@ -5052,25 +5032,19 @@
     <class-decl name='BezierArc' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-129'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libnurbs/internals/arcsorter.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
-
-
     <!-- REAL[4] -->
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='128' id='type-id-131'>
       <!-- <anonymous range>[4] -->
       <subrange length='4' type-id='type-id-3' id='type-id-62'/>
-
     </array-type-def>
     <!-- REAL[][24][24] -->
     <array-type-def dimensions='3' type-id='type-id-1' size-in-bits='infinite' id='type-id-132'>
       <!-- <anonymous range>[] -->
       <subrange length='infinite' id='type-id-133'/>
-
       <!-- <anonymous range>[24] -->
       <subrange length='24' type-id='type-id-3' id='type-id-134'/>
-
       <!-- <anonymous range>[24] -->
       <subrange length='24' type-id='type-id-3' id='type-id-134'/>
-
     </array-type-def>
     <!-- struct Curvelist -->
     <class-decl name='Curvelist' size-in-bits='256' is-struct='yes' visibility='default' filepath='libnurbs/internals/curvelist.h' line='47' column='1' id='type-id-135'>
@@ -6202,7 +6176,6 @@
     </class-decl>
     <!-- class Subdivider -->
     <class-decl name='Subdivider' size-in-bits='20416' visibility='default' filepath='libnurbs/internals/subdivider.h' line='55' column='1' id='type-id-66'>
-
         <member-type access='private'>
           <!-- enum Subdivider::dir -->
           <enum-decl name='dir' filepath='libnurbs/internals/subdivider.h' line='105' column='1' id='type-id-169'>
@@ -8270,10 +8243,8 @@
     <array-type-def dimensions='2' type-id='type-id-1' size-in-bits='384' id='type-id-191'>
       <!-- <anonymous range>[3] -->
       <subrange length='3' type-id='type-id-3' id='type-id-91'/>
-
       <!-- <anonymous range>[4] -->
       <subrange length='4' type-id='type-id-3' id='type-id-62'/>
-
     </array-type-def>
     <!-- struct GridVertex -->
     <class-decl name='GridVertex' size-in-bits='128' is-struct='yes' visibility='default' filepath='libnurbs/internals/gridvertex.h' line='39' column='1' id='type-id-202'>
@@ -9197,46 +9168,37 @@
     <pointer-type-def type-id='type-id-208' size-in-bits='64' id='type-id-209'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libnurbs/internals/curve.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
-
-
     <!-- Quiltspec[2] -->
     <array-type-def dimensions='1' type-id='type-id-216' size-in-bits='640' id='type-id-164'>
       <!-- <anonymous range>[2] -->
       <subrange length='2' type-id='type-id-3' id='type-id-88'/>
-
     </array-type-def>
     <!-- REAL[120] -->
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='3840' id='type-id-217'>
       <!-- <anonymous range>[120] -->
       <subrange length='120' type-id='type-id-3' id='type-id-218'/>
-
     </array-type-def>
     <!-- REAL[5] -->
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='160' id='type-id-219'>
       <!-- <anonymous range>[5] -->
       <subrange length='5' type-id='type-id-3' id='type-id-220'/>
-
     </array-type-def>
     <!-- REAL[5][5] -->
     <array-type-def dimensions='2' type-id='type-id-1' size-in-bits='800' id='type-id-221'>
       <!-- <anonymous range>[5] -->
       <subrange length='5' type-id='type-id-3' id='type-id-220'/>
-
       <!-- <anonymous range>[5] -->
       <subrange length='5' type-id='type-id-3' id='type-id-220'/>
-
     </array-type-def>
     <!-- float[4] -->
     <array-type-def dimensions='1' type-id='type-id-30' size-in-bits='128' id='type-id-222'>
       <!-- <anonymous range>[4] -->
       <subrange length='4' type-id='type-id-3' id='type-id-62'/>
-
     </array-type-def>
     <!-- int[2] -->
     <array-type-def dimensions='1' type-id='type-id-10' size-in-bits='64' id='type-id-223'>
       <!-- <anonymous range>[2] -->
       <subrange length='2' type-id='type-id-3' id='type-id-88'/>
-
     </array-type-def>
     <!-- class Curve -->
     <class-decl name='Curve' size-in-bits='8128' visibility='default' filepath='libnurbs/internals/curve.h' line='46' column='1' id='type-id-224'>
@@ -10464,7 +10426,6 @@
     <array-type-def dimensions='1' type-id='type-id-30' size-in-bits='96' id='type-id-137'>
       <!-- <anonymous range>[3] -->
       <subrange length='3' type-id='type-id-3' id='type-id-91'/>
-
     </array-type-def>
     <!-- Curvelist* -->
     <pointer-type-def type-id='type-id-135' size-in-bits='64' id='type-id-138'/>
@@ -10622,7 +10583,6 @@
     <class-decl name='Hull' size-in-bits='4800' visibility='default' filepath='libnurbs/internals/hull.h' line='47' column='1' id='type-id-243'>
     <!-- class TrimRegion -->
       <base-class access='public' layout-offset-in-bits='192' is-virtual='yes' type-id='type-id-210'/>
-
         <member-type access='private'>
           <!-- struct Hull::Side -->
           <class-decl name='Side' size-in-bits='256' is-struct='yes' visibility='default' filepath='libnurbs/internals/hull.h' line='55' column='1' id='type-id-244'>
@@ -10875,7 +10835,6 @@
     <array-type-def dimensions='1' type-id='type-id-193' size-in-bits='128' id='type-id-249'>
       <!-- <anonymous range>[2] -->
       <subrange length='2' type-id='type-id-3' id='type-id-88'/>
-
     </array-type-def>
     <!-- class Mesher -->
     <class-decl name='Mesher' size-in-bits='7680' visibility='default' filepath='libnurbs/internals/mesher.h' line='47' column='1' id='type-id-183'>
@@ -11155,7 +11114,6 @@
     <array-type-def dimensions='1' type-id='type-id-253' size-in-bits='64' id='type-id-254'>
       <!-- <anonymous range>[2] -->
       <subrange length='2' type-id='type-id-3' id='type-id-88'/>
-
     </array-type-def>
     <!-- typedef float Real -->
     <typedef-decl name='Real' type-id='type-id-30' filepath='libnurbs/nurbtess/definitions.h' line='36' column='1' id='type-id-253'/>
@@ -11891,7 +11849,6 @@
     <class-decl name='O_curve' size-in-bits='384' is-struct='yes' visibility='default' filepath='libnurbs/internals/reader.h' line='55' column='1' id='type-id-272'>
     <!-- class PooledObj -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-111'/>
-
         <member-type access='public'>
           <!-- union {O_nurbscurve* o_nurbscurve; O_pwlcurve* o_pwlcurve;} -->
           <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='libnurbs/internals/reader.h' line='56' column='1' id='type-id-273'>
@@ -12026,27 +11983,22 @@
     <pointer-type-def type-id='type-id-63' size-in-bits='64' id='type-id-141'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libnurbs/internals/patch.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
-
     <!-- Patchspec[2] -->
     <array-type-def dimensions='1' type-id='type-id-276' size-in-bits='640' id='type-id-277'>
       <!-- <anonymous range>[2] -->
       <subrange length='2' type-id='type-id-3' id='type-id-88'/>
-
     </array-type-def>
     <!-- REAL[2880] -->
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='92160' id='type-id-278'>
       <!-- <anonymous range>[2880] -->
       <subrange length='2880' type-id='type-id-3' id='type-id-279'/>
-
     </array-type-def>
     <!-- REAL[2][5] -->
     <array-type-def dimensions='2' type-id='type-id-1' size-in-bits='320' id='type-id-280'>
       <!-- <anonymous range>[2] -->
       <subrange length='2' type-id='type-id-3' id='type-id-88'/>
-
       <!-- <anonymous range>[5] -->
       <subrange length='5' type-id='type-id-3' id='type-id-220'/>
-
     </array-type-def>
     <!-- struct Pspec -->
     <class-decl name='Pspec' size-in-bits='256' is-struct='yes' visibility='default' filepath='libnurbs/internals/patch.h' line='46' column='1' id='type-id-281'>
@@ -12296,7 +12248,6 @@
     <array-type-def dimensions='1' type-id='type-id-281' size-in-bits='512' id='type-id-180'>
       <!-- <anonymous range>[2] -->
       <subrange length='2' type-id='type-id-3' id='type-id-88'/>
-
     </array-type-def>
     <!-- Patchlist* -->
     <pointer-type-def type-id='type-id-178' size-in-bits='64' id='type-id-181'/>
@@ -13356,18 +13307,15 @@
     <pointer-type-def type-id='type-id-297' size-in-bits='64' id='type-id-298'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libnurbs/internals/varray.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
-
     <!-- REAL[1000] -->
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='32000' id='type-id-300'>
       <!-- <anonymous range>[1000] -->
       <subrange length='1000' type-id='type-id-3' id='type-id-301'/>
-
     </array-type-def>
     <!-- long int[1000] -->
     <array-type-def dimensions='1' type-id='type-id-12' size-in-bits='64000' id='type-id-302'>
       <!-- <anonymous range>[1000] -->
       <subrange length='1000' type-id='type-id-3' id='type-id-301'/>
-
     </array-type-def>
     <!-- class Varray -->
     <class-decl name='Varray' size-in-bits='96192' visibility='default' filepath='libnurbs/internals/varray.h' line='43' column='1' id='type-id-303'>
@@ -14518,28 +14466,20 @@
   <abi-instr version='1.0' address-size='64' path='libnurbs/nurbtess/sampledLine.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libtess/tess.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C99'>
-
-
-
-
-
     <!-- CachedVertex[100] -->
     <array-type-def dimensions='1' type-id='type-id-318' size-in-bits='25600' id='type-id-319'>
       <!-- <anonymous range>[100] -->
       <subrange length='100' type-id='type-id-3' id='type-id-320'/>
-
     </array-type-def>
     <!-- GLdouble[3] -->
     <array-type-def dimensions='1' type-id='type-id-321' size-in-bits='192' id='type-id-322'>
       <!-- <anonymous range>[3] -->
       <subrange length='3' type-id='type-id-3' id='type-id-91'/>
-
     </array-type-def>
     <!-- __jmp_buf_tag[1] -->
     <array-type-def dimensions='1' type-id='type-id-323' size-in-bits='1600' id='type-id-324'>
       <!-- <anonymous range>[1] -->
       <subrange length='1' type-id='type-id-3' id='type-id-325'/>
-
     </array-type-def>
     <!-- float -->
     <type-decl name='float' size-in-bits='32' id='type-id-30'/>
@@ -14549,7 +14489,6 @@
     <array-type-def dimensions='1' type-id='type-id-12' size-in-bits='512' id='type-id-326'>
       <!-- <anonymous range>[8] -->
       <subrange length='8' type-id='type-id-3' id='type-id-327'/>
-
     </array-type-def>
     <!-- unnamed&#45;enum&#45;underlying&#45;type -->
     <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-38'/>
@@ -14559,7 +14498,6 @@
     <array-type-def dimensions='1' type-id='type-id-3' size-in-bits='1024' id='type-id-328'>
       <!-- <anonymous range>[16] -->
       <subrange length='16' type-id='type-id-3' id='type-id-329'/>
-
     </array-type-def>
     <!-- typedef GLUtesselator GLUtesselator -->
     <typedef-decl name='GLUtesselator' type-id='type-id-330' filepath='../../../include/GL/glu.h' line='276' column='1' id='type-id-331'/>

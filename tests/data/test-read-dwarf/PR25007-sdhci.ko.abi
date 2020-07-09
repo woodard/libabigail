@@ -43,97 +43,62 @@
     <elf-symbol name='__this_module' size='896' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='/ws/android/kernel/aosp/common-mainline/common/drivers/mmc/host/sdhci.c' comp-dir-path='/ws/android/kernel/aosp/common-mainline/out/android-mainline/common' language='LANG_C89'>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <type-decl name='__ARRAY_SIZE_TYPE__' size-in-bits='64' id='type-id-1'/>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='64' id='type-id-3'>
       <subrange length='2' type-id='type-id-1' id='type-id-4'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='96' id='type-id-5'>
       <subrange length='3' type-id='type-id-1' id='type-id-6'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-7' size-in-bits='128' id='type-id-8'>
       <subrange length='2' type-id='type-id-1' id='type-id-4'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-9' size-in-bits='128' id='type-id-10'>
       <subrange length='16' type-id='type-id-1' id='type-id-11'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-9' size-in-bits='72' id='type-id-12'>
       <subrange length='9' type-id='type-id-1' id='type-id-13'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-14' size-in-bits='4096' id='type-id-15'>
       <subrange length='32' type-id='type-id-1' id='type-id-16'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-17' size-in-bits='256' id='type-id-18'>
       <subrange length='4' type-id='type-id-1' id='type-id-19'/>
-
     </array-type-def>
     <type-decl name='bool' size-in-bits='8' id='type-id-20'/>
     <array-type-def dimensions='1' type-id='type-id-21' size-in-bits='256' id='type-id-22'>
       <subrange length='4' type-id='type-id-1' id='type-id-19'/>
-
     </array-type-def>
     <type-decl name='char' size-in-bits='8' id='type-id-23'/>
     <array-type-def dimensions='1' type-id='type-id-24' size-in-bits='2048' id='type-id-25'>
       <subrange length='32' type-id='type-id-1' id='type-id-16'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-24' size-in-bits='192' id='type-id-26'>
       <subrange length='3' type-id='type-id-1' id='type-id-6'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-23' size-in-bits='1024' id='type-id-27'>
       <subrange length='128' type-id='type-id-1' id='type-id-28'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-23' size-in-bits='128' id='type-id-29'>
       <subrange length='16' type-id='type-id-1' id='type-id-11'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-23' size-in-bits='16384' id='type-id-30'>
       <subrange length='2048' type-id='type-id-1' id='type-id-31'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-23' size-in-bits='160' id='type-id-32'>
       <subrange length='20' type-id='type-id-1' id='type-id-33'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-23' size-in-bits='256' id='type-id-34'>
       <subrange length='32' type-id='type-id-1' id='type-id-16'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-23' size-in-bits='448' id='type-id-35'>
       <subrange length='56' type-id='type-id-1' id='type-id-36'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-23' size-in-bits='48' id='type-id-37'>
       <subrange length='6' type-id='type-id-1' id='type-id-38'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-23' size-in-bits='64' id='type-id-39'>
       <subrange length='8' type-id='type-id-1' id='type-id-40'/>
-
     </array-type-def>
     <class-decl name='anon_vma' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-41'/>
     <class-decl name='assoc_array_ptr' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-42'/>
@@ -234,181 +199,140 @@
     <class-decl name='xol_area' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-137'/>
     <array-type-def dimensions='1' type-id='type-id-138' size-in-bits='192' id='type-id-139'>
       <subrange length='3' type-id='type-id-1' id='type-id-6'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-140' size-in-bits='256' id='type-id-141'>
       <subrange length='2' type-id='type-id-1' id='type-id-4'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-142' size-in-bits='256' id='type-id-143'>
       <subrange length='4' type-id='type-id-1' id='type-id-19'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-144' size-in-bits='512' id='type-id-145'>
       <subrange length='4' type-id='type-id-1' id='type-id-19'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-146' size-in-bits='4096' id='type-id-147'>
       <subrange length='8' type-id='type-id-1' id='type-id-40'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-148' size-in-bits='192' id='type-id-149'>
       <subrange length='3' type-id='type-id-1' id='type-id-6'/>
-
     </array-type-def>
     <type-decl name='int' size-in-bits='32' id='type-id-150'/>
     <array-type-def dimensions='1' type-id='type-id-150' size-in-bits='128' id='type-id-151'>
       <subrange length='4' type-id='type-id-1' id='type-id-19'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-152' size-in-bits='16384' id='type-id-153'>
       <subrange length='64' type-id='type-id-1' id='type-id-154'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-155' size-in-bits='infinite' id='type-id-156'>
       <subrange length='infinite' type-id='type-id-1' id='type-id-157'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-158' size-in-bits='384' id='type-id-159'>
       <subrange length='3' type-id='type-id-1' id='type-id-6'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-160' size-in-bits='infinite' id='type-id-161'>
       <subrange length='infinite' type-id='type-id-1' id='type-id-157'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-162' id='type-id-163'>
       <subrange length='3' type-id='type-id-1' id='type-id-6'/>
-
     </array-type-def>
     <type-decl name='long int' size-in-bits='64' id='type-id-164'/>
     <type-decl name='long long int' size-in-bits='64' id='type-id-165'/>
     <type-decl name='long long unsigned int' size-in-bits='64' id='type-id-166'/>
     <array-type-def dimensions='1' type-id='type-id-167' size-in-bits='1728' id='type-id-168'>
       <subrange length='3' type-id='type-id-1' id='type-id-6'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-169' size-in-bits='2016' id='type-id-170'>
       <subrange length='7' type-id='type-id-1' id='type-id-171'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-172' size-in-bits='128' id='type-id-173'>
       <subrange length='2' type-id='type-id-1' id='type-id-4'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-174' size-in-bits='2688' id='type-id-175'>
       <subrange length='3' type-id='type-id-1' id='type-id-6'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-176' size-in-bits='1024' id='type-id-177'>
       <subrange length='16' type-id='type-id-1' id='type-id-11'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-178' size-in-bits='128' id='type-id-179'>
       <subrange length='2' type-id='type-id-1' id='type-id-4'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-180' size-in-bits='256' id='type-id-181'>
       <subrange length='4' type-id='type-id-1' id='type-id-19'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-182' size-in-bits='1344' id='type-id-183'>
       <subrange length='3' type-id='type-id-1' id='type-id-6'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-184' size-in-bits='384' id='type-id-185'>
       <subrange length='2' type-id='type-id-1' id='type-id-4'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-186' size-in-bits='2048' id='type-id-187'>
       <subrange length='16' type-id='type-id-1' id='type-id-11'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-188' size-in-bits='448' id='type-id-189'>
       <subrange length='7' type-id='type-id-1' id='type-id-171'/>
-
     </array-type-def>
     <type-decl name='short int' size-in-bits='16' id='type-id-190'/>
     <type-decl name='signed char' size-in-bits='8' id='type-id-191'/>
     <array-type-def dimensions='1' type-id='type-id-192' size-in-bits='192' id='type-id-193'>
       <subrange length='3' type-id='type-id-1' id='type-id-6'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-194' size-in-bits='2304' id='type-id-195'>
       <subrange length='3' type-id='type-id-1' id='type-id-6'/>
-
     </array-type-def>
     <typedef-decl name='__uint128_t' type-id='type-id-196' id='type-id-14'/>
     <array-type-def dimensions='1' type-id='type-id-197' size-in-bits='512' id='type-id-198'>
       <subrange length='16' type-id='type-id-1' id='type-id-11'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-197' size-in-bits='64' id='type-id-199'>
       <subrange length='2' type-id='type-id-1' id='type-id-4'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-197' size-in-bits='128' id='type-id-200'>
       <subrange length='4' type-id='type-id-1' id='type-id-19'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-201' size-in-bits='512' id='type-id-202'>
       <subrange length='8' type-id='type-id-1' id='type-id-40'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-203' size-in-bits='24' id='type-id-204'>
       <subrange length='3' type-id='type-id-1' id='type-id-6'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-203' size-in-bits='32' id='type-id-205'>
       <subrange length='4' type-id='type-id-1' id='type-id-19'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-203' size-in-bits='64' id='type-id-206'>
       <subrange length='8' type-id='type-id-1' id='type-id-40'/>
-
     </array-type-def>
     <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-207'/>
     <type-decl name='unsigned __int128' size-in-bits='128' id='type-id-196'/>
     <type-decl name='unsigned char' size-in-bits='8' id='type-id-208'/>
     <array-type-def dimensions='1' type-id='type-id-208' size-in-bits='256' id='type-id-209'>
       <subrange length='32' type-id='type-id-1' id='type-id-16'/>
-
     </array-type-def>
     <type-decl name='unsigned int' size-in-bits='32' id='type-id-210'/>
     <type-decl name='unsigned long int' size-in-bits='64' id='type-id-211'/>
     <array-type-def dimensions='1' type-id='type-id-211' size-in-bits='64' id='type-id-212'>
       <subrange length='1' type-id='type-id-1' id='type-id-213'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-211' size-in-bits='128' id='type-id-214'>
       <subrange length='2' type-id='type-id-1' id='type-id-4'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-211' size-in-bits='2944' id='type-id-215'>
       <subrange length='46' type-id='type-id-1' id='type-id-216'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-211' size-in-bits='256' id='type-id-217'>
       <subrange length='4' type-id='type-id-1' id='type-id-19'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-211' size-in-bits='infinite' id='type-id-218'>
       <subrange length='infinite' type-id='type-id-1' id='type-id-157'/>
-
     </array-type-def>
     <type-decl name='unsigned short int' size-in-bits='16' id='type-id-219'/>
     <array-type-def dimensions='1' type-id='type-id-220' size-in-bits='128' id='type-id-221'>
       <subrange length='1' type-id='type-id-1' id='type-id-213'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-222' size-in-bits='256' id='type-id-223'>
       <subrange length='4' type-id='type-id-1' id='type-id-19'/>
-
     </array-type-def>
     <type-decl name='void' id='type-id-224'/>
     <array-type-def dimensions='1' type-id='type-id-225' size-in-bits='256' id='type-id-226'>
       <subrange length='4' type-id='type-id-1' id='type-id-19'/>
-
     </array-type-def>
     <class-decl name='sdhci_host' size-in-bits='8704' is-struct='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/drivers/mmc/host/sdhci.h' line='371' column='1' id='type-id-227'>
       <data-member access='public' layout-offset-in-bits='0'>

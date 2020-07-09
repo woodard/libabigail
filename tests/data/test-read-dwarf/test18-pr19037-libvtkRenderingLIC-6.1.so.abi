@@ -451,27 +451,19 @@
     <elf-symbol name='vtkSurfaceLICPainter_SC' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2D.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
-
-
-
-
     <type-decl name='bool' size-in-bits='8' id='type-id-1'/>
     <type-decl name='char' size-in-bits='8' id='type-id-2'/>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='8' id='type-id-3'>
       <subrange length='1' type-id='type-id-4' id='type-id-5'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='160' id='type-id-6'>
       <subrange length='20' type-id='type-id-4' id='type-id-7'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='320' id='type-id-8'>
       <subrange length='40' type-id='type-id-4' id='type-id-9'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='32' id='type-id-10'>
       <subrange length='4' type-id='type-id-4' id='type-id-11'/>
-
     </array-type-def>
     <class-decl name='typedef __va_list_tag __va_list_tag' size-in-bits='192' is-struct='yes' visibility='default' id='type-id-12'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -492,7 +484,6 @@
     <type-decl name='int' size-in-bits='32' id='type-id-17'/>
     <array-type-def dimensions='1' type-id='type-id-17' size-in-bits='128' id='type-id-18'>
       <subrange length='4' type-id='type-id-4' id='type-id-11'/>
-
     </array-type-def>
     <type-decl name='long double' size-in-bits='128' id='type-id-19'/>
     <type-decl name='long int' size-in-bits='64' id='type-id-20'/>
@@ -1417,7 +1408,6 @@
     <typedef-decl name='__FILE' type-id='type-id-29' filepath='/usr/include/stdio.h' line='65' column='1' id='type-id-85'/>
     <typedef-decl name='mbstate_t' type-id='type-id-86' filepath='/usr/include/wchar.h' line='106' column='1' id='type-id-87'/>
     <class-decl name='__mbstate_t' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/include/wchar.h' line='84' column='1' id='type-id-86'>
-
         <member-type access='public'>
           <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='87' column='1' id='type-id-88'>
             <data-member access='private'>
@@ -1545,7 +1535,6 @@
       </data-member>
     </class-decl>
     <class-decl name='vtkWeakPointerBase' size-in-bits='64' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkWeakPointerBase.h' line='31' column='1' id='type-id-75'>
-
         <member-type access='protected'>
           <class-decl name='NoReference' size-in-bits='8' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkWeakPointerBase.h' line='70' column='1' id='type-id-91'/>
         </member-type>
@@ -1630,7 +1619,6 @@
       </data-member>
     </class-decl>
     <class-decl name='vtkPixelTransfer' size-in-bits='8' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='35' column='1' id='type-id-104'>
-
         <member-type access='private'>
           <typedef-decl name='VTK_TT' type-id='type-id-15' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.cxx' line='19' column='1' id='type-id-105'/>
         </member-type>
@@ -2091,9 +2079,7 @@
     <pointer-type-def type-id='type-id-27' size-in-bits='64' id='type-id-260'/>
     <pointer-type-def type-id='type-id-260' size-in-bits='64' id='type-id-261'/>
     <namespace-decl name='std'>
-
       <class-decl name='ios_base' visibility='default' is-declaration-only='yes' id='type-id-219'>
-
           <member-type access='private'>
             <class-decl name='Init' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='538' column='1' id='type-id-221'>
               <data-member access='private' static='yes'>
@@ -2209,7 +2195,6 @@
         </data-member>
       </class-decl>
       <class-decl name='_Resetiosflags' size-in-bits='32' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iomanip' line='49' column='1' id='type-id-262'>
-
           <member-type access='public'>
             <typedef-decl name='fmtflags' type-id='type-id-263' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='263' column='1' id='type-id-149'/>
           </member-type>
@@ -2240,7 +2225,6 @@
         <enumerator name='_S_ios_fmtflags_end' value='65536'/>
       </enum-decl>
       <class-decl name='basic_ios&lt;char, std::char_traits&lt;char&gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-164'>
-
           <member-type access='public'>
             <typedef-decl name='iostate' type-id='type-id-264' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='338' column='1' id='type-id-167'/>
           </member-type>
@@ -2287,11 +2271,9 @@
         <enumerator name='_S_ios_iostate_end' value='65536'/>
       </enum-decl>
       <class-decl name='__basic_file&lt;char&gt;' size-in-bits='128' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/x86_64-redhat-linux/bits/basic_file.h' line='53' column='1' id='type-id-151'>
-
           <member-type access='private'>
             <typedef-decl name='openmode' type-id='type-id-265' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='369' column='1' id='type-id-154'/>
           </member-type>
-
           <member-type access='private'>
             <typedef-decl name='seekdir' type-id='type-id-266' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='401' column='1' id='type-id-156'/>
           </member-type>
@@ -3237,11 +3219,9 @@
         </member-function>
       </class-decl>
       <class-decl name='char_traits&lt;char&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='238' column='1' is-declaration-only='yes' id='type-id-280'>
-
           <member-type access='public'>
             <typedef-decl name='char_type' type-id='type-id-2' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='239' column='1' id='type-id-169'/>
           </member-type>
-
           <member-type access='public'>
             <typedef-decl name='int_type' type-id='type-id-17' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='240' column='1' id='type-id-173'/>
           </member-type>
@@ -3344,14 +3324,12 @@
         </member-function>
       </class-decl>
       <class-decl name='_Deque_base&lt;vtkPixelExtent, std::allocator&lt;vtkPixelExtent&gt; &gt;' size-in-bits='640' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='362' column='1' id='type-id-142'>
-
           <member-type access='protected'>
             <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='465' column='1' id='type-id-281'>
               <underlying-type type-id='type-id-24'/>
               <enumerator name='_S_initial_map_size' value='8'/>
             </enum-decl>
           </member-type>
-
           <member-type access='protected'>
             <class-decl name='_Deque_impl' size-in-bits='640' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='412' column='1' id='type-id-200'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-161'/>
@@ -4130,7 +4108,6 @@
       <parameter type-id='type-id-17'/>
       <return type-id='type-id-22'/>
     </function-decl>
-
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='125' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-17'/>
       <parameter type-id='type-id-68'/>
@@ -4277,7 +4254,6 @@
       <parameter type-id='type-id-119'/>
       <return type-id='type-id-17'/>
     </function-decl>
-
     <function-decl name='atexit' filepath='/usr/include/stdlib.h' line='518' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-226'/>
       <return type-id='type-id-17'/>
@@ -4606,7 +4582,6 @@
       </member-function>
     </class-decl>
     <class-decl name='vtkDataObject' visibility='default' is-declaration-only='yes' id='type-id-235'>
-
         <member-type access='private'>
           <enum-decl name='FieldAssociations' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/DataModel/vtkDataObject.h' line='212' column='1' id='type-id-287'>
             <underlying-type type-id='type-id-24'/>
@@ -4692,7 +4667,6 @@
       </member-function>
     </class-decl>
     <class-decl name='vtkOStreamWrapper' visibility='default' is-declaration-only='yes' id='type-id-289'>
-
         <member-type access='private'>
           <class-decl name='EndlType' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkOStreamWrapper.h' line='58' column='1' id='type-id-184'/>
         </member-type>
@@ -4859,7 +4833,6 @@
       </member-function>
     </class-decl>
     <class-decl name='vtkTextureObject' visibility='default' is-declaration-only='yes' id='type-id-290'>
-
         <member-type access='private'>
           <enum-decl name='__anonymous_enum__2' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/OpenGL/vtkTextureObject.h' line='88' column='1' id='type-id-291'>
             <underlying-type type-id='type-id-24'/>
@@ -4871,7 +4844,6 @@
             <enumerator name='NumberOfDepthFormats' value='5'/>
           </enum-decl>
         </member-type>
-
         <member-type access='private'>
           <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/OpenGL/vtkTextureObject.h' line='65' column='1' id='type-id-292'>
             <underlying-type type-id='type-id-24'/>
@@ -4883,7 +4855,6 @@
             <enumerator name='NumberOfWrapModes' value='5'/>
           </enum-decl>
         </member-type>
-
         <member-type access='private'>
           <enum-decl name='__anonymous_enum__1' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/OpenGL/vtkTextureObject.h' line='76' column='1' id='type-id-293'>
             <underlying-type type-id='type-id-24'/>
@@ -4938,7 +4909,6 @@
       </member-function>
     </class-decl>
     <class-decl name='vtkPixelBufferObject' visibility='default' is-declaration-only='yes' id='type-id-247'>
-
         <member-type access='private'>
           <enum-decl name='BufferType' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/OpenGL/vtkPixelBufferObject.h' line='265' column='1' id='type-id-295'>
             <underlying-type type-id='type-id-24'/>
@@ -4986,7 +4956,6 @@
       </member-function>
     </class-decl>
     <class-decl name='vtkDataArrayTemplate&lt;float&gt;' visibility='default' is-declaration-only='yes' id='type-id-233'>
-
         <member-type access='private'>
           <enum-decl name='DeleteMethod' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkDataArrayTemplate.h' line='254' column='1' id='type-id-296'>
             <underlying-type type-id='type-id-24'/>
@@ -5019,8 +4988,6 @@
         </function-decl>
       </member-function>
     </class-decl>
-
-
     <class-decl name='vtkImageNoiseSource' visibility='default' is-declaration-only='yes' id='type-id-241'/>
     <class-decl name='vtkInformationVector' visibility='default' is-declaration-only='yes' id='type-id-243'/>
     <class-decl name='vtkPointData' visibility='default' is-declaration-only='yes' id='type-id-254'/>
@@ -5040,10 +5007,8 @@
     <class-decl name='vtkRenderWindow' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-258'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2DExtentTranslator.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
-
     <array-type-def dimensions='1' type-id='type-id-17' size-in-bits='192' id='type-id-63'>
       <subrange length='6' type-id='type-id-4' id='type-id-297'/>
-
     </array-type-def>
     <class-decl name='vtkWeakPointer&lt;vtkImageDataLIC2D&gt;' size-in-bits='64' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkWeakPointer.h' line='47' column='1' id='type-id-65'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-75'/>
@@ -5146,9 +5111,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-65' size-in-bits='64' id='type-id-299'/>
     <pointer-type-def type-id='type-id-65' size-in-bits='64' id='type-id-298'/>
     <namespace-decl name='std'>
-
       <class-decl name='ctype&lt;char&gt;' visibility='default' is-declaration-only='yes' id='type-id-302'>
-
           <member-type access='private'>
             <typedef-decl name='char_type' type-id='type-id-2' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/locale_facets.h' line='679' column='1' id='type-id-309'/>
           </member-type>
@@ -5173,31 +5136,23 @@
         <return type-id='type-id-214'/>
       </function-decl>
     </namespace-decl>
-
-
-
     <function-type size-in-bits='64' id='type-id-308'>
       <parameter type-id='type-id-214'/>
       <return type-id='type-id-214'/>
     </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
-
     <array-type-def dimensions='1' type-id='type-id-17' size-in-bits='64' id='type-id-310'>
       <subrange length='2' type-id='type-id-4' id='type-id-311'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-37' size-in-bits='256' id='type-id-312'>
       <subrange length='4' type-id='type-id-4' id='type-id-11'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-56' size-in-bits='128' id='type-id-313'>
       <subrange length='2' type-id='type-id-4' id='type-id-311'/>
-
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-13' size-in-bits='64' id='type-id-314'>
       <subrange length='2' type-id='type-id-4' id='type-id-311'/>
-
     </array-type-def>
     <class-decl name='vtkPainterCommunicator' size-in-bits='64' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPainterCommunicator.h' line='30' column='1' id='type-id-315'>
       <member-function access='private' constructor='yes'>
@@ -5287,7 +5242,6 @@
     </class-decl>
     <class-decl name='vtkLineIntegralConvolution2D' size-in-bits='1792' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.h' line='105' column='1' id='type-id-320'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-286'/>
-
         <member-type access='private'>
           <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.h' line='149' column='1' id='type-id-321'>
             <underlying-type type-id='type-id-24'/>
@@ -6318,7 +6272,6 @@
     <pointer-type-def type-id='type-id-248' size-in-bits='64' id='type-id-279'/>
     <pointer-type-def type-id='type-id-290' size-in-bits='64' id='type-id-325'/>
     <namespace-decl name='std'>
-
       <function-decl name='operator-&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='319' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-147'/>
         <parameter type-id='type-id-147'/>
@@ -6537,7 +6490,6 @@
         <return type-id='type-id-253'/>
       </function-decl>
       <class-decl name='basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stringfwd.h' line='52' column='1' id='type-id-373'>
-
           <member-type access='private'>
             <class-decl name='_Rep_base' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='141' column='1' id='type-id-423'>
               <data-member access='public' layout-offset-in-bits='0'>
@@ -6551,7 +6503,6 @@
               </data-member>
             </class-decl>
           </member-type>
-
           <member-type access='private'>
             <class-decl name='_Rep' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='148' column='1' id='type-id-377'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-423'/>
@@ -6652,7 +6603,6 @@
               </member-function>
             </class-decl>
           </member-type>
-
           <member-type access='private'>
             <class-decl name='_Alloc_hider' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='258' column='1' id='type-id-405'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-358'/>
@@ -7724,7 +7674,6 @@
       <class-decl name='__false_type' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/cpp_type_traits.h' line='79' column='1' is-declaration-only='yes' id='type-id-274'/>
       <typedef-decl name='string' type-id='type-id-373' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stringfwd.h' line='56' column='1' id='type-id-428'/>
       <class-decl name='_Vector_base&lt;vtkPixelBufferObject*, std::allocator&lt;vtkPixelBufferObject*&gt; &gt;' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='70' column='1' id='type-id-355'>
-
           <member-type access='public'>
             <class-decl name='_Vector_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='75' column='1' id='type-id-394'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-364'/>
@@ -8172,7 +8121,6 @@
         </member-function>
       </class-decl>
       <class-decl name='_Vector_base&lt;float, std::allocator&lt;float&gt; &gt;' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='70' column='1' id='type-id-352'>
-
           <member-type access='public'>
             <class-decl name='_Vector_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='75' column='1' id='type-id-391'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-361'/>
@@ -9032,8 +8980,6 @@
       </class-decl>
       <class-decl name='__normal_iterator&lt;const float*, std::vector&lt;float, std::allocator&lt;float&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-437'/>
     </namespace-decl>
-
-
     <namespace-decl name='vtkLineIntegralConvolution2DUtil'>
       <function-decl name='GetVectorLookupProgram' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.cxx' line='814' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-17'/>
@@ -9076,14 +9022,9 @@
         </function-decl>
       </member-function>
     </class-decl>
-
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
     <pointer-type-def type-id='type-id-105' size-in-bits='64' id='type-id-106'/>
-
-
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkStructuredGridLIC2D.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
     <class-decl name='vtkStructuredGridLIC2D' size-in-bits='1472' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkStructuredGridLIC2D.h' line='51' column='1' id='type-id-449'>
@@ -9410,9 +9351,6 @@
     <pointer-type-def type-id='type-id-467' size-in-bits='64' id='type-id-468'/>
     <pointer-type-def type-id='type-id-469' size-in-bits='64' id='type-id-453'/>
     <pointer-type-def type-id='type-id-449' size-in-bits='64' id='type-id-451'/>
-
-
-
     <namespace-decl name='detail'>
       <class-decl name='vtkAtomicIntImpl&lt;int&gt;' size-in-bits='32' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Common/Core/vtkAtomicInt.h' line='85' column='1' id='type-id-457'>
         <data-member access='protected' layout-offset-in-bits='0'>
@@ -9494,8 +9432,6 @@
         </function-decl>
       </member-function>
     </class-decl>
-
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICComposite.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
     <class-decl name='vtkSurfaceLICComposite' size-in-bits='3584' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICComposite.h' line='38' column='1' id='type-id-471'>
@@ -9843,7 +9779,6 @@
     <pointer-type-def type-id='type-id-471' size-in-bits='64' id='type-id-472'/>
     <reference-type-def kind='lvalue' type-id='type-id-325' size-in-bits='64' id='type-id-475'/>
     <namespace-decl name='std'>
-
       <function-decl name='operator==&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='235' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-147'/>
         <parameter type-id='type-id-147'/>
@@ -10337,8 +10272,6 @@
         <return type-id='type-id-46'/>
       </function-decl>
     </namespace-decl>
-
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICDefaultPainter.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
     <class-decl name='vtkSurfaceLICDefaultPainter' size-in-bits='1728' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICDefaultPainter.h' line='37' column='1' id='type-id-493'>
@@ -10513,7 +10446,6 @@
     </class-decl>
     <class-decl name='vtkSurfaceLICPainter' size-in-bits='2880' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.h' line='67' column='1' id='type-id-504'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-505'/>
-
         <member-type access='private'>
           <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.h' line='210' column='1' id='type-id-506'>
             <underlying-type type-id='type-id-24'/>
@@ -10523,7 +10455,6 @@
             <enumerator name='ENHANCE_CONTRAST_BOTH' value='4'/>
           </enum-decl>
         </member-type>
-
         <member-type access='private'>
           <enum-decl name='__anonymous_enum__1' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.h' line='374' column='1' id='type-id-507'>
             <underlying-type type-id='type-id-24'/>
@@ -10533,7 +10464,6 @@
             <enumerator name='COMPOSITE_AUTO' value='3'/>
           </enum-decl>
         </member-type>
-
         <member-type access='protected'>
           <class-decl name='vtkInternals' size-in-bits='3392' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='824' column='1' id='type-id-508'>
             <data-member access='private' layout-offset-in-bits='0'>
@@ -11738,12 +11668,7 @@
     <pointer-type-def type-id='type-id-504' size-in-bits='64' id='type-id-495'/>
     <reference-type-def kind='lvalue' type-id='type-id-500' size-in-bits='64' id='type-id-503'/>
     <pointer-type-def type-id='type-id-500' size-in-bits='64' id='type-id-501'/>
-
-
-
-
     <class-decl name='vtkPainter' visibility='default' is-declaration-only='yes' id='type-id-505'>
-
         <member-type access='private'>
           <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/Core/vtkPainter.h' line='100' column='1' id='type-id-551'>
             <underlying-type type-id='type-id-24'/>
@@ -11899,20 +11824,15 @@
     <class-decl name='vtkScalarsToColorsPainter' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-549'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
-
-
     <array-type-def dimensions='1' type-id='type-id-15' size-in-bits='192' id='type-id-524'>
       <subrange length='3' type-id='type-id-4' id='type-id-552'/>
-
     </array-type-def>
     <type-decl name='unsigned char' size-in-bits='8' id='type-id-553'/>
     <array-type-def dimensions='1' type-id='type-id-554' size-in-bits='512' id='type-id-509'>
       <subrange length='8' type-id='type-id-4' id='type-id-555'/>
-
     </array-type-def>
     <typedef-decl name='GLfloat' type-id='type-id-16' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/mesa@8.0.5-22dd4c4b/include/GL/gl.h' line='160' column='1' id='type-id-556'/>
     <class-decl name='vtkSmartPointerBase' size-in-bits='64' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkSmartPointerBase.h' line='30' column='1' id='type-id-557'>
-
         <member-type access='protected'>
           <class-decl name='NoReference' size-in-bits='8' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkSmartPointerBase.h' line='73' column='1' id='type-id-558'/>
         </member-type>
@@ -13765,7 +13685,6 @@
     <pointer-type-def type-id='type-id-512' size-in-bits='64' id='type-id-585'/>
     <pointer-type-def type-id='type-id-684' size-in-bits='64' id='type-id-528'/>
     <namespace-decl name='std'>
-
       <function-decl name='uninitialized_copy&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='106' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-145'/>
         <parameter type-id='type-id-145'/>
@@ -13796,7 +13715,6 @@
         <return type-id='type-id-1'/>
       </function-decl>
       <class-decl name='_Vector_base&lt;vtkPixelExtent, std::allocator&lt;vtkPixelExtent&gt; &gt;' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='70' column='1' id='type-id-630'>
-
           <member-type access='public'>
             <class-decl name='_Vector_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='75' column='1' id='type-id-659'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-161'/>
@@ -14241,8 +14159,6 @@
       <class-decl name='__normal_iterator&lt;vtkPixelExtent*, std::vector&lt;vtkPixelExtent, std::allocator&lt;vtkPixelExtent&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-685'/>
       <class-decl name='__normal_iterator&lt;const vtkPixelExtent*, std::vector&lt;vtkPixelExtent, std::allocator&lt;vtkPixelExtent&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-686'/>
     </namespace-decl>
-
-
     <namespace-decl name='vtkSurfaceLICPainterUtil'>
       <function-decl name='ilog2' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='225' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-13'/>
@@ -14317,7 +14233,6 @@
         </member-function>
       </class-decl>
       <class-decl name='RandomNoise2D' size-in-bits='128' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='299' column='1' id='type-id-678'>
-
           <member-type access='private'>
             <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='319' column='1' id='type-id-689'>
               <underlying-type type-id='type-id-24'/>
@@ -14421,7 +14336,6 @@
       </class-decl>
     </namespace-decl>
     <class-decl name='vtkLightingHelper' visibility='default' is-declaration-only='yes' id='type-id-671'>
-
         <member-type access='private'>
           <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/OpenGL/vtkLightingHelper.h' line='42' column='1' id='type-id-690'>
             <underlying-type type-id='type-id-24'/>
@@ -14542,8 +14456,6 @@
         </function-decl>
       </member-function>
     </class-decl>
-
-
     <class-decl name='vtkBackgroundColorMonitor' visibility='default' is-declaration-only='yes' id='type-id-664'/>
     <class-decl name='vtkCellData' visibility='default' is-declaration-only='yes' id='type-id-665'/>
     <class-decl name='vtkColorMaterialHelper' visibility='default' is-declaration-only='yes' id='type-id-666'/>
@@ -14573,10 +14485,6 @@
         </function-decl>
       </member-function>
     </class-decl>
-
-
-
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_AAH.cxx' language='LANG_C_plus_plus'>
     <var-decl name='vtkLineIntegralConvolution2D_AAH' type-id='type-id-68' mangled-name='vtkLineIntegralConvolution2D_AAH' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_AAH.cxx' line='9' column='1' elf-symbol-id='vtkLineIntegralConvolution2D_AAH'/>

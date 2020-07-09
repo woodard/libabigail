@@ -12,13 +12,10 @@
     <elf-symbol name='_init' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
   <abi-instr version='1.0' address-size='64' path='test24-drop-fns.cc' comp-dir-path='/home/dodji/git/libabigail.git/suppr/tests/data/test-read-dwarf' language='LANG_C_plus_plus'>
-
-
     <type-decl name='bool' size-in-bits='8' id='type-id-1'/>
     <type-decl name='char' size-in-bits='8' id='type-id-2'/>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='32' id='type-id-3'>
       <subrange length='4' type-id='type-id-4' id='type-id-5'/>
-
     </array-type-def>
     <class-decl name='typedef __va_list_tag __va_list_tag' size-in-bits='192' is-struct='yes' visibility='default' id='type-id-6'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -47,7 +44,6 @@
     <type-decl name='unsigned long int' size-in-bits='64' id='type-id-17'/>
     <array-type-def dimensions='1' type-id='type-id-17' size-in-bits='infinite' id='type-id-18'>
       <subrange length='infinite' id='type-id-19'/>
-
     </array-type-def>
     <type-decl name='void' id='type-id-20'/>
     <type-decl name='wchar_t' size-in-bits='32' id='type-id-21'/>
@@ -58,7 +54,6 @@
     <typedef-decl name='mbstate_t' type-id='type-id-27' filepath='/usr/include/wchar.h' line='106' column='1' id='type-id-28'/>
     <typedef-decl name='__mbstate_t' type-id='type-id-29' filepath='/usr/include/wchar.h' line='94' column='1' id='type-id-27'/>
     <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-27' visibility='default' filepath='/usr/include/wchar.h' line='83' column='1' id='type-id-29'>
-
         <member-type access='public'>
           <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='86' column='1' id='type-id-30'>
             <data-member access='private'>
@@ -245,9 +240,7 @@
     <pointer-type-def type-id='type-id-21' size-in-bits='64' id='type-id-99'/>
     <pointer-type-def type-id='type-id-99' size-in-bits='64' id='type-id-100'/>
     <namespace-decl name='std'>
-
       <class-decl name='basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' size-in-bits='64' visibility='default' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2510' column='1' id='type-id-59'>
-
           <member-type access='private'>
             <class-decl name='_Alloc_hider' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2670' column='1' id='type-id-90'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-56'/>
@@ -264,39 +257,30 @@
               </member-function>
             </class-decl>
           </member-type>
-
           <member-type access='public'>
             <typedef-decl name='size_type' type-id='type-id-101' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2519' column='1' id='type-id-66'/>
           </member-type>
-
           <member-type access='public'>
             <typedef-decl name='allocator_type' type-id='type-id-56' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2518' column='1' id='type-id-102'/>
           </member-type>
-
           <member-type access='public'>
             <typedef-decl name='reference' type-id='type-id-104' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2521' column='1' id='type-id-103'/>
           </member-type>
-
           <member-type access='public'>
             <typedef-decl name='const_reference' type-id='type-id-106' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2522' column='1' id='type-id-105'/>
           </member-type>
-
           <member-type access='public'>
             <typedef-decl name='iterator' type-id='type-id-108' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2525' column='1' id='type-id-107'/>
           </member-type>
-
           <member-type access='public'>
             <typedef-decl name='const_iterator' type-id='type-id-110' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2527' column='1' id='type-id-109'/>
           </member-type>
-
           <member-type access='public'>
             <typedef-decl name='const_reverse_iterator' type-id='type-id-112' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2528' column='1' id='type-id-111'/>
           </member-type>
-
           <member-type access='public'>
             <typedef-decl name='reverse_iterator' type-id='type-id-114' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2529' column='1' id='type-id-113'/>
           </member-type>
-
           <member-type access='private'>
             <class-decl name='_Rep_base' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2546' column='1' id='type-id-115'>
               <data-member access='public' layout-offset-in-bits='0'>
@@ -310,7 +294,6 @@
               </data-member>
             </class-decl>
           </member-type>
-
           <member-type access='private'>
             <class-decl name='_Rep' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2553' column='1' id='type-id-63'>
               <base-class access='public' layout-offset-in-bits='0' type-id='type-id-115'/>
@@ -1445,15 +1428,12 @@
       </class-decl>
       <class-decl name='allocator&lt;char&gt;' size-in-bits='8' visibility='default' filepath='/usr/include/c++/5.3.1/bits/allocator.h' line='92' column='1' id='type-id-56'>
         <base-class access='public' layout-offset-in-bits='0' type-id='type-id-40'/>
-
           <member-type access='public'>
             <typedef-decl name='size_type' type-id='type-id-116' filepath='/usr/include/c++/5.3.1/bits/allocator.h' line='95' column='1' id='type-id-101'/>
           </member-type>
-
           <member-type access='public'>
             <typedef-decl name='reference' type-id='type-id-42' filepath='/usr/include/c++/5.3.1/bits/allocator.h' line='99' column='1' id='type-id-104'/>
           </member-type>
-
           <member-type access='public'>
             <typedef-decl name='const_reference' type-id='type-id-49' filepath='/usr/include/c++/5.3.1/bits/allocator.h' line='100' column='1' id='type-id-106'/>
           </member-type>
@@ -1487,11 +1467,9 @@
         <return type-id='type-id-59'/>
       </function-decl>
       <class-decl name='char_traits&lt;char&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/bits/char_traits.h' line='233' column='1' id='type-id-117'>
-
           <member-type access='public'>
             <typedef-decl name='char_type' type-id='type-id-2' filepath='/usr/include/c++/5.3.1/bits/char_traits.h' line='235' column='1' id='type-id-68'/>
           </member-type>
-
           <member-type access='public'>
             <typedef-decl name='int_type' type-id='type-id-11' filepath='/usr/include/c++/5.3.1/bits/char_traits.h' line='236' column='1' id='type-id-72'/>
           </member-type>
@@ -1598,25 +1576,19 @@
       <typedef-decl name='ostream' type-id='type-id-118' filepath='/usr/include/c++/5.3.1/iosfwd' line='141' column='1' id='type-id-96'/>
     </namespace-decl>
     <namespace-decl name='__gnu_cxx'>
-
       <class-decl name='new_allocator&lt;char&gt;' size-in-bits='8' visibility='default' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='58' column='1' id='type-id-40'>
-
           <member-type access='public'>
             <typedef-decl name='size_type' type-id='type-id-116' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='61' column='1' id='type-id-119'/>
           </member-type>
-
           <member-type access='public'>
             <typedef-decl name='pointer' type-id='type-id-34' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='63' column='1' id='type-id-120'/>
           </member-type>
-
           <member-type access='public'>
             <typedef-decl name='const_pointer' type-id='type-id-32' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='64' column='1' id='type-id-121'/>
           </member-type>
-
           <member-type access='public'>
             <typedef-decl name='reference' type-id='type-id-42' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='65' column='1' id='type-id-122'/>
           </member-type>
-
           <member-type access='public'>
             <typedef-decl name='const_reference' type-id='type-id-49' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='66' column='1' id='type-id-123'/>
           </member-type>
@@ -2086,7 +2058,6 @@
       <parameter type-id='type-id-11'/>
       <return type-id='type-id-15'/>
     </function-decl>
-
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='124' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-11'/>
       <parameter type-id='type-id-32'/>

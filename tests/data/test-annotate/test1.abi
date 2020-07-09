@@ -100,12 +100,10 @@
       <base-class access='public' layout-offset-in-bits='192' is-virtual='yes' type-id='type-id-7'/>
     <!-- struct b1 -->
       <base-class access='public' layout-offset-in-bits='256' is-virtual='yes' type-id='type-id-8'/>
-
         <member-type access='public'>
           <!-- typedef int s0::integer -->
           <typedef-decl name='integer' type-id='type-id-3' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='15' column='1' id='type-id-10'/>
         </member-type>
-
         <member-type access='public'>
           <!-- typedef unsigned char s0::byte -->
           <typedef-decl name='byte' type-id='type-id-5' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='16' column='1' id='type-id-11'/>
