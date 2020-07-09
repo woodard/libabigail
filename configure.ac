@@ -646,12 +646,6 @@ if test x$ENABLE_UBSAN = xyes; then
     CXXFLAGS="$CXXFLAGS -fsanitize=undefined"
 fi
 
-dnl Check if we compile with clang and set flags accordingly
-dnl TODO: fix that warning (spoiler: not trivial)
-if `$CXX -v 2>&1 | grep 'clang version' > /dev/null 2>&1`; then
-    CXXFLAGS="$CXXFLAGS -Wno-error-overloaded-virtual"
-fi
-
 dnl Check if several decls and constant are defined in dependant
 dnl libraries
 HAS_EM_AARCH64=no
