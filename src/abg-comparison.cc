@@ -788,21 +788,6 @@ const qualified_type_diff*
 is_qualified_type_diff(const diff* diff)
 {return dynamic_cast<const qualified_type_diff*>(diff);}
 
-/// Test if a diff node is either a reference diff node or a pointer
-/// diff node.  Note that this function also works on diffs of
-/// typedefs of reference or pointer.
-///
-/// @param diff the diff node to test.
-///
-/// @return true iff @p diff is either reference diff node or a
-/// pointer diff node.
-bool
-is_reference_or_pointer_diff(const diff* diff)
-{
-  diff = peel_typedef_diff(diff);
-  return is_reference_diff(diff) || is_pointer_diff(diff);
-}
-
 /// Test if a diff node is a reference or pointer diff node to a
 /// change that is neither basic type change nor distinct type change.
 ///

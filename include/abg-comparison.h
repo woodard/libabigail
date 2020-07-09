@@ -2852,8 +2852,6 @@ is_reference_diff(const diff* diff);
 
 const qualified_type_diff*
 is_qualified_type_diff(const diff* diff);
-bool
-is_reference_or_pointer_diff(const diff* diff);
 
 const fn_parm_diff*
 is_fn_parm_diff(const diff* diff);
