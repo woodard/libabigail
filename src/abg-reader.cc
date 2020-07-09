@@ -119,7 +119,6 @@ private:
   unordered_map<string, vector<type_base_sptr> >	m_types_map;
   unordered_map<string, shared_ptr<function_tdecl> >	m_fn_tmpl_map;
   unordered_map<string, shared_ptr<class_tdecl> >	m_class_tmpl_map;
-  unordered_map<string, size_t>			m_wip_types_map;
   vector<type_base_sptr>				m_types_to_canonicalize;
   string_xml_node_map					m_id_xml_node_map;
   xml_node_decl_base_sptr_map				m_xml_node_decl_map;
@@ -518,65 +517,6 @@ public:
   clear_types_to_canonicalize()
   {m_types_to_canonicalize.clear();}
 
-  /// Clean the map of classes that are "Work In Progress"; that is,
-  /// the map of the class that are currently being built, but at not
-  /// yet fully built.
-  void
-  clear_wip_classes_map()
-  {m_wip_types_map.clear();}
-
-  /// Mark a given type as being "Work In Progress"; that is, mark it
-  /// as being currently built.
-  ///
-  /// @param t the class to mark as being "Work In Progress".
-  void
-  mark_type_as_wip(const type_base_sptr t)
-  {
-    if (!t)
-      return;
-    string qname = get_type_name(t, /*qualified=*/true);
-    unordered_map<string, size_t>::iterator it = m_wip_types_map.find(qname);
-    if (it == m_wip_types_map.end())
-      m_wip_types_map[qname] = 1;
-    else
-      ++it->second;
-  }
-
-  /// Mark a given class as being *NOT* "Work In Progress" anymore;
-  /// that is, mark it as being fully built.
-  ///
-  /// @param t the type to mark as being built.
-  void
-  unmark_type_as_wip(const type_base_sptr t)
-  {
-    if (!t)
-      return;
-
-    string qname = get_type_name(t, /*qualified=*/true);
-    unordered_map<string, size_t>::iterator it = m_wip_types_map.find(qname);
-    if (it == m_wip_types_map.end())
-      return;
-    if (it->second)
-      --it->second;
-    if (it->second == 0)
-      m_wip_types_map.erase(it);
-  }
-
-  /// Test if a type is being currently built; that is, if it's "Work
-  /// In Progress".
-  ///
-  /// @param t the type to consider.
-  bool
-  is_wip_type(const type_base_sptr t) const
-  {
-    if (!t)
-      return false;
-
-    string qname = get_type_name(t, /*qualified=*/true);
-    unordered_map<string, size_t>::const_iterator i =
-      m_wip_types_map.find(qname);
-    return i != m_wip_types_map.end();
-  }
 
   /// Test if two types are equal, without comparing them structurally.
   ///
@@ -883,7 +823,6 @@ public:
 	&& !type_has_non_canonicalized_subtype(t)
 	&& !is_class_type(t)
 	&& !is_union_type(t)
-	&& !is_wip_type(t)
 	// Below are types that *must* be canonicalized only after
 	// they are added to their context; but then this function
 	// might be called to early, before they are actually added to
@@ -3818,7 +3757,6 @@ build_function_type(read_context&	ctxt,
 						parms, size, align));
 
   ctxt.get_translation_unit()->bind_function_type_life_time(fn_type);
-  ctxt.mark_type_as_wip(fn_type);
   ctxt.key_type_decl(fn_type, id);
 
   for (xmlNodePtr n = node->children; n ; n = n->next)
@@ -3845,7 +3783,6 @@ build_function_type(read_context&	ctxt,
     }
 
   fn_type->set_parameters(parms);
-  ctxt.unmark_type_as_wip(fn_type);
 
   return fn_type;
 }
@@ -4543,7 +4480,6 @@ build_class_decl(read_context&		ctxt,
   ctxt.push_decl_to_current_scope(decl, add_to_current_scope);
 
   ctxt.map_xml_node_to_decl(node, decl);
-  ctxt.mark_type_as_wip(decl);
   ctxt.key_type_decl(decl, id);
 
   // If this class has a naming typedef, get it and refer to it.
@@ -4767,7 +4703,6 @@ build_class_decl(read_context&		ctxt,
     }
 
   ctxt.pop_scope_or_abort(decl);
-  ctxt.unmark_type_as_wip(decl);
 
   return decl;
 }
@@ -4950,7 +4885,6 @@ build_union_decl(read_context& ctxt,
   ctxt.push_decl_to_current_scope(decl, add_to_current_scope);
 
   ctxt.map_xml_node_to_decl(node, decl);
-  ctxt.mark_type_as_wip(decl);
   ctxt.key_type_decl(decl, id);
 
   for (xmlNodePtr n = node->children; !is_decl_only && n; n = n->next)
@@ -5102,7 +5036,6 @@ build_union_decl(read_context& ctxt,
     }
 
   ctxt.pop_scope_or_abort(decl);
-  ctxt.unmark_type_as_wip(decl);
 
   return decl;
 }
