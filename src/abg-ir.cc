@@ -19319,7 +19319,7 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
     {
       if (k)
 	*k |= LOCAL_TYPE_CHANGE_KIND;
-      RETURN(false);
+      return false;
     }
 
   if (types_defined_same_linux_kernel_corpus_public(l, r))
