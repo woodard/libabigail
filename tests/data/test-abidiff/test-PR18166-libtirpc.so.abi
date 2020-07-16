@@ -344,10 +344,8 @@
     </class-decl>
     <typedef-decl name='u_int32_t' type-id='type-id-14' filepath='/usr/include/x86_64-linux-gnu/sys/types.h' line='203' column='1' id='type-id-18'/>
     <type-decl name='sizetype' size-in-bits='64' id='type-id-19'/>
-
     <array-type-def dimensions='1' type-id='type-id-11' size-in-bits='64' id='type-id-17'>
       <subrange length='8' type-id='type-id-19' id='type-id-20'/>
-
     </array-type-def>
     <class-decl name='auth_ops' size-in-bits='448' is-struct='yes' visibility='default' filepath='/home/max/src/v6/libtirpc/tirpc/rpc/auth.h' line='188' column='1' id='type-id-21'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -518,10 +516,8 @@
     </class-decl>
     <pointer-type-def type-id='type-id-79' size-in-bits='64' id='type-id-80'/>
     <typedef-decl name='__pthread_list_t' type-id='type-id-79' filepath='/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h' line='65' column='1' id='type-id-78'/>
-
     <array-type-def dimensions='1' type-id='type-id-11' size-in-bits='320' id='type-id-77'>
       <subrange length='40' type-id='type-id-19' id='type-id-81'/>
-
     </array-type-def>
     <typedef-decl name='pthread_mutex_t' type-id='type-id-75' filepath='/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h' line='104' column='1' id='type-id-82'/>
     <pointer-type-def type-id='type-id-82' size-in-bits='64' id='type-id-83'/>
@@ -868,10 +864,8 @@
     </class-decl>
     <type-decl name='unsigned short int' size-in-bits='16' id='type-id-118'/>
     <typedef-decl name='sa_family_t' type-id='type-id-118' filepath='/usr/include/x86_64-linux-gnu/bits/sockaddr.h' line='29' column='1' id='type-id-116'/>
-
     <array-type-def dimensions='1' type-id='type-id-11' size-in-bits='112' id='type-id-117'>
       <subrange length='14' type-id='type-id-19' id='type-id-119'/>
-
     </array-type-def>
     <pointer-type-def type-id='type-id-115' size-in-bits='64' id='type-id-120'/>
     <function-decl name='bindresvport_sa' mangled-name='bindresvport_sa' filepath='/home/max/src/v6/libtirpc/src/bindresvport.c' line='72' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='bindresvport_sa'>
@@ -903,10 +897,8 @@
     <typedef-decl name='uint32_t' type-id='type-id-14' filepath='/usr/include/stdint.h' line='52' column='1' id='type-id-127'/>
     <typedef-decl name='in_addr_t' type-id='type-id-127' filepath='/usr/include/netinet/in.h' line='141' column='1' id='type-id-126'/>
     <type-decl name='unsigned char' size-in-bits='8' id='type-id-128'/>
-
     <array-type-def dimensions='1' type-id='type-id-128' size-in-bits='64' id='type-id-124'>
       <subrange length='8' type-id='type-id-19' id='type-id-20'/>
-
     </array-type-def>
     <pointer-type-def type-id='type-id-121' size-in-bits='64' id='type-id-129'/>
     <function-decl name='bindresvport' mangled-name='bindresvport' filepath='/usr/include/netinet/in.h' line='492' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='bindresvport'>
@@ -1005,20 +997,14 @@
       </data-member>
     </union-decl>
     <typedef-decl name='uint8_t' type-id='type-id-128' filepath='/usr/include/stdint.h' line='49' column='1' id='type-id-160'/>
-
     <array-type-def dimensions='1' type-id='type-id-160' size-in-bits='128' id='type-id-157'>
       <subrange length='16' type-id='type-id-19' id='type-id-161'/>
-
     </array-type-def>
-
     <array-type-def dimensions='1' type-id='type-id-125' size-in-bits='128' id='type-id-158'>
       <subrange length='8' type-id='type-id-19' id='type-id-20'/>
-
     </array-type-def>
-
     <array-type-def dimensions='1' type-id='type-id-127' size-in-bits='128' id='type-id-159'>
       <subrange length='4' type-id='type-id-19' id='type-id-162'/>
-
     </array-type-def>
     <qualified-type-def type-id='type-id-154' const='yes' id='type-id-163'/>
     <pointer-type-def type-id='type-id-163' size-in-bits='64' id='type-id-137'/>
@@ -1042,10 +1028,8 @@
         <var-decl name='sun_path' type-id='type-id-173' visibility='default' filepath='/usr/include/x86_64-linux-gnu/sys/un.h' line='33' column='1'/>
       </data-member>
     </class-decl>
-
     <array-type-def dimensions='1' type-id='type-id-11' size-in-bits='864' id='type-id-173'>
       <subrange length='108' type-id='type-id-19' id='type-id-174'/>
-
     </array-type-def>
     <qualified-type-def type-id='type-id-172' const='yes' id='type-id-175'/>
     <pointer-type-def type-id='type-id-175' size-in-bits='64' id='type-id-142'/>
@@ -1157,10 +1141,8 @@
         <var-decl name='__ss_padding' type-id='type-id-203' visibility='default' filepath='/usr/include/x86_64-linux-gnu/bits/socket.h' line='197' column='1'/>
       </data-member>
     </class-decl>
-
     <array-type-def dimensions='1' type-id='type-id-11' size-in-bits='896' id='type-id-203'>
       <subrange length='112' type-id='type-id-19' id='type-id-204'/>
-
     </array-type-def>
     <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/home/max/src/v6/libtirpc/src/clnt_bcast.c' line='109' column='1' id='type-id-202'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -1612,10 +1594,8 @@
         <var-decl name='nc_unused' type-id='type-id-271' visibility='default' filepath='/home/max/src/v6/libtirpc/tirpc/netconfig.h' line='18' column='1'/>
       </data-member>
     </class-decl>
-
     <array-type-def dimensions='1' type-id='type-id-84' size-in-bits='576' id='type-id-271'>
       <subrange length='9' type-id='type-id-19' id='type-id-272'/>
-
     </array-type-def>
     <qualified-type-def type-id='type-id-270' const='yes' id='type-id-273'/>
     <pointer-type-def type-id='type-id-273' size-in-bits='64' id='type-id-274'/>
@@ -1894,10 +1874,8 @@
         <var-decl name='__val' type-id='type-id-312' visibility='default' filepath='/usr/include/x86_64-linux-gnu/bits/sigset.h' line='31' column='1'/>
       </data-member>
     </class-decl>
-
     <array-type-def dimensions='1' type-id='type-id-84' size-in-bits='1024' id='type-id-312'>
       <subrange length='16' type-id='type-id-19' id='type-id-161'/>
-
     </array-type-def>
     <typedef-decl name='__sigset_t' type-id='type-id-311' filepath='/usr/include/x86_64-linux-gnu/bits/sigset.h' line='32' column='1' id='type-id-310'/>
     <typedef-decl name='sigset_t' type-id='type-id-310' filepath='/usr/include/x86_64-linux-gnu/sys/select.h' line='38' column='1' id='type-id-313'/>
@@ -1953,10 +1931,8 @@
       </data-member>
     </class-decl>
     <type-decl name='long long unsigned int' size-in-bits='64' id='type-id-322'/>
-
     <array-type-def dimensions='1' type-id='type-id-11' size-in-bits='384' id='type-id-320'>
       <subrange length='48' type-id='type-id-19' id='type-id-323'/>
-
     </array-type-def>
     <type-decl name='long long int' size-in-bits='64' id='type-id-321'/>
     <typedef-decl name='pthread_cond_t' type-id='type-id-318' filepath='/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h' line='130' column='1' id='type-id-324'/>
@@ -2034,10 +2010,8 @@
         <var-decl name='__align' type-id='type-id-6' visibility='default' filepath='/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h' line='135' column='1'/>
       </data-member>
     </union-decl>
-
     <array-type-def dimensions='1' type-id='type-id-11' size-in-bits='32' id='type-id-331'>
       <subrange length='4' type-id='type-id-19' id='type-id-162'/>
-
     </array-type-def>
     <typedef-decl name='pthread_condattr_t' type-id='type-id-330' filepath='/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h' line='136' column='1' id='type-id-332'/>
     <qualified-type-def type-id='type-id-332' const='yes' id='type-id-333'/>
@@ -2376,16 +2350,12 @@
     <pointer-type-def type-id='type-id-343' size-in-bits='64' id='type-id-345'/>
     <typedef-decl name='__off_t' type-id='type-id-46' filepath='/usr/include/x86_64-linux-gnu/bits/types.h' line='141' column='1' id='type-id-346'/>
     <type-decl name='signed char' size-in-bits='8' id='type-id-347'/>
-
     <array-type-def dimensions='1' type-id='type-id-11' size-in-bits='infinite' id='type-id-348'>
       <subrange type-id='type-id-19' id='type-id-352'/>
-
     </array-type-def>
     <typedef-decl name='__off64_t' type-id='type-id-46' filepath='/usr/include/x86_64-linux-gnu/bits/types.h' line='142' column='1' id='type-id-349'/>
-
     <array-type-def dimensions='1' type-id='type-id-11' size-in-bits='160' id='type-id-350'>
       <subrange length='20' type-id='type-id-19' id='type-id-353'/>
-
     </array-type-def>
     <typedef-decl name='FILE' type-id='type-id-343' filepath='/usr/include/stdio.h' line='49' column='1' id='type-id-354'/>
     <pointer-type-def type-id='type-id-354' size-in-bits='64' id='type-id-355'/>
@@ -2752,10 +2722,8 @@
         <var-decl name='__flags' type-id='type-id-14' visibility='default' filepath='/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h' line='167' column='1'/>
       </data-member>
     </class-decl>
-
     <array-type-def dimensions='1' type-id='type-id-11' size-in-bits='448' id='type-id-368'>
       <subrange length='56' type-id='type-id-19' id='type-id-369'/>
-
     </array-type-def>
     <typedef-decl name='pthread_rwlock_t' type-id='type-id-366' filepath='/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h' line='189' column='1' id='type-id-370'/>
     <var-decl name='svc_lock' type-id='type-id-370' mangled-name='svc_lock' visibility='default' filepath='/home/max/src/v6/libtirpc/src/mt_misc.c' line='11' column='1' elf-symbol-id='svc_lock'/>
@@ -3027,10 +2995,8 @@
       </data-member>
     </class-decl>
     <typedef-decl name='__fd_mask' type-id='type-id-46' filepath='/usr/include/x86_64-linux-gnu/sys/select.h' line='55' column='1' id='type-id-391'/>
-
     <array-type-def dimensions='1' type-id='type-id-391' size-in-bits='1024' id='type-id-390'>
       <subrange length='16' type-id='type-id-19' id='type-id-161'/>
-
     </array-type-def>
     <typedef-decl name='fd_set' type-id='type-id-389' filepath='/usr/include/x86_64-linux-gnu/sys/select.h' line='76' column='1' id='type-id-388'/>
     <var-decl name='svc_fdset' type-id='type-id-388' mangled-name='svc_fdset' visibility='default' filepath='/home/max/src/v6/libtirpc/src/rpc_commondata.c' line='37' column='1' elf-symbol-id='svc_fdset'/>
@@ -3694,10 +3660,8 @@
         <var-decl name='rmtinfo' type-id='type-id-447' visibility='default' filepath='/home/max/src/v6/libtirpc/tirpc/rpc/rpcb_prot.h' line='435' column='1'/>
       </data-member>
     </class-decl>
-
     <array-type-def dimensions='1' type-id='type-id-6' size-in-bits='416' id='type-id-451'>
       <subrange length='13' type-id='type-id-19' id='type-id-452'/>
-
     </array-type-def>
     <typedef-decl name='rpcbs_proc' type-id='type-id-451' filepath='/home/max/src/v6/libtirpc/tirpc/rpc/rpcb_prot.h' line='400' column='1' id='type-id-450'/>
     <typedef-decl name='rpcb_stat' type-id='type-id-449' filepath='/home/max/src/v6/libtirpc/tirpc/rpc/rpcb_prot.h' line='437' column='1' id='type-id-453'/>
@@ -3935,10 +3899,8 @@
         <var-decl name='__cmsg_data' type-id='type-id-465' visibility='default' filepath='/usr/include/x86_64-linux-gnu/bits/socket.h' line='290' column='1'/>
       </data-member>
     </class-decl>
-
     <array-type-def dimensions='1' type-id='type-id-128' size-in-bits='infinite' id='type-id-465'>
       <subrange type-id='type-id-19' id='type-id-352'/>
-
     </array-type-def>
     <pointer-type-def type-id='type-id-464' size-in-bits='64' id='type-id-466'/>
     <function-decl name='__cmsg_nxthdr' filepath='/usr/include/x86_64-linux-gnu/bits/socket.h' line='310' column='1' visibility='default' binding='global' size-in-bits='64'>

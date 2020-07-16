@@ -323,7 +323,6 @@
   </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkDatabaseToTableReader.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-
       <class-decl name='ios_base' visibility='default' is-declaration-only='yes' id='type-id-1'>
         <member-type access='private'>
           <class-decl name='Init' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='538' column='1' id='type-id-2'>
@@ -2902,7 +2901,6 @@
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-145'/>
     </function-decl>
-
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='125' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <parameter type-id='type-id-25'/>
@@ -3142,7 +3140,6 @@
       <parameter type-id='type-id-153'/>
       <return type-id='type-id-7'/>
     </function-decl>
-
     <array-type-def dimensions='1' type-id='type-id-45' size-in-bits='256' id='type-id-49'>
       <subrange length='4'/>
     </array-type-def>
@@ -11660,7 +11657,6 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkRowQuery.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-
       <function-decl name='transform&lt;__gnu_cxx::__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;, __gnu_cxx::__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;, int (*)(int)throw ()&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algo.h' line='4693' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-56'/>
         <parameter type-id='type-id-56'/>
@@ -11776,8 +11772,6 @@
     <qualified-type-def type-id='type-id-619' const='yes' id='type-id-630'/>
     <pointer-type-def type-id='type-id-630' size-in-bits='64' id='type-id-621'/>
     <reference-type-def kind='lvalue' type-id='type-id-630' size-in-bits='64' id='type-id-622'/>
-
-
     <pointer-type-def type-id='type-id-631' size-in-bits='64' id='type-id-632'/>
     <function-decl name='atexit' filepath='/usr/include/stdlib.h' line='518' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-632'/>
@@ -11957,7 +11951,6 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkRowQueryToTable.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-
       <class-decl name='random_access_iterator_tag' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='89' column='1' id='type-id-640'>
         <base-class access='public' layout-offset-in-bits='0' type-id='type-id-641'/>
       </class-decl>
@@ -12097,8 +12090,6 @@
         <return type-id='type-id-4'/>
       </function-decl>
     </namespace-decl>
-
-
     <class-decl name='vtkRowQueryToTable' size-in-bits='1088' visibility='default' filepath='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkRowQueryToTable.h' line='44' column='1' id='type-id-651'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-173'/>
       <data-member access='protected' layout-offset-in-bits='1024'>
@@ -12226,7 +12217,6 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLDatabase.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;vtkSQLDatabase* (**)(const char*), std::vector&lt;vtkSQLDatabase* (*)(const char*), std::allocator&lt;vtkSQLDatabase* (*)(const char*)&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-225'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;vtkSQLDatabase* (* const*)(const char*), std::vector&lt;vtkSQLDatabase* (*)(const char*), std::allocator&lt;vtkSQLDatabase* (*)(const char*)&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-226'/>
       <function-decl name='_Destroy&lt;vtkSQLDatabase* (**)(const char*)&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='119' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -12900,10 +12890,6 @@
     <class-decl name='vtkStringArray' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-241'/>
     <class-decl name='vtkInformationObjectBaseKey' visibility='default' is-declaration-only='yes' id='type-id-237'/>
     <reference-type-def kind='lvalue' type-id='type-id-47' size-in-bits='64' id='type-id-659'/>
-
-
-
-
     <class-decl name='vtkSimpleCriticalSection' visibility='default' is-declaration-only='yes' id='type-id-675'>
       <member-function access='private' constructor='yes'>
         <function-decl name='vtkSimpleCriticalSection' filepath='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/Common/Core/vtkSimpleCriticalSection.h' line='69' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -12932,7 +12918,6 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLDatabaseSchema.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;vtkSQLDatabaseSchemaInternals::Column*, std::vector&lt;vtkSQLDatabaseSchemaInternals::Column, std::allocator&lt;vtkSQLDatabaseSchemaInternals::Column&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-342'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;const vtkSQLDatabaseSchemaInternals::Column*, std::vector&lt;vtkSQLDatabaseSchemaInternals::Column, std::allocator&lt;vtkSQLDatabaseSchemaInternals::Column&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-343'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;vtkSQLDatabaseSchemaInternals::Index*, std::vector&lt;vtkSQLDatabaseSchemaInternals::Index, std::allocator&lt;vtkSQLDatabaseSchemaInternals::Index&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-356'/>
@@ -14554,14 +14539,8 @@
     <reference-type-def kind='lvalue' type-id='type-id-560' size-in-bits='64' id='type-id-716'/>
     <reference-type-def kind='lvalue' type-id='type-id-568' size-in-bits='64' id='type-id-717'/>
     <reference-type-def kind='lvalue' type-id='type-id-567' size-in-bits='64' id='type-id-718'/>
-
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLDatabaseTableSource.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
-
-
-
-
     <class-decl name='vtkTable' visibility='default' is-declaration-only='yes' id='type-id-242'>
       <member-function access='private' static='yes'>
         <function-decl name='SafeDownCast' mangled-name='_ZN8vtkTable12SafeDownCastEP13vtkObjectBase' filepath='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/Common/DataModel/vtkTable.h' line='62' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -14997,18 +14976,8 @@
     <reference-type-def kind='lvalue' type-id='type-id-746' size-in-bits='64' id='type-id-735'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLQuery.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
-
-
-
-
-
-
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkTableToDatabaseWriter.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
-
-
-
-
     <class-decl name='vtkWriter' visibility='default' is-declaration-only='yes' id='type-id-748'>
       <member-function access='private' static='yes'>
         <function-decl name='IsTypeOf' mangled-name='_ZN9vtkWriter8IsTypeOfEPKc' filepath='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/Core/vtkWriter.h' line='42' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -15161,7 +15130,6 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLiteDatabase.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-
       <class-decl name='basic_ofstream&lt;char, std::char_traits&lt;char&gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-754'>
         <member-function access='public'>
           <function-decl name='is_open' mangled-name='_ZNSt14basic_ofstreamIcSt11char_traitsIcEE7is_openEv' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/fstream' line='675' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -15179,11 +15147,6 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-
-
-
-
-
     <class-decl name='vtkSQLiteDatabase' size-in-bits='704' visibility='default' filepath='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLiteDatabase.h' line='55' column='1' id='type-id-756'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-186'/>
       <member-type access='private'>
@@ -15411,7 +15374,6 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLiteQuery.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-
       <function-decl name='operator&lt;&lt; &lt;std::char_traits&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ostream' line='523' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-72'/>
         <parameter type-id='type-id-764'/>
@@ -15420,9 +15382,6 @@
     </namespace-decl>
     <qualified-type-def type-id='type-id-257' const='yes' id='type-id-765'/>
     <pointer-type-def type-id='type-id-765' size-in-bits='64' id='type-id-764'/>
-
-
-
     <class-decl name='vtkSQLiteQuery' size-in-bits='896' visibility='default' filepath='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLiteQuery.h' line='53' column='1' id='type-id-766'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-240'/>
       <data-member access='private' layout-offset-in-bits='640'>
@@ -15796,7 +15755,6 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLiteToTableReader.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-
       <function-decl name='__copy_move_backward_a&lt;false, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='582' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-55'/>
         <parameter type-id='type-id-55'/>
@@ -16501,8 +16459,6 @@
     <qualified-type-def type-id='type-id-773' const='yes' id='type-id-805'/>
     <reference-type-def kind='lvalue' type-id='type-id-805' size-in-bits='64' id='type-id-776'/>
     <reference-type-def kind='lvalue' type-id='type-id-773' size-in-bits='64' id='type-id-777'/>
-
-
     <pointer-type-def type-id='type-id-779' size-in-bits='64' id='type-id-780'/>
     <pointer-type-def type-id='type-id-778' size-in-bits='64' id='type-id-781'/>
     <qualified-type-def type-id='type-id-778' const='yes' id='type-id-806'/>
@@ -16939,7 +16895,6 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkTableToSQLiteWriter.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-
       <function-decl name='operator+&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' mangled-name='_ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EPKS3_RKS6_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.tcc' line='694' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EPKS3_RKS6_'>
         <parameter type-id='type-id-25'/>
         <parameter type-id='type-id-59'/>
@@ -16951,9 +16906,6 @@
         <return type-id='type-id-39'/>
       </function-decl>
     </namespace-decl>
-
-
-
     <class-decl name='vtkTableToSQLiteWriter' size-in-bits='1344' visibility='default' filepath='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkTableToSQLiteWriter.h' line='29' column='1' id='type-id-835'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-749'/>
       <data-member access='protected' layout-offset-in-bits='1280'>
