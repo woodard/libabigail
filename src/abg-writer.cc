@@ -2189,16 +2189,14 @@ write_canonical_types_of_scope(const scope_decl	&scope,
   const type_base_sptrs_type &canonical_types =
     scope.get_sorted_canonical_types();
 
-  const config& c = ctxt.get_config();
-
   for (type_base_sptrs_type::const_iterator i = canonical_types.begin();
        i != canonical_types.end();
        ++i)
     {
       if (is_member_type)
-	write_member_type(*i, ctxt, indent + c.get_xml_element_indent());
+	write_member_type(*i, ctxt, indent);
       else
-	write_type(*i, ctxt, indent + c.get_xml_element_indent());
+	write_type(*i, ctxt, indent);
     }
 
   return true;
@@ -2257,7 +2255,7 @@ write_translation_unit(write_context&	       ctxt,
   o << ">\n";
 
   write_canonical_types_of_scope(*tu.get_global_scope(),
-				 ctxt, indent);
+				 ctxt, indent + c.get_xml_element_indent());
 
   typedef scope_decl::declarations declarations;
   typedef declarations::const_iterator const_iterator;
@@ -3568,7 +3566,7 @@ write_class_decl(const class_decl_sptr& decl,
 	   base != decl->get_base_specifiers().end();
 	   ++base)
 	{
-          annotate((*base)->get_base_class(), ctxt, indent);
+	  annotate((*base)->get_base_class(), ctxt, nb_ws);
 	  do_indent(o, nb_ws);
 	  o << "<base-class";
 

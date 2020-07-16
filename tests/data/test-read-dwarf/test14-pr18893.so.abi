@@ -531,14 +531,14 @@
     <pointer-type-def type-id='type-id-35' size-in-bits='64' id='type-id-18'/>
     <pointer-type-def type-id='type-id-36' size-in-bits='64' id='type-id-21'/>
     <class-decl name='CachingEvaluator' size-in-bits='64' visibility='default' filepath='libnurbs/internals/cachingeval.h' line='39' column='1' is-declaration-only='yes' id='type-id-8'>
-        <member-type access='private'>
-          <enum-decl name='ServiceMode' filepath='libnurbs/internals/cachingeval.h' line='42' column='1' id='type-id-37'>
-            <underlying-type type-id='type-id-38'/>
-            <enumerator name='play' value='0'/>
-            <enumerator name='record' value='1'/>
-            <enumerator name='playAndRecord' value='2'/>
-          </enum-decl>
-        </member-type>
+      <member-type access='private'>
+        <enum-decl name='ServiceMode' filepath='libnurbs/internals/cachingeval.h' line='42' column='1' id='type-id-37'>
+          <underlying-type type-id='type-id-38'/>
+          <enumerator name='play' value='0'/>
+          <enumerator name='record' value='1'/>
+          <enumerator name='playAndRecord' value='2'/>
+        </enum-decl>
+      </member-type>
       <member-function access='private' destructor='yes' vtable-offset='-1'>
         <function-decl name='~CachingEvaluator' filepath='libnurbs/internals/cachingeval.h' line='41' column='1' visibility='default' binding='global' size-in-bits='64'>
           <parameter type-id='type-id-31' is-artificial='yes'/>
@@ -3007,13 +3007,13 @@
       </member-function>
     </class-decl>
     <class-decl name='Pool' size-in-bits='2496' visibility='default' filepath='libnurbs/internals/bufpool.h' line='50' column='1' id='type-id-68'>
-        <member-type access='protected'>
-          <enum-decl name='Magic' filepath='libnurbs/internals/bufpool.h' line='70' column='1' id='type-id-120'>
-            <underlying-type type-id='type-id-38'/>
-            <enumerator name='is_allocated' value='62369'/>
-            <enumerator name='is_free' value='61858'/>
-          </enum-decl>
-        </member-type>
+      <member-type access='protected'>
+        <enum-decl name='Magic' filepath='libnurbs/internals/bufpool.h' line='70' column='1' id='type-id-120'>
+          <underlying-type type-id='type-id-38'/>
+          <enumerator name='is_allocated' value='62369'/>
+          <enumerator name='is_free' value='61858'/>
+        </enum-decl>
+      </member-type>
       <data-member access='protected' layout-offset-in-bits='0'>
         <var-decl name='freelist' type-id='type-id-121' visibility='default' filepath='libnurbs/internals/bufpool.h' line='62' column='1'/>
       </data-member>
@@ -3930,15 +3930,15 @@
       </member-function>
     </class-decl>
     <class-decl name='Subdivider' size-in-bits='20416' visibility='default' filepath='libnurbs/internals/subdivider.h' line='55' column='1' id='type-id-66'>
-        <member-type access='private'>
-          <enum-decl name='dir' filepath='libnurbs/internals/subdivider.h' line='105' column='1' id='type-id-169'>
-            <underlying-type type-id='type-id-38'/>
-            <enumerator name='down' value='0'/>
-            <enumerator name='same' value='1'/>
-            <enumerator name='up' value='2'/>
-            <enumerator name='none' value='3'/>
-          </enum-decl>
-        </member-type>
+      <member-type access='private'>
+        <enum-decl name='dir' filepath='libnurbs/internals/subdivider.h' line='105' column='1' id='type-id-169'>
+          <underlying-type type-id='type-id-38'/>
+          <enumerator name='down' value='0'/>
+          <enumerator name='same' value='1'/>
+          <enumerator name='up' value='2'/>
+          <enumerator name='none' value='3'/>
+        </enum-decl>
+      </member-type>
       <data-member access='private' layout-offset-in-bits='0'>
         <var-decl name='slicer' type-id='type-id-170' visibility='default' filepath='libnurbs/internals/subdivider.h' line='112' column='1'/>
       </data-member>
@@ -6722,22 +6722,22 @@
   <abi-instr version='1.0' address-size='64' path='libnurbs/internals/hull.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
     <class-decl name='Hull' size-in-bits='4800' visibility='default' filepath='libnurbs/internals/hull.h' line='47' column='1' id='type-id-243'>
       <base-class access='public' layout-offset-in-bits='192' is-virtual='yes' type-id='type-id-210'/>
-        <member-type access='private'>
-          <class-decl name='Side' size-in-bits='256' is-struct='yes' visibility='default' filepath='libnurbs/internals/hull.h' line='55' column='1' id='type-id-244'>
-            <data-member access='public' layout-offset-in-bits='0'>
-              <var-decl name='left' type-id='type-id-207' visibility='default' filepath='libnurbs/internals/hull.h' line='56' column='1'/>
-            </data-member>
-            <data-member access='public' layout-offset-in-bits='64'>
-              <var-decl name='line' type-id='type-id-245' visibility='default' filepath='libnurbs/internals/hull.h' line='57' column='1'/>
-            </data-member>
-            <data-member access='public' layout-offset-in-bits='128'>
-              <var-decl name='right' type-id='type-id-207' visibility='default' filepath='libnurbs/internals/hull.h' line='58' column='1'/>
-            </data-member>
-            <data-member access='public' layout-offset-in-bits='192'>
-              <var-decl name='index' type-id='type-id-12' visibility='default' filepath='libnurbs/internals/hull.h' line='59' column='1'/>
-            </data-member>
-          </class-decl>
-        </member-type>
+      <member-type access='private'>
+        <class-decl name='Side' size-in-bits='256' is-struct='yes' visibility='default' filepath='libnurbs/internals/hull.h' line='55' column='1' id='type-id-244'>
+          <data-member access='public' layout-offset-in-bits='0'>
+            <var-decl name='left' type-id='type-id-207' visibility='default' filepath='libnurbs/internals/hull.h' line='56' column='1'/>
+          </data-member>
+          <data-member access='public' layout-offset-in-bits='64'>
+            <var-decl name='line' type-id='type-id-245' visibility='default' filepath='libnurbs/internals/hull.h' line='57' column='1'/>
+          </data-member>
+          <data-member access='public' layout-offset-in-bits='128'>
+            <var-decl name='right' type-id='type-id-207' visibility='default' filepath='libnurbs/internals/hull.h' line='58' column='1'/>
+          </data-member>
+          <data-member access='public' layout-offset-in-bits='192'>
+            <var-decl name='index' type-id='type-id-12' visibility='default' filepath='libnurbs/internals/hull.h' line='59' column='1'/>
+          </data-member>
+        </class-decl>
+      </member-type>
       <data-member access='private' layout-offset-in-bits='64'>
         <var-decl name='lower' type-id='type-id-244' visibility='default' filepath='libnurbs/internals/hull.h' line='62' column='1'/>
       </data-member>
@@ -7549,16 +7549,16 @@
     </class-decl>
     <class-decl name='O_curve' size-in-bits='384' is-struct='yes' visibility='default' filepath='libnurbs/internals/reader.h' line='55' column='1' id='type-id-272'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-111'/>
-        <member-type access='public'>
-          <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='libnurbs/internals/reader.h' line='56' column='1' id='type-id-273'>
-            <data-member access='private'>
-              <var-decl name='o_nurbscurve' type-id='type-id-85' visibility='default' filepath='libnurbs/internals/reader.h' line='57' column='1'/>
-            </data-member>
-            <data-member access='private'>
-              <var-decl name='o_pwlcurve' type-id='type-id-84' visibility='default' filepath='libnurbs/internals/reader.h' line='58' column='1'/>
-            </data-member>
-          </union-decl>
-        </member-type>
+      <member-type access='public'>
+        <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='libnurbs/internals/reader.h' line='56' column='1' id='type-id-273'>
+          <data-member access='private'>
+            <var-decl name='o_nurbscurve' type-id='type-id-85' visibility='default' filepath='libnurbs/internals/reader.h' line='57' column='1'/>
+          </data-member>
+          <data-member access='private'>
+            <var-decl name='o_pwlcurve' type-id='type-id-84' visibility='default' filepath='libnurbs/internals/reader.h' line='58' column='1'/>
+          </data-member>
+        </union-decl>
+      </member-type>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='curve' type-id='type-id-273' visibility='default' filepath='libnurbs/internals/reader.h' line='59' column='1'/>
       </data-member>

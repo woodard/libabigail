@@ -1408,16 +1408,16 @@
     <typedef-decl name='__FILE' type-id='type-id-29' filepath='/usr/include/stdio.h' line='65' column='1' id='type-id-85'/>
     <typedef-decl name='mbstate_t' type-id='type-id-86' filepath='/usr/include/wchar.h' line='106' column='1' id='type-id-87'/>
     <class-decl name='__mbstate_t' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/include/wchar.h' line='84' column='1' id='type-id-86'>
-        <member-type access='public'>
-          <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='87' column='1' id='type-id-88'>
-            <data-member access='private'>
-              <var-decl name='__wch' type-id='type-id-13' visibility='default' filepath='/usr/include/wchar.h' line='89' column='1'/>
-            </data-member>
-            <data-member access='private'>
-              <var-decl name='__wchb' type-id='type-id-10' visibility='default' filepath='/usr/include/wchar.h' line='93' column='1'/>
-            </data-member>
-          </union-decl>
-        </member-type>
+      <member-type access='public'>
+        <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='87' column='1' id='type-id-88'>
+          <data-member access='private'>
+            <var-decl name='__wch' type-id='type-id-13' visibility='default' filepath='/usr/include/wchar.h' line='89' column='1'/>
+          </data-member>
+          <data-member access='private'>
+            <var-decl name='__wchb' type-id='type-id-10' visibility='default' filepath='/usr/include/wchar.h' line='93' column='1'/>
+          </data-member>
+        </union-decl>
+      </member-type>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='__count' type-id='type-id-17' visibility='default' filepath='/usr/include/wchar.h' line='85' column='1'/>
       </data-member>
@@ -1535,9 +1535,9 @@
       </data-member>
     </class-decl>
     <class-decl name='vtkWeakPointerBase' size-in-bits='64' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkWeakPointerBase.h' line='31' column='1' id='type-id-75'>
-        <member-type access='protected'>
-          <class-decl name='NoReference' size-in-bits='8' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkWeakPointerBase.h' line='70' column='1' id='type-id-91'/>
-        </member-type>
+      <member-type access='protected'>
+        <class-decl name='NoReference' size-in-bits='8' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkWeakPointerBase.h' line='70' column='1' id='type-id-91'/>
+      </member-type>
       <data-member access='protected' layout-offset-in-bits='0'>
         <var-decl name='Object' type-id='type-id-66' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkWeakPointerBase.h' line='74' column='1'/>
       </data-member>
@@ -1619,9 +1619,9 @@
       </data-member>
     </class-decl>
     <class-decl name='vtkPixelTransfer' size-in-bits='8' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='35' column='1' id='type-id-104'>
-        <member-type access='private'>
-          <typedef-decl name='VTK_TT' type-id='type-id-15' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.cxx' line='19' column='1' id='type-id-105'/>
-        </member-type>
+      <member-type access='private'>
+        <typedef-decl name='VTK_TT' type-id='type-id-15' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.cxx' line='19' column='1' id='type-id-105'/>
+      </member-type>
       <member-function access='private' static='yes'>
         <function-decl name='Blit' mangled-name='_ZN16vtkPixelTransfer4BlitERK14vtkPixelExtentiiPviS3_' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='44' column='1' visibility='default' binding='global' size-in-bits='64'>
           <parameter type-id='type-id-49'/>
@@ -2080,29 +2080,29 @@
     <pointer-type-def type-id='type-id-260' size-in-bits='64' id='type-id-261'/>
     <namespace-decl name='std'>
       <class-decl name='ios_base' visibility='default' is-declaration-only='yes' id='type-id-219'>
-          <member-type access='private'>
-            <class-decl name='Init' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='538' column='1' id='type-id-221'>
-              <data-member access='private' static='yes'>
-                <var-decl name='_S_refcount' type-id='type-id-28' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='545' column='1'/>
-              </data-member>
-              <data-member access='private' static='yes'>
-                <var-decl name='_S_synced_with_stdio' type-id='type-id-1' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='546' column='1'/>
-              </data-member>
-              <member-function access='private' constructor='yes'>
-                <function-decl name='Init' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='541' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <parameter type-id='type-id-222' is-artificial='yes'/>
-                  <return type-id='type-id-26'/>
-                </function-decl>
-              </member-function>
-              <member-function access='private' destructor='yes'>
-                <function-decl name='~Init' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='542' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <parameter type-id='type-id-222' is-artificial='yes'/>
-                  <parameter type-id='type-id-17' is-artificial='yes'/>
-                  <return type-id='type-id-26'/>
-                </function-decl>
-              </member-function>
-            </class-decl>
-          </member-type>
+        <member-type access='private'>
+          <class-decl name='Init' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='538' column='1' id='type-id-221'>
+            <data-member access='private' static='yes'>
+              <var-decl name='_S_refcount' type-id='type-id-28' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='545' column='1'/>
+            </data-member>
+            <data-member access='private' static='yes'>
+              <var-decl name='_S_synced_with_stdio' type-id='type-id-1' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='546' column='1'/>
+            </data-member>
+            <member-function access='private' constructor='yes'>
+              <function-decl name='Init' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='541' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <parameter type-id='type-id-222' is-artificial='yes'/>
+                <return type-id='type-id-26'/>
+              </function-decl>
+            </member-function>
+            <member-function access='private' destructor='yes'>
+              <function-decl name='~Init' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='542' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <parameter type-id='type-id-222' is-artificial='yes'/>
+                <parameter type-id='type-id-17' is-artificial='yes'/>
+                <return type-id='type-id-26'/>
+              </function-decl>
+            </member-function>
+          </class-decl>
+        </member-type>
         <data-member access='private' static='yes'>
           <var-decl name='boolalpha' type-id='type-id-150' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='266' column='1'/>
         </data-member>
@@ -2195,9 +2195,9 @@
         </data-member>
       </class-decl>
       <class-decl name='_Resetiosflags' size-in-bits='32' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iomanip' line='49' column='1' id='type-id-262'>
-          <member-type access='public'>
-            <typedef-decl name='fmtflags' type-id='type-id-263' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='263' column='1' id='type-id-149'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='fmtflags' type-id='type-id-263' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='263' column='1' id='type-id-149'/>
+        </member-type>
         <data-member access='public' layout-offset-in-bits='0'>
           <var-decl name='_M_mask' type-id='type-id-149' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iomanip' line='49' column='1'/>
         </data-member>
@@ -2225,9 +2225,9 @@
         <enumerator name='_S_ios_fmtflags_end' value='65536'/>
       </enum-decl>
       <class-decl name='basic_ios&lt;char, std::char_traits&lt;char&gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-164'>
-          <member-type access='public'>
-            <typedef-decl name='iostate' type-id='type-id-264' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='338' column='1' id='type-id-167'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='iostate' type-id='type-id-264' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='338' column='1' id='type-id-167'/>
+        </member-type>
         <member-function access='public'>
           <function-decl name='rdstate' mangled-name='_ZNKSt9basic_iosIcSt11char_traitsIcEE7rdstateEv' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_ios.h' line='127' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-166' is-artificial='yes'/>
@@ -2271,12 +2271,12 @@
         <enumerator name='_S_ios_iostate_end' value='65536'/>
       </enum-decl>
       <class-decl name='__basic_file&lt;char&gt;' size-in-bits='128' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/x86_64-redhat-linux/bits/basic_file.h' line='53' column='1' id='type-id-151'>
-          <member-type access='private'>
-            <typedef-decl name='openmode' type-id='type-id-265' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='369' column='1' id='type-id-154'/>
-          </member-type>
-          <member-type access='private'>
-            <typedef-decl name='seekdir' type-id='type-id-266' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='401' column='1' id='type-id-156'/>
-          </member-type>
+        <member-type access='private'>
+          <typedef-decl name='openmode' type-id='type-id-265' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='369' column='1' id='type-id-154'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='seekdir' type-id='type-id-266' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='401' column='1' id='type-id-156'/>
+        </member-type>
         <data-member access='private' layout-offset-in-bits='0'>
           <var-decl name='_M_cfile' type-id='type-id-206' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/x86_64-redhat-linux/bits/basic_file.h' line='55' column='1'/>
         </data-member>
@@ -3219,12 +3219,12 @@
         </member-function>
       </class-decl>
       <class-decl name='char_traits&lt;char&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='238' column='1' is-declaration-only='yes' id='type-id-280'>
-          <member-type access='public'>
-            <typedef-decl name='char_type' type-id='type-id-2' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='239' column='1' id='type-id-169'/>
-          </member-type>
-          <member-type access='public'>
-            <typedef-decl name='int_type' type-id='type-id-17' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='240' column='1' id='type-id-173'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='char_type' type-id='type-id-2' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='239' column='1' id='type-id-169'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='int_type' type-id='type-id-17' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='240' column='1' id='type-id-173'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='assign' mangled-name='_ZNSt11char_traitsIcE6assignERcRKc' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='246' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-216'/>
@@ -3324,42 +3324,42 @@
         </member-function>
       </class-decl>
       <class-decl name='_Deque_base&lt;vtkPixelExtent, std::allocator&lt;vtkPixelExtent&gt; &gt;' size-in-bits='640' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='362' column='1' id='type-id-142'>
-          <member-type access='protected'>
-            <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='465' column='1' id='type-id-281'>
-              <underlying-type type-id='type-id-24'/>
-              <enumerator name='_S_initial_map_size' value='8'/>
-            </enum-decl>
-          </member-type>
-          <member-type access='protected'>
-            <class-decl name='_Deque_impl' size-in-bits='640' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='412' column='1' id='type-id-200'>
-              <base-class access='public' layout-offset-in-bits='0' type-id='type-id-161'/>
-              <data-member access='public' layout-offset-in-bits='0'>
-                <var-decl name='_M_map' type-id='type-id-253' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='413' column='1'/>
-              </data-member>
-              <data-member access='public' layout-offset-in-bits='64'>
-                <var-decl name='_M_map_size' type-id='type-id-37' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='414' column='1'/>
-              </data-member>
-              <data-member access='public' layout-offset-in-bits='128'>
-                <var-decl name='_M_start' type-id='type-id-145' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='415' column='1'/>
-              </data-member>
-              <data-member access='public' layout-offset-in-bits='384'>
-                <var-decl name='_M_finish' type-id='type-id-145' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='416' column='1'/>
-              </data-member>
-              <member-function access='public' constructor='yes'>
-                <function-decl name='_Deque_impl' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='418' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <parameter type-id='type-id-201' is-artificial='yes'/>
-                  <return type-id='type-id-26'/>
-                </function-decl>
-              </member-function>
-              <member-function access='public' constructor='yes'>
-                <function-decl name='_Deque_impl' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='423' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <parameter type-id='type-id-201' is-artificial='yes'/>
-                  <parameter type-id='type-id-163'/>
-                  <return type-id='type-id-26'/>
-                </function-decl>
-              </member-function>
-            </class-decl>
-          </member-type>
+        <member-type access='protected'>
+          <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='465' column='1' id='type-id-281'>
+            <underlying-type type-id='type-id-24'/>
+            <enumerator name='_S_initial_map_size' value='8'/>
+          </enum-decl>
+        </member-type>
+        <member-type access='protected'>
+          <class-decl name='_Deque_impl' size-in-bits='640' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='412' column='1' id='type-id-200'>
+            <base-class access='public' layout-offset-in-bits='0' type-id='type-id-161'/>
+            <data-member access='public' layout-offset-in-bits='0'>
+              <var-decl name='_M_map' type-id='type-id-253' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='413' column='1'/>
+            </data-member>
+            <data-member access='public' layout-offset-in-bits='64'>
+              <var-decl name='_M_map_size' type-id='type-id-37' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='414' column='1'/>
+            </data-member>
+            <data-member access='public' layout-offset-in-bits='128'>
+              <var-decl name='_M_start' type-id='type-id-145' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='415' column='1'/>
+            </data-member>
+            <data-member access='public' layout-offset-in-bits='384'>
+              <var-decl name='_M_finish' type-id='type-id-145' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='416' column='1'/>
+            </data-member>
+            <member-function access='public' constructor='yes'>
+              <function-decl name='_Deque_impl' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='418' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <parameter type-id='type-id-201' is-artificial='yes'/>
+                <return type-id='type-id-26'/>
+              </function-decl>
+            </member-function>
+            <member-function access='public' constructor='yes'>
+              <function-decl name='_Deque_impl' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='423' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <parameter type-id='type-id-201' is-artificial='yes'/>
+                <parameter type-id='type-id-163'/>
+                <return type-id='type-id-26'/>
+              </function-decl>
+            </member-function>
+          </class-decl>
+        </member-type>
         <data-member access='protected' layout-offset-in-bits='0'>
           <var-decl name='_M_impl' type-id='type-id-200' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='467' column='1'/>
         </data-member>
@@ -4582,19 +4582,19 @@
       </member-function>
     </class-decl>
     <class-decl name='vtkDataObject' visibility='default' is-declaration-only='yes' id='type-id-235'>
-        <member-type access='private'>
-          <enum-decl name='FieldAssociations' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/DataModel/vtkDataObject.h' line='212' column='1' id='type-id-287'>
-            <underlying-type type-id='type-id-24'/>
-            <enumerator name='FIELD_ASSOCIATION_POINTS' value='0'/>
-            <enumerator name='FIELD_ASSOCIATION_CELLS' value='1'/>
-            <enumerator name='FIELD_ASSOCIATION_NONE' value='2'/>
-            <enumerator name='FIELD_ASSOCIATION_POINTS_THEN_CELLS' value='3'/>
-            <enumerator name='FIELD_ASSOCIATION_VERTICES' value='4'/>
-            <enumerator name='FIELD_ASSOCIATION_EDGES' value='5'/>
-            <enumerator name='FIELD_ASSOCIATION_ROWS' value='6'/>
-            <enumerator name='NUMBER_OF_ASSOCIATIONS' value='7'/>
-          </enum-decl>
-        </member-type>
+      <member-type access='private'>
+        <enum-decl name='FieldAssociations' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/DataModel/vtkDataObject.h' line='212' column='1' id='type-id-287'>
+          <underlying-type type-id='type-id-24'/>
+          <enumerator name='FIELD_ASSOCIATION_POINTS' value='0'/>
+          <enumerator name='FIELD_ASSOCIATION_CELLS' value='1'/>
+          <enumerator name='FIELD_ASSOCIATION_NONE' value='2'/>
+          <enumerator name='FIELD_ASSOCIATION_POINTS_THEN_CELLS' value='3'/>
+          <enumerator name='FIELD_ASSOCIATION_VERTICES' value='4'/>
+          <enumerator name='FIELD_ASSOCIATION_EDGES' value='5'/>
+          <enumerator name='FIELD_ASSOCIATION_ROWS' value='6'/>
+          <enumerator name='NUMBER_OF_ASSOCIATIONS' value='7'/>
+        </enum-decl>
+      </member-type>
       <member-function access='private' static='yes'>
         <function-decl name='SafeDownCast' mangled-name='_ZN13vtkDataObject12SafeDownCastEP13vtkObjectBase' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/DataModel/vtkDataObject.h' line='61' column='1' visibility='default' binding='global' size-in-bits='64'>
           <parameter type-id='type-id-66'/>
@@ -4667,9 +4667,9 @@
       </member-function>
     </class-decl>
     <class-decl name='vtkOStreamWrapper' visibility='default' is-declaration-only='yes' id='type-id-289'>
-        <member-type access='private'>
-          <class-decl name='EndlType' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkOStreamWrapper.h' line='58' column='1' id='type-id-184'/>
-        </member-type>
+      <member-type access='private'>
+        <class-decl name='EndlType' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkOStreamWrapper.h' line='58' column='1' id='type-id-184'/>
+      </member-type>
       <member-function access='private' static='yes'>
         <function-decl name='UseEndl' mangled-name='_ZN17vtkOStreamWrapper7UseEndlERKNS_8EndlTypeE' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkOStreamWrapper.h' line='134' column='1' visibility='default' binding='global' size-in-bits='64'>
           <parameter type-id='type-id-186'/>
@@ -4833,40 +4833,40 @@
       </member-function>
     </class-decl>
     <class-decl name='vtkTextureObject' visibility='default' is-declaration-only='yes' id='type-id-290'>
-        <member-type access='private'>
-          <enum-decl name='__anonymous_enum__2' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/OpenGL/vtkTextureObject.h' line='88' column='1' id='type-id-291'>
-            <underlying-type type-id='type-id-24'/>
-            <enumerator name='Native' value='0'/>
-            <enumerator name='Fixed16' value='1'/>
-            <enumerator name='Fixed24' value='2'/>
-            <enumerator name='Fixed32' value='3'/>
-            <enumerator name='Float32' value='4'/>
-            <enumerator name='NumberOfDepthFormats' value='5'/>
-          </enum-decl>
-        </member-type>
-        <member-type access='private'>
-          <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/OpenGL/vtkTextureObject.h' line='65' column='1' id='type-id-292'>
-            <underlying-type type-id='type-id-24'/>
-            <enumerator name='Clamp' value='0'/>
-            <enumerator name='ClampToEdge' value='1'/>
-            <enumerator name='Repeat' value='2'/>
-            <enumerator name='ClampToBorder' value='3'/>
-            <enumerator name='MirroredRepeat' value='4'/>
-            <enumerator name='NumberOfWrapModes' value='5'/>
-          </enum-decl>
-        </member-type>
-        <member-type access='private'>
-          <enum-decl name='__anonymous_enum__1' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/OpenGL/vtkTextureObject.h' line='76' column='1' id='type-id-293'>
-            <underlying-type type-id='type-id-24'/>
-            <enumerator name='Nearest' value='0'/>
-            <enumerator name='Linear' value='1'/>
-            <enumerator name='NearestMipmapNearest' value='2'/>
-            <enumerator name='NearestMipmapLinear' value='3'/>
-            <enumerator name='LinearMipmapNearest' value='4'/>
-            <enumerator name='LinearMipmapLinear' value='5'/>
-            <enumerator name='NumberOfMinificationModes' value='6'/>
-          </enum-decl>
-        </member-type>
+      <member-type access='private'>
+        <enum-decl name='__anonymous_enum__2' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/OpenGL/vtkTextureObject.h' line='88' column='1' id='type-id-291'>
+          <underlying-type type-id='type-id-24'/>
+          <enumerator name='Native' value='0'/>
+          <enumerator name='Fixed16' value='1'/>
+          <enumerator name='Fixed24' value='2'/>
+          <enumerator name='Fixed32' value='3'/>
+          <enumerator name='Float32' value='4'/>
+          <enumerator name='NumberOfDepthFormats' value='5'/>
+        </enum-decl>
+      </member-type>
+      <member-type access='private'>
+        <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/OpenGL/vtkTextureObject.h' line='65' column='1' id='type-id-292'>
+          <underlying-type type-id='type-id-24'/>
+          <enumerator name='Clamp' value='0'/>
+          <enumerator name='ClampToEdge' value='1'/>
+          <enumerator name='Repeat' value='2'/>
+          <enumerator name='ClampToBorder' value='3'/>
+          <enumerator name='MirroredRepeat' value='4'/>
+          <enumerator name='NumberOfWrapModes' value='5'/>
+        </enum-decl>
+      </member-type>
+      <member-type access='private'>
+        <enum-decl name='__anonymous_enum__1' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/OpenGL/vtkTextureObject.h' line='76' column='1' id='type-id-293'>
+          <underlying-type type-id='type-id-24'/>
+          <enumerator name='Nearest' value='0'/>
+          <enumerator name='Linear' value='1'/>
+          <enumerator name='NearestMipmapNearest' value='2'/>
+          <enumerator name='NearestMipmapLinear' value='3'/>
+          <enumerator name='LinearMipmapNearest' value='4'/>
+          <enumerator name='LinearMipmapLinear' value='5'/>
+          <enumerator name='NumberOfMinificationModes' value='6'/>
+        </enum-decl>
+      </member-type>
       <member-function access='private' static='yes'>
         <function-decl name='IsSupported' mangled-name='_ZN16vtkTextureObject11IsSupportedEP15vtkRenderWindow' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/OpenGL/vtkTextureObject.h' line='459' column='1' visibility='default' binding='global' size-in-bits='64'>
           <parameter type-id='type-id-77'/>
@@ -4909,13 +4909,13 @@
       </member-function>
     </class-decl>
     <class-decl name='vtkPixelBufferObject' visibility='default' is-declaration-only='yes' id='type-id-247'>
-        <member-type access='private'>
-          <enum-decl name='BufferType' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/OpenGL/vtkPixelBufferObject.h' line='265' column='1' id='type-id-295'>
-            <underlying-type type-id='type-id-24'/>
-            <enumerator name='UNPACKED_BUFFER' value='0'/>
-            <enumerator name='PACKED_BUFFER' value='1'/>
-          </enum-decl>
-        </member-type>
+      <member-type access='private'>
+        <enum-decl name='BufferType' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/OpenGL/vtkPixelBufferObject.h' line='265' column='1' id='type-id-295'>
+          <underlying-type type-id='type-id-24'/>
+          <enumerator name='UNPACKED_BUFFER' value='0'/>
+          <enumerator name='PACKED_BUFFER' value='1'/>
+        </enum-decl>
+      </member-type>
       <member-function access='private'>
         <function-decl name='MapUnpackedBuffer' mangled-name='_ZN20vtkPixelBufferObject17MapUnpackedBufferEiji' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/OpenGL/vtkPixelBufferObject.h' line='247' column='1' visibility='default' binding='global' size-in-bits='64'>
           <parameter type-id='type-id-248' is-artificial='yes'/>
@@ -4956,13 +4956,13 @@
       </member-function>
     </class-decl>
     <class-decl name='vtkDataArrayTemplate&lt;float&gt;' visibility='default' is-declaration-only='yes' id='type-id-233'>
-        <member-type access='private'>
-          <enum-decl name='DeleteMethod' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkDataArrayTemplate.h' line='254' column='1' id='type-id-296'>
-            <underlying-type type-id='type-id-24'/>
-            <enumerator name='VTK_DATA_ARRAY_FREE' value='0'/>
-            <enumerator name='VTK_DATA_ARRAY_DELETE' value='1'/>
-          </enum-decl>
-        </member-type>
+      <member-type access='private'>
+        <enum-decl name='DeleteMethod' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkDataArrayTemplate.h' line='254' column='1' id='type-id-296'>
+          <underlying-type type-id='type-id-24'/>
+          <enumerator name='VTK_DATA_ARRAY_FREE' value='0'/>
+          <enumerator name='VTK_DATA_ARRAY_DELETE' value='1'/>
+        </enum-decl>
+      </member-type>
       <member-function access='private'>
         <function-decl name='GetPointer' mangled-name='_ZN20vtkDataArrayTemplateIfE10GetPointerEx' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkDataArrayTemplate.h' line='250' column='1' visibility='default' binding='global' size-in-bits='64'>
           <parameter type-id='type-id-234' is-artificial='yes'/>
@@ -5112,9 +5112,9 @@
     <pointer-type-def type-id='type-id-65' size-in-bits='64' id='type-id-298'/>
     <namespace-decl name='std'>
       <class-decl name='ctype&lt;char&gt;' visibility='default' is-declaration-only='yes' id='type-id-302'>
-          <member-type access='private'>
-            <typedef-decl name='char_type' type-id='type-id-2' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/locale_facets.h' line='679' column='1' id='type-id-309'/>
-          </member-type>
+        <member-type access='private'>
+          <typedef-decl name='char_type' type-id='type-id-2' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/locale_facets.h' line='679' column='1' id='type-id-309'/>
+        </member-type>
         <member-function access='private'>
           <function-decl name='widen' mangled-name='_ZNKSt5ctypeIcE5widenEc' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/locale_facets.h' line='865' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-305' is-artificial='yes'/>
@@ -5242,13 +5242,13 @@
     </class-decl>
     <class-decl name='vtkLineIntegralConvolution2D' size-in-bits='1792' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.h' line='105' column='1' id='type-id-320'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-286'/>
-        <member-type access='private'>
-          <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.h' line='149' column='1' id='type-id-321'>
-            <underlying-type type-id='type-id-24'/>
-            <enumerator name='ENHANCE_CONTRAST_OFF' value='0'/>
-            <enumerator name='ENHANCE_CONTRAST_ON' value='1'/>
-          </enum-decl>
-        </member-type>
+      <member-type access='private'>
+        <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.h' line='149' column='1' id='type-id-321'>
+          <underlying-type type-id='type-id-24'/>
+          <enumerator name='ENHANCE_CONTRAST_OFF' value='0'/>
+          <enumerator name='ENHANCE_CONTRAST_ON' value='1'/>
+        </enum-decl>
+      </member-type>
       <data-member access='protected' layout-offset-in-bits='384'>
         <var-decl name='Comm' type-id='type-id-316' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.h' line='362' column='1'/>
       </data-member>
@@ -6490,135 +6490,135 @@
         <return type-id='type-id-253'/>
       </function-decl>
       <class-decl name='basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stringfwd.h' line='52' column='1' id='type-id-373'>
-          <member-type access='private'>
-            <class-decl name='_Rep_base' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='141' column='1' id='type-id-423'>
-              <data-member access='public' layout-offset-in-bits='0'>
-                <var-decl name='_M_length' type-id='type-id-37' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='142' column='1'/>
-              </data-member>
-              <data-member access='public' layout-offset-in-bits='64'>
-                <var-decl name='_M_capacity' type-id='type-id-37' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='143' column='1'/>
-              </data-member>
-              <data-member access='public' layout-offset-in-bits='128'>
-                <var-decl name='_M_refcount' type-id='type-id-28' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='144' column='1'/>
-              </data-member>
-            </class-decl>
-          </member-type>
-          <member-type access='private'>
-            <class-decl name='_Rep' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='148' column='1' id='type-id-377'>
-              <base-class access='public' layout-offset-in-bits='0' type-id='type-id-423'/>
-              <data-member access='public' static='yes'>
-                <var-decl name='_S_max_size' type-id='type-id-140' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.tcc' line='51' column='1'/>
-              </data-member>
-              <data-member access='public' static='yes'>
-                <var-decl name='_S_terminal' type-id='type-id-133' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.tcc' line='56' column='1'/>
-              </data-member>
-              <data-member access='public' static='yes'>
-                <var-decl name='_S_empty_rep_storage' type-id='type-id-312' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.tcc' line='68' column='1'/>
-              </data-member>
-              <member-function access='public' static='yes'>
-                <function-decl name='_S_empty_rep' mangled-name='_ZNSs4_Rep12_S_empty_repEv' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='173' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <return type-id='type-id-407'/>
-                </function-decl>
-              </member-function>
-              <member-function access='public'>
-                <function-decl name='_M_is_leaked' mangled-name='_ZNKSs4_Rep12_M_is_leakedEv' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='183' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <parameter type-id='type-id-379' is-artificial='yes'/>
-                  <return type-id='type-id-1'/>
-                </function-decl>
-              </member-function>
-              <member-function access='public'>
-                <function-decl name='_M_is_shared' mangled-name='_ZNKSs4_Rep12_M_is_sharedEv' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='187' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <parameter type-id='type-id-379' is-artificial='yes'/>
-                  <return type-id='type-id-1'/>
-                </function-decl>
-              </member-function>
-              <member-function access='public'>
-                <function-decl name='_M_set_leaked' mangled-name='_ZNSs4_Rep13_M_set_leakedEv' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='191' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <parameter type-id='type-id-408' is-artificial='yes'/>
-                  <return type-id='type-id-26'/>
-                </function-decl>
-              </member-function>
-              <member-function access='public'>
-                <function-decl name='_M_set_sharable' mangled-name='_ZNSs4_Rep15_M_set_sharableEv' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='195' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <parameter type-id='type-id-408' is-artificial='yes'/>
-                  <return type-id='type-id-26'/>
-                </function-decl>
-              </member-function>
-              <member-function access='public'>
-                <function-decl name='_M_set_length_and_sharable' mangled-name='_ZNSs4_Rep26_M_set_length_and_sharableEm' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='199' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <parameter type-id='type-id-408' is-artificial='yes'/>
-                  <parameter type-id='type-id-4'/>
-                  <return type-id='type-id-26'/>
-                </function-decl>
-              </member-function>
-              <member-function access='public'>
-                <function-decl name='_M_refdata' mangled-name='_ZNSs4_Rep10_M_refdataEv' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='214' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <parameter type-id='type-id-408' is-artificial='yes'/>
-                  <return type-id='type-id-31'/>
-                </function-decl>
-              </member-function>
-              <member-function access='public'>
-                <function-decl name='_M_grab' mangled-name='_ZNSs4_Rep7_M_grabERKSaIcES2_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='218' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <parameter type-id='type-id-408' is-artificial='yes'/>
-                  <parameter type-id='type-id-360'/>
-                  <parameter type-id='type-id-360'/>
-                  <return type-id='type-id-31'/>
-                </function-decl>
-              </member-function>
-              <member-function access='public' static='yes'>
-                <function-decl name='_S_create' mangled-name='_ZNSs4_Rep9_S_createEmmRKSaIcE' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.tcc' line='546' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <parameter type-id='type-id-4'/>
-                  <parameter type-id='type-id-4'/>
-                  <parameter type-id='type-id-360'/>
-                  <return type-id='type-id-408'/>
-                </function-decl>
-              </member-function>
-              <member-function access='public'>
-                <function-decl name='_M_dispose' mangled-name='_ZNSs4_Rep10_M_disposeERKSaIcE' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='229' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <parameter type-id='type-id-408' is-artificial='yes'/>
-                  <parameter type-id='type-id-360'/>
-                  <return type-id='type-id-26'/>
-                </function-decl>
-              </member-function>
-              <member-function access='public'>
-                <function-decl name='_M_destroy' mangled-name='_ZNSs4_Rep10_M_destroyERKSaIcE' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.tcc' line='445' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <parameter type-id='type-id-408' is-artificial='yes'/>
-                  <parameter type-id='type-id-360'/>
-                  <return type-id='type-id-26'/>
-                </function-decl>
-              </member-function>
-              <member-function access='public'>
-                <function-decl name='_M_refcopy' mangled-name='_ZNSs4_Rep10_M_refcopyEv' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='243' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <parameter type-id='type-id-408' is-artificial='yes'/>
-                  <return type-id='type-id-31'/>
-                </function-decl>
-              </member-function>
-              <member-function access='public'>
-                <function-decl name='_M_clone' mangled-name='_ZNSs4_Rep8_M_cloneERKSaIcEm' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.tcc' line='624' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <parameter type-id='type-id-408' is-artificial='yes'/>
-                  <parameter type-id='type-id-360'/>
-                  <parameter type-id='type-id-4'/>
-                  <return type-id='type-id-31'/>
-                </function-decl>
-              </member-function>
-            </class-decl>
-          </member-type>
-          <member-type access='private'>
-            <class-decl name='_Alloc_hider' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='258' column='1' id='type-id-405'>
-              <base-class access='public' layout-offset-in-bits='0' type-id='type-id-358'/>
-              <data-member access='public' layout-offset-in-bits='0'>
-                <var-decl name='_M_p' type-id='type-id-31' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='262' column='1'/>
-              </data-member>
-              <member-function access='public' constructor='yes'>
-                <function-decl name='_Alloc_hider' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='259' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <parameter type-id='type-id-406' is-artificial='yes'/>
-                  <parameter type-id='type-id-31'/>
-                  <parameter type-id='type-id-360'/>
-                  <return type-id='type-id-26'/>
-                </function-decl>
-              </member-function>
-            </class-decl>
-          </member-type>
+        <member-type access='private'>
+          <class-decl name='_Rep_base' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='141' column='1' id='type-id-423'>
+            <data-member access='public' layout-offset-in-bits='0'>
+              <var-decl name='_M_length' type-id='type-id-37' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='142' column='1'/>
+            </data-member>
+            <data-member access='public' layout-offset-in-bits='64'>
+              <var-decl name='_M_capacity' type-id='type-id-37' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='143' column='1'/>
+            </data-member>
+            <data-member access='public' layout-offset-in-bits='128'>
+              <var-decl name='_M_refcount' type-id='type-id-28' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='144' column='1'/>
+            </data-member>
+          </class-decl>
+        </member-type>
+        <member-type access='private'>
+          <class-decl name='_Rep' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='148' column='1' id='type-id-377'>
+            <base-class access='public' layout-offset-in-bits='0' type-id='type-id-423'/>
+            <data-member access='public' static='yes'>
+              <var-decl name='_S_max_size' type-id='type-id-140' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.tcc' line='51' column='1'/>
+            </data-member>
+            <data-member access='public' static='yes'>
+              <var-decl name='_S_terminal' type-id='type-id-133' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.tcc' line='56' column='1'/>
+            </data-member>
+            <data-member access='public' static='yes'>
+              <var-decl name='_S_empty_rep_storage' type-id='type-id-312' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.tcc' line='68' column='1'/>
+            </data-member>
+            <member-function access='public' static='yes'>
+              <function-decl name='_S_empty_rep' mangled-name='_ZNSs4_Rep12_S_empty_repEv' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='173' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <return type-id='type-id-407'/>
+              </function-decl>
+            </member-function>
+            <member-function access='public'>
+              <function-decl name='_M_is_leaked' mangled-name='_ZNKSs4_Rep12_M_is_leakedEv' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='183' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <parameter type-id='type-id-379' is-artificial='yes'/>
+                <return type-id='type-id-1'/>
+              </function-decl>
+            </member-function>
+            <member-function access='public'>
+              <function-decl name='_M_is_shared' mangled-name='_ZNKSs4_Rep12_M_is_sharedEv' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='187' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <parameter type-id='type-id-379' is-artificial='yes'/>
+                <return type-id='type-id-1'/>
+              </function-decl>
+            </member-function>
+            <member-function access='public'>
+              <function-decl name='_M_set_leaked' mangled-name='_ZNSs4_Rep13_M_set_leakedEv' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='191' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <parameter type-id='type-id-408' is-artificial='yes'/>
+                <return type-id='type-id-26'/>
+              </function-decl>
+            </member-function>
+            <member-function access='public'>
+              <function-decl name='_M_set_sharable' mangled-name='_ZNSs4_Rep15_M_set_sharableEv' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='195' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <parameter type-id='type-id-408' is-artificial='yes'/>
+                <return type-id='type-id-26'/>
+              </function-decl>
+            </member-function>
+            <member-function access='public'>
+              <function-decl name='_M_set_length_and_sharable' mangled-name='_ZNSs4_Rep26_M_set_length_and_sharableEm' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='199' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <parameter type-id='type-id-408' is-artificial='yes'/>
+                <parameter type-id='type-id-4'/>
+                <return type-id='type-id-26'/>
+              </function-decl>
+            </member-function>
+            <member-function access='public'>
+              <function-decl name='_M_refdata' mangled-name='_ZNSs4_Rep10_M_refdataEv' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='214' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <parameter type-id='type-id-408' is-artificial='yes'/>
+                <return type-id='type-id-31'/>
+              </function-decl>
+            </member-function>
+            <member-function access='public'>
+              <function-decl name='_M_grab' mangled-name='_ZNSs4_Rep7_M_grabERKSaIcES2_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='218' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <parameter type-id='type-id-408' is-artificial='yes'/>
+                <parameter type-id='type-id-360'/>
+                <parameter type-id='type-id-360'/>
+                <return type-id='type-id-31'/>
+              </function-decl>
+            </member-function>
+            <member-function access='public' static='yes'>
+              <function-decl name='_S_create' mangled-name='_ZNSs4_Rep9_S_createEmmRKSaIcE' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.tcc' line='546' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <parameter type-id='type-id-4'/>
+                <parameter type-id='type-id-4'/>
+                <parameter type-id='type-id-360'/>
+                <return type-id='type-id-408'/>
+              </function-decl>
+            </member-function>
+            <member-function access='public'>
+              <function-decl name='_M_dispose' mangled-name='_ZNSs4_Rep10_M_disposeERKSaIcE' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='229' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <parameter type-id='type-id-408' is-artificial='yes'/>
+                <parameter type-id='type-id-360'/>
+                <return type-id='type-id-26'/>
+              </function-decl>
+            </member-function>
+            <member-function access='public'>
+              <function-decl name='_M_destroy' mangled-name='_ZNSs4_Rep10_M_destroyERKSaIcE' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.tcc' line='445' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <parameter type-id='type-id-408' is-artificial='yes'/>
+                <parameter type-id='type-id-360'/>
+                <return type-id='type-id-26'/>
+              </function-decl>
+            </member-function>
+            <member-function access='public'>
+              <function-decl name='_M_refcopy' mangled-name='_ZNSs4_Rep10_M_refcopyEv' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='243' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <parameter type-id='type-id-408' is-artificial='yes'/>
+                <return type-id='type-id-31'/>
+              </function-decl>
+            </member-function>
+            <member-function access='public'>
+              <function-decl name='_M_clone' mangled-name='_ZNSs4_Rep8_M_cloneERKSaIcEm' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.tcc' line='624' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <parameter type-id='type-id-408' is-artificial='yes'/>
+                <parameter type-id='type-id-360'/>
+                <parameter type-id='type-id-4'/>
+                <return type-id='type-id-31'/>
+              </function-decl>
+            </member-function>
+          </class-decl>
+        </member-type>
+        <member-type access='private'>
+          <class-decl name='_Alloc_hider' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='258' column='1' id='type-id-405'>
+            <base-class access='public' layout-offset-in-bits='0' type-id='type-id-358'/>
+            <data-member access='public' layout-offset-in-bits='0'>
+              <var-decl name='_M_p' type-id='type-id-31' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='262' column='1'/>
+            </data-member>
+            <member-function access='public' constructor='yes'>
+              <function-decl name='_Alloc_hider' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='259' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <parameter type-id='type-id-406' is-artificial='yes'/>
+                <parameter type-id='type-id-31'/>
+                <parameter type-id='type-id-360'/>
+                <return type-id='type-id-26'/>
+              </function-decl>
+            </member-function>
+          </class-decl>
+        </member-type>
         <data-member access='public' static='yes'>
           <var-decl name='npos' type-id='type-id-140' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='270' column='1'/>
         </data-member>
@@ -7674,33 +7674,33 @@
       <class-decl name='__false_type' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/cpp_type_traits.h' line='79' column='1' is-declaration-only='yes' id='type-id-274'/>
       <typedef-decl name='string' type-id='type-id-373' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stringfwd.h' line='56' column='1' id='type-id-428'/>
       <class-decl name='_Vector_base&lt;vtkPixelBufferObject*, std::allocator&lt;vtkPixelBufferObject*&gt; &gt;' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='70' column='1' id='type-id-355'>
-          <member-type access='public'>
-            <class-decl name='_Vector_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='75' column='1' id='type-id-394'>
-              <base-class access='public' layout-offset-in-bits='0' type-id='type-id-364'/>
-              <data-member access='public' layout-offset-in-bits='0'>
-                <var-decl name='_M_start' type-id='type-id-279' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='76' column='1'/>
-              </data-member>
-              <data-member access='public' layout-offset-in-bits='64'>
-                <var-decl name='_M_finish' type-id='type-id-279' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='77' column='1'/>
-              </data-member>
-              <data-member access='public' layout-offset-in-bits='128'>
-                <var-decl name='_M_end_of_storage' type-id='type-id-279' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='78' column='1'/>
-              </data-member>
-              <member-function access='public' constructor='yes'>
-                <function-decl name='_Vector_impl' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='80' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <parameter type-id='type-id-395' is-artificial='yes'/>
-                  <return type-id='type-id-26'/>
-                </function-decl>
-              </member-function>
-              <member-function access='public' constructor='yes'>
-                <function-decl name='_Vector_impl' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='84' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <parameter type-id='type-id-395' is-artificial='yes'/>
-                  <parameter type-id='type-id-366'/>
-                  <return type-id='type-id-26'/>
-                </function-decl>
-              </member-function>
-            </class-decl>
-          </member-type>
+        <member-type access='public'>
+          <class-decl name='_Vector_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='75' column='1' id='type-id-394'>
+            <base-class access='public' layout-offset-in-bits='0' type-id='type-id-364'/>
+            <data-member access='public' layout-offset-in-bits='0'>
+              <var-decl name='_M_start' type-id='type-id-279' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='76' column='1'/>
+            </data-member>
+            <data-member access='public' layout-offset-in-bits='64'>
+              <var-decl name='_M_finish' type-id='type-id-279' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='77' column='1'/>
+            </data-member>
+            <data-member access='public' layout-offset-in-bits='128'>
+              <var-decl name='_M_end_of_storage' type-id='type-id-279' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='78' column='1'/>
+            </data-member>
+            <member-function access='public' constructor='yes'>
+              <function-decl name='_Vector_impl' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='80' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <parameter type-id='type-id-395' is-artificial='yes'/>
+                <return type-id='type-id-26'/>
+              </function-decl>
+            </member-function>
+            <member-function access='public' constructor='yes'>
+              <function-decl name='_Vector_impl' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='84' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <parameter type-id='type-id-395' is-artificial='yes'/>
+                <parameter type-id='type-id-366'/>
+                <return type-id='type-id-26'/>
+              </function-decl>
+            </member-function>
+          </class-decl>
+        </member-type>
         <data-member access='public' layout-offset-in-bits='0'>
           <var-decl name='_M_impl' type-id='type-id-394' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='136' column='1'/>
         </data-member>
@@ -8121,33 +8121,33 @@
         </member-function>
       </class-decl>
       <class-decl name='_Vector_base&lt;float, std::allocator&lt;float&gt; &gt;' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='70' column='1' id='type-id-352'>
-          <member-type access='public'>
-            <class-decl name='_Vector_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='75' column='1' id='type-id-391'>
-              <base-class access='public' layout-offset-in-bits='0' type-id='type-id-361'/>
-              <data-member access='public' layout-offset-in-bits='0'>
-                <var-decl name='_M_start' type-id='type-id-59' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='76' column='1'/>
-              </data-member>
-              <data-member access='public' layout-offset-in-bits='64'>
-                <var-decl name='_M_finish' type-id='type-id-59' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='77' column='1'/>
-              </data-member>
-              <data-member access='public' layout-offset-in-bits='128'>
-                <var-decl name='_M_end_of_storage' type-id='type-id-59' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='78' column='1'/>
-              </data-member>
-              <member-function access='public' constructor='yes'>
-                <function-decl name='_Vector_impl' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='80' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <parameter type-id='type-id-392' is-artificial='yes'/>
-                  <return type-id='type-id-26'/>
-                </function-decl>
-              </member-function>
-              <member-function access='public' constructor='yes'>
-                <function-decl name='_Vector_impl' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='84' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <parameter type-id='type-id-392' is-artificial='yes'/>
-                  <parameter type-id='type-id-363'/>
-                  <return type-id='type-id-26'/>
-                </function-decl>
-              </member-function>
-            </class-decl>
-          </member-type>
+        <member-type access='public'>
+          <class-decl name='_Vector_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='75' column='1' id='type-id-391'>
+            <base-class access='public' layout-offset-in-bits='0' type-id='type-id-361'/>
+            <data-member access='public' layout-offset-in-bits='0'>
+              <var-decl name='_M_start' type-id='type-id-59' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='76' column='1'/>
+            </data-member>
+            <data-member access='public' layout-offset-in-bits='64'>
+              <var-decl name='_M_finish' type-id='type-id-59' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='77' column='1'/>
+            </data-member>
+            <data-member access='public' layout-offset-in-bits='128'>
+              <var-decl name='_M_end_of_storage' type-id='type-id-59' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='78' column='1'/>
+            </data-member>
+            <member-function access='public' constructor='yes'>
+              <function-decl name='_Vector_impl' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='80' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <parameter type-id='type-id-392' is-artificial='yes'/>
+                <return type-id='type-id-26'/>
+              </function-decl>
+            </member-function>
+            <member-function access='public' constructor='yes'>
+              <function-decl name='_Vector_impl' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='84' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <parameter type-id='type-id-392' is-artificial='yes'/>
+                <parameter type-id='type-id-363'/>
+                <return type-id='type-id-26'/>
+              </function-decl>
+            </member-function>
+          </class-decl>
+        </member-type>
         <data-member access='public' layout-offset-in-bits='0'>
           <var-decl name='_M_impl' type-id='type-id-391' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='136' column='1'/>
         </data-member>
@@ -10446,349 +10446,349 @@
     </class-decl>
     <class-decl name='vtkSurfaceLICPainter' size-in-bits='2880' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.h' line='67' column='1' id='type-id-504'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-505'/>
-        <member-type access='private'>
-          <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.h' line='210' column='1' id='type-id-506'>
-            <underlying-type type-id='type-id-24'/>
-            <enumerator name='ENHANCE_CONTRAST_OFF' value='0'/>
-            <enumerator name='ENHANCE_CONTRAST_LIC' value='1'/>
-            <enumerator name='ENHANCE_CONTRAST_COLOR' value='3'/>
-            <enumerator name='ENHANCE_CONTRAST_BOTH' value='4'/>
-          </enum-decl>
-        </member-type>
-        <member-type access='private'>
-          <enum-decl name='__anonymous_enum__1' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.h' line='374' column='1' id='type-id-507'>
-            <underlying-type type-id='type-id-24'/>
-            <enumerator name='COMPOSITE_INPLACE' value='0'/>
-            <enumerator name='COMPOSITE_INPLACE_DISJOINT' value='1'/>
-            <enumerator name='COMPOSITE_BALANCED' value='2'/>
-            <enumerator name='COMPOSITE_AUTO' value='3'/>
-          </enum-decl>
-        </member-type>
-        <member-type access='protected'>
-          <class-decl name='vtkInternals' size-in-bits='3392' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='824' column='1' id='type-id-508'>
-            <data-member access='private' layout-offset-in-bits='0'>
-              <var-decl name='LightMonitor' type-id='type-id-509' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='826' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='512'>
-              <var-decl name='ViewMonitor' type-id='type-id-510' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='827' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='576'>
-              <var-decl name='BGMonitor' type-id='type-id-511' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='828' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='640'>
-              <var-decl name='Context' type-id='type-id-512' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='830' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='704'>
-              <var-decl name='GLSupport' type-id='type-id-1' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='831' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='736'>
-              <var-decl name='Viewsize' type-id='type-id-310' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='832' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='832'>
-              <var-decl name='LastInputDataSetMTime' type-id='type-id-21' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='833' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='896'>
-              <var-decl name='LastPropertyMTime' type-id='type-id-21' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='834' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='960'>
-              <var-decl name='LastLUTMTime' type-id='type-id-21' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='835' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='1024'>
-              <var-decl name='BlockExts' type-id='type-id-176' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='837' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='1664'>
-              <var-decl name='DataSetExt' type-id='type-id-47' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='838' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='1792'>
-              <var-decl name='ContextNeedsUpdate' type-id='type-id-1' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='840' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='1800'>
-              <var-decl name='OutputDataNeedsUpdate' type-id='type-id-1' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='841' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='1808'>
-              <var-decl name='CommunicatorNeedsUpdate' type-id='type-id-1' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='842' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='1816'>
-              <var-decl name='GeometryNeedsUpdate' type-id='type-id-1' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='843' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='1824'>
-              <var-decl name='GatherNeedsUpdate' type-id='type-id-1' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='844' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='1832'>
-              <var-decl name='LICNeedsUpdate' type-id='type-id-1' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='845' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='1840'>
-              <var-decl name='ColorNeedsUpdate' type-id='type-id-1' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='846' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='1856'>
-              <var-decl name='Communicator' type-id='type-id-316' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='848' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='1920'>
-              <var-decl name='DepthImage' type-id='type-id-513' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='851' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='1984'>
-              <var-decl name='GeometryImage' type-id='type-id-513' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='855' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='2048'>
-              <var-decl name='VectorImage' type-id='type-id-513' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='856' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='2112'>
-              <var-decl name='CompositeVectorImage' type-id='type-id-513' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='857' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='2176'>
-              <var-decl name='MaskVectorImage' type-id='type-id-513' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='858' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='2240'>
-              <var-decl name='CompositeMaskVectorImage' type-id='type-id-513' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='859' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='2304'>
-              <var-decl name='NoiseImage' type-id='type-id-513' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='860' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='2368'>
-              <var-decl name='LICImage' type-id='type-id-513' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='861' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='2432'>
-              <var-decl name='RGBColorImage' type-id='type-id-513' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='862' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='2496'>
-              <var-decl name='HSLColorImage' type-id='type-id-513' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='863' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='2560'>
-              <var-decl name='Noise' type-id='type-id-514' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='864' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='2624'>
-              <var-decl name='FBO' type-id='type-id-515' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='866' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='2688'>
-              <var-decl name='RenderGeometryPass' type-id='type-id-516' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='868' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='2752'>
-              <var-decl name='ColorPass' type-id='type-id-516' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='869' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='2816'>
-              <var-decl name='ColorEnhancePass' type-id='type-id-516' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='870' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='2880'>
-              <var-decl name='CopyPass' type-id='type-id-516' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='871' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='2944'>
-              <var-decl name='LightingHelper' type-id='type-id-517' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='872' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='3008'>
-              <var-decl name='ColorMaterialHelper' type-id='type-id-518' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='873' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='3072'>
-              <var-decl name='Compositor' type-id='type-id-519' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='875' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='3136'>
-              <var-decl name='LICer' type-id='type-id-520' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='876' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='3200'>
-              <var-decl name='FieldAssociation' type-id='type-id-17' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='878' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='3232'>
-              <var-decl name='FieldAttributeType' type-id='type-id-17' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='879' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='3264'>
-              <var-decl name='FieldName' type-id='type-id-428' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='880' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='3328'>
-              <var-decl name='FieldNameSet' type-id='type-id-1' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='881' column='1'/>
-            </data-member>
-            <data-member access='private' layout-offset-in-bits='3336'>
-              <var-decl name='HasVectors' type-id='type-id-1' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='882' column='1'/>
-            </data-member>
-            <member-function access='private' constructor='yes'>
-              <function-decl name='vtkInternals' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='888' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <return type-id='type-id-26'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private' destructor='yes'>
-              <function-decl name='~vtkInternals' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='927' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <parameter type-id='type-id-17' is-artificial='yes'/>
-                <return type-id='type-id-26'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private' static='yes'>
-              <function-decl name='IsSupported' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals11IsSupportedEP21vtkOpenGLRenderWindow' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='950' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-246'/>
-                <return type-id='type-id-1'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private'>
-              <function-decl name='ClearGraphicsResources' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals22ClearGraphicsResourcesEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='989' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <return type-id='type-id-26'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private'>
-              <function-decl name='ClearTextures' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals13ClearTexturesEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1008' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <return type-id='type-id-26'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private'>
-              <function-decl name='AllocateTextures' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals16AllocateTexturesEP15vtkRenderWindowPi' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1024' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <parameter type-id='type-id-77'/>
-                <parameter type-id='type-id-54'/>
-                <return type-id='type-id-26'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private'>
-              <function-decl name='AllocateTexture' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals15AllocateTextureEP15vtkRenderWindowPiR15vtkSmartPointerI16vtkTextureObjectEi' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1041' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <parameter type-id='type-id-77'/>
-                <parameter type-id='type-id-54'/>
-                <parameter type-id='type-id-522'/>
-                <parameter type-id='type-id-17'/>
-                <return type-id='type-id-26'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private'>
-              <function-decl name='AllocateDepthTexture' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals20AllocateDepthTextureEP15vtkRenderWindowPiR15vtkSmartPointerI16vtkTextureObjectE' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1068' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <parameter type-id='type-id-77'/>
-                <parameter type-id='type-id-54'/>
-                <parameter type-id='type-id-522'/>
-                <return type-id='type-id-26'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private'>
-              <function-decl name='Updated' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals7UpdatedEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1102' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <return type-id='type-id-26'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private'>
-              <function-decl name='UpdateAll' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals9UpdateAllEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1116' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <return type-id='type-id-26'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private'>
-              <function-decl name='ViewportQuadTextureCoords' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals25ViewportQuadTextureCoordsEPf' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1129' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <parameter type-id='type-id-60'/>
-                <return type-id='type-id-26'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private'>
-              <function-decl name='ViewportQuadPoints' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals18ViewportQuadPointsERK14vtkPixelExtentPf' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1138' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <parameter type-id='type-id-49'/>
-                <parameter type-id='type-id-60'/>
-                <return type-id='type-id-26'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private'>
-              <function-decl name='ViewportQuadTextureCoords' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals25ViewportQuadTextureCoordsERK14vtkPixelExtentS3_Pf' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1146' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <parameter type-id='type-id-49'/>
-                <parameter type-id='type-id-49'/>
-                <parameter type-id='type-id-60'/>
-                <return type-id='type-id-26'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private'>
-              <function-decl name='ViewQuadPoints' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals14ViewQuadPointsEPf' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1168' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <parameter type-id='type-id-60'/>
-                <return type-id='type-id-26'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private'>
-              <function-decl name='ViewQuadTextureCoords' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals21ViewQuadTextureCoordsEPf' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1177' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <parameter type-id='type-id-60'/>
-                <return type-id='type-id-26'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private'>
-              <function-decl name='RenderQuad' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals10RenderQuadERK14vtkPixelExtentS3_i' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1185' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <parameter type-id='type-id-49'/>
-                <parameter type-id='type-id-49'/>
-                <parameter type-id='type-id-17'/>
-                <return type-id='type-id-26'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private'>
-              <function-decl name='LightingChanged' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals15LightingChangedEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1219' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <return type-id='type-id-1'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private'>
-              <function-decl name='ViewChanged' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals11ViewChangedEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1236' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <return type-id='type-id-1'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private'>
-              <function-decl name='BackgroundChanged' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals17BackgroundChangedEP11vtkRenderer' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1244' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <parameter type-id='type-id-523'/>
-                <return type-id='type-id-1'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private'>
-              <function-decl name='idx' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals3idxEii' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1252' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <parameter type-id='type-id-17'/>
-                <parameter type-id='type-id-17'/>
-                <return type-id='type-id-17'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private'>
-              <function-decl name='VisibilityTest' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals14VisibilityTestEPd' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1263' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <parameter type-id='type-id-194'/>
-                <return type-id='type-id-1'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private'>
-              <function-decl name='ProjectBounds' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals13ProjectBoundsEPdPiS1_R14vtkPixelExtent' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1299' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <parameter type-id='type-id-194'/>
-                <parameter type-id='type-id-54'/>
-                <parameter type-id='type-id-194'/>
-                <parameter type-id='type-id-50'/>
-                <return type-id='type-id-1'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private'>
-              <function-decl name='ProjectBounds' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals13ProjectBoundsEP13vtkDataObjectPiR14vtkPixelExtentRSt5dequeIS4_SaIS4_EE' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1390' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <parameter type-id='type-id-236'/>
-                <parameter type-id='type-id-54'/>
-                <parameter type-id='type-id-50'/>
-                <parameter type-id='type-id-58'/>
-                <return type-id='type-id-17'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private'>
-              <function-decl name='GetPixelBounds' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals14GetPixelBoundsEPfiR14vtkPixelExtent' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1474' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <parameter type-id='type-id-59'/>
-                <parameter type-id='type-id-17'/>
-                <parameter type-id='type-id-50'/>
-                <return type-id='type-id-26'/>
-              </function-decl>
-            </member-function>
-            <member-function access='private'>
-              <function-decl name='GetPixelBounds' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals14GetPixelBoundsEPfiRSt5dequeI14vtkPixelExtentSaIS3_EE' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1496' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <parameter type-id='type-id-59'/>
-                <parameter type-id='type-id-17'/>
-                <parameter type-id='type-id-58'/>
-                <return type-id='type-id-26'/>
-              </function-decl>
-            </member-function>
-          </class-decl>
-        </member-type>
+      <member-type access='private'>
+        <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.h' line='210' column='1' id='type-id-506'>
+          <underlying-type type-id='type-id-24'/>
+          <enumerator name='ENHANCE_CONTRAST_OFF' value='0'/>
+          <enumerator name='ENHANCE_CONTRAST_LIC' value='1'/>
+          <enumerator name='ENHANCE_CONTRAST_COLOR' value='3'/>
+          <enumerator name='ENHANCE_CONTRAST_BOTH' value='4'/>
+        </enum-decl>
+      </member-type>
+      <member-type access='private'>
+        <enum-decl name='__anonymous_enum__1' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.h' line='374' column='1' id='type-id-507'>
+          <underlying-type type-id='type-id-24'/>
+          <enumerator name='COMPOSITE_INPLACE' value='0'/>
+          <enumerator name='COMPOSITE_INPLACE_DISJOINT' value='1'/>
+          <enumerator name='COMPOSITE_BALANCED' value='2'/>
+          <enumerator name='COMPOSITE_AUTO' value='3'/>
+        </enum-decl>
+      </member-type>
+      <member-type access='protected'>
+        <class-decl name='vtkInternals' size-in-bits='3392' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='824' column='1' id='type-id-508'>
+          <data-member access='private' layout-offset-in-bits='0'>
+            <var-decl name='LightMonitor' type-id='type-id-509' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='826' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='512'>
+            <var-decl name='ViewMonitor' type-id='type-id-510' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='827' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='576'>
+            <var-decl name='BGMonitor' type-id='type-id-511' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='828' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='640'>
+            <var-decl name='Context' type-id='type-id-512' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='830' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='704'>
+            <var-decl name='GLSupport' type-id='type-id-1' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='831' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='736'>
+            <var-decl name='Viewsize' type-id='type-id-310' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='832' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='832'>
+            <var-decl name='LastInputDataSetMTime' type-id='type-id-21' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='833' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='896'>
+            <var-decl name='LastPropertyMTime' type-id='type-id-21' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='834' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='960'>
+            <var-decl name='LastLUTMTime' type-id='type-id-21' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='835' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='1024'>
+            <var-decl name='BlockExts' type-id='type-id-176' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='837' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='1664'>
+            <var-decl name='DataSetExt' type-id='type-id-47' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='838' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='1792'>
+            <var-decl name='ContextNeedsUpdate' type-id='type-id-1' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='840' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='1800'>
+            <var-decl name='OutputDataNeedsUpdate' type-id='type-id-1' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='841' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='1808'>
+            <var-decl name='CommunicatorNeedsUpdate' type-id='type-id-1' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='842' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='1816'>
+            <var-decl name='GeometryNeedsUpdate' type-id='type-id-1' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='843' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='1824'>
+            <var-decl name='GatherNeedsUpdate' type-id='type-id-1' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='844' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='1832'>
+            <var-decl name='LICNeedsUpdate' type-id='type-id-1' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='845' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='1840'>
+            <var-decl name='ColorNeedsUpdate' type-id='type-id-1' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='846' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='1856'>
+            <var-decl name='Communicator' type-id='type-id-316' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='848' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='1920'>
+            <var-decl name='DepthImage' type-id='type-id-513' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='851' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='1984'>
+            <var-decl name='GeometryImage' type-id='type-id-513' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='855' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='2048'>
+            <var-decl name='VectorImage' type-id='type-id-513' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='856' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='2112'>
+            <var-decl name='CompositeVectorImage' type-id='type-id-513' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='857' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='2176'>
+            <var-decl name='MaskVectorImage' type-id='type-id-513' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='858' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='2240'>
+            <var-decl name='CompositeMaskVectorImage' type-id='type-id-513' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='859' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='2304'>
+            <var-decl name='NoiseImage' type-id='type-id-513' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='860' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='2368'>
+            <var-decl name='LICImage' type-id='type-id-513' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='861' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='2432'>
+            <var-decl name='RGBColorImage' type-id='type-id-513' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='862' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='2496'>
+            <var-decl name='HSLColorImage' type-id='type-id-513' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='863' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='2560'>
+            <var-decl name='Noise' type-id='type-id-514' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='864' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='2624'>
+            <var-decl name='FBO' type-id='type-id-515' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='866' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='2688'>
+            <var-decl name='RenderGeometryPass' type-id='type-id-516' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='868' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='2752'>
+            <var-decl name='ColorPass' type-id='type-id-516' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='869' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='2816'>
+            <var-decl name='ColorEnhancePass' type-id='type-id-516' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='870' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='2880'>
+            <var-decl name='CopyPass' type-id='type-id-516' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='871' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='2944'>
+            <var-decl name='LightingHelper' type-id='type-id-517' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='872' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='3008'>
+            <var-decl name='ColorMaterialHelper' type-id='type-id-518' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='873' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='3072'>
+            <var-decl name='Compositor' type-id='type-id-519' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='875' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='3136'>
+            <var-decl name='LICer' type-id='type-id-520' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='876' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='3200'>
+            <var-decl name='FieldAssociation' type-id='type-id-17' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='878' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='3232'>
+            <var-decl name='FieldAttributeType' type-id='type-id-17' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='879' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='3264'>
+            <var-decl name='FieldName' type-id='type-id-428' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='880' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='3328'>
+            <var-decl name='FieldNameSet' type-id='type-id-1' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='881' column='1'/>
+          </data-member>
+          <data-member access='private' layout-offset-in-bits='3336'>
+            <var-decl name='HasVectors' type-id='type-id-1' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='882' column='1'/>
+          </data-member>
+          <member-function access='private' constructor='yes'>
+            <function-decl name='vtkInternals' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='888' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <return type-id='type-id-26'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private' destructor='yes'>
+            <function-decl name='~vtkInternals' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='927' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <parameter type-id='type-id-17' is-artificial='yes'/>
+              <return type-id='type-id-26'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private' static='yes'>
+            <function-decl name='IsSupported' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals11IsSupportedEP21vtkOpenGLRenderWindow' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='950' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-246'/>
+              <return type-id='type-id-1'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private'>
+            <function-decl name='ClearGraphicsResources' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals22ClearGraphicsResourcesEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='989' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <return type-id='type-id-26'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private'>
+            <function-decl name='ClearTextures' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals13ClearTexturesEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1008' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <return type-id='type-id-26'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private'>
+            <function-decl name='AllocateTextures' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals16AllocateTexturesEP15vtkRenderWindowPi' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1024' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <parameter type-id='type-id-77'/>
+              <parameter type-id='type-id-54'/>
+              <return type-id='type-id-26'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private'>
+            <function-decl name='AllocateTexture' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals15AllocateTextureEP15vtkRenderWindowPiR15vtkSmartPointerI16vtkTextureObjectEi' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1041' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <parameter type-id='type-id-77'/>
+              <parameter type-id='type-id-54'/>
+              <parameter type-id='type-id-522'/>
+              <parameter type-id='type-id-17'/>
+              <return type-id='type-id-26'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private'>
+            <function-decl name='AllocateDepthTexture' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals20AllocateDepthTextureEP15vtkRenderWindowPiR15vtkSmartPointerI16vtkTextureObjectE' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1068' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <parameter type-id='type-id-77'/>
+              <parameter type-id='type-id-54'/>
+              <parameter type-id='type-id-522'/>
+              <return type-id='type-id-26'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private'>
+            <function-decl name='Updated' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals7UpdatedEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1102' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <return type-id='type-id-26'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private'>
+            <function-decl name='UpdateAll' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals9UpdateAllEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1116' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <return type-id='type-id-26'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private'>
+            <function-decl name='ViewportQuadTextureCoords' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals25ViewportQuadTextureCoordsEPf' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1129' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <parameter type-id='type-id-60'/>
+              <return type-id='type-id-26'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private'>
+            <function-decl name='ViewportQuadPoints' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals18ViewportQuadPointsERK14vtkPixelExtentPf' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1138' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <parameter type-id='type-id-49'/>
+              <parameter type-id='type-id-60'/>
+              <return type-id='type-id-26'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private'>
+            <function-decl name='ViewportQuadTextureCoords' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals25ViewportQuadTextureCoordsERK14vtkPixelExtentS3_Pf' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1146' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <parameter type-id='type-id-49'/>
+              <parameter type-id='type-id-49'/>
+              <parameter type-id='type-id-60'/>
+              <return type-id='type-id-26'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private'>
+            <function-decl name='ViewQuadPoints' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals14ViewQuadPointsEPf' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1168' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <parameter type-id='type-id-60'/>
+              <return type-id='type-id-26'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private'>
+            <function-decl name='ViewQuadTextureCoords' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals21ViewQuadTextureCoordsEPf' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1177' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <parameter type-id='type-id-60'/>
+              <return type-id='type-id-26'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private'>
+            <function-decl name='RenderQuad' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals10RenderQuadERK14vtkPixelExtentS3_i' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1185' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <parameter type-id='type-id-49'/>
+              <parameter type-id='type-id-49'/>
+              <parameter type-id='type-id-17'/>
+              <return type-id='type-id-26'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private'>
+            <function-decl name='LightingChanged' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals15LightingChangedEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1219' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <return type-id='type-id-1'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private'>
+            <function-decl name='ViewChanged' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals11ViewChangedEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1236' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <return type-id='type-id-1'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private'>
+            <function-decl name='BackgroundChanged' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals17BackgroundChangedEP11vtkRenderer' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1244' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <parameter type-id='type-id-523'/>
+              <return type-id='type-id-1'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private'>
+            <function-decl name='idx' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals3idxEii' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1252' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <parameter type-id='type-id-17'/>
+              <parameter type-id='type-id-17'/>
+              <return type-id='type-id-17'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private'>
+            <function-decl name='VisibilityTest' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals14VisibilityTestEPd' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1263' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <parameter type-id='type-id-194'/>
+              <return type-id='type-id-1'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private'>
+            <function-decl name='ProjectBounds' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals13ProjectBoundsEPdPiS1_R14vtkPixelExtent' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1299' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <parameter type-id='type-id-194'/>
+              <parameter type-id='type-id-54'/>
+              <parameter type-id='type-id-194'/>
+              <parameter type-id='type-id-50'/>
+              <return type-id='type-id-1'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private'>
+            <function-decl name='ProjectBounds' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals13ProjectBoundsEP13vtkDataObjectPiR14vtkPixelExtentRSt5dequeIS4_SaIS4_EE' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1390' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <parameter type-id='type-id-236'/>
+              <parameter type-id='type-id-54'/>
+              <parameter type-id='type-id-50'/>
+              <parameter type-id='type-id-58'/>
+              <return type-id='type-id-17'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private'>
+            <function-decl name='GetPixelBounds' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals14GetPixelBoundsEPfiR14vtkPixelExtent' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1474' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <parameter type-id='type-id-59'/>
+              <parameter type-id='type-id-17'/>
+              <parameter type-id='type-id-50'/>
+              <return type-id='type-id-26'/>
+            </function-decl>
+          </member-function>
+          <member-function access='private'>
+            <function-decl name='GetPixelBounds' mangled-name='_ZN20vtkSurfaceLICPainter12vtkInternals14GetPixelBoundsEPfiRSt5dequeI14vtkPixelExtentSaIS3_EE' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1496' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-521' is-artificial='yes'/>
+              <parameter type-id='type-id-59'/>
+              <parameter type-id='type-id-17'/>
+              <parameter type-id='type-id-58'/>
+              <return type-id='type-id-26'/>
+            </function-decl>
+          </member-function>
+        </class-decl>
+      </member-type>
       <data-member access='protected' layout-offset-in-bits='1088'>
         <var-decl name='NumberOfSteps' type-id='type-id-17' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.h' line='487' column='1'/>
       </data-member>
@@ -11669,15 +11669,15 @@
     <reference-type-def kind='lvalue' type-id='type-id-500' size-in-bits='64' id='type-id-503'/>
     <pointer-type-def type-id='type-id-500' size-in-bits='64' id='type-id-501'/>
     <class-decl name='vtkPainter' visibility='default' is-declaration-only='yes' id='type-id-505'>
-        <member-type access='private'>
-          <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/Core/vtkPainter.h' line='100' column='1' id='type-id-551'>
-            <underlying-type type-id='type-id-24'/>
-            <enumerator name='VERTS' value='1'/>
-            <enumerator name='LINES' value='2'/>
-            <enumerator name='POLYS' value='4'/>
-            <enumerator name='STRIPS' value='8'/>
-          </enum-decl>
-        </member-type>
+      <member-type access='private'>
+        <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/Core/vtkPainter.h' line='100' column='1' id='type-id-551'>
+          <underlying-type type-id='type-id-24'/>
+          <enumerator name='VERTS' value='1'/>
+          <enumerator name='LINES' value='2'/>
+          <enumerator name='POLYS' value='4'/>
+          <enumerator name='STRIPS' value='8'/>
+        </enum-decl>
+      </member-type>
       <member-function access='private' static='yes'>
         <function-decl name='IsTypeOf' mangled-name='_ZN10vtkPainter8IsTypeOfEPKc' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/Core/vtkPainter.h' line='61' column='1' visibility='default' binding='global' size-in-bits='64'>
           <parameter type-id='type-id-68'/>
@@ -11833,9 +11833,9 @@
     </array-type-def>
     <typedef-decl name='GLfloat' type-id='type-id-16' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/mesa@8.0.5-22dd4c4b/include/GL/gl.h' line='160' column='1' id='type-id-556'/>
     <class-decl name='vtkSmartPointerBase' size-in-bits='64' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkSmartPointerBase.h' line='30' column='1' id='type-id-557'>
-        <member-type access='protected'>
-          <class-decl name='NoReference' size-in-bits='8' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkSmartPointerBase.h' line='73' column='1' id='type-id-558'/>
-        </member-type>
+      <member-type access='protected'>
+        <class-decl name='NoReference' size-in-bits='8' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkSmartPointerBase.h' line='73' column='1' id='type-id-558'/>
+      </member-type>
       <data-member access='protected' layout-offset-in-bits='0'>
         <var-decl name='Object' type-id='type-id-66' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkSmartPointerBase.h' line='77' column='1'/>
       </data-member>
@@ -13715,33 +13715,33 @@
         <return type-id='type-id-1'/>
       </function-decl>
       <class-decl name='_Vector_base&lt;vtkPixelExtent, std::allocator&lt;vtkPixelExtent&gt; &gt;' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='70' column='1' id='type-id-630'>
-          <member-type access='public'>
-            <class-decl name='_Vector_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='75' column='1' id='type-id-659'>
-              <base-class access='public' layout-offset-in-bits='0' type-id='type-id-161'/>
-              <data-member access='public' layout-offset-in-bits='0'>
-                <var-decl name='_M_start' type-id='type-id-48' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='76' column='1'/>
-              </data-member>
-              <data-member access='public' layout-offset-in-bits='64'>
-                <var-decl name='_M_finish' type-id='type-id-48' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='77' column='1'/>
-              </data-member>
-              <data-member access='public' layout-offset-in-bits='128'>
-                <var-decl name='_M_end_of_storage' type-id='type-id-48' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='78' column='1'/>
-              </data-member>
-              <member-function access='public' constructor='yes'>
-                <function-decl name='_Vector_impl' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='80' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <parameter type-id='type-id-660' is-artificial='yes'/>
-                  <return type-id='type-id-26'/>
-                </function-decl>
-              </member-function>
-              <member-function access='public' constructor='yes'>
-                <function-decl name='_Vector_impl' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='84' column='1' visibility='default' binding='global' size-in-bits='64'>
-                  <parameter type-id='type-id-660' is-artificial='yes'/>
-                  <parameter type-id='type-id-163'/>
-                  <return type-id='type-id-26'/>
-                </function-decl>
-              </member-function>
-            </class-decl>
-          </member-type>
+        <member-type access='public'>
+          <class-decl name='_Vector_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='75' column='1' id='type-id-659'>
+            <base-class access='public' layout-offset-in-bits='0' type-id='type-id-161'/>
+            <data-member access='public' layout-offset-in-bits='0'>
+              <var-decl name='_M_start' type-id='type-id-48' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='76' column='1'/>
+            </data-member>
+            <data-member access='public' layout-offset-in-bits='64'>
+              <var-decl name='_M_finish' type-id='type-id-48' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='77' column='1'/>
+            </data-member>
+            <data-member access='public' layout-offset-in-bits='128'>
+              <var-decl name='_M_end_of_storage' type-id='type-id-48' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='78' column='1'/>
+            </data-member>
+            <member-function access='public' constructor='yes'>
+              <function-decl name='_Vector_impl' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='80' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <parameter type-id='type-id-660' is-artificial='yes'/>
+                <return type-id='type-id-26'/>
+              </function-decl>
+            </member-function>
+            <member-function access='public' constructor='yes'>
+              <function-decl name='_Vector_impl' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='84' column='1' visibility='default' binding='global' size-in-bits='64'>
+                <parameter type-id='type-id-660' is-artificial='yes'/>
+                <parameter type-id='type-id-163'/>
+                <return type-id='type-id-26'/>
+              </function-decl>
+            </member-function>
+          </class-decl>
+        </member-type>
         <data-member access='public' layout-offset-in-bits='0'>
           <var-decl name='_M_impl' type-id='type-id-659' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='136' column='1'/>
         </data-member>
@@ -14233,14 +14233,14 @@
         </member-function>
       </class-decl>
       <class-decl name='RandomNoise2D' size-in-bits='128' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='299' column='1' id='type-id-678'>
-          <member-type access='private'>
-            <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='319' column='1' id='type-id-689'>
-              <underlying-type type-id='type-id-24'/>
-              <enumerator name='UNIFORM' value='0'/>
-              <enumerator name='GAUSSIAN' value='1'/>
-              <enumerator name='PERLIN' value='2'/>
-            </enum-decl>
-          </member-type>
+        <member-type access='private'>
+          <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='319' column='1' id='type-id-689'>
+            <underlying-type type-id='type-id-24'/>
+            <enumerator name='UNIFORM' value='0'/>
+            <enumerator name='GAUSSIAN' value='1'/>
+            <enumerator name='PERLIN' value='2'/>
+          </enum-decl>
+        </member-type>
         <data-member access='private' layout-offset-in-bits='0'>
           <var-decl name='ValueGen' type-id='type-id-654' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='390' column='1'/>
         </data-member>
@@ -14336,12 +14336,12 @@
       </class-decl>
     </namespace-decl>
     <class-decl name='vtkLightingHelper' visibility='default' is-declaration-only='yes' id='type-id-671'>
-        <member-type access='private'>
-          <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/OpenGL/vtkLightingHelper.h' line='42' column='1' id='type-id-690'>
-            <underlying-type type-id='type-id-24'/>
-            <enumerator name='VTK_MAX_LIGHTS' value='8'/>
-          </enum-decl>
-        </member-type>
+      <member-type access='private'>
+        <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/OpenGL/vtkLightingHelper.h' line='42' column='1' id='type-id-690'>
+          <underlying-type type-id='type-id-24'/>
+          <enumerator name='VTK_MAX_LIGHTS' value='8'/>
+        </enum-decl>
+      </member-type>
       <member-function access='private'>
         <function-decl name='EncodeLightState' mangled-name='_ZN17vtkLightingHelper16EncodeLightStateEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/OpenGL/vtkLightingHelper.h' line='56' column='1' visibility='default' binding='global' size-in-bits='64'>
           <parameter type-id='type-id-604' is-artificial='yes'/>

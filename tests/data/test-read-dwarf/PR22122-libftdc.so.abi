@@ -398,9 +398,9 @@
           </member-function>
         </class-decl>
         <class-decl name='__anonymous_struct__1' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-            <member-type access='public'>
-              <typedef-decl name='rval_reference_type' type-id='type-id-114' filepath='src/third_party/boost-1.60.0/boost/optional/optional.hpp' line='152' column='1' id='type-id-141'/>
-            </member-type>
+          <member-type access='public'>
+            <typedef-decl name='rval_reference_type' type-id='type-id-114' filepath='src/third_party/boost-1.60.0/boost/optional/optional.hpp' line='152' column='1' id='type-id-141'/>
+          </member-type>
         </class-decl>
       </namespace-decl>
       <class-decl name='__anonymous_struct__' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
@@ -450,9 +450,9 @@
         </member-function>
       </class-decl>
       <class-decl name='__anonymous_struct__1' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='private'>
-            <typedef-decl name='rval_reference_type' type-id='type-id-141' filepath='src/third_party/boost-1.60.0/boost/optional/optional.hpp' line='777' column='1' id='type-id-142'/>
-          </member-type>
+        <member-type access='private'>
+          <typedef-decl name='rval_reference_type' type-id='type-id-141' filepath='src/third_party/boost-1.60.0/boost/optional/optional.hpp' line='777' column='1' id='type-id-142'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='optional' mangled-name='_ZN5boost8optionalISt6vectorIN5mongo7BSONObjESaIS3_EEEC2Ev' filepath='src/third_party/boost-1.60.0/boost/optional/optional.hpp' line='786' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-57' is-artificial='yes'/>
@@ -471,9 +471,9 @@
     <namespace-decl name='std'>
       <namespace-decl name='__cxx11'>
         <class-decl name='basic_stringstream&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' size-in-bits='3136' visibility='default' is-declaration-only='yes' id='type-id-90'>
-            <member-type access='private'>
-              <typedef-decl name='__string_type' type-id='type-id-87' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/sstream' line='669' column='1' id='type-id-143'/>
-            </member-type>
+          <member-type access='private'>
+            <typedef-decl name='__string_type' type-id='type-id-87' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/sstream' line='669' column='1' id='type-id-143'/>
+          </member-type>
           <member-function access='public'>
             <function-decl name='str' mangled-name='_ZNKSt7__cxx1118basic_stringstreamIcSt11char_traitsIcESaIcEE3strEv' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/sstream' line='765' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-92' is-artificial='yes'/>
@@ -488,20 +488,20 @@
           </member-function>
         </class-decl>
         <class-decl name='basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' size-in-bits='256' visibility='default' is-declaration-only='yes' id='type-id-87'>
-            <member-type access='private'>
-              <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-144'>
-                <underlying-type type-id='type-id-18'/>
-              </enum-decl>
-            </member-type>
-            <member-type access='private'>
-              <typedef-decl name='size_type' type-id='type-id-146' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/basic_string.h' line='82' column='1' id='type-id-145'/>
-            </member-type>
-            <member-type access='private'>
-              <typedef-decl name='pointer' type-id='type-id-148' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/basic_string.h' line='86' column='1' id='type-id-147'/>
-            </member-type>
-            <member-type access='private'>
-              <typedef-decl name='const_pointer' type-id='type-id-150' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/basic_string.h' line='87' column='1' id='type-id-149'/>
-            </member-type>
+          <member-type access='private'>
+            <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-144'>
+              <underlying-type type-id='type-id-18'/>
+            </enum-decl>
+          </member-type>
+          <member-type access='private'>
+            <typedef-decl name='size_type' type-id='type-id-146' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/basic_string.h' line='82' column='1' id='type-id-145'/>
+          </member-type>
+          <member-type access='private'>
+            <typedef-decl name='pointer' type-id='type-id-148' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/basic_string.h' line='86' column='1' id='type-id-147'/>
+          </member-type>
+          <member-type access='private'>
+            <typedef-decl name='const_pointer' type-id='type-id-150' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/basic_string.h' line='87' column='1' id='type-id-149'/>
+          </member-type>
           <member-type access='private'>
             <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
               <member-function access='public' static='yes'>
@@ -828,9 +828,9 @@
       <typedef-decl name='ptrdiff_t' type-id='type-id-15' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/x86_64-linux-gnu/c++/5.4.0/bits/c++config.h' line='197' column='1' id='type-id-157'/>
       <typedef-decl name='size_t' type-id='type-id-21' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/x86_64-linux-gnu/c++/5.4.0/bits/c++config.h' line='196' column='1' id='type-id-47'/>
       <class-decl name='__anonymous_struct__' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='private'>
-            <typedef-decl name='size_type' type-id='type-id-47' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_vector.h' line='236' column='1' id='type-id-158'/>
-          </member-type>
+        <member-type access='private'>
+          <typedef-decl name='size_type' type-id='type-id-47' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_vector.h' line='236' column='1' id='type-id-158'/>
+        </member-type>
         <member-function access='public'>
           <function-decl name='size' mangled-name='_ZNKSt6vectorImSaImEE4sizeEv' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_vector.h' line='654' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-86' is-artificial='yes'/>
@@ -874,9 +874,9 @@
         </member-function>
       </class-decl>
       <class-decl name='__anonymous_struct__1' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='public'>
-            <typedef-decl name='_Tp_alloc_type' type-id='type-id-161' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_vector.h' line='75' column='1' id='type-id-160'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='_Tp_alloc_type' type-id='type-id-161' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_vector.h' line='75' column='1' id='type-id-160'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='_M_allocate' mangled-name='_ZNSt12_Vector_baseImSaImEE11_M_allocateEm' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_vector.h' line='167' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-119' is-artificial='yes'/>
@@ -894,15 +894,15 @@
         </member-function>
       </class-decl>
       <class-decl name='__anonymous_struct__2' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='public'>
-            <typedef-decl name='rebind_alloc&lt;unsigned char&gt;' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='477' column='1' id='type-id-162'/>
-          </member-type>
-          <member-type access='public'>
-            <typedef-decl name='pointer' type-id='type-id-132' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='450' column='1' id='type-id-159'/>
-          </member-type>
-          <member-type access='public'>
-            <typedef-decl name='allocator_type' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='445' column='1' id='type-id-120'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='rebind_alloc&lt;unsigned char&gt;' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='477' column='1' id='type-id-162'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='pointer' type-id='type-id-132' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='450' column='1' id='type-id-159'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='allocator_type' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='445' column='1' id='type-id-120'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='allocate' mangled-name='_ZNSt16allocator_traitsISaImEE8allocateERS0_m' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='490' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-121'/>
@@ -921,9 +921,9 @@
       </class-decl>
       <class-decl name='__anonymous_struct__3' is-anonymous='yes' naming-typedef-id='type-id-162' visibility='default' is-declaration-only='yes' id='type-id-24'/>
       <class-decl name='__anonymous_struct__4' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='public'>
-            <typedef-decl name='__int_type' type-id='type-id-20' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/atomic_base.h' line='241' column='1' id='type-id-163'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='__int_type' type-id='type-id-20' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/atomic_base.h' line='241' column='1' id='type-id-163'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='__atomic_base' mangled-name='_ZNSt13__atomic_baseIjEC2Ej' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/atomic_base.h' line='256' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-119' is-artificial='yes'/>
@@ -952,9 +952,9 @@
       </enum-decl>
       <typedef-decl name='memory_order' type-id='type-id-165' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/atomic_base.h' line='63' column='1' id='type-id-164'/>
       <class-decl name='__anonymous_struct__5' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='public'>
-            <typedef-decl name='__integral_type' type-id='type-id-20' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/atomic' line='626' column='1' id='type-id-166'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='__integral_type' type-id='type-id-20' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/atomic' line='626' column='1' id='type-id-166'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='atomic' mangled-name='_ZNSt6atomicIjEC2Ej' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/atomic' line='635' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-119' is-artificial='yes'/>
@@ -994,9 +994,9 @@
       </class-decl>
       <class-decl name='__anonymous_struct__9' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
       <class-decl name='__anonymous_struct__10' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='public'>
-            <typedef-decl name='const_pointer' type-id='type-id-66' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='453' column='1' id='type-id-167'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='const_pointer' type-id='type-id-66' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='453' column='1' id='type-id-167'/>
+        </member-type>
       </class-decl>
       <class-decl name='allocator&lt;char&gt;' size-in-bits='8' visibility='default' is-declaration-only='yes' id='type-id-168'/>
       <class-decl name='basic_streambuf&lt;char, std::char_traits&lt;char&gt; &gt;' size-in-bits='512' visibility='default' is-declaration-only='yes' id='type-id-130'>
@@ -1114,11 +1114,11 @@
         </member-function>
       </class-decl>
       <class-decl name='__anonymous_struct__2' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='private'>
-            <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-173'>
-              <underlying-type type-id='type-id-18'/>
-            </enum-decl>
-          </member-type>
+        <member-type access='private'>
+          <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-173'>
+            <underlying-type type-id='type-id-18'/>
+          </enum-decl>
+        </member-type>
       </class-decl>
       <class-decl name='__anonymous_struct__3' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
         <member-type access='private'>
@@ -1179,9 +1179,9 @@
         </member-function>
       </class-decl>
       <class-decl name='__anonymous_struct__4' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='private'>
-            <typedef-decl name='WordType' type-id='type-id-20' filepath='src/mongo/platform/atomic_word.h' line='54' column='1' id='type-id-174'/>
-          </member-type>
+        <member-type access='private'>
+          <typedef-decl name='WordType' type-id='type-id-20' filepath='src/mongo/platform/atomic_word.h' line='54' column='1' id='type-id-174'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='AtomicWord' mangled-name='_ZN5mongo10AtomicWordIjvEC2Ej' filepath='src/mongo/platform/atomic_word.h' line='59' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-113' is-artificial='yes'/>
@@ -1391,14 +1391,14 @@
         <return type-id='type-id-25'/>
       </function-decl>
       <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='public'>
-            <typedef-decl name='pointer' type-id='type-id-159' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/ext/alloc_traits.h' line='104' column='1' id='type-id-148'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='pointer' type-id='type-id-159' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/ext/alloc_traits.h' line='104' column='1' id='type-id-148'/>
+        </member-type>
         <member-type access='public'>
           <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-              <member-type access='public'>
-                <typedef-decl name='other' type-id='type-id-162' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/ext/alloc_traits.h' line='169' column='1' id='type-id-161'/>
-              </member-type>
+            <member-type access='public'>
+              <typedef-decl name='other' type-id='type-id-162' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/ext/alloc_traits.h' line='169' column='1' id='type-id-161'/>
+            </member-type>
           </class-decl>
         </member-type>
       </class-decl>
@@ -1421,12 +1421,12 @@
         </member-function>
       </class-decl>
       <class-decl name='__anonymous_struct__2' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='public'>
-            <typedef-decl name='size_type' type-id='type-id-158' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/ext/alloc_traits.h' line='106' column='1' id='type-id-146'/>
-          </member-type>
-          <member-type access='public'>
-            <typedef-decl name='const_pointer' type-id='type-id-167' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/ext/alloc_traits.h' line='105' column='1' id='type-id-150'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='size_type' type-id='type-id-158' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/ext/alloc_traits.h' line='106' column='1' id='type-id-146'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='const_pointer' type-id='type-id-167' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/ext/alloc_traits.h' line='105' column='1' id='type-id-150'/>
+        </member-type>
       </class-decl>
       <class-decl name='__anonymous_struct__3' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
     </namespace-decl>
@@ -3124,12 +3124,12 @@
         </member-type>
       </class-decl>
       <class-decl name='__anonymous_struct__1' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='private'>
-            <typedef-decl name='const_iterator' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_vector.h' line='233' column='1' id='type-id-210'/>
-          </member-type>
-          <member-type access='private'>
-            <typedef-decl name='iterator' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_vector.h' line='231' column='1' id='type-id-211'/>
-          </member-type>
+        <member-type access='private'>
+          <typedef-decl name='const_iterator' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_vector.h' line='233' column='1' id='type-id-210'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='iterator' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_vector.h' line='231' column='1' id='type-id-211'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='emplace_back&lt;std::unique_ptr&lt;mongo::FTDCCollectorInterface, std::default_delete&lt;mongo::FTDCCollectorInterface&gt; &gt; &gt;' mangled-name='_ZNSt6vectorISt10unique_ptrIN5mongo22FTDCCollectorInterfaceESt14default_deleteIS2_EESaIS5_EE12emplace_backIJS5_EEEvDpOT_' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_vector.h' line='936' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-119' is-artificial='yes'/>
@@ -3172,9 +3172,9 @@
       <class-decl name='__anonymous_struct__2' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
         <member-type access='private'>
           <class-decl name='__anonymous_struct__' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-              <member-type access='private'>
-                <typedef-decl name='type' type-id='type-id-197' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/unique_ptr.h' line='143' column='1' id='type-id-212'/>
-              </member-type>
+            <member-type access='private'>
+              <typedef-decl name='type' type-id='type-id-197' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/unique_ptr.h' line='143' column='1' id='type-id-212'/>
+            </member-type>
           </class-decl>
         </member-type>
         <member-function access='public' static='yes'>
@@ -3229,9 +3229,9 @@
       </class-decl>
       <class-decl name='__anonymous_struct__3' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
       <class-decl name='__anonymous_struct__4' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='public'>
-            <typedef-decl name='rebind_alloc&lt;std::unique_ptr&lt;mongo::FTDCCollectorInterface, std::default_delete&lt;mongo::FTDCCollectorInterface&gt; &gt; &gt;' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='477' column='1' id='type-id-213'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='rebind_alloc&lt;std::unique_ptr&lt;mongo::FTDCCollectorInterface, std::default_delete&lt;mongo::FTDCCollectorInterface&gt; &gt; &gt;' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='477' column='1' id='type-id-213'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='construct&lt;std::unique_ptr&lt;mongo::FTDCCollectorInterface, std::default_delete&lt;mongo::FTDCCollectorInterface&gt; &gt;, std::unique_ptr&lt;mongo::FTDCCollectorInterface, std::default_delete&lt;mongo::FTDCCollectorInterface&gt; &gt; &gt;' mangled-name='_ZNSt16allocator_traitsISaISt10unique_ptrIN5mongo22FTDCCollectorInterfaceESt14default_deleteIS2_EEEE9constructIS5_JS5_EEEvRS6_PT_DpOT0_' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='529' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-121'/>
@@ -3782,9 +3782,9 @@
       <class-decl name='__anonymous_struct__13' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
       <class-decl name='__anonymous_struct__14' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
       <class-decl name='__anonymous_struct__15' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='private'>
-            <typedef-decl name='bytes_type' type-id='type-id-59' filepath='src/mongo/base/data_view.h' line='71' column='1' id='type-id-214'/>
-          </member-type>
+        <member-type access='private'>
+          <typedef-decl name='bytes_type' type-id='type-id-59' filepath='src/mongo/base/data_view.h' line='71' column='1' id='type-id-214'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='write&lt;mongo::LittleEndian&lt;char&gt; &gt;' mangled-name='_ZN5mongo8DataView5writeINS_12LittleEndianIcEEEERS0_RKT_m' filepath='src/mongo/base/data_view.h' line='82' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-113' is-artificial='yes'/>
@@ -3820,11 +3820,11 @@
         </member-function>
       </class-decl>
       <class-decl name='__anonymous_struct__17' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='private'>
-            <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-215'>
-              <underlying-type type-id='type-id-18'/>
-            </enum-decl>
-          </member-type>
+        <member-type access='private'>
+          <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-215'>
+            <underlying-type type-id='type-id-18'/>
+          </enum-decl>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='got' mangled-name='_ZN5mongo15BSONSizeTracker3gotEi' filepath='src/mongo/bson/bsonmisc.h' line='258' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-113' is-artificial='yes'/>
@@ -3968,9 +3968,9 @@
           </member-function>
         </class-decl>
         <class-decl name='__anonymous_struct__1' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-            <member-type access='public'>
-              <typedef-decl name='reference_type' type-id='type-id-222' filepath='src/third_party/boost-1.60.0/boost/optional/optional.hpp' line='150' column='1' id='type-id-235'/>
-            </member-type>
+          <member-type access='public'>
+            <typedef-decl name='reference_type' type-id='type-id-222' filepath='src/third_party/boost-1.60.0/boost/optional/optional.hpp' line='150' column='1' id='type-id-235'/>
+          </member-type>
         </class-decl>
         <class-decl name='__anonymous_struct__2' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
           <member-function access='protected'>
@@ -4000,9 +4000,9 @@
       </class-decl>
       <class-decl name='__anonymous_struct__1' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
       <class-decl name='__anonymous_struct__2' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='private'>
-            <typedef-decl name='reference_type' type-id='type-id-235' filepath='src/third_party/boost-1.60.0/boost/optional/optional.hpp' line='774' column='1' id='type-id-236'/>
-          </member-type>
+        <member-type access='private'>
+          <typedef-decl name='reference_type' type-id='type-id-235' filepath='src/third_party/boost-1.60.0/boost/optional/optional.hpp' line='774' column='1' id='type-id-236'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='get' mangled-name='_ZN5boost8optionalIN5mongo12FTDCBSONUtil8FTDCTypeEE3getEv' filepath='src/third_party/boost-1.60.0/boost/optional/optional.hpp' line='1025' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-57' is-artificial='yes'/>
@@ -4042,9 +4042,9 @@
         </member-function>
       </class-decl>
       <class-decl name='__anonymous_struct__3' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='private'>
-            <typedef-decl name='reference' type-id='type-id-238' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_vector.h' line='229' column='1' id='type-id-237'/>
-          </member-type>
+        <member-type access='private'>
+          <typedef-decl name='reference' type-id='type-id-238' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_vector.h' line='229' column='1' id='type-id-237'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='swap' mangled-name='_ZNSt6thread4swapERS_' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_vector.h' line='1194' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-119' is-artificial='yes'/>
@@ -4080,12 +4080,12 @@
         </member-type>
       </class-decl>
       <class-decl name='__anonymous_struct__5' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='public'>
-            <typedef-decl name='rebind_alloc&lt;unsigned long&gt;' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='477' column='1' id='type-id-239'/>
-          </member-type>
-          <member-type access='public'>
-            <typedef-decl name='value_type' type-id='type-id-21' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='447' column='1' id='type-id-240'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='rebind_alloc&lt;unsigned long&gt;' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='477' column='1' id='type-id-239'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='value_type' type-id='type-id-21' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='447' column='1' id='type-id-240'/>
+        </member-type>
       </class-decl>
       <class-decl name='__anonymous_struct__6' is-anonymous='yes' naming-typedef-id='type-id-239' visibility='default' is-declaration-only='yes' id='type-id-24'/>
       <class-decl name='__anonymous_struct__7' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
@@ -4314,11 +4314,11 @@
       <class-decl name='__anonymous_struct__4' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
       <class-decl name='__anonymous_struct__5' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
       <class-decl name='__anonymous_struct__6' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='private'>
-            <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-230'>
-              <underlying-type type-id='type-id-18'/>
-            </enum-decl>
-          </member-type>
+        <member-type access='private'>
+          <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-230'>
+            <underlying-type type-id='type-id-18'/>
+          </enum-decl>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='getArrayOffset' mangled-name='_ZN5mongo14FTDCCompressor14getArrayOffsetEjjj' filepath='src/mongo/db/ftdc/compressor.h' line='140' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-218'/>
@@ -4577,12 +4577,12 @@
     <namespace-decl name='__gnu_cxx'>
       <class-decl name='__anonymous_struct__' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
       <class-decl name='__anonymous_struct__1' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='public'>
-            <typedef-decl name='reference' type-id='type-id-221' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/ext/alloc_traits.h' line='109' column='1' id='type-id-238'/>
-          </member-type>
-          <member-type access='public'>
-            <typedef-decl name='value_type' type-id='type-id-240' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/ext/alloc_traits.h' line='103' column='1' id='type-id-220'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='reference' type-id='type-id-221' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/ext/alloc_traits.h' line='109' column='1' id='type-id-238'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='value_type' type-id='type-id-240' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/ext/alloc_traits.h' line='103' column='1' id='type-id-220'/>
+        </member-type>
         <member-type access='public'>
           <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
         </member-type>
@@ -4663,9 +4663,9 @@
           </member-function>
         </class-decl>
         <class-decl name='__anonymous_struct__2' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-            <member-type access='public'>
-              <typedef-decl name='rep' type-id='type-id-15' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/chrono' line='243' column='1' id='type-id-274'/>
-            </member-type>
+          <member-type access='public'>
+            <typedef-decl name='rep' type-id='type-id-15' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/chrono' line='243' column='1' id='type-id-274'/>
+          </member-type>
         </class-decl>
         <class-decl name='__anonymous_struct__3' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
       </namespace-decl>
@@ -4767,9 +4767,9 @@
         </member-function>
       </class-decl>
       <class-decl name='__anonymous_struct__3' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='public'>
-            <typedef-decl name='result_type' type-id='type-id-276' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/functional' line='1505' column='1' id='type-id-275'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='result_type' type-id='type-id-276' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/functional' line='1505' column='1' id='type-id-275'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='_Bind_simple&lt;std::_Bind&lt;std::_Mem_fn&lt;void (mongo::FTDCController::*)()&gt; (mongo::FTDCController *)&gt;&gt;' mangled-name='_ZNSt12_Bind_simpleIFSt5_BindIFSt7_Mem_fnIMN5mongo14FTDCControllerEFvvEEPS3_EEvEEC2IS9_JEEEOT_DpOT0_' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/functional' line='1509' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-119' is-artificial='yes'/>
@@ -4799,9 +4799,9 @@
         </member-function>
       </class-decl>
       <class-decl name='__anonymous_struct__4' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='public'>
-            <typedef-decl name='type' type-id='type-id-22' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/type_traits' line='158' column='1' id='type-id-276'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='type' type-id='type-id-22' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/type_traits' line='158' column='1' id='type-id-276'/>
+        </member-type>
       </class-decl>
       <class-decl name='__anonymous_struct__5' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
       <class-decl name='__anonymous_struct__6' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
@@ -4818,9 +4818,9 @@
       <class-decl name='__anonymous_struct__7' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
         <member-type access='private'>
           <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-              <member-type access='public'>
-                <typedef-decl name='other' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/allocator.h' line='105' column='1' id='type-id-277'/>
-              </member-type>
+            <member-type access='public'>
+              <typedef-decl name='other' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/allocator.h' line='105' column='1' id='type-id-277'/>
+            </member-type>
           </class-decl>
         </member-type>
       </class-decl>
@@ -4845,9 +4845,9 @@
         </member-function>
       </class-decl>
       <class-decl name='__anonymous_struct__10' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='private'>
-            <typedef-decl name='mutex_type' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/mutex' line='383' column='1' id='type-id-265'/>
-          </member-type>
+        <member-type access='private'>
+          <typedef-decl name='mutex_type' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/mutex' line='383' column='1' id='type-id-265'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='lock_guard' mangled-name='_ZNSt10lock_guardISt5mutexEC2ERS0_' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/mutex' line='385' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-119' is-artificial='yes'/>
@@ -4886,9 +4886,9 @@
       </class-decl>
       <class-decl name='__anonymous_struct__19' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
       <class-decl name='basic_ostream&lt;char, std::char_traits&lt;char&gt; &gt;' size-in-bits='2176' visibility='default' is-declaration-only='yes' id='type-id-278'>
-          <member-type access='private'>
-            <typedef-decl name='__ostream_type' type-id='type-id-278' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/ostream' line='71' column='1' id='type-id-279'/>
-          </member-type>
+        <member-type access='private'>
+          <typedef-decl name='__ostream_type' type-id='type-id-278' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/ostream' line='71' column='1' id='type-id-279'/>
+        </member-type>
         <member-function access='public'>
           <function-decl name='operator&lt;&lt;' mangled-name='_ZNSolsEm' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/ostream' line='170' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-280' is-artificial='yes'/>
@@ -5083,9 +5083,9 @@
         </member-function>
       </class-decl>
       <class-decl name='__anonymous_struct__41' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='private'>
-            <typedef-decl name='__allocator_type' type-id='type-id-283' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/shared_ptr_base.h' line='514' column='1' id='type-id-282'/>
-          </member-type>
+        <member-type access='private'>
+          <typedef-decl name='__allocator_type' type-id='type-id-283' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/shared_ptr_base.h' line='514' column='1' id='type-id-282'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='_Sp_counted_ptr_inplace&lt;std::_Bind_simple&lt;std::_Bind&lt;std::_Mem_fn&lt;void (mongo::FTDCController::*)()&gt; (mongo::FTDCController *)&gt; ()&gt; &gt;' mangled-name='_ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFSt5_BindIFSt7_Mem_fnIMN5mongo14FTDCControllerEFvvEEPS6_EEvEEEESaISF_ELN9__gnu_cxx12_Lock_policyE2EEC2IJSE_EEESG_DpOT_' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/shared_ptr_base.h' line='517' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-119' is-artificial='yes'/>
@@ -5109,9 +5109,9 @@
         </member-function>
       </class-decl>
       <class-decl name='__anonymous_struct__42' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='public'>
-            <typedef-decl name='__type' type-id='type-id-277' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='65' column='1' id='type-id-284'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='__type' type-id='type-id-277' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='65' column='1' id='type-id-284'/>
+        </member-type>
       </class-decl>
       <typedef-decl name='__alloc_rebind&lt;std::allocator&lt;std::thread::_Impl&lt;std::_Bind_simple&lt;std::_Bind&lt;std::_Mem_fn&lt;void (mongo::FTDCController::*)()&gt; (mongo::FTDCController *)&gt; ()&gt; &gt; &gt;, std::_Sp_counted_ptr_inplace&lt;std::thread::_Impl&lt;std::_Bind_simple&lt;std::_Bind&lt;std::_Mem_fn&lt;void (mongo::FTDCController::*)()&gt; (mongo::FTDCController *)&gt; ()&gt; &gt;, std::allocator&lt;std::thread::_Impl&lt;std::_Bind_simple&lt;std::_Bind&lt;std::_Mem_fn&lt;void (mongo::FTDCController::*)()&gt; (mongo::FTDCController *)&gt; ()&gt; &gt; &gt;, __gnu_cxx::_Lock_policy::_S_atomic&gt; &gt;' type-id='type-id-284' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='76' column='1' id='type-id-283'/>
       <class-decl name='type_info' visibility='default' is-declaration-only='yes' id='type-id-255'>
@@ -5168,9 +5168,9 @@
         </member-function>
       </class-decl>
       <class-decl name='__anonymous_struct__48' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='private'>
-            <typedef-decl name='_Class' type-id='type-id-285' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/functional' line='554' column='1' id='type-id-267'/>
-          </member-type>
+        <member-type access='private'>
+          <typedef-decl name='_Class' type-id='type-id-285' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/functional' line='554' column='1' id='type-id-267'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='operator()&lt;, void&gt;' mangled-name='_ZNKSt12_Mem_fn_baseIMN5mongo14FTDCControllerEFvvELb1EEclIJEvEEvPS1_DpOT_' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/functional' line='599' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-86' is-artificial='yes'/>
@@ -5180,12 +5180,12 @@
         </member-function>
       </class-decl>
       <class-decl name='__anonymous_struct__49' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='public'>
-            <typedef-decl name='__result_type' type-id='type-id-22' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/functional' line='506' column='1' id='type-id-286'/>
-          </member-type>
-          <member-type access='public'>
-            <typedef-decl name='__class_type' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/functional' line='507' column='1' id='type-id-285'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='__result_type' type-id='type-id-22' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/functional' line='506' column='1' id='type-id-286'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='__class_type' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/functional' line='507' column='1' id='type-id-285'/>
+        </member-type>
       </class-decl>
     </namespace-decl>
     <namespace-decl name='mongo'>
@@ -5229,11 +5229,11 @@
           </member-function>
         </class-decl>
         <class-decl name='__anonymous_struct__3' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-            <member-type access='private'>
-              <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-287'>
-                <underlying-type type-id='type-id-18'/>
-              </enum-decl>
-            </member-type>
+          <member-type access='private'>
+            <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-287'>
+              <underlying-type type-id='type-id-18'/>
+            </enum-decl>
+          </member-type>
           <member-function access='public' static='yes'>
             <function-decl name='LogComponent' mangled-name='_ZN5mongo6logger12LogComponentC2ENS1_5ValueE' filepath='src/mongo/logger/log_component.h' line='69' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-260' is-artificial='yes'/>
@@ -5279,11 +5279,11 @@
         </member-function>
       </class-decl>
       <class-decl name='__anonymous_struct__1' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='private'>
-            <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-288'>
-              <underlying-type type-id='type-id-18'/>
-            </enum-decl>
-          </member-type>
+        <member-type access='private'>
+          <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-288'>
+            <underlying-type type-id='type-id-18'/>
+          </enum-decl>
+        </member-type>
       </class-decl>
       <class-decl name='__anonymous_struct__2' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
         <member-type access='private'>
@@ -5296,11 +5296,11 @@
       <class-decl name='__anonymous_struct__6' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
       <class-decl name='__anonymous_struct__7' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
       <class-decl name='__anonymous_struct__8' is-anonymous='yes' naming-typedef-id='type-id-285' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='private'>
-            <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-289'>
-              <underlying-type type-id='type-id-18'/>
-            </enum-decl>
-          </member-type>
+        <member-type access='private'>
+          <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-289'>
+            <underlying-type type-id='type-id-18'/>
+          </enum-decl>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='setEnabled' mangled-name='_ZN5mongo14FTDCController10setEnabledEb' filepath='src/mongo/db/ftdc/controller.h' line='70' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo14FTDCController10setEnabledEb'>
             <parameter type-id='type-id-113' is-artificial='yes'/>
@@ -5468,9 +5468,9 @@
     <namespace-decl name='boost'>
       <namespace-decl name='detail'>
         <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-            <member-type access='public'>
-              <typedef-decl name='type' type-id='type-id-24' filepath='src/third_party/boost-1.60.0/boost/detail/reference_content.hpp' line='80' column='1' id='type-id-296'/>
-            </member-type>
+          <member-type access='public'>
+            <typedef-decl name='type' type-id='type-id-24' filepath='src/third_party/boost-1.60.0/boost/detail/reference_content.hpp' line='80' column='1' id='type-id-296'/>
+          </member-type>
         </class-decl>
       </namespace-decl>
       <namespace-decl name='optional_detail'>
@@ -5482,9 +5482,9 @@
         <class-decl name='__anonymous_struct__5' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
         <class-decl name='__anonymous_struct__6' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
         <class-decl name='__anonymous_struct__7' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-            <member-type access='private'>
-              <typedef-decl name='internal_type' type-id='type-id-296' filepath='src/third_party/boost-1.60.0/boost/optional/optional.hpp' line='205' column='1' id='type-id-291'/>
-            </member-type>
+          <member-type access='private'>
+            <typedef-decl name='internal_type' type-id='type-id-296' filepath='src/third_party/boost-1.60.0/boost/optional/optional.hpp' line='205' column='1' id='type-id-291'/>
+          </member-type>
           <member-function access='private' static='yes'>
             <function-decl name='get_object' mangled-name='_ZN5boost15optional_detail13optional_baseISt6vectorIN5mongo7BSONObjESaIS4_EEE10get_objectEv' filepath='src/third_party/boost-1.60.0/boost/optional/optional.hpp' line='726' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-58' is-artificial='yes'/>
@@ -5659,9 +5659,9 @@
         </member-function>
       </class-decl>
       <class-decl name='__anonymous_struct__3' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='public'>
-            <typedef-decl name='rebind_alloc&lt;mongo::BSONObj&gt;' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='477' column='1' id='type-id-297'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='rebind_alloc&lt;mongo::BSONObj&gt;' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='477' column='1' id='type-id-297'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='construct&lt;mongo::BSONObj, mongo::BSONObj&gt;' mangled-name='_ZNSt16allocator_traitsISaIN5mongo7BSONObjEEE9constructIS1_JS1_EEEvRS2_PT_DpOT0_' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='529' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-121'/>
@@ -6066,9 +6066,9 @@
           </class-decl>
         </namespace-decl>
         <class-decl name='__anonymous_struct__' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-            <member-type access='private'>
-              <typedef-decl name='string_type' type-id='type-id-87' filepath='src/third_party/boost-1.60.0/boost/filesystem/path.hpp' line='70' column='1' id='type-id-318'/>
-            </member-type>
+          <member-type access='private'>
+            <typedef-decl name='string_type' type-id='type-id-87' filepath='src/third_party/boost-1.60.0/boost/filesystem/path.hpp' line='70' column='1' id='type-id-318'/>
+          </member-type>
           <member-function access='public'>
             <function-decl name='path' mangled-name='_ZN5boost10filesystem4pathC2ERKS1_' filepath='src/third_party/boost-1.60.0/boost/filesystem/path.hpp' line='133' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-246' is-artificial='yes'/>
@@ -6198,9 +6198,9 @@
       <namespace-decl name='iterators'>
         <namespace-decl name='detail'>
           <class-decl name='__anonymous_struct__' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-              <member-type access='private'>
-                <typedef-decl name='reference' type-id='type-id-245' filepath='src/third_party/boost-1.60.0/boost/iterator/iterator_facade.hpp' line='645' column='1' id='type-id-340'/>
-              </member-type>
+            <member-type access='private'>
+              <typedef-decl name='reference' type-id='type-id-245' filepath='src/third_party/boost-1.60.0/boost/iterator/iterator_facade.hpp' line='645' column='1' id='type-id-340'/>
+            </member-type>
             <member-function access='public'>
               <function-decl name='operator*' mangled-name='_ZNK5boost9iterators6detail20iterator_facade_baseINS_10filesystem18directory_iteratorENS3_15directory_entryENS0_25single_pass_traversal_tagERS5_lLb0ELb0EEdeEv' filepath='src/third_party/boost-1.60.0/boost/iterator/iterator_facade.hpp' line='653' column='1' visibility='default' binding='global' size-in-bits='64'>
                 <parameter type-id='type-id-322' is-artificial='yes'/>
@@ -6346,9 +6346,9 @@
       </namespace-decl>
       <namespace-decl name='system'>
         <class-decl name='__anonymous_struct__' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-            <member-type access='private'>
-              <typedef-decl name='unspecified_bool_type' type-id='type-id-134' filepath='src/third_party/boost-1.60.0/boost/system/error_code.hpp' line='359' column='1' id='type-id-343'/>
-            </member-type>
+          <member-type access='private'>
+            <typedef-decl name='unspecified_bool_type' type-id='type-id-134' filepath='src/third_party/boost-1.60.0/boost/system/error_code.hpp' line='359' column='1' id='type-id-343'/>
+          </member-type>
           <member-function access='public'>
             <function-decl name='error_code' mangled-name='_ZN5boost6system10error_codeC2Ev' filepath='src/third_party/boost-1.60.0/boost/system/error_code.hpp' line='322' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-310' is-artificial='yes'/>
@@ -6407,9 +6407,9 @@
       <class-decl name='__anonymous_struct__1' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
       <class-decl name='__anonymous_struct__2' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
       <class-decl name='__anonymous_struct__3' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='private'>
-            <typedef-decl name='element_type' type-id='type-id-296' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='345' column='1' id='type-id-301'/>
-          </member-type>
+        <member-type access='private'>
+          <typedef-decl name='element_type' type-id='type-id-296' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='345' column='1' id='type-id-301'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='get' mangled-name='_ZNK5boost10shared_ptrINS_10filesystem6detail11dir_itr_impEE3getEv' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='706' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-65' is-artificial='yes'/>
@@ -6428,9 +6428,9 @@
     </namespace-decl>
     <namespace-decl name='std'>
       <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='public'>
-            <typedef-decl name='difference_type' type-id='type-id-157' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_iterator_base_types.h' line='182' column='1' id='type-id-344'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='difference_type' type-id='type-id-157' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_iterator_base_types.h' line='182' column='1' id='type-id-344'/>
+        </member-type>
       </class-decl>
       <function-decl name='__introsort_loop&lt;__gnu_cxx::__normal_iterator&lt;boost::filesystem::path *, std::vector&lt;boost::filesystem::path, std::allocator&lt;boost::filesystem::path&gt; &gt; &gt;, long, __gnu_cxx::__ops::_Iter_less_iter&gt;' mangled-name='_ZSt16__introsort_loopIN9__gnu_cxx17__normal_iteratorIPN5boost10filesystem4pathESt6vectorIS4_SaIS4_EEEElNS0_5__ops15_Iter_less_iterEEvT_SC_T0_T1_' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_algo.h' line='1935' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt16__introsort_loopIN9__gnu_cxx17__normal_iteratorIPN5boost10filesystem4pathESt6vectorIS4_SaIS4_EEEElNS0_5__ops15_Iter_less_iterEEvT_SC_T0_T1_'>
         <parameter type-id='type-id-24' name='__first' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_algo.h' line='1935' column='1'/>
@@ -6473,15 +6473,15 @@
         <return type-id='type-id-22'/>
       </function-decl>
       <class-decl name='__anonymous_struct__1' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='public'>
-            <typedef-decl name='rebind_alloc&lt;char&gt;' type-id='type-id-168' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='477' column='1' id='type-id-345'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='rebind_alloc&lt;char&gt;' type-id='type-id-168' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='477' column='1' id='type-id-345'/>
+        </member-type>
       </class-decl>
       <class-decl name='__anonymous_struct__2' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
       <class-decl name='__anonymous_struct__3' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='public'>
-            <typedef-decl name='char_type' type-id='type-id-2' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/char_traits.h' line='235' column='1' id='type-id-326'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='char_type' type-id='type-id-2' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/char_traits.h' line='235' column='1' id='type-id-326'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='assign' mangled-name='_ZNSt11char_traitsIcE6assignERcRKc' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/char_traits.h' line='242' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-336'/>
@@ -6526,9 +6526,9 @@
         </member-type>
       </class-decl>
       <class-decl name='__anonymous_struct__6' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='public'>
-            <typedef-decl name='rebind_alloc&lt;std::tuple&lt;mongo::FTDCBSONUtil::FTDCType, mongo::BSONObj, mongo::Date_t&gt; &gt;' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='477' column='1' id='type-id-346'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='rebind_alloc&lt;std::tuple&lt;mongo::FTDCBSONUtil::FTDCType, mongo::BSONObj, mongo::Date_t&gt; &gt;' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='477' column='1' id='type-id-346'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='construct&lt;std::tuple&lt;mongo::FTDCBSONUtil::FTDCType, mongo::BSONObj, mongo::Date_t&gt;, std::tuple&lt;mongo::FTDCBSONUtil::FTDCType, mongo::BSONObj, mongo::Date_t&gt; &gt;' mangled-name='_ZNSt16allocator_traitsISaISt5tupleIJN5mongo12FTDCBSONUtil8FTDCTypeENS1_7BSONObjENS1_6Date_tEEEEE9constructIS6_JS6_EEEvRS7_PT_DpOT0_' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='529' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-121'/>
@@ -6551,9 +6551,9 @@
         </member-function>
       </class-decl>
       <class-decl name='__anonymous_struct__9' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='private'>
-            <typedef-decl name='reverse_iterator' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_vector.h' line='235' column='1' id='type-id-347'/>
-          </member-type>
+        <member-type access='private'>
+          <typedef-decl name='reverse_iterator' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_vector.h' line='235' column='1' id='type-id-347'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='emplace_back&lt;boost::filesystem::path&gt;' mangled-name='_ZNSt6vectorIN5boost10filesystem4pathESaIS2_EE12emplace_backIJS2_EEEvDpOT_' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_vector.h' line='936' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-119' is-artificial='yes'/>
@@ -6582,9 +6582,9 @@
         </member-type>
       </class-decl>
       <class-decl name='__anonymous_struct__12' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='public'>
-            <typedef-decl name='rebind_alloc&lt;boost::filesystem::path&gt;' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='477' column='1' id='type-id-348'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='rebind_alloc&lt;boost::filesystem::path&gt;' type-id='type-id-24' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='477' column='1' id='type-id-348'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='construct&lt;boost::filesystem::path, boost::filesystem::path&gt;' mangled-name='_ZNSt16allocator_traitsISaIN5boost10filesystem4pathEEE9constructIS2_JS2_EEEvRS3_PT_DpOT0_' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/alloc_traits.h' line='529' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-121'/>
@@ -6810,9 +6810,9 @@
         </class-decl>
       </namespace-decl>
       <class-decl name='__anonymous_struct__' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='private'>
-            <typedef-decl name='difference_type' type-id='type-id-344' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_iterator.h' line='732' column='1' id='type-id-350'/>
-          </member-type>
+        <member-type access='private'>
+          <typedef-decl name='difference_type' type-id='type-id-344' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_iterator.h' line='732' column='1' id='type-id-350'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='__normal_iterator' mangled-name='_ZN9__gnu_cxx17__normal_iteratorIPN5boost10filesystem4pathESt6vectorIS3_SaIS3_EEEC2ERKS4_' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_iterator.h' line='740' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-54' is-artificial='yes'/>
@@ -6910,11 +6910,11 @@
           </member-function>
         </class-decl>
         <class-decl name='__anonymous_struct__2' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-            <member-type access='private'>
-              <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-351'>
-                <underlying-type type-id='type-id-18'/>
-              </enum-decl>
-            </member-type>
+          <member-type access='private'>
+            <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-351'>
+              <underlying-type type-id='type-id-18'/>
+            </enum-decl>
+          </member-type>
         </class-decl>
       </namespace-decl>
       <namespace-decl name='FTDCBSONUtil'>
@@ -7076,11 +7076,11 @@
       </class-decl>
       <class-decl name='__anonymous_struct__18' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
       <class-decl name='__anonymous_struct__19' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='private'>
-            <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-352'>
-              <underlying-type type-id='type-id-18'/>
-            </enum-decl>
-          </member-type>
+        <member-type access='private'>
+          <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-352'>
+            <underlying-type type-id='type-id-18'/>
+          </enum-decl>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='FTDCFileReader' mangled-name='_ZN5mongo14FTDCFileReaderC2Ev' filepath='src/mongo/db/ftdc/file_reader.h' line='55' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo14FTDCFileReaderC2Ev'>
             <parameter type-id='type-id-113' is-artificial='yes'/>
@@ -7147,9 +7147,9 @@
       </namespace-decl>
       <namespace-decl name='filesystem'>
         <class-decl name='__anonymous_struct__' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-            <member-type access='private'>
-              <typedef-decl name='value_type' type-id='type-id-2' filepath='src/third_party/boost-1.60.0/boost/filesystem/path.hpp' line='67' column='1' id='type-id-359'/>
-            </member-type>
+          <member-type access='private'>
+            <typedef-decl name='value_type' type-id='type-id-2' filepath='src/third_party/boost-1.60.0/boost/filesystem/path.hpp' line='67' column='1' id='type-id-359'/>
+          </member-type>
           <member-function access='public'>
             <function-decl name='c_str' mangled-name='_ZNK5boost10filesystem4path5c_strEv' filepath='src/third_party/boost-1.60.0/boost/filesystem/path.hpp' line='398' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-249' is-artificial='yes'/>
@@ -7217,12 +7217,12 @@
         </member-function>
       </class-decl>
       <class-decl name='ios_base' size-in-bits='1728' visibility='default' is-declaration-only='yes' id='type-id-374'>
-          <member-type access='private'>
-            <typedef-decl name='iostate' type-id='type-id-165' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/ios_base.h' line='398' column='1' id='type-id-172'/>
-          </member-type>
-          <member-type access='private'>
-            <typedef-decl name='openmode' type-id='type-id-375' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/ios_base.h' line='429' column='1' id='type-id-349'/>
-          </member-type>
+        <member-type access='private'>
+          <typedef-decl name='iostate' type-id='type-id-165' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/ios_base.h' line='398' column='1' id='type-id-172'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='openmode' type-id='type-id-375' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/ios_base.h' line='429' column='1' id='type-id-349'/>
+        </member-type>
         <member-type access='private'>
           <class-decl name='__anonymous_struct__' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
         </member-type>
@@ -7596,9 +7596,9 @@
           </member-function>
         </class-decl>
         <class-decl name='__anonymous_struct__1' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-            <member-type access='public'>
-              <typedef-decl name='argument_type' type-id='type-id-188' filepath='src/third_party/boost-1.60.0/boost/optional/optional.hpp' line='164' column='1' id='type-id-379'/>
-            </member-type>
+          <member-type access='public'>
+            <typedef-decl name='argument_type' type-id='type-id-188' filepath='src/third_party/boost-1.60.0/boost/optional/optional.hpp' line='164' column='1' id='type-id-379'/>
+          </member-type>
         </class-decl>
         <class-decl name='__anonymous_struct__2' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
         <class-decl name='__anonymous_struct__3' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
@@ -7610,9 +7610,9 @@
         <class-decl name='__anonymous_struct__' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
       </namespace-decl>
       <class-decl name='__anonymous_struct__' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='private'>
-            <typedef-decl name='argument_type' type-id='type-id-379' filepath='src/third_party/boost-1.60.0/boost/optional/optional.hpp' line='782' column='1' id='type-id-380'/>
-          </member-type>
+        <member-type access='private'>
+          <typedef-decl name='argument_type' type-id='type-id-379' filepath='src/third_party/boost-1.60.0/boost/optional/optional.hpp' line='782' column='1' id='type-id-380'/>
+        </member-type>
         <member-function access='public'>
           <function-decl name='optional' mangled-name='_ZN5boost8optionalIN5mongo14ConstDataRangeEEC2ENS_6none_tE' filepath='src/third_party/boost-1.60.0/boost/optional/optional.hpp' line='790' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-57' is-artificial='yes'/>
@@ -7652,11 +7652,11 @@
     <namespace-decl name='mongo'>
       <namespace-decl name='logger'>
         <class-decl name='__anonymous_struct__' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-            <member-type access='private'>
-              <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-381'>
-                <underlying-type type-id='type-id-18'/>
-              </enum-decl>
-            </member-type>
+          <member-type access='private'>
+            <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-381'>
+              <underlying-type type-id='type-id-18'/>
+            </enum-decl>
+          </member-type>
         </class-decl>
       </namespace-decl>
       <class-decl name='__anonymous_struct__' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
@@ -7730,11 +7730,11 @@
       <class-decl name='__anonymous_struct__9' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
       <class-decl name='__anonymous_struct__10' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
       <class-decl name='__anonymous_struct__11' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='private'>
-            <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-382'>
-              <underlying-type type-id='type-id-18'/>
-            </enum-decl>
-          </member-type>
+        <member-type access='private'>
+          <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-382'>
+            <underlying-type type-id='type-id-18'/>
+          </enum-decl>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='getSampleCount' mangled-name='_ZNK5mongo14FTDCCompressor14getSampleCountEv' filepath='src/mongo/db/ftdc/compressor.h' line='104' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-80' is-artificial='yes'/>
@@ -7872,9 +7872,9 @@
     </namespace-decl>
     <namespace-decl name='std'>
       <class-decl name='__anonymous_struct__' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='private'>
-            <typedef-decl name='const_reference' type-id='type-id-407' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_vector.h' line='230' column='1' id='type-id-406'/>
-          </member-type>
+        <member-type access='private'>
+          <typedef-decl name='const_reference' type-id='type-id-407' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_vector.h' line='230' column='1' id='type-id-406'/>
+        </member-type>
         <member-function access='public'>
           <function-decl name='emplace_back&lt;unsigned int&gt;' mangled-name='_ZNSt6vectorImSaImEE12emplace_backIJjEEEvDpOT_' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/stl_vector.h' line='936' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-119' is-artificial='yes'/>
@@ -8571,19 +8571,19 @@
         </member-function>
       </class-decl>
       <class-decl name='__anonymous_struct__26' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='private'>
-            <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-410'>
-              <underlying-type type-id='type-id-18'/>
-            </enum-decl>
-          </member-type>
+        <member-type access='private'>
+          <enum-decl name='__anonymous_enum__' is-anonymous='yes' is-declaration-only='yes' id='type-id-410'>
+            <underlying-type type-id='type-id-18'/>
+          </enum-decl>
+        </member-type>
       </class-decl>
       <class-decl name='__anonymous_struct__27' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
     </namespace-decl>
     <namespace-decl name='__gnu_cxx'>
       <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'>
-          <member-type access='public'>
-            <typedef-decl name='const_reference' type-id='type-id-395' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/ext/alloc_traits.h' line='110' column='1' id='type-id-407'/>
-          </member-type>
+        <member-type access='public'>
+          <typedef-decl name='const_reference' type-id='type-id-395' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/ext/alloc_traits.h' line='110' column='1' id='type-id-407'/>
+        </member-type>
         <member-type access='public'>
           <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
         </member-type>

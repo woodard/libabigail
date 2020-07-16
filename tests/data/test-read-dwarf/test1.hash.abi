@@ -60,12 +60,12 @@
     <class-decl name='s0' size-in-bits='384' is-struct='yes' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='13' column='1' id='10ec88de'>
       <base-class access='public' layout-offset-in-bits='192' is-virtual='yes' type-id='96c6f7f7'/>
       <base-class access='public' layout-offset-in-bits='256' is-virtual='yes' type-id='95c6f664'/>
-        <member-type access='public'>
-          <typedef-decl name='integer' type-id='95e97e5e' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='15' column='1' id='61814d27'/>
-        </member-type>
-        <member-type access='public'>
-          <typedef-decl name='byte' type-id='002ac4a6' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='16' column='1' id='92bf8355'/>
-        </member-type>
+      <member-type access='public'>
+        <typedef-decl name='integer' type-id='95e97e5e' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='15' column='1' id='61814d27'/>
+      </member-type>
+      <member-type access='public'>
+        <typedef-decl name='byte' type-id='002ac4a6' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='16' column='1' id='92bf8355'/>
+      </member-type>
       <data-member access='public' layout-offset-in-bits='64'>
         <var-decl name='m0' type-id='61814d27' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='18' column='1'/>
       </data-member>

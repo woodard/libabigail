@@ -139,7 +139,7 @@
     </array-type-def>
     <!-- struct BasicCurveEvaluator -->
     <class-decl name='BasicCurveEvaluator' size-in-bits='64' is-struct='yes' visibility='default' filepath='libnurbs/internals/basiccrveval.h' line='43' column='1' id='type-id-7'>
-    <!-- class CachingEvaluator -->
+      <!-- class CachingEvaluator -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-8'/>
       <member-function access='public' destructor='yes' vtable-offset='-1'>
         <!-- BasicCurveEvaluator::~BasicCurveEvaluator(int) -->
@@ -307,7 +307,7 @@
     </class-decl>
     <!-- class OpenGLCurveEvaluator -->
     <class-decl name='OpenGLCurveEvaluator' size-in-bits='27584' visibility='default' filepath='libnurbs/interface/glcurveval.h' line='66' column='1' id='type-id-14'>
-    <!-- struct BasicCurveEvaluator -->
+      <!-- struct BasicCurveEvaluator -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-7'/>
       <data-member access='private' layout-offset-in-bits='64'>
         <!-- curveEvalMachine OpenGLCurveEvaluator::em_vertex -->
@@ -853,15 +853,15 @@
     <pointer-type-def type-id='type-id-36' size-in-bits='64' id='type-id-21'/>
     <!-- class CachingEvaluator -->
     <class-decl name='CachingEvaluator' size-in-bits='64' visibility='default' filepath='libnurbs/internals/cachingeval.h' line='39' column='1' is-declaration-only='yes' id='type-id-8'>
-        <member-type access='private'>
-          <!-- enum CachingEvaluator::ServiceMode -->
-          <enum-decl name='ServiceMode' filepath='libnurbs/internals/cachingeval.h' line='42' column='1' id='type-id-37'>
-            <underlying-type type-id='type-id-38'/>
-            <enumerator name='play' value='0'/>
-            <enumerator name='record' value='1'/>
-            <enumerator name='playAndRecord' value='2'/>
-          </enum-decl>
-        </member-type>
+      <member-type access='private'>
+        <!-- enum CachingEvaluator::ServiceMode -->
+        <enum-decl name='ServiceMode' filepath='libnurbs/internals/cachingeval.h' line='42' column='1' id='type-id-37'>
+          <underlying-type type-id='type-id-38'/>
+          <enumerator name='play' value='0'/>
+          <enumerator name='record' value='1'/>
+          <enumerator name='playAndRecord' value='2'/>
+        </enum-decl>
+      </member-type>
       <member-function access='private' destructor='yes' vtable-offset='-1'>
         <!-- CachingEvaluator::~CachingEvaluator(int) -->
         <function-decl name='~CachingEvaluator' filepath='libnurbs/internals/cachingeval.h' line='41' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -969,7 +969,7 @@
   <abi-instr version='1.0' address-size='64' path='libnurbs/interface/glinterface.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
     <!-- struct GLUnurbs -->
     <class-decl name='GLUnurbs' size-in-bits='1149440' is-struct='yes' visibility='default' filepath='libnurbs/interface/glrenderer.h' line='49' column='1' id='type-id-39'>
-    <!-- class NurbsTessellator -->
+      <!-- class NurbsTessellator -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-40'/>
       <data-member access='public' layout-offset-in-bits='47616'>
         <!-- errorCallbackType GLUnurbs::errorCallback -->
@@ -1250,7 +1250,7 @@
     </class-decl>
     <!-- struct OpenGLSurfaceEvaluator -->
     <class-decl name='OpenGLSurfaceEvaluator' size-in-bits='1074048' is-struct='yes' visibility='default' filepath='libnurbs/interface/glsurfeval.h' line='100' column='1' id='type-id-43'>
-    <!-- struct BasicSurfaceEvaluator -->
+      <!-- struct BasicSurfaceEvaluator -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-48'/>
       <data-member access='private' layout-offset-in-bits='64'>
         <!-- StoredVertex* OpenGLSurfaceEvaluator::vertexCache[3] -->
@@ -3776,7 +3776,7 @@
     </class-decl>
     <!-- struct BasicSurfaceEvaluator -->
     <class-decl name='BasicSurfaceEvaluator' size-in-bits='64' is-struct='yes' visibility='default' filepath='libnurbs/internals/basicsurfeval.h' line='43' column='1' id='type-id-48'>
-    <!-- class CachingEvaluator -->
+      <!-- class CachingEvaluator -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-8'/>
       <member-function access='public' destructor='yes' vtable-offset='-1'>
         <!-- BasicSurfaceEvaluator::~BasicSurfaceEvaluator(int) -->
@@ -4406,7 +4406,7 @@
     </array-type-def>
     <!-- struct Arc -->
     <class-decl name='Arc' size-in-bits='448' is-struct='yes' visibility='default' filepath='libnurbs/internals/arc.h' line='55' column='1' id='type-id-110'>
-    <!-- class PooledObj -->
+      <!-- class PooledObj -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-111'/>
       <data-member access='public' static='yes'>
         <!-- static const int Arc::bezier_tag -->
@@ -4739,14 +4739,14 @@
     </class-decl>
     <!-- class Pool -->
     <class-decl name='Pool' size-in-bits='2496' visibility='default' filepath='libnurbs/internals/bufpool.h' line='50' column='1' id='type-id-68'>
-        <member-type access='protected'>
-          <!-- enum Pool::Magic -->
-          <enum-decl name='Magic' filepath='libnurbs/internals/bufpool.h' line='70' column='1' id='type-id-120'>
-            <underlying-type type-id='type-id-38'/>
-            <enumerator name='is_allocated' value='62369'/>
-            <enumerator name='is_free' value='61858'/>
-          </enum-decl>
-        </member-type>
+      <member-type access='protected'>
+        <!-- enum Pool::Magic -->
+        <enum-decl name='Magic' filepath='libnurbs/internals/bufpool.h' line='70' column='1' id='type-id-120'>
+          <underlying-type type-id='type-id-38'/>
+          <enumerator name='is_allocated' value='62369'/>
+          <enumerator name='is_free' value='61858'/>
+        </enum-decl>
+      </member-type>
       <data-member access='protected' layout-offset-in-bits='0'>
         <!-- Buffer* Pool::freelist -->
         <var-decl name='freelist' type-id='type-id-121' visibility='default' filepath='libnurbs/internals/bufpool.h' line='62' column='1'/>
@@ -4939,7 +4939,7 @@
     </enum-decl>
     <!-- class PwlArc -->
     <class-decl name='PwlArc' size-in-bits='192' visibility='default' filepath='libnurbs/internals/pwlarc.h' line='44' column='1' id='type-id-127'>
-    <!-- class PooledObj -->
+      <!-- class PooledObj -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-111'/>
       <data-member access='private' layout-offset-in-bits='0'>
         <!-- TrimVertex* PwlArc::pts -->
@@ -5317,7 +5317,7 @@
     </class-decl>
     <!-- class ArcSorter -->
     <class-decl name='ArcSorter' size-in-bits='192' visibility='default' filepath='libnurbs/internals/arcsorter.h' line='44' column='1' id='type-id-144'>
-    <!-- class Sorter -->
+      <!-- class Sorter -->
       <base-class access='private' layout-offset-in-bits='0' type-id='type-id-142'/>
       <data-member access='protected' layout-offset-in-bits='128'>
         <!-- Subdivider& ArcSorter::subdivider -->
@@ -5391,7 +5391,7 @@
     </class-decl>
     <!-- class FlistSorter -->
     <class-decl name='FlistSorter' size-in-bits='128' visibility='default' filepath='libnurbs/internals/flistsorter.h' line='42' column='1' id='type-id-149'>
-    <!-- class Sorter -->
+      <!-- class Sorter -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-142'/>
       <member-function access='private' constructor='yes'>
         <!-- FlistSorter::FlistSorter() -->
@@ -5954,7 +5954,7 @@
     </class-decl>
     <!-- struct Quilt -->
     <class-decl name='Quilt' size-in-bits='896' is-struct='yes' visibility='default' filepath='libnurbs/internals/quilt.h' line='64' column='1' id='type-id-162'>
-    <!-- class PooledObj -->
+      <!-- class PooledObj -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-111'/>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- Mapdesc* Quilt::mapdesc -->
@@ -6176,16 +6176,16 @@
     </class-decl>
     <!-- class Subdivider -->
     <class-decl name='Subdivider' size-in-bits='20416' visibility='default' filepath='libnurbs/internals/subdivider.h' line='55' column='1' id='type-id-66'>
-        <member-type access='private'>
-          <!-- enum Subdivider::dir -->
-          <enum-decl name='dir' filepath='libnurbs/internals/subdivider.h' line='105' column='1' id='type-id-169'>
-            <underlying-type type-id='type-id-38'/>
-            <enumerator name='down' value='0'/>
-            <enumerator name='same' value='1'/>
-            <enumerator name='up' value='2'/>
-            <enumerator name='none' value='3'/>
-          </enum-decl>
-        </member-type>
+      <member-type access='private'>
+        <!-- enum Subdivider::dir -->
+        <enum-decl name='dir' filepath='libnurbs/internals/subdivider.h' line='105' column='1' id='type-id-169'>
+          <underlying-type type-id='type-id-38'/>
+          <enumerator name='down' value='0'/>
+          <enumerator name='same' value='1'/>
+          <enumerator name='up' value='2'/>
+          <enumerator name='none' value='3'/>
+        </enum-decl>
+      </member-type>
       <data-member access='private' layout-offset-in-bits='0'>
         <!-- Slicer Subdivider::slicer -->
         <var-decl name='slicer' type-id='type-id-170' visibility='default' filepath='libnurbs/internals/subdivider.h' line='112' column='1'/>
@@ -7373,9 +7373,9 @@
     </class-decl>
     <!-- class Slicer -->
     <class-decl name='Slicer' size-in-bits='8064' visibility='default' filepath='libnurbs/internals/slicer.h' line='49' column='1' id='type-id-170'>
-    <!-- class CoveAndTiler -->
+      <!-- class CoveAndTiler -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-182'/>
-    <!-- class Mesher -->
+      <!-- class Mesher -->
       <base-class access='public' layout-offset-in-bits='128' type-id='type-id-183'/>
       <data-member access='private' layout-offset-in-bits='5248'>
         <!-- Backend& Slicer::backend -->
@@ -8118,7 +8118,7 @@
     </class-decl>
     <!-- class ArcSdirSorter -->
     <class-decl name='ArcSdirSorter' size-in-bits='192' visibility='default' filepath='libnurbs/internals/arcsorter.h' line='57' column='1' id='type-id-195'>
-    <!-- class ArcSorter -->
+      <!-- class ArcSorter -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-144'/>
       <member-function access='private' constructor='yes'>
         <!-- ArcSdirSorter::ArcSdirSorter(Subdivider&) -->
@@ -8147,7 +8147,7 @@
     </class-decl>
     <!-- class ArcTdirSorter -->
     <class-decl name='ArcTdirSorter' size-in-bits='192' visibility='default' filepath='libnurbs/internals/arcsorter.h' line='65' column='1' id='type-id-197'>
-    <!-- class ArcSorter -->
+      <!-- class ArcSorter -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-144'/>
       <member-function access='private' constructor='yes'>
         <!-- ArcTdirSorter::ArcTdirSorter(Subdivider&) -->
@@ -8308,7 +8308,7 @@
     </class-decl>
     <!-- class GridTrimVertex -->
     <class-decl name='GridTrimVertex' size-in-bits='384' visibility='default' filepath='libnurbs/internals/gridtrimvertex.h' line='45' column='1' id='type-id-203'>
-    <!-- class PooledObj -->
+      <!-- class PooledObj -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-111'/>
       <data-member access='private' layout-offset-in-bits='0'>
         <!-- TrimVertex GridTrimVertex::dummyt -->
@@ -8940,7 +8940,7 @@
     </class-decl>
     <!-- class CoveAndTiler -->
     <class-decl name='CoveAndTiler' size-in-bits='2688' visibility='default' filepath='libnurbs/internals/coveandtiler.h' line='46' column='1' id='type-id-182'>
-    <!-- class TrimRegion -->
+      <!-- class TrimRegion -->
       <base-class access='public' layout-offset-in-bits='192' is-virtual='yes' type-id='type-id-210'/>
       <data-member access='private' layout-offset-in-bits='64'>
         <!-- Backend& CoveAndTiler::backend -->
@@ -9330,7 +9330,7 @@
     <typedef-decl name='Maxmatrix' type-id='type-id-221' filepath='libnurbs/internals/mapdesc.h' line='45' column='1' id='type-id-226'/>
     <!-- struct Mapdesc -->
     <class-decl name='Mapdesc' size-in-bits='3392' is-struct='yes' visibility='default' filepath='libnurbs/internals/mapdesc.h' line='49' column='1' id='type-id-227'>
-    <!-- class PooledObj -->
+      <!-- class PooledObj -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-111'/>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- REAL Mapdesc::pixel_tolerance -->
@@ -10433,7 +10433,7 @@
   <abi-instr version='1.0' address-size='64' path='libnurbs/internals/displaylist.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
     <!-- struct Dlnode -->
     <class-decl name='Dlnode' size-in-bits='384' is-struct='yes' visibility='default' filepath='libnurbs/internals/displaylist.h' line='48' column='1' id='type-id-235'>
-    <!-- class PooledObj -->
+      <!-- class PooledObj -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-111'/>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- PFVS Dlnode::work -->
@@ -10581,29 +10581,29 @@
   <abi-instr version='1.0' address-size='64' path='libnurbs/internals/hull.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
     <!-- class Hull -->
     <class-decl name='Hull' size-in-bits='4800' visibility='default' filepath='libnurbs/internals/hull.h' line='47' column='1' id='type-id-243'>
-    <!-- class TrimRegion -->
+      <!-- class TrimRegion -->
       <base-class access='public' layout-offset-in-bits='192' is-virtual='yes' type-id='type-id-210'/>
-        <member-type access='private'>
-          <!-- struct Hull::Side -->
-          <class-decl name='Side' size-in-bits='256' is-struct='yes' visibility='default' filepath='libnurbs/internals/hull.h' line='55' column='1' id='type-id-244'>
-            <data-member access='public' layout-offset-in-bits='0'>
-              <!-- Trimline* Hull::Side::left -->
-              <var-decl name='left' type-id='type-id-207' visibility='default' filepath='libnurbs/internals/hull.h' line='56' column='1'/>
-            </data-member>
-            <data-member access='public' layout-offset-in-bits='64'>
-              <!-- Gridline* Hull::Side::line -->
-              <var-decl name='line' type-id='type-id-245' visibility='default' filepath='libnurbs/internals/hull.h' line='57' column='1'/>
-            </data-member>
-            <data-member access='public' layout-offset-in-bits='128'>
-              <!-- Trimline* Hull::Side::right -->
-              <var-decl name='right' type-id='type-id-207' visibility='default' filepath='libnurbs/internals/hull.h' line='58' column='1'/>
-            </data-member>
-            <data-member access='public' layout-offset-in-bits='192'>
-              <!-- long int Hull::Side::index -->
-              <var-decl name='index' type-id='type-id-12' visibility='default' filepath='libnurbs/internals/hull.h' line='59' column='1'/>
-            </data-member>
-          </class-decl>
-        </member-type>
+      <member-type access='private'>
+        <!-- struct Hull::Side -->
+        <class-decl name='Side' size-in-bits='256' is-struct='yes' visibility='default' filepath='libnurbs/internals/hull.h' line='55' column='1' id='type-id-244'>
+          <data-member access='public' layout-offset-in-bits='0'>
+            <!-- Trimline* Hull::Side::left -->
+            <var-decl name='left' type-id='type-id-207' visibility='default' filepath='libnurbs/internals/hull.h' line='56' column='1'/>
+          </data-member>
+          <data-member access='public' layout-offset-in-bits='64'>
+            <!-- Gridline* Hull::Side::line -->
+            <var-decl name='line' type-id='type-id-245' visibility='default' filepath='libnurbs/internals/hull.h' line='57' column='1'/>
+          </data-member>
+          <data-member access='public' layout-offset-in-bits='128'>
+            <!-- Trimline* Hull::Side::right -->
+            <var-decl name='right' type-id='type-id-207' visibility='default' filepath='libnurbs/internals/hull.h' line='58' column='1'/>
+          </data-member>
+          <data-member access='public' layout-offset-in-bits='192'>
+            <!-- long int Hull::Side::index -->
+            <var-decl name='index' type-id='type-id-12' visibility='default' filepath='libnurbs/internals/hull.h' line='59' column='1'/>
+          </data-member>
+        </class-decl>
+      </member-type>
       <data-member access='private' layout-offset-in-bits='64'>
         <!-- Hull::Side Hull::lower -->
         <var-decl name='lower' type-id='type-id-244' visibility='default' filepath='libnurbs/internals/hull.h' line='62' column='1'/>
@@ -10838,9 +10838,9 @@
     </array-type-def>
     <!-- class Mesher -->
     <class-decl name='Mesher' size-in-bits='7680' visibility='default' filepath='libnurbs/internals/mesher.h' line='47' column='1' id='type-id-183'>
-    <!-- class TrimRegion -->
+      <!-- class TrimRegion -->
       <base-class access='public' layout-offset-in-bits='192' is-virtual='yes' type-id='type-id-210'/>
-    <!-- class Hull -->
+      <!-- class Hull -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-243'/>
       <data-member access='private' static='yes'>
         <!-- static const float Mesher::ZERO -->
@@ -11654,7 +11654,7 @@
   <abi-instr version='1.0' address-size='64' path='libnurbs/internals/nurbsinterfac.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
     <!-- struct O_pwlcurve -->
     <class-decl name='O_pwlcurve' size-in-bits='320' is-struct='yes' visibility='default' filepath='libnurbs/internals/reader.h' line='83' column='1' id='type-id-267'>
-    <!-- class PooledObj -->
+      <!-- class PooledObj -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-111'/>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- TrimVertex* O_pwlcurve::pts -->
@@ -11702,7 +11702,7 @@
     </class-decl>
     <!-- struct Property -->
     <class-decl name='Property' size-in-bits='192' is-struct='yes' visibility='default' filepath='libnurbs/internals/reader.h' line='120' column='1' id='type-id-268'>
-    <!-- class PooledObj -->
+      <!-- class PooledObj -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-111'/>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- long int Property::type -->
@@ -11751,7 +11751,7 @@
     </class-decl>
     <!-- struct O_nurbssurface -->
     <class-decl name='O_nurbssurface' size-in-bits='320' is-struct='yes' visibility='default' filepath='libnurbs/internals/reader.h' line='101' column='1' id='type-id-269'>
-    <!-- class PooledObj -->
+      <!-- class PooledObj -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-111'/>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- Quilt* O_nurbssurface::bezier_patches -->
@@ -11791,7 +11791,7 @@
     </class-decl>
     <!-- struct O_surface -->
     <class-decl name='O_surface' size-in-bits='256' is-struct='yes' visibility='default' filepath='libnurbs/internals/reader.h' line='112' column='1' id='type-id-270'>
-    <!-- class PooledObj -->
+      <!-- class PooledObj -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-111'/>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- O_nurbssurface* O_surface::o_nurbssurface -->
@@ -11821,7 +11821,7 @@
     </class-decl>
     <!-- struct O_trim -->
     <class-decl name='O_trim' size-in-bits='192' is-struct='yes' visibility='default' filepath='libnurbs/internals/reader.h' line='94' column='1' id='type-id-271'>
-    <!-- class PooledObj -->
+      <!-- class PooledObj -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-111'/>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- O_curve* O_trim::o_curve -->
@@ -11847,21 +11847,21 @@
     </class-decl>
     <!-- struct O_curve -->
     <class-decl name='O_curve' size-in-bits='384' is-struct='yes' visibility='default' filepath='libnurbs/internals/reader.h' line='55' column='1' id='type-id-272'>
-    <!-- class PooledObj -->
+      <!-- class PooledObj -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-111'/>
-        <member-type access='public'>
-          <!-- union {O_nurbscurve* o_nurbscurve; O_pwlcurve* o_pwlcurve;} -->
-          <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='libnurbs/internals/reader.h' line='56' column='1' id='type-id-273'>
-            <data-member access='private'>
-              <!-- O_nurbscurve* o_nurbscurve -->
-              <var-decl name='o_nurbscurve' type-id='type-id-85' visibility='default' filepath='libnurbs/internals/reader.h' line='57' column='1'/>
-            </data-member>
-            <data-member access='private'>
-              <!-- O_pwlcurve* o_pwlcurve -->
-              <var-decl name='o_pwlcurve' type-id='type-id-84' visibility='default' filepath='libnurbs/internals/reader.h' line='58' column='1'/>
-            </data-member>
-          </union-decl>
-        </member-type>
+      <member-type access='public'>
+        <!-- union {O_nurbscurve* o_nurbscurve; O_pwlcurve* o_pwlcurve;} -->
+        <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='libnurbs/internals/reader.h' line='56' column='1' id='type-id-273'>
+          <data-member access='private'>
+            <!-- O_nurbscurve* o_nurbscurve -->
+            <var-decl name='o_nurbscurve' type-id='type-id-85' visibility='default' filepath='libnurbs/internals/reader.h' line='57' column='1'/>
+          </data-member>
+          <data-member access='private'>
+            <!-- O_pwlcurve* o_pwlcurve -->
+            <var-decl name='o_pwlcurve' type-id='type-id-84' visibility='default' filepath='libnurbs/internals/reader.h' line='58' column='1'/>
+          </data-member>
+        </union-decl>
+      </member-type>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- union {O_nurbscurve* o_nurbscurve; O_pwlcurve* o_pwlcurve;} O_curve::curve -->
         <var-decl name='curve' type-id='type-id-273' visibility='default' filepath='libnurbs/internals/reader.h' line='59' column='1'/>
@@ -11902,7 +11902,7 @@
     </class-decl>
     <!-- struct O_nurbscurve -->
     <class-decl name='O_nurbscurve' size-in-bits='384' is-struct='yes' visibility='default' filepath='libnurbs/internals/reader.h' line='70' column='1' id='type-id-275'>
-    <!-- class PooledObj -->
+      <!-- class PooledObj -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-111'/>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- Quilt* O_nurbscurve::bezier_curves -->
@@ -12194,7 +12194,7 @@
     </class-decl>
     <!-- struct Patchspec -->
     <class-decl name='Patchspec' size-in-bits='320' is-struct='yes' visibility='default' filepath='libnurbs/internals/patch.h' line='54' column='1' id='type-id-276'>
-    <!-- struct Pspec -->
+      <!-- struct Pspec -->
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-281'/>
       <data-member access='public' layout-offset-in-bits='256'>
         <!-- int Patchspec::order -->
