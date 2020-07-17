@@ -12298,7 +12298,6 @@ decl_base::set_definition_of_declaration(const decl_base_sptr& d)
 {
   ABG_ASSERT(get_is_declaration_only());
   priv_->definition_of_declaration_ = d;
-  priv_->definition_of_declaration_ = d;
   if (type_base *t = is_type(this))
     if (type_base_sptr canonical_type = is_type(d)->get_canonical_type())
       t->priv_->canonical_type = canonical_type;
