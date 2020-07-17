@@ -45,6 +45,42 @@ bool
 leaf_reporter::diff_to_be_reported(const diff *d) const
 {return d && d->to_be_reported() && d->has_local_changes();}
 
+/// Test if a given instance of @ref corpus_diff carries changes whose
+/// reports are not suppressed by any suppression specification.  In
+/// effect, these are deemed incompatible ABI changes.
+///
+/// @param d the @ref corpus_diff to consider
+///
+/// @return true iff @p d carries subtype changes that are deemed
+/// incompatible ABI changes.
+bool
+leaf_reporter::diff_has_net_changes(const corpus_diff *d) const
+{
+  if (!d)
+    return false;
+
+  const corpus_diff::diff_stats& stats = const_cast<corpus_diff*>(d)->
+    apply_filters_and_suppressions_before_reporting();
+
+  // Logic here should match emit_diff_stats.
+  return (d->architecture_changed()
+	  || d->soname_changed()
+	  || stats.net_num_func_removed()
+	  || stats.net_num_leaf_type_changes()
+	  || stats.net_num_leaf_func_changes()
+	  || stats.net_num_func_added()
+	  || stats.net_num_vars_removed()
+	  || stats.net_num_leaf_var_changes()
+	  || stats.net_num_vars_added()
+	  || stats.net_num_removed_unreachable_types()
+	  || stats.net_num_changed_unreachable_types()
+	  || stats.net_num_added_unreachable_types()
+	  || stats.net_num_removed_func_syms()
+	  || stats.net_num_added_func_syms()
+	  || stats.net_num_removed_var_syms()
+	  || stats.net_num_added_var_syms());
+}
+
 /// Report the changes carried by the diffs contained in an instance
 /// of @ref string_diff_ptr_map.
 ///

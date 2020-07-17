@@ -35,6 +35,41 @@ namespace abigail
 namespace comparison
 {
 
+/// Test if a given instance of @ref corpus_diff carries changes whose
+/// reports are not suppressed by any suppression specification.  In
+/// effect, these are deemed incompatible ABI changes.
+///
+/// @param d the @ref corpus_diff to consider
+///
+/// @return true iff @p d carries subtype changes that are deemed
+/// incompatible ABI changes.
+bool
+default_reporter::diff_has_net_changes(const corpus_diff *d) const
+{
+  if (!d)
+    return false;
+
+  const corpus_diff::diff_stats& stats = const_cast<corpus_diff*>(d)->
+    apply_filters_and_suppressions_before_reporting();
+
+  // Logic here should match emit_diff_stats.
+  return (d->architecture_changed()
+	  || d->soname_changed()
+	  || stats.net_num_func_removed()
+	  || stats.net_num_func_changed()
+	  || stats.net_num_func_added()
+	  || stats.net_num_vars_removed()
+	  || stats.net_num_vars_changed()
+	  || stats.net_num_vars_added()
+	  || stats.net_num_removed_unreachable_types()
+	  || stats.net_num_changed_unreachable_types()
+	  || stats.net_num_added_unreachable_types()
+	  || stats.net_num_removed_func_syms()
+	  || stats.net_num_added_func_syms()
+	  || stats.net_num_removed_var_syms()
+	  || stats.net_num_added_var_syms());
+}
+
 /// Ouputs a report of the differences between of the two type_decl
 /// involved in the @ref type_decl_diff.
 ///

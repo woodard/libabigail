@@ -165,6 +165,15 @@ test-abidiff-exit/test-decl-enum-v1.o \
 test-abidiff-exit/test-decl-enum-report.txt \
 test-abidiff-exit/test-decl-enum-report-2.txt \
 test-abidiff-exit/test-decl-enum-report-3.txt \
+test-abidiff-exit/test-net-change.abignore \
+test-abidiff-exit/test-net-change-v0.c \
+test-abidiff-exit/test-net-change-v0.o \
+test-abidiff-exit/test-net-change-v1.c \
+test-abidiff-exit/test-net-change-v1.o \
+test-abidiff-exit/test-net-change-report0.txt \
+test-abidiff-exit/test-net-change-report1.txt \
+test-abidiff-exit/test-net-change-report2.txt \
+test-abidiff-exit/test-net-change-report3.txt \
 \
 test-diff-dwarf/test0-v0.cc		\
 test-diff-dwarf/test0-v0.o			\

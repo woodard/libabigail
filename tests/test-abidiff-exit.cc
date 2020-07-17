@@ -239,6 +239,44 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-decl-enum-report-3.txt",
     "output/test-abidiff-exit/test-decl-enum-report-3.txt"
   },
+  {
+    "data/test-abidiff-exit/test-net-change-v0.o",
+    "data/test-abidiff-exit/test-net-change-v1.o",
+    "",
+    "--no-default-suppression --no-show-locs",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE
+    | abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE,
+    "data/test-abidiff-exit/test-net-change-report0.txt",
+    "output/test-abidiff-exit/test-net-change-report0.txt"
+  },
+  {
+    "data/test-abidiff-exit/test-net-change-v0.o",
+    "data/test-abidiff-exit/test-net-change-v1.o",
+    "data/test-abidiff-exit/test-net-change.abignore",
+    "--no-default-suppression --no-show-locs",
+    abigail::tools_utils::ABIDIFF_OK,
+    "data/test-abidiff-exit/test-net-change-report1.txt",
+    "output/test-abidiff-exit/test-net-change-report1.txt"
+  },
+  {
+    "data/test-abidiff-exit/test-net-change-v0.o",
+    "data/test-abidiff-exit/test-net-change-v1.o",
+    "",
+    "--no-default-suppression --no-show-locs --leaf-changes-only",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE
+    | abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE,
+    "data/test-abidiff-exit/test-net-change-report2.txt",
+    "output/test-abidiff-exit/test-net-change-report2.txt"
+  },
+  {
+    "data/test-abidiff-exit/test-net-change-v0.o",
+    "data/test-abidiff-exit/test-net-change-v1.o",
+    "data/test-abidiff-exit/test-net-change.abignore",
+    "--no-default-suppression --no-show-locs --leaf-changes-only",
+    abigail::tools_utils::ABIDIFF_OK,
+    "data/test-abidiff-exit/test-net-change-report3.txt",
+    "output/test-abidiff-exit/test-net-change-report3.txt"
+  },
   {0, 0, 0 ,0,  abigail::tools_utils::ABIDIFF_OK, 0, 0}
 };
 

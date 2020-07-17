@@ -73,6 +73,8 @@ public:
 
   virtual bool diff_to_be_reported(const diff *d) const;
 
+  virtual bool diff_has_net_changes(const corpus_diff *d) const = 0;
+
   virtual void
   report(const type_decl_diff& d, std::ostream& out,
 	 const std::string& indent = "") const = 0;
@@ -161,6 +163,8 @@ typedef shared_ptr<default_reporter> default_reporter_sptr;
 class default_reporter : public reporter_base
 {
 public:
+
+  virtual bool diff_has_net_changes(const corpus_diff *d) const;
 
   virtual void
   report(const type_decl_diff& d, std::ostream& out,
@@ -265,6 +269,8 @@ class leaf_reporter : public default_reporter
 public:
 
   virtual bool diff_to_be_reported(const diff *d) const;
+
+  virtual bool diff_has_net_changes(const corpus_diff *d) const;
 
   void
   report_changes_from_diff_maps(const diff_maps&, std::ostream& out,

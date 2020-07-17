@@ -10063,6 +10063,9 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
 /// Emit the summary of the functions & variables that got
 /// removed/changed/added.
 ///
+/// TODO: This should be handled by the reporters, just like what is
+/// done for reporter_base::diff_to_be_reported.
+///
 /// @param out the output stream to emit the stats to.
 ///
 /// @param indent the indentation string to use in the summary.
@@ -10848,26 +10851,7 @@ corpus_diff::has_net_subtype_changes() const
 /// carries subtype changes that are deemed incompatible ABI changes.
 bool
 corpus_diff::has_net_changes() const
-{
-    const diff_stats& stats = const_cast<corpus_diff*>(this)->
-      apply_filters_and_suppressions_before_reporting();
-
-    return (architecture_changed()
-	    || soname_changed()
-	    || stats.net_num_func_changed()
-	    || stats.net_num_vars_changed()
-	    || stats.net_num_func_added()
-	    || stats.net_num_added_func_syms()
-	    || stats.net_num_func_removed()
-	    || stats.net_num_removed_func_syms()
-	    || stats.net_num_vars_added()
-	    || stats.net_num_added_var_syms()
-	    || stats.net_num_vars_removed()
-	    || stats.net_num_removed_var_syms()
-	    || stats.net_num_added_unreachable_types()
-	    || stats.net_num_removed_unreachable_types()
-	    || stats.net_num_changed_unreachable_types());
-}
+{return  context()->get_reporter()->diff_has_net_changes(this);}
 
 /// Apply the different filters that are registered to be applied to
 /// the diff tree; that includes the categorization filters.  Also,
