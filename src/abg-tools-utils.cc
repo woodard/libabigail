@@ -510,61 +510,45 @@ get_anonymous_enum_internal_name_prefix()
 bool
 decl_names_equal(const string& l, const string& r)
 {
-  string::size_type l_pos1 = 0, l_pos2 = 0, r_pos1 = 0, r_pos2 = 0;
-  string::size_type l_length = l.length(), r_length = r.length();
+  string::size_type l_pos1 = 0, r_pos1 = 0;
+  const string::size_type l_length = l.length(), r_length = r.length();
 
   while (l_pos1 < l_length && r_pos1 < r_length)
     {
-      l_pos2 = l.find("::", l_pos1);
-      r_pos2 = r.find("::", r_pos1);
-
-      if ((l.compare(l_pos1,
-		     ANONYMOUS_STRUCT_INTERNAL_NAME_LEN,
-		     ANONYMOUS_STRUCT_INTERNAL_NAME) == 0
-	   && r.compare(r_pos1,
-			ANONYMOUS_STRUCT_INTERNAL_NAME_LEN,
-			ANONYMOUS_STRUCT_INTERNAL_NAME) == 0)
-	  ||
-	  (l.compare(l_pos1,
-		     ANONYMOUS_UNION_INTERNAL_NAME_LEN,
-		     ANONYMOUS_UNION_INTERNAL_NAME) == 0
-	   && r.compare(r_pos1,
-			ANONYMOUS_UNION_INTERNAL_NAME_LEN,
-			ANONYMOUS_UNION_INTERNAL_NAME) == 0)
-	  ||
-	  (l.compare(l_pos1,
-		     ANONYMOUS_ENUM_INTERNAL_NAME_LEN,
-		     ANONYMOUS_ENUM_INTERNAL_NAME) == 0
-	   && r.compare(r_pos1,
-			ANONYMOUS_ENUM_INTERNAL_NAME_LEN,
-			ANONYMOUS_ENUM_INTERNAL_NAME) == 0))
-	{
-	  if (l_pos2 == l.npos || r_pos2 == r.npos)
-	    return true;
-
-	  l_pos1 = l_pos2 + 2;
-	  r_pos1 = r_pos2 + 2;
-	  continue;
-	}
-
-      if (l_pos2 == l.npos || r_pos2 == r.npos)
-	{
-	  if (l_pos2 != r_pos2)
-	    return false;
-
-	  return !l.compare(l_pos1, l_pos2, r,
-			    r_pos1, r_pos2);
-	}
+      string::size_type l_pos2 = l.find("::", l_pos1);
+      string::size_type r_pos2 = r.find("::", r_pos1);
+      if (l_pos2 == string::npos)
+	l_pos2 = l_length;
+      if (r_pos2 == string::npos)
+	r_pos2 = r_length;
 
       if (l.compare(l_pos1, l_pos2 - l_pos1, r,
-		    r_pos1, r_pos2 - r_pos1))
+		    r_pos1, r_pos2 - r_pos1)
+	  && (l.compare(l_pos1,
+			ANONYMOUS_STRUCT_INTERNAL_NAME_LEN,
+			ANONYMOUS_STRUCT_INTERNAL_NAME)
+	      || r.compare(r_pos1,
+			   ANONYMOUS_STRUCT_INTERNAL_NAME_LEN,
+			   ANONYMOUS_STRUCT_INTERNAL_NAME))
+	  && (l.compare(l_pos1,
+			ANONYMOUS_UNION_INTERNAL_NAME_LEN,
+			ANONYMOUS_UNION_INTERNAL_NAME)
+	      || r.compare(r_pos1,
+			   ANONYMOUS_UNION_INTERNAL_NAME_LEN,
+			   ANONYMOUS_UNION_INTERNAL_NAME))
+	  && (l.compare(l_pos1,
+			ANONYMOUS_ENUM_INTERNAL_NAME_LEN,
+			ANONYMOUS_ENUM_INTERNAL_NAME)
+	      || r.compare(r_pos1,
+			   ANONYMOUS_ENUM_INTERNAL_NAME_LEN,
+			   ANONYMOUS_ENUM_INTERNAL_NAME)))
 	return false;
 
-      l_pos1 = l_pos2 + 2;
-      r_pos1 = r_pos2 + 2;
+      l_pos1 = l_pos2 == l_length ? l_pos2 : l_pos2 + 2;
+      r_pos1 = r_pos2 == r_length ? r_pos2 : r_pos2 + 2;
     }
 
-  return true;
+  return (l_pos1 == l_length) == (r_pos1 == r_length);
 }
 
 /// If a given file is a symbolic link, get the canonicalized absolute

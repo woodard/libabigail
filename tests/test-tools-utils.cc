@@ -86,5 +86,15 @@ main(int, char**)
 
   ABG_ASSERT(decl_names_equal("S0::m2", "S0::m12") == false);
 
+  ABG_ASSERT(!decl_names_equal("S0::S1", "S0"));
+  ABG_ASSERT(!decl_names_equal("S0", "S0::S1"));
+  ABG_ASSERT(!decl_names_equal("S1::S0", "S0::S1"));
+  ABG_ASSERT(!decl_names_equal("__anonymous_struct__::S0", "__anonymous_struct__"));
+  ABG_ASSERT(!decl_names_equal("__anonymous_struct__", "__anonymous_struct__::S1"));
+  ABG_ASSERT(!decl_names_equal("__anonymous_struct__::S0", "__anonymous_struct__::S1"));
+  ABG_ASSERT(!decl_names_equal("S0::__anonymous_struct__", "__anonymous_struct__"));
+  ABG_ASSERT(!decl_names_equal("__anonymous_struct__", "S1::__anonymous_struct__"));
+  ABG_ASSERT(!decl_names_equal("S0::__anonymous_struct__", "S1::__anonymous_struct__"));
+
   return 0;
 }
