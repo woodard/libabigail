@@ -130,10 +130,6 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
           type of 'union {lttng_event_perf_counter_ctx perf_counter; struct {char* provider_name; char* ctx_name;} app_ctx; char padding[288];} lttng_event_context::u' changed:
             type name changed from '__anonymous_union__4' to '__anonymous_union__5'
             type size hasn't changed
-            3 data member changes:
-              name of '__anonymous_union__4::app_ctx' changed to '__anonymous_union__5::app_ctx'
-              name of '__anonymous_union__4::padding' changed to '__anonymous_union__5::padding'
-              name of '__anonymous_union__4::perf_counter' changed to '__anonymous_union__5::perf_counter'
             type changed from:
               union {lttng_event_perf_counter_ctx perf_counter; struct {char* provider_name; char* ctx_name;} app_ctx; char padding[288];}
             to:

@@ -4065,13 +4065,13 @@ equals(const decl_base& l, const decl_base& r, change_kind* k)
 
   /// If both of the current decls have an anonymous scope then let's
   /// compare their name component by component by properly handling
-  /// anonyous scopes. That's the slow path.
+  /// anonymous scopes. That's the slow path.
   ///
   /// Otherwise, let's just compare their name, the obvious way.
   /// That's the fast path because in that case the names are
   /// interned_string and comparing them is much faster.
-  bool decls_are_different = (ln != rn);
-  if (decls_are_different
+  bool decls_are_same = (ln == rn);
+  if (!decls_are_same
       && l.get_is_anonymous()
       && !l.get_has_anonymous_parent()
       && r.get_is_anonymous()
@@ -4079,17 +4079,17 @@ equals(const decl_base& l, const decl_base& r, change_kind* k)
     // Both decls are anonymous and their scope are *NOT* anonymous.
     // So we consider the decls to have equivalent names (both
     // anonymous, remember).  We are still in the fast path here.
-    decls_are_different = false;
+    decls_are_same = true;
 
-  if (decls_are_different
+  if (!decls_are_same
       && l.get_has_anonymous_parent()
       && r.get_has_anonymous_parent())
     // This is the slow path as we are comparing the decl qualified
     // names component by component, properly handling anonymous
     // scopes.
-    decls_are_different = tools_utils::decl_names_equal(ln, rn);
+    decls_are_same = tools_utils::decl_names_equal(ln, rn);
 
-  if (decls_are_different)
+  if (!decls_are_same)
     {
       result = false;
       if (k)

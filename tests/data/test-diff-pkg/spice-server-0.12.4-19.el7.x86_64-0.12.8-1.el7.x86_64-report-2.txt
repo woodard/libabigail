@@ -630,7 +630,7 @@
         in pointed to type 'typedef SpiceServer' at spice-server.h:38:1:
           underlying type 'struct RedsState' at reds-private.h:127:1 changed:
             type size hasn't changed
-            5 data member changes (2 filtered):
+            5 data member changes (1 filtered):
               type of 'SpiceWatch* RedsState::listen_watch' changed:
                 pointed to type 'typedef SpiceWatch' changed at spice.h:61:1, as reported earlier
               type of 'SpiceWatch* RedsState::secure_listen_watch' changed:
