@@ -1437,30 +1437,25 @@ maybe_report_data_members_replaced_by_anon_dm(const class_or_union_diff &d,
       // Let's detect all the data members that are replaced by
       // members of the same anonymous data member and report them
       // in one go.
-      changed_var_sptrs_type::const_iterator i, j;
-      i = d.ordered_data_members_replaced_by_adms().begin();
-      // This contains the data members replaced by the same
-      // anonymous data member.
-      vector<var_decl_sptr> dms_replaced_by_same_anon_dm;
-      // This contains the anonymous data member that replaced the
-      // data members in the variable above.
-      var_decl_sptr anonymous_data_member;
-
-      while (i != d.ordered_data_members_replaced_by_adms().end())
+      for (changed_var_sptrs_type::const_iterator i =
+	     d.ordered_data_members_replaced_by_adms().begin();
+	   i != d.ordered_data_members_replaced_by_adms().end();)
 	{
-	  anonymous_data_member = i->second;
+	  // This contains the data members replaced by the same
+	  // anonymous data member.
+	  vector<var_decl_sptr> dms_replaced_by_same_anon_dm;
+	  dms_replaced_by_same_anon_dm.push_back(i->first);
+	  // This contains the anonymous data member that replaced the
+	  // data members in the variable above.
+	  var_decl_sptr anonymous_data_member = i->second;
 	  // Let's look forward to see if the subsequent data
 	  // members were replaced by members of
 	  // anonymous_data_member.
-	  for (j = i;
-	       j != d.ordered_data_members_replaced_by_adms().end();
-	       ++j)
-	    {
-	      if (*i->second == *j->second)
-		dms_replaced_by_same_anon_dm.push_back(j->first);
-	      else
-		break;
-	    }
+	  for (++i;
+	       i != d.ordered_data_members_replaced_by_adms().end()
+		 && *i->second == *anonymous_data_member;
+	       ++i)
+	    dms_replaced_by_same_anon_dm.push_back(i->first);
 
 	  bool several_data_members_replaced =
 	    dms_replaced_by_same_anon_dm.size() > 1;
@@ -1490,10 +1485,8 @@ maybe_report_data_members_replaced_by_anon_dm(const class_or_union_diff &d,
 	  out << "replaced by anonymous data member:\n"
 	      << indent + "  "
 	      << "'"
-	      << i->second->get_pretty_representation()
+	      << anonymous_data_member->get_pretty_representation()
 	      << "'\n";
-
-	  i = j;
 	}
     }
 }

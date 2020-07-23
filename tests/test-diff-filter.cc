@@ -738,6 +738,34 @@ InOutSpec in_out_specs[] =
    "data/test-diff-filter/test-PR25661-6-report-4.txt",
    "output/test-diff-filter/test-PR25661-6-report-4.txt",
   },
+  {
+   "data/test-diff-filter/test-PR25661-7-v0.o",
+   "data/test-diff-filter/test-PR25661-7-v1.o",
+   "--no-default-suppression",
+   "data/test-diff-filter/test-PR25661-7-report-1.txt",
+   "output/test-diff-filter/test-PR25661-7-report-1.txt",
+  },
+  {
+   "data/test-diff-filter/test-PR25661-7-v0.o",
+   "data/test-diff-filter/test-PR25661-7-v1.o",
+   "--no-default-suppression --leaf-changes-only",
+   "data/test-diff-filter/test-PR25661-7-report-2.txt",
+   "output/test-diff-filter/test-PR25661-7-report-2.txt",
+  },
+  {
+   "data/test-diff-filter/test-PR25661-7-v0.o",
+   "data/test-diff-filter/test-PR25661-7-v1.o",
+   "--no-default-suppression --harmless",
+   "data/test-diff-filter/test-PR25661-7-report-3.txt",
+   "output/test-diff-filter/test-PR25661-7-report-3.txt",
+  },
+  {
+   "data/test-diff-filter/test-PR25661-7-v0.o",
+   "data/test-diff-filter/test-PR25661-7-v1.o",
+   "--no-default-suppression --harmless --leaf-changes-only",
+   "data/test-diff-filter/test-PR25661-7-report-4.txt",
+   "output/test-diff-filter/test-PR25661-7-report-4.txt",
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };
