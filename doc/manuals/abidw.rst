@@ -197,7 +197,7 @@ Options
     1.8 will not set the default size and will interpret types without
     a size-in-bits attribute as zero sized.
 
-  * ``--type-id-style`` ( ``sequence`` | ``hash`` )
+  * ``--type-id-style`` <``sequence``|``hash``>
 
     This option controls how types are idenfied in the generated XML
     files.  The default ``sequence`` style just numbers (with
