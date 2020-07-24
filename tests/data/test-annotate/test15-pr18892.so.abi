@@ -4298,13 +4298,6 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <!-- void __sanitizer::RawWrite(const char*) -->
-      <function-decl name='RawWrite' mangled-name='_ZN11__sanitizer8RawWriteEPKc' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common.h' line='122' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const char*' -->
-        <parameter type-id='type-id-2'/>
-        <!-- void -->
-        <return type-id='type-id-26'/>
-      </function-decl>
     </namespace-decl>
     <!-- void (__sanitizer::uptr, __sanitizer::uptr) -->
     <function-type size-in-bits='64' id='type-id-80'>
@@ -4763,13 +4756,6 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <!-- void __sanitizer::ReportErrorSummary(const char*) -->
-      <function-decl name='ReportErrorSummary' mangled-name='_ZN11__sanitizer18ReportErrorSummaryEPKc' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common.cc' line='177' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const char*' -->
-        <parameter type-id='type-id-2'/>
-        <!-- void -->
-        <return type-id='type-id-26'/>
-      </function-decl>
       <!-- const char* __sanitizer::SanitizerToolName -->
       <var-decl name='SanitizerToolName' type-id='type-id-2' mangled-name='_ZN11__sanitizer17SanitizerToolNameE' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common.cc' line='20' column='1'/>
       <!-- __sanitizer::fd_t __sanitizer::report_fd -->
@@ -5345,17 +5331,6 @@
         <parameter type-id='type-id-83'/>
         <!-- bool -->
         <return type-id='type-id-116'/>
-      </function-decl>
-      <!-- int __sanitizer::internal_memcmp(void*, void*, __sanitizer::uptr) -->
-      <function-decl name='internal_memcmp' mangled-name='_ZN11__sanitizer15internal_memcmpEPKvS1_m' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_libc.cc' line='39' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'void*' -->
-        <parameter type-id='type-id-1' name='s1' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='633' column='1'/>
-        <!-- parameter of type 'void*' -->
-        <parameter type-id='type-id-1' name='s2' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='633' column='1'/>
-        <!-- parameter of type 'typedef __sanitizer::uptr' -->
-        <parameter type-id='type-id-83' name='n' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='633' column='1'/>
-        <!-- int -->
-        <return type-id='type-id-5'/>
       </function-decl>
     </namespace-decl>
   </abi-instr>
@@ -6081,88 +6056,6 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <!-- __sanitizer::uptr __sanitizer::internal_open(const char*, int) -->
-      <function-decl name='internal_open' mangled-name='_ZN11__sanitizer13internal_openEPKci' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_linux.cc' line='95' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const char*' -->
-        <parameter type-id='type-id-2'/>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-5'/>
-        <!-- typedef __sanitizer::uptr -->
-        <return type-id='type-id-83'/>
-      </function-decl>
-      <!-- __sanitizer::uptr __sanitizer::internal_open(const char*, int, __sanitizer::u32) -->
-      <function-decl name='internal_open' mangled-name='_ZN11__sanitizer13internal_openEPKcij' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_linux.cc' line='99' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const char*' -->
-        <parameter type-id='type-id-2'/>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-5'/>
-        <!-- parameter of type 'typedef __sanitizer::u32' -->
-        <parameter type-id='type-id-170'/>
-        <!-- typedef __sanitizer::uptr -->
-        <return type-id='type-id-83'/>
-      </function-decl>
-      <!-- __sanitizer::uptr __sanitizer::internal_stat(const char*, void*) -->
-      <function-decl name='internal_stat' mangled-name='_ZN11__sanitizer13internal_statEPKcPv' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_linux.cc' line='140' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const char*' -->
-        <parameter type-id='type-id-2'/>
-        <!-- parameter of type 'void*' -->
-        <parameter type-id='type-id-1'/>
-        <!-- typedef __sanitizer::uptr -->
-        <return type-id='type-id-83'/>
-      </function-decl>
-      <!-- __sanitizer::uptr __sanitizer::internal_fstat(__sanitizer::fd_t, void*) -->
-      <function-decl name='internal_fstat' mangled-name='_ZN11__sanitizer14internal_fstatEiPv' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_linux.cc' line='162' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'typedef __sanitizer::fd_t' -->
-        <parameter type-id='type-id-118'/>
-        <!-- parameter of type 'void*' -->
-        <parameter type-id='type-id-1'/>
-        <!-- typedef __sanitizer::uptr -->
-        <return type-id='type-id-83'/>
-      </function-decl>
-      <!-- __sanitizer::uptr __sanitizer::internal_readlink(const char*, char*, __sanitizer::uptr) -->
-      <function-decl name='internal_readlink' mangled-name='_ZN11__sanitizer17internal_readlinkEPKcPcm' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_linux.cc' line='184' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const char*' -->
-        <parameter type-id='type-id-2'/>
-        <!-- parameter of type 'char*' -->
-        <parameter type-id='type-id-25'/>
-        <!-- parameter of type 'typedef __sanitizer::uptr' -->
-        <parameter type-id='type-id-83'/>
-        <!-- typedef __sanitizer::uptr -->
-        <return type-id='type-id-83'/>
-      </function-decl>
-      <!-- __sanitizer::uptr __sanitizer::internal_execve(const char*, char* const*, char* const*) -->
-      <function-decl name='internal_execve' mangled-name='_ZN11__sanitizer15internal_execveEPKcPKPcS4_' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_linux.cc' line='201' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const char*' -->
-        <parameter type-id='type-id-2'/>
-        <!-- parameter of type 'char* const*' -->
-        <parameter type-id='type-id-160'/>
-        <!-- parameter of type 'char* const*' -->
-        <parameter type-id='type-id-160'/>
-        <!-- typedef __sanitizer::uptr -->
-        <return type-id='type-id-83'/>
-      </function-decl>
-      <!-- __sanitizer::uptr __sanitizer::internal_getdents(__sanitizer::fd_t, __sanitizer::linux_dirent*, unsigned int) -->
-      <function-decl name='internal_getdents' mangled-name='_ZN11__sanitizer17internal_getdentsEiPNS_12linux_direntEj' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_linux.cc' line='590' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'typedef __sanitizer::fd_t' -->
-        <parameter type-id='type-id-118'/>
-        <!-- parameter of type '__sanitizer::linux_dirent*' -->
-        <parameter type-id='type-id-158'/>
-        <!-- parameter of type 'unsigned int' -->
-        <parameter type-id='type-id-129'/>
-        <!-- typedef __sanitizer::uptr -->
-        <return type-id='type-id-83'/>
-      </function-decl>
-      <!-- __sanitizer::uptr __sanitizer::internal_lseek(__sanitizer::fd_t, __sanitizer::OFF_T, int) -->
-      <function-decl name='internal_lseek' mangled-name='_ZN11__sanitizer14internal_lseekEiyi' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_linux.cc' line='594' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'typedef __sanitizer::fd_t' -->
-        <parameter type-id='type-id-118'/>
-        <!-- parameter of type 'typedef __sanitizer::OFF_T' -->
-        <parameter type-id='type-id-171'/>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-5'/>
-        <!-- typedef __sanitizer::uptr -->
-        <return type-id='type-id-83'/>
-      </function-decl>
     </namespace-decl>
     <!-- void (int, void*, void*) -->
     <function-type size-in-bits='64' id='type-id-166'>
@@ -6322,23 +6215,6 @@
         <parameter type-id='type-id-83'/>
         <!-- parameter of type 'typedef __sanitizer::string_predicate_t' -->
         <parameter type-id='type-id-198'/>
-        <!-- typedef __sanitizer::uptr -->
-        <return type-id='type-id-83'/>
-      </function-decl>
-      <!-- __sanitizer::uptr __sanitizer::Unwind_GetIP(_Unwind_Context*) -->
-      <function-decl name='Unwind_GetIP' mangled-name='_ZN11__sanitizer12Unwind_GetIPEP15_Unwind_Context' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_linux_libcdep.cc' line='136' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type '_Unwind_Context*' -->
-        <parameter type-id='type-id-192'/>
-        <!-- typedef __sanitizer::uptr -->
-        <return type-id='type-id-83'/>
-      </function-decl>
-      <!-- __sanitizer::uptr __sanitizer::GetTlsSize() -->
-      <function-decl name='GetTlsSize' mangled-name='_ZN11__sanitizer10GetTlsSizeEv' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_linux_libcdep.cc' line='204' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- typedef __sanitizer::uptr -->
-        <return type-id='type-id-83'/>
-      </function-decl>
-      <!-- __sanitizer::uptr __sanitizer::ThreadSelf() -->
-      <function-decl name='ThreadSelf' mangled-name='_ZN11__sanitizer10ThreadSelfEv' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_linux_libcdep.cc' line='254' column='1' visibility='default' binding='global' size-in-bits='64'>
         <!-- typedef __sanitizer::uptr -->
         <return type-id='type-id-83'/>
       </function-decl>
@@ -8072,11 +7948,6 @@
         <!-- void -->
         <return type-id='type-id-26'/>
       </function-decl>
-      <!-- __sanitizer::StackDepotStats* __sanitizer::StackDepotGetStats() -->
-      <function-decl name='StackDepotGetStats' mangled-name='_ZN11__sanitizer18StackDepotGetStatsEv' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_stackdepot.cc' line='45' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- __sanitizer::StackDepotStats* -->
-        <return type-id='type-id-221'/>
-      </function-decl>
     </namespace-decl>
     <!-- bool (const __sanitizer::StackDepotReverseMap::IdDescPair&, const __sanitizer::StackDepotReverseMap::IdDescPair&) -->
     <function-type size-in-bits='64' id='type-id-224'>
@@ -8315,15 +8186,6 @@
     <namespace-decl name='__sanitizer'>
       <!-- bool __sanitizer::TemplateMatch(char*, const char*) -->
       <function-decl name='TemplateMatch' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_suppressions.cc' line='24' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'char*' -->
-        <parameter type-id='type-id-25'/>
-        <!-- parameter of type 'const char*' -->
-        <parameter type-id='type-id-2'/>
-        <!-- bool -->
-        <return type-id='type-id-116'/>
-      </function-decl>
-      <!-- bool __sanitizer::TemplateMatch(char*, const char*) -->
-      <function-decl name='TemplateMatch' mangled-name='_ZN11__sanitizer13TemplateMatchEPcPKc' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_suppressions.cc' line='24' column='1' visibility='default' binding='global' size-in-bits='64'>
         <!-- parameter of type 'char*' -->
         <parameter type-id='type-id-25'/>
         <!-- parameter of type 'const char*' -->
@@ -9007,17 +8869,6 @@
       </function-decl>
       <!-- typedef long long unsigned int __sanitizer::u64 -->
       <typedef-decl name='u64' type-id='type-id-136' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_internal_defs.h' line='69' column='1' id='type-id-173'/>
-      <!-- void* __sanitizer::internal_memcpy(void*, void*, __sanitizer::uptr) -->
-      <function-decl name='internal_memcpy' mangled-name='_ZN11__sanitizer15internal_memcpyEPvPKvm' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_libc.h' line='28' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'void*' -->
-        <parameter type-id='type-id-1'/>
-        <!-- parameter of type 'void*' -->
-        <parameter type-id='type-id-1'/>
-        <!-- parameter of type 'typedef __sanitizer::uptr' -->
-        <parameter type-id='type-id-83'/>
-        <!-- void* -->
-        <return type-id='type-id-1'/>
-      </function-decl>
     </namespace-decl>
     <!-- namespace __tsan -->
     <namespace-decl name='__tsan'>
@@ -9394,28 +9245,6 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <!-- void __tsan::build_consistency_release() -->
-      <function-decl name='build_consistency_release' mangled-name='_ZN6__tsan25build_consistency_releaseEv' filepath='../../.././libsanitizer/tsan/tsan_defs.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- void -->
-        <return type-id='type-id-26'/>
-      </function-decl>
-      <!-- void __tsan::build_consistency_nostats() -->
-      <function-decl name='build_consistency_nostats' mangled-name='_ZN6__tsan25build_consistency_nostatsEv' filepath='../../.././libsanitizer/tsan/tsan_defs.h' line='84' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- void -->
-        <return type-id='type-id-26'/>
-      </function-decl>
-      <!-- void __tsan::build_consistency_shadow8() -->
-      <function-decl name='build_consistency_shadow8' mangled-name='_ZN6__tsan25build_consistency_shadow8Ev' filepath='../../.././libsanitizer/tsan/tsan_defs.h' line='94' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- void -->
-        <return type-id='type-id-26'/>
-      </function-decl>
-      <!-- void __tsan::internal_free(void*) -->
-      <function-decl name='internal_free' mangled-name='_ZN6__tsan13internal_freeEPv' filepath='../../.././libsanitizer/tsan/tsan_mman.h' line='72' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'void*' -->
-        <parameter type-id='type-id-1'/>
-        <!-- void -->
-        <return type-id='type-id-26'/>
-      </function-decl>
     </namespace-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_fd.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
@@ -12294,25 +12123,6 @@
       <typedef-decl name='OFF64_T' type-id='type-id-173' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_internal_defs.h' line='85' column='1' id='type-id-379'/>
       <!-- typedef __sanitizer::u64 __sanitizer::OFF_T -->
       <typedef-decl name='OFF_T' type-id='type-id-173' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_internal_defs.h' line='81' column='1' id='type-id-171'/>
-      <!-- void* __sanitizer::AllocatorReturnNull() -->
-      <function-decl name='AllocatorReturnNull' mangled-name='_ZN11__sanitizer19AllocatorReturnNullEv' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_allocator.h' line='25' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- void* -->
-        <return type-id='type-id-1'/>
-      </function-decl>
-      <!-- __sanitizer::uptr __sanitizer::GetPageSizeCached() -->
-      <function-decl name='GetPageSizeCached' mangled-name='_ZN11__sanitizer17GetPageSizeCachedEv' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common.h' line='39' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- typedef __sanitizer::uptr -->
-        <return type-id='type-id-83'/>
-      </function-decl>
-      <!-- char* __sanitizer::internal_strchr(const char*, int) -->
-      <function-decl name='internal_strchr' mangled-name='_ZN11__sanitizer15internal_strchrEPKci' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_libc.h' line='34' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const char*' -->
-        <parameter type-id='type-id-2'/>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-5'/>
-        <!-- char* -->
-        <return type-id='type-id-25'/>
-      </function-decl>
     </namespace-decl>
     <!-- namespace __tsan -->
     <namespace-decl name='__tsan'>
@@ -12708,30 +12518,6 @@
           <var-decl name='ctx' type-id='type-id-350' visibility='default' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='118' column='1'/>
         </data-member>
       </class-decl>
-      <!-- void* __tsan::user_alloc(__tsan::ThreadState*, __sanitizer::uptr, __sanitizer::uptr, __sanitizer::uptr) -->
-      <function-decl name='user_alloc' mangled-name='_ZN6__tsan10user_allocEPNS_11ThreadStateEmmm' filepath='../../.././libsanitizer/tsan/tsan_mman.h' line='26' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type '__tsan::ThreadState*' -->
-        <parameter type-id='type-id-348'/>
-        <!-- parameter of type 'typedef __sanitizer::uptr' -->
-        <parameter type-id='type-id-83'/>
-        <!-- parameter of type 'typedef __sanitizer::uptr' -->
-        <parameter type-id='type-id-83'/>
-        <!-- parameter of type 'typedef __sanitizer::uptr' -->
-        <parameter type-id='type-id-83'/>
-        <!-- void* -->
-        <return type-id='type-id-1'/>
-      </function-decl>
-      <!-- void __tsan::FdClose(__tsan::ThreadState*, __sanitizer::uptr, int) -->
-      <function-decl name='FdClose' mangled-name='_ZN6__tsan7FdCloseEPNS_11ThreadStateEmi' filepath='../../.././libsanitizer/tsan/tsan_fd.h' line='43' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type '__tsan::ThreadState*' -->
-        <parameter type-id='type-id-348'/>
-        <!-- parameter of type 'typedef __sanitizer::uptr' -->
-        <parameter type-id='type-id-83'/>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-5'/>
-        <!-- void -->
-        <return type-id='type-id-26'/>
-      </function-decl>
     </namespace-decl>
     <!-- namespace std -->
     <namespace-decl name='std'>
@@ -32681,66 +32467,6 @@
         <!-- __tsan::Flags* -->
         <return type-id='type-id-309'/>
       </function-decl>
-      <!-- __tsan::Context* __tsan::CTX() -->
-      <function-decl name='CTX' mangled-name='_ZN6__tsan3CTXEv' filepath='../../.././libsanitizer/tsan/tsan_rtl.h' line='469' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- __tsan::Context* -->
-        <return type-id='type-id-1207'/>
-      </function-decl>
-      <!-- void __tsan::MemoryAccess(__tsan::ThreadState*, __sanitizer::uptr, __sanitizer::uptr, int, bool, bool) -->
-      <function-decl name='MemoryAccess' mangled-name='_ZN6__tsan12MemoryAccessEPNS_11ThreadStateEmmibb' filepath='../../.././libsanitizer/tsan/tsan_rtl.h' line='647' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type '__tsan::ThreadState*' -->
-        <parameter type-id='type-id-348'/>
-        <!-- parameter of type 'typedef __sanitizer::uptr' -->
-        <parameter type-id='type-id-83'/>
-        <!-- parameter of type 'typedef __sanitizer::uptr' -->
-        <parameter type-id='type-id-83'/>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-5'/>
-        <!-- parameter of type 'bool' -->
-        <parameter type-id='type-id-116'/>
-        <!-- parameter of type 'bool' -->
-        <parameter type-id='type-id-116'/>
-        <!-- void -->
-        <return type-id='type-id-26'/>
-      </function-decl>
-      <!-- void __tsan::FuncEntry(__tsan::ThreadState*, __sanitizer::uptr) -->
-      <function-decl name='FuncEntry' mangled-name='_ZN6__tsan9FuncEntryEPNS_11ThreadStateEm' filepath='../../.././libsanitizer/tsan/tsan_rtl.h' line='693' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type '__tsan::ThreadState*' -->
-        <parameter type-id='type-id-348'/>
-        <!-- parameter of type 'typedef __sanitizer::uptr' -->
-        <parameter type-id='type-id-83'/>
-        <!-- void -->
-        <return type-id='type-id-26'/>
-      </function-decl>
-      <!-- void __tsan::FuncExit(__tsan::ThreadState*) -->
-      <function-decl name='FuncExit' mangled-name='_ZN6__tsan8FuncExitEPNS_11ThreadStateE' filepath='../../.././libsanitizer/tsan/tsan_rtl.h' line='694' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type '__tsan::ThreadState*' -->
-        <parameter type-id='type-id-348'/>
-        <!-- void -->
-        <return type-id='type-id-26'/>
-      </function-decl>
-      <!-- void __tsan::AcquireImpl(__tsan::ThreadState*, __sanitizer::uptr, __tsan::SyncClock*) -->
-      <function-decl name='AcquireImpl' mangled-name='_ZN6__tsan11AcquireImplEPNS_11ThreadStateEmPNS_9SyncClockE' filepath='../../.././libsanitizer/tsan/tsan_rtl.h' line='722' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type '__tsan::ThreadState*' -->
-        <parameter type-id='type-id-348'/>
-        <!-- parameter of type 'typedef __sanitizer::uptr' -->
-        <parameter type-id='type-id-83'/>
-        <!-- parameter of type '__tsan::SyncClock*' -->
-        <parameter type-id='type-id-285'/>
-        <!-- void -->
-        <return type-id='type-id-26'/>
-      </function-decl>
-      <!-- void __tsan::ReleaseImpl(__tsan::ThreadState*, __sanitizer::uptr, __tsan::SyncClock*) -->
-      <function-decl name='ReleaseImpl' mangled-name='_ZN6__tsan11ReleaseImplEPNS_11ThreadStateEmPNS_9SyncClockE' filepath='../../.././libsanitizer/tsan/tsan_rtl.h' line='723' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type '__tsan::ThreadState*' -->
-        <parameter type-id='type-id-348'/>
-        <!-- parameter of type 'typedef __sanitizer::uptr' -->
-        <parameter type-id='type-id-83'/>
-        <!-- parameter of type '__tsan::SyncClock*' -->
-        <parameter type-id='type-id-285'/>
-        <!-- void -->
-        <return type-id='type-id-26'/>
-      </function-decl>
     </namespace-decl>
     <!-- a8 __tsan_atomic8_load(const volatile a8*, morder) -->
     <function-decl name='__tsan_atomic8_load' mangled-name='__tsan_atomic8_load' filepath='../../.././libsanitizer/tsan/tsan_interface_atomic.cc' line='393' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__tsan_atomic8_load'>
@@ -33781,13 +33507,6 @@
         <parameter type-id='type-id-83'/>
         <!-- struct __tsan::MD5Hash -->
         <return type-id='type-id-1250'/>
-      </function-decl>
-      <!-- void __tsan::MD5_Init(__tsan::__anonymous_struct__*) -->
-      <function-decl name='MD5_Init' mangled-name='_ZN6__tsan8MD5_InitEPNS_7MD5_CTXE' filepath='../../.././libsanitizer/tsan/tsan_md5.cc' line='142' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type '__tsan::__anonymous_struct__*' -->
-        <parameter type-id='type-id-1499'/>
-        <!-- void -->
-        <return type-id='type-id-26'/>
       </function-decl>
     </namespace-decl>
   </abi-instr>
@@ -35046,11 +34765,6 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <!-- __sanitizer::InternalAllocator* __sanitizer::internal_allocator() -->
-      <function-decl name='internal_allocator' mangled-name='_ZN11__sanitizer18internal_allocatorEv' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_allocator_internal.h' line='62' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- __sanitizer::InternalAllocator* -->
-        <return type-id='type-id-1516'/>
-      </function-decl>
     </namespace-decl>
     <!-- namespace __tsan -->
     <namespace-decl name='__tsan'>
@@ -35101,11 +34815,6 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <!-- __tsan::Allocator* __tsan::allocator() -->
-      <function-decl name='allocator' mangled-name='_ZN6__tsan9allocatorEv' filepath='../../.././libsanitizer/tsan/tsan_mman.cc' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- __tsan::Allocator* -->
-        <return type-id='type-id-1525'/>
-      </function-decl>
     </namespace-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_mutex.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
@@ -35225,11 +34934,6 @@
         <parameter type-id='type-id-176'/>
         <!-- typedef __sanitizer::atomic_uintptr_t::Type -->
         <return type-id='type-id-1465'/>
-      </function-decl>
-      <!-- __sanitizer::uptr __sanitizer::internal_sched_yield() -->
-      <function-decl name='internal_sched_yield' mangled-name='_ZN11__sanitizer20internal_sched_yieldEv' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_libc.h' line='93' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- typedef __sanitizer::uptr -->
-        <return type-id='type-id-83'/>
       </function-decl>
       <!-- __sanitizer::uptr __sanitizer::internal_sched_yield() -->
       <function-decl name='internal_sched_yield' mangled-name='_ZN11__sanitizer20internal_sched_yieldEv' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_libc.h' line='93' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -36254,19 +35958,6 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <!-- void __sanitizer::ReportErrorSummary(const char*, const char*, int, const char*) -->
-      <function-decl name='ReportErrorSummary' mangled-name='_ZN11__sanitizer18ReportErrorSummaryEPKcS1_iS1_' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common.h' line='217' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const char*' -->
-        <parameter type-id='type-id-2'/>
-        <!-- parameter of type 'const char*' -->
-        <parameter type-id='type-id-2'/>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-5'/>
-        <!-- parameter of type 'const char*' -->
-        <parameter type-id='type-id-2'/>
-        <!-- void -->
-        <return type-id='type-id-26'/>
-      </function-decl>
     </namespace-decl>
     <!-- namespace __tsan -->
     <namespace-decl name='__tsan'>
@@ -37589,22 +37280,6 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <!-- const char* __tsan::thread_name(char*, int) -->
-      <function-decl name='thread_name' mangled-name='_ZN6__tsan11thread_nameEPci' filepath='../../.././libsanitizer/tsan/tsan_report.cc' line='56' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'char*' -->
-        <parameter type-id='type-id-25'/>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-5'/>
-        <!-- const char* -->
-        <return type-id='type-id-2'/>
-      </function-decl>
-      <!-- bool __tsan::FrameIsInternal(const __tsan::ReportStack*) -->
-      <function-decl name='FrameIsInternal' mangled-name='_ZN6__tsan15FrameIsInternalEPKNS_11ReportStackE' filepath='../../.././libsanitizer/tsan/tsan_rtl.h' line='620' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const __tsan::ReportStack*' -->
-        <parameter type-id='type-id-1635'/>
-        <!-- bool -->
-        <return type-id='type-id-116'/>
-      </function-decl>
     </namespace-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_rtl.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
@@ -37980,22 +37655,6 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <!-- __sanitizer::uptr __sanitizer::internal_strlen(const char*) -->
-      <function-decl name='internal_strlen' mangled-name='_ZN11__sanitizer15internal_strlenEPKc' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_libc.h' line='39' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const char*' -->
-        <parameter type-id='type-id-2'/>
-        <!-- typedef __sanitizer::uptr -->
-        <return type-id='type-id-83'/>
-      </function-decl>
-      <!-- bool __sanitizer::internal_iserror(__sanitizer::uptr, int*) -->
-      <function-decl name='internal_iserror' mangled-name='_ZN11__sanitizer16internal_iserrorEmPi' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_libc.h' line='96' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'typedef __sanitizer::uptr' -->
-        <parameter type-id='type-id-83'/>
-        <!-- parameter of type 'int*' -->
-        <parameter type-id='type-id-30'/>
-        <!-- bool -->
-        <return type-id='type-id-116'/>
-      </function-decl>
     </namespace-decl>
     <!-- namespace __tsan -->
     <namespace-decl name='__tsan'>
@@ -38249,34 +37908,6 @@
         <!-- void -->
         <return type-id='type-id-26'/>
       </function-decl>
-      <!-- void __tsan::MapThreadTrace(__sanitizer::uptr, __sanitizer::uptr) -->
-      <function-decl name='MapThreadTrace' mangled-name='_ZN6__tsan14MapThreadTraceEmm' filepath='../../.././libsanitizer/tsan/tsan_rtl.cc' line='198' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'typedef __sanitizer::uptr' -->
-        <parameter type-id='type-id-83'/>
-        <!-- parameter of type 'typedef __sanitizer::uptr' -->
-        <parameter type-id='type-id-83'/>
-        <!-- void -->
-        <return type-id='type-id-26'/>
-      </function-decl>
-      <!-- void __tsan::MemoryAccessImpl(__tsan::ThreadState*, __sanitizer::uptr, int, bool, bool, __sanitizer::u64*, __tsan::Shadow) -->
-      <function-decl name='MemoryAccessImpl' mangled-name='_ZN6__tsan16MemoryAccessImplEPNS_11ThreadStateEmibbPyNS_6ShadowE' filepath='../../.././libsanitizer/tsan/tsan_rtl.cc' line='416' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type '__tsan::ThreadState*' -->
-        <parameter type-id='type-id-348'/>
-        <!-- parameter of type 'typedef __sanitizer::uptr' -->
-        <parameter type-id='type-id-83'/>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-5'/>
-        <!-- parameter of type 'bool' -->
-        <parameter type-id='type-id-116'/>
-        <!-- parameter of type 'bool' -->
-        <parameter type-id='type-id-116'/>
-        <!-- parameter of type '__sanitizer::u64*' -->
-        <parameter type-id='type-id-1337'/>
-        <!-- parameter of type 'class __tsan::Shadow' -->
-        <parameter type-id='type-id-1681'/>
-        <!-- void -->
-        <return type-id='type-id-26'/>
-      </function-decl>
       <!-- char __tsan::cur_thread_placeholder[431104] -->
       <var-decl name='cur_thread_placeholder' type-id='type-id-1655' mangled-name='_ZN6__tsan22cur_thread_placeholderE' visibility='default' filepath='../../.././libsanitizer/tsan/tsan_rtl.cc' line='35' column='1'/>
     </namespace-decl>
@@ -38481,17 +38112,6 @@
         <parameter type-id='type-id-348'/>
         <!-- parameter of type 'typedef __sanitizer::uptr' -->
         <parameter type-id='type-id-83'/>
-        <!-- void -->
-        <return type-id='type-id-26'/>
-      </function-decl>
-      <!-- void __tsan::ReleaseStoreImpl(__tsan::ThreadState*, __sanitizer::uptr, __tsan::SyncClock*) -->
-      <function-decl name='ReleaseStoreImpl' mangled-name='_ZN6__tsan16ReleaseStoreImplEPNS_11ThreadStateEmPNS_9SyncClockE' filepath='../../.././libsanitizer/tsan/tsan_rtl_mutex.cc' line='327' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type '__tsan::ThreadState*' -->
-        <parameter type-id='type-id-348'/>
-        <!-- parameter of type 'typedef __sanitizer::uptr' -->
-        <parameter type-id='type-id-83'/>
-        <!-- parameter of type '__tsan::SyncClock*' -->
-        <parameter type-id='type-id-285'/>
         <!-- void -->
         <return type-id='type-id-26'/>
       </function-decl>
@@ -40021,23 +39641,6 @@
           <var-decl name='count' type-id='type-id-5' visibility='default' filepath='../../.././libsanitizer/tsan/tsan_rtl_thread.cc' line='142' column='1'/>
         </data-member>
       </class-decl>
-      <!-- __tsan::Trace* __tsan::ThreadTrace(int) -->
-      <function-decl name='ThreadTrace' mangled-name='_ZN6__tsan11ThreadTraceEi' filepath='../../.././libsanitizer/tsan/tsan_rtl.h' line='752' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-5'/>
-        <!-- __tsan::Trace* -->
-        <return type-id='type-id-1707'/>
-      </function-decl>
-      <!-- __sanitizer::uptr __tsan::TraceSize() -->
-      <function-decl name='TraceSize' mangled-name='_ZN6__tsan9TraceSizeEv' filepath='../../.././libsanitizer/tsan/tsan_rtl.h' line='750' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- typedef __sanitizer::uptr -->
-        <return type-id='type-id-83'/>
-      </function-decl>
-      <!-- __sanitizer::uptr __tsan::TraceParts() -->
-      <function-decl name='TraceParts' mangled-name='_ZN6__tsan10TracePartsEv' filepath='../../.././libsanitizer/tsan/tsan_rtl.h' line='751' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- typedef __sanitizer::uptr -->
-        <return type-id='type-id-83'/>
-      </function-decl>
     </namespace-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_stat.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
@@ -40096,13 +39699,6 @@
         <!-- const char* -->
         <return type-id='type-id-2'/>
       </function-decl>
-      <!-- __sanitizer::uptr __sanitizer::internal_close(__sanitizer::fd_t) -->
-      <function-decl name='internal_close' mangled-name='_ZN11__sanitizer14internal_closeEi' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_libc.h' line='66' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'typedef __sanitizer::fd_t' -->
-        <parameter type-id='type-id-118'/>
-        <!-- typedef __sanitizer::uptr -->
-        <return type-id='type-id-83'/>
-      </function-decl>
     </namespace-decl>
     <!-- namespace __tsan -->
     <namespace-decl name='__tsan'>
@@ -40134,13 +39730,6 @@
         <parameter type-id='type-id-896'/>
         <!-- typedef __sanitizer::uptr -->
         <return type-id='type-id-83'/>
-      </function-decl>
-      <!-- __sanitizer::SuppressionType __tsan::conv(__tsan::ReportType) -->
-      <function-decl name='conv' mangled-name='_ZN6__tsan4convENS_10ReportTypeE' filepath='../../.././libsanitizer/tsan/tsan_suppressions.cc' line='93' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'enum __tsan::ReportType' -->
-        <parameter type-id='type-id-1488'/>
-        <!-- enum __sanitizer::SuppressionType -->
-        <return type-id='type-id-1194'/>
       </function-decl>
     </namespace-decl>
   </abi-instr>
@@ -40637,26 +40226,6 @@
           <var-decl name='size' type-id='type-id-83' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_symbolizer.h' line='61' column='1'/>
         </data-member>
       </class-decl>
-      <!-- void* __sanitizer::internal_memset(void*, int, __sanitizer::uptr) -->
-      <function-decl name='internal_memset' mangled-name='_ZN11__sanitizer15internal_memsetEPvim' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_libc.h' line='33' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'void*' -->
-        <parameter type-id='type-id-1'/>
-        <!-- parameter of type 'int' -->
-        <parameter type-id='type-id-5'/>
-        <!-- parameter of type 'typedef __sanitizer::uptr' -->
-        <parameter type-id='type-id-83'/>
-        <!-- void* -->
-        <return type-id='type-id-1'/>
-      </function-decl>
-      <!-- void __sanitizer::UnmapOrDie(void*, __sanitizer::uptr) -->
-      <function-decl name='UnmapOrDie' mangled-name='_ZN11__sanitizer10UnmapOrDieEPvm' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common.h' line='52' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'void*' -->
-        <parameter type-id='type-id-1'/>
-        <!-- parameter of type 'typedef __sanitizer::uptr' -->
-        <parameter type-id='type-id-83'/>
-        <!-- void -->
-        <return type-id='type-id-26'/>
-      </function-decl>
     </namespace-decl>
     <!-- namespace __tsan -->
     <namespace-decl name='__tsan'>

@@ -18012,6 +18012,7 @@
       </member-function>
     </class-decl>
     <typedef-decl name='time_t' type-id='type-id-1103' filepath='/usr/include/time.h' line='76' column='1' id='type-id-1092'/>
+    <typedef-decl name='__time_t' type-id='type-id-285' filepath='/usr/include/bits/types.h' line='149' column='1' id='type-id-1103'/>
     <class-decl name='siginfo' size-in-bits='1024' is-struct='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='52' column='1' id='type-id-1104'>
       <member-type access='public'>
         <union-decl name='__anonymous_union__' size-in-bits='896' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='59' column='1' id='type-id-1105'>
@@ -18123,7 +18124,6 @@
         <var-decl name='_sifields' type-id='type-id-1105' visibility='default' filepath='/usr/include/bits/siginfo.h' line='107' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='__time_t' type-id='type-id-285' filepath='/usr/include/bits/types.h' line='149' column='1' id='type-id-1103'/>
     <class-decl name='CpuProfiler' size-in-bits='704' visibility='default' filepath='src/profiler.cc' line='89' column='1' id='type-id-1115'>
       <data-member access='private' static='yes'>
         <var-decl name='instance_' type-id='type-id-1115' mangled-name='_ZN11CpuProfiler9instance_E' visibility='default' filepath='src/profiler.cc' line='107' column='1' elf-symbol-id='_ZN11CpuProfiler9instance_E'/>

@@ -429,7 +429,7 @@ static bool
 die_die_attribute(const Dwarf_Die* die,
 		  unsigned attr_name,
 		  Dwarf_Die& result,
-		  bool look_thru_abstract_origin = true);
+		  bool recursively = true);
 
 static string
 get_internal_anonymous_die_prefix_name(const Dwarf_Die *die);
@@ -8284,15 +8284,27 @@ die_attribute_has_no_signedness(const Dwarf_Die *die, unsigned attr_name)
 /// @param flag the output parameter to store the flag value into.
 /// This is set iff the function returns true.
 ///
+/// @param recursively if true, the function looks through the
+/// possible DW_AT_specification and DW_AT_abstract_origin attribute
+/// all the way down to the initial DIE that is cloned and look on
+/// that DIE to see if it has the @p attr_name attribute.
+///
 /// @return true if the DIE has a flag attribute named @p attr_name,
 /// false otherwise.
 static bool
-die_flag_attribute(Dwarf_Die* die, unsigned attr_name, bool& flag)
+die_flag_attribute(Dwarf_Die* die,
+		   unsigned attr_name,
+		   bool& flag,
+		   bool recursively = true)
 {
   Dwarf_Attribute attr;
+  if (recursively
+      ? !dwarf_attr_integrate(die, attr_name, &attr)
+      : !dwarf_attr(die, attr_name, &attr))
+    return false;
+
   bool f = false;
-  if (!dwarf_attr_integrate(die, attr_name, &attr)
-      || dwarf_formflag(&attr, &f))
+  if (dwarf_formflag(&attr, &f))
     return false;
 
   flag = f;
@@ -8343,18 +8355,15 @@ die_decl_file_attribute(const Dwarf_Die* die)
 ///
 /// @param die the DIE to read the value from.
 ///
-/// @param die_is_in_alt_di true if @p die comes from alternate debug
-/// info sections.
-///
 /// @param attr_name the DW_AT_* attribute name to read.
 ///
 /// @param result the DIE resulting from reading the attribute value.
 /// This is set iff the function returns true.
 ///
-/// @param look_thru_abstract_origin if yes, the function looks
-/// through the possible DW_AT_abstract_origin attribute all the way
-/// down to the initial DIE that is cloned and look on that DIE to see
-/// if it has the @p attr_name attribute.
+/// @param recursively if true, the function looks through the
+/// possible DW_AT_specification and DW_AT_abstract_origin attribute
+/// all the way down to the initial DIE that is cloned and look on
+/// that DIE to see if it has the @p attr_name attribute.
 ///
 /// @return true if the DIE @p die contains an attribute named @p
 /// attr_name that is a DIE reference, false otherwise.
@@ -8362,21 +8371,15 @@ static bool
 die_die_attribute(const Dwarf_Die* die,
 		  unsigned attr_name,
 		  Dwarf_Die& result,
-		  bool look_thru_abstract_origin)
+		  bool recursively)
 {
   Dwarf_Attribute attr;
-  if (look_thru_abstract_origin)
-    {
-      if (!dwarf_attr_integrate(const_cast<Dwarf_Die*>(die), attr_name, &attr))
-	return false;
-    }
-  else
-    {
-      if (!dwarf_attr(const_cast<Dwarf_Die*>(die), attr_name, &attr))
-	return false;
-    }
-  bool r = dwarf_formref_die(&attr, &result);
-  return r;
+  if (recursively
+      ? !dwarf_attr_integrate(const_cast<Dwarf_Die*>(die), attr_name, &attr)
+      : !dwarf_attr(const_cast<Dwarf_Die*>(die), attr_name, &attr))
+    return false;
+
+  return dwarf_formref_die(&attr, &result);
 }
 
 /// Read and return a DW_FORM_addr attribute from a given DIE.
@@ -8559,7 +8562,7 @@ static bool
 die_is_declaration_only(Dwarf_Die* die)
 {
   bool is_declaration_only = false;
-  die_flag_attribute(die, DW_AT_declaration, is_declaration_only);
+  die_flag_attribute(die, DW_AT_declaration, is_declaration_only, false);
   return is_declaration_only;
 }
 
