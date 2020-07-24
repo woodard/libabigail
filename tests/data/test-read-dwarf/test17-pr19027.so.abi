@@ -5655,7 +5655,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='Sanitizer&lt;OT::maxp&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='292' column='1' is-declaration-only='yes' id='type-id-568'>
+      <class-decl name='Sanitizer&lt;OT::maxp&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='292' column='1' id='type-id-568'>
         <member-function access='public' static='yes'>
           <function-decl name='sanitize' mangled-name='_ZN2OT9SanitizerINS_4maxpEE8sanitizeEP9hb_blob_t' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='293' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-59'/>
@@ -5669,7 +5669,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='Sanitizer&lt;OT::head&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='292' column='1' is-declaration-only='yes' id='type-id-569'>
+      <class-decl name='Sanitizer&lt;OT::head&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='292' column='1' id='type-id-569'>
         <member-function access='public' static='yes'>
           <function-decl name='sanitize' mangled-name='_ZN2OT9SanitizerINS_4headEE8sanitizeEP9hb_blob_t' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='293' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-59'/>
@@ -5683,7 +5683,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='Sanitizer&lt;OT::OpenTypeFontFile&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='292' column='1' is-declaration-only='yes' id='type-id-570'>
+      <class-decl name='Sanitizer&lt;OT::OpenTypeFontFile&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='292' column='1' id='type-id-570'>
         <member-function access='public' static='yes'>
           <function-decl name='sanitize' mangled-name='_ZN2OT9SanitizerINS_16OpenTypeFontFileEE8sanitizeEP9hb_blob_t' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='293' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-59'/>
@@ -8982,7 +8982,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='Sanitizer&lt;OT::cmap&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='292' column='1' is-declaration-only='yes' id='type-id-837'>
+      <class-decl name='Sanitizer&lt;OT::cmap&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='292' column='1' id='type-id-837'>
         <member-function access='public' static='yes'>
           <function-decl name='sanitize' mangled-name='_ZN2OT9SanitizerINS_4cmapEE8sanitizeEP9hb_blob_t' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='293' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-59'/>
@@ -8996,7 +8996,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='Sanitizer&lt;OT::_hea&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='292' column='1' is-declaration-only='yes' id='type-id-838'>
+      <class-decl name='Sanitizer&lt;OT::_hea&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='292' column='1' id='type-id-838'>
         <member-function access='public' static='yes'>
           <function-decl name='sanitize' mangled-name='_ZN2OT9SanitizerINS_4_heaEE8sanitizeEP9hb_blob_t' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='293' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-59'/>
@@ -9010,7 +9010,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='Sanitizer&lt;OT::_mtx&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='292' column='1' is-declaration-only='yes' id='type-id-839'>
+      <class-decl name='Sanitizer&lt;OT::_mtx&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='292' column='1' id='type-id-839'>
         <member-function access='public' static='yes'>
           <function-decl name='sanitize' mangled-name='_ZN2OT9SanitizerINS_4_mtxEE8sanitizeEP9hb_blob_t' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='293' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-59'/>
@@ -22582,7 +22582,7 @@
       <class-decl name='OffsetArrayOf&lt;OT::PosLookup&gt;' size-in-bits='32' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='900' column='1' id='type-id-1828'>
         <base-class access='public' layout-offset-in-bits='0' type-id='type-id-1040'/>
       </class-decl>
-      <class-decl name='Sanitizer&lt;OT::GDEF&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='292' column='1' is-declaration-only='yes' id='type-id-1885'>
+      <class-decl name='Sanitizer&lt;OT::GDEF&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='292' column='1' id='type-id-1885'>
         <member-function access='public' static='yes'>
           <function-decl name='sanitize' mangled-name='_ZN2OT9SanitizerINS_4GDEFEE8sanitizeEP9hb_blob_t' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='293' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-59'/>
@@ -22596,7 +22596,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='Sanitizer&lt;OT::GSUB&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='292' column='1' is-declaration-only='yes' id='type-id-1886'>
+      <class-decl name='Sanitizer&lt;OT::GSUB&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='292' column='1' id='type-id-1886'>
         <member-function access='public' static='yes'>
           <function-decl name='sanitize' mangled-name='_ZN2OT9SanitizerINS_4GSUBEE8sanitizeEP9hb_blob_t' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='293' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-59'/>
@@ -22610,7 +22610,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='Sanitizer&lt;OT::GPOS&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='292' column='1' is-declaration-only='yes' id='type-id-1887'>
+      <class-decl name='Sanitizer&lt;OT::GPOS&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='292' column='1' id='type-id-1887'>
         <member-function access='public' static='yes'>
           <function-decl name='sanitize' mangled-name='_ZN2OT9SanitizerINS_4GPOSEE8sanitizeEP9hb_blob_t' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='293' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-59'/>

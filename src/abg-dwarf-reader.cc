@@ -7852,6 +7852,7 @@ build_ir_node_from_die(read_context&	ctxt,
 		       scope_decl*	scope,
 		       bool		called_from_public_decl,
 		       size_t		where_offset,
+		       bool		is_declaration_only = true,
 		       bool		is_required_decl_spec = false);
 
 static type_or_decl_base_sptr
@@ -7861,21 +7862,23 @@ build_ir_node_from_die(read_context&	ctxt,
 		       size_t		where_offset);
 
 static class_decl_sptr
-add_or_update_class_type(read_context&	ctxt,
-			 Dwarf_Die*	die,
-			 scope_decl*	scope,
-			 bool		is_struct,
-			 class_decl_sptr  klass,
-			 bool		called_from_public_decl,
-			 size_t		where_offset);
+add_or_update_class_type(read_context&	 ctxt,
+			 Dwarf_Die*	 die,
+			 scope_decl*	 scope,
+			 bool		 is_struct,
+			 class_decl_sptr klass,
+			 bool		 called_from_public_decl,
+			 size_t		 where_offset,
+			 bool		 is_declaration_only);
 
 static union_decl_sptr
-add_or_update_union_type(read_context&	ctxt,
-			 Dwarf_Die*	die,
-			 scope_decl*	scope,
-			 union_decl_sptr  union_type,
-			 bool		called_from_public_decl,
-			 size_t		where_offset);
+add_or_update_union_type(read_context&	 ctxt,
+			 Dwarf_Die*	 die,
+			 scope_decl*	 scope,
+			 union_decl_sptr union_type,
+			 bool		 called_from_public_decl,
+			 size_t		 where_offset,
+			 bool		 is_declaration_only);
 
 static decl_base_sptr
 build_ir_node_for_void_type(read_context& ctxt);
@@ -7889,14 +7892,16 @@ build_function_decl(read_context&	ctxt,
 static bool
 function_is_suppressed(const read_context& ctxt,
 		       const scope_decl* scope,
-		       Dwarf_Die *function_die);
+		       Dwarf_Die *function_die,
+		       bool is_declaration_only);
 
 static function_decl_sptr
 build_or_get_fn_decl_if_not_suppressed(read_context&	ctxt,
 				       scope_decl	*scope,
 				       Dwarf_Die	*die,
 				       size_t	where_offset,
-				       function_decl_sptr f = function_decl_sptr());
+				       bool is_declaration_only,
+				       function_decl_sptr f);
 
 static var_decl_sptr
 build_var_decl(read_context&	ctxt,
@@ -13074,12 +13079,16 @@ build_enum_underlying_type(read_context& ctxt,
 /// does *NOT* add the built type to this scope.  The scope is just so
 /// that the function knows how to name anonymous enums.
 ///
+/// @param is_declaration_only is true if the DIE denoted by @p die is
+/// a declaration-only DIE.
+///
 /// @return the built enum_type_decl or NULL if it could not be built.
 static enum_type_decl_sptr
 build_enum_type(read_context&	ctxt,
 		Dwarf_Die*	die,
 		scope_decl*	scope,
-		size_t		where_offset)
+		size_t		where_offset,
+		bool		is_declaration_only)
 {
   enum_type_decl_sptr result;
   if (!die)
@@ -13092,7 +13101,6 @@ build_enum_type(read_context&	ctxt,
   string name, linkage_name;
   location loc;
   die_loc_and_name(ctxt, die, loc, name, linkage_name);
-  bool is_declaration_only = die_is_declaration_only(die);
 
   bool is_anonymous = false;
   // If the enum is anonymous, let's give it a name.
@@ -13557,6 +13565,9 @@ add_or_update_member_function(read_context& ctxt,
 /// e.g, DW_TAG_partial_unit that can be included in several places in
 /// the DIE tree.
 ///
+/// @param is_declaration_only is true if the DIE denoted by @p die is
+/// a declaration-only DIE.
+///
 /// @return the resulting class_type.
 static class_decl_sptr
 add_or_update_class_type(read_context&	 ctxt,
@@ -13565,7 +13576,8 @@ add_or_update_class_type(read_context&	 ctxt,
 			 bool		 is_struct,
 			 class_decl_sptr klass,
 			 bool		 called_from_public_decl,
-			 size_t	 where_offset)
+			 size_t		 where_offset,
+			 bool		 is_declaration_only)
 {
   class_decl_sptr result;
   if (!die)
@@ -13605,7 +13617,6 @@ add_or_update_class_type(read_context&	 ctxt,
   string name, linkage_name;
   location loc;
   die_loc_and_name(ctxt, die, loc, name, linkage_name);
-  bool is_declaration_only = die_is_declaration_only(die);
 
   bool is_anonymous = false;
   if (name.empty())
@@ -13811,8 +13822,7 @@ add_or_update_class_type(read_context&	 ctxt,
 						      &child))
 		continue;
 
-	      decl_base_sptr ty = is_decl(
-					  build_ir_node_from_die(ctxt, &type_die,
+	      decl_base_sptr ty = is_decl(build_ir_node_from_die(ctxt, &type_die,
 								 called_from_public_decl,
 								 where_offset));
 	      type_base_sptr t = is_type(ty);
@@ -13931,13 +13941,19 @@ add_or_update_class_type(read_context&	 ctxt,
 /// positionned at, in the DIE tree.  This is useful when @p die is
 /// e.g, DW_TAG_partial_unit that can be included in several places in
 /// the DIE tree.
+///
+/// @param is_declaration_only is true if the DIE denoted by @p die is
+/// a declaration-only DIE.
+///
+/// @return the resulting @ref union_decl type.
 static union_decl_sptr
-add_or_update_union_type(read_context&	ctxt,
-			 Dwarf_Die*	die,
-			 scope_decl*	scope,
+add_or_update_union_type(read_context&	 ctxt,
+			 Dwarf_Die*	 die,
+			 scope_decl*	 scope,
 			 union_decl_sptr union_type,
-			 bool		called_from_public_decl,
-			 size_t	where_offset)
+			 bool		 called_from_public_decl,
+			 size_t	 where_offset,
+			 bool		 is_declaration_only)
 {
   union_decl_sptr result;
   if (!die)
@@ -13963,7 +13979,6 @@ add_or_update_union_type(read_context&	ctxt,
   string name, linkage_name;
   location loc;
   die_loc_and_name(ctxt, die, loc, name, linkage_name);
-  bool is_declaration_only = die_is_declaration_only(die);
 
   bool is_anonymous = false;
   if (name.empty())
@@ -15202,12 +15217,16 @@ build_var_decl(read_context&	ctxt,
 ///
 /// @param function_die the DIE representing the function.
 ///
+/// @param is_declaration_only is true if the DIE denoted by @p die is
+/// a declaration-only DIE.
+///
 /// @return true iff @p function_die is suppressed by at least one
 /// suppression specification attached to the @p ctxt.
 static bool
 function_is_suppressed(const read_context& ctxt,
 		       const scope_decl* scope,
-		       Dwarf_Die *function_die)
+		       Dwarf_Die *function_die,
+		       bool is_declaration_only)
 {
   if (function_die == 0
       || dwarf_tag(function_die) != DW_TAG_subprogram)
@@ -15226,8 +15245,7 @@ function_is_suppressed(const read_context& ctxt,
   // symbol, by default, it's not suppressed.  Unless we are asked to
   // drop undefined symbols too.
   if (!is_class_type(scope)
-      && (!die_is_declaration_only(function_die)
-	  || ctxt.drop_undefined_syms()))
+      && (!is_declaration_only || ctxt.drop_undefined_syms()))
     {
       Dwarf_Addr fn_addr;
       if (!ctxt.get_function_address(function_die, fn_addr))
@@ -15267,6 +15285,9 @@ function_is_suppressed(const read_context& ctxt,
 /// e.g, DW_TAG_partial_unit that can be included in several places in
 /// the DIE tree.
 ///
+/// @param is_declaration_only is true if the DIE denoted by @p fn_die
+/// is a declaration-only DIE.
+///
 /// @param result if this is set to an existing function_decl, this
 /// means that the function will append the new properties it sees on
 /// @p fn_die to that exising function_decl.  Otherwise, if this
@@ -15280,10 +15301,11 @@ build_or_get_fn_decl_if_not_suppressed(read_context&	  ctxt,
 				       scope_decl	  *scope,
 				       Dwarf_Die	  *fn_die,
 				       size_t		  where_offset,
+				       bool		  is_declaration_only,
 				       function_decl_sptr result)
 {
   function_decl_sptr fn;
-  if (function_is_suppressed(ctxt, scope, fn_die))
+  if (function_is_suppressed(ctxt, scope, fn_die, is_declaration_only))
     return fn;
 
   if (!result)
@@ -16247,6 +16269,9 @@ maybe_set_member_type_access_specifier(decl_base_sptr member_type_declaration,
 /// build is for a decl that is a specification for another decl that
 /// is concrete.  If you don't know what this is, set it to false.
 ///
+/// @param is_declaration_only is true if the DIE denoted by @p die is
+/// a declaration-only DIE.
+///
 /// @return the resulting IR node.
 static type_or_decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
@@ -16254,6 +16279,7 @@ build_ir_node_from_die(read_context&	ctxt,
 		       scope_decl*	scope,
 		       bool		called_from_public_decl,
 		       size_t		where_offset,
+		       bool		is_declaration_only,
 		       bool		is_required_decl_spec)
 {
   type_or_decl_base_sptr result;
@@ -16289,6 +16315,12 @@ build_ir_node_from_die(read_context&	ctxt,
 
       return result;
     }
+
+  // This is *the* bit of code that ensures we have the right notion
+  // of "declared" at any point in a DIE chain formed from
+  // DW_AT_abstract_origin and DW_AT_specification links. There should
+  // be no other callers of die_is_declaration_only.
+  is_declaration_only = is_declaration_only && die_is_declaration_only(die);
 
   switch (tag)
     {
@@ -16395,7 +16427,8 @@ build_ir_node_from_die(read_context&	ctxt,
 	else if (!type_suppressed)
 	  {
 	    enum_type_decl_sptr e = build_enum_type(ctxt, die, scope,
-						    where_offset);
+						    where_offset,
+						    is_declaration_only);
 	    result = add_decl_to_scope(e, scope);
 	    if (result)
 	      {
@@ -16437,7 +16470,9 @@ build_ir_node_from_die(read_context&	ctxt,
 		  is_decl(build_ir_node_from_die(ctxt, &spec_die,
 						 skope.get(),
 						 called_from_public_decl,
-						 where_offset));
+						 where_offset,
+						 is_declaration_only,
+						 /*is_required_decl_spec=*/false));
 		ABG_ASSERT(cl);
 		klass = dynamic_pointer_cast<class_decl>(cl);
 		ABG_ASSERT(klass);
@@ -16448,7 +16483,8 @@ build_ir_node_from_die(read_context&	ctxt,
 					   tag == DW_TAG_structure_type,
 					   klass,
 					   called_from_public_decl,
-					   where_offset);
+					   where_offset,
+					   is_declaration_only);
 	      }
 	    else
 	      klass =
@@ -16456,7 +16492,8 @@ build_ir_node_from_die(read_context&	ctxt,
 					 tag == DW_TAG_structure_type,
 					 class_decl_sptr(),
 					 called_from_public_decl,
-					 where_offset);
+					 where_offset,
+					 is_declaration_only);
 	    result = klass;
 	    if (klass)
 	      {
@@ -16473,7 +16510,8 @@ build_ir_node_from_die(read_context&	ctxt,
 	    add_or_update_union_type(ctxt, die, scope,
 				     union_decl_sptr(),
 				     called_from_public_decl,
-				     where_offset);
+				     where_offset,
+				     is_declaration_only);
 	  if (union_type)
 	    {
 	      maybe_set_member_type_access_specifier(union_type, die);
@@ -16563,7 +16601,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	if (tag == DW_TAG_member)
 	  ABG_ASSERT(!is_c_language(ctxt.cur_transl_unit()->get_language()));
 
-	if (die_die_attribute(die, DW_AT_specification, spec_die,false)
+	if (die_die_attribute(die, DW_AT_specification, spec_die, false)
 	    || (var_is_cloned = die_die_attribute(die, DW_AT_abstract_origin,
 						  spec_die, false)))
 	  {
@@ -16577,6 +16615,7 @@ build_ir_node_from_die(read_context&	ctxt,
 						 spec_scope.get(),
 						 called_from_public_decl,
 						 where_offset,
+						 is_declaration_only,
 						 /*is_required_decl_spec=*/true));
 		if (d)
 		  {
@@ -16658,7 +16697,9 @@ build_ir_node_from_die(read_context&	ctxt,
 						 origin_die,
 						 interface_scope.get(),
 						 called_from_public_decl,
-						 where_offset));
+						 where_offset,
+						 is_declaration_only,
+						 /*is_required_decl_spec=*/false));
 		if (d)
 		  {
 		    fn = dynamic_pointer_cast<function_decl>(d);
@@ -16681,7 +16722,9 @@ build_ir_node_from_die(read_context&	ctxt,
 	  : scope;
 
 	result = build_or_get_fn_decl_if_not_suppressed(ctxt, logical_scope,
-							die, where_offset, fn);
+							die, where_offset,
+							is_declaration_only,
+                                                        fn);
 
 	if (result && !fn)
 	  result = add_decl_to_scope(is_decl(result), logical_scope);
@@ -16836,7 +16879,8 @@ build_ir_node_from_die(read_context&	ctxt,
       const scope_decl_sptr& scop = ctxt.global_scope();
       return build_ir_node_from_die(ctxt, die, scop.get(),
 				    called_from_public_decl,
-				    where_offset);
+				    where_offset,
+                                    true);
     }
 
   scope_decl_sptr scope = get_scope_for_die(ctxt, die,
@@ -16844,7 +16888,8 @@ build_ir_node_from_die(read_context&	ctxt,
 					    where_offset);
   return build_ir_node_from_die(ctxt, die, scope.get(),
 				called_from_public_decl,
-				where_offset);
+				where_offset,
+                                true);
 }
 
 status
