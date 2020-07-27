@@ -44,40 +44,30 @@ struct node_visitor_base
 
 /// The interface for types which are feeling social and want to be
 /// visited during the traversal of a hierarchy of nodes.
+///
+/// It is expected that classes derived from traversable_base define a
+/// traverse method specialised to the node *visitor* type. Such
+/// methods should visit nodes recursively, calling
+/// ir_node_visitor::visit for each node. The method should return
+/// true until all nodes have been visited.
 class traversable_base
 {
-  bool visiting_;
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
 
 protected:
 
-  /// This should returns false before and after the node has been
-  /// visiting.  During the visiting of the node (and of its children)
-  /// this should return true.
-  ///
-  /// @return true if the current node is being visited.
-  bool
-  visiting()
-  {return visiting_;}
+  traversable_base();
 
-  /// The traversing code should be responsible of calling this, not
-  /// the user code.
-  ///
-  /// This is the setter of the "visiting" flag of the node being
-  /// visited.  If set to yes, it means the node is being visited.
-  /// False means either the node has not yet been visited, or it
-  /// has already been visited.
-  ///
-  /// @param f the new value of the "visiting" flag.
-  void
-  visiting(bool f)
-  {visiting_ = f;}
+  bool visiting() const;
+
+  void visiting(bool f);
 
 public:
-  traversable_base()
-    : visiting_()
-  {}
 
-  virtual ~traversable_base() {}
+   virtual ~traversable_base();
 
   /// This virtual method is overloaded and implemented by any single
   /// type which instance is going to be visited during the traversal
@@ -92,8 +82,16 @@ public:
   ///
   /// @return true if traversed until the end of the type tree, false
   /// otherwise.
-  virtual bool traverse(node_visitor_base& v);
-};
+  ///
+  /// Note that each class that derives from this one and overloads
+  /// this method will have to define a type for its node visitor
+  /// argument (the one named v).  That type will have to derive from
+  /// the node_visitor_base type.  In that sense, this new overload
+  /// method will "hide" this one.  That is why we are keeping this
+  /// method commented, for documentation purposes.
+
+  // virtual bool traverse(node_visitor_base& v);
+}; // end class traversable_base
 
 }// end namespace ir.
 }//end namespace abigail
