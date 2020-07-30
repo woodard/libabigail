@@ -373,6 +373,13 @@ InOutSpec in_out_specs[] =
     NULL,
     NULL,
   },
+  {
+    "data/test-read-dwarf/PR26261/PR26261-exe",
+    "",
+    SEQUENCE_TYPE_ID_STYLE,
+    "data/test-read-dwarf/PR26261/PR26261-exe.abi",
+    "output/test-read-dwarf/PR26261/PR26261-exe.abi",
+  },
   // This should be the last entry.
   {NULL, NULL, SEQUENCE_TYPE_ID_STYLE, NULL, NULL}
 };

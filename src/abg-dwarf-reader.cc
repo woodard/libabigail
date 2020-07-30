@@ -11874,76 +11874,100 @@ compare_dies(const read_context& ctxt,
 	     != aggregates_being_compared.end())
 	    || (aggregates_being_compared.find(rn)
 		!= aggregates_being_compared.end()))
-	  result = true;
+	  {
+	    result = true;
+	    break;
+	  }
 	else if (l_tag == DW_TAG_subroutine_type)
 	  {
-	    // The string reprs of l and r are already equal. Now
-	    // let's just check if they both come from the same TU.
-	    bool from_the_same_tu = false;
-	    if (compare_dies_cu_decl_file(l, r, from_the_same_tu)
-		&& from_the_same_tu)
-	      result = true;
-	  }
-	else
-	  {
-	    if (!fn_die_equal_by_linkage_name(ctxt, l, r))
+	    // So, we are looking at types that are pointed to by a
+	    // function pointer.  These are not real concrete function
+	    // types, rather, they denote interfaces of functions.
+	    //
+	    // If the textual representations are different, then
+	    // obviously they are different DIEs.
+	    if (ln != rn)
 	      {
 		result = false;
 		break;
 	      }
 
-	    if (!ctxt.die_is_in_c(l) && !ctxt.die_is_in_c(r))
+	    // So if their textual representation are the same and
+	    // they come from the same TU, then they represent the
+	    // same DIE.
+	    bool from_the_same_tu = false;
+	    if (compare_dies_cu_decl_file(l, r, from_the_same_tu)
+		&& from_the_same_tu)
 	      {
-		// In C, we cannot have two different functions with the
-		// same linkage name in a given binary.  But here we are
-		// looking at DIEs that don't originate from C.  So we
-		// need to compare return types and parameter types.
-		Dwarf_Die l_return_type, r_return_type;
-		bool l_return_type_is_void = !die_die_attribute(l, DW_AT_type,
-								l_return_type);
-		bool r_return_type_is_void = !die_die_attribute(r, DW_AT_type,
-								r_return_type);
-		if (l_return_type_is_void != r_return_type_is_void
-		    || (!l_return_type_is_void
-			&& !compare_dies(ctxt,
-					 &l_return_type, &r_return_type,
-					 aggregates_being_compared,
-					 update_canonical_dies_on_the_fly)))
-		  result = false;
-		else
-		  {
-		    Dwarf_Die l_child, r_child;
-		    bool found_l_child, found_r_child;
-		    for (found_l_child = dwarf_child(const_cast<Dwarf_Die*>(l),
-						     &l_child) == 0,
-			   found_r_child = dwarf_child(const_cast<Dwarf_Die*>(r),
-						       &r_child) == 0;
-			 found_l_child && found_r_child;
-			 found_l_child = dwarf_siblingof(&l_child,
-							 &l_child) == 0,
-			   found_r_child = dwarf_siblingof(&r_child,
-							   &r_child)==0)
-		      {
-			int l_child_tag = dwarf_tag(&l_child);
-			int r_child_tag = dwarf_tag(&r_child);
-			if (l_child_tag != r_child_tag
-			    || (l_child_tag == DW_TAG_formal_parameter
-				&& !compare_dies(ctxt, &l_child, &r_child,
-						 aggregates_being_compared,
-						 update_canonical_dies_on_the_fly)))
-			  {
-			    result = false;
-			    break;
-			  }
-		      }
-		    if (found_l_child != found_r_child)
-		      result = false;
-		  }
+		result = true;
+		break;
 	      }
-
-	    aggregates_being_compared.erase(ln);
-	    aggregates_being_compared.erase(rn);
 	  }
+
+	if (l_tag == DW_TAG_subprogram
+	    && !fn_die_equal_by_linkage_name(ctxt, l, r))
+	  {
+	    result = false;
+	    break;
+	  }
+	else if (l_tag == DW_TAG_subprogram
+		 && ctxt.die_is_in_c(l) && ctxt.die_is_in_c(r)
+		 /*&& fn_die_equal_by_linkage_name(ctxt, l, r)*/)
+	  {
+	    result = true;
+	    break;
+	  }
+	else if (!ctxt.die_is_in_c(l) && !ctxt.die_is_in_c(r))
+	  {
+	    // In C, we cannot have two different functions with the
+	    // same linkage name in a given binary.  But here we are
+	    // looking at DIEs that don't originate from C.  So we
+	    // need to compare return types and parameter types.
+	    Dwarf_Die l_return_type, r_return_type;
+	    bool l_return_type_is_void = !die_die_attribute(l, DW_AT_type,
+							    l_return_type);
+	    bool r_return_type_is_void = !die_die_attribute(r, DW_AT_type,
+							    r_return_type);
+	    if (l_return_type_is_void != r_return_type_is_void
+		|| (!l_return_type_is_void
+		    && !compare_dies(ctxt,
+				     &l_return_type, &r_return_type,
+				     aggregates_being_compared,
+				     update_canonical_dies_on_the_fly)))
+	      result = false;
+	    else
+	      {
+		Dwarf_Die l_child, r_child;
+		bool found_l_child, found_r_child;
+		for (found_l_child = dwarf_child(const_cast<Dwarf_Die*>(l),
+						 &l_child) == 0,
+		       found_r_child = dwarf_child(const_cast<Dwarf_Die*>(r),
+						   &r_child) == 0;
+		     found_l_child && found_r_child;
+		     found_l_child = dwarf_siblingof(&l_child,
+						     &l_child) == 0,
+		       found_r_child = dwarf_siblingof(&r_child,
+						       &r_child)==0)
+		  {
+		    int l_child_tag = dwarf_tag(&l_child);
+		    int r_child_tag = dwarf_tag(&r_child);
+		    if (l_child_tag != r_child_tag
+			|| (l_child_tag == DW_TAG_formal_parameter
+			    && !compare_dies(ctxt, &l_child, &r_child,
+					     aggregates_being_compared,
+					     update_canonical_dies_on_the_fly)))
+		      {
+			result = false;
+			break;
+		      }
+		  }
+		if (found_l_child != found_r_child)
+		  result = false;
+	      }
+	  }
+
+	aggregates_being_compared.erase(ln);
+	aggregates_being_compared.erase(rn);
       }
       break;
 

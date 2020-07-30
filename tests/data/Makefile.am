@@ -496,6 +496,14 @@ test-read-dwarf/PR25042-libgdbm-clang-dwarf5.so.6.0.0.abi \
 test-read-dwarf/test25-bogus-binary.elf \
 test-read-dwarf/test26-bogus-binary.elf \
 test-read-dwarf/test27-bogus-binary.elf \
+test-read-dwarf/PR26261/Makefile \
+test-read-dwarf/PR26261/PR26261-exe.abi \
+test-read-dwarf/PR26261/PR26261-obja.c \
+test-read-dwarf/PR26261/PR26261-objb.c \
+test-read-dwarf/PR26261/PR26261-exe \
+test-read-dwarf/PR26261/PR26261-main.c \
+test-read-dwarf/PR26261/PR26261-obja.h \
+test-read-dwarf/PR26261/PR26261-objb.h \
 \
 test-annotate/test0.abi			\
 test-annotate/test1.abi			\
