@@ -78,9 +78,9 @@ struct options
   vector<string>	drop_var_regex_patterns;
   vector<string>	keep_fn_regex_patterns;
   vector<string>	keep_var_regex_patterns;
-  string		headers_dir1;
+  vector<string>	headers_dirs1;
   vector<string>        header_files1;
-  string		headers_dir2;
+  vector<string>	headers_dirs2;
   vector<string>        header_files2;
   bool			drop_private_types;
   bool			linux_kernel_mode;
@@ -318,7 +318,9 @@ parse_command_line(int argc, char* argv[], options& opts)
 	      opts.wrong_option = argv[i];
 	      return true;
 	    }
-	  opts.headers_dir1 = argv[j];
+	  // The user can specify several header files directories for
+	  // the first binary.
+	  opts.headers_dirs1.push_back(argv[j]);
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--header-file1")
@@ -344,7 +346,9 @@ parse_command_line(int argc, char* argv[], options& opts)
 	      opts.wrong_option = argv[i];
 	      return true;
 	    }
-	  opts.headers_dir2 = argv[j];
+	  // The user can specify several header files directories for
+	  // the first binary.
+	  opts.headers_dirs2.push_back(argv[j]);
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--header-file2")
@@ -720,22 +724,22 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
       load_default_user_suppressions(supprs);
     }
 
-  if (!opts.headers_dir1.empty() || !opts.header_files1.empty())
+  if (!opts.headers_dirs1.empty() || !opts.header_files1.empty())
     {
       // Generate suppression specification to avoid showing ABI
       // changes on types that are not defined in public headers.
       suppression_sptr suppr =
-	gen_suppr_spec_from_headers(opts.headers_dir1, opts.header_files1);
+	gen_suppr_spec_from_headers(opts.headers_dirs1, opts.header_files1);
       if (suppr)
 	ctxt->add_suppression(suppr);
     }
 
-  if (!opts.headers_dir2.empty() || !opts.header_files2.empty())
+  if (!opts.headers_dirs2.empty() || !opts.header_files2.empty())
     {
       // Generate suppression specification to avoid showing ABI
       // changes on types that are not defined in public headers.
       suppression_sptr suppr =
-	gen_suppr_spec_from_headers(opts.headers_dir2, opts.header_files2);
+	gen_suppr_spec_from_headers(opts.headers_dirs2, opts.header_files2);
       if (suppr)
 	ctxt->add_suppression(suppr);
     }
@@ -770,7 +774,7 @@ set_suppressions(ReadContextType& read_ctxt, const options& opts)
     read_suppressions(*i, supprs);
 
   if (read_context_get_path(read_ctxt) == opts.file1
-      && (!opts.headers_dir1.empty() || !opts.header_files1.empty()))
+      && (!opts.headers_dirs1.empty() || !opts.header_files1.empty()))
     {
       // Generate suppression specification to avoid showing ABI
       // changes on types that are not defined in public headers for
@@ -780,7 +784,7 @@ set_suppressions(ReadContextType& read_ctxt, const options& opts)
       // corpus loading, they are going to be dropped from the
       // internal representation altogether.
       suppression_sptr suppr =
-	gen_suppr_spec_from_headers(opts.headers_dir1, opts.header_files1);
+	gen_suppr_spec_from_headers(opts.headers_dirs1, opts.header_files1);
       if (suppr)
 	{
 	  if (opts.drop_private_types)
@@ -790,7 +794,7 @@ set_suppressions(ReadContextType& read_ctxt, const options& opts)
     }
 
   if (read_context_get_path(read_ctxt) == opts.file2
-      && (!opts.headers_dir2.empty() || !opts.header_files2.empty()))
+      && (!opts.headers_dirs2.empty() || !opts.header_files2.empty()))
     {
       // Generate suppression specification to avoid showing ABI
       // changes on types that are not defined in public headers for
@@ -800,7 +804,7 @@ set_suppressions(ReadContextType& read_ctxt, const options& opts)
       // corpus loading, they are going to be dropped from the
       // internal representation altogether.
       suppression_sptr suppr =
-	gen_suppr_spec_from_headers(opts.headers_dir2, opts.header_files2);
+	gen_suppr_spec_from_headers(opts.headers_dirs2, opts.header_files2);
       if (suppr)
 	{
 	  if (opts.drop_private_types)

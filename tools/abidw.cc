@@ -90,7 +90,7 @@ struct options
   string		out_file_path;
   vector<char*>	di_root_paths;
   vector<char**>	prepared_di_root_paths;
-  string		headers_dir;
+  vector<string>	headers_dirs;
   vector<string>	header_files;
   string		vmlinux;
   vector<string>	suppression_paths;
@@ -239,7 +239,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  int j = i + 1;
 	  if (j >= argc)
 	    return false;
-	  opts.headers_dir = argv[j];
+	  opts.headers_dirs.push_back(argv[j]);
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--header-file")
@@ -445,7 +445,7 @@ set_suppressions(read_context& read_ctxt, options& opts)
     read_suppressions(*i, supprs);
 
   suppression_sptr suppr =
-    abigail::tools_utils::gen_suppr_spec_from_headers(opts.headers_dir,
+    abigail::tools_utils::gen_suppr_spec_from_headers(opts.headers_dirs,
 						      opts.header_files);
   if (suppr)
     {

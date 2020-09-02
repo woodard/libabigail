@@ -101,8 +101,18 @@ Options
   * ``--headers-dir1 | --hd1`` <headers-directory-path-1>
 
     Specifies where to find the public headers of the first shared
-    library that the tool has to consider.  The tool will thus filter
-    out ABI changes on types that are not defined in public headers.
+    library (or binary in general) that the tool has to consider.  The
+    tool will thus filter out ABI changes on types that are not
+    defined in public headers.
+
+    Note that several public header directories can be specified for
+    the first shared library.  In that case the ``--headers-dir1``
+    option should be present several times on the command line, like
+    in the following example: ::
+
+      $ abidiff --headers-dir1 /some/path       \
+                --headers-dir1 /some/other/path \
+		binary-version-1 binary-version-2
 
   * ``--header-file1 | --hf1`` <header-file-path-1>
 
@@ -115,6 +125,15 @@ Options
     Specifies where to find the public headers of the second shared
     library that the tool has to consider.  The tool will thus filter
     out ABI changes on types that are not defined in public headers.
+
+    Note that several public header directories can be specified for
+    the second shared library.  In that case the ``--headers-dir2``
+    option should be present several times like in the following
+    example: ::
+
+      $ abidiff --headers-dir2 /some/path       \
+                --headers-dir2 /some/other/path \
+		binary-version-1 binary-version-2
 
   * ``--header-file2 | --hf2`` <header-file-path-2>
 

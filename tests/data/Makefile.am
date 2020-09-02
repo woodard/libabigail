@@ -174,6 +174,16 @@ test-abidiff-exit/test-net-change-report0.txt \
 test-abidiff-exit/test-net-change-report1.txt \
 test-abidiff-exit/test-net-change-report2.txt \
 test-abidiff-exit/test-net-change-report3.txt \
+test-abidiff-exit/test-headers-dirs/headers-a/header-a-v0.h \
+test-abidiff-exit/test-headers-dirs/headers-a/header-a-v1.h \
+test-abidiff-exit/test-headers-dirs/headers-b/header-b-v0.h \
+test-abidiff-exit/test-headers-dirs/headers-b/header-b-v1.h \
+test-abidiff-exit/test-headers-dirs/test-headers-dir-report-1.txt  \
+test-abidiff-exit/test-headers-dirs/test-headers-dir-report-2.txt \
+test-abidiff-exit/test-headers-dirs/test-headers-dir-v0.c \
+test-abidiff-exit/test-headers-dirs/test-headers-dir-v0.o \
+test-abidiff-exit/test-headers-dirs/test-headers-dir-v1.c \
+test-abidiff-exit/test-headers-dirs/test-headers-dir-v1.o \
 \
 test-diff-dwarf/test0-v0.cc		\
 test-diff-dwarf/test0-v0.o			\

@@ -91,6 +91,10 @@ suppr::type_suppression_sptr
 gen_suppr_spec_from_headers(const string& hdrs_root_dir,
 			    const vector<string>& hdr_files);
 
+suppr::type_suppression_sptr
+gen_suppr_spec_from_headers(const vector<string>& headers_root_dirs,
+			    const vector<string>& header_files);
+
 suppr::suppressions_type
 gen_suppr_spec_from_kernel_abi_whitelists
    (const vector<string>& abi_whitelist_paths);

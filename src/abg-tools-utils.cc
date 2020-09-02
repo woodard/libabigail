@@ -1842,6 +1842,70 @@ handle_fts_entry(const FTSENT *entry,
     }
 }
 
+/// Populate a type_supression from header files found in a given
+/// directory tree.
+///
+/// The suppression suppresses types defined in source files that are
+/// *NOT* found in the directory tree.
+///
+/// This is a subroutine for gen_suppr_spect_from_headers.
+///
+/// @param headers_root_dir the directory tree to consider for header
+/// files.
+///
+/// @param result the type_supression to populate from the content of
+/// @p headers_root_dir.
+static void
+gen_suppr_spec_from_headers_root_dir(const string& headers_root_dir,
+				     type_suppression_sptr &result)
+{
+  if (!headers_root_dir.empty())
+    {
+      char* paths[] = {const_cast<char*>(headers_root_dir.c_str()), 0};
+
+      if (FTS *file_hierarchy = fts_open(paths, FTS_LOGICAL|FTS_NOCHDIR, NULL))
+	{
+	  FTSENT *entry;
+	  while ((entry = fts_read(file_hierarchy)))
+	    handle_fts_entry(entry, result);
+	  fts_close(file_hierarchy);
+	}
+    }
+}
+
+/// Generate a type suppression specification that suppresses ABI
+/// changes for types defined in source files that are neither in a
+/// given set of header root directories nor in a set of header
+/// files.
+///
+/// @param headers_root_dirs ABI changes in types defined in files
+/// *NOT* found in these directory trees are going be suppressed.
+///
+/// @param header_files a set of additional header files that define
+/// types that are to be kept (not supressed) by the returned type
+/// suppression.
+///
+/// @return the resulting type suppression generated, if any file was
+/// found in the directory tree @p headers_root_dir.
+type_suppression_sptr
+gen_suppr_spec_from_headers(const vector<string>& headers_root_dirs,
+			    const vector<string>& header_files)
+{
+  type_suppression_sptr result;
+
+  for (vector<string>::const_iterator root_dir = headers_root_dirs.begin();
+       root_dir != headers_root_dirs.end();
+       ++root_dir)
+    gen_suppr_spec_from_headers_root_dir(*root_dir, result);
+
+  for (vector<string>::const_iterator file = header_files.begin();
+       file != header_files.end();
+       ++file)
+    handle_file_entry(*file, result);
+
+  return result;
+}
+
 /// Generate a type suppression specification that suppresses ABI
 /// changes for types defined in source files that are neither in a
 /// given header root dir, not in a set of header files.
@@ -1860,32 +1924,12 @@ gen_suppr_spec_from_headers(const string& headers_root_dir,
 			    const vector<string>& header_files)
 {
   type_suppression_sptr result;
-
-  if (headers_root_dir.empty() && header_files.empty())
-    // We were given no headers root dir and no header files
-    // so the resulting suppression specification shall be empty.
-    return result;
+  vector<string> root_dirs;
 
   if (!headers_root_dir.empty())
-    {
-      char* paths[] = {const_cast<char*>(headers_root_dir.c_str()), 0};
+    root_dirs.push_back(headers_root_dir);
 
-      FTS *file_hierarchy = fts_open(paths, FTS_LOGICAL|FTS_NOCHDIR, NULL);
-      if (!file_hierarchy)
-	return result;
-
-      FTSENT *entry;
-      while ((entry = fts_read(file_hierarchy)))
-	handle_fts_entry(entry, result);
-      fts_close(file_hierarchy);
-    }
-
-  for (vector<string>::const_iterator file = header_files.begin();
-       file != header_files.end();
-       ++file)
-    handle_file_entry(*file, result);
-
-  return result;
+  return gen_suppr_spec_from_headers(root_dirs, header_files);
 }
 
 /// Generate a type suppression specification that suppresses ABI

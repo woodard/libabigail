@@ -128,9 +128,18 @@ Options
 
   * ``--headers-dir | --hd`` <headers-directory-path-1>
 
-    Specifies where to find the public headers of the first shared
-    library that the tool has to consider.  The tool will thus filter
-    out types that are not defined in public headers.
+    Specifies where to find the public headers of the binary that the
+    tool has to consider.  The tool will thus filter out types that
+    are not defined in public headers.
+
+    Note that several public header directories can be specified for
+    the binary to consider.  In that case the ``--header-dir`` option
+    should be present several times on the command line, like in the
+    following example: ::
+
+      $ abidw --header-dir /some/path       \
+              --header-dir /some/other/path \
+              binary > binary.abi
 
   * ``--header-file | --hf`` <header-file-path>
 
