@@ -19960,20 +19960,7 @@ class_decl::get_pretty_representation(bool internal,
   // if an anonymous class is named by a typedef, then consider that
   // it has a name, which is the typedef name.
   if (get_is_anonymous())
-    {
-      if (internal)
-	{
-	  if (typedef_decl_sptr d = get_naming_typedef())
-	    {
-	      string qualified_name =
-		decl_base::priv_->qualified_parent_name_ + "::" + d->get_name();
-	      return cl + qualified_name;
-	    }
-	}
-      else
-	return get_class_or_union_flat_representation(this, "",
-						      /*one_line=*/true);
-    }
+    return get_class_or_union_flat_representation(this, "",/*one_line=*/true);
 
   string result = cl;
   if (qualified_name)
@@ -21745,7 +21732,7 @@ union_decl::get_pretty_representation(bool internal,
 				      bool qualified_name) const
 {
   string repr;
-  if (get_is_anonymous() && !internal)
+  if (get_is_anonymous())
     repr = get_class_or_union_flat_representation(this, "",
 						  /*one_line=*/true);
   else

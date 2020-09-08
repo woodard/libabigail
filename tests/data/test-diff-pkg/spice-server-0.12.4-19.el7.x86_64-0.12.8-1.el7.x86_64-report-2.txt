@@ -92,7 +92,7 @@
                                                                                                 in pointed to type 'typedef RedChannelClient' at red_channel.h:131:1:
                                                                                                   underlying type 'struct RedChannelClient' at red_channel.h:247:1 changed:
                                                                                                     type size hasn't changed
-                                                                                                    3 data member changes (2 filtered):
+                                                                                                    3 data member changes:
                                                                                                       type of 'RedChannel* RedChannelClient::channel' changed:
                                                                                                         in pointed to type 'typedef RedChannel' at red_channel.h:130:1:
                                                                                                           underlying type 'struct RedChannel' changed, as being reported

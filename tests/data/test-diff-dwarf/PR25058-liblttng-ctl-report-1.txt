@@ -121,19 +121,12 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
     parameter 2 of type 'lttng_event_context*' has sub-type changes:
       in pointed to type 'struct lttng_event_context':
         type size hasn't changed
-        2 data member changes:
+        1 data member change:
           type of 'lttng_event_context_type lttng_event_context::ctx' changed:
             type size hasn't changed
             2 enumerator insertions:
               'lttng_event_context_type::LTTNG_EVENT_CONTEXT_CALLSTACK_KERNEL' value '20'
               'lttng_event_context_type::LTTNG_EVENT_CONTEXT_CALLSTACK_USER' value '21'
-          type of 'union {lttng_event_perf_counter_ctx perf_counter; struct {char* provider_name; char* ctx_name;} app_ctx; char padding[288];} lttng_event_context::u' changed:
-            type name changed from '__anonymous_union__4' to '__anonymous_union__5'
-            type size hasn't changed
-            type changed from:
-              union {lttng_event_perf_counter_ctx perf_counter; struct {char* provider_name; char* ctx_name;} app_ctx; char padding[288];}
-            to:
-              union {lttng_event_perf_counter_ctx perf_counter; struct {char* provider_name; char* ctx_name;} app_ctx; char padding[288];}
 
   [C] 'function lttng_condition_status lttng_condition_buffer_usage_get_channel_name(const lttng_condition*, const char**)' has some indirect sub-type changes:
     parameter 1 of type 'const lttng_condition*' has sub-type changes:
