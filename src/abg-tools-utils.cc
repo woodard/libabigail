@@ -2414,17 +2414,15 @@ get_vmlinux_path_from_kernel_dist(const string&	from,
     if (!dir_exists(from))
     return false;
 
-  // For now, we assume either an Enterprise Linux or a Fedora kernel
-  // distribution directory.
-  //
-  // We also take into account split debug info package for these.  In
-  // this case, the content split debug info package is installed
-  // under the 'dist_root' directory as well, and its content is
-  // accessible from <dist_root>/usr/lib/debug directory.
+  // For now, we assume the possibility of having either an Enterprise
+  // Linux or a Fedora kernel distribution directory.  In those cases,
+  // the vmlinux binary is located under the /lib/modules
+  // sub-directory.  So we might as well save some time by picking it
+  // from there directly.
 
     string dist_root = from;
   if (dir_exists(dist_root + "/lib/modules"))
-    dist_root + "/lib/modules";
+    dist_root += "/lib/modules";
 
   bool found = false;
   if (find_vmlinux_path(dist_root, vmlinux_path))
