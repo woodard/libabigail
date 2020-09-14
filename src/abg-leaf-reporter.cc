@@ -202,7 +202,9 @@ leaf_reporter::report(const typedef_diff& d,
   if (!diff_to_be_reported(&d))
     return;
 
-  report_local_typedef_changes(d, out, indent);
+  // all changes carried by a typedef_diff are considered local, so
+  // let's just call the default reporter here.
+  default_reporter::report(d, out, indent);
 
   maybe_report_interfaces_impacted_by_diff(&d, out, indent);
 }

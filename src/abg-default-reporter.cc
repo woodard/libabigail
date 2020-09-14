@@ -231,7 +231,11 @@ default_reporter::report(const enum_diff& d, ostream& out,
   d.reported_once(true);
 }
 
-/// For a @ref typedef_diff node, report the changes that are local.
+/// For a @ref typedef_diff node, report the local changes to the
+/// typedef rather the changes to its underlying type.
+///
+/// Note that changes to the underlying type are also considered
+/// local.
 ///
 /// @param d the @ref typedef_diff node to consider.
 ///
@@ -239,9 +243,9 @@ default_reporter::report(const enum_diff& d, ostream& out,
 ///
 /// @param indent the white space string to use for indentation.
 void
-default_reporter::report_local_typedef_changes(const typedef_diff &d,
-					       ostream& out,
-					       const string& indent) const
+default_reporter::report_non_type_typedef_changes(const typedef_diff &d,
+						  ostream& out,
+						  const string& indent) const
 {
   if (!d.to_be_reported())
     return;
@@ -283,7 +287,7 @@ default_reporter::report(const typedef_diff& d,
 
   typedef_decl_sptr f = d.first_typedef_decl(), s = d.second_typedef_decl();
 
-  report_local_typedef_changes(d, out, indent);
+  report_non_type_typedef_changes(d, out, indent);
 
   diff_sptr dif = d.underlying_type_diff();
   if (dif && dif->has_changes())

@@ -10901,14 +10901,15 @@ struct leaf_diff_node_marker_visitor : public diff_node_visitor
 	// Similarly, a *local* change describing a type that changed
 	// its nature doesn't make sense.
 	&& !is_distinct_diff(d)
-	// Similarly, a pointer (or reference or array) or qualified
-	// type change in itself doesn't make sense.  It's would
-	// rather make sense to show that pointer change as part of
-	// the variable change whose pointer type changed, for
+	// Similarly, a pointer (or reference or array), a typedef or
+	// qualified type change in itself doesn't make sense.  It
+	// would rather make sense to show that pointer change as part
+	// of the variable change whose pointer type changed, for
 	// instance.
 	&& !is_pointer_diff(d)
 	&& !is_reference_diff(d)
 	&& !is_qualified_type_diff(d)
+	&& !is_typedef_diff(d)
 	&& !is_array_diff(d)
 	// Similarly a parameter change in itself doesn't make sense.
 	// It should have already been reported as part of the change
@@ -11670,16 +11671,16 @@ struct suppression_categorization_visitor : public diff_node_visitor
 	//  2/ and has no local change (unless it's a pointer,
 	//  reference or qualified diff node).
 	//
-	//  Note that qualified type diff nodes are a bit special.
-	//  The local changes of the underlying type are considered
-	//  local for the qualified type, just like for
-	//  pointer/reference types.  But then the qualified type
-	//  itself can have local changes of its own, and those
-	//  changes are of the kind LOCAL_NON_TYPE_CHANGE_KIND.  So a
-	//  qualified type which have local changes that are *NOT* of
-	//  LOCAL_NON_TYPE_CHANGE_KIND (or that has no local changes
-	//  at all) and which is in the PRIVATE_TYPE_CATEGORY or
-	//  SUPPRESSED_CATEGORY can see these categories be
+	//  Note that qualified type and typedef diff nodes are a bit
+	//  special.  The local changes of the underlying type are
+	//  considered local for the qualified/typedef type, just like
+	//  for pointer/reference types.  But then the qualified or
+	//  typedef type itself can have local changes of its own, and
+	//  those changes are of the kind LOCAL_NON_TYPE_CHANGE_KIND.
+	//  So a qualified type which have local changes that are
+	//  *NOT* of LOCAL_NON_TYPE_CHANGE_KIND (or that has no local
+	//  changes at all) and which is in the PRIVATE_TYPE_CATEGORY
+	//  or SUPPRESSED_CATEGORY can see these categories be
 	//  propagated.
 	//
 	// Note that all pointer/reference diff node changes are
@@ -11687,7 +11688,7 @@ struct suppression_categorization_visitor : public diff_node_visitor
 	// pointed-to-type are considered local to the pointer itself.
 	//
 	// Similarly, changes local to the type of function parameters,
-	// variables (and data members) and classe (that are not of
+	// variables (and data members) and classes (that are not of
 	// LOCAL_NON_TYPE_CHANGE_KIND kind) and that have been
 	// suppressed can propagate their SUPPRESSED_CATEGORY-ness to
 	// those kinds of diff node.
@@ -11696,6 +11697,8 @@ struct suppression_categorization_visitor : public diff_node_visitor
 	    || is_pointer_diff(d)
 	    || is_reference_diff(d)
 	    || (is_qualified_type_diff(d)
+		&& (!(d->has_local_changes() & LOCAL_NON_TYPE_CHANGE_KIND)))
+	    || (is_typedef_diff(d)
 		&& (!(d->has_local_changes() & LOCAL_NON_TYPE_CHANGE_KIND)))
 	    || (is_function_decl_diff(d)
 		&& (!(d->has_local_changes() & LOCAL_NON_TYPE_CHANGE_KIND)))
@@ -11758,12 +11761,19 @@ struct suppression_categorization_visitor : public diff_node_visitor
 	      canonical_diff->add_to_category(SUPPRESSED_CATEGORY);
 	  }
 
-	if (// We don't propagate "private type"-ness to typedefs
-	    // because defining "public" typedefs of private (opaque)
-	    // types is a common idiom.  So the typedef must stay
-	    // public.
-	    !is_typedef_diff(d)
-	    && has_non_empty_child
+	// Note that the private-ness of a an underlying type won't be
+	// propagated to its parent typedef, by virtue of the big "if"
+	// clause at the beginning of this function.  So we don't have
+	// to handle that case here.  So the idiom of defining
+	// typedefs of private (opaque) types will be respected;
+	// meaning that changes to opaque underlying type will be
+	// flagged as private and the typedef will be flagged private
+	// as well, unless the typedef itself has local non-type
+	// changes.  In the later case, changes to the typedef will be
+	// emitted because the typedef won't inherit the privateness
+	// of its underlying type.  So in practise, the typedef
+	// remains public for the purpose of change reporting.
+	if (has_non_empty_child
 	    && has_private_child
 	    && !has_non_private_child)
 	  {
@@ -12223,8 +12233,21 @@ struct redundancy_marking_visitor : public diff_node_visitor
 		// in the same sense as other types.  So we always
 		// propagate redundancy to them, regardless of if they
 		// have local changes or not.
+		//
+		// We also propagate redundancy to typedef types if
+		// these /only/ carry changes to their underlying
+		// type.
+		//
+		// Note that changes to the underlying type of a
+		// typedef is considered local of
+		// LOCAL_TYPE_CHANGE_KIND kind.  The other changes to the
+		// typedef itself are considered local of
+		// LOCAL_NON_TYPE_CHANGE_KIND kind.
 		|| is_pointer_diff(d)
-		|| is_qualified_type_diff(d)))
+		|| is_qualified_type_diff(d)
+		|| (is_typedef_diff(d)
+		    && (!(d->has_local_changes()
+			  & LOCAL_NON_TYPE_CHANGE_KIND)))))
 	  {
 	    bool has_non_redundant_child = false;
 	    bool has_non_empty_child = false;

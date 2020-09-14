@@ -175,9 +175,9 @@ public:
 	 const std::string& indent = "") const;
 
   void
-  report_local_typedef_changes(const typedef_diff &d,
-			       std::ostream& out,
-			       const std::string& indent) const;
+  report_non_type_typedef_changes(const typedef_diff &d,
+				  std::ostream& out,
+				  const std::string& indent) const;
 
   virtual void
   report(const typedef_diff& d, std::ostream& out,

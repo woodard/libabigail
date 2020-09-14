@@ -15778,9 +15778,11 @@ equals(const typedef_decl& l, const typedef_decl& r, change_kind* k)
 
   if (*l.get_underlying_type() != *r.get_underlying_type())
     {
+      // Changes to the underlying type of a typedef are considered
+      // local, a bit like for pointers.
       result = false;
       if (k)
-	*k |= SUBTYPE_CHANGE_KIND;
+	*k |= LOCAL_TYPE_CHANGE_KIND;
       else
 	return false;
     }
