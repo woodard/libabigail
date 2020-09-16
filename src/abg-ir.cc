@@ -6818,6 +6818,39 @@ interned_string
 get_type_name(const type_base_sptr& t, bool qualified, bool internal)
 {return get_type_name(t.get(), qualified, internal);}
 
+/// Return the generic internal name of an anonymous type.
+///
+/// For internal purposes, we want to define a generic name for all
+/// anonymous types of a certain kind.  For instance, all anonymous
+/// structs will be have a generic name of "__anonymous_struct__", all
+/// anonymous unions will have a generic name of
+/// "__anonymous_union__", etc.
+///
+/// That generic name can be used as a hash to put all anonymous types
+/// of a certain kind in the same hash table bucket, for instance.
+static interned_string
+get_generic_anonymous_internal_type_name(const decl_base *d)
+{
+  ABG_ASSERT(d);
+
+  const environment *env = d->get_environment();
+
+  interned_string result;
+  if (is_class_type(d))
+    result =
+      env->intern(tools_utils::get_anonymous_struct_internal_name_prefix());
+  else if (is_union_type(d))
+    result =
+      env->intern(tools_utils::get_anonymous_union_internal_name_prefix());
+  else if (is_enum_type(d))
+    result =
+      env->intern(tools_utils::get_anonymous_enum_internal_name_prefix());
+  else
+    ABG_ASSERT_NOT_REACHED;
+
+  return result;
+}
+
 /// Get the name of a given type and return a copy of it.
 ///
 /// @param t the type to consider.
@@ -6842,6 +6875,13 @@ get_type_name(const type_base* t, bool qualified, bool internal)
       ABG_ASSERT(fn_type);
       return fn_type->get_cached_name(internal);
     }
+
+  // All anonymous types of a given kind get to have the same internal
+  // name for internal purpose.  This to allow them to be compared
+  // among themselves during type canonicalization.
+  if (internal && d->get_is_anonymous())
+    return get_generic_anonymous_internal_type_name(d);
+
   if (qualified)
     return d->get_qualified_name(internal);
   return d->get_name();

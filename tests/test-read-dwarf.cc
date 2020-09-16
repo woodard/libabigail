@@ -380,6 +380,20 @@ InOutSpec in_out_specs[] =
     "data/test-read-dwarf/PR26261/PR26261-exe.abi",
     "output/test-read-dwarf/PR26261/PR26261-exe.abi",
   },
+  {
+    "data/test-read-dwarf/test-PR26568-1.o",
+    "",
+    SEQUENCE_TYPE_ID_STYLE,
+    "data/test-read-dwarf/test-PR26568-1.o.abi",
+    "output/test-read-dwarf/test-PR26568-1.o.abi",
+  },
+  {
+    "data/test-read-dwarf/test-PR26568-2.o",
+    "",
+    SEQUENCE_TYPE_ID_STYLE,
+    "data/test-read-dwarf/test-PR26568-2.o.abi",
+    "output/test-read-dwarf/test-PR26568-2.o.abi",
+  },
   // This should be the last entry.
   {NULL, NULL, SEQUENCE_TYPE_ID_STYLE, NULL, NULL}
 };

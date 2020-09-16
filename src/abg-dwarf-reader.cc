@@ -14088,7 +14088,11 @@ add_or_update_union_type(read_context&	 ctxt,
 	      location loc;
 	      die_loc_and_name(ctxt, &child, loc, n, m);
 
-	      if (lookup_var_decl_in_scope(n, result))
+	      // Because we can be updating an existing union, let's
+	      // make sure we don't already have a member of the same
+	      // name.  Anonymous member are handled a bit later below
+	      // so let's not consider them here.
+	      if (!n.empty() && lookup_var_decl_in_scope(n, result))
 		continue;
 
 	      ssize_t offset_in_bits = 0;
@@ -14109,6 +14113,12 @@ add_or_update_union_type(read_context&	 ctxt,
 	      die_access_specifier(&child, access);
 
 	      var_decl_sptr dm(new var_decl(n, t, loc, m));
+	      // If dm is an anonymous data member, let's make sure
+	      // the current union doesn't already have it as a data
+	      // member.
+	      if (n.empty() && result->find_data_member(dm))
+		continue;
+
 	      result->add_data_member(dm, access, /*is_laid_out=*/true,
 				      /*is_static=*/false,
 				      offset_in_bits);
