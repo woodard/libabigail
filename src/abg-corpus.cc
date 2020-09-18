@@ -1726,8 +1726,13 @@ corpus_group::add_corpus(const corpus_sptr& corp)
     corp_arch = corp->get_architecture_name();
   if (cur_arch.empty())
     set_architecture_name(corp_arch);
-  else
-    ABG_ASSERT(cur_arch == corp_arch);
+  else if (cur_arch != corp_arch)
+    {
+      std::cerr << "corpus '" << corp->get_path() << "'"
+		<< " has architecture '" << corp_arch << "'"
+		<< " but expected '" << cur_arch << "'\n";
+      ABG_ASSERT_NOT_REACHED;
+    }
 
   priv_->corpora.push_back(corp);
   corp->set_group(this);
