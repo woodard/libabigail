@@ -3150,6 +3150,9 @@ public:
   parameters::const_iterator
   get_first_non_implicit_parm() const;
 
+  parameters::const_iterator
+  get_first_parm() const;
+
   const interned_string&
   get_cached_name(bool internal = false) const;
 

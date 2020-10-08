@@ -16816,24 +16816,11 @@ equals(const function_type& lhs,
 	  RETURN(result);
       }
 
-  class_decl* lcl = 0, * rcl = 0;
   vector<shared_ptr<function_decl::parameter> >::const_iterator i,j;
-  for (i = lhs.get_first_non_implicit_parm(),
-	 j = rhs.get_first_non_implicit_parm();
-       (i != lhs.get_parameters().end()
-	&& j != rhs.get_parameters().end());
+  for (i = lhs.get_first_parm(), j = rhs.get_first_parm();
+       i != lhs.get_parameters().end() && j != rhs.get_parameters().end();
        ++i, ++j)
     {
-      if (lhs_class)
-	lcl = dynamic_cast<class_decl*>((*i)->get_type().get());
-      if (rhs_class)
-	rcl = dynamic_cast<class_decl*>((*j)->get_type().get());
-      if (lcl && rcl
-	  && lcl == lhs_class
-	  && rcl == rhs_class)
-	// Do not compare the class types of two methods that we are
-	// probably comparing atm; otherwise we can recurse indefinitely.
-	continue;
       if (**i != **j)
 	{
 	  result = false;
@@ -16864,12 +16851,12 @@ equals(const function_type& lhs,
 #undef RETURN
 }
 
-/// Get the parameter of the function.
+/// Get the first parameter of the function.
 ///
 /// If the function is a non-static member function, the parameter
 /// returned is the first one following the implicit 'this' parameter.
 ///
-/// @return the first non implicit parm.
+/// @return the first non implicit parameter of the function.
 function_type::parameters::const_iterator
 function_type::get_first_non_implicit_parm() const
 {
@@ -16885,6 +16872,16 @@ function_type::get_first_non_implicit_parm() const
 
   return i;
 }
+
+/// Get the first parameter of the function.
+///
+/// Note that if the function is a non-static member function, the
+/// parameter returned is the implicit 'this' parameter.
+///
+/// @return the first parameter of the function.
+function_type::parameters::const_iterator
+function_type::get_first_parm() const
+{return get_parameters().begin();}
 
 /// Get the name of the current @ref function_type.
 ///

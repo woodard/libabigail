@@ -1,7 +1,7 @@
-Functions changes summary: 0 Removed, 3 Changed, 0 Added functions
+Functions changes summary: 0 Removed, 4 Changed, 0 Added functions
 Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
-3 functions with some indirect sub-type change:
+4 functions with some indirect sub-type change:
 
   [C] 'function void bar(s*)' has some indirect sub-type changes:
     parameter 1 of type 's*' has sub-type changes:
@@ -16,7 +16,13 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
   [C] 'method s::s(const s&)' has some indirect sub-type changes:
     'method s::s(const s&)' access changed from 'public' to 'private'
+    implicit parameter 0 of type 's*' has sub-type changes:
+      pointed to type 'class s' changed, as reported earlier
     parameter 1 of type 'const s&' has sub-type changes:
       in referenced type 'const s':
         unqualified underlying type 'class s' changed, as reported earlier
+
+  [C] 'method s::s()' has some indirect sub-type changes:
+    implicit parameter 0 of type 's*' has sub-type changes:
+      pointed to type 'class s' changed, as reported earlier
 

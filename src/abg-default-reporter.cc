@@ -536,8 +536,10 @@ default_reporter::report(const fn_parm_diff& d, ostream& out,
       diff_category saved_category = type_diff->get_category();
       // Parameter type changes are never redundants.
       type_diff->set_category(saved_category & ~REDUNDANT_CATEGORY);
-      out << indent
-	  << "parameter " << f->get_index();
+      out << indent;
+      if (f->get_is_artificial())
+	out << "implicit ";
+      out << "parameter " << f->get_index();
       report_loc_info(f, *d.context(), out);
       out << " of type '"
 	  << f->get_type_pretty_representation();

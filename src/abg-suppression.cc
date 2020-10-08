@@ -725,6 +725,7 @@ type_suppression::suppresses_diff(const diff* diff) const
 	      if (!d)
 		// This might be of, e.g, distinct_diff type.
 		return false;
+	      d = is_type_diff(peel_qualified_diff(d));
 	    }
 	  else
 	    return false;
@@ -737,6 +738,7 @@ type_suppression::suppresses_diff(const diff* diff) const
 	      if (!d)
 		// This might be of, e.g, distinct_diff type.
 		return false;
+	      d = is_type_diff(peel_qualified_diff(d));
 	    }
 	  else
 	    return false;
@@ -747,11 +749,13 @@ type_suppression::suppresses_diff(const diff* diff) const
 	    {
 	      d = is_type_diff(ptr_diff->underlying_type_diff().get());
 	      ABG_ASSERT(d);
+	      d = is_type_diff(peel_qualified_diff(d));
 	    }
 	  else if (const reference_diff* ref_diff = is_reference_diff(diff))
 	    {
 	      d = is_type_diff(ref_diff->underlying_type_diff().get());
 	      ABG_ASSERT(d);
+	      d = is_type_diff(peel_qualified_diff(d));
 	    }
 	  else
 	    return false;

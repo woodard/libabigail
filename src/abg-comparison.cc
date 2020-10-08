@@ -6829,7 +6829,7 @@ function_type_diff::ensure_lookup_tables_populated()
        i != priv_->parm_changes_.deletions().end();
        ++i)
     {
-      parm = *(first_function_type()->get_first_non_implicit_parm()
+      parm = *(first_function_type()->get_first_parm()
 	       + i->index());
       parm_name = parm->get_name_id();
       // If for a reason the type name is empty we want to know and
@@ -6849,7 +6849,7 @@ function_type_diff::ensure_lookup_tables_populated()
 	   j != i->inserted_indexes().end();
 	   ++j)
 	{
-	  parm = *(second_function_type()->get_first_non_implicit_parm() + *j);
+	  parm = *(second_function_type()->get_first_parm() + *j);
 	  parm_name = parm->get_name_id();
 	  // If for a reason the type name is empty we want to know and
 	  // fix that.
@@ -7101,9 +7101,9 @@ compute_diff(const function_type_sptr	first,
 
   function_type_diff_sptr result(new function_type_diff(first, second, ctxt));
 
-  diff_utils::compute_diff(first->get_first_non_implicit_parm(),
+  diff_utils::compute_diff(first->get_first_parm(),
 			   first->get_parameters().end(),
-			   second->get_first_non_implicit_parm(),
+			   second->get_first_parm(),
 			   second->get_parameters().end(),
 			   result->priv_->parm_changes_);
 
