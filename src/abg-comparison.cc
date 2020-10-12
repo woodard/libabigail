@@ -201,6 +201,27 @@ sort_string_function_ptr_map(const string_function_ptr_map& map,
   std::sort(sorted.begin(), sorted.end(), comp);
 }
 
+/// Sort a map that's an instance of @ref
+/// string_member_function_sptr_map and fill a vector of member
+/// functions with the sorted result.
+///
+/// @param map the map to sort.
+///
+/// @param sorted the resulting sorted vector.
+void
+sort_string_member_function_sptr_map(const string_member_function_sptr_map& map,
+				     class_or_union::member_functions& sorted)
+{
+  sorted.reserve(map.size());
+  for (string_member_function_sptr_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  function_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
 /// Sort the values of a @ref string_function_decl_diff_sptr_map map
 /// and store the result in a vector of @ref function_decl_diff_sptr
 /// objects.
@@ -885,55 +906,6 @@ bool
 is_child_node_of_base_diff(const diff* diff)
 {return diff && is_base_diff(diff->parent_node());}
 
-/// Test if the current diff node has an ancestor node that has been
-/// filtered out.
-///
-/// This function detects cycles when walking through the "parent"
-/// path.
-///
-/// @param diff the diff node to take into account.
-///
-/// @param ancestor this is a hash map of the pointers of the parents
-/// that are visited.  It's used to detect cycles while visiting
-/// parents of this diff tree node.
-///
-/// @return true iff the current diff node has an ancestor node that
-/// has been filtered out.
-static bool
-diff_has_ancestor_filtered_out(const diff* d,
-			       unordered_map<size_t, bool>& ancestors)
-{
-  if (!d || !d->parent_node())
-    return false;
-  if (d->parent_node()->is_filtered_out())
-    return true;
-
-  const diff* parent = d->parent_node();
-  unordered_map<size_t, bool>::const_iterator i =
-    ancestors.find(reinterpret_cast<size_t>(parent));
-  if (i != ancestors.end())
-    // We've just detected a cycle in the path made of the parents
-    // that we are visiting.
-    return false;
-  ancestors[reinterpret_cast<size_t>(parent)] = true;
-
-  return diff_has_ancestor_filtered_out(parent, ancestors);
-}
-
-/// Test if the current diff node has an ancestor node that has been
-/// filtered out.
-///
-/// @param diff the diff node to take into account.
-///
-/// @return true iff the current diff node has an ancestor node that
-/// has been filtered out.
-static bool
-diff_has_ancestor_filtered_out(const diff* diff)
-{
-  unordered_map<size_t, bool> ancestors_trace;
-  return diff_has_ancestor_filtered_out(diff, ancestors_trace);
-}
-
 /// The default traverse function.
 ///
 /// @return true.
@@ -1323,45 +1295,6 @@ diff_context::mark_diff_as_visited(const diff* d)
 void
 diff_context::forget_visited_diffs()
 {priv_->visited_diff_nodes_.clear();}
-
-/// Mark a given diff node as being the last one that has been visited
-/// in its class of equivalence.
-///
-/// @param d the diff node to mark.
-void
-diff_context::mark_last_diff_visited_per_class_of_equivalence(const diff* d)
-{
-  if (!d->get_canonical_diff())
-    return;
-
-  size_t v0 = reinterpret_cast<size_t>(d->get_canonical_diff());
-  size_t v1 = reinterpret_cast<size_t>(d);
-  priv_->last_visited_diff_node_[v0]= v1;
-}
-
-/// Clear the marking about the diff diff nodes in a given class of
-/// equivalence.
-void
-diff_context::clear_last_diffs_visited_per_class_of_equivalence()
-{priv_->last_visited_diff_node_.clear();}
-
-/// Return the last diff node visited in the class of equivalence of
-/// a given diff node.
-///
-/// @param d the diff node which class of equivalence to consider.
-///
-/// @return the last diff node visited in the class of equivalence of
-/// the diff node @p d.
-const diff*
-diff_context::get_last_visited_diff_of_class_of_equivalence(const diff* d)
-{
-  size_t v0 = reinterpret_cast<size_t>(d);
-
-  pointer_map::const_iterator it = priv_->last_visited_diff_node_.find(v0);
-  if (it != priv_->last_visited_diff_node_.end())
-    return reinterpret_cast<const diff*>(it->second);
-  return 0;
-}
 
 /// This sets a flag that, if it's true, then during the traversing of
 /// a diff nodes tree each node is visited at most once.
@@ -5264,11 +5197,11 @@ class_or_union_diff::chain_into_hierarchy()
     if (diff_sptr d = *i)
       append_child_node(d);
 
-  for (unsigned_var_diff_sptr_map::const_iterator i =
-	 get_priv()->changed_dm_.begin();
-       i != get_priv()->changed_dm_.end();
+  for (var_diff_sptrs_type::const_iterator i =
+	 get_priv()->sorted_changed_dm_.begin();
+       i != get_priv()->sorted_changed_dm_.end();
        ++i)
-    if (diff_sptr d = i->second)
+    if (diff_sptr d = *i)
       append_child_node(d);
 
   // member types changes
@@ -5486,6 +5419,12 @@ class_diff::ensure_lookup_tables_populated(void) const
 	 i != to_delete.end();
 	 ++i)
       p->inserted_member_functions_.erase(*i);
+
+    sort_string_member_function_sptr_map(p->deleted_member_functions_,
+					 p->sorted_deleted_member_functions_);
+
+    sort_string_member_function_sptr_map(p->inserted_member_functions_,
+					 p->sorted_inserted_member_functions_);
 
     sort_string_virtual_member_function_diff_sptr_map
       (p->changed_member_functions_,
@@ -12155,11 +12094,11 @@ struct redundancy_marking_visitor : public diff_node_visitor
 		&& !is_diff_of_variadic_parameter(d)
 		&& !is_diff_of_variadic_parameter_type(d)
 		// If the canonical diff itself has been filtered out,
-		// then this one is not marked redundant, obviously.
-		&& !d->get_canonical_diff()->is_filtered_out()
-		&& !(diff_has_ancestor_filtered_out
-		     (d->context()->
-		      get_last_visited_diff_of_class_of_equivalence(d)))
+		// then this one is not marked redundant, unless the
+		// canonical diff was already redundant.
+		&& (!d->get_canonical_diff()->is_filtered_out()
+		    || (d->get_canonical_diff()->get_category()
+			& REDUNDANT_CATEGORY))
 		// If the *same* diff node (not one that is merely
 		// equivalent to this one) has already been visited
 		// the do not mark it as beind redundant.  It's only
@@ -12197,8 +12136,6 @@ struct redundancy_marking_visitor : public diff_node_visitor
 	set_visiting_kind(get_visiting_kind() | SKIP_CHILDREN_VISITING_KIND);
 	skip_children_nodes_ = true;
       }
-
-    d->context()->mark_last_diff_visited_per_class_of_equivalence(d);
   }
 
   virtual void
@@ -12259,6 +12196,12 @@ struct redundancy_marking_visitor : public diff_node_visitor
 		if ((*i)->has_changes())
 		  {
 		    has_non_empty_child = true;
+		    // Let's see if the current child node '*i' is
+		    // "non-redundant".
+		    //
+		    // A non-redundant node would be a node that
+		    // carries a change to be reported and has not
+		    // been marked as being redundant.
 		    if ((*i)->to_be_reported()
 			&& ((*i)->get_category() & REDUNDANT_CATEGORY) == 0)
 		      has_non_redundant_child = true;
@@ -12322,12 +12265,10 @@ categorize_redundancy(diff* diff_tree)
   if (diff_tree->context()->show_redundant_changes())
     return;
   redundancy_marking_visitor v;
-  diff_tree->context()->clear_last_diffs_visited_per_class_of_equivalence();
   bool s = diff_tree->context()->visiting_a_node_twice_is_forbidden();
   diff_tree->context()->forbid_visiting_a_node_twice(false);
   diff_tree->traverse(v);
   diff_tree->context()->forbid_visiting_a_node_twice(s);
-  diff_tree->context()->clear_last_diffs_visited_per_class_of_equivalence();
 }
 
 /// Walk a given @ref diff sub-tree to categorize each of the nodes

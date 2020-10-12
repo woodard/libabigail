@@ -191,9 +191,6 @@ struct diff_context::priv
   vector<filtering::filter_base_sptr>	filters_;
   suppressions_type			suppressions_;
   pointer_map				visited_diff_nodes_;
-  // This is the last visited diff node, per class of equivalence.
-  // It's set during the redundant diff node marking process.
-  pointer_map				last_visited_diff_node_;
   corpus_diff_sptr			corpus_diff_;
   ostream*				default_output_stream_;
   ostream*				error_output_stream_;
@@ -506,7 +503,9 @@ struct class_or_union_diff::priv
   string_decl_base_sptr_map dms_replaced_by_adms_;
   mutable changed_var_sptrs_type dms_replaced_by_adms_ordered_;
   string_member_function_sptr_map deleted_member_functions_;
+  class_or_union::member_functions sorted_deleted_member_functions_;
   string_member_function_sptr_map inserted_member_functions_;
+  class_or_union::member_functions sorted_inserted_member_functions_;
   string_function_decl_diff_sptr_map changed_member_functions_;
   function_decl_diff_sptrs_type sorted_changed_member_functions_;
   string_decl_base_sptr_map deleted_member_class_tmpls_;
@@ -1391,8 +1390,13 @@ sort_string_function_ptr_map(const string_function_ptr_map& map,
 			     vector<function_decl*>& sorted);
 
 void
+sort_string_member_function_sptr_map(const string_member_function_sptr_map& map,
+				     class_or_union::member_functions& sorted);
+
+void
 sort_string_type_base_sptr_map(string_type_base_sptr_map& map,
 			       vector<type_base_sptr>& sorted);
+
 void
 sort_string_function_decl_diff_sptr_map
 (const string_function_decl_diff_sptr_map& map,

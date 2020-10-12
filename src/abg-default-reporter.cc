@@ -934,17 +934,17 @@ default_reporter::report(const class_or_union_diff& d,
       if (numdels)
 	report_mem_header(out, numdels, num_filtered, del_kind,
 			  "member function", indent);
-      for (string_member_function_sptr_map::const_iterator i =
-	     d.get_priv()->deleted_member_functions_.begin();
-	   i != d.get_priv()->deleted_member_functions_.end();
+      for (class_or_union::member_functions::const_iterator i =
+	     d.get_priv()->sorted_deleted_member_functions_.begin();
+	   i != d.get_priv()->sorted_deleted_member_functions_.end();
 	   ++i)
 	{
 	  if (!(ctxt->get_allowed_category()
 		& NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
-	      && !get_member_function_is_virtual(i->second))
+	      && !get_member_function_is_virtual(*i))
 	    continue;
 
-	  method_decl_sptr mem_fun = i->second;
+	  method_decl_sptr mem_fun = *i;
 	  out << indent << "  ";
 	  represent(*ctxt, mem_fun, out);
 	}
@@ -955,17 +955,17 @@ default_reporter::report(const class_or_union_diff& d,
       if (numins)
 	report_mem_header(out, numins, num_filtered, ins_kind,
 			  "member function", indent);
-      for (string_member_function_sptr_map::const_iterator i =
-	     d.get_priv()->inserted_member_functions_.begin();
-	   i != d.get_priv()->inserted_member_functions_.end();
+      for (class_or_union::member_functions::const_iterator i =
+	     d.get_priv()->sorted_inserted_member_functions_.begin();
+	   i != d.get_priv()->sorted_inserted_member_functions_.end();
 	   ++i)
 	{
 	  if (!(ctxt->get_allowed_category()
 		& NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
-	      && !get_member_function_is_virtual(i->second))
+	      && !get_member_function_is_virtual(*i))
 	    continue;
 
-	  method_decl_sptr mem_fun = i->second;
+	  method_decl_sptr mem_fun = *i;
 	  out << indent << "  ";
 	  represent(*ctxt, mem_fun, out);
 	}

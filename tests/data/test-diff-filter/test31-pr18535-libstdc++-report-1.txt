@@ -1,4 +1,4 @@
-Functions changes summary: 0 Removed, 10 Changed (174 filtered out), 13 Added functions
+Functions changes summary: 0 Removed, 5 Changed (179 filtered out), 13 Added functions
 Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 Function symbols changes summary: 0 Removed, 0 Added function symbol not referenced by debug info
 Variable symbols changes summary: 0 Removed, 6 Added variable symbols not referenced by debug info
@@ -25,7 +25,7 @@ Variable symbols changes summary: 0 Removed, 6 Added variable symbols not refere
   [A] 'function std::unexpected_handler std::get_unexpected()'
   [A] 'method std::regex_error::regex_error(std::regex_constants::error_type)'
 
-10 functions with some indirect sub-type change:
+5 functions with some indirect sub-type change:
 
   [C] 'function __cxxabiv1::__cxa_dependent_exception* __cxxabiv1::__cxa_allocate_dependent_exception()' at eh_alloc.cc:158:1 has some indirect sub-type changes:
     return type changed:
@@ -70,16 +70,7 @@ Variable symbols changes summary: 0 Removed, 6 Added variable symbols not refere
                           1 base class insertion:
                             struct std::_Tuple_impl<0u, std::__future_base::_Result_base*, std::__future_base::_Result_base::_Deleter> at tuple:231:1
                       and name of 'std::unique_ptr<std::__future_base::_Result<void>, std::__future_base::_Result_base::_Deleter>::_M_t' changed to 'std::unique_ptr<std::__future_base::_Result_base, std::__future_base::_Result_base::_Deleter>::_M_t' at unique_ptr.h:147:1
-        1 member function changes (3 filtered):
-          'method virtual std::__future_base::_Async_state_common::~_Async_state_common(int)' has some sub-type changes:
-            implicit parameter 0 of type 'std::__future_base::_Async_state_common*' has sub-type changes:
-              pointed to type 'class std::__future_base::_Async_state_common' changed, as being reported
-
-  [C] 'method virtual std::__future_base::_State_base::~_State_base(int)' at compatibility-thread-c++0x.cc:103:1 has some indirect sub-type changes:
-    linkage names of method virtual std::__future_base::_State_base::~_State_base(int)
-    changed from '_ZNSt13__future_base11_State_baseD2Ev@@GLIBCXX_3.4.15, _ZNSt13__future_base11_State_baseD1Ev@@GLIBCXX_3.4.15' to '_ZNSt13__future_base11_State_baseD1Ev@@GLIBCXX_3.4.15, _ZNSt13__future_base11_State_baseD2Ev@@GLIBCXX_3.4.15'
-    implicit parameter 0 of type 'std::__future_base::_State_base*' has sub-type changes:
-      pointed to type 'class std::__future_base::_State_base' changed at future:306:1, as reported earlier
+        no member function changes (4 filtered);
 
   [C] 'function void std::__throw_regex_error(std::regex_constants::error_type)' at functexcept.cc:139:1 has some indirect sub-type changes:
     parameter 1 of type 'enum std::regex_constants::error_type' has sub-type changes:
@@ -91,10 +82,7 @@ Variable symbols changes summary: 0 Removed, 6 Added variable symbols not refere
     implicit parameter 0 of type 'std::basic_filebuf<wchar_t, std::char_traits<wchar_t> >*' has sub-type changes:
       in pointed to type 'class std::basic_filebuf<wchar_t, std::char_traits<wchar_t> >' at fstream:72:1:
         type size hasn't changed
-        1 member function changes (13 filtered):
-          'method virtual std::basic_filebuf<wchar_t, std::char_traits<wchar_t> >::~basic_filebuf(int)' has some sub-type changes:
-            implicit parameter 0 of type 'std::basic_filebuf<wchar_t, std::char_traits<wchar_t> >*' has sub-type changes:
-              pointed to type 'class std::basic_filebuf<wchar_t, std::char_traits<wchar_t> >' changed, as being reported
+        no member function changes (14 filtered);
         1 data member change:
           type of 'const std::basic_filebuf<wchar_t, std::char_traits<wchar_t> >::__codecvt_type* std::basic_filebuf<wchar_t, std::char_traits<wchar_t> >::_M_codecvt' changed:
             in pointed to type 'const std::basic_filebuf<wchar_t, std::char_traits<wchar_t> >::__codecvt_type':
@@ -103,45 +91,9 @@ Variable symbols changes summary: 0 Removed, 6 Added variable symbols not refere
                   type size hasn't changed
                   no base class change (1 filtered);
                   2 member function insertions:
-                    'method virtual std::codecvt_base::result std::codecvt<wchar_t, char, __mbstate_t>::do_out(std::codecvt<wchar_t, char, __mbstate_t>::state_type&, const std::codecvt<wchar_t, char, __mbstate_t>::intern_type*, const std::codecvt<wchar_t, char, __mbstate_t>::intern_type*, const std::codecvt<wchar_t, char, __mbstate_t>::intern_type*&, std::codecvt<wchar_t, char, __mbstate_t>::extern_type*, std::codecvt<wchar_t, char, __mbstate_t>::extern_type*, std::codecvt<wchar_t, char, __mbstate_t>::extern_type*&) const' at codecvt_members.cc:43:1, virtual at voffset 2/8
                     'method virtual std::codecvt_base::result std::codecvt<wchar_t, char, __mbstate_t>::do_in(std::codecvt<wchar_t, char, __mbstate_t>::state_type&, const std::codecvt<wchar_t, char, __mbstate_t>::extern_type*, const std::codecvt<wchar_t, char, __mbstate_t>::extern_type*, const std::codecvt<wchar_t, char, __mbstate_t>::extern_type*&, std::codecvt<wchar_t, char, __mbstate_t>::intern_type*, std::codecvt<wchar_t, char, __mbstate_t>::intern_type*, std::codecvt<wchar_t, char, __mbstate_t>::intern_type*&) const' at codecvt_members.cc:118:1, virtual at voffset 4/8
+                    'method virtual std::codecvt_base::result std::codecvt<wchar_t, char, __mbstate_t>::do_out(std::codecvt<wchar_t, char, __mbstate_t>::state_type&, const std::codecvt<wchar_t, char, __mbstate_t>::intern_type*, const std::codecvt<wchar_t, char, __mbstate_t>::intern_type*, const std::codecvt<wchar_t, char, __mbstate_t>::intern_type*&, std::codecvt<wchar_t, char, __mbstate_t>::extern_type*, std::codecvt<wchar_t, char, __mbstate_t>::extern_type*, std::codecvt<wchar_t, char, __mbstate_t>::extern_type*&) const' at codecvt_members.cc:43:1, virtual at voffset 2/8
                   no member function changes (10 filtered);
-
-  [C] 'method std::basic_fstream<wchar_t, std::char_traits<wchar_t> >* std::basic_fstream<wchar_t, std::char_traits<wchar_t> >::basic_fstream(int, void**, const char*, std::ios_base::openmode)' at fstream:819:1 has some indirect sub-type changes:
-    implicit parameter 0 of type 'std::basic_fstream<wchar_t, std::char_traits<wchar_t> >*' has sub-type changes:
-      in pointed to type 'class std::basic_fstream<wchar_t, std::char_traits<wchar_t> >' at fstream:779:1:
-        type size hasn't changed
-        1 member function changes (3 filtered):
-          'method virtual std::basic_fstream<wchar_t, std::char_traits<wchar_t> >::~basic_fstream(int, void**)' has some sub-type changes:
-            implicit parameter 0 of type 'std::basic_fstream<wchar_t, std::char_traits<wchar_t> >*' has sub-type changes:
-              pointed to type 'class std::basic_fstream<wchar_t, std::char_traits<wchar_t> >' changed, as being reported
-        no data member change (1 filtered);
-
-  [C] 'method std::basic_ifstream<wchar_t, std::char_traits<wchar_t> >* std::basic_ifstream<wchar_t, std::char_traits<wchar_t> >::basic_ifstream(int, void**, const char*, std::ios_base::openmode)' at fstream:470:1 has some indirect sub-type changes:
-    implicit parameter 0 of type 'std::basic_ifstream<wchar_t, std::char_traits<wchar_t> >*' has sub-type changes:
-      in pointed to type 'class std::basic_ifstream<wchar_t, std::char_traits<wchar_t> >' at fstream:430:1:
-        type size hasn't changed
-        3 member function changes (1 filtered):
-          'method virtual std::basic_ifstream<wchar_t, std::char_traits<wchar_t> >::~basic_ifstream(int, void**)' has some sub-type changes:
-            implicit parameter 0 of type 'std::basic_ifstream<wchar_t, std::char_traits<wchar_t> >*' has sub-type changes:
-              pointed to type 'class std::basic_ifstream<wchar_t, std::char_traits<wchar_t> >' changed, as being reported
-          'method virtual std::basic_ifstream<wchar_t, std::char_traits<wchar_t> >::~basic_ifstream(int, void**)' has some sub-type changes:
-            implicit parameter 0 of type 'std::basic_ifstream<wchar_t, std::char_traits<wchar_t> >*' has sub-type changes:
-              pointed to type 'class std::basic_ifstream<wchar_t, std::char_traits<wchar_t> >' changed, as being reported
-          'method virtual std::basic_ifstream<wchar_t, std::char_traits<wchar_t> >::~basic_ifstream(int, void**)' has some sub-type changes:
-            implicit parameter 0 of type 'std::basic_ifstream<wchar_t, std::char_traits<wchar_t> >*' has sub-type changes:
-              pointed to type 'class std::basic_ifstream<wchar_t, std::char_traits<wchar_t> >' changed, as being reported
-        no data member change (1 filtered);
-
-  [C] 'method std::basic_ofstream<wchar_t, std::char_traits<wchar_t> >* std::basic_ofstream<wchar_t, std::char_traits<wchar_t> >::basic_ofstream(int, void**, const char*, std::ios_base::openmode)' at fstream:643:1 has some indirect sub-type changes:
-    implicit parameter 0 of type 'std::basic_ofstream<wchar_t, std::char_traits<wchar_t> >*' has sub-type changes:
-      in pointed to type 'class std::basic_ofstream<wchar_t, std::char_traits<wchar_t> >' at fstream:602:1:
-        type size hasn't changed
-        1 member function changes (3 filtered):
-          'method virtual std::basic_ofstream<wchar_t, std::char_traits<wchar_t> >::~basic_ofstream(int, void**)' has some sub-type changes:
-            implicit parameter 0 of type 'std::basic_ofstream<wchar_t, std::char_traits<wchar_t> >*' has sub-type changes:
-              pointed to type 'class std::basic_ofstream<wchar_t, std::char_traits<wchar_t> >' changed, as being reported
-        no data member change (1 filtered);
 
   [C] 'method std::codecvt_byname<wchar_t, char, __mbstate_t>* std::codecvt_byname<wchar_t, char, __mbstate_t>::codecvt_byname(const char*, std::size_t)' at codecvt.h:462:1 has some indirect sub-type changes:
     Please note that the symbol of this function is _ZNSt14codecvt_bynameIwc11__mbstate_tEC1EPKcj@@GLIBCXX_3.4
@@ -152,23 +104,7 @@ Variable symbols changes summary: 0 Removed, 6 Added variable symbols not refere
         1 base class change:
           'class std::codecvt<wchar_t, char, __mbstate_t>' at codecvt.h:398:1 changed:
             details were reported earlier
-        2 member function changes (1 filtered):
-          'method virtual std::codecvt_byname<wchar_t, char, __mbstate_t>::~codecvt_byname(int)' has some sub-type changes:
-            implicit parameter 0 of type 'std::codecvt_byname<wchar_t, char, __mbstate_t>*' has sub-type changes:
-              pointed to type 'class std::codecvt_byname<wchar_t, char, __mbstate_t>' changed, as being reported
-          'method virtual std::codecvt_byname<wchar_t, char, __mbstate_t>::~codecvt_byname(int)' has some sub-type changes:
-            implicit parameter 0 of type 'std::codecvt_byname<wchar_t, char, __mbstate_t>*' has sub-type changes:
-              pointed to type 'class std::codecvt_byname<wchar_t, char, __mbstate_t>' changed, as being reported
-
-  [C] 'method virtual std::regex_error::~regex_error(int)' at regex.cc:36:1 has some indirect sub-type changes:
-    implicit parameter 0 of type 'std::regex_error*' has sub-type changes:
-      in pointed to type 'class std::regex_error' at regex_error.h:135:1:
-        type size hasn't changed
-        1 member function changes (2 filtered):
-          'method virtual std::regex_error::~regex_error(int)' has some sub-type changes:
-            implicit parameter 0 of type 'std::regex_error*' has sub-type changes:
-              pointed to type 'class std::regex_error' changed, as being reported
-        no data member change (1 filtered);
+        no member function changes (3 filtered);
 
 6 Added variable symbols not referenced by debug info:
 

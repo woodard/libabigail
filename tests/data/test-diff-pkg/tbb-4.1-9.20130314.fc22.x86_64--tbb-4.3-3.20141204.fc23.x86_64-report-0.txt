@@ -1,5 +1,5 @@
 ================ changes of 'libtbb.so.2'===============
-  Functions changes summary: 0 Removed, 13 Changed (94 filtered out), 17 Added functions
+  Functions changes summary: 0 Removed, 10 Changed (97 filtered out), 17 Added functions
   Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
   Function symbols changes summary: 0 Removed, 0 Added function symbol not referenced by debug info
   Variable symbols changes summary: 3 Removed, 0 Added variable symbols not referenced by debug info
@@ -24,7 +24,7 @@
     [A] 'method void tbb::internal::concurrent_queue_base_v8::move_content(tbb::internal::concurrent_queue_base_v8&)'    {_ZN3tbb8internal24concurrent_queue_base_v812move_contentERS1_}
     [A] 'method void tbb::task_group_context::capture_fp_settings()'    {_ZN3tbb18task_group_context19capture_fp_settingsEv}
 
-  13 functions with some indirect sub-type change:
+  10 functions with some indirect sub-type change:
 
     [C] 'method void tbb::filter::set_end_of_input()' at pipeline.cpp:700:1 has some indirect sub-type changes:
       implicit parameter 0 of type 'tbb::filter*' has sub-type changes:
@@ -105,10 +105,7 @@
                           'method virtual tbb::task* tbb::internal::generic_scheduler::receive_or_steal_task(tbb::internal::reference_count&, bool)' at scheduler.h:391:1, virtual at voffset 7/7
                         1 member function insertion:
                           'method virtual tbb::task* tbb::internal::generic_scheduler::receive_or_steal_task(tbb::internal::reference_count&)' at scheduler.h:362:1, virtual at voffset 7/7
-                        1 member function changes (3 filtered):
-                          'method virtual void tbb::internal::generic_scheduler::spawn(tbb::task&, tbb::task*&)' has some sub-type changes:
-                            implicit parameter 0 of type 'tbb::internal::generic_scheduler*' has sub-type changes:
-                              pointed to type 'class tbb::internal::generic_scheduler' changed, as being reported
+                        no member function changes (4 filtered);
                         3 data member deletions:
                           'unsigned int tbb::internal::generic_scheduler::hint_for_push', at offset 896 (in bits) at scheduler.h:171:1
                           'volatile intptr_t* tbb::internal::generic_scheduler::my_ref_top_priority', at offset 2560 (in bits) at scheduler.h:433:1
@@ -118,10 +115,7 @@
                           type of 'tbb::internal::market* tbb::internal::generic_scheduler::my_market' changed:
                             in pointed to type 'class tbb::internal::market' at market.h:49:1:
                               type size changed from 1664 to 1728 (in bits)
-                              1 member function changes (7 filtered):
-                                'method virtual rml::job* tbb::internal::market::create_one_job()' has some sub-type changes:
-                                  implicit parameter 0 of type 'tbb::internal::market*' has sub-type changes:
-                                    pointed to type 'class tbb::internal::market' changed, as being reported
+                              no member function changes (8 filtered);
                               1 data member insertion:
                                 'bool tbb::internal::market::join_workers', at offset 384 (in bits) at market.h:88:1
                               7 data member changes:
@@ -182,10 +176,7 @@
             'method virtual tbb::internal::concurrent_queue_base::~concurrent_queue_base(int)' at concurrent_queue_v2.cpp:225:1
           1 member function insertion:
             'method virtual tbb::internal::concurrent_queue_base::~concurrent_queue_base(int)' at concurrent_queue_v2.cpp:217:1
-          1 member function changes (3 filtered):
-            'method virtual tbb::internal::concurrent_queue_base::~concurrent_queue_base(int)' has some sub-type changes:
-              implicit parameter 0 of type 'tbb::internal::concurrent_queue_base*' has sub-type changes:
-                pointed to type 'class tbb::internal::concurrent_queue_base' changed, as being reported
+          no member function changes (4 filtered);
           1 data member change:
             type of 'tbb::internal::concurrent_queue_rep* tbb::internal::concurrent_queue_base::my_rep' changed:
               in pointed to type 'class tbb::internal::concurrent_queue_rep' at concurrent_queue_v2.cpp:102:1:
@@ -225,10 +216,6 @@
           1 base class insertion:
             class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
 
-    [C] 'method bool tbb::mutex::scoped_lock::internal_try_acquire(tbb::mutex&)' at mutex.h:132:1 has some indirect sub-type changes:
-      parameter 1 of type 'tbb::mutex&' has sub-type changes:
-        referenced type 'class tbb::mutex' changed at mutex.h:48:1, as reported earlier
-
     [C] 'method void tbb::queuing_mutex::internal_construct()' at queuing_mutex.h:106:1 has some indirect sub-type changes:
       implicit parameter 0 of type 'tbb::queuing_mutex*' has sub-type changes:
         in pointed to type 'class tbb::queuing_mutex' at queuing_mutex.h:45:1:
@@ -249,14 +236,6 @@
           type size hasn't changed
           1 base class insertion:
             class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
-
-    [C] 'method bool tbb::recursive_mutex::scoped_lock::internal_try_acquire(tbb::recursive_mutex&)' at recursive_mutex.h:142:1 has some indirect sub-type changes:
-      parameter 1 of type 'tbb::recursive_mutex&' has sub-type changes:
-        referenced type 'class tbb::recursive_mutex' changed at recursive_mutex.h:47:1, as reported earlier
-
-    [C] 'method void tbb::spin_mutex::scoped_lock::internal_acquire(tbb::spin_mutex&)' at spin_mutex.h:66:1 has some indirect sub-type changes:
-      parameter 1 of type 'tbb::spin_mutex&' has sub-type changes:
-        referenced type 'class tbb::spin_mutex' changed at spin_mutex.h:47:1, as reported earlier
 
     [C] 'method tbb::thread_bound_filter::result_type tbb::thread_bound_filter::process_item()' at pipeline.cpp:712:1 has some indirect sub-type changes:
       implicit parameter 0 of type 'tbb::thread_bound_filter*' has sub-type changes:

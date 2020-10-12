@@ -27,53 +27,7 @@
                           2 data member insertions:
                             '_XtransConnFd* _XtransConnInfo::recv_fds', at offset 640 (in bits) at Xtransint.h:148:1
                             '_XtransConnFd* _XtransConnInfo::send_fds', at offset 704 (in bits) at Xtransint.h:149:1
-                          1 data member change:
-                            type of '_Xtransport* _XtransConnInfo::transptr' changed:
-                              in pointed to type 'struct _Xtransport' at Xtransint.h:158:1:
-                                type size hasn't changed
-                                3 data member changes (16 filtered):
-                                  type of 'typedef XtransConnInfo (_Xtransport*, char*, char*, char*)* _Xtransport::OpenCOTSClient' changed:
-                                    in pointed to type 'function type typedef XtransConnInfo (_Xtransport*, char*, char*, char*)':
-                                      parameter 2 of type 'char*' changed:
-                                        in pointed to type 'char':
-                                          entity changed from 'char' to 'const char'
-                                          type size hasn't changed
-                                      parameter 3 of type 'char*' changed:
-                                        in pointed to type 'char':
-                                          entity changed from 'char' to 'const char'
-                                          type size hasn't changed
-                                      parameter 4 of type 'char*' changed:
-                                        in pointed to type 'char':
-                                          entity changed from 'char' to 'const char'
-                                          type size hasn't changed
-                                  type of 'typedef XtransConnInfo (_Xtransport*, char*, char*, char*)* _Xtransport::OpenCOTSServer' changed:
-                                    in pointed to type 'function type typedef XtransConnInfo (_Xtransport*, char*, char*, char*)':
-                                      parameter 2 of type 'char*' changed:
-                                        in pointed to type 'char':
-                                          entity changed from 'char' to 'const char'
-                                          type size hasn't changed
-                                      parameter 3 of type 'char*' changed:
-                                        in pointed to type 'char':
-                                          entity changed from 'char' to 'const char'
-                                          type size hasn't changed
-                                      parameter 4 of type 'char*' changed:
-                                        in pointed to type 'char':
-                                          entity changed from 'char' to 'const char'
-                                          type size hasn't changed
-                                  type of 'typedef XtransConnInfo (_Xtransport*, char*, char*, char*)* _Xtransport::OpenCLTSServer' changed:
-                                    in pointed to type 'function type typedef XtransConnInfo (_Xtransport*, char*, char*, char*)':
-                                      parameter 2 of type 'char*' changed:
-                                        in pointed to type 'char':
-                                          entity changed from 'char' to 'const char'
-                                          type size hasn't changed
-                                      parameter 3 of type 'char*' changed:
-                                        in pointed to type 'char':
-                                          entity changed from 'char' to 'const char'
-                                          type size hasn't changed
-                                      parameter 4 of type 'char*' changed:
-                                        in pointed to type 'char':
-                                          entity changed from 'char' to 'const char'
-                                          type size hasn't changed
+                          no data member change (1 filtered);
               type of '_IcePingWait* _IceConn::ping_waits' changed:
                 in pointed to type 'struct _IcePingWait' at ICEconn.h:48:1:
                   entity changed from 'struct _IcePingWait' to compatible type 'typedef _IcePingWait' at ICEconn.h:48:1
