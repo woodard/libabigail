@@ -266,6 +266,10 @@ operator+(const std::string& s1, const interned_string& s2)
 
 namespace ir
 {
+
+static size_t
+hash_as_canonical_type_or_constant(const type_base *t);
+
 /// @brief the location of a token represented in its simplest form.
 /// Instances of this type are to be stored in a sorted vector, so the
 /// type must have proper relational operators.
@@ -22977,36 +22981,7 @@ hash_type_or_decl(const type_or_decl_base *tod)
   if (tod == 0)
     ;
   else if (const type_base* t = is_type(tod))
-    {
-      // If the type has a canonical type, then use the pointer value
-      // as a hash.  This is the fastest we can get.
-      if (type_base* ct = t->get_naked_canonical_type())
-	result = reinterpret_cast<size_t>(ct);
-      else if (const class_decl* cl = is_class_type(t))
-	{
-	  if (cl->get_is_declaration_only()
-	      && cl->get_naked_definition_of_declaration())
-	    // The is a declaration-only class, so it has no canonical
-	    // type; but then it's class definition has one.  Let's
-	    // use that one.
-	    return hash_type_or_decl(cl->get_naked_definition_of_declaration());
-	  else
-	    {
-	      // The class really has no canonical type, let's use the
-	      // slow path of hashing the class recursively.  Well
-	      // it's not that slow as the hash value is quickly going
-	      // to result to zero anyway.
-	      type_base::dynamic_hash hash;
-	      result = hash(t);
-	    }
-	}
-      else
-	{
-	  // Let's use the slow path of hashing the class recursively.
-	  type_base::dynamic_hash hash;
-	  result = hash(t);
-	}
-    }
+    result = hash_type(t);
   else if (const decl_base* d = is_decl(tod))
     {
       if (var_decl* v = is_var_decl(d))
@@ -23079,41 +23054,7 @@ hash_type_or_decl(const type_or_decl_base *tod)
 /// @return the resulting hash value.
 size_t
 hash_type(const type_base *t)
-{
-  size_t result = 0;
-
-  // If the type has a canonical type, then use the pointer value
-  // as a hash.  This is the fastest we can get.
-  if (type_base* ct = t->get_naked_canonical_type())
-    result = reinterpret_cast<size_t>(ct);
-  else if (const class_decl* cl = is_class_type(t))
-    {
-      if (cl->get_is_declaration_only()
-	  && cl->get_naked_definition_of_declaration())
-	// The is a declaration-only class, so it has no canonical
-	// type; but then it's class definition has one.  Let's
-	// use that one.
-	return hash_type
-	  (is_class_type(cl->get_naked_definition_of_declaration()));
-      else
-	{
-	  // The class really has no canonical type, let's use the
-	  // slow path of hashing the class recursively.  Well
-	  // it's not that slow as the hash value is quickly going
-	  // to result to zero anyway.
-	  type_base::dynamic_hash hash;
-	  result = hash(t);
-	}
-    }
-  else
-    {
-      // Let's use the slow path of hashing the class recursively.
-      type_base::dynamic_hash hash;
-      result = hash(t);
-    }
-
-  return result;
-}
+{return hash_as_canonical_type_or_constant(t);}
 
 /// Hash an ABI artifact that is either a type of a decl.
 ///
@@ -23128,10 +23069,12 @@ hash_type_or_decl(const type_or_decl_base_sptr& tod)
 /// type or by returning a constant if the type doesn't have a
 /// canonical type.
 ///
+/// This is a subroutine of hash_type.
+///
 /// @param t the type to consider.
 ///
 /// @return the hash value.
-size_t
+static size_t
 hash_as_canonical_type_or_constant(const type_base *t)
 {
   type_base *canonical_type = 0;

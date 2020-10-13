@@ -136,7 +136,7 @@ struct type_hasher
 {
   size_t
   operator()(const type_base* t) const
-  {return hash_as_canonical_type_or_constant(t);}
+  {return hash_type(t);}
 }; // end struct type_hasher
 
 /// A convenience typedef for a map that associates a pointer to type

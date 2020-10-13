@@ -991,6 +991,11 @@ operator()(const shared_ptr<class_tdecl> t) const
 /// inheritance hierarchy, make sure to handle the most derived type
 /// first.
 ///
+/// FIXME: This hashing function is not maintained and is surely
+/// broken in subtle ways.  In pratice, the various *::hash functors
+/// should be audited before they are used here.  They should all
+/// match what is done in the 'equals' functions in abg-ir.cc.
+///
 /// @param t a pointer to the type declaration to be hashed
 ///
 /// @return the resulting hash
