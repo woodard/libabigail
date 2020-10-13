@@ -626,6 +626,11 @@ if test x$ABIGAIL_DEBUG != x; then
     CXXFLAGS="$CXXFLAGS -Og -g3 -ggdb"
 fi
 
+if test x$ABIGAIL_NO_OPTIMIZATION_DEBUG != x; then
+   CFLAGS="-g -O0 -Wall -Wextra -Werror"
+   CXXFLAGS="-g -O0 -Wall -Wextra -Werror"
+fi
+
 if test x$ENABLE_ASAN = xyes; then
     CFLAGS="$CFLAGS -fsanitize=address"
     CXXFLAGS="$CXXFLAGS -fsanitize=address"
