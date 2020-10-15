@@ -1719,10 +1719,28 @@ write_elf_symbol_aliases(const elf_symbol& sym, ostream& out)
 static bool
 write_elf_symbol_reference(const elf_symbol& sym, ostream& o)
 {
-  auto actual_sym = &sym;
-  while (actual_sym->is_suppressed() && actual_sym->has_aliases())
-    actual_sym = actual_sym->get_next_alias().get();
-  o << " elf-symbol-id='" << actual_sym->get_id_string() << "'";
+  const elf_symbol* main = sym.get_main_symbol().get();
+  const elf_symbol* alias = &sym;
+  bool found = !alias->is_suppressed();
+  // If the symbol itself is suppressed, check the alias chain.
+  if (!found)
+    {
+      alias = main;
+      found = !alias->is_suppressed();
+    }
+  // If the main symbol is suppressed, search the remainder of the chain.
+  while (!found)
+    {
+      alias = alias->get_next_alias().get();
+      // Two separate termination conditions at present.
+      if (!alias || alias == main)
+        break;
+      found = !alias->is_suppressed();
+    }
+  // If all aliases are suppressed, just stick with the main symbol.
+  if (!found)
+    alias = main;
+  o << " elf-symbol-id='" << alias->get_id_string() << "'";
   return true;
 }
 
