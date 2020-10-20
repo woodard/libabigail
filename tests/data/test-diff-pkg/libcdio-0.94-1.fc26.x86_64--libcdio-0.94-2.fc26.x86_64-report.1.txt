@@ -14,7 +14,7 @@
                 underlying type 'struct cdio_dvd_disckey' at dvd.h:100:1 changed:
                   type size hasn't changed
                   1 data member change:
-                    'unsigned int cdio_dvd_disckey::agid' offset changed from 30 to 22 (in bits) (by -8 bits)
+                    'unsigned int cdio_dvd_disckey::agid' offset changed from 0 to 8 (in bits) (by +8 bits)
               type of 'cdio_dvd_physical_t physical' changed:
                 underlying type 'struct cdio_dvd_physical' at dvd.h:86:1 changed:
                   type size hasn't changed
@@ -24,14 +24,14 @@
                         underlying type 'struct cdio_dvd_layer' at dvd.h:65:1 changed:
                           type size hasn't changed
                           8 data member changes:
-                            'unsigned int cdio_dvd_layer::track_density' offset changed from 21 to 5 (in bits) (by -16 bits)
-                            'unsigned int cdio_dvd_layer::bca' offset changed from 24 to 0 (in bits) (by -24 bits)
-                            'unsigned int cdio_dvd_layer::disc_size' offset changed from 24 to 16 (in bits) (by -8 bits)
-                            'unsigned int cdio_dvd_layer::linear_density' offset changed from 25 to 1 (in bits) (by -24 bits)
-                            'unsigned int cdio_dvd_layer::nlayers' offset changed from 25 to 9 (in bits) (by -16 bits)
-                            'unsigned int cdio_dvd_layer::track_path' offset changed from 27 to 11 (in bits) (by -16 bits)
-                            'unsigned int cdio_dvd_layer::layer_type' offset changed from 28 to 12 (in bits) (by -16 bits)
-                            'unsigned int cdio_dvd_layer::min_rate' offset changed from 28 to 20 (in bits) (by -8 bits)
+                            'unsigned int cdio_dvd_layer::layer_type' offset changed from 0 to 16 (in bits) (by +16 bits)
+                            'unsigned int cdio_dvd_layer::min_rate' offset changed from 0 to 8 (in bits) (by +8 bits)
+                            'unsigned int cdio_dvd_layer::linear_density' offset changed from 3 to 27 (in bits) (by +24 bits)
+                            'unsigned int cdio_dvd_layer::disc_size' offset changed from 4 to 12 (in bits) (by +8 bits)
+                            'unsigned int cdio_dvd_layer::track_path' offset changed from 4 to 20 (in bits) (by +16 bits)
+                            'unsigned int cdio_dvd_layer::nlayers' offset changed from 5 to 21 (in bits) (by +16 bits)
+                            'unsigned int cdio_dvd_layer::bca' offset changed from 7 to 31 (in bits) (by +24 bits)
+                            'unsigned int cdio_dvd_layer::track_density' offset changed from 7 to 23 (in bits) (by +16 bits)
                       type size hasn't changed
 
     [C] 'function discmode_t mmc_get_dvd_struct_physical_private(void*, mmc_run_cmd_fn_t, cdio_dvd_struct_t*)' at mmc.c:450:1 has some indirect sub-type changes:

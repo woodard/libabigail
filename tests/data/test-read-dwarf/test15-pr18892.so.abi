@@ -7139,10 +7139,10 @@
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='req' type-id='type-id-211' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors_ioctl.inc' line='14' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='type' type-id='type-id-599' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors_ioctl.inc' line='21' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='32'>
+      <data-member access='public' layout-offset-in-bits='2'>
         <var-decl name='size' type-id='type-id-211' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors_ioctl.inc' line='22' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>

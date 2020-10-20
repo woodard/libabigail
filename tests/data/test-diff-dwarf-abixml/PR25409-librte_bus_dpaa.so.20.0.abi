@@ -1,4 +1,4 @@
-<abi-corpus path='data/test-diff-dwarf-abixml/PR25409-librte_bus_dpaa.so.20.0' architecture='elf-amd-x86_64' soname='librte_bus_dpaa.so.20.0'>
+<abi-corpus path='PR25409-librte_bus_dpaa.so.20.0' architecture='elf-amd-x86_64' soname='librte_bus_dpaa.so.20.0'>
   <elf-needed>
     <dependency name='libm.so.6'/>
     <dependency name='libdl.so.2'/>
@@ -587,10 +587,10 @@
       </data-member>
     </class-decl>
     <class-decl name='__anonymous_struct__2' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_bman.h' line='57' column='1' id='type-id-79'>
-      <data-member access='public' layout-offset-in-bits='16'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='addr' type-id='type-id-80' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_bman.h' line='62' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='48'>
         <var-decl name='__notaddress' type-id='type-id-80' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_bman.h' line='63' column='1'/>
       </data-member>
     </class-decl>
@@ -1021,19 +1021,19 @@
       </data-member>
     </union-decl>
     <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='122' column='1' id='type-id-162'>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='liodn_offset' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='132' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='6'>
         <var-decl name='dd' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='133' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='8'>
         <var-decl name='bpid' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='134' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='4'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='__reserved' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='135' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='16'>
+      <data-member access='public' layout-offset-in-bits='4'>
         <var-decl name='eliodn_offset' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='136' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='24'>
@@ -1044,10 +1044,10 @@
       </data-member>
     </class-decl>
     <class-decl name='__anonymous_struct__1' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='141' column='1' id='type-id-163'>
-      <data-member access='public' layout-offset-in-bits='40'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='__notaddress' type-id='type-id-80' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='142' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='24'>
         <var-decl name='addr' type-id='type-id-80' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='144' column='1'/>
       </data-member>
     </class-decl>
@@ -1066,13 +1066,13 @@
       </data-member>
     </union-decl>
     <class-decl name='__anonymous_struct__2' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='160' column='1' id='type-id-164'>
-      <data-member access='public' layout-offset-in-bits='12'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='length20' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='166' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='3'>
+      <data-member access='public' layout-offset-in-bits='4'>
         <var-decl name='offset' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='167' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='29'>
         <var-decl name='format' type-id='type-id-167' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='168' column='1'/>
       </data-member>
     </class-decl>
@@ -1085,18 +1085,18 @@
       <enumerator name='qm_fd_compound' value='1'/>
     </enum-decl>
     <class-decl name='__anonymous_struct__3' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='172' column='1' id='type-id-165'>
-      <data-member access='public' layout-offset-in-bits='3'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='length29' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='177' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='29'>
         <var-decl name='_format1' type-id='type-id-167' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='178' column='1'/>
       </data-member>
     </class-decl>
     <class-decl name='__anonymous_struct__4' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='182' column='1' id='type-id-166'>
-      <data-member access='public' layout-offset-in-bits='3'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='cong_weight' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='187' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='29'>
         <var-decl name='_format2' type-id='type-id-167' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='188' column='1'/>
       </data-member>
     </class-decl>
@@ -1215,7 +1215,7 @@
       <data-member access='public' layout-offset-in-bits='32'>
         <var-decl name='rc' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='332' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='32'>
+      <data-member access='public' layout-offset-in-bits='8'>
         <var-decl name='orp' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='333' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
@@ -1232,13 +1232,13 @@
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='verb' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='339' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='21'>
+      <data-member access='public' layout-offset-in-bits='8'>
         <var-decl name='portal' type-id='type-id-175' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='345' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='3'>
         <var-decl name='__reserved1' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='346' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='8'>
+      <data-member access='public' layout-offset-in-bits='6'>
         <var-decl name='colour' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='347' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='16'>
@@ -1247,7 +1247,7 @@
       <data-member access='public' layout-offset-in-bits='32'>
         <var-decl name='rc' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='350' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='32'>
+      <data-member access='public' layout-offset-in-bits='8'>
         <var-decl name='__reserved3' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='351' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
@@ -1371,10 +1371,10 @@
       <data-member access='public' layout-offset-in-bits='32'>
         <var-decl name='' type-id='type-id-191' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='460' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='15'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='__reserved2' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='476' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='48'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <var-decl name='ics_cred' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='477' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
@@ -1399,16 +1399,16 @@
       </data-member>
     </union-decl>
     <class-decl name='__anonymous_struct__8' size-in-bits='8' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='444' column='1' id='type-id-195'>
-      <data-member access='public' layout-offset-in-bits='6'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='olws' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='451' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='5'>
+      <data-member access='public' layout-offset-in-bits='2'>
         <var-decl name='oa' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='452' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='3'>
         <var-decl name='orprws' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='453' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='6'>
         <var-decl name='__reserved1' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='454' column='1'/>
       </data-member>
     </class-decl>
@@ -1421,10 +1421,10 @@
       </data-member>
     </union-decl>
     <class-decl name='__anonymous_struct__9' size-in-bits='16' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='462' column='1' id='type-id-196'>
-      <data-member access='public' layout-offset-in-bits='13'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='wq' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='467' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='3'>
         <var-decl name='channel' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='468' column='1'/>
       </data-member>
     </class-decl>
@@ -1440,21 +1440,21 @@
       </data-member>
     </union-decl>
     <class-decl name='qm_fqd_taildrop' size-in-bits='16' is-struct='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='418' column='1' id='type-id-197'>
-      <data-member access='public' layout-offset-in-bits='11'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='exp' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='424' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='3'>
+      <data-member access='public' layout-offset-in-bits='5'>
         <var-decl name='mant' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='425' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='13'>
         <var-decl name='__reserved1' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='426' column='1'/>
       </data-member>
     </class-decl>
     <class-decl name='qm_fqd_oac' size-in-bits='16' is-struct='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='429' column='1' id='type-id-194'>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='__reserved1' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='435' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='6'>
         <var-decl name='oac' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='436' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='8'>
@@ -1492,16 +1492,16 @@
       </data-member>
     </class-decl>
     <class-decl name='qm_fqd_stashing' size-in-bits='16' is-struct='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='401' column='1' id='type-id-200'>
-      <data-member access='public' layout-offset-in-bits='6'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='context_cl' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='411' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='4'>
+      <data-member access='public' layout-offset-in-bits='2'>
         <var-decl name='data_cl' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='412' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='4'>
         <var-decl name='annotation_cl' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='413' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='6'>
         <var-decl name='__reserved1' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='414' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='8'>
@@ -1625,19 +1625,19 @@
       </data-member>
     </union-decl>
     <class-decl name='__anonymous_struct__12' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='617' column='1' id='type-id-206'>
-      <data-member access='public' layout-offset-in-bits='26'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='Pn' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='625' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='20'>
+      <data-member access='public' layout-offset-in-bits='6'>
         <var-decl name='Sn' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='626' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='13'>
+      <data-member access='public' layout-offset-in-bits='12'>
         <var-decl name='SA' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='627' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='8'>
+      <data-member access='public' layout-offset-in-bits='19'>
         <var-decl name='Mn' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='628' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='24'>
         <var-decl name='MA' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='629' column='1'/>
       </data-member>
     </class-decl>
@@ -1679,13 +1679,13 @@
       </data-member>
     </union-decl>
     <class-decl name='__anonymous_struct__14' size-in-bits='16' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='644' column='1' id='type-id-210'>
-      <data-member access='public' layout-offset-in-bits='11'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='Tn' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='650' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='3'>
+      <data-member access='public' layout-offset-in-bits='5'>
         <var-decl name='TA' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='651' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='13'>
         <var-decl name='__reserved' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='652' column='1'/>
       </data-member>
     </class-decl>
@@ -1745,10 +1745,10 @@
       </data-member>
     </union-decl>
     <class-decl name='__anonymous_struct__15' size-in-bits='16' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='785' column='1' id='type-id-212'>
-      <data-member access='public' layout-offset-in-bits='13'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='__reserved1' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='790' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='3'>
         <var-decl name='id' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='791' column='1'/>
       </data-member>
     </class-decl>
@@ -1818,64 +1818,64 @@
       <data-member access='public' layout-offset-in-bits='16'>
         <var-decl name='__reserved2' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='883' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='18446744073709551600'>
+      <data-member access='public' layout-offset-in-bits='24'>
         <var-decl name='fqd_link' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='884' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='odp_seq' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='886' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='48'>
+      <data-member access='public' layout-offset-in-bits='14'>
         <var-decl name='__reserved3' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='887' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='orp_nesn' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='889' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='64'>
+      <data-member access='public' layout-offset-in-bits='14'>
         <var-decl name='__reserved4' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='890' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='orp_ea_hseq' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='892' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='80'>
+      <data-member access='public' layout-offset-in-bits='15'>
         <var-decl name='__reserved5' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='893' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='orp_ea_tseq' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='895' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='96'>
+      <data-member access='public' layout-offset-in-bits='15'>
         <var-decl name='__reserved6' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='896' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='112'>
         <var-decl name='__reserved7' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='898' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='18446744073709551600'>
+      <data-member access='public' layout-offset-in-bits='24'>
         <var-decl name='orp_ea_hptr' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='899' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='144'>
         <var-decl name='__reserved8' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='901' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='18446744073709551600'>
+      <data-member access='public' layout-offset-in-bits='24'>
         <var-decl name='orp_ea_tptr' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='902' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='176'>
         <var-decl name='__reserved9' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='904' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='18446744073709551600'>
+      <data-member access='public' layout-offset-in-bits='24'>
         <var-decl name='pfdr_hptr' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='905' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='208'>
         <var-decl name='__reserved10' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='907' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='18446744073709551600'>
+      <data-member access='public' layout-offset-in-bits='24'>
         <var-decl name='pfdr_tptr' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='908' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='240'>
         <var-decl name='__reserved11' type-id='type-id-131' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='910' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='7'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='is' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='911' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='280'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <var-decl name='__reserved12' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='912' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='288'>
@@ -1887,7 +1887,7 @@
       <data-member access='public' layout-offset-in-bits='336'>
         <var-decl name='__reserved13' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='915' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='18446744073709551600'>
+      <data-member access='public' layout-offset-in-bits='24'>
         <var-decl name='frm_cnt' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='916' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='368'>
@@ -1935,19 +1935,19 @@
       <data-member access='public' layout-offset-in-bits='216'>
         <var-decl name='__reserved2' type-id='type-id-125' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='937' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='18446744073709551608'>
+      <data-member access='public' layout-offset-in-bits='16'>
         <var-decl name='__reserved3' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='938' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='16'>
+      <data-member access='public' layout-offset-in-bits='8'>
         <var-decl name='i_bcnt_hi' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='939' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='272'>
         <var-decl name='i_bcnt_lo' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='940' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='18446744073709551608'>
+      <data-member access='public' layout-offset-in-bits='16'>
         <var-decl name='__reserved4' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='941' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='16'>
+      <data-member access='public' layout-offset-in-bits='8'>
         <var-decl name='a_bcnt_hi' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='942' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='336'>
@@ -2001,10 +2001,10 @@
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='i_bcnt_lo' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='961' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='24'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='i_bcnt_hi' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='962' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='32'>
+      <data-member access='public' layout-offset-in-bits='8'>
         <var-decl name='__reserved3' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='963' column='1'/>
       </data-member>
     </class-decl>
@@ -2020,10 +2020,10 @@
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='a_bcnt_lo' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='975' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='24'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='a_bcnt_hi' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='976' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='32'>
+      <data-member access='public' layout-offset-in-bits='8'>
         <var-decl name='__reserved4' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='977' column='1'/>
       </data-member>
     </class-decl>
@@ -2068,10 +2068,10 @@
       </data-member>
     </union-decl>
     <class-decl name='__anonymous_struct__18' size-in-bits='16' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='1000' column='1' id='type-id-231'>
-      <data-member access='public' layout-offset-in-bits='13'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='__reserved' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='1005' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='3'>
         <var-decl name='id' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='1006' column='1'/>
       </data-member>
     </class-decl>
@@ -2094,10 +2094,10 @@
       <data-member access='public' layout-offset-in-bits='368'>
         <var-decl name='cgr_groupid' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='1222' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='4'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='is_static' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='1223' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='376'>
+      <data-member access='public' layout-offset-in-bits='4'>
         <var-decl name='qp_initialized' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='1224' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
@@ -2186,22 +2186,22 @@
       </data-member>
     </union-decl>
     <class-decl name='__anonymous_struct__19' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_eventdev/rte_eventdev.h' line='1011' column='1' id='type-id-255'>
-      <data-member access='public' layout-offset-in-bits='12'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='flow_id' type-id='type-id-7' visibility='default' filepath='../../dpdk/lib/librte_eventdev/rte_eventdev.h' line='1012' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='4'>
+      <data-member access='public' layout-offset-in-bits='20'>
         <var-decl name='sub_event_type' type-id='type-id-7' visibility='default' filepath='../../dpdk/lib/librte_eventdev/rte_eventdev.h' line='1019' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='28'>
         <var-decl name='event_type' type-id='type-id-7' visibility='default' filepath='../../dpdk/lib/librte_eventdev/rte_eventdev.h' line='1023' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='6'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='op' type-id='type-id-14' visibility='default' filepath='../../dpdk/lib/librte_eventdev/rte_eventdev.h' line='1027' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2'>
         <var-decl name='rsvd' type-id='type-id-14' visibility='default' filepath='../../dpdk/lib/librte_eventdev/rte_eventdev.h' line='1033' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='32'>
+      <data-member access='public' layout-offset-in-bits='6'>
         <var-decl name='sched_type' type-id='type-id-14' visibility='default' filepath='../../dpdk/lib/librte_eventdev/rte_eventdev.h' line='1035' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='40'>
@@ -2347,22 +2347,22 @@
       </data-member>
     </union-decl>
     <class-decl name='__anonymous_struct__21' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='537' column='1' id='type-id-274'>
-      <data-member access='public' layout-offset-in-bits='28'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='l2_type' type-id='type-id-7' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='538' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='24'>
+      <data-member access='public' layout-offset-in-bits='4'>
         <var-decl name='l3_type' type-id='type-id-7' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='539' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='20'>
+      <data-member access='public' layout-offset-in-bits='8'>
         <var-decl name='l4_type' type-id='type-id-7' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='540' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='16'>
+      <data-member access='public' layout-offset-in-bits='12'>
         <var-decl name='tun_type' type-id='type-id-7' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='541' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='16'>
         <var-decl name='' type-id='type-id-275' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='543' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='4'>
+      <data-member access='public' layout-offset-in-bits='24'>
         <var-decl name='inner_l4_type' type-id='type-id-7' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='557' column='1'/>
       </data-member>
     </class-decl>
@@ -2375,10 +2375,10 @@
       </data-member>
     </union-decl>
     <class-decl name='__anonymous_struct__22' size-in-bits='8' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='550' column='1' id='type-id-276'>
-      <data-member access='public' layout-offset-in-bits='4'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='inner_l2_type' type-id='type-id-14' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='551' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='4'>
         <var-decl name='inner_l3_type' type-id='type-id-14' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='553' column='1'/>
       </data-member>
     </class-decl>
@@ -2667,22 +2667,22 @@
       </data-member>
     </union-decl>
     <class-decl name='__anonymous_struct__28' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='629' column='1' id='type-id-309'>
-      <data-member access='public' layout-offset-in-bits='57'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='l2_len' type-id='type-id-11' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='630' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='48'>
+      <data-member access='public' layout-offset-in-bits='7'>
         <var-decl name='l3_len' type-id='type-id-11' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='634' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='40'>
+      <data-member access='public' layout-offset-in-bits='16'>
         <var-decl name='l4_len' type-id='type-id-11' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='636' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='24'>
         <var-decl name='tso_segsz' type-id='type-id-11' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='638' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='15'>
+      <data-member access='public' layout-offset-in-bits='40'>
         <var-decl name='outer_l3_len' type-id='type-id-11' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='653' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='8'>
+      <data-member access='public' layout-offset-in-bits='49'>
         <var-decl name='outer_l2_len' type-id='type-id-11' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='655' column='1'/>
       </data-member>
     </class-decl>
@@ -3545,19 +3545,19 @@
       <data-member access='public' layout-offset-in-bits='33984'>
         <var-decl name='port_id' type-id='type-id-4' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev_core.h' line='852' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='7'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='promiscuous' type-id='type-id-14' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev_core.h' line='855' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='6'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <var-decl name='scattered_rx' type-id='type-id-14' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev_core.h' line='856' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='5'>
+      <data-member access='public' layout-offset-in-bits='2'>
         <var-decl name='all_multicast' type-id='type-id-14' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev_core.h' line='857' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='4'>
+      <data-member access='public' layout-offset-in-bits='3'>
         <var-decl name='dev_started' type-id='type-id-14' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev_core.h' line='858' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='3'>
+      <data-member access='public' layout-offset-in-bits='4'>
         <var-decl name='lro' type-id='type-id-14' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev_core.h' line='859' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='34008'>
@@ -3609,13 +3609,13 @@
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='link_speed' type-id='type-id-7' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev.h' line='309' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='15'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='link_duplex' type-id='type-id-4' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev.h' line='310' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='14'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <var-decl name='link_autoneg' type-id='type-id-4' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev.h' line='311' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='13'>
+      <data-member access='public' layout-offset-in-bits='2'>
         <var-decl name='link_status' type-id='type-id-4' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev.h' line='312' column='1'/>
       </data-member>
     </class-decl>
@@ -3692,13 +3692,13 @@
       <data-member access='public' layout-offset-in-bits='128'>
         <var-decl name='pvid' type-id='type-id-4' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev.h' line='802' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='7'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='hw_vlan_reject_tagged' type-id='type-id-14' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev.h' line='804' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='6'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <var-decl name='hw_vlan_reject_untagged' type-id='type-id-14' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev.h' line='806' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='5'>
+      <data-member access='public' layout-offset-in-bits='2'>
         <var-decl name='hw_vlan_insert_pvid' type-id='type-id-14' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev.h' line='808' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
@@ -3983,13 +3983,13 @@
       </data-member>
     </class-decl>
     <class-decl name='rte_intr_conf' size-in-bits='32' is-struct='yes' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev.h' line='1031' column='1' id='type-id-480'>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='lsc' type-id='type-id-7' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev.h' line='1033' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <var-decl name='rxq' type-id='type-id-7' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev.h' line='1035' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='29'>
+      <data-member access='public' layout-offset-in-bits='2'>
         <var-decl name='rmv' type-id='type-id-7' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev.h' line='1037' column='1'/>
       </data-member>
     </class-decl>

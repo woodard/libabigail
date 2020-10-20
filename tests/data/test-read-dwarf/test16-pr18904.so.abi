@@ -2800,46 +2800,46 @@
     <union-decl name='varDescFlags' size-in-bits='32' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='217' column='1' id='type-id-239'>
       <member-type access='private'>
         <class-decl name='__anonymous_struct__' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='218' column='1' id='type-id-240'>
-          <data-member access='public' layout-offset-in-bits='31'>
+          <data-member access='public' layout-offset-in-bits='0'>
             <var-decl name='is_static' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='220' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='30'>
+          <data-member access='public' layout-offset-in-bits='1'>
             <var-decl name='is_static_dstn' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='222' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='29'>
+          <data-member access='public' layout-offset-in-bits='2'>
             <var-decl name='has_length' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='224' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='28'>
+          <data-member access='public' layout-offset-in-bits='3'>
             <var-decl name='is_stack_buf' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='226' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='27'>
+          <data-member access='public' layout-offset-in-bits='4'>
             <var-decl name='targetptr' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='228' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='26'>
+          <data-member access='public' layout-offset-in-bits='5'>
             <var-decl name='preallocated' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='230' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='25'>
+          <data-member access='public' layout-offset-in-bits='6'>
             <var-decl name='is_pointer' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='232' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='24'>
+          <data-member access='public' layout-offset-in-bits='7'>
             <var-decl name='sink_addr' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='235' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='23'>
+          <data-member access='public' layout-offset-in-bits='8'>
             <var-decl name='alloc_disp' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='237' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='22'>
+          <data-member access='public' layout-offset-in-bits='9'>
             <var-decl name='is_noncont_src' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='239' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='21'>
+          <data-member access='public' layout-offset-in-bits='10'>
             <var-decl name='is_noncont_dst' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='241' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='20'>
+          <data-member access='public' layout-offset-in-bits='11'>
             <var-decl name='always_copy' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='244' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='19'>
+          <data-member access='public' layout-offset-in-bits='12'>
             <var-decl name='always_delete' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='246' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='18'>
+          <data-member access='public' layout-offset-in-bits='13'>
             <var-decl name='pin' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='248' column='1'/>
           </data-member>
         </class-decl>
@@ -3736,10 +3736,10 @@
         <union-decl name='__anonymous_union__' size-in-bits='8' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='256' column='1' id='type-id-287'>
           <member-type access='private'>
             <class-decl name='__anonymous_struct__' size-in-bits='8' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='257' column='1' id='type-id-288'>
-              <data-member access='public' layout-offset-in-bits='4'>
+              <data-member access='public' layout-offset-in-bits='0'>
                 <var-decl name='dst' type-id='type-id-20' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='258' column='1'/>
               </data-member>
-              <data-member access='public' layout-offset-in-bits='0'>
+              <data-member access='public' layout-offset-in-bits='4'>
                 <var-decl name='src' type-id='type-id-20' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='259' column='1'/>
               </data-member>
             </class-decl>
@@ -3756,10 +3756,10 @@
         <union-decl name='__anonymous_union__1' size-in-bits='8' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='265' column='1' id='type-id-289'>
           <member-type access='private'>
             <class-decl name='__anonymous_struct__' size-in-bits='8' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='266' column='1' id='type-id-290'>
-              <data-member access='public' layout-offset-in-bits='7'>
+              <data-member access='public' layout-offset-in-bits='0'>
                 <var-decl name='in' type-id='type-id-20' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='267' column='1'/>
               </data-member>
-              <data-member access='public' layout-offset-in-bits='6'>
+              <data-member access='public' layout-offset-in-bits='1'>
                 <var-decl name='out' type-id='type-id-20' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='268' column='1'/>
               </data-member>
             </class-decl>
@@ -3843,20 +3843,20 @@
     <union-decl name='OffloadFlags' size-in-bits='32' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='160' column='1' id='type-id-276'>
       <member-type access='private'>
         <class-decl name='__anonymous_struct__' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='162' column='1' id='type-id-294'>
-          <data-member access='public' layout-offset-in-bits='31'>
+          <data-member access='public' layout-offset-in-bits='0'>
             <var-decl name='fortran_traceback' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='163' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='30'>
+          <data-member access='public' layout-offset-in-bits='1'>
             <var-decl name='omp_async' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='164' column='1'/>
           </data-member>
         </class-decl>
       </member-type>
       <member-type access='private'>
         <class-decl name='__anonymous_struct__1' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='162' column='1' id='type-id-294'>
-          <data-member access='public' layout-offset-in-bits='31'>
+          <data-member access='public' layout-offset-in-bits='0'>
             <var-decl name='fortran_traceback' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='163' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='30'>
+          <data-member access='public' layout-offset-in-bits='1'>
             <var-decl name='omp_async' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='164' column='1'/>
           </data-member>
         </class-decl>

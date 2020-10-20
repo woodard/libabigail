@@ -166,28 +166,28 @@
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='name' type-id='type-id-23' visibility='default' filepath='./gdbmdefs.h' line='177' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='read_write' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='180' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='29'>
+      <data-member access='public' layout-offset-in-bits='2'>
         <var-decl name='fast_write' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='183' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='28'>
+      <data-member access='public' layout-offset-in-bits='3'>
         <var-decl name='central_free' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='186' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='27'>
+      <data-member access='public' layout-offset-in-bits='4'>
         <var-decl name='coalesce_blocks' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='189' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='26'>
+      <data-member access='public' layout-offset-in-bits='5'>
         <var-decl name='file_locking' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='192' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='25'>
+      <data-member access='public' layout-offset-in-bits='6'>
         <var-decl name='memory_mapping' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='195' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='24'>
+      <data-member access='public' layout-offset-in-bits='7'>
         <var-decl name='cloexec' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='198' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='23'>
+      <data-member access='public' layout-offset-in-bits='8'>
         <var-decl name='need_recovery' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='201' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='96'>
@@ -232,16 +232,16 @@
       <data-member access='public' layout-offset-in-bits='896'>
         <var-decl name='cache_entry' type-id='type-id-13' visibility='default' filepath='./gdbmdefs.h' line='239' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='header_changed' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='243' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <var-decl name='directory_changed' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='244' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='29'>
+      <data-member access='public' layout-offset-in-bits='2'>
         <var-decl name='bucket_changed' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='245' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='28'>
+      <data-member access='public' layout-offset-in-bits='3'>
         <var-decl name='second_changed' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='246' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1024'>
@@ -509,28 +509,28 @@
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='name' type-id='type-id-23' visibility='default' filepath='./gdbmdefs.h' line='177' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='read_write' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='180' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='29'>
+      <data-member access='public' layout-offset-in-bits='2'>
         <var-decl name='fast_write' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='183' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='28'>
+      <data-member access='public' layout-offset-in-bits='3'>
         <var-decl name='central_free' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='186' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='27'>
+      <data-member access='public' layout-offset-in-bits='4'>
         <var-decl name='coalesce_blocks' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='189' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='26'>
+      <data-member access='public' layout-offset-in-bits='5'>
         <var-decl name='file_locking' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='192' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='25'>
+      <data-member access='public' layout-offset-in-bits='6'>
         <var-decl name='memory_mapping' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='195' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='24'>
+      <data-member access='public' layout-offset-in-bits='7'>
         <var-decl name='cloexec' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='198' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='23'>
+      <data-member access='public' layout-offset-in-bits='8'>
         <var-decl name='need_recovery' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='201' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='96'>
@@ -575,16 +575,16 @@
       <data-member access='public' layout-offset-in-bits='896'>
         <var-decl name='cache_entry' type-id='type-id-13' visibility='default' filepath='./gdbmdefs.h' line='239' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='header_changed' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='243' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <var-decl name='directory_changed' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='244' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='29'>
+      <data-member access='public' layout-offset-in-bits='2'>
         <var-decl name='bucket_changed' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='245' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='28'>
+      <data-member access='public' layout-offset-in-bits='3'>
         <var-decl name='second_changed' type-id='type-id-24' visibility='default' filepath='./gdbmdefs.h' line='246' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1024'>

@@ -1806,16 +1806,16 @@
         <data-member access='public' layout-offset-in-bits='256'>
           <var-decl name='objects' type-id='type-id-58' visibility='default' filepath='src/span.h' line='50' column='1'/>
         </data-member>
-        <data-member access='public' layout-offset-in-bits='16'>
+        <data-member access='public' layout-offset-in-bits='0'>
           <var-decl name='refcount' type-id='type-id-64' visibility='default' filepath='src/span.h' line='51' column='1'/>
         </data-member>
-        <data-member access='public' layout-offset-in-bits='8'>
+        <data-member access='public' layout-offset-in-bits='16'>
           <var-decl name='sizeclass' type-id='type-id-64' visibility='default' filepath='src/span.h' line='52' column='1'/>
         </data-member>
-        <data-member access='public' layout-offset-in-bits='6'>
+        <data-member access='public' layout-offset-in-bits='24'>
           <var-decl name='location' type-id='type-id-64' visibility='default' filepath='src/span.h' line='53' column='1'/>
         </data-member>
-        <data-member access='public' layout-offset-in-bits='5'>
+        <data-member access='public' layout-offset-in-bits='26'>
           <var-decl name='sample' type-id='type-id-64' visibility='default' filepath='src/span.h' line='54' column='1'/>
         </data-member>
       </class-decl>
@@ -15168,16 +15168,16 @@
         <data-member access='public' layout-offset-in-bits='256'>
           <var-decl name='objects' type-id='type-id-58' visibility='default' filepath='src/span.h' line='50' column='1'/>
         </data-member>
-        <data-member access='public' layout-offset-in-bits='16'>
+        <data-member access='public' layout-offset-in-bits='0'>
           <var-decl name='refcount' type-id='type-id-64' visibility='default' filepath='src/span.h' line='51' column='1'/>
         </data-member>
-        <data-member access='public' layout-offset-in-bits='8'>
+        <data-member access='public' layout-offset-in-bits='16'>
           <var-decl name='sizeclass' type-id='type-id-64' visibility='default' filepath='src/span.h' line='52' column='1'/>
         </data-member>
-        <data-member access='public' layout-offset-in-bits='6'>
+        <data-member access='public' layout-offset-in-bits='24'>
           <var-decl name='location' type-id='type-id-64' visibility='default' filepath='src/span.h' line='53' column='1'/>
         </data-member>
-        <data-member access='public' layout-offset-in-bits='5'>
+        <data-member access='public' layout-offset-in-bits='26'>
           <var-decl name='sample' type-id='type-id-64' visibility='default' filepath='src/span.h' line='54' column='1'/>
         </data-member>
       </class-decl>

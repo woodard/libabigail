@@ -16877,7 +16877,7 @@
             <!-- unsigned short int hb_ot_map_t::lookup_map_t::index -->
             <var-decl name='index' type-id='type-id-89' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-map-private.hh' line='60' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='15'>
+          <data-member access='public' layout-offset-in-bits='0'>
             <!-- unsigned short int hb_ot_map_t::lookup_map_t::auto_zwj -->
             <var-decl name='auto_zwj' type-id='type-id-89' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-map-private.hh' line='61' column='1'/>
           </data-member>
@@ -16914,11 +16914,11 @@
             <!-- hb_mask_t hb_ot_map_t::feature_map_t::_1_mask -->
             <var-decl name='_1_mask' type-id='type-id-133' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-map-private.hh' line='51' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='31'>
+          <data-member access='public' layout-offset-in-bits='0'>
             <!-- unsigned int hb_ot_map_t::feature_map_t::needs_fallback -->
             <var-decl name='needs_fallback' type-id='type-id-12' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-map-private.hh' line='52' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='30'>
+          <data-member access='public' layout-offset-in-bits='1'>
             <!-- unsigned int hb_ot_map_t::feature_map_t::auto_zwj -->
             <var-decl name='auto_zwj' type-id='type-id-12' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-map-private.hh' line='53' column='1'/>
           </data-member>
@@ -17098,15 +17098,15 @@
         <!-- hb_mask_t hb_ot_shape_plan_t::kern_mask -->
         <var-decl name='kern_mask' type-id='type-id-133' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-private.hh' line='44' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <!-- unsigned int hb_ot_shape_plan_t::has_frac -->
         <var-decl name='has_frac' type-id='type-id-12' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-private.hh' line='45' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <!-- unsigned int hb_ot_shape_plan_t::has_kern -->
         <var-decl name='has_kern' type-id='type-id-12' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-private.hh' line='46' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='29'>
+      <data-member access='public' layout-offset-in-bits='2'>
         <!-- unsigned int hb_ot_shape_plan_t::has_mark -->
         <var-decl name='has_mark' type-id='type-id-12' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-private.hh' line='47' column='1'/>
       </data-member>

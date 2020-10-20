@@ -268,16 +268,16 @@
       <data-member access='public' layout-offset-in-bits='96'>
         <var-decl name='dummy3' type-id='type-id-2' visibility='default' filepath='../dbus/dbus-string.h' line='50' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='dummy_bit1' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-string.h' line='51' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <var-decl name='dummy_bit2' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-string.h' line='52' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='29'>
+      <data-member access='public' layout-offset-in-bits='2'>
         <var-decl name='dummy_bit3' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-string.h' line='53' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='26'>
+      <data-member access='public' layout-offset-in-bits='3'>
         <var-decl name='dummy_bits' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-string.h' line='54' column='1'/>
       </data-member>
     </class-decl>
@@ -301,19 +301,19 @@
       <data-member access='public' layout-offset-in-bits='64'>
         <var-decl name='message' type-id='type-id-15' visibility='default' filepath='../dbus/dbus-errors.h' line='51' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='dummy1' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-errors.h' line='53' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <var-decl name='dummy2' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-errors.h' line='54' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='29'>
+      <data-member access='public' layout-offset-in-bits='2'>
         <var-decl name='dummy3' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-errors.h' line='55' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='28'>
+      <data-member access='public' layout-offset-in-bits='3'>
         <var-decl name='dummy4' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-errors.h' line='56' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='27'>
+      <data-member access='public' layout-offset-in-bits='4'>
         <var-decl name='dummy5' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-errors.h' line='57' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
@@ -463,22 +463,22 @@
       <data-member access='public' layout-offset-in-bits='2016'>
         <var-decl name='io_path_acquired' type-id='type-id-17' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='313' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='shareable' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='315' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <var-decl name='exit_on_disconnect' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='317' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='29'>
+      <data-member access='public' layout-offset-in-bits='2'>
         <var-decl name='route_peer_messages' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='319' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='28'>
+      <data-member access='public' layout-offset-in-bits='3'>
         <var-decl name='disconnected_message_arrived' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='321' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='27'>
+      <data-member access='public' layout-offset-in-bits='4'>
         <var-decl name='disconnected_message_processed' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='325' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='26'>
+      <data-member access='public' layout-offset-in-bits='5'>
         <var-decl name='have_connection_lock' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='330' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2080'>
@@ -633,10 +633,10 @@
       <data-member access='public' layout-offset-in-bits='640'>
         <var-decl name='body' type-id='type-id-7' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='105' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='locked' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='107' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <var-decl name='in_cache' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='110' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='896'>
@@ -645,7 +645,7 @@
       <data-member access='public' layout-offset-in-bits='960'>
         <var-decl name='size_counter_delta' type-id='type-id-80' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='114' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='11'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='changed_stamp' type-id='type-id-16' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='116' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1088'>
@@ -692,10 +692,10 @@
       <data-member access='public' layout-offset-in-bits='192'>
         <var-decl name='fields' type-id='type-id-84' visibility='default' filepath='../dbus/dbus-marshal-header.h' line='54' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='29'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='padding' type-id='type-id-16' visibility='default' filepath='../dbus/dbus-marshal-header.h' line='58' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='21'>
+      <data-member access='public' layout-offset-in-bits='3'>
         <var-decl name='byte_order' type-id='type-id-16' visibility='default' filepath='../dbus/dbus-marshal-header.h' line='59' column='1'/>
       </data-member>
     </class-decl>
@@ -743,10 +743,10 @@
       <data-member access='public' layout-offset-in-bits='512'>
         <var-decl name='reply_serial' type-id='type-id-16' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-pending-call.c' line='76' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='completed' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-pending-call.c' line='78' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <var-decl name='timeout_added' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-pending-call.c' line='79' column='1'/>
       </data-member>
     </class-decl>
@@ -773,7 +773,7 @@
       <data-member access='public' layout-offset-in-bits='320'>
         <var-decl name='free_data_function' type-id='type-id-38' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-timeout.c' line='50' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='enabled' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-timeout.c' line='51' column='1'/>
       </data-member>
     </class-decl>
@@ -804,10 +804,10 @@
       <data-member access='public' layout-offset-in-bits='384'>
         <var-decl name='free_data_function' type-id='type-id-38' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-watch.c' line='51' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='enabled' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-watch.c' line='52' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <var-decl name='oom_last_time' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-watch.c' line='53' column='1'/>
       </data-member>
     </class-decl>
@@ -834,10 +834,10 @@
       <data-member access='public' layout-offset-in-bits='640'>
         <var-decl name='body' type-id='type-id-7' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='105' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='locked' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='107' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <var-decl name='in_cache' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='110' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='896'>
@@ -846,7 +846,7 @@
       <data-member access='public' layout-offset-in-bits='960'>
         <var-decl name='size_counter_delta' type-id='type-id-80' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='114' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='11'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='changed_stamp' type-id='type-id-16' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='116' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1088'>
@@ -876,10 +876,10 @@
       <data-member access='public' layout-offset-in-bits='192'>
         <var-decl name='fields' type-id='type-id-84' visibility='default' filepath='../dbus/dbus-marshal-header.h' line='54' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='29'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='padding' type-id='type-id-16' visibility='default' filepath='../dbus/dbus-marshal-header.h' line='58' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='21'>
+      <data-member access='public' layout-offset-in-bits='3'>
         <var-decl name='byte_order' type-id='type-id-16' visibility='default' filepath='../dbus/dbus-marshal-header.h' line='59' column='1'/>
       </data-member>
     </class-decl>
@@ -2030,10 +2030,10 @@
       <data-member access='public' layout-offset-in-bits='1088'>
         <var-decl name='auth_mechanisms' type-id='type-id-127' visibility='default' filepath='../dbus/dbus-server-protected.h' line='85' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='disconnected' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-server-protected.h' line='87' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <var-decl name='have_server_lock' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-server-protected.h' line='90' column='1'/>
       </data-member>
     </class-decl>

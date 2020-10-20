@@ -1323,15 +1323,15 @@
         <!-- void* obstack::extra_arg -->
         <var-decl name='extra_arg' type-id='type-id-14' visibility='default' filepath='../.././gcc/../include/obstack.h' line='178' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <!-- unsigned int obstack::use_extra_arg -->
         <var-decl name='use_extra_arg' type-id='type-id-13' visibility='default' filepath='../.././gcc/../include/obstack.h' line='179' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <!-- unsigned int obstack::maybe_empty_object -->
         <var-decl name='maybe_empty_object' type-id='type-id-13' visibility='default' filepath='../.././gcc/../include/obstack.h' line='180' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='29'>
+      <data-member access='public' layout-offset-in-bits='2'>
         <!-- unsigned int obstack::alloc_failed -->
         <var-decl name='alloc_failed' type-id='type-id-13' visibility='default' filepath='../.././gcc/../include/obstack.h' line='184' column='1'/>
       </data-member>
@@ -1453,11 +1453,11 @@
         <!-- ht_identifier cpp_hashnode::ident -->
         <var-decl name='ident' type-id='type-id-79' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='677' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <!-- unsigned int cpp_hashnode::is_directive -->
         <var-decl name='is_directive' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='678' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='24'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <!-- unsigned int cpp_hashnode::directive_index -->
         <var-decl name='directive_index' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='679' column='1'/>
       </data-member>
@@ -1465,11 +1465,11 @@
         <!-- unsigned char cpp_hashnode::rid_code -->
         <var-decl name='rid_code' type-id='type-id-27' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='682' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='10'>
+      <data-member access='public' layout-offset-in-bits='16'>
         <!-- node_type cpp_hashnode::type -->
         <var-decl name='type' type-id='type-id-80' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='683' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='128'>
+      <data-member access='public' layout-offset-in-bits='22'>
         <!-- unsigned int cpp_hashnode::flags -->
         <var-decl name='flags' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='684' column='1'/>
       </data-member>
@@ -1638,7 +1638,7 @@
         <!-- source_location line_map::start_location -->
         <var-decl name='start_location' type-id='type-id-103' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='205' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='24'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <!-- lc_reason line_map::reason -->
         <var-decl name='reason' type-id='type-id-108' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='208' column='1'/>
       </data-member>
@@ -1712,7 +1712,7 @@
         <!-- unsigned char line_map_ordinary::sysp -->
         <var-decl name='sysp' type-id='type-id-27' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='84' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='16'>
+      <data-member access='public' layout-offset-in-bits='8'>
         <!-- unsigned int line_map_ordinary::column_bits -->
         <var-decl name='column_bits' type-id='type-id-13' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='87' column='1'/>
       </data-member>
@@ -2745,27 +2745,27 @@
         <!-- unsigned short int cpp_macro::paramc -->
         <var-decl name='paramc' type-id='type-id-29' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='60' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='15'>
+      <data-member access='public' layout-offset-in-bits='16'>
         <!-- unsigned int cpp_macro::fun_like -->
         <var-decl name='fun_like' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='63' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='14'>
+      <data-member access='public' layout-offset-in-bits='17'>
         <!-- unsigned int cpp_macro::variadic -->
         <var-decl name='variadic' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='66' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='13'>
+      <data-member access='public' layout-offset-in-bits='18'>
         <!-- unsigned int cpp_macro::syshdr -->
         <var-decl name='syshdr' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='69' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='12'>
+      <data-member access='public' layout-offset-in-bits='19'>
         <!-- unsigned int cpp_macro::used -->
         <var-decl name='used' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='72' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='11'>
+      <data-member access='public' layout-offset-in-bits='20'>
         <!-- unsigned int cpp_macro::traditional -->
         <var-decl name='traditional' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='75' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='10'>
+      <data-member access='public' layout-offset-in-bits='21'>
         <!-- unsigned int cpp_macro::extra_tokens -->
         <var-decl name='extra_tokens' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='80' column='1'/>
       </data-member>
@@ -2858,7 +2858,7 @@
         <!-- source_location cpp_token::src_loc -->
         <var-decl name='src_loc' type-id='type-id-103' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='224' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='24'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <!-- cpp_ttype cpp_token::type -->
         <var-decl name='type' type-id='type-id-181' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='225' column='1'/>
       </data-member>
@@ -6433,15 +6433,15 @@
         <!-- bool cpp_buffer::need_line -->
         <var-decl name='need_line' type-id='type-id-1' visibility='default' filepath='../.././libcpp/internal.h' line='326' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='23'>
+      <data-member access='public' layout-offset-in-bits='8'>
         <!-- unsigned int cpp_buffer::warned_cplusplus_comments -->
         <var-decl name='warned_cplusplus_comments' type-id='type-id-13' visibility='default' filepath='../.././libcpp/internal.h' line='332' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='22'>
+      <data-member access='public' layout-offset-in-bits='9'>
         <!-- unsigned int cpp_buffer::from_stage3 -->
         <var-decl name='from_stage3' type-id='type-id-13' visibility='default' filepath='../.././libcpp/internal.h' line='337' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='21'>
+      <data-member access='public' layout-offset-in-bits='10'>
         <!-- unsigned int cpp_buffer::return_at_eof -->
         <var-decl name='return_at_eof' type-id='type-id-13' visibility='default' filepath='../.././libcpp/internal.h' line='342' column='1'/>
       </data-member>
@@ -6478,15 +6478,15 @@
         <!-- source_location def_pragma_macro::line -->
         <var-decl name='line' type-id='type-id-103' visibility='default' filepath='../.././libcpp/internal.h' line='367' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <!-- unsigned int def_pragma_macro::syshdr -->
         <var-decl name='syshdr' type-id='type-id-13' visibility='default' filepath='../.././libcpp/internal.h' line='369' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <!-- unsigned int def_pragma_macro::used -->
         <var-decl name='used' type-id='type-id-13' visibility='default' filepath='../.././libcpp/internal.h' line='371' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='29'>
+      <data-member access='public' layout-offset-in-bits='2'>
         <!-- unsigned int def_pragma_macro::is_undef -->
         <var-decl name='is_undef' type-id='type-id-13' visibility='default' filepath='../.././libcpp/internal.h' line='374' column='1'/>
       </data-member>
@@ -8237,7 +8237,7 @@
         <!-- source_location cpp_token::src_loc -->
         <var-decl name='src_loc' type-id='type-id-103' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='224' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='24'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <!-- cpp_ttype cpp_token::type -->
         <var-decl name='type' type-id='type-id-181' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='225' column='1'/>
       </data-member>
@@ -8346,27 +8346,27 @@
         <!-- unsigned short int cpp_macro::paramc -->
         <var-decl name='paramc' type-id='type-id-29' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='60' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='15'>
+      <data-member access='public' layout-offset-in-bits='16'>
         <!-- unsigned int cpp_macro::fun_like -->
         <var-decl name='fun_like' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='63' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='14'>
+      <data-member access='public' layout-offset-in-bits='17'>
         <!-- unsigned int cpp_macro::variadic -->
         <var-decl name='variadic' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='66' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='13'>
+      <data-member access='public' layout-offset-in-bits='18'>
         <!-- unsigned int cpp_macro::syshdr -->
         <var-decl name='syshdr' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='69' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='12'>
+      <data-member access='public' layout-offset-in-bits='19'>
         <!-- unsigned int cpp_macro::used -->
         <var-decl name='used' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='72' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='11'>
+      <data-member access='public' layout-offset-in-bits='20'>
         <!-- unsigned int cpp_macro::traditional -->
         <var-decl name='traditional' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='75' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='10'>
+      <data-member access='public' layout-offset-in-bits='21'>
         <!-- unsigned int cpp_macro::extra_tokens -->
         <var-decl name='extra_tokens' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='80' column='1'/>
       </data-member>
@@ -9908,15 +9908,15 @@
         <!-- bool cpp_buffer::need_line -->
         <var-decl name='need_line' type-id='type-id-1' visibility='default' filepath='../.././libcpp/internal.h' line='326' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='23'>
+      <data-member access='public' layout-offset-in-bits='8'>
         <!-- unsigned int cpp_buffer::warned_cplusplus_comments -->
         <var-decl name='warned_cplusplus_comments' type-id='type-id-13' visibility='default' filepath='../.././libcpp/internal.h' line='332' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='22'>
+      <data-member access='public' layout-offset-in-bits='9'>
         <!-- unsigned int cpp_buffer::from_stage3 -->
         <var-decl name='from_stage3' type-id='type-id-13' visibility='default' filepath='../.././libcpp/internal.h' line='337' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='21'>
+      <data-member access='public' layout-offset-in-bits='10'>
         <!-- unsigned int cpp_buffer::return_at_eof -->
         <var-decl name='return_at_eof' type-id='type-id-13' visibility='default' filepath='../.././libcpp/internal.h' line='342' column='1'/>
       </data-member>
@@ -10045,15 +10045,15 @@
         <!-- source_location def_pragma_macro::line -->
         <var-decl name='line' type-id='type-id-103' visibility='default' filepath='../.././libcpp/internal.h' line='367' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <!-- unsigned int def_pragma_macro::syshdr -->
         <var-decl name='syshdr' type-id='type-id-13' visibility='default' filepath='../.././libcpp/internal.h' line='369' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <!-- unsigned int def_pragma_macro::used -->
         <var-decl name='used' type-id='type-id-13' visibility='default' filepath='../.././libcpp/internal.h' line='371' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='29'>
+      <data-member access='public' layout-offset-in-bits='2'>
         <!-- unsigned int def_pragma_macro::is_undef -->
         <var-decl name='is_undef' type-id='type-id-13' visibility='default' filepath='../.././libcpp/internal.h' line='374' column='1'/>
       </data-member>
@@ -12659,26 +12659,26 @@
     </union-decl>
     <!-- struct {unsigned int __w_termsig; unsigned int __w_coredump; unsigned int __w_retcode;} -->
     <class-decl name='__anonymous_struct__' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/waitstatus.h' line='70' column='1' id='type-id-502'>
-      <data-member access='public' layout-offset-in-bits='25'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <!-- unsigned int __w_termsig -->
         <var-decl name='__w_termsig' type-id='type-id-13' visibility='default' filepath='/usr/include/bits/waitstatus.h' line='73' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='24'>
+      <data-member access='public' layout-offset-in-bits='7'>
         <!-- unsigned int __w_coredump -->
         <var-decl name='__w_coredump' type-id='type-id-13' visibility='default' filepath='/usr/include/bits/waitstatus.h' line='74' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='16'>
+      <data-member access='public' layout-offset-in-bits='8'>
         <!-- unsigned int __w_retcode -->
         <var-decl name='__w_retcode' type-id='type-id-13' visibility='default' filepath='/usr/include/bits/waitstatus.h' line='75' column='1'/>
       </data-member>
     </class-decl>
     <!-- struct {unsigned int __w_stopval; unsigned int __w_stopsig;} -->
     <class-decl name='__anonymous_struct__1' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/waitstatus.h' line='85' column='1' id='type-id-503'>
-      <data-member access='public' layout-offset-in-bits='24'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <!-- unsigned int __w_stopval -->
         <var-decl name='__w_stopval' type-id='type-id-13' visibility='default' filepath='/usr/include/bits/waitstatus.h' line='88' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='16'>
+      <data-member access='public' layout-offset-in-bits='8'>
         <!-- unsigned int __w_stopsig -->
         <var-decl name='__w_stopsig' type-id='type-id-13' visibility='default' filepath='/usr/include/bits/waitstatus.h' line='89' column='1'/>
       </data-member>
