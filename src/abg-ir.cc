@@ -6008,9 +6008,9 @@ scope_decl::get_sorted_canonical_types() const
 	priv_->sorted_canonical_types_.push_back(*e);
 
       type_topo_comp comp;
-      std::sort(priv_->sorted_canonical_types_.begin(),
-		priv_->sorted_canonical_types_.end(),
-		comp);
+      std::stable_sort(priv_->sorted_canonical_types_.begin(),
+		       priv_->sorted_canonical_types_.end(),
+		       comp);
     }
   return priv_->sorted_canonical_types_;
 }
