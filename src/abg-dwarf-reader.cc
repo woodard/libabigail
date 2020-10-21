@@ -12739,7 +12739,8 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
   // unit.  That is, it's going to be the union of all the translation
   // units of the same path.
   {
-    string abs_path = compilation_dir + "/" + path;
+    const string& abs_path =
+      compilation_dir.empty() ? path : compilation_dir + "/" + path;
     result = ctxt.current_corpus()->find_translation_unit(abs_path);
   }
 
