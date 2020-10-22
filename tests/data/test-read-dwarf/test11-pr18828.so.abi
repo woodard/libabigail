@@ -1,4 +1,4 @@
-<abi-corpus path='data/test-read-dwarf/test11-pr18828.so'>
+<abi-corpus version='2.0' path='data/test-read-dwarf/test11-pr18828.so'>
   <elf-needed>
     <dependency name='build/debug/mongo/db/libserver_parameters.so'/>
     <dependency name='build/debug/mongo/libbase.so'/>
@@ -633,7 +633,7 @@
     <elf-symbol name='_ZTVN5mongo23ExportedServerParameterIiEE' size='80' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZTVN5mongo36ExportedScramIterationCountParameterE' size='80' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
-  <abi-instr version='1.0' address-size='64' path='src/mongo/db/auth/sasl_options.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/mongo/db/auth/sasl_options.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <type-decl name='bool' size-in-bits='8' id='type-id-1'/>
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='112' id='type-id-2'>
       <subrange length='14' type-id='type-id-3' id='type-id-4'/>

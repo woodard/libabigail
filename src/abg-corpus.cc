@@ -466,7 +466,10 @@ corpus::priv::~priv()
 ///
 /// @param path the path to the file containing the ABI corpus.
 corpus::corpus(ir::environment* env, const string& path)
-{priv_.reset(new priv(path, env));}
+{
+  priv_.reset(new priv(path, env));
+  init_format_version();
+}
 
 /// Getter of the enviroment of the corpus.
 ///
@@ -486,8 +489,11 @@ corpus::get_environment()
 ///
 /// @param e the new environment.
 void
-corpus::set_environment(environment* e) const
-{priv_->env = e;}
+corpus::set_environment(environment* e)
+{
+  priv_->env = e;
+  init_format_version();
+}
 
 /// Add a translation unit to the current ABI Corpus. Next time
 /// corpus::save is called, all the translation unit that got added to
@@ -692,6 +698,23 @@ void
 corpus::set_group(corpus_group* g)
 {priv_->group = g;}
 
+/// Initialize the abixml serialization format version number of the
+/// corpus.
+///
+/// This function sets the format version number ot the default one
+/// supported by the current version of Libabigail.
+void
+corpus::init_format_version()
+{
+  if (priv_->env)
+    {
+      set_format_major_version_number
+	(priv_->env->get_config().get_format_major_version_number());
+      set_format_minor_version_number
+	(priv_->env->get_config().get_format_minor_version_number());
+    }
+}
+
 /// Getter for the origin of the corpus.
 ///
 /// @return the origin of the corpus.
@@ -705,6 +728,40 @@ corpus::get_origin() const
 void
 corpus::set_origin(origin o)
 {priv_->origin_ = o;}
+
+/// Getter of the major version number of the abixml serialization
+/// format.
+///
+/// @return the major version number of the abixml format.
+string&
+corpus::get_format_major_version_number() const
+{return priv_->format_major_version_number_;}
+
+/// Setter of the major version number of the abixml serialization
+/// format.
+///
+/// @param maj the new major version numberof the abixml format.
+void
+corpus::set_format_major_version_number(const string& maj)
+{priv_->format_major_version_number_ = maj;}
+
+/// Getter of the minor version number of the abixml serialization
+/// format.
+///
+/// @return the minor version number of the abixml serialization
+/// format.
+string&
+corpus::get_format_minor_version_number() const
+{return priv_->format_minor_version_number_;}
+
+/// Setter of the minor version number of the abixml serialization
+/// format.
+///
+/// @param min the new minor version number of the abixml
+/// serialization format.
+void
+corpus::set_format_minor_version_number(const string& min)
+{priv_->format_minor_version_number_ = min;}
 
 /// Get the file path associated to the corpus file.
 ///

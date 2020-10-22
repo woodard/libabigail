@@ -1,4 +1,4 @@
-<abi-corpus path='/home/dodji/git/libabigail/fixes/tests/data/test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1' architecture='elf-amd-x86_64' soname='libvtkIOSQL-6.1.so.1'>
+<abi-corpus version='2.0' path='test0-pr19026-libvtkIOSQL-6.1.so.1' architecture='elf-amd-x86_64' soname='libvtkIOSQL-6.1.so.1'>
   <elf-needed>
     <dependency name='libvtkIOCore-6.1.so.1'/>
     <dependency name='libvtksys-6.1.so.1'/>
@@ -321,7 +321,7 @@
     <elf-symbol name='_ZTV24vtkTableToDatabaseWriter' size='584' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZTV25vtkSQLDatabaseTableSource' size='632' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
-  <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkDatabaseToTableReader.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkDatabaseToTableReader.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
     <type-decl name='bool' size-in-bits='8' id='type-id-1'/>
     <type-decl name='char' size-in-bits='8' id='type-id-2'/>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='8' id='type-id-3'>
@@ -5253,7 +5253,7 @@
     <qualified-type-def type-id='type-id-474' const='yes' id='type-id-509'/>
     <qualified-type-def type-id='type-id-476' const='yes' id='type-id-510'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkRowQuery.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkRowQuery.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
     <type-decl name='short int' size-in-bits='16' id='type-id-252'/>
     <type-decl name='unsigned char' size-in-bits='8' id='type-id-251'/>
     <class-decl name='lldiv_t' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/include/stdlib.h' line='119' column='1' id='type-id-511'>
@@ -6001,7 +6001,7 @@
     </function-type>
     <class-decl name='vtkAbstractArray' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-563'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkRowQueryToTable.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkRowQueryToTable.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
     <class-decl name='vtkRowQueryToTable' size-in-bits='1088' visibility='default' filepath='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkRowQueryToTable.h' line='44' column='1' id='type-id-570'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-96'/>
       <data-member access='protected' layout-offset-in-bits='1024'>
@@ -6204,7 +6204,7 @@
       </function-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLDatabase.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLDatabase.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
     <class-decl name='vtkSQLDatabaseSchema' size-in-bits='512' visibility='default' filepath='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLDatabaseSchema.h' line='59' column='1' id='type-id-233'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-32'/>
       <member-type access='private'>
@@ -7916,7 +7916,7 @@
       <return type-id='type-id-38'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLDatabaseSchema.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLDatabaseSchema.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
     <class-decl name='vtkSQLDatabaseSchemaInternals' size-in-bits='384' visibility='default' filepath='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLDatabaseSchema.cxx' line='36' column='1' id='type-id-281'>
       <member-type access='private'>
         <class-decl name='Statement' size-in-bits='192' is-struct='yes' visibility='default' filepath='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLDatabaseSchema.cxx' line='39' column='1' id='type-id-284'>
@@ -10508,7 +10508,7 @@
       <class-decl name='__normal_iterator&lt;const vtkSQLDatabaseSchemaInternals::Table*, std::vector&lt;vtkSQLDatabaseSchemaInternals::Table, std::allocator&lt;vtkSQLDatabaseSchemaInternals::Table&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-843'/>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLDatabaseTableSource.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLDatabaseTableSource.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
     <class-decl name='vtkSQLDatabaseTableSource' size-in-bits='1280' visibility='default' filepath='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLDatabaseTableSource.h' line='37' column='1' id='type-id-844'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-96'/>
       <member-type access='private'>
@@ -10789,14 +10789,14 @@
     <class-decl name='vtkTable' visibility='default' is-declaration-only='yes' id='type-id-875'/>
     <class-decl name='vtkGarbageCollector' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-869'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLQuery.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLQuery.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
     <qualified-type-def type-id='type-id-234' const='yes' id='type-id-278'/>
     <reference-type-def kind='lvalue' type-id='type-id-278' size-in-bits='64' id='type-id-248'/>
     <pointer-type-def type-id='type-id-278' size-in-bits='64' id='type-id-250'/>
     <qualified-type-def type-id='type-id-548' const='yes' id='type-id-879'/>
     <qualified-type-def type-id='type-id-46' const='yes' id='type-id-249'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLiteDatabase.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLiteDatabase.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
     <class-decl name='vtkSQLiteDatabase' size-in-bits='704' visibility='default' filepath='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLiteDatabase.h' line='55' column='1' id='type-id-880'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-31'/>
       <member-type access='private'>
@@ -11002,7 +11002,7 @@
     </namespace-decl>
     <class-decl name='vtk_sqlite3' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-891'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLiteQuery.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLiteQuery.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
     <class-decl name='vtkSQLiteQuery' size-in-bits='896' visibility='default' filepath='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLiteQuery.h' line='53' column='1' id='type-id-892'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-234'/>
       <data-member access='private' layout-offset-in-bits='640'>
@@ -11359,7 +11359,7 @@
     </namespace-decl>
     <class-decl name='vtk_sqlite3_stmt' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-901'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLiteToTableReader.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLiteToTableReader.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
     <class-decl name='vtkSQLiteToTableReader' size-in-bits='1152' visibility='default' filepath='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkSQLiteToTableReader.h' line='30' column='1' id='type-id-902'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-95'/>
       <member-function access='protected' constructor='yes'>
@@ -11795,7 +11795,7 @@
     <class-decl name='vtkDoubleArray' visibility='default' is-declaration-only='yes' id='type-id-960'/>
     <class-decl name='vtkIntArray' visibility='default' is-declaration-only='yes' id='type-id-962'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkTableToDatabaseWriter.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkTableToDatabaseWriter.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
     <class-decl name='vtkTableToDatabaseWriter' size-in-bits='1280' visibility='default' filepath='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkTableToDatabaseWriter.h' line='33' column='1' id='type-id-973'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-974'/>
       <data-member access='protected' layout-offset-in-bits='1088'>
@@ -11909,7 +11909,7 @@
     <qualified-type-def type-id='type-id-975' const='yes' id='type-id-977'/>
     <class-decl name='vtkWriter' visibility='default' is-declaration-only='yes' id='type-id-974'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkTableToSQLiteWriter.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkTableToSQLiteWriter.cxx' comp-dir-path='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/spack-build/IO/SQL' language='LANG_C_plus_plus'>
     <class-decl name='vtkTableToSQLiteWriter' size-in-bits='1344' visibility='default' filepath='/var/tmp/gamblin2/spack-stage/spack-stage-hrtRhh/VTK-6.1.0/IO/SQL/vtkTableToSQLiteWriter.h' line='29' column='1' id='type-id-980'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-973'/>
       <data-member access='protected' layout-offset-in-bits='1280'>

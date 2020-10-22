@@ -1,4 +1,4 @@
-<abi-corpus path='data/test-read-dwarf/PR22015-libboost_iostreams.so'>
+<abi-corpus version='2.0' path='data/test-read-dwarf/PR22015-libboost_iostreams.so'>
   <elf-needed>
     <dependency name='build/cached/third_party/boost-1.60.0/libboost_system.so'/>
     <dependency name='libm.so.6'/>
@@ -135,7 +135,7 @@
     <elf-symbol name='_ZTSN5boost6detail17sp_counted_impl_pINS_9iostreams6detail20file_descriptor_implEEE' size='80' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZTSN5boost9exceptionE' size='19' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
-  <abi-instr version='1.0' address-size='64' path='src/third_party/boost-1.60.0/libs/iostreams/src/file_descriptor.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/third_party/boost-1.60.0/libs/iostreams/src/file_descriptor.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <type-decl name='bool' size-in-bits='8' id='type-id-1'/>
     <type-decl name='char' size-in-bits='8' id='type-id-2'/>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='32' id='type-id-3'>
@@ -3515,7 +3515,7 @@
     <qualified-type-def type-id='type-id-282' const='yes' id='type-id-312'/>
     <qualified-type-def type-id='type-id-291' const='yes' id='type-id-313'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/third_party/boost-1.60.0/libs/iostreams/src/mapped_file.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/third_party/boost-1.60.0/libs/iostreams/src/mapped_file.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <reference-type-def kind='lvalue' type-id='type-id-298' size-in-bits='64' id='type-id-314'/>
     <pointer-type-def type-id='type-id-298' size-in-bits='64' id='type-id-299'/>
     <pointer-type-def type-id='type-id-282' size-in-bits='64' id='type-id-289'/>

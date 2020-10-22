@@ -1,4 +1,4 @@
-<abi-corpus path='data/test-read-dwarf/test0'>
+<abi-corpus version='2.0' path='data/test-read-dwarf/test0'>
   <elf-needed>
     <dependency name='libstdc++.so.6'/>
     <dependency name='libm.so.6'/>
@@ -22,7 +22,7 @@
     <elf-symbol name='_IO_stdin_used' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='global' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
-  <abi-instr version='1.0' address-size='64' path='test0.cc' comp-dir-path='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='test0.cc' comp-dir-path='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf' language='LANG_C_plus_plus'>
     <type-decl name='char' size-in-bits='8' id='type-id-1'/>
     <type-decl name='int' size-in-bits='32' id='type-id-2'/>
     <type-decl name='long int' size-in-bits='64' id='type-id-3'/>

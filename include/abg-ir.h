@@ -24,6 +24,7 @@
 #include "abg-fwd.h"
 #include "abg-hash.h"
 #include "abg-traverse.h"
+#include "abg-config.h"
 
 /// @file
 ///
@@ -195,6 +196,9 @@ public:
 
   interned_string
   intern(const string&) const;
+
+  const config&
+  get_config() const;
 
   friend class class_or_union;
   friend class class_decl;

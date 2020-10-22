@@ -662,6 +662,9 @@ public:
 /// The private data of the @ref corpus type.
 struct corpus::priv
 {
+  mutable unordered_map<string, type_base_sptr> canonical_types_;
+  string					format_major_version_number_;
+  string					format_minor_version_number_;
   environment*					env;
   corpus_group*				group;
   corpus::exported_decls_builder_sptr		exported_decls_builder;

@@ -1,4 +1,4 @@
-<abi-corpus path='data/test-read-dwarf/test21-pr19092.so'>
+<abi-corpus version='2.0' path='data/test-read-dwarf/test21-pr19092.so'>
   <elf-needed>
     <dependency name='libstdc++.so.6'/>
     <dependency name='libm.so.6'/>
@@ -449,9 +449,9 @@
     <elf-symbol name='version_string' size='6' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='vflag' size='1' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
-  <abi-instr version='1.0' address-size='64' path='../.././gcc/collect2-aix.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/gcc' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../.././gcc/collect2-aix.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/gcc' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././gcc/collect2.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/gcc' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../.././gcc/collect2.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/gcc' language='LANG_C_plus_plus'>
     <type-decl name='bool' size-in-bits='8' id='type-id-1'/>
     <type-decl name='char' size-in-bits='8' id='type-id-2'/>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='1024' id='type-id-3'>
@@ -1861,7 +1861,7 @@
       </data-member>
     </class-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././gcc/diagnostic.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/gcc' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../.././gcc/diagnostic.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/gcc' language='LANG_C_plus_plus'>
     <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='12diagnostic_t' filepath='../.././gcc/diagnostic-core.h' line='32' column='1' id='type-id-185'>
       <underlying-type type-id='type-id-26'/>
       <enumerator name='DK_UNSPECIFIED' value='0'/>
@@ -2158,7 +2158,7 @@
       <return type-id='type-id-14'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././gcc/ggc-none.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/gcc' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../.././gcc/ggc-none.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/gcc' language='LANG_C_plus_plus'>
     <enum-decl name='gt_types_enum' filepath='./gtype-desc.h' line='23' column='1' id='type-id-200'>
       <underlying-type type-id='type-id-26'/>
       <enumerator name='gt_ggc_e_24lazy_hex_fp_value_struct' value='0'/>
@@ -2872,7 +2872,7 @@
     <var-decl name='tree_zone' type-id='type-id-201' mangled-name='tree_zone' visibility='default' filepath='../.././gcc/ggc-none.c' line='81' column='1' elf-symbol-id='tree_zone'/>
     <var-decl name='tree_id_zone' type-id='type-id-201' mangled-name='tree_id_zone' visibility='default' filepath='../.././gcc/ggc-none.c' line='82' column='1' elf-symbol-id='tree_id_zone'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././gcc/input.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/gcc' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../.././gcc/input.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/gcc' language='LANG_C_plus_plus'>
     <class-decl name='linemap_stats' size-in-bits='704' is-struct='yes' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='685' column='1' id='type-id-202'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='num_ordinary_maps_allocated' type-id='type-id-21' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='687' column='1'/>
@@ -2919,7 +2919,7 @@
     <var-decl name='line_table' type-id='type-id-197' mangled-name='line_table' visibility='default' filepath='../.././gcc/input.c' line='31' column='1' elf-symbol-id='line_table'/>
     <var-decl name='input_location' type-id='type-id-75' mangled-name='input_location' visibility='default' filepath='../.././gcc/input.c' line='29' column='1' elf-symbol-id='input_location'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././gcc/intl.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/gcc' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../.././gcc/intl.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/gcc' language='LANG_C_plus_plus'>
     <type-decl name='wchar_t' size-in-bits='32' id='type-id-204'/>
     <typedef-decl name='nl_item' type-id='type-id-18' filepath='/usr/include/nl_types.h' line='37' column='1' id='type-id-205'/>
     <qualified-type-def type-id='type-id-204' const='yes' id='type-id-206'/>
@@ -2981,7 +2981,7 @@
       <return type-id='type-id-14'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././gcc/pretty-print.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/gcc' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../.././gcc/pretty-print.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/gcc' language='LANG_C_plus_plus'>
     <typedef-decl name='iconv_t' type-id='type-id-14' filepath='/usr/include/iconv.h' line='30' column='1' id='type-id-209'/>
     <qualified-type-def type-id='type-id-96' const='yes' id='type-id-210'/>
     <pointer-type-def type-id='type-id-210' size-in-bits='64' id='type-id-211'/>
@@ -3133,7 +3133,7 @@
       <return type-id='type-id-14'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././gcc/tlink.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/gcc' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../.././gcc/tlink.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/gcc' language='LANG_C_plus_plus'>
     <class-decl name='symbol_stack_entry' size-in-bits='128' is-struct='yes' visibility='default' filepath='../.././gcc/tlink.c' line='188' column='1' id='type-id-215'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='value' type-id='type-id-216' visibility='default' filepath='../.././gcc/tlink.c' line='190' column='1'/>
@@ -3342,7 +3342,7 @@
       <return type-id='type-id-14'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././gcc/vec.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/gcc' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../.././gcc/vec.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/gcc' language='LANG_C_plus_plus'>
     <function-decl name='vec_gc_p_reserve' mangled-name='_Z16vec_gc_p_reservePvi' filepath='../.././gcc/vec.c' line='257' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z16vec_gc_p_reservePvi'>
       <parameter type-id='type-id-14'/>
       <parameter type-id='type-id-18'/>
@@ -3433,7 +3433,7 @@
       <return type-id='type-id-14'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././gcc/version.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/gcc' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../.././gcc/version.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/gcc' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='248' id='type-id-248'>
       <subrange length='31' type-id='type-id-4' id='type-id-249'/>
     </array-type-def>
@@ -3456,7 +3456,7 @@
     <var-decl name='pkgversion_string' type-id='type-id-256' mangled-name='pkgversion_string' visibility='default' filepath='../.././gcc/version.c' line='36' column='1' elf-symbol-id='pkgversion_string'/>
     <var-decl name='bug_report_url' type-id='type-id-254' mangled-name='bug_report_url' visibility='default' filepath='../.././gcc/version.c' line='29' column='1' elf-symbol-id='bug_report_url'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libcpp/charset.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../.././libcpp/charset.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
     <pointer-type-def type-id='type-id-257' size-in-bits='64' id='type-id-258'/>
     <function-decl name='cpp_init_iconv' mangled-name='_Z14cpp_init_iconvP10cpp_reader' filepath='../.././libcpp/charset.c' line='700' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z14cpp_init_iconvP10cpp_reader'>
       <parameter type-id='type-id-259'/>
@@ -4570,7 +4570,7 @@
     </class-decl>
     <typedef-decl name='cpp_num_part' type-id='type-id-28' filepath='../.././libcpp/include/cpplib.h' line='799' column='1' id='type-id-384'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libcpp/directives.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../.././libcpp/directives.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
     <typedef-decl name='pragma_cb' type-id='type-id-330' filepath='../.././libcpp/directives.c' line='43' column='1' id='type-id-388'/>
     <typedef-decl name='cpp_options' type-id='type-id-301' filepath='../.././libcpp/include/cpplib.h' line='33' column='1' id='type-id-389'/>
     <typedef-decl name='cpp_callbacks' type-id='type-id-298' filepath='../.././libcpp/include/cpplib.h' line='38' column='1' id='type-id-390'/>
@@ -4755,7 +4755,7 @@
       <return type-id='type-id-18'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libcpp/errors.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../.././libcpp/errors.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
     <function-decl name='cpp_error' mangled-name='_Z9cpp_errorP10cpp_readeriPKcz' filepath='../.././libcpp/errors.c' line='72' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z9cpp_errorP10cpp_readeriPKcz'>
       <parameter type-id='type-id-259'/>
       <parameter type-id='type-id-18'/>
@@ -4832,7 +4832,7 @@
       <return type-id='type-id-51'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libcpp/expr.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../.././libcpp/expr.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
     <typedef-decl name='cpp_num' type-id='type-id-381' filepath='../.././libcpp/include/cpplib.h' line='800' column='1' id='type-id-361'/>
     <class-decl name='cpp_num' size-in-bits='192' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='801' column='1' id='type-id-381'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -4910,7 +4910,7 @@
       <return type-id='type-id-361'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libcpp/files.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../.././libcpp/files.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='2048' id='type-id-397'>
       <subrange length='256' type-id='type-id-4' id='type-id-398'/>
     </array-type-def>
@@ -5164,7 +5164,7 @@
     </function-type>
     <class-decl name='__dirstream' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-401'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libcpp/identifiers.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../.././libcpp/identifiers.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
     <typedef-decl name='ht_cb' type-id='type-id-410' filepath='../.././libcpp/include/symtab.h' line='90' column='1' id='type-id-411'/>
     <pointer-type-def type-id='type-id-412' size-in-bits='64' id='type-id-410'/>
     <function-decl name='_cpp_destroy_hashtable' mangled-name='_cpp_destroy_hashtable' filepath='../.././libcpp/identifiers.c' line='80' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_cpp_destroy_hashtable'>
@@ -5203,7 +5203,7 @@
     <pointer-type-def type-id='type-id-414' size-in-bits='64' id='type-id-413'/>
     <typedef-decl name='hash_table' type-id='type-id-315' filepath='../.././libcpp/include/symtab.h' line='41' column='1' id='type-id-414'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libcpp/init.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../.././libcpp/init.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-154' size-in-bits='2048' id='type-id-415'>
       <subrange length='256' type-id='type-id-4' id='type-id-398'/>
     </array-type-def>
@@ -5255,7 +5255,7 @@
     </function-decl>
     <var-decl name='_cpp_trigraph_map' type-id='type-id-416' mangled-name='_cpp_trigraph_map' visibility='default' filepath='../.././libcpp/init.c' line='60' column='1' elf-symbol-id='_cpp_trigraph_map'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libcpp/lex.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../.././libcpp/lex.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
     <class-decl name='normalize_state' size-in-bits='96' is-struct='yes' visibility='default' filepath='../.././libcpp/internal.h' line='706' column='1' id='type-id-274'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='previous' type-id='type-id-260' visibility='default' filepath='../.././libcpp/internal.h' line='709' column='1'/>
@@ -5386,7 +5386,7 @@
       <return type-id='type-id-15'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libcpp/line-map.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../.././libcpp/line-map.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-162' size-in-bits='192' id='type-id-159'>
       <subrange length='1' type-id='type-id-4' id='type-id-7'/>
     </array-type-def>
@@ -5785,7 +5785,7 @@
       <return type-id='type-id-18'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libcpp/macro.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../.././libcpp/macro.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
     <class-decl name='_cpp_file' size-in-bits='1856' is-struct='yes' visibility='default' filepath='../.././libcpp/files.c' line='56' column='1' id='type-id-307'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='name' type-id='type-id-15' visibility='default' filepath='../.././libcpp/files.c' line='59' column='1'/>
@@ -7148,7 +7148,7 @@
     </function-type>
     <class-decl name='_cpp_strbuf' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-427'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libcpp/mkdeps.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../.././libcpp/mkdeps.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
     <qualified-type-def type-id='type-id-313' const='yes' id='type-id-438'/>
     <pointer-type-def type-id='type-id-438' size-in-bits='64' id='type-id-439'/>
     <function-decl name='deps_init' mangled-name='_Z9deps_initv' filepath='../.././libcpp/mkdeps.c' line='168' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z9deps_initv'>
@@ -7202,7 +7202,7 @@
       <return type-id='type-id-18'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libcpp/symtab.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../.././libcpp/symtab.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
     <function-decl name='ht_create' mangled-name='_Z9ht_createj' filepath='../.././libcpp/symtab.c' line='57' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z9ht_createj'>
       <parameter type-id='type-id-13'/>
       <return type-id='type-id-413'/>
@@ -7260,7 +7260,7 @@
       <enumerator name='HT_ALLOC' value='1'/>
     </enum-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libcpp/traditional.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../.././libcpp/traditional.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
     <enum-decl name='ht_lookup_option' filepath='../.././libcpp/include/symtab.h' line='44' column='1' id='type-id-440'>
       <underlying-type type-id='type-id-26'/>
       <enumerator name='HT_NO_INSERT' value='0'/>
@@ -7317,7 +7317,7 @@
       <return type-id='type-id-1'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libiberty/argv.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
+  <abi-instr address-size='64' path='../.././libiberty/argv.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
     <function-decl name='freeargv' mangled-name='freeargv' filepath='../.././libiberty/argv.c' line='108' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='freeargv'>
       <parameter type-id='type-id-123' name='vector' filepath='../.././libiberty/argv.c' line='108' column='1'/>
       <return type-id='type-id-31'/>
@@ -7367,7 +7367,7 @@
       <return type-id='type-id-31'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libiberty/concat.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
+  <abi-instr address-size='64' path='../.././libiberty/concat.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
     <function-decl name='concat_copy' mangled-name='concat_copy' filepath='../.././libiberty/concat.c' line='117' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='concat_copy'>
       <parameter type-id='type-id-51' name='dst' filepath='../.././libiberty/concat.c' line='117' column='1'/>
       <parameter type-id='type-id-15' name='first' filepath='../.././libiberty/concat.c' line='117' column='1'/>
@@ -7382,7 +7382,7 @@
     </function-decl>
     <var-decl name='libiberty_concat_ptr' type-id='type-id-51' mangled-name='libiberty_concat_ptr' visibility='default' filepath='../.././libiberty/concat.c' line='134' column='1' elf-symbol-id='libiberty_concat_ptr'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libiberty/cp-demangle.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
+  <abi-instr address-size='64' path='../.././libiberty/cp-demangle.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
     <array-type-def dimensions='1' type-id='type-id-441' size-in-bits='8448' id='type-id-442'>
       <subrange length='33' type-id='type-id-4' id='type-id-443'/>
     </array-type-def>
@@ -7802,7 +7802,7 @@
       <return type-id='type-id-31'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libiberty/cplus-dem.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
+  <abi-instr address-size='64' path='../.././libiberty/cplus-dem.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
     <array-type-def dimensions='1' type-id='type-id-481' size-in-bits='2112' id='type-id-482'>
       <subrange length='11' type-id='type-id-4' id='type-id-483'/>
     </array-type-def>
@@ -7882,9 +7882,9 @@
       <return type-id='type-id-51'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libiberty/filename_cmp.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
+  <abi-instr address-size='64' path='../.././libiberty/filename_cmp.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libiberty/fopen_unlocked.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
+  <abi-instr address-size='64' path='../.././libiberty/fopen_unlocked.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
     <function-decl name='unlock_stream' mangled-name='unlock_stream' filepath='../.././libiberty/fopen_unlocked.c' line='94' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='unlock_stream'>
       <parameter type-id='type-id-89' name='fp' filepath='../.././libiberty/fopen_unlocked.c' line='94' column='1'/>
       <return type-id='type-id-31'/>
@@ -7912,14 +7912,14 @@
       <return type-id='type-id-89'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libiberty/getpwd.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
+  <abi-instr address-size='64' path='../.././libiberty/getpwd.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
     <function-decl name='getcwd' filepath='/usr/include/unistd.h' line='508' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-51'/>
       <parameter type-id='type-id-32'/>
       <return type-id='type-id-51'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libiberty/hashtab.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
+  <abi-instr address-size='64' path='../.././libiberty/hashtab.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
     <type-decl name='double' size-in-bits='64' id='type-id-489'/>
     <function-decl name='htab_size' mangled-name='htab_size' filepath='../.././libiberty/hashtab.c' line='224' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='htab_size'>
       <parameter type-id='type-id-228' name='htab' filepath='../.././libiberty/hashtab.c' line='224' column='1'/>
@@ -8012,13 +8012,13 @@
     <var-decl name='htab_hash_pointer' type-id='type-id-230' mangled-name='htab_hash_pointer' visibility='default' filepath='../.././libiberty/hashtab.c' line='82' column='1' elf-symbol-id='htab_hash_pointer'/>
     <var-decl name='htab_eq_pointer' type-id='type-id-232' mangled-name='htab_eq_pointer' visibility='default' filepath='../.././libiberty/hashtab.c' line='83' column='1' elf-symbol-id='htab_eq_pointer'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libiberty/hex.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
+  <abi-instr address-size='64' path='../.././libiberty/hex.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
     <function-decl name='hex_init' mangled-name='hex_init' filepath='../.././libiberty/hex.c' line='159' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='hex_init'>
       <return type-id='type-id-31'/>
     </function-decl>
     <var-decl name='_hex_value' type-id='type-id-415' mangled-name='_hex_value' visibility='default' filepath='../.././libiberty/hex.c' line='75' column='1' elf-symbol-id='_hex_value'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libiberty/lbasename.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
+  <abi-instr address-size='64' path='../.././libiberty/lbasename.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
     <function-decl name='unix_lbasename' mangled-name='unix_lbasename' filepath='../.././libiberty/lbasename.c' line='49' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='unix_lbasename'>
       <parameter type-id='type-id-15' name='name' filepath='../.././libiberty/lbasename.c' line='49' column='1'/>
       <return type-id='type-id-15'/>
@@ -8028,7 +8028,7 @@
       <return type-id='type-id-15'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libiberty/make-temp-file.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
+  <abi-instr address-size='64' path='../.././libiberty/make-temp-file.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
     <function-decl name='choose_tmpdir' mangled-name='choose_tmpdir' filepath='../.././libiberty/make-temp-file.c' line='106' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='choose_tmpdir'>
       <return type-id='type-id-51'/>
     </function-decl>
@@ -8038,7 +8038,7 @@
       <return type-id='type-id-18'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libiberty/md5.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
+  <abi-instr address-size='64' path='../.././libiberty/md5.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
     <array-type-def dimensions='1' type-id='type-id-490' size-in-bits='64' id='type-id-491'>
       <subrange length='2' type-id='type-id-4' id='type-id-492'/>
     </array-type-def>
@@ -8108,7 +8108,7 @@
       <return type-id='type-id-18'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libiberty/pex-common.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
+  <abi-instr address-size='64' path='../.././libiberty/pex-common.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
     <class-decl name='pex_obj' size-in-bits='1152' is-struct='yes' visibility='default' filepath='../.././libiberty/pex-common.h' line='54' column='1' id='type-id-130'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='flags' type-id='type-id-18' visibility='default' filepath='../.././libiberty/pex-common.h' line='57' column='1'/>
@@ -8316,7 +8316,7 @@
       <return type-id='type-id-31'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libiberty/pex-unix.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
+  <abi-instr address-size='64' path='../.././libiberty/pex-unix.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
     <typedef-decl name='__WAIT_STATUS' type-id='type-id-498' filepath='/usr/include/stdlib.h' line='72' column='1' id='type-id-499'/>
     <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/usr/include/stdlib.h' line='68' column='1' id='type-id-498'>
       <data-member access='private'>
@@ -8479,7 +8479,7 @@
       <return type-id='type-id-18'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libiberty/safe-ctype.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
+  <abi-instr address-size='64' path='../.././libiberty/safe-ctype.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
     <array-type-def dimensions='1' type-id='type-id-508' size-in-bits='4096' id='type-id-509'>
       <subrange length='256' type-id='type-id-4' id='type-id-398'/>
     </array-type-def>
@@ -8491,7 +8491,7 @@
     <var-decl name='_sch_toupper' type-id='type-id-415' mangled-name='_sch_toupper' visibility='default' filepath='../.././libiberty/safe-ctype.c' line='220' column='1' elf-symbol-id='_sch_toupper'/>
     <var-decl name='_sch_tolower' type-id='type-id-415' mangled-name='_sch_tolower' visibility='default' filepath='../.././libiberty/safe-ctype.c' line='191' column='1' elf-symbol-id='_sch_tolower'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libiberty/unlink-if-ordinary.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
+  <abi-instr address-size='64' path='../.././libiberty/unlink-if-ordinary.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
     <function-decl name='__lxstat' filepath='/usr/include/sys/stat.h' line='405' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-18'/>
       <parameter type-id='type-id-15'/>
@@ -8499,10 +8499,10 @@
       <return type-id='type-id-18'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libiberty/xexit.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
+  <abi-instr address-size='64' path='../.././libiberty/xexit.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
     <var-decl name='_xexit_cleanup' type-id='type-id-136' mangled-name='_xexit_cleanup' visibility='default' filepath='../.././libiberty/xexit.c' line='44' column='1' elf-symbol-id='_xexit_cleanup'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libiberty/xmalloc.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
+  <abi-instr address-size='64' path='../.././libiberty/xmalloc.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
     <typedef-decl name='intptr_t' type-id='type-id-511' filepath='/usr/include/unistd.h' line='268' column='1' id='type-id-512'/>
     <typedef-decl name='__intptr_t' type-id='type-id-21' filepath='/usr/include/bits/types.h' line='189' column='1' id='type-id-511'/>
     <function-decl name='xmalloc_failed' mangled-name='xmalloc_failed' filepath='../.././libiberty/xmalloc.c' line='117' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='xmalloc_failed'>
@@ -8519,6 +8519,6 @@
       <return type-id='type-id-14'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../.././libiberty/xmemdup.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
+  <abi-instr address-size='64' path='../.././libiberty/xmemdup.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libiberty' language='LANG_C89'>
   </abi-instr>
 </abi-corpus>

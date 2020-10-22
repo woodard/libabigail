@@ -1005,6 +1005,26 @@ handle_error(abigail::dwarf_reader::status status_code,
   return abigail::tools_utils::ABIDIFF_OK;
 }
 
+/// Emit an error message saying that the two files have incompatible
+/// format versions.
+///
+/// @param file_path1 the first file path to consider.
+///
+/// @param file_path2 the second file path to consider.
+///
+/// @param prog_name the name of the current program.
+static void
+emit_incompatible_format_version_error_message(const string& file_path1,
+					       const string& file_path2,
+					       const string& prog_name)
+{
+  emit_prefix(prog_name, cerr)
+    << "incompatible format version between the two input files:\n"
+    << "'" << file_path1 << "'\n"
+    << "and\n"
+    << "'" << file_path2 << "'\n" ;
+}
+
 int
 main(int argc, char* argv[])
 {
@@ -1286,6 +1306,15 @@ main(int argc, char* argv[])
 	      return abigail::tools_utils::ABIDIFF_OK;
 	    }
 
+	  if (c1->get_format_major_version_number()
+	      != c2->get_format_major_version_number())
+	    {
+	      emit_incompatible_format_version_error_message(opts.file1,
+							     opts.file2,
+							     argv[0]);
+	      return abigail::tools_utils::ABIDIFF_ERROR;
+	    }
+
 	  set_corpus_keep_drop_regex_patterns(opts, c1);
 	  set_corpus_keep_drop_regex_patterns(opts, c2);
 
@@ -1306,6 +1335,15 @@ main(int argc, char* argv[])
 	    {
 	      display_symtabs(c1, c2, cout);
 	      return abigail::tools_utils::ABIDIFF_OK;
+	    }
+
+	  if (g1->get_format_major_version_number()
+	      != g2->get_format_major_version_number())
+	    {
+	      emit_incompatible_format_version_error_message(opts.file1,
+							     opts.file2,
+							     argv[0]);
+	      return abigail::tools_utils::ABIDIFF_ERROR;
 	    }
 
 	  adjust_diff_context_for_kmidiff(*ctxt);

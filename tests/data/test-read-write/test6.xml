@@ -1,4 +1,4 @@
-<abi-instr version='1.0' path='data/test-read-write/test6.xml'>
+<abi-instr path='data/test-read-write/test6.xml'>
   <type-decl name='char' size-in-bits='8' alignment-in-bits='8' id='type-id-1'/>
   <enum-decl name='enum_foo' id='type-id-2'>
     <underlying-type type-id='type-id-1'/>

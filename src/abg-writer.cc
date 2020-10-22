@@ -154,7 +154,6 @@ class write_context
 {
   const environment*			m_env;
   id_manager				m_id_manager;
-  config				m_config;
   ostream*				m_ostream;
   bool					m_annotate;
   bool					m_show_locs;
@@ -217,7 +216,10 @@ public:
 
   const config&
   get_config() const
-  {return m_config;}
+  {
+    ABG_ASSERT(get_environment());
+    return get_environment()->get_config();
+  }
 
   /// Getter for the current ostream
   ///
@@ -2209,10 +2211,7 @@ write_translation_unit(write_context&	       ctxt,
 
   do_indent(o, indent);
 
-  o << "<abi-instr version='"
-    << c.get_format_major_version_number()
-    << "." << c.get_format_minor_version_number()
-    << "'";
+  o << "<abi-instr";
 
   if (tu.get_address_size() != 0)
     o << " address-size='" << static_cast<int>(tu.get_address_size()) << "'";
@@ -4476,6 +4475,21 @@ write_corpus_to_archive(const corpus_sptr corp, const bool annotate)
 
 #endif //WITH_ZIP_ARCHIVE
 
+/// Serialize the current version number of the ABIXML format.
+///
+/// @param ctxt the writing context to use.
+static void
+write_version_info(write_context& ctxt)
+{
+  ostream& o = ctxt.get_ostream();
+  const config& c = ctxt.get_config();
+
+  o << "version='"
+    << c.get_format_major_version_number()
+    << "." << c.get_format_minor_version_number()
+    << "'";
+}
+
 /// Serialize an ABI corpus to a single native xml document.  The root
 /// note of the resulting XML document is 'abi-corpus'.
 ///
@@ -4506,7 +4520,9 @@ write_corpus(write_context&	ctxt,
 
   std::ostream& out = ctxt.get_ostream();
 
-  out << "<abi-corpus";
+  out << "<abi-corpus ";
+
+  write_version_info(ctxt);
 
   // For an abi-corpus as part of an abi-corpus group, only omit the path, but
   // keep the filename.
@@ -4615,7 +4631,8 @@ write_corpus_group(write_context&	    ctxt,
 
 std::ostream& out = ctxt.get_ostream();
 
-  out << "<abi-corpus-group";
+  out << "<abi-corpus-group ";
+  write_version_info(ctxt);
 
   if (!group->get_path().empty() && ctxt.get_write_corpus_path())
     out << " path='" << xml::escape_xml_string(group->get_path()) << "'";

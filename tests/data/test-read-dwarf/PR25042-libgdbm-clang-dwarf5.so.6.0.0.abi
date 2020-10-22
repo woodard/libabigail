@@ -1,4 +1,4 @@
-<abi-corpus path='data/test-read-dwarf/PR25042-libgdbm-clang-dwarf5.so.6.0.0' soname='libgdbm.so.6'>
+<abi-corpus version='2.0' path='data/test-read-dwarf/PR25042-libgdbm-clang-dwarf5.so.6.0.0' soname='libgdbm.so.6'>
   <elf-needed>
     <dependency name='libc.so.6'/>
     <dependency name='ld-linux-x86-64.so.2'/>
@@ -90,7 +90,7 @@
     <elf-symbol name='gdbm_version' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='gdbm_version_number' size='12' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
-  <abi-instr version='1.0' address-size='64' path='base64.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='base64.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <qualified-type-def type-id='type-id-1' const='yes' id='type-id-2'/>
     <pointer-type-def type-id='type-id-2' size-in-bits='64' id='type-id-3'/>
     <pointer-type-def type-id='type-id-4' size-in-bits='64' id='type-id-5'/>
@@ -118,7 +118,7 @@
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-4'/>
     <type-decl name='unsigned long int' size-in-bits='64' id='type-id-9'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='bucket.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='bucket.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <function-decl name='_gdbm_new_bucket' mangled-name='_gdbm_new_bucket' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/bucket.c' line='29' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_gdbm_new_bucket'>
       <parameter type-id='type-id-10' name='dbf' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/bucket.c' line='29' column='1'/>
       <parameter type-id='type-id-11' name='bucket' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/bucket.c' line='29' column='1'/>
@@ -413,7 +413,7 @@
       <subrange length='1' type-id='type-id-36' id='type-id-39'/>
     </array-type-def>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='falloc.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='falloc.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <function-decl name='_gdbm_alloc' mangled-name='_gdbm_alloc' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/falloc.c' line='52' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_gdbm_alloc'>
       <parameter type-id='type-id-10' name='dbf' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/falloc.c' line='52' column='1'/>
       <parameter type-id='type-id-8' name='num_bytes' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/falloc.c' line='52' column='1'/>
@@ -435,7 +435,7 @@
     <pointer-type-def type-id='type-id-35' size-in-bits='64' id='type-id-52'/>
     <pointer-type-def type-id='type-id-8' size-in-bits='64' id='type-id-53'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='findkey.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='findkey.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <pointer-type-def type-id='type-id-23' size-in-bits='64' id='type-id-54'/>
     <function-decl name='gdbm_bucket_element_valid_p' mangled-name='gdbm_bucket_element_valid_p' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/findkey.c' line='26' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gdbm_bucket_element_valid_p'>
       <parameter type-id='type-id-10' name='dbf' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/findkey.c' line='26' column='1'/>
@@ -464,7 +464,7 @@
       </data-member>
     </class-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='fullio.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='fullio.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <function-decl name='_gdbm_full_read' mangled-name='_gdbm_full_read' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/fullio.c' line='25' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_gdbm_full_read'>
       <parameter type-id='type-id-10' name='dbf' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/fullio.c' line='25' column='1'/>
       <parameter type-id='type-id-30' name='buffer' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/fullio.c' line='25' column='1'/>
@@ -483,7 +483,7 @@
       <return type-id='type-id-8'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='gdbmclose.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='gdbmclose.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <type-decl name='__ARRAY_SIZE_TYPE__' size-in-bits='64' id='type-id-36'/>
     <array-type-def dimensions='1' type-id='type-id-35' size-in-bits='128' id='type-id-51'>
       <subrange length='1' type-id='type-id-36' id='type-id-39'/>
@@ -759,7 +759,7 @@
       <return type-id='type-id-12'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='gdbmcount.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='gdbmcount.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <type-decl name='long long unsigned int' size-in-bits='64' id='type-id-59'/>
     <typedef-decl name='gdbm_count_t' type-id='type-id-59' filepath='./gdbm.h' line='88' column='1' id='type-id-60'/>
     <pointer-type-def type-id='type-id-60' size-in-bits='64' id='type-id-61'/>
@@ -769,7 +769,7 @@
       <return type-id='type-id-8'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='gdbmdelete.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='gdbmdelete.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <typedef-decl name='datum' type-id='type-id-56' filepath='./gdbm.h' line='95' column='1' id='type-id-55'/>
     <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-55' visibility='default' filepath='./gdbm.h' line='91' column='1' id='type-id-56'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -785,7 +785,7 @@
       <return type-id='type-id-8'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='gdbmdump.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='gdbmdump.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <array-type-def dimensions='1' type-id='type-id-31' size-in-bits='8' id='type-id-62'>
       <subrange length='1' type-id='type-id-36' id='type-id-39'/>
     </array-type-def>
@@ -915,7 +915,7 @@
       <return type-id='type-id-8'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='gdbmerrno.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='gdbmerrno.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <pointer-type-def type-id='type-id-8' size-in-bits='64' id='type-id-53'/>
     <function-decl name='gdbm_errno_location' mangled-name='gdbm_errno_location' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmerrno.c' line='29' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gdbm_errno_location'>
       <return type-id='type-id-53'/>
@@ -955,14 +955,14 @@
       <return type-id='type-id-8'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='gdbmexists.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='gdbmexists.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <function-decl name='gdbm_exists' mangled-name='gdbm_exists' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmexists.c' line='29' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gdbm_exists'>
       <parameter type-id='type-id-10' name='dbf' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmexists.c' line='29' column='1'/>
       <parameter type-id='type-id-55' name='key' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmexists.c' line='29' column='1'/>
       <return type-id='type-id-8'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='gdbmexp.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='gdbmexp.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <function-decl name='gdbm_export_to_file' mangled-name='gdbm_export_to_file' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmexp.c' line='33' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gdbm_export_to_file'>
       <parameter type-id='type-id-10' name='dbf' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmexp.c' line='33' column='1'/>
       <parameter type-id='type-id-79' name='fp' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmexp.c' line='33' column='1'/>
@@ -976,20 +976,20 @@
       <return type-id='type-id-8'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='gdbmfdesc.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='gdbmfdesc.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <function-decl name='gdbm_fdesc' mangled-name='gdbm_fdesc' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmfdesc.c' line='28' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gdbm_fdesc'>
       <parameter type-id='type-id-10' name='dbf' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmfdesc.c' line='28' column='1'/>
       <return type-id='type-id-8'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='gdbmfetch.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='gdbmfetch.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <function-decl name='gdbm_fetch' mangled-name='gdbm_fetch' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmfetch.c' line='30' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gdbm_fetch'>
       <parameter type-id='type-id-10' name='dbf' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmfetch.c' line='30' column='1'/>
       <parameter type-id='type-id-55' name='key' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmfetch.c' line='30' column='1'/>
       <return type-id='type-id-55'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='gdbmimp.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='gdbmimp.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <function-decl name='gdbm_import_from_file' mangled-name='gdbm_import_from_file' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmimp.c' line='28' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gdbm_import_from_file'>
       <parameter type-id='type-id-10' name='dbf' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmimp.c' line='28' column='1'/>
       <parameter type-id='type-id-79' name='fp' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmimp.c' line='28' column='1'/>
@@ -1003,7 +1003,7 @@
       <return type-id='type-id-8'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='gdbmload.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='gdbmload.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <array-type-def dimensions='1' type-id='type-id-80' size-in-bits='256' id='type-id-81'>
       <subrange length='2' type-id='type-id-36' id='type-id-82'/>
     </array-type-def>
@@ -1100,7 +1100,7 @@
       <return type-id='type-id-8'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='gdbmopen.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='gdbmopen.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <pointer-type-def type-id='type-id-48' size-in-bits='64' id='type-id-88'/>
     <pointer-type-def type-id='type-id-35' size-in-bits='64' id='type-id-52'/>
     <function-decl name='gdbm_avail_table_valid_p' mangled-name='gdbm_avail_table_valid_p' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmopen.c' line='82' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gdbm_avail_table_valid_p'>
@@ -1150,13 +1150,13 @@
       <return type-id='type-id-12'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='gdbmreorg.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='gdbmreorg.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <function-decl name='gdbm_reorganize' mangled-name='gdbm_reorganize' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmreorg.c' line='32' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gdbm_reorganize'>
       <parameter type-id='type-id-10' name='dbf' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmreorg.c' line='32' column='1'/>
       <return type-id='type-id-8'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='gdbmseq.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='gdbmseq.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <function-decl name='gdbm_firstkey' mangled-name='gdbm_firstkey' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmseq.c' line='98' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gdbm_firstkey'>
       <parameter type-id='type-id-10' name='dbf' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmseq.c' line='98' column='1'/>
       <return type-id='type-id-55'/>
@@ -1167,7 +1167,7 @@
       <return type-id='type-id-55'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='gdbmsetopt.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='gdbmsetopt.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <function-decl name='gdbm_setopt' mangled-name='gdbm_setopt' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmsetopt.c' line='333' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gdbm_setopt'>
       <parameter type-id='type-id-10' name='dbf' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmsetopt.c' line='333' column='1'/>
       <parameter type-id='type-id-8' name='optflag' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmsetopt.c' line='333' column='1'/>
@@ -1176,7 +1176,7 @@
       <return type-id='type-id-8'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='gdbmstore.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='gdbmstore.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <function-decl name='gdbm_store' mangled-name='gdbm_store' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmstore.c' line='40' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gdbm_store'>
       <parameter type-id='type-id-10' name='dbf' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmstore.c' line='40' column='1'/>
       <parameter type-id='type-id-55' name='key' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmstore.c' line='40' column='1'/>
@@ -1185,13 +1185,13 @@
       <return type-id='type-id-8'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='gdbmsync.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='gdbmsync.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <function-decl name='gdbm_sync' mangled-name='gdbm_sync' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmsync.c' line='28' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gdbm_sync'>
       <parameter type-id='type-id-10' name='dbf' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmsync.c' line='28' column='1'/>
       <return type-id='type-id-8'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hash.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='hash.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <function-decl name='_gdbm_hash' mangled-name='_gdbm_hash' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/hash.c' line='31' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_gdbm_hash'>
       <parameter type-id='type-id-55' name='key' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/hash.c' line='31' column='1'/>
       <return type-id='type-id-8'/>
@@ -1210,7 +1210,7 @@
       <return type-id='type-id-12'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='lock.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='lock.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <function-decl name='_gdbm_unlock_file' mangled-name='_gdbm_unlock_file' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/lock.c' line='60' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_gdbm_unlock_file'>
       <parameter type-id='type-id-10' name='dbf' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/lock.c' line='60' column='1'/>
       <return type-id='type-id-12'/>
@@ -1220,7 +1220,7 @@
       <return type-id='type-id-8'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='mmap.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='mmap.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <typedef-decl name='ssize_t' type-id='type-id-89' filepath='/usr/include/sys/types.h' line='108' column='1' id='type-id-90'/>
     <typedef-decl name='__ssize_t' type-id='type-id-20' filepath='/usr/include/bits/types.h' line='193' column='1' id='type-id-89'/>
     <function-decl name='_gdbm_file_size' mangled-name='_gdbm_file_size' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/mmap.c' line='60' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_gdbm_file_size'>
@@ -1270,7 +1270,7 @@
       <return type-id='type-id-8'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='recover.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='recover.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <type-decl name='variadic parameter type' id='type-id-91'/>
     <typedef-decl name='gdbm_recovery' type-id='type-id-92' filepath='./gdbm.h' line='157' column='1' id='type-id-93'/>
     <class-decl name='gdbm_recovery_s' size-in-bits='704' is-struct='yes' visibility='default' filepath='./gdbm.h' line='137' column='1' id='type-id-92'>
@@ -1333,7 +1333,7 @@
       <return type-id='type-id-12'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='update.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='update.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <function-decl name='_gdbm_end_update' mangled-name='_gdbm_end_update' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/update.c' line='62' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_gdbm_end_update'>
       <parameter type-id='type-id-10' name='dbf' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/update.c' line='62' column='1'/>
       <return type-id='type-id-8'/>
@@ -1344,7 +1344,7 @@
       <return type-id='type-id-12'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='version.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
+  <abi-instr address-size='64' path='version.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <qualified-type-def type-id='type-id-8' const='yes' id='type-id-97'/>
     <pointer-type-def type-id='type-id-97' size-in-bits='64' id='type-id-98'/>
     <function-decl name='gdbm_version_cmp' mangled-name='gdbm_version_cmp' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/version.c' line='39' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gdbm_version_cmp'>

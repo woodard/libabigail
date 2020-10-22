@@ -1768,6 +1768,38 @@ consider_types_not_reachable_from_public_interfaces(read_context& ctxt,
 						    bool flag)
 {ctxt.tracking_non_reachable_types(flag);}
 
+/// Read the "version" attribute from the current XML element which is
+/// supposed to be a corpus or a corpus group and set the format
+/// version to the corpus object accordingly.
+///
+/// Note that this is a subroutine of read_corpus_from_input and
+/// read_corpus_group_from_input.
+///
+/// @param reader the XML reader to consider.  That reader must be
+/// set to an XML element representing a corpus or a corpus group.
+///
+/// @param corp output parameter.  The corpus object which format
+/// version string is going to be set according to the value of the
+/// "version" attribute found on the current XML element.
+static void
+handle_version_attribute(xml::reader_sptr& reader, corpus& corp)
+{
+  string version_string;
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(reader, "version"))
+    xml::xml_char_sptr_to_string(s, version_string);
+
+  vector<string> v;
+  if (version_string.empty())
+    {
+      v.push_back("1");
+      v.push_back("0");
+    }
+  else
+    tools_utils::split_string(version_string, ".", v);
+  corp.set_format_major_version_number(v[0]);
+  corp.set_format_minor_version_number(v[1]);
+}
+
 /// Parse the input XML document containing an ABI corpus, represented
 /// by an 'abi-corpus' element node, associated to the current
 /// context.
@@ -1810,6 +1842,8 @@ read_corpus_from_input(read_context& ctxt)
 
       corpus& corp = *ctxt.get_corpus();
       ctxt.set_exported_decls_builder(corp.get_exported_decls_builder().get());
+
+      handle_version_attribute(reader, corp);
 
       xml::xml_char_sptr path_str = XML_READER_GET_ATTRIBUTE(reader, "path");
       string path;
@@ -2001,6 +2035,9 @@ read_corpus_group_from_input(read_context& ctxt)
     }
 
   corpus_group_sptr group = ctxt.get_corpus_group();
+
+  handle_version_attribute(reader, *group);
+
   xml::xml_char_sptr path_str = XML_READER_GET_ATTRIBUTE(reader, "path");
   if (path_str)
     group->set_path(reinterpret_cast<char*>(path_str.get()));

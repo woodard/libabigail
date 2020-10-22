@@ -1,4 +1,4 @@
-<abi-corpus architecture='elf-amd-x86_64' soname='libharfbuzz.so.0'>
+<abi-corpus version='2.0' architecture='elf-amd-x86_64' soname='libharfbuzz.so.0'>
   <elf-needed>
     <dependency name='libglib-2.0.so.0'/>
     <dependency name='libfreetype.so.6'/>
@@ -518,7 +518,7 @@
     <!-- hb_version_string -->
     <elf-symbol name='hb_version_string' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
-  <abi-instr version='1.0' address-size='64' path='hb-blob.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-blob.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <!-- bool -->
     <type-decl name='bool' size-in-bits='8' id='type-id-1'/>
     <!-- char -->
@@ -996,7 +996,7 @@
       <return type-id='type-id-13'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-buffer-serialize.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-buffer-serialize.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <!-- const char*[8] -->
     <array-type-def dimensions='1' type-id='type-id-31' size-in-bits='512' id='type-id-70'>
       <!-- <anonymous range>[8] -->
@@ -2341,7 +2341,7 @@
     <!-- typedef uint32_t hb_tag_t -->
     <typedef-decl name='hb_tag_t' type-id='type-id-106' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-common.h' line='91' column='1' id='type-id-223'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-buffer.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-buffer.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <!-- struct hb_utf_t<unsigned int, true> -->
     <class-decl name='hb_utf_t&lt;unsigned int, true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-utf-private.hh' line='32' column='1' id='type-id-224'/>
     <!-- struct hb_utf_t<short unsigned int, true> -->
@@ -2730,7 +2730,7 @@
       <return type-id='type-id-13'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-common.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-common.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <!-- char[1] -->
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='8' id='type-id-239'>
       <!-- <anonymous range>[1] -->
@@ -2883,7 +2883,7 @@
       <return type-id='type-id-131'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-face.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-face.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <!-- OffsetTo<OT::OffsetTable, OT::IntType<unsigned int, 4u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-249' size-in-bits='32' id='type-id-250'>
       <!-- <anonymous range>[1] -->
@@ -13738,7 +13738,7 @@
       <subrange length='1' type-id='type-id-4' id='type-id-171'/>
     </array-type-def>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-font.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-font.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <!-- hb_font_t* const -->
     <qualified-type-def type-id='type-id-143' const='yes' id='type-id-1120'/>
     <!-- int* -->
@@ -14366,7 +14366,7 @@
       <return type-id='type-id-13'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-ft.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-ft.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <!-- struct FT_FaceRec_ -->
     <class-decl name='FT_FaceRec_' size-in-bits='1984' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='959' column='1' id='type-id-1122'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -15179,7 +15179,7 @@
     <!-- struct FT_SubGlyphRec_ -->
     <class-decl name='FT_SubGlyphRec_' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1209'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-glib.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-glib.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <!-- enum GUnicodeScript -->
     <enum-decl name='GUnicodeScript' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/glib@2.42.1-46d6a76b/include/glib-2.0/glib/gunicode.h' line='409' column='1' id='type-id-1215'>
       <underlying-type type-id='type-id-11'/>
@@ -15331,7 +15331,7 @@
       <return type-id='type-id-116'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-ot-font.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-ot-font.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <!-- BYTE[256] -->
     <array-type-def dimensions='1' type-id='type-id-1000' size-in-bits='2048' id='type-id-971'>
       <!-- <anonymous range>[256] -->
@@ -16650,7 +16650,7 @@
     <!-- const OT::Supplier<OT::IntType<short unsigned int, 2u> > -->
     <qualified-type-def type-id='type-id-1275' const='yes' id='type-id-1373'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-ot-layout.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-ot-layout.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <!-- EntryExitRecord[1] -->
     <array-type-def dimensions='1' type-id='type-id-1003' size-in-bits='32' id='type-id-937'>
       <!-- <anonymous range>[1] -->
@@ -26174,7 +26174,7 @@
     <!-- void* (const hb_ot_shape_plan_t*)* -->
     <pointer-type-def type-id='type-id-2358' size-in-bits='64' id='type-id-2348'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-ot-map.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-ot-map.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <!-- feature_info_t[32] -->
     <array-type-def dimensions='1' type-id='type-id-2359' size-in-bits='7168' id='type-id-2360'>
       <!-- <anonymous range>[32] -->
@@ -26381,7 +26381,7 @@
     <!-- hb_prealloced_array_t<hb_ot_map_t::stage_map_t, 4u>* const -->
     <qualified-type-def type-id='type-id-2290' const='yes' id='type-id-2392'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-arabic.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-ot-shape-complex-arabic.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <!-- OT::ArrayOf<OT::Offset<OT::IntType<short unsigned int, 2u> >, OT::IntType<short unsigned int, 2u> >& -->
     <reference-type-def kind='lvalue' type-id='type-id-619' size-in-bits='64' id='type-id-423'/>
     <!-- OT::ArrayOf<OT::OffsetTo<OT::Ligature, OT::IntType<short unsigned int, 2u> >, OT::IntType<short unsigned int, 2u> >& -->
@@ -26447,15 +26447,15 @@
     <!-- const unsigned int* -->
     <pointer-type-def type-id='type-id-105' size-in-bits='64' id='type-id-2311'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-default.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-ot-shape-complex-default.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-hangul.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-ot-shape-complex-hangul.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-hebrew.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-ot-shape-complex-hebrew.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-indic-table.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-ot-shape-complex-indic-table.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-indic.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-ot-shape-complex-indic.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <!-- hb_mask_t[21] -->
     <array-type-def dimensions='1' type-id='type-id-133' size-in-bits='672' id='type-id-2403'>
       <!-- <anonymous range>[21] -->
@@ -26605,19 +26605,19 @@
     <!-- would_substitute_feature_t* const -->
     <qualified-type-def type-id='type-id-2421' const='yes' id='type-id-2422'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-myanmar.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-ot-shape-complex-myanmar.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-sea.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-ot-shape-complex-sea.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-thai.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-ot-shape-complex-thai.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-tibetan.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-ot-shape-complex-tibetan.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-ot-shape-fallback.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-ot-shape-fallback.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-ot-shape-normalize.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-ot-shape-normalize.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-ot-shape.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-ot-shape.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <!-- char[8] -->
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='64' id='type-id-2346'>
       <!-- <anonymous range>[8] -->
@@ -26887,7 +26887,7 @@
       <return type-id='type-id-33'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-ot-tag.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-ot-tag.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <!-- hb_tag_t* -->
     <pointer-type-def type-id='type-id-223' size-in-bits='64' id='type-id-1399'/>
     <!-- hb_language_t hb_ot_tag_to_language(hb_tag_t) -->
@@ -26923,7 +26923,7 @@
       <return type-id='type-id-13'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-set.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-set.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <!-- elt_t[2048] -->
     <array-type-def dimensions='1' type-id='type-id-1072' size-in-bits='65536' id='type-id-1073'>
       <!-- <anonymous range>[2048] -->
@@ -27207,7 +27207,7 @@
       <return type-id='type-id-28'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-shape-plan.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-shape-plan.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <!-- hb_shape_plan_t* hb_shape_plan_get_empty() -->
     <function-decl name='hb_shape_plan_get_empty' mangled-name='hb_shape_plan_get_empty' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-shape-plan.cc' line='164' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='hb_shape_plan_get_empty'>
       <!-- hb_shape_plan_t* -->
@@ -27308,7 +27308,7 @@
     <!-- const char* const -->
     <qualified-type-def type-id='type-id-31' const='yes' id='type-id-2443'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-shape.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-shape.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <!-- const char* const -->
     <qualified-type-def type-id='type-id-31' const='yes' id='type-id-2443'/>
     <!-- const char* const* -->
@@ -27369,7 +27369,7 @@
       <return type-id='type-id-28'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='hb-unicode.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='hb-unicode.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <!-- hb_unicode_funcs_t* hb_unicode_funcs_get_empty() -->
     <function-decl name='hb_unicode_funcs_get_empty' mangled-name='hb_unicode_funcs_get_empty' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-unicode.cc' line='215' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='hb_unicode_funcs_get_empty'>
       <!-- hb_unicode_funcs_t* -->

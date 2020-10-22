@@ -57,6 +57,7 @@ private:
   corpus();
 
   void set_group(corpus_group*);
+  void init_format_version();
 
 public:
   shared_ptr<priv> priv_;
@@ -72,7 +73,7 @@ public:
   get_environment();
 
   void
-  set_environment(environment*) const;
+  set_environment(environment*);
 
   void
   add(const translation_unit_sptr);
@@ -121,6 +122,18 @@ public:
 
   void
   set_origin(origin);
+
+  string&
+  get_format_major_version_number() const;
+
+  void
+  set_format_major_version_number(const string&);
+
+  string&
+  get_format_minor_version_number() const;
+
+  void
+  set_format_minor_version_number(const string&);
 
   string&
   get_path() const;

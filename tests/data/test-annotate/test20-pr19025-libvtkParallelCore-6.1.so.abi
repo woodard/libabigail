@@ -1,4 +1,4 @@
-<abi-corpus architecture='elf-amd-x86_64' soname='libvtkParallelCore-6.1.so.1'>
+<abi-corpus version='2.0' architecture='elf-amd-x86_64' soname='libvtkParallelCore-6.1.so.1'>
   <elf-needed>
     <dependency name='libvtkIOLegacy-6.1.so.1'/>
     <dependency name='libvtkIOCore-6.1.so.1'/>
@@ -752,7 +752,7 @@
     <!-- vtable for vtkCommunicator::Operation -->
     <elf-symbol name='_ZTVN15vtkCommunicator9OperationE' size='48' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkCommunicator.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkCommunicator.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
     <!-- bool -->
     <type-decl name='bool' size-in-bits='8' id='type-id-1'/>
     <!-- char -->
@@ -7873,7 +7873,7 @@
     <!-- void (void*, void*, int, int)* -->
     <pointer-type-def type-id='type-id-545' size-in-bits='64' id='type-id-544'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkDummyCommunicator.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkDummyCommunicator.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
     <!-- class vtkDummyCommunicator -->
     <class-decl name='vtkDummyCommunicator' size-in-bits='576' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkDummyCommunicator.h' line='32' column='1' id='type-id-546'>
       <!-- class vtkCommunicator -->
@@ -8006,7 +8006,7 @@
     <!-- vtkDummyCommunicator* -->
     <pointer-type-def type-id='type-id-546' size-in-bits='64' id='type-id-547'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkDummyController.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkDummyController.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
     <!-- struct vtkMultiProcessController -->
     <class-decl name='vtkMultiProcessController' size-in-bits='896' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessController.h' line='63' column='1' id='type-id-533'>
       <!-- class vtkObject -->
@@ -11319,7 +11319,7 @@
     <!-- const __gnu_cxx::new_allocator<vtksys::_Hashtable_node<std::pair<const int, void*> >*> -->
     <qualified-type-def type-id='type-id-720' const='yes' id='type-id-739'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkFieldDataSerializer.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkFieldDataSerializer.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
     <!-- class vtkFieldDataSerializer -->
     <class-decl name='vtkFieldDataSerializer' size-in-bits='384' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkFieldDataSerializer.h' line='41' column='1' id='type-id-740'>
       <!-- class vtkObject -->
@@ -11596,7 +11596,7 @@
     <!-- class vtkStringArray -->
     <class-decl name='vtkStringArray' visibility='default' is-declaration-only='yes' id='type-id-756'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessController.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessController.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
     <!-- class vtkProcess -->
     <class-decl name='vtkProcess' size-in-bits='512' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkProcess.h' line='44' column='1' id='type-id-591'>
       <!-- class vtkObject -->
@@ -17835,7 +17835,7 @@
     <!-- int* const -->
     <qualified-type-def type-id='type-id-90' const='yes' id='type-id-1231'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessStream.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessStream.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
     <!-- size_t[4] -->
     <array-type-def dimensions='1' type-id='type-id-40' size-in-bits='256' id='type-id-451'>
       <!-- <anonymous range>[4] -->
@@ -19213,7 +19213,7 @@
       </function-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkProcess.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkProcess.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
     <!-- const vtkProcess -->
     <qualified-type-def type-id='type-id-591' const='yes' id='type-id-659'/>
     <!-- const vtkProcess& -->
@@ -19223,7 +19223,7 @@
     <!-- vtkProcess* const -->
     <qualified-type-def type-id='type-id-564' const='yes' id='type-id-595'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkProcessGroup.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkProcessGroup.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
     <!-- const vtkProcessGroup -->
     <qualified-type-def type-id='type-id-593' const='yes' id='type-id-660'/>
     <!-- const vtkProcessGroup& -->
@@ -19271,7 +19271,7 @@
       </function-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketCommunicator.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketCommunicator.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
     <!-- class vtkSocketCommunicator -->
     <class-decl name='vtkSocketCommunicator' size-in-bits='1088' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketCommunicator.h' line='55' column='1' id='type-id-1286'>
       <!-- class vtkCommunicator -->
@@ -22262,7 +22262,7 @@
     <!-- class vtkSocket -->
     <class-decl name='vtkSocket' visibility='default' is-declaration-only='yes' id='type-id-1521'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketController.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketController.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
     <!-- class vtkSocketController -->
     <class-decl name='vtkSocketController' size-in-bits='896' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketController.h' line='47' column='1' id='type-id-1549'>
       <!-- struct vtkMultiProcessController -->
@@ -22509,7 +22509,7 @@
     <!-- vtkSocketController* const -->
     <qualified-type-def type-id='type-id-1550' const='yes' id='type-id-1552'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSubCommunicator.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSubCommunicator.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
     <!-- class vtkSubCommunicator -->
     <class-decl name='vtkSubCommunicator' size-in-bits='640' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSubCommunicator.h' line='52' column='1' id='type-id-1555'>
       <!-- class vtkCommunicator -->
@@ -22666,7 +22666,7 @@
     <!-- vtkSubCommunicator* -->
     <pointer-type-def type-id='type-id-1555' size-in-bits='64' id='type-id-1556'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSubGroup.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSubGroup.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>
     <!-- int[20] -->
     <array-type-def dimensions='1' type-id='type-id-19' size-in-bits='640' id='type-id-1560'>
       <!-- <anonymous range>[20] -->

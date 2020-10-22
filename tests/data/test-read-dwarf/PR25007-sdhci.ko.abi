@@ -1,4 +1,4 @@
-<abi-corpus path='data/test-read-dwarf/PR25007-sdhci.ko'>
+<abi-corpus version='2.0' path='data/test-read-dwarf/PR25007-sdhci.ko'>
   <elf-function-symbols>
     <elf-symbol name='__sdhci_add_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='__sdhci_read_caps' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
@@ -42,7 +42,7 @@
   <elf-variable-symbols>
     <elf-symbol name='__this_module' size='896' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
-  <abi-instr version='1.0' address-size='64' path='/ws/android/kernel/aosp/common-mainline/common/drivers/mmc/host/sdhci.c' comp-dir-path='/ws/android/kernel/aosp/common-mainline/out/android-mainline/common' language='LANG_C89'>
+  <abi-instr address-size='64' path='/ws/android/kernel/aosp/common-mainline/common/drivers/mmc/host/sdhci.c' comp-dir-path='/ws/android/kernel/aosp/common-mainline/out/android-mainline/common' language='LANG_C89'>
     <type-decl name='__ARRAY_SIZE_TYPE__' size-in-bits='64' id='type-id-1'/>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='64' id='type-id-3'>
       <subrange length='2' type-id='type-id-1' id='type-id-4'/>
@@ -11483,7 +11483,7 @@
       <return type-id='type-id-225'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='drivers/mmc/host/sdhci.mod.c' comp-dir-path='/ws/android/kernel/aosp/common-mainline/out/android-mainline/common' language='LANG_C89'>
+  <abi-instr address-size='64' path='drivers/mmc/host/sdhci.mod.c' comp-dir-path='/ws/android/kernel/aosp/common-mainline/out/android-mainline/common' language='LANG_C89'>
     <var-decl name='__this_module' type-id='type-id-475' mangled-name='__this_module' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/out/android-mainline/common/drivers/mmc/host/sdhci.mod.c' line='11' column='1' elf-symbol-id='__this_module'/>
   </abi-instr>
 </abi-corpus>

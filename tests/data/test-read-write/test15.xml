@@ -1,4 +1,4 @@
-<abi-instr version='1.0' path='data/test-read-write/test15.xml'>
+<abi-instr path='data/test-read-write/test15.xml'>
   <type-decl name='int' size-in-bits='32' alignment-in-bits='32' id='type-id-1'/>
   <class-template-decl id='class-tmpl-id-2'>
     <template-type-parameter id='type-id-3' name='T'/>

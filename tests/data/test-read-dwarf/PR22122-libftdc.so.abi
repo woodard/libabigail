@@ -1,4 +1,4 @@
-<abi-corpus path='data/test-read-dwarf/PR22122-libftdc.so'>
+<abi-corpus version='2.0' path='data/test-read-dwarf/PR22122-libftdc.so'>
   <elf-needed>
     <dependency name='build/cached/third_party/s2/libs2.so'/>
     <dependency name='build/cached/third_party/s2/util/math/libmath.so'/>
@@ -244,7 +244,7 @@
     <elf-symbol name='_ZZN5mongo11BSONElementC1EvE11kEooElement' size='2' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZZN5mongo7BSONObjC1EvE21kEmptyObjectPrototype' size='5' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
-  <abi-instr version='1.0' address-size='64' path='src/mongo/db/ftdc/block_compressor.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/mongo/db/ftdc/block_compressor.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <type-decl name='bool' size-in-bits='8' id='type-id-1'/>
     <type-decl name='char' size-in-bits='8' id='type-id-2'/>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='168' id='type-id-3'>
@@ -2440,7 +2440,7 @@
     <class-decl name='__anonymous_struct__6' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-41' visibility='default' is-declaration-only='yes' id='type-id-43'/>
     <qualified-type-def type-id='type-id-179' const='yes' id='type-id-183'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/mongo/db/ftdc/collector.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/mongo/db/ftdc/collector.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <typedef-decl name='clock_t' type-id='type-id-184' filepath='/usr/include/time.h' line='59' column='1' id='type-id-185'/>
     <typedef-decl name='__clock_t' type-id='type-id-18' filepath='/usr/include/x86_64-linux-gnu/bits/types.h' line='135' column='1' id='type-id-184'/>
     <typedef-decl name='time_t' type-id='type-id-186' filepath='/usr/include/time.h' line='75' column='1' id='type-id-187'/>
@@ -2912,7 +2912,7 @@
       <return type-id='type-id-30'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/mongo/db/ftdc/compressor.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/mongo/db/ftdc/compressor.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <typedef-decl name='is_not_reference_tag' type-id='type-id-233' filepath='src/third_party/boost-1.60.0/boost/optional/optional.hpp' line='219' column='1' id='type-id-234'/>
     <typedef-decl name='uint32_t' type-id='type-id-23' filepath='/usr/include/stdint.h' line='51' column='1' id='type-id-235'/>
     <typedef-decl name='uint64_t' type-id='type-id-24' filepath='/usr/include/stdint.h' line='55' column='1' id='type-id-236'/>
@@ -3289,7 +3289,7 @@
       <class-decl name='__anonymous_struct__2' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-58'/>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/mongo/db/ftdc/controller.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/mongo/db/ftdc/controller.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='832' id='type-id-265'>
       <subrange length='104' type-id='type-id-4' id='type-id-266'/>
     </array-type-def>
@@ -3920,7 +3920,7 @@
       </namespace-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/mongo/db/ftdc/decompressor.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/mongo/db/ftdc/decompressor.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <pointer-type-def type-id='type-id-324' size-in-bits='64' id='type-id-325'/>
     <qualified-type-def type-id='type-id-131' const='yes' id='type-id-326'/>
     <reference-type-def kind='lvalue' type-id='type-id-326' size-in-bits='64' id='type-id-327'/>
@@ -4215,7 +4215,7 @@
       <class-decl name='__anonymous_struct__5' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-58'/>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/mongo/db/ftdc/file_manager.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/mongo/db/ftdc/file_manager.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='16' id='type-id-334'>
       <subrange length='2' type-id='type-id-4' id='type-id-335'/>
     </array-type-def>
@@ -4958,7 +4958,7 @@
       </namespace-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/mongo/db/ftdc/file_reader.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/mongo/db/ftdc/file_reader.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='128' id='type-id-408'>
       <subrange length='16' type-id='type-id-4' id='type-id-409'/>
     </array-type-def>
@@ -5274,7 +5274,7 @@
       </namespace-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/mongo/db/ftdc/file_writer.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/mongo/db/ftdc/file_writer.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='632' id='type-id-443'>
       <subrange length='79' type-id='type-id-4' id='type-id-444'/>
     </array-type-def>
@@ -5492,7 +5492,7 @@
       </namespace-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/mongo/db/ftdc/util.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/mongo/db/ftdc/util.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='56' id='type-id-453'>
       <subrange length='7' type-id='type-id-4' id='type-id-454'/>
     </array-type-def>
@@ -5885,7 +5885,7 @@
       </namespace-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/mongo/db/ftdc/varint.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/mongo/db/ftdc/varint.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <namespace-decl name='mongo'>
       <class-decl name='__anonymous_struct__' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-86'/>
       <class-decl name='__anonymous_struct__1' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-86'>

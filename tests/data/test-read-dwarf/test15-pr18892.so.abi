@@ -1,4 +1,4 @@
-<abi-corpus path='data/test-read-dwarf/test15-pr18892.so' soname='libtsan.so.0'>
+<abi-corpus version='2.0' path='data/test-read-dwarf/test15-pr18892.so' soname='libtsan.so.0'>
   <elf-needed>
     <dependency name='librt.so.1'/>
     <dependency name='libpthread.so.0'/>
@@ -1524,7 +1524,7 @@
     <elf-symbol name='__asan_cplus_demangle_builtin_types' size='1056' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='__asan_cplus_demangle_operators' size='1488' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/interception/interception_linux.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/interception' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/interception/interception_linux.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/interception' language='LANG_C_plus_plus'>
     <function-decl name='dlvsym' filepath='/usr/include/dlfcn.h' line='74' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-1'/>
       <parameter type-id='type-id-2'/>
@@ -1537,9 +1537,9 @@
     <type-decl name='void' id='type-id-4'/>
     <type-decl name='char' size-in-bits='8' id='type-id-5'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/interception/interception_type_test.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/interception' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/interception/interception_type_test.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/interception' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
     <class-decl name='backtrace_freelist_struct' size-in-bits='128' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='55' column='1' id='type-id-6'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='next' type-id='type-id-7' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='58' column='1'/>
@@ -1735,7 +1735,7 @@
       <return type-id='type-id-4'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/elf.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/elf.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
     <function-decl name='dl_iterate_phdr' filepath='/usr/include/link.h' line='167' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-1'/>
@@ -1749,7 +1749,7 @@
       <return type-id='type-id-25'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
     <function-decl name='__asan_backtrace_pcinfo' mangled-name='__asan_backtrace_pcinfo' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='166' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_pcinfo'>
       <parameter type-id='type-id-23' name='state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='166' column='1'/>
       <parameter type-id='type-id-24' name='pc' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='166' column='1'/>
@@ -1783,7 +1783,7 @@
     </function-decl>
     <pointer-type-def type-id='type-id-25' size-in-bits='64' id='type-id-42'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
     <class-decl name='backtrace_state' size-in-bits='576' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='127' column='1' id='type-id-28'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='filename' type-id='type-id-2' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='130' column='1'/>
@@ -1824,7 +1824,7 @@
       <return type-id='type-id-1'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
     <typedef-decl name='off_t' type-id='type-id-43' filepath='/usr/include/sys/types.h' line='87' column='1' id='type-id-44'/>
     <typedef-decl name='__off_t' type-id='type-id-45' filepath='/usr/include/bits/types.h' line='141' column='1' id='type-id-43'/>
     <class-decl name='backtrace_view' size-in-bits='192' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/internal.h' line='169' column='1' id='type-id-46'>
@@ -1875,7 +1875,7 @@
     </function-decl>
     <type-decl name='long int' size-in-bits='64' id='type-id-45'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/posix.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/posix.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
     <function-decl name='__asan_backtrace_close' mangled-name='__asan_backtrace_close' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/posix.c' line='91' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_close'>
       <parameter type-id='type-id-25' name='descriptor' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/posix.c' line='91' column='1'/>
       <parameter type-id='type-id-26' name='error_callback' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/posix.c' line='91' column='1'/>
@@ -1902,7 +1902,7 @@
       <return type-id='type-id-25'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/state.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/state.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
     <function-decl name='__asan_backtrace_create_state' mangled-name='__asan_backtrace_create_state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/state.c' line='46' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_create_state'>
       <parameter type-id='type-id-2' name='filename' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/state.c' line='46' column='1'/>
       <parameter type-id='type-id-25' name='threaded' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/state.c' line='46' column='1'/>
@@ -1911,7 +1911,7 @@
       <return type-id='type-id-23'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
     <array-type-def dimensions='1' type-id='type-id-48' size-in-bits='8448' id='type-id-49'>
       <subrange length='33' type-id='type-id-50' id='type-id-51'/>
     </array-type-def>
@@ -2387,9 +2387,9 @@
       <return type-id='type-id-4'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/bridge.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/libbacktrace/bridge.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_allocator.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_allocator.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <qualified-type-def type-id='type-id-91' const='yes' id='type-id-92'/>
     <pointer-type-def type-id='type-id-93' size-in-bits='64' id='type-id-94'/>
     <qualified-type-def type-id='type-id-94' const='yes' id='type-id-95'/>
@@ -2737,7 +2737,7 @@
     <qualified-type-def type-id='type-id-159' volatile='yes' id='type-id-160'/>
     <type-decl name='long long unsigned int' size-in-bits='64' id='type-id-161'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_common.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_common.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-162' size-in-bits='768' id='type-id-163'>
       <subrange length='6' type-id='type-id-50' id='type-id-164'/>
     </array-type-def>
@@ -2926,9 +2926,9 @@
     <reference-type-def kind='lvalue' type-id='type-id-196' size-in-bits='64' id='type-id-193'/>
     <qualified-type-def type-id='type-id-189' const='yes' id='type-id-196'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_common_libcdep.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_common_libcdep.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_coverage.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_coverage.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <pointer-type-def type-id='type-id-197' size-in-bits='64' id='type-id-198'/>
     <qualified-type-def type-id='type-id-198' const='yes' id='type-id-199'/>
     <pointer-type-def type-id='type-id-200' size-in-bits='64' id='type-id-201'/>
@@ -3024,9 +3024,9 @@
     <type-decl name='unsigned int' size-in-bits='32' id='type-id-211'/>
     <pointer-type-def type-id='type-id-211' size-in-bits='64' id='type-id-219'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_flags.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_flags.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_libc.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_libc.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <namespace-decl name='__sanitizer'>
       <function-decl name='IsSpace' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common.h' line='299' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-25'/>
@@ -3075,7 +3075,7 @@
       </function-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_libignore.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_libignore.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <qualified-type-def type-id='type-id-220' const='yes' id='type-id-221'/>
     <qualified-type-def type-id='type-id-222' id='type-id-223'/>
     <pointer-type-def type-id='type-id-224' size-in-bits='64' id='type-id-220'/>
@@ -3287,7 +3287,7 @@
       </enum-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_linux.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_linux.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-5' size-in-bits='2048' id='type-id-246'>
       <subrange length='256' type-id='type-id-50' id='type-id-194'/>
     </array-type-def>
@@ -3637,7 +3637,7 @@
     </namespace-decl>
     <qualified-type-def type-id='type-id-287' volatile='yes' id='type-id-295'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_linux_libcdep.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_linux_libcdep.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-5' size-in-bits='448' id='type-id-296'>
       <subrange length='56' type-id='type-id-50' id='type-id-297'/>
     </array-type-def>
@@ -3722,12 +3722,12 @@
     <class-decl name='_Unwind_Context' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-303'/>
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-312'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_linux.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_linux.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <namespace-decl name='__sanitizer'>
       <var-decl name='struct_statfs64_sz' type-id='type-id-211' mangled-name='_ZN11__sanitizer18struct_statfs64_szE' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_linux.cc' line='63' column='1'/>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <namespace-decl name='__sanitizer'>
       <var-decl name='struct_utsname_sz' type-id='type-id-211' mangled-name='_ZN11__sanitizer17struct_utsname_szE' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.cc' line='120' column='1'/>
       <var-decl name='struct_stat_sz' type-id='type-id-211' mangled-name='_ZN11__sanitizer14struct_stat_szE' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.cc' line='121' column='1'/>
@@ -4267,7 +4267,7 @@
       <var-decl name='sigset_t_sz' type-id='type-id-211' mangled-name='_ZN11__sanitizer11sigset_t_szE' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.cc' line='138' column='1'/>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_posix.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_posix.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <namespace-decl name='__sanitizer'>
       <function-decl name='UnmapOrDie' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_posix.cc' line='71' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-1'/>
@@ -4280,7 +4280,7 @@
       </function-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_posix_libcdep.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_posix_libcdep.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <typedef-decl name='__uid_t' type-id='type-id-211' filepath='/usr/include/bits/types.h' line='135' column='1' id='type-id-313'/>
     <typedef-decl name='pthread_t' type-id='type-id-33' filepath='/usr/include/bits/pthreadtypes.h' line='50' column='1' id='type-id-314'/>
     <typedef-decl name='__useconds_t' type-id='type-id-211' filepath='/usr/include/bits/types.h' line='150' column='1' id='type-id-315'/>
@@ -4334,7 +4334,7 @@
     <typedef-decl name='rlim_t' type-id='type-id-321' filepath='/usr/include/bits/resource.h' line='127' column='1' id='type-id-320'/>
     <typedef-decl name='__rlim_t' type-id='type-id-33' filepath='/usr/include/bits/types.h' line='146' column='1' id='type-id-321'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_printf.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_printf.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <qualified-type-def type-id='type-id-168' const='yes' id='type-id-322'/>
     <pointer-type-def type-id='type-id-323' size-in-bits='64' id='type-id-324'/>
     <namespace-decl name='__sanitizer'>
@@ -4349,7 +4349,7 @@
       <return type-id='type-id-4'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_stackdepot.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_stackdepot.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-33' size-in-bits='64' id='type-id-325'>
       <subrange length='1' type-id='type-id-50' id='type-id-326'/>
     </array-type-def>
@@ -4493,11 +4493,11 @@
       <return type-id='type-id-112'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_stacktrace.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_stacktrace.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_stacktrace_libcdep.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_stacktrace_libcdep.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_stoptheworld_linux_libcdep.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_stoptheworld_linux_libcdep.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <typedef-decl name='pid_t' type-id='type-id-352' filepath='/usr/include/sched.h' line='37' column='1' id='type-id-353'/>
     <qualified-type-def type-id='type-id-354' const='yes' id='type-id-355'/>
     <pointer-type-def type-id='type-id-356' size-in-bits='64' id='type-id-357'/>
@@ -4672,7 +4672,7 @@
     <pointer-type-def type-id='type-id-386' size-in-bits='64' id='type-id-384'/>
     <reference-type-def kind='lvalue' type-id='type-id-382' size-in-bits='64' id='type-id-385'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_suppressions.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_suppressions.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <qualified-type-def type-id='type-id-240' const='yes' id='type-id-387'/>
     <qualified-type-def type-id='type-id-388' id='type-id-389'/>
     <qualified-type-def type-id='type-id-237' const='yes' id='type-id-390'/>
@@ -4693,7 +4693,7 @@
     <qualified-type-def type-id='type-id-239' const='yes' id='type-id-397'/>
     <qualified-type-def type-id='type-id-243' const='yes' id='type-id-398'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_symbolizer.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_symbolizer.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <qualified-type-def type-id='type-id-399' const='yes' id='type-id-400'/>
     <pointer-type-def type-id='type-id-401' size-in-bits='64' id='type-id-399'/>
     <namespace-decl name='__sanitizer'>
@@ -4875,7 +4875,7 @@
       </class-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_symbolizer_libbacktrace.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_symbolizer_libbacktrace.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <typedef-decl name='demangle_callbackref' type-id='type-id-89' filepath='../../.././libsanitizer/../include/demangle.h' line='150' column='1' id='type-id-87'/>
     <typedef-decl name='backtrace_error_callback' type-id='type-id-32' filepath='../../.././libsanitizer/../libbacktrace/backtrace.h' line='82' column='1' id='type-id-26'/>
     <typedef-decl name='uintptr_t' type-id='type-id-33' filepath='/usr/include/stdint.h' line='123' column='1' id='type-id-24'/>
@@ -4909,9 +4909,9 @@
       </class-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_symbolizer_libcdep.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_symbolizer_libcdep.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_symbolizer_posix_libcdep.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_symbolizer_posix_libcdep.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-5' size-in-bits='131072' id='type-id-415'>
       <subrange length='16384' type-id='type-id-50' id='type-id-416'/>
     </array-type-def>
@@ -5124,7 +5124,7 @@
       <return type-id='type-id-112'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_thread_registry.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_thread_registry.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <qualified-type-def type-id='type-id-430' const='yes' id='type-id-431'/>
     <qualified-type-def type-id='type-id-432' const='yes' id='type-id-433'/>
     <qualified-type-def type-id='type-id-434' const='yes' id='type-id-435'/>
@@ -5261,7 +5261,7 @@
       </enum-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_clock.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_clock.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <type-decl name='int' size-in-bits='32' id='type-id-25'/>
     <type-decl name='long long unsigned int' size-in-bits='64' id='type-id-161'/>
     <array-type-def dimensions='1' type-id='type-id-161' size-in-bits='1048576' id='type-id-442'>
@@ -5403,7 +5403,7 @@
       </function-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_fd.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_fd.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <namespace-decl name='__sanitizer'>
       <function-decl name='atomic_fetch_sub&lt;__sanitizer::atomic_uint64_t&gt;' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_atomic_clang.h' line='88' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-466'/>
@@ -7046,7 +7046,7 @@
       </class-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_flags.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_flags.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <pointer-type-def type-id='type-id-545' size-in-bits='64' id='type-id-576'/>
     <pointer-type-def type-id='type-id-112' size-in-bits='64' id='type-id-577'/>
     <pointer-type-def type-id='type-id-2' size-in-bits='64' id='type-id-578'/>
@@ -7061,13 +7061,13 @@
       </function-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_ignoreset.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_ignoreset.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <qualified-type-def type-id='type-id-492' const='yes' id='type-id-579'/>
     <qualified-type-def type-id='type-id-580' const='yes' id='type-id-581'/>
     <pointer-type-def type-id='type-id-582' size-in-bits='64' id='type-id-580'/>
     <qualified-type-def type-id='type-id-471' const='yes' id='type-id-582'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_interceptors.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_interceptors.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-227' size-in-bits='16384' id='type-id-228'>
       <subrange length='128' type-id='type-id-50' id='type-id-155'/>
     </array-type-def>
@@ -15713,7 +15713,7 @@
     <pointer-type-def type-id='type-id-1443' size-in-bits='64' id='type-id-671'/>
     <qualified-type-def type-id='type-id-1140' const='yes' id='type-id-1442'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_interface.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_interface.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <type-decl name='unsigned short int' size-in-bits='16' id='type-id-279'/>
     <typedef-decl name='uu16' type-id='type-id-1436' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_internal_defs.h' line='171' column='1' id='type-id-1444'/>
     <typedef-decl name='uu32' type-id='type-id-284' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_internal_defs.h' line='172' column='1' id='type-id-1445'/>
@@ -15793,7 +15793,7 @@
       <return type-id='type-id-4'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_interface_ann.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_interface_ann.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-5' size-in-bits='1024' id='type-id-1456'>
       <subrange length='128' type-id='type-id-50' id='type-id-155'/>
     </array-type-def>
@@ -16162,7 +16162,7 @@
       <return type-id='type-id-4'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_interface_atomic.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_interface_atomic.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <type-decl name='__int128' size-in-bits='128' id='type-id-1473'/>
     <array-type-def dimensions='1' type-id='type-id-128' size-in-bits='27136' id='type-id-133'>
       <subrange length='53' type-id='type-id-50' id='type-id-136'/>
@@ -18812,7 +18812,7 @@
       <return type-id='type-id-4'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_interface_java.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_interface_java.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <typedef-decl name='jptr' type-id='type-id-33' filepath='../../.././libsanitizer/tsan/tsan_interface_java.h' line='33' column='1' id='type-id-1582'/>
     <pointer-type-def type-id='type-id-1583' size-in-bits='64' id='type-id-1584'/>
     <pointer-type-def type-id='type-id-1585' size-in-bits='64' id='type-id-1586'/>
@@ -18932,7 +18932,7 @@
       <return type-id='type-id-25'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_md5.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_md5.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-17' size-in-bits='512' id='type-id-1589'>
       <subrange length='64' type-id='type-id-50' id='type-id-122'/>
     </array-type-def>
@@ -18973,7 +18973,7 @@
       </function-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_mman.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_mman.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-115' size-in-bits='16777216' id='type-id-111'>
       <subrange length='262144' type-id='type-id-50' id='type-id-116'/>
     </array-type-def>
@@ -19256,7 +19256,7 @@
       </function-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_mutex.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_mutex.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <pointer-type-def type-id='type-id-159' size-in-bits='64' id='type-id-1640'/>
     <pointer-type-def type-id='type-id-1641' size-in-bits='64' id='type-id-1642'/>
     <qualified-type-def type-id='type-id-1642' const='yes' id='type-id-1643'/>
@@ -19346,11 +19346,11 @@
       </class-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_mutexset.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_mutexset.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <qualified-type-def type-id='type-id-495' const='yes' id='type-id-1650'/>
     <qualified-type-def type-id='type-id-1545' const='yes' id='type-id-1651'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_platform_linux.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_platform_linux.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <class-decl name='rlimit' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/include/bits/resource.h' line='135' column='1' id='type-id-316'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='rlim_cur' type-id='type-id-320' visibility='default' filepath='/usr/include/bits/resource.h' line='138' column='1'/>
@@ -19568,7 +19568,7 @@
       <return type-id='type-id-4'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_report.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_report.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <type-decl name='variadic parameter type' id='type-id-1666'/>
     <pointer-type-def type-id='type-id-1667' size-in-bits='64' id='type-id-1668'/>
     <pointer-type-def type-id='type-id-1669' size-in-bits='64' id='type-id-1670'/>
@@ -20084,7 +20084,7 @@
       </function-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_rtl.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_rtl.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-5' size-in-bits='3448832' id='type-id-1754'>
       <subrange length='431104' type-id='type-id-50' id='type-id-1755'/>
     </array-type-def>
@@ -20551,7 +20551,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-1794' size-in-bits='64' id='type-id-1793'/>
     <qualified-type-def type-id='type-id-1790' const='yes' id='type-id-1794'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_rtl_mutex.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_rtl_mutex.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <qualified-type-def type-id='type-id-1552' const='yes' id='type-id-1795'/>
     <namespace-decl name='__tsan'>
       <function-decl name='AcquireImpl' filepath='../../.././libsanitizer/tsan/tsan_rtl_mutex.cc' line='310' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -20574,7 +20574,7 @@
       </function-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_rtl_report.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_rtl_report.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <qualified-type-def type-id='type-id-523' const='yes' id='type-id-1796'/>
     <pointer-type-def type-id='type-id-1797' size-in-bits='64' id='type-id-1798'/>
     <qualified-type-def type-id='type-id-1798' const='yes' id='type-id-1799'/>
@@ -20737,7 +20737,7 @@
     <qualified-type-def type-id='type-id-1827' const='yes' id='type-id-1828'/>
     <reference-type-def kind='lvalue' type-id='type-id-1828' size-in-bits='64' id='type-id-1829'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_rtl_thread.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_rtl_thread.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-1788' size-in-bits='5062656' id='type-id-1786'>
       <subrange length='256' type-id='type-id-50' id='type-id-194'/>
     </array-type-def>
@@ -21046,9 +21046,9 @@
       </function-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_stat.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_stat.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_suppressions.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_suppressions.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <qualified-type-def type-id='type-id-1141' const='yes' id='type-id-1854'/>
     <qualified-type-def type-id='type-id-239' const='yes' id='type-id-397'/>
     <reference-type-def kind='lvalue' type-id='type-id-397' size-in-bits='64' id='type-id-388'/>
@@ -21065,7 +21065,7 @@
       </function-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_symbolize.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_symbolize.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <reference-type-def kind='lvalue' type-id='type-id-409' size-in-bits='64' id='type-id-1859'/>
     <pointer-type-def type-id='type-id-409' size-in-bits='64' id='type-id-407'/>
     <pointer-type-def type-id='type-id-410' size-in-bits='64' id='type-id-408'/>
@@ -21295,7 +21295,7 @@
       <var-decl name='col' type-id='type-id-25' mangled-name='_ZN6__tsan3colE' visibility='default' filepath='../../.././libsanitizer/tsan/tsan_symbolize.cc' line='64' column='1'/>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_symbolize_addr2line_linux.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_symbolize_addr2line_linux.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <typedef-decl name='__pid_t' type-id='type-id-25' filepath='/usr/include/bits/types.h' line='143' column='1' id='type-id-352'/>
     <class-decl name='dl_phdr_info' size-in-bits='512' is-struct='yes' visibility='default' filepath='/usr/include/link.h' line='138' column='1' id='type-id-1866'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -21390,7 +21390,7 @@
       <return type-id='type-id-45'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/tsan/tsan_sync.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_sync.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <pointer-type-def type-id='type-id-1876' size-in-bits='64' id='type-id-1877'/>
     <pointer-type-def type-id='type-id-1878' size-in-bits='64' id='type-id-1879'/>
     <pointer-type-def type-id='type-id-1880' size-in-bits='64' id='type-id-1881'/>

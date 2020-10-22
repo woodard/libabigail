@@ -1,4 +1,4 @@
-<abi-instr version='1.0' path='data/test-read-write/test14.xml'>
+<abi-instr path='data/test-read-write/test14.xml'>
   <class-decl name='S' size-in-bits='8' alignment-in-bits='8' visibility='default' id='type-id-1'>
     <member-template access='public'>
       <function-template-decl id='fn-tmpl-id-2'>
