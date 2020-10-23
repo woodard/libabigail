@@ -222,7 +222,7 @@ enum abidiff_status
   /// Its numerical value is 0.
   ABIDIFF_OK = 0,
 
-  /// This bit is set if there an application error.
+  /// This bit is set if there is an application error.
   ///
   /// Its numerical value is 1.
   ABIDIFF_ERROR = 1,
