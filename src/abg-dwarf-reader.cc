@@ -392,24 +392,11 @@ die_signed_constant_attribute(const Dwarf_Die*die,
 static bool
 die_constant_attribute(const Dwarf_Die *die,
 		       unsigned attr_name,
+		       bool is_signed,
 		       array_type_def::subrange_type::bound_value &value);
 
 static bool
-die_attribute_has_form(const Dwarf_Die* die,
-		       unsigned	attr_name,
-		       unsigned int	form);
-
-static bool
 form_is_DW_FORM_strx(unsigned form);
-
-static bool
-die_attribute_is_signed(const Dwarf_Die* die, unsigned attr_name);
-
-static bool
-die_attribute_is_unsigned(const Dwarf_Die* die, unsigned attr_name);
-
-static bool
-die_attribute_has_no_signedness(const Dwarf_Die* die, unsigned attr_name);
 
 static bool
 die_address_attribute(Dwarf_Die* die, unsigned attr_name, Dwarf_Addr& result);
@@ -8111,7 +8098,7 @@ die_unsigned_constant_attribute(const Dwarf_Die*	die,
 
 /// Read a signed constant value from a given attribute.
 ///
-/// The signed constant expected must be of form DW_FORM_sdata.
+/// The signed constant expected must be of constant form.
 ///
 /// @param die the DIE to get the attribute from.
 ///
@@ -8149,6 +8136,9 @@ die_signed_constant_attribute(const Dwarf_Die *die,
 ///
 /// @param attr_name the attribute name to consider.
 ///
+/// @param is_signed true if the attribute value has to read as
+/// signed.
+///
 /// @param value the resulting value read from attribute @p attr_name
 /// on DIE @p die.
 ///
@@ -8157,10 +8147,10 @@ die_signed_constant_attribute(const Dwarf_Die *die,
 static bool
 die_constant_attribute(const Dwarf_Die *die,
 		       unsigned attr_name,
+		       bool is_signed,
 		       array_type_def::subrange_type::bound_value &value)
 {
-  if (die_attribute_is_unsigned(die, attr_name)
-      || die_attribute_has_no_signedness(die, attr_name))
+  if (!is_signed)
     {
       uint64_t l = 0;
       if (!die_unsigned_constant_attribute(die, attr_name, l))
@@ -8175,29 +8165,6 @@ die_constant_attribute(const Dwarf_Die *die,
       value.set_signed(l);
     }
   return true;
-}
-
-/// Test if a given attribute on a DIE has a particular form.
-///
-/// @param die the DIE to consider.
-///
-/// @param attr_name the attribute name to consider on DIE @p die.
-///
-/// @param attr_form the attribute form that we expect attribute @p
-/// attr_name has on DIE @p die.
-///
-/// @return true iff the attribute named @p attr_name on DIE @p die
-/// has the form @p attr_form.
-static bool
-die_attribute_has_form(const Dwarf_Die	*die,
-		       unsigned	attr_name,
-		       unsigned int	attr_form)
-{
-  Dwarf_Attribute attr;
-  if (!dwarf_attr_integrate(const_cast<Dwarf_Die*>(die), attr_name, &attr))
-    return false;
-
-  return dwarf_hasform(&attr, attr_form);
 }
 
 /// Test if a given DWARF form is DW_FORM_strx{1,4}.
@@ -8226,55 +8193,6 @@ form_is_DW_FORM_strx(unsigned form)
 #endif
     }
   return false;
-}
-
-/// Test if a given DIE attribute is signed.
-///
-/// @param die the DIE to consider.
-///
-/// @param attr_name the attribute name to consider.
-///
-/// @return true iff the attribute named @p attr_name on DIE @p die is
-/// signed.
-static bool
-die_attribute_is_signed(const Dwarf_Die* die, unsigned attr_name)
-{
-  if (die_attribute_has_form(die, attr_name, DW_FORM_sdata))
-    return true;
-  return false;
-}
-
-/// Test if a given DIE attribute is unsigned.
-///
-/// @param die the DIE to consider.
-///
-/// @param attr_name the attribute name to consider.
-///
-/// @return true iff the attribute named @p attr_name on DIE @p die is
-/// unsigned.
-static bool
-die_attribute_is_unsigned(const Dwarf_Die* die, unsigned attr_name)
-{
-  if (die_attribute_has_form(die, attr_name, DW_FORM_udata))
-    return true;
-  return false;
-}
-
-/// Test if a given DIE attribute is neither explicitely signed nor
-/// unsigned.  Usually this is the case for attribute of the form
-/// DW_FORM_data*.
-///
-/// @param die the DIE to consider.
-///
-/// @param attr_name the name of the attribute to consider.
-///
-/// @return true iff the attribute named @p attr_name of DIE @p die is
-/// neither specifically signed nor unsigned.
-static bool
-die_attribute_has_no_signedness(const Dwarf_Die *die, unsigned attr_name)
-{
-  return (!die_attribute_is_unsigned(die, attr_name)
-	  && !die_attribute_is_signed(die, attr_name));
 }
 
 /// Get the value of a DIE attribute; that value is meant to be a
@@ -8387,17 +8305,17 @@ die_die_attribute(const Dwarf_Die* die,
   return dwarf_formref_die(&attr, &result);
 }
 
-/// Read and return a DW_FORM_addr attribute from a given DIE.
+/// Read and return an addresss class attribute from a given DIE.
 ///
 /// @param die the DIE to consider.
 ///
-/// @param attr_name the name of the DW_FORM_addr attribute to read
+/// @param attr_name the name of the address class attribute to read
 /// the value from.
 ///
 /// @param the resulting address.
 ///
 /// @return true iff the attribute could be read, was of the expected
-/// DW_FORM_addr and could thus be translated into the @p result.
+/// address class and could thus be translated into the @p result.
 static bool
 die_address_attribute(Dwarf_Die* die, unsigned attr_name, Dwarf_Addr& result)
 {
@@ -14744,6 +14662,27 @@ build_subrange_type(read_context&	ctxt,
 
   string name = die_name(die);
 
+  // load the underlying type.
+  Dwarf_Die underlying_type_die;
+  type_base_sptr underlying_type;
+  /* Unless there is an underlying type which says differently.  */
+  bool is_signed = true;
+  if (die_die_attribute(die, DW_AT_type, underlying_type_die))
+    underlying_type =
+      is_type(build_ir_node_from_die(ctxt,
+				     &underlying_type_die,
+				     /*called_from_public_decl=*/true,
+				     where_offset));
+
+  if (underlying_type)
+    {
+      uint64_t ate;
+      if (die_unsigned_constant_attribute (&underlying_type_die,
+					   DW_AT_encoding,
+					   ate))
+	  is_signed = (ate == DW_ATE_signed || ate == DW_ATE_signed_char);
+    }
+
   translation_unit::language language = ctxt.cur_transl_unit()->get_language();
   array_type_def::subrange_type::bound_value lower_bound =
     get_default_array_lower_bound(language);
@@ -14760,10 +14699,10 @@ build_subrange_type(read_context&	ctxt,
   //     values of the subrange.
   //
   // So let's look for DW_AT_lower_bound first.
-  die_constant_attribute(die, DW_AT_lower_bound, lower_bound);
+  die_constant_attribute(die, DW_AT_lower_bound, is_signed, lower_bound);
 
   // Then, DW_AT_upper_bound.
-  if (!die_constant_attribute(die, DW_AT_upper_bound, upper_bound))
+  if (!die_constant_attribute(die, DW_AT_upper_bound, is_signed, upper_bound))
     {
       // The DWARF 4 spec says, in [5.11 Subrange Type
       // Entries]:
@@ -14806,16 +14745,6 @@ build_subrange_type(read_context&	ctxt,
 				       upper_bound,
 				       location()));
   result->is_infinite(is_infinite);
-
-  // load the underlying type.
-  Dwarf_Die underlying_type_die;
-  type_base_sptr underlying_type;
-  if (die_die_attribute(die, DW_AT_type, underlying_type_die))
-    underlying_type =
-      is_type(build_ir_node_from_die(ctxt,
-				     &underlying_type_die,
-				     /*called_from_public_decl=*/true,
-				     where_offset));
 
   if (underlying_type)
     result->set_underlying_type(underlying_type);
