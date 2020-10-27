@@ -14237,53 +14237,59 @@ maybe_strip_qualification(const qualified_type_def_sptr t,
       // this function.
       result = is_decl(u);
     }
-  else if (is_array_of_qualified_element(u))
+  else if (is_array_type(u) || is_typedef_of_array(u))
     {
-      // In C and C++, a cv qualifiers of a qualified array apply to
-      // the array element type.  So the qualifiers of the array can
-      // be dropped and applied to the element type.
-      //
-      // Here, the element type is qualified already.  So apply the
-      // qualifiers of the array itself to the already qualified
-      // element type and drop the array qualifiers.
-      array_type_def_sptr array = is_array_type(u);
-      qualified_type_def_sptr element_type =
-	is_qualified_type(array->get_element_type());
-      qualified_type_def::CV quals = element_type->get_cv_quals();
-      quals |= t->get_cv_quals();
-      element_type->set_cv_quals(quals);
-      result = is_decl(u);
-      if (u->get_canonical_type()
-	  || element_type->get_canonical_type())
-	// We shouldn't be editing types that were already
-	// canonicalized.  For those, canonicalization should be
-	// delayed until after all editing is done.
+      array_type_def_sptr array;
+      scope_decl * scope = 0;
+      if ((array = is_array_type(u)))
+	{
+	  scope = array->get_scope();
+	  ABG_ASSERT(scope);
+	  array = is_array_type(clone_array_tree(array));
+	  add_decl_to_scope(array, scope);
+	  t->set_underlying_type(array);
+	  u = t->get_underlying_type();
+	}
+      else if (is_typedef_of_array(u))
+	{
+	  scope = is_decl(u)->get_scope();
+	  ABG_ASSERT(scope);
+	  typedef_decl_sptr typdef =
+	    is_typedef(clone_array_tree(is_typedef(u)));
+	  ABG_ASSERT(typdef);
+	  add_decl_to_scope(typdef, scope);
+	  t->set_underlying_type(typdef);
+	  u = t->get_underlying_type();
+	  array = is_typedef_of_array(u);
+	}
+      else
 	ABG_ASSERT_NOT_REACHED;
-    }
-  else if (is_array_type(u) && !is_array_of_qualified_element(is_array_type(u)))
-    {
-      // In C and C++, a cv qualifiers of a qualified array apply to
-      // the array element type.  So the qualifiers of the array can
-      // be dropped and applied to the element type.
-      //
-      // Here, the element type is not qualified.  So apply the
-      // qualifiers of the array itself to the element type and drop
-      // the array qualifiers.
-      array_type_def_sptr array = is_array_type(u);
+
+      ABG_ASSERT(array);
+      // We should not be editing types that are already canonicalized.
+      ABG_ASSERT(!array->get_canonical_type());
       type_base_sptr element_type = array->get_element_type();
-      qualified_type_def_sptr qual_type
-	(new qualified_type_def(element_type,
-				t->get_cv_quals(),
-				t->get_location()));
-      add_decl_to_scope(qual_type, is_decl(element_type)->get_scope());
-      array->set_element_type(qual_type);
-      ctxt.schedule_type_for_late_canonicalization(is_type(qual_type));
-      result = is_decl(u);
-      if (u->get_canonical_type())
-	// We shouldn't be editing types that were already
-	// canonicalized.  For those, canonicalization should be
-	// delayed until after all editing is done.
-	ABG_ASSERT_NOT_REACHED;
+
+      if (qualified_type_def_sptr qualified = is_qualified_type(element_type))
+	{
+	  // We should not be editing types that are already canonicalized.
+	  ABG_ASSERT(!qualified->get_canonical_type());
+	  qualified_type_def::CV quals = qualified->get_cv_quals();
+	  quals |= t->get_cv_quals();
+	  qualified->set_cv_quals(quals);
+	  result = is_decl(u);
+	}
+      else
+	{
+	  qualified_type_def_sptr qual_type
+	    (new qualified_type_def(element_type,
+				    t->get_cv_quals(),
+				    t->get_location()));
+	  add_decl_to_scope(qual_type, is_decl(element_type)->get_scope());
+	  array->set_element_type(qual_type);
+	  ctxt.schedule_type_for_late_canonicalization(is_type(qual_type));
+	  result = is_decl(u);
+	}
     }
 
   return result;

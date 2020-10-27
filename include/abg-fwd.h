@@ -703,10 +703,13 @@ array_type_def_sptr
 is_array_type(const type_or_decl_base_sptr& decl);
 
 array_type_def_sptr
-is_array_of_qualified_element(type_base_sptr&);
+is_array_of_qualified_element(const type_base_sptr&);
 
 qualified_type_def_sptr
 is_array_of_qualified_element(const array_type_def_sptr&);
+
+array_type_def_sptr
+is_typedef_of_array(const type_base_sptr&);
 
 void
 set_data_member_offset(var_decl_sptr, uint64_t);
@@ -849,6 +852,9 @@ type_base*
 peel_qualified_or_typedef_type(const type_base* type);
 
 type_base_sptr
+peel_qualified_or_typedef_type(const type_base_sptr &type);
+
+type_base_sptr
 peel_typedef_pointer_or_reference_type(const type_base_sptr);
 
 type_base*
@@ -857,6 +863,18 @@ peel_typedef_pointer_or_reference_type(const type_base* type);
 type_base*
 peel_pointer_or_reference_type(const type_base *type,
 			       bool peel_qualified_type = true);
+
+array_type_def_sptr
+clone_array(const array_type_def_sptr& array);
+
+typedef_decl_sptr
+clone_typedef(const typedef_decl_sptr& t);
+
+qualified_type_def_sptr
+clone_qualified_type(const qualified_type_def_sptr& t);
+
+type_base_sptr
+clone_array_tree(const type_base_sptr t);
 
 string
 get_name(const type_or_decl_base*, bool qualified = true);

@@ -2085,6 +2085,9 @@ public:
   type_base_sptr
   get_underlying_type() const;
 
+  void
+  set_underlying_type(const type_base_sptr&);
+
   virtual void
   get_qualified_name(interned_string& qualified_name,
 		     bool internal = false) const;
@@ -2329,7 +2332,7 @@ public:
 		  const string&	name,
 		  bound_value		lower_bound,
 		  bound_value		upper_bound,
-		  type_base_sptr&	underlying_type,
+		  const type_base_sptr& underlying_type,
 		  const location&	loc,
 		  translation_unit::language l = translation_unit::LANG_C11);
 
@@ -2647,6 +2650,9 @@ public:
 
   type_base_sptr
   get_underlying_type() const;
+
+  void
+  set_underlying_type(const type_base_sptr&);
 
   virtual bool
   traverse(ir_node_visitor&);
