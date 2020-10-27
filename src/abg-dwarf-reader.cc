@@ -14666,7 +14666,7 @@ build_subrange_type(read_context&	ctxt,
   Dwarf_Die underlying_type_die;
   type_base_sptr underlying_type;
   /* Unless there is an underlying type which says differently.  */
-  bool is_signed = true;
+  bool is_signed = false;
   if (die_die_attribute(die, DW_AT_type, underlying_type_die))
     underlying_type =
       is_type(build_ir_node_from_die(ctxt,
