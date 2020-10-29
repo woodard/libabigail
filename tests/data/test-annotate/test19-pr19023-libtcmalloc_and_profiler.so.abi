@@ -31631,8 +31631,8 @@
       <!-- <anonymous range>[88] -->
       <subrange length='88' type-id='type-id-5' id='type-id-1249'/>
     </array-type-def>
-    <!-- unnamed&#45;enum&#45;underlying&#45;type -->
-    <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-133'/>
+    <!-- unnamed&#45;enum&#45;underlying&#45;type&#45;32 -->
+    <type-decl name='unnamed-enum-underlying-type-32' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-133'/>
     <!-- unsigned char -->
     <type-decl name='unsigned char' size-in-bits='8' id='type-id-3'/>
     <!-- unsigned char[2169] -->

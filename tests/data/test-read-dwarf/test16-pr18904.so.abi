@@ -34737,7 +34737,7 @@
     <type-decl name='long double' size-in-bits='128' id='type-id-3061'/>
     <type-decl name='long long unsigned int' size-in-bits='64' id='type-id-1521'/>
     <type-decl name='signed char' size-in-bits='8' id='type-id-27'/>
-    <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-14'/>
+    <type-decl name='unnamed-enum-underlying-type-32' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-14'/>
     <type-decl name='unsigned short int' size-in-bits='16' id='type-id-39'/>
     <type-decl name='wchar_t' size-in-bits='32' id='type-id-9'/>
     <typedef-decl name='lldiv_t' type-id='type-id-3062' filepath='/usr/include/stdlib.h' line='121' column='1' id='type-id-3063'/>

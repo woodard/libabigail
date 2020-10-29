@@ -276,7 +276,7 @@
     </array-type-def>
     <type-decl name='int' size-in-bits='32' id='type-id-9'/>
     <type-decl name='long int' size-in-bits='64' id='type-id-10'/>
-    <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-11'/>
+    <type-decl name='unnamed-enum-underlying-type-32' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-11'/>
     <type-decl name='unsigned int' size-in-bits='32' id='type-id-12'/>
     <type-decl name='unsigned long int' size-in-bits='64' id='type-id-4'/>
     <type-decl name='void' id='type-id-13'/>

@@ -9290,7 +9290,7 @@
     <array-type-def dimensions='1' type-id='type-id-15' size-in-bits='512' id='type-id-326'>
       <subrange length='8' type-id='type-id-3' id='type-id-327'/>
     </array-type-def>
-    <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-9'/>
+    <type-decl name='unnamed-enum-underlying-type-32' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-9'/>
     <type-decl name='unsigned long int' size-in-bits='64' id='type-id-3'/>
     <array-type-def dimensions='1' type-id='type-id-3' size-in-bits='1024' id='type-id-328'>
       <subrange length='16' type-id='type-id-3' id='type-id-329'/>

@@ -1967,7 +1967,7 @@
     <array-type-def dimensions='1' type-id='type-id-121' size-in-bits='infinite' id='type-id-126'>
       <subrange length='infinite' type-id='type-id-4' id='type-id-139'/>
     </array-type-def>
-    <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-142'/>
+    <type-decl name='unnamed-enum-underlying-type-32' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-142'/>
     <typedef-decl name='_Atomic_word' type-id='type-id-11' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/x86_64-linux-gnu/c++/4.9/bits/atomic_word.h' line='32' column='1' id='type-id-131'/>
     <typedef-decl name='__gthread_once_t' type-id='type-id-143' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/x86_64-linux-gnu/c++/4.9/bits/gthr-default.h' line='49' column='1' id='type-id-144'/>
     <typedef-decl name='pthread_once_t' type-id='type-id-11' filepath='/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h' line='168' column='1' id='type-id-143'/>

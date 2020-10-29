@@ -490,7 +490,7 @@
     <type-decl name='long long int' size-in-bits='64' id='type-id-21'/>
     <type-decl name='long long unsigned int' size-in-bits='64' id='type-id-22'/>
     <type-decl name='signed char' size-in-bits='8' id='type-id-23'/>
-    <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-24'/>
+    <type-decl name='unnamed-enum-underlying-type-32' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-24'/>
     <type-decl name='unsigned int' size-in-bits='32' id='type-id-13'/>
     <type-decl name='unsigned long int' size-in-bits='64' id='type-id-4'/>
     <type-decl name='unsigned short int' size-in-bits='16' id='type-id-25'/>

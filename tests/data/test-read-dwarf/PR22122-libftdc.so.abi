@@ -264,7 +264,7 @@
     <type-decl name='long long int' size-in-bits='64' id='type-id-16'/>
     <type-decl name='long long unsigned int' size-in-bits='64' id='type-id-17'/>
     <type-decl name='sizetype' size-in-bits='64' id='type-id-5'/>
-    <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' is-declaration-only='yes' id='type-id-18'/>
+    <type-decl name='unnamed-enum-underlying-type-0' is-anonymous='yes' is-declaration-only='yes' id='type-id-18'/>
     <type-decl name='unsigned char' size-in-bits='8' id='type-id-19'/>
     <type-decl name='unsigned int' size-in-bits='32' id='type-id-20'/>
     <type-decl name='unsigned long int' size-in-bits='64' id='type-id-21'/>

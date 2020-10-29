@@ -3844,7 +3844,7 @@
     <array-type-def dimensions='1' type-id='type-id-238' size-in-bits='infinite' id='type-id-239'>
       <subrange length='infinite' id='type-id-24'/>
     </array-type-def>
-    <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-240'/>
+    <type-decl name='unnamed-enum-underlying-type-32' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-240'/>
     <array-type-def dimensions='1' type-id='type-id-22' size-in-bits='39936' id='type-id-241'>
       <subrange length='624' type-id='type-id-4' id='type-id-242'/>
     </array-type-def>

@@ -8812,8 +8812,8 @@
     </array-type-def>
     <!-- sizetype -->
     <type-decl name='sizetype' size-in-bits='64' id='type-id-38'/>
-    <!-- unnamed&#45;enum&#45;underlying&#45;type -->
-    <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-46'/>
+    <!-- unnamed&#45;enum&#45;underlying&#45;type&#45;32 -->
+    <type-decl name='unnamed-enum-underlying-type-32' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-46'/>
     <!-- unsigned int -->
     <type-decl name='unsigned int' size-in-bits='32' id='type-id-129'/>
     <!-- unsigned long int -->

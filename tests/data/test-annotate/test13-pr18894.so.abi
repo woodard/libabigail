@@ -667,8 +667,8 @@
   <abi-instr version='1.0' address-size='64' path='dbus-bus.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- struct DBusConnection -->
     <class-decl name='DBusConnection' size-in-bits='2112' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-25'/>
-    <!-- unnamed&#45;enum&#45;underlying&#45;type -->
-    <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-26'/>
+    <!-- unnamed&#45;enum&#45;underlying&#45;type&#45;32 -->
+    <type-decl name='unnamed-enum-underlying-type-32' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-26'/>
     <!-- unsigned long int -->
     <type-decl name='unsigned long int' size-in-bits='64' id='type-id-27'/>
     <!-- typedef DBusConnection DBusConnection -->

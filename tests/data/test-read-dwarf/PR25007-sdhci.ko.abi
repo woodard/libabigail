@@ -300,7 +300,7 @@
     <array-type-def dimensions='1' type-id='type-id-203' size-in-bits='64' id='type-id-206'>
       <subrange length='8' type-id='type-id-1' id='type-id-40'/>
     </array-type-def>
-    <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-207'/>
+    <type-decl name='unnamed-enum-underlying-type-32' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-207'/>
     <type-decl name='unsigned __int128' size-in-bits='128' id='type-id-196'/>
     <type-decl name='unsigned char' size-in-bits='8' id='type-id-208'/>
     <array-type-def dimensions='1' type-id='type-id-208' size-in-bits='256' id='type-id-209'>

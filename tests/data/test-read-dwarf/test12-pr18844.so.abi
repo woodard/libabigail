@@ -1788,7 +1788,7 @@
     <type-decl name='short int' size-in-bits='16' id='type-id-42'/>
     <type-decl name='sizetype' size-in-bits='64' id='type-id-3'/>
     <typedef-decl name='__va_list_tag' type-id='type-id-17' id='type-id-43'/>
-    <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-44'/>
+    <type-decl name='unnamed-enum-underlying-type-32' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-44'/>
     <type-decl name='unsigned char' size-in-bits='8' id='type-id-45'/>
     <array-type-def dimensions='1' type-id='type-id-45' size-in-bits='128' id='type-id-46'>
       <subrange length='16' type-id='type-id-3' id='type-id-10'/>

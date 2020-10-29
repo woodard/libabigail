@@ -19850,7 +19850,7 @@
     <array-type-def dimensions='1' type-id='type-id-1261' size-in-bits='16896' id='type-id-1262'>
       <subrange length='88' type-id='type-id-5' id='type-id-1249'/>
     </array-type-def>
-    <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-133'/>
+    <type-decl name='unnamed-enum-underlying-type-32' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-133'/>
     <type-decl name='unsigned char' size-in-bits='8' id='type-id-3'/>
     <array-type-def dimensions='1' type-id='type-id-3' size-in-bits='17352' id='type-id-1263'>
       <subrange length='2169' type-id='type-id-5' id='type-id-1264'/>

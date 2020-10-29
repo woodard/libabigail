@@ -5021,7 +5021,7 @@
       <subrange length='16384' type-id='type-id-38' id='type-id-263'/>
     </array-type-def>
     <type-decl name='sizetype' size-in-bits='64' id='type-id-38'/>
-    <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-46'/>
+    <type-decl name='unnamed-enum-underlying-type-32' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-46'/>
     <type-decl name='unsigned int' size-in-bits='32' id='type-id-129'/>
     <type-decl name='unsigned long int' size-in-bits='64' id='type-id-102'/>
     <type-decl name='void' id='type-id-26'/>

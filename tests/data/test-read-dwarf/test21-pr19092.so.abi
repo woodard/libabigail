@@ -506,7 +506,7 @@
     <array-type-def dimensions='1' type-id='type-id-14' size-in-bits='192' id='type-id-25'>
       <subrange length='1' type-id='type-id-6' id='type-id-9'/>
     </array-type-def>
-    <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-26'/>
+    <type-decl name='unnamed-enum-underlying-type-32' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-26'/>
     <type-decl name='unsigned char' size-in-bits='8' id='type-id-27'/>
     <type-decl name='unsigned int' size-in-bits='32' id='type-id-15'/>
     <type-decl name='unsigned long int' size-in-bits='64' id='type-id-28'/>

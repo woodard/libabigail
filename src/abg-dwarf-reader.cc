@@ -431,7 +431,8 @@ get_internal_anonymous_die_name(Dwarf_Die *die,
 
 static string
 build_internal_underlying_enum_type_name(const string &base_name,
-					 bool is_anonymous);
+					 bool is_anonymous,
+					 uint64_t size);
 
 static string
 die_qualified_type_name(const read_context& ctxt,
@@ -10408,7 +10409,8 @@ build_internal_anonymous_die_name(const string &base_name,
 /// be anonymous.
 static string
 build_internal_underlying_enum_type_name(const string &base_name,
-					 bool is_anonymous = true)
+					 bool is_anonymous,
+					 uint64_t size)
 {
   std::ostringstream o;
 
@@ -10417,7 +10419,7 @@ build_internal_underlying_enum_type_name(const string &base_name,
   else
     o << "enum-" << base_name;
 
-  o << "-underlying-type";
+  o << "-underlying-type-" << size;
 
   return o.str();
 }
@@ -12974,7 +12976,8 @@ build_enum_underlying_type(read_context& ctxt,
 			   bool is_anonymous = true)
 {
   string underlying_type_name =
-    build_internal_underlying_enum_type_name(enum_name, is_anonymous);
+    build_internal_underlying_enum_type_name(enum_name, is_anonymous,
+					     enum_size);
 
   type_decl_sptr result(new type_decl(ctxt.env(), underlying_type_name,
 				      enum_size, enum_size, location()));
