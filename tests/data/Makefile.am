@@ -520,6 +520,8 @@ test-read-dwarf/test-PR26568-2.o     \
 test-read-dwarf/test-PR26568-1.o     \
 test-read-dwarf/test-PR26568-1.o.abi \
 test-read-dwarf/test-PR26568-2.o.abi \
+test-read-dwarf/test-libandroid.so \
+test-read-dwarf/test-libandroid.so.abi \
 \
 test-annotate/test0.abi			\
 test-annotate/test1.abi			\

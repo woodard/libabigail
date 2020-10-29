@@ -394,6 +394,13 @@ InOutSpec in_out_specs[] =
     "data/test-read-dwarf/test-PR26568-2.o.abi",
     "output/test-read-dwarf/test-PR26568-2.o.abi",
   },
+  {
+    "data/test-read-dwarf/test-libandroid.so",
+    "",
+    HASH_TYPE_ID_STYLE,
+    "data/test-read-dwarf/test-libandroid.so.abi",
+    "output/test-read-dwarf/test-libandroid.so.abi",
+  },
   // This should be the last entry.
   {NULL, NULL, SEQUENCE_TYPE_ID_STYLE, NULL, NULL}
 };

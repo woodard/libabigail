@@ -9385,9 +9385,9 @@ compare_dies_cu_decl_file(const Dwarf_Die* l, const Dwarf_Die *r, bool &result)
 /// @param expr_len the length of the resulting dwarf expression.
 /// This is set iff the function returns true.
 ///
-/// @return true if the attribute exists and has a dwarf expression as
-/// value.  In that case the expr and expr_len arguments are set to
-/// the resulting dwarf exprssion.
+/// @return true if the attribute exists and has a non-empty dwarf expression
+/// as value.  In that case the expr and expr_len arguments are set to the
+/// resulting dwarf expression.
 static bool
 die_location_expr(const Dwarf_Die* die,
 		  unsigned attr_name,
@@ -9403,6 +9403,10 @@ die_location_expr(const Dwarf_Die* die,
 
   size_t len = 0;
   bool result = (dwarf_getlocation(&attr, expr, &len) == 0);
+
+  // Ignore location expressions where reading them succeeded but
+  // their length is 0.
+  result &= len > 0;
 
   if (result)
     *expr_len = len;
