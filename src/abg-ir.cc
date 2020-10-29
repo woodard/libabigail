@@ -20487,53 +20487,45 @@ struct virtual_member_function_less_than
     ABG_ASSERT(get_member_function_is_virtual(f));
     ABG_ASSERT(get_member_function_is_virtual(s));
 
-    if (get_member_function_vtable_offset(f)
-	== get_member_function_vtable_offset(s))
+    ssize_t f_offset = get_member_function_vtable_offset(f);
+    ssize_t s_offset = get_member_function_vtable_offset(s);
+    if (f_offset != s_offset) return f_offset < s_offset;
+
+    string fn, sn;
+
+    // If the functions have symbols, then compare their symbol-id
+    // string.
+    elf_symbol_sptr f_sym = f.get_symbol();
+    elf_symbol_sptr s_sym = s.get_symbol();
+    if ((!f_sym) != (!s_sym)) return !f_sym;
+    if (f_sym && s_sym)
       {
-	string fn, sn;
-
-	// If the functions have symbols, then compare their symbol-id
-	// string.
-	if (f.get_symbol() && s.get_symbol())
-	  {
-	    fn = f.get_symbol()->get_id_string();
-	    sn = s.get_symbol()->get_id_string();
-	  }
-	else if (f.get_symbol())
-	  return false;
-	else if (s.get_symbol())
-	  return true;
-	else
-	  {
-	    // None of the functions have symbols, so compare their
-	    // pretty representation.
-	    if (fn.empty())
-	      {
-		fn = f.get_pretty_representation();
-		sn = s.get_pretty_representation();
-	      }
-	  }
-
-	/// If it's just the file paths that are different then sort
-	/// them too.
-	if (fn == sn)
-	  {
-	    string fn_filepath, sn_filepath;
-	    unsigned line = 0, column = 0;
-	    location fn_loc = f.get_location(), sn_loc = s.get_location();
-	    if (fn_loc)
-	      fn_loc.expand(fn_filepath, line, column);
-	    if (sn_loc)
-	      sn_loc.expand(sn_filepath, line, column);
-
-	    if (!fn_filepath.empty() && !sn_filepath.empty())
-	      return fn_filepath < sn_filepath;
-	  }
-	return fn < sn;
+	fn = f_sym->get_id_string();
+	sn = s_sym->get_id_string();
+	if (fn != sn) return fn < sn;
       }
 
-    return (get_member_function_vtable_offset(f)
-	    < get_member_function_vtable_offset(s));
+    // Try the linkage names (important for destructors).
+    fn = f.get_linkage_name();
+    sn = s.get_linkage_name();
+    if (fn != sn) return fn < sn;
+
+    // None of the functions have symbols or linkage names that
+    // distinguish them, so compare their pretty representation.
+    fn = f.get_pretty_representation();
+    sn = s.get_pretty_representation();
+    if (fn != sn) return fn < sn;
+
+    /// If it's just the file paths that are different then sort them
+    /// too.
+    string fn_filepath, sn_filepath;
+    unsigned line = 0, column = 0;
+    location fn_loc = f.get_location(), sn_loc = s.get_location();
+    if (fn_loc)
+      fn_loc.expand(fn_filepath, line, column);
+    if (sn_loc)
+      sn_loc.expand(sn_filepath, line, column);
+    return fn_filepath < sn_filepath;
   }
 
   /// The less than operator.  First, it sorts the methods by their
@@ -20560,7 +20552,7 @@ static void
 sort_virtual_member_functions(class_decl::member_functions& mem_fns)
 {
   virtual_member_function_less_than lt;
-  std::sort(mem_fns.begin(), mem_fns.end(), lt);
+  std::stable_sort(mem_fns.begin(), mem_fns.end(), lt);
 }
 
 /// Add a member function to the current instance of @ref class_or_union.

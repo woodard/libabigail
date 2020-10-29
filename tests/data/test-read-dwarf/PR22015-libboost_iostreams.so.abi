@@ -1031,13 +1031,13 @@
             </function-decl>
           </member-function>
           <member-function access='public' destructor='yes' vtable-offset='0'>
-            <function-decl name='~clone_impl' mangled-name='_ZN5boost16exception_detail10clone_implINS0_19error_info_injectorINSt8ios_base7failureB5cxx11EEEED1Ev' filepath='src/third_party/boost-1.60.0/boost/exception/exception.hpp' line='462' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <function-decl name='~clone_impl' mangled-name='_ZN5boost16exception_detail10clone_implINS0_19error_info_injectorINSt8ios_base7failureB5cxx11EEEED0Ev' filepath='src/third_party/boost-1.60.0/boost/exception/exception.hpp' line='462' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-76' is-artificial='yes'/>
               <return type-id='type-id-18'/>
             </function-decl>
           </member-function>
           <member-function access='public' destructor='yes' vtable-offset='0'>
-            <function-decl name='~clone_impl' mangled-name='_ZN5boost16exception_detail10clone_implINS0_19error_info_injectorINSt8ios_base7failureB5cxx11EEEED0Ev' filepath='src/third_party/boost-1.60.0/boost/exception/exception.hpp' line='462' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <function-decl name='~clone_impl' mangled-name='_ZN5boost16exception_detail10clone_implINS0_19error_info_injectorINSt8ios_base7failureB5cxx11EEEED1Ev' filepath='src/third_party/boost-1.60.0/boost/exception/exception.hpp' line='462' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-76' is-artificial='yes'/>
               <return type-id='type-id-18'/>
             </function-decl>
@@ -1072,13 +1072,13 @@
             </function-decl>
           </member-function>
           <member-function access='public' destructor='yes' vtable-offset='0'>
-            <function-decl name='~error_info_injector' mangled-name='_ZN5boost16exception_detail19error_info_injectorINSt8ios_base7failureB5cxx11EED2Ev' filepath='src/third_party/boost-1.60.0/boost/exception/exception.hpp' line='336' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <function-decl name='~error_info_injector' mangled-name='_ZN5boost16exception_detail19error_info_injectorINSt8ios_base7failureB5cxx11EED0Ev' filepath='src/third_party/boost-1.60.0/boost/exception/exception.hpp' line='336' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-80' is-artificial='yes'/>
               <return type-id='type-id-18'/>
             </function-decl>
           </member-function>
           <member-function access='public' destructor='yes' vtable-offset='0'>
-            <function-decl name='~error_info_injector' mangled-name='_ZN5boost16exception_detail19error_info_injectorINSt8ios_base7failureB5cxx11EED0Ev' filepath='src/third_party/boost-1.60.0/boost/exception/exception.hpp' line='336' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <function-decl name='~error_info_injector' mangled-name='_ZN5boost16exception_detail19error_info_injectorINSt8ios_base7failureB5cxx11EED2Ev' filepath='src/third_party/boost-1.60.0/boost/exception/exception.hpp' line='336' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-80' is-artificial='yes'/>
               <return type-id='type-id-18'/>
             </function-decl>
