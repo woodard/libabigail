@@ -13615,8 +13615,7 @@ add_or_update_class_type(read_context&	 ctxt,
 				  decl_base::VISIBILITY_DEFAULT,
 				  is_anonymous));
 
-      if (is_declaration_only)
-	result->set_is_declaration_only(true);
+      result->set_is_declaration_only(is_declaration_only);
 
       res = add_decl_to_scope(result, scope);
       result = dynamic_pointer_cast<class_decl>(res);
@@ -13625,6 +13624,24 @@ add_or_update_class_type(read_context&	 ctxt,
 
   if (size)
     result->set_size_in_bits(size);
+
+  if (klass)
+    // We are amending a class that was built before.  So let's check
+    // if we need to amend its "declaration-only-ness" status.
+    if (!!result->get_size_in_bits() == result->get_is_declaration_only())
+      // The size of the class doesn't match its
+      // 'declaration-only-ness".  We might have a non-zero sized
+      // class which is declaration-only, or a zero sized class that
+      // is not declaration-only.  Let's set the declaration-only-ness
+      // according to what we are instructed to.
+      //
+      // Note however that there are binaries out there emitted by
+      // compilers (Clang, in C++) emit declarations-only classes that
+      // have non-zero size.  So we must honor these too. That is why
+      // we are not forcing the declaration-only-ness to false when a
+      // class has non-zero size.  An example of such binary is
+      // tests/data/test-diff-filter/test41-PR21486-abg-writer.llvm.o.
+      result->set_is_declaration_only(is_declaration_only);
 
   result->set_is_artificial(is_artificial);
 
