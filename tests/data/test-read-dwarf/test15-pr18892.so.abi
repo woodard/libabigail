@@ -4700,6 +4700,15 @@
     <pointer-type-def type-id='type-id-279' size-in-bits='64' id='type-id-280'/>
     <qualified-type-def type-id='type-id-281' const='yes' id='type-id-282'/>
     <pointer-type-def type-id='type-id-282' size-in-bits='64' id='type-id-283'/>
+    <namespace-decl name='__cxxabiv1'>
+      <function-decl name='__cxa_demangle' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_symbolizer_posix_libcdep.cc' line='34' column='1' visibility='default' binding='global' size-in-bits='64'>
+        <parameter type-id='type-id-2'/>
+        <parameter type-id='type-id-25'/>
+        <parameter type-id='type-id-78'/>
+        <parameter type-id='type-id-30'/>
+        <return type-id='type-id-25'/>
+      </function-decl>
+    </namespace-decl>
     <namespace-decl name='__sanitizer'>
       <function-decl name='__sanitizer_symbolize_flush' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_symbolizer_posix_libcdep.cc' line='315' column='1' visibility='default' binding='global' size-in-bits='64'>
         <return type-id='type-id-26'/>
@@ -5001,15 +5010,6 @@
       <parameter type-id='type-id-5'/>
       <return type-id='type-id-238'/>
     </function-decl>
-    <namespace-decl name='__cxxabiv1'>
-      <function-decl name='__cxa_demangle' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_symbolizer_posix_libcdep.cc' line='34' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <parameter type-id='type-id-2'/>
-        <parameter type-id='type-id-25'/>
-        <parameter type-id='type-id-78'/>
-        <parameter type-id='type-id-30'/>
-        <return type-id='type-id-25'/>
-      </function-decl>
-    </namespace-decl>
     <function-type size-in-bits='64' id='type-id-279'>
       <parameter type-id='type-id-2'/>
       <parameter type-id='type-id-177'/>
@@ -6296,6 +6296,9 @@
     <pointer-type-def type-id='type-id-1017' size-in-bits='64' id='type-id-178'/>
     <qualified-type-def type-id='type-id-179' volatile='yes' id='type-id-1196'/>
     <pointer-type-def type-id='type-id-344' size-in-bits='64' id='type-id-1197'/>
+    <namespace-decl name='std'>
+      <class-decl name='nothrow_t' size-in-bits='8' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='108' column='1' id='type-id-1013'/>
+    </namespace-decl>
     <namespace-decl name='__sanitizer'>
       <function-decl name='ToLower' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common.h' line='306' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-5'/>
@@ -7237,9 +7240,6 @@
           <var-decl name='ctx' type-id='type-id-354' visibility='default' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='118' column='1'/>
         </data-member>
       </class-decl>
-    </namespace-decl>
-    <namespace-decl name='std'>
-      <class-decl name='nothrow_t' size-in-bits='8' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='108' column='1' id='type-id-1013'/>
     </namespace-decl>
     <function-decl name='__interceptor_mlock' mangled-name='mlock' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1791' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='mlock'>
       <parameter type-id='type-id-1' name='addr' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1791' column='1'/>

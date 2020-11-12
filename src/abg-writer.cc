@@ -2259,7 +2259,7 @@ write_translation_unit(write_context&	       ctxt,
 
   typedef scope_decl::declarations declarations;
   typedef declarations::const_iterator const_iterator;
-  const declarations& d = tu.get_global_scope()->get_member_decls();
+  const declarations& d = tu.get_global_scope()->get_sorted_member_decls();
 
   for (const_iterator i = d.begin(); i != d.end(); ++i)
     {

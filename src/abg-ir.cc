@@ -2710,6 +2710,58 @@ is_ptr_ref_or_qual_type(const type_base *t)
   return false;
 }
 
+/// A functor to sort decls somewhat topologically.  That is, types
+/// are sorted in a way that makes the ones that are defined "first"
+/// to come first.
+///
+/// The topological criteria is a lexicographic sort of the definition
+/// location of the type.  For types that have no location (or the
+/// same location), it's their qualified name that is used for the
+/// lexicographic sort.
+struct decl_topo_comp
+{
+
+  /// The "Less Than" comparison operator of this functor.
+  ///
+  /// @param f the first decl to be considered for the comparison.
+  ///
+  /// @param s the second decl to be considered for the comparison.
+  ///
+  /// @return true iff @p f is less than @p s.
+  bool
+  operator()(const decl_base *f,
+	     const decl_base *s)
+  {
+    if (!!f != !!s)
+      return f && !s;
+
+    if (!f)
+      return false;
+
+    location fl = f->get_location();
+    location sl = s->get_location();
+    if (fl.get_value() != sl.get_value())
+      return fl.get_value() < sl.get_value();
+
+    // We reach this point if location data is useless.
+    return (get_pretty_representation(f, true)
+	    < get_pretty_representation(s, true));
+  }
+
+  /// The "Less Than" comparison operator of this functor.
+  ///
+  /// @param f the first decl to be considered for the comparison.
+  ///
+  /// @param s the second decl to be considered for the comparison.
+  ///
+  /// @return true iff @p f is less than @p s.
+  bool
+  operator()(const decl_base_sptr &f,
+	     const decl_base_sptr &s)
+  {return operator()(f.get(), s.get());}
+
+}; // end struct decl_topo_comp
+
 /// A functor to sort types somewhat topologically.  That is, types
 /// are sorted in a way that makes the ones that are defined "first"
 /// to come first.
@@ -2807,18 +2859,8 @@ struct type_topo_comp
       }
 
     // From this point, fd and sd should be non-nil
-
-    location fl = fd->get_location();
-    location sl = sd->get_location();
-    if (fl.get_value() == sl.get_value())
-      {
-	if (fl)
-	  return fl.expand() < sl.expand();
-	return (get_pretty_representation(f, true)
-		< get_pretty_representation(s, true));
-      }
-
-    return fl.get_value() < sl.get_value();
+    decl_topo_comp decl_comp;
+    return decl_comp(fd, sd);
   }
 }; //end struct type_topo_comp
 
@@ -6191,6 +6233,7 @@ canonical_type_hash::operator()(const type_base *l) const
 struct scope_decl::priv
 {
   declarations members_;
+  declarations sorted_members_;
   scopes member_scopes_;
   canonical_type_sptr_set_type canonical_types_;
   type_base_sptrs_type sorted_canonical_types_;
@@ -6281,6 +6324,29 @@ scope_decl::get_member_decls() const
 scope_decl::declarations&
 scope_decl::get_member_decls()
 {return priv_->members_;}
+
+/// Getter for the sorted member declarations carried by the current
+/// @ref scope_decl.
+///
+/// @return the sorted member declarations carried by the current @ref
+/// scope_decl.  The declarations are sorted topologically.
+const scope_decl::declarations&
+scope_decl::get_sorted_member_decls() const
+{
+  decl_topo_comp comp;
+  if (priv_->sorted_members_.empty())
+    {
+      for (declarations::const_iterator i = get_member_decls().begin();
+	   i != get_member_decls().end();
+	   ++i)
+	priv_->sorted_members_.push_back(*i);
+
+      std::stable_sort(priv_->sorted_members_.begin(),
+		       priv_->sorted_members_.end(),
+		       comp);
+    }
+  return priv_->sorted_members_;
+}
 
 /// Getter for the number of anonymous classes contained in this
 /// scope.

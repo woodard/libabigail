@@ -1709,6 +1709,9 @@ public:
   declarations&
   get_member_decls();
 
+  const declarations&
+  get_sorted_member_decls() const;
+
   virtual size_t
   get_num_anonymous_member_classes() const;
 

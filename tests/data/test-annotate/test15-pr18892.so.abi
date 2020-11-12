@@ -8309,6 +8309,22 @@
     <qualified-type-def type-id='type-id-281' const='yes' id='type-id-282'/>
     <!-- const __sanitizer::Symbolizer* -->
     <pointer-type-def type-id='type-id-282' size-in-bits='64' id='type-id-283'/>
+    <!-- namespace __cxxabiv1 -->
+    <namespace-decl name='__cxxabiv1'>
+      <!-- char* __cxxabiv1::__cxa_demangle(const char*, char*, size_t*, int*) -->
+      <function-decl name='__cxa_demangle' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_symbolizer_posix_libcdep.cc' line='34' column='1' visibility='default' binding='global' size-in-bits='64'>
+        <!-- parameter of type 'const char*' -->
+        <parameter type-id='type-id-2'/>
+        <!-- parameter of type 'char*' -->
+        <parameter type-id='type-id-25'/>
+        <!-- parameter of type 'size_t*' -->
+        <parameter type-id='type-id-78'/>
+        <!-- parameter of type 'int*' -->
+        <parameter type-id='type-id-30'/>
+        <!-- char* -->
+        <return type-id='type-id-25'/>
+      </function-decl>
+    </namespace-decl>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
       <!-- void __sanitizer::__sanitizer_symbolize_flush() -->
@@ -8778,22 +8794,6 @@
       <!-- typedef __pid_t -->
       <return type-id='type-id-238'/>
     </function-decl>
-    <!-- namespace __cxxabiv1 -->
-    <namespace-decl name='__cxxabiv1'>
-      <!-- char* __cxxabiv1::__cxa_demangle(const char*, char*, size_t*, int*) -->
-      <function-decl name='__cxa_demangle' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_symbolizer_posix_libcdep.cc' line='34' column='1' visibility='default' binding='global' size-in-bits='64'>
-        <!-- parameter of type 'const char*' -->
-        <parameter type-id='type-id-2'/>
-        <!-- parameter of type 'char*' -->
-        <parameter type-id='type-id-25'/>
-        <!-- parameter of type 'size_t*' -->
-        <parameter type-id='type-id-78'/>
-        <!-- parameter of type 'int*' -->
-        <parameter type-id='type-id-30'/>
-        <!-- char* -->
-        <return type-id='type-id-25'/>
-      </function-decl>
-    </namespace-decl>
     <!-- bool (const char*, __sanitizer::u64, char*, int) -->
     <function-type size-in-bits='64' id='type-id-279'>
       <!-- parameter of type 'const char*' -->
@@ -11051,6 +11051,11 @@
     <qualified-type-def type-id='type-id-179' volatile='yes' id='type-id-1196'/>
     <!-- wchar_t* -->
     <pointer-type-def type-id='type-id-344' size-in-bits='64' id='type-id-1197'/>
+    <!-- namespace std -->
+    <namespace-decl name='std'>
+      <!-- struct std::nothrow_t -->
+      <class-decl name='nothrow_t' size-in-bits='8' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='108' column='1' id='type-id-1013'/>
+    </namespace-decl>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
       <!-- int __sanitizer::ToLower(int) -->
@@ -12528,11 +12533,6 @@
           <var-decl name='ctx' type-id='type-id-354' visibility='default' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='118' column='1'/>
         </data-member>
       </class-decl>
-    </namespace-decl>
-    <!-- namespace std -->
-    <namespace-decl name='std'>
-      <!-- struct std::nothrow_t -->
-      <class-decl name='nothrow_t' size-in-bits='8' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='108' column='1' id='type-id-1013'/>
     </namespace-decl>
     <!-- int __interceptor_mlock(void*, __sanitizer::uptr) -->
     <function-decl name='__interceptor_mlock' mangled-name='mlock' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1791' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='mlock'>
