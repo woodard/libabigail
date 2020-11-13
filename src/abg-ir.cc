@@ -14738,6 +14738,17 @@ array_type_def::subrange_type::bound_value::set_signed(int64_t v)
   v_.signed_ = v;
 }
 
+/// Equality operator of the bound value.
+///
+/// @param v the other bound value to compare with.
+///
+/// @return true iff the current bound value equals @p v.
+bool
+array_type_def::subrange_type::bound_value::operator==(const bound_value& v) const
+{
+  return s_ == v.s_ && v_.unsigned_ == v.v_.unsigned_;
+}
+
 // </array_type_def::subrante_type::bound_value>
 
 struct array_type_def::subrange_type::priv

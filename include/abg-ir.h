@@ -2326,6 +2326,7 @@ public:
       uint64_t get_unsigned_value();
       void set_unsigned(uint64_t v);
       void set_signed(int64_t v);
+      bool operator==(const bound_value&) const;
     }; //end class bound_value
 
     /// Hasher for an instance of array::subrange
