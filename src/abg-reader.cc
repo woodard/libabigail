@@ -3980,7 +3980,14 @@ build_array_type_def(read_context&	ctxt,
 	{
 	  if (array_type_def::subrange_sptr s =
 	      build_subrange_type(ctxt, n))
-	    subranges.push_back(s);
+	    {
+	      if (add_to_current_scope)
+		{
+		  add_decl_to_scope(s, ctxt.get_cur_scope());
+		  ctxt.maybe_canonicalize_type(s);
+		}
+	      subranges.push_back(s);
+	    }
 	}
     }
 
@@ -5489,6 +5496,7 @@ build_type(read_context&	ctxt,
 	abi->record_type_as_reachable_from_public_interfaces(*t);
     }
 
+  ctxt.maybe_canonicalize_type(t);
   return t;
 }
 

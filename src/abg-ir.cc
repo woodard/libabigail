@@ -6003,6 +6003,8 @@ clone_array(const array_type_def_sptr& array)
 					   (*i)->get_location(),
 					   (*i)->get_language()));
       subrange->is_infinite((*i)->is_infinite());
+      if (scope_decl *scope = (*i)->get_scope())
+	add_decl_to_scope(subrange, scope);
       subranges.push_back(subrange);
     }
 
@@ -8484,6 +8486,29 @@ is_class_type(const type_or_decl_base* t)
 class_decl_sptr
 is_class_type(const type_or_decl_base_sptr& d)
 {return dynamic_pointer_cast<class_decl>(d);}
+
+
+/// Test wheter a type is a declaration-only class.
+///
+/// @param t the type to considier.
+///
+/// @return true iff @p t is a declaration-only class.
+bool
+is_declaration_only_class_or_union_type(const type_base *t)
+{
+  if (const class_or_union *klass = is_class_or_union_type(t))
+    return klass->get_is_declaration_only();
+  return false;
+}
+
+/// Test wheter a type is a declaration-only class.
+///
+/// @param t the type to considier.
+///
+/// @return true iff @p t is a declaration-only class.
+bool
+is_declaration_only_class_type(const type_base_sptr& t)
+{return is_declaration_only_class_or_union_type(t.get());}
 
 /// Test if a type is a @ref class_or_union.
 ///
@@ -12002,6 +12027,12 @@ synthesize_type_from_translation_unit(const type_base_sptr& type,
 	}
       else if (function_type_sptr f = is_function_type(type))
 	result = synthesize_function_type_from_translation_unit(*f, tu);
+
+      if (result)
+	{
+	  add_decl_to_scope(is_decl(result), tu.get_global_scope());
+	  canonicalize(result);
+	}
     }
 
   if (result)
@@ -12096,7 +12127,9 @@ synthesize_function_type_from_translation_unit(const function_type& fn_type,
   // The new synthesized type must be in the same environment as its
   // translation unit.
   result_fn_type->set_environment(tu.get_environment());
+  tu.bind_function_type_life_time(result_fn_type);
 
+  canonicalize(result_fn_type);
   return result_fn_type;
 }
 
@@ -23464,6 +23497,12 @@ hash_as_canonical_type_or_constant(const type_base *t)
 
   if (canonical_type)
     return reinterpret_cast<size_t>(canonical_type);
+
+  // If we reached this point, it means we are seeing a
+  // non-canonicalized type.  It must be a decl-only class;
+  // otherwise it means that for some weird reason, the type hasn't
+  // been canonicalized.  It should be!
+  ABG_ASSERT(is_declaration_only_class_or_union_type(t));
 
   return 0xDEADBABE;
 }

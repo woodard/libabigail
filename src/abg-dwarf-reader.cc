@@ -504,11 +504,6 @@ static void
 maybe_canonicalize_type(const type_base_sptr&	t,
 			read_context&		ctxt);
 
-static void
-maybe_canonicalize_type(const Dwarf_Die*	die,
-			const type_base_sptr&	t,
-			read_context&		ctxt);
-
 static uint64_t
 get_default_array_lower_bound(translation_unit::language l);
 
@@ -7871,6 +7866,9 @@ add_or_update_union_type(read_context&	 ctxt,
 static decl_base_sptr
 build_ir_node_for_void_type(read_context& ctxt);
 
+static decl_base_sptr
+build_ir_node_for_variadic_parameter_type(read_context &ctxt);
+
 static function_decl_sptr
 build_function_decl(read_context&	ctxt,
 		    Dwarf_Die*		die,
@@ -14193,6 +14191,52 @@ build_qualified_type(read_context&	ctxt,
   return result;
 }
 
+/// Walk a tree of typedef of qualified arrays and schedule all type
+/// nodes for canonicalization.
+///
+/// This is to be used after an array tree has been cloned.  In that
+/// case, the newly cloned type nodes have to be scheduled for
+/// canonicalization.
+///
+/// This is a subroutine of maybe_strip_qualification.
+///
+/// @param t the type node to be scheduled for canonicalization.
+///
+/// @param ctxt the contexter of the reader to use.
+static void
+schedule_array_tree_for_late_canonicalization(const type_base_sptr& t,
+					      read_context &ctxt)
+{
+  if (typedef_decl_sptr type = is_typedef(t))
+    {
+      schedule_array_tree_for_late_canonicalization(type->get_underlying_type(),
+						    ctxt);
+      ctxt.schedule_type_for_late_canonicalization(t);
+    }
+  else if (qualified_type_def_sptr type = is_qualified_type(t))
+    {
+      schedule_array_tree_for_late_canonicalization(type->get_underlying_type(),
+						    ctxt);
+      ctxt.schedule_type_for_late_canonicalization(t);
+    }
+  else if (array_type_def_sptr type = is_array_type(t))
+    {
+      for (vector<array_type_def::subrange_sptr>::const_iterator i =
+	     type->get_subranges().begin();
+	   i != type->get_subranges().end();
+	   ++i)
+	{
+	  if (!(*i)->get_scope())
+	    add_decl_to_scope(*i, ctxt.cur_transl_unit()->get_global_scope());
+	  ctxt.schedule_type_for_late_canonicalization(*i);
+
+	}
+      schedule_array_tree_for_late_canonicalization(type->get_element_type(),
+						    ctxt);
+      ctxt.schedule_type_for_late_canonicalization(type);
+    }
+}
+
 /// Strip qualification from a qualified type, when it makes sense.
 ///
 /// DWARF constructs "const reference".  This is redundant because a
@@ -14227,6 +14271,7 @@ maybe_strip_qualification(const qualified_type_def_sptr t,
       result.reset(new qualified_type_def
 		   (u, t->get_cv_quals() & ~qualified_type_def::CV_CONST,
 		    t->get_location()));
+      ctxt.schedule_type_for_late_canonicalization(is_type(result));
     }
   else if (t->get_cv_quals() & qualified_type_def::CV_CONST
 	   && env->is_void_type(u))
@@ -14246,6 +14291,7 @@ maybe_strip_qualification(const qualified_type_def_sptr t,
 	  scope = array->get_scope();
 	  ABG_ASSERT(scope);
 	  array = is_array_type(clone_array_tree(array));
+	  schedule_array_tree_for_late_canonicalization(array, ctxt);
 	  add_decl_to_scope(array, scope);
 	  t->set_underlying_type(array);
 	  u = t->get_underlying_type();
@@ -14256,6 +14302,7 @@ maybe_strip_qualification(const qualified_type_def_sptr t,
 	  ABG_ASSERT(scope);
 	  typedef_decl_sptr typdef =
 	    is_typedef(clone_array_tree(is_typedef(u)));
+	  schedule_array_tree_for_late_canonicalization(typdef, ctxt);
 	  ABG_ASSERT(typdef);
 	  add_decl_to_scope(typdef, scope);
 	  t->set_underlying_type(typdef);
@@ -14619,7 +14666,8 @@ build_function_type(read_context&	ctxt,
 	    bool is_artificial = die_is_artificial(&child);
 	    ir::environment* env = ctxt.env();
 	    ABG_ASSERT(env);
-	    type_base_sptr parm_type = env->get_variadic_parameter_type();
+	    type_base_sptr parm_type =
+	      is_type(build_ir_node_for_variadic_parameter_type(ctxt));
 	    function_decl::parameter_sptr p
 	      (new function_decl::parameter(parm_type,
 					    /*name=*/"",
@@ -15615,6 +15663,8 @@ build_function_decl(read_context&	ctxt,
       if (!fn_type)
 	return result;
 
+      maybe_canonicalize_type(fn_type, ctxt);
+
       result.reset(is_method
 		   ? new method_decl(fname, fn_type,
 				     is_inline, floc,
@@ -16141,50 +16191,6 @@ maybe_canonicalize_type(const type_base_sptr& t,
     canonicalize(t);
 }
 
-/// Canonicalize a type if it's suitable for early canonicalizing, or,
-/// if it's not, schedule it for late canonicalization, after the
-/// debug info of the current translation unit has been fully read.
-///
-/// A (composite) type is deemed suitable for early canonicalizing iff
-/// all of its sub-types are canonicalized themselve.  Non composite
-/// types are always deemed suitable for early canonicalization.
-///
-/// Note that this function knows how to properly use either one of
-/// the following two overloads:
-///
-///     1/
-///     void maybe_canonicalize_type(const Dwarf_Die*	die,
-///				     const type_base_sptr&	t,
-///				     read_context&		ctxt);
-///
-///     2/
-///     void maybe_canonicalize_type(const Dwarf_Die *die, read_context& ctxt);
-///
-/// So this function uses 1/ for most types and uses uses 2/ function
-/// types.  Using 2/ is slower and bigger than using 1/, but then 1/
-/// deals poorly with anonymous types because of how poorly DIEs
-/// canonicalization works on anonymous types.  That's why this
-/// function uses 2/ only for the types that really need it.
-///
-/// @param die the DIE of the type denoted by @p t.
-///
-/// @param t the type to consider.  Its DIE is @p die.
-///
-/// @param ctxt the read context in use.
-static void
-maybe_canonicalize_type(const Dwarf_Die	*die,
-			const type_base_sptr&	t,
-			read_context&		ctxt)
-{
-  if (const function_type_sptr ft = is_function_type(t))
-    {
-      maybe_canonicalize_type(ft, ctxt);
-      return;
-    }
-
-  maybe_canonicalize_type(die, ctxt);
-}
-
 /// If a given decl is a member type declaration, set its access
 /// specifier from the DIE that represents it.
 ///
@@ -16468,7 +16474,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	    if (klass)
 	      {
 		maybe_set_member_type_access_specifier(klass, die);
-		maybe_canonicalize_type(die, klass, ctxt);
+		maybe_canonicalize_type(klass, ctxt);
 	      }
 	  }
       }
@@ -16485,7 +16491,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	  if (union_type)
 	    {
 	      maybe_set_member_type_access_specifier(union_type, die);
-	      maybe_canonicalize_type(die, union_type, ctxt);
+	      maybe_canonicalize_type(union_type, ctxt);
 	    }
 	  result = union_type;
 	}
@@ -16805,6 +16811,26 @@ build_ir_node_for_void_type(read_context& ctxt)
   ir::environment* env = ctxt.env();
   ABG_ASSERT(env);
   type_base_sptr t = env->get_void_type();
+  decl_base_sptr type_declaration = get_type_declaration(t);
+  if (!has_scope(type_declaration))
+    add_decl_to_scope(type_declaration,
+		      ctxt.cur_transl_unit()->get_global_scope());
+  canonicalize(t);
+  return type_declaration;
+}
+
+/// Build the IR node for a variadic parameter type.
+///
+/// @param ctxt the read context to use.
+///
+/// @return the variadic parameter type.
+static decl_base_sptr
+build_ir_node_for_variadic_parameter_type(read_context &ctxt)
+{
+
+  ir::environment* env = ctxt.env();
+  ABG_ASSERT(env);
+  type_base_sptr t = env->get_variadic_parameter_type();
   decl_base_sptr type_declaration = get_type_declaration(t);
   if (!has_scope(type_declaration))
     add_decl_to_scope(type_declaration,

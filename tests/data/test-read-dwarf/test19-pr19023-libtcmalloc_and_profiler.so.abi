@@ -19861,12 +19861,13 @@
       <subrange length='65536' type-id='type-id-5' id='type-id-1266'/>
     </array-type-def>
     <type-decl name='unsigned short int' size-in-bits='16' id='type-id-14'/>
+    <type-decl name='variadic parameter type' id='type-id-1267'/>
     <type-decl name='void' id='type-id-56'/>
-    <array-type-def dimensions='1' type-id='type-id-53' size-in-bits='1984' id='type-id-1267'>
-      <subrange length='31' type-id='type-id-5' id='type-id-1268'/>
+    <array-type-def dimensions='1' type-id='type-id-53' size-in-bits='1984' id='type-id-1268'>
+      <subrange length='31' type-id='type-id-5' id='type-id-1269'/>
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-1269' size-in-bits='4194304' id='type-id-1270'>
-      <subrange length='65536' type-id='type-id-5' id='type-id-1271'/>
+    <array-type-def dimensions='1' type-id='type-id-1270' size-in-bits='4194304' id='type-id-1271'>
+      <subrange length='65536' type-id='type-id-5' id='type-id-1266'/>
     </array-type-def>
     <type-decl name='wchar_t' size-in-bits='32' id='type-id-1272'/>
     <typedef-decl name='size_t' type-id='type-id-5' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/include/stddef.h' line='211' column='1' id='type-id-57'/>
@@ -20127,7 +20128,7 @@
         <var-decl name='kValueMask' type-id='type-id-89' visibility='default' filepath='src/packed-cache-inl.h' line='230' column='1'/>
       </data-member>
       <data-member access='private' layout-offset-in-bits='0'>
-        <var-decl name='array_' type-id='type-id-1270' visibility='default' filepath='src/packed-cache-inl.h' line='234' column='1'/>
+        <var-decl name='array_' type-id='type-id-1271' visibility='default' filepath='src/packed-cache-inl.h' line='234' column='1'/>
       </data-member>
       <member-function access='private'>
         <function-decl name='PackedCache' filepath='src/packed-cache-inl.h' line='148' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -21426,7 +21427,7 @@
     <pointer-type-def type-id='type-id-980' size-in-bits='64' id='type-id-80'/>
     <qualified-type-def type-id='type-id-943' volatile='yes' id='type-id-939'/>
     <qualified-type-def type-id='type-id-57' volatile='yes' id='type-id-1485'/>
-    <qualified-type-def type-id='type-id-5' volatile='yes' id='type-id-1269'/>
+    <qualified-type-def type-id='type-id-5' volatile='yes' id='type-id-1270'/>
     <pointer-type-def type-id='type-id-1272' size-in-bits='64' id='type-id-1486'/>
     <pointer-type-def type-id='type-id-1486' size-in-bits='64' id='type-id-1487'/>
     <namespace-decl name='std'>
@@ -24940,7 +24941,7 @@
           <var-decl name='depth' type-id='type-id-130' visibility='default' filepath='src/common.h' line='268' column='1'/>
         </data-member>
         <data-member access='public' layout-offset-in-bits='128'>
-          <var-decl name='stack' type-id='type-id-1267' visibility='default' filepath='src/common.h' line='269' column='1'/>
+          <var-decl name='stack' type-id='type-id-1268' visibility='default' filepath='src/common.h' line='269' column='1'/>
         </data-member>
       </class-decl>
       <class-decl name='PageHeap' size-in-bits='4293888' visibility='default' filepath='src/page_heap.h' line='104' column='1' id='type-id-1405'>

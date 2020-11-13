@@ -994,10 +994,11 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='recover.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
-    <typedef-decl name='gdbm_recovery' type-id='type-id-91' filepath='./gdbm.h' line='157' column='1' id='type-id-92'/>
-    <class-decl name='gdbm_recovery_s' size-in-bits='704' is-struct='yes' visibility='default' filepath='./gdbm.h' line='137' column='1' id='type-id-91'>
+    <type-decl name='variadic parameter type' id='type-id-91'/>
+    <typedef-decl name='gdbm_recovery' type-id='type-id-92' filepath='./gdbm.h' line='157' column='1' id='type-id-93'/>
+    <class-decl name='gdbm_recovery_s' size-in-bits='704' is-struct='yes' visibility='default' filepath='./gdbm.h' line='137' column='1' id='type-id-92'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='errfun' type-id='type-id-93' visibility='default' filepath='./gdbm.h' line='142' column='1'/>
+        <var-decl name='errfun' type-id='type-id-94' visibility='default' filepath='./gdbm.h' line='142' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <var-decl name='data' type-id='type-id-20' visibility='default' filepath='./gdbm.h' line='143' column='1'/>
@@ -1030,8 +1031,8 @@
         <var-decl name='backup_name' type-id='type-id-17' visibility='default' filepath='./gdbm.h' line='156' column='1'/>
       </data-member>
     </class-decl>
-    <pointer-type-def type-id='type-id-92' size-in-bits='64' id='type-id-94'/>
-    <pointer-type-def type-id='type-id-95' size-in-bits='64' id='type-id-93'/>
+    <pointer-type-def type-id='type-id-93' size-in-bits='64' id='type-id-95'/>
+    <pointer-type-def type-id='type-id-96' size-in-bits='64' id='type-id-94'/>
     <function-decl name='gdbm_copy_meta' mangled-name='gdbm_copy_meta' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/recover.c' line='23' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gdbm_copy_meta'>
       <parameter type-id='type-id-9' name='dst' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/recover.c' line='23' column='1'/>
       <parameter type-id='type-id-9' name='src' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/recover.c' line='23' column='1'/>
@@ -1044,11 +1045,11 @@
     </function-decl>
     <function-decl name='gdbm_recover' mangled-name='gdbm_recover' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/recover.c' line='351' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gdbm_recover'>
       <parameter type-id='type-id-9' name='dbf' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/recover.c' line='351' column='1'/>
-      <parameter type-id='type-id-94' name='rcvr' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/recover.c' line='351' column='1'/>
+      <parameter type-id='type-id-95' name='rcvr' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/recover.c' line='351' column='1'/>
       <parameter type-id='type-id-8' name='flags' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/recover.c' line='351' column='1'/>
       <return type-id='type-id-8'/>
     </function-decl>
-    <function-type size-in-bits='64' id='type-id-95'>
+    <function-type size-in-bits='64' id='type-id-96'>
       <parameter type-id='type-id-20'/>
       <parameter type-id='type-id-56'/>
       <parameter is-variadic='yes'/>
@@ -1067,11 +1068,11 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='version.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
-    <qualified-type-def type-id='type-id-8' const='yes' id='type-id-96'/>
-    <pointer-type-def type-id='type-id-96' size-in-bits='64' id='type-id-97'/>
+    <qualified-type-def type-id='type-id-8' const='yes' id='type-id-97'/>
+    <pointer-type-def type-id='type-id-97' size-in-bits='64' id='type-id-98'/>
     <function-decl name='gdbm_version_cmp' mangled-name='gdbm_version_cmp' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/version.c' line='39' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gdbm_version_cmp'>
-      <parameter type-id='type-id-97' name='a' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/version.c' line='39' column='1'/>
-      <parameter type-id='type-id-97' name='b' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/version.c' line='39' column='1'/>
+      <parameter type-id='type-id-98' name='a' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/version.c' line='39' column='1'/>
+      <parameter type-id='type-id-98' name='b' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/version.c' line='39' column='1'/>
       <return type-id='type-id-8'/>
     </function-decl>
   </abi-instr>

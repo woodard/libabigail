@@ -31651,17 +31651,19 @@
     </array-type-def>
     <!-- unsigned short int -->
     <type-decl name='unsigned short int' size-in-bits='16' id='type-id-14'/>
+    <!-- variadic parameter type -->
+    <type-decl name='variadic parameter type' id='type-id-1267'/>
     <!-- void -->
     <type-decl name='void' id='type-id-56'/>
     <!-- void*[31] -->
-    <array-type-def dimensions='1' type-id='type-id-53' size-in-bits='1984' id='type-id-1267'>
+    <array-type-def dimensions='1' type-id='type-id-53' size-in-bits='1984' id='type-id-1268'>
       <!-- <anonymous range>[31] -->
-      <subrange length='31' type-id='type-id-5' id='type-id-1268'/>
+      <subrange length='31' type-id='type-id-5' id='type-id-1269'/>
     </array-type-def>
     <!-- volatile unsigned long int[65536] -->
-    <array-type-def dimensions='1' type-id='type-id-1269' size-in-bits='4194304' id='type-id-1270'>
+    <array-type-def dimensions='1' type-id='type-id-1270' size-in-bits='4194304' id='type-id-1271'>
       <!-- <anonymous range>[65536] -->
-      <subrange length='65536' type-id='type-id-5' id='type-id-1271'/>
+      <subrange length='65536' type-id='type-id-5' id='type-id-1266'/>
     </array-type-def>
     <!-- wchar_t -->
     <type-decl name='wchar_t' size-in-bits='32' id='type-id-1272'/>
@@ -32044,7 +32046,7 @@
       </data-member>
       <data-member access='private' layout-offset-in-bits='0'>
         <!-- volatile unsigned long int PackedCache<35, long unsigned int>::array_[65536] -->
-        <var-decl name='array_' type-id='type-id-1270' visibility='default' filepath='src/packed-cache-inl.h' line='234' column='1'/>
+        <var-decl name='array_' type-id='type-id-1271' visibility='default' filepath='src/packed-cache-inl.h' line='234' column='1'/>
       </data-member>
       <member-function access='private'>
         <!-- void PackedCache<35, long unsigned int>::PackedCache(unsigned long int) -->
@@ -34085,7 +34087,7 @@
     <!-- volatile size_t -->
     <qualified-type-def type-id='type-id-57' volatile='yes' id='type-id-1485'/>
     <!-- volatile unsigned long int -->
-    <qualified-type-def type-id='type-id-5' volatile='yes' id='type-id-1269'/>
+    <qualified-type-def type-id='type-id-5' volatile='yes' id='type-id-1270'/>
     <!-- wchar_t* -->
     <pointer-type-def type-id='type-id-1272' size-in-bits='64' id='type-id-1486'/>
     <!-- wchar_t** -->
@@ -39672,7 +39674,7 @@
         </data-member>
         <data-member access='public' layout-offset-in-bits='128'>
           <!-- void* tcmalloc::StackTrace::stack[31] -->
-          <var-decl name='stack' type-id='type-id-1267' visibility='default' filepath='src/common.h' line='269' column='1'/>
+          <var-decl name='stack' type-id='type-id-1268' visibility='default' filepath='src/common.h' line='269' column='1'/>
         </data-member>
       </class-decl>
       <!-- class tcmalloc::PageHeap -->

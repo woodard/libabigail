@@ -1416,13 +1416,13 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
     parameter 1 of type 'InitTableEntry*' changed:
       in pointed to type 'struct InitTableEntry' at offload_table.h:296:1:
         entity changed from 'struct InitTableEntry' to compatible type 'typedef InitTableEntry' at offload_table.h:296:1
-          type name changed from 'InitTableEntry' to '__anonymous_struct__1'
+          type name changed from 'InitTableEntry' to '__anonymous_struct__2'
           type size hasn't changed
           1 data member change:
             type of 'void ()* InitTableEntry::func' changed:
               in pointed to type 'function type void ()':
                 parameter 1 of type 'typedef MyoArena' was added
-            and name of 'InitTableEntry::func' changed to '__anonymous_struct__1::func' at offload_table.h:295:1
+            and name of 'InitTableEntry::func' changed to '__anonymous_struct__2::func' at offload_table.h:295:1
 
   [C] 'function void __offload_register_image(void*)' at offload_host.cpp:5531:1 has some indirect sub-type changes:
     return type changed:

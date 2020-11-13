@@ -450,6 +450,12 @@ is_class_type(const type_or_decl_base*);
 class_decl_sptr
 is_class_type(const type_or_decl_base_sptr&);
 
+bool
+is_declaration_only_class_or_union_type(const type_base *t);
+
+bool
+is_declaration_only_class_or_union_type(const type_base_sptr&);
+
 class_or_union*
 is_class_or_union_type(const type_or_decl_base*);
 
