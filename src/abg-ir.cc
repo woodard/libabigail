@@ -12229,42 +12229,6 @@ static void
 maybe_propagate_canonical_type(const type_base& lhs_type,
 			       const type_base& rhs_type);
 
-/// Test if it is OK for a type to be compared against another type
-/// (of the same kind) from the same ABI corpus, just by looking at
-/// its name and size.
-///
-/// This kind of comparison is based on the One Definition Rule of
-/// C++: https://en.wikipedia.org/wiki/One_Definition_Rule.
-///
-/// That is, if two types of the same kind from the same ABI corpus
-/// have the same name, then they designate the same "thing".
-///
-/// Comparing types using this ODR-based approach is much faster than
-/// doing the actual structural (member-wise) comparison.
-///
-/// Note that C doesn't follow the ODR.  Though, in practice, if the
-/// ODR is violated (even for C), something might be going wrong
-/// there.  It is for C, though, that we add the size constraint.
-///
-/// @param type the type to consider.
-///
-/// @return true iff @p type is eligible for the ODR-based comparison
-/// optimization.
-static bool
-type_eligible_for_odr_based_comparison(const type_base_sptr& type)
-{
-  // We are doing the ODR-based optimization just for non-anonymous
-  // user-defined types and built-in types
-  if (type
-      && (is_class_type(type)
-	  || is_enum_type(type)
-	  || is_function_type(type)
-	  || is_type_decl(type))
-      && !is_anonymous_type(type))
-    return true;
-  return false;
-}
-
 /// Test if two types are eligible to the "Linux Kernel Fast Type
 /// Comparison Optimization", a.k.a LKFTCO.
 ///
@@ -12425,8 +12389,6 @@ type_base::get_canonical_type_for(type_base_sptr t)
 	     || !class_or_union->get_is_anonymous()
 	     || class_or_union->get_linkage_name().empty());
 
-  translation_unit::language lang = t->get_translation_unit()->get_language();
-
   // We want the pretty representation of the type, but for an
   // internal use, not for a user-facing purpose.
   //
@@ -12438,9 +12400,6 @@ type_base::get_canonical_type_for(type_base_sptr t)
   // "class Foo", regardless of its struct-ness. This also applies to
   // composite types which would have "class Foo" as a sub-type.
   string repr = t->get_cached_pretty_representation(/*internal=*/true);
-
-  // This is the corpus of the type we want to canonicalize.
-  const corpus* t_corpus = t->get_corpus();
 
   // If 't' already has a canonical type 'inside' its corpus
   // (t_corpus), then this variable is going to contain that canonical
@@ -12471,67 +12430,6 @@ type_base::get_canonical_type_for(type_base_sptr t)
 	   it != v.rend();
 	   ++it)
 	{
-	  // We are going to use the One Definition Rule[1] to perform
-	  // a speed optimization here.
-	  //
-	  // Here is how I'd phrase that optimization: If 't' has the
-	  // same *name* as a canonical type C which comes from the
-	  // same *abi corpus* as 't', then C is the canonical type of
-	  // 't.
-	  //
-	  // [1]: https://en.wikipedia.org/wiki/One_Definition_Rule
-	  //
-	  // Note how we walk the vector of canonical types by
-	  // starting from the end; that is because since canonical
-	  // types of a given corpus are added at the end of this
-	  // vector, when two ABI corpora have been loaded and their
-	  // canonical types are present in this vector (e.g, when
-	  // comparing two ABI corpora), the canonical types of the
-	  // second corpus are going to be near the end the vector.
-	  // As this function is likely to be called during the
-	  // loading of the ABI corpus, looking from the end of the
-	  // vector maximizes the changes of triggering the
-	  // optimization, even when we are reading the second corpus.
-	  translation_unit::language other_lang =
-	    (*it)->get_translation_unit()->get_language();
-
-	  bool is_odr_allowed =
-	    is_cplus_plus_language(lang) && is_cplus_plus_language(other_lang);
-
-	  if (t_corpus
-	      && is_odr_allowed
-	      && type_eligible_for_odr_based_comparison(t))
-	    {
-	      if (const corpus* it_corpus = (*it)->get_corpus())
-		{
-		  // This is true if the canonical type candidate and
-		  // the type being canonicalized are both from the
-		  // same corpus.
-		  bool same_corpus = (it_corpus == t_corpus);
-		  if (!same_corpus)
-		    // Maybe a canonical type for 't' has already been
-		    // computed from this corpus?
-		    canonical_type_present_in_corpus =
-		      t_corpus->lookup_canonical_type(repr);
-		  if ((same_corpus || canonical_type_present_in_corpus)
-		      // Let's add one more size constraint to rule
-		      // out programs that break the One Definition
-		      // Rule too easily.
-		      && (*it)->get_size_in_bits() == t->get_size_in_bits())
-		    {
-		      // Both types come from the same ABI corpus and
-		      // have the same name; the One Definition Rule
-		      // of C and C++ says that these two types should
-		      // be equal.  Using that rule would saves us
-		      // from a potentially expensive type comparison
-		      // here.
-		      result = same_corpus
-			? *it
-			: canonical_type_present_in_corpus;
-		      break;
-		    }
-		}
-	    }
 	  // Before the "*it == it" comparison below is done, let's
 	  // perform on-the-fly-canonicalization.  For C types, let's
 	  // consider that an unresolved struct declaration 'struct S'
@@ -12574,15 +12472,6 @@ type_base::get_canonical_type_for(type_base_sptr t)
 	  result = t;
 	}
     }
-
-  if (result && t_corpus && !canonical_type_present_in_corpus)
-    // So we have found a canonical type for 't'.  Let's cache that
-    // canonical type inside the corpus of t.  So that next time we
-    // come across a type of that corpus which has the same name as
-    // this canonical type, we know that both types ought to be the
-    // same (per the One Definition Rule), potentially saving us from
-    // expensive structural type comparisons.
-    t_corpus->record_canonical_type(result);
 
   return result;
 }
@@ -23527,7 +23416,7 @@ function_decl_is_less_than(const function_decl &f, const function_decl &s)
     return fr < sr;
 
   fr = f.get_pretty_representation(),
-		sr = s.get_pretty_representation();
+    sr = s.get_pretty_representation();
 
   if (fr != sr)
     return fr < sr;

@@ -308,9 +308,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-101'/>
-      <class-decl name='__normal_iterator&lt;char const*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-102'/>
-      <class-decl name='__numeric_traits_integer&lt;int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='55' column='1' id='type-id-103'>
+      <class-decl name='__numeric_traits_integer&lt;int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='55' column='1' id='type-id-101'>
         <data-member access='public' static='yes'>
           <var-decl name='__min' type-id='type-id-45' mangled-name='_ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='58' column='1'/>
         </data-member>
@@ -324,7 +322,7 @@
           <var-decl name='__digits' type-id='type-id-45' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='64' column='1'/>
         </data-member>
       </class-decl>
-      <class-decl name='__numeric_traits_integer&lt;long unsigned int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='55' column='1' id='type-id-104'>
+      <class-decl name='__numeric_traits_integer&lt;long unsigned int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='55' column='1' id='type-id-102'>
         <data-member access='public' static='yes'>
           <var-decl name='__min' type-id='type-id-75' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='58' column='1'/>
         </data-member>
@@ -338,7 +336,7 @@
           <var-decl name='__digits' type-id='type-id-45' mangled-name='_ZN9__gnu_cxx24__numeric_traits_integerImE8__digitsE' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='64' column='1'/>
         </data-member>
       </class-decl>
-      <class-decl name='__numeric_traits_integer&lt;char&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='55' column='1' id='type-id-105'>
+      <class-decl name='__numeric_traits_integer&lt;char&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='55' column='1' id='type-id-103'>
         <data-member access='public' static='yes'>
           <var-decl name='__min' type-id='type-id-42' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='58' column='1'/>
         </data-member>
@@ -352,7 +350,7 @@
           <var-decl name='__digits' type-id='type-id-45' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='64' column='1'/>
         </data-member>
       </class-decl>
-      <class-decl name='__numeric_traits_integer&lt;short int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='55' column='1' id='type-id-106'>
+      <class-decl name='__numeric_traits_integer&lt;short int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='55' column='1' id='type-id-104'>
         <data-member access='public' static='yes'>
           <var-decl name='__min' type-id='type-id-49' mangled-name='_ZN9__gnu_cxx24__numeric_traits_integerIsE5__minE' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='58' column='1'/>
         </data-member>
@@ -366,7 +364,7 @@
           <var-decl name='__digits' type-id='type-id-45' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='64' column='1'/>
         </data-member>
       </class-decl>
-      <class-decl name='__numeric_traits_integer&lt;long int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='55' column='1' id='type-id-107'>
+      <class-decl name='__numeric_traits_integer&lt;long int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='55' column='1' id='type-id-105'>
         <data-member access='public' static='yes'>
           <var-decl name='__min' type-id='type-id-46' mangled-name='_ZN9__gnu_cxx24__numeric_traits_integerIlE5__minE' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='58' column='1'/>
         </data-member>
@@ -380,11 +378,11 @@
           <var-decl name='__digits' type-id='type-id-45' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='64' column='1'/>
         </data-member>
       </class-decl>
+      <class-decl name='__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-106'/>
+      <class-decl name='__normal_iterator&lt;char const*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-107'/>
     </namespace-decl>
     <namespace-decl name='std'>
-      <class-decl name='basic_ostream&lt;char, std::char_traits&lt;char&gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-108'/>
       <typedef-decl name='ostream' type-id='type-id-108' filepath='/usr/include/c++/5.3.1/iosfwd' line='141' column='1' id='type-id-90'/>
-      <var-decl name='cout' type-id='type-id-90' mangled-name='_ZSt4cout' visibility='default' filepath='/usr/include/c++/5.3.1/iostream' line='61' column='1'/>
       <class-decl name='basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' size-in-bits='64' visibility='default' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2510' column='1' id='type-id-53'>
         <member-type access='private'>
           <class-decl name='_Alloc_hider' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2670' column='1' id='type-id-84'>
@@ -407,10 +405,10 @@
           <typedef-decl name='const_reference' type-id='type-id-114' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2522' column='1' id='type-id-113'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='iterator' type-id='type-id-101' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2525' column='1' id='type-id-115'/>
+          <typedef-decl name='iterator' type-id='type-id-106' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2525' column='1' id='type-id-115'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='const_iterator' type-id='type-id-102' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2527' column='1' id='type-id-116'/>
+          <typedef-decl name='const_iterator' type-id='type-id-107' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2527' column='1' id='type-id-116'/>
         </member-type>
         <member-type access='public'>
           <typedef-decl name='const_reverse_iterator' type-id='type-id-118' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2528' column='1' id='type-id-117'/>
@@ -462,8 +460,6 @@
         </member-type>
       </class-decl>
       <typedef-decl name='size_t' type-id='type-id-14' filepath='/usr/include/c++/5.3.1/x86_64-redhat-linux/bits/c++config.h' line='1969' column='1' id='type-id-96'/>
-      <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char const*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-118'/>
-      <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-120'/>
       <class-decl name='char_traits&lt;char&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/bits/char_traits.h' line='233' column='1' id='type-id-122'>
         <member-type access='public'>
           <typedef-decl name='char_type' type-id='type-id-2' filepath='/usr/include/c++/5.3.1/bits/char_traits.h' line='235' column='1' id='type-id-62'/>
@@ -473,6 +469,10 @@
         </member-type>
       </class-decl>
       <typedef-decl name='string' type-id='type-id-53' filepath='/usr/include/c++/5.3.1/bits/stringfwd.h' line='74' column='1' id='type-id-69'/>
+      <class-decl name='basic_ostream&lt;char, std::char_traits&lt;char&gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-108'/>
+      <var-decl name='cout' type-id='type-id-90' mangled-name='_ZSt4cout' visibility='default' filepath='/usr/include/c++/5.3.1/iostream' line='61' column='1'/>
+      <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char const*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-118'/>
+      <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-120'/>
     </namespace-decl>
     <var-decl name='__dso_handle' type-id='type-id-5' visibility='default'/>
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='353' column='1' visibility='default' binding='global' size-in-bits='64'>

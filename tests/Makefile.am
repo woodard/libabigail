@@ -24,14 +24,18 @@ FEDABIPKGDIFF_TEST += runtestfedabipkgdiff.py
 endif
 endif
 
+RUN_TEST_SLOW_SELF_COMPARE=runtestslowselfcompare.sh
+
 # rather expensive tests (keep in this order), > 1s runtime
 TESTS=				\
+$(RUN_TEST_SLOW_SELF_COMPARE)   \
 runtestdiffsuppr		\
 runtesttypesstability		\
 runtestdiffpkg			\
 runtestannotate			\
 runtestdifffilter		\
-runtestreaddwarf
+runtestreaddwarf	        \
+runtestcanonicalizetypes.sh
 
 # rather cheap tests
 TESTS+=				\
@@ -39,7 +43,6 @@ runtestabicompat		\
 runtestabidiff			\
 runtestabidiffexit		\
 runtestaltdwarf			\
-runtestcanonicalizetypes.sh	\
 runtestcorediff			\
 runtestcxxcompat		\
 runtestdiffdwarf		\
@@ -64,6 +67,7 @@ endif
 EXTRA_DIST = \
 runtestcanonicalizetypes.sh.in \
 runtestfedabipkgdiff.py.in \
+runtestslowselfcompare.sh.in \
 mockfedabipkgdiff.in \
 test-valgrind-suppressions.supp
 
@@ -173,6 +177,9 @@ testdiff2_LDADD=$(top_builddir)/src/libabigail.la
 printdifftree_SOURCES = print-diff-tree.cc
 printdifftree_LDADD = $(top_builddir)/src/libabigail.la
 
+runtestslowselfcompare_sh_SOURCES =
+runtestslowselfcompare.sh$(EXEEXT):
+
 runtestcanonicalizetypes_sh_SOURCES =
 runtestcanonicalizetypes.sh$(EXEEXT):
 
@@ -229,3 +236,7 @@ check-valgrind-memcheck-recursive:
 
 check-valgrind-helgrind-recursive:
 	$(MAKE) check-valgrind-helgrind VALGRIND_FLAGS="${RECURSIVE_VALGRIND_FLAGS}"
+
+check-self-compare:
+	$(MAKE) check TESTS=runtestslowselfcompare.sh ENABLE_SLOW_TEST=yes
+

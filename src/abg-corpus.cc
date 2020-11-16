@@ -475,46 +475,6 @@ corpus::priv::~priv()
   delete pub_type_pretty_reprs_;
 }
 
-/// Record a canonical type which has been computed for the current
-/// corpus.
-///
-/// This function associates the name of the canonical type to the
-/// canonical type, so that further lookup of this canonical using
-/// corpus::lookup_canonical_type succeeds in a faster manner.
-///
-/// @param t a canonical type for a type present in the current
-/// corpus.  This type can later be retrieved from the current corpus
-/// using corpus::lookup_canonical_type().
-void
-corpus::record_canonical_type(const type_base_sptr& t) const
-{
-  string n = get_pretty_representation(t, /*internal=*/true);
-  priv_->canonical_types_[n] = t;
-}
-
-/// Retrieve a canonical type present in the current corpus, from its
-/// name.
-///
-/// Note that the type must have been cached inside the corpus by an
-/// invocation to corpus::record_canonical_type().
-///
-/// @param qualified_name the name of the canonical type to retrieve.
-/// It must have been computed using the function
-/// get_pretty_representation(type_base_sptr, true).
-///
-/// @return the canonical type which name is @p qualified_name and
-/// which has been previously cached inside the corpus by an
-/// invocation to corpus::record_canonical_type().
-type_base_sptr
-corpus::lookup_canonical_type(const string& qualified_name) const
-{
-  unordered_map<string, type_base_sptr>::const_iterator i =
-    priv_->canonical_types_.find(qualified_name);
-  if (i == priv_->canonical_types_.end())
-    return type_base_sptr();
-  return i->second;
-}
-
 /// Constructor of the @ref corpus type.
 ///
 /// @param env the environment of the corpus.

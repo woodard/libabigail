@@ -805,7 +805,7 @@ public:
   /// @return true iff the declaration-only class @p t has been
   /// emitted.
   bool
-  decl_only_type_is_emitted(type_base* t)
+  decl_only_type_is_emitted(const type_base* t)
   {
     type_ptr_set_type::const_iterator i = m_emitted_decl_only_set.find(t);
     if (i == m_emitted_decl_only_set.end())
@@ -2291,31 +2291,33 @@ write_translation_unit(write_context&	       ctxt,
   // we need to emit.
   type_ptr_set_type referenced_types_to_emit;
 
+  for (type_ptr_set_type::const_iterator i =
+	 ctxt.get_referenced_types().begin();
+       i != ctxt.get_referenced_types().end();
+       ++i)
+    if (!ctxt.type_is_emitted(*i)
+	&& !ctxt.decl_only_type_is_emitted(*i))
+	referenced_types_to_emit.insert(*i);
+
   for (fn_type_ptr_set_type::const_iterator i =
 	 ctxt.get_referenced_function_types().begin();
        i != ctxt.get_referenced_function_types().end();
        ++i)
-    {
-      type_base_sptr type(*i, noop_deleter());
-      if (!ctxt.type_is_emitted(type)
-	  && !ctxt.decl_only_type_is_emitted(type))
-	// A referenced type that was not emitted at all must be
-	// emitted now.
-	referenced_types_to_emit.insert(type.get());
-    }
+    if (!ctxt.type_is_emitted(*i)
+	&& !ctxt.decl_only_type_is_emitted(*i))
+      // A referenced type that was not emitted at all must be
+      // emitted now.
+      referenced_types_to_emit.insert(*i);
 
   for (type_ptr_set_type::const_iterator i =
 	 ctxt.get_referenced_non_canonical_types().begin();
        i != ctxt.get_referenced_non_canonical_types().end();
        ++i)
-    {
-      const type_base_sptr type(const_cast<type_base*>(*i), noop_deleter());
-      if (!ctxt.type_is_emitted(type)
-	  && !ctxt.decl_only_type_is_emitted(type))
-	// A referenced type that was not emitted at all must be
-	// emitted now.
-	referenced_types_to_emit.insert(type.get());
-    }
+    if (!ctxt.type_is_emitted(*i)
+	&& !ctxt.decl_only_type_is_emitted(*i))
+      // A referenced type that was not emitted at all must be
+      // emitted now.
+      referenced_types_to_emit.insert(*i);
 
   // Ok, now let's emit the referenced type for good.
   while (!referenced_types_to_emit.empty())
@@ -2326,6 +2328,11 @@ write_translation_unit(write_context&	       ctxt,
       vector<type_base*> sorted_referenced_types;
       ctxt.sort_types(referenced_types_to_emit,
 		      sorted_referenced_types);
+
+      // Clear the types recorded as referenced by the process of
+      // emitting the types out.  New types are going to be referenced
+      // the process of emitting the types below.
+      ctxt.clear_referenced_types();
 
       // Now, emit the referenced decls in a sorted order.
       for (vector<type_base*>::const_iterator i =
@@ -2352,7 +2359,8 @@ write_translation_unit(write_context&	       ctxt,
 	    }
 	}
 
-      // So all referenced types that we wanted to emit were emitted.
+      // So all the (referenced) types that we wanted to emit were
+      // emitted.
       referenced_types_to_emit.clear();
 
       // But then, while emitting those referenced type, other types
@@ -2363,17 +2371,24 @@ write_translation_unit(write_context&	       ctxt,
       // emitted yet.  If yes, then we'll emit those again.
 
       for (type_ptr_set_type::const_iterator i =
+	     ctxt.get_referenced_types().begin();
+	   i != ctxt.get_referenced_types().end();
+	   ++i)
+	if (!ctxt.type_is_emitted(*i)
+	    && !ctxt.decl_only_type_is_emitted(*i))
+	  // A referenced type that was not emitted at all must be
+	  // emitted now.
+	  referenced_types_to_emit.insert(*i);
+
+      for (type_ptr_set_type::const_iterator i =
 	     ctxt.get_referenced_non_canonical_types().begin();
 	   i != ctxt.get_referenced_non_canonical_types().end();
 	   ++i)
-	{
-	  type_base_sptr type(const_cast<type_base*>(*i), noop_deleter());
-	  if (!ctxt.type_is_emitted(type)
-	      && !ctxt.decl_only_type_is_emitted(type))
-	    // A referenced type that was not emitted at all must be
-	    // emitted now.
-	    referenced_types_to_emit.insert(type.get());
-	}
+	if (!ctxt.type_is_emitted(*i)
+	    && !ctxt.decl_only_type_is_emitted(*i))
+	  // A referenced type that was not emitted at all must be
+	  // emitted now.
+	  referenced_types_to_emit.insert(*i);
     }
 
   // Now handle all function types that were not only referenced by
@@ -2396,6 +2411,8 @@ write_translation_unit(write_context&	       ctxt,
       ABG_ASSERT(fn_type);
       write_function_type(fn_type, ctxt, indent + c.get_xml_element_indent());
     }
+
+  ctxt.clear_referenced_types();
 
   do_indent(o, indent);
   o << "</abi-instr>\n";
@@ -2476,6 +2493,9 @@ write_namespace_decl(const namespace_decl_sptr& decl,
   typedef scope_decl::declarations		declarations;
   typedef declarations::const_iterator const_iterator;
   const declarations& d = decl->get_member_decls();
+
+  write_canonical_types_of_scope(*decl, ctxt,
+				 indent + c.get_xml_element_indent());
 
   for (const_iterator i = d.begin(); i != d.end(); ++i)
     {

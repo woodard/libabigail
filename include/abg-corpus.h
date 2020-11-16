@@ -71,8 +71,6 @@ public:
 private:
   corpus();
 
-  void record_canonical_type(const type_base_sptr&) const;
-  type_base_sptr lookup_canonical_type(const string& qualified_name) const;
   void set_group(corpus_group*);
 
 public:

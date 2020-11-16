@@ -88,3 +88,9 @@ tag-and-all: distcheck
 distcheck-fast:
 	$(MAKE) distcheck GZIP_ENV="--fast"
 
+# This makes us compare libabigail.so against its own ABIXML
+# representation.  It's super slow (more than 5 minutes on one of my
+# old boxes) so I do this only before releases.
+check-self-compare:
+	$(MAKE) -C tests check-self-compare
+

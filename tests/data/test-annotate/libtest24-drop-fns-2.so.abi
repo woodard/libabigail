@@ -2324,19 +2324,6 @@
       </class-decl>
       <!-- typedef unsigned long int std::size_t -->
       <typedef-decl name='size_t' type-id='type-id-17' filepath='/usr/include/c++/5.3.1/x86_64-redhat-linux/bits/c++config.h' line='1969' column='1' id='type-id-117'/>
-      <!-- class std::reverse_iterator<__gnu_cxx::__normal_iterator<char const*, std::basic_string<char, std::char_traits<char>, std::allocator<char> > > > -->
-      <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char const*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-113'/>
-      <!-- class std::reverse_iterator<__gnu_cxx::__normal_iterator<char*, std::basic_string<char, std::char_traits<char>, std::allocator<char> > > > -->
-      <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-115'/>
-      <!-- std::basic_string<char, std::char_traits<char>, std::allocator<char> > std::operator+<char, std::char_traits<char>, std::allocator<char> >(const char*, const std::basic_string<char, std::char_traits<char>, std::allocator<char> >&) -->
-      <function-decl name='operator+&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' mangled-name='_ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EPKS3_RKS6_' filepath='/usr/include/c++/5.3.1/bits/basic_string.tcc' line='1151' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EPKS3_RKS6_'>
-        <!-- parameter of type 'const char*' -->
-        <parameter type-id='type-id-33'/>
-        <!-- parameter of type 'const std::basic_string<char, std::char_traits<char>, std::allocator<char> >&' -->
-        <parameter type-id='type-id-62'/>
-        <!-- class std::basic_string<char, std::char_traits<char>, std::allocator<char> > -->
-        <return type-id='type-id-60'/>
-      </function-decl>
       <!-- struct std::char_traits<char> -->
       <class-decl name='char_traits&lt;char&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/bits/char_traits.h' line='233' column='1' id='type-id-118'>
         <member-type access='public'>
@@ -2502,10 +2489,23 @@
       </class-decl>
       <!-- typedef std::basic_string<char, std::char_traits<char>, std::allocator<char> > std::string -->
       <typedef-decl name='string' type-id='type-id-60' filepath='/usr/include/c++/5.3.1/bits/stringfwd.h' line='74' column='1' id='type-id-76'/>
-      <!-- class std::basic_ostream<char, std::char_traits<char> > -->
-      <class-decl name='basic_ostream&lt;char, std::char_traits&lt;char&gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-119'/>
       <!-- typedef std::basic_ostream<char, std::char_traits<char> > std::ostream -->
       <typedef-decl name='ostream' type-id='type-id-119' filepath='/usr/include/c++/5.3.1/iosfwd' line='141' column='1' id='type-id-97'/>
+      <!-- class std::reverse_iterator<__gnu_cxx::__normal_iterator<char const*, std::basic_string<char, std::char_traits<char>, std::allocator<char> > > > -->
+      <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char const*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-113'/>
+      <!-- class std::reverse_iterator<__gnu_cxx::__normal_iterator<char*, std::basic_string<char, std::char_traits<char>, std::allocator<char> > > > -->
+      <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-115'/>
+      <!-- std::basic_string<char, std::char_traits<char>, std::allocator<char> > std::operator+<char, std::char_traits<char>, std::allocator<char> >(const char*, const std::basic_string<char, std::char_traits<char>, std::allocator<char> >&) -->
+      <function-decl name='operator+&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' mangled-name='_ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EPKS3_RKS6_' filepath='/usr/include/c++/5.3.1/bits/basic_string.tcc' line='1151' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EPKS3_RKS6_'>
+        <!-- parameter of type 'const char*' -->
+        <parameter type-id='type-id-33'/>
+        <!-- parameter of type 'const std::basic_string<char, std::char_traits<char>, std::allocator<char> >&' -->
+        <parameter type-id='type-id-62'/>
+        <!-- class std::basic_string<char, std::char_traits<char>, std::allocator<char> > -->
+        <return type-id='type-id-60'/>
+      </function-decl>
+      <!-- class std::basic_ostream<char, std::char_traits<char> > -->
+      <class-decl name='basic_ostream&lt;char, std::char_traits&lt;char&gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-119'/>
     </namespace-decl>
     <!-- namespace __gnu_cxx -->
     <namespace-decl name='__gnu_cxx'>
@@ -2644,10 +2644,6 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <!-- class __gnu_cxx::__normal_iterator<char*, std::basic_string<char, std::char_traits<char>, std::allocator<char> > > -->
-      <class-decl name='__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-109'/>
-      <!-- class __gnu_cxx::__normal_iterator<char const*, std::basic_string<char, std::char_traits<char>, std::allocator<char> > > -->
-      <class-decl name='__normal_iterator&lt;char const*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-111'/>
       <!-- struct __gnu_cxx::__numeric_traits_integer<int> -->
       <class-decl name='__numeric_traits_integer&lt;int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='55' column='1' id='type-id-125'>
         <data-member access='public' static='yes'>
@@ -2743,6 +2739,10 @@
           <var-decl name='__digits' type-id='type-id-52' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='64' column='1'/>
         </data-member>
       </class-decl>
+      <!-- class __gnu_cxx::__normal_iterator<char*, std::basic_string<char, std::char_traits<char>, std::allocator<char> > > -->
+      <class-decl name='__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-109'/>
+      <!-- class __gnu_cxx::__normal_iterator<char const*, std::basic_string<char, std::char_traits<char>, std::allocator<char> > > -->
+      <class-decl name='__normal_iterator&lt;char const*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-111'/>
     </namespace-decl>
     <!-- wint_t btowc(int) -->
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='353' column='1' visibility='default' binding='global' size-in-bits='64'>

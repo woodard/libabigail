@@ -232,6 +232,7 @@
           <typedef-decl name='int_type' type-id='type-id-11' filepath='/usr/include/c++/5.3.1/bits/char_traits.h' line='236' column='1' id='type-id-63'/>
         </member-type>
       </class-decl>
+      <typedef-decl name='string' type-id='type-id-83' filepath='/usr/include/c++/5.3.1/bits/stringfwd.h' line='74' column='1' id='type-id-65'/>
       <class-decl name='basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' size-in-bits='64' visibility='default' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2510' column='1' id='type-id-83'>
         <member-type access='private'>
           <class-decl name='_Alloc_hider' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2670' column='1' id='type-id-84'>
@@ -312,11 +313,10 @@
         </member-type>
       </class-decl>
       <typedef-decl name='size_t' type-id='type-id-17' filepath='/usr/include/c++/5.3.1/x86_64-redhat-linux/bits/c++config.h' line='1969' column='1' id='type-id-101'/>
+      <typedef-decl name='ostream' type-id='type-id-102' filepath='/usr/include/c++/5.3.1/iosfwd' line='141' column='1' id='type-id-77'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char const*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-97'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-99'/>
-      <typedef-decl name='string' type-id='type-id-83' filepath='/usr/include/c++/5.3.1/bits/stringfwd.h' line='74' column='1' id='type-id-65'/>
       <class-decl name='basic_ostream&lt;char, std::char_traits&lt;char&gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-102'/>
-      <typedef-decl name='ostream' type-id='type-id-102' filepath='/usr/include/c++/5.3.1/iosfwd' line='141' column='1' id='type-id-77'/>
     </namespace-decl>
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='353' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-11'/>
@@ -711,8 +711,6 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-93'/>
-      <class-decl name='__normal_iterator&lt;char const*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-95'/>
       <class-decl name='__numeric_traits_integer&lt;int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='55' column='1' id='type-id-108'>
         <data-member access='public' static='yes'>
           <var-decl name='__min' type-id='type-id-52' mangled-name='_ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='58' column='1'/>
@@ -783,6 +781,8 @@
           <var-decl name='__digits' type-id='type-id-52' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='64' column='1'/>
         </data-member>
       </class-decl>
+      <class-decl name='__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-93'/>
+      <class-decl name='__normal_iterator&lt;char const*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-95'/>
     </namespace-decl>
     <function-decl name='wcstold' filepath='/usr/include/wchar.h' line='459' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-73'/>
