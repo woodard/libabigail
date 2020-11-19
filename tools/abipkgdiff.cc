@@ -87,6 +87,7 @@
 #endif
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <cstring>
 #include <cstdlib>
@@ -101,11 +102,14 @@
 #include "abg-comparison.h"
 #include "abg-suppression.h"
 #include "abg-dwarf-reader.h"
+#include "abg-reader.h"
+#include "abg-writer.h"
 
 using std::cout;
 using std::cerr;
 using std::string;
 using std::ostream;
+using std::ofstream;
 using std::vector;
 using std::map;
 using abg_compat::unordered_set;
@@ -158,6 +162,13 @@ using abigail::dwarf_reader::create_read_context;
 using abigail::dwarf_reader::get_soname_of_elf_file;
 using abigail::dwarf_reader::get_type_of_elf_file;
 using abigail::dwarf_reader::read_corpus_from_elf;
+using abigail::xml_reader::read_corpus_from_native_xml_file;
+using abigail::xml_writer::HASH_TYPE_ID_STYLE;
+using abigail::xml_writer::create_write_context;
+using abigail::xml_writer::type_id_style_kind;
+using abigail::xml_writer::write_context_sptr;
+using abigail::xml_writer::write_corpus;
+
 
 /// The options passed to the current program.
 class options
@@ -203,6 +214,7 @@ public:
   bool		show_added_binaries;
   bool		fail_if_no_debug_info;
   bool		show_identical_binaries;
+  bool		self_check;
   vector<string> kabi_whitelist_packages;
   vector<string> suppression_paths;
   vector<string> kabi_whitelist_paths;
@@ -216,8 +228,8 @@ public:
       nonexistent_file(),
       abignore(true),
       parallel(true),
-      verbose(false),
-      drop_private_types(false),
+      verbose(),
+      drop_private_types(),
       show_relative_offset_changes(true),
       no_default_suppression(),
       keep_tmp_files(),
@@ -237,7 +249,8 @@ public:
       show_symbols_not_referenced_by_debug_info(true),
       show_added_binaries(true),
       fail_if_no_debug_info(),
-      show_identical_binaries()
+      show_identical_binaries(),
+      self_check()
   {
     // set num_workers to the default number of threads of the
     // underlying maching.  This is the default value for the number
@@ -854,6 +867,8 @@ display_usage(const string& prog_name, ostream& out)
     << " --fail-no-dbg                  fail if no debug info was found\n"
     << " --show-identical-binaries      show the names of identical binaries\n"
     << " --verbose                      emit verbose progress messages\n"
+    << " --self-check                   perform a sanity check by comparing "
+    "binaries inside the input package against their ABIXML representation\n"
     << " --help|-h                      display this help message\n"
     << " --version|-v                   display program version information"
     " and exit\n";
@@ -927,7 +942,7 @@ extract_deb(const string& package_path,
       << package_path
       << " to "
       << extracted_package_dir_path
-      << " ...";
+      << " ...\n";
 
   string cmd = "mkdir -p " + extracted_package_dir_path + " && dpkg -x " +
     package_path + " " + extracted_package_dir_path;
@@ -1272,7 +1287,7 @@ compare(const elf_file& elf1,
 
   if (opts.verbose)
     emit_prefix("abipkgdiff", cerr)
-      << "  Reading file "
+      << "Reading file "
       << elf1.path
       << " ...\n";
 
@@ -1352,13 +1367,13 @@ compare(const elf_file& elf1,
 
   if (opts.verbose)
     emit_prefix("abipkgdiff", cerr)
-      << " DONE reading file "
+      << "DONE reading file "
       << elf1.path
       << "\n";
 
   if (opts.verbose)
     emit_prefix("abipkgdiff", cerr)
-      << "  Reading file "
+      << "Reading file "
       << elf2.path
       << " ...\n";
 
@@ -1463,6 +1478,190 @@ compare(const elf_file& elf1,
   if (diff->has_incompatible_changes())
     s |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
 
+  return s;
+}
+
+/// Compare an ELF file to its ABIXML representation.
+///
+/// @param elf the ELF file to compare.
+///
+/// @param debug_dir the debug directory of the ELF file.
+///
+/// @param opts the options passed the user.
+///
+/// @param env the environment to use for the comparison.
+///
+/// @param diff the diff object resulting from the comparison of @p
+/// elf against its ABIXML representation.
+///
+/// @param ctxt the resulting diff context used for the comparison
+/// that yielded @p diff.
+///
+/// @param detailed_error_status the detailed error satus returned by
+/// this function.
+///
+/// @return the status of the self comparison.
+static abidiff_status
+compare_to_self(const elf_file& elf,
+		const string&	debug_dir,
+		const options&	opts,
+		abigail::ir::environment_sptr	&env,
+		corpus_diff_sptr	&diff,
+		diff_context_sptr	&ctxt,
+		abigail::dwarf_reader::status *detailed_error_status = 0)
+{
+  char *di_dir = (char*) debug_dir.c_str();
+
+  vector<char**> di_dirs;
+  di_dirs.push_back(&di_dir);
+
+  abigail::dwarf_reader::status c_status = abigail::dwarf_reader::STATUS_OK;
+
+  if (opts.verbose)
+    emit_prefix("abipkgdiff", cerr)
+      << "Comparing the ABI of file '"
+      << elf.path
+      << "' against itself ...\n";
+
+  if (opts.verbose)
+    emit_prefix("abipkgdiff", cerr)
+      << "Reading file "
+      << elf.path
+      << " ...\n";
+
+  corpus_sptr corp;
+  {
+    read_context_sptr c =
+      create_read_context(elf.path, di_dirs, env.get(),
+			  /*load_all_types=*/opts.show_all_types);
+
+    corp = read_corpus_from_elf(*c, c_status);
+
+    if (!(c_status & abigail::dwarf_reader::STATUS_OK))
+      {
+	if (opts.verbose)
+	  emit_prefix("abipkgdiff", cerr)
+	    << "Could not read file '"
+	    << elf.path
+	    << "' propertly\n";
+
+	if (detailed_error_status)
+	  *detailed_error_status = c_status;
+
+	return abigail::tools_utils::ABIDIFF_ERROR;
+      }
+
+    if (opts.verbose)
+      emit_prefix("abipkgdiff", cerr)
+	<< "Read file '"
+	<< elf.path
+	<< "' OK\n";
+
+
+    ABG_ASSERT(corp);
+  }
+
+  corpus_sptr reread_corp;
+  string abi_file_path;
+  {
+    abi_file_path = elf.path + ".abi";
+    ofstream of(abi_file_path.c_str(), std::ios_base::trunc);
+
+
+    {
+      const abigail::xml_writer::write_context_sptr c =
+	abigail::xml_writer::create_write_context(env.get(), of);
+
+      if (opts.verbose)
+	emit_prefix("abipkgdiff", cerr)
+	  << "Writting ABIXML file '"
+	  << abi_file_path
+	  << "' ...\n";
+
+      if (!write_corpus(*c, corp, 0))
+	{
+	  if (opts.verbose)
+	    emit_prefix("abipkgdiff", cerr)
+	      << "Could not write the ABIXML file to '"
+	      << abi_file_path << "'\n";
+
+	  return abigail::tools_utils::ABIDIFF_ERROR;
+	}
+
+      of.flush();
+      of.close();
+
+      if (opts.verbose)
+	emit_prefix("abipkgdiff", cerr)
+	  << "Wrote ABIXML file '"
+	  << abi_file_path
+	  << "' OK\n";
+    }
+
+    {
+      abigail::xml_reader::read_context_sptr c =
+	abigail::xml_reader::create_native_xml_read_context(abi_file_path,
+							    env.get());
+      if (!c)
+	{
+	  if (opts.verbose)
+	    emit_prefix("abipkgdiff", cerr)
+	      << "Could not create read context for ABIXML file '"
+	      << abi_file_path << "'\n";
+
+	  return abigail::tools_utils::ABIDIFF_ERROR;
+	}
+
+      if (opts.verbose)
+	emit_prefix("abipkgdiff", cerr)
+	  << "Reading ABIXML file '"
+	  << abi_file_path
+	  << "' ...\n";
+
+      reread_corp = read_corpus_from_input(*c);
+      if (!reread_corp)
+	{
+	  if (opts.verbose)
+	    emit_prefix("abipkgdiff", cerr)
+	      << "Could not read temporary ABIXML file '"
+	      << abi_file_path << "'\n";
+
+	  return abigail::tools_utils::ABIDIFF_ERROR;
+	}
+
+      if (opts.verbose)
+	emit_prefix("abipkgdiff", cerr)
+	  << "Read file '"
+	  << abi_file_path
+	  << "' OK\n";
+    }
+  }
+
+  ctxt.reset(new diff_context);
+  set_diff_context_from_opts(ctxt, opts);
+
+  if (opts.verbose)
+    emit_prefix("abipkgdiff", cerr)
+      << "Comparing the ABIs of: \n"
+      << "   '" << corp->get_path() << "' against \n"
+      << "   '" << abi_file_path << "'...\n";
+
+  diff = compute_diff(corp, reread_corp, ctxt);
+  if (opts.verbose)
+    emit_prefix("abipkgdfiff", cerr)
+      << "... Comparing the ABIs: DONE\n";
+
+  abidiff_status s = abigail::tools_utils::ABIDIFF_OK;
+  if (diff->has_net_changes())
+    s |= abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+  if (diff->has_incompatible_changes())
+    s |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
+
+  if (opts.verbose)
+    emit_prefix("abipkgdfiff", cerr)
+      << (s == abigail::tools_utils::ABIDIFF_OK)
+      ? string("Comparison against self SUCCEEDED\n")
+      : string("Comparison against self FAILED\n");
   return s;
 }
 
@@ -1833,6 +2032,86 @@ public:
 
 /// Convenience typedef for a shared_ptr of @ref compare_task.
 typedef shared_ptr<compare_task> compare_task_sptr;
+
+/// The worker task which job is to compare an ELF binary to its ABI
+/// representation.
+class self_compare_task : public compare_task
+{
+public:
+
+  compare_args_sptr args;
+  abidiff_status status;
+  ostringstream out;
+  string pretty_output;
+
+  self_compare_task()
+    : status(abigail::tools_utils::ABIDIFF_OK)
+  {}
+
+  self_compare_task(const compare_args_sptr& a)
+    : args(a),
+      status(abigail::tools_utils::ABIDIFF_OK)
+  {}
+
+  /// The job performed by the task.
+  ///
+  /// This compares an ELF file to its ABIXML representation and
+  /// expects the result to be the empty set.
+  virtual void
+  perform()
+  {
+    abigail::ir::environment_sptr env(new abigail::ir::environment);
+    diff_context_sptr ctxt;
+    corpus_diff_sptr diff;
+
+    abigail::dwarf_reader::status detailed_status =
+      abigail::dwarf_reader::STATUS_UNKNOWN;
+
+    status |= compare_to_self(args->elf1, args->debug_dir1,
+			      args->opts, env, diff, ctxt,
+			      &detailed_status);
+
+    string name = args->elf1.name;
+    if (status == abigail::tools_utils::ABIDIFF_OK)
+      pretty_output += "==== SELF CHECK SUCCEEDED for '"+ name + "' ====\n";
+    else if ((status & abigail::tools_utils::ABIDIFF_ABI_CHANGE)
+	     ||( diff && diff->has_net_changes()))
+      {
+	// There is an ABI change, tell the user about it.
+	diff->report(out, /*prefix=*/"  ");
+
+	pretty_output +=
+	  string("======== comparing'") + name +
+	  "' to itself wrongly yielded result: ===========\n"
+	  + out.str()
+	  + "===SELF CHECK FAILED for '"+ name + "'\n";
+      }
+
+    // If an error happened while comparing the two binaries, tell the
+    // user about it.
+    if (status & abigail::tools_utils::ABIDIFF_ERROR)
+      {
+	string diagnostic =
+	  abigail::dwarf_reader::status_to_diagnostic_string(detailed_status);
+
+	if (!diagnostic.empty())
+	  {
+	    string name = args->elf1.name;
+
+	    pretty_output +=
+	      "==== Error happened during self check of " + name + ": ====\n";
+
+	    pretty_output += diagnostic;
+
+	    pretty_output +=
+	      "==== SELF CHECK FAILED for " + name + " ====\n";
+	  }
+      }
+  }
+}; // end class self_compare
+
+/// Convenience typedef for a shared_ptr of @ref compare_task.
+typedef shared_ptr<self_compare_task> self_compare_task_sptr;
 
 /// This function is a sub-routine of create_maps_of_package_content.
 ///
@@ -2220,6 +2499,21 @@ prepare_packages(package_sptr &first_package,
   return first_pkg_prepare->is_ok && second_pkg_prepare->is_ok;
 }
 
+/// Prepare one package for the sake of comparing it to its ABIXML
+/// representation.
+///
+/// The preparation entails unpacking the content of the package into
+/// a temporary directory and mapping its content.
+///
+/// @param pkg the package to prepare.
+///
+/// @param opts the options provided by the user.
+///
+/// @return true iff the preparation succeeded.
+static bool
+prepare_package(package_sptr& pkg, options &opts)
+{return extract_package_and_map_its_content(pkg, opts);}
+
 /// Compare the added sizes of an ELF pair (specified by a comparison
 /// task that compares two ELF files) against the added sizes of a
 /// second ELF pair.
@@ -2244,8 +2538,8 @@ elf_size_is_greater(const task_sptr &task1,
   compare_task_sptr t1 = dynamic_pointer_cast<compare_task>(task1);
   compare_task_sptr t2 = dynamic_pointer_cast<compare_task>(task2);
 
-  off_t s1 = t1->args->elf1.size + t1->args->elf2.size;
-  off_t s2 = t2->args->elf1.size + t2->args->elf2.size;
+  off_t s1 = t1->args ? t1->args->elf1.size + t1->args->elf2.size : 0;
+  off_t s2 = t2->args ? t2->args->elf1.size + t2->args->elf2.size: 0;
 
   return s1 > s2;
 }
@@ -2483,6 +2777,112 @@ compare_prepared_userspace_packages(package& first_package,
   return status;
 }
 
+/// In the context of the unpacked content of a given package, compare
+/// the binaries inside the package against their ABIXML
+/// representation.  This should yield the empty set.
+///
+/// @param pkg (unpacked) package
+///
+/// @param diff the representation of the changes between the binaries
+/// and their ABIXML.  This should obviously be the empty set.
+///
+/// @param diff a textual representation of the diff.
+///
+/// @param opts the options provided by the user.
+static abidiff_status
+self_compare_prepared_userspace_package(package&	pkg,
+					abi_diff&	diff,
+					options&	opts)
+{
+  abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
+  abigail::workers::queue::tasks_type self_compare_tasks;
+  string pkg_name = pkg.base_name();
+
+  // Setting debug-info path of libraries
+  string debug_dir, relative_debug_path = "/usr/lib/debug/";
+  if (!pkg.debug_info_packages().empty())
+    debug_dir =
+      pkg.debug_info_packages().front()->extracted_dir_path() +
+      relative_debug_path;
+
+  suppressions_type supprs;
+  for (map<string, elf_file_sptr>::iterator it =
+	 pkg.path_elf_file_sptr_map().begin();
+       it != pkg.path_elf_file_sptr_map().end();
+       ++it)
+    {
+      if (it != pkg.path_elf_file_sptr_map().end()
+	  && (it->second->type == abigail::dwarf_reader::ELF_TYPE_DSO
+	      || it->second->type == abigail::dwarf_reader::ELF_TYPE_EXEC
+              || it->second->type == abigail::dwarf_reader::ELF_TYPE_PI_EXEC
+	      || it->second->type == abigail::dwarf_reader::ELF_TYPE_RELOCATABLE))
+	{
+	  if (it->second->type != abigail::dwarf_reader::ELF_TYPE_RELOCATABLE)
+	    {
+	      compare_args_sptr args
+		(new compare_args(*it->second,
+				  debug_dir,
+				  supprs,
+				  *it->second,
+				  debug_dir,
+				  supprs,
+				  opts));
+	      self_compare_task_sptr t(new self_compare_task(args));
+	      self_compare_tasks.push_back(t);
+	    }
+	}
+    }
+
+  if (self_compare_tasks.empty())
+    {
+      maybe_erase_temp_dirs(pkg, pkg, opts);
+      return abigail::tools_utils::ABIDIFF_OK;
+    }
+
+  // Larger elfs are processed first, since it's usually safe to assume
+  // their debug-info is larger as well, but the results are still
+  // in a map ordered by looked up in elf.name order.
+  std::sort(self_compare_tasks.begin(),
+	    self_compare_tasks.end(),
+	    elf_size_is_greater);
+
+  // There's no reason to spawn more workers than there are ELF pairs
+  // to be compared.
+  size_t num_workers = (opts.parallel
+			? std::min(opts.num_workers, self_compare_tasks.size())
+			: 1);
+  assert(num_workers >= 1);
+
+  comparison_done_notify notifier(diff);
+  abigail::workers::queue comparison_queue(num_workers, notifier);
+
+  // Compare all the binaries, in parallel and then wait for the
+  // comparisons to complete.
+  comparison_queue.schedule_tasks(self_compare_tasks);
+  comparison_queue.wait_for_workers_to_complete();
+
+  // Get the set of comparison tasks that were perform and sort them.
+  queue::tasks_type& done_tasks = comparison_queue.get_completed_tasks();
+  std::sort(done_tasks.begin(), done_tasks.end(), elf_size_is_greater);
+
+  // Print the reports of the comparison to standard output.
+  for (queue::tasks_type::const_iterator i = done_tasks.begin();
+       i != done_tasks.end();
+       ++i)
+    {
+      self_compare_task_sptr t = dynamic_pointer_cast<self_compare_task>(*i);
+      if (t)
+	cout << t->pretty_output;
+    }
+
+  // Erase temporary directory tree we might have left behind.
+  maybe_erase_temp_dirs(pkg, pkg, opts);
+
+  status = notifier.status;
+
+  return status;
+}
+
 /// Compare the ABI of two prepared packages that contain linux kernel
 /// binaries.
 ///
@@ -2626,6 +3026,29 @@ compare_prepared_package(package& first_package, package& second_package,
   return status;
 }
 
+/// Compare binaries in a package against their ABIXML
+/// representations.
+///
+/// @param pkg the package to consider.
+///
+/// @param diff the textual representation of the resulting
+/// comparison.
+///
+/// @param opts the options provided by the user
+///
+/// @return the status of the comparison.
+static abidiff_status
+self_compare_prepared_package(package& pkg,
+			      abi_diff& diff,
+			      options& opts)
+{
+  abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
+
+  status = self_compare_prepared_userspace_package(pkg, diff, opts);
+
+  return status;
+}
+
 /// Compare the ABI of two packages
 ///
 /// @param first_package the first package to consider.
@@ -2656,6 +3079,24 @@ compare(package_sptr& first_package, package_sptr& second_package,
     }
 
   return compare_prepared_package(*first_package, *second_package, diff, opts);
+}
+
+/// Compare binaries in a package against their ABIXML
+/// representations.
+///
+/// @param pkg the package to consider.
+///
+/// @param opts the options provided by the user
+///
+/// @return the status of the comparison.
+static abidiff_status
+compare_to_self(package_sptr& pkg, options& opts)
+{
+  if (!prepare_package(pkg, opts))
+    return abigail::tools_utils::ABIDIFF_ERROR;
+
+  abi_diff diff;
+  return self_compare_prepared_package(*pkg, diff, opts);
 }
 
 /// Compare the ABI of two packages.
@@ -2830,6 +3271,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.parallel = false;
       else if (!strcmp(argv[i], "--show-identical-binaries"))
 	opts.show_identical_binaries = true;
+      else if (!strcmp(argv[i], "--self-check"))
+	opts.self_check = true;
       else if (!strcmp(argv[i], "--suppressions")
 	       || !strcmp(argv[i], "--suppr"))
 	{
@@ -2976,10 +3419,31 @@ main(int argc, char* argv[])
     return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 	    | abigail::tools_utils::ABIDIFF_ERROR);
 
-  if (opts.package1.empty() || opts.package2.empty())
+  bool need_just_one_input_package = opts.self_check;
+
+  if (need_just_one_input_package)
+    {
+      bool bail_out = false;
+      if (!opts.package2.empty())
+	{
+	  // We don't need the second package, we'll ignore it later
+	  // down below.
+	  ;
+	}
+      if (opts.package1.empty())
+	{
+	  // We need at least one package to work with!
+	  emit_prefix("abipkgdiff", cerr)
+	    << "missing input package\n";
+	  if (bail_out)
+	    return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+		    | abigail::tools_utils::ABIDIFF_ERROR);
+	}
+    }
+  else if(opts.package1.empty() || opts.package2.empty())
     {
       emit_prefix("abipkgdiff", cerr)
-	<< "Please enter two packages to compare" << "\n";
+	<< "please enter two packages to compare" << "\n";
       return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
@@ -3036,7 +3500,8 @@ main(int argc, char* argv[])
   switch (first_package->type())
     {
     case abigail::tools_utils::FILE_TYPE_RPM:
-      if (second_package->type() != abigail::tools_utils::FILE_TYPE_RPM)
+      if (!second_package->path().empty()
+	  && second_package->type() != abigail::tools_utils::FILE_TYPE_RPM)
 	{
 	  base_name(opts.package2, package_name);
 	  emit_prefix("abipkgdiff", cerr)
@@ -3063,7 +3528,8 @@ main(int argc, char* argv[])
 	    }
 
 	  if (first_package->debug_info_packages().empty()
-	      || second_package->debug_info_packages().empty())
+	      || (!second_package->path().empty()
+		  && second_package->debug_info_packages().empty()))
 	    {
 	      emit_prefix("abipkgdiff", cerr)
 		<< "a Linux Kernel package must be accompanied with its "
@@ -3086,7 +3552,8 @@ main(int argc, char* argv[])
       break;
 
     case abigail::tools_utils::FILE_TYPE_DEB:
-      if (second_package->type() != abigail::tools_utils::FILE_TYPE_DEB)
+      if (!second_package->path().empty()
+	  && second_package->type() != abigail::tools_utils::FILE_TYPE_DEB)
 	{
 	  base_name(opts.package2, package_name);
 	  emit_prefix("abipkgdiff", cerr)
@@ -3097,7 +3564,8 @@ main(int argc, char* argv[])
       break;
 
     case abigail::tools_utils::FILE_TYPE_DIR:
-      if (second_package->type() != abigail::tools_utils::FILE_TYPE_DIR)
+      if (!second_package->path().empty()
+	  && second_package->type() != abigail::tools_utils::FILE_TYPE_DIR)
 	{
 	  base_name(opts.package2, package_name);
 	  emit_prefix("abipkgdiff", cerr)
@@ -3108,7 +3576,8 @@ main(int argc, char* argv[])
       break;
 
     case abigail::tools_utils::FILE_TYPE_TAR:
-      if (second_package->type() != abigail::tools_utils::FILE_TYPE_TAR)
+      if (!second_package->path().empty()
+	  && second_package->type() != abigail::tools_utils::FILE_TYPE_TAR)
 	{
 	  base_name(opts.package2, package_name);
 	  emit_prefix("abipkgdiff", cerr)
@@ -3125,6 +3594,9 @@ main(int argc, char* argv[])
       return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
+
+  if (opts.self_check)
+    return compare_to_self(first_package, opts);
 
   return compare(first_package, second_package, opts);
 }

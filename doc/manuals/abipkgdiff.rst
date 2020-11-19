@@ -451,6 +451,23 @@ Options
 
     Emit verbose progress messages.
 
+
+  * ``self-check``
+
+    This is used to test the underlying Libabigail library.  When in
+    used, the command expects only on input package, along with its
+    associated debug info packages.  The command then compares each
+    binary inside the package against its own ABIXML
+    representation. The result of the comparison should yield the
+    empty set if Libabigail behaves correctly.  Otherwise, it means
+    there is an issue that ought to be fixed.  This option is used by
+    people interested in Libabigail development for regression testing
+    purposes.  Here is an example of the use of this option: ::
+
+      $ abipkgdiff --self-check --d1 mesa-libGLU-debuginfo-9.0.1-3.fc33.x86_64.rpm  mesa-libGLU-9.0.1-3.fc33.x86_64.rpm
+       ==== SELF CHECK SUCCEEDED for 'libGLU.so.1.3.1' ====
+      $
+
 .. _abipkgdiff_return_value_label:
 
 Return value
