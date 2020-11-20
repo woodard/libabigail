@@ -1118,19 +1118,30 @@ def abipkgdiff(cmp_half1, cmp_half2):
     else:
         debuginfo_pkg2 = format_debug_info_pkg_options("--d2", cmp_half2.ancillary_debug);
 
-    cmd = [
-        abipkgdiff_tool,
-        suppressions,
-        '--show-identical-binaries' if global_config.show_identical_binaries else '',
-        '--no-default-suppression' if global_config.no_default_suppr else '',
-        '--dso-only' if global_config.dso_only else '',
-        debuginfo_pkg1,
-        debuginfo_pkg2,
-        devel_pkg1,
-        devel_pkg2,
-        cmp_half1.subject.downloaded_file,
-        cmp_half2.subject.downloaded_file,
-    ]
+    cmd = []
+
+    if global_config.self_compare:
+        cmd = [
+            abipkgdiff_tool,
+            '--dso-only' if global_config.dso_only else '',
+            '--self-check',
+            debuginfo_pkg1,
+            cmp_half1.subject.downloaded_file,
+        ]
+    else:
+        cmd = [
+            abipkgdiff_tool,
+            suppressions,
+            '--show-identical-binaries' if global_config.show_identical_binaries else '',
+            '--no-default-suppression' if global_config.no_default_suppr else '',
+            '--dso-only' if global_config.dso_only else '',
+            debuginfo_pkg1,
+            debuginfo_pkg2,
+            devel_pkg1,
+            devel_pkg2,
+            cmp_half1.subject.downloaded_file,
+            cmp_half2.subject.downloaded_file,
+        ]
     cmd = [s for s in cmd if s != '']
 
     if global_config.dry_run:
@@ -1193,7 +1204,7 @@ def run_abipkgdiff(rpm_col1, rpm_col2):
     return_codes = [
         abipkgdiff(cmp_half1, cmp_half2) for cmp_half1, cmp_half2
         in generate_comparison_halves(rpm_col1, rpm_col2)]
-    return max(return_codes) if return_codes else 0
+    return max(return_codes, key=abs) if return_codes else 0
 
 
 @log_call
