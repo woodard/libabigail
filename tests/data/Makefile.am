@@ -1760,6 +1760,9 @@ test-diff-pkg/PR24690/flatpak-libs-1.2.4-3.fc30.x86_64.rpm \
 test-diff-pkg/PR24690/flatpak-libs-1.4.0-1.fc30.x86_64.rpm \
 test-diff-pkg/PR24690/flatpak-libs-debuginfo-1.2.4-3.fc30.x86_64.rpm \
 test-diff-pkg/PR24690/flatpak-libs-debuginfo-1.4.0-1.fc30.x86_64.rpm \
+test-diff-pkg/mesa-libGLU-9.0.1-3.fc33.x86_64.rpm \
+test-diff-pkg/mesa-libGLU-debuginfo-9.0.1-3.fc33.x86_64.rpm \
+test-diff-pkg/mesa-libGLU-9.0.1-3.fc33.x86_64.self-check-report-0.txt \
 \
 test-fedabipkgdiff/dbus-glib-0.104-3.fc23.x86_64.rpm \
 test-fedabipkgdiff/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm \

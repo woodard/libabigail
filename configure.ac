@@ -274,11 +274,25 @@ if test x$ENABLE_RPM = xyes -o x$ENABLE_RPM = xauto; then
   fi
 fi
 
+ENABLE_RPM415=no
+if test x$ENABLE_RPM = xyes; then
+   rpmversion=$(rpm --version | sed "s/RPM version //")
+   AC_MSG_NOTICE([detected rpm version: $rpmversion])
+   if [[[ "$rpmversion" > "4.14.0" ]]]; then
+      ENABLE_RPM415=yes;
+   fi
+fi
+
 if test x$ENABLE_RPM = xyes; then
    AC_DEFINE([WITH_RPM], 1, [compile the rpm package support in abipkgdiff])
-   AC_MSG_NOTICE(rpm support in abipkgdiff is enabled);
+   AC_MSG_NOTICE([rpm support in abipkgdiff is enabled]);
+
+   if test x$ENABLE_RPM415 = xyes; then
+      AC_DEFINE([WITH_RPM_4_15], 1, [has RPM 4.15 at least])
+      AC_MSG_NOTICE([rpm 4.15 support in abipkgdiff tests is enabled])
+   fi
 else
-   AC_MSG_NOTICE(rpm support in abipkgdiff is disabled);
+   AC_MSG_NOTICE([rpm support in abipkgdiff is disabled]);
 fi
 
 AM_CONDITIONAL(ENABLE_RPM, test x$ENABLE_RPM = xyes)
@@ -934,6 +948,7 @@ AC_MSG_NOTICE([
     Use a C++-11 compiler                          : ${ENABLE_CXX11}
     libdw has the dwarf_getalt function            : ${FOUND_DWARF_GETALT_IN_LIBDW}
     Enable rpm support in abipkgdiff               : ${ENABLE_RPM}
+    Enable rpm 4.15 support in abipkgdiff tests    : ${ENABLE_RPM415}
     Enable deb support in abipkgdiff               : ${ENABLE_DEB}
     Enable GNU tar archive support in abipkgdiff   : ${ENABLE_TAR}
     Enable bash completion	                   : ${ENABLE_BASH_COMPLETION}
