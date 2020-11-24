@@ -162,10 +162,7 @@ using abigail::dwarf_reader::create_read_context;
 using abigail::dwarf_reader::get_soname_of_elf_file;
 using abigail::dwarf_reader::get_type_of_elf_file;
 using abigail::dwarf_reader::read_corpus_from_elf;
-using abigail::xml_reader::read_corpus_from_native_xml_file;
-using abigail::xml_writer::HASH_TYPE_ID_STYLE;
 using abigail::xml_writer::create_write_context;
-using abigail::xml_writer::type_id_style_kind;
 using abigail::xml_writer::write_context_sptr;
 using abigail::xml_writer::write_corpus;
 
@@ -1533,7 +1530,7 @@ compare_to_self(const elf_file& elf,
   {
     read_context_sptr c =
       create_read_context(elf.path, di_dirs, env.get(),
-			  /*load_all_types=*/opts.show_all_types);
+			  /*read_all_types=*/opts.show_all_types);
 
     corp = read_corpus_from_elf(*c, c_status);
 
@@ -2038,19 +2035,8 @@ typedef shared_ptr<compare_task> compare_task_sptr;
 class self_compare_task : public compare_task
 {
 public:
-
-  compare_args_sptr args;
-  abidiff_status status;
-  ostringstream out;
-  string pretty_output;
-
-  self_compare_task()
-    : status(abigail::tools_utils::ABIDIFF_OK)
-  {}
-
   self_compare_task(const compare_args_sptr& a)
-    : args(a),
-      status(abigail::tools_utils::ABIDIFF_OK)
+    : compare_task(a)
   {}
 
   /// The job performed by the task.
@@ -2078,7 +2064,7 @@ public:
 	     ||( diff && diff->has_net_changes()))
       {
 	// There is an ABI change, tell the user about it.
-	diff->report(out, /*prefix=*/"  ");
+	diff->report(out, /*indent=*/"  ");
 
 	pretty_output +=
 	  string("======== comparing'") + name +
