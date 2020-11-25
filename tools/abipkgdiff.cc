@@ -2524,10 +2524,17 @@ elf_size_is_greater(const task_sptr &task1,
   compare_task_sptr t1 = dynamic_pointer_cast<compare_task>(task1);
   compare_task_sptr t2 = dynamic_pointer_cast<compare_task>(task2);
 
-  off_t s1 = t1->args ? t1->args->elf1.size + t1->args->elf2.size : 0;
-  off_t s2 = t2->args ? t2->args->elf1.size + t2->args->elf2.size: 0;
+  ABG_ASSERT(t1->args && t2->args);
+  off_t s1 = t1->args->elf1.size + t1->args->elf2.size;
+  off_t s2 = t2->args->elf1.size + t2->args->elf2.size;
 
-  return s1 > s2;
+  if (s1 != s2)
+    return s1 > s2;
+
+  // The sizes of the compared binaries are the same.  So sort them
+  // lexicographically.
+  return t1->args->elf1.name < t2->args->elf1.name;
+
 }
 
 /// This type is used to notify the calling thread that the comparison
