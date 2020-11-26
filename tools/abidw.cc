@@ -593,7 +593,7 @@ load_corpus_and_write_abixml(char* argv[],
 	    emit_prefix(argv[0], cerr)
 	      << "computed diff in: " << t << "\n";
 
-	  bool has_error = diff->has_incompatible_changes();
+	  bool has_error = diff->has_changes();
 	  if (has_error)
 	    {
 	      t.start();
