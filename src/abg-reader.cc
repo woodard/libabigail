@@ -3852,6 +3852,19 @@ build_subrange_type(read_context&	ctxt,
 	length = strtoull(CHAR_STR(s), NULL, 0);
     }
 
+  int64_t lower_bound = 0, upper_bound = 0;
+  bool bounds_present = false;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "lower-bound"))
+    {
+      lower_bound = strtoll(CHAR_STR(s), NULL, 0);
+      s = XML_NODE_GET_ATTRIBUTE(node, "upper-bound");
+      if (!string(CHAR_STR(s)).empty())
+	upper_bound = strtoll(CHAR_STR(s), NULL, 0);
+      bounds_present = true;
+      ABG_ASSERT(is_infinite
+		 || (length == (uint64_t) upper_bound - lower_bound));
+    }
+
   string underlying_type_id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
     underlying_type_id = CHAR_STR(s);
@@ -3872,7 +3885,18 @@ build_subrange_type(read_context&	ctxt,
   array_type_def::subrange_type::bound_value min_bound;
   if (!is_infinite)
     if (length > 0)
+      // By default, if no 'lower-bound/upper-bound' attributes are
+      // set, we assume that the lower bound is 0 and the upper bound
+      // is length - 1.
       max_bound.set_signed(length - 1);
+
+  if (bounds_present)
+    {
+      // So lower_bound/upper_bound are set.  Let's set them rather
+      // than assume that mind_bound is zero.
+      min_bound.set_signed(lower_bound);
+      max_bound.set_signed(upper_bound);
+    }
 
   array_type_def::subrange_sptr p
     (new array_type_def::subrange_type(ctxt.get_environment(),

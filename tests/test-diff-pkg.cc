@@ -634,6 +634,18 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/mesa-libGLU-9.0.1-3.fc33.x86_64.self-check-report-0.txt",
     "output/test-diff-pkg/mesa-libGLU-9.0.1-3.fc33.x86_64.self-check-report-0.txt"
   },
+  {
+    "data/test-diff-pkg/hdf5-1.10.6-2.fc33.x86_64.rpm",
+    "data/test-diff-pkg/hdf5-1.10.6-2.fc33.x86_64.rpm",
+    "--self-check",
+    "",
+    "data/test-diff-pkg/hdf5-debuginfo-1.10.6-2.fc33.x86_64.rpm",
+    "data/test-diff-pkg/hdf5-debuginfo-1.10.6-2.fc33.x86_64.rpm",
+    "",
+    "",
+    "data/test-diff-pkg/hdf5-1.10.6-2.fc33.x86_64.self-check-report-0.txt",
+    "output/test-diff-pkg/hdf5-1.10.6-2.fc33.x86_64.self-check-report-0.txt"
+  },
 #endif // WITH_RPM_4_15
 #endif //WITH_RPM
 
