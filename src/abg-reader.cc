@@ -3841,7 +3841,7 @@ build_subrange_type(read_context&	ctxt,
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
     name = CHAR_STR(s);
 
-  size_t length = 0;
+  uint64_t length = 0;
   string length_str;
   bool is_infinite = false;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "length"))
@@ -3849,7 +3849,7 @@ build_subrange_type(read_context&	ctxt,
       if (string(CHAR_STR(s)) == "infinite")
 	is_infinite = true;
       else
-	length = atoi(CHAR_STR(s));
+	length = strtoull(CHAR_STR(s), NULL, 0);
     }
 
   string underlying_type_id;
