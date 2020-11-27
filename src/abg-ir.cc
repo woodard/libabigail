@@ -4121,7 +4121,8 @@ equals(const decl_base& l, const decl_base& r, change_kind* k)
       && l.get_is_anonymous()
       && !l.get_has_anonymous_parent()
       && r.get_is_anonymous()
-      && !r.get_has_anonymous_parent())
+      && !r.get_has_anonymous_parent()
+      && (l.get_qualified_parent_name() == r.get_qualified_parent_name()))
     // Both decls are anonymous and their scope are *NOT* anonymous.
     // So we consider the decls to have equivalent names (both
     // anonymous, remember).  We are still in the fast path here.
@@ -7201,7 +7202,17 @@ get_type_name(const type_base* t, bool qualified, bool internal)
   // name for internal purpose.  This to allow them to be compared
   // among themselves during type canonicalization.
   if (internal && d->get_is_anonymous())
-    return get_generic_anonymous_internal_type_name(d);
+    {
+      string r;
+      if (qualified)
+	{
+	  r = d->get_qualified_parent_name();
+	  if (!r.empty())
+	    r += "::";
+	}
+      r += get_generic_anonymous_internal_type_name(d);
+      return t->get_environment()->intern(r);
+    }
 
   if (qualified)
     return d->get_qualified_name(internal);
@@ -7728,6 +7739,7 @@ string
 get_class_or_union_flat_representation(const class_or_union& cou,
 				       const string& indent,
 				       bool one_line,
+				       bool internal,
 				       bool qualified_names)
 {
   string repr;
@@ -7736,7 +7748,7 @@ get_class_or_union_flat_representation(const class_or_union& cou,
   if (class_decl* clazz = is_class_type(&cou))
     {
       repr = indent;
-      if (clazz->is_struct())
+      if (!internal && clazz->is_struct())
 	repr += "struct";
       else
 	repr += "class";
@@ -7776,19 +7788,19 @@ get_class_or_union_flat_representation(const class_or_union& cou,
 	repr +=
 	  get_class_or_union_flat_representation
 	  (anonymous_data_member_to_class_or_union(*dm),
-	   real_indent, one_line, qualified_names);
+	   real_indent, one_line, internal, qualified_names);
       else
 	{
 	  if (one_line)
 	    {
 	      if (dm != dmems.begin())
 		repr += real_indent;
-	      repr += (*dm)->get_pretty_representation(/*internal=*/false,
+	      repr += (*dm)->get_pretty_representation(internal,
 						       qualified_names);
 	    }
 	  else
 	    repr +=
-	      real_indent+ (*dm)->get_pretty_representation(/*internal=*/false,
+	      real_indent+ (*dm)->get_pretty_representation(internal,
 							    qualified_names);
 	}
       repr += ";";
@@ -7822,11 +7834,12 @@ string
 get_class_or_union_flat_representation(const class_or_union* cou,
 				       const string& indent,
 				       bool one_line,
+				       bool internal,
 				       bool qualified_names)
 {
   if (cou)
     return get_class_or_union_flat_representation(*cou, indent, one_line,
-						  qualified_names);
+						  internal, qualified_names);
   return "";
 }
 
@@ -7850,10 +7863,12 @@ string
 get_class_or_union_flat_representation(const class_or_union_sptr& cou,
 				       const string& indent,
 				       bool one_line,
+				       bool internal,
 				       bool qualified_names)
 {return get_class_or_union_flat_representation(cou.get(),
 					       indent,
 					       one_line,
+					       internal,
 					       qualified_names);}
 
 /// By looking at the language of the TU a given ABI artifact belongs
@@ -16629,13 +16644,13 @@ var_decl::get_pretty_representation(bool internal, bool qualified_name) const
 	  result +=
 	    get_class_or_union_flat_representation
 	    (is_class_or_union_type(get_type()),
-	     "", /*one_line=*/true);
+	     "", /*one_line=*/true, internal);
 	}
       else if (data_member_has_anonymous_type(this))
 	{
 	  result += get_class_or_union_flat_representation
 	    (is_class_or_union_type(get_type()),
-	     "", /*one_line=*/true);
+	     "", /*one_line=*/true, internal);
 	  result += " ";
 	  if (member_of_anonymous_class || !qualified_name)
 	    // It doesn't make sense to name the member of an
@@ -20295,7 +20310,9 @@ class_decl::get_pretty_representation(bool internal,
   // if an anonymous class is named by a typedef, then consider that
   // it has a name, which is the typedef name.
   if (get_is_anonymous())
-    return get_class_or_union_flat_representation(this, "",/*one_line=*/true);
+    return get_class_or_union_flat_representation(this, "",
+						  /*one_line=*/true,
+						  internal);
 
   string result = cl;
   if (qualified_name)
@@ -22061,7 +22078,8 @@ union_decl::get_pretty_representation(bool internal,
   string repr;
   if (get_is_anonymous())
     repr = get_class_or_union_flat_representation(this, "",
-						  /*one_line=*/true);
+						  /*one_line=*/true,
+						  internal);
   else
     {
       repr = "union ";

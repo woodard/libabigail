@@ -1409,11 +1409,13 @@ default_reporter::report(const union_diff& d, ostream& out,
       out << indent << "type changed from:\n"
 	  << get_class_or_union_flat_representation(first, indent + "  ",
 						    /*one_line=*/true,
+						    /*internal=*/false,
 						    /*qualified_names=*/false)
 	  << "\n"
 	  << indent << "to:\n"
 	  << get_class_or_union_flat_representation(second, indent + "  ",
 						    /*one_line=*/true,
+						    /*internal=*/false,
 						    /*qualified_names=*/false)
 	  << "\n";
     }

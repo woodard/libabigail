@@ -996,18 +996,21 @@ string
 get_class_or_union_flat_representation(const class_or_union& cou,
 				       const string& indent,
 				       bool one_line,
+				       bool internal,
 				       bool qualified_name = true);
 
 string
 get_class_or_union_flat_representation(const class_or_union* cou,
 				       const string& indent,
 				       bool one_line,
+				       bool internal,
 				       bool qualified_name = true);
 
 string
 get_class_or_union_flat_representation(const class_or_union_sptr& cou,
 				       const string& indent,
 				       bool one_line,
+				       bool internal,
 				       bool qualified_name = true);
 
 bool
