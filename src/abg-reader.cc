@@ -4454,6 +4454,8 @@ build_class_decl(read_context&		ctxt,
 	  decl.reset(new class_decl(env, name, is_struct));
 	  if (size_in_bits)
 	    decl->set_size_in_bits(size_in_bits);
+	  if (is_anonymous)
+	    decl->set_is_anonymous(is_anonymous);
 	}
       else
 	decl.reset(new class_decl(env, name, size_in_bits, alignment_in_bits,
