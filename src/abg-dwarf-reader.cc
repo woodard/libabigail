@@ -4630,6 +4630,40 @@ public:
       }
   }
 
+  /// Test if a symbol belongs to a function of the current ABI
+  /// corpus.
+  ///
+  /// This is a sub-routine of fixup_functions_with_no_symbols.
+  ///
+  /// @param fn the function symbol to consider.
+  ///
+  /// @returnt true if @p fn belongs to a function of the current ABI
+  /// corpus.
+  bool
+  symbol_already_belongs_to_a_function(elf_symbol_sptr& fn)
+  {
+    corpus_sptr corp = current_corpus();
+    if (!corp)
+      return false;
+
+    string id = fn->get_id_string();
+
+    const vector<function_decl*> *fns = corp->lookup_functions(id);
+    if (!fns)
+      return false;
+
+    for (vector<function_decl*>::const_iterator i = fns->begin();
+	 i != fns->end();
+	 ++i)
+      {
+	function_decl* f = *i;
+	ABG_ASSERT(f);
+	if (f->get_symbol())
+	  return true;
+      }
+    return false;
+  }
+
   /// Some functions described by DWARF may have their linkage name
   /// set, but no link to their actual underlying elf symbol.  When
   /// these are virtual member functions, comparing the enclosing type
@@ -4663,6 +4697,23 @@ public:
       if (elf_symbol_sptr sym =
 	  corp->lookup_function_symbol(i->second->get_linkage_name()))
 	{
+	  // So i->second is a virtual member function that was
+	  // previously scheduled to be set a function symbol.
+	  //
+	  // But if it appears that it now has a symbol already set,
+	  // then do not set a symbol to it again.
+	  //
+	  // Or if it appears that another virtual member function
+	  // from the current ABI Corpus, with the same linkage
+	  // (mangled) name has already been set a symbol, then do not
+	  // set a symbol to this function either.  Otherwise, there
+	  // will be two virtual member functions with the same symbol
+	  // in the class and that leads to spurious hard-to-debug
+	  // change reports later down the road.
+	  if (i->second->get_symbol()
+	      || symbol_already_belongs_to_a_function(sym))
+	    continue;
+
 	  ABG_ASSERT(is_member_function(i->second));
 	  ABG_ASSERT(get_member_function_is_virtual(i->second));
 	  i->second->set_symbol(sym);
@@ -15707,7 +15758,7 @@ build_function_decl(read_context&	ctxt,
 	    fn_sym = ctxt.function_symbol_is_exported(fn_addr);
 	}
 
-      if (fn_sym)
+      if (fn_sym && !ctxt.symbol_already_belongs_to_a_function(fn_sym))
 	{
 	  result->set_symbol(fn_sym);
 	  string linkage_name = result->get_linkage_name();

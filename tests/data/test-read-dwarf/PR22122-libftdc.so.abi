@@ -1348,7 +1348,7 @@
           </function-decl>
         </member-function>
         <member-function access='public' static='yes'>
-          <function-decl name='StringData' mangled-name='_ZN5mongo10StringDataC2EPKc' filepath='src/mongo/base/string_data.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo10StringDataC2EPKc'>
+          <function-decl name='StringData' mangled-name='_ZN5mongo10StringDataC2EPKc' filepath='src/mongo/base/string_data.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-126' is-artificial='yes'/>
             <parameter type-id='type-id-73'/>
             <return type-id='type-id-26'/>
