@@ -14889,6 +14889,11 @@ build_subrange_type(read_context&	ctxt,
   if (underlying_type)
     result->set_underlying_type(underlying_type);
 
+  ABG_ASSERT(result->is_infinite()
+	     || (result->get_length() ==
+		 (uint64_t) (result->get_upper_bound()
+			     - result->get_lower_bound() + 1)));
+
   if (associate_type_to_die)
     ctxt.associate_die_to_type(die, result, where_offset);
 
