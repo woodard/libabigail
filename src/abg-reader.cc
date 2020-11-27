@@ -3862,7 +3862,7 @@ build_subrange_type(read_context&	ctxt,
 	upper_bound = strtoll(CHAR_STR(s), NULL, 0);
       bounds_present = true;
       ABG_ASSERT(is_infinite
-		 || (length == (uint64_t) upper_bound - lower_bound));
+		 || (length == (uint64_t) upper_bound - lower_bound + 1));
     }
 
   string underlying_type_id;
