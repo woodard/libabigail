@@ -1649,7 +1649,7 @@ compare_to_self(const elf_file& elf,
       << "... Comparing the ABIs: DONE\n";
 
   abidiff_status s = abigail::tools_utils::ABIDIFF_OK;
-  if (diff->has_net_changes())
+  if (diff->has_changes())
     s |= abigail::tools_utils::ABIDIFF_ABI_CHANGE;
   if (diff->has_incompatible_changes())
     s |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
