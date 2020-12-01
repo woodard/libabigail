@@ -1,5 +1,5 @@
-m4_define([version_major],   [1])
-m4_define([version_minor],   [8])
+m4_define([version_major],   [2])
+m4_define([version_minor],   [0])
 
 AC_INIT([libabigail],
 	[version_major.version_minor],
