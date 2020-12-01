@@ -1,3 +1,235 @@
+1.8
+===
+Dodji Seketeli (62):
+      Bump version number to 1.8
+      Update fedabipkgdiff tests according to commit b602f46c
+      abipkgdiff: fix documentation of --impacted-interface
+      dwarf-reader: Fix bloom filter access in GNU_HASH section
+      Update tests/data/test-abidiff-exit/test-leaf-peeling-report.txt
+      Update the mailing list registration form on the web page
+      abipkgdiff: Fix race condition while using private types suppr specs
+      Fix compilation with g++ 4.8.5 on el7
+      Bug 25977 - runtestabidiffexit regression on EL7
+      Bug 25986 - Wrong name of function type used in change report
+      Add -g back to ABIGAIL_DEVEL
+      {default,leaf}-reporter: group data members changes reports together
+      dwarf-reader: support several anonymous data members in a given class
+      Bug 25661 - Support data member replacement by anonymous data member
+      Bug 25989 - type_topo_comp doesn't meet irreflexive requirements
+      abigail.m4: Fix copyright notice
+      Bug 26127 - abidw --annotate emits incomplete function types
+      Bug 26135 - Wrong linkage name causes anonymous classes miscomparison
+      Support declaration-only enums in DWARF reader.
+      reader: Remove useless support for WIP types
+      Pimpl-ify traversable_base and remove its unused traverse method
+      dwarf-reader: re-indent a block of code
+      Bug 26261 - Fix logic for canonicalizing DW_TAG_subroutine_type DIEs
+      Use flat representation to canonicalize anonymous classes and unions
+      writer: Avoid using dynamic hashing in type maps
+      Fix thinko in get_vmlinux_path_from_kernel_dist
+      Bug 26309 - Wrong leaf reporting of changes to typedef underlying type
+      Make abidiff and abidw support several --headers-dir{1,2} options
+      Bug 26568 - Union should support more than one anonymous member
+      Consider the implicit 'this' parameter when comparing methods
+      Fix redundancy detection in the diff graph
+      Structurally compare the few non-canonicalized types in general
+      configure: Support ABIGAIL_NO_OPTIMIZATION_DEBUG environment variable
+      abg-tools-utils: Fix comment
+      Bug 26770 - Spurious declaration-only-ness induces spurious type changes
+      update-test-output.py: Update syntax
+      Update test-libandroid.so.abi
+      Bug PR26739 - Handle qualified typedef array types
+      writer: Sort decls and fix topological sorting for types
+      ir: Add equality op to array_type_def::subrange_type::bound_value
+      Make sure to canonicalize all types but decl-only classes
+      Bug 26769 - Fix missing types in abixml output
+      abipkgdiff: Add a new --self-check option
+      fedabipkgdiff: make --self-compare use abipkgdiff --self-check
+      dwarf-reader: support artificially generated translation units
+      tests/data/test-fedabipkgdiff: Update reference output
+      abipkgdiff: Avoid uncertainty when sorting worker tasks
+      reader: Read array subrange length into an uint64_t
+      Bug 26780 - Fix array subrange bounds (de)serialization
+      writer: Emit definitions of declarations when they are present
+      ir: Introduce internal pretty representation for anonymous classes
+      reader: Don't lose anonymous-ness of decl-only classes
+      dwarf-reader: Avoid having several functions with the same symbol
+      abidw: make --abidiff report any change against own ABIXML
+      abipkgdiff: make --self-check to fail on any change against own ABIXML
+      writer: fix off-by-one error in assertion
+      reader: Fix off-by-one error in assert
+      dwarf-reader: Bug 26908 - don't crash on empty DW_TAG_partial_unit
+      configure: add --enable-rpm415 option
+      Add check-self-compare to release regression testing
+      Update the Changelog for 1.8
+      Update NEWS file for 1.8
+
+Giuliano Procida (112):
+      Correct spelling of "alignment".
+      Correct various inconsequential typos.
+      Add space missing between "[C]" tag and description of changed item.
+      Fix the reporting of leaf change statistics.
+      abisym: Remove leading space in output.
+      abg-comparison.cc: Remove stray function declaration.
+      Fix spurious new lines after diff sections.
+      Add more leaf change reporting.
+      Fix interaction of --redundant and --leaf-changes-only options.
+      abg-leaf-reporter.cc: Fix indentation of function parameter diffs.
+      Eliminate some unnecessary blank lines in diff output.
+      Output 2-space indentation consistently.
+      Treat function type changes as local.
+      Tag add/remove/change lines unconditionally with [A], [D], [C].
+      dwarf-reader: Use all bits of Bloom filter words.
+      Ensure change_kind enum values are used consistently.
+      Eliminate redundancy in representation of local change kinds.
+      abg-ir.cc: Fix peel_typedef_type(const type_base*).
+      abg-ir.cc: Remove always-true check.
+      abg-ir.cc: Improve types_have_similar_structure.
+      abidiff: Remove some more unnecessary blank lines.
+      abg-reader.cc: Fix code indentation and tabify.
+      abg-ir.cc: Add types_have_similar_structure tests.
+      abidiff: Clean up new lines between sections.
+      abidiff: Remove blank line after base class diffs.
+      abidiff: Fix enum impacted interfaces blank line.
+      abidiff: Remove member function diff blank lines.
+      abidiff: Fix variable declaration formatting.
+      abidiff: Eliminate leaf mode double blank lines.
+      abidiff: Remove new lines after parameter diffs.
+      Fix size calculations for multidimensional arrays.
+      abidiff: Remove blank line after typedef changes.
+      test-diff-suppr.cc: Add missing tests.
+      abidiffpkg: Remove stray test report file.
+      abg-dwarf-reader.cc: Avoid division by zero.
+      Rename test-abidiff-exit/test-leaf[0-3] files.
+      test-abidiff-exit.cc: Drop redundant --redundant.
+      abidiff: More compact references to prior diffs.
+      abg-reporter-priv.cc: Fix anonymous member size change reports.
+      abg-reporter-priv.cc: Improve readability of represent helper function.
+      abidiff: Document and refresh tests.
+      Fix variable suppression name_not_regex.
+      test35-leaf.suppr: fix regex typo.
+      test24-soname-suppr*txt: Fix suppression syntax.
+      Add tests for declaration-only struct diffs.
+      abidiff: Blank line after declaration-only diff.
+      abidiff: Omit declaration-only type size 0 diffs.
+      Move regex definitions to own files.
+      Move libxml bits out of abg-sptr-utils.h.
+      Simplify generation of symbol whitelist regex.
+      Remove excess whitespace.
+      Remove stray semicolons.
+      Eliminate redundant conditional operators.
+      Make set_drops_artifact_from_ir non-const.
+      Hoist some common expressions evaluating offsets.
+      Tidy #includes in a few files.
+      Document ^_^ regex in generate_from_strings.
+      Escape names used in symbol whitelisting regex.
+      abg-suppression.cc: More uniform variable naming.
+      Add POSIX regex wrapper functions.
+      Use regex::compile wrapper instead of regcomp.
+      Tidy checks for sufficient suppression properties.
+      Use regex::match wrapper instead of regexec.
+      Refactor read_parameter_spec_from_string logic.
+      abg-reader.cc: Remove key_replacement_type_map.
+      Let std::unordered_map::operator[] insert keys.
+      doc: Fix sufficient suppression property lists.
+      Tidy get_pretty_representation qualified_name.
+      clang-format: set continuation indentation to 2
+      Fix HARMLESS_SYMBOL_ALIAS_CHANGE_CATEGORY spelling
+      Eliminate non-ASCII characters.
+      abg-writer: Add support for stable hash type ids.
+      Fix leaf-mode formatting of decl <-> defn diffs.
+      Fix bug that suppressed DWARF read tests.
+      get_canonical_type_for: restore environment better
+      Improve code comments and whitespace.
+      Refactor d.context() as ctxt in report(enum_diff).
+      Tidy build_enum_type state variables.
+      Rename declaration-definition change category.
+      abg-ir.cc: Remove unused re_canonicalize function.
+      Support incomplete enums in core and diff code.
+      Add declaration-only enums to XML reader/writer.
+      Add tests for declaration-only enums.
+      Use pointers not strings in type graph comparison.
+      abg-writer.cc: Clean up new line emission.
+      reporter: Fix report whitespace typos.
+      Fix corpus_diff::has_net_changes for --leaf-changes-only mode
+      abg-ir.cc: Tidy some operator== definitions
+      Fix --type-id-style hash for empty internal names.
+      abg-comparison.cc: Tidy some corpus_diff code
+      abg-ir.cc: Refactor operator== methods with helper function
+      abg-comparison.h: Remove stray declaration
+      Remove unused is_reference_or_pointer_diff.
+      Simplify peel_typedef_pointer_or_reference_type
+      Fix inheritance of scope_decl::insert_member_decl
+      Enable Clang's -Werror-overloaded-virtual.
+      abg-ir.cc: Fix incorrect pop of compared types.
+      Remove ABI XML test data file blank lines
+      abg-writer.cc: Fix indentation of XML output
+      abg-ir.cc: Remove duplicated line of code
+      Make decl_names_equal more accurate
+      Fix decl_base comparison function
+      Fix maybe_report_data_members_replaced_by_anon_dm
+      Improve documentation of abidiff --type-id-style
+      DWARF: look up DW_AT_declaration non-recursively
+      DWARF: track chained DIE declaration-only status
+      abg-corpus.cc: report architecture discrepancies
+      Add missing newlines to end of test files.
+      Fix two wrongs in test suppression regex
+      Stabilise sort of canonical types
+      Improve and stabilise sort of member functions
+      Improve enum synthetic type names
+
+Mark Wielaard (10):
+      Add --header-file option to add individual public header files.
+      Add --drop-private-types to abidw.
+      Add --drop-undefined-syms to abidw.
+      Add no-parameter-names to drop function parameter names.
+      Add --no-elf-needed option to drop DT_NEEDED list from corpus.
+      Rename read_elf_symbol_binding to read_elf_symbol_visibility.
+      Add --no-write-default-sizes option.
+      Don't iterate before the start of a RandomAccessOutputIterator.
+      dwarf-reader: get subrange_type bounds signedness from underlying type
+      Assume subrange bounds types are unsigned if no underlying type is given.
+
+Matthias Maennich (38):
+      dwarf-reader: gnu_hash_tab lookup: fix overflow in bloom hash calculation
+      configure: add support for thread sanitizer (--enable-tsan)
+      abg-workers: guard bring_workers_down to avoid dead lock
+      abidiff: fix documentation of --impacted-interfaces
+      configure: add support for memory sanitizer (--enable-msan)
+      test-read-dwarf: ensure in_elf_path exists and add missing test files
+      dwarf-reader: remove superfluous ABG_ASSERT
+      make: add distcheck-fast target
+      abg-dwarf-reader: simplify symbol map update
+      tests: parallelize diff-suppr test
+      abg-dwarf-reader split: create abg-elf-helpers.{h,cc} and test case
+      abg-elf-helpers: move some elf helpers from abg-dwarf-reader
+      abg-elf-helpers: move some versioning helpers from abg-dwarf-reader
+      abg-elf-helpers: move some kernel helpers from abg-dwarf-reader
+      abg-elf-helpers: consolidate the is_linux_kernel* helpers
+      abg-dwarf-reader: migrate more ELF helpers to elf-helpers
+      abg-elf-helpers: migrate more elf helpers (architecture specific helpers)
+      abg-elf-helpers: migrate maybe_adjust_et_rel_sym_addr_to_abs_addr
+      test-types-stability: parallelize test case alternatives
+      tests: reorder test execution to optimize 'make check' runtime
+      corpus/writer: sort emitted translation units by path name
+      configure: set -Wno-error-overloaded-virtual for clang builds
+      tests/.gitignore: ignore all files starting with runtest*
+      dwarf-reader: read_context: drop some unused accessor methods
+      cxx-compat: add test suite for cxx-compat
+      configure: add ABIGAIL_DEBUG options
+      configure: add more diagnostic options when ABIGAIL_DEVEL is set
+      tests: Add symtab test suite
+      tests: Add kernel symtab test suite
+      dwarf-reader: Remove unused code
+      dwarf-reader: read_context: drop unused symbol versioning code
+      abg-reporter: fully qualify std::string and std::ostream
+      abipkgdiff: remove unused includes of elfutils/libdw.h and elf.h
+      dwarf-reader: get_die_source: always initialize return value
+      cleanup: std::weak_ptr use: replace manual lock by std::weak_ptr::lock
+      dwarf-reader: fix lookup for repeated translation unit paths
+      dwarf-reader: Ignore zero length location expressions from DW_AT_location
+      abipkgdiff: minor cleanups
+
 1.7
 ==
 Dodji Seketeli:
