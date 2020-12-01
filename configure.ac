@@ -59,6 +59,12 @@ AC_ARG_ENABLE(rpm,
 	      ENABLE_RPM=$enableval,
 	      ENABLE_RPM=auto)
 
+AC_ARG_ENABLE(rpm415,
+	      AS_HELP_STRING([--enable-rpm415=yes|no|auto],
+			     [enable the support of rpm 4.15 or higher in abipkgdiff (default is auto)]),
+	      ENABLE_RPM415=$enableval,
+	      ENABLE_RPM415=auto)
+
 AC_ARG_ENABLE(deb,
 	      AS_HELP_STRING([--enable-deb=yes|no|auto],
 			     [enable the support of deb in abipkgdiff (default is auto)]),
@@ -274,12 +280,13 @@ if test x$ENABLE_RPM = xyes -o x$ENABLE_RPM = xauto; then
   fi
 fi
 
-ENABLE_RPM415=no
-if test x$ENABLE_RPM = xyes; then
+if test x$ENABLE_RPM = xyes -a x$ENABLE_RPM415 = xauto; then
    rpmversion=$(rpm --version | sed "s/RPM version //")
    AC_MSG_NOTICE([detected rpm version: $rpmversion])
    if [[[ "$rpmversion" > "4.14.0" ]]]; then
-      ENABLE_RPM415=yes;
+      ENABLE_RPM415=yes
+   else
+      ENABLE_RPM415=no
    fi
 fi
 
