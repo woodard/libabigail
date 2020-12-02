@@ -20,10 +20,9 @@ EXTRA_DIST = 			\
 autoconf-archive/ax_check_python_modules.m4 \
 autoconf-archive/ax_prog_python_version.m4 \
 autoconf-archive/ax_compare_version.m4 \
-NEWS README COPYING COMPILING  \
-COMMIT-LOG-GUIDELINES VISIBILITY \
-ChangeLog COPYING-LGPLV2 COPYING-LGPLV3	\
-COPYING-GPLV3 gen-changelog.py	\
+NEWS README LICENSE.txt license-change-2020.txt \
+COMPILING COMMIT-LOG-GUIDELINES VISIBILITY \
+ChangeLog gen-changelog.py	\
 $(headers) $(m4data_DATA) 	\
 libabigail.pc.in
 
