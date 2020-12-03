@@ -3,18 +3,10 @@ SUBDIRS = data
 
 ZIP_ARCHIVE_TESTS =
 if ENABLE_ZIP_ARCHIVE
-ZIP_ARCHIVE_TESTS += runtestwritereadarchive
-if ENABLE_CXX11
-ZIP_ARCHIVE_TESTS += runtestdot
-endif
+ZIP_ARCHIVE_TESTS += runtestwritereadarchive runtestdot
 endif
 
 AM_CXXFLAGS = $(VISIBILITY_FLAGS)
-
-CXX11_TESTS =
-if ENABLE_CXX11
-CXX11_TESTS += runtestsvg
-endif
 
 FEDABIPKGDIFF_TEST =
 if ENABLE_FEDABIPKGDIFF
@@ -55,9 +47,10 @@ runtestlookupsyms		\
 runtestreadwrite		\
 runtestsymtab			\
 runtesttoolsutils		\
+runtestsvg			\
 $(FEDABIPKGDIFF_TEST) 		\
-$(ZIP_ARCHIVE_TESTS)		\
-$(CXX11_TESTS)
+$(ZIP_ARCHIVE_TESTS)
+
 
 if ENABLE_RUNNING_TESTS_WITH_PY3
 TESTS += runtestdefaultsupprspy3.sh

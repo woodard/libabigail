@@ -4,13 +4,9 @@ libabigaildir=$(libdir)
 
 AM_CXXFLAGS = $(VISIBILITY_FLAGS)
 
-if ENABLE_CXX11
-CXX11_SOURCES = abg-viz-common.cc			\
-		abg-viz-dot.cc				\
+VIZ_SOURCES = abg-viz-common.cc	\
+		abg-viz-dot.cc	\
 		abg-viz-svg.cc
-else
-CXX11_SOURCES =
-endif
 
 libabigail_la_SOURCES =			\
 abg-internal.h				\
@@ -42,7 +38,7 @@ abg-tools-utils.cc			\
 abg-elf-helpers.h			\
 abg-elf-helpers.cc			\
 abg-regex.cc				\
-$(CXX11_SOURCES)
+$(VIZ_SOURCES)
 
 libabigail_la_LIBADD = $(DEPS_LIBS)
 libabigail_la_LDFLAGS = -lpthread -Wl,--as-needed -no-undefined

@@ -85,12 +85,6 @@ AC_ARG_ENABLE(zip-archive,
 	      ENABLE_ZIP_ARCHIVE=no)
 
 
-AC_ARG_ENABLE(cxx11,
-	      AS_HELP_STRING([--enable-cxx11=yes|no],
-			     [enable features that use the C++11 compiler]),
-	      ENABLE_CXX11=$enableval,
-	      ENABLE_CXX11=no)
-
 AC_ARG_ENABLE(apidoc,
 	      AS_HELP_STRING([--enable-apidoc=yes|no|auto],
 			     [enable generation of the apidoc in html]),
@@ -158,6 +152,11 @@ LT_INIT
 
 AC_LANG([C++])
 AC_LANG_COMPILER_REQUIRE
+
+dnl
+dnl We use C++11
+dnl
+CXX_STANDARD=c++11
 
 dnl
 dnl check if the c++ compiler has support __attribute__((visibility("hidden")))
@@ -588,14 +587,6 @@ AM_CONDITIONAL(ENABLE_ZIP_ARCHIVE, test x$ENABLE_ZIP_ARCHIVE = xyes)
 DEPS_CPPFLAGS="$XML_CFLAGS $LIBZIP_CFLAGS"
 AC_SUBST(DEPS_CPPFLAGS)
 
-dnl Handle conditional use of a C++11 compiler
-if test x$ENABLE_CXX11 = xyes; then
-   CXXFLAGS="$CXXFLAGS -std=c++11"
-   AC_DEFINE([WITH_CXX11], 1, [Defined to 1 if a C++11 compiler is used])
-fi
-
-AM_CONDITIONAL(ENABLE_CXX11, test x$ENABLE_CXX11 = xyes)
-
 dnl Check for the presence of doxygen program
 
 if test x$ENABLE_APIDOC != xno; then
@@ -672,6 +663,9 @@ if test x$ENABLE_UBSAN = xyes; then
     CFLAGS="$CFLAGS -fsanitize=undefined"
     CXXFLAGS="$CXXFLAGS -fsanitize=undefined"
 fi
+
+dnl Set the level of C++ standard we use.
+CXXFLAGS="$CXXFLAGS -std=$CXX_STANDARD"
 
 dnl Check if several decls and constant are defined in dependant
 dnl libraries
@@ -949,11 +943,12 @@ AC_MSG_NOTICE([
     C Compiler                                     : ${CC}
     C++ Compiler		                   : ${CXX}
     GCC visibility attribute supported             : ${SUPPORTS_GCC_VISIBILITY_ATTRIBUTE}
+    CXXFLAGS	   	     			   : ${CXXFLAGS}
     Python					   : ${PYTHON}
 
  OPTIONAL FEATURES:
     Enable zip archives                            : ${ENABLE_ZIP_ARCHIVE}
-    Use a C++-11 compiler                          : ${ENABLE_CXX11}
+    C++ standard level                             : ${CXX_STANDARD}
     libdw has the dwarf_getalt function            : ${FOUND_DWARF_GETALT_IN_LIBDW}
     Enable rpm support in abipkgdiff               : ${ENABLE_RPM}
     Enable rpm 4.15 support in abipkgdiff tests    : ${ENABLE_RPM415}
