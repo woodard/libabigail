@@ -23608,7 +23608,7 @@ types_have_similar_structure(const type_base* first,
 	  || ty1->get_dimension_count() != ty2->get_dimension_count()
 	  || !types_have_similar_structure(ty1->get_element_type(),
 					   ty2->get_element_type(),
-					   indirect_type))
+					   /*indirect_type=*/true))
 	return false;
 
       return true;
