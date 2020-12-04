@@ -23474,10 +23474,10 @@ types_have_similar_structure(const type_base_sptr& first,
 ///
 /// typedef are resolved to their definitions; their names are ignored.
 ///
-/// Two indirect types (pointers or references) have similar structure
-/// if their underlying types are of the same kind and have the same
-/// name.  In the indirect types case, the size of the underlying type
-/// does not matter.
+/// Two indirect types (pointers, references or arrays) have similar
+/// structure if their underlying types are of the same kind and have
+/// the same name.  In the indirect types case, the size of the
+/// underlying type does not matter.
 ///
 /// Two direct types (i.e, non indirect) have a similar structure if
 /// they have the same kind, name and size.  Two class types have
@@ -23488,7 +23488,9 @@ types_have_similar_structure(const type_base_sptr& first,
 ///
 /// @param second the second type to consider.
 ///
-/// @param indirect_type whether to do an indirect comparison
+/// @param indirect_type if true, then consider @p first and @p
+/// second as being underlying types of indirect types.  Meaning that
+/// their size does not matter.
 ///
 /// @return true iff @p first and @p second have similar structures.
 bool
@@ -23517,7 +23519,7 @@ types_have_similar_structure(const type_base* first,
       const pointer_type_def* ty2 = is_pointer_type(second);
       return types_have_similar_structure(ty1->get_pointed_to_type(),
 					  ty2->get_pointed_to_type(),
-					  true);
+					  /*indirect_type=*/true);
     }
 
   // Peel off matching references.
@@ -23528,7 +23530,7 @@ types_have_similar_structure(const type_base* first,
 	return false;
       return types_have_similar_structure(ty1->get_pointed_to_type(),
 					  ty2->get_pointed_to_type(),
-					  true);
+					  /*indirect_type=*/true);
     }
 
   if (const type_decl* ty1 = is_type_decl(first))
