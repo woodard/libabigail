@@ -338,6 +338,50 @@ InOutSpec in_out_specs[] =
     "output/test-abidiff-exit/test-headers-dirs/test-headers-dir-report-2.txt"
   },
   {
+    "data/test-abidiff-exit/qualifier-typedef-array-v0.o",
+    "data/test-abidiff-exit/qualifier-typedef-array-v1.o",
+    "",
+    "",
+    "",
+    "",
+    abigail::tools_utils::ABIDIFF_OK,
+    "data/test-abidiff-exit/qualifier-typedef-array-report-0.txt",
+    "output/test-abidiff-exit/qualifier-typedef-array-report-0.txt"
+  },
+  {
+    "data/test-abidiff-exit/qualifier-typedef-array-v0.o",
+    "data/test-abidiff-exit/qualifier-typedef-array-v1.o",
+    "",
+    "",
+    "",
+    "--harmless",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    "data/test-abidiff-exit/qualifier-typedef-array-report-1.txt",
+    "output/test-abidiff-exit/qualifier-typedef-array-report-1.txt"
+  },
+  {
+    "data/test-abidiff-exit/qualifier-typedef-array-v0.o",
+    "data/test-abidiff-exit/qualifier-typedef-array-v1.o",
+    "",
+    "",
+    "",
+    "--leaf-changes-only",
+    abigail::tools_utils::ABIDIFF_OK,
+    "data/test-abidiff-exit/qualifier-typedef-array-report-2.txt",
+    "output/test-abidiff-exit/qualifier-typedef-array-report-2.txt"
+  },
+  {
+    "data/test-abidiff-exit/qualifier-typedef-array-v0.o",
+    "data/test-abidiff-exit/qualifier-typedef-array-v1.o",
+    "",
+    "",
+    "",
+    "--harmless --leaf-changes-only",
+    abigail::tools_utils::ABIDIFF_OK,
+    "data/test-abidiff-exit/qualifier-typedef-array-report-3.txt",
+    "output/test-abidiff-exit/qualifier-typedef-array-report-3.txt"
+  },
+  {
     "data/test-abidiff-exit/test-non-leaf-array-v0.o",
     "data/test-abidiff-exit/test-non-leaf-array-v1.o",
     "",
