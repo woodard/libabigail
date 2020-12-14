@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 ---
 BasedOnStyle: GNU
+Standard: c++11
 AlignConsecutiveDeclarations: true
 AlwaysBreakAfterReturnType: All
 BreakConstructorInitializers: BeforeColon
