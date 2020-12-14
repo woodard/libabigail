@@ -20,10 +20,11 @@
 #include "config.h"
 #include <sys/wait.h>
 #include <cassert>
-#include <cstring>
-#include <string>
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
+#include <memory>
+#include <string>
 #include <vector>
 #include "abg-workers.h"
 #include "test-utils.h"
@@ -813,7 +814,7 @@ int
 main()
 {
   using std::vector;
-  using abg_compat::dynamic_pointer_cast;
+  using std::dynamic_pointer_cast;
   using abigail::workers::queue;
   using abigail::workers::task;
   using abigail::workers::task_sptr;

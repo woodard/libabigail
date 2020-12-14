@@ -11,14 +11,15 @@
 /// native XML format is named "abixml".
 
 #include "config.h"
-#include <cstring>
-#include <cstdlib>
-#include <cerrno>
-#include <deque>
 #include <assert.h>
-#include <sstream>
-#include <libxml/xmlstring.h>
 #include <libxml/xmlreader.h>
+#include <libxml/xmlstring.h>
+#include <cerrno>
+#include <cstdlib>
+#include <cstring>
+#include <deque>
+#include <memory>
+#include <sstream>
 
 #include "abg-cxx-compat.h"
 #include "abg-suppression-priv.h"
@@ -50,9 +51,9 @@ namespace xml_reader
 {
 using std::string;
 using std::deque;
-using abg_compat::shared_ptr;
+using std::shared_ptr;
 using abg_compat::unordered_map;
-using abg_compat::dynamic_pointer_cast;
+using std::dynamic_pointer_cast;
 using std::vector;
 using std::istream;
 #ifdef WITH_ZIP_ARCHIVE

@@ -11,6 +11,7 @@
 #include <libxml/xmlreader.h>
 
 #include <istream>
+#include <memory>
 
 #include "abg-sptr-utils.h"
 #include "abg-cxx-compat.h"
@@ -23,7 +24,7 @@ namespace xml
 {
 
 using sptr_utils::build_sptr;
-using abg_compat::shared_ptr;
+using std::shared_ptr;
 
 /// A convenience typedef for a shared pointer of xmlTextReader.
 typedef shared_ptr<xmlTextReader> reader_sptr;

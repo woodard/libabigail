@@ -21,10 +21,11 @@
 ///
 /// The comparison is expected to yield the empty set.
 
-#include <string>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
-#include <cstdlib>
+#include <memory>
+#include <string>
 #include "abg-tools-utils.h"
 #include "test-utils.h"
 #include "abg-dwarf-reader.h"
@@ -103,7 +104,7 @@ int
 main()
 {
   using std::vector;
-  using abg_compat::dynamic_pointer_cast;
+  using std::dynamic_pointer_cast;
   using abigail::workers::queue;
   using abigail::workers::task;
   using abigail::workers::task_sptr;

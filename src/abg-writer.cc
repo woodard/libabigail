@@ -12,13 +12,14 @@
 
 #include "config.h"
 #include <assert.h>
+#include <algorithm>
+#include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <fstream>
+#include <memory>
 #include <sstream>
-#include <vector>
 #include <stack>
-#include <algorithm>
+#include <vector>
 
 #include "abg-cxx-compat.h"
 #include "abg-tools-utils.h"
@@ -46,9 +47,9 @@ ABG_END_EXPORT_DECLARATIONS
 namespace abigail
 {
 using std::cerr;
-using abg_compat::shared_ptr;
-using abg_compat::dynamic_pointer_cast;
-using abg_compat::static_pointer_cast;
+using std::shared_ptr;
+using std::dynamic_pointer_cast;
+using std::static_pointer_cast;
 using std::ofstream;
 using std::ostream;
 using std::ostringstream;

@@ -19,16 +19,17 @@
 #include <libgen.h>
 #include <assert.h>
 #include <limits.h>
-#include <cstring>
-#include <cmath>
 #include <elfutils/libdwfl.h>
 #include <dwarf.h>
 #include <algorithm>
-#include <stack>
+#include <cmath>
+#include <cstring>
 #include <deque>
 #include <list>
+#include <memory>
 #include <ostream>
 #include <sstream>
+#include <stack>
 
 #include "abg-cxx-compat.h"
 #include "abg-ir-priv.h"
@@ -62,8 +63,8 @@ using std::cerr;
 namespace dwarf_reader
 {
 
-using abg_compat::dynamic_pointer_cast;
-using abg_compat::static_pointer_cast;
+using std::dynamic_pointer_cast;
+using std::static_pointer_cast;
 using abg_compat::unordered_map;
 using abg_compat::unordered_set;
 using std::stack;

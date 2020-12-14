@@ -8,9 +8,10 @@
 /// @file
 
 #include <cstring>
-#include <vector>
-#include <string>
 #include <iostream>
+#include <memory>
+#include <string>
+#include <vector>
 #include "abg-config.h"
 #include "abg-comp-filter.h"
 #include "abg-suppression.h"
@@ -23,7 +24,7 @@ using std::string;
 using std::ostream;
 using std::cout;
 using std::cerr;
-using abg_compat::shared_ptr;
+using std::shared_ptr;
 using abigail::ir::environment;
 using abigail::ir::environment_sptr;
 using abigail::translation_unit;

@@ -11,6 +11,7 @@
 #define __ABG_SPTR_UTILS_H__
 
 #include <regex.h>
+#include <memory>
 
 #include "abg-cxx-compat.h"
 
@@ -21,7 +22,7 @@ namespace abigail
 namespace sptr_utils
 {
 
-using abg_compat::shared_ptr;
+using std::shared_ptr;
 
 /// This is to be specialized for the diverse C types that needs
 /// wrapping in shared_ptr.

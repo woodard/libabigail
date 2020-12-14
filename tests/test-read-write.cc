@@ -7,11 +7,12 @@
 /// save it back and diff the resulting XML file against the input
 /// file.  They should be identical.
 
-#include <string>
-#include <fstream>
-#include <iostream>
 #include <cstdlib>
 #include <cstring>
+#include <fstream>
+#include <iostream>
+#include <memory>
+#include <string>
 #include <vector>
 #include "abg-cxx-compat.h"
 #include "abg-ir.h"
@@ -26,7 +27,7 @@ using std::vector;
 using std::ofstream;
 using std::cerr;
 
-using abg_compat::dynamic_pointer_cast;
+using std::dynamic_pointer_cast;
 
 using abigail::tools_utils::file_type;
 using abigail::tools_utils::check_file;

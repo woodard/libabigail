@@ -71,14 +71,15 @@
   #include <fts.h>
 #endif
 
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <cstring>
-#include <cstdlib>
-#include <vector>
 #include <algorithm>
+#include <cstdlib>
+#include <cstring>
+#include <fstream>
+#include <iostream>
 #include <map>
+#include <memory>
+#include <string>
+#include <vector>
 
 #include "abg-cxx-compat.h"
 #include "abg-workers.h"
@@ -100,8 +101,8 @@ using std::map;
 using abg_compat::unordered_set;
 using std::set;
 using std::ostringstream;
-using abg_compat::shared_ptr;
-using abg_compat::dynamic_pointer_cast;
+using std::shared_ptr;
+using std::dynamic_pointer_cast;
 using abigail::workers::task;
 using abigail::workers::task_sptr;
 using abigail::workers::queue;

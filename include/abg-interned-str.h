@@ -17,6 +17,7 @@
 #define __ABG_INTERNED_STR_H__
 
 #include <functional>
+#include <memory>
 #include <ostream>
 #include <string>
 #include "abg-cxx-compat.h"
@@ -26,7 +27,7 @@ namespace abigail
 {
 // Inject some std types into this namespace.
 using abg_compat::unordered_set;
-using abg_compat::shared_ptr;
+using std::shared_ptr;
 using std::string;
 using std::ostream;
 

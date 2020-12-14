@@ -8,17 +8,10 @@
 #ifndef __ABG_CXX_COMPAT_H
 #define __ABG_CXX_COMPAT_H
 
-#include <memory>
 #include <unordered_map>
 #include <unordered_set>
 
 namespace abg_compat {
-
-// <memory>
-using std::shared_ptr;
-using std::weak_ptr;
-using std::dynamic_pointer_cast;
-using std::static_pointer_cast;
 
 // <unordered_map>
 using std::unordered_map;

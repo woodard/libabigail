@@ -21,13 +21,14 @@
 #ifndef __ABG_DIFF_UTILS_H__
 #define __ABG_DIFF_UTILS_H__
 
-#include <stdexcept>
 #include <cassert>
 #include <cstdlib>
+#include <memory>
 #include <ostream>
+#include <sstream>
+#include <stdexcept>
 #include <string>
 #include <vector>
-#include <sstream>
 #include "abg-cxx-compat.h"
 #include "abg-fwd.h"
 
@@ -42,7 +43,7 @@ namespace abigail
 namespace diff_utils
 {
 
-using abg_compat::shared_ptr;
+using std::shared_ptr;
 
 // Inject the names from std:: below into this namespace
 using std::string;

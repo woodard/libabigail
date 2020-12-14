@@ -19,6 +19,7 @@
 #include "abg-cxx-compat.h"
 #include "abg-internal.h"
 // <headers defining libabigail's API go under here>
+#include <memory>
 ABG_BEGIN_EXPORT_DECLARATIONS
 
 #include "abg-hash.h"
@@ -42,8 +43,8 @@ using namespace abigail::suppr;
 
 // Inject types from outside in here.
 using std::vector;
-using abg_compat::dynamic_pointer_cast;
-using abg_compat::static_pointer_cast;
+using std::dynamic_pointer_cast;
+using std::static_pointer_cast;
 using abigail::sptr_utils::noop_deleter;
 
 /// Convenience typedef for a pair of decls or types.

@@ -30,18 +30,18 @@
 #include <sys/time.h>
 #include <dirent.h>
 #include <time.h>
-#include <algorithm>
-#include <cstdlib>
-#include <cstring>
-#include <iterator>
 #include <ctype.h>
 #include <errno.h>
 #include <libgen.h>
 
+#include <algorithm>
+#include <cstdlib>
+#include <cstring>
 #include <fstream>
 #include <iostream>
+#include <iterator>
+#include <memory>
 #include <sstream>
-
 
 #include "abg-dwarf-reader.h"
 #include "abg-internal.h"
@@ -1709,10 +1709,10 @@ struct malloced_char_star_deleter
 /// @param p the path to turn into an absolute path.
 ///
 /// @return a shared pointer to the resulting absolute path.
-abg_compat::shared_ptr<char>
+std::shared_ptr<char>
 make_path_absolute(const char*p)
 {
-  using abg_compat::shared_ptr;
+  using std::shared_ptr;
 
   shared_ptr<char> result;
 

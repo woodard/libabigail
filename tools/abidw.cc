@@ -13,12 +13,13 @@
 
 #include <unistd.h>
 #include <cassert>
-#include <cstring>
 #include <cstdio>
 #include <cstdlib>
-#include <string>
-#include <iostream>
+#include <cstring>
 #include <fstream>
+#include <iostream>
+#include <memory>
+#include <string>
 #include <vector>
 #include "abg-cxx-compat.h"
 #include "abg-config.h"
@@ -35,7 +36,7 @@ using std::cout;
 using std::ostream;
 using std::ofstream;
 using std::vector;
-using abg_compat::shared_ptr;
+using std::shared_ptr;
 using abigail::tools_utils::emit_prefix;
 using abigail::tools_utils::temp_file;
 using abigail::tools_utils::temp_file_sptr;

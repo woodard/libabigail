@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <functional>
 #include <iterator>
+#include <memory>
 #include <sstream>
 #include <typeinfo>
 #include <utility>
@@ -117,8 +118,8 @@ using std::string;
 using std::list;
 using std::vector;
 using abg_compat::unordered_map;
-using abg_compat::dynamic_pointer_cast;
-using abg_compat::static_pointer_cast;
+using std::dynamic_pointer_cast;
+using std::static_pointer_cast;
 
 /// Convenience typedef for a map of string -> string*.
 typedef unordered_map<string, string*> pool_map_type;

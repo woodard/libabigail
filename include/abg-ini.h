@@ -13,10 +13,11 @@
 #ifndef __ABG_INI_H__
 #define __ABG_INI_H__
 
+#include <istream>
+#include <memory>
+#include <ostream>
 #include <string>
 #include <vector>
-#include <istream>
-#include <ostream>
 #include "abg-cxx-compat.h"
 
 namespace abigail
@@ -25,8 +26,8 @@ namespace abigail
 namespace ini
 {
 // Inject some standard types in this namespace.
-using abg_compat::shared_ptr;
-using abg_compat::dynamic_pointer_cast;
+using std::shared_ptr;
+using std::dynamic_pointer_cast;
 using std::string;
 using std::vector;
 using std:: pair;

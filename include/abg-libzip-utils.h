@@ -9,6 +9,7 @@
 #define __ABG_LIBZIP_UTILS_H__
 
 #include <zip.h>
+#include <memory>
 #include "abg-cxx-compat.h"
 
 namespace abigail
@@ -17,7 +18,7 @@ namespace abigail
 namespace zip_utils
 {
 
-using abg_compat::shared_ptr;
+using std::shared_ptr;
 using std::string;
 
 /// @brief Functor passed to shared_ptr constructor during

@@ -9,11 +9,12 @@
 /// files and diff the corpus files against reference XML corpus
 /// files.
 
-#include <string>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <memory>
+#include <string>
 #include <vector>
-#include <cstdlib>
 #include "abg-ir.h"
 #include "abg-dwarf-reader.h"
 #include "abg-workers.h"
@@ -25,7 +26,7 @@ using std::vector;
 using std::string;
 using std::ofstream;
 using std::cerr;
-using abg_compat::dynamic_pointer_cast;
+using std::dynamic_pointer_cast;
 using abigail::tests::get_build_dir;
 using abigail::dwarf_reader::read_corpus_from_elf;
 using abigail::dwarf_reader::read_context;

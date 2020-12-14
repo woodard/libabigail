@@ -16,10 +16,11 @@
 #ifndef __ABG_WORKERS_H__
 #define __ABG_WORKERS_H__
 
+#include <memory>
 #include <vector>
 #include "abg-cxx-compat.h"
 
-using abg_compat::shared_ptr;
+using std::shared_ptr;
 
 namespace abigail
 {

@@ -4,8 +4,9 @@
 // Copyright (C) 2013-2020 Red Hat, Inc.
 
 #include <cstdlib>
-#include <iostream>
 #include <fstream>
+#include <iostream>
+#include <memory>
 #include "test-utils.h"
 #include "abg-ir.h"
 #include "abg-corpus.h"
@@ -63,7 +64,7 @@ const InOutSpec archive_spec =
 using std::string;
 using std::cerr;
 using std::ofstream;
-using abg_compat::shared_ptr;
+using std::shared_ptr;
 using abigail::corpus;
 using abigail::corpus_sptr;
 using abigail::translation_unit;

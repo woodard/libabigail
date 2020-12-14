@@ -13,6 +13,7 @@
 #ifndef __ABG_REPORTER_H__
 #define __ABG_REPORTER_H__
 
+#include <memory>
 #include <ostream>
 #include <string>
 #include "abg-cxx-compat.h"
@@ -20,7 +21,7 @@
 namespace abigail
 {
 
-using abg_compat::shared_ptr;
+using std::shared_ptr;
 
 namespace comparison
 {
