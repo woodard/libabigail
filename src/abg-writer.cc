@@ -19,6 +19,7 @@
 #include <memory>
 #include <sstream>
 #include <stack>
+#include <unordered_map>
 #include <vector>
 
 #include "abg-cxx-compat.h"
@@ -56,7 +57,7 @@ using std::ostringstream;
 using std::list;
 using std::vector;
 using std::stack;
-using abg_compat::unordered_map;
+using std::unordered_map;
 using abigail::sptr_utils::noop_deleter;
 
 #if WITH_ZIP_ARCHIVE

@@ -12,6 +12,7 @@
 #include <cstdio>
 #include <cstring>
 #include <stdexcept>
+#include <unordered_map>
 
 #include "abg-cxx-compat.h"
 #include "abg-internal.h"
@@ -43,7 +44,7 @@ namespace ir
 {
 
 using std::ostringstream;
-using abg_compat::unordered_map;
+using std::unordered_map;
 using std::list;
 using std::vector;
 

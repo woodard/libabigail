@@ -30,6 +30,7 @@
 #include <ostream>
 #include <sstream>
 #include <stack>
+#include <unordered_map>
 
 #include "abg-cxx-compat.h"
 #include "abg-ir-priv.h"
@@ -65,7 +66,7 @@ namespace dwarf_reader
 
 using std::dynamic_pointer_cast;
 using std::static_pointer_cast;
-using abg_compat::unordered_map;
+using std::unordered_map;
 using abg_compat::unordered_set;
 using std::stack;
 using std::deque;

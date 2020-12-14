@@ -20,6 +20,7 @@
 #include <deque>
 #include <memory>
 #include <sstream>
+#include <unordered_map>
 
 #include "abg-cxx-compat.h"
 #include "abg-suppression-priv.h"
@@ -52,7 +53,7 @@ namespace xml_reader
 using std::string;
 using std::deque;
 using std::shared_ptr;
-using abg_compat::unordered_map;
+using std::unordered_map;
 using std::dynamic_pointer_cast;
 using std::vector;
 using std::istream;
@@ -2886,7 +2887,7 @@ build_elf_symbol_db(read_context& ctxt,
 
   ctxt.set_corpus_node(node);
 
-  typedef abg_compat::unordered_map<xmlNodePtr, elf_symbol_sptr>
+  typedef std::unordered_map<xmlNodePtr, elf_symbol_sptr>
     xml_node_ptr_elf_symbol_sptr_map_type;
   xml_node_ptr_elf_symbol_sptr_map_type xml_node_ptr_elf_symbol_map;
 

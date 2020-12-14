@@ -16,6 +16,7 @@
 #include <memory>
 #include <sstream>
 #include <typeinfo>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -117,7 +118,7 @@ namespace abigail
 using std::string;
 using std::list;
 using std::vector;
-using abg_compat::unordered_map;
+using std::unordered_map;
 using std::dynamic_pointer_cast;
 using std::static_pointer_cast;
 

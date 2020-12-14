@@ -11,6 +11,7 @@
 /// @file
 
 #include <ostream>
+#include <unordered_map>
 #include "abg-cxx-compat.h"
 #include "abg-corpus.h"
 #include "abg-diff-utils.h"
@@ -36,7 +37,7 @@ typedef std::vector<filter_base_sptr> filters;
 // Inject types we need into this namespace.
 using std::ostream;
 using std::vector;
-using abg_compat::unordered_map;
+using std::unordered_map;
 using abg_compat::unordered_set;
 using std::pair;
 

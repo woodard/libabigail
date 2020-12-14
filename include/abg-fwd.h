@@ -16,6 +16,7 @@
 #include <ostream>
 #include <string>
 #include <typeinfo>
+#include <unordered_map>
 #include <utility> // for std::rel_ops, at least.
 #include <vector>
 #include "abg-cxx-compat.h"
@@ -51,7 +52,7 @@ namespace abigail
 // Inject some types.
 using std::shared_ptr;
 using std::weak_ptr;
-using abg_compat::unordered_map;
+using std::unordered_map;
 using std::string;
 using std::vector;
 
