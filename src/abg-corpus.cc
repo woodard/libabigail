@@ -14,7 +14,6 @@
 #include <stdexcept>
 #include <unordered_map>
 
-#include "abg-cxx-compat.h"
 #include "abg-internal.h"
 
 // <headers defining libabigail's API go under here>

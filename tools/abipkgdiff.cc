@@ -82,7 +82,6 @@
 #include <unordered_set>
 #include <vector>
 
-#include "abg-cxx-compat.h"
 #include "abg-workers.h"
 #include "abg-config.h"
 #include "abg-tools-utils.h"

@@ -22,7 +22,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include "abg-cxx-compat.h"
 #include "abg-tools-utils.h"
 
 #include "abg-internal.h"

@@ -20,7 +20,6 @@
 #include <utility>
 #include <vector>
 
-#include "abg-cxx-compat.h"
 #include "abg-internal.h"
 // <headers defining libabigail's API go under here>
 ABG_BEGIN_EXPORT_DECLARATIONS

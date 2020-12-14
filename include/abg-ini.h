@@ -18,7 +18,6 @@
 #include <ostream>
 #include <string>
 #include <vector>
-#include "abg-cxx-compat.h"
 
 namespace abigail
 {

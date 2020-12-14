@@ -34,7 +34,6 @@
 #include <iostream>
 #include <memory>
 #include <string>
-#include "abg-cxx-compat.h"
 #include "abg-config.h"
 #include "abg-tools-utils.h"
 #include "abg-corpus.h"

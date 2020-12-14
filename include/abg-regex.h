@@ -16,7 +16,6 @@
 #include <string>
 #include <vector>
 
-#include "abg-cxx-compat.h"
 #include "abg-sptr-utils.h"
 
 namespace abigail

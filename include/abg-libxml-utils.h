@@ -14,7 +14,6 @@
 #include <memory>
 
 #include "abg-sptr-utils.h"
-#include "abg-cxx-compat.h"
 
 namespace abigail
 {

@@ -21,7 +21,6 @@
 #include <ostream>
 #include <string>
 #include <unordered_set>
-#include "abg-cxx-compat.h"
 
 
 namespace abigail

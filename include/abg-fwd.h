@@ -19,7 +19,6 @@
 #include <unordered_map>
 #include <utility> // for std::rel_ops, at least.
 #include <vector>
-#include "abg-cxx-compat.h"
 #include "abg-interned-str.h"
 #include "abg-hash.h"
 

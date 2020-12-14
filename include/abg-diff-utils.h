@@ -29,7 +29,6 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include "abg-cxx-compat.h"
 #include "abg-fwd.h"
 
 namespace abigail

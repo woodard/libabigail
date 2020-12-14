@@ -10,7 +10,6 @@
 
 #include <unordered_set>
 
-#include "abg-cxx-compat.h"
 #include "abg-ini.h"
 #include "abg-comparison.h"
 

@@ -22,7 +22,6 @@
 #include <sstream>
 #include <unordered_map>
 
-#include "abg-cxx-compat.h"
 #include "abg-suppression-priv.h"
 
 #include "abg-internal.h"

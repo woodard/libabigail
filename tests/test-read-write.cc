@@ -14,7 +14,6 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include "abg-cxx-compat.h"
 #include "abg-ir.h"
 #include "abg-reader.h"
 #include "abg-writer.h"

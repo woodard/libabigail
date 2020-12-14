@@ -16,7 +16,6 @@
 #include <memory>
 #include <ostream>
 #include <string>
-#include "abg-cxx-compat.h"
 
 namespace abigail
 {

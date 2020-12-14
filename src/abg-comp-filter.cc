@@ -10,7 +10,6 @@
 /// This file contains definitions of diff objects filtering
 /// facilities.
 
-#include "abg-cxx-compat.h"
 #include "abg-internal.h"
 #include <memory>
 // <headers defining libabigail's API go under here>

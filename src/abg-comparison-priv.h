@@ -16,7 +16,6 @@
 #ifndef __ABG_COMPARISON_PRIV_H__
 #define __ABG_COMPARISON_PRIV_H__
 
-#include "abg-cxx-compat.h"
 #include "abg-internal.h"
 // <headers defining libabigail's API go under here>
 #include <memory>

@@ -18,7 +18,6 @@
 
 #include <memory>
 #include <vector>
-#include "abg-cxx-compat.h"
 
 using std::shared_ptr;
 

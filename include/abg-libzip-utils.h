@@ -10,7 +10,6 @@
 
 #include <zip.h>
 #include <memory>
-#include "abg-cxx-compat.h"
 
 namespace abigail
 {

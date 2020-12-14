@@ -21,7 +21,6 @@
 #include <functional>
 #include <set>
 #include <unordered_map>
-#include "abg-cxx-compat.h"
 #include "abg-fwd.h"
 #include "abg-hash.h"
 #include "abg-traverse.h"

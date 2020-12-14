@@ -33,7 +33,6 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "abg-cxx-compat.h"
 #include "abg-ir-priv.h"
 #include "abg-suppression-priv.h"
 #include "abg-corpus-priv.h"

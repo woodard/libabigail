@@ -23,7 +23,6 @@
 #include <memory>
 #include <string>
 #include <unordered_set>
-#include "abg-cxx-compat.h"
 #include "abg-tools-utils.h"
 #include "abg-workers.h"
 #include "test-utils.h"

@@ -14,7 +14,6 @@
 #include <ostream>
 #include <set>
 #include <string>
-#include "abg-cxx-compat.h"
 #include "abg-suppression.h"
 
 namespace abigail

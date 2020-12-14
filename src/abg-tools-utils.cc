@@ -45,7 +45,6 @@
 
 #include "abg-dwarf-reader.h"
 #include "abg-internal.h"
-#include "abg-cxx-compat.h"
 #include "abg-regex.h"
 
 // <headers defining libabigail's API go under here>

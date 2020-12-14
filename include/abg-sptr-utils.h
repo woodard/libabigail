@@ -13,7 +13,6 @@
 #include <regex.h>
 #include <memory>
 
-#include "abg-cxx-compat.h"
 
 namespace abigail
 {
