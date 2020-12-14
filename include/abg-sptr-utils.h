@@ -5,7 +5,7 @@
 
 /// @file
 ///
-/// Utilities to ease the wrapping of C types into std::tr1::shared_ptr
+/// Utilities to ease the wrapping of C types into std::shared_ptr
 
 #ifndef __ABG_SPTR_UTILS_H__
 #define __ABG_SPTR_UTILS_H__
@@ -17,7 +17,7 @@
 namespace abigail
 {
 
-/// Namespace for the utilities to wrap C types into std::tr1::shared_ptr.
+/// Namespace for the utilities to wrap C types into std::shared_ptr.
 namespace sptr_utils
 {
 

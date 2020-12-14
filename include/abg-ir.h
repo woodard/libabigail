@@ -35,7 +35,7 @@
 /// How objects' lifetime is handled in libabigail.
 ///
 /// For memory management and garbage collection of libabigail's IR
-/// artifacts, we use std::tr1::shared_ptr and std::tr1::weak_ptr.
+/// artifacts, we use std::shared_ptr and std::weak_ptr.
 ///
 /// When manipulating these IR artifacts, there are a few rules to keep in
 /// mind.
@@ -90,7 +90,7 @@ namespace abigail
 namespace ir
 {
 
-// Inject some std::tr1 types in here.
+// Inject some std types in here.
 using abg_compat::unordered_map;
 
 /// A convenience typedef fo r an ordered set of size_t.
