@@ -79,6 +79,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 #include "abg-cxx-compat.h"
@@ -98,7 +99,7 @@ using std::ostream;
 using std::ofstream;
 using std::vector;
 using std::map;
-using abg_compat::unordered_set;
+using std::unordered_set;
 using std::set;
 using std::ostringstream;
 using std::shared_ptr;

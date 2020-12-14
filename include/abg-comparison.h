@@ -12,6 +12,7 @@
 
 #include <ostream>
 #include <unordered_map>
+#include <unordered_set>
 #include "abg-cxx-compat.h"
 #include "abg-corpus.h"
 #include "abg-diff-utils.h"
@@ -38,7 +39,7 @@ typedef std::vector<filter_base_sptr> filters;
 using std::ostream;
 using std::vector;
 using std::unordered_map;
-using abg_compat::unordered_set;
+using std::unordered_set;
 using std::pair;
 
 using diff_utils::insertion;

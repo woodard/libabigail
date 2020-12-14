@@ -22,6 +22,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <unordered_set>
 #include "abg-cxx-compat.h"
 #include "abg-tools-utils.h"
 #include "abg-workers.h"
@@ -2156,7 +2157,7 @@ main(int argc, char *argv[])
   const std::string out_base_path = std::string(get_build_dir()) + "/tests/";
 
   // output paths need to be unique to avoid collisions during parallel testing
-  abg_compat::unordered_set<std::string> out_paths;
+  std::unordered_set<std::string> out_paths;
   bool non_unique_output_paths = false;
   for (InOutSpec* s = in_out_specs; s->in_elfv0_path; ++s) {
 	if (!out_paths.insert(s->out_report_path).second) {

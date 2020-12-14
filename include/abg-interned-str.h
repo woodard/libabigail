@@ -20,13 +20,14 @@
 #include <memory>
 #include <ostream>
 #include <string>
+#include <unordered_set>
 #include "abg-cxx-compat.h"
 
 
 namespace abigail
 {
 // Inject some std types into this namespace.
-using abg_compat::unordered_set;
+using std::unordered_set;
 using std::shared_ptr;
 using std::string;
 using std::ostream;

@@ -8,12 +8,7 @@
 #ifndef __ABG_CXX_COMPAT_H
 #define __ABG_CXX_COMPAT_H
 
-#include <unordered_set>
-
 namespace abg_compat {
-
-// <unordered_set>
-using std::unordered_set;
 
 }
 

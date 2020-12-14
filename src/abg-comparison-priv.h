@@ -20,6 +20,7 @@
 #include "abg-internal.h"
 // <headers defining libabigail's API go under here>
 #include <memory>
+#include <unordered_set>
 ABG_BEGIN_EXPORT_DECLARATIONS
 
 #include "abg-hash.h"
@@ -38,7 +39,7 @@ namespace abigail
 namespace comparison
 {
 
-using abg_compat::unordered_set;
+using std::unordered_set;
 using namespace abigail::suppr;
 
 // Inject types from outside in here.
