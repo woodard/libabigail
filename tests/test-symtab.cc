@@ -174,19 +174,19 @@ TEST_CASE("Symtab::SimpleSymtabs", "[symtab, basic]")
   GIVEN("a binary with a single undefined function")
   {
     const std::string  binary = "basic/single_undefined_function.so";
-    const corpus_sptr& corpus = assert_symbol_count(binary, 0, 0, 1, 0);
+    const corpus_sptr corpus = assert_symbol_count(binary, 0, 0, 1, 0);
   }
 
   GIVEN("a binary with a single undefined variable")
   {
     const std::string  binary = "basic/single_undefined_variable.so";
-    const corpus_sptr& corpus = assert_symbol_count(binary, 0, 0, 0, 1);
+    const corpus_sptr corpus = assert_symbol_count(binary, 0, 0, 0, 1);
   }
 
   GIVEN("a binary with one function and one variable undefined")
   {
     const std::string  binary = "basic/one_function_one_variable_undefined.so";
-    const corpus_sptr& corpus = assert_symbol_count(binary, 0, 0, 1, 1);
+    const corpus_sptr corpus = assert_symbol_count(binary, 0, 0, 1, 1);
   }
 }
 
