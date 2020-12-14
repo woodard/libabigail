@@ -16,6 +16,7 @@
 #ifndef __ABG_INTERNED_STR_H__
 #define __ABG_INTERNED_STR_H__
 
+#include <functional>
 #include <ostream>
 #include <string>
 #include "abg-cxx-compat.h"
@@ -211,7 +212,7 @@ struct hash_interned_string
   size_t
   operator()(const interned_string& s) const
   {
-    abg_compat::hash<size_t> hash_size_t;
+    std::hash<size_t> hash_size_t;
     return hash_size_t(reinterpret_cast<size_t>(s.raw()));
   }
 }; // end struct hash_interned_string

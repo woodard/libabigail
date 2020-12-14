@@ -10,12 +10,13 @@
 /// Definitions for the Internal Representation artifacts of libabigail.
 
 #include <cxxabi.h>
-#include <vector>
-#include <utility>
 #include <algorithm>
+#include <functional>
 #include <iterator>
-#include <typeinfo>
 #include <sstream>
+#include <typeinfo>
+#include <utility>
+#include <vector>
 
 #include "abg-cxx-compat.h"
 #include "abg-internal.h"
@@ -23276,7 +23277,7 @@ hash_type_or_decl(const type_or_decl_base *tod)
 	  ABG_ASSERT(v->get_type());
 	  size_t h = hash_type_or_decl(v->get_type());
 	  string repr = v->get_pretty_representation();
-	  abg_compat::hash<string> hash_string;
+	  std::hash<string> hash_string;
 	  h = hashing::combine_hashes(h, hash_string(repr));
 	  result = h;
 	}
@@ -23285,7 +23286,7 @@ hash_type_or_decl(const type_or_decl_base *tod)
 	  ABG_ASSERT(f->get_type());
 	  size_t h = hash_type_or_decl(f->get_type());
 	  string repr = f->get_pretty_representation();
-	  abg_compat::hash<string> hash_string;
+	  std::hash<string> hash_string;
 	  h = hashing::combine_hashes(h, hash_string(repr));
 	  result = h;
 	}
@@ -23293,8 +23294,8 @@ hash_type_or_decl(const type_or_decl_base *tod)
 	{
 	  type_base_sptr parm_type = p->get_type();
 	  ABG_ASSERT(parm_type);
-	  abg_compat::hash<bool> hash_bool;
-	  abg_compat::hash<unsigned> hash_unsigned;
+	  std::hash<bool> hash_bool;
+	  std::hash<unsigned> hash_unsigned;
 	  size_t h = hash_type_or_decl(parm_type);
 	  h = hashing::combine_hashes(h, hash_unsigned(p->get_index()));
 	  h = hashing::combine_hashes(h, hash_bool(p->get_variadic_marker()));
@@ -23303,8 +23304,8 @@ hash_type_or_decl(const type_or_decl_base *tod)
       else if (class_decl::base_spec *bs = is_class_base_spec(d))
 	{
 	  member_base::hash hash_member;
-	  abg_compat::hash<size_t> hash_size;
-	  abg_compat::hash<bool> hash_bool;
+	  std::hash<size_t> hash_size;
+	  std::hash<bool> hash_bool;
 	  type_base_sptr type = bs->get_base_class();
 	  size_t h = hash_type_or_decl(type);
 	  h = hashing::combine_hashes(h, hash_member(*bs));

@@ -8,15 +8,11 @@
 #ifndef __ABG_CXX_COMPAT_H
 #define __ABG_CXX_COMPAT_H
 
-#include <functional>
 #include <memory>
 #include <unordered_map>
 #include <unordered_set>
 
 namespace abg_compat {
-
-// <functional>
-using std::hash;
 
 // <memory>
 using std::shared_ptr;

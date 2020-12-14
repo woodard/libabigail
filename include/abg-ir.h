@@ -18,6 +18,7 @@
 #include <assert.h>
 #include <stdint.h>
 #include <cstdlib>
+#include <functional>
 #include <set>
 #include "abg-cxx-compat.h"
 #include "abg-fwd.h"
@@ -362,7 +363,7 @@ struct type_or_decl_hash
   operator()(const type_or_decl_base *artifact) const
   {
     string repr =  get_pretty_representation(artifact);
-    abg_compat::hash<string> do_hash;
+    std::hash<string> do_hash;
     return do_hash(repr);
   }
 

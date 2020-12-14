@@ -5,6 +5,7 @@
 
 /// @file
 
+#include <functional>
 #include "abg-cxx-compat.h"
 #include "abg-internal.h"
 // <headers defining libabigail's API go under here>
@@ -94,8 +95,8 @@ using namespace abigail::ir;
 size_t
 type_base::hash::operator()(const type_base& t) const
 {
-  abg_compat::hash<size_t> size_t_hash;
-  abg_compat::hash<string> str_hash;
+  std::hash<size_t> size_t_hash;
+  std::hash<string> str_hash;
 
   size_t v = str_hash(typeid(t).name());
   v = hashing::combine_hashes(v, size_t_hash(t.get_size_in_bits()));
@@ -127,7 +128,7 @@ struct decl_base::hash
   size_t
   operator()(const decl_base& d) const
   {
-    abg_compat::hash<string> str_hash;
+    std::hash<string> str_hash;
 
     size_t v = str_hash(typeid(d).name());
     if (!d.get_linkage_name().empty())
@@ -150,7 +151,7 @@ struct type_decl::hash
   {
     decl_base::hash decl_hash;
     type_base::hash type_hash;
-    abg_compat::hash<string> str_hash;
+    std::hash<string> str_hash;
 
     size_t v = str_hash(typeid(t).name());
     v = hashing::combine_hashes(v, decl_hash(t));
@@ -168,7 +169,7 @@ struct type_decl::hash
 size_t
 scope_decl::hash::operator()(const scope_decl& d) const
 {
-  abg_compat::hash<string> hash_string;
+  std::hash<string> hash_string;
   size_t v = hash_string(typeid(d).name());
   for (scope_decl::declarations::const_iterator i =
 	 d.get_member_decls().begin();
@@ -195,7 +196,7 @@ struct scope_type_decl::hash
   {
     decl_base::hash decl_hash;
     type_base::hash type_hash;
-    abg_compat::hash<string> str_hash;
+    std::hash<string> str_hash;
 
     size_t v = str_hash(typeid(t).name());
     v = hashing::combine_hashes(v, decl_hash(t));
@@ -212,7 +213,7 @@ struct qualified_type_def::hash
   {
     type_base::hash type_hash;
     decl_base::hash decl_hash;
-    abg_compat::hash<string> str_hash;
+    std::hash<string> str_hash;
 
     size_t v = str_hash(typeid(t).name());
     v = hashing::combine_hashes(v, type_hash(t));
@@ -227,7 +228,7 @@ struct pointer_type_def::hash
   size_t
   operator()(const pointer_type_def& t) const
   {
-    abg_compat::hash<string> str_hash;
+    std::hash<string> str_hash;
     type_base::hash type_base_hash;
     decl_base::hash decl_hash;
     type_base::shared_ptr_hash hash_type_ptr;
@@ -245,7 +246,7 @@ struct reference_type_def::hash
   size_t
   operator()(const reference_type_def& t)
   {
-    abg_compat::hash<string> hash_str;
+    std::hash<string> hash_str;
     type_base::hash hash_type_base;
     decl_base::hash hash_decl;
     type_base::shared_ptr_hash hash_type_ptr;
@@ -266,7 +267,7 @@ struct array_type_def::subrange_type::hash
   size_t
   operator()(const array_type_def::subrange_type& s) const
   {
-    abg_compat::hash<int> hash_size_t;
+    std::hash<int> hash_size_t;
     size_t v = hash_size_t(hash_size_t(s.get_lower_bound()));
     v = hashing::combine_hashes(v, hash_size_t(s.get_upper_bound()));
     return v;
@@ -278,7 +279,7 @@ struct array_type_def::hash
   size_t
   operator()(const array_type_def& t)
   {
-    abg_compat::hash<string> hash_str;
+    std::hash<string> hash_str;
     type_base::hash hash_type_base;
     decl_base::hash hash_decl;
     type_base::shared_ptr_hash hash_type_ptr;
@@ -305,10 +306,10 @@ struct enum_type_decl::hash
   size_t
   operator()(const enum_type_decl& t) const
   {
-    abg_compat::hash<string> str_hash;
+    std::hash<string> str_hash;
     decl_base::hash decl_hash;
     type_base::shared_ptr_hash type_ptr_hash;
-    abg_compat::hash<size_t> size_t_hash;
+    std::hash<size_t> size_t_hash;
 
     size_t v = str_hash(typeid(t).name());
     v = hashing::combine_hashes(v, decl_hash(t));
@@ -330,7 +331,7 @@ struct typedef_decl::hash
   size_t
   operator()(const typedef_decl& t) const
   {
-    abg_compat::hash<string> str_hash;
+    std::hash<string> str_hash;
     type_base::hash hash_type;
     decl_base::hash decl_hash;
     type_base::shared_ptr_hash type_ptr_hash;
@@ -356,10 +357,10 @@ struct typedef_decl::hash
 size_t
 var_decl::hash::operator()(const var_decl& t) const
 {
-  abg_compat::hash<string> hash_string;
+  std::hash<string> hash_string;
   decl_base::hash hash_decl;
   type_base::shared_ptr_hash hash_type_ptr;
-  abg_compat::hash<size_t> hash_size_t;
+  std::hash<size_t> hash_size_t;
 
   size_t v = hash_string(typeid(t).name());
   v = hashing::combine_hashes(v, hash_decl(t));
@@ -395,10 +396,10 @@ var_decl::hash::operator()(const var_decl* t) const
 size_t
 function_decl::hash::operator()(const function_decl& t) const
 {
-  abg_compat::hash<int> hash_int;
-  abg_compat::hash<size_t> hash_size_t;
-  abg_compat::hash<bool> hash_bool;
-  abg_compat::hash<string> hash_string;
+  std::hash<int> hash_int;
+  std::hash<size_t> hash_size_t;
+  std::hash<bool> hash_bool;
+  std::hash<string> hash_string;
   decl_base::hash hash_decl_base;
   type_base::shared_ptr_hash hash_type_ptr;
 
@@ -440,8 +441,8 @@ function_decl::parameter::hash::operator()
   (const function_decl::parameter& p) const
 {
   type_base::shared_ptr_hash hash_type_ptr;
-  abg_compat::hash<bool> hash_bool;
-  abg_compat::hash<unsigned> hash_unsigned;
+  std::hash<bool> hash_bool;
+  std::hash<unsigned> hash_unsigned;
   size_t v = hash_type_ptr(p.get_type());
   v = hashing::combine_hashes(v, hash_unsigned(p.get_index()));
   v = hashing::combine_hashes(v, hash_bool(p.get_variadic_marker()));
@@ -464,7 +465,7 @@ struct method_type::hash
   size_t
   operator()(const method_type& t) const
   {
-    abg_compat::hash<string> hash_string;
+    std::hash<string> hash_string;
     type_base::shared_ptr_hash hash_type_ptr;
     function_decl::parameter::hash hash_parameter;
 
@@ -500,7 +501,7 @@ struct method_type::hash
 size_t
 function_type::hash::operator()(const function_type& t) const
 {
-  abg_compat::hash<string> hash_string;
+  std::hash<string> hash_string;
   type_base::shared_ptr_hash hash_type_ptr;
   function_decl::parameter::hash hash_parameter;
 
@@ -544,7 +545,7 @@ function_type::hash::operator()(const function_type_sptr t) const
 size_t
 member_base::hash::operator()(const member_base& m) const
 {
-  abg_compat::hash<int> hash_int;
+  std::hash<int> hash_int;
   return hash_int(m.get_access_specifier());
 }
 
@@ -553,9 +554,9 @@ class_decl::base_spec::hash::operator()(const base_spec& t) const
 {
   member_base::hash hash_member;
   type_base::shared_ptr_hash hash_type_ptr;
-  abg_compat::hash<size_t> hash_size;
-  abg_compat::hash<bool> hash_bool;
-  abg_compat::hash<string> hash_string;
+  std::hash<size_t> hash_size;
+  std::hash<bool> hash_bool;
+  std::hash<string> hash_string;
 
   size_t v = hash_string(typeid(t).name());
   v = hashing::combine_hashes(v, hash_member(t));
@@ -569,10 +570,10 @@ size_t
 member_function_template::hash::operator()
   (const member_function_template& t) const
 {
-  abg_compat::hash<bool> hash_bool;
+  std::hash<bool> hash_bool;
   function_tdecl::hash hash_function_tdecl;
   member_base::hash hash_member;
-  abg_compat::hash<string> hash_string;
+  std::hash<string> hash_string;
 
   size_t v = hash_member(t);
   string n = t.get_qualified_name();
@@ -589,7 +590,7 @@ member_class_template::hash::operator()
 {
   member_base::hash hash_member;
   class_tdecl::hash hash_class_tdecl;
-  abg_compat::hash<string> hash_string;
+  std::hash<string> hash_string;
 
   size_t v = hash_member(t);
   string n = t.get_qualified_name();
@@ -627,7 +628,7 @@ class_or_union::hash::operator()(const class_or_union& t) const
 
   ABG_ASSERT(!t.get_is_declaration_only());
 
-  abg_compat::hash<string> hash_string;
+  std::hash<string> hash_string;
   scope_type_decl::hash hash_scope_type;
   var_decl::hash hash_data_member;
   member_function_template::hash hash_member_fn_tmpl;
@@ -706,7 +707,7 @@ class_decl::hash::operator()(const class_decl& t) const
 
   ABG_ASSERT(!t.get_is_declaration_only());
 
-  abg_compat::hash<string> hash_string;
+  std::hash<string> hash_string;
   class_decl::base_spec::hash hash_base;
   class_or_union::hash hash_class_or_union;
 
@@ -755,8 +756,8 @@ struct template_parameter::hash
 
     t.set_hashing_has_started(true);
 
-    abg_compat::hash<unsigned> hash_unsigned;
-    abg_compat::hash<std::string> hash_string;
+    std::hash<unsigned> hash_unsigned;
+    std::hash<std::string> hash_string;
     template_decl::hash hash_template_decl;
 
     size_t v = hash_string(typeid(t).name());
@@ -786,7 +787,7 @@ struct template_parameter::shared_ptr_hash
 size_t
 template_decl::hash::operator()(const template_decl& t) const
 {
-  abg_compat::hash<string> hash_string;
+  std::hash<string> hash_string;
   template_parameter::shared_ptr_hash hash_template_parameter;
 
   size_t v = hash_string(typeid(t).name());
@@ -807,7 +808,7 @@ struct type_tparameter::hash
   size_t
   operator()(const type_tparameter& t) const
   {
-    abg_compat::hash<string> hash_string;
+    std::hash<string> hash_string;
     template_parameter::hash hash_template_parameter;
     type_decl::hash hash_type;
 
@@ -828,7 +829,7 @@ size_t
 non_type_tparameter::hash::operator()(const non_type_tparameter& t) const
 {
   template_parameter::hash hash_template_parameter;
-  abg_compat::hash<string> hash_string;
+  std::hash<string> hash_string;
   type_base::shared_ptr_hash hash_type;
 
   size_t v = hash_string(typeid(t).name());
@@ -853,7 +854,7 @@ struct template_tparameter::hash
   size_t
   operator()(const template_tparameter& t) const
   {
-    abg_compat::hash<string> hash_string;
+    std::hash<string> hash_string;
     type_tparameter::hash hash_template_type_parm;
     template_decl::hash hash_template_decl;
 
@@ -891,7 +892,7 @@ operator()(const template_parameter* t) const
 size_t
 type_composition::hash::operator()(const type_composition& t) const
 {
-  abg_compat::hash<string> hash_string;
+  std::hash<string> hash_string;
   type_base::dynamic_hash hash_type;
 
   size_t v = hash_string(typeid(t).name());
@@ -912,7 +913,7 @@ size_t
 function_tdecl::hash::
 operator()(const function_tdecl& t) const
 {
-  abg_compat::hash<string> hash_string;
+  std::hash<string> hash_string;
   decl_base::hash hash_decl_base;
   template_decl::hash hash_template_decl;
   function_decl::hash hash_function_decl;
@@ -941,7 +942,7 @@ size_t
 class_tdecl::hash::
 operator()(const class_tdecl& t) const
 {
-  abg_compat::hash<string> hash_string;
+  std::hash<string> hash_string;
   decl_base::hash hash_decl_base;
   template_decl::hash hash_template_decl;
   class_decl::hash hash_class_decl;
