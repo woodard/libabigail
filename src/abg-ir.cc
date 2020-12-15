@@ -2031,7 +2031,7 @@ elf_symbol::get_name_and_version_from_id(const string&	id,
 {
   name.clear(), ver.clear();
 
-  string::size_type i = id.find("@");
+  string::size_type i = id.find('@');
   if (i == string::npos)
     {
       name = id;
@@ -2044,7 +2044,7 @@ elf_symbol::get_name_and_version_from_id(const string&	id,
   if (i >= id.size())
     return true;
 
-  string::size_type j = id.find("@", i);
+  string::size_type j = id.find('@', i);
   if (j == string::npos)
     j = i;
   else
@@ -12926,7 +12926,7 @@ parse_integral_type(const string&			type_name,
   while (cur_pos < len)
     {
       prev_pos = cur_pos;
-      cur_pos = input.find(" ", prev_pos);
+      cur_pos = input.find(' ', prev_pos);
       prev_word = cur_word;
       cur_word = input.substr(prev_pos, cur_pos - prev_pos);
 
@@ -12940,7 +12940,7 @@ parse_integral_type(const string&			type_name,
 	  && prev_word != "long")
 	{
 	  prev_pos = cur_pos;
-	  cur_pos = input.find(" ", prev_pos);
+	  cur_pos = input.find(' ', prev_pos);
 	  string saved_prev_word = prev_word;
 	  prev_word = cur_word;
 	  cur_word = input.substr(prev_pos, cur_pos - prev_pos);
