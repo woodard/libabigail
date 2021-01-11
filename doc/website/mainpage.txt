@@ -55,7 +55,7 @@ The source code of the library is under <a href="http://www.gnu.org/licenses/lgp
 You can download compressed tarballs containing the source code of
 Libabigail at http://mirrors.kernel.org/sourceware/libabigail.  The
 latest released version of is source code is
-http://mirrors.kernel.org/sourceware/libabigail/libabigail-1.7.tar.gz.
+http://mirrors.kernel.org/sourceware/libabigail/libabigail-1.8.tar.gz.
 
 You can also get the source code in a read-only manner from our <a
 href="http://sourceware.org/git/gitweb.cgi?p=libabigail.git">Git
