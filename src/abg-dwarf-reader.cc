@@ -4287,6 +4287,31 @@ public:
     return false;
   }
 
+  /// Compare two ABI artifacts in a context which canonicalization
+  /// has not be done yet.
+  ///
+  /// @param l the left-hand-side operand of the comparison
+  ///
+  /// @param r the right-hand-side operand of the comparison.
+  ///
+  /// @return true if @p l equals @p r.
+  bool
+  compare_before_canonicalisation(const type_or_decl_base_sptr &l,
+				  const type_or_decl_base_sptr &r)
+  {
+    if (!l || !r)
+      return !!l == !!r;
+
+    const environment* e = l->get_environment();
+    ABG_ASSERT(!e->canonicalization_is_done());
+
+    bool s = e->decl_only_class_equals_definition();
+    e->decl_only_class_equals_definition(true);
+    bool equal = l == r;
+    e->decl_only_class_equals_definition(s);
+    return equal;
+  }
+
   /// Walk the declaration-only classes that have been found during
   /// the building of the corpus and resolve them to their definitions.
   void
@@ -4332,8 +4357,8 @@ public:
 	//
 	//   2/ There are more than one class that define that
 	//   declaration and none of them is defined in the TU of the
-	//   declaration.  In this case, the declaration is left
-	//   unresolved.
+	//   declaration.  If those classes are all different, then
+	//   the declaration is left unresolved.
 	//
 	//   3/ No class defines the declaration.  In this case, the
 	//   declaration is left unresoved.
@@ -4389,6 +4414,38 @@ public:
 		    else if (per_tu_class_map.size() == 1)
 		      (*j)->set_definition_of_declaration
 			(per_tu_class_map.begin()->second);
+		    else if (per_tu_class_map.size() > 1)
+		      {
+			// We are in case where there are more than
+			// one definition for the declaration.  Let's
+			// see if they are all equal.  If they are,
+			// then the declaration resolves to the
+			// definition.  Otherwise, we are in the case
+			// 3/ described above.
+			unordered_map<string,
+				      class_decl_sptr>::const_iterator it;
+			class_decl_sptr first_class =
+			  per_tu_class_map.begin()->second;
+			bool all_class_definitions_are_equal = true;
+			for (it = per_tu_class_map.begin();
+			     it != per_tu_class_map.end();
+			     ++it)
+			  {
+			    if (it == per_tu_class_map.begin())
+			      continue;
+			    else
+			      {
+				if (!compare_before_canonicalisation(it->second,
+								     first_class))
+				  {
+				    all_class_definitions_are_equal = false;
+				    break;
+				  }
+			      }
+			  }
+			if (all_class_definitions_are_equal)
+			  (*j)->set_definition_of_declaration(first_class);
+		      }
 		  }
 	      }
 	    resolved_classes.push_back(i->first);
@@ -4486,6 +4543,11 @@ public:
 
   /// Walk the declaration-only enums that have been found during
   /// the building of the corpus and resolve them to their definitions.
+  ///
+  /// TODO: Do away with this function by factorizing it with
+  /// resolve_declaration_only_classes.  All declaration-only decls
+  /// could be handled the same way as declaration-only-ness is a
+  /// property of abigail::ir::decl_base now.
   void
   resolve_declaration_only_enums()
   {

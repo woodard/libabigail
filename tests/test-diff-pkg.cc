@@ -632,6 +632,19 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/hdf5-1.10.6-2.fc33.x86_64.self-check-report-0.txt",
     "output/test-diff-pkg/hdf5-1.10.6-2.fc33.x86_64.self-check-report-0.txt"
   },
+  {
+    "data/test-diff-pkg/cogl-1.22.8-2.fc33.x86_64.rpm",
+    "data/test-diff-pkg/cogl-1.22.8-2.fc33.x86_64.rpm",
+    "--self-check",
+    "",
+    "data/test-diff-pkg/cogl-debuginfo-1.22.8-2.fc33.x86_64.rpm",
+    "data/test-diff-pkg/cogl-debuginfo-1.22.8-2.fc33.x86_64.rpm",
+    "",
+    "",
+    "data/test-diff-pkg/cogl-1.22.8-2.fc33.x86_64.self-check-report-0.txt",
+    "output/test-diff-pkg/cogl-1.22.8-2.fc33.x86_64.self-check-report-0.txt"
+  }
+  ,
 #endif // WITH_RPM_4_15
 #endif //WITH_RPM
 

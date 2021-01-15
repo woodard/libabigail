@@ -1779,6 +1779,9 @@ test-diff-pkg/mesa-libGLU-9.0.1-3.fc33.x86_64.self-check-report-0.txt \
 test-diff-pkg/hdf5-1.10.6-2.fc33.x86_64.rpm \
 test-diff-pkg/hdf5-1.10.6-2.fc33.x86_64.self-check-report-0.txt \
 test-diff-pkg/hdf5-debuginfo-1.10.6-2.fc33.x86_64.rpm \
+test-diff-pkg/cogl-1.22.8-2.fc33.x86_64.rpm \
+test-diff-pkg/cogl-1.22.8-2.fc33.x86_64.self-check-report-0.txt \
+test-diff-pkg/cogl-debuginfo-1.22.8-2.fc33.x86_64.rpm \
 \
 test-fedabipkgdiff/dbus-glib-0.104-3.fc23.x86_64.rpm \
 test-fedabipkgdiff/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm \
