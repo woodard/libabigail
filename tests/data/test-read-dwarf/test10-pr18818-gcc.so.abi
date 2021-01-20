@@ -6254,7 +6254,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='scoped_array' mangled-name='_ZN5boost12scoped_arrayIcEC2EPc' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/scoped_array.hpp' line='57' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <function-decl name='scoped_array' mangled-name='_ZN5boost12scoped_arrayIcEC2EPc' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/scoped_array.hpp' line='57' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost12scoped_arrayIcEC2EPc'>
             <parameter type-id='type-id-314' is-artificial='yes'/>
             <parameter type-id='type-id-42'/>
             <return type-id='type-id-27'/>

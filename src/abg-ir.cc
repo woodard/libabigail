@@ -18055,9 +18055,10 @@ function_decl::get_id() const
       if (elf_symbol_sptr s = get_symbol())
 	{
 	  if (s->has_aliases())
-	    // The symbol has several aliases, so let's use the
-	    // linkage name of the function as its ID.
-	    priv_->id_ = env->intern(get_linkage_name());
+	    // The symbol has several aliases, so let's use a scheme
+	    // that allows all aliased functions to have different
+	    // IDs.
+	    priv_->id_ = env->intern(get_name() + "/" + s->get_id_string());
 	  else
 	    // Let's use the full symbol name with its version as ID.
 	    priv_->id_ = env->intern(s->get_id_string());

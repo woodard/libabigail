@@ -3566,7 +3566,7 @@
         </function-decl>
       </member-function>
       <member-function access='public' destructor='yes'>
-        <function-decl name='~Stream' mangled-name='_ZN6StreamD2Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_engine.h' line='332' column='1' visibility='default' binding='global' size-in-bits='64'>
+        <function-decl name='~Stream' mangled-name='_ZN6StreamD2Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_engine.h' line='332' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN6StreamD2Ev'>
           <parameter type-id='type-id-265' is-artificial='yes'/>
           <parameter type-id='type-id-25' is-artificial='yes'/>
           <return type-id='type-id-149'/>
@@ -3681,7 +3681,7 @@
         </function-decl>
       </member-function>
       <member-function access='private' constructor='yes'>
-        <function-decl name='MemRange' mangled-name='_ZN8MemRangeC2EPKvm' filepath='../../../gcc/liboffloadmic/runtime/offload_engine.h' line='49' column='1' visibility='default' binding='global' size-in-bits='64'>
+        <function-decl name='MemRange' mangled-name='_ZN8MemRangeC2EPKvm' filepath='../../../gcc/liboffloadmic/runtime/offload_engine.h' line='49' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN8MemRangeC2EPKvm'>
           <parameter type-id='type-id-274' is-artificial='yes'/>
           <parameter type-id='type-id-151'/>
           <parameter type-id='type-id-56'/>
@@ -5618,7 +5618,7 @@
               </function-decl>
             </member-function>
             <member-function access='public'>
-              <function-decl name='_Rb_tree_impl' mangled-name='_ZNSt8_Rb_treeImSt4pairIKmP6StreamESt10_Select1stIS4_ESt4lessImESaIS4_EE13_Rb_tree_implIS8_Lb1EEC2Ev' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/stl_tree.h' line='596' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <function-decl name='_Rb_tree_impl' mangled-name='_ZNSt8_Rb_treeImSt4pairIKmP6StreamESt10_Select1stIS4_ESt4lessImESaIS4_EE13_Rb_tree_implIS8_Lb1EEC2Ev' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/stl_tree.h' line='596' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt8_Rb_treeImSt4pairIKmP6StreamESt10_Select1stIS4_ESt4lessImESaIS4_EE13_Rb_tree_implIS8_Lb1EEC2Ev'>
                 <parameter type-id='type-id-930' is-artificial='yes'/>
                 <return type-id='type-id-149'/>
               </function-decl>
@@ -6696,7 +6696,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='_Rb_tree_const_iterator' mangled-name='_ZNSt23_Rb_tree_const_iteratorISt4pairIKmP6StreamEEC2ERKSt17_Rb_tree_iteratorIS4_E' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/stl_tree.h' line='266' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <function-decl name='_Rb_tree_const_iterator' mangled-name='_ZNSt23_Rb_tree_const_iteratorISt4pairIKmP6StreamEEC2ERKSt17_Rb_tree_iteratorIS4_E' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/stl_tree.h' line='266' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt23_Rb_tree_const_iteratorISt4pairIKmP6StreamEEC2ERKSt17_Rb_tree_iteratorIS4_E'>
             <parameter type-id='type-id-942' is-artificial='yes'/>
             <parameter type-id='type-id-603'/>
             <return type-id='type-id-149'/>
@@ -7781,7 +7781,7 @@
               </function-decl>
             </member-function>
             <member-function access='public' constructor='yes'>
-              <function-decl name='_Alloc_node' mangled-name='_ZNSt8_Rb_treeI7PtrDataS0_St9_IdentityIS0_ESt4lessIS0_ESaIS0_EE11_Alloc_nodeC2ERS6_' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/stl_tree.h' line='459' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <function-decl name='_Alloc_node' mangled-name='_ZNSt8_Rb_treeI7PtrDataS0_St9_IdentityIS0_ESt4lessIS0_ESaIS0_EE11_Alloc_nodeC2ERS6_' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/stl_tree.h' line='459' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt8_Rb_treeI7PtrDataS0_St9_IdentityIS0_ESt4lessIS0_ESaIS0_EE11_Alloc_nodeC2ERS6_'>
                 <parameter type-id='type-id-1226' is-artificial='yes'/>
                 <parameter type-id='type-id-917'/>
                 <return type-id='type-id-149'/>
@@ -11063,7 +11063,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='pair&lt;std::_Rb_tree_node&lt;PtrData&gt;*&amp;, std::_Rb_tree_node_base*&amp;, 1u&gt;' mangled-name='_ZNSt4pairIPSt18_Rb_tree_node_baseS1_EC2IRPSt13_Rb_tree_nodeI7PtrDataERS1_Lb1EEEOT_OT0_' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/stl_pair.h' line='240' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <function-decl name='pair&lt;std::_Rb_tree_node&lt;PtrData&gt;*&amp;, std::_Rb_tree_node_base*&amp;, 1u&gt;' mangled-name='_ZNSt4pairIPSt18_Rb_tree_node_baseS1_EC2IRPSt13_Rb_tree_nodeI7PtrDataERS1_Lb1EEEOT_OT0_' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/stl_pair.h' line='240' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt4pairIPSt18_Rb_tree_node_baseS1_EC2IRPSt13_Rb_tree_nodeI7PtrDataERS1_Lb1EEEOT_OT0_'>
             <parameter type-id='type-id-1071' is-artificial='yes'/>
             <parameter type-id='type-id-1419'/>
             <parameter type-id='type-id-1417'/>
@@ -14631,7 +14631,7 @@
             </function-decl>
           </member-function>
           <member-function access='private' destructor='yes'>
-            <function-decl name='~_List_base' mangled-name='_ZNSt7__cxx1110_List_baseIP9coibufferSaIS2_EED2Ev' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/stl_list.h' line='441' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <function-decl name='~_List_base' mangled-name='_ZNSt7__cxx1110_List_baseIP9coibufferSaIS2_EED2Ev' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/stl_list.h' line='441' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt7__cxx1110_List_baseIP9coibufferSaIS2_EED2Ev'>
               <parameter type-id='type-id-984' is-artificial='yes'/>
               <parameter type-id='type-id-25' is-artificial='yes'/>
               <return type-id='type-id-149'/>
@@ -15002,7 +15002,7 @@
             </function-decl>
           </member-function>
           <member-function access='private' destructor='yes'>
-            <function-decl name='~_List_base' mangled-name='_ZNSt7__cxx1110_List_baseIP7PtrDataSaIS2_EED2Ev' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/stl_list.h' line='441' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <function-decl name='~_List_base' mangled-name='_ZNSt7__cxx1110_List_baseIP7PtrDataSaIS2_EED2Ev' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/stl_list.h' line='441' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt7__cxx1110_List_baseIP7PtrDataSaIS2_EED2Ev'>
               <parameter type-id='type-id-974' is-artificial='yes'/>
               <parameter type-id='type-id-25' is-artificial='yes'/>
               <return type-id='type-id-149'/>
@@ -18455,7 +18455,7 @@
           </function-decl>
         </member-function>
         <member-function access='private'>
-          <function-decl name='new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKmP6StreamEEEC2Ev' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/ext/new_allocator.h' line='79' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <function-decl name='new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKmP6StreamEEEC2Ev' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/ext/new_allocator.h' line='79' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeISt4pairIKmP6StreamEEEC2Ev'>
             <parameter type-id='type-id-368' is-artificial='yes'/>
             <return type-id='type-id-149'/>
           </function-decl>
@@ -18974,7 +18974,7 @@
           </function-decl>
         </member-function>
         <member-function access='private' destructor='yes'>
-          <function-decl name='~new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIP9coibufferEED2Ev' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/ext/new_allocator.h' line='86' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <function-decl name='~new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIP9coibufferEED2Ev' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/ext/new_allocator.h' line='86' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIP9coibufferEED2Ev'>
             <parameter type-id='type-id-362' is-artificial='yes'/>
             <parameter type-id='type-id-25' is-artificial='yes'/>
             <return type-id='type-id-149'/>
@@ -19183,7 +19183,7 @@
           </function-decl>
         </member-function>
         <member-function access='private' destructor='yes'>
-          <function-decl name='~new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIP7PtrDataEED2Ev' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/ext/new_allocator.h' line='86' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <function-decl name='~new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIP7PtrDataEED2Ev' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/ext/new_allocator.h' line='86' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISt10_List_nodeIP7PtrDataEED2Ev'>
             <parameter type-id='type-id-358' is-artificial='yes'/>
             <parameter type-id='type-id-25' is-artificial='yes'/>
             <return type-id='type-id-149'/>
@@ -19231,7 +19231,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='__aligned_membuf' mangled-name='_ZN9__gnu_cxx16__aligned_membufI7PtrDataEC2Ev' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/ext/aligned_buffer.h' line='56' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <function-decl name='__aligned_membuf' mangled-name='_ZN9__gnu_cxx16__aligned_membufI7PtrDataEC2Ev' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/ext/aligned_buffer.h' line='56' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx16__aligned_membufI7PtrDataEC2Ev'>
             <parameter type-id='type-id-318' is-artificial='yes'/>
             <return type-id='type-id-149'/>
           </function-decl>
@@ -22663,7 +22663,7 @@
         </function-decl>
       </member-function>
       <member-function access='public' constructor='yes'>
-        <function-decl name='mutex_t' mangled-name='_ZN7mutex_tC2Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_util.h' line='83' column='1' visibility='default' binding='global' size-in-bits='64'>
+        <function-decl name='mutex_t' mangled-name='_ZN7mutex_tC2Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_util.h' line='83' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN7mutex_tC2Ev'>
           <parameter type-id='type-id-1842' is-artificial='yes'/>
           <return type-id='type-id-149'/>
         </function-decl>
@@ -22676,7 +22676,7 @@
         </function-decl>
       </member-function>
       <member-function access='public' constructor='yes'>
-        <function-decl name='mutex_t' mangled-name='_ZN7mutex_tC2Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_util.h' line='83' column='1' visibility='default' binding='global' size-in-bits='64'>
+        <function-decl name='mutex_t' mangled-name='_ZN7mutex_tC2Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_util.h' line='83' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN7mutex_tC2Ev'>
           <parameter type-id='type-id-1842' is-artificial='yes'/>
           <return type-id='type-id-149'/>
         </function-decl>
@@ -22689,7 +22689,7 @@
         </function-decl>
       </member-function>
       <member-function access='public' constructor='yes'>
-        <function-decl name='mutex_t' mangled-name='_ZN7mutex_tC2Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_util.h' line='83' column='1' visibility='default' binding='global' size-in-bits='64'>
+        <function-decl name='mutex_t' mangled-name='_ZN7mutex_tC2Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_util.h' line='83' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN7mutex_tC2Ev'>
           <parameter type-id='type-id-1842' is-artificial='yes'/>
           <return type-id='type-id-149'/>
         </function-decl>
@@ -22702,7 +22702,7 @@
         </function-decl>
       </member-function>
       <member-function access='public' constructor='yes'>
-        <function-decl name='mutex_t' mangled-name='_ZN7mutex_tC2Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_util.h' line='83' column='1' visibility='default' binding='global' size-in-bits='64'>
+        <function-decl name='mutex_t' mangled-name='_ZN7mutex_tC2Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_util.h' line='83' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN7mutex_tC2Ev'>
           <parameter type-id='type-id-1842' is-artificial='yes'/>
           <return type-id='type-id-149'/>
         </function-decl>
@@ -22883,7 +22883,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='pair&lt;std::_Rb_tree_iterator&lt;PtrData&gt;, bool, 1u&gt;' mangled-name='_ZNSt4pairISt17_Rb_tree_iteratorI7PtrDataEbEC2IS2_bLb1EEEOT_OT0_' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/stl_pair.h' line='240' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <function-decl name='pair&lt;std::_Rb_tree_iterator&lt;PtrData&gt;, bool, 1u&gt;' mangled-name='_ZNSt4pairISt17_Rb_tree_iteratorI7PtrDataEbEC2IS2_bLb1EEEOT_OT0_' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/stl_pair.h' line='240' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt4pairISt17_Rb_tree_iteratorI7PtrDataEbEC2IS2_bLb1EEEOT_OT0_'>
             <parameter type-id='type-id-1855' is-artificial='yes'/>
             <parameter type-id='type-id-1489'/>
             <parameter type-id='type-id-206'/>
@@ -24103,7 +24103,7 @@
         </function-decl>
       </member-function>
       <member-function access='public' destructor='yes'>
-        <function-decl name='~mutex_locker_t' mangled-name='_ZN14mutex_locker_tD2Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_util.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64'>
+        <function-decl name='~mutex_locker_t' mangled-name='_ZN14mutex_locker_tD2Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_util.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN14mutex_locker_tD2Ev'>
           <parameter type-id='type-id-1969' is-artificial='yes'/>
           <parameter type-id='type-id-25' is-artificial='yes'/>
           <return type-id='type-id-149'/>
@@ -24117,7 +24117,7 @@
         </function-decl>
       </member-function>
       <member-function access='public' destructor='yes'>
-        <function-decl name='~mutex_locker_t' mangled-name='_ZN14mutex_locker_tD2Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_util.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64'>
+        <function-decl name='~mutex_locker_t' mangled-name='_ZN14mutex_locker_tD2Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_util.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN14mutex_locker_tD2Ev'>
           <parameter type-id='type-id-1969' is-artificial='yes'/>
           <parameter type-id='type-id-25' is-artificial='yes'/>
           <return type-id='type-id-149'/>
@@ -26209,7 +26209,7 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
-          <function-decl name='pair&lt;std::_Rb_tree_iterator&lt;PtrData&gt;, bool, 1u&gt;' mangled-name='_ZNSt4pairISt17_Rb_tree_iteratorI7PtrDataEbEC2IS2_bLb1EEEOT_OT0_' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/stl_pair.h' line='240' column='1' visibility='default' binding='global' size-in-bits='64'>
+          <function-decl name='pair&lt;std::_Rb_tree_iterator&lt;PtrData&gt;, bool, 1u&gt;' mangled-name='_ZNSt4pairISt17_Rb_tree_iteratorI7PtrDataEbEC2IS2_bLb1EEEOT_OT0_' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/stl_pair.h' line='240' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt4pairISt17_Rb_tree_iteratorI7PtrDataEbEC2IS2_bLb1EEEOT_OT0_'>
             <parameter type-id='type-id-1855' is-artificial='yes'/>
             <parameter type-id='type-id-1489'/>
             <parameter type-id='type-id-206'/>
@@ -37366,7 +37366,7 @@
         </function-decl>
       </member-function>
       <member-function access='public' constructor='yes'>
-        <function-decl name='mutex_t' mangled-name='_ZN7mutex_tC2Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_util.h' line='83' column='1' visibility='default' binding='global' size-in-bits='64'>
+        <function-decl name='mutex_t' mangled-name='_ZN7mutex_tC2Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_util.h' line='83' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN7mutex_tC2Ev'>
           <parameter type-id='type-id-1842' is-artificial='yes'/>
           <return type-id='type-id-149'/>
         </function-decl>
@@ -37379,7 +37379,7 @@
         </function-decl>
       </member-function>
       <member-function access='public' constructor='yes'>
-        <function-decl name='mutex_t' mangled-name='_ZN7mutex_tC2Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_util.h' line='83' column='1' visibility='default' binding='global' size-in-bits='64'>
+        <function-decl name='mutex_t' mangled-name='_ZN7mutex_tC2Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_util.h' line='83' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN7mutex_tC2Ev'>
           <parameter type-id='type-id-1842' is-artificial='yes'/>
           <return type-id='type-id-149'/>
         </function-decl>
@@ -37392,7 +37392,7 @@
         </function-decl>
       </member-function>
       <member-function access='public' constructor='yes'>
-        <function-decl name='mutex_t' mangled-name='_ZN7mutex_tC2Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_util.h' line='83' column='1' visibility='default' binding='global' size-in-bits='64'>
+        <function-decl name='mutex_t' mangled-name='_ZN7mutex_tC2Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_util.h' line='83' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN7mutex_tC2Ev'>
           <parameter type-id='type-id-1842' is-artificial='yes'/>
           <return type-id='type-id-149'/>
         </function-decl>
@@ -37405,7 +37405,7 @@
         </function-decl>
       </member-function>
       <member-function access='public' constructor='yes'>
-        <function-decl name='mutex_t' mangled-name='_ZN7mutex_tC2Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_util.h' line='83' column='1' visibility='default' binding='global' size-in-bits='64'>
+        <function-decl name='mutex_t' mangled-name='_ZN7mutex_tC2Ev' filepath='../../../gcc/liboffloadmic/runtime/offload_util.h' line='83' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN7mutex_tC2Ev'>
           <parameter type-id='type-id-1842' is-artificial='yes'/>
           <return type-id='type-id-149'/>
         </function-decl>

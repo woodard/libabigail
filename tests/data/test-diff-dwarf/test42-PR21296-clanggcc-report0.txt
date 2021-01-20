@@ -1,18 +1,12 @@
-Functions changes summary: 1 Removed, 11 Changed, 0 Added functions
+Functions changes summary: 2 Removed, 8 Changed, 0 Added functions
 Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
-1 Removed function:
+2 Removed functions:
 
+  [D] 'method STR::~STR(int)'
   [D] 'method void std::_Tuple_impl<1ul>::_Tuple_impl()'
 
-11 functions with some indirect sub-type change:
-
-  [C] 'method STR::~STR(int)' has some indirect sub-type changes:
-    linkage names of method STR::~STR(int)
-    changed from '_ZN3STRD1Ev, _ZN3STRD2Ev' to '_ZN3STRD2Ev'
-
-    name of symbol changed from _ZN3STRD1Ev to _ZN3STRD2Ev
-    parameter 1 of type 'int' was removed
+8 functions with some indirect sub-type change:
 
   [C] 'function std::tuple<STR&&> my_forward_as_tuple<STR>(STR&&)' has some indirect sub-type changes:
     return type changed:
@@ -44,23 +38,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in referenced type 'const std::_Tuple_impl<0ul, STR&&>':
         'const std::_Tuple_impl<0ul, STR&&>' changed to 'const std::_Tuple_impl<0, STR &&>'
 
-  [C] 'method void std::_Tuple_impl<0ul, STR&&>::_Tuple_impl<STR>(STR&&)' has some indirect sub-type changes:
-    Please note that the symbol of this function is _ZNSt11_Tuple_implILm0EJO3STREEC2IS0_JESt10false_typeEEOT_DpOT0_
-     and it aliases symbol: _ZNSt11_Tuple_implILm0EJO3STREEC1IS0_JESt10false_typeEEOT_DpOT0_
-    linkage names of method void std::_Tuple_impl<0ul, STR&&>::_Tuple_impl<STR>(STR&&)
-    changed from '_ZNSt11_Tuple_implILm0EJO3STREEC2IS0_JESt10false_typeEEOT_DpOT0_, _ZNSt11_Tuple_implILm0EJO3STREEC1IS0_JESt10false_typeEEOT_DpOT0_' to '_ZNSt11_Tuple_implILm0EJO3STREEC2IS0_JESt10false_typeEEOT_DpOT0_'
-    'method void std::_Tuple_impl<0ul, STR&&>::_Tuple_impl<STR>(STR&&) {_ZNSt11_Tuple_implILm0EJO3STREEC2IS0_JESt10false_typeEEOT_DpOT0_, _ZNSt11_Tuple_implILm0EJO3STREEC1IS0_JESt10false_typeEEOT_DpOT0_}' now becomes 'method void std::_Tuple_impl<0, STR &&>::_Tuple_impl<STR, std::false_type>(STR&&) {_ZNSt11_Tuple_implILm0EJO3STREEC2IS0_JESt10false_typeEEOT_DpOT0_}'
-    implicit parameter 0 of type 'std::_Tuple_impl<0ul, STR&&>*' changed:
-      in pointed to type 'struct std::_Tuple_impl<0ul, STR&&>':
-        type name changed from 'std::_Tuple_impl<0ul, STR&&>' to 'std::_Tuple_impl<0, STR &&>'
-        type size hasn't changed
-        2 base class deletions:
-          struct std::_Head_base<0ul, STR&&, false>
-          struct std::_Tuple_impl<1ul>
-        2 base class insertions:
-          struct std::_Head_base<0, STR &&, false>
-          struct std::_Tuple_impl<1>
-
   [C] 'function std::__add_c_ref<STR&&>::type std::__get_helper<0ul, STR&&>(const std::_Tuple_impl<0ul, STR&&>&)' has some indirect sub-type changes:
     'function std::__add_c_ref<STR&&>::type std::__get_helper<0ul, STR&&>(const std::_Tuple_impl<0ul, STR&&>&) {_ZSt12__get_helperILm0EO3STRJEENSt11__add_c_refIT0_E4typeERKSt11_Tuple_implIXT_EJS3_DpT1_EE}' now becomes 'function std::__add_c_ref<STR &&>::type std::__get_helper<0, STR &&>(const std::_Tuple_impl<0, STR &&>&) {_ZSt12__get_helperILm0EO3STRJEENSt11__add_c_refIT0_E4typeERKSt11_Tuple_implIXT_EJS3_DpT1_EE}'
     return type changed:
@@ -82,15 +59,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
     return type changed:
       in referenced type 'typedef std::remove_reference<STR&>::type':
         typedef name changed from std::remove_reference<STR&>::type to std::remove_reference<STR &>::type
-
-  [C] 'method void std::tuple<STR&&>::tuple<STR>(STR&&)' has some indirect sub-type changes:
-    Please note that the symbol of this function is _ZNSt5tupleIJO3STREEC2IJS0_ESt9true_typeEEDpOT_
-     and it aliases symbol: _ZNSt5tupleIJO3STREEC1IJS0_ESt9true_typeEEDpOT_
-    linkage names of method void std::tuple<STR&&>::tuple<STR>(STR&&)
-    changed from '_ZNSt5tupleIJO3STREEC2IJS0_ESt9true_typeEEDpOT_, _ZNSt5tupleIJO3STREEC1IJS0_ESt9true_typeEEDpOT_' to '_ZNSt5tupleIJO3STREEC2IJS0_ESt9true_typeEEDpOT_'
-    'method void std::tuple<STR&&>::tuple<STR>(STR&&) {_ZNSt5tupleIJO3STREEC2IJS0_ESt9true_typeEEDpOT_, _ZNSt5tupleIJO3STREEC1IJS0_ESt9true_typeEEDpOT_}' now becomes 'method void std::tuple<STR &&>::tuple<STR, std::true_type>(STR&&) {_ZNSt5tupleIJO3STREEC2IJS0_ESt9true_typeEEDpOT_}'
-    implicit parameter 0 of type 'std::tuple<STR&&>*' changed:
-      pointed to type 'class std::tuple<STR&&>' changed, as reported earlier
 
   [C] 'function void tpl<std::tuple<STR&&> >(std::tuple<STR&&>)' has some indirect sub-type changes:
     'function void tpl<std::tuple<STR&&> >(std::tuple<STR&&>) {_Z3tplISt5tupleIJO3STREEEvT_}' now becomes 'function void tpl<std::tuple<STR &&> >(std::tuple<STR &&>) {_Z3tplISt5tupleIJO3STREEEvT_}'

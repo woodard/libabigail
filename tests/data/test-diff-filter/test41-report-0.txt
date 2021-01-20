@@ -1,4 +1,4 @@
-Functions changes summary: 8 Removed, 6 Changed (7 filtered out), 16 Added functions
+Functions changes summary: 8 Removed, 5 Changed (6 filtered out), 16 Added functions
 Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 Function symbols changes summary: 1 Removed, 0 Added function symbol not referenced by debug info
 Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referenced by debug info
@@ -34,7 +34,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
     note that this adds a new entry to the vtable of class std::tr1::_Sp_counted_base<__gnu_cxx::_Lock_policy::_S_atomic>
   [A] 'function void std::tr1::__enable_shared_from_this_helper<__gnu_cxx::_Lock_policy::_S_atomic>(const std::tr1::__shared_count<__gnu_cxx::_Lock_policy::_S_atomic>&, ...)'    {_ZNSt3tr132__enable_shared_from_this_helperILN9__gnu_cxx12_Lock_policyE2EEEvRKNS_14__shared_countIXT_EEEz}
 
-6 functions with some indirect sub-type change:
+5 functions with some indirect sub-type change:
 
   [C] 'method abigail::interned_string abigail::xml_writer::write_context::get_id_for_type(abigail::ir::type_base*) const' at abg-writer.cc:247:1 has some indirect sub-type changes:
     implicit parameter 0 of type 'const abigail::xml_writer::write_context*' has sub-type changes:
@@ -155,20 +155,6 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
                             entity changed from 'unsigned int' to 'unsigned int*'
                             type size changed from 32 to 64 (in bits)
                     and name of 'std::_Deque_iterator<unsigned int, unsigned int&, unsigned int*>::_M_node' changed to 'std::_Deque_iterator<unsigned int, unsigned int &, unsigned int *>::_M_node' at stl_deque.h:140:1
-
-  [C] 'method std::deque<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::~deque(int)' at stl_deque.h:1040:1 has some indirect sub-type changes:
-    linkage names of method std::deque<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::~deque(int)
-    changed from '_ZNSt5dequeINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESaIS5_EED2Ev, _ZNSt5dequeINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESaIS5_EED1Ev' to '_ZNSt5dequeINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESaIS5_EED2Ev'
-    'method std::deque<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::~deque(int) {_ZNSt5dequeINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESaIS5_EED2Ev, _ZNSt5dequeINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESaIS5_EED1Ev}' now becomes 'method std::deque<std::__cxx11::basic_string<char>, std::allocator<std::__cxx11::basic_string<char> > >::~deque() {_ZNSt5dequeINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESaIS5_EED2Ev}'
-    implicit parameter 0 of type 'std::deque<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >*' changed:
-      in pointed to type 'class std::deque<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >' at stl_deque.h:829:1:
-        type name changed from 'std::deque<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >' to 'std::deque<std::__cxx11::basic_string<char>, std::allocator<std::__cxx11::basic_string<char> > >'
-        type size hasn't changed
-        1 base class deletion:
-          class std::_Deque_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > at stl_deque.h:458:1
-        1 base class insertion:
-          class std::_Deque_base<std::__cxx11::basic_string<char>, std::allocator<std::__cxx11::basic_string<char> > > at stl_deque.h:458:1
-    parameter 1 of type 'int' was removed
 
 1 Removed function symbol not referenced by debug info:
 
