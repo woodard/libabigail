@@ -14,15 +14,15 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [D] 'method const char* FuncList::find_name(void*)'
   [D] 'method int64_t FuncList::max_name_length()'
   [D] 'method MicEnvVar::VarValue* MicEnvVar::CardEnvVars::find_var(char*, int)'
-  [D] 'method MicEnvVar::CardEnvVars::~CardEnvVars(int)'
-  [D] 'method MicEnvVar::VarValue::~VarValue(int)'
+  [D] 'method MicEnvVar::CardEnvVars::~CardEnvVars()'
+  [D] 'method MicEnvVar::VarValue::~VarValue()'
   [D] 'method void MicEnvVar::add_env_var(int, char*, int, char*)'
   [D] 'method void MicEnvVar::analyze_env_var(char*)'
   [D] 'method char** MicEnvVar::create_environ_for_card(int)'
   [D] 'method MicEnvVar::CardEnvVars* MicEnvVar::get_card(int)'
   [D] 'method MicEnvVarKind MicEnvVar::get_env_var_kind(char*, int*, char**, int*, char**)'
   [D] 'method void MicEnvVar::mic_parse_env_var_list(int, char*)'
-  [D] 'method MicEnvVar::~MicEnvVar(int)'
+  [D] 'method MicEnvVar::~MicEnvVar()'
   [D] 'method bool MyoWrapper::LoadLibrary()'
   [D] 'function void ORSL::init()'
   [D] 'function void ORSL::release(int)'
@@ -121,7 +121,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method void Engine::set_indexes(int, int)'
   [A] 'method void Engine::stream_destroy(_Offload_stream)'
   [A] 'method void Engine::unload_library(void*, const char*)'
-  [A] 'method Engine::~Engine(int)'
+  [A] 'method Engine::~Engine()'
   [A] 'method Iterator::Iterator()'
   [A] 'method Iterator::Iterator(TableList<VarTable>::Node*)'
   [A] 'method void Iterator::new_node(TableList<VarTable>::Node*)'
@@ -201,7 +201,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method void OffloadDescriptor::set_stream(_Offload_stream)'
   [A] 'method void OffloadDescriptor::setup_omp_async_info()'
   [A] 'method bool OffloadDescriptor::wait_dependencies(void**, int, _Offload_stream)'
-  [A] 'method OffloadDescriptor::~OffloadDescriptor(int)'
+  [A] 'method OffloadDescriptor::~OffloadDescriptor()'
   [A] 'method OffloadTimer::OffloadTimer(OffloadHostTimerData*, OffloadHostPhase)'
   [A] 'method PersistData::PersistData(void*, uint64_t, uint64_t, uint64_t)'
   [A] 'method PtrData::PtrData(const PtrData&)'
@@ -222,7 +222,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method COIPIPELINE Stream::get_pipeline()'
   [A] 'method void Stream::set_last_offload(OffloadDescriptor*)'
   [A] 'method void Stream::set_pipeline(COIPIPELINE)'
-  [A] 'method Stream::~Stream(int)'
+  [A] 'method Stream::~Stream()'
   [A] 'method void TableList<FuncTable>::TableList(TableList<FuncTable>::Node*)'
   [A] 'method void TableList<FuncTable>::add_table(TableList<FuncTable>::Node*)'
   [A] 'method void TableList<FuncTable>::remove_table(TableList<FuncTable>::Node*)'
@@ -243,7 +243,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method AutoSet& Thread::get_auto_vars()'
   [A] 'method COIPIPELINE Thread::get_pipeline(int) const'
   [A] 'method void Thread::set_pipeline(int, COIPIPELINE)'
-  [A] 'method Thread::~Thread(int)'
+  [A] 'method Thread::~Thread()'
   [A] 'function int _Offload_find_associated_mic_memory(int, void*, void**, uint64_t*, void**, uint64_t*, int*)'
   [A] 'function void _Offload_shared_aligned_arena_free(MyoArena, void*)'
   [A] 'function void* _Offload_shared_aligned_arena_malloc(MyoArena, size_t, size_t)'
@@ -324,35 +324,35 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method __gnu_cxx::new_allocator<const VarTable::Entry*>::size_type __gnu_cxx::new_allocator<const VarTable::Entry*>::max_size() const'
   [A] 'method void __gnu_cxx::new_allocator<const VarTable::Entry*>::new_allocator()'
   [A] 'method void __gnu_cxx::new_allocator<const VarTable::Entry*>::new_allocator(const __gnu_cxx::new_allocator<const VarTable::Entry*>&)'
-  [A] 'method __gnu_cxx::new_allocator<const VarTable::Entry*>::~new_allocator(int)'
+  [A] 'method __gnu_cxx::new_allocator<const VarTable::Entry*>::~new_allocator()'
   [A] 'method __gnu_cxx::new_allocator<std::_List_node<DynLib> >::pointer __gnu_cxx::new_allocator<std::_List_node<DynLib> >::allocate(__gnu_cxx::new_allocator<std::_List_node<DynLib> >::size_type, void*)'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<DynLib> >::construct<DynLib, DynLib>(DynLib*, DynLib&)'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<DynLib> >::deallocate(__gnu_cxx::new_allocator<std::_List_node<DynLib> >::pointer, __gnu_cxx::new_allocator<std::_List_node<DynLib> >::size_type)'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<DynLib> >::destroy<DynLib>(DynLib*)'
   [A] 'method __gnu_cxx::new_allocator<std::_List_node<DynLib> >::size_type __gnu_cxx::new_allocator<std::_List_node<DynLib> >::max_size() const'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<DynLib> >::new_allocator()'
-  [A] 'method __gnu_cxx::new_allocator<std::_List_node<DynLib> >::~new_allocator(int)'
+  [A] 'method __gnu_cxx::new_allocator<std::_List_node<DynLib> >::~new_allocator()'
   [A] 'method __gnu_cxx::new_allocator<std::_List_node<MyoTable> >::pointer __gnu_cxx::new_allocator<std::_List_node<MyoTable> >::allocate(__gnu_cxx::new_allocator<std::_List_node<MyoTable> >::size_type, void*)'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<MyoTable> >::construct<MyoTable, MyoTable>(MyoTable*, MyoTable&)'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<MyoTable> >::deallocate(__gnu_cxx::new_allocator<std::_List_node<MyoTable> >::pointer, __gnu_cxx::new_allocator<std::_List_node<MyoTable> >::size_type)'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<MyoTable> >::destroy<MyoTable>(MyoTable*)'
   [A] 'method __gnu_cxx::new_allocator<std::_List_node<MyoTable> >::size_type __gnu_cxx::new_allocator<std::_List_node<MyoTable> >::max_size() const'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<MyoTable> >::new_allocator()'
-  [A] 'method __gnu_cxx::new_allocator<std::_List_node<MyoTable> >::~new_allocator(int)'
+  [A] 'method __gnu_cxx::new_allocator<std::_List_node<MyoTable> >::~new_allocator()'
   [A] 'method __gnu_cxx::new_allocator<std::_List_node<PersistData> >::pointer __gnu_cxx::new_allocator<std::_List_node<PersistData> >::allocate(__gnu_cxx::new_allocator<std::_List_node<PersistData> >::size_type, void*)'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<PersistData> >::construct<PersistData, const PersistData&>(PersistData*, const PersistData&)'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<PersistData> >::deallocate(__gnu_cxx::new_allocator<std::_List_node<PersistData> >::pointer, __gnu_cxx::new_allocator<std::_List_node<PersistData> >::size_type)'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<PersistData> >::destroy<PersistData>(PersistData*)'
   [A] 'method __gnu_cxx::new_allocator<std::_List_node<PersistData> >::size_type __gnu_cxx::new_allocator<std::_List_node<PersistData> >::max_size() const'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<PersistData> >::new_allocator()'
-  [A] 'method __gnu_cxx::new_allocator<std::_List_node<PersistData> >::~new_allocator(int)'
+  [A] 'method __gnu_cxx::new_allocator<std::_List_node<PersistData> >::~new_allocator()'
   [A] 'method __gnu_cxx::new_allocator<std::_List_node<PtrData*> >::pointer __gnu_cxx::new_allocator<std::_List_node<PtrData*> >::allocate(__gnu_cxx::new_allocator<std::_List_node<PtrData*> >::size_type, void*)'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<PtrData*> >::construct<PtrData*, PtrData* const&>(PtrData**, PtrData* const&)'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<PtrData*> >::deallocate(__gnu_cxx::new_allocator<std::_List_node<PtrData*> >::pointer, __gnu_cxx::new_allocator<std::_List_node<PtrData*> >::size_type)'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<PtrData*> >::destroy<PtrData*>(PtrData**)'
   [A] 'method __gnu_cxx::new_allocator<std::_List_node<PtrData*> >::size_type __gnu_cxx::new_allocator<std::_List_node<PtrData*> >::max_size() const'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<PtrData*> >::new_allocator()'
-  [A] 'method __gnu_cxx::new_allocator<std::_List_node<PtrData*> >::~new_allocator(int)'
+  [A] 'method __gnu_cxx::new_allocator<std::_List_node<PtrData*> >::~new_allocator()'
   [A] 'method __gnu_cxx::new_allocator<std::_List_node<TargetImage> >::pointer __gnu_cxx::new_allocator<std::_List_node<TargetImage> >::allocate(__gnu_cxx::new_allocator<std::_List_node<TargetImage> >::size_type, void*)'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<TargetImage> >::construct<TargetImage, TargetImage>(TargetImage*, TargetImage&)'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<TargetImage> >::construct<TargetImage, const TargetImage&>(TargetImage*, const TargetImage&)'
@@ -360,35 +360,35 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<TargetImage> >::destroy<TargetImage>(TargetImage*)'
   [A] 'method __gnu_cxx::new_allocator<std::_List_node<TargetImage> >::size_type __gnu_cxx::new_allocator<std::_List_node<TargetImage> >::max_size() const'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<TargetImage> >::new_allocator()'
-  [A] 'method __gnu_cxx::new_allocator<std::_List_node<TargetImage> >::~new_allocator(int)'
+  [A] 'method __gnu_cxx::new_allocator<std::_List_node<TargetImage> >::~new_allocator()'
   [A] 'method __gnu_cxx::new_allocator<std::_List_node<char*> >::pointer __gnu_cxx::new_allocator<std::_List_node<char*> >::allocate(__gnu_cxx::new_allocator<std::_List_node<char*> >::size_type, void*)'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<char*> >::construct<char*, char* const&>(char**, char* const&)'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<char*> >::deallocate(__gnu_cxx::new_allocator<std::_List_node<char*> >::pointer, __gnu_cxx::new_allocator<std::_List_node<char*> >::size_type)'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<char*> >::destroy<char*>(char**)'
   [A] 'method __gnu_cxx::new_allocator<std::_List_node<char*> >::size_type __gnu_cxx::new_allocator<std::_List_node<char*> >::max_size() const'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<char*> >::new_allocator()'
-  [A] 'method __gnu_cxx::new_allocator<std::_List_node<char*> >::~new_allocator(int)'
+  [A] 'method __gnu_cxx::new_allocator<std::_List_node<char*> >::~new_allocator()'
   [A] 'method __gnu_cxx::new_allocator<std::_List_node<coibuffer*> >::pointer __gnu_cxx::new_allocator<std::_List_node<coibuffer*> >::allocate(__gnu_cxx::new_allocator<std::_List_node<coibuffer*> >::size_type, void*)'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<coibuffer*> >::construct<coibuffer*, coibuffer* const&>(coibuffer**, coibuffer* const&)'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<coibuffer*> >::deallocate(__gnu_cxx::new_allocator<std::_List_node<coibuffer*> >::pointer, __gnu_cxx::new_allocator<std::_List_node<coibuffer*> >::size_type)'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<coibuffer*> >::destroy<coibuffer*>(coibuffer**)'
   [A] 'method __gnu_cxx::new_allocator<std::_List_node<coibuffer*> >::size_type __gnu_cxx::new_allocator<std::_List_node<coibuffer*> >::max_size() const'
   [A] 'method void __gnu_cxx::new_allocator<std::_List_node<coibuffer*> >::new_allocator()'
-  [A] 'method __gnu_cxx::new_allocator<std::_List_node<coibuffer*> >::~new_allocator(int)'
+  [A] 'method __gnu_cxx::new_allocator<std::_List_node<coibuffer*> >::~new_allocator()'
   [A] 'method __gnu_cxx::new_allocator<std::_Rb_tree_node<AutoData> >::pointer __gnu_cxx::new_allocator<std::_Rb_tree_node<AutoData> >::allocate(__gnu_cxx::new_allocator<std::_Rb_tree_node<AutoData> >::size_type, void*)'
   [A] 'method void __gnu_cxx::new_allocator<std::_Rb_tree_node<AutoData> >::construct<AutoData, AutoData>(AutoData*, AutoData&)'
   [A] 'method void __gnu_cxx::new_allocator<std::_Rb_tree_node<AutoData> >::deallocate(__gnu_cxx::new_allocator<std::_Rb_tree_node<AutoData> >::pointer, __gnu_cxx::new_allocator<std::_Rb_tree_node<AutoData> >::size_type)'
   [A] 'method void __gnu_cxx::new_allocator<std::_Rb_tree_node<AutoData> >::destroy<AutoData>(AutoData*)'
   [A] 'method __gnu_cxx::new_allocator<std::_Rb_tree_node<AutoData> >::size_type __gnu_cxx::new_allocator<std::_Rb_tree_node<AutoData> >::max_size() const'
   [A] 'method void __gnu_cxx::new_allocator<std::_Rb_tree_node<AutoData> >::new_allocator()'
-  [A] 'method __gnu_cxx::new_allocator<std::_Rb_tree_node<AutoData> >::~new_allocator(int)'
+  [A] 'method __gnu_cxx::new_allocator<std::_Rb_tree_node<AutoData> >::~new_allocator()'
   [A] 'method __gnu_cxx::new_allocator<std::_Rb_tree_node<PtrData> >::pointer __gnu_cxx::new_allocator<std::_Rb_tree_node<PtrData> >::allocate(__gnu_cxx::new_allocator<std::_Rb_tree_node<PtrData> >::size_type, void*)'
   [A] 'method void __gnu_cxx::new_allocator<std::_Rb_tree_node<PtrData> >::construct<PtrData, PtrData>(PtrData*, PtrData&)'
   [A] 'method void __gnu_cxx::new_allocator<std::_Rb_tree_node<PtrData> >::deallocate(__gnu_cxx::new_allocator<std::_Rb_tree_node<PtrData> >::pointer, __gnu_cxx::new_allocator<std::_Rb_tree_node<PtrData> >::size_type)'
   [A] 'method void __gnu_cxx::new_allocator<std::_Rb_tree_node<PtrData> >::destroy<PtrData>(PtrData*)'
   [A] 'method __gnu_cxx::new_allocator<std::_Rb_tree_node<PtrData> >::size_type __gnu_cxx::new_allocator<std::_Rb_tree_node<PtrData> >::max_size() const'
   [A] 'method void __gnu_cxx::new_allocator<std::_Rb_tree_node<PtrData> >::new_allocator()'
-  [A] 'method __gnu_cxx::new_allocator<std::_Rb_tree_node<PtrData> >::~new_allocator(int)'
+  [A] 'method __gnu_cxx::new_allocator<std::_Rb_tree_node<PtrData> >::~new_allocator()'
   [A] 'method __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<long unsigned int const, Stream*> > >::pointer __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<long unsigned int const, Stream*> > >::allocate(__gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<long unsigned int const, Stream*> > >::size_type, void*)'
   [A] 'method void __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<long unsigned int const, Stream*> > >::construct<std::pair<long unsigned int const, Stream*>, const std::pair<long unsigned int const, Stream*>&>(std::pair<long unsigned int const, Stream*>*, const std::pair<long unsigned int const, Stream*>&)'
   [A] 'method void __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<long unsigned int const, Stream*> > >::construct<std::pair<long unsigned int const, Stream*>, const std::piecewise_construct_t&, std::tuple<long unsigned int const&>, std::tuple<> >(std::pair<long unsigned int const, Stream*>*, const std::piecewise_construct_t&, std::tuple<long unsigned int const&>&, std::tuple<>&)'
@@ -397,14 +397,14 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<long unsigned int const, Stream*> > >::size_type __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<long unsigned int const, Stream*> > >::max_size() const'
   [A] 'method void __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<long unsigned int const, Stream*> > >::new_allocator()'
   [A] 'method void __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<long unsigned int const, Stream*> > >::new_allocator(const __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<long unsigned int const, Stream*> > >&)'
-  [A] 'method __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<long unsigned int const, Stream*> > >::~new_allocator(int)'
+  [A] 'method __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<long unsigned int const, Stream*> > >::~new_allocator()'
   [A] 'method __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<void const* const, OffloadDescriptor*> > >::pointer __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<void const* const, OffloadDescriptor*> > >::allocate(__gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<void const* const, OffloadDescriptor*> > >::size_type, void*)'
   [A] 'method void __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<void const* const, OffloadDescriptor*> > >::construct<std::pair<void const* const, OffloadDescriptor*>, const std::piecewise_construct_t&, std::tuple<void const* const&>, std::tuple<> >(std::pair<void const* const, OffloadDescriptor*>*, const std::piecewise_construct_t&, std::tuple<void const* const&>&, std::tuple<>&)'
   [A] 'method void __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<void const* const, OffloadDescriptor*> > >::deallocate(__gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<void const* const, OffloadDescriptor*> > >::pointer, __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<void const* const, OffloadDescriptor*> > >::size_type)'
   [A] 'method void __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<void const* const, OffloadDescriptor*> > >::destroy<std::pair<void const* const, OffloadDescriptor*> >(std::pair<void const* const, OffloadDescriptor*>*)'
   [A] 'method __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<void const* const, OffloadDescriptor*> > >::size_type __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<void const* const, OffloadDescriptor*> > >::max_size() const'
   [A] 'method void __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<void const* const, OffloadDescriptor*> > >::new_allocator()'
-  [A] 'method __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<void const* const, OffloadDescriptor*> > >::~new_allocator(int)'
+  [A] 'method __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<void const* const, OffloadDescriptor*> > >::~new_allocator()'
   [A] 'function bool __gnu_cxx::operator!=<const VarTable::Entry* const*, std::vector<const VarTable::Entry*> >(const __gnu_cxx::__normal_iterator<const VarTable::Entry* const*, std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> > >&, const __gnu_cxx::__normal_iterator<const VarTable::Entry* const*, std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> > >&)'
   [A] 'function bool __gnu_cxx::operator!=<const VarTable::Entry**, std::vector<const VarTable::Entry*> >(const __gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> > >&, const __gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> > >&)'
   [A] 'function __gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> > >::difference_type __gnu_cxx::operator-<const VarTable::Entry**, std::vector<const VarTable::Entry*> >(const __gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> > >&, const __gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> > >&)'
@@ -418,7 +418,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'function bool __offload_target_image_is_executable(void*)'
   [A] 'function int for__continue_traceback(_Offload_result)'
   [A] 'method mutex_locker_t::mutex_locker_t(mutex_t&)'
-  [A] 'method mutex_locker_t::~mutex_locker_t(int)'
+  [A] 'method mutex_locker_t::~mutex_locker_t()'
   [A] 'method void mutex_t::lock()'
   [A] 'method mutex_t::mutex_t()'
   [A] 'method void mutex_t::unlock()'
@@ -536,7 +536,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method std::_Rb_tree<AutoData, AutoData, std::_Identity<AutoData>, std::less<AutoData>, std::allocator<AutoData> >::iterator std::_Rb_tree<AutoData, AutoData, std::_Identity<AutoData>, std::less<AutoData>, std::allocator<AutoData> >::erase(std::_Rb_tree<AutoData, AutoData, std::_Identity<AutoData>, std::less<AutoData>, std::allocator<AutoData> >::const_iterator, std::_Rb_tree<AutoData, AutoData, std::_Identity<AutoData>, std::less<AutoData>, std::allocator<AutoData> >::const_iterator)'
   [A] 'method std::_Rb_tree<AutoData, AutoData, std::_Identity<AutoData>, std::less<AutoData>, std::allocator<AutoData> >::iterator std::_Rb_tree<AutoData, AutoData, std::_Identity<AutoData>, std::less<AutoData>, std::allocator<AutoData> >::find(const AutoData&)'
   [A] 'method std::_Rb_tree<AutoData, AutoData, std::_Identity<AutoData>, std::less<AutoData>, std::allocator<AutoData> >::size_type std::_Rb_tree<AutoData, AutoData, std::_Identity<AutoData>, std::less<AutoData>, std::allocator<AutoData> >::size() const'
-  [A] 'method std::_Rb_tree<AutoData, AutoData, std::_Identity<AutoData>, std::less<AutoData>, std::allocator<AutoData> >::~_Rb_tree(int)'
+  [A] 'method std::_Rb_tree<AutoData, AutoData, std::_Identity<AutoData>, std::less<AutoData>, std::allocator<AutoData> >::~_Rb_tree()'
   [A] 'method std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Alloc_node::_Alloc_node(std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >&)'
   [A] 'method std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Link_type std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Alloc_node::operator()<PtrData>(PtrData&) const'
   [A] 'method std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Link_type std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_M_begin()'
@@ -573,7 +573,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::iterator std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::erase(std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::const_iterator, std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::const_iterator)'
   [A] 'method std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::iterator std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::find(const PtrData&)'
   [A] 'method std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::size_type std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::size() const'
-  [A] 'method std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::~_Rb_tree(int)'
+  [A] 'method std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::~_Rb_tree()'
   [A] 'method std::_Rb_tree<long unsigned int, std::pair<long unsigned int const, Stream*>, std::_Select1st<std::pair<long unsigned int const, Stream*> >, std::less<long unsigned int>, std::allocator<std::pair<long unsigned int const, Stream*> > >::_Alloc_node::_Alloc_node(std::_Rb_tree<long unsigned int, std::pair<long unsigned int const, Stream*>, std::_Select1st<std::pair<long unsigned int const, Stream*> >, std::less<long unsigned int>, std::allocator<std::pair<long unsigned int const, Stream*> > >&)'
   [A] 'method std::_Rb_tree<long unsigned int, std::pair<long unsigned int const, Stream*>, std::_Select1st<std::pair<long unsigned int const, Stream*> >, std::less<long unsigned int>, std::allocator<std::pair<long unsigned int const, Stream*> > >::_Link_type std::_Rb_tree<long unsigned int, std::pair<long unsigned int const, Stream*>, std::_Select1st<std::pair<long unsigned int const, Stream*> >, std::less<long unsigned int>, std::allocator<std::pair<long unsigned int const, Stream*> > >::_Alloc_node::operator()<const std::pair<long unsigned int const, Stream*>&>(const std::pair<long unsigned int const, Stream*>&) const'
   [A] 'method std::_Rb_tree<long unsigned int, std::pair<long unsigned int const, Stream*>, std::_Select1st<std::pair<long unsigned int const, Stream*> >, std::less<long unsigned int>, std::allocator<std::pair<long unsigned int const, Stream*> > >::_Link_type std::_Rb_tree<long unsigned int, std::pair<long unsigned int const, Stream*>, std::_Select1st<std::pair<long unsigned int const, Stream*> >, std::less<long unsigned int>, std::allocator<std::pair<long unsigned int const, Stream*> > >::_M_begin()'
@@ -625,7 +625,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method std::less<long unsigned int> std::_Rb_tree<long unsigned int, std::pair<long unsigned int const, Stream*>, std::_Select1st<std::pair<long unsigned int const, Stream*> >, std::less<long unsigned int>, std::allocator<std::pair<long unsigned int const, Stream*> > >::key_comp() const'
   [A] 'method std::_Rb_tree<long unsigned int, std::pair<long unsigned int const, Stream*>, std::_Select1st<std::pair<long unsigned int const, Stream*> >, std::less<long unsigned int>, std::allocator<std::pair<long unsigned int const, Stream*> > >::iterator std::_Rb_tree<long unsigned int, std::pair<long unsigned int const, Stream*>, std::_Select1st<std::pair<long unsigned int const, Stream*> >, std::less<long unsigned int>, std::allocator<std::pair<long unsigned int const, Stream*> > >::lower_bound(const std::_Rb_tree<long unsigned int, std::pair<long unsigned int const, Stream*>, std::_Select1st<std::pair<long unsigned int const, Stream*> >, std::less<long unsigned int>, std::allocator<std::pair<long unsigned int const, Stream*> > >::key_type&)'
   [A] 'method std::_Rb_tree<long unsigned int, std::pair<long unsigned int const, Stream*>, std::_Select1st<std::pair<long unsigned int const, Stream*> >, std::less<long unsigned int>, std::allocator<std::pair<long unsigned int const, Stream*> > >::size_type std::_Rb_tree<long unsigned int, std::pair<long unsigned int const, Stream*>, std::_Select1st<std::pair<long unsigned int const, Stream*> >, std::less<long unsigned int>, std::allocator<std::pair<long unsigned int const, Stream*> > >::size() const'
-  [A] 'method std::_Rb_tree<long unsigned int, std::pair<long unsigned int const, Stream*>, std::_Select1st<std::pair<long unsigned int const, Stream*> >, std::less<long unsigned int>, std::allocator<std::pair<long unsigned int const, Stream*> > >::~_Rb_tree(int)'
+  [A] 'method std::_Rb_tree<long unsigned int, std::pair<long unsigned int const, Stream*>, std::_Select1st<std::pair<long unsigned int const, Stream*> >, std::less<long unsigned int>, std::allocator<std::pair<long unsigned int const, Stream*> > >::~_Rb_tree()'
   [A] 'method std::_Rb_tree<void const*, std::pair<void const* const, OffloadDescriptor*>, std::_Select1st<std::pair<void const* const, OffloadDescriptor*> >, std::less<void const*>, std::allocator<std::pair<void const* const, OffloadDescriptor*> > >::_Link_type std::_Rb_tree<void const*, std::pair<void const* const, OffloadDescriptor*>, std::_Select1st<std::pair<void const* const, OffloadDescriptor*> >, std::less<void const*>, std::allocator<std::pair<void const* const, OffloadDescriptor*> > >::_M_begin()'
   [A] 'method void std::_Rb_tree<void const*, std::pair<void const* const, OffloadDescriptor*>, std::_Select1st<std::pair<void const* const, OffloadDescriptor*> >, std::less<void const*>, std::allocator<std::pair<void const* const, OffloadDescriptor*> > >::_M_construct_node<const std::piecewise_construct_t&, std::tuple<void const* const&>, std::tuple<> >(std::_Rb_tree<void const*, std::pair<void const* const, OffloadDescriptor*>, std::_Select1st<std::pair<void const* const, OffloadDescriptor*> >, std::less<void const*>, std::allocator<std::pair<void const* const, OffloadDescriptor*> > >::_Link_type, const std::piecewise_construct_t&, std::tuple<void const* const&>&, std::tuple<>&)'
   [A] 'method std::_Rb_tree<void const*, std::pair<void const* const, OffloadDescriptor*>, std::_Select1st<std::pair<void const* const, OffloadDescriptor*> >, std::less<void const*>, std::allocator<std::pair<void const* const, OffloadDescriptor*> > >::_Link_type std::_Rb_tree<void const*, std::pair<void const* const, OffloadDescriptor*>, std::_Select1st<std::pair<void const* const, OffloadDescriptor*> >, std::less<void const*>, std::allocator<std::pair<void const* const, OffloadDescriptor*> > >::_M_create_node<const std::piecewise_construct_t&, std::tuple<void const* const&>, std::tuple<> >(const std::piecewise_construct_t&, std::tuple<void const* const&>&, std::tuple<>&)'
@@ -655,7 +655,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method std::less<void const*> std::_Rb_tree<void const*, std::pair<void const* const, OffloadDescriptor*>, std::_Select1st<std::pair<void const* const, OffloadDescriptor*> >, std::less<void const*>, std::allocator<std::pair<void const* const, OffloadDescriptor*> > >::key_comp() const'
   [A] 'method std::_Rb_tree<void const*, std::pair<void const* const, OffloadDescriptor*>, std::_Select1st<std::pair<void const* const, OffloadDescriptor*> >, std::less<void const*>, std::allocator<std::pair<void const* const, OffloadDescriptor*> > >::iterator std::_Rb_tree<void const*, std::pair<void const* const, OffloadDescriptor*>, std::_Select1st<std::pair<void const* const, OffloadDescriptor*> >, std::less<void const*>, std::allocator<std::pair<void const* const, OffloadDescriptor*> > >::lower_bound(const std::_Rb_tree<void const*, std::pair<void const* const, OffloadDescriptor*>, std::_Select1st<std::pair<void const* const, OffloadDescriptor*> >, std::less<void const*>, std::allocator<std::pair<void const* const, OffloadDescriptor*> > >::key_type&)'
   [A] 'method std::_Rb_tree<void const*, std::pair<void const* const, OffloadDescriptor*>, std::_Select1st<std::pair<void const* const, OffloadDescriptor*> >, std::less<void const*>, std::allocator<std::pair<void const* const, OffloadDescriptor*> > >::size_type std::_Rb_tree<void const*, std::pair<void const* const, OffloadDescriptor*>, std::_Select1st<std::pair<void const* const, OffloadDescriptor*> >, std::less<void const*>, std::allocator<std::pair<void const* const, OffloadDescriptor*> > >::size() const'
-  [A] 'method std::_Rb_tree<void const*, std::pair<void const* const, OffloadDescriptor*>, std::_Select1st<std::pair<void const* const, OffloadDescriptor*> >, std::less<void const*>, std::allocator<std::pair<void const* const, OffloadDescriptor*> > >::~_Rb_tree(int)'
+  [A] 'method std::_Rb_tree<void const*, std::pair<void const* const, OffloadDescriptor*>, std::_Select1st<std::pair<void const* const, OffloadDescriptor*> >, std::less<void const*>, std::allocator<std::pair<void const* const, OffloadDescriptor*> > >::~_Rb_tree()'
   [A] 'method std::_Rb_tree_const_iterator<AutoData>::iterator std::_Rb_tree_const_iterator<AutoData>::_M_const_cast() const'
   [A] 'method void std::_Rb_tree_const_iterator<AutoData>::_Rb_tree_const_iterator(const std::_Rb_tree_const_iterator<AutoData>::iterator&)'
   [A] 'method void std::_Rb_tree_const_iterator<AutoData>::_Rb_tree_const_iterator(std::_Rb_tree_const_iterator<AutoData>::_Base_ptr)'
@@ -721,7 +721,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method const std::_Vector_base<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::_Tp_alloc_type& std::_Vector_base<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::_M_get_Tp_allocator() const'
   [A] 'method void std::_Vector_base<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::_Vector_base(const std::_Vector_base<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::allocator_type&)'
   [A] 'method std::_Vector_base<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::_Vector_impl::_Vector_impl(const std::_Vector_base<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::_Tp_alloc_type&)'
-  [A] 'method std::_Vector_base<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::~_Vector_base(int)'
+  [A] 'method std::_Vector_base<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::~_Vector_base()'
   [A] 'function std::allocator<std::_List_node<DynLib> >* std::__addressof<std::allocator<std::_List_node<DynLib> > >(std::allocator<std::_List_node<DynLib> >&)'
   [A] 'function std::allocator<std::_List_node<MyoTable> >* std::__addressof<std::allocator<std::_List_node<MyoTable> > >(std::allocator<std::_List_node<MyoTable> >&)'
   [A] 'function std::allocator<std::_List_node<PersistData> >* std::__addressof<std::allocator<std::_List_node<PersistData> > >(std::allocator<std::_List_node<PersistData> >&)'
@@ -731,25 +731,25 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'function std::allocator<std::_List_node<coibuffer*> >* std::__addressof<std::allocator<std::_List_node<coibuffer*> > >(std::allocator<std::_List_node<coibuffer*> >&)'
   [A] 'method void std::__allocated_ptr<std::allocator<std::_List_node<DynLib> > >::__allocated_ptr(std::allocator<std::_List_node<DynLib> >&, std::__allocated_ptr<std::allocator<std::_List_node<DynLib> > >::pointer)'
   [A] 'method std::__allocated_ptr<std::allocator<std::_List_node<DynLib> > >& std::__allocated_ptr<std::allocator<std::_List_node<DynLib> > >::operator=()'
-  [A] 'method std::__allocated_ptr<std::allocator<std::_List_node<DynLib> > >::~__allocated_ptr(int)'
+  [A] 'method std::__allocated_ptr<std::allocator<std::_List_node<DynLib> > >::~__allocated_ptr()'
   [A] 'method void std::__allocated_ptr<std::allocator<std::_List_node<MyoTable> > >::__allocated_ptr(std::allocator<std::_List_node<MyoTable> >&, std::__allocated_ptr<std::allocator<std::_List_node<MyoTable> > >::pointer)'
   [A] 'method std::__allocated_ptr<std::allocator<std::_List_node<MyoTable> > >& std::__allocated_ptr<std::allocator<std::_List_node<MyoTable> > >::operator=()'
-  [A] 'method std::__allocated_ptr<std::allocator<std::_List_node<MyoTable> > >::~__allocated_ptr(int)'
+  [A] 'method std::__allocated_ptr<std::allocator<std::_List_node<MyoTable> > >::~__allocated_ptr()'
   [A] 'method void std::__allocated_ptr<std::allocator<std::_List_node<PersistData> > >::__allocated_ptr(std::allocator<std::_List_node<PersistData> >&, std::__allocated_ptr<std::allocator<std::_List_node<PersistData> > >::pointer)'
   [A] 'method std::__allocated_ptr<std::allocator<std::_List_node<PersistData> > >& std::__allocated_ptr<std::allocator<std::_List_node<PersistData> > >::operator=()'
-  [A] 'method std::__allocated_ptr<std::allocator<std::_List_node<PersistData> > >::~__allocated_ptr(int)'
+  [A] 'method std::__allocated_ptr<std::allocator<std::_List_node<PersistData> > >::~__allocated_ptr()'
   [A] 'method void std::__allocated_ptr<std::allocator<std::_List_node<PtrData*> > >::__allocated_ptr(std::allocator<std::_List_node<PtrData*> >&, std::__allocated_ptr<std::allocator<std::_List_node<PtrData*> > >::pointer)'
   [A] 'method std::__allocated_ptr<std::allocator<std::_List_node<PtrData*> > >& std::__allocated_ptr<std::allocator<std::_List_node<PtrData*> > >::operator=()'
-  [A] 'method std::__allocated_ptr<std::allocator<std::_List_node<PtrData*> > >::~__allocated_ptr(int)'
+  [A] 'method std::__allocated_ptr<std::allocator<std::_List_node<PtrData*> > >::~__allocated_ptr()'
   [A] 'method void std::__allocated_ptr<std::allocator<std::_List_node<TargetImage> > >::__allocated_ptr(std::allocator<std::_List_node<TargetImage> >&, std::__allocated_ptr<std::allocator<std::_List_node<TargetImage> > >::pointer)'
   [A] 'method std::__allocated_ptr<std::allocator<std::_List_node<TargetImage> > >& std::__allocated_ptr<std::allocator<std::_List_node<TargetImage> > >::operator=()'
-  [A] 'method std::__allocated_ptr<std::allocator<std::_List_node<TargetImage> > >::~__allocated_ptr(int)'
+  [A] 'method std::__allocated_ptr<std::allocator<std::_List_node<TargetImage> > >::~__allocated_ptr()'
   [A] 'method void std::__allocated_ptr<std::allocator<std::_List_node<char*> > >::__allocated_ptr(std::allocator<std::_List_node<char*> >&, std::__allocated_ptr<std::allocator<std::_List_node<char*> > >::pointer)'
   [A] 'method std::__allocated_ptr<std::allocator<std::_List_node<char*> > >& std::__allocated_ptr<std::allocator<std::_List_node<char*> > >::operator=()'
-  [A] 'method std::__allocated_ptr<std::allocator<std::_List_node<char*> > >::~__allocated_ptr(int)'
+  [A] 'method std::__allocated_ptr<std::allocator<std::_List_node<char*> > >::~__allocated_ptr()'
   [A] 'method void std::__allocated_ptr<std::allocator<std::_List_node<coibuffer*> > >::__allocated_ptr(std::allocator<std::_List_node<coibuffer*> >&, std::__allocated_ptr<std::allocator<std::_List_node<coibuffer*> > >::pointer)'
   [A] 'method std::__allocated_ptr<std::allocator<std::_List_node<coibuffer*> > >& std::__allocated_ptr<std::allocator<std::_List_node<coibuffer*> > >::operator=()'
-  [A] 'method std::__allocated_ptr<std::allocator<std::_List_node<coibuffer*> > >::~__allocated_ptr(int)'
+  [A] 'method std::__allocated_ptr<std::allocator<std::_List_node<coibuffer*> > >::~__allocated_ptr()'
   [A] 'method char** std::__copy_move<false, false, std::bidirectional_iterator_tag>::__copy_m<std::_List_iterator<char*>, char**>(std::_List_iterator<char*>, char**)'
   [A] 'method const VarTable::Entry** std::__copy_move<true, false, std::random_access_iterator_tag>::__copy_m<std::move_iterator<const VarTable::Entry**>, const VarTable::Entry**>(std::move_iterator<const VarTable::Entry**>, const VarTable::Entry**)'
   [A] 'function char** std::__copy_move_a2<false, std::_List_iterator<char*>, char**>(std::_List_iterator<char*>, std::_List_iterator<char*>, char**)'
@@ -770,7 +770,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method void std::__cxx11::_List_base<DynLib, std::allocator<DynLib> >::_M_init()'
   [A] 'method void std::__cxx11::_List_base<DynLib, std::allocator<DynLib> >::_M_put_node(__gnu_cxx::__alloc_traits<std::allocator<std::_List_node<DynLib> > >::pointer)'
   [A] 'method void std::__cxx11::_List_base<DynLib, std::allocator<DynLib> >::_M_set_size(std::size_t)'
-  [A] 'method std::__cxx11::_List_base<DynLib, std::allocator<DynLib> >::~_List_base(int)'
+  [A] 'method std::__cxx11::_List_base<DynLib, std::allocator<DynLib> >::~_List_base()'
   [A] 'method void std::__cxx11::_List_base<MyoTable, std::allocator<MyoTable> >::_List_base()'
   [A] 'method std::__cxx11::_List_base<MyoTable, std::allocator<MyoTable> >::_List_impl::_List_impl()'
   [A] 'method void std::__cxx11::_List_base<MyoTable, std::allocator<MyoTable> >::_M_clear()'
@@ -780,7 +780,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method void std::__cxx11::_List_base<MyoTable, std::allocator<MyoTable> >::_M_init()'
   [A] 'method void std::__cxx11::_List_base<MyoTable, std::allocator<MyoTable> >::_M_put_node(__gnu_cxx::__alloc_traits<std::allocator<std::_List_node<MyoTable> > >::pointer)'
   [A] 'method void std::__cxx11::_List_base<MyoTable, std::allocator<MyoTable> >::_M_set_size(std::size_t)'
-  [A] 'method std::__cxx11::_List_base<MyoTable, std::allocator<MyoTable> >::~_List_base(int)'
+  [A] 'method std::__cxx11::_List_base<MyoTable, std::allocator<MyoTable> >::~_List_base()'
   [A] 'method void std::__cxx11::_List_base<PersistData, std::allocator<PersistData> >::_List_base()'
   [A] 'method std::__cxx11::_List_base<PersistData, std::allocator<PersistData> >::_List_impl::_List_impl()'
   [A] 'method void std::__cxx11::_List_base<PersistData, std::allocator<PersistData> >::_M_clear()'
@@ -791,7 +791,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method void std::__cxx11::_List_base<PersistData, std::allocator<PersistData> >::_M_init()'
   [A] 'method void std::__cxx11::_List_base<PersistData, std::allocator<PersistData> >::_M_put_node(__gnu_cxx::__alloc_traits<std::allocator<std::_List_node<PersistData> > >::pointer)'
   [A] 'method void std::__cxx11::_List_base<PersistData, std::allocator<PersistData> >::_M_set_size(std::size_t)'
-  [A] 'method std::__cxx11::_List_base<PersistData, std::allocator<PersistData> >::~_List_base(int)'
+  [A] 'method std::__cxx11::_List_base<PersistData, std::allocator<PersistData> >::~_List_base()'
   [A] 'method void std::__cxx11::_List_base<PtrData*, std::allocator<PtrData*> >::_List_base()'
   [A] 'method std::__cxx11::_List_base<PtrData*, std::allocator<PtrData*> >::_List_impl::_List_impl()'
   [A] 'method void std::__cxx11::_List_base<PtrData*, std::allocator<PtrData*> >::_M_clear()'
@@ -802,7 +802,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method std::size_t std::__cxx11::_List_base<PtrData*, std::allocator<PtrData*> >::_M_node_count() const'
   [A] 'method void std::__cxx11::_List_base<PtrData*, std::allocator<PtrData*> >::_M_put_node(__gnu_cxx::__alloc_traits<std::allocator<std::_List_node<PtrData*> > >::pointer)'
   [A] 'method void std::__cxx11::_List_base<PtrData*, std::allocator<PtrData*> >::_M_set_size(std::size_t)'
-  [A] 'method std::__cxx11::_List_base<PtrData*, std::allocator<PtrData*> >::~_List_base(int)'
+  [A] 'method std::__cxx11::_List_base<PtrData*, std::allocator<PtrData*> >::~_List_base()'
   [A] 'method void std::__cxx11::_List_base<TargetImage, std::allocator<TargetImage> >::_List_base()'
   [A] 'method std::__cxx11::_List_base<TargetImage, std::allocator<TargetImage> >::_List_impl::_List_impl()'
   [A] 'method void std::__cxx11::_List_base<TargetImage, std::allocator<TargetImage> >::_M_clear()'
@@ -812,7 +812,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method void std::__cxx11::_List_base<TargetImage, std::allocator<TargetImage> >::_M_init()'
   [A] 'method void std::__cxx11::_List_base<TargetImage, std::allocator<TargetImage> >::_M_put_node(__gnu_cxx::__alloc_traits<std::allocator<std::_List_node<TargetImage> > >::pointer)'
   [A] 'method void std::__cxx11::_List_base<TargetImage, std::allocator<TargetImage> >::_M_set_size(std::size_t)'
-  [A] 'method std::__cxx11::_List_base<TargetImage, std::allocator<TargetImage> >::~_List_base(int)'
+  [A] 'method std::__cxx11::_List_base<TargetImage, std::allocator<TargetImage> >::~_List_base()'
   [A] 'method void std::__cxx11::_List_base<char*, std::allocator<char*> >::_List_base()'
   [A] 'method std::__cxx11::_List_base<char*, std::allocator<char*> >::_List_impl::_List_impl()'
   [A] 'method void std::__cxx11::_List_base<char*, std::allocator<char*> >::_M_clear()'
@@ -823,7 +823,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method std::size_t std::__cxx11::_List_base<char*, std::allocator<char*> >::_M_node_count() const'
   [A] 'method void std::__cxx11::_List_base<char*, std::allocator<char*> >::_M_put_node(__gnu_cxx::__alloc_traits<std::allocator<std::_List_node<char*> > >::pointer)'
   [A] 'method void std::__cxx11::_List_base<char*, std::allocator<char*> >::_M_set_size(std::size_t)'
-  [A] 'method std::__cxx11::_List_base<char*, std::allocator<char*> >::~_List_base(int)'
+  [A] 'method std::__cxx11::_List_base<char*, std::allocator<char*> >::~_List_base()'
   [A] 'method void std::__cxx11::_List_base<coibuffer*, std::allocator<coibuffer*> >::_List_base()'
   [A] 'method std::__cxx11::_List_base<coibuffer*, std::allocator<coibuffer*> >::_List_impl::_List_impl()'
   [A] 'method void std::__cxx11::_List_base<coibuffer*, std::allocator<coibuffer*> >::_M_clear()'
@@ -834,7 +834,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method std::size_t std::__cxx11::_List_base<coibuffer*, std::allocator<coibuffer*> >::_M_node_count() const'
   [A] 'method void std::__cxx11::_List_base<coibuffer*, std::allocator<coibuffer*> >::_M_put_node(__gnu_cxx::__alloc_traits<std::allocator<std::_List_node<coibuffer*> > >::pointer)'
   [A] 'method void std::__cxx11::_List_base<coibuffer*, std::allocator<coibuffer*> >::_M_set_size(std::size_t)'
-  [A] 'method std::__cxx11::_List_base<coibuffer*, std::allocator<coibuffer*> >::~_List_base(int)'
+  [A] 'method std::__cxx11::_List_base<coibuffer*, std::allocator<coibuffer*> >::~_List_base()'
   [A] 'method std::__cxx11::list<DynLib, std::allocator<DynLib> >::_Node* std::__cxx11::list<DynLib, std::allocator<DynLib> >::_M_create_node<DynLib>(DynLib&)'
   [A] 'method void std::__cxx11::list<DynLib, std::allocator<DynLib> >::_M_erase(std::__cxx11::list<DynLib, std::allocator<DynLib> >::iterator)'
   [A] 'method void std::__cxx11::list<DynLib, std::allocator<DynLib> >::_M_insert<DynLib>(std::__cxx11::list<DynLib, std::allocator<DynLib> >::iterator, DynLib&)'
@@ -924,30 +924,30 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'function const VarTable::Entry** std::__uninitialized_move_if_noexcept_a<const VarTable::Entry**, const VarTable::Entry**, std::allocator<const VarTable::Entry*> >(const VarTable::Entry**, const VarTable::Entry**, const VarTable::Entry**, std::allocator<const VarTable::Entry*>&)'
   [A] 'method void std::allocator<const VarTable::Entry*>::allocator()'
   [A] 'method void std::allocator<const VarTable::Entry*>::allocator(const std::allocator<const VarTable::Entry*>&)'
-  [A] 'method std::allocator<const VarTable::Entry*>::~allocator(int)'
+  [A] 'method std::allocator<const VarTable::Entry*>::~allocator()'
   [A] 'method void std::allocator<std::_List_node<DynLib> >::allocator()'
-  [A] 'method std::allocator<std::_List_node<DynLib> >::~allocator(int)'
+  [A] 'method std::allocator<std::_List_node<DynLib> >::~allocator()'
   [A] 'method void std::allocator<std::_List_node<MyoTable> >::allocator()'
-  [A] 'method std::allocator<std::_List_node<MyoTable> >::~allocator(int)'
+  [A] 'method std::allocator<std::_List_node<MyoTable> >::~allocator()'
   [A] 'method void std::allocator<std::_List_node<PersistData> >::allocator()'
-  [A] 'method std::allocator<std::_List_node<PersistData> >::~allocator(int)'
+  [A] 'method std::allocator<std::_List_node<PersistData> >::~allocator()'
   [A] 'method void std::allocator<std::_List_node<PtrData*> >::allocator()'
-  [A] 'method std::allocator<std::_List_node<PtrData*> >::~allocator(int)'
+  [A] 'method std::allocator<std::_List_node<PtrData*> >::~allocator()'
   [A] 'method void std::allocator<std::_List_node<TargetImage> >::allocator()'
-  [A] 'method std::allocator<std::_List_node<TargetImage> >::~allocator(int)'
+  [A] 'method std::allocator<std::_List_node<TargetImage> >::~allocator()'
   [A] 'method void std::allocator<std::_List_node<char*> >::allocator()'
-  [A] 'method std::allocator<std::_List_node<char*> >::~allocator(int)'
+  [A] 'method std::allocator<std::_List_node<char*> >::~allocator()'
   [A] 'method void std::allocator<std::_List_node<coibuffer*> >::allocator()'
-  [A] 'method std::allocator<std::_List_node<coibuffer*> >::~allocator(int)'
+  [A] 'method std::allocator<std::_List_node<coibuffer*> >::~allocator()'
   [A] 'method void std::allocator<std::_Rb_tree_node<AutoData> >::allocator()'
-  [A] 'method std::allocator<std::_Rb_tree_node<AutoData> >::~allocator(int)'
+  [A] 'method std::allocator<std::_Rb_tree_node<AutoData> >::~allocator()'
   [A] 'method void std::allocator<std::_Rb_tree_node<PtrData> >::allocator()'
-  [A] 'method std::allocator<std::_Rb_tree_node<PtrData> >::~allocator(int)'
+  [A] 'method std::allocator<std::_Rb_tree_node<PtrData> >::~allocator()'
   [A] 'method void std::allocator<std::_Rb_tree_node<std::pair<long unsigned int const, Stream*> > >::allocator()'
   [A] 'method void std::allocator<std::_Rb_tree_node<std::pair<long unsigned int const, Stream*> > >::allocator(const std::allocator<std::_Rb_tree_node<std::pair<long unsigned int const, Stream*> > >&)'
-  [A] 'method std::allocator<std::_Rb_tree_node<std::pair<long unsigned int const, Stream*> > >::~allocator(int)'
+  [A] 'method std::allocator<std::_Rb_tree_node<std::pair<long unsigned int const, Stream*> > >::~allocator()'
   [A] 'method void std::allocator<std::_Rb_tree_node<std::pair<void const* const, OffloadDescriptor*> > >::allocator()'
-  [A] 'method std::allocator<std::_Rb_tree_node<std::pair<void const* const, OffloadDescriptor*> > >::~allocator(int)'
+  [A] 'method std::allocator<std::_Rb_tree_node<std::pair<void const* const, OffloadDescriptor*> > >::~allocator()'
   [A] 'method void std::allocator_traits<std::allocator<const VarTable::Entry*> >::_S_construct<const VarTable::Entry*, const VarTable::Entry*>(const VarTable::Entry**, const VarTable::Entry*&)'
   [A] 'method void std::allocator_traits<std::allocator<const VarTable::Entry*> >::_S_destroy<std::allocator<const VarTable::Entry*>, const VarTable::Entry*>(const VarTable::Entry**, int)'
   [A] 'method __gnu_cxx::new_allocator<const VarTable::Entry*>::size_type std::allocator_traits<std::allocator<const VarTable::Entry*> >::_S_max_size<const std::allocator<const VarTable::Entry*> >(int)'
@@ -1035,7 +1035,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method std::bitset<1024ul>::reference std::bitset<1024ul>::operator[](std::size_t)'
   [A] 'method bool std::bitset<1024ul>::reference::operator bool() const'
   [A] 'method std::bitset<1024ul>::reference::reference(std::bitset<1024ul>&, std::size_t)'
-  [A] 'method std::bitset<1024ul>::reference::~reference(int)'
+  [A] 'method std::bitset<1024ul>::reference::~reference()'
   [A] 'method std::bitset<1024ul>& std::bitset<1024ul>::reset()'
   [A] 'method std::bitset<1024ul>& std::bitset<1024ul>::set(std::size_t, bool)'
   [A] 'method bool std::bitset<1024ul>::test(std::size_t) const'
@@ -1045,7 +1045,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method std::bitset<128ul>::reference std::bitset<128ul>::operator[](std::size_t)'
   [A] 'method bool std::bitset<128ul>::reference::operator bool() const'
   [A] 'method std::bitset<128ul>::reference::reference(std::bitset<128ul>&, std::size_t)'
-  [A] 'method std::bitset<128ul>::reference::~reference(int)'
+  [A] 'method std::bitset<128ul>::reference::~reference()'
   [A] 'method std::bitset<128ul>& std::bitset<128ul>::reset()'
   [A] 'method std::bitset<128ul>& std::bitset<128ul>::set(std::size_t, bool)'
   [A] 'function char** std::copy<std::_List_iterator<char*>, char**>(std::_List_iterator<char*>, std::_List_iterator<char*>, char**)'
@@ -1170,127 +1170,129 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::size_type std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::max_size() const'
   [A] 'method std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::size_type std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::size() const'
   [A] 'method void std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::vector<Iterator, void>(Iterator, Iterator, const std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::allocator_type&)'
-  [A] 'method std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::~vector(int)'
+  [A] 'method std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::~vector()'
 
 6 functions with some indirect sub-type change:
 
   [C] 'method void Engine::fini_process(bool)' has some indirect sub-type changes:
-    implicit parameter 0 of type 'Engine*' has sub-type changes:
-      in pointed to type 'struct Engine':
-        type size changed from 2752 to 5504 (in bits)
-        1 data member deletion:
-          'mutex_t Engine::m_ptr_lock', at offset 1344 (in bits)
-        7 data member insertions:
-          'PtrDataTable Engine::m_targetptr_set', at offset 1664 (in bits)
-          'StreamMap Engine::m_stream_map', at offset 3072 (in bits)
-          'mutex_t Engine::m_stream_lock', at offset 3456 (in bits)
-          'int Engine::m_num_cores', at offset 3776 (in bits)
-          'int Engine::m_num_threads', at offset 3808 (in bits)
-          'std::bitset<1024ul> Engine::m_cpus', at offset 3840 (in bits)
-          'DynLibList Engine::m_dyn_libs', at offset 4864 (in bits)
-        4 data member changes:
-          type of 'Engine::PtrSet Engine::m_ptr_set' changed:
-            entity changed from 'typedef Engine::PtrSet' to compatible type 'class PtrDataTable'
-              type name changed from 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >' to 'PtrDataTable'
-              type size changed from 384 to 704 (in bits)
-              1 data member insertion:
-                'mutex_t PtrDataTable::m_ptr_lock', at offset 384 (in bits)
-              1 data member change:
-                type of 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_Rep_type std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_M_t' changed:
-                  typedef name changed from std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_Rep_type to PtrDataTable::PtrSet
-                  underlying type 'class std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >' changed:
-                    type name changed from 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >' to 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >'
-                    type size hasn't changed
-                    1 data member change:
-                      type of 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true> std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_M_impl' changed:
-                        entity changed from 'struct std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>' to compatible type 'typedef std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_Rep_type'
-                          type name changed from 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>' to 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >'
-                          type size hasn't changed
-                          1 base class deletion:
-                            class std::allocator<std::_Rb_tree_node<PtrData> >
-                          2 data member deletions:
-                            'std::_Rb_tree_node_base std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_header', at offset 64 (in bits)
-                            'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::size_type std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_node_count', at offset 320 (in bits)
-                          1 data member change:
-                            type of 'std::less<PtrData> std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_key_compare' changed:
-                              type name changed from 'std::less<PtrData>' to 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>'
-                              type size changed from 8 to 384 (in bits)
-                              1 base class deletion:
-                                struct std::binary_function<PtrData, PtrData, bool>
-                              1 base class insertion:
-                                class std::allocator<std::_Rb_tree_node<PtrData> >
-                              3 data member insertions:
-                                'std::less<PtrData> std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_key_compare', at offset 0 (in bits)
-                                'std::_Rb_tree_node_base std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_header', at offset 64 (in bits)
-                                'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::size_type std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_node_count', at offset 320 (in bits)
-                            and name of 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_key_compare' changed to 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_M_impl'
-                      and name of 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_M_impl' changed to 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_M_t'
-                and name of 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_M_t' changed to 'PtrDataTable::list'
-          'Engine::SignalMap Engine::m_signal_map' offset changed from 1664 to 2368 (in bits) (by +704 bits)
-          'mutex_t Engine::m_signal_lock' offset changed from 2048 to 2752 (in bits) (by +704 bits)
-          type of 'coifunction* Engine::m_funcs[6]' changed:
-            type name changed from 'coifunction*[6]' to 'coifunction*[7]'
-            array type size changed from 384 to 448
-            array type subrange 1 changed length from 6 to 7
-          and offset changed from 2368 to 5056 (in bits) (by +2688 bits)
+    implicit parameter 0 of type 'Engine* const' has sub-type changes:
+      in unqualified underlying type 'Engine*':
+        in pointed to type 'struct Engine':
+          type size changed from 2752 to 5504 (in bits)
+          1 data member deletion:
+            'mutex_t Engine::m_ptr_lock', at offset 1344 (in bits)
+          7 data member insertions:
+            'PtrDataTable Engine::m_targetptr_set', at offset 1664 (in bits)
+            'StreamMap Engine::m_stream_map', at offset 3072 (in bits)
+            'mutex_t Engine::m_stream_lock', at offset 3456 (in bits)
+            'int Engine::m_num_cores', at offset 3776 (in bits)
+            'int Engine::m_num_threads', at offset 3808 (in bits)
+            'std::bitset<1024ul> Engine::m_cpus', at offset 3840 (in bits)
+            'DynLibList Engine::m_dyn_libs', at offset 4864 (in bits)
+          4 data member changes:
+            type of 'Engine::PtrSet Engine::m_ptr_set' changed:
+              entity changed from 'typedef Engine::PtrSet' to compatible type 'class PtrDataTable'
+                type name changed from 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >' to 'PtrDataTable'
+                type size changed from 384 to 704 (in bits)
+                1 data member insertion:
+                  'mutex_t PtrDataTable::m_ptr_lock', at offset 384 (in bits)
+                1 data member change:
+                  type of 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_Rep_type std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_M_t' changed:
+                    typedef name changed from std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_Rep_type to PtrDataTable::PtrSet
+                    underlying type 'class std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >' changed:
+                      type name changed from 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >' to 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >'
+                      type size hasn't changed
+                      1 data member change:
+                        type of 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true> std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_M_impl' changed:
+                          entity changed from 'struct std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>' to compatible type 'typedef std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_Rep_type'
+                            type name changed from 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>' to 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >'
+                            type size hasn't changed
+                            1 base class deletion:
+                              class std::allocator<std::_Rb_tree_node<PtrData> >
+                            2 data member deletions:
+                              'std::_Rb_tree_node_base std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_header', at offset 64 (in bits)
+                              'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::size_type std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_node_count', at offset 320 (in bits)
+                            1 data member change:
+                              type of 'std::less<PtrData> std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_key_compare' changed:
+                                type name changed from 'std::less<PtrData>' to 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>'
+                                type size changed from 8 to 384 (in bits)
+                                1 base class deletion:
+                                  struct std::binary_function<PtrData, PtrData, bool>
+                                1 base class insertion:
+                                  class std::allocator<std::_Rb_tree_node<PtrData> >
+                                3 data member insertions:
+                                  'std::less<PtrData> std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_key_compare', at offset 0 (in bits)
+                                  'std::_Rb_tree_node_base std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_header', at offset 64 (in bits)
+                                  'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::size_type std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_node_count', at offset 320 (in bits)
+                              and name of 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>::_M_key_compare' changed to 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_M_impl'
+                        and name of 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_M_impl' changed to 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_M_t'
+                  and name of 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_M_t' changed to 'PtrDataTable::list'
+            'Engine::SignalMap Engine::m_signal_map' offset changed from 1664 to 2368 (in bits) (by +704 bits)
+            'mutex_t Engine::m_signal_lock' offset changed from 2048 to 2752 (in bits) (by +704 bits)
+            type of 'coifunction* Engine::m_funcs[6]' changed:
+              type name changed from 'coifunction*[6]' to 'coifunction*[7]'
+              array type size changed from 384 to 448
+              array type subrange 1 changed length from 6 to 7
+            and offset changed from 2368 to 5056 (in bits) (by +2688 bits)
 
   [C] 'method void OffloadDescriptor::cleanup()' has some indirect sub-type changes:
-    implicit parameter 0 of type 'OffloadDescriptor*' has sub-type changes:
-      in pointed to type 'struct OffloadDescriptor':
-        type size changed from 2240 to 2368 (in bits)
-        9 data member insertions:
-          'bool OffloadDescriptor::m_wait_all_devices', at offset 320 (in bits)
-          'uint32_t OffloadDescriptor::m_in_deps_allocated', at offset 1824 (in bits)
-          'uint32_t OffloadDescriptor::m_out_deps_allocated', at offset 1952 (in bits)
-          '_Offload_stream OffloadDescriptor::m_stream', at offset 1984 (in bits)
-          'bool OffloadDescriptor::m_initial_need_runfunction', at offset 2248 (in bits)
-          'bool OffloadDescriptor::m_out_with_preallocated', at offset 2256 (in bits)
-          'bool OffloadDescriptor::m_preallocated_alloc', at offset 2264 (in bits)
-          'bool OffloadDescriptor::m_traceback_called', at offset 2272 (in bits)
-          'OffloadDescriptor::OmpAsyncLastEventType OffloadDescriptor::m_omp_async_last_event_type', at offset 2304 (in bits)
-        8 data member changes (2 filtered):
-          'bool OffloadDescriptor::m_is_mandatory' offset changed from 320 to 328 (in bits) (by +8 bits)
-          'const bool OffloadDescriptor::m_is_openmp' offset changed from 328 to 336 (in bits) (by +8 bits)
-          type of 'VarDesc* OffloadDescriptor::m_vars' changed:
-            in pointed to type 'struct VarDesc':
-              type size hasn't changed
-              1 data member change:
-                type of 'union {struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst;}; uint32_t bits;} VarDesc::flags' changed:
-                  type name changed from 'VarDesc::__anonymous_union__2' to 'varDescFlags'
-                  type size hasn't changed
-                  1 data member changes (1 filtered):
-                    anonymous data member at offset 0 (in bits) changed from:
-                      struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst;}
-                    to:
-                      struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t targetptr; uint32_t preallocated; uint32_t is_pointer; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst; uint32_t always_copy; uint32_t always_delete; uint32_t pin;}
-          type of 'OffloadDescriptor::VarExtra* OffloadDescriptor::m_vars_extra' changed:
-            in pointed to type 'struct OffloadDescriptor::VarExtra':
-              type size changed from 576 to 640 (in bits)
-              2 data member insertions:
-                'void* OffloadDescriptor::VarExtra::alloc', at offset 320 (in bits)
-                'OffloadDescriptor::OmpAsyncLastEventType OffloadDescriptor::VarExtra::omp_last_event_type', at offset 608 (in bits)
-              4 data member changes (3 filtered):
-                'CeanReadRanges* OffloadDescriptor::VarExtra::read_rng_src' offset changed from 320 to 384 (in bits) (by +64 bits)
-                type of 'CeanReadRanges* OffloadDescriptor::VarExtra::read_rng_dst' changed:
-                  in pointed to type 'struct CeanReadRanges':
-                    type size changed from 512 to 576 (in bits)
-                    1 data member insertion:
-                      'Arr_Desc* CeanReadRanges::arr_desc', at offset 0 (in bits)
-                    7 data member changes:
-                      'void* CeanReadRanges::ptr' offset changed from 0 to 64 (in bits) (by +64 bits)
-                      'int64_t CeanReadRanges::current_number' offset changed from 64 to 128 (in bits) (by +64 bits)
-                      'int64_t CeanReadRanges::range_max_number' offset changed from 128 to 192 (in bits) (by +64 bits)
-                      'int64_t CeanReadRanges::range_size' offset changed from 192 to 256 (in bits) (by +64 bits)
-                      'int CeanReadRanges::last_noncont_ind' offset changed from 256 to 320 (in bits) (by +64 bits)
-                      'int64_t CeanReadRanges::init_offset' offset changed from 320 to 384 (in bits) (by +64 bits)
-                      'CeanReadDim CeanReadRanges::Dim[1]' offset changed from 384 to 448 (in bits) (by +64 bits)
-                and offset changed from 384 to 448 (in bits) (by +64 bits)
-                'int64_t OffloadDescriptor::VarExtra::ptr_arr_offset' offset changed from 448 to 512 (in bits) (by +64 bits)
-                'bool OffloadDescriptor::VarExtra::is_arr_ptr_el' offset changed from 512 to 576 (in bits) (by +64 bits)
-          'OffloadHostTimerData* OffloadDescriptor::m_timer_data' offset changed from 1984 to 2048 (in bits) (by +64 bits)
-          'uint64_t OffloadDescriptor::m_in_datalen' offset changed from 2048 to 2112 (in bits) (by +64 bits)
-          'uint64_t OffloadDescriptor::m_out_datalen' offset changed from 2112 to 2176 (in bits) (by +64 bits)
-          'bool OffloadDescriptor::m_need_runfunction' offset changed from 2176 to 2240 (in bits) (by +64 bits)
+    implicit parameter 0 of type 'OffloadDescriptor* const' has sub-type changes:
+      in unqualified underlying type 'OffloadDescriptor*':
+        in pointed to type 'struct OffloadDescriptor':
+          type size changed from 2240 to 2368 (in bits)
+          9 data member insertions:
+            'bool OffloadDescriptor::m_wait_all_devices', at offset 320 (in bits)
+            'uint32_t OffloadDescriptor::m_in_deps_allocated', at offset 1824 (in bits)
+            'uint32_t OffloadDescriptor::m_out_deps_allocated', at offset 1952 (in bits)
+            '_Offload_stream OffloadDescriptor::m_stream', at offset 1984 (in bits)
+            'bool OffloadDescriptor::m_initial_need_runfunction', at offset 2248 (in bits)
+            'bool OffloadDescriptor::m_out_with_preallocated', at offset 2256 (in bits)
+            'bool OffloadDescriptor::m_preallocated_alloc', at offset 2264 (in bits)
+            'bool OffloadDescriptor::m_traceback_called', at offset 2272 (in bits)
+            'OffloadDescriptor::OmpAsyncLastEventType OffloadDescriptor::m_omp_async_last_event_type', at offset 2304 (in bits)
+          8 data member changes (2 filtered):
+            'bool OffloadDescriptor::m_is_mandatory' offset changed from 320 to 328 (in bits) (by +8 bits)
+            'const bool OffloadDescriptor::m_is_openmp' offset changed from 328 to 336 (in bits) (by +8 bits)
+            type of 'VarDesc* OffloadDescriptor::m_vars' changed:
+              in pointed to type 'struct VarDesc':
+                type size hasn't changed
+                1 data member change:
+                  type of 'union {struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst;}; uint32_t bits;} VarDesc::flags' changed:
+                    type name changed from 'VarDesc::__anonymous_union__2' to 'varDescFlags'
+                    type size hasn't changed
+                    1 data member changes (1 filtered):
+                      anonymous data member at offset 0 (in bits) changed from:
+                        struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst;}
+                      to:
+                        struct {uint32_t is_static; uint32_t is_static_dstn; uint32_t has_length; uint32_t is_stack_buf; uint32_t targetptr; uint32_t preallocated; uint32_t is_pointer; uint32_t sink_addr; uint32_t alloc_disp; uint32_t is_noncont_src; uint32_t is_noncont_dst; uint32_t always_copy; uint32_t always_delete; uint32_t pin;}
+            type of 'OffloadDescriptor::VarExtra* OffloadDescriptor::m_vars_extra' changed:
+              in pointed to type 'struct OffloadDescriptor::VarExtra':
+                type size changed from 576 to 640 (in bits)
+                2 data member insertions:
+                  'void* OffloadDescriptor::VarExtra::alloc', at offset 320 (in bits)
+                  'OffloadDescriptor::OmpAsyncLastEventType OffloadDescriptor::VarExtra::omp_last_event_type', at offset 608 (in bits)
+                4 data member changes (3 filtered):
+                  'CeanReadRanges* OffloadDescriptor::VarExtra::read_rng_src' offset changed from 320 to 384 (in bits) (by +64 bits)
+                  type of 'CeanReadRanges* OffloadDescriptor::VarExtra::read_rng_dst' changed:
+                    in pointed to type 'struct CeanReadRanges':
+                      type size changed from 512 to 576 (in bits)
+                      1 data member insertion:
+                        'Arr_Desc* CeanReadRanges::arr_desc', at offset 0 (in bits)
+                      7 data member changes:
+                        'void* CeanReadRanges::ptr' offset changed from 0 to 64 (in bits) (by +64 bits)
+                        'int64_t CeanReadRanges::current_number' offset changed from 64 to 128 (in bits) (by +64 bits)
+                        'int64_t CeanReadRanges::range_max_number' offset changed from 128 to 192 (in bits) (by +64 bits)
+                        'int64_t CeanReadRanges::range_size' offset changed from 192 to 256 (in bits) (by +64 bits)
+                        'int CeanReadRanges::last_noncont_ind' offset changed from 256 to 320 (in bits) (by +64 bits)
+                        'int64_t CeanReadRanges::init_offset' offset changed from 320 to 384 (in bits) (by +64 bits)
+                        'CeanReadDim CeanReadRanges::Dim[1]' offset changed from 384 to 448 (in bits) (by +64 bits)
+                  and offset changed from 384 to 448 (in bits) (by +64 bits)
+                  'int64_t OffloadDescriptor::VarExtra::ptr_arr_offset' offset changed from 448 to 512 (in bits) (by +64 bits)
+                  'bool OffloadDescriptor::VarExtra::is_arr_ptr_el' offset changed from 512 to 576 (in bits) (by +64 bits)
+            'OffloadHostTimerData* OffloadDescriptor::m_timer_data' offset changed from 1984 to 2048 (in bits) (by +64 bits)
+            'uint64_t OffloadDescriptor::m_in_datalen' offset changed from 2048 to 2112 (in bits) (by +64 bits)
+            'uint64_t OffloadDescriptor::m_out_datalen' offset changed from 2112 to 2176 (in bits) (by +64 bits)
+            'bool OffloadDescriptor::m_need_runfunction' offset changed from 2176 to 2240 (in bits) (by +64 bits)
 
   [C] 'method void OffloadDescriptor::report_coi_error(error_types, COIRESULT)' has some indirect sub-type changes:
     parameter 1 of type 'typedef error_types' changed:

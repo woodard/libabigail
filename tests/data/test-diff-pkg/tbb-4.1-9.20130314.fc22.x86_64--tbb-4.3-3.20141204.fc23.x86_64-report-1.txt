@@ -1,5 +1,5 @@
 ================ changes of 'libtbb.so.2'===============
-  Functions changes summary: 0 Removed, 8 Changed (99 filtered out), 17 Added functions
+  Functions changes summary: 0 Removed, 9 Changed (101 filtered out), 17 Added functions
   Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
   Function symbols changes summary: 0 Removed, 0 Added function symbol not referenced by debug info
   Variable symbols changes summary: 3 Removed, 0 Added variable symbols not referenced by debug info
@@ -24,24 +24,30 @@
     [A] 'method void tbb::internal::concurrent_queue_base_v8::move_content(tbb::internal::concurrent_queue_base_v8&)'    {_ZN3tbb8internal24concurrent_queue_base_v812move_contentERS1_}
     [A] 'method void tbb::task_group_context::capture_fp_settings()'    {_ZN3tbb18task_group_context19capture_fp_settingsEv}
 
-  8 functions with some indirect sub-type change:
+  9 functions with some indirect sub-type change:
 
-    [C] 'method tbb::task& tbb::internal::allocate_root_with_context_proxy::allocate(std::size_t) const' at task.h:135:1 has some indirect sub-type changes:
-      implicit parameter 0 of type 'const tbb::internal::allocate_root_with_context_proxy*' has sub-type changes:
-        in pointed to type 'const tbb::internal::allocate_root_with_context_proxy':
-          in unqualified underlying type 'class tbb::internal::allocate_root_with_context_proxy' at task.h:131:1:
-            type size hasn't changed
-            1 data member change:
-              type of 'tbb::task_group_context& tbb::internal::allocate_root_with_context_proxy::my_context' changed:
-                in referenced type 'class tbb::task_group_context' at task.h:302:1:
-                  type size hasn't changed
-                  1 data member insertion:
-                    'tbb::internal::cpu_ctl_env_space tbb::task_group_context::my_cpu_ctl_env', at offset 896 (in bits) at task.h:380:1
-                  1 data member changes (2 filtered):
-                    type of 'char tbb::task_group_context::_leading_padding[80]' changed:
-                      type name changed from 'char[80]' to 'char[72]'
-                      array type size changed from 640 to 576
-                      array type subrange 1 changed length from 80 to 72
+    [C] 'method tbb::task& tbb::internal::allocate_root_with_context_proxy::allocate(std::size_t) const' at task.cpp:66:1 has some indirect sub-type changes:
+      implicit parameter 0 of type 'const tbb::internal::allocate_root_with_context_proxy* const' has sub-type changes:
+        in unqualified underlying type 'const tbb::internal::allocate_root_with_context_proxy*':
+          in pointed to type 'const tbb::internal::allocate_root_with_context_proxy':
+            in unqualified underlying type 'class tbb::internal::allocate_root_with_context_proxy' at task.h:131:1:
+              type size hasn't changed
+              1 data member change:
+                type of 'tbb::task_group_context& tbb::internal::allocate_root_with_context_proxy::my_context' changed:
+                  in referenced type 'class tbb::task_group_context' at task.h:302:1:
+                    type size hasn't changed
+                    1 data member insertion:
+                      'tbb::internal::cpu_ctl_env_space tbb::task_group_context::my_cpu_ctl_env', at offset 896 (in bits) at task.h:380:1
+                    1 data member changes (2 filtered):
+                      type of 'char tbb::task_group_context::_leading_padding[80]' changed:
+                        type name changed from 'char[80]' to 'char[72]'
+                        array type size changed from 640 to 576
+                        array type subrange 1 changed length from 80 to 72
+
+    [C] 'method tbb::internal::concurrent_queue_iterator_base_v3::concurrent_queue_iterator_base_v3(const tbb::internal::concurrent_queue_base_v3&)' at concurrent_queue.cpp:622:1 has some indirect sub-type changes:
+      parameter 1 of type 'const tbb::internal::concurrent_queue_base_v3&' has sub-type changes:
+        in referenced type 'const tbb::internal::concurrent_queue_base_v3':
+          'const tbb::internal::concurrent_queue_base_v3' changed to 'const tbb::internal::concurrent_queue_base'
 
     [C] 'function void tbb::internal::throw_exception_v4(tbb::internal::exception_id)' at tbb_misc.cpp:119:1 has some indirect sub-type changes:
       parameter 1 of type 'enum tbb::internal::exception_id' has sub-type changes:
@@ -51,42 +57,47 @@
         1 enumerator change:
           'tbb::internal::exception_id::eid_max' from value '20' to '21' at tbb_exception.h:79:1
 
-    [C] 'method void tbb::mutex::internal_construct()' at mutex.h:218:1 has some indirect sub-type changes:
-      implicit parameter 0 of type 'tbb::mutex*' has sub-type changes:
-        in pointed to type 'class tbb::mutex' at mutex.h:40:1:
-          type size hasn't changed
-          1 base class insertion:
-            class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
+    [C] 'method void tbb::mutex::internal_construct()' at mutex.cpp:113:1 has some indirect sub-type changes:
+      implicit parameter 0 of type 'tbb::mutex* const' has sub-type changes:
+        in unqualified underlying type 'tbb::mutex*':
+          in pointed to type 'class tbb::mutex' at mutex.h:40:1:
+            type size hasn't changed
+            1 base class insertion:
+              class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
 
-    [C] 'method void tbb::queuing_mutex::internal_construct()' at queuing_mutex.h:106:1 has some indirect sub-type changes:
-      implicit parameter 0 of type 'tbb::queuing_mutex*' has sub-type changes:
-        in pointed to type 'class tbb::queuing_mutex' at queuing_mutex.h:45:1:
-          type size hasn't changed
-          1 base class insertion:
-            class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
+    [C] 'method void tbb::queuing_mutex::internal_construct()' at queuing_mutex.cpp:105:1 has some indirect sub-type changes:
+      implicit parameter 0 of type 'tbb::queuing_mutex* const' has sub-type changes:
+        in unqualified underlying type 'tbb::queuing_mutex*':
+          in pointed to type 'class tbb::queuing_mutex' at queuing_mutex.h:45:1:
+            type size hasn't changed
+            1 base class insertion:
+              class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
 
-    [C] 'method void tbb::queuing_rw_mutex::internal_construct()' at queuing_rw_mutex.h:146:1 has some indirect sub-type changes:
-      implicit parameter 0 of type 'tbb::queuing_rw_mutex*' has sub-type changes:
-        in pointed to type 'class tbb::queuing_rw_mutex' at queuing_rw_mutex.h:47:1:
-          type size hasn't changed
-          1 base class insertion:
-            class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
+    [C] 'method void tbb::queuing_rw_mutex::internal_construct()' at queuing_rw_mutex.cpp:491:1 has some indirect sub-type changes:
+      implicit parameter 0 of type 'tbb::queuing_rw_mutex* const' has sub-type changes:
+        in unqualified underlying type 'tbb::queuing_rw_mutex*':
+          in pointed to type 'class tbb::queuing_rw_mutex' at queuing_rw_mutex.h:47:1:
+            type size hasn't changed
+            1 base class insertion:
+              class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
 
-    [C] 'method void tbb::recursive_mutex::internal_construct()' at recursive_mutex.h:224:1 has some indirect sub-type changes:
-      implicit parameter 0 of type 'tbb::recursive_mutex*' has sub-type changes:
-        in pointed to type 'class tbb::recursive_mutex' at recursive_mutex.h:39:1:
-          type size hasn't changed
-          1 base class insertion:
-            class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
+    [C] 'method void tbb::recursive_mutex::internal_construct()' at recursive_mutex.cpp:97:1 has some indirect sub-type changes:
+      implicit parameter 0 of type 'tbb::recursive_mutex* const' has sub-type changes:
+        in unqualified underlying type 'tbb::recursive_mutex*':
+          in pointed to type 'class tbb::recursive_mutex' at recursive_mutex.h:39:1:
+            type size hasn't changed
+            1 base class insertion:
+              class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
 
-    [C] 'method void tbb::spin_mutex::internal_construct()' at spin_mutex.h:138:1 has some indirect sub-type changes:
-      implicit parameter 0 of type 'tbb::spin_mutex*' has sub-type changes:
-        in pointed to type 'class tbb::spin_mutex' at spin_mutex.h:40:1:
-          type size hasn't changed
-          1 base class insertion:
-            class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
+    [C] 'method void tbb::spin_mutex::internal_construct()' at spin_mutex.cpp:54:1 has some indirect sub-type changes:
+      implicit parameter 0 of type 'tbb::spin_mutex* const' has sub-type changes:
+        in unqualified underlying type 'tbb::spin_mutex*':
+          in pointed to type 'class tbb::spin_mutex' at spin_mutex.h:40:1:
+            type size hasn't changed
+            1 base class insertion:
+              class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
 
-    [C] 'method void tbb::spin_rw_mutex::internal_acquire_reader()' at spin_rw_mutex_v2.h:44:1 has some indirect sub-type changes:
+    [C] 'method void tbb::spin_rw_mutex::internal_acquire_reader()' at spin_rw_mutex_v2.cpp:67:1 has some indirect sub-type changes:
       parameter 1 of type 'tbb::spin_rw_mutex*' has sub-type changes:
         in pointed to type 'typedef tbb::spin_rw_mutex' at spin_rw_mutex.h:38:1:
           underlying type 'class tbb::spin_rw_mutex_v3' at spin_rw_mutex.h:43:1 changed:

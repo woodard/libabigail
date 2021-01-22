@@ -13317,13 +13317,22 @@ finish_member_function_reading(Dwarf_Die*		  die,
       first_parm = f->get_parameters()[0];
 
     bool is_artificial = first_parm && first_parm->get_is_artificial();
-    pointer_type_def_sptr this_ptr_type;
-    type_base_sptr other_klass;
+    type_base_sptr this_ptr_type, other_klass;
 
     if (is_artificial)
-      this_ptr_type = is_pointer_type(first_parm->get_type());
-    if (this_ptr_type)
-      other_klass = this_ptr_type->get_pointed_to_type();
+      this_ptr_type = first_parm->get_type();
+
+    // Sometimes, the type of the "this" pointer is "const class_type* const".
+    //
+    // Meaning that the "this pointer" itself is const qualified.  So
+    // let's get the underlying underlying non-qualified pointer.
+    if (qualified_type_def_sptr q = is_qualified_type(this_ptr_type))
+      this_ptr_type = q->get_underlying_type();
+
+    // Now, get the pointed-to type.
+    if (pointer_type_def_sptr p = is_pointer_type(this_ptr_type))
+      other_klass = p->get_pointed_to_type();
+
     // Sometimes, other_klass can be qualified; e.g, volatile.  In
     // that case, let's get the unqualified version of other_klass.
     if (qualified_type_def_sptr q = is_qualified_type(other_klass))
@@ -13334,6 +13343,17 @@ finish_member_function_reading(Dwarf_Die*		  die,
       ;
     else
       is_static = true;
+
+    if (is_static)
+      {
+	// If we are looking at a DWARF version that is high enough
+	// for the DW_AT_object_pointer attribute to be present, let's
+	// see if it's present.  If it is, then the current member
+	// function is not static.
+	Dwarf_Die object_pointer_die;
+	if (die_has_object_pointer(die, object_pointer_die))
+	  is_static = false;
+      }
   }
   set_member_access_specifier(m, access);
   if (vindex != -1)
@@ -16365,6 +16385,44 @@ maybe_set_member_type_access_specifier(decl_base_sptr member_type_declaration,
     }
 }
 
+/// This function tests if a given function which might be intented to
+/// be added to a class scope (to become a member function) should be
+/// dropped on the floor instead and not be added to the class.
+///
+/// This is a subroutine of build_ir_node_from_die.
+///
+/// @param fn the function to consider.
+///
+/// @param scope the scope the function is intended to be added
+/// to. This might be of class type or not.
+///
+/// @param fn_die the DWARF die of @p fn.
+///
+/// @return true iff @p fn should be dropped on the floor.
+static bool
+potential_member_fn_should_be_dropped(const function_decl_sptr& fn,
+				      Dwarf_Die *fn_die)
+{
+  if (!fn || fn->get_scope())
+    return false;
+
+  if (// A function that is not virtual ...
+      !die_is_virtual(fn_die)
+      // ... has a linkage name ...
+      && !fn->get_linkage_name().empty()
+      // .. and yet has no ELF symbol associated ...
+      && !fn->get_symbol())
+    // Should not be added to its class scope.
+    //
+    // Why would it? It's not part of the ABI anyway, as it doesn't
+    // have any ELF symbol associated and is not a virtual member
+    // function.  It just constitutes bloat in the IR and might even
+    // induce spurious change reports down the road.
+    return true;
+
+  return false;
+}
+
 /// Build an IR node from a given DIE and add the node to the current
 /// IR being build and held in the read_context.  Doing that is called
 /// "emitting an IR node for the DIE".
@@ -16816,14 +16874,19 @@ build_ir_node_from_die(read_context&	ctxt,
 						where_offset);
 	    if (interface_scope)
 	      {
-		decl_base_sptr d =
-		  is_decl(build_ir_node_from_die(ctxt,
-						 origin_die,
-						 interface_scope.get(),
-						 called_from_public_decl,
-						 where_offset,
-						 is_declaration_only,
-						 /*is_required_decl_spec=*/false));
+		decl_base_sptr d;
+		class_decl_sptr c = is_class_type(interface_scope);
+		if (c && !linkage_name.empty())
+		  d = c->find_member_function_sptr(linkage_name);
+
+		if (!d)
+		  d = is_decl(build_ir_node_from_die(ctxt,
+						     origin_die,
+						     interface_scope.get(),
+						     called_from_public_decl,
+						     where_offset,
+						     is_declaration_only,
+						     /*is_required_decl_spec=*/false));
 		if (d)
 		  {
 		    fn = dynamic_pointer_cast<function_decl>(d);
@@ -16848,10 +16911,18 @@ build_ir_node_from_die(read_context&	ctxt,
 	result = build_or_get_fn_decl_if_not_suppressed(ctxt, logical_scope,
 							die, where_offset,
 							is_declaration_only,
-                                                        fn);
+							fn);
 
 	if (result && !fn)
-	  result = add_decl_to_scope(is_decl(result), logical_scope);
+	  {
+	    if (potential_member_fn_should_be_dropped(is_function_decl(result),
+						      die))
+	      {
+		result.reset();
+		break;
+	      }
+	    result = add_decl_to_scope(is_decl(result), logical_scope);
+	  }
 
 	fn = is_function_decl(result);
 	if (fn && is_member_function(fn))

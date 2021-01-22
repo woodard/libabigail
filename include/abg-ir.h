@@ -3762,6 +3762,7 @@ public:
   typedef vector<method_decl_sptr>		member_functions;
   typedef unordered_map<ssize_t, member_functions> virtual_mem_fn_map_type;
   typedef unordered_map<string, method_decl*> string_mem_fn_ptr_map_type;
+  typedef unordered_map<string, method_decl_sptr> string_mem_fn_sptr_map_type;
   /// @}
 
   class_or_union(const environment* env, const string& name,
@@ -3865,6 +3866,9 @@ public:
 
   method_decl*
   find_member_function(const string& mangled_name);
+
+  method_decl_sptr
+  find_member_function_sptr(const string& mangled_name);
 
   const method_decl*
   find_member_function_from_signature(const string& s) const;

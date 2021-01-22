@@ -31,8 +31,13 @@
     <type-decl name='variadic parameter type' id='2c1145c5'/>
     <type-decl name='void' id='48b5725f'/>
     <pointer-type-def type-id='a84c031d' size-in-bits='64' id='26a90f95'/>
+    <qualified-type-def type-id='95e97e5e' const='yes' id='2448a865'/>
+    <qualified-type-def type-id='bd54fe1a' const='yes' id='9cb2385f'/>
+    <qualified-type-def type-id='769216e8' id='769216e9'/>
     <reference-type-def kind='lvalue' type-id='95e97e5e' size-in-bits='64' id='769216e8'/>
+    <qualified-type-def type-id='b176607d' id='b176607e'/>
     <reference-type-def kind='lvalue' type-id='383eb5fc' size-in-bits='64' id='b176607d'/>
+    <qualified-type-def type-id='9cb2385f' volatile='yes' id='7b610541'/>
     <namespace-decl name='ns0'>
       <enum-decl name='E' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='19' column='1' id='383eb5fc'>
         <underlying-type type-id='9cac1fee'/>
@@ -41,25 +46,25 @@
       </enum-decl>
       <typedef-decl name='long_long' type-id='1eb56b1e' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='25' column='1' id='0eabcaca'/>
       <function-decl name='bar' mangled-name='_ZN3ns03barEiz' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='12' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN3ns03barEiz'>
-        <parameter type-id='95e97e5e'/>
+        <parameter type-id='2448a865' name='c' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='12' column='1'/>
         <parameter is-variadic='yes'/>
         <return type-id='48b5725f'/>
       </function-decl>
       <function-decl name='baz' mangled-name='_ZN3ns03bazERi' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='16' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN3ns03bazERi'>
-        <parameter type-id='769216e8'/>
+        <parameter type-id='769216e9' name='c' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='16' column='1'/>
         <return type-id='48b5725f'/>
       </function-decl>
       <function-decl name='bar2' mangled-name='_ZN3ns04bar2ERNS_1EE' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='22' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN3ns04bar2ERNS_1EE'>
-        <parameter type-id='b176607d'/>
+        <parameter type-id='b176607e' name='e' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='22' column='1'/>
         <return type-id='48b5725f'/>
       </function-decl>
       <function-decl name='baz2' mangled-name='_ZN3ns04baz2ERi' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='28' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN3ns04baz2ERi'>
-        <parameter type-id='769216e8'/>
+        <parameter type-id='769216e9' name='c' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='28' column='1'/>
         <return type-id='0eabcaca'/>
       </function-decl>
       <function-decl name='foo' mangled-name='_ZN3ns03fooEPcl' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='45' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN3ns03fooEPcl'>
-        <parameter type-id='26a90f95'/>
-        <parameter type-id='bd54fe1a'/>
+        <parameter type-id='26a90f95' name='c' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='45' column='1'/>
+        <parameter type-id='7b610541' name='l' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='45' column='1'/>
         <return type-id='bd54fe1a'/>
       </function-decl>
     </namespace-decl>

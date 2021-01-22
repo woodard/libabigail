@@ -1,9 +1,10 @@
-Functions changes summary: 2 Removed, 8 Changed, 0 Added functions
+Functions changes summary: 3 Removed, 8 Changed, 0 Added functions
 Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
-2 Removed functions:
+3 Removed functions:
 
-  [D] 'method STR::~STR(int)'
+  [D] 'method STR::STR(const char*)'
+  [D] 'method STR::~STR()'
   [D] 'method void std::_Tuple_impl<1ul>::_Tuple_impl()'
 
 8 functions with some indirect sub-type change:
@@ -19,12 +20,9 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
   [C] 'method void std::_Head_base<0ul, STR&&, false>::_Head_base<STR>(STR&&)' has some indirect sub-type changes:
     'method void std::_Head_base<0ul, STR&&, false>::_Head_base<STR>(STR&&) {_ZNSt10_Head_baseILm0EO3STRLb0EEC2IS0_St9true_typeEEOT_}' now becomes 'method void std::_Head_base<0, STR &&, false>::_Head_base<STR, std::true_type>(STR&&) {_ZNSt10_Head_baseILm0EO3STRLb0EEC2IS0_St9true_typeEEOT_}'
-    implicit parameter 0 of type 'std::_Head_base<0ul, STR&&, false>*' changed:
-      in pointed to type 'struct std::_Head_base<0ul, STR&&, false>':
-        type name changed from 'std::_Head_base<0ul, STR&&, false>' to 'std::_Head_base<0, STR &&, false>'
-        type size hasn't changed
-        1 data member change:
-          name of 'std::_Head_base<0ul, STR&&, false>::_M_head_impl' changed to 'std::_Head_base<0, STR &&, false>::_M_head_impl'
+    implicit parameter 0 of type 'std::_Head_base<0ul, STR&&, false>* const' changed:
+      entity changed from 'std::_Head_base<0ul, STR&&, false>* const' to 'std::_Head_base<0, STR &&, false>*'
+      type size hasn't changed
 
   [C] 'method STR& std::_Head_base<0ul, STR&&, false>::_M_head()' has some indirect sub-type changes:
     'method STR& std::_Head_base<0ul, STR&&, false>::_M_head() {_ZNSt10_Head_baseILm0EO3STRLb0EE7_M_headERKS2_}' now becomes 'method STR& std::_Head_base<0, STR &&, false>::_M_head() {_ZNSt10_Head_baseILm0EO3STRLb0EE7_M_headERKS2_}'

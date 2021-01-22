@@ -596,32 +596,6 @@
       <parameter is-variadic='yes'/>
       <return type-id='type-id-11'/>
     </function-decl>
-    <function-decl name='wcschr' mangled-name='wcschr' filepath='/usr/include/wchar.h' line='224' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-73'/>
-      <parameter type-id='type-id-22'/>
-      <return type-id='type-id-73'/>
-    </function-decl>
-    <function-decl name='wcspbrk' mangled-name='wcspbrk' filepath='/usr/include/wchar.h' line='262' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-73'/>
-      <parameter type-id='type-id-73'/>
-      <return type-id='type-id-73'/>
-    </function-decl>
-    <function-decl name='wcsrchr' mangled-name='wcsrchr' filepath='/usr/include/wchar.h' line='234' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-73'/>
-      <parameter type-id='type-id-22'/>
-      <return type-id='type-id-73'/>
-    </function-decl>
-    <function-decl name='wcsstr' mangled-name='wcsstr' filepath='/usr/include/wchar.h' line='273' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-73'/>
-      <parameter type-id='type-id-73'/>
-      <return type-id='type-id-73'/>
-    </function-decl>
-    <function-decl name='wmemchr' mangled-name='wmemchr' filepath='/usr/include/wchar.h' line='316' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-73'/>
-      <parameter type-id='type-id-22'/>
-      <parameter type-id='type-id-26'/>
-      <return type-id='type-id-73'/>
-    </function-decl>
     <namespace-decl name='__gnu_cxx'>
       <class-decl name='new_allocator&lt;char&gt;' size-in-bits='8' visibility='default' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='58' column='1' id='type-id-41'>
         <member-type access='public'>
@@ -639,77 +613,6 @@
         <member-type access='public'>
           <typedef-decl name='const_reference' type-id='type-id-50' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='66' column='1' id='type-id-107'/>
         </member-type>
-        <member-function access='public'>
-          <function-decl name='new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorIcEC4Ev' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='79' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-42' is-artificial='yes'/>
-            <return type-id='type-id-21'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public'>
-          <function-decl name='new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorIcEC4ERKS1_' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='81' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-42' is-artificial='yes'/>
-            <parameter type-id='type-id-45'/>
-            <return type-id='type-id-21'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' destructor='yes'>
-          <function-decl name='~new_allocator' mangled-name='_ZN9__gnu_cxx13new_allocatorIcED4Ev' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='86' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-42' is-artificial='yes'/>
-            <parameter type-id='type-id-11' is-artificial='yes'/>
-            <return type-id='type-id-21'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' const='yes'>
-          <function-decl name='address' mangled-name='_ZNK9__gnu_cxx13new_allocatorIcE7addressERc' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='89' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-46' is-artificial='yes'/>
-            <parameter type-id='type-id-106'/>
-            <return type-id='type-id-104'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' const='yes'>
-          <function-decl name='address' mangled-name='_ZNK9__gnu_cxx13new_allocatorIcE7addressERKc' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='93' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-46' is-artificial='yes'/>
-            <parameter type-id='type-id-107'/>
-            <return type-id='type-id-105'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public'>
-          <function-decl name='allocate' mangled-name='_ZN9__gnu_cxx13new_allocatorIcE8allocateEmPKv' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='99' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-42' is-artificial='yes'/>
-            <parameter type-id='type-id-103'/>
-            <parameter type-id='type-id-8'/>
-            <return type-id='type-id-104'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public'>
-          <function-decl name='deallocate' mangled-name='_ZN9__gnu_cxx13new_allocatorIcE10deallocateEPcm' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='109' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-42' is-artificial='yes'/>
-            <parameter type-id='type-id-104'/>
-            <parameter type-id='type-id-103'/>
-            <return type-id='type-id-21'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' const='yes'>
-          <function-decl name='max_size' mangled-name='_ZNK9__gnu_cxx13new_allocatorIcE8max_sizeEv' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='113' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-46' is-artificial='yes'/>
-            <return type-id='type-id-103'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public'>
-          <function-decl name='construct' mangled-name='_ZN9__gnu_cxx13new_allocatorIcE9constructEPcRKc' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='129' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-42' is-artificial='yes'/>
-            <parameter type-id='type-id-104'/>
-            <parameter type-id='type-id-50'/>
-            <return type-id='type-id-21'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public'>
-          <function-decl name='destroy' mangled-name='_ZN9__gnu_cxx13new_allocatorIcE7destroyEPc' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='133' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-42' is-artificial='yes'/>
-            <parameter type-id='type-id-104'/>
-            <return type-id='type-id-21'/>
-          </function-decl>
-        </member-function>
       </class-decl>
       <class-decl name='__numeric_traits_integer&lt;int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='55' column='1' id='type-id-108'>
         <data-member access='public' static='yes'>

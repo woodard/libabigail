@@ -142,15 +142,6 @@
           <return type-id='type-id-6'/>
         </function-decl>
       </member-function>
-      <member-function access='public'>
-        <!-- s0::integer s0::mem_fun() -->
-        <function-decl name='mem_fun' mangled-name='_ZN2s07mem_funEv' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='36' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN2s07mem_funEv'>
-          <!-- implicit parameter of type 's0*' -->
-          <parameter type-id='type-id-12' is-artificial='yes'/>
-          <!-- typedef s0::integer -->
-          <return type-id='type-id-10'/>
-        </function-decl>
-      </member-function>
       <member-function access='public' constructor='yes'>
         <!-- s0::s0(int, void**) -->
         <function-decl name='s0' mangled-name='_ZN2s0C1Ev' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='21' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN2s0C1Ev'>
@@ -177,21 +168,32 @@
           <return type-id='type-id-6'/>
         </function-decl>
       </member-function>
+      <member-function access='public'>
+        <!-- s0::integer s0::mem_fun() -->
+        <function-decl name='mem_fun' mangled-name='_ZN2s07mem_funEv' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='36' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN2s07mem_funEv'>
+          <!-- implicit parameter of type 's0* const' -->
+          <parameter type-id='type-id-14' name='this' is-artificial='yes'/>
+          <!-- typedef s0::integer -->
+          <return type-id='type-id-10'/>
+        </function-decl>
+      </member-function>
     </class-decl>
     <!-- s0& -->
-    <qualified-type-def type-id='type-id-14' id='type-id-15'/>
+    <qualified-type-def type-id='type-id-15' id='type-id-16'/>
     <!-- s0& -->
-    <reference-type-def kind='lvalue' type-id='type-id-9' size-in-bits='64' id='type-id-14'/>
+    <reference-type-def kind='lvalue' type-id='type-id-9' size-in-bits='64' id='type-id-15'/>
     <!-- s0* -->
     <pointer-type-def type-id='type-id-9' size-in-bits='64' id='type-id-12'/>
+    <!-- s0* const -->
+    <qualified-type-def type-id='type-id-12' const='yes' id='type-id-14'/>
     <!-- void* -->
-    <pointer-type-def type-id='type-id-6' size-in-bits='64' id='type-id-16'/>
+    <pointer-type-def type-id='type-id-6' size-in-bits='64' id='type-id-17'/>
     <!-- void** -->
-    <pointer-type-def type-id='type-id-16' size-in-bits='64' id='type-id-13'/>
+    <pointer-type-def type-id='type-id-17' size-in-bits='64' id='type-id-13'/>
     <!-- void foo(s0&) -->
     <function-decl name='foo' mangled-name='_Z3fooR2s0' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='42' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z3fooR2s0'>
       <!-- parameter of type 's0&' -->
-      <parameter type-id='type-id-15' name='s' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='42' column='1'/>
+      <parameter type-id='type-id-16' name='s' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='42' column='1'/>
       <!-- void -->
       <return type-id='type-id-6'/>
     </function-decl>

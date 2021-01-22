@@ -2860,8 +2860,8 @@ environment::get_void_type() const
 {
   if (!priv_->void_type_)
     priv_->void_type_.reset(new type_decl(const_cast<environment*>(this),
-					       intern("void"),
-					       0, 0, location()));
+					  intern("void"),
+					  0, 0, location()));
   return priv_->void_type_;
 }
 
@@ -18501,7 +18501,7 @@ struct class_or_union::priv
   data_members			non_static_data_members_;
   member_functions		member_functions_;
   // A map that associates a linkage name to a member function.
-  string_mem_fn_ptr_map_type	mem_fns_map_;
+  string_mem_fn_sptr_map_type	mem_fns_map_;
   // A map that associates function signature strings to member
   // function.
   string_mem_fn_ptr_map_type	signature_2_mem_fn_map_;
@@ -19316,7 +19316,7 @@ class_or_union::add_member_function(method_decl_sptr f,
   // Update the map of linkage name -> member functions.  It's useful,
   // so that class_or_union::find_member_function() can function.
   if (!f->get_linkage_name().empty())
-    priv_->mem_fns_map_[f->get_linkage_name()] = f.get();
+    priv_->mem_fns_map_[f->get_linkage_name()] = f;
 }
 
 /// Get the member functions of this @ref class_or_union.
@@ -19346,7 +19346,22 @@ class_or_union::find_member_function(const string& linkage_name) const
 method_decl*
 class_or_union::find_member_function(const string& linkage_name)
 {
-  string_mem_fn_ptr_map_type::const_iterator i =
+  string_mem_fn_sptr_map_type::const_iterator i =
+    priv_->mem_fns_map_.find(linkage_name);
+  if (i == priv_->mem_fns_map_.end())
+    return 0;
+  return i->second.get();
+}
+
+/// Find a method, using its linkage name as a key.
+///
+/// @param linkage_name the linkage name of the method to find.
+///
+/// @return the method found, or nil if none was found.
+method_decl_sptr
+class_or_union::find_member_function_sptr(const string& linkage_name)
+{
+  string_mem_fn_sptr_map_type::const_iterator i =
     priv_->mem_fns_map_.find(linkage_name);
   if (i == priv_->mem_fns_map_.end())
     return 0;
@@ -20664,7 +20679,8 @@ method_decl::set_linkage_name(const string& l)
     {
       method_type_sptr t = get_type();
       class_or_union_sptr cl = t->get_class_type();
-      cl->priv_->mem_fns_map_[l] = this;
+      method_decl_sptr m(this, sptr_utils::noop_deleter());
+      cl->priv_->mem_fns_map_[l] = m;
     }
 }
 
@@ -23394,10 +23410,11 @@ hash_as_canonical_type_or_constant(const type_base *t)
     return reinterpret_cast<size_t>(canonical_type);
 
   // If we reached this point, it means we are seeing a
-  // non-canonicalized type.  It must be a decl-only class;
-  // otherwise it means that for some weird reason, the type hasn't
-  // been canonicalized.  It should be!
-  ABG_ASSERT(is_declaration_only_class_or_union_type(t));
+  // non-canonicalized type.  It must be a decl-only class or a
+  // function type, otherwise it means that for some weird reason, the
+  // type hasn't been canonicalized.  It should be!
+  ABG_ASSERT(is_declaration_only_class_or_union_type(t)
+	     || is_function_type(t));
 
   return 0xDEADBABE;
 }
