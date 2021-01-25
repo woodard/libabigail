@@ -14101,7 +14101,9 @@ pointer_type_def::pointer_type_def(const type_base_sptr&	pointed_to,
 bool
 equals(const pointer_type_def& l, const pointer_type_def& r, change_kind* k)
 {
-  bool result = (l.get_pointed_to_type() == r.get_pointed_to_type());
+  // Compare the pointed-to-types modulo the typedefs they might have
+  bool result = (peel_typedef_type(l.get_pointed_to_type())
+		 == peel_typedef_type(r.get_pointed_to_type()));
   if (!result)
     if (k)
       {
@@ -14406,7 +14408,9 @@ equals(const reference_type_def& l, const reference_type_def& r, change_kind* k)
       return false;
     }
 
-  bool result = (l.get_pointed_to_type() == r.get_pointed_to_type());
+  // Compare the pointed-to-types modulo the typedefs they might have
+  bool result = (peel_typedef_type(l.get_pointed_to_type())
+		 == (peel_typedef_type(r.get_pointed_to_type())));
   if (!result)
     if (k)
       {
@@ -15226,7 +15230,9 @@ equals(const array_type_def& l, const array_type_def& r, change_kind* k)
 	  return false;
       }
 
-  if (l.get_element_type() != r.get_element_type())
+  // Compare the element types modulo the typedefs they might have
+  if (peel_typedef_type(l.get_element_type())
+      != peel_typedef_type(r.get_element_type()))
     {
       result = false;
       if (k)

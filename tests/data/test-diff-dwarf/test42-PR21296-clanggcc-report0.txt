@@ -55,8 +55,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
   [C] 'function std::remove_reference<STR&>::type&& std::move<STR&>(STR&)' has some indirect sub-type changes:
     'function std::remove_reference<STR&>::type&& std::move<STR&>(STR&) {_ZSt4moveIR3STREONSt16remove_referenceIT_E4typeEOS3_}' now becomes 'function std::remove_reference<STR &>::type&& std::move<STR &>(STR&) {_ZSt4moveIR3STREONSt16remove_referenceIT_E4typeEOS3_}'
     return type changed:
-      in referenced type 'typedef std::remove_reference<STR&>::type':
-        typedef name changed from std::remove_reference<STR&>::type to std::remove_reference<STR &>::type
 
   [C] 'function void tpl<std::tuple<STR&&> >(std::tuple<STR&&>)' has some indirect sub-type changes:
     'function void tpl<std::tuple<STR&&> >(std::tuple<STR&&>) {_Z3tplISt5tupleIJO3STREEEvT_}' now becomes 'function void tpl<std::tuple<STR &&> >(std::tuple<STR &&>) {_Z3tplISt5tupleIJO3STREEEvT_}'

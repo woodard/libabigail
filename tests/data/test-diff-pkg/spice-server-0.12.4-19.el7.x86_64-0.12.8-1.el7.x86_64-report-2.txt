@@ -303,16 +303,7 @@
                                                                       type of 'CommonChannel CursorChannel::common' changed, as reported earlier
                                                               type of 'QXLInstance* RedWorker::qxl' changed:
                                                                 in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
-                                                                  underlying type 'struct QXLInstance' at spice.h:259:1 changed:
-                                                                    type size hasn't changed
-                                                                    1 data member change:
-                                                                      type of 'QXLState* QXLInstance::st' changed:
-                                                                        in pointed to type 'typedef QXLState' at spice-qxl.h:35:1:
-                                                                          underlying type 'struct QXLState' at reds.h:93:1 changed:
-                                                                            type size hasn't changed
-                                                                            1 data member change:
-                                                                              type of 'RedDispatcher* QXLState::dispatcher' changed:
-                                                                                pointed to type 'struct RedDispatcher' changed, as being reported
+                                                                  underlying type 'struct QXLInstance' changed, as being reported
                                                               type of 'RedDispatcher* RedWorker::red_dispatcher' changed:
                                                                 in pointed to type 'typedef RedDispatcher':
                                                                   entity changed from 'typedef RedDispatcher' to compatible type 'struct RedDispatcher'
