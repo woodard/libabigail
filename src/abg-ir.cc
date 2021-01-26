@@ -12367,7 +12367,14 @@ type_base::get_canonical_type_for(type_base_sptr t)
 
   class_or_union_sptr class_or_union = is_class_or_union_type(t);
 
-  // Look through declaration-only classes
+  // Look through declaration-only classes when we are dealing with
+  // C++ or languages where we assume the "One Definition Rule".  In
+  // that context, we assume that a declaration-only non-anonymous
+  // class equals all fully defined classes of the same name.
+  //
+  // Otherwise, all classes, including declaration-only classes are
+  // canonicalized and only canonical comparison is going to be used
+  // in the system.
   if (decl_only_class_equals_definition)
     if (class_or_union)
       {
@@ -23419,8 +23426,7 @@ hash_as_canonical_type_or_constant(const type_base *t)
   // non-canonicalized type.  It must be a decl-only class or a
   // function type, otherwise it means that for some weird reason, the
   // type hasn't been canonicalized.  It should be!
-  ABG_ASSERT(is_declaration_only_class_or_union_type(t)
-	     || is_function_type(t));
+  ABG_ASSERT(is_declaration_only_class_or_union_type(t));
 
   return 0xDEADBABE;
 }

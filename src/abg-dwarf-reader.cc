@@ -4895,7 +4895,8 @@ public:
 	cn_timer.start();
       }
 
-    if (!types_to_canonicalize(source).empty())
+    if (!types_to_canonicalize(source).empty()
+	|| !extra_types_to_canonicalize().empty())
       {
 	tools_utils::timer single_type_cn_timer;
 	size_t total = types_to_canonicalize(source).size();
