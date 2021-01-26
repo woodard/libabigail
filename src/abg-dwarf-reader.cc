@@ -9414,19 +9414,23 @@ compare_dies_string_attribute_value(const Dwarf_Die *l, const Dwarf_Die *r,
   ABG_ASSERT(l_attr.form == DW_FORM_strp
 	     || l_attr.form == DW_FORM_string
 	     || l_attr.form == DW_FORM_GNU_strp_alt
-	     || form_is_DW_FORM_strx(l_attr.form));
+	     || form_is_DW_FORM_strx(l_attr.form)
+	     || l_attr.form == DW_FORM_line_strp);
 
   ABG_ASSERT(r_attr.form == DW_FORM_strp
 	     || r_attr.form == DW_FORM_string
 	     || r_attr.form == DW_FORM_GNU_strp_alt
-	     || form_is_DW_FORM_strx(r_attr.form));
+	     || form_is_DW_FORM_strx(r_attr.form)
+	     || l_attr.form == DW_FORM_line_strp);
 
   if ((l_attr.form == DW_FORM_strp
        && r_attr.form == DW_FORM_strp)
       || (l_attr.form == DW_FORM_GNU_strp_alt
 	  && r_attr.form == DW_FORM_GNU_strp_alt)
       || (form_is_DW_FORM_strx(l_attr.form)
-	  && form_is_DW_FORM_strx(r_attr.form)))
+	  && form_is_DW_FORM_strx(r_attr.form))
+      || (l_attr.form == DW_FORM_line_strp
+	  && r_attr.form == DW_FORM_line_strp))
     {
       // So these string attributes are actually pointers into a
       // string table.  The string table is most likely de-duplicated

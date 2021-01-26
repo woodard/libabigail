@@ -658,6 +658,18 @@ static InOutSpec in_out_specs[] =
     "output/test-diff-pkg/glibc-2.32-3.fc33.aarch64-self-check-report-0.txt"
   }
   ,
+  {
+    "data/test-diff-pkg/sshpass-1.07-1.fc34.x86_64.rpm",
+    "data/test-diff-pkg/sshpass-1.07-1.fc34.x86_64.rpm",
+    "--self-check",
+    "",
+    "data/test-diff-pkg/sshpass-debuginfo-1.07-1.fc34.x86_64.rpm",
+    "data/test-diff-pkg/sshpass-debuginfo-1.07-1.fc34.x86_64.rpm",
+    "",
+    "",
+    "data/test-diff-pkg/sshpass-1.07-1.fc34.x86_64-self-check-report-0.txt",
+    "output/test-diff-pkg/sshpass-1.07-1.fc34.x86_64-self-check-report-0.txt"
+  },
 #endif // WITH_RPM_4_15
 #endif //WITH_RPM
 
