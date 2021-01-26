@@ -152,6 +152,10 @@ using abigail::xml_writer::create_write_context;
 using abigail::xml_writer::write_context_sptr;
 using abigail::xml_writer::write_corpus;
 
+class package;
+
+/// Convenience typedef for a shared pointer to a @ref package.
+typedef shared_ptr<package> package_sptr;
 
 /// The options passed to the current program.
 class options
@@ -202,6 +206,8 @@ public:
   vector<string> suppression_paths;
   vector<string> kabi_whitelist_paths;
   suppressions_type kabi_suppressions;
+  package_sptr  pkg1;
+  package_sptr  pkg2;
 
   options(const string& program_name)
     : prog_name(program_name),
@@ -301,11 +307,6 @@ struct abi_diff
 	    ||!changed_binaries.empty());
   }
 };
-
-class package;
-
-/// Convenience typedef for a shared pointer to a @ref package.
-typedef shared_ptr<package> package_sptr;
 
 /// Abstracts a package.
 class package
@@ -647,6 +648,34 @@ public:
     std::sort(elf_file_paths().begin(), elf_file_paths().end());
     string common_prefix;
     sorted_strings_common_prefix(elf_file_paths(), common_paths_prefix());
+  }
+
+  /// Create the path of an ABI file to be associated with a given
+  /// binary.
+  ///
+  /// @param elf_file_path the path to the binary to consider.
+  ///
+  /// @param abi_file_path the resulting ABI file path.  This is set
+  /// iff the function return true.
+  ///
+  /// @return true if the ABI file path could be constructed and the
+  /// directory tree containing it could be created.  In that case,
+  /// the resulting ABI file path is set to the @p abi_file_path
+  /// output parameter.
+  bool
+  create_abi_file_path(const string &elf_file_path,
+		       string &abi_file_path) const
+  {
+    string abi_path, dir, parent;
+    if (!abigail::tools_utils::string_suffix(elf_file_path,
+					     extracted_dir_path(),
+					     abi_path))
+      return false;
+    abi_path = extracted_dir_path() + "/abixml" + abi_path + ".abi";
+    if (!abigail::tools_utils::ensure_parent_dir_created(abi_path))
+      return false;
+    abi_file_path = abi_path;
+    return true;
   }
 
   /// Erase the content of the temporary extraction directory that has
@@ -1547,9 +1576,15 @@ compare_to_self(const elf_file& elf,
   corpus_sptr reread_corp;
   string abi_file_path;
   {
-    abi_file_path = elf.path + ".abi";
+    if (!opts.pkg1->create_abi_file_path(elf.path, abi_file_path))
+      {
+	if (opts.verbose)
+	  emit_prefix("abipkgdiff", cerr)
+	    << "Could not create the directory tree to store the abi for '"
+	    << elf.path
+	    << "'\n";
+      }
     ofstream of(abi_file_path.c_str(), std::ios_base::trunc);
-
 
     {
       const abigail::xml_writer::write_context_sptr c =
@@ -1645,6 +1680,7 @@ compare_to_self(const elf_file& elf,
       << "Comparison against self "
       << (s == abigail::tools_utils::ABIDIFF_OK ? "SUCCEEDED" : "FAILED")
       << '\n';
+
   return s;
 }
 
@@ -1887,8 +1923,8 @@ public:
   {}
 
   /// The job performed by the current task, which is to extract its
-  /// packages in sequence.  This is job is to be performed in
-  /// parallel with other jobs of other tasks.
+  /// packages in sequence.  This job is to be performed in parallel
+  /// with other jobs of other tasks.
   virtual void
   perform()
   {
@@ -1996,19 +2032,16 @@ public:
       {
 	string diagnostic =
 	  abigail::dwarf_reader::status_to_diagnostic_string(detailed_status);
+	if (diagnostic.empty())
+	  diagnostic =
+	    "Unknown error.  Please run the tool again with --verbose\n";
 
-	if (!diagnostic.empty())
-	  {
-	    string name = args->elf1.name;
-
-	    pretty_output +=
-	      "==== Error happened during processing of " + name + ": ====\n";
-
-	    pretty_output += diagnostic;
-
-	    pretty_output +=
-	      "==== End of error for " + name + " ====\n";
-	  }
+	string name = args->elf1.name;
+	pretty_output +=
+	  "==== Error happened during processing of '" + name + "' ====\n";
+	pretty_output += diagnostic;
+	pretty_output +=
+	  "==== End of error for '" + name + "' ====\n";
       }
   }
 }; // end class compare_task
@@ -2066,18 +2099,17 @@ public:
 	string diagnostic =
 	  abigail::dwarf_reader::status_to_diagnostic_string(detailed_status);
 
-	if (!diagnostic.empty())
-	  {
-	    string name = args->elf1.name;
+	if (diagnostic.empty())
+	  diagnostic =
+	    "Unknown error.  Please run the tool again with --verbose\n";
 
-	    pretty_output +=
-	      "==== Error happened during self check of " + name + ": ====\n";
+	string name = args->elf1.name;
+	pretty_output +=
+	  "==== Error happened during self check of '" + name + "' ====\n";
+	pretty_output += diagnostic;
+	pretty_output +=
+	  "==== SELF CHECK FAILED for '" + name + "' ====\n";
 
-	    pretty_output += diagnostic;
-
-	    pretty_output +=
-	      "==== SELF CHECK FAILED for " + name + " ====\n";
-	  }
       }
   }
 }; // end class self_compare
@@ -3430,6 +3462,8 @@ main(int argc, char* argv[])
   package_sptr first_package(new package(opts.package1, "package1"));
 
   package_sptr second_package(new package(opts.package2, "package2"));
+  opts.pkg1 = first_package;
+  opts.pkg2 = second_package;
 
   for (vector<string>::const_iterator p = opts.debug_packages1.begin();
        p != opts.debug_packages1.end();
