@@ -1642,9 +1642,9 @@ compare_to_self(const elf_file& elf,
 
   if (opts.verbose)
     emit_prefix("abipkgdfiff", cerr)
-      << (s == abigail::tools_utils::ABIDIFF_OK)
-      ? string("Comparison against self SUCCEEDED\n")
-      : string("Comparison against self FAILED\n");
+      << "Comparison against self "
+      << (s == abigail::tools_utils::ABIDIFF_OK ? "SUCCEEDED" : "FAILED")
+      << '\n';
   return s;
 }
 
