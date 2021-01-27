@@ -514,10 +514,31 @@ class RPMCollection(object):
                 yield _rpm
 
     def get_sibling_debuginfo(self, rpm):
-        """Get sibling debuginfo package of given rpm"""
+        """Get sibling debuginfo package of given rpm
+
+        The sibling debuginfo is a debug info package for the
+        'rpm'.  Note that if there are several debuginfo packages
+        associated to 'rpm' and users want to get the one which name
+        matches exactly 'rpm', then they might want to use the member
+        function 'get_matching_debuginfo' instead.
+
+        """
         if rpm.arch not in self.ancillary_rpms:
             return None
         return self.ancillary_rpms[rpm.arch].get('debuginfo')
+
+    def get_matching_debuginfo(self, rpm):
+        """Get the debuginfo package that matches a given one """
+        all_debuginfo_list = self.get_all_debuginfo_rpms(rpm)
+        debuginfo_pkg = None
+        for d in all_debuginfo_list:
+            if d.name == '{0}-debuginfo'.format(rpm.name):
+                debuginfo_pkg = d
+                break
+        if not debuginfo_pkg:
+            debuginfo_pkg = self.get_sibling_debuginfo(rpm)
+
+        return debuginfo_pkg
 
     def get_sibling_devel(self, rpm):
         """Get sibling devel package of given rpm"""
@@ -578,8 +599,7 @@ def generate_comparison_halves(rpm_col1, rpm_col2):
         if _rpm.is_devel:
             debuginfo_list1 = rpm_col1.get_all_debuginfo_rpms(_rpm)
         else:
-            debuginfo_list1.append(rpm_col1.get_sibling_debuginfo(_rpm))
-
+            debuginfo_list1.append(rpm_col1.get_matching_debuginfo(_rpm))
 
         devel1 = rpm_col1.get_sibling_devel(_rpm)
 
@@ -590,7 +610,7 @@ def generate_comparison_halves(rpm_col1, rpm_col2):
             if rpm2.is_devel:
                 debuginfo_list2 = rpm_col2.get_all_debuginfo_rpms(rpm2)
             else:
-                debuginfo_list2.append(rpm_col2.get_sibling_debuginfo(rpm2))
+                debuginfo_list2.append(rpm_col2.get_matching_debuginfo(rpm2))
             devel2 = rpm_col2.get_sibling_devel(rpm2)
 
         yield (ComparisonHalf(subject=_rpm,
