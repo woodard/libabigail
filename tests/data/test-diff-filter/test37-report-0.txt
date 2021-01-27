@@ -8,7 +8,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in referenced type 'struct A' at test37-v1.cc:3:1:
         type size changed from 32 to 8 (in bits)
         1 data member change:
-          type of 'int A::m0' changed:
+          type of 'int m0' changed:
             type name changed from 'int' to 'char'
             type size changed from 32 to 8 (in bits)
 
@@ -17,7 +17,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in referenced type 'struct B' at test37-v1.cc:8:1:
         type size changed from 32 to 8 (in bits)
         1 data member change:
-          type of 'int B::m0' changed:
+          type of 'int m0' changed:
             type name changed from 'int' to 'char'
             type size changed from 32 to 8 (in bits)
 
@@ -26,7 +26,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in referenced type 'struct C' at test37-v1.cc:13:1:
         type size changed from 32 to 8 (in bits)
         1 data member change:
-          type of 'int C::m0' changed:
+          type of 'int m0' changed:
             type name changed from 'int' to 'char'
             type size changed from 32 to 8 (in bits)
 

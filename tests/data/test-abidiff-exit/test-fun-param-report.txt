@@ -8,7 +8,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in pointed to type 'struct ops' at test-fun-param-v1.c:1:1:
         type size hasn't changed
         1 data member change:
-          type of 'void (void*, unsigned int, unsigned long int)* ops::bind_class' changed:
+          type of 'void (void*, unsigned int, unsigned long int)* bind_class' changed:
             in pointed to type 'function type void (void*, unsigned int, unsigned long int)':
               parameter 4 of type 'void*' was added
               parameter 5 of type 'unsigned long int' was added

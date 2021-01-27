@@ -8,7 +8,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in pointed to type 'class C0':
         type size hasn't changed
         1 data member change:
-          'int C0::m0' access changed from 'private' to 'public'
+          'int m0' access changed from 'private' to 'public'
 
   [C] 'function C0 foo()' has some indirect sub-type changes:
     return type changed:

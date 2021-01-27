@@ -12,15 +12,15 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in pointed to type 'class C1':
         type size changed from 8 to 64 (in bits)
         1 data member insertion:
-          'int C1::m1', at offset 32 (in bits)
+          'int m1', at offset 32 (in bits)
 
   [C] 'function void foo(C0&)' has some indirect sub-type changes:
     parameter 1 of type 'C0&' has sub-type changes:
       in referenced type 'struct C0':
         type size changed from 16 to 24 (in bits)
         1 data member insertion:
-          'char C0::m2', at offset 0 (in bits)
+          'char m2', at offset 0 (in bits)
         2 data member changes:
-          'E0 C0::m0' offset changed from 0 to 8 (in bits) (by +8 bits)
-          'E1 C0::m1' offset changed from 8 to 16 (in bits) (by +8 bits)
+          'E0 m0' offset changed from 0 to 8 (in bits) (by +8 bits)
+          'E1 m1' offset changed from 8 to 16 (in bits) (by +8 bits)
 

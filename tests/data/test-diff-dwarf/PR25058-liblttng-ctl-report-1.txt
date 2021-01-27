@@ -90,7 +90,7 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
       in pointed to type 'struct lttng_action':
         type size hasn't changed
         2 data member changes:
-          type of 'action_serialize_cb lttng_action::serialize' changed:
+          type of 'action_serialize_cb serialize' changed:
             underlying type 'typedef ssize_t (lttng_action*, char*)*' changed:
               in pointed to type 'function type typedef ssize_t (lttng_action*, char*)':
                 return type changed:
@@ -103,7 +103,7 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
                   in pointed to type 'char':
                     entity changed from 'char' to 'struct lttng_dynamic_buffer'
                     type size changed from 8 to 192 (in bits)
-          type of 'action_destroy_cb lttng_action::destroy' changed:
+          type of 'action_destroy_cb destroy' changed:
             underlying type 'void (lttng_action*)*' changed:
               in pointed to type 'function type void (lttng_action*)':
                 parameter 1 of type 'lttng_action*' has sub-type changes:
@@ -122,7 +122,7 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
       in pointed to type 'struct lttng_event_context':
         type size hasn't changed
         1 data member change:
-          type of 'lttng_event_context_type lttng_event_context::ctx' changed:
+          type of 'lttng_event_context_type ctx' changed:
             type size hasn't changed
             2 enumerator insertions:
               'lttng_event_context_type::LTTNG_EVENT_CONTEXT_CALLSTACK_KERNEL' value '20'
@@ -134,19 +134,19 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
         in unqualified underlying type 'struct lttng_condition':
           type size hasn't changed
           5 data member changes:
-            type of 'lttng_condition_type lttng_condition::type' changed:
+            type of 'lttng_condition_type type' changed:
               type size hasn't changed
               3 enumerator insertions:
                 'lttng_condition_type::LTTNG_CONDITION_TYPE_SESSION_CONSUMED_SIZE' value '100'
                 'lttng_condition_type::LTTNG_CONDITION_TYPE_SESSION_ROTATION_ONGOING' value '103'
                 'lttng_condition_type::LTTNG_CONDITION_TYPE_SESSION_ROTATION_COMPLETED' value '104'
-            type of 'condition_validate_cb lttng_condition::validate' changed:
+            type of 'condition_validate_cb validate' changed:
               underlying type 'bool (const lttng_condition*)*' changed:
                 in pointed to type 'function type bool (const lttng_condition*)':
                   parameter 1 of type 'const lttng_condition*' has sub-type changes:
                     in pointed to type 'const lttng_condition':
                       unqualified underlying type 'struct lttng_condition' changed, as being reported
-            type of 'condition_serialize_cb lttng_condition::serialize' changed:
+            type of 'condition_serialize_cb serialize' changed:
               underlying type 'typedef ssize_t (const lttng_condition*, char*)*' changed:
                 in pointed to type 'function type typedef ssize_t (const lttng_condition*, char*)':
                   return type changed:
@@ -160,7 +160,7 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
                     in pointed to type 'char':
                       entity changed from 'char' to 'struct lttng_dynamic_buffer'
                       type size changed from 8 to 192 (in bits)
-            type of 'condition_equal_cb lttng_condition::equal' changed:
+            type of 'condition_equal_cb equal' changed:
               underlying type 'bool (const lttng_condition*, const lttng_condition*)*' changed:
                 in pointed to type 'function type bool (const lttng_condition*, const lttng_condition*)':
                   parameter 1 of type 'const lttng_condition*' has sub-type changes:
@@ -169,7 +169,7 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
                   parameter 2 of type 'const lttng_condition*' has sub-type changes:
                     in pointed to type 'const lttng_condition':
                       unqualified underlying type 'struct lttng_condition' changed, as being reported
-            type of 'condition_destroy_cb lttng_condition::destroy' changed:
+            type of 'condition_destroy_cb destroy' changed:
               underlying type 'void (lttng_condition*)*' changed:
                 in pointed to type 'function type void (lttng_condition*)':
                   parameter 1 of type 'lttng_condition*' has sub-type changes:
@@ -239,7 +239,7 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
       in pointed to type 'struct lttng_event':
         type size hasn't changed
         1 data member change:
-          type of 'lttng_event_type lttng_event::type' changed:
+          type of 'lttng_event_type type' changed:
             type size hasn't changed
             1 enumerator insertion:
               'lttng_event_type::LTTNG_EVENT_USERSPACE_PROBE' value '6'
@@ -262,8 +262,8 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
         in unqualified underlying type 'struct lttng_evaluation':
           type size hasn't changed
           3 data member changes:
-            type of 'lttng_condition_type lttng_evaluation::type' changed, as reported earlier
-            type of 'evaluation_serialize_cb lttng_evaluation::serialize' changed:
+            type of 'lttng_condition_type type' changed, as reported earlier
+            type of 'evaluation_serialize_cb serialize' changed:
               underlying type 'typedef ssize_t (lttng_evaluation*, char*)*' changed:
                 in pointed to type 'function type typedef ssize_t (lttng_evaluation*, char*)':
                   return type changed:
@@ -278,7 +278,7 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
                     in pointed to type 'char':
                       entity changed from 'char' to 'struct lttng_dynamic_buffer'
                       type size changed from 8 to 192 (in bits)
-            type of 'evaluation_destroy_cb lttng_evaluation::destroy' changed:
+            type of 'evaluation_destroy_cb destroy' changed:
               underlying type 'void (lttng_evaluation*)*' changed:
                 in pointed to type 'function type void (lttng_evaluation*)':
                   parameter 1 of type 'lttng_evaluation*' has sub-type changes:
@@ -323,9 +323,9 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
         in pointed to type 'struct lttng_session':
           type size changed from 35008 to 35072 (in bits)
           1 data member deletion:
-            'char lttng_session::padding[12]', at offset 34912 (in bits)
+            'char padding[12]', at offset 34912 (in bits)
           1 data member insertion:
-            'union {char padding[12]; void* ptr;} lttng_session::extended', at offset 34944 (in bits)
+            'union {char padding[12]; void* ptr;} extended', at offset 34944 (in bits)
 
   [C] 'function int lttng_list_syscalls(lttng_event**)' has some indirect sub-type changes:
     parameter 1 of type 'lttng_event**' has sub-type changes:
@@ -338,7 +338,7 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
         in pointed to type 'struct lttng_event_field':
           type size hasn't changed
           1 data member change:
-            type of 'lttng_event lttng_event_field::event' changed, as reported earlier
+            type of 'lttng_event event' changed, as reported earlier
 
   [C] 'function int lttng_list_tracepoints(lttng_handle*, lttng_event**)' has some indirect sub-type changes:
     parameter 2 of type 'lttng_event**' has sub-type changes:
@@ -355,11 +355,11 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
         in pointed to type 'struct lttng_notification':
           type size changed from 192 to 128 (in bits)
           1 data member deletion:
-            'bool lttng_notification::owns_elements', at offset 128 (in bits)
+            'bool owns_elements', at offset 128 (in bits)
           2 data member changes:
-            type of 'lttng_condition* lttng_notification::condition' changed:
+            type of 'lttng_condition* condition' changed:
               pointed to type 'struct lttng_condition' changed, as reported earlier
-            type of 'lttng_evaluation* lttng_notification::evaluation' changed:
+            type of 'lttng_evaluation* evaluation' changed:
               pointed to type 'struct lttng_evaluation' changed, as reported earlier
 
   [C] 'function lttng_notification_channel_status lttng_notification_channel_subscribe(lttng_notification_channel*, const lttng_condition*)' has some indirect sub-type changes:
@@ -399,9 +399,9 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
       in pointed to type 'struct lttng_trigger':
         type size hasn't changed
         2 data member changes:
-          type of 'lttng_condition* lttng_trigger::condition' changed:
+          type of 'lttng_condition* condition' changed:
             pointed to type 'struct lttng_condition' changed, as reported earlier
-          type of 'lttng_action* lttng_trigger::action' changed:
+          type of 'lttng_action* action' changed:
             pointed to type 'struct lttng_action' changed, as reported earlier
 
   [C] 'function lttng_trigger* lttng_trigger_create(lttng_condition*, lttng_action*)' has some indirect sub-type changes:
@@ -437,16 +437,16 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
       in pointed to type 'struct filter_parser_ctx':
         type size hasn't changed
         1 data member change:
-          type of 'filter_ast* filter_parser_ctx::ast' changed:
+          type of 'filter_ast* ast' changed:
             in pointed to type 'struct filter_ast':
               type size changed from 704 to 768 (in bits)
               2 data member changes:
-                type of 'filter_node filter_ast::root' changed:
+                type of 'filter_node root' changed:
                   type size changed from 576 to 640 (in bits)
                   2 data member changes:
-                    type of 'filter_node* filter_node::parent' changed:
+                    type of 'filter_node* parent' changed:
                       pointed to type 'struct filter_node' changed, as being reported
-                    type of 'union {struct {} unknown; struct {filter_node* child;} root; struct {__anonymous_enum__ type; ast_link_type post_op; ast_link_type pre_op; union {char* string; uint64_t constant; double float_constant; char* identifier; filter_node* child;} u; filter_node* prev; filter_node* next;} expression; struct {op_type type; filter_node* lchild; filter_node* rchild;} op; struct {unary_op_type type; filter_node* child;} unary_op;} filter_node::u' changed:
+                    type of 'union {struct {} unknown; struct {filter_node* child;} root; struct {__anonymous_enum__ type; ast_link_type post_op; ast_link_type pre_op; union {char* string; uint64_t constant; double float_constant; char* identifier; filter_node* child;} u; filter_node* prev; filter_node* next;} expression; struct {op_type type; filter_node* lchild; filter_node* rchild;} op; struct {unary_op_type type; filter_node* child;} unary_op;} u' changed:
                       type size changed from 320 to 384 (in bits)
                       4 data member changes:
                         type of 'struct {__anonymous_enum__ type; ast_link_type post_op; ast_link_type pre_op; union {char* string; uint64_t constant; double float_constant; char* identifier; filter_node* child;} u; filter_node* prev; filter_node* next;} expression' changed:
@@ -509,7 +509,7 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
                                 'unary_op_type::AST_UNARY_BIT_NOT' value '4'
                             type of 'filter_node* child' changed:
                               pointed to type 'struct filter_node' changed, as being reported
-                'cds_list_head filter_ast::allocated_nodes' offset changed from 576 to 640 (in bits) (by +64 bits)
+                'cds_list_head allocated_nodes' offset changed from 576 to 640 (in bits) (by +64 bits)
 
   [C] 'function YYSTYPE* lttng_yyget_lval(yyscan_t)' has some indirect sub-type changes:
     return type changed:
@@ -517,7 +517,7 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
         underlying type 'union YYSTYPE' changed:
           type size hasn't changed
           1 data member change:
-            type of 'filter_node* YYSTYPE::n' changed:
+            type of 'filter_node* n' changed:
               pointed to type 'struct filter_node' changed, as reported earlier
           type changed from:
             union YYSTYPE{long long int ll; char c; gc_string* gs; filter_node* n;}

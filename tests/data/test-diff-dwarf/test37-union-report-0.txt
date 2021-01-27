@@ -8,5 +8,5 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in pointed to type 'union some_union_type':
         type size changed from 32 to 64 (in bits)
         1 data member insertion:
-          'S some_union_type::m2'
+          'S m2'
 

@@ -11,7 +11,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         underlying type 'struct S' changed:
           type size changed from 32 to 64 (in bits)
           1 data member insertion:
-            'char S::inserted_member', at offset 0 (in bits)
+            'char inserted_member', at offset 0 (in bits)
           1 data member change:
-            'int S::m0' offset changed from 0 to 32 (in bits) (by +32 bits)
+            'int m0' offset changed from 0 to 32 (in bits) (by +32 bits)
 

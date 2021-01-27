@@ -12,7 +12,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in referenced type 'struct S0' at test45-basic-type-change-v1.cc:8:1:
         type size hasn't changed
         1 data member change:
-          type of 'int* S0::m0' changed:
+          type of 'int* m0' changed:
             in pointed to type 'int':
               type name changed from 'int' to 'char'
               type size changed from 32 to 8 (in bits)
@@ -26,7 +26,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in referenced type 'struct S1' at test45-basic-type-change-v1.cc:13:1:
         type size hasn't changed
         1 data member change:
-          type of 'int* S1::m0' changed:
+          type of 'int* m0' changed:
             in pointed to type 'int':
               type name changed from 'int' to 'char'
               type size changed from 32 to 8 (in bits)
@@ -38,7 +38,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in referenced type 'struct S2' at test45-basic-type-change-v1.cc:18:1:
         type size hasn't changed
         1 data member change:
-          type of 'int* S2::m0' changed:
+          type of 'int* m0' changed:
             in pointed to type 'int':
               type name changed from 'int' to 'char'
               type size changed from 32 to 8 (in bits)

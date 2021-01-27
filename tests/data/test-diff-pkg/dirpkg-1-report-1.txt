@@ -9,7 +9,7 @@
         in referenced type 'struct S':
           type size changed from 32 to 64 (in bits)
           1 data member insertion:
-            'char S::mem1', at offset 32 (in bits)
+            'char mem1', at offset 32 (in bits)
 
 ================ end of changes of 'libobj-v0.so'===============
 

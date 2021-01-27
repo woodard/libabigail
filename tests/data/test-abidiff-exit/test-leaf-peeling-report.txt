@@ -19,7 +19,7 @@ Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
 'struct ops2 at test-leaf-peeling-v0.cc:10:1' changed:
   type size changed from 320 to 640 (in bits)
   there are data member changes:
-    'foo ops2::y[10]' size changed from 320 to 640 (in bits) (by +320 bits)
+    'foo y[10]' size changed from 320 to 640 (in bits) (by +320 bits)
 
 'struct ops3 at test-leaf-peeling-v0.cc:14:1' changed:
   type size hasn't changed

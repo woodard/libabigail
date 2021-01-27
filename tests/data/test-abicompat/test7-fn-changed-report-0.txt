@@ -14,5 +14,5 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in unqualified underlying type 'struct Student':
         type size changed from 128 to 192 (in bits)
         1 data member insertion:
-          'float Student::percentage', at offset 128 (in bits)
+          'float percentage', at offset 128 (in bits)
 

@@ -8,7 +8,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in referenced type 'struct base':
         type size changed from 32 to 64 (in bits)
         1 data member insertion:
-          'char base::m1', at offset 32 (in bits)
+          'char m1', at offset 32 (in bits)
 
   [C] 'function void foo(S*)' has some indirect sub-type changes:
     parameter 1 of type 'S*' has sub-type changes:
@@ -18,5 +18,5 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
           'struct base' changed:
             details were reported earlier
         1 data member change:
-          'int S::m0' offset changed from 32 to 64 (in bits) (by +32 bits)
+          'int m0' offset changed from 32 to 64 (in bits) (by +32 bits)
 

@@ -8,7 +8,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in referenced type 'struct S':
         type size changed from 64 to 96 (in bits)
         1 data member insertion:
-          'unsigned int S::m01', at offset 32 (in bits)
+          'unsigned int m01', at offset 32 (in bits)
         1 data member change:
-          'int S::m1' offset changed from 32 to 64 (in bits) (by +32 bits)
+          'int m1' offset changed from 32 to 64 (in bits) (by +32 bits)
 

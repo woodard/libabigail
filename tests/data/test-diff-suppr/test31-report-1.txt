@@ -9,5 +9,5 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         in pointed to type 'struct hidden::S0':
           type size changed from 32 to 64 (in bits)
           1 data member insertion:
-            'char hidden::S0::m1', at offset 32 (in bits)
+            'char m1', at offset 32 (in bits)
 

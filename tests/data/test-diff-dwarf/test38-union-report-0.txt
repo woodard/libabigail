@@ -8,7 +8,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in pointed to type 'union some_union_type':
         type size hasn't changed
         1 data member deletion:
-          'int some_union_type::m0'
+          'int m0'
         type changed from:
           union some_union_type{int m0; char m1; S m2;}
         to:

@@ -13,7 +13,7 @@ Unreachable types summary: 1 removed, 1 changed, 1 added types
   [C] 'struct unreachable_struct2' changed:
     type size changed from 32 to 64 (in bits)
     1 data member insertion:
-      'char unreachable_struct2::m2', at offset 32 (in bits) at test-v1.c:9:1
+      'char m2', at offset 32 (in bits) at test-v1.c:9:1
 
 1 added type unreachable from any public interface:
 
