@@ -359,7 +359,7 @@ class corpus_group : public corpus
 public:
   typedef vector<corpus_sptr> corpora_type;
 
-  corpus_group(ir::environment*, const string&);
+  corpus_group(ir::environment*, const string& path = "");
 
   virtual ~corpus_group();
 

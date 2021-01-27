@@ -1640,7 +1640,7 @@ struct corpus_group::priv
 }; // end corpus_group::priv
 
 /// Default constructor of the @ref corpus_group type.
-corpus_group::corpus_group(environment* env, const string& path = "")
+corpus_group::corpus_group(environment* env, const string& path)
   : corpus(env, path), priv_(new priv)
 {}
 
