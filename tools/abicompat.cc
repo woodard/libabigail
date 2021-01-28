@@ -153,17 +153,6 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.list_undefined_symbols_only = true;
       else if (!strcmp(argv[i], "--show-base-names") || !strcmp(argv[i], "-b"))
 	opts.show_base_names = true;
-      else if (!strcmp(argv[i], "--lib-debug-info-dir1")
-	       || !strcmp(argv[i], "--libd1"))
-	{
-	  if (argc <= i + 1 || argv[i + 1][0] == '-')
-	    return false;
-	  // elfutils wants the root path to the debug info to be
-	  // absolute.
-	  opts.lib1_di_root_path =
-	    abigail::tools_utils::make_path_absolute(argv[i + 1]);
-	  ++i;
-	}
       else if (!strcmp(argv[i], "--app-debug-info-dir")
 	       || !strcmp(argv[i], "--appd"))
 	{
@@ -172,6 +161,17 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  // elfutils wants the root path to the debug info to be
 	  // absolute.
 	  opts.app_di_root_path =
+	    abigail::tools_utils::make_path_absolute(argv[i + 1]);
+	  ++i;
+	}
+      else if (!strcmp(argv[i], "--lib-debug-info-dir1")
+	       || !strcmp(argv[i], "--libd1"))
+	{
+	  if (argc <= i + 1 || argv[i + 1][0] == '-')
+	    return false;
+	  // elfutils wants the root path to the debug info to be
+	  // absolute.
+	  opts.lib1_di_root_path =
 	    abigail::tools_utils::make_path_absolute(argv[i + 1]);
 	  ++i;
 	}
