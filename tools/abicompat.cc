@@ -131,114 +131,103 @@ parse_command_line(int argc, char* argv[], options& opts)
   if (argc < 2)
     return false;
 
-  for (int i = 1; i < argc; ++i)
-    {
-      if (argv[i][0] != '-')
-	{
-	  if (opts.app_path.empty())
-	    opts.app_path = argv[i];
-	  else if (opts.lib1_path.empty())
-	    opts.lib1_path = argv[i];
-	  else if (opts.lib2_path.empty())
-	    opts.lib2_path = argv[i];
-	  else
-	    return false;
-	}
-      else if (!strcmp(argv[i], "--version")
-	       || !strcmp(argv[i], "-v"))
-	{
-	  opts.display_version = true;
-	  return true;
-	}
-      else if (!strcmp(argv[i], "--list-undefined-symbols")
+  for (int i = 1; i < argc; ++i) {
+      if (argv[i][0] != '-'){
+	if (opts.app_path.empty())
+	  opts.app_path = argv[i];
+	else if (opts.lib1_path.empty())
+	  opts.lib1_path = argv[i];
+	else if (opts.lib2_path.empty())
+	  opts.lib2_path = argv[i];
+	else
+	  return false;
+      } else if (!strcmp(argv[i], "--version")
+		 || !strcmp(argv[i], "-v")){
+	opts.display_version = true;
+	return true;
+      } else if (!strcmp(argv[i], "--list-undefined-symbols")
 	       || !strcmp(argv[i], "-u"))
 	opts.list_undefined_symbols_only = true;
       else if (!strcmp(argv[i], "--show-base-names")
 	       || !strcmp(argv[i], "-b"))
 	opts.show_base_names = true;
-      else if (!strcmp(argv[i], "--app-debug-info-dir")
-	       || !strcmp(argv[i], "--appd"))
-	{
-	  if (argc <= i + 1
-	      || argv[i + 1][0] == '-')
-	    return false;
-	  // elfutils wants the root path to the debug info to be
-	  // absolute.
-	  opts.app_di_root_path =
-	    abigail::tools_utils::make_path_absolute(argv[i + 1]);
-	  ++i;
-	}
       else if (!strcmp(argv[i], "--lib-debug-info-dir1")
-	       || !strcmp(argv[i], "--libd1"))
-	{
-	  if (argc <= i + 1
-	      || argv[i + 1][0] == '-')
-	    return false;
-	  // elfutils wants the root path to the debug info to be
-	  // absolute.
-	  opts.lib1_di_root_path =
-	    abigail::tools_utils::make_path_absolute(argv[i + 1]);
-	  ++i;
-	}
-      else if (!strcmp(argv[i], "--lib-debug-info-dir2")
-	       || !strcmp(argv[i], "--libd2"))
-	{
-	  if (argc <= i + 1
-	      || argv[i + 1][0] == '-')
-	    return false;
-	  // elfutils wants the root path to the debug info to be
-	  // absolute.
-	  opts.lib2_di_root_path =
-	    abigail::tools_utils::make_path_absolute(argv[i + 1]);
-	  ++i;
-	}
-      else if (!strcmp(argv[i], "--suppressions")
-	       || !strcmp(argv[i], "--suppr"))
-	{
-	  int j = i + 1;
-	  if (j >= argc)
-	    return false;
-	  opts.suppression_paths.push_back(argv[j]);
-	  ++i;
-	}
-      else if (!strcmp(argv[i], "--libdir2"))
-    {
-      int j = i + 1;
-      if (j >= argc)
-        return false;
-      opts.libdir2_paths.push_back(argv[j]);
-      ++i;
-    }
-      else if (!strcmp(argv[i], "--redundant"))
+	       || !strcmp(argv[i], "--libd1")) {
+	if (argc <= i + 1 || argv[i + 1][0] == '-')
+	  return false;
+	// elfutils wants the root path to the debug info to be
+	// absolute.
+	opts.lib1_di_root_path =
+	  abigail::tools_utils::make_path_absolute(argv[i + 1]);
+	++i;
+      } else if (!strcmp(argv[i], "--app-debug-info-dir")
+	       || !strcmp(argv[i], "--appd")) {
+	if (argc <= i + 1 || argv[i + 1][0] == '-')
+	  return false;
+	// elfutils wants the root path to the debug info to be
+	// absolute.
+	opts.app_di_root_path =
+	  abigail::tools_utils::make_path_absolute(argv[i + 1]);
+	++i;
+      } else if (!strcmp(argv[i], "--lib-debug-info-dir2")
+		 || !strcmp(argv[i], "--libd2")) {
+	if (argc <= i + 1
+	    || argv[i + 1][0] == '-')
+	  return false;
+	// elfutils wants the root path to the debug info to be
+	// absolute.
+	opts.lib2_di_root_path =
+	  abigail::tools_utils::make_path_absolute(argv[i + 1]);
+	++i;
+      } else if (!strcmp(argv[i], "--suppressions")
+	       || !strcmp(argv[i], "--suppr")) {
+	int j = i + 1;
+	if (j >= argc)
+	  return false;
+	opts.suppression_paths.push_back(argv[j]);
+	++i;
+      } else if (!strcmp(argv[i], "--libdir2"))	{
+	int j = i + 1;
+	if (j >= argc)
+	  return false;
+	opts.libdir2_paths.push_back(argv[j]);
+	++i;
+      } else if (!strcmp(argv[i], "--redundant"))
 	opts.show_redundant = true;
       else if (!strcmp(argv[i], "--no-redundant"))
 	opts.show_redundant = false;
       else if (!strcmp(argv[i], "--no-show-locs"))
 	opts.show_locs = false;
-      else if (!strcmp(argv[i], "--help")
-	       || !strcmp(argv[i], "-h"))
-	{
-	  opts.display_help = true;
-	  return true;
-	}
-      else if (!strcmp(argv[i], "--weak-mode"))
+      else if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h")) {
+	opts.display_help = true;
+	return true;
+      } else if (!strcmp(argv[i], "--weak-mode"))
 	opts.weak_mode = true;
       else if (!strcmp(argv[i], "--recursive"))
 	opts.recursive = true;
-      else
-	{
+      else {
 	  opts.unknow_option = argv[i];
 	  return false;
-	}
-    }
+      }
+  } // for through arguments
 
   if (!opts.list_undefined_symbols_only)
     {
-      if (opts.app_path.empty()
-	  || opts.lib1_path.empty())
+      if (opts.app_path.empty())
 	return false;
-      if (!opts.weak_mode && opts.lib2_path.empty())
-	opts.weak_mode = true;
+      if (opts.recursive){
+	/* In the recursive mode all the lib1_paths are provided by the dynamic
+	   linker so we don't need a lib1_path */
+	if(opts.libdir2_paths.empty())
+	  /* Fixme: Theoretically there could be a weak recursive mode but it is
+	     not yet implemented. */
+	  return false;
+      } else { // individual library mode
+	if (opts.lib1_path.empty())
+	  return false;
+	if (!opts.weak_mode && opts.lib2_path.empty())
+	  opts.weak_mode = true;
+      }
     }
 
   return true;
@@ -258,6 +247,7 @@ ldd( vector< pair<string,string> > &libnames, const string &app_path)
         // fixme: error handling
         abort();
     }
+    signal(SIGCHLD, SIG_IGN);
     if(child==0){
         const char *envp[3] = { "LD_TRACE_LOADED_OBJECTS=1", NULL , NULL };
         char *ldlibpath=getenv("LD_LIBRARY_PATH");
@@ -272,24 +262,25 @@ ldd( vector< pair<string,string> > &libnames, const string &app_path)
          come to it */
         // fixme: error handling
         int in=open("/dev/null",O_RDONLY);
-        dup2(0, in);
+        dup2(in, 0);
         close(in);
-        dup2(1, inout[1]);
+        dup2(inout[1], 1);
+	close(inout[0]);
+	close(inout[1]);
         // fixme: arch independence
-        execle( "/lib64/ld-linux-x86_64", "/lib64/ld-linux-x86_64", app_path,
-               NULL, envp);
+        execle( "/lib64/ld-linux-x86-64.so.2", "/lib64/ld-linux-x86-64.so.2",
+		app_path.c_str(), NULL, envp);
     } else {
+      close(inout[1]);
       static const ssize_t bufsize=4096;
       char buf[bufsize];
       ssize_t bytes;
-      while( bytes=read(inout[0], buf, bufsize) != 0){
+      while( (bytes=read(inout[0], buf, bufsize)) != 0){
 	// fixme
 	if(bytes==-1)
 	  abort();
 	str.append(buf, bytes);
       }
-      int status;
-      waitpid(child, &status, 0);
     }
     /* There is now a string which has the output of the ldd command
      map those needed names to their paths which can be found in the str
@@ -309,16 +300,15 @@ ldd( vector< pair<string,string> > &libnames, const string &app_path)
     for(auto loc = str.find( " => "); loc != string::npos;
 	loc=str.find( " => ", loc) )
     {
-        auto begin_soname=str.rfind('\t', loc);
-        str[loc]=0;
-	auto end_libname=str.find(' ',loc+4); // loc+4=the beginning of the path
-        str[end_libname]=0;
-        libnames.push_back( std::make_pair(
-					   string(str, begin_soname,
-						  loc-begin_soname),
-					   string(str, loc+=4,
-						  end_libname-loc) ) );
-	loc=end_libname+1; // move past the current entry
+        auto begin_soname=str.rfind('\t', loc)+1;
+	auto begin_libpath=loc+4;
+	auto end_libpath=str.find(' ',begin_libpath);
+	string shortname(str, begin_soname,loc-begin_soname);
+	string pathname(str, begin_libpath, end_libpath-begin_libpath);
+	libnames.push_back( std::make_pair(shortname,pathname));
+	// cout << '-' << shortname << '-' << pathname << '-' << libnames.size()
+	//      << std::endl;
+	loc=end_libpath+1; // move past the current entry
     }
     return libnames;
 }
