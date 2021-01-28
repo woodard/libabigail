@@ -488,14 +488,18 @@ perform_compat_check_in_normal_mode(options& opts,
 				    corpus_group_sptr lib1_corpora,
                                     corpus_group_sptr lib2_corpora)
 {
+  // cout << lib1_corpora->get_corpora().size() << ' '
+  //      << lib2_corpora->get_corpora().size() << std::endl;
+
   abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
   for( auto i=0; i<lib1_corpora->get_corpora().size(); i++){
     // i is the index for the library taking the place of the app
-    for( auto j=i;i<lib2_corpora->get_corpora().size(); j++){
+    for( auto j=i;j<lib2_corpora->get_corpora().size(); j++){
       // j is the index for the library being tested
       /* Every library can provide symbols to other libraries so
 	 you need to test every library with every other library to get
 	 the full ABI surface even though that is a O(N^2) algorithm */
+      // cout << i << ' ' << j << std::endl;
       status |= perform_compat_check_in_normal_mode( opts, ctxt,
 					   lib1_corpora->get_corpora()[i],
 					   lib1_corpora->get_corpora()[j+1],
@@ -849,6 +853,7 @@ main(int argc, char* argv[])
 	 paths from the dynamic linker */
       /* fixme: adding it directly may be a memory leak since these are
 	 sptr's - who actually owns the corpora and its memory? */
+      cout << "reading corpus for: " << pathname << std::endl;
       first_group->add_corpus( read_corpus_from_elf(pathname,
 						    lib1_di_roots,
 						    env.get(),
@@ -888,6 +893,7 @@ main(int argc, char* argv[])
 	    << "could not read file " << second_path << "\n";
 	  return abigail::tools_utils::ABIDIFF_ERROR;
 	}
+      cout << "reading corpus for: " << second_path << std::endl;
       second_group->add_corpus( read_corpus_from_elf(second_path,
 						     lib1_di_roots, env.get(),
 						     /*load_all_types=*/false,
