@@ -25,26 +25,25 @@
 /// incompatibility between what the application expects and what the
 /// library provides.
 
-#include <unistd.h>
+#include "abg-comparison.h"
+#include "abg-config.h"
+#include "abg-corpus.h"
+#include "abg-dwarf-reader.h"
+#include "abg-suppression.h"
+#include "abg-tools-utils.h"
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <fcntl.h>
 #include <fstream>
 #include <iostream>
 #include <memory>
 #include <string>
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <sys/wait.h>
-#include <fcntl.h>
 #include <unistd.h>
-#include "abg-config.h"
-#include "abg-tools-utils.h"
-#include "abg-corpus.h"
-#include "abg-dwarf-reader.h"
-#include "abg-comparison.h"
-#include "abg-suppression.h"
 
 using std::string;
 using std::cerr;
@@ -62,35 +61,36 @@ class options
   options();
 
 public:
-  string		prog_name;
-  string		unknow_option;
-  string		app_path;
-  string		lib1_path;
-  string		lib2_path;
-  shared_ptr<char>	app_di_root_path;
-  shared_ptr<char>	lib1_di_root_path;
-  shared_ptr<char>	lib2_di_root_path;
-  vector<string>	suppression_paths;
-  vector<string>        libdir2_paths;
-  bool			display_help;
-  bool			display_version;
-  bool			weak_mode;
-  bool                  recursive;
-  bool			list_undefined_symbols_only;
-  bool			show_base_names;
-  bool			show_redundant;
-  bool			show_locs;
+  string	   prog_name;
+  string	   unknow_option;
+  string	   app_path;
+  string	   lib1_path;
+  string	   lib2_path;
+  shared_ptr<char> app_di_root_path;
+  shared_ptr<char> lib1_di_root_path;
+  shared_ptr<char> lib2_di_root_path;
+  vector<string>   suppression_paths;
+  vector<string>   libdir2_paths;
+  bool		   display_help;
+  bool		   display_version;
+  bool		   weak_mode;
+  bool		   recursive;
+  bool		   list_undefined_symbols_only;
+  bool		   show_base_names;
+  bool		   show_redundant;
+  bool		   show_locs;
 
   options(const char* program_name)
-    :prog_name(program_name),
-     display_help(),
-     display_version(),
-     weak_mode(),
-     list_undefined_symbols_only(),
-     show_base_names(),
-     show_redundant(true),
-     show_locs(true)
-  {}
+    : prog_name(program_name),
+      display_help(),
+      display_version(),
+      weak_mode(),
+      list_undefined_symbols_only(),
+      show_base_names(),
+      show_redundant(true),
+      show_locs(true)
+  {
+  }
 }; // end struct options
 
 static void
@@ -104,25 +104,24 @@ display_usage(const string& prog_name, ostream& out)
     << "  --help|-h  display this help message\n"
     << "  --version|-v  show program version information and exit\n"
     << "  --list-undefined-symbols|-u  display the list of "
-    "undefined symbols of the application\n"
+       "undefined symbols of the application\n"
     << "  --show-base-names|b  in the report, only show the base names "
-    " of the files; not the full paths\n"
+       " of the files; not the full paths\n"
     << "  --app-debug-info-dir|--appd <path-to-app-debug-info>  set the path "
-    "to the debug information directory for the application\n"
+       "to the debug information directory for the application\n"
     << "  --lib-debug-info-dir1|--libd1 <path-to-lib-debug-info1>  set the path "
-    "to the debug information directory for the first library\n"
+       "to the debug information directory for the first library\n"
     << "  --lib-debug-info-dir2|--libd2 <path-to-lib-debug-info2>  set the path "
-    "to the debug information directory for the second library\n"
-    <<  "--suppressions|--suppr <path> specify a suppression file\n"
+       "to the debug information directory for the second library\n"
+    << "--suppressions|--suppr <path> specify a suppression file\n"
     << "--no-redundant  do not display redundant changes\n"
     << "--no-show-locs  do now show location information\n"
     << "--redundant  display redundant changes (this is the default)\n"
     << "--weak-mode  check compatibility between the application and "
-    "just one version of the library.\n"
+       "just one version of the library.\n"
     << "--recursive  include all application dependencies.\n"
     << "--libdir2 <path-to-libdir2>  for recursive mode set the path to search"
-    "for the second set of libs (can be specified multiple times)"
-    ;
+       "for the second set of libs (can be specified multiple times)";
 }
 
 static bool
@@ -131,186 +130,210 @@ parse_command_line(int argc, char* argv[], options& opts)
   if (argc < 2)
     return false;
 
-  for (int i = 1; i < argc; ++i) {
-      if (argv[i][0] != '-'){
-	if (opts.app_path.empty())
-	  opts.app_path = argv[i];
-	else if (opts.lib1_path.empty())
-	  opts.lib1_path = argv[i];
-	else if (opts.lib2_path.empty())
-	  opts.lib2_path = argv[i];
-	else
-	  return false;
-      } else if (!strcmp(argv[i], "--version")
-		 || !strcmp(argv[i], "-v")){
-	opts.display_version = true;
-	return true;
-      } else if (!strcmp(argv[i], "--list-undefined-symbols")
+  for (int i = 1; i < argc; ++i)
+    {
+      if (argv[i][0] != '-')
+	{
+	  if (opts.app_path.empty())
+	    opts.app_path = argv[i];
+	  else if (opts.lib1_path.empty())
+	    opts.lib1_path = argv[i];
+	  else if (opts.lib2_path.empty())
+	    opts.lib2_path = argv[i];
+	  else
+	    return false;
+	}
+      else if (!strcmp(argv[i], "--version") || !strcmp(argv[i], "-v"))
+	{
+	  opts.display_version = true;
+	  return true;
+	}
+      else if (!strcmp(argv[i], "--list-undefined-symbols")
 	       || !strcmp(argv[i], "-u"))
 	opts.list_undefined_symbols_only = true;
-      else if (!strcmp(argv[i], "--show-base-names")
-	       || !strcmp(argv[i], "-b"))
+      else if (!strcmp(argv[i], "--show-base-names") || !strcmp(argv[i], "-b"))
 	opts.show_base_names = true;
       else if (!strcmp(argv[i], "--lib-debug-info-dir1")
-	       || !strcmp(argv[i], "--libd1")) {
-	if (argc <= i + 1 || argv[i + 1][0] == '-')
-	  return false;
-	// elfutils wants the root path to the debug info to be
-	// absolute.
-	opts.lib1_di_root_path =
-	  abigail::tools_utils::make_path_absolute(argv[i + 1]);
-	++i;
-      } else if (!strcmp(argv[i], "--app-debug-info-dir")
-	       || !strcmp(argv[i], "--appd")) {
-	if (argc <= i + 1 || argv[i + 1][0] == '-')
-	  return false;
-	// elfutils wants the root path to the debug info to be
-	// absolute.
-	opts.app_di_root_path =
-	  abigail::tools_utils::make_path_absolute(argv[i + 1]);
-	++i;
-      } else if (!strcmp(argv[i], "--lib-debug-info-dir2")
-		 || !strcmp(argv[i], "--libd2")) {
-	if (argc <= i + 1
-	    || argv[i + 1][0] == '-')
-	  return false;
-	// elfutils wants the root path to the debug info to be
-	// absolute.
-	opts.lib2_di_root_path =
-	  abigail::tools_utils::make_path_absolute(argv[i + 1]);
-	++i;
-      } else if (!strcmp(argv[i], "--suppressions")
-	       || !strcmp(argv[i], "--suppr")) {
-	int j = i + 1;
-	if (j >= argc)
-	  return false;
-	opts.suppression_paths.push_back(argv[j]);
-	++i;
-      } else if (!strcmp(argv[i], "--libdir2"))	{
-	int j = i + 1;
-	if (j >= argc)
-	  return false;
-	opts.libdir2_paths.push_back(argv[j]);
-	++i;
-      } else if (!strcmp(argv[i], "--redundant"))
+	       || !strcmp(argv[i], "--libd1"))
+	{
+	  if (argc <= i + 1 || argv[i + 1][0] == '-')
+	    return false;
+	  // elfutils wants the root path to the debug info to be
+	  // absolute.
+	  opts.lib1_di_root_path =
+	    abigail::tools_utils::make_path_absolute(argv[i + 1]);
+	  ++i;
+	}
+      else if (!strcmp(argv[i], "--app-debug-info-dir")
+	       || !strcmp(argv[i], "--appd"))
+	{
+	  if (argc <= i + 1 || argv[i + 1][0] == '-')
+	    return false;
+	  // elfutils wants the root path to the debug info to be
+	  // absolute.
+	  opts.app_di_root_path =
+	    abigail::tools_utils::make_path_absolute(argv[i + 1]);
+	  ++i;
+	}
+      else if (!strcmp(argv[i], "--lib-debug-info-dir2")
+	       || !strcmp(argv[i], "--libd2"))
+	{
+	  if (argc <= i + 1 || argv[i + 1][0] == '-')
+	    return false;
+	  // elfutils wants the root path to the debug info to be
+	  // absolute.
+	  opts.lib2_di_root_path =
+	    abigail::tools_utils::make_path_absolute(argv[i + 1]);
+	  ++i;
+	}
+      else if (!strcmp(argv[i], "--suppressions")
+	       || !strcmp(argv[i], "--suppr"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    return false;
+	  opts.suppression_paths.push_back(argv[j]);
+	  ++i;
+	}
+      else if (!strcmp(argv[i], "--libdir2"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    return false;
+	  opts.libdir2_paths.push_back(argv[j]);
+	  ++i;
+	}
+      else if (!strcmp(argv[i], "--redundant"))
 	opts.show_redundant = true;
       else if (!strcmp(argv[i], "--no-redundant"))
 	opts.show_redundant = false;
       else if (!strcmp(argv[i], "--no-show-locs"))
 	opts.show_locs = false;
-      else if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h")) {
-	opts.display_help = true;
-	return true;
-      } else if (!strcmp(argv[i], "--weak-mode"))
+      else if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h"))
+	{
+	  opts.display_help = true;
+	  return true;
+	}
+      else if (!strcmp(argv[i], "--weak-mode"))
 	opts.weak_mode = true;
       else if (!strcmp(argv[i], "--recursive"))
 	opts.recursive = true;
-      else {
+      else
+	{
 	  opts.unknow_option = argv[i];
 	  return false;
-      }
-  } // for through arguments
+	}
+    } // for through arguments
 
   if (!opts.list_undefined_symbols_only)
     {
       if (opts.app_path.empty())
 	return false;
-      if (opts.recursive){
-	/* In the recursive mode all the lib1_paths are provided by the dynamic
-	   linker so we don't need a lib1_path */
-	if(opts.libdir2_paths.empty())
-	  /* Fixme: Theoretically there could be a weak recursive mode but it is
-	     not yet implemented. */
-	  return false;
-      } else { // individual library mode
-	if (opts.lib1_path.empty())
-	  return false;
-	if (!opts.weak_mode && opts.lib2_path.empty())
-	  opts.weak_mode = true;
-      }
+      if (opts.recursive)
+	{
+	  /* In the recursive mode all the lib1_paths are provided by the
+	     dynamic linker so we don't need a lib1_path */
+	  if (opts.libdir2_paths.empty())
+	    /* Fixme: Theoretically there could be a weak recursive mode but it
+	       is not yet implemented. */
+	    return false;
+	}
+      else
+	{ // individual library mode
+	  if (opts.lib1_path.empty())
+	    return false;
+	  if (!opts.weak_mode && opts.lib2_path.empty())
+	    opts.weak_mode = true;
+	}
     }
 
   return true;
 }
 
-static vector< pair<string,string> > &
-ldd( vector< pair<string,string> > &libnames, const string &app_path)
+static vector<pair<string, string>>&
+ldd(vector<pair<string, string>>& libnames, const string& app_path)
 {
-    /* Use LD_TRACE_LOADED_OBJECTS=1 and ld.so to find where the objects
-     can be found */
-    int inout[2];
-    pipe(inout);
-    // fixme: error handling
-    std::string str;
-    pid_t child=fork();
-    if(child==-1){
-        // fixme: error handling
-        abort();
-    }
-    signal(SIGCHLD, SIG_IGN);
-    if(child==0){
-        const char *envp[3] = { "LD_TRACE_LOADED_OBJECTS=1", NULL , NULL };
-        char *ldlibpath=getenv("LD_LIBRARY_PATH");
-        if(ldlibpath!=NULL){
-            std::string path("LD_LIBRARY_PATH=");
-            path+=ldlibpath;
-            envp[1]=strdup(path.c_str());
-        }
-        /* fixme: There is a very small chance that something else from the
-         environment such as an audit library may modify the paths of the
-         libraries being loaded by the app but let's cross that bridge when we
-         come to it */
-        // fixme: error handling
-        int in=open("/dev/null",O_RDONLY);
-        dup2(in, 0);
-        close(in);
-        dup2(inout[1], 1);
-	close(inout[0]);
-	close(inout[1]);
-        // fixme: arch independence
-        execle( "/lib64/ld-linux-x86-64.so.2", "/lib64/ld-linux-x86-64.so.2",
-		app_path.c_str(), NULL, envp);
-    } else {
-      close(inout[1]);
-      static const ssize_t bufsize=4096;
-      char buf[bufsize];
-      ssize_t bytes;
-      while( (bytes=read(inout[0], buf, bufsize)) != 0){
-	// fixme
-	if(bytes==-1)
-	  abort();
-	str.append(buf, bytes);
-      }
-    }
-    /* There is now a string which has the output of the ldd command
-     map those needed names to their paths which can be found in the str
-     string */
-    /* The output of the trace from the dynamic linker is going to look
-     like:
-  libselinux.so.1 => /lib64/libselinux.so.1 (0x00007f1d7ac40000)
-  libcap.so.2 => /lib64/libcap.so.2 (0x00007f1d7ac39000)
-     chop it up.
-     Note: in the output there are occasionally some entries which do not
-     map to an actual shared library. A good example of that is:
-  linux-vdso.so.1 (0x00007ffcd3137000)
-     We're not going to handle this right now. The DWARF is in a kernel
-     module like /usr/lib/modules/5.9.10-200.fc33.x86_64/vdso/vdso64.so
-     */
-
-    for(auto loc = str.find( " => "); loc != string::npos;
-	loc=str.find( " => ", loc) )
+  /* Use LD_TRACE_LOADED_OBJECTS=1 and ld.so to find where the objects
+   can be found */
+  int inout[2];
+  pipe(inout);
+  // fixme: error handling
+  std::string str;
+  pid_t	      child = fork();
+  if (child == -1)
     {
-        auto begin_soname=str.rfind('\t', loc)+1;
-	auto begin_libpath=loc+4;
-	auto end_libpath=str.find(' ',begin_libpath);
-	string shortname(str, begin_soname,loc-begin_soname);
-	string pathname(str, begin_libpath, end_libpath-begin_libpath);
-	libnames.push_back( std::make_pair(shortname,pathname));
-	// cout << '-' << shortname << '-' << pathname << '-' << libnames.size()
-	//      << std::endl;
-	loc=end_libpath+1; // move past the current entry
+      // fixme: error handling
+      abort();
     }
-    return libnames;
+  signal(SIGCHLD, SIG_IGN);
+  if (child == 0)
+    {
+      const char* envp[3] = { "LD_TRACE_LOADED_OBJECTS=1", NULL, NULL };
+      char*	  ldlibpath = getenv("LD_LIBRARY_PATH");
+      if (ldlibpath != NULL)
+	{
+	  std::string path("LD_LIBRARY_PATH=");
+	  path += ldlibpath;
+	  envp[1] = strdup(path.c_str());
+	}
+      /* fixme: There is a very small chance that something else from the
+       environment such as an audit library may modify the paths of the
+       libraries being loaded by the app but let's cross that bridge when we
+       come to it */
+      // fixme: error handling
+      int in = open("/dev/null", O_RDONLY);
+      dup2(in, 0);
+      close(in);
+      dup2(inout[1], 1);
+      close(inout[0]);
+      close(inout[1]);
+      // fixme: arch independence
+      execle("/lib64/ld-linux-x86-64.so.2", "/lib64/ld-linux-x86-64.so.2",
+	     app_path.c_str(), NULL, envp);
+    }
+  else
+    {
+      close(inout[1]);
+      static const ssize_t bufsize = 4096;
+      char		   buf[bufsize];
+      ssize_t		   bytes;
+      while ((bytes = read(inout[0], buf, bufsize)) != 0)
+	{
+	  // fixme
+	  if (bytes == -1)
+	    abort();
+	  str.append(buf, bytes);
+	}
+    }
+  /* There is now a string which has the output of the ldd command
+   map those needed names to their paths which can be found in the str
+   string */
+  /* The output of the trace from the dynamic linker is going to look
+   like:
+libselinux.so.1 => /lib64/libselinux.so.1 (0x00007f1d7ac40000)
+libcap.so.2 => /lib64/libcap.so.2 (0x00007f1d7ac39000)
+   chop it up.
+   Note: in the output there are occasionally some entries which do not
+   map to an actual shared library. A good example of that is:
+linux-vdso.so.1 (0x00007ffcd3137000)
+   We're not going to handle this right now. The DWARF is in a kernel
+   module like /usr/lib/modules/5.9.10-200.fc33.x86_64/vdso/vdso64.so
+   */
+
+  for (auto loc = str.find(" => "); loc != string::npos;
+       loc = str.find(" => ", loc))
+    {
+      auto   begin_soname = str.rfind('\t', loc) + 1;
+      auto   begin_libpath = loc + 4;
+      auto   end_libpath = str.find(' ', begin_libpath);
+      string shortname(str, begin_soname, loc - begin_soname);
+      string pathname(str, begin_libpath, end_libpath - begin_libpath);
+      libnames.push_back(std::make_pair(shortname, pathname));
+      // cout << '-' << shortname << '-' << pathname << '-' << libnames.size()
+      //      << std::endl;
+      loc = end_libpath + 1; // move past the current entry
+    }
+  return libnames;
 }
 
 using abigail::tools_utils::check_file;
@@ -359,20 +382,19 @@ create_diff_context(const options& opts)
   ctxt->show_linkage_names(true);
   ctxt->show_redundant_changes(opts.show_redundant);
   ctxt->show_locs(opts.show_locs);
-  ctxt->switch_categories_off
-    (abigail::comparison::ACCESS_CHANGE_CATEGORY
-     | abigail::comparison::COMPATIBLE_TYPE_CHANGE_CATEGORY
-     | abigail::comparison::HARMLESS_DECL_NAME_CHANGE_CATEGORY
-     | abigail::comparison::NON_VIRT_MEM_FUN_CHANGE_CATEGORY
-     | abigail::comparison::STATIC_DATA_MEMBER_CHANGE_CATEGORY
-     | abigail::comparison::HARMLESS_ENUM_CHANGE_CATEGORY
-     | abigail::comparison::HARMLESS_SYMBOL_ALIAS_CHANGE_CATEGORY);
+  ctxt->switch_categories_off(
+    abigail::comparison::ACCESS_CHANGE_CATEGORY
+    | abigail::comparison::COMPATIBLE_TYPE_CHANGE_CATEGORY
+    | abigail::comparison::HARMLESS_DECL_NAME_CHANGE_CATEGORY
+    | abigail::comparison::NON_VIRT_MEM_FUN_CHANGE_CATEGORY
+    | abigail::comparison::STATIC_DATA_MEMBER_CHANGE_CATEGORY
+    | abigail::comparison::HARMLESS_ENUM_CHANGE_CATEGORY
+    | abigail::comparison::HARMLESS_SYMBOL_ALIAS_CHANGE_CATEGORY);
 
   // Load suppression specifications, if there are any.
   suppressions_type supprs;
   for (vector<string>::const_iterator i = opts.suppression_paths.begin();
-       i != opts.suppression_paths.end();
-       ++i)
+       i != opts.suppression_paths.end(); ++i)
     if (check_file(*i, cerr, opts.prog_name))
       read_suppressions(*i, supprs);
 
@@ -403,11 +425,11 @@ create_diff_context(const options& opts)
 ///
 /// @return a status bitfield.
 static abidiff_status
-perform_compat_check_in_normal_mode(options& opts,
+perform_compat_check_in_normal_mode(options&	       opts,
 				    diff_context_sptr& ctxt,
-				    corpus_sptr app_corpus,
-				    corpus_sptr lib1_corpus,
-				    corpus_sptr lib2_corpus)
+				    corpus_sptr	       app_corpus,
+				    corpus_sptr	       lib1_corpus,
+				    corpus_sptr	       lib2_corpus)
 {
   ABG_ASSERT(lib1_corpus);
   ABG_ASSERT(lib2_corpus);
@@ -420,8 +442,7 @@ perform_compat_check_in_normal_mode(options& opts,
 
   for (elf_symbols::const_iterator i =
 	 app_corpus->get_sorted_undefined_fun_symbols().begin();
-       i != app_corpus->get_sorted_undefined_fun_symbols().end();
-       ++i)
+       i != app_corpus->get_sorted_undefined_fun_symbols().end(); ++i)
     {
       string id = (*i)->get_id_string();
       lib1_corpus->get_sym_ids_of_fns_to_keep().push_back(id);
@@ -429,8 +450,7 @@ perform_compat_check_in_normal_mode(options& opts,
     }
   for (elf_symbols::const_iterator i =
 	 app_corpus->get_sorted_undefined_var_symbols().begin();
-       i != app_corpus->get_sorted_undefined_var_symbols().end();
-       ++i)
+       i != app_corpus->get_sorted_undefined_var_symbols().end(); ++i)
     {
       string id = (*i)->get_id_string();
       lib1_corpus->get_sym_ids_of_vars_to_keep().push_back(id);
@@ -449,9 +469,8 @@ perform_compat_check_in_normal_mode(options& opts,
 
   if (changes->has_net_changes())
     {
-      string app_path = opts.app_path,
-	lib1_path = opts.lib1_path,
-	lib2_path = opts.lib2_path;
+      string app_path = opts.app_path, lib1_path = opts.lib1_path,
+	     lib2_path = opts.lib2_path;
 
       if (opts.show_base_names)
 	{
@@ -471,11 +490,10 @@ perform_compat_check_in_normal_mode(options& opts,
 	  status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
 	}
       else
-	  cout << " might not be ";
+	cout << " might not be ";
 
       cout << "ABI compatible with '" << lib2_path
-	   << "' due to differences with '" << lib1_path
-	   << "' below:\n";
+	   << "' due to differences with '" << lib1_path << "' below:\n";
       changes->report(cout);
     }
 
@@ -483,29 +501,31 @@ perform_compat_check_in_normal_mode(options& opts,
 }
 
 static abidiff_status
-perform_compat_check_in_normal_mode(options& opts,
-                                    diff_context_sptr& ctxt,
-				    corpus_group_sptr lib1_corpora,
-                                    corpus_group_sptr lib2_corpora)
+perform_compat_check_in_normal_mode(options&	       opts,
+				    diff_context_sptr& ctxt,
+				    corpus_group_sptr  lib1_corpora,
+				    corpus_group_sptr  lib2_corpora)
 {
   // cout << lib1_corpora->get_corpora().size() << ' '
   //      << lib2_corpora->get_corpora().size() << std::endl;
 
   abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
-  for( auto i=0; i<lib1_corpora->get_corpora().size(); i++){
-    // i is the index for the library taking the place of the app
-    for( auto j=i;j<lib2_corpora->get_corpora().size(); j++){
-      // j is the index for the library being tested
-      /* Every library can provide symbols to other libraries so
-	 you need to test every library with every other library to get
-	 the full ABI surface even though that is a O(N^2) algorithm */
-      // cout << i << ' ' << j << std::endl;
-      status |= perform_compat_check_in_normal_mode( opts, ctxt,
-					   lib1_corpora->get_corpora()[i],
-					   lib1_corpora->get_corpora()[j+1],
-					   lib2_corpora->get_corpora()[j]);
+  for (auto i = 0; i < lib1_corpora->get_corpora().size(); i++)
+    {
+      // i is the index for the library taking the place of the app
+      for (auto j = i; j < lib2_corpora->get_corpora().size(); j++)
+	{
+	  // j is the index for the library being tested
+	  /* Every library can provide symbols to other libraries so
+	     you need to test every library with every other library to get
+	     the full ABI surface even though that is a O(N^2) algorithm */
+	  // cout << i << ' ' << j << std::endl;
+	  status |= perform_compat_check_in_normal_mode(
+	    opts, ctxt, lib1_corpora->get_corpora()[i],
+	    lib1_corpora->get_corpora()[j + 1],
+	    lib2_corpora->get_corpora()[j]);
+	}
     }
-  }
   return status;
 }
 
@@ -514,18 +534,15 @@ perform_compat_check_in_normal_mode(options& opts,
 /// the differences found in the type of that function.
 struct fn_change
 {
-  function_decl* decl;
+  function_decl*	  decl;
   function_type_diff_sptr diff;
 
-  fn_change()
-    : decl()
-  {}
+  fn_change() : decl() {}
 
-  fn_change(function_decl* decl,
-	    function_type_diff_sptr difference)
-    : decl(decl),
-      diff(difference)
-  {}
+  fn_change(function_decl* decl, function_type_diff_sptr difference)
+    : decl(decl), diff(difference)
+  {
+  }
 }; // end struct fn_change
 
 /// An description of a change of the type of a variable.  It contains
@@ -536,15 +553,11 @@ struct var_change
   var_decl* decl;
   diff_sptr diff;
 
-  var_change()
-    : decl()
-  {}
+  var_change() : decl() {}
 
-  var_change(var_decl* var,
-	     diff_sptr difference)
-    : decl(var),
-      diff(difference)
-  {}
+  var_change(var_decl* var, diff_sptr difference) : decl(var), diff(difference)
+  {
+  }
 }; // end struct var_change
 
 /// Perform a compatibility check of an application corpus and a
@@ -564,10 +577,10 @@ struct var_change
 ///
 /// @return a status bitfield.
 static abidiff_status
-perform_compat_check_in_weak_mode(options& opts,
+perform_compat_check_in_weak_mode(options&	     opts,
 				  diff_context_sptr& ctxt,
-				  corpus_sptr app_corpus,
-				  corpus_sptr lib_corpus)
+				  corpus_sptr	     app_corpus,
+				  corpus_sptr	     lib_corpus)
 {
   ABG_ASSERT(lib_corpus);
   ABG_ASSERT(app_corpus);
@@ -586,8 +599,7 @@ perform_compat_check_in_weak_mode(options& opts,
 
   for (elf_symbols::const_iterator i =
 	 app_corpus->get_sorted_undefined_fun_symbols().begin();
-       i != app_corpus->get_sorted_undefined_fun_symbols().end();
-       ++i)
+       i != app_corpus->get_sorted_undefined_fun_symbols().end(); ++i)
     {
       string id = (*i)->get_id_string();
       lib_corpus->get_sym_ids_of_fns_to_keep().push_back(id);
@@ -595,8 +607,7 @@ perform_compat_check_in_weak_mode(options& opts,
 
   for (elf_symbols::const_iterator i =
 	 app_corpus->get_sorted_undefined_var_symbols().begin();
-       i != app_corpus->get_sorted_undefined_var_symbols().end();
-       ++i)
+       i != app_corpus->get_sorted_undefined_var_symbols().end(); ++i)
     {
       string id = (*i)->get_id_string();
       lib_corpus->get_sym_ids_of_vars_to_keep().push_back(id);
@@ -618,11 +629,10 @@ perform_compat_check_in_weak_mode(options& opts,
 
   {
     function_type_sptr lib_fn_type, app_fn_type;
-    vector<fn_change> fn_changes;
+    vector<fn_change>  fn_changes;
     for (corpus::functions::const_iterator i =
 	   lib_corpus->get_functions().begin();
-	 i != lib_corpus->get_functions().end();
-	 ++i)
+	 i != lib_corpus->get_functions().end(); ++i)
       {
 	// lib_fn_type contains the type of a function that is defined
 	// in lib_corpus.
@@ -661,12 +671,9 @@ perform_compat_check_in_weak_mode(options& opts,
 	     << "'" << app_path << "' "
 	     << "expects:\n\n";
 	for (vector<fn_change>::const_iterator i = fn_changes.begin();
-	     i != fn_changes.end();
-	     ++i)
+	     i != fn_changes.end(); ++i)
 	  {
-	    cout << "  "
-		 << i->decl->get_pretty_representation()
-		 << ":\n";
+	    cout << "  " << i->decl->get_pretty_representation() << ":\n";
 	    i->diff->report(cout, "    ");
 	    cout << "\n";
 	  }
@@ -681,12 +688,11 @@ perform_compat_check_in_weak_mode(options& opts,
     // against the variables actually provided by lib_corpus and
     // report the difference that might have been found.
 
-    type_base_sptr lib_var_type, app_var_type;
+    type_base_sptr     lib_var_type, app_var_type;
     vector<var_change> var_changes;
     for (corpus::variables::const_iterator i =
 	   lib_corpus->get_variables().begin();
-	 i != lib_corpus->get_variables().end();
-	 ++i)
+	 i != lib_corpus->get_variables().end(); ++i)
       {
 	lib_var_type = (*i)->get_type();
 	ABG_ASSERT(lib_var_type);
@@ -705,12 +711,9 @@ perform_compat_check_in_weak_mode(options& opts,
 	     << "'" << app_path << "' "
 	     << "expects:\n\n";
 	for (vector<var_change>::const_iterator i = var_changes.begin();
-	     i != var_changes.end();
-	     ++i)
+	     i != var_changes.end(); ++i)
 	  {
-	    cout << "  "
-		 << i->decl->get_pretty_representation()
-		 << ":\n";
+	    cout << "  " << i->decl->get_pretty_representation() << ":\n";
 	    i->diff->report(cout, "    ");
 	    cout << "\n";
 	  }
@@ -746,7 +749,7 @@ main(int argc, char* argv[])
     {
       display_usage(argv[0], cout);
       return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-		  | abigail::tools_utils::ABIDIFF_ERROR);
+	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
 
   if (opts.display_version)
@@ -764,8 +767,7 @@ main(int argc, char* argv[])
     abigail::tools_utils::guess_file_type(opts.app_path);
   if (type != abigail::tools_utils::FILE_TYPE_ELF)
     {
-      emit_prefix(argv[0], cerr)
-	<< opts.app_path << " is not an ELF file\n";
+      emit_prefix(argv[0], cerr) << opts.app_path << " is not an ELF file\n";
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
@@ -777,7 +779,7 @@ main(int argc, char* argv[])
   suppressions_type& supprs = ctxt->suppressions();
   bool files_suppressed = (file_is_suppressed(opts.app_path, supprs)
 			   || file_is_suppressed(opts.lib1_path, supprs)
-			   ||file_is_suppressed(opts.lib2_path, supprs));
+			   || file_is_suppressed(opts.lib2_path, supprs));
 
   if (files_suppressed)
     // We don't have to compare anything because a user
@@ -786,16 +788,14 @@ main(int argc, char* argv[])
     return abigail::tools_utils::ABIDIFF_OK;
 
   // Read the application ELF file.
-  char * app_di_root = opts.app_di_root_path.get();
+  char*		 app_di_root = opts.app_di_root_path.get();
   vector<char**> app_di_roots;
   app_di_roots.push_back(&app_di_root);
-  status status = abigail::dwarf_reader::STATUS_UNKNOWN;
+  status	   status = abigail::dwarf_reader::STATUS_UNKNOWN;
   environment_sptr env(new environment);
-  corpus_sptr app_corpus=
-    read_corpus_from_elf(opts.app_path,
-			 app_di_roots, env.get(),
-			 /*load_all_types=*/opts.weak_mode,
-			 status);
+  corpus_sptr	   app_corpus =
+    read_corpus_from_elf(opts.app_path, app_di_roots, env.get(),
+			 /*load_all_types=*/opts.weak_mode, status);
 
   if (status & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
     {
@@ -814,8 +814,7 @@ main(int argc, char* argv[])
     {
       for (elf_symbols::const_iterator i =
 	     app_corpus->get_sorted_undefined_fun_symbols().begin();
-	   i != app_corpus->get_sorted_undefined_fun_symbols().end();
-	   ++i)
+	   i != app_corpus->get_sorted_undefined_fun_symbols().end(); ++i)
 	{
 	  string id = (*i)->get_id_string();
 	  string sym_name = (*i)->get_name();
@@ -833,38 +832,117 @@ main(int argc, char* argv[])
   /* This is a new mode. It looks at the DT_NEEDED for an app and loads
      all of those into a corpus group. It also loads a second version of
      the libraries and then does the comparison of with those. */
-  if(opts.recursive) {
-    // add these corpuses to the corpus group
-    corpus_group_sptr first_group( new corpus_group(env.get() ) );
-    corpus_group_sptr second_group( new  corpus_group(env.get() ) );
-    first_group->add_corpus(app_corpus);
+  if (opts.recursive)
+    {
+      // add these corpuses to the corpus group
+      corpus_group_sptr first_group(new corpus_group(env.get()));
+      corpus_group_sptr second_group(new corpus_group(env.get()));
+      first_group->add_corpus(app_corpus);
 
-    char * lib1_di_root = opts.lib1_di_root_path.get();
-    vector<char**> lib1_di_roots;
-    lib1_di_roots.push_back(&lib1_di_root);
+      char*	     lib1_di_root = opts.lib1_di_root_path.get();
+      vector<char**> lib1_di_roots;
+      lib1_di_roots.push_back(&lib1_di_root);
 
-    vector< pair<string,string> > libnames;
-    ldd(libnames, opts.app_path);
-    for ( auto i: libnames){
-      string &shortname=i.first;
-      string &pathname=i.second;
-      /* the checking is this an ELF done on the libraries below is
-	 intentionally skipped here because we are getting the library
-	 paths from the dynamic linker */
-      /* fixme: adding it directly may be a memory leak since these are
-	 sptr's - who actually owns the corpora and its memory? */
-      cout << "reading corpus for: " << pathname << std::endl;
-      first_group->add_corpus( read_corpus_from_elf(pathname,
-						    lib1_di_roots,
-						    env.get(),
-						    /*load_all_types=*/false,
-						    status));
+      vector<pair<string, string>> libnames;
+      ldd(libnames, opts.app_path);
+      for (auto i : libnames)
+	{
+	  string& shortname = i.first;
+	  string& pathname = i.second;
+	  /* the checking is this an ELF done on the libraries below is
+	     intentionally skipped here because we are getting the library
+	     paths from the dynamic linker */
+	  /* fixme: adding it directly may be a memory leak since these are
+	     sptr's - who actually owns the corpora and its memory? */
+	  cout << "reading corpus for: " << pathname << std::endl;
+	  first_group->add_corpus(
+	    read_corpus_from_elf(pathname, lib1_di_roots, env.get(),
+				 /*load_all_types=*/false, status));
+	  if (status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
+	    emit_prefix(argv[0], cerr)
+	      << "could not read debug info for " << pathname << "\n";
+	  if (status & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
+	    {
+	      cerr << "could not read symbols from " << pathname << "\n";
+	      return abigail::tools_utils::ABIDIFF_ERROR;
+	    }
+	  if (!(status & abigail::dwarf_reader::STATUS_OK))
+	    {
+	      emit_prefix(argv[0], cerr)
+		<< "could not read file " << opts.lib1_path << "\n";
+	      return abigail::tools_utils::ABIDIFF_ERROR;
+	    }
+	  /* fixme: this needs to have a way to specify alternative libraries
+	     in the second group. Possibly allow the users to specify multiple
+	     lib-v2-paths in the format of lib-v2-name:lib-v2-newpath or
+	     something like that. */
+	  bool	 found = false;
+	  string second_path;
+	  for (auto j : opts.libdir2_paths)
+	    {
+	      second_path = j + '/' + shortname;
+	      type = abigail::tools_utils::guess_file_type(second_path);
+	      if (type == abigail::tools_utils::FILE_TYPE_ELF)
+		{
+		  found = true;
+		  break;
+		}
+	    }
+	  if (!found)
+	    {
+	      emit_prefix(argv[0], cerr)
+		<< "could not read file " << second_path << "\n";
+	      return abigail::tools_utils::ABIDIFF_ERROR;
+	    }
+	  cout << "reading corpus for: " << second_path << std::endl;
+	  second_group->add_corpus(
+	    read_corpus_from_elf(second_path, lib1_di_roots, env.get(),
+				 /*load_all_types=*/false, status));
+	  if (status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
+	    emit_prefix(argv[0], cerr)
+	      << "could not read debug info for " << second_path << "\n";
+	  if (status & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
+	    {
+	      cerr << "could not read symbols from " << second_path << "\n";
+	      return abigail::tools_utils::ABIDIFF_ERROR;
+	    }
+	  if (!(status & abigail::dwarf_reader::STATUS_OK))
+	    {
+	      emit_prefix(argv[0], cerr)
+		<< "could not read file " << second_path << "\n";
+	      return abigail::tools_utils::ABIDIFF_ERROR;
+	    }
+	}
+      s = perform_compat_check_in_normal_mode(opts, ctxt, first_group,
+					      second_group);
+    }
+  else
+    { // This is the normal mode just comparing a single library
+      // Read the first version of the library.
+      ABG_ASSERT(!opts.lib1_path.empty());
+      if (!abigail::tools_utils::check_file(opts.lib1_path, cerr,
+					    opts.prog_name))
+	return abigail::tools_utils::ABIDIFF_ERROR;
+      type = abigail::tools_utils::guess_file_type(opts.lib1_path);
+      if (type != abigail::tools_utils::FILE_TYPE_ELF)
+	{
+	  emit_prefix(argv[0], cerr)
+	    << opts.lib1_path << " is not an ELF file\n";
+	  return abigail::tools_utils::ABIDIFF_ERROR;
+	}
+
+      char*	     lib1_di_root = opts.lib1_di_root_path.get();
+      vector<char**> lib1_di_roots;
+      lib1_di_roots.push_back(&lib1_di_root);
+      corpus_sptr lib1_corpus =
+	read_corpus_from_elf(opts.lib1_path, lib1_di_roots, env.get(),
+			     /*load_all_types=*/false, status);
       if (status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
 	emit_prefix(argv[0], cerr)
-	  << "could not read debug info for " << pathname << "\n";
+	  << "could not read debug info for " << opts.lib1_path << "\n";
       if (status & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
 	{
-	  cerr << "could not read symbols from " << pathname << "\n";
+	  cerr << "could not read symbols from " << opts.lib1_path << "\n";
 	  return abigail::tools_utils::ABIDIFF_ERROR;
 	}
       if (!(status & abigail::dwarf_reader::STATUS_OK))
@@ -873,119 +951,41 @@ main(int argc, char* argv[])
 	    << "could not read file " << opts.lib1_path << "\n";
 	  return abigail::tools_utils::ABIDIFF_ERROR;
 	}
-      /* fixme: this needs to have a way to specify alternative libraries
-	 in the second group. Possibly allow the users to specify multiple
-	 lib-v2-paths in the format of lib-v2-name:lib-v2-newpath or
-	 something like that. */
-      bool found=false;
-      string second_path;
-      for( auto j: opts.libdir2_paths){
-	second_path=j+'/'+shortname;
-	type = abigail::tools_utils::guess_file_type( second_path);
-	if( type == abigail::tools_utils::FILE_TYPE_ELF){
-	  found=true;
-	  break;
-	}
-      }
-      if( !found)
+
+      // Read the second version of the library.
+      corpus_sptr lib2_corpus;
+      if (!opts.weak_mode)
 	{
-	  emit_prefix(argv[0], cerr)
-	    << "could not read file " << second_path << "\n";
-	  return abigail::tools_utils::ABIDIFF_ERROR;
+	  ABG_ASSERT(!opts.lib2_path.empty());
+	  char*		 lib2_di_root = opts.lib2_di_root_path.get();
+	  vector<char**> lib2_di_roots;
+	  lib2_di_roots.push_back(&lib2_di_root);
+	  lib2_corpus =
+	    read_corpus_from_elf(opts.lib2_path, lib2_di_roots, env.get(),
+				 /*load_all_types=*/false, status);
+	  if (status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
+	    emit_prefix(argv[0], cerr)
+	      << "could not read debug info for " << opts.lib2_path << "\n";
+	  if (status & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
+	    {
+	      emit_prefix(argv[0], cerr)
+		<< "could not read symbols from " << opts.lib2_path << "\n";
+	      return abigail::tools_utils::ABIDIFF_ERROR;
+	    }
+	  if (!(status & abigail::dwarf_reader::STATUS_OK))
+	    {
+	      emit_prefix(argv[0], cerr)
+		<< "could not read file " << opts.lib2_path << "\n";
+	      return abigail::tools_utils::ABIDIFF_ERROR;
+	    }
 	}
-      cout << "reading corpus for: " << second_path << std::endl;
-      second_group->add_corpus( read_corpus_from_elf(second_path,
-						     lib1_di_roots, env.get(),
-						     /*load_all_types=*/false,
-						     status));
-      if (status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
-	emit_prefix(argv[0], cerr)
-	  << "could not read debug info for " << second_path << "\n";
-      if (status & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
-	{
-	  cerr << "could not read symbols from " << second_path << "\n";
-	  return abigail::tools_utils::ABIDIFF_ERROR;
-	}
-      if (!(status & abigail::dwarf_reader::STATUS_OK))
-	{
-	  emit_prefix(argv[0], cerr)
-	    << "could not read file " << second_path << "\n";
-	  return abigail::tools_utils::ABIDIFF_ERROR;
-	}
+
+      if (opts.weak_mode)
+	s = perform_compat_check_in_weak_mode(opts, ctxt, app_corpus,
+					      lib1_corpus);
+      else
+	s = perform_compat_check_in_normal_mode(opts, ctxt, app_corpus,
+						lib1_corpus, lib2_corpus);
     }
-    s = perform_compat_check_in_normal_mode(opts, ctxt, first_group, second_group);
-  } else { // This is the normal mode just comparing a single library
-    // Read the first version of the library.
-    ABG_ASSERT(!opts.lib1_path.empty());
-    if (!abigail::tools_utils::check_file(opts.lib1_path, cerr, opts.prog_name))
-      return abigail::tools_utils::ABIDIFF_ERROR;
-    type = abigail::tools_utils::guess_file_type(opts.lib1_path);
-    if (type != abigail::tools_utils::FILE_TYPE_ELF)
-      {
-	emit_prefix(argv[0], cerr) << opts.lib1_path << " is not an ELF file\n";
-	return abigail::tools_utils::ABIDIFF_ERROR;
-      }
-
-    char * lib1_di_root = opts.lib1_di_root_path.get();
-    vector<char**> lib1_di_roots;
-    lib1_di_roots.push_back(&lib1_di_root);
-    corpus_sptr lib1_corpus = read_corpus_from_elf(opts.lib1_path,
-						   lib1_di_roots, env.get(),
-						   /*load_all_types=*/false,
-						   status);
-    if (status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
-      emit_prefix(argv[0], cerr)
-	<< "could not read debug info for " << opts.lib1_path << "\n";
-    if (status & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
-      {
-	cerr << "could not read symbols from " << opts.lib1_path << "\n";
-	return abigail::tools_utils::ABIDIFF_ERROR;
-      }
-    if (!(status & abigail::dwarf_reader::STATUS_OK))
-      {
-	emit_prefix(argv[0], cerr)
-	  << "could not read file " << opts.lib1_path << "\n";
-	return abigail::tools_utils::ABIDIFF_ERROR;
-      }
-
-    // Read the second version of the library.
-    corpus_sptr lib2_corpus;
-    if (!opts.weak_mode)
-      {
-	ABG_ASSERT(!opts.lib2_path.empty());
-	char * lib2_di_root = opts.lib2_di_root_path.get();
-	vector<char**> lib2_di_roots;
-	lib2_di_roots.push_back(&lib2_di_root);
-	lib2_corpus = read_corpus_from_elf(opts.lib2_path,
-					   lib2_di_roots, env.get(),
-					   /*load_all_types=*/false,
-					   status);
-	if (status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
-	  emit_prefix(argv[0], cerr)
-	    << "could not read debug info for " << opts.lib2_path << "\n";
-	if (status & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
-	  {
-	    emit_prefix(argv[0], cerr)
-	      << "could not read symbols from " << opts.lib2_path << "\n";
-	    return abigail::tools_utils::ABIDIFF_ERROR;
-	  }
-	if (!(status & abigail::dwarf_reader::STATUS_OK))
-	  {
-	    emit_prefix(argv[0], cerr)
-	      << "could not read file " << opts.lib2_path << "\n";
-	    return abigail::tools_utils::ABIDIFF_ERROR;
-	  }
-      }
-
-    if (opts.weak_mode)
-      s = perform_compat_check_in_weak_mode(opts, ctxt,
-					    app_corpus,
-					    lib1_corpus);
-    else
-      s = perform_compat_check_in_normal_mode(opts, ctxt,
-					      app_corpus,
-					      lib1_corpus,
-					      lib2_corpus);
-  }
   return s;
 }
