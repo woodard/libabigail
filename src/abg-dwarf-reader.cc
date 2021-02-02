@@ -12777,7 +12777,9 @@ get_scope_for_die(read_context& ctxt,
 {
   const die_source source_of_die = ctxt.get_die_source(die);
 
-  if (is_c_language(ctxt.cur_transl_unit()->get_language()))
+  translation_unit::language die_lang = translation_unit::LANG_UNKNOWN;
+  ctxt.get_die_language(die, die_lang);
+  if (is_c_language(die_lang))
     {
       ABG_ASSERT(dwarf_tag(die) != DW_TAG_member);
       return ctxt.global_scope();
