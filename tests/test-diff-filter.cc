@@ -780,6 +780,13 @@ InOutSpec in_out_specs[] =
    "data/test-diff-filter/test-PR26684-report-0.txt",
    "output/test-diff-filter/test-PR26684-report-0.txt",
   },
+  {
+   "data/test-diff-filter/test-PR27331-v0.o",
+   "data/test-diff-filter/test-PR27331-v1.o",
+   "--no-default-suppression --leaf-changes-only",
+   "data/test-diff-filter/test-PR27331-report-0.txt",
+   "output/test-diff-filter/test-PR27331-report-0.txt",
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };

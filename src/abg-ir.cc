@@ -19732,7 +19732,8 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 	    {
 	      // Report any representation change as being local.
 	      if (!types_have_similar_structure((*d0)->get_type(),
-						(*d1)->get_type()))
+						(*d1)->get_type())
+		  || (*d0)->get_type() == (*d1)->get_type())
 		*k |= LOCAL_TYPE_CHANGE_KIND;
 	      else
 		*k |= SUBTYPE_CHANGE_KIND;
