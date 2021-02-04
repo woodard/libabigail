@@ -1482,6 +1482,13 @@ test-diff-suppr/libtest48-soname-abixml-suppr.txt \
 test-diff-suppr/libtest48-soname-abixml-suppr-2.txt \
 test-diff-suppr/libtest48-soname-abixml-suppr-3.txt \
 test-diff-suppr/libtest48-soname-abixml-suppr-4.txt \
+test-diff-suppr/PR27267/include-dir-v0/include.h \
+test-diff-suppr/PR27267/include-dir-v1/include.h \
+test-diff-suppr/PR27267/v0.c \
+test-diff-suppr/PR27267/v1.c \
+test-diff-suppr/PR27267/libtestpr27267-v0.so \
+test-diff-suppr/PR27267/libtestpr27267-v1.so \
+test-diff-suppr/PR27267/report-1.txt \
 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1.abi \

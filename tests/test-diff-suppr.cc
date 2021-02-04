@@ -2026,6 +2026,16 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest48-soname-abixml-report-1.txt",
     "output/test-diff-suppr/libtest48-soname-abixml-report-1_suppr4.txt"
   },
+  {
+    "data/test-diff-suppr/PR27267/libtestpr27267-v0.so",
+    "data/test-diff-suppr/PR27267/libtestpr27267-v1.so",
+    "data/test-diff-suppr/PR27267/include-dir-v0",
+    "data/test-diff-suppr/PR27267/include-dir-v1",
+    "",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/PR27267/report-1.txt",
+    "output/test-diff-suppr/PR27267/report-1.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}
 };

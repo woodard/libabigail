@@ -15906,12 +15906,6 @@ get_opaque_version_of_type(read_context	&ctxt,
       && tag != DW_TAG_enumeration_type)
     return result;
 
-  if (tag == DW_TAG_union_type)
-    // TODO: also handle declaration-only unions.  To do that, we mostly
-    // need to adapt add_or_update_union_type to make it schedule
-    // declaration-only unions for resolution too.
-    return result;
-
   string type_name, linkage_name;
   location type_location;
   die_loc_and_name(ctxt, type_die, type_location, type_name, linkage_name);
@@ -15973,6 +15967,7 @@ get_opaque_version_of_type(read_context	&ctxt,
 							    underlying_type,
 							    enumeratorz,
 							    linkage_name));
+	  add_decl_to_scope(enum_type, scope);
 	  result = enum_type;
 	}
     }
