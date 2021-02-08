@@ -9446,7 +9446,7 @@ compare_dies_string_attribute_value(const Dwarf_Die *l, const Dwarf_Die *r,
 	     || r_attr.form == DW_FORM_string
 	     || r_attr.form == DW_FORM_GNU_strp_alt
 	     || form_is_DW_FORM_strx(r_attr.form)
-	     || form_is_DW_FORM_line_strp(l_attr.form));
+	     || form_is_DW_FORM_line_strp(r_attr.form));
 
   if ((l_attr.form == DW_FORM_strp
        && r_attr.form == DW_FORM_strp)
