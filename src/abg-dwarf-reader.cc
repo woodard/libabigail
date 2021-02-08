@@ -390,6 +390,9 @@ static bool
 form_is_DW_FORM_strx(unsigned form);
 
 static bool
+form_is_DW_FORM_line_strp(unsigned form);
+
+static bool
 die_address_attribute(Dwarf_Die* die, unsigned attr_name, Dwarf_Addr& result);
 
 static string
@@ -8310,6 +8313,28 @@ form_is_DW_FORM_strx(unsigned form)
   return false;
 }
 
+/// Test if a given DWARF form is DW_FORM_line_strp.
+///
+/// Unfortunaly, the DW_FORM_line_strp is an enumerator of an untagged
+/// enum in dwarf.h so we have to use an unsigned int for the form,
+/// grrr.
+///
+/// @param form the form to consider.
+///
+/// @return true iff @p form is DW_FORM_line_strp.
+static bool
+form_is_DW_FORM_line_strp(unsigned form)
+{
+  if (form)
+    {
+#if defined HAVE_DW_FORM_line_strp
+      if (form == DW_FORM_line_strp)
+	return true;
+#endif
+    }
+  return false;
+}
+
 /// Get the value of a DIE attribute; that value is meant to be a
 /// flag.
 ///
@@ -9415,13 +9440,13 @@ compare_dies_string_attribute_value(const Dwarf_Die *l, const Dwarf_Die *r,
 	     || l_attr.form == DW_FORM_string
 	     || l_attr.form == DW_FORM_GNU_strp_alt
 	     || form_is_DW_FORM_strx(l_attr.form)
-	     || l_attr.form == DW_FORM_line_strp);
+	     || form_is_DW_FORM_line_strp(l_attr.form));
 
   ABG_ASSERT(r_attr.form == DW_FORM_strp
 	     || r_attr.form == DW_FORM_string
 	     || r_attr.form == DW_FORM_GNU_strp_alt
 	     || form_is_DW_FORM_strx(r_attr.form)
-	     || l_attr.form == DW_FORM_line_strp);
+	     || form_is_DW_FORM_line_strp(l_attr.form));
 
   if ((l_attr.form == DW_FORM_strp
        && r_attr.form == DW_FORM_strp)
@@ -9429,8 +9454,8 @@ compare_dies_string_attribute_value(const Dwarf_Die *l, const Dwarf_Die *r,
 	  && r_attr.form == DW_FORM_GNU_strp_alt)
       || (form_is_DW_FORM_strx(l_attr.form)
 	  && form_is_DW_FORM_strx(r_attr.form))
-      || (l_attr.form == DW_FORM_line_strp
-	  && r_attr.form == DW_FORM_line_strp))
+      || (form_is_DW_FORM_line_strp(l_attr.form)
+	  && form_is_DW_FORM_line_strp(r_attr.form)))
     {
       // So these string attributes are actually pointers into a
       // string table.  The string table is most likely de-duplicated
