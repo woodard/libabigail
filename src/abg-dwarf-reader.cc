@@ -390,6 +390,9 @@ static bool
 form_is_DW_FORM_strx(unsigned form);
 
 static bool
+form_is_DW_FORM_line_strp(unsigned form);
+
+static bool
 die_address_attribute(Dwarf_Die* die, unsigned attr_name, Dwarf_Addr& result);
 
 static string
@@ -8310,6 +8313,28 @@ form_is_DW_FORM_strx(unsigned form)
   return false;
 }
 
+/// Test if a given DWARF form is DW_FORM_line_strp.
+///
+/// Unfortunaly, the DW_FORM_line_strp is an enumerator of an untagged
+/// enum in dwarf.h so we have to use an unsigned int for the form,
+/// grrr.
+///
+/// @param form the form to consider.
+///
+/// @return true iff @p form is DW_FORM_line_strp.
+static bool
+form_is_DW_FORM_line_strp(unsigned form)
+{
+  if (form)
+    {
+#if defined HAVE_DW_FORM_line_strp
+      if (form == DW_FORM_line_strp)
+	return true;
+#endif
+    }
+  return false;
+}
+
 /// Get the value of a DIE attribute; that value is meant to be a
 /// flag.
 ///
@@ -9415,13 +9440,13 @@ compare_dies_string_attribute_value(const Dwarf_Die *l, const Dwarf_Die *r,
 	     || l_attr.form == DW_FORM_string
 	     || l_attr.form == DW_FORM_GNU_strp_alt
 	     || form_is_DW_FORM_strx(l_attr.form)
-	     || l_attr.form == DW_FORM_line_strp);
+	     || form_is_DW_FORM_line_strp(l_attr.form));
 
   ABG_ASSERT(r_attr.form == DW_FORM_strp
 	     || r_attr.form == DW_FORM_string
 	     || r_attr.form == DW_FORM_GNU_strp_alt
 	     || form_is_DW_FORM_strx(r_attr.form)
-	     || l_attr.form == DW_FORM_line_strp);
+	     || form_is_DW_FORM_line_strp(r_attr.form));
 
   if ((l_attr.form == DW_FORM_strp
        && r_attr.form == DW_FORM_strp)
@@ -9429,8 +9454,8 @@ compare_dies_string_attribute_value(const Dwarf_Die *l, const Dwarf_Die *r,
 	  && r_attr.form == DW_FORM_GNU_strp_alt)
       || (form_is_DW_FORM_strx(l_attr.form)
 	  && form_is_DW_FORM_strx(r_attr.form))
-      || (l_attr.form == DW_FORM_line_strp
-	  && r_attr.form == DW_FORM_line_strp))
+      || (form_is_DW_FORM_line_strp(l_attr.form)
+	  && form_is_DW_FORM_line_strp(r_attr.form)))
     {
       // So these string attributes are actually pointers into a
       // string table.  The string table is most likely de-duplicated
@@ -10307,6 +10332,223 @@ eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
 // </location expression evaluation>
 // -----------------------------------
 
+/// Convert the value of the DW_AT_bit_offset attribute into the value
+/// of the DW_AT_data_bit_offset attribute.
+///
+/// On big endian machines, the value of the DW_AT_bit_offset
+/// attribute is the same as the value of the DW_AT_data_bit_offset
+/// attribute.
+///
+/// On little endian machines however, the situation is different.
+/// The DW_AT_bit_offset value for a bit field is the number of bits
+/// to the left of the most significant bit of the bit field.
+///
+/// The DW_AT_data_bit_offset offset value is the number of bits to
+/// the right of the least significant bit of the bit field.
+///
+/// In other words, DW_AT_data_bit_offset is what everybody would
+/// instinctively think of as being the "offset of the bit
+/// field". DW_AT_bit_offset however is very counter-intuitive on
+/// little endian machines.
+///
+/// This function thus reads the value of a DW_AT_bit_offset property
+/// of a DIE and converts it into what the DW_AT_data_bit_offset would
+/// have been if it was present.
+///
+/// Note that DW_AT_bit_offset has been made obsolete starting from
+/// DWARF5.
+///
+/// If you like coffee and it's not too late, now might be a good time
+/// to have a coffee break.  Otherwise if it's late at night, you
+/// might want to consider an herbal tea break.  Then come back to
+/// read this.
+///
+///
+/// Okay, to have a better idea of what DW_AT_bit_offset and
+/// DW_AT_data_bit_offset represent, let's consider a struct 'S' which
+/// have bit fields data members defined as:
+///
+///      struct S
+///      {
+///        int j:5;
+///        int k:6;
+///        int m:5;
+///        int n:8;
+///      };
+///
+/// The below wonderful (at least!) ASCII art sketch describes the
+/// layout of the bitfields of 'struct S' on a little endian machine.
+/// You need to read the sketch from the bottom-up.
+///
+/// So please scroll down to its bottom.  Note how the 32 bits integer
+/// word containing the bit fields is laid out with its least
+/// significant bit starting on the right hand side, at index 0.
+///
+/// Then slowly scroll up starting from there, and take the time to
+/// read each line and see how the bit fields are laid out and what
+/// DW_AT_bit_offset and DW_AT_data_bit_offset represent for each of
+/// the bit fields.
+///
+/// DW_AT_bit_offset(n)
+/// <   - - - - - - >
+/// |               |       n      |
+/// ^               ^< - -   - -  >^
+///                                           DW_AT_data_bit_offset(n)
+///                                <  - - - - -  - - - - - - - - - - >
+///                                |                                 |
+///                                ^                                 ^
+///                 DW_AT_bit_offset(m)
+/// <--------------------------------->
+/// |                                 |   m   |
+/// ^                                 ^<  -  >^
+///                                           DW_AT_data_bit_offset(m)
+///                                           <  - - - - - - - - - - >
+///                                           |                      |
+///                                           ^                      ^
+///                           DW_AT_bit_offset(k)
+/// <-------------------------------------------->
+/// |                                            |    k    |
+/// ^                                            ^<  - -  >^
+///                                                     DW_AT_data_bit_offset(k)
+///                                                        < - - - - >
+///                                                        |         |
+///                                                        ^         ^
+///                                      DW_AT_bit_offset(j)
+/// <-------------------------------------------------------->
+/// |                                                        |
+/// ^                                                        ^
+///                       n               m          k          j
+///                 <  - - - - - - >  < - - - >  < - - - - > < - - - >
+///                                                                   
+/// | | | | | | | | |  | | | | | | |  | | | | |  | | | | | | | | | | |
+/// ^       ^       ^              ^  ^       ^  ^       ^ ^ ^       ^
+/// 31      27      23             16 15      11 10      6 5 4       0
+///
+/// So, the different bit fields all fit in one 32 bits word, assuming
+/// the bit fields are tightly packed.
+///
+/// Let's look at what DW_AT_bit_offset of the 'j' bit field would be
+/// on this little endian machine and let's see how it relates to
+/// DW_AT_data_bit_offset of j.
+///
+/// DW_AT_bit_offset(j) would be equal to the number of bits from the
+/// left of the 32 bits word (i.e from bit number 31) to the most
+/// significant bit of the j bit field (i.e, bit number 4).  Thus:
+///
+///       DW_AT_bit_offset(j) =
+///         sizeof_in_bits(int) - size_in_bits_of(j) = 32 - 5 = 27.
+///
+/// DW_AT_data_bit_offset(j) is the number of bits from the right of the
+/// 32 bits word (i.e, bit number 0) to the lest significant bit of
+/// the 'j' bit field (ie, bit number 0).  Thus:
+///
+///       DW_AT_data_bit_offset(j) = 0.
+///
+/// More generally, we can notice that:
+///
+///       sizeof_in_bits(int) =
+///         DW_AT_bit_offset(j) + sizeof_in_bits(j) + DW_AT_data_bit_offset(j).
+///
+/// It follows that:
+///
+///       DW_AT_data_bit_offset(j) =
+///          sizeof_in_bits(int) - sizeof_in_bits(j) - DW_AT_bit_offset(j);
+///
+/// Thus:
+///
+///       DW_AT_data_bit_offset(j) = 32 - 27 - 5 = 0;
+///
+/// Note that DW_AT_data_bit_offset(j) is the offset of 'j' starting
+/// from the right hand side of the word.  It is what we would
+/// intuitively think it is.  DW_AT_bit_offset however is super
+/// counter-intuitive, pfff.
+///
+/// Anyway, this general equation holds true for all bit fields.
+///
+/// Similarly, it follows that:
+///
+///       DW_AT_bit_offset(k) =
+///         sizeof_in_bits(int) - sizeof_in_bits(k) - DW_AT_data_bit_offset(k);
+///
+/// Thus:
+///       DW_AT_bit_offset(k) = 32 - 6 - 5 = 21.
+///
+///
+/// Likewise:
+///
+///      DW_AT_bit_offset(m) =
+///        sizeof_in_bits(int) - sizeof_in_bits(m) - DW_AT_data_bit_offset(m);
+///
+///
+/// Thus:
+///      DW_AT_bit_offset(m) = 32 - 5 - (5 + 6) = 16.
+///
+/// And:
+///
+///
+/// Lastly:
+///
+///      DW_AT_bit_offset(n) =
+///        sizeof_in_bits(int) - sizeof_in_bits(n) - DW_AT_bit_offset(n);
+///
+/// Thus:
+///      DW_AT_bit_offset(n) = 32 - 8 - (5 + 6 + 5) = 8.
+///
+/// Luckily, the body of the function is much smaller than this
+/// comment.  Enjoy!
+///
+/// @param die the DIE to consider.
+///
+/// @param is_big_endian this is true iff the machine we are looking at
+/// is big endian.
+///
+/// @param offset this is the output parameter into which the value of
+/// the DW_AT_bit_offset is put, converted as if it was the value of
+/// the DW_AT_data_bit_offset parameter.  This parameter is set iff
+/// the function returns true.
+///
+/// @return true if DW_AT_bit_offset was found on @p die.
+static bool
+read_and_convert_DW_at_bit_offset(const Dwarf_Die* die,
+				  bool is_big_endian,
+				  uint64_t &offset)
+{
+  uint64_t off = 0;
+  if (!die_unsigned_constant_attribute(die, DW_AT_bit_offset, off))
+    return false;
+
+  if (is_big_endian)
+    {
+      offset = off;
+      return true;
+    }
+
+  // Okay, we are looking at a little endian machine.  We need to
+  // convert DW_AT_bit_offset into what DW_AT_data_bit_offset would
+  // have been.  To understand this, you really need to read the
+  // preliminary comment of this function.
+  uint64_t containing_anonymous_object_size = 0;
+  ABG_ASSERT(die_unsigned_constant_attribute(die, DW_AT_byte_size,
+					     containing_anonymous_object_size));
+  containing_anonymous_object_size *= 8;
+
+  uint64_t bitfield_size = 0;
+  ABG_ASSERT(die_unsigned_constant_attribute(die, DW_AT_bit_size,
+					     bitfield_size));
+
+  // As noted in the the preliminary comment of this function if we
+  // want to get the DW_AT_data_bit_offset of a bit field 'k' from the
+  // its DW_AT_bit_offset value, the equation is:
+  //
+  //     DW_AT_data_bit_offset(k) =
+  //       sizeof_in_bits(containing_anonymous_object_size)
+  //       - DW_AT_data_bit_offset(k)
+  //       - sizeof_in_bits(k)
+  offset = containing_anonymous_object_size - off - bitfield_size;
+
+  return true;
+}
+
 /// Get the offset of a struct/class member as represented by the
 /// value of the DW_AT_data_member_location attribute.
 ///
@@ -10314,10 +10556,10 @@ eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
 /// DW_AT_data_member_location is not necessarily a constant that one
 /// would just read and be done with it.  Rather, it can be a DWARF
 /// expression that one has to interpret.  In general, the offset can
-/// be given by the DW_AT_bit_offset attribute.  In that case the
-/// offset is a constant.  But it can also be given by the
-/// DW_AT_data_member_location attribute.  In that case it's a DWARF
-/// location expression.
+/// be given by the DW_AT_bit_offset or DW_AT_data_bit_offset
+/// attribute.  In that case the offset is a constant.  But it can
+/// also be given by the DW_AT_data_member_location attribute.  In
+/// that case it's a DWARF location expression.
 ///
 /// When the it's the DW_AT_data_member_location that is present,
 /// there are three cases to possibly take into account:
@@ -10363,15 +10605,28 @@ die_member_offset(const read_context& ctxt,
   uint64_t expr_len = 0;
   uint64_t off = 0;
 
-  if (die_unsigned_constant_attribute(die, DW_AT_bit_offset, off))
+  // First let's see if the DW_AT_data_bit_offset attribute is
+  // present.
+  if (die_unsigned_constant_attribute(die, DW_AT_data_bit_offset, off))
     {
-      // The DW_AT_bit_offset is present.  If it contains a non-zero
-      // value, let's read that one.
-      if (off != 0)
-	{
-	  offset = off;
-	  return true;
-	}
+      offset = off;
+      return true;
+    }
+
+  // Otherwise, let's see if the DW_AT_bit_offset attribute is
+  // present.  On little endian machines, we need to convert this
+  // attribute into what it would have been if the
+  // DW_AT_data_bit_offset was used instead.  In other words,
+  // DW_AT_bit_offset needs to be converted into a
+  // human-understandable form that represents the offset of the
+  // bitfield data member it describes.  For details about the
+  // conversion, please read the extensive comments of
+  // read_and_convert_DW_at_bit_offset.
+  bool is_big_endian = architecture_is_big_endian(ctxt.elf_handle());
+  if (read_and_convert_DW_at_bit_offset(die, is_big_endian, off))
+    {
+      offset = off;
+      return true;
     }
 
   if (!die_location_expr(die, DW_AT_data_member_location, &expr, &expr_len))
@@ -12547,7 +12802,9 @@ get_scope_for_die(read_context& ctxt,
 {
   const die_source source_of_die = ctxt.get_die_source(die);
 
-  if (is_c_language(ctxt.cur_transl_unit()->get_language()))
+  translation_unit::language die_lang = translation_unit::LANG_UNKNOWN;
+  ctxt.get_die_language(die, die_lang);
+  if (is_c_language(die_lang))
     {
       ABG_ASSERT(dwarf_tag(die) != DW_TAG_member);
       return ctxt.global_scope();
@@ -15674,12 +15931,6 @@ get_opaque_version_of_type(read_context	&ctxt,
       && tag != DW_TAG_enumeration_type)
     return result;
 
-  if (tag == DW_TAG_union_type)
-    // TODO: also handle declaration-only unions.  To do that, we mostly
-    // need to adapt add_or_update_union_type to make it schedule
-    // declaration-only unions for resolution too.
-    return result;
-
   string type_name, linkage_name;
   location type_location;
   die_loc_and_name(ctxt, type_die, type_location, type_name, linkage_name);
@@ -15741,6 +15992,7 @@ get_opaque_version_of_type(read_context	&ctxt,
 							    underlying_type,
 							    enumeratorz,
 							    linkage_name));
+	  add_decl_to_scope(enum_type, scope);
 	  result = enum_type;
 	}
     }

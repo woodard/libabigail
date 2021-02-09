@@ -8,5 +8,5 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       entity changed from 'class C0' to compatible type 'typedef c0_type'
         type size hasn't changed
         1 data member change:
-          'int C0::m0' access changed from 'private' to 'public'
+          'int m0' access changed from 'private' to 'public'
 

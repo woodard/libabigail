@@ -2641,6 +2641,7 @@ typedef unordered_map<interned_string,
 /// The private data of the @ref environment type.
 struct environment::priv
 {
+  config			 config_;
   canonical_types_map_type	 canonical_types_;
   mutable vector<type_base_sptr> sorted_canonical_types_;
   type_base_sptr		 void_type_;
@@ -3042,6 +3043,13 @@ environment::is_variadic_parameter_type(const type_base_sptr& t) const
 interned_string
 environment::intern(const string& s) const
 {return const_cast<environment*>(this)->priv_->string_pool_.create_string(s);}
+
+/// Getter of the general configuration object.
+///
+/// @return the configuration object.
+const config&
+environment::get_config() const
+{return priv_->config_;}
 
 // </environment stuff>
 
@@ -19724,7 +19732,8 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 	    {
 	      // Report any representation change as being local.
 	      if (!types_have_similar_structure((*d0)->get_type(),
-						(*d1)->get_type()))
+						(*d1)->get_type())
+		  || (*d0)->get_type() == (*d1)->get_type())
 		*k |= LOCAL_TYPE_CHANGE_KIND;
 	      else
 		*k |= SUBTYPE_CHANGE_KIND;

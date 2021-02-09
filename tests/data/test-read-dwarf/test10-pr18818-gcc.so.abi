@@ -1,4 +1,4 @@
-<abi-corpus path='data/test-read-dwarf/test10-pr18818-gcc.so'>
+<abi-corpus version='2.0' path='data/test-read-dwarf/test10-pr18818-gcc.so'>
   <elf-needed>
     <dependency name='build/debug/third_party/boost-1.56.0/libboost_system.so'/>
     <dependency name='librt.so.1'/>
@@ -410,7 +410,7 @@
     <elf-symbol name='_ZTVN5boost6system12system_errorE' size='40' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZTVN5boost6system14error_categoryE' size='72' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
-  <abi-instr version='1.0' address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/codecvt_error_category.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/codecvt_error_category.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <type-decl name='bool' size-in-bits='8' id='type-id-1'/>
     <type-decl name='char' size-in-bits='8' id='type-id-2'/>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='8' id='type-id-3'>
@@ -2376,7 +2376,7 @@
       <class-decl name='input_iterator_tag' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/bits/stl_iterator_base_types.h' line='89' column='1' id='type-id-245'/>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/operations.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/operations.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-247' size-in-bits='infinite' id='type-id-248'>
       <subrange length='infinite' id='type-id-24'/>
     </array-type-def>
@@ -5532,7 +5532,7 @@
       </class-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/path.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/path.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <reference-type-def kind='lvalue' type-id='type-id-635' size-in-bits='64' id='type-id-636'/>
     <pointer-type-def type-id='type-id-635' size-in-bits='64' id='type-id-637'/>
     <qualified-type-def type-id='type-id-93' const='yes' id='type-id-236'/>
@@ -5657,7 +5657,7 @@
       </function-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/path_traits.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/path_traits.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='83' column='1' id='type-id-657'>
       <member-type access='public'>
         <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='86' column='1' id='type-id-658'>
@@ -5828,7 +5828,7 @@
       </function-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/portability.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/portability.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
       <function-decl name='operator!=&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' mangled-name='_ZStneIcSt11char_traitsIcESaIcEEbRKSbIT_T0_T1_EPKS3_' filepath='/usr/include/c++/4.9/bits/basic_string.h' line='2575' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZStneIcSt11char_traitsIcESaIcEEbRKSbIT_T0_T1_EPKS3_'>
         <parameter type-id='type-id-613' name='__lhs' filepath='/usr/include/c++/4.9/bits/basic_string.h' line='2538' column='1'/>
@@ -5865,7 +5865,7 @@
       </namespace-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/unique_path.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/unique_path.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <pointer-type-def type-id='type-id-633' size-in-bits='64' id='type-id-614'/>
     <qualified-type-def type-id='type-id-358' const='yes' id='type-id-632'/>
     <qualified-type-def type-id='type-id-694' id='type-id-695'/>
@@ -5895,7 +5895,7 @@
       </namespace-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/utf8_codecvt_facet.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/utf8_codecvt_facet.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <type-decl name='unsigned char' size-in-bits='8' id='type-id-696'/>
     <pointer-type-def type-id='type-id-697' size-in-bits='64' id='type-id-698'/>
     <reference-type-def kind='lvalue' type-id='type-id-42' size-in-bits='64' id='type-id-699'/>
@@ -6114,6 +6114,6 @@
       </namespace-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/windows_file_codecvt.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/windows_file_codecvt.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
   </abi-instr>
 </abi-corpus>

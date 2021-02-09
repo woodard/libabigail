@@ -8,5 +8,5 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in pointed to type 'struct S':
         type size changed from 32 to 64 (in bits)
         1 data member insertion:
-          'char S::m1', at offset 32 (in bits)
+          'char m1', at offset 32 (in bits)
 

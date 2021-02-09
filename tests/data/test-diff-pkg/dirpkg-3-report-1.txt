@@ -9,7 +9,7 @@
         in referenced type 'struct S1':
           type size changed from 8 to 32 (in bits)
           1 data member insertion:
-            'int S1::mem2', at offset 0 (in bits)
+            'int mem2', at offset 0 (in bits)
 
 ================ end of changes of 'libobj-v0.so'===============
 

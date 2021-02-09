@@ -1,4 +1,4 @@
-<abi-corpus path='data/test-read-dwarf/test2.so'>
+<abi-corpus version='2.0' path='data/test-read-dwarf/test2.so'>
   <elf-needed>
     <dependency name='libstdc++.so.6'/>
     <dependency name='libm.so.6'/>
@@ -15,7 +15,7 @@
     <elf-symbol name='_fini' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_init' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
-  <abi-instr version='1.0' address-size='64' path='test2-0.cc' comp-dir-path='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='test2-0.cc' comp-dir-path='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf' language='LANG_C_plus_plus'>
     <type-decl name='int' size-in-bits='32' id='type-id-1'/>
     <typedef-decl name='character' type-id='type-id-2' id='type-id-3'/>
     <typedef-decl name='integer' type-id='type-id-1' id='type-id-4'/>
@@ -48,7 +48,7 @@
       </function-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='test2-1.cc' comp-dir-path='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='test2-1.cc' comp-dir-path='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf' language='LANG_C_plus_plus'>
     <class-decl name='second_type' size-in-bits='64' is-struct='yes' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test2.h' line='12' column='1' id='type-id-8'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='member0' type-id='type-id-4' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test2.h' line='14' column='1'/>

@@ -1,4 +1,4 @@
-<abi-corpus path='data/test-read-dwarf/test16-pr18904.so' soname='liboffloadmic_host.so.5'>
+<abi-corpus version='2.0' path='data/test-read-dwarf/test16-pr18904.so' soname='liboffloadmic_host.so.5'>
   <elf-needed>
     <dependency name='libdl.so.2'/>
     <dependency name='libstdc++.so.6'/>
@@ -1615,9 +1615,9 @@
     <elf-symbol name='__offload_myo_var_tables' size='48' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='__offload_myo_vtable_tables' size='48' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/cean_util.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../../gcc/liboffloadmic/runtime/cean_util.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/coi/coi_client.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../../gcc/liboffloadmic/runtime/coi/coi_client.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <type-decl name='unsigned char' size-in-bits='8' id='type-id-1'/>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='32768' id='type-id-3'>
       <subrange length='1024' type-id='type-id-4' id='type-id-5'/>
@@ -2177,7 +2177,7 @@
     <qualified-type-def type-id='type-id-156' const='yes' id='type-id-155'/>
     <type-decl name='char' size-in-bits='8' id='type-id-156'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/compiler_if_host.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../../gcc/liboffloadmic/runtime/compiler_if_host.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-157' size-in-bits='128' id='type-id-158'>
       <subrange length='1' type-id='type-id-4' id='type-id-159'/>
     </array-type-def>
@@ -2800,46 +2800,46 @@
     <union-decl name='varDescFlags' size-in-bits='32' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='217' column='1' id='type-id-239'>
       <member-type access='private'>
         <class-decl name='__anonymous_struct__' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='218' column='1' id='type-id-240'>
-          <data-member access='public' layout-offset-in-bits='31'>
+          <data-member access='public' layout-offset-in-bits='0'>
             <var-decl name='is_static' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='220' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='30'>
+          <data-member access='public' layout-offset-in-bits='1'>
             <var-decl name='is_static_dstn' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='222' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='29'>
+          <data-member access='public' layout-offset-in-bits='2'>
             <var-decl name='has_length' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='224' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='28'>
+          <data-member access='public' layout-offset-in-bits='3'>
             <var-decl name='is_stack_buf' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='226' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='27'>
+          <data-member access='public' layout-offset-in-bits='4'>
             <var-decl name='targetptr' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='228' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='26'>
+          <data-member access='public' layout-offset-in-bits='5'>
             <var-decl name='preallocated' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='230' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='25'>
+          <data-member access='public' layout-offset-in-bits='6'>
             <var-decl name='is_pointer' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='232' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='24'>
+          <data-member access='public' layout-offset-in-bits='7'>
             <var-decl name='sink_addr' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='235' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='23'>
+          <data-member access='public' layout-offset-in-bits='8'>
             <var-decl name='alloc_disp' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='237' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='22'>
+          <data-member access='public' layout-offset-in-bits='9'>
             <var-decl name='is_noncont_src' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='239' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='21'>
+          <data-member access='public' layout-offset-in-bits='10'>
             <var-decl name='is_noncont_dst' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='241' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='20'>
+          <data-member access='public' layout-offset-in-bits='11'>
             <var-decl name='always_copy' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='244' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='19'>
+          <data-member access='public' layout-offset-in-bits='12'>
             <var-decl name='always_delete' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='246' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='18'>
+          <data-member access='public' layout-offset-in-bits='13'>
             <var-decl name='pin' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='248' column='1'/>
           </data-member>
         </class-decl>
@@ -3736,10 +3736,10 @@
         <union-decl name='__anonymous_union__' size-in-bits='8' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='256' column='1' id='type-id-287'>
           <member-type access='private'>
             <class-decl name='__anonymous_struct__' size-in-bits='8' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='257' column='1' id='type-id-288'>
-              <data-member access='public' layout-offset-in-bits='4'>
+              <data-member access='public' layout-offset-in-bits='0'>
                 <var-decl name='dst' type-id='type-id-20' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='258' column='1'/>
               </data-member>
-              <data-member access='public' layout-offset-in-bits='0'>
+              <data-member access='public' layout-offset-in-bits='4'>
                 <var-decl name='src' type-id='type-id-20' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='259' column='1'/>
               </data-member>
             </class-decl>
@@ -3756,10 +3756,10 @@
         <union-decl name='__anonymous_union__1' size-in-bits='8' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='265' column='1' id='type-id-289'>
           <member-type access='private'>
             <class-decl name='__anonymous_struct__' size-in-bits='8' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='266' column='1' id='type-id-290'>
-              <data-member access='public' layout-offset-in-bits='7'>
+              <data-member access='public' layout-offset-in-bits='0'>
                 <var-decl name='in' type-id='type-id-20' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='267' column='1'/>
               </data-member>
-              <data-member access='public' layout-offset-in-bits='6'>
+              <data-member access='public' layout-offset-in-bits='1'>
                 <var-decl name='out' type-id='type-id-20' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='268' column='1'/>
               </data-member>
             </class-decl>
@@ -3843,20 +3843,20 @@
     <union-decl name='OffloadFlags' size-in-bits='32' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='160' column='1' id='type-id-276'>
       <member-type access='private'>
         <class-decl name='__anonymous_struct__' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='162' column='1' id='type-id-294'>
-          <data-member access='public' layout-offset-in-bits='31'>
+          <data-member access='public' layout-offset-in-bits='0'>
             <var-decl name='fortran_traceback' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='163' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='30'>
+          <data-member access='public' layout-offset-in-bits='1'>
             <var-decl name='omp_async' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='164' column='1'/>
           </data-member>
         </class-decl>
       </member-type>
       <member-type access='private'>
         <class-decl name='__anonymous_struct__1' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='162' column='1' id='type-id-294'>
-          <data-member access='public' layout-offset-in-bits='31'>
+          <data-member access='public' layout-offset-in-bits='0'>
             <var-decl name='fortran_traceback' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='163' column='1'/>
           </data-member>
-          <data-member access='public' layout-offset-in-bits='30'>
+          <data-member access='public' layout-offset-in-bits='1'>
             <var-decl name='omp_async' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='164' column='1'/>
           </data-member>
         </class-decl>
@@ -12098,9 +12098,9 @@
     </class-decl>
     <pointer-type-def type-id='type-id-2091' size-in-bits='64' id='type-id-2092'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/dv_util.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../../gcc/liboffloadmic/runtime/dv_util.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_common.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_common.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <type-decl name='char' size-in-bits='8' id='type-id-156'/>
     <type-decl name='long int' size-in-bits='64' id='type-id-191'/>
     <type-decl name='long long int' size-in-bits='64' id='type-id-247'/>
@@ -12185,7 +12185,7 @@
       <return type-id='type-id-150'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_engine.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_engine.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-33' size-in-bits='8192' id='type-id-2093'>
       <subrange length='128' type-id='type-id-4' id='type-id-2094'/>
     </array-type-def>
@@ -14260,7 +14260,7 @@
       </data-member>
     </class-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_env.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_env.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <class-decl name='MicEnvVar' size-in-bits='512' is-struct='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_env.h' line='47' column='1' id='type-id-2453'>
       <member-type access='public'>
         <class-decl name='VarValue' size-in-bits='192' is-struct='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_env.h' line='72' column='1' id='type-id-2454'>
@@ -15714,7 +15714,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-2507' size-in-bits='64' id='type-id-2505'/>
     <pointer-type-def type-id='type-id-214' size-in-bits='64' id='type-id-2787'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_host.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_host.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-156' size-in-bits='4096' id='type-id-2983'>
       <subrange length='512' type-id='type-id-4' id='type-id-2984'/>
     </array-type-def>
@@ -16935,7 +16935,7 @@
       <return type-id='type-id-154'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <class-decl name='MyoTable' size-in-bits='128' is-struct='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='474' column='1' id='type-id-3182'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='var_tab' type-id='type-id-3183' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_myo_host.cpp' line='479' column='1'/>
@@ -18235,7 +18235,7 @@
     <qualified-type-def type-id='type-id-3442' const='yes' id='type-id-3447'/>
     <qualified-type-def type-id='type-id-3444' const='yes' id='type-id-3448'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_omp_host.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='32' id='type-id-3449'>
       <subrange length='4' type-id='type-id-4' id='type-id-3450'/>
     </array-type-def>
@@ -18397,9 +18397,9 @@
       <return type-id='type-id-154'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_orsl.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_orsl.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_table.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_table.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <type-decl name='bool' size-in-bits='8' id='type-id-149'/>
     <array-type-def dimensions='1' type-id='type-id-156' size-in-bits='320' id='type-id-2079'>
       <subrange length='40' type-id='type-id-4' id='type-id-182'/>
@@ -19059,7 +19059,7 @@
       <return type-id='type-id-154'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_timer_host.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_timer_host.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <typedef-decl name='clock_t' type-id='type-id-3498' filepath='/usr/include/time.h' line='59' column='1' id='type-id-3499'/>
     <typedef-decl name='__clock_t' type-id='type-id-191' filepath='/usr/include/bits/types.h' line='135' column='1' id='type-id-3498'/>
     <typedef-decl name='time_t' type-id='type-id-3500' filepath='/usr/include/time.h' line='75' column='1' id='type-id-3501'/>
@@ -19370,7 +19370,7 @@
     <qualified-type-def type-id='type-id-3530' const='yes' id='type-id-3529'/>
     <pointer-type-def type-id='type-id-3515' size-in-bits='64' id='type-id-3530'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_trace.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_trace.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-156' size-in-bits='128' id='type-id-3531'>
       <subrange length='16' type-id='type-id-4' id='type-id-178'/>
     </array-type-def>
@@ -20970,7 +20970,7 @@
       <return type-id='type-id-154'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C99'>
+  <abi-instr address-size='64' path='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C99'>
     <array-type-def dimensions='1' type-id='type-id-3707' size-in-bits='1024' id='type-id-3708'>
       <subrange length='16' type-id='type-id-4' id='type-id-178'/>
     </array-type-def>

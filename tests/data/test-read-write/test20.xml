@@ -1,4 +1,4 @@
-<abi-instr version='1.0' path='data/test-read-write/test20.xml'>
+<abi-instr path='data/test-read-write/test20.xml'>
   <class-decl name='__class_type_info_pseudo' size-in-bits='128' alignment-in-bits='64' visibility='default' id='type-id-1'/>
   <class-decl name='__vmi_class_type_info_pseudo3' size-in-bits='576' alignment-in-bits='64' visibility='default' id='type-id-2'/>
   <type-decl name='int' size-in-bits='32' alignment-in-bits='32' id='type-id-3'/>

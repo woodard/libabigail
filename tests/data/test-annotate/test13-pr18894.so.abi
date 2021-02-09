@@ -1,4 +1,4 @@
-<abi-corpus architecture='elf-amd-x86_64' soname='libdbus-1.so.3'>
+<abi-corpus version='2.0' architecture='elf-amd-x86_64' soname='libdbus-1.so.3'>
   <elf-needed>
     <dependency name='librt.so.1'/>
     <dependency name='libpthread.so.0'/>
@@ -474,7 +474,7 @@
     <!-- dbus_watch_set_data -->
     <elf-symbol name='dbus_watch_set_data' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
-  <abi-instr version='1.0' address-size='64' path='dbus-address.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
+  <abi-instr address-size='64' path='dbus-address.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- char -->
     <type-decl name='char' size-in-bits='8' id='type-id-1'/>
     <!-- int -->
@@ -516,19 +516,19 @@
         <!-- int DBusString::dummy3 -->
         <var-decl name='dummy3' type-id='type-id-2' visibility='default' filepath='../dbus/dbus-string.h' line='50' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <!-- unsigned int DBusString::dummy_bit1 -->
         <var-decl name='dummy_bit1' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-string.h' line='51' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <!-- unsigned int DBusString::dummy_bit2 -->
         <var-decl name='dummy_bit2' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-string.h' line='52' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='29'>
+      <data-member access='public' layout-offset-in-bits='2'>
         <!-- unsigned int DBusString::dummy_bit3 -->
         <var-decl name='dummy_bit3' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-string.h' line='53' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='26'>
+      <data-member access='public' layout-offset-in-bits='3'>
         <!-- unsigned int DBusString::dummy_bits -->
         <var-decl name='dummy_bits' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-string.h' line='54' column='1'/>
       </data-member>
@@ -562,23 +562,23 @@
         <!-- const char* DBusError::message -->
         <var-decl name='message' type-id='type-id-15' visibility='default' filepath='../dbus/dbus-errors.h' line='51' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <!-- unsigned int DBusError::dummy1 -->
         <var-decl name='dummy1' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-errors.h' line='53' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <!-- unsigned int DBusError::dummy2 -->
         <var-decl name='dummy2' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-errors.h' line='54' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='29'>
+      <data-member access='public' layout-offset-in-bits='2'>
         <!-- unsigned int DBusError::dummy3 -->
         <var-decl name='dummy3' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-errors.h' line='55' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='28'>
+      <data-member access='public' layout-offset-in-bits='3'>
         <!-- unsigned int DBusError::dummy4 -->
         <var-decl name='dummy4' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-errors.h' line='56' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='27'>
+      <data-member access='public' layout-offset-in-bits='4'>
         <!-- unsigned int DBusError::dummy5 -->
         <var-decl name='dummy5' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-errors.h' line='57' column='1'/>
       </data-member>
@@ -664,7 +664,7 @@
       <return type-id='type-id-22'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-bus.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
+  <abi-instr address-size='64' path='dbus-bus.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- struct DBusConnection -->
     <class-decl name='DBusConnection' size-in-bits='2112' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='257' column='1' id='type-id-25'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -799,27 +799,27 @@
         <!-- dbus_bool_t DBusConnection::io_path_acquired -->
         <var-decl name='io_path_acquired' type-id='type-id-17' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='313' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <!-- unsigned int DBusConnection::shareable -->
         <var-decl name='shareable' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='315' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <!-- unsigned int DBusConnection::exit_on_disconnect -->
         <var-decl name='exit_on_disconnect' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='317' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='29'>
+      <data-member access='public' layout-offset-in-bits='2'>
         <!-- unsigned int DBusConnection::route_peer_messages -->
         <var-decl name='route_peer_messages' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='319' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='28'>
+      <data-member access='public' layout-offset-in-bits='3'>
         <!-- unsigned int DBusConnection::disconnected_message_arrived -->
         <var-decl name='disconnected_message_arrived' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='321' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='27'>
+      <data-member access='public' layout-offset-in-bits='4'>
         <!-- unsigned int DBusConnection::disconnected_message_processed -->
         <var-decl name='disconnected_message_processed' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='325' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='26'>
+      <data-member access='public' layout-offset-in-bits='5'>
         <!-- unsigned int DBusConnection::have_connection_lock -->
         <var-decl name='have_connection_lock' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='330' column='1'/>
       </data-member>
@@ -1087,11 +1087,11 @@
         <!-- DBusString DBusMessage::body -->
         <var-decl name='body' type-id='type-id-7' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='105' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <!-- unsigned int DBusMessage::locked -->
         <var-decl name='locked' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='107' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <!-- unsigned int DBusMessage::in_cache -->
         <var-decl name='in_cache' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='110' column='1'/>
       </data-member>
@@ -1103,7 +1103,7 @@
         <!-- long int DBusMessage::size_counter_delta -->
         <var-decl name='size_counter_delta' type-id='type-id-80' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='114' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='11'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <!-- dbus_uint32_t DBusMessage::changed_stamp -->
         <var-decl name='changed_stamp' type-id='type-id-16' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='116' column='1'/>
       </data-member>
@@ -1173,11 +1173,11 @@
         <!-- DBusHeaderField DBusHeader::fields[10] -->
         <var-decl name='fields' type-id='type-id-84' visibility='default' filepath='../dbus/dbus-marshal-header.h' line='54' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='29'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <!-- dbus_uint32_t DBusHeader::padding -->
         <var-decl name='padding' type-id='type-id-16' visibility='default' filepath='../dbus/dbus-marshal-header.h' line='58' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='21'>
+      <data-member access='public' layout-offset-in-bits='3'>
         <!-- dbus_uint32_t DBusHeader::byte_order -->
         <var-decl name='byte_order' type-id='type-id-16' visibility='default' filepath='../dbus/dbus-marshal-header.h' line='59' column='1'/>
       </data-member>
@@ -1197,7 +1197,7 @@
       </data-member>
     </class-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-connection.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
+  <abi-instr address-size='64' path='dbus-connection.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- DBusHeaderField[10] -->
     <array-type-def dimensions='1' type-id='type-id-85' size-in-bits='320' id='type-id-84'>
       <!-- <anonymous range>[10] -->
@@ -1247,11 +1247,11 @@
         <!-- dbus_uint32_t DBusPendingCall::reply_serial -->
         <var-decl name='reply_serial' type-id='type-id-16' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-pending-call.c' line='76' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <!-- unsigned int DBusPendingCall::completed -->
         <var-decl name='completed' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-pending-call.c' line='78' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <!-- unsigned int DBusPendingCall::timeout_added -->
         <var-decl name='timeout_added' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-pending-call.c' line='79' column='1'/>
       </data-member>
@@ -1288,7 +1288,7 @@
         <!-- DBusFreeFunction DBusTimeout::free_data_function -->
         <var-decl name='free_data_function' type-id='type-id-38' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-timeout.c' line='50' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <!-- unsigned int DBusTimeout::enabled -->
         <var-decl name='enabled' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-timeout.c' line='51' column='1'/>
       </data-member>
@@ -1331,11 +1331,11 @@
         <!-- DBusFreeFunction DBusWatch::free_data_function -->
         <var-decl name='free_data_function' type-id='type-id-38' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-watch.c' line='51' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <!-- unsigned int DBusWatch::enabled -->
         <var-decl name='enabled' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-watch.c' line='52' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <!-- unsigned int DBusWatch::oom_last_time -->
         <var-decl name='oom_last_time' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-watch.c' line='53' column='1'/>
       </data-member>
@@ -1377,11 +1377,11 @@
         <!-- DBusString DBusMessage::body -->
         <var-decl name='body' type-id='type-id-7' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='105' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <!-- unsigned int DBusMessage::locked -->
         <var-decl name='locked' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='107' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <!-- unsigned int DBusMessage::in_cache -->
         <var-decl name='in_cache' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='110' column='1'/>
       </data-member>
@@ -1393,7 +1393,7 @@
         <!-- long int DBusMessage::size_counter_delta -->
         <var-decl name='size_counter_delta' type-id='type-id-80' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='114' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='11'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <!-- dbus_uint32_t DBusMessage::changed_stamp -->
         <var-decl name='changed_stamp' type-id='type-id-16' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='116' column='1'/>
       </data-member>
@@ -1434,11 +1434,11 @@
         <!-- DBusHeaderField DBusHeader::fields[10] -->
         <var-decl name='fields' type-id='type-id-84' visibility='default' filepath='../dbus/dbus-marshal-header.h' line='54' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='29'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <!-- dbus_uint32_t DBusHeader::padding -->
         <var-decl name='padding' type-id='type-id-16' visibility='default' filepath='../dbus/dbus-marshal-header.h' line='58' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='21'>
+      <data-member access='public' layout-offset-in-bits='3'>
         <!-- dbus_uint32_t DBusHeader::byte_order -->
         <var-decl name='byte_order' type-id='type-id-16' visibility='default' filepath='../dbus/dbus-marshal-header.h' line='59' column='1'/>
       </data-member>
@@ -2386,7 +2386,7 @@
     <!-- void (DBusPendingCall*, void*)* -->
     <pointer-type-def type-id='type-id-147' size-in-bits='64' id='type-id-142'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-errors.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
+  <abi-instr address-size='64' path='dbus-errors.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- variadic parameter type -->
     <type-decl name='variadic parameter type' id='type-id-148'/>
     <!-- const DBusError -->
@@ -2456,7 +2456,7 @@
       <return type-id='type-id-17'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-memory.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
+  <abi-instr address-size='64' path='dbus-memory.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- typedef unsigned long int size_t -->
     <typedef-decl name='size_t' type-id='type-id-43' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/include/stddef.h' line='211' column='1' id='type-id-151'/>
     <!-- void dbus_free(void*) -->
@@ -2502,7 +2502,7 @@
       <return type-id='type-id-10'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-message.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
+  <abi-instr address-size='64' path='dbus-message.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- struct __va_list_tag -->
     <class-decl name='__va_list_tag' size-in-bits='192' is-struct='yes' visibility='default' id='type-id-152'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -3236,7 +3236,7 @@
       <return type-id='type-id-4'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-misc.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
+  <abi-instr address-size='64' path='dbus-misc.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- void dbus_get_version(int*, int*, int*) -->
     <function-decl name='dbus_get_version' mangled-name='dbus_get_version' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-misc.c' line='161' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_get_version'>
       <!-- parameter of type 'int*' -->
@@ -3254,7 +3254,7 @@
       <return type-id='type-id-22'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-pending-call.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
+  <abi-instr address-size='64' path='dbus-pending-call.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- typedef void (DBusPendingCall*, void*)* DBusPendingCallNotifyFunction -->
     <typedef-decl name='DBusPendingCallNotifyFunction' type-id='type-id-142' filepath='../dbus/dbus-connection.h' line='162' column='1' id='type-id-89'/>
     <!-- void (DBusPendingCall*, void*)* -->
@@ -3360,7 +3360,7 @@
       <return type-id='type-id-4'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-server.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
+  <abi-instr address-size='64' path='dbus-server.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- char[16] -->
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='128' id='type-id-159'>
       <!-- <anonymous range>[16] -->
@@ -3433,11 +3433,11 @@
         <!-- char** DBusServer::auth_mechanisms -->
         <var-decl name='auth_mechanisms' type-id='type-id-127' visibility='default' filepath='../dbus/dbus-server-protected.h' line='85' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='31'>
+      <data-member access='public' layout-offset-in-bits='0'>
         <!-- unsigned int DBusServer::disconnected -->
         <var-decl name='disconnected' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-server-protected.h' line='87' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='30'>
+      <data-member access='public' layout-offset-in-bits='1'>
         <!-- unsigned int DBusServer::have_server_lock -->
         <var-decl name='have_server_lock' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-server-protected.h' line='90' column='1'/>
       </data-member>
@@ -3646,7 +3646,7 @@
       <return type-id='type-id-4'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-signature.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
+  <abi-instr address-size='64' path='dbus-signature.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- typedef __anonymous_struct__ DBusSignatureIter -->
     <typedef-decl name='DBusSignatureIter' type-id='type-id-178' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.h' line='51' column='1' id='type-id-179'/>
     <!-- struct {void* dummy1; void* dummy2; dbus_uint32_t dummy8; int dummy12; int dummy17;} -->
@@ -3771,7 +3771,7 @@
       <return type-id='type-id-22'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-syntax.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
+  <abi-instr address-size='64' path='dbus-syntax.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- dbus_bool_t dbus_validate_utf8(const char*, DBusError*) -->
     <function-decl name='dbus_validate_utf8' mangled-name='dbus_validate_utf8' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-syntax.c' line='289' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_validate_utf8'>
       <!-- parameter of type 'const char*' -->
@@ -3827,7 +3827,7 @@
       <return type-id='type-id-17'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-sysdeps.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
+  <abi-instr address-size='64' path='dbus-sysdeps.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- dbus_bool_t dbus_setenv(const char*, const char*) -->
     <function-decl name='dbus_setenv' mangled-name='dbus_setenv' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-sysdeps.c' line='114' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_setenv'>
       <!-- parameter of type 'const char*' -->
@@ -3838,7 +3838,7 @@
       <return type-id='type-id-17'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-threads.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
+  <abi-instr address-size='64' path='dbus-threads.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- struct DBusMutex -->
     <class-decl name='DBusMutex' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-183'/>
     <!-- typedef __anonymous_struct__ DBusThreadFunctions -->
@@ -4043,7 +4043,7 @@
       <return type-id='type-id-4'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-timeout.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
+  <abi-instr address-size='64' path='dbus-timeout.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- typedef typedef dbus_bool_t (void*)* DBusTimeoutHandler -->
     <typedef-decl name='DBusTimeoutHandler' type-id='type-id-143' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-timeout.h' line='41' column='1' id='type-id-92'/>
     <!-- typedef dbus_bool_t (void*)* -->
@@ -4095,7 +4095,7 @@
       <return type-id='type-id-17'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-uuidgen.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
+  <abi-instr address-size='64' path='dbus-uuidgen.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- dbus_bool_t dbus_internal_do_not_use_create_uuid(char**) -->
     <function-decl name='dbus_internal_do_not_use_create_uuid' mangled-name='dbus_internal_do_not_use_create_uuid' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-uuidgen.c' line='122' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_internal_do_not_use_create_uuid'>
       <!-- parameter of type 'char**' -->
@@ -4117,7 +4117,7 @@
       <return type-id='type-id-17'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='dbus-watch.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
+  <abi-instr address-size='64' path='dbus-watch.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus' language='LANG_C89'>
     <!-- typedef typedef dbus_bool_t (DBusWatch*, unsigned int, void*)* DBusWatchHandler -->
     <typedef-decl name='DBusWatchHandler' type-id='type-id-144' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-watch.h' line='43' column='1' id='type-id-94'/>
     <!-- typedef dbus_bool_t (DBusWatch*, unsigned int, void*)* -->

@@ -11,12 +11,12 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
             underlying type 'struct S' changed:
               type size hasn't changed
               2 data member changes:
-                type of 'FooStruct::Embedded* S::m1' changed:
+                type of 'FooStruct::Embedded* m1' changed:
                   in pointed to type 'struct FooStruct::Embedded':
                     type size hasn't changed
                     1 data member insertion:
-                      'char FooStruct::Embedded::m1', at offset 32 (in bits)
-                type of 'FooStruct::Embedded** S::m2' changed:
+                      'char m1', at offset 32 (in bits)
+                type of 'FooStruct::Embedded** m2' changed:
                   in pointed to type 'FooStruct::Embedded*':
                     pointed to type 'struct FooStruct::Embedded' changed, as reported earlier
 

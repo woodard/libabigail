@@ -6,5 +6,5 @@ have sub-types that are different from what application 'test7-fn-changed-app' e
       in unqualified underlying type 'struct Student' at test7-fn-changed-libapp-v1.h:3:1:
         type size changed from 128 to 192 (in bits)
         1 data member insertion:
-          'float Student::percentage', at offset 128 (in bits) at test7-fn-changed-libapp-v1.h:7:1
+          'float percentage', at offset 128 (in bits) at test7-fn-changed-libapp-v1.h:7:1
 

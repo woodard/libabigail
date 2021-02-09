@@ -8,7 +8,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in referenced type 'struct S':
         type size hasn't changed
         1 data member change:
-          type of 'int S::m0' changed:
+          type of 'int m0' changed:
             type name changed from 'int' to 'unsigned int'
             type size hasn't changed
 

@@ -239,7 +239,11 @@ represent_data_member(var_decl_sptr d,
       || (!get_member_is_static(d) && !get_data_member_is_laid_out(d)))
     return;
 
-  out << indent << "'" << d->get_pretty_representation() << "'";
+  out << indent
+      << "'"
+      << d->get_pretty_representation(/*internal=*/false,
+				      /*qualified_name=*/false)
+      << "'";
   if (!get_member_is_static(d))
     {
       // Do not emit offset information for data member of a union
@@ -405,7 +409,8 @@ represent(const var_diff_sptr	&diff,
   const uint64_t n_size = get_var_size_in_bits(n);
   const uint64_t o_offset = get_data_member_offset(o);
   const uint64_t n_offset = get_data_member_offset(n);
-  const string o_pretty_representation = o->get_pretty_representation();
+  const string o_pretty_representation =
+    o->get_pretty_representation(/*internal=*/false, /*qualified_name=*/false);
   // no n_pretty_representation here as it's only needed in a couple of places
   const bool show_size_offset_changes = ctxt->get_allowed_category()
 					& SIZE_OR_OFFSET_CHANGE_CATEGORY;
@@ -432,7 +437,9 @@ represent(const var_diff_sptr	&diff,
 
   if (is_strict_anonymous_data_member_change)
     {
-      const string n_pretty_representation = n->get_pretty_representation();
+      const string n_pretty_representation =
+	n->get_pretty_representation(/*internal=*/false,
+				     /*qualified_name=*/false);
       const type_base_sptr o_type = o->get_type(), n_type = n->get_type();
       if (o_pretty_representation != n_pretty_representation)
 	{
@@ -472,7 +479,9 @@ represent(const var_diff_sptr	&diff,
       ABG_ASSERT(o_anon != n_anon);
       // So we are looking at a non-anonymous data member change from
       // or to an anonymous data member.
-      const string n_pretty_representation = n->get_pretty_representation();
+      const string n_pretty_representation =
+	n->get_pretty_representation(/*internal=*/false,
+				     /*qualified_name=*/false);
       out << indent << (o_anon ? "anonymous " : "")
 	  << "data member " << o_pretty_representation;
       show_offset_or_size(" at offset", o_offset, *ctxt, out);

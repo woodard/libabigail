@@ -1,4 +1,4 @@
-<abi-corpus path='data/test-read-dwarf/test6.so'>
+<abi-corpus version='2.0' path='data/test-read-dwarf/test6.so'>
   <elf-needed>
     <dependency name='libstdc++.so.6'/>
     <dependency name='libm.so.6'/>
@@ -16,7 +16,7 @@
     <elf-symbol name='_ZN1CIiE3barE' size='4' type='object-type' binding='gnu-unique-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZZN1B3fooEvE1a' size='4' type='object-type' binding='gnu-unique-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
-  <abi-instr version='1.0' address-size='64' path='test6.cc' comp-dir-path='/home/skumari/Tasks/source_repo/dodji/libabigail/tests/data/test-read-dwarf' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='test6.cc' comp-dir-path='/home/skumari/Tasks/source_repo/dodji/libabigail/tests/data/test-read-dwarf' language='LANG_C_plus_plus'>
     <type-decl name='int' size-in-bits='32' id='type-id-1'/>
     <class-decl name='B' size-in-bits='8' is-struct='yes' visibility='default' filepath='/home/skumari/Tasks/source_repo/dodji/libabigail/tests/data/test-read-dwarf/test6.cc' line='9' column='1' id='type-id-2'>
       <member-function access='public'>

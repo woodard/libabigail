@@ -1,4 +1,4 @@
-<abi-corpus path='data/test-read-dwarf/test12-pr18844.so'>
+<abi-corpus version='2.0' path='data/test-read-dwarf/test12-pr18844.so'>
   <elf-needed>
     <dependency name='build/debug/mongo/bson/mutable/libmutable_bson.so'/>
     <dependency name='build/debug/mongo/bson/util/libbson_extract.so'/>
@@ -1719,7 +1719,7 @@
     <elf-symbol name='_ZTVSt23_Sp_counted_ptr_inplaceIN5mongo4repl19ReplicationExecutor5EventESaIS3_ELN9__gnu_cxx12_Lock_policyE2EE' size='56' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZZN5mongo7BSONObjC1EvE21kEmptyObjectPrototype' size='5' type='object-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
-  <abi-instr version='1.0' address-size='64' path='src/mongo/db/repl/replication_executor.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/mongo/db/repl/replication_executor.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <type-decl name='bool' size-in-bits='8' id='type-id-1'/>
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='112' id='type-id-2'>
       <subrange length='14' type-id='type-id-3' id='type-id-4'/>
@@ -25428,7 +25428,7 @@
       </class-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/mongo/db/repl/scatter_gather_algorithm.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/mongo/db/repl/scatter_gather_algorithm.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <qualified-type-def type-id='type-id-3872' const='yes' id='type-id-3847'/>
     <reference-type-def kind='lvalue' type-id='type-id-3847' size-in-bits='64' id='type-id-3776'/>
     <qualified-type-def type-id='type-id-3742' const='yes' id='type-id-3848'/>
@@ -25587,7 +25587,7 @@
       </namespace-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/mongo/db/repl/scatter_gather_runner.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/mongo/db/repl/scatter_gather_runner.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <reference-type-def kind='lvalue' type-id='type-id-3895' size-in-bits='64' id='type-id-3890'/>
     <reference-type-def kind='lvalue' type-id='type-id-3810' size-in-bits='64' id='type-id-3809'/>
     <reference-type-def kind='lvalue' type-id='type-id-3719' size-in-bits='64' id='type-id-3916'/>

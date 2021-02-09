@@ -15,7 +15,7 @@ Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
       type name changed from 'sto2' to 'stn2'
       type size changed from 64 to 128 (in bits)
       1 data member insertion:
-        'double stn2::y', at offset 64 (in bits) at test-leaf-redundant-v1.c:9:1
+        'double y', at offset 64 (in bits) at test-leaf-redundant-v1.c:9:1
 
   [C] 'function void fn3(sto1*)' at test-leaf-redundant-v1.c:18:1 has some sub-type changes:
     parameter 1 of type 'sto1*' changed:

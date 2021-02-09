@@ -6,13 +6,13 @@ Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
 'struct S at test-member-size-v0.cc:3:1' changed:
   type size changed from 128 to 192 (in bits)
   1 data member insertion:
-    'int S::y', at offset 128 (in bits) at test-member-size-v1.cc:6:1
+    'int y', at offset 128 (in bits) at test-member-size-v1.cc:6:1
 
 'struct T at test-member-size-v0.cc:13:1' changed:
   type size changed from 192 to 256 (in bits)
   there are data member changes:
     type 'struct S' of 'T::s' changed, as reported earlier
-    'int T::a' offset changed from 128 to 192 (in bits) (by +64 bits)
+    'int a' offset changed from 128 to 192 (in bits) (by +64 bits)
 
 'struct U at test-member-size-v0.cc:18:1' changed:
   type size changed from 192 to 256 (in bits)
@@ -21,4 +21,4 @@ Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
       type size changed from 128 to 192 (in bits)
       there are data member changes:
         type 'struct S' of 'U::__anonymous_struct__::s' changed, as reported earlier
-    'int U::r' offset changed from 128 to 192 (in bits) (by +64 bits)
+    'int r' offset changed from 128 to 192 (in bits) (by +64 bits)

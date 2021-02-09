@@ -14,9 +14,9 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
           in unqualified underlying type 'class B0S0':
             type size changed from 64 to 96 (in bits)
             1 data member insertion:
-              'unsigned int B0S0::m2', at offset 32 (in bits)
+              'unsigned int m2', at offset 32 (in bits)
             1 data member change:
-              'char B0S0::m1' offset changed from 32 to 64 (in bits) (by +32 bits)
+              'char m1' offset changed from 32 to 64 (in bits) (by +32 bits)
 
   [C] 'method void S0::member0() const' has some indirect sub-type changes:
     'method void S0::member0() const' access changed from 'private' to 'public'
@@ -29,7 +29,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
               'class B0S0' changed:
                 details were reported earlier
             1 data member change:
-              'int S0::m0' offset changed from 64 to 96 (in bits) (by +32 bits), access changed from 'private' to 'protected'
+              'int m0' offset changed from 64 to 96 (in bits) (by +32 bits), access changed from 'private' to 'protected'
 
   [C] 'function void foo(S0&, S1*)' has some indirect sub-type changes:
     parameter 1 of type 'S0&' has sub-type changes:

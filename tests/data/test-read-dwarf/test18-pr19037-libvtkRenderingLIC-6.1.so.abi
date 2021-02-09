@@ -1,4 +1,4 @@
-<abi-corpus path='data/test-read-dwarf/test18-pr19037-libvtkRenderingLIC-6.1.so' soname='libvtkRenderingLIC-6.1.so.1'>
+<abi-corpus version='2.0' path='data/test-read-dwarf/test18-pr19037-libvtkRenderingLIC-6.1.so' soname='libvtkRenderingLIC-6.1.so.1'>
   <elf-needed>
     <dependency name='libvtkIOLegacy-6.1.so.1'/>
     <dependency name='libvtkIOXML-6.1.so.1'/>
@@ -450,7 +450,7 @@
     <elf-symbol name='vtkSurfaceLICPainter_GeomVs' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='vtkSurfaceLICPainter_SC' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2D.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2D.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
     <type-decl name='bool' size-in-bits='8' id='type-id-1'/>
     <type-decl name='char' size-in-bits='8' id='type-id-2'/>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='8' id='type-id-3'>
@@ -3381,7 +3381,7 @@
     <typedef-decl name='GLfloat' type-id='type-id-16' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/mesa@8.0.5-22dd4c4b/include/GL/gl.h' line='160' column='1' id='type-id-319'/>
     <pointer-type-def type-id='type-id-62' size-in-bits='64' id='type-id-320'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2DExtentTranslator.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2DExtentTranslator.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-17' size-in-bits='192' id='type-id-60'>
       <subrange length='6' type-id='type-id-4' id='type-id-322'/>
     </array-type-def>
@@ -3456,7 +3456,7 @@
       <return type-id='type-id-226'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-17' size-in-bits='64' id='type-id-338'>
       <subrange length='2' type-id='type-id-4' id='type-id-339'/>
     </array-type-def>
@@ -5113,10 +5113,10 @@
     <reference-type-def kind='lvalue' type-id='type-id-497' size-in-bits='64' id='type-id-491'/>
     <qualified-type-def type-id='type-id-56' const='yes' id='type-id-497'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
     <pointer-type-def type-id='type-id-110' size-in-bits='64' id='type-id-112'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkStructuredGridLIC2D.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkStructuredGridLIC2D.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
     <class-decl name='vtkStructuredGridLIC2D' size-in-bits='1472' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkStructuredGridLIC2D.h' line='51' column='1' id='type-id-498'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-499'/>
       <data-member access='protected' layout-offset-in-bits='1024'>
@@ -5376,7 +5376,7 @@
     <class-decl name='vtkStructuredGrid' visibility='default' is-declaration-only='yes' id='type-id-524'/>
     <class-decl name='vtkStructuredGridAlgorithm' visibility='default' is-declaration-only='yes' id='type-id-499'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICComposite.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICComposite.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
     <class-decl name='vtkSurfaceLICComposite' size-in-bits='3584' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICComposite.h' line='38' column='1' id='type-id-525'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-348'/>
       <data-member access='protected' layout-offset-in-bits='384'>
@@ -6111,7 +6111,7 @@
       </function-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICDefaultPainter.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICDefaultPainter.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
     <class-decl name='vtkSurfaceLICDefaultPainter' size-in-bits='1728' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICDefaultPainter.h' line='37' column='1' id='type-id-562'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-563'/>
       <data-member access='protected' layout-offset-in-bits='1664'>
@@ -7743,7 +7743,7 @@
     <class-decl name='vtkOpenGLLightMonitor' visibility='default' is-declaration-only='yes' id='type-id-658'/>
     <qualified-type-def type-id='type-id-624' const='yes' id='type-id-657'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-15' size-in-bits='192' id='type-id-590'>
       <subrange length='3' type-id='type-id-4' id='type-id-642'/>
     </array-type-def>
@@ -8555,7 +8555,7 @@
     <class-decl name='vtkScalarsToColors' visibility='default' is-declaration-only='yes' id='type-id-760'/>
     <class-decl name='vtkUniformVariables' visibility='default' is-declaration-only='yes' id='type-id-798'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkTextureIO.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkTextureIO.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
     <class-decl name='vtkTextureIO' size-in-bits='8' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkTextureIO.h' line='33' column='1' id='type-id-808'>
       <member-function access='private' static='yes'>
         <function-decl name='Write' mangled-name='_ZN12vtkTextureIO5WriteEPKcP16vtkTextureObjectRKSt5dequeI14vtkPixelExtentSaIS5_EEPKd' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkTextureIO.cxx' line='125' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN12vtkTextureIO5WriteEPKcP16vtkTextureObjectRKSt5dequeI14vtkPixelExtentSaIS5_EEPKd'>
@@ -8577,46 +8577,46 @@
       </member-function>
     </class-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_AAH.cxx' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_AAH.cxx' language='LANG_C_plus_plus'>
     <var-decl name='vtkLineIntegralConvolution2D_AAH' type-id='type-id-68' mangled-name='vtkLineIntegralConvolution2D_AAH' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_AAH.cxx' line='9' column='1' elf-symbol-id='vtkLineIntegralConvolution2D_AAH'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_AAV.cxx' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_AAV.cxx' language='LANG_C_plus_plus'>
     <var-decl name='vtkLineIntegralConvolution2D_AAV' type-id='type-id-68' mangled-name='vtkLineIntegralConvolution2D_AAV' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_AAV.cxx' line='9' column='1' elf-symbol-id='vtkLineIntegralConvolution2D_AAV'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_CE.cxx' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_CE.cxx' language='LANG_C_plus_plus'>
     <var-decl name='vtkLineIntegralConvolution2D_CE' type-id='type-id-68' mangled-name='vtkLineIntegralConvolution2D_CE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_CE.cxx' line='9' column='1' elf-symbol-id='vtkLineIntegralConvolution2D_CE'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_EE.cxx' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_EE.cxx' language='LANG_C_plus_plus'>
     <var-decl name='vtkLineIntegralConvolution2D_EE' type-id='type-id-68' mangled-name='vtkLineIntegralConvolution2D_EE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_EE.cxx' line='9' column='1' elf-symbol-id='vtkLineIntegralConvolution2D_EE'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_LIC0.cxx' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_LIC0.cxx' language='LANG_C_plus_plus'>
     <var-decl name='vtkLineIntegralConvolution2D_LIC0' type-id='type-id-68' mangled-name='vtkLineIntegralConvolution2D_LIC0' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_LIC0.cxx' line='9' column='1' elf-symbol-id='vtkLineIntegralConvolution2D_LIC0'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_LICI.cxx' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_LICI.cxx' language='LANG_C_plus_plus'>
     <var-decl name='vtkLineIntegralConvolution2D_LICI' type-id='type-id-68' mangled-name='vtkLineIntegralConvolution2D_LICI' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_LICI.cxx' line='9' column='1' elf-symbol-id='vtkLineIntegralConvolution2D_LICI'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_LICN.cxx' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_LICN.cxx' language='LANG_C_plus_plus'>
     <var-decl name='vtkLineIntegralConvolution2D_LICN' type-id='type-id-68' mangled-name='vtkLineIntegralConvolution2D_LICN' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_LICN.cxx' line='9' column='1' elf-symbol-id='vtkLineIntegralConvolution2D_LICN'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_VT.cxx' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_VT.cxx' language='LANG_C_plus_plus'>
     <var-decl name='vtkLineIntegralConvolution2D_VT' type-id='type-id-68' mangled-name='vtkLineIntegralConvolution2D_VT' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_VT.cxx' line='9' column='1' elf-symbol-id='vtkLineIntegralConvolution2D_VT'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkStructuredGridLIC2D_fs.cxx' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkStructuredGridLIC2D_fs.cxx' language='LANG_C_plus_plus'>
     <var-decl name='vtkStructuredGridLIC2D_fs' type-id='type-id-68' mangled-name='vtkStructuredGridLIC2D_fs' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkStructuredGridLIC2D_fs.cxx' line='9' column='1' elf-symbol-id='vtkStructuredGridLIC2D_fs'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkSurfaceLICPainter_CE.cxx' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkSurfaceLICPainter_CE.cxx' language='LANG_C_plus_plus'>
     <var-decl name='vtkSurfaceLICPainter_CE' type-id='type-id-68' mangled-name='vtkSurfaceLICPainter_CE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkSurfaceLICPainter_CE.cxx' line='9' column='1' elf-symbol-id='vtkSurfaceLICPainter_CE'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkSurfaceLICPainter_DCpy.cxx' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkSurfaceLICPainter_DCpy.cxx' language='LANG_C_plus_plus'>
     <var-decl name='vtkSurfaceLICPainter_DCpy' type-id='type-id-68' mangled-name='vtkSurfaceLICPainter_DCpy' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkSurfaceLICPainter_DCpy.cxx' line='9' column='1' elf-symbol-id='vtkSurfaceLICPainter_DCpy'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkSurfaceLICPainter_GeomFs.cxx' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkSurfaceLICPainter_GeomFs.cxx' language='LANG_C_plus_plus'>
     <var-decl name='vtkSurfaceLICPainter_GeomFs' type-id='type-id-68' mangled-name='vtkSurfaceLICPainter_GeomFs' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkSurfaceLICPainter_GeomFs.cxx' line='9' column='1' elf-symbol-id='vtkSurfaceLICPainter_GeomFs'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkSurfaceLICPainter_GeomVs.cxx' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkSurfaceLICPainter_GeomVs.cxx' language='LANG_C_plus_plus'>
     <var-decl name='vtkSurfaceLICPainter_GeomVs' type-id='type-id-68' mangled-name='vtkSurfaceLICPainter_GeomVs' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkSurfaceLICPainter_GeomVs.cxx' line='9' column='1' elf-symbol-id='vtkSurfaceLICPainter_GeomVs'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkSurfaceLICPainter_SC.cxx' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkSurfaceLICPainter_SC.cxx' language='LANG_C_plus_plus'>
     <var-decl name='vtkSurfaceLICPainter_SC' type-id='type-id-68' mangled-name='vtkSurfaceLICPainter_SC' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkSurfaceLICPainter_SC.cxx' line='9' column='1' elf-symbol-id='vtkSurfaceLICPainter_SC'/>
   </abi-instr>
 </abi-corpus>

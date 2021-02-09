@@ -9,13 +9,13 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in pointed to type 'struct libapp::S0':
         type size changed from 32 to 64 (in bits)
         1 data member insertion:
-          'char libapp::S0::m1', at offset 32 (in bits)
+          'char m1', at offset 32 (in bits)
 
   [C] 'function libapp::S1* libapp::create_s1()' has some indirect sub-type changes:
     return type changed:
       in pointed to type 'struct libapp::S1':
         type size changed from 32 to 96 (in bits)
         2 data member insertions:
-          'char libapp::S1::m1', at offset 32 (in bits)
-          'unsigned int libapp::S1::m2', at offset 64 (in bits)
+          'char m1', at offset 32 (in bits)
+          'unsigned int m2', at offset 64 (in bits)
 

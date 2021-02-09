@@ -32,9 +32,9 @@ Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
         type name changed from 'int' to 'long int'
         type size changed from 32 to 64 (in bits)
   1 data member deletion:
-    'int ops::deleted_var', at offset 96 (in bits) at test-leaf-cxx-members-v0.cc:5:1
+    'int deleted_var', at offset 96 (in bits) at test-leaf-cxx-members-v0.cc:5:1
   1 data member insertion:
-    'long int ops::added_var', at offset 128 (in bits) at test-leaf-cxx-members-v1.cc:10:1
+    'long int added_var', at offset 128 (in bits) at test-leaf-cxx-members-v1.cc:10:1
   there are data member changes:
     type 'int' of 'ops::changed_var' changed:
       type name changed from 'int' to 'long int'

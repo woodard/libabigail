@@ -1,4 +1,4 @@
-<abi-corpus architecture='elf-amd-x86_64' soname='libtcmalloc_and_profiler.so.4'>
+<abi-corpus version='2.0' architecture='elf-amd-x86_64' soname='libtcmalloc_and_profiler.so.4'>
   <elf-needed>
     <dependency name='libunwind.so.8'/>
     <dependency name='libpthread.so.0'/>
@@ -1576,9 +1576,9 @@
     <!-- sys_alloc -->
     <elf-symbol name='sys_alloc' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
-  <abi-instr version='1.0' address-size='64' path='src/base/atomicops-internals-x86.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/base/atomicops-internals-x86.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/base/dynamic_annotations.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C89'>
+  <abi-instr address-size='64' path='src/base/dynamic_annotations.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C89'>
     <!-- int RunningOnValgrind() -->
     <function-decl name='RunningOnValgrind' mangled-name='RunningOnValgrind' filepath='src/base/dynamic_annotations.c' line='152' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='RunningOnValgrind'>
       <!-- int -->
@@ -1594,7 +1594,7 @@
     <!-- int -->
     <type-decl name='int' size-in-bits='32' id='type-id-1'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/base/elf_mem_image.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/base/elf_mem_image.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- unsigned char[16] -->
     <array-type-def dimensions='1' type-id='type-id-3' size-in-bits='128' id='type-id-4'>
       <!-- <anonymous range>[16] -->
@@ -2194,7 +2194,7 @@
     <!-- char -->
     <type-decl name='char' size-in-bits='8' id='type-id-65'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/base/linuxthreads.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/base/linuxthreads.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- typedef int (void*, int, pid_t*, typedef __va_list_tag __va_list_tag*)* ListAllProcessThreadsCallBack -->
     <typedef-decl name='ListAllProcessThreadsCallBack' type-id='type-id-66' filepath='./src/base/thread_lister.h' line='48' column='1' id='type-id-67'/>
     <!-- typedef __pid_t pid_t -->
@@ -2259,7 +2259,7 @@
       </data-member>
     </class-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/base/logging.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/base/logging.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- namespace FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead -->
     <namespace-decl name='FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead'>
       <!-- int32 FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead::FLAGS_verbose -->
@@ -2299,7 +2299,7 @@
     <!-- typedef int int32_t -->
     <typedef-decl name='int32_t' type-id='type-id-1' filepath='/usr/include/stdint.h' line='39' column='1' id='type-id-76'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/base/low_level_alloc.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/base/low_level_alloc.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- AllocList*[30] -->
     <array-type-def dimensions='1' type-id='type-id-77' size-in-bits='1920' id='type-id-78'>
       <!-- <anonymous range>[30] -->
@@ -2533,7 +2533,7 @@
     <!-- typedef long int int64_t -->
     <typedef-decl name='int64_t' type-id='type-id-85' filepath='/usr/include/stdint.h' line='41' column='1' id='type-id-103'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/base/spinlock.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/base/spinlock.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- struct CycleClock -->
     <class-decl name='CycleClock' size-in-bits='8' is-struct='yes' visibility='default' filepath='./src/base/cycleclock.h' line='79' column='1' id='type-id-104'/>
     <!-- namespace base -->
@@ -2549,7 +2549,7 @@
       </function-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/base/spinlock_internal.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/base/spinlock_internal.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- const base::internal::SpinLockWaitTransition -->
     <qualified-type-def type-id='type-id-105' const='yes' id='type-id-106'/>
     <!-- const base::internal::SpinLockWaitTransition* -->
@@ -2623,7 +2623,7 @@
     <!-- const volatile Atomic32 -->
     <qualified-type-def type-id='type-id-93' const='yes' id='type-id-110'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/base/sysinfo.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/base/sysinfo.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- char[10] -->
     <array-type-def dimensions='1' type-id='type-id-65' size-in-bits='80' id='type-id-111'>
       <!-- <anonymous range>[10] -->
@@ -2938,7 +2938,7 @@
     <!-- const size_t -->
     <qualified-type-def type-id='type-id-62' const='yes' id='type-id-117'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/base/vdso_support.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/base/vdso_support.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- base::VDSOInitHelper* -->
     <pointer-type-def type-id='type-id-132' size-in-bits='64' id='type-id-133'/>
     <!-- base::VDSOSupport* -->
@@ -3058,7 +3058,7 @@
       </class-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/central_freelist.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/central_freelist.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- const int& -->
     <reference-type-def kind='lvalue' type-id='type-id-144' size-in-bits='64' id='type-id-145'/>
     <!-- const int32_t -->
@@ -3145,19 +3145,19 @@
           <!-- void* tcmalloc::Span::objects -->
           <var-decl name='objects' type-id='type-id-58' visibility='default' filepath='src/span.h' line='50' column='1'/>
         </data-member>
-        <data-member access='public' layout-offset-in-bits='16'>
+        <data-member access='public' layout-offset-in-bits='0'>
           <!-- unsigned int tcmalloc::Span::refcount -->
           <var-decl name='refcount' type-id='type-id-64' visibility='default' filepath='src/span.h' line='51' column='1'/>
         </data-member>
-        <data-member access='public' layout-offset-in-bits='8'>
+        <data-member access='public' layout-offset-in-bits='16'>
           <!-- unsigned int tcmalloc::Span::sizeclass -->
           <var-decl name='sizeclass' type-id='type-id-64' visibility='default' filepath='src/span.h' line='52' column='1'/>
         </data-member>
-        <data-member access='public' layout-offset-in-bits='6'>
+        <data-member access='public' layout-offset-in-bits='24'>
           <!-- unsigned int tcmalloc::Span::location -->
           <var-decl name='location' type-id='type-id-64' visibility='default' filepath='src/span.h' line='53' column='1'/>
         </data-member>
-        <data-member access='public' layout-offset-in-bits='5'>
+        <data-member access='public' layout-offset-in-bits='26'>
           <!-- unsigned int tcmalloc::Span::sample -->
           <var-decl name='sample' type-id='type-id-64' visibility='default' filepath='src/span.h' line='54' column='1'/>
         </data-member>
@@ -3174,7 +3174,7 @@
     <!-- typedef unsigned long int uintptr_t -->
     <typedef-decl name='uintptr_t' type-id='type-id-5' filepath='/usr/include/stdint.h' line='123' column='1' id='type-id-156'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/common.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/common.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- namespace tcmalloc -->
     <namespace-decl name='tcmalloc'>
       <!-- uint64_t tcmalloc::metadata_system_bytes() -->
@@ -3198,7 +3198,7 @@
       </function-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/heap-checker-bcad.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/heap-checker-bcad.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- class HeapLeakCheckerGlobalPrePost -->
     <class-decl name='HeapLeakCheckerGlobalPrePost' size-in-bits='8' visibility='default' filepath='src/heap-checker-bcad.cc' line='60' column='1' id='type-id-157'>
       <data-member access='private' static='yes'>
@@ -3231,7 +3231,7 @@
     <!-- bool heap_leak_checker_bcad_variable -->
     <var-decl name='heap_leak_checker_bcad_variable' type-id='type-id-61' mangled-name='heap_leak_checker_bcad_variable' visibility='default' filepath='src/heap-checker-bcad.cc' line='53' column='1' elf-symbol-id='heap_leak_checker_bcad_variable'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/heap-checker.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/heap-checker.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- char[] -->
     <array-type-def dimensions='1' type-id='type-id-65' size-in-bits='infinite' id='type-id-159'>
       <!-- <anonymous range>[] -->
@@ -11970,7 +11970,7 @@
     <!-- const __gnu_cxx::new_allocator<MallocExtension::FreeListInfo> -->
     <qualified-type-def type-id='type-id-1049' const='yes' id='type-id-1059'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/heap-profile-table.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/heap-profile-table.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- AddressMap<HeapProfileTable::AllocValue>* const -->
     <qualified-type-def type-id='type-id-265' const='yes' id='type-id-275'/>
     <!-- HeapProfileTable* const -->
@@ -13501,7 +13501,7 @@
     <!-- const __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<const void* const, const char*> > > -->
     <qualified-type-def type-id='type-id-1131' const='yes' id='type-id-1138'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/heap-profiler.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/heap-profiler.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- struct HeapProfileEndWriter -->
     <class-decl name='HeapProfileEndWriter' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/heap-profiler.cc' line='593' column='1' id='type-id-1139'>
       <member-function access='public' destructor='yes'>
@@ -13597,7 +13597,7 @@
       <return type-id='type-id-60'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/internal_logging.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/internal_logging.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- char[200] -->
     <array-type-def dimensions='1' type-id='type-id-65' size-in-bits='1600' id='type-id-1141'>
       <!-- <anonymous range>[200] -->
@@ -13902,7 +13902,7 @@
     <!-- tcmalloc::LogItem* -->
     <pointer-type-def type-id='type-id-1145' size-in-bits='64' id='type-id-1158'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/malloc_extension.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/malloc_extension.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- enum MallocExtension_Ownership -->
     <enum-decl name='MallocExtension_Ownership' filepath='src/gperftools/malloc_extension_c.h' line='87' column='1' id='type-id-1161'>
       <underlying-type type-id='type-id-89'/>
@@ -14024,7 +14024,7 @@
       <return type-id='type-id-1'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/malloc_hook.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/malloc_hook.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- typedef void (void*, typedef size_t, int, int, int, typedef off_t)* MallocHook_PreMmapHook -->
     <typedef-decl name='MallocHook_PreMmapHook' type-id='type-id-1163' filepath='./src/gperftools/malloc_hook_c.h' line='87' column='1' id='type-id-1164'/>
     <!-- typedef int (void*, typedef size_t, int, int, int, typedef off_t, void**)* MallocHook_MmapReplacement -->
@@ -14725,7 +14725,7 @@
     <!-- const base::internal::HookList<void (*)(const void*, size_t)> -->
     <qualified-type-def type-id='type-id-1222' const='yes' id='type-id-1231'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/maybe_threads.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/maybe_threads.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- pthread_key_t* -->
     <pointer-type-def type-id='type-id-1232' size-in-bits='64' id='type-id-1233'/>
     <!-- pthread_once_t* -->
@@ -14776,7 +14776,7 @@
     <!-- typedef int pthread_once_t -->
     <typedef-decl name='pthread_once_t' type-id='type-id-1' filepath='/usr/include/bits/pthreadtypes.h' line='144' column='1' id='type-id-1234'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/memfs_malloc.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/memfs_malloc.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- class HugetlbSysAllocator -->
     <class-decl name='HugetlbSysAllocator' size-in-bits='384' visibility='default' filepath='src/memfs_malloc.cc' line='90' column='1' id='type-id-1236'>
       <!-- class SysAllocator -->
@@ -14901,7 +14901,7 @@
       <var-decl name='FLAGS_nomemfs_malloc_map_private' type-id='type-id-65' mangled-name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead32FLAGS_nomemfs_malloc_map_privateE' visibility='default' filepath='src/memfs_malloc.cc' line='87' column='1' elf-symbol-id='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead32FLAGS_nomemfs_malloc_map_privateE'/>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/memory_region_map.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/memory_region_map.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- HeapProfileBucket[20] -->
     <array-type-def dimensions='1' type-id='type-id-212' size-in-bits='8960' id='type-id-197'>
       <!-- <anonymous range>[20] -->
@@ -15425,7 +15425,7 @@
       <return type-id='type-id-60'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/page_heap.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/page_heap.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- TCMalloc_PageMap3<35>* const -->
     <qualified-type-def type-id='type-id-1280' const='yes' id='type-id-1281'/>
     <!-- namespace tcmalloc -->
@@ -15508,7 +15508,7 @@
     <!-- TCMalloc_PageMap3<35>::Node* -->
     <pointer-type-def type-id='type-id-1283' size-in-bits='64' id='type-id-1285'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/profile-handler.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/profile-handler.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- typedef void (int, siginfo_t*, void*, void*)* ProfileHandlerCallback -->
     <typedef-decl name='ProfileHandlerCallback' type-id='type-id-1286' filepath='src/profile-handler.h' line='95' column='1' id='type-id-1287'/>
     <!-- struct timer_id_holder -->
@@ -16488,7 +16488,7 @@
       </data-member>
     </union-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/profiledata.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/profiledata.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- ProfileData* const -->
     <qualified-type-def type-id='type-id-1386' const='yes' id='type-id-1387'/>
     <!-- const ProfileData::Entry& -->
@@ -16784,7 +16784,7 @@
     <!-- typedef long int __time_t -->
     <typedef-decl name='__time_t' type-id='type-id-85' filepath='/usr/include/bits/types.h' line='149' column='1' id='type-id-1416'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/profiler.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/profiler.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- Slot[64] -->
     <array-type-def dimensions='1' type-id='type-id-1405' size-in-bits='4096' id='type-id-1406'>
       <!-- <anonymous range>[64] -->
@@ -17529,7 +17529,7 @@
       <return type-id='type-id-1'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/raw_printer.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/raw_printer.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- base::RawPrinter* -->
     <pointer-type-def type-id='type-id-1428' size-in-bits='64' id='type-id-1429'/>
     <!-- base::RawPrinter* const -->
@@ -17595,7 +17595,7 @@
       </class-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/sampler.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/sampler.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- const double& -->
     <qualified-type-def type-id='type-id-1434' id='type-id-1435'/>
     <!-- namespace std -->
@@ -17622,7 +17622,7 @@
     <!-- const double -->
     <qualified-type-def type-id='type-id-2' const='yes' id='type-id-1436'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/span.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/span.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- tcmalloc::PageHeapAllocator<tcmalloc::Span>* const -->
     <qualified-type-def type-id='type-id-1437' const='yes' id='type-id-1438'/>
     <!-- namespace tcmalloc -->
@@ -17702,7 +17702,7 @@
       </class-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/stack_trace_table.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/stack_trace_table.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- const tcmalloc::PageHeapAllocator<tcmalloc::StackTraceTable::Bucket> -->
     <qualified-type-def type-id='type-id-1440' const='yes' id='type-id-1441'/>
     <!-- const tcmalloc::PageHeapAllocator<tcmalloc::StackTraceTable::Bucket>* -->
@@ -17883,7 +17883,7 @@
       <subrange length='31' type-id='type-id-5' id='type-id-1461'/>
     </array-type-def>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/stacktrace.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/stacktrace.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- namespace tcmalloc -->
     <namespace-decl name='tcmalloc'>
       <!-- namespace tcmalloc::commandlineflags -->
@@ -17952,7 +17952,7 @@
       <return type-id='type-id-1'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/static_vars.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/static_vars.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- namespace tcmalloc -->
     <namespace-decl name='tcmalloc'>
       <!-- namespace tcmalloc::commandlineflags -->
@@ -17969,7 +17969,7 @@
       </namespace-decl>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/symbolize.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/symbolize.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- class SymbolTable -->
     <class-decl name='SymbolTable' size-in-bits='448' visibility='default' filepath='src/symbolize.h' line='50' column='1' id='type-id-1462'>
       <member-type access='private'>
@@ -18688,7 +18688,7 @@
       <var-decl name='FLAGS_nosymbolize_pprof' type-id='type-id-65' mangled-name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead23FLAGS_nosymbolize_pprofE' visibility='default' filepath='src/symbolize.cc' line='70' column='1' elf-symbol-id='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead23FLAGS_nosymbolize_pprofE'/>
     </namespace-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/system-alloc.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/system-alloc.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- SysAllocator*[2] -->
     <array-type-def dimensions='1' type-id='type-id-966' size-in-bits='128' id='type-id-1541'>
       <!-- <anonymous range>[2] -->
@@ -18933,7 +18933,7 @@
     <!-- size_t TCMalloc_SystemTaken -->
     <var-decl name='TCMalloc_SystemTaken' type-id='type-id-62' mangled-name='TCMalloc_SystemTaken' visibility='default' filepath='src/system-alloc.cc' line='127' column='1' elf-symbol-id='TCMalloc_SystemTaken'/>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/tcmalloc.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/tcmalloc.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- AtomicWord[8] -->
     <array-type-def dimensions='1' type-id='type-id-922' size-in-bits='512' id='type-id-923'>
       <!-- <anonymous range>[8] -->
@@ -24392,19 +24392,19 @@
           <!-- void* tcmalloc::Span::objects -->
           <var-decl name='objects' type-id='type-id-58' visibility='default' filepath='src/span.h' line='50' column='1'/>
         </data-member>
-        <data-member access='public' layout-offset-in-bits='16'>
+        <data-member access='public' layout-offset-in-bits='0'>
           <!-- unsigned int tcmalloc::Span::refcount -->
           <var-decl name='refcount' type-id='type-id-64' visibility='default' filepath='src/span.h' line='51' column='1'/>
         </data-member>
-        <data-member access='public' layout-offset-in-bits='8'>
+        <data-member access='public' layout-offset-in-bits='16'>
           <!-- unsigned int tcmalloc::Span::sizeclass -->
           <var-decl name='sizeclass' type-id='type-id-64' visibility='default' filepath='src/span.h' line='52' column='1'/>
         </data-member>
-        <data-member access='public' layout-offset-in-bits='6'>
+        <data-member access='public' layout-offset-in-bits='24'>
           <!-- unsigned int tcmalloc::Span::location -->
           <var-decl name='location' type-id='type-id-64' visibility='default' filepath='src/span.h' line='53' column='1'/>
         </data-member>
-        <data-member access='public' layout-offset-in-bits='5'>
+        <data-member access='public' layout-offset-in-bits='26'>
           <!-- unsigned int tcmalloc::Span::sample -->
           <var-decl name='sample' type-id='type-id-64' visibility='default' filepath='src/span.h' line='54' column='1'/>
         </data-member>
@@ -24766,7 +24766,7 @@
       <return type-id='type-id-58'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='src/thread_cache.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
+  <abi-instr address-size='64' path='src/thread_cache.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- const tcmalloc::ThreadCache* const -->
     <qualified-type-def type-id='type-id-1685' const='yes' id='type-id-1766'/>
     <!-- tcmalloc::PageHeapAllocator<tcmalloc::ThreadCache>* const -->

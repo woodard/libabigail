@@ -40,9 +40,9 @@
           underlying type 'struct SSLCipherSuiteInfoStr' at sslt.h:178:1 changed:
             type size hasn't changed
             1 data member insertion:
-              'SSLAuthType SSLCipherSuiteInfoStr::authType', at offset 736 (in bits) at sslt.h:250:1
+              'SSLAuthType authType', at offset 736 (in bits) at sslt.h:250:1
             1 data member changes (3 filtered):
-              type of 'SSLAuthType SSLCipherSuiteInfoStr::authAlgorithm' changed:
+              type of 'SSLAuthType authAlgorithm' changed:
                 underlying type 'enum __anonymous_enum__' at sslt.h:87:1 changed:
                   type size hasn't changed
                   1 enumerator deletion:
@@ -79,27 +79,27 @@
           underlying type 'struct NSSCMSContentInfoStr' at cmst.h:131:1 changed:
             type size hasn't changed
             1 data member changes (2 filtered):
-              type of 'NSSCMSContent NSSCMSContentInfoStr::content' changed:
+              type of 'NSSCMSContent content' changed:
                 underlying type 'union NSSCMSContentUnion' at cmst.h:118:1 changed:
                   type size hasn't changed
                   1 data member changes (3 filtered):
-                    type of 'NSSCMSEncryptedData* NSSCMSContentUnion::encryptedData' changed:
+                    type of 'NSSCMSEncryptedData* encryptedData' changed:
                       in pointed to type 'typedef NSSCMSEncryptedData' at cmst.h:65:1:
                         underlying type 'struct NSSCMSEncryptedDataStr' at cmst.h:468:1 changed:
                           type size hasn't changed
                           1 data member changes (1 filtered):
-                            type of 'NSSCMSAttribute** NSSCMSEncryptedDataStr::unprotectedAttr' changed:
+                            type of 'NSSCMSAttribute** unprotectedAttr' changed:
                               in pointed to type 'NSSCMSAttribute*':
                                 in pointed to type 'typedef NSSCMSAttribute' at cmst.h:69:1:
                                   underlying type 'struct NSSCMSAttributeStr' at cmst.h:487:1 changed:
                                     type size hasn't changed
                                     1 data member change:
-                                      type of 'SECOidData* NSSCMSAttributeStr::typeTag' changed:
+                                      type of 'SECOidData* typeTag' changed:
                                         in pointed to type 'typedef SECOidData' at secoidt.h:16:1:
                                           underlying type 'struct SECOidDataStr' at secoidt.h:500:1 changed:
                                             type size hasn't changed
                                             1 data member change:
-                                              type of 'SECOidTag SECOidDataStr::offset' changed:
+                                              type of 'SECOidTag offset' changed:
                                                 underlying type 'enum __anonymous_enum__1' at secoidt.h:34:1 changed:
                                                   type size hasn't changed
                                                   1 enumerator insertion:

@@ -1,4 +1,4 @@
-<abi-corpus path='data/test-read-dwarf/PR26261/PR26261-exe'>
+<abi-corpus version='2.0' path='data/test-read-dwarf/PR26261/PR26261-exe'>
   <elf-needed>
     <dependency name='libc.so.6'/>
   </elf-needed>
@@ -16,7 +16,7 @@
   <elf-variable-symbols>
     <elf-symbol name='_IO_stdin_used' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
-  <abi-instr version='1.0' address-size='64' path='PR26261-main.c' comp-dir-path='/home/dodji/git/libabigail/patches/tests/data/test-read-dwarf/PR26261' language='LANG_C89'>
+  <abi-instr address-size='64' path='PR26261-main.c' comp-dir-path='/home/dodji/git/libabigail/patches/tests/data/test-read-dwarf/PR26261' language='LANG_C89'>
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-2'/>
     <pointer-type-def type-id='type-id-2' size-in-bits='64' id='type-id-3'/>
     <function-decl name='wrapped_call' mangled-name='wrapped_call' filepath='/home/dodji/git/libabigail/patches/tests/data/test-read-dwarf/PR26261/PR26261-main.c' line='18' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='wrapped_call'>
@@ -40,7 +40,7 @@
       <return type-id='type-id-6'/>
     </function-type>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='PR26261-obja.c' comp-dir-path='/home/dodji/git/libabigail/patches/tests/data/test-read-dwarf/PR26261' language='LANG_C89'>
+  <abi-instr address-size='64' path='PR26261-obja.c' comp-dir-path='/home/dodji/git/libabigail/patches/tests/data/test-read-dwarf/PR26261' language='LANG_C89'>
     <type-decl name='int' size-in-bits='32' id='type-id-5'/>
     <type-decl name='void' id='type-id-6'/>
     <class-decl name='SA' size-in-bits='192' is-struct='yes' visibility='default' filepath='/home/dodji/git/libabigail/patches/tests/data/test-read-dwarf/PR26261/PR26261-obja.h' line='5' column='1' id='type-id-8'>
@@ -63,7 +63,7 @@
       <return type-id='type-id-6'/>
     </function-decl>
   </abi-instr>
-  <abi-instr version='1.0' address-size='64' path='PR26261-objb.c' comp-dir-path='/home/dodji/git/libabigail/patches/tests/data/test-read-dwarf/PR26261' language='LANG_C89'>
+  <abi-instr address-size='64' path='PR26261-objb.c' comp-dir-path='/home/dodji/git/libabigail/patches/tests/data/test-read-dwarf/PR26261' language='LANG_C89'>
     <type-decl name='char' size-in-bits='8' id='type-id-1'/>
     <class-decl name='SB' size-in-bits='128' is-struct='yes' visibility='default' filepath='/home/dodji/git/libabigail/patches/tests/data/test-read-dwarf/PR26261/PR26261-objb.h' line='3' column='1' id='type-id-12'>
       <data-member access='public' layout-offset-in-bits='0'>

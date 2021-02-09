@@ -32,14 +32,14 @@ Variable symbols changes summary: 0 Removed, 6 Added variable symbols not refere
       in pointed to type 'struct __cxxabiv1::__cxa_dependent_exception' at unwind-cxx.h:112:1:
         type size hasn't changed
         1 data member insertion:
-          'void (void*)* __cxxabiv1::__cxa_dependent_exception::__padding', at offset 32 (in bits) at unwind-cxx.h:120:1
+          'void (void*)* __padding', at offset 32 (in bits) at unwind-cxx.h:120:1
         6 data member changes:
-          'std::unexpected_handler __cxxabiv1::__cxa_dependent_exception::unexpectedHandler' offset changed from 32 to 64 (in bits) (by +32 bits)
-          'std::terminate_handler __cxxabiv1::__cxa_dependent_exception::terminateHandler' offset changed from 64 to 96 (in bits) (by +32 bits)
-          '__cxxabiv1::__cxa_exception* __cxxabiv1::__cxa_dependent_exception::nextException' offset changed from 96 to 128 (in bits) (by +32 bits)
-          'int __cxxabiv1::__cxa_dependent_exception::handlerCount' offset changed from 128 to 160 (in bits) (by +32 bits)
-          '__cxxabiv1::__cxa_exception* __cxxabiv1::__cxa_dependent_exception::nextPropagatingException' offset changed from 160 to 192 (in bits) (by +32 bits)
-          'int __cxxabiv1::__cxa_dependent_exception::propagationCount' offset changed from 192 to 224 (in bits) (by +32 bits)
+          'std::unexpected_handler unexpectedHandler' offset changed from 32 to 64 (in bits) (by +32 bits)
+          'std::terminate_handler terminateHandler' offset changed from 64 to 96 (in bits) (by +32 bits)
+          '__cxxabiv1::__cxa_exception* nextException' offset changed from 96 to 128 (in bits) (by +32 bits)
+          'int handlerCount' offset changed from 128 to 160 (in bits) (by +32 bits)
+          '__cxxabiv1::__cxa_exception* nextPropagatingException' offset changed from 160 to 192 (in bits) (by +32 bits)
+          'int propagationCount' offset changed from 192 to 224 (in bits) (by +32 bits)
 
   [C] 'method virtual std::__future_base::_Async_state_common::~_Async_state_common(int)' at compatibility-thread-c++0x.cc:117:1 has some indirect sub-type changes:
     implicit parameter 0 of type 'std::__future_base::_Async_state_common*' has sub-type changes:
@@ -54,13 +54,13 @@ Variable symbols changes summary: 0 Removed, 6 Added variable symbols not refere
                   entity changed from 'std::__future_base::_State_base*' to 'void'
                   type size changed from 32 to 0 (in bits)
             1 data member changes (1 filtered):
-              type of 'std::__future_base::_State_base::_Ptr_type std::__future_base::_State_base::_M_result' changed:
+              type of 'std::__future_base::_State_base::_Ptr_type _M_result' changed:
                 underlying type 'typedef std::__future_base::_Ptr' at future:253:1 changed:
                   underlying type 'class std::unique_ptr<std::__future_base::_Result<void>, std::__future_base::_Result_base::_Deleter>' at unique_ptr.h:109:1 changed:
                     type name changed from 'std::unique_ptr<std::__future_base::_Result<void>, std::__future_base::_Result_base::_Deleter>' to 'std::unique_ptr<std::__future_base::_Result_base, std::__future_base::_Result_base::_Deleter>'
                     type size hasn't changed
                     1 data member change:
-                      type of 'std::unique_ptr<std::__future_base::_Result<void>, std::__future_base::_Result_base::_Deleter>::__tuple_type std::unique_ptr<std::__future_base::_Result<void>, std::__future_base::_Result_base::_Deleter>::_M_t' changed:
+                      type of 'std::unique_ptr<std::__future_base::_Result<void>, std::__future_base::_Result_base::_Deleter>::__tuple_type _M_t' changed:
                         typedef name changed from std::unique_ptr<std::__future_base::_Result<void>, std::__future_base::_Result_base::_Deleter>::__tuple_type to std::unique_ptr<std::__future_base::_Result_base, std::__future_base::_Result_base::_Deleter>::__tuple_type at unique_ptr.h:146:1
                         underlying type 'class std::tuple<std::__future_base::_Result<void>*, std::__future_base::_Result_base::_Deleter>' at tuple:521:1 changed:
                           type name changed from 'std::tuple<std::__future_base::_Result<void>*, std::__future_base::_Result_base::_Deleter>' to 'std::tuple<std::__future_base::_Result_base*, std::__future_base::_Result_base::_Deleter>'
@@ -85,7 +85,7 @@ Variable symbols changes summary: 0 Removed, 6 Added variable symbols not refere
           type size hasn't changed
           no member function changes (14 filtered);
           1 data member change:
-            type of 'const std::basic_filebuf<wchar_t, std::char_traits<wchar_t> >::__codecvt_type* std::basic_filebuf<wchar_t, std::char_traits<wchar_t> >::_M_codecvt' changed:
+            type of 'const std::basic_filebuf<wchar_t, std::char_traits<wchar_t> >::__codecvt_type* _M_codecvt' changed:
               in pointed to type 'const std::basic_filebuf<wchar_t, std::char_traits<wchar_t> >::__codecvt_type':
                 in unqualified underlying type 'typedef std::basic_filebuf<wchar_t, std::char_traits<wchar_t> >::__codecvt_type' at fstream:86:1:
                   underlying type 'class std::codecvt<wchar_t, char, __mbstate_t>' at codecvt.h:398:1 changed:

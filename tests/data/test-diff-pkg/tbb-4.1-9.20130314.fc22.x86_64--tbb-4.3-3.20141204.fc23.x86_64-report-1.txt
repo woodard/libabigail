@@ -33,13 +33,13 @@
             in unqualified underlying type 'class tbb::internal::allocate_root_with_context_proxy' at task.h:131:1:
               type size hasn't changed
               1 data member change:
-                type of 'tbb::task_group_context& tbb::internal::allocate_root_with_context_proxy::my_context' changed:
+                type of 'tbb::task_group_context& my_context' changed:
                   in referenced type 'class tbb::task_group_context' at task.h:302:1:
                     type size hasn't changed
                     1 data member insertion:
-                      'tbb::internal::cpu_ctl_env_space tbb::task_group_context::my_cpu_ctl_env', at offset 896 (in bits) at task.h:380:1
+                      'tbb::internal::cpu_ctl_env_space my_cpu_ctl_env', at offset 896 (in bits) at task.h:380:1
                     1 data member changes (2 filtered):
-                      type of 'char tbb::task_group_context::_leading_padding[80]' changed:
+                      type of 'char _leading_padding[80]' changed:
                         type name changed from 'char[80]' to 'char[72]'
                         array type size changed from 640 to 576
                         array type subrange 1 changed length from 80 to 72

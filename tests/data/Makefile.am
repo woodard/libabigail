@@ -569,6 +569,8 @@ test-types-stability/pr19433-custom0 \
 test-types-stability/pr19141-get5d.o \
 test-types-stability/pr19142-topo.o \
 test-types-stability/pr19204-libtcmalloc.so.4.2.6-xlc \
+test-types-stability/PR27165-libzmq.so.5.2.3 \
+test-types-stability/PR27165-libzmq.so.5.2.3.debug \
 \
 test-diff-filter/test0-v0.cc		\
 test-diff-filter/test0-v1.cc		\
@@ -913,6 +915,15 @@ test-diff-filter/test-PR26739-2-v0.c         \
 test-diff-filter/test-PR26739-2-v0.o         \
 test-diff-filter/test-PR26739-2-v1.o         \
 test-diff-filter/test-PR26739-2-report-0.txt \
+test-diff-filter/test-PR26684-dwarf5.o 	     \
+test-diff-filter/test-PR26684-dwarf4.o       \
+test-diff-filter/test-PR26684.c              \
+test-diff-filter/test-PR26684-report-0.txt   \
+test-diff-filter/test-PR27331-v0.c           \
+test-diff-filter/test-PR27331-v0.o           \
+test-diff-filter/test-PR27331-v1.c           \
+test-diff-filter/test-PR27331-v1.o           \
+test-diff-filter/test-PR27331-report-0.txt   \
 \
 test-diff-suppr/test0-type-suppr-v0.cc	\
 test-diff-suppr/test0-type-suppr-v1.cc	\
@@ -1471,6 +1482,13 @@ test-diff-suppr/libtest48-soname-abixml-suppr.txt \
 test-diff-suppr/libtest48-soname-abixml-suppr-2.txt \
 test-diff-suppr/libtest48-soname-abixml-suppr-3.txt \
 test-diff-suppr/libtest48-soname-abixml-suppr-4.txt \
+test-diff-suppr/PR27267/include-dir-v0/include.h \
+test-diff-suppr/PR27267/include-dir-v1/include.h \
+test-diff-suppr/PR27267/v0.c \
+test-diff-suppr/PR27267/v1.c \
+test-diff-suppr/PR27267/libtestpr27267-v0.so \
+test-diff-suppr/PR27267/libtestpr27267-v1.so \
+test-diff-suppr/PR27267/report-1.txt \
 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1.abi \

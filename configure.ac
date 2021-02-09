@@ -844,6 +844,7 @@ HAS_DW_FORM_strx1=no
 HAS_DW_FORM_strx2=no
 HAS_DW_FORM_strx3=no
 HAS_DW_FORM_strx4=no
+HAS_DW_FORM_line_strp=no
 
 AC_CHECK_DECL([DW_FORM_strx1],
 	      [HAS_DW_FORM_strx1=yes],
@@ -887,6 +888,17 @@ if test x$HAS_DW_FORM_strx4 = xyes; then
    AC_DEFINE([HAVE_DW_FORM_strx4],
    	     1,
 	     [Define to 1 if dwarf.h has the DW_FORM_strx4 enumerator])
+fi
+
+AC_CHECK_DECL([DW_FORM_line_strp],
+	      [HAS_DW_FORM_line_strp=yes],
+	      [HAS_DW_FORM_line_strp=no],
+	      [[#include <dwarf.h>]])
+
+if test x$HAS_DW_FORM_line_strp = xyes; then
+   AC_DEFINE([HAVE_DW_FORM_line_strp],
+   	     1,
+	     [Define to 1 if dwarf.h has the DW_FORM_line_strp enumerator])
 fi
 
 if test x$HAS_DW_FORM_strx1 = xyes -a \
