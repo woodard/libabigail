@@ -13709,12 +13709,6 @@
         <class-decl name='__split_buffer&lt;const android::ApkAssets *, std::__1::allocator&lt;const android::ApkAssets *&gt; &amp;&gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='4c29fac1'/>
         <class-decl name='basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;' visibility='default' is-declaration-only='yes' id='27619c1c'>
           <member-type access='private'>
-            <enum-decl name='__anonymous_enum__2' is-anonymous='yes' filepath='external/libcxx/include/string' line='1535' column='1' id='2bd287ae'>
-              <underlying-type type-id='9cac1fee'/>
-              <enumerator name='__alignment' value='16'/>
-            </enum-decl>
-          </member-type>
-          <member-type access='private'>
             <typedef-decl name='const_pointer' type-id='cbcf5557' filepath='external/libcxx/include/string' line='682' column='1' id='dc224b08'/>
           </member-type>
           <member-type access='private'>
@@ -13724,7 +13718,7 @@
             </enum-decl>
           </member-type>
           <member-type access='private'>
-            <enum-decl name='__anonymous_enum__1' is-anonymous='yes' filepath='external/libcxx/include/string' line='1535' column='1' id='2ad2861b'>
+            <enum-decl name='__anonymous_enum__1' is-anonymous='yes' filepath='external/libcxx/include/string' line='1535' column='1' id='288a5e69'>
               <underlying-type type-id='9cac1fee'/>
               <enumerator name='__alignment' value='16'/>
             </enum-decl>

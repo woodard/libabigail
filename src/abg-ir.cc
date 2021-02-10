@@ -257,6 +257,12 @@ namespace ir
 static size_t
 hash_as_canonical_type_or_constant(const type_base *t);
 
+static bool
+has_generic_anonymous_internal_type_name(const decl_base *d);
+
+static interned_string
+get_generic_anonymous_internal_type_name(const decl_base *d);
+
 /// @brief the location of a token represented in its simplest form.
 /// Instances of this type are to be stored in a sorted vector, so the
 /// type must have proper relational operators.
@@ -3913,6 +3919,25 @@ string
 decl_base::get_pretty_representation(bool internal,
 				     bool qualified_name) const
 {
+  if (internal
+      && get_is_anonymous()
+      && has_generic_anonymous_internal_type_name(this))
+    {
+      // We are looking at an anonymous enum, union or class and we
+      // want an *internal* pretty representation for it.  All
+      // anonymous types of this kind in the same namespace must have
+      // the same internal representation for type canonicalization to
+      // work properly.
+      //
+      // OK, in practise, we are certainly looking at an enum because
+      // classes and unions should have their own overloaded virtual
+      // member function for this.
+      string name = get_generic_anonymous_internal_type_name(this);
+      if (qualified_name && !get_qualified_parent_name().empty())
+	name = get_qualified_parent_name() + "::" + name;
+      return name;
+    }
+
   if (qualified_name)
     return get_qualified_name(internal);
   return get_name();
@@ -7135,6 +7160,19 @@ interned_string
 get_type_name(const type_base_sptr& t, bool qualified, bool internal)
 {return get_type_name(t.get(), qualified, internal);}
 
+/// Return true iff a decl is for a type type that has a generic
+/// anonymous internal type name.
+///
+/// @param d the decl to considier.
+///
+/// @return true iff @p d is for a type type that has a generic
+/// anonymous internal type name.
+static bool
+has_generic_anonymous_internal_type_name(const decl_base *d)
+{
+  return is_class_or_union_type(d) || is_enum_type(d);
+}
+
 /// Return the generic internal name of an anonymous type.
 ///
 /// For internal purposes, we want to define a generic name for all
@@ -7148,7 +7186,7 @@ get_type_name(const type_base_sptr& t, bool qualified, bool internal)
 static interned_string
 get_generic_anonymous_internal_type_name(const decl_base *d)
 {
-  ABG_ASSERT(d);
+  ABG_ASSERT(has_generic_anonymous_internal_type_name(d));
 
   const environment *env = d->get_environment();
 
