@@ -62,24 +62,24 @@ class options
   options();
 
 public:
-  string	   prog_name;
-  string	   unknow_option;
-  string	   app_path;
-  string	   lib1_path;
-  string	   lib2_path;
-  shared_ptr<char> app_di_root_path;
-  shared_ptr<char> lib1_di_root_path;
-  shared_ptr<char> lib2_di_root_path;
-  vector<string>   suppression_paths;
-  vector<string>   libdir2_paths;
-  bool		   display_help;
-  bool		   display_version;
-  bool		   weak_mode;
-  bool		   recursive;
-  bool		   list_undefined_symbols_only;
-  bool		   show_base_names;
-  bool		   show_redundant;
-  bool		   show_locs;
+  string               prog_name;
+  string               unknow_option;
+  string               app_path;
+  string               lib1_path;
+  string               lib2_path;
+  shared_ptr<char>     app_di_root_path;
+  shared_ptr<char>     lib1_di_root_path;
+  shared_ptr<char>     lib2_di_root_path;
+  vector<string>       suppression_paths;
+  vector<string>       libdir2_paths;
+  bool                 display_help;
+  bool                 display_version;
+  bool                 weak_mode;
+  bool		       recursive;
+  bool                 list_undefined_symbols_only;
+  bool                 show_base_names;
+  bool                 show_redundant;
+  bool                 show_locs;
 
   options(const char* program_name)
     :prog_name(program_name),
@@ -229,7 +229,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.unknow_option = argv[i];
 	  return false;
 	}
-    } // for through arguments
+    }
 
   if (!opts.list_undefined_symbols_only)
     {
