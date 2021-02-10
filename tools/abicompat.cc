@@ -37,6 +37,7 @@
 #include <string>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/utsname.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include "abg-config.h"
@@ -262,7 +263,9 @@ ldd(vector<pair<string, string>>& libnames, const string& app_path)
   /* Use LD_TRACE_LOADED_OBJECTS=1 and ld.so to find where the objects
    can be found */
   int inout[2];
-  pipe(inout);
+  int ret=pipe(inout);
+  if (ret == -1)
+    abort();
   // fixme: error handling
   std::string str;
   pid_t	      child = fork();
@@ -286,16 +289,28 @@ ldd(vector<pair<string, string>>& libnames, const string& app_path)
        environment such as an audit library may modify the paths of the
        libraries being loaded by the app but let's cross that bridge when we
        come to it */
-      // fixme: error handling
+      // fixme: error handling - if these things fail I don't know what to do
+      // for now just abort. IDK
       int in = open("/dev/null", O_RDONLY);
-      dup2(in, 0);
-      close(in);
-      dup2(inout[1], 1);
-      close(inout[0]);
-      close(inout[1]);
-      // fixme: arch independence
-      execle("/lib64/ld-linux-x86-64.so.2", "/lib64/ld-linux-x86-64.so.2",
-	     app_path.c_str(), NULL, envp);
+      if (in == -1 || dup2(in, 0)  == -1 || close(in) == -1 ||
+	  dup2(inout[1], 1) == -1 || close(inout[0]) == -1 ||
+	  close(inout[1]) == -1)
+	abort();
+
+      string ld_so("/lib64/ld-linux-");
+      struct utsname utsn;
+      if ( uname(&utsn) == -1)
+	abort();
+      ld_so.append(utsn.machine);
+      ld_so.append(".so.2");
+      execle(ld_so.c_str(), ld_so.c_str(), app_path.c_str(), NULL, envp);
+      // 64bit didn't work try 32b
+      ld_so.assign("/lib/ld-linux-");
+      ld_so.append(utsn.machine);
+      ld_so.append(".so.2");
+      execle(ld_so.c_str(), ld_so.c_str(), app_path.c_str(), NULL, envp);
+      // IDK it failed - figure out why fix it
+      abort();
     }
   else
     {
@@ -305,7 +320,7 @@ ldd(vector<pair<string, string>>& libnames, const string& app_path)
       ssize_t		   bytes;
       while ((bytes = read(inout[0], buf, bufsize)) != 0)
 	{
-	  // fixme
+	  // fixme if this happens
 	  if (bytes == -1)
 	    abort();
 	  str.append(buf, bytes);
