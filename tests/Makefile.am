@@ -89,6 +89,10 @@ libtestutils_la_CXXFLAGS=		\
 
 libcatch_la_SOURCES = lib/catch.cc lib/catch.hpp
 
+lib_LTLIBRARIES = libswaplibs.la
+
+libswaplibs_la_SOURCES= swap-libs-audit.cc
+
 runtestreadwrite_SOURCES=test-read-write.cc
 runtestreadwrite_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 
