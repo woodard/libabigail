@@ -16546,7 +16546,8 @@ maybe_canonicalize_type(const Dwarf_Die *die, read_context& ctxt)
       || is_union_type(peeled_type)
       || is_function_type(peeled_type)
       || is_array_type(peeled_type)
-      || is_qualified_type(peeled_type))
+      || is_qualified_type(peeled_type)
+      || is_typedef(t))
     // We delay canonicalization of classes/unions or typedef,
     // pointers, references and array to classes/unions.  This is
     // because the (underlying) class might not be finished yet and we

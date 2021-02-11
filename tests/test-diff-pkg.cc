@@ -670,6 +670,18 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/sshpass-1.07-1.fc34.x86_64-self-check-report-0.txt",
     "output/test-diff-pkg/sshpass-1.07-1.fc34.x86_64-self-check-report-0.txt"
   },
+  {
+    "data/test-diff-pkg/nmap-7.70-5.el8_testjcc.x86_64.rpm",
+    "data/test-diff-pkg/nmap-7.70-5.el8_testjcc.x86_64.rpm",
+    "--self-check",
+    "",
+    "data/test-diff-pkg/nmap-debuginfo-7.70-5.el8_testjcc.x86_64.rpm",
+    "data/test-diff-pkg/nmap-debuginfo-7.70-5.el8_testjcc.x86_64.rpm",
+    "",
+    "",
+    "data/test-diff-pkg/nmap-7.70-5.el8_testjcc.x86_64-self-check-report-0.txt",
+    "output/test-diff-pkg/nmap-7.70-5.el8_testjcc.x86_64-self-check-report-0.txt"
+  } ,
 #endif // WITH_RPM_4_15
 #endif //WITH_RPM
 
