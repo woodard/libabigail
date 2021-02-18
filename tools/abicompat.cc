@@ -99,7 +99,9 @@ display_usage(const string& prog_name, ostream& out)
 {
   emit_prefix(prog_name, out)
     << "usage: " << prog_name
-    << " [options] [application-path] [lib-v1-path] [lib-v2-path]"
+    << " [options] [application-path] [lib-v1-path] [lib-v2-path]\n"
+    << "or\n"
+    << " [options] --recursive [application-path1] [application-path2]"
     << "\n"
     << " where options can be: \n"
     << "  --help|-h  display this help message\n"
@@ -120,9 +122,10 @@ display_usage(const string& prog_name, ostream& out)
     << "--redundant  display redundant changes (this is the default)\n"
     << "--weak-mode  check compatibility between the application and "
        "just one version of the library.\n"
-    << "--recursive  include all application dependencies.\n"
+    << "--recursive  include all application dependencies. When two app paths "
+    << "are specified the libraries from app2 are compared against app1\n"
     << "--libdir2 <path-to-libdir2>  for recursive mode set the path to search"
-       "for the second set of libs (can be specified multiple times)";
+       "for the second set of libs (can be specified multiple times)\n";
 }
 
 static bool
@@ -268,7 +271,7 @@ ldd(vector<pair<string, string>>& libnames, const string& app_path)
     abort();
   // fixme: error handling
   std::string str;
-  pid_t	      child = fork();
+  pid_t child = fork();
   if (child == -1)
     {
       // fixme: error handling
@@ -384,6 +387,46 @@ using abigail::comparison::compute_diff;
 using abigail::suppr::suppression_sptr;
 using abigail::suppr::suppressions_type;
 using abigail::suppr::read_suppressions;
+
+class cg_error{
+public:
+  status stat;
+  string pathname;
+  cg_error(status s, const string &p):stat(s),pathname(p){}
+};
+
+class c_error{
+public:
+  string pathname;
+  c_error( const string &p):pathname(p){}
+};
+
+static void populate_cg_from_app( corpus_group_sptr group, char *root_path,
+				 const string &app_path)
+{
+  status stat;
+  vector<char**> lib1_di_roots;
+  lib1_di_roots.push_back(&root_path);
+
+  vector<pair<string, string> > libnames;
+  ldd(libnames, app_path);
+  for (auto i : libnames)
+    {
+      string& shortname = i.first;
+      string& pathname = i.second;
+      /* the checking is this an ELF done on the libraries below is
+	 intentionally skipped here because we are getting the library
+	 paths from the dynamic linker */
+      /* fixme: adding it directly may be a memory leak since these are
+	 sptr's - who actually owns the corpora and its memory? */
+      cout << "reading corpus for: " << pathname << std::endl;
+      group->add_corpus( read_corpus_from_elf(pathname, lib1_di_roots,
+					      group->get_environment(),
+					      /*load_all_types=*/false, stat));
+      if ( stat != 0)
+	throw cg_error( stat, pathname);
+    }
+}
 
 /// Create the context of a diff.
 ///
@@ -887,79 +930,77 @@ main(int argc, char* argv[])
       corpus_group_sptr second_group(new corpus_group(env.get()));
       first_group->add_corpus(app_corpus);
 
-      char*	     lib1_di_root = opts.lib1_di_root_path.get();
-      vector<char**> lib1_di_roots;
-      lib1_di_roots.push_back(&lib1_di_root);
-
-      vector<pair<string, string>> libnames;
-      ldd(libnames, opts.app_path);
-      for (auto i : libnames)
+      try
 	{
-	  string& shortname = i.first;
-	  string& pathname = i.second;
-	  /* the checking is this an ELF done on the libraries below is
-	     intentionally skipped here because we are getting the library
-	     paths from the dynamic linker */
-	  /* fixme: adding it directly may be a memory leak since these are
-	     sptr's - who actually owns the corpora and its memory? */
-	  cout << "reading corpus for: " << pathname << std::endl;
-	  first_group->add_corpus(
-	    read_corpus_from_elf(pathname, lib1_di_roots, env.get(),
-				 /*load_all_types=*/false, status));
-	  if (status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
-	    emit_prefix(argv[0], cerr)
-	      << "could not read debug info for " << pathname << "\n";
-	  if (status & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
+	  populate_cg_from_app(first_group, opts.lib1_di_root_path.get(),
+			       opts.app_path);
+	  if( !opts.lib1_path.empty())
+	    populate_cg_from_app(second_group, opts.lib1_di_root_path.get(),
+				 opts.lib1_path);
+	  else
 	    {
-	      cerr << "could not read symbols from " << pathname << "\n";
+	      /* Having two apps currently implies that libdir2's are not used
+		 this may not be the correct behaivior but what is? */
+	      vector<pair<string, string> > libnames;
+	      ldd(libnames, opts.app_path);
+	      for (auto i : libnames)
+		{
+		  string& shortname = i.first;
+		  /* fixme: this needs to have a way to specify alternative
+		     libraries in the second group. Possibly allow the users to
+		     specify multiple lib-v2-paths in the format of 
+		     lib-v2-name:lib-v2-newpath or something like that. */
+		  bool	 found = false;
+		  string second_path;
+		  for (auto j : opts.libdir2_paths)
+		    {
+		      second_path = j + '/' + shortname;
+		      type = abigail::tools_utils::guess_file_type(second_path);
+		      if (type == abigail::tools_utils::FILE_TYPE_ELF)
+			{
+			  found = true;
+			  break;
+			}
+		    }
+		  if (!found)
+		    throw c_error( shortname); 
+		  cout << "reading corpus for: " << second_path << std::endl;
+		  char*	     lib1_di_root = opts.lib1_di_root_path.get();
+		  vector<char**> lib1_di_roots;
+		  lib1_di_roots.push_back(&lib1_di_root);
+		  second_group->
+		    add_corpus(read_corpus_from_elf(second_path,
+						    lib1_di_roots,
+						    env.get(),
+						    /*load_all_types=*/false,
+						    status));
+		  if( status)
+		    throw cg_error( status, shortname);
+		}
+	    }
+	}
+      catch(cg_error e)
+	{
+	  if (e.stat & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
+	    emit_prefix(argv[0], cerr)
+	      << "could not read debug info for " << e.pathname << "\n";
+	  if (e.stat & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
+	    {
+	      cerr << "could not read symbols from " << e.pathname << "\n";
 	      return abigail::tools_utils::ABIDIFF_ERROR;
 	    }
-	  if (!(status & abigail::dwarf_reader::STATUS_OK))
+	  if (!(e.stat & abigail::dwarf_reader::STATUS_OK))
 	    {
 	      emit_prefix(argv[0], cerr)
 		<< "could not read file " << opts.lib1_path << "\n";
 	      return abigail::tools_utils::ABIDIFF_ERROR;
 	    }
-	  /* fixme: this needs to have a way to specify alternative libraries
-	     in the second group. Possibly allow the users to specify multiple
-	     lib-v2-paths in the format of lib-v2-name:lib-v2-newpath or
-	     something like that. */
-	  bool	 found = false;
-	  string second_path;
-	  for (auto j : opts.libdir2_paths)
-	    {
-	      second_path = j + '/' + shortname;
-	      type = abigail::tools_utils::guess_file_type(second_path);
-	      if (type == abigail::tools_utils::FILE_TYPE_ELF)
-		{
-		  found = true;
-		  break;
-		}
-	    }
-	  if (!found)
-	    {
-	      emit_prefix(argv[0], cerr)
-		<< "could not read file " << second_path << "\n";
-	      return abigail::tools_utils::ABIDIFF_ERROR;
-	    }
-	  cout << "reading corpus for: " << second_path << std::endl;
-	  second_group->add_corpus(
-	    read_corpus_from_elf(second_path, lib1_di_roots, env.get(),
-				 /*load_all_types=*/false, status));
-	  if (status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
-	    emit_prefix(argv[0], cerr)
-	      << "could not read debug info for " << second_path << "\n";
-	  if (status & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
-	    {
-	      cerr << "could not read symbols from " << second_path << "\n";
-	      return abigail::tools_utils::ABIDIFF_ERROR;
-	    }
-	  if (!(status & abigail::dwarf_reader::STATUS_OK))
-	    {
-	      emit_prefix(argv[0], cerr)
-		<< "could not read file " << second_path << "\n";
-	      return abigail::tools_utils::ABIDIFF_ERROR;
-	    }
+	}
+      catch(c_error e)
+	{
+	  emit_prefix(argv[0], cerr)
+	    << "could not read file " << e.pathname << "\n";
+	  return abigail::tools_utils::ABIDIFF_ERROR;
 	}
       s = perform_compat_check_in_normal_mode(opts, ctxt, first_group,
 					      second_group);
