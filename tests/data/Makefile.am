@@ -1806,6 +1806,9 @@ test-diff-pkg/glibc-debuginfo-2.32-3.fc33.aarch64.rpm \
 test-diff-pkg/sshpass-1.07-1.fc34.x86_64-self-check-report-0.txt \
 test-diff-pkg/sshpass-1.07-1.fc34.x86_64.rpm \
 test-diff-pkg/sshpass-debuginfo-1.07-1.fc34.x86_64.rpm \
+test-diff-pkg/nmap-7.70-5.el8_testjcc.x86_64-self-check-report-0.txt \
+test-diff-pkg/nmap-7.70-5.el8_testjcc.x86_64.rpm \
+test-diff-pkg/nmap-debuginfo-7.70-5.el8_testjcc.x86_64.rpm \
 \
 test-fedabipkgdiff/dbus-glib-0.104-3.fc23.x86_64.rpm \
 test-fedabipkgdiff/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm \

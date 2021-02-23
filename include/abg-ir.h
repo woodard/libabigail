@@ -1194,6 +1194,11 @@ change_kind&
 operator&=(change_kind&, change_kind);
 
 bool
+maybe_compare_as_member_decls(const decl_base& l,
+			      const decl_base& r,
+			      change_kind* k);
+
+bool
 equals(const decl_base&, const decl_base&, change_kind*);
 
 /// The base class of both types and declarations.
@@ -1572,6 +1577,11 @@ public:
 
   friend bool
   equals(const var_decl&, const var_decl&, change_kind*);
+
+  friend bool
+  maybe_compare_as_member_decls(const decl_base& l,
+				const decl_base& r,
+				change_kind* k);
 
   friend decl_base_sptr
   add_decl_to_scope(decl_base_sptr decl, scope_decl* scpe);

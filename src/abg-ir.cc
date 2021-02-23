@@ -257,6 +257,12 @@ namespace ir
 static size_t
 hash_as_canonical_type_or_constant(const type_base *t);
 
+static bool
+has_generic_anonymous_internal_type_name(const decl_base *d);
+
+static interned_string
+get_generic_anonymous_internal_type_name(const decl_base *d);
+
 /// @brief the location of a token represented in its simplest form.
 /// Instances of this type are to be stored in a sorted vector, so the
 /// type must have proper relational operators.
@@ -3913,6 +3919,25 @@ string
 decl_base::get_pretty_representation(bool internal,
 				     bool qualified_name) const
 {
+  if (internal
+      && get_is_anonymous()
+      && has_generic_anonymous_internal_type_name(this))
+    {
+      // We are looking at an anonymous enum, union or class and we
+      // want an *internal* pretty representation for it.  All
+      // anonymous types of this kind in the same namespace must have
+      // the same internal representation for type canonicalization to
+      // work properly.
+      //
+      // OK, in practise, we are certainly looking at an enum because
+      // classes and unions should have their own overloaded virtual
+      // member function for this.
+      string name = get_generic_anonymous_internal_type_name(this);
+      if (qualified_name && !get_qualified_parent_name().empty())
+	name = get_qualified_parent_name() + "::" + name;
+      return name;
+    }
+
   if (qualified_name)
     return get_qualified_name(internal);
   return get_name();
@@ -4053,6 +4078,74 @@ operator&=(change_kind& l, change_kind r)
   return l;
 }
 
+/// Compare the properties that belong to the "is-a-member-relation"
+/// of a decl.
+///
+/// For instance, access specifiers are part of the
+/// "is-a-member-relation" of a decl.
+///
+/// This comparison however doesn't take decl names into account.  So
+/// typedefs for instance are decls that we want to compare with this
+/// function.
+///
+/// This function is a sub-routine of the more general 'equals'
+/// overload for instances of decl_base.
+///
+/// @param l the left-hand side operand of the comparison.
+///
+/// @param r the right-hand side operand of the comparison.
+///
+/// @return true iff @p l compare equals, as a member decl, to @p r.
+bool
+maybe_compare_as_member_decls(const decl_base& l,
+			      const decl_base& r,
+			      change_kind* k)
+{
+  bool result = true;
+  if (is_member_decl(l) && is_member_decl(r))
+    {
+      context_rel* r1 = const_cast<context_rel*>(l.get_context_rel());
+      context_rel *r2 = const_cast<context_rel*>(r.get_context_rel());
+
+      access_specifier la = no_access, ra = no_access;
+      bool member_types_or_functions =
+	((is_type(l) && is_type(r))
+	 || (is_function_decl(l) && is_function_decl(r)));
+
+      if (member_types_or_functions)
+	{
+	  // Access specifiers on member types in DWARF is not
+	  // reliable; in the same DSO, the same struct can be either
+	  // a class or a struct, and the access specifiers of its
+	  // member types are not necessarily given, so they
+	  // effectively can be considered differently, again, in the
+	  // same DSO.  So, here, let's avoid considering those!
+	  // during comparison.
+	  la = r1->get_access_specifier();
+	  ra = r2->get_access_specifier();
+	  r1->set_access_specifier(no_access);
+	  r2->set_access_specifier(no_access);
+	}
+
+      bool rels_are_different = *r1 != *r2;
+
+      if (member_types_or_functions)
+	{
+	  // restore the access specifiers.
+	  r1->set_access_specifier(la);
+	  r2->set_access_specifier(ra);
+	}
+
+      if (rels_are_different)
+	{
+	  result = false;
+	  if (k)
+	    *k |= LOCAL_NON_TYPE_CHANGE_KIND;
+	}
+    }
+  return result;
+}
+
 /// Compares two instances of @ref decl_base.
 ///
 /// If the two intances are different, set a bitfield to give some
@@ -4140,49 +4233,7 @@ equals(const decl_base& l, const decl_base& r, change_kind* k)
 	return false;
     }
 
-  if (is_member_decl(l) && is_member_decl(r))
-    {
-      context_rel* r1 = const_cast<context_rel*>(l.get_context_rel());
-      context_rel *r2 = const_cast<context_rel*>(r.get_context_rel());
-
-      access_specifier la = no_access, ra = no_access;
-      bool member_types_or_functions =
-	((is_type(l) && is_type(r))
-	 || (is_function_decl(l) && is_function_decl(r)));
-
-      if (member_types_or_functions)
-	{
-	  // Access specifiers on member types in DWARF is not
-	  // reliable; in the same DSO, the same struct can be either
-	  // a class or a struct, and the access specifiers of its
-	  // member types are not necessarily given, so they
-	  // effectively can be considered differently, again, in the
-	  // same DSO.  So, here, let's avoid considering those!
-	  // during comparison.
-	  la = r1->get_access_specifier();
-	  ra = r2->get_access_specifier();
-	  r1->set_access_specifier(no_access);
-	  r2->set_access_specifier(no_access);
-	}
-
-      bool rels_are_different = *r1 != *r2;
-
-      if (member_types_or_functions)
-	{
-	  // restore the access specifiers.
-	  r1->set_access_specifier(la);
-	  r2->set_access_specifier(ra);
-	}
-
-      if (rels_are_different)
-	{
-	  result = false;
-	  if (k)
-	    *k |= LOCAL_NON_TYPE_CHANGE_KIND;
-	  else
-	    return false;
-	}
-    }
+  result &= maybe_compare_as_member_decls(l, r, k);
 
   return result;
 }
@@ -7135,6 +7186,19 @@ interned_string
 get_type_name(const type_base_sptr& t, bool qualified, bool internal)
 {return get_type_name(t.get(), qualified, internal);}
 
+/// Return true iff a decl is for a type type that has a generic
+/// anonymous internal type name.
+///
+/// @param d the decl to considier.
+///
+/// @return true iff @p d is for a type type that has a generic
+/// anonymous internal type name.
+static bool
+has_generic_anonymous_internal_type_name(const decl_base *d)
+{
+  return is_class_or_union_type(d) || is_enum_type(d);
+}
+
 /// Return the generic internal name of an anonymous type.
 ///
 /// For internal purposes, we want to define a generic name for all
@@ -7148,7 +7212,7 @@ get_type_name(const type_base_sptr& t, bool qualified, bool internal)
 static interned_string
 get_generic_anonymous_internal_type_name(const decl_base *d)
 {
-  ABG_ASSERT(d);
+  ABG_ASSERT(has_generic_anonymous_internal_type_name(d));
 
   const environment *env = d->get_environment();
 
@@ -16119,7 +16183,14 @@ bool
 equals(const typedef_decl& l, const typedef_decl& r, change_kind* k)
 {
   bool result = true;
-  if (!l.decl_base::operator==(r))
+  // Compare the properties of the 'is-a-member-decl" relation of this
+  // decl.  For typedefs of a C program, this always return true as
+  // there is no "member typedef type" in C.
+  //
+  // In other words, in C, Only the underlying types of typedefs are
+  // compared.  In C++ however, the properties of the
+  // 'is-a-member-decl' relation of the typedef are compared.
+  if (!maybe_compare_as_member_decls(l, r, k))
     {
       result = false;
       if (k)
