@@ -1,5 +1,5 @@
 #include <link.h>
-  
+
 #include <stdlib.h>
 
 #include <string>
@@ -22,7 +22,7 @@ static void load_swapfile(){
       failed=true;
       return;
     }
-  
+
   ifstream swapfile;
   try {
     swapfile.open(swap_filename);

@@ -242,8 +242,10 @@ parse_command_line(int argc, char* argv[], options& opts)
       if (opts.recursive)
 	{
 	  /* In the recursive mode all the lib1_paths are provided by the
-	     dynamic linker so we don't need a lib1_path */
-	  if (opts.libdir2_paths.empty())
+	     dynamic linker so we don't need a lib1_path. However lib1_path
+	     may contain a second version of a the app or a path where a
+	     second version of the app can be found.  */
+	  if ( opts.lib1_path.empty() && opts.libdir2_paths.empty() )
 	    /* Fixme: Theoretically there could be a weak recursive mode but it
 	       is not yet implemented. */
 	    return false;
@@ -300,11 +302,19 @@ ldd(vector<pair<string, string>>& libnames, const string& app_path)
 	  close(inout[1]) == -1)
 	abort();
 
+      /* fixme this logic needs to pull the name of the interpreter out of the
+	 ELF file rather than construct it */
       string ld_so("/lib64/ld-linux-");
       struct utsname utsn;
       if ( uname(&utsn) == -1)
 	abort();
-      ld_so.append(utsn.machine);
+      if( !strcmp(utsn.machine,"x86_64"))
+	/* This is a kludge. For some reason the name of ld-linux.so on x86_64
+	   is x86-64 not x86_64. So search for: /lib64/ld-linux-x86-64.so.2
+	   rather than /lib64/ld-linux-x86_64.so.2 */
+	ld_so.append("x86-64");
+      else
+	ld_so.append(utsn.machine);
       ld_so.append(".so.2");
       execle(ld_so.c_str(), ld_so.c_str(), app_path.c_str(), NULL, envp);
       // 64bit didn't work try 32b
@@ -948,7 +958,7 @@ main(int argc, char* argv[])
 		  string& shortname = i.first;
 		  /* fixme: this needs to have a way to specify alternative
 		     libraries in the second group. Possibly allow the users to
-		     specify multiple lib-v2-paths in the format of 
+		     specify multiple lib-v2-paths in the format of
 		     lib-v2-name:lib-v2-newpath or something like that. */
 		  bool	 found = false;
 		  string second_path;
@@ -963,7 +973,7 @@ main(int argc, char* argv[])
 			}
 		    }
 		  if (!found)
-		    throw c_error( shortname); 
+		    throw c_error( shortname);
 		  cout << "reading corpus for: " << second_path << std::endl;
 		  char*	     lib1_di_root = opts.lib1_di_root_path.get();
 		  vector<char**> lib1_di_roots;
