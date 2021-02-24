@@ -1039,13 +1039,6 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-    <reference-type-def kind='lvalue' type-id='a3cec311' size-in-bits='32' id='157d4f95'/>
-    <reference-type-def kind='lvalue' type-id='34433e18' size-in-bits='32' id='83dafb9a'/>
-    <reference-type-def kind='lvalue' type-id='0a81a029' size-in-bits='32' id='990ef79d'/>
-    <reference-type-def kind='lvalue' type-id='2d59b88e' size-in-bits='32' id='0c3db078'/>
-    <qualified-type-def type-id='c894953d' const='yes' id='4ab96a04'/>
-    <qualified-type-def type-id='3ff5601b' const='yes' id='922df12b'/>
-    <pointer-type-def type-id='3ff5601b' size-in-bits='32' id='4aafb922'/>
     <namespace-decl name='android'>
       <class-decl name='String16' size-in-bits='32' visibility='default' filepath='system/core/libutils/include/utils/String16.h' line='39' column='1' id='c73fabea'>
         <member-type access='private'>
@@ -1073,6 +1066,13 @@
         </member-type>
       </class-decl>
     </namespace-decl>
+    <reference-type-def kind='lvalue' type-id='a3cec311' size-in-bits='32' id='157d4f95'/>
+    <reference-type-def kind='lvalue' type-id='34433e18' size-in-bits='32' id='83dafb9a'/>
+    <reference-type-def kind='lvalue' type-id='0a81a029' size-in-bits='32' id='990ef79d'/>
+    <reference-type-def kind='lvalue' type-id='2d59b88e' size-in-bits='32' id='0c3db078'/>
+    <qualified-type-def type-id='c894953d' const='yes' id='4ab96a04'/>
+    <qualified-type-def type-id='3ff5601b' const='yes' id='922df12b'/>
+    <pointer-type-def type-id='3ff5601b' size-in-bits='32' id='4aafb922'/>
     <typedef-decl name='int32_t' type-id='33f57a65' filepath='bionic/libc/include/stdint.h' line='64' column='1' id='3ff5601b'/>
     <type-decl name='void' id='48b5725f'/>
     <namespace-decl name='android'>
@@ -1806,15 +1806,6 @@
         </class-decl>
       </namespace-decl>
     </namespace-decl>
-    <qualified-type-def type-id='f7c5ae1e' const='yes' id='79f4741d'/>
-    <qualified-type-def type-id='65c10d3d' const='yes' id='dda33994'/>
-    <qualified-type-def type-id='cb49a619' const='yes' id='4eb937a6'/>
-    <reference-type-def kind='lvalue' type-id='b04de3ca' size-in-bits='32' id='769dcc84'/>
-    <pointer-type-def type-id='b04de3ca' size-in-bits='32' id='6a9db9a0'/>
-    <qualified-type-def type-id='a846fc93' const='yes' id='eb5b5ff2'/>
-    <qualified-type-def type-id='b96825af' const='yes' id='2b61797f'/>
-    <reference-type-def kind='rvalue' type-id='c722890a' size-in-bits='32' id='4c21e37e'/>
-    <pointer-type-def type-id='c722890a' size-in-bits='32' id='d3ba3bb8'/>
     <namespace-decl name='std'>
       <namespace-decl name='__1'>
         <class-decl name='default_delete&lt;android::IObbActionListener&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='external/libcxx/include/memory' line='2320' column='1' id='0de0b2fb'>
@@ -1827,6 +1818,15 @@
         </class-decl>
       </namespace-decl>
     </namespace-decl>
+    <qualified-type-def type-id='f7c5ae1e' const='yes' id='79f4741d'/>
+    <qualified-type-def type-id='65c10d3d' const='yes' id='dda33994'/>
+    <qualified-type-def type-id='cb49a619' const='yes' id='4eb937a6'/>
+    <reference-type-def kind='lvalue' type-id='b04de3ca' size-in-bits='32' id='769dcc84'/>
+    <pointer-type-def type-id='b04de3ca' size-in-bits='32' id='6a9db9a0'/>
+    <qualified-type-def type-id='a846fc93' const='yes' id='eb5b5ff2'/>
+    <qualified-type-def type-id='b96825af' const='yes' id='2b61797f'/>
+    <reference-type-def kind='rvalue' type-id='c722890a' size-in-bits='32' id='4c21e37e'/>
+    <pointer-type-def type-id='c722890a' size-in-bits='32' id='d3ba3bb8'/>
     <namespace-decl name='std'>
       <namespace-decl name='__1'>
         <class-decl name='__pointer_type&lt;android::IObbActionListener, std::__1::default_delete&lt;android::IObbActionListener&gt; &gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='external/libcxx/include/memory' line='1029' column='1' id='4ef6f3a4'>
@@ -1838,9 +1838,6 @@
     </namespace-decl>
     <pointer-type-def type-id='9af0438f' size-in-bits='32' id='ed491f06'/>
     <type-decl name='char32_t' size-in-bits='32' id='a846fc93'/>
-    <reference-type-def kind='lvalue' type-id='4eb937a6' size-in-bits='32' id='6d925e80'/>
-    <qualified-type-def type-id='f8f7e309' const='yes' id='b04de3ca'/>
-    <pointer-type-def type-id='0de0b2fb' size-in-bits='32' id='b83a824b'/>
     <class-decl name='ObbActionListener' size-in-bits='224' is-struct='yes' visibility='default' filepath='frameworks/base/native/android/storage_manager.cpp' line='36' column='1' id='38e516d0'>
       <base-class access='public' layout-offset-in-bits='0' type-id='b4c0d64f'/>
       <data-member access='private' layout-offset-in-bits='128'>
@@ -1903,6 +1900,9 @@
         </class-decl>
       </namespace-decl>
     </namespace-decl>
+    <reference-type-def kind='lvalue' type-id='4eb937a6' size-in-bits='32' id='6d925e80'/>
+    <qualified-type-def type-id='f8f7e309' const='yes' id='b04de3ca'/>
+    <pointer-type-def type-id='0de0b2fb' size-in-bits='32' id='b83a824b'/>
     <namespace-decl name='std'>
       <namespace-decl name='__1'>
         <namespace-decl name='__pointer_type_imp'>
@@ -2017,6 +2017,30 @@
     <typedef-decl name='AStorageManager' type-id='56516754' filepath='frameworks/native/include/android/storage_manager.h' line='40' column='1' id='6fc023b3'/>
     <type-decl name='unsigned char' size-in-bits='8' id='002ac4a6'/>
     <pointer-type-def type-id='2144ef38' size-in-bits='32' id='3ab04eee'/>
+    <class-decl name='AStorageManager' size-in-bits='352' is-struct='yes' visibility='default' filepath='frameworks/base/native/android/storage_manager.cpp' line='62' column='1' id='56516754'>
+      <base-class access='public' layout-offset-in-bits='0' type-id='12f619c0'/>
+      <data-member access='protected' layout-offset-in-bits='64'>
+        <var-decl name='mCallbackLock' type-id='406f4753' visibility='default' filepath='frameworks/base/native/android/storage_manager.cpp' line='64' column='1'/>
+      </data-member>
+      <data-member access='protected' layout-offset-in-bits='96'>
+        <var-decl name='mCallbacks' type-id='3847ab67' visibility='default' filepath='frameworks/base/native/android/storage_manager.cpp' line='65' column='1'/>
+      </data-member>
+      <data-member access='protected' layout-offset-in-bits='256'>
+        <var-decl name='mNextNonce' type-id='fda05812' visibility='default' filepath='frameworks/base/native/android/storage_manager.cpp' line='66' column='1'/>
+      </data-member>
+      <data-member access='protected' layout-offset-in-bits='288'>
+        <var-decl name='mObbActionListener' type-id='788ba3f2' visibility='default' filepath='frameworks/base/native/android/storage_manager.cpp' line='67' column='1'/>
+      </data-member>
+      <data-member access='protected' layout-offset-in-bits='320'>
+        <var-decl name='mMountService' type-id='f331f373' visibility='default' filepath='frameworks/base/native/android/storage_manager.cpp' line='68' column='1'/>
+      </data-member>
+      <member-function access='public' constructor='yes'>
+        <function-decl name='AStorageManager' mangled-name='_ZN15AStorageManagerC2Ev' filepath='frameworks/base/native/android/storage_manager.cpp' line='98' column='1' visibility='default' binding='global' size-in-bits='32'>
+          <parameter type-id='df7f8372' is-artificial='yes'/>
+          <return type-id='48b5725f'/>
+        </function-decl>
+      </member-function>
+    </class-decl>
     <namespace-decl name='android'>
       <class-decl name='BBinder' visibility='default' is-declaration-only='yes' id='a4d376c6'/>
     </namespace-decl>
@@ -2090,30 +2114,6 @@
     </namespace-decl>
     <pointer-type-def type-id='f7007f3f' size-in-bits='32' id='eac80e0f'/>
     <qualified-type-def type-id='4c8890e6' const='yes' id='f4bc7ed7'/>
-    <class-decl name='AStorageManager' size-in-bits='352' is-struct='yes' visibility='default' filepath='frameworks/base/native/android/storage_manager.cpp' line='62' column='1' id='56516754'>
-      <base-class access='public' layout-offset-in-bits='0' type-id='12f619c0'/>
-      <data-member access='protected' layout-offset-in-bits='64'>
-        <var-decl name='mCallbackLock' type-id='406f4753' visibility='default' filepath='frameworks/base/native/android/storage_manager.cpp' line='64' column='1'/>
-      </data-member>
-      <data-member access='protected' layout-offset-in-bits='96'>
-        <var-decl name='mCallbacks' type-id='3847ab67' visibility='default' filepath='frameworks/base/native/android/storage_manager.cpp' line='65' column='1'/>
-      </data-member>
-      <data-member access='protected' layout-offset-in-bits='256'>
-        <var-decl name='mNextNonce' type-id='fda05812' visibility='default' filepath='frameworks/base/native/android/storage_manager.cpp' line='66' column='1'/>
-      </data-member>
-      <data-member access='protected' layout-offset-in-bits='288'>
-        <var-decl name='mObbActionListener' type-id='788ba3f2' visibility='default' filepath='frameworks/base/native/android/storage_manager.cpp' line='67' column='1'/>
-      </data-member>
-      <data-member access='protected' layout-offset-in-bits='320'>
-        <var-decl name='mMountService' type-id='f331f373' visibility='default' filepath='frameworks/base/native/android/storage_manager.cpp' line='68' column='1'/>
-      </data-member>
-      <member-function access='public' constructor='yes'>
-        <function-decl name='AStorageManager' mangled-name='_ZN15AStorageManagerC2Ev' filepath='frameworks/base/native/android/storage_manager.cpp' line='98' column='1' visibility='default' binding='global' size-in-bits='32'>
-          <parameter type-id='df7f8372' is-artificial='yes'/>
-          <return type-id='48b5725f'/>
-        </function-decl>
-      </member-function>
-    </class-decl>
     <pointer-type-def type-id='40b6343a' size-in-bits='32' id='6d5a3b78'/>
     <reference-type-def kind='rvalue' type-id='12dbd264' size-in-bits='32' id='de3da448'/>
     <pointer-type-def type-id='12dbd264' size-in-bits='32' id='eed59172'/>
@@ -2368,16 +2368,16 @@
     <typedef-decl name='pthread_mutex_t' type-id='cc3d65c7' filepath='bionic/libc/include/bits/pthread_types.h' line='78' column='1' id='7a6844eb'/>
     <pointer-type-def type-id='f0b1600d' size-in-bits='32' id='547a22ad'/>
     <qualified-type-def type-id='547a22ad' const='yes' id='b8e35a82'/>
-    <qualified-type-def type-id='406f4753' const='yes' id='a3f5ae0e'/>
-    <qualified-type-def type-id='fd376fcf' const='yes' id='2e96e5aa'/>
-    <qualified-type-def type-id='5d81b3b0' const='yes' id='94d46bf9'/>
-    <qualified-type-def type-id='3847ab67' const='yes' id='27297916'/>
-    <qualified-type-def type-id='f331f373' const='yes' id='62294afc'/>
     <class-decl name='__anonymous_struct__4' size-in-bits='32' is-struct='yes' is-anonymous='yes' naming-typedef-id='7a6844eb' visibility='default' filepath='bionic/libc/include/bits/pthread_types.h' line='72' column='1' id='cc3d65c7'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='__private' type-id='e4652d73' visibility='default' filepath='bionic/libc/include/bits/pthread_types.h' line='76' column='1'/>
       </data-member>
     </class-decl>
+    <qualified-type-def type-id='406f4753' const='yes' id='a3f5ae0e'/>
+    <qualified-type-def type-id='fd376fcf' const='yes' id='2e96e5aa'/>
+    <qualified-type-def type-id='5d81b3b0' const='yes' id='94d46bf9'/>
+    <qualified-type-def type-id='3847ab67' const='yes' id='27297916'/>
+    <qualified-type-def type-id='f331f373' const='yes' id='62294afc'/>
     <class-decl name='ObbCallback' size-in-bits='96' visibility='default' filepath='frameworks/base/native/android/storage_manager.cpp' line='49' column='1' id='f0b1600d'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='nonce' type-id='3ff5601b' visibility='default' filepath='frameworks/base/native/android/storage_manager.cpp' line='57' column='1'/>
@@ -15012,18 +15012,23 @@
       <parameter type-id='d6ad37ff'/>
       <return type-id='b59d7dce'/>
     </function-decl>
+    <class-decl name='_JavaVM' is-struct='yes' visibility='default' is-declaration-only='yes' id='d607eddf'/>
+    <class-decl name='__sFILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='8d7b2c1e'/>
     <class-decl name='_jbooleanArray' visibility='default' is-declaration-only='yes' id='2ca86b0d'/>
     <class-decl name='_jbyteArray' visibility='default' is-declaration-only='yes' id='1e7918a7'/>
     <class-decl name='_jcharArray' visibility='default' is-declaration-only='yes' id='eeed1f5d'/>
     <class-decl name='_jclass' visibility='default' is-declaration-only='yes' id='e53ab91c'/>
     <class-decl name='_jdoubleArray' visibility='default' is-declaration-only='yes' id='530c1a32'/>
+    <class-decl name='_jfieldID' is-struct='yes' visibility='default' is-declaration-only='yes' id='2e67d715'/>
     <class-decl name='_jfloatArray' visibility='default' is-declaration-only='yes' id='a87003ef'/>
     <class-decl name='_jintArray' visibility='default' is-declaration-only='yes' id='b0749e8e'/>
     <class-decl name='_jlongArray' visibility='default' is-declaration-only='yes' id='fb46a283'/>
+    <class-decl name='_jmethodID' is-struct='yes' visibility='default' is-declaration-only='yes' id='d988e2e8'/>
     <class-decl name='_jobjectArray' visibility='default' is-declaration-only='yes' id='fdf9f098'/>
     <class-decl name='_jshortArray' visibility='default' is-declaration-only='yes' id='30a4d497'/>
     <class-decl name='_jstring' visibility='default' is-declaration-only='yes' id='ae6a1c55'/>
     <class-decl name='_jthrowable' visibility='default' is-declaration-only='yes' id='07f10124'/>
+    <class-decl name='__anonymous_struct__3' is-struct='yes' is-anonymous='yes' naming-typedef-id='b7b5d51d' visibility='default' is-declaration-only='yes' id='cdd897ad'/>
     <pointer-type-def type-id='ca7c9639' size-in-bits='32' id='d5203fe9'/>
     <reference-type-def kind='rvalue' type-id='a6c45d85' size-in-bits='32' id='0e7051ad'/>
     <function-type size-in-bits='32' id='055a6f41'>
@@ -16482,11 +16487,6 @@
     <pointer-type-def type-id='68b1ae7f' size-in-bits='32' id='302e0f27'/>
     <reference-type-def kind='rvalue' type-id='27619c1c' size-in-bits='32' id='cbb281c0'/>
     <pointer-type-def type-id='b9953957' size-in-bits='32' id='ff43352f'/>
-    <class-decl name='_JavaVM' is-struct='yes' visibility='default' is-declaration-only='yes' id='d607eddf'/>
-    <class-decl name='__sFILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='8d7b2c1e'/>
-    <class-decl name='_jfieldID' is-struct='yes' visibility='default' is-declaration-only='yes' id='2e67d715'/>
-    <class-decl name='_jmethodID' is-struct='yes' visibility='default' is-declaration-only='yes' id='d988e2e8'/>
-    <class-decl name='__anonymous_struct__3' is-struct='yes' is-anonymous='yes' naming-typedef-id='b7b5d51d' visibility='default' is-declaration-only='yes' id='cdd897ad'/>
     <namespace-decl name='std'>
       <namespace-decl name='__1'>
         <class-decl name='__const_pointer&lt;char, char *, std::__1::allocator&lt;char&gt;, true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='external/libcxx/include/memory' line='1042' column='1' id='a6fda4d5'>
@@ -16498,7 +16498,6 @@
     </namespace-decl>
     <union-decl name='jvalue' visibility='default' is-declaration-only='yes' id='2eab072b'/>
     <pointer-type-def type-id='002ac4a6' size-in-bits='32' id='cf536864'/>
-    <qualified-type-def type-id='1eb56b1e' const='yes' id='ca7c9639'/>
     <namespace-decl name='std'>
       <namespace-decl name='__1'>
         <class-decl name='__hash_value_type&lt;ASurfaceControl *, ASurfaceControlStats&gt;' size-in-bits='192' is-struct='yes' visibility='default' filepath='external/libcxx/include/unordered_map' line='628' column='1' id='68b1ae7f'>
@@ -16583,7 +16582,41 @@
         </class-decl>
       </namespace-decl>
     </namespace-decl>
+    <qualified-type-def type-id='1eb56b1e' const='yes' id='ca7c9639'/>
     <qualified-type-def type-id='0373e656' const='yes' id='f8a9b7c9'/>
+    <class-decl name='ASurfaceControlStats' size-in-bits='128' is-struct='yes' visibility='default' filepath='frameworks/base/native/android/surface_control.cpp' line='196' column='1' id='5d04a8c3'>
+      <data-member access='public' layout-offset-in-bits='0'>
+        <var-decl name='acquireTime' type-id='9da381c4' visibility='default' filepath='frameworks/base/native/android/surface_control.cpp' line='197' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='64'>
+        <var-decl name='previousReleaseFence' type-id='f783287d' visibility='default' filepath='frameworks/base/native/android/surface_control.cpp' line='198' column='1'/>
+      </data-member>
+    </class-decl>
+    <namespace-decl name='std'>
+      <namespace-decl name='__1'>
+        <class-decl name='__tuple_indices&lt;0&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='external/libcxx/include/__tuple' line='90' column='1' id='d0bb5fc7'/>
+      </namespace-decl>
+    </namespace-decl>
+    <namespace-decl name='std'>
+      <namespace-decl name='__1'>
+        <class-decl name='__tuple_indices&lt;&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='external/libcxx/include/__tuple' line='90' column='1' id='c527ef4d'/>
+      </namespace-decl>
+    </namespace-decl>
+    <namespace-decl name='std'>
+      <namespace-decl name='__1'>
+        <class-decl name='pair&lt;ASurfaceControl *&amp;&amp;, ASurfaceControlStats &amp;&amp;&gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='b83aca4a'/>
+      </namespace-decl>
+    </namespace-decl>
+    <namespace-decl name='std'>
+      <namespace-decl name='__1'>
+        <class-decl name='pair&lt;ASurfaceControl *&amp;, ASurfaceControlStats &amp;&gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='01608bde'/>
+      </namespace-decl>
+    </namespace-decl>
+    <namespace-decl name='std'>
+      <namespace-decl name='__1'>
+        <class-decl name='piecewise_construct_t' size-in-bits='8' is-struct='yes' visibility='default' filepath='external/libcxx/include/utility' line='298' column='1' id='4582d906'/>
+      </namespace-decl>
+    </namespace-decl>
     <namespace-decl name='std'>
       <namespace-decl name='__1'>
         <class-decl name='tuple&lt;&gt;' size-in-bits='8' visibility='default' filepath='external/libcxx/include/tuple' line='907' column='1' id='ad3ebb8d'>
@@ -16631,39 +16664,6 @@
     <reference-type-def kind='rvalue' type-id='b9953957' size-in-bits='32' id='7fd67367'/>
     <reference-type-def kind='lvalue' type-id='ad3ebb8d' size-in-bits='32' id='57c94099'/>
     <reference-type-def kind='lvalue' type-id='3982c1f3' size-in-bits='32' id='efa5f087'/>
-    <class-decl name='ASurfaceControlStats' size-in-bits='128' is-struct='yes' visibility='default' filepath='frameworks/base/native/android/surface_control.cpp' line='196' column='1' id='5d04a8c3'>
-      <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='acquireTime' type-id='9da381c4' visibility='default' filepath='frameworks/base/native/android/surface_control.cpp' line='197' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='previousReleaseFence' type-id='f783287d' visibility='default' filepath='frameworks/base/native/android/surface_control.cpp' line='198' column='1'/>
-      </data-member>
-    </class-decl>
-    <namespace-decl name='std'>
-      <namespace-decl name='__1'>
-        <class-decl name='__tuple_indices&lt;0&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='external/libcxx/include/__tuple' line='90' column='1' id='d0bb5fc7'/>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='std'>
-      <namespace-decl name='__1'>
-        <class-decl name='__tuple_indices&lt;&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='external/libcxx/include/__tuple' line='90' column='1' id='c527ef4d'/>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='std'>
-      <namespace-decl name='__1'>
-        <class-decl name='pair&lt;ASurfaceControl *&amp;&amp;, ASurfaceControlStats &amp;&amp;&gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='b83aca4a'/>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='std'>
-      <namespace-decl name='__1'>
-        <class-decl name='pair&lt;ASurfaceControl *&amp;, ASurfaceControlStats &amp;&gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='01608bde'/>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='std'>
-      <namespace-decl name='__1'>
-        <class-decl name='piecewise_construct_t' size-in-bits='8' is-struct='yes' visibility='default' filepath='external/libcxx/include/utility' line='298' column='1' id='4582d906'/>
-      </namespace-decl>
-    </namespace-decl>
     <pointer-type-def type-id='7df76490' size-in-bits='32' id='0373e656'/>
     <namespace-decl name='android'>
       <class-decl name='sp&lt;android::Fence&gt;' size-in-bits='32' visibility='default' filepath='system/core/libutils/include/utils/StrongPointer.h' line='31' column='1' id='f783287d'>
@@ -16705,12 +16705,6 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-    <qualified-type-def type-id='68b1ae7f' const='yes' id='9be7a20a'/>
-    <qualified-type-def type-id='b9953957' const='yes' id='d7189d92'/>
-    <reference-type-def kind='lvalue' type-id='4d4a8404' size-in-bits='32' id='ce4e0186'/>
-    <pointer-type-def type-id='ad3ebb8d' size-in-bits='32' id='63c9537d'/>
-    <reference-type-def kind='rvalue' type-id='3982c1f3' size-in-bits='32' id='e339cd73'/>
-    <pointer-type-def type-id='3982c1f3' size-in-bits='32' id='e3a5dda3'/>
     <namespace-decl name='std'>
       <namespace-decl name='__1'>
         <class-decl name='__tuple_impl&lt;std::__1::__tuple_indices&lt;0&gt;, ASurfaceControl *const &amp;&gt;' size-in-bits='32' is-struct='yes' visibility='default' filepath='external/libcxx/include/tuple' line='365' column='1' id='6ab6a882'>
@@ -16738,9 +16732,16 @@
         </class-decl>
       </namespace-decl>
     </namespace-decl>
+    <qualified-type-def type-id='68b1ae7f' const='yes' id='9be7a20a'/>
+    <qualified-type-def type-id='b9953957' const='yes' id='d7189d92'/>
+    <reference-type-def kind='lvalue' type-id='4d4a8404' size-in-bits='32' id='ce4e0186'/>
+    <pointer-type-def type-id='ad3ebb8d' size-in-bits='32' id='63c9537d'/>
+    <reference-type-def kind='rvalue' type-id='3982c1f3' size-in-bits='32' id='e339cd73'/>
+    <pointer-type-def type-id='3982c1f3' size-in-bits='32' id='e3a5dda3'/>
     <pointer-type-def type-id='8e900ba9' size-in-bits='32' id='97b48b31'/>
     <reference-type-def kind='rvalue' type-id='f783287d' size-in-bits='32' id='adbbacfd'/>
     <pointer-type-def type-id='f783287d' size-in-bits='32' id='e1c103ed'/>
+    <class-decl name='ASurfaceControl' is-struct='yes' visibility='default' is-declaration-only='yes' id='7df76490'/>
     <namespace-decl name='std'>
       <namespace-decl name='__1'>
         <class-decl name='__tuple_leaf&lt;0, ASurfaceControl *const &amp;, false&gt;' size-in-bits='32' visibility='default' filepath='external/libcxx/include/tuple' line='171' column='1' id='13e36007'>
@@ -16775,7 +16776,6 @@
     <qualified-type-def type-id='3982c1f3' const='yes' id='4d4a8404'/>
     <reference-type-def kind='rvalue' type-id='6ab6a882' size-in-bits='32' id='1ad91416'/>
     <pointer-type-def type-id='6ab6a882' size-in-bits='32' id='aa2cee90'/>
-    <class-decl name='ASurfaceControl' is-struct='yes' visibility='default' is-declaration-only='yes' id='7df76490'/>
     <reference-type-def kind='lvalue' type-id='f8a9b7c9' size-in-bits='32' id='622c8d3d'/>
     <namespace-decl name='android'>
       <class-decl name='Fence' size-in-bits='64' visibility='default' filepath='frameworks/native/libs/ui/include/ui/Fence.h' line='35' column='1' id='8e900ba9'>
@@ -16922,7 +16922,6 @@
         </class-decl>
       </namespace-decl>
     </namespace-decl>
-    <qualified-type-def type-id='8e900ba9' const='yes' id='00dc55cc'/>
     <namespace-decl name='std'>
       <namespace-decl name='__1'>
         <class-decl name='atomic&lt;int&gt;' size-in-bits='32' is-struct='yes' visibility='default' filepath='external/libcxx/include/atomic' line='1084' column='1' id='673b29cf'>
@@ -16943,10 +16942,9 @@
         </class-decl>
       </namespace-decl>
     </namespace-decl>
+    <qualified-type-def type-id='8e900ba9' const='yes' id='00dc55cc'/>
     <reference-type-def kind='rvalue' type-id='bd6f4e31' size-in-bits='32' id='5f6661f1'/>
     <pointer-type-def type-id='bd6f4e31' size-in-bits='32' id='7cdd3de9'/>
-    <reference-type-def kind='lvalue' type-id='d21a10b2' size-in-bits='32' id='530818fc'/>
-    <pointer-type-def type-id='673b29cf' size-in-bits='32' id='a287a977'/>
     <namespace-decl name='std'>
       <namespace-decl name='__1'>
         <class-decl name='__atomic_base&lt;int, true&gt;' size-in-bits='32' is-struct='yes' visibility='default' filepath='external/libcxx/include/atomic' line='1003' column='1' id='a5d64365'>
@@ -16967,8 +16965,8 @@
         </class-decl>
       </namespace-decl>
     </namespace-decl>
-    <qualified-type-def type-id='bd6f4e31' const='yes' id='d21a10b2'/>
-    <pointer-type-def type-id='a5d64365' size-in-bits='32' id='dcdcfc25'/>
+    <reference-type-def kind='lvalue' type-id='d21a10b2' size-in-bits='32' id='530818fc'/>
+    <pointer-type-def type-id='673b29cf' size-in-bits='32' id='a287a977'/>
     <namespace-decl name='std'>
       <namespace-decl name='__1'>
         <class-decl name='__atomic_base&lt;int, false&gt;' size-in-bits='32' is-struct='yes' visibility='default' filepath='external/libcxx/include/atomic' line='891' column='1' id='0efd2e9e'>
@@ -17001,6 +16999,8 @@
         </class-decl>
       </namespace-decl>
     </namespace-decl>
+    <qualified-type-def type-id='bd6f4e31' const='yes' id='d21a10b2'/>
+    <pointer-type-def type-id='a5d64365' size-in-bits='32' id='dcdcfc25'/>
     <reference-type-def kind='lvalue' type-id='96cd7851' size-in-bits='32' id='dc74a355'/>
     <pointer-type-def type-id='0efd2e9e' size-in-bits='32' id='88faef04'/>
     <qualified-type-def type-id='0efd2e9e' const='yes' id='96cd7851'/>
@@ -32973,6 +32973,18 @@
         </class-decl>
       </namespace-decl>
     </namespace-decl>
+    <namespace-decl name='std'>
+      <namespace-decl name='__1'>
+        <class-decl name='default_delete&lt;std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt; &gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='external/libcxx/include/memory' line='2320' column='1' id='523e1257'>
+          <member-function access='public'>
+            <function-decl name='default_delete' filepath='external/libcxx/include/memory' line='2324' column='1' visibility='default' binding='global' size-in-bits='32'>
+              <parameter type-id='2e0ab16f' is-artificial='yes'/>
+              <return type-id='48b5725f'/>
+            </function-decl>
+          </member-function>
+        </class-decl>
+      </namespace-decl>
+    </namespace-decl>
     <function-type size-in-bits='32' id='f1e1c37c'>
       <parameter type-id='1a1ddb91'/>
       <parameter type-id='9f7200cf'/>
@@ -32990,18 +33002,6 @@
     <reference-type-def kind='rvalue' type-id='ee11ffd6' size-in-bits='32' id='165e4caa'/>
     <namespace-decl name='std'>
       <namespace-decl name='__1'>
-        <class-decl name='default_delete&lt;std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt; &gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='external/libcxx/include/memory' line='2320' column='1' id='523e1257'>
-          <member-function access='public'>
-            <function-decl name='default_delete' filepath='external/libcxx/include/memory' line='2324' column='1' visibility='default' binding='global' size-in-bits='32'>
-              <parameter type-id='2e0ab16f' is-artificial='yes'/>
-              <return type-id='48b5725f'/>
-            </function-decl>
-          </member-function>
-        </class-decl>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='std'>
-      <namespace-decl name='__1'>
         <class-decl name='__pointer_type&lt;std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;, std::__1::default_delete&lt;std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt; &gt; &gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='external/libcxx/include/memory' line='1029' column='1' id='302a5334'>
           <member-type access='public'>
             <typedef-decl name='type' type-id='e0875c35' filepath='external/libcxx/include/memory' line='1031' column='1' id='538091a9'/>
@@ -33012,10 +33012,6 @@
     <pointer-type-def type-id='b24794a9' size-in-bits='32' id='e9f802d1'/>
     <reference-type-def kind='rvalue' type-id='9d2f093d' size-in-bits='32' id='f43945bd'/>
     <pointer-type-def type-id='9d2f093d' size-in-bits='32' id='c15f802d'/>
-    <reference-type-def kind='lvalue' type-id='de2f4d68' size-in-bits='32' id='1276b1ca'/>
-    <pointer-type-def type-id='dc8bc990' size-in-bits='32' id='d0702546'/>
-    <reference-type-def kind='rvalue' type-id='9c8ba24a' size-in-bits='32' id='2b854586'/>
-    <pointer-type-def type-id='523e1257' size-in-bits='32' id='2e0ab16f'/>
     <namespace-decl name='std'>
       <namespace-decl name='__1'>
         <class-decl name='__compressed_pair_elem&lt;std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt; *, 0, false&gt;' size-in-bits='32' is-struct='yes' visibility='default' filepath='external/libcxx/include/memory' line='2134' column='1' id='88382077'>
@@ -33063,6 +33059,10 @@
         </class-decl>
       </namespace-decl>
     </namespace-decl>
+    <reference-type-def kind='lvalue' type-id='de2f4d68' size-in-bits='32' id='1276b1ca'/>
+    <pointer-type-def type-id='dc8bc990' size-in-bits='32' id='d0702546'/>
+    <reference-type-def kind='rvalue' type-id='9c8ba24a' size-in-bits='32' id='2b854586'/>
+    <pointer-type-def type-id='523e1257' size-in-bits='32' id='2e0ab16f'/>
     <namespace-decl name='std'>
       <namespace-decl name='__1'>
         <namespace-decl name='__pointer_type_imp'>

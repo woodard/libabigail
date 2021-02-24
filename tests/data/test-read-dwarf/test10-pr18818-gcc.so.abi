@@ -2342,18 +2342,6 @@
       <parameter type-id='type-id-161'/>
       <return type-id='type-id-29'/>
     </function-decl>
-    <qualified-type-def type-id='type-id-93' const='yes' id='type-id-236'/>
-    <qualified-type-def type-id='type-id-95' const='yes' id='type-id-240'/>
-    <qualified-type-def type-id='type-id-139' id='type-id-203'/>
-    <function-type size-in-bits='64' id='type-id-167'>
-      <parameter type-id='type-id-12'/>
-      <parameter type-id='type-id-12'/>
-      <return type-id='type-id-15'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-182'>
-      <return type-id='type-id-27'/>
-    </function-type>
-    <qualified-type-def type-id='type-id-173' const='yes' id='type-id-202'/>
     <namespace-decl name='std'>
       <class-decl name='__false_type' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/bits/cpp_type_traits.h' line='83' column='1' id='type-id-204'/>
     </namespace-decl>
@@ -2367,6 +2355,18 @@
         <base-class access='public' layout-offset-in-bits='0' type-id='type-id-246'/>
       </class-decl>
     </namespace-decl>
+    <qualified-type-def type-id='type-id-93' const='yes' id='type-id-236'/>
+    <qualified-type-def type-id='type-id-95' const='yes' id='type-id-240'/>
+    <qualified-type-def type-id='type-id-139' id='type-id-203'/>
+    <function-type size-in-bits='64' id='type-id-167'>
+      <parameter type-id='type-id-12'/>
+      <parameter type-id='type-id-12'/>
+      <return type-id='type-id-15'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-182'>
+      <return type-id='type-id-27'/>
+    </function-type>
+    <qualified-type-def type-id='type-id-173' const='yes' id='type-id-202'/>
     <namespace-decl name='std'>
       <class-decl name='bidirectional_iterator_tag' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/bits/stl_iterator_base_types.h' line='99' column='1' id='type-id-246'>
         <base-class access='public' layout-offset-in-bits='0' type-id='type-id-205'/>
