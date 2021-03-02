@@ -52,7 +52,8 @@ create_native_xml_read_context(std::istream* in, environment* env);
 const string&
 read_context_get_path(const read_context&);
 
-abigail::corpus_sptr
+#ifdef WITH_ZIP_ARCHIVE
+corpus_sptr
 read_corpus_from_file(const string& path);
 
 int
@@ -61,6 +62,7 @@ read_corpus_from_file(corpus_sptr& corp,
 
 int
 read_corpus_from_file(corpus_sptr& corp);
+#endif //WITH_ZIP_ARCHIVE
 
 corpus_sptr
 read_corpus_from_native_xml(std::istream* in,
