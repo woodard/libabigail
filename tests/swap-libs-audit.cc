@@ -1,3 +1,10 @@
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+// -*- Mode: C++ -*-
+//
+// Copyright (C) 2020-2021 Red Hat, Inc.
+//
+// Author: Ben Woodard
+
 #include <link.h>
 
 #include <stdlib.h>

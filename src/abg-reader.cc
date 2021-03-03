@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- mode: C++ -*-
 //
-// Copyright (C) 2013-2020 Red Hat, Inc.
+// Copyright (C) 2013-2021 Red Hat, Inc.
 
 /// @file
 ///
@@ -5847,8 +5847,7 @@ struct array_deleter
 ///
 /// @return true upon successful completion, false otherwise.
 static translation_unit_sptr
-read_to_translation_unit(zip_sptr ar,
-			 int file_index)
+read_to_translation_unit(zip_sptr ar, int file_index, environment* env)
 {
   translation_unit_sptr nil;
   if (!ar)
@@ -5873,7 +5872,7 @@ read_to_translation_unit(zip_sptr ar,
       }
   }
 
-  return read_translation_unit_from_buffer(input);
+  return read_translation_unit_from_buffer(input, env);
 }
 
 /// Read an ABI corpus from an archive file which is a ZIP archive of

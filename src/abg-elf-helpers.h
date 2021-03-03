@@ -2,6 +2,7 @@
 // -*- Mode: C++ -*-
 //
 // Copyright (C) 2020 Google, Inc.
+// Copyright (C) 2021 Red Hat, Inc.
 
 /// @file
 ///
@@ -149,6 +150,12 @@ is_linux_kernel(Elf *elf_handle);
 
 bool
 get_binary_load_address(Elf* elf_handle, GElf_Addr& load_address);
+
+bool
+get_binary_interpreter(const string &app_path, string &interp);
+
+bool
+get_binary_interpreter(Elf* elf_handle, string &interp);
 
 unsigned char
 get_architecture_word_size(Elf* elf_handle);

@@ -30,16 +30,10 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <fcntl.h>
 #include <fstream>
 #include <iostream>
 #include <memory>
 #include <string>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/utsname.h>
-#include <sys/wait.h>
-#include <unistd.h>
 #include "abg-config.h"
 #include "abg-tools-utils.h"
 #include "abg-corpus.h"
@@ -57,6 +51,7 @@ using std::pair;
 using std::shared_ptr;
 
 using abigail::tools_utils::emit_prefix;
+using abigail::tools_utils::ldd;
 
 class options
 {
@@ -262,113 +257,6 @@ parse_command_line(int argc, char* argv[], options& opts)
   return true;
 }
 
-static vector<pair<string, string>>&
-ldd(vector<pair<string, string>>& libnames, const string& app_path)
-{
-  /* Use LD_TRACE_LOADED_OBJECTS=1 and ld.so to find where the objects
-   can be found */
-  int inout[2];
-  int ret=pipe(inout);
-  if (ret == -1)
-    abort();
-  // fixme: error handling
-  std::string str;
-  pid_t child = fork();
-  if (child == -1)
-    {
-      // fixme: error handling
-      abort();
-    }
-  signal(SIGCHLD, SIG_IGN);
-  if (child == 0)
-    {
-      const char* envp[3] = { "LD_TRACE_LOADED_OBJECTS=1", NULL, NULL };
-      char*	  ldlibpath = getenv("LD_LIBRARY_PATH");
-      if (ldlibpath != NULL)
-	{
-	  std::string path("LD_LIBRARY_PATH=");
-	  path += ldlibpath;
-	  envp[1] = strdup(path.c_str());
-	}
-      /* fixme: There is a very small chance that something else from the
-       environment such as an audit library may modify the paths of the
-       libraries being loaded by the app but let's cross that bridge when we
-       come to it */
-      // fixme: error handling - if these things fail I don't know what to do
-      // for now just abort. IDK
-      int in = open("/dev/null", O_RDONLY);
-      if (in == -1 || dup2(in, 0)  == -1 || close(in) == -1 ||
-	  dup2(inout[1], 1) == -1 || close(inout[0]) == -1 ||
-	  close(inout[1]) == -1)
-	abort();
-
-      /* fixme this logic needs to pull the name of the interpreter out of the
-	 ELF file rather than construct it */
-      string ld_so("/lib64/ld-linux-");
-      struct utsname utsn;
-      if ( uname(&utsn) == -1)
-	abort();
-      if( !strcmp(utsn.machine,"x86_64"))
-	/* This is a kludge. For some reason the name of ld-linux.so on x86_64
-	   is x86-64 not x86_64. So search for: /lib64/ld-linux-x86-64.so.2
-	   rather than /lib64/ld-linux-x86_64.so.2 */
-	ld_so.append("x86-64");
-      else
-	ld_so.append(utsn.machine);
-      ld_so.append(".so.2");
-      execle(ld_so.c_str(), ld_so.c_str(), app_path.c_str(), NULL, envp);
-      // 64bit didn't work try 32b
-      ld_so.assign("/lib/ld-linux-");
-      ld_so.append(utsn.machine);
-      ld_so.append(".so.2");
-      execle(ld_so.c_str(), ld_so.c_str(), app_path.c_str(), NULL, envp);
-      // IDK it failed - figure out why fix it
-      abort();
-    }
-  else
-    {
-      close(inout[1]);
-      static const ssize_t bufsize = 4096;
-      char		   buf[bufsize];
-      ssize_t		   bytes;
-      while ((bytes = read(inout[0], buf, bufsize)) != 0)
-	{
-	  // fixme if this happens
-	  if (bytes == -1)
-	    abort();
-	  str.append(buf, bytes);
-	}
-    }
-  /* There is now a string which has the output of the ldd command
-   map those needed names to their paths which can be found in the str
-   string */
-  /* The output of the trace from the dynamic linker is going to look
-   like:
-libselinux.so.1 => /lib64/libselinux.so.1 (0x00007f1d7ac40000)
-libcap.so.2 => /lib64/libcap.so.2 (0x00007f1d7ac39000)
-   chop it up.
-   Note: in the output there are occasionally some entries which do not
-   map to an actual shared library. A good example of that is:
-linux-vdso.so.1 (0x00007ffcd3137000)
-   We're not going to handle this right now. The DWARF is in a kernel
-   module like /usr/lib/modules/5.9.10-200.fc33.x86_64/vdso/vdso64.so
-   */
-
-  for (auto loc = str.find(" => "); loc != string::npos;
-       loc = str.find(" => ", loc))
-    {
-      auto   begin_soname = str.rfind('\t', loc) + 1;
-      auto   begin_libpath = loc + 4;
-      auto   end_libpath = str.find(' ', begin_libpath);
-      string shortname(str, begin_soname, loc - begin_soname);
-      string pathname(str, begin_libpath, end_libpath - begin_libpath);
-      libnames.push_back(std::make_pair(shortname, pathname));
-      // cout << '-' << shortname << '-' << pathname << '-' << libnames.size()
-      //      << std::endl;
-      loc = end_libpath + 1; // move past the current entry
-    }
-  return libnames;
-}
 
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::base_name;

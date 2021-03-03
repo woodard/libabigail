@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2020 Red Hat, Inc.
+// Copyright (C) 2013-2021 Red Hat, Inc.
 
 ///@file
 
@@ -14,6 +14,7 @@
 #include <ostream>
 #include <set>
 #include <string>
+#include <utility>
 #include "abg-suppression.h"
 
 namespace abigail
@@ -28,6 +29,7 @@ using std::ifstream;
 using std::string;
 using std::set;
 using std::shared_ptr;
+using std::pair;
 
 const char* get_system_libdir();
 const char* get_anonymous_struct_internal_name_prefix();
@@ -115,6 +117,9 @@ bool
 find_file_under_dir(const string& root_dir,
 		    const string& file_path_to_look_for,
 		    string& result);
+
+vector<pair<string, string>>&
+ldd(vector<pair<string, string>>& libnames, const string& app_path);
 
 class temp_file;
 

@@ -2,6 +2,7 @@
 // -*- Mode: C++ -*-
 //
 // Copyright (C) 2020 Google, Inc.
+// Copyright (C) 2021 Red Hat, Inc.
 
 /// @file
 ///
@@ -10,6 +11,10 @@
 #include "abg-elf-helpers.h"
 
 #include <elf.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #include "abg-tools-utils.h"
 
@@ -924,6 +929,74 @@ get_binary_load_address(Elf* elf_handle, GElf_Addr& load_address)
       return true;
     }
   return false;
+}
+
+/// Get the address at which a given binary is loaded in memory.
+///
+/// @param app_path is the filename of the binary to consider.
+///
+/// @param interp is set by the function iff it returns true.
+///
+/// @return true if the function could get the binary interpreter
+/// and assign @p interp to it.
+bool
+get_binary_interpreter(const string &app_path, string &interp)
+{
+  int fd=open( app_path.c_str(), O_RDONLY);
+  if (elf_version(EV_CURRENT) == EV_NONE)
+    return false;
+  Elf *ef=elf_begin( fd, ELF_C_READ, NULL);
+  bool retval=false;
+  if(ef!=NULL)
+    retval = get_binary_interpreter(ef,interp);
+  close(fd);
+  return retval;
+}
+
+/// Get the address at which a given binary is loaded in memory.
+///
+/// @param elf_handle the elf handle for the binary to consider.
+///
+/// @param interp is set by the function iff it returns true.
+///
+/// @return true if the function could get the binary interpreter
+/// and assign @p interp to it.
+bool
+get_binary_interpreter(Elf* ef, string &interp)
+{
+  size_t section_header_string_index = 0;
+  Elf64_Word section_type=SHT_PROGBITS;
+  string name(".interp");
+
+  if (elf_getshdrstrndx (ef, &section_header_string_index) < 0)
+    return false;
+
+  /* There may be an easier way to do this using the program headers but
+     I figured this method out first. */
+  Elf_Scn* section = 0;
+  GElf_Shdr header_mem, *header;
+  bool found=false;
+  while ((section = elf_nextscn(ef, section)) != 0)
+    {
+      header = gelf_getshdr(section, &header_mem);
+      if (header == NULL || header->sh_type != section_type)
+      continue;
+
+      const char* section_name =
+	elf_strptr(ef, section_header_string_index, header->sh_name);
+      if (section_name && name==section_name)
+	{
+	  found=true;
+	  break;
+	}
+    }
+  if(!found)
+    return false;
+  Elf_Data *data = elf_getdata (section, NULL);
+  if (data == NULL || data->d_buf == NULL || data->d_size <= 0)
+    return false;
+  interp.assign( static_cast<const char*>(data->d_buf) );
+  return true;
 }
 
 /// Return the size of a word for the current architecture.

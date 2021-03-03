@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2020 Red Hat, Inc.
+// Copyright (C) 2013-2021 Red Hat, Inc.
 
 ///@file
 
@@ -33,6 +33,8 @@
 #include <ctype.h>
 #include <errno.h>
 #include <libgen.h>
+#include <signal.h>
+#include <fcntl.h>
 
 #include <algorithm>
 #include <cstdlib>
@@ -46,6 +48,7 @@
 #include "abg-dwarf-reader.h"
 #include "abg-internal.h"
 #include "abg-regex.h"
+#include "abg-elf-helpers.h"
 
 // <headers defining libabigail's API go under here>
 ABG_BEGIN_EXPORT_DECLARATIONS
@@ -2646,6 +2649,102 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
     }
 
   return result;
+}
+
+vector<pair<string, string>>&
+ldd(vector<pair<string, string>>& libnames, const string& app_path)
+{
+  /* Use LD_TRACE_LOADED_OBJECTS=1 and ld.so to find where the objects
+   can be found */
+  int inout[2];
+  int ret=pipe(inout);
+  if (ret == -1)
+    abort();
+  // fixme: error handling
+  std::string str;
+  pid_t child = fork();
+  if (child == -1)
+    {
+      // fixme: error handling
+      abort();
+    }
+  signal(SIGCHLD, SIG_IGN);
+  if (child == 0)
+    {
+      const char* envp[3] = { "LD_TRACE_LOADED_OBJECTS=1", NULL, NULL };
+      char*	  ldlibpath = getenv("LD_LIBRARY_PATH");
+      if (ldlibpath != NULL)
+	{
+	  std::string path("LD_LIBRARY_PATH=");
+	  path += ldlibpath;
+	  envp[1] = strdup(path.c_str());
+	}
+      /* fixme: There is a very small chance that something else from the
+       environment such as an audit library may modify the paths of the
+       libraries being loaded by the app but let's cross that bridge when we
+       come to it */
+      // fixme: error handling - if these things fail I don't know what to do
+      // for now just abort. IDK
+      int in = open("/dev/null", O_RDONLY);
+      if (in == -1 || dup2(in, 0)  == -1 || close(in) == -1 ||
+	  dup2(inout[1], 1) == -1 || close(inout[0]) == -1 ||
+	  close(inout[1]) == -1)
+	abort();
+
+      /* fixme this logic needs to pull the name of the interpreter out of the
+	 ELF file rather than construct it */
+      string ld_so;
+      if( abigail::elf_helpers::get_binary_interpreter(app_path, ld_so))
+	// fixme with some error checking -- but even getting an error
+	// back to a user is hard from this place in the code we're
+	// in a child process with /dev/null as stderr. What to do?
+	execle(ld_so.c_str(), ld_so.c_str(), app_path.c_str(), NULL, envp);
+      // IDK it failed - figure out why fix it
+      abort();
+    }
+  else
+    {
+      close(inout[1]);
+      static const ssize_t bufsize = 4096;
+      char		   buf[bufsize];
+      ssize_t		   bytes;
+      while ((bytes = read(inout[0], buf, bufsize)) != 0)
+	{
+	  // fixme if this happens
+	  if (bytes == -1)
+	    abort();
+	  str.append(buf, bytes);
+	}
+    }
+  /* There is now a string which has the output of the ldd command
+   map those needed names to their paths which can be found in the str
+   string */
+  /* The output of the trace from the dynamic linker is going to look
+   like:
+libselinux.so.1 => /lib64/libselinux.so.1 (0x00007f1d7ac40000)
+libcap.so.2 => /lib64/libcap.so.2 (0x00007f1d7ac39000)
+   chop it up.
+   Note: in the output there are occasionally some entries which do not
+   map to an actual shared library. A good example of that is:
+linux-vdso.so.1 (0x00007ffcd3137000)
+   We're not going to handle this right now. The DWARF is in a kernel
+   module like /usr/lib/modules/5.9.10-200.fc33.x86_64/vdso/vdso64.so
+   */
+
+  for (auto loc = str.find(" => "); loc != string::npos;
+       loc = str.find(" => ", loc))
+    {
+      auto   begin_soname = str.rfind('\t', loc) + 1;
+      auto   begin_libpath = loc + 4;
+      auto   end_libpath = str.find(' ', begin_libpath);
+      string shortname(str, begin_soname, loc - begin_soname);
+      string pathname(str, begin_libpath, end_libpath - begin_libpath);
+      libnames.push_back(std::make_pair(shortname, pathname));
+      // cout << '-' << shortname << '-' << pathname << '-' << libnames.size()
+      //      << std::endl;
+      loc = end_libpath + 1; // move past the current entry
+    }
+  return libnames;
 }
 
 }//end namespace tools_utils
