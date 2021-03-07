@@ -1,5 +1,5 @@
 ## SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-SUBDIRS = include src tools tests doc bash-completion
+SUBDIRS = include src tools tests doc bash-completion python
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 headers = config.h
 
@@ -93,4 +93,3 @@ distcheck-fast:
 # old boxes) so I do this only before releases.
 check-self-compare:
 	$(MAKE) -C tests check-self-compare
-

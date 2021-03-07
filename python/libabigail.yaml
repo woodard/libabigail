@@ -1,0 +1,21 @@
+library: libabigail
+
+# This must be relative to python directory targeted by shroud
+cxx_header: libabigail.hpp
+
+options:
+  wrap_fortran: False
+  wrap_c: False
+  wrap_python: True
+  debug: True
+
+declarations:
+- decl: namespace abipython
+  declarations:
+  - decl: class Libabigail
+    declarations:
+    - decl: int GetVersion()
+    - decl: std::string ReadElfCorpusAndWriteXML(std::string in_file_path, 
+            std::string out_file_path,
+            bool load_all_types = true, 
+            bool linux_kernel_mode = false);
