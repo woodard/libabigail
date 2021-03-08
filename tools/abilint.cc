@@ -48,6 +48,7 @@ using abigail::corpus;
 using abigail::corpus_sptr;
 using abigail::xml_reader::read_translation_unit_from_file;
 using abigail::xml_reader::read_translation_unit_from_istream;
+using abigail::xml_reader::read_corpus_from_file;
 using abigail::xml_reader::read_corpus_from_native_xml;
 using abigail::xml_reader::read_corpus_from_native_xml_file;
 using abigail::xml_reader::read_corpus_group_from_input;
@@ -57,9 +58,6 @@ using abigail::xml_writer::write_context_sptr;
 using abigail::xml_writer::create_write_context;
 using abigail::xml_writer::write_corpus;
 using abigail::xml_writer::write_corpus_to_archive;
-#ifdef WITH_ZIP_ARCHIVE
-using abigail::xml_reader::read_corpus_from_file;
-#endif
 
 struct options
 {
