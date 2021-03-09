@@ -6207,6 +6207,7 @@ public:
     ABG_ASSERT(gelf_getehdr(elf_handle(), &elf_header));
 
     bool is_ppc64 = architecture_is_ppc64(elf_handle());
+    bool is_arm32 = architecture_is_arm32(elf_handle());
 
     for (size_t i = 0; i < nb_syms; ++i)
       {
@@ -6236,6 +6237,8 @@ public:
 		      maybe_adjust_et_rel_sym_addr_to_abs_addr(elf_handle(),
 							       sym);
 
+		  if (is_arm32)
+		    symbol_value = symbol_value & ~1;
 		  addr_elf_symbol_sptr_map_type::const_iterator it =
 		    fun_addr_sym_map_->find(symbol_value);
 		  if (it == fun_addr_sym_map_->end())

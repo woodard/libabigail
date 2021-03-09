@@ -131,6 +131,9 @@ bool
 architecture_is_ppc64(Elf* elf_handle);
 
 bool
+architecture_is_arm32(Elf* elf_handle);
+
+bool
 architecture_is_big_endian(Elf* elf_handle);
 
 //
