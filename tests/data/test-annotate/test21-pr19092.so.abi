@@ -2410,6 +2410,100 @@
       <!-- char* -->
       <return type-id='type-id-51'/>
     </function-decl>
+    <!-- struct ht_identifier -->
+    <class-decl name='ht_identifier' size-in-bits='128' is-struct='yes' visibility='default' filepath='../.././libcpp/include/symtab.h' line='32' column='1' id='type-id-79'>
+      <data-member access='public' layout-offset-in-bits='0'>
+        <!-- const unsigned char* ht_identifier::str -->
+        <var-decl name='str' type-id='type-id-145' visibility='default' filepath='../.././libcpp/include/symtab.h' line='33' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='64'>
+        <!-- unsigned int ht_identifier::len -->
+        <var-decl name='len' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/symtab.h' line='34' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='96'>
+        <!-- unsigned int ht_identifier::hash_value -->
+        <var-decl name='hash_value' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/symtab.h' line='35' column='1'/>
+      </data-member>
+    </class-decl>
+    <!-- struct pex_obj -->
+    <class-decl name='pex_obj' size-in-bits='1152' is-struct='yes' visibility='default' filepath='../.././libiberty/pex-common.h' line='54' column='1' id='type-id-130'>
+      <data-member access='public' layout-offset-in-bits='0'>
+        <!-- int pex_obj::flags -->
+        <var-decl name='flags' type-id='type-id-18' visibility='default' filepath='../.././libiberty/pex-common.h' line='57' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='64'>
+        <!-- const char* pex_obj::pname -->
+        <var-decl name='pname' type-id='type-id-15' visibility='default' filepath='../.././libiberty/pex-common.h' line='59' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='128'>
+        <!-- const char* pex_obj::tempbase -->
+        <var-decl name='tempbase' type-id='type-id-15' visibility='default' filepath='../.././libiberty/pex-common.h' line='61' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='192'>
+        <!-- int pex_obj::next_input -->
+        <var-decl name='next_input' type-id='type-id-18' visibility='default' filepath='../.././libiberty/pex-common.h' line='63' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='256'>
+        <!-- char* pex_obj::next_input_name -->
+        <var-decl name='next_input_name' type-id='type-id-51' visibility='default' filepath='../.././libiberty/pex-common.h' line='65' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='320'>
+        <!-- int pex_obj::next_input_name_allocated -->
+        <var-decl name='next_input_name_allocated' type-id='type-id-18' visibility='default' filepath='../.././libiberty/pex-common.h' line='67' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='352'>
+        <!-- int pex_obj::stderr_pipe -->
+        <var-decl name='stderr_pipe' type-id='type-id-18' visibility='default' filepath='../.././libiberty/pex-common.h' line='69' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='384'>
+        <!-- int pex_obj::count -->
+        <var-decl name='count' type-id='type-id-18' visibility='default' filepath='../.././libiberty/pex-common.h' line='71' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='448'>
+        <!-- pid_t* pex_obj::children -->
+        <var-decl name='children' type-id='type-id-146' visibility='default' filepath='../.././libiberty/pex-common.h' line='73' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='512'>
+        <!-- int* pex_obj::status -->
+        <var-decl name='status' type-id='type-id-42' visibility='default' filepath='../.././libiberty/pex-common.h' line='75' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='576'>
+        <!-- pex_time* pex_obj::time -->
+        <var-decl name='time' type-id='type-id-147' visibility='default' filepath='../.././libiberty/pex-common.h' line='77' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='640'>
+        <!-- int pex_obj::number_waited -->
+        <var-decl name='number_waited' type-id='type-id-18' visibility='default' filepath='../.././libiberty/pex-common.h' line='79' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='704'>
+        <!-- FILE* pex_obj::input_file -->
+        <var-decl name='input_file' type-id='type-id-89' visibility='default' filepath='../.././libiberty/pex-common.h' line='81' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='768'>
+        <!-- FILE* pex_obj::read_output -->
+        <var-decl name='read_output' type-id='type-id-89' visibility='default' filepath='../.././libiberty/pex-common.h' line='83' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='832'>
+        <!-- FILE* pex_obj::read_err -->
+        <var-decl name='read_err' type-id='type-id-89' visibility='default' filepath='../.././libiberty/pex-common.h' line='85' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='896'>
+        <!-- int pex_obj::remove_count -->
+        <var-decl name='remove_count' type-id='type-id-18' visibility='default' filepath='../.././libiberty/pex-common.h' line='87' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='960'>
+        <!-- char** pex_obj::remove -->
+        <var-decl name='remove' type-id='type-id-123' visibility='default' filepath='../.././libiberty/pex-common.h' line='90' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='1024'>
+        <!-- const pex_funcs* pex_obj::funcs -->
+        <var-decl name='funcs' type-id='type-id-148' visibility='default' filepath='../.././libiberty/pex-common.h' line='92' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='1088'>
+        <!-- void* pex_obj::sysdep -->
+        <var-decl name='sysdep' type-id='type-id-14' visibility='default' filepath='../.././libiberty/pex-common.h' line='94' column='1'/>
+      </data-member>
+    </class-decl>
     <!-- enum node_type -->
     <enum-decl name='node_type' filepath='../.././libcpp/include/cpplib.h' line='614' column='1' id='type-id-80'>
       <underlying-type type-id='type-id-26'/>
@@ -2522,100 +2616,6 @@
       <!-- void* -->
       <return type-id='type-id-14'/>
     </function-type>
-    <!-- struct ht_identifier -->
-    <class-decl name='ht_identifier' size-in-bits='128' is-struct='yes' visibility='default' filepath='../.././libcpp/include/symtab.h' line='32' column='1' id='type-id-79'>
-      <data-member access='public' layout-offset-in-bits='0'>
-        <!-- const unsigned char* ht_identifier::str -->
-        <var-decl name='str' type-id='type-id-145' visibility='default' filepath='../.././libcpp/include/symtab.h' line='33' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='64'>
-        <!-- unsigned int ht_identifier::len -->
-        <var-decl name='len' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/symtab.h' line='34' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='96'>
-        <!-- unsigned int ht_identifier::hash_value -->
-        <var-decl name='hash_value' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/symtab.h' line='35' column='1'/>
-      </data-member>
-    </class-decl>
-    <!-- struct pex_obj -->
-    <class-decl name='pex_obj' size-in-bits='1152' is-struct='yes' visibility='default' filepath='../.././libiberty/pex-common.h' line='54' column='1' id='type-id-130'>
-      <data-member access='public' layout-offset-in-bits='0'>
-        <!-- int pex_obj::flags -->
-        <var-decl name='flags' type-id='type-id-18' visibility='default' filepath='../.././libiberty/pex-common.h' line='57' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='64'>
-        <!-- const char* pex_obj::pname -->
-        <var-decl name='pname' type-id='type-id-15' visibility='default' filepath='../.././libiberty/pex-common.h' line='59' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='128'>
-        <!-- const char* pex_obj::tempbase -->
-        <var-decl name='tempbase' type-id='type-id-15' visibility='default' filepath='../.././libiberty/pex-common.h' line='61' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='192'>
-        <!-- int pex_obj::next_input -->
-        <var-decl name='next_input' type-id='type-id-18' visibility='default' filepath='../.././libiberty/pex-common.h' line='63' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='256'>
-        <!-- char* pex_obj::next_input_name -->
-        <var-decl name='next_input_name' type-id='type-id-51' visibility='default' filepath='../.././libiberty/pex-common.h' line='65' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='320'>
-        <!-- int pex_obj::next_input_name_allocated -->
-        <var-decl name='next_input_name_allocated' type-id='type-id-18' visibility='default' filepath='../.././libiberty/pex-common.h' line='67' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='352'>
-        <!-- int pex_obj::stderr_pipe -->
-        <var-decl name='stderr_pipe' type-id='type-id-18' visibility='default' filepath='../.././libiberty/pex-common.h' line='69' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='384'>
-        <!-- int pex_obj::count -->
-        <var-decl name='count' type-id='type-id-18' visibility='default' filepath='../.././libiberty/pex-common.h' line='71' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='448'>
-        <!-- pid_t* pex_obj::children -->
-        <var-decl name='children' type-id='type-id-146' visibility='default' filepath='../.././libiberty/pex-common.h' line='73' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='512'>
-        <!-- int* pex_obj::status -->
-        <var-decl name='status' type-id='type-id-42' visibility='default' filepath='../.././libiberty/pex-common.h' line='75' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='576'>
-        <!-- pex_time* pex_obj::time -->
-        <var-decl name='time' type-id='type-id-147' visibility='default' filepath='../.././libiberty/pex-common.h' line='77' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='640'>
-        <!-- int pex_obj::number_waited -->
-        <var-decl name='number_waited' type-id='type-id-18' visibility='default' filepath='../.././libiberty/pex-common.h' line='79' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='704'>
-        <!-- FILE* pex_obj::input_file -->
-        <var-decl name='input_file' type-id='type-id-89' visibility='default' filepath='../.././libiberty/pex-common.h' line='81' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='768'>
-        <!-- FILE* pex_obj::read_output -->
-        <var-decl name='read_output' type-id='type-id-89' visibility='default' filepath='../.././libiberty/pex-common.h' line='83' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='832'>
-        <!-- FILE* pex_obj::read_err -->
-        <var-decl name='read_err' type-id='type-id-89' visibility='default' filepath='../.././libiberty/pex-common.h' line='85' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='896'>
-        <!-- int pex_obj::remove_count -->
-        <var-decl name='remove_count' type-id='type-id-18' visibility='default' filepath='../.././libiberty/pex-common.h' line='87' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='960'>
-        <!-- char** pex_obj::remove -->
-        <var-decl name='remove' type-id='type-id-123' visibility='default' filepath='../.././libiberty/pex-common.h' line='90' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='1024'>
-        <!-- const pex_funcs* pex_obj::funcs -->
-        <var-decl name='funcs' type-id='type-id-148' visibility='default' filepath='../.././libiberty/pex-common.h' line='92' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='1088'>
-        <!-- void* pex_obj::sysdep -->
-        <var-decl name='sysdep' type-id='type-id-14' visibility='default' filepath='../.././libiberty/pex-common.h' line='94' column='1'/>
-      </data-member>
-    </class-decl>
     <!-- union _cpp_hashnode_value -->
     <union-decl name='_cpp_hashnode_value' size-in-bits='64' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='665' column='1' id='type-id-81'>
       <data-member access='private'>
@@ -2663,10 +2663,6 @@
     <pointer-type-def type-id='type-id-156' size-in-bits='64' id='type-id-147'/>
     <!-- pid_t* -->
     <pointer-type-def type-id='type-id-157' size-in-bits='64' id='type-id-146'/>
-    <!-- const pex_funcs -->
-    <qualified-type-def type-id='type-id-158' const='yes' id='type-id-153'/>
-    <!-- const unsigned char -->
-    <qualified-type-def type-id='type-id-27' const='yes' id='type-id-154'/>
     <!-- struct answer -->
     <class-decl name='answer' size-in-bits='320' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='28' column='1' id='type-id-152'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -2679,7 +2675,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
         <!-- cpp_token answer::first[1] -->
-        <var-decl name='first' type-id='type-id-159' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='31' column='1'/>
+        <var-decl name='first' type-id='type-id-158' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='31' column='1'/>
       </data-member>
     </class-decl>
     <!-- struct pex_time -->
@@ -2701,23 +2697,22 @@
         <var-decl name='system_microseconds' type-id='type-id-28' visibility='default' filepath='../.././libiberty/../include/libiberty.h' line='564' column='1'/>
       </data-member>
     </class-decl>
+    <!-- const pex_funcs -->
+    <qualified-type-def type-id='type-id-159' const='yes' id='type-id-153'/>
+    <!-- const unsigned char -->
+    <qualified-type-def type-id='type-id-27' const='yes' id='type-id-154'/>
     <!-- typedef cpp_macro cpp_macro -->
     <typedef-decl name='cpp_macro' type-id='type-id-160' filepath='../.././libcpp/include/cpplib.h' line='37' column='1' id='type-id-155'/>
     <!-- typedef __pid_t pid_t -->
     <typedef-decl name='pid_t' type-id='type-id-161' filepath='/usr/include/sys/types.h' line='99' column='1' id='type-id-157'/>
-    <!-- cpp_token[1] -->
-    <array-type-def dimensions='1' type-id='type-id-162' size-in-bits='192' id='type-id-159'>
-      <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-7'/>
-    </array-type-def>
     <!-- struct cpp_macro -->
     <class-decl name='cpp_macro' size-in-bits='256' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='36' column='1' id='type-id-160'>
       <member-type access='public'>
         <!-- union cpp_macro::cpp_macro_u -->
-        <union-decl name='cpp_macro_u' size-in-bits='64' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='47' column='1' id='type-id-163'>
+        <union-decl name='cpp_macro_u' size-in-bits='64' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='47' column='1' id='type-id-162'>
           <data-member access='private'>
             <!-- cpp_token* cpp_macro::cpp_macro_u::tokens -->
-            <var-decl name='tokens' type-id='type-id-164' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='49' column='1'/>
+            <var-decl name='tokens' type-id='type-id-163' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='49' column='1'/>
           </data-member>
           <data-member access='private'>
             <!-- const unsigned char* cpp_macro::cpp_macro_u::text -->
@@ -2727,11 +2722,11 @@
       </member-type>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- cpp_hashnode** cpp_macro::params -->
-        <var-decl name='params' type-id='type-id-165' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='42' column='1'/>
+        <var-decl name='params' type-id='type-id-164' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='42' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- cpp_macro::cpp_macro_u cpp_macro::exp -->
-        <var-decl name='exp' type-id='type-id-163' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='51' column='1'/>
+        <var-decl name='exp' type-id='type-id-162' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='51' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
         <!-- source_location cpp_macro::line -->
@@ -2771,78 +2766,73 @@
       </data-member>
     </class-decl>
     <!-- struct pex_funcs -->
-    <class-decl name='pex_funcs' size-in-bits='576' is-struct='yes' visibility='default' filepath='../.././libiberty/pex-common.h' line='99' column='1' id='type-id-158'>
+    <class-decl name='pex_funcs' size-in-bits='576' is-struct='yes' visibility='default' filepath='../.././libiberty/pex-common.h' line='99' column='1' id='type-id-159'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- int (pex_obj*, const char*, int)* pex_funcs::open_read -->
-        <var-decl name='open_read' type-id='type-id-166' visibility='default' filepath='../.././libiberty/pex-common.h' line='103' column='1'/>
+        <var-decl name='open_read' type-id='type-id-165' visibility='default' filepath='../.././libiberty/pex-common.h' line='103' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- int (pex_obj*, const char*, int)* pex_funcs::open_write -->
-        <var-decl name='open_write' type-id='type-id-166' visibility='default' filepath='../.././libiberty/pex-common.h' line='106' column='1'/>
+        <var-decl name='open_write' type-id='type-id-165' visibility='default' filepath='../.././libiberty/pex-common.h' line='106' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
         <!-- typedef pid_t (pex_obj*, int, const char*, char* const*, char* const*, int, int, int, int, const char**, int*)* pex_funcs::exec_child -->
-        <var-decl name='exec_child' type-id='type-id-167' visibility='default' filepath='../.././libiberty/pex-common.h' line='117' column='1'/>
+        <var-decl name='exec_child' type-id='type-id-166' visibility='default' filepath='../.././libiberty/pex-common.h' line='117' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
         <!-- int (pex_obj*, int)* pex_funcs::close -->
-        <var-decl name='close' type-id='type-id-168' visibility='default' filepath='../.././libiberty/pex-common.h' line='124' column='1'/>
+        <var-decl name='close' type-id='type-id-167' visibility='default' filepath='../.././libiberty/pex-common.h' line='124' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
         <!-- typedef pid_t (pex_obj*, typedef pid_t, int*, pex_time*, int, const char**, int*)* pex_funcs::wait -->
-        <var-decl name='wait' type-id='type-id-169' visibility='default' filepath='../.././libiberty/pex-common.h' line='129' column='1'/>
+        <var-decl name='wait' type-id='type-id-168' visibility='default' filepath='../.././libiberty/pex-common.h' line='129' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
         <!-- int (pex_obj*, int*, int)* pex_funcs::pipe -->
-        <var-decl name='pipe' type-id='type-id-170' visibility='default' filepath='../.././libiberty/pex-common.h' line='135' column='1'/>
+        <var-decl name='pipe' type-id='type-id-169' visibility='default' filepath='../.././libiberty/pex-common.h' line='135' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
         <!-- FILE* (pex_obj*, int, int)* pex_funcs::fdopenr -->
-        <var-decl name='fdopenr' type-id='type-id-171' visibility='default' filepath='../.././libiberty/pex-common.h' line='139' column='1'/>
+        <var-decl name='fdopenr' type-id='type-id-170' visibility='default' filepath='../.././libiberty/pex-common.h' line='139' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='448'>
         <!-- FILE* (pex_obj*, int, int)* pex_funcs::fdopenw -->
-        <var-decl name='fdopenw' type-id='type-id-171' visibility='default' filepath='../.././libiberty/pex-common.h' line='144' column='1'/>
+        <var-decl name='fdopenw' type-id='type-id-170' visibility='default' filepath='../.././libiberty/pex-common.h' line='144' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='512'>
         <!-- void (pex_obj*)* pex_funcs::cleanup -->
-        <var-decl name='cleanup' type-id='type-id-172' visibility='default' filepath='../.././libiberty/pex-common.h' line='147' column='1'/>
+        <var-decl name='cleanup' type-id='type-id-171' visibility='default' filepath='../.././libiberty/pex-common.h' line='147' column='1'/>
       </data-member>
     </class-decl>
+    <!-- cpp_token[1] -->
+    <array-type-def dimensions='1' type-id='type-id-172' size-in-bits='192' id='type-id-158'>
+      <!-- <anonymous range>[1] -->
+      <subrange length='1' type-id='type-id-4' id='type-id-7'/>
+    </array-type-def>
     <!-- typedef int __pid_t -->
     <typedef-decl name='__pid_t' type-id='type-id-18' filepath='/usr/include/bits/types.h' line='143' column='1' id='type-id-161'/>
     <!-- FILE* (pex_obj*, int, int)* -->
-    <pointer-type-def type-id='type-id-173' size-in-bits='64' id='type-id-171'/>
-    <!-- cpp_hashnode** -->
-    <pointer-type-def type-id='type-id-116' size-in-bits='64' id='type-id-165'/>
-    <!-- cpp_token* -->
-    <pointer-type-def type-id='type-id-162' size-in-bits='64' id='type-id-164'/>
-    <!-- int (pex_obj*, const char*, int)* -->
-    <pointer-type-def type-id='type-id-174' size-in-bits='64' id='type-id-166'/>
-    <!-- int (pex_obj*, int)* -->
-    <pointer-type-def type-id='type-id-175' size-in-bits='64' id='type-id-168'/>
-    <!-- int (pex_obj*, int*, int)* -->
-    <pointer-type-def type-id='type-id-176' size-in-bits='64' id='type-id-170'/>
+    <pointer-type-def type-id='type-id-173' size-in-bits='64' id='type-id-170'/>
     <!-- struct cpp_token -->
-    <class-decl name='cpp_token' size-in-bits='192' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='223' column='1' id='type-id-162'>
+    <class-decl name='cpp_token' size-in-bits='192' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='223' column='1' id='type-id-172'>
       <member-type access='public'>
         <!-- union cpp_token::cpp_token_u -->
-        <union-decl name='cpp_token_u' size-in-bits='128' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='228' column='1' id='type-id-177'>
+        <union-decl name='cpp_token_u' size-in-bits='128' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='228' column='1' id='type-id-174'>
           <data-member access='private'>
             <!-- cpp_identifier cpp_token::cpp_token_u::node -->
-            <var-decl name='node' type-id='type-id-178' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='231' column='1'/>
+            <var-decl name='node' type-id='type-id-175' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='231' column='1'/>
           </data-member>
           <data-member access='private'>
             <!-- cpp_token* cpp_token::cpp_token_u::source -->
-            <var-decl name='source' type-id='type-id-164' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='234' column='1'/>
+            <var-decl name='source' type-id='type-id-163' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='234' column='1'/>
           </data-member>
           <data-member access='private'>
             <!-- cpp_string cpp_token::cpp_token_u::str -->
-            <var-decl name='str' type-id='type-id-179' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='237' column='1'/>
+            <var-decl name='str' type-id='type-id-176' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='237' column='1'/>
           </data-member>
           <data-member access='private'>
             <!-- cpp_macro_arg cpp_token::cpp_token_u::macro_arg -->
-            <var-decl name='macro_arg' type-id='type-id-180' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='240' column='1'/>
+            <var-decl name='macro_arg' type-id='type-id-177' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='240' column='1'/>
           </data-member>
           <data-member access='private'>
             <!-- unsigned int cpp_token::cpp_token_u::token_no -->
@@ -2860,7 +2850,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- cpp_ttype cpp_token::type -->
-        <var-decl name='type' type-id='type-id-181' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='225' column='1'/>
+        <var-decl name='type' type-id='type-id-178' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='225' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='48'>
         <!-- unsigned short int cpp_token::flags -->
@@ -2868,17 +2858,52 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- cpp_token::cpp_token_u cpp_token::val -->
-        <var-decl name='val' type-id='type-id-177' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='248' column='1'/>
+        <var-decl name='val' type-id='type-id-174' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='248' column='1'/>
       </data-member>
     </class-decl>
+    <!-- cpp_hashnode** -->
+    <pointer-type-def type-id='type-id-116' size-in-bits='64' id='type-id-164'/>
+    <!-- cpp_token* -->
+    <pointer-type-def type-id='type-id-172' size-in-bits='64' id='type-id-163'/>
+    <!-- int (pex_obj*, const char*, int)* -->
+    <pointer-type-def type-id='type-id-179' size-in-bits='64' id='type-id-165'/>
+    <!-- int (pex_obj*, int)* -->
+    <pointer-type-def type-id='type-id-180' size-in-bits='64' id='type-id-167'/>
+    <!-- int (pex_obj*, int*, int)* -->
+    <pointer-type-def type-id='type-id-181' size-in-bits='64' id='type-id-169'/>
     <!-- typedef pid_t (pex_obj*, int, const char*, char* const*, char* const*, int, int, int, int, const char**, int*)* -->
-    <pointer-type-def type-id='type-id-182' size-in-bits='64' id='type-id-167'/>
+    <pointer-type-def type-id='type-id-182' size-in-bits='64' id='type-id-166'/>
     <!-- typedef pid_t (pex_obj*, typedef pid_t, int*, pex_time*, int, const char**, int*)* -->
-    <pointer-type-def type-id='type-id-183' size-in-bits='64' id='type-id-169'/>
+    <pointer-type-def type-id='type-id-183' size-in-bits='64' id='type-id-168'/>
     <!-- void (pex_obj*)* -->
-    <pointer-type-def type-id='type-id-184' size-in-bits='64' id='type-id-172'/>
+    <pointer-type-def type-id='type-id-184' size-in-bits='64' id='type-id-171'/>
+    <!-- struct cpp_identifier -->
+    <class-decl name='cpp_identifier' size-in-bits='64' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='212' column='1' id='type-id-175'>
+      <data-member access='public' layout-offset-in-bits='0'>
+        <!-- cpp_hashnode* cpp_identifier::node -->
+        <var-decl name='node' type-id='type-id-116' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='218' column='1'/>
+      </data-member>
+    </class-decl>
+    <!-- struct cpp_macro_arg -->
+    <class-decl name='cpp_macro_arg' size-in-bits='32' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='206' column='1' id='type-id-177'>
+      <data-member access='public' layout-offset-in-bits='0'>
+        <!-- unsigned int cpp_macro_arg::arg_no -->
+        <var-decl name='arg_no' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='208' column='1'/>
+      </data-member>
+    </class-decl>
+    <!-- struct cpp_string -->
+    <class-decl name='cpp_string' size-in-bits='128' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='173' column='1' id='type-id-176'>
+      <data-member access='public' layout-offset-in-bits='0'>
+        <!-- unsigned int cpp_string::len -->
+        <var-decl name='len' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='174' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='64'>
+        <!-- const unsigned char* cpp_string::text -->
+        <var-decl name='text' type-id='type-id-145' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='175' column='1'/>
+      </data-member>
+    </class-decl>
     <!-- enum cpp_ttype -->
-    <enum-decl name='cpp_ttype' filepath='../.././libcpp/include/cpplib.h' line='153' column='1' id='type-id-181'>
+    <enum-decl name='cpp_ttype' filepath='../.././libcpp/include/cpplib.h' line='153' column='1' id='type-id-178'>
       <underlying-type type-id='type-id-26'/>
       <enumerator name='CPP_EQ' value='0'/>
       <enumerator name='CPP_NOT' value='1'/>
@@ -2968,31 +2993,6 @@
       <enumerator name='CPP_LAST_PUNCTUATOR' value='52'/>
       <enumerator name='CPP_LAST_CPP_OP' value='26'/>
     </enum-decl>
-    <!-- struct cpp_identifier -->
-    <class-decl name='cpp_identifier' size-in-bits='64' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='212' column='1' id='type-id-178'>
-      <data-member access='public' layout-offset-in-bits='0'>
-        <!-- cpp_hashnode* cpp_identifier::node -->
-        <var-decl name='node' type-id='type-id-116' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='218' column='1'/>
-      </data-member>
-    </class-decl>
-    <!-- struct cpp_macro_arg -->
-    <class-decl name='cpp_macro_arg' size-in-bits='32' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='206' column='1' id='type-id-180'>
-      <data-member access='public' layout-offset-in-bits='0'>
-        <!-- unsigned int cpp_macro_arg::arg_no -->
-        <var-decl name='arg_no' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='208' column='1'/>
-      </data-member>
-    </class-decl>
-    <!-- struct cpp_string -->
-    <class-decl name='cpp_string' size-in-bits='128' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='173' column='1' id='type-id-179'>
-      <data-member access='public' layout-offset-in-bits='0'>
-        <!-- unsigned int cpp_string::len -->
-        <var-decl name='len' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='174' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='64'>
-        <!-- const unsigned char* cpp_string::text -->
-        <var-decl name='text' type-id='type-id-145' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='175' column='1'/>
-      </data-member>
-    </class-decl>
   </abi-instr>
   <abi-instr address-size='64' path='../.././gcc/diagnostic.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/gcc' language='LANG_C_plus_plus'>
     <!-- struct line_maps -->
@@ -5229,7 +5229,7 @@
       <!-- parameter of type 'cpp_string*' -->
       <parameter type-id='type-id-262'/>
       <!-- parameter of type 'enum cpp_ttype' -->
-      <parameter type-id='type-id-181'/>
+      <parameter type-id='type-id-178'/>
       <!-- bool -->
       <return type-id='type-id-1'/>
     </function-decl>
@@ -5244,7 +5244,7 @@
       <!-- parameter of type 'cpp_string*' -->
       <parameter type-id='type-id-262'/>
       <!-- parameter of type 'enum cpp_ttype' -->
-      <parameter type-id='type-id-181'/>
+      <parameter type-id='type-id-178'/>
       <!-- bool -->
       <return type-id='type-id-1'/>
     </function-decl>
@@ -5318,12 +5318,6 @@
     <pointer-type-def type-id='type-id-275' size-in-bits='64' id='type-id-265'/>
     <!-- unsigned int* -->
     <pointer-type-def type-id='type-id-13' size-in-bits='64' id='type-id-264'/>
-    <!-- const cpp_string -->
-    <qualified-type-def type-id='type-id-272' const='yes' id='type-id-268'/>
-    <!-- const cpp_token -->
-    <qualified-type-def type-id='type-id-276' const='yes' id='type-id-269'/>
-    <!-- const uchar -->
-    <qualified-type-def type-id='type-id-275' const='yes' id='type-id-270'/>
     <!-- struct normalize_state -->
     <class-decl name='normalize_state' size-in-bits='96' is-struct='yes' visibility='default' filepath='../.././libcpp/internal.h' line='706' column='1' id='type-id-273'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -5336,25 +5330,23 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- cpp_normalize_level normalize_state::level -->
-        <var-decl name='level' type-id='type-id-277' visibility='default' filepath='../.././libcpp/internal.h' line='713' column='1'/>
+        <var-decl name='level' type-id='type-id-276' visibility='default' filepath='../.././libcpp/internal.h' line='713' column='1'/>
       </data-member>
     </class-decl>
+    <!-- const cpp_string -->
+    <qualified-type-def type-id='type-id-272' const='yes' id='type-id-268'/>
+    <!-- const cpp_token -->
+    <qualified-type-def type-id='type-id-277' const='yes' id='type-id-269'/>
+    <!-- const uchar -->
+    <qualified-type-def type-id='type-id-275' const='yes' id='type-id-270'/>
     <!-- typedef cpp_reader cpp_reader -->
     <typedef-decl name='cpp_reader' type-id='type-id-278' filepath='../.././libcpp/include/cpplib.h' line='31' column='1' id='type-id-271'/>
     <!-- typedef cpp_string cpp_string -->
-    <typedef-decl name='cpp_string' type-id='type-id-179' filepath='../.././libcpp/include/cpplib.h' line='35' column='1' id='type-id-272'/>
+    <typedef-decl name='cpp_string' type-id='type-id-176' filepath='../.././libcpp/include/cpplib.h' line='35' column='1' id='type-id-272'/>
     <!-- typedef __off_t off_t -->
     <typedef-decl name='off_t' type-id='type-id-54' filepath='/usr/include/stdio.h' line='91' column='1' id='type-id-274'/>
     <!-- typedef unsigned char uchar -->
     <typedef-decl name='uchar' type-id='type-id-27' filepath='../.././libcpp/include/cpp-id-data.h' line='22' column='1' id='type-id-275'/>
-    <!-- enum cpp_normalize_level -->
-    <enum-decl name='cpp_normalize_level' filepath='../.././libcpp/include/cpplib.h' line='276' column='1' id='type-id-277'>
-      <underlying-type type-id='type-id-26'/>
-      <enumerator name='normalized_KC' value='0'/>
-      <enumerator name='normalized_C' value='1'/>
-      <enumerator name='normalized_identifier_C' value='2'/>
-      <enumerator name='normalized_none' value='3'/>
-    </enum-decl>
     <!-- struct cpp_reader -->
     <class-decl name='cpp_reader' size-in-bits='10560' is-struct='yes' visibility='default' filepath='../.././libcpp/internal.h' line='380' column='1' id='type-id-278'>
       <member-type access='public'>
@@ -5424,7 +5416,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='1216'>
         <!-- cpp_token cpp_reader::directive_result -->
-        <var-decl name='directive_result' type-id='type-id-276' visibility='default' filepath='../.././libcpp/internal.h' line='410' column='1'/>
+        <var-decl name='directive_result' type-id='type-id-277' visibility='default' filepath='../.././libcpp/internal.h' line='410' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1408'>
         <!-- source_location cpp_reader::invocation_location -->
@@ -5496,7 +5488,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='3456'>
         <!-- cpp_token* cpp_reader::cur_token -->
-        <var-decl name='cur_token' type-id='type-id-164' visibility='default' filepath='../.././libcpp/internal.h' line='453' column='1'/>
+        <var-decl name='cur_token' type-id='type-id-163' visibility='default' filepath='../.././libcpp/internal.h' line='453' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3520'>
         <!-- tokenrun cpp_reader::base_run -->
@@ -5552,11 +5544,11 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='5120'>
         <!-- cpp_token cpp_reader::avoid_paste -->
-        <var-decl name='avoid_paste' type-id='type-id-276' visibility='default' filepath='../.././libcpp/internal.h' line='489' column='1'/>
+        <var-decl name='avoid_paste' type-id='type-id-277' visibility='default' filepath='../.././libcpp/internal.h' line='489' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5312'>
         <!-- cpp_token cpp_reader::eof -->
-        <var-decl name='eof' type-id='type-id-276' visibility='default' filepath='../.././libcpp/internal.h' line='490' column='1'/>
+        <var-decl name='eof' type-id='type-id-277' visibility='default' filepath='../.././libcpp/internal.h' line='490' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5504'>
         <!-- deps* cpp_reader::deps -->
@@ -5639,132 +5631,116 @@
         <var-decl name='forced_token_location_p' type-id='type-id-117' visibility='default' filepath='../.././libcpp/internal.h' line='553' column='1'/>
       </data-member>
     </class-decl>
+    <!-- enum cpp_normalize_level -->
+    <enum-decl name='cpp_normalize_level' filepath='../.././libcpp/include/cpplib.h' line='276' column='1' id='type-id-276'>
+      <underlying-type type-id='type-id-26'/>
+      <enumerator name='normalized_KC' value='0'/>
+      <enumerator name='normalized_C' value='1'/>
+      <enumerator name='normalized_identifier_C' value='2'/>
+      <enumerator name='normalized_none' value='3'/>
+    </enum-decl>
     <!-- typedef cpp_token cpp_token -->
-    <typedef-decl name='cpp_token' type-id='type-id-162' filepath='../.././libcpp/include/cpplib.h' line='34' column='1' id='type-id-276'/>
+    <typedef-decl name='cpp_token' type-id='type-id-172' filepath='../.././libcpp/include/cpplib.h' line='34' column='1' id='type-id-277'/>
     <!-- _cpp_buff* -->
     <pointer-type-def type-id='type-id-305' size-in-bits='64' id='type-id-283'/>
     <!-- _cpp_file* -->
     <pointer-type-def type-id='type-id-306' size-in-bits='64' id='type-id-289'/>
-    <!-- const cpp_hashnode* -->
-    <pointer-type-def type-id='type-id-307' size-in-bits='64' id='type-id-291'/>
-    <!-- const directive* -->
-    <pointer-type-def type-id='type-id-308' size-in-bits='64' id='type-id-286'/>
-    <!-- cpp_buffer* -->
-    <pointer-type-def type-id='type-id-309' size-in-bits='64' id='type-id-281'/>
-    <!-- cpp_context* -->
-    <pointer-type-def type-id='type-id-284' size-in-bits='64' id='type-id-285'/>
-    <!-- cpp_dir* -->
-    <pointer-type-def type-id='type-id-288' size-in-bits='64' id='type-id-287'/>
-    <!-- cpp_savedstate* -->
-    <pointer-type-def type-id='type-id-310' size-in-bits='64' id='type-id-302'/>
-    <!-- def_pragma_macro* -->
-    <pointer-type-def type-id='type-id-311' size-in-bits='64' id='type-id-304'/>
-    <!-- deps* -->
-    <pointer-type-def type-id='type-id-312' size-in-bits='64' id='type-id-295'/>
-    <!-- file_hash_entry_pool* -->
-    <pointer-type-def type-id='type-id-313' size-in-bits='64' id='type-id-290'/>
-    <!-- ht* -->
-    <pointer-type-def type-id='type-id-314' size-in-bits='64' id='type-id-298'/>
-    <!-- op* -->
-    <pointer-type-def type-id='type-id-315' size-in-bits='64' id='type-id-299'/>
-    <!-- pragma_entry* -->
-    <pointer-type-def type-id='type-id-316' size-in-bits='64' id='type-id-296'/>
     <!-- struct cpp_callbacks -->
     <class-decl name='cpp_callbacks' size-in-bits='1152' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='499' column='1' id='type-id-297'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- void (cpp_reader*, const cpp_token*, int)* cpp_callbacks::line_change -->
-        <var-decl name='line_change' type-id='type-id-317' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='502' column='1'/>
+        <var-decl name='line_change' type-id='type-id-307' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='502' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- void (cpp_reader*, const line_map*)* cpp_callbacks::file_change -->
-        <var-decl name='file_change' type-id='type-id-318' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='508' column='1'/>
+        <var-decl name='file_change' type-id='type-id-308' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='508' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
         <!-- void (cpp_reader*, const char*)* cpp_callbacks::dir_change -->
-        <var-decl name='dir_change' type-id='type-id-319' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='510' column='1'/>
+        <var-decl name='dir_change' type-id='type-id-309' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='510' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
         <!-- void (cpp_reader*, typedef source_location, const unsigned char*, const char*, int, const cpp_token**)* cpp_callbacks::include -->
-        <var-decl name='include' type-id='type-id-320' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='512' column='1'/>
+        <var-decl name='include' type-id='type-id-310' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='512' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
         <!-- void (cpp_reader*, typedef source_location, cpp_hashnode*)* cpp_callbacks::define -->
-        <var-decl name='define' type-id='type-id-321' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='513' column='1'/>
+        <var-decl name='define' type-id='type-id-311' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='513' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
         <!-- void (cpp_reader*, typedef source_location, cpp_hashnode*)* cpp_callbacks::undef -->
-        <var-decl name='undef' type-id='type-id-321' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='514' column='1'/>
+        <var-decl name='undef' type-id='type-id-311' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='514' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
         <!-- void (cpp_reader*, typedef source_location, const cpp_string*)* cpp_callbacks::ident -->
-        <var-decl name='ident' type-id='type-id-322' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='515' column='1'/>
+        <var-decl name='ident' type-id='type-id-312' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='515' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='448'>
         <!-- void (cpp_reader*, typedef source_location)* cpp_callbacks::def_pragma -->
-        <var-decl name='def_pragma' type-id='type-id-323' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='516' column='1'/>
+        <var-decl name='def_pragma' type-id='type-id-313' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='516' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='512'>
         <!-- int (cpp_reader*, const char*, int)* cpp_callbacks::valid_pch -->
-        <var-decl name='valid_pch' type-id='type-id-324' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='517' column='1'/>
+        <var-decl name='valid_pch' type-id='type-id-314' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='517' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='576'>
         <!-- void (cpp_reader*, const char*, int, const char*)* cpp_callbacks::read_pch -->
-        <var-decl name='read_pch' type-id='type-id-325' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='518' column='1'/>
+        <var-decl name='read_pch' type-id='type-id-315' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='518' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='640'>
         <!-- missing_header_cb cpp_callbacks::missing_header -->
-        <var-decl name='missing_header' type-id='type-id-326' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='519' column='1'/>
+        <var-decl name='missing_header' type-id='type-id-316' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='519' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='704'>
         <!-- cpp_hashnode* (cpp_reader*, const cpp_token*)* cpp_callbacks::macro_to_expand -->
-        <var-decl name='macro_to_expand' type-id='type-id-327' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='523' column='1'/>
+        <var-decl name='macro_to_expand' type-id='type-id-317' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='523' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='768'>
         <!-- bool (cpp_reader*, int, int, typedef source_location, unsigned int, const char*, va_list*)* cpp_callbacks::error -->
-        <var-decl name='error' type-id='type-id-328' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='529' column='1'/>
+        <var-decl name='error' type-id='type-id-318' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='529' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='832'>
         <!-- void (cpp_reader*, typedef source_location, cpp_hashnode*)* cpp_callbacks::used_define -->
-        <var-decl name='used_define' type-id='type-id-321' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='533' column='1'/>
+        <var-decl name='used_define' type-id='type-id-311' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='533' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='896'>
         <!-- void (cpp_reader*, typedef source_location, cpp_hashnode*)* cpp_callbacks::used_undef -->
-        <var-decl name='used_undef' type-id='type-id-321' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='534' column='1'/>
+        <var-decl name='used_undef' type-id='type-id-311' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='534' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='960'>
         <!-- void (cpp_reader*)* cpp_callbacks::before_define -->
-        <var-decl name='before_define' type-id='type-id-329' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='537' column='1'/>
+        <var-decl name='before_define' type-id='type-id-319' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='537' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1024'>
         <!-- void (cpp_reader*, typedef source_location, cpp_hashnode*)* cpp_callbacks::used -->
-        <var-decl name='used' type-id='type-id-321' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='540' column='1'/>
+        <var-decl name='used' type-id='type-id-311' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='540' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1088'>
         <!-- bool (cpp_reader*, cpp_hashnode*)* cpp_callbacks::user_builtin_macro -->
-        <var-decl name='user_builtin_macro' type-id='type-id-330' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='543' column='1'/>
+        <var-decl name='user_builtin_macro' type-id='type-id-320' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='543' column='1'/>
       </data-member>
     </class-decl>
     <!-- struct cpp_context -->
     <class-decl name='cpp_context' size-in-bits='448' is-struct='yes' visibility='default' filepath='../.././libcpp/internal.h' line='177' column='1' id='type-id-284'>
       <member-type access='public'>
         <!-- union {struct {utoken first; utoken last;} iso; struct {const unsigned char* cur; const unsigned char* rlimit;} trad;} -->
-        <union-decl name='__anonymous_union__' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='183' column='1' id='type-id-331'>
+        <union-decl name='__anonymous_union__' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='183' column='1' id='type-id-321'>
           <member-type access='private'>
             <!-- struct {utoken first; utoken last;} -->
-            <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='188' column='1' id='type-id-332'>
+            <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='188' column='1' id='type-id-322'>
               <data-member access='public' layout-offset-in-bits='0'>
                 <!-- utoken first -->
-                <var-decl name='first' type-id='type-id-333' visibility='default' filepath='../.././libcpp/internal.h' line='189' column='1'/>
+                <var-decl name='first' type-id='type-id-323' visibility='default' filepath='../.././libcpp/internal.h' line='189' column='1'/>
               </data-member>
               <data-member access='public' layout-offset-in-bits='64'>
                 <!-- utoken last -->
-                <var-decl name='last' type-id='type-id-333' visibility='default' filepath='../.././libcpp/internal.h' line='190' column='1'/>
+                <var-decl name='last' type-id='type-id-323' visibility='default' filepath='../.././libcpp/internal.h' line='190' column='1'/>
               </data-member>
             </class-decl>
           </member-type>
           <member-type access='private'>
             <!-- struct {const unsigned char* cur; const unsigned char* rlimit;} -->
-            <class-decl name='__anonymous_struct__1' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='195' column='1' id='type-id-334'>
+            <class-decl name='__anonymous_struct__1' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='195' column='1' id='type-id-324'>
               <data-member access='public' layout-offset-in-bits='0'>
                 <!-- const unsigned char* cur -->
                 <var-decl name='cur' type-id='type-id-145' visibility='default' filepath='../.././libcpp/internal.h' line='196' column='1'/>
@@ -5777,20 +5753,20 @@
           </member-type>
           <data-member access='private'>
             <!-- struct {utoken first; utoken last;} iso -->
-            <var-decl name='iso' type-id='type-id-332' visibility='default' filepath='../.././libcpp/internal.h' line='191' column='1'/>
+            <var-decl name='iso' type-id='type-id-322' visibility='default' filepath='../.././libcpp/internal.h' line='191' column='1'/>
           </data-member>
           <data-member access='private'>
             <!-- struct {const unsigned char* cur; const unsigned char* rlimit;} trad -->
-            <var-decl name='trad' type-id='type-id-334' visibility='default' filepath='../.././libcpp/internal.h' line='198' column='1'/>
+            <var-decl name='trad' type-id='type-id-324' visibility='default' filepath='../.././libcpp/internal.h' line='198' column='1'/>
           </data-member>
         </union-decl>
       </member-type>
       <member-type access='public'>
         <!-- union {macro_context* mc; cpp_hashnode* macro;} -->
-        <union-decl name='__anonymous_union__1' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='216' column='1' id='type-id-335'>
+        <union-decl name='__anonymous_union__1' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='216' column='1' id='type-id-325'>
           <data-member access='private'>
             <!-- macro_context* mc -->
-            <var-decl name='mc' type-id='type-id-336' visibility='default' filepath='../.././libcpp/internal.h' line='217' column='1'/>
+            <var-decl name='mc' type-id='type-id-326' visibility='default' filepath='../.././libcpp/internal.h' line='217' column='1'/>
           </data-member>
           <data-member access='private'>
             <!-- cpp_hashnode* macro -->
@@ -5808,7 +5784,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
         <!-- union {struct {utoken first; utoken last;} iso; struct {const unsigned char* cur; const unsigned char* rlimit;} trad;} cpp_context::u -->
-        <var-decl name='u' type-id='type-id-331' visibility='default' filepath='../.././libcpp/internal.h' line='199' column='1'/>
+        <var-decl name='u' type-id='type-id-321' visibility='default' filepath='../.././libcpp/internal.h' line='199' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
         <!-- _cpp_buff* cpp_context::buff -->
@@ -5816,11 +5792,11 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
         <!-- union {macro_context* mc; cpp_hashnode* macro;} cpp_context::c -->
-        <var-decl name='c' type-id='type-id-335' visibility='default' filepath='../.././libcpp/internal.h' line='219' column='1'/>
+        <var-decl name='c' type-id='type-id-325' visibility='default' filepath='../.././libcpp/internal.h' line='219' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
         <!-- context_tokens_kind cpp_context::tokens_kind -->
-        <var-decl name='tokens_kind' type-id='type-id-337' visibility='default' filepath='../.././libcpp/internal.h' line='222' column='1'/>
+        <var-decl name='tokens_kind' type-id='type-id-327' visibility='default' filepath='../.././libcpp/internal.h' line='222' column='1'/>
       </data-member>
     </class-decl>
     <!-- struct cpp_dir -->
@@ -5851,29 +5827,29 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
         <!-- const char** cpp_dir::name_map -->
-        <var-decl name='name_map' type-id='type-id-338' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='575' column='1'/>
+        <var-decl name='name_map' type-id='type-id-328' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='575' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
         <!-- char* (const char*, cpp_dir*)* cpp_dir::construct -->
-        <var-decl name='construct' type-id='type-id-339' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='581' column='1'/>
+        <var-decl name='construct' type-id='type-id-329' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='581' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
         <!-- ino_t cpp_dir::ino -->
-        <var-decl name='ino' type-id='type-id-340' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='585' column='1'/>
+        <var-decl name='ino' type-id='type-id-330' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='585' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='448'>
         <!-- dev_t cpp_dir::dev -->
-        <var-decl name='dev' type-id='type-id-341' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='586' column='1'/>
+        <var-decl name='dev' type-id='type-id-331' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='586' column='1'/>
       </data-member>
     </class-decl>
     <!-- struct cpp_options -->
     <class-decl name='cpp_options' size-in-bits='1024' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='290' column='1' id='type-id-300'>
       <member-type access='public'>
         <!-- struct {cpp_deps_style style; bool missing_files; bool phony_targets; bool ignore_main_file; bool need_preprocessor_output;} -->
-        <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='451' column='1' id='type-id-342'>
+        <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='451' column='1' id='type-id-332'>
           <data-member access='public' layout-offset-in-bits='0'>
             <!-- cpp_deps_style style -->
-            <var-decl name='style' type-id='type-id-343' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='453' column='1'/>
+            <var-decl name='style' type-id='type-id-333' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='453' column='1'/>
           </data-member>
           <data-member access='public' layout-offset-in-bits='32'>
             <!-- bool missing_files -->
@@ -5899,7 +5875,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='32'>
         <!-- c_lang cpp_options::lang -->
-        <var-decl name='lang' type-id='type-id-344' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='296' column='1'/>
+        <var-decl name='lang' type-id='type-id-334' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='296' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- unsigned char cpp_options::cplusplus -->
@@ -6067,7 +6043,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='576'>
         <!-- cpp_normalize_level cpp_options::warn_normalize -->
-        <var-decl name='warn_normalize' type-id='type-id-277' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='441' column='1'/>
+        <var-decl name='warn_normalize' type-id='type-id-276' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='441' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='608'>
         <!-- bool cpp_options::warn_invalid_pch -->
@@ -6079,7 +6055,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='640'>
         <!-- struct {cpp_deps_style style; bool missing_files; bool phony_targets; bool ignore_main_file; bool need_preprocessor_output;} cpp_options::deps -->
-        <var-decl name='deps' type-id='type-id-342' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='468' column='1'/>
+        <var-decl name='deps' type-id='type-id-332' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='468' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='704'>
         <!-- size_t cpp_options::precision -->
@@ -6122,7 +6098,7 @@
     <class-decl name='cset_converter' size-in-bits='192' is-struct='yes' visibility='default' filepath='../.././libcpp/internal.h' line='47' column='1' id='type-id-294'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- convert_f cset_converter::func -->
-        <var-decl name='func' type-id='type-id-345' visibility='default' filepath='../.././libcpp/internal.h' line='49' column='1'/>
+        <var-decl name='func' type-id='type-id-335' visibility='default' filepath='../.././libcpp/internal.h' line='49' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- iconv_t cset_converter::cd -->
@@ -6211,6 +6187,30 @@
         <var-decl name='n__VA_ARGS__' type-id='type-id-116' visibility='default' filepath='../.././libcpp/internal.h' line='280' column='1'/>
       </data-member>
     </class-decl>
+    <!-- const cpp_hashnode* -->
+    <pointer-type-def type-id='type-id-336' size-in-bits='64' id='type-id-291'/>
+    <!-- const directive* -->
+    <pointer-type-def type-id='type-id-337' size-in-bits='64' id='type-id-286'/>
+    <!-- cpp_buffer* -->
+    <pointer-type-def type-id='type-id-338' size-in-bits='64' id='type-id-281'/>
+    <!-- cpp_context* -->
+    <pointer-type-def type-id='type-id-284' size-in-bits='64' id='type-id-285'/>
+    <!-- cpp_dir* -->
+    <pointer-type-def type-id='type-id-288' size-in-bits='64' id='type-id-287'/>
+    <!-- cpp_savedstate* -->
+    <pointer-type-def type-id='type-id-339' size-in-bits='64' id='type-id-302'/>
+    <!-- def_pragma_macro* -->
+    <pointer-type-def type-id='type-id-340' size-in-bits='64' id='type-id-304'/>
+    <!-- deps* -->
+    <pointer-type-def type-id='type-id-341' size-in-bits='64' id='type-id-295'/>
+    <!-- file_hash_entry_pool* -->
+    <pointer-type-def type-id='type-id-342' size-in-bits='64' id='type-id-290'/>
+    <!-- ht* -->
+    <pointer-type-def type-id='type-id-343' size-in-bits='64' id='type-id-298'/>
+    <!-- op* -->
+    <pointer-type-def type-id='type-id-344' size-in-bits='64' id='type-id-299'/>
+    <!-- pragma_entry* -->
+    <pointer-type-def type-id='type-id-345' size-in-bits='64' id='type-id-296'/>
     <!-- tokenrun* -->
     <pointer-type-def type-id='type-id-346' size-in-bits='64' id='type-id-293'/>
     <!-- typedef __anonymous_struct__1 cpp_comment_table -->
@@ -6220,53 +6220,11 @@
     <!-- unsigned char* -->
     <pointer-type-def type-id='type-id-27' size-in-bits='64' id='type-id-280'/>
     <!-- bool (cpp_reader*, cpp_hashnode*)* -->
-    <pointer-type-def type-id='type-id-348' size-in-bits='64' id='type-id-330'/>
+    <pointer-type-def type-id='type-id-348' size-in-bits='64' id='type-id-320'/>
     <!-- bool (cpp_reader*, int, int, typedef source_location, unsigned int, const char*, va_list*)* -->
-    <pointer-type-def type-id='type-id-349' size-in-bits='64' id='type-id-328'/>
+    <pointer-type-def type-id='type-id-349' size-in-bits='64' id='type-id-318'/>
     <!-- char* (const char*, cpp_dir*)* -->
-    <pointer-type-def type-id='type-id-350' size-in-bits='64' id='type-id-339'/>
-    <!-- const char** -->
-    <pointer-type-def type-id='type-id-15' size-in-bits='64' id='type-id-338'/>
-    <!-- const cpp_hashnode -->
-    <qualified-type-def type-id='type-id-351' const='yes' id='type-id-307'/>
-    <!-- const directive -->
-    <qualified-type-def type-id='type-id-352' const='yes' id='type-id-308'/>
-    <!-- cpp_hashnode* (cpp_reader*, const cpp_token*)* -->
-    <pointer-type-def type-id='type-id-353' size-in-bits='64' id='type-id-327'/>
-    <!-- enum c_lang -->
-    <enum-decl name='c_lang' filepath='../.././libcpp/include/cpplib.h' line='168' column='1' id='type-id-344'>
-      <underlying-type type-id='type-id-26'/>
-      <enumerator name='CLK_GNUC89' value='0'/>
-      <enumerator name='CLK_GNUC99' value='1'/>
-      <enumerator name='CLK_GNUC11' value='2'/>
-      <enumerator name='CLK_STDC89' value='3'/>
-      <enumerator name='CLK_STDC94' value='4'/>
-      <enumerator name='CLK_STDC99' value='5'/>
-      <enumerator name='CLK_STDC11' value='6'/>
-      <enumerator name='CLK_GNUCXX' value='7'/>
-      <enumerator name='CLK_CXX98' value='8'/>
-      <enumerator name='CLK_GNUCXX11' value='9'/>
-      <enumerator name='CLK_CXX11' value='10'/>
-      <enumerator name='CLK_ASM' value='11'/>
-    </enum-decl>
-    <!-- enum context_tokens_kind -->
-    <enum-decl name='context_tokens_kind' filepath='../.././libcpp/internal.h' line='161' column='1' id='type-id-337'>
-      <underlying-type type-id='type-id-26'/>
-      <enumerator name='TOKENS_KIND_INDIRECT' value='0'/>
-      <enumerator name='TOKENS_KIND_DIRECT' value='1'/>
-      <enumerator name='TOKENS_KIND_EXTENDED' value='2'/>
-    </enum-decl>
-    <!-- enum cpp_deps_style -->
-    <enum-decl name='cpp_deps_style' filepath='../.././libcpp/include/cpplib.h' line='273' column='1' id='type-id-343'>
-      <underlying-type type-id='type-id-26'/>
-      <enumerator name='DEPS_NONE' value='0'/>
-      <enumerator name='DEPS_USER' value='1'/>
-      <enumerator name='DEPS_SYSTEM' value='2'/>
-    </enum-decl>
-    <!-- int (cpp_reader*, const char*, int)* -->
-    <pointer-type-def type-id='type-id-354' size-in-bits='64' id='type-id-324'/>
-    <!-- macro_context* -->
-    <pointer-type-def type-id='type-id-355' size-in-bits='64' id='type-id-336'/>
+    <pointer-type-def type-id='type-id-350' size-in-bits='64' id='type-id-329'/>
     <!-- struct _cpp_buff -->
     <class-decl name='_cpp_buff' size-in-bits='256' is-struct='yes' visibility='default' filepath='../.././libcpp/internal.h' line='101' column='1' id='type-id-305'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -6358,7 +6316,7 @@
       </data-member>
     </class-decl>
     <!-- struct cpp_buffer -->
-    <class-decl name='cpp_buffer' size-in-bits='1536' is-struct='yes' visibility='default' filepath='../.././libcpp/internal.h' line='297' column='1' id='type-id-309'>
+    <class-decl name='cpp_buffer' size-in-bits='1536' is-struct='yes' visibility='default' filepath='../.././libcpp/internal.h' line='297' column='1' id='type-id-338'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- const unsigned char* cpp_buffer::cur -->
         <var-decl name='cur' type-id='type-id-145' visibility='default' filepath='../.././libcpp/internal.h' line='299' column='1'/>
@@ -6381,7 +6339,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
         <!-- _cpp_line_note* cpp_buffer::notes -->
-        <var-decl name='notes' type-id='type-id-356' visibility='default' filepath='../.././libcpp/internal.h' line='306' column='1'/>
+        <var-decl name='notes' type-id='type-id-351' visibility='default' filepath='../.././libcpp/internal.h' line='306' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
         <!-- unsigned int cpp_buffer::cur_note -->
@@ -6409,7 +6367,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='704'>
         <!-- if_stack* cpp_buffer::if_stack -->
-        <var-decl name='if_stack' type-id='type-id-357' visibility='default' filepath='../.././libcpp/internal.h' line='323' column='1'/>
+        <var-decl name='if_stack' type-id='type-id-352' visibility='default' filepath='../.././libcpp/internal.h' line='323' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='768'>
         <!-- bool cpp_buffer::need_line -->
@@ -6441,9 +6399,9 @@
       </data-member>
     </class-decl>
     <!-- struct cpp_savedstate -->
-    <class-decl name='cpp_savedstate' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-310'/>
+    <class-decl name='cpp_savedstate' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-339'/>
     <!-- struct def_pragma_macro -->
-    <class-decl name='def_pragma_macro' size-in-bits='256' is-struct='yes' visibility='default' filepath='../.././libcpp/internal.h' line='358' column='1' id='type-id-311'>
+    <class-decl name='def_pragma_macro' size-in-bits='256' is-struct='yes' visibility='default' filepath='../.././libcpp/internal.h' line='358' column='1' id='type-id-340'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- def_pragma_macro* def_pragma_macro::next -->
         <var-decl name='next' type-id='type-id-304' visibility='default' filepath='../.././libcpp/internal.h' line='360' column='1'/>
@@ -6474,10 +6432,10 @@
       </data-member>
     </class-decl>
     <!-- struct deps -->
-    <class-decl name='deps' size-in-bits='448' is-struct='yes' visibility='default' filepath='../.././libcpp/mkdeps.c' line='30' column='1' id='type-id-312'>
+    <class-decl name='deps' size-in-bits='448' is-struct='yes' visibility='default' filepath='../.././libcpp/mkdeps.c' line='30' column='1' id='type-id-341'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- const char** deps::targetv -->
-        <var-decl name='targetv' type-id='type-id-338' visibility='default' filepath='../.././libcpp/mkdeps.c' line='32' column='1'/>
+        <var-decl name='targetv' type-id='type-id-328' visibility='default' filepath='../.././libcpp/mkdeps.c' line='32' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- unsigned int deps::ntargets -->
@@ -6489,7 +6447,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
         <!-- const char** deps::depv -->
-        <var-decl name='depv' type-id='type-id-338' visibility='default' filepath='../.././libcpp/mkdeps.c' line='36' column='1'/>
+        <var-decl name='depv' type-id='type-id-328' visibility='default' filepath='../.././libcpp/mkdeps.c' line='36' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
         <!-- unsigned int deps::ndeps -->
@@ -6501,7 +6459,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
         <!-- const char** deps::vpathv -->
-        <var-decl name='vpathv' type-id='type-id-338' visibility='default' filepath='../.././libcpp/mkdeps.c' line='40' column='1'/>
+        <var-decl name='vpathv' type-id='type-id-328' visibility='default' filepath='../.././libcpp/mkdeps.c' line='40' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
         <!-- size_t* deps::vpathlv -->
@@ -6517,20 +6475,20 @@
       </data-member>
     </class-decl>
     <!-- struct file_hash_entry_pool -->
-    <class-decl name='file_hash_entry_pool' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-313'/>
+    <class-decl name='file_hash_entry_pool' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-342'/>
     <!-- struct ht -->
-    <class-decl name='ht' size-in-bits='1152' is-struct='yes' visibility='default' filepath='../.././libcpp/include/symtab.h' line='47' column='1' id='type-id-314'>
+    <class-decl name='ht' size-in-bits='1152' is-struct='yes' visibility='default' filepath='../.././libcpp/include/symtab.h' line='47' column='1' id='type-id-343'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- obstack ht::stack -->
         <var-decl name='stack' type-id='type-id-58' visibility='default' filepath='../.././libcpp/include/symtab.h' line='50' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='704'>
         <!-- hashnode* ht::entries -->
-        <var-decl name='entries' type-id='type-id-358' visibility='default' filepath='../.././libcpp/include/symtab.h' line='52' column='1'/>
+        <var-decl name='entries' type-id='type-id-353' visibility='default' filepath='../.././libcpp/include/symtab.h' line='52' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='768'>
         <!-- typedef hashnode (hash_table*)* ht::alloc_node -->
-        <var-decl name='alloc_node' type-id='type-id-359' visibility='default' filepath='../.././libcpp/include/symtab.h' line='54' column='1'/>
+        <var-decl name='alloc_node' type-id='type-id-354' visibility='default' filepath='../.././libcpp/include/symtab.h' line='54' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='832'>
         <!-- void* (typedef size_t)* ht::alloc_subobject -->
@@ -6562,14 +6520,14 @@
       </data-member>
     </class-decl>
     <!-- struct op -->
-    <class-decl name='op' size-in-bits='320' is-struct='yes' visibility='default' filepath='../.././libcpp/expr.c' line='30' column='1' id='type-id-315'>
+    <class-decl name='op' size-in-bits='320' is-struct='yes' visibility='default' filepath='../.././libcpp/expr.c' line='30' column='1' id='type-id-344'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- const cpp_token* op::token -->
         <var-decl name='token' type-id='type-id-263' visibility='default' filepath='../.././libcpp/expr.c' line='32' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- cpp_num op::value -->
-        <var-decl name='value' type-id='type-id-360' visibility='default' filepath='../.././libcpp/expr.c' line='33' column='1'/>
+        <var-decl name='value' type-id='type-id-355' visibility='default' filepath='../.././libcpp/expr.c' line='33' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
         <!-- source_location op::loc -->
@@ -6577,11 +6535,11 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='288'>
         <!-- cpp_ttype op::op -->
-        <var-decl name='op' type-id='type-id-181' visibility='default' filepath='../.././libcpp/expr.c' line='35' column='1'/>
+        <var-decl name='op' type-id='type-id-178' visibility='default' filepath='../.././libcpp/expr.c' line='35' column='1'/>
       </data-member>
     </class-decl>
     <!-- struct pragma_entry -->
-    <class-decl name='pragma_entry' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-316'/>
+    <class-decl name='pragma_entry' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-345'/>
     <!-- struct tokenrun -->
     <class-decl name='tokenrun' size-in-bits='256' is-struct='yes' visibility='default' filepath='../.././libcpp/internal.h' line='130' column='1' id='type-id-346'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -6594,18 +6552,18 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
         <!-- cpp_token* tokenrun::base -->
-        <var-decl name='base' type-id='type-id-164' visibility='default' filepath='../.././libcpp/internal.h' line='133' column='1'/>
+        <var-decl name='base' type-id='type-id-163' visibility='default' filepath='../.././libcpp/internal.h' line='133' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
         <!-- cpp_token* tokenrun::limit -->
-        <var-decl name='limit' type-id='type-id-164' visibility='default' filepath='../.././libcpp/internal.h' line='133' column='1'/>
+        <var-decl name='limit' type-id='type-id-163' visibility='default' filepath='../.././libcpp/internal.h' line='133' column='1'/>
       </data-member>
     </class-decl>
     <!-- struct {cpp_comment* entries; int count; int allocated;} -->
     <class-decl name='__anonymous_struct__1' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-303' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='972' column='1' id='type-id-347'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- cpp_comment* entries -->
-        <var-decl name='entries' type-id='type-id-361' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='974' column='1'/>
+        <var-decl name='entries' type-id='type-id-356' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='974' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- int count -->
@@ -6616,16 +6574,58 @@
         <var-decl name='allocated' type-id='type-id-18' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='980' column='1'/>
       </data-member>
     </class-decl>
+    <!-- const char** -->
+    <pointer-type-def type-id='type-id-15' size-in-bits='64' id='type-id-328'/>
+    <!-- const cpp_hashnode -->
+    <qualified-type-def type-id='type-id-357' const='yes' id='type-id-336'/>
+    <!-- const directive -->
+    <qualified-type-def type-id='type-id-358' const='yes' id='type-id-337'/>
+    <!-- cpp_hashnode* (cpp_reader*, const cpp_token*)* -->
+    <pointer-type-def type-id='type-id-359' size-in-bits='64' id='type-id-317'/>
+    <!-- enum c_lang -->
+    <enum-decl name='c_lang' filepath='../.././libcpp/include/cpplib.h' line='168' column='1' id='type-id-334'>
+      <underlying-type type-id='type-id-26'/>
+      <enumerator name='CLK_GNUC89' value='0'/>
+      <enumerator name='CLK_GNUC99' value='1'/>
+      <enumerator name='CLK_GNUC11' value='2'/>
+      <enumerator name='CLK_STDC89' value='3'/>
+      <enumerator name='CLK_STDC94' value='4'/>
+      <enumerator name='CLK_STDC99' value='5'/>
+      <enumerator name='CLK_STDC11' value='6'/>
+      <enumerator name='CLK_GNUCXX' value='7'/>
+      <enumerator name='CLK_CXX98' value='8'/>
+      <enumerator name='CLK_GNUCXX11' value='9'/>
+      <enumerator name='CLK_CXX11' value='10'/>
+      <enumerator name='CLK_ASM' value='11'/>
+    </enum-decl>
+    <!-- enum context_tokens_kind -->
+    <enum-decl name='context_tokens_kind' filepath='../.././libcpp/internal.h' line='161' column='1' id='type-id-327'>
+      <underlying-type type-id='type-id-26'/>
+      <enumerator name='TOKENS_KIND_INDIRECT' value='0'/>
+      <enumerator name='TOKENS_KIND_DIRECT' value='1'/>
+      <enumerator name='TOKENS_KIND_EXTENDED' value='2'/>
+    </enum-decl>
+    <!-- enum cpp_deps_style -->
+    <enum-decl name='cpp_deps_style' filepath='../.././libcpp/include/cpplib.h' line='273' column='1' id='type-id-333'>
+      <underlying-type type-id='type-id-26'/>
+      <enumerator name='DEPS_NONE' value='0'/>
+      <enumerator name='DEPS_USER' value='1'/>
+      <enumerator name='DEPS_SYSTEM' value='2'/>
+    </enum-decl>
+    <!-- int (cpp_reader*, const char*, int)* -->
+    <pointer-type-def type-id='type-id-360' size-in-bits='64' id='type-id-314'/>
+    <!-- macro_context* -->
+    <pointer-type-def type-id='type-id-361' size-in-bits='64' id='type-id-326'/>
     <!-- typedef bool (typedef iconv_t, const unsigned char*, typedef size_t, _cpp_strbuf*)* convert_f -->
-    <typedef-decl name='convert_f' type-id='type-id-362' filepath='../.././libcpp/internal.h' line='45' column='1' id='type-id-345'/>
+    <typedef-decl name='convert_f' type-id='type-id-362' filepath='../.././libcpp/internal.h' line='45' column='1' id='type-id-335'/>
     <!-- typedef __dev_t dev_t -->
-    <typedef-decl name='dev_t' type-id='type-id-63' filepath='/usr/include/sys/types.h' line='61' column='1' id='type-id-341'/>
+    <typedef-decl name='dev_t' type-id='type-id-63' filepath='/usr/include/sys/types.h' line='61' column='1' id='type-id-331'/>
     <!-- typedef __ino_t ino_t -->
-    <typedef-decl name='ino_t' type-id='type-id-64' filepath='/usr/include/sys/types.h' line='49' column='1' id='type-id-340'/>
+    <typedef-decl name='ino_t' type-id='type-id-64' filepath='/usr/include/sys/types.h' line='49' column='1' id='type-id-330'/>
     <!-- typedef const char* (cpp_reader*, const char*, cpp_dir**)* missing_header_cb -->
-    <typedef-decl name='missing_header_cb' type-id='type-id-363' filepath='../.././libcpp/include/cpplib.h' line='496' column='1' id='type-id-326'/>
+    <typedef-decl name='missing_header_cb' type-id='type-id-363' filepath='../.././libcpp/include/cpplib.h' line='496' column='1' id='type-id-316'/>
     <!-- union utoken -->
-    <union-decl name='utoken' size-in-bits='64' visibility='default' filepath='../.././libcpp/internal.h' line='122' column='1' id='type-id-333'>
+    <union-decl name='utoken' size-in-bits='64' visibility='default' filepath='../.././libcpp/internal.h' line='122' column='1' id='type-id-323'>
       <data-member access='private'>
         <!-- const cpp_token* utoken::token -->
         <var-decl name='token' type-id='type-id-263' visibility='default' filepath='../.././libcpp/internal.h' line='124' column='1'/>
@@ -6636,47 +6636,47 @@
       </data-member>
     </union-decl>
     <!-- void (cpp_reader*)* -->
-    <pointer-type-def type-id='type-id-365' size-in-bits='64' id='type-id-329'/>
+    <pointer-type-def type-id='type-id-365' size-in-bits='64' id='type-id-319'/>
     <!-- void (cpp_reader*, const char*)* -->
-    <pointer-type-def type-id='type-id-366' size-in-bits='64' id='type-id-319'/>
+    <pointer-type-def type-id='type-id-366' size-in-bits='64' id='type-id-309'/>
     <!-- void (cpp_reader*, const char*, int, const char*)* -->
-    <pointer-type-def type-id='type-id-367' size-in-bits='64' id='type-id-325'/>
+    <pointer-type-def type-id='type-id-367' size-in-bits='64' id='type-id-315'/>
     <!-- void (cpp_reader*, const cpp_token*, int)* -->
-    <pointer-type-def type-id='type-id-368' size-in-bits='64' id='type-id-317'/>
+    <pointer-type-def type-id='type-id-368' size-in-bits='64' id='type-id-307'/>
     <!-- void (cpp_reader*, const line_map*)* -->
-    <pointer-type-def type-id='type-id-369' size-in-bits='64' id='type-id-318'/>
+    <pointer-type-def type-id='type-id-369' size-in-bits='64' id='type-id-308'/>
     <!-- void (cpp_reader*, typedef source_location)* -->
-    <pointer-type-def type-id='type-id-370' size-in-bits='64' id='type-id-323'/>
+    <pointer-type-def type-id='type-id-370' size-in-bits='64' id='type-id-313'/>
     <!-- void (cpp_reader*, typedef source_location, const cpp_string*)* -->
-    <pointer-type-def type-id='type-id-371' size-in-bits='64' id='type-id-322'/>
+    <pointer-type-def type-id='type-id-371' size-in-bits='64' id='type-id-312'/>
     <!-- void (cpp_reader*, typedef source_location, const unsigned char*, const char*, int, const cpp_token**)* -->
-    <pointer-type-def type-id='type-id-372' size-in-bits='64' id='type-id-320'/>
+    <pointer-type-def type-id='type-id-372' size-in-bits='64' id='type-id-310'/>
     <!-- void (cpp_reader*, typedef source_location, cpp_hashnode*)* -->
-    <pointer-type-def type-id='type-id-373' size-in-bits='64' id='type-id-321'/>
+    <pointer-type-def type-id='type-id-373' size-in-bits='64' id='type-id-311'/>
     <!-- _cpp_line_note* -->
-    <pointer-type-def type-id='type-id-374' size-in-bits='64' id='type-id-356'/>
+    <pointer-type-def type-id='type-id-374' size-in-bits='64' id='type-id-351'/>
     <!-- bool (typedef iconv_t, const unsigned char*, typedef size_t, _cpp_strbuf*)* -->
     <pointer-type-def type-id='type-id-375' size-in-bits='64' id='type-id-362'/>
+    <!-- struct directive -->
+    <class-decl name='directive' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-358'/>
     <!-- const char* (cpp_reader*, const char*, cpp_dir**)* -->
     <pointer-type-def type-id='type-id-376' size-in-bits='64' id='type-id-363'/>
     <!-- const cpp_token** -->
     <pointer-type-def type-id='type-id-263' size-in-bits='64' id='type-id-364'/>
     <!-- cpp_comment* -->
-    <pointer-type-def type-id='type-id-377' size-in-bits='64' id='type-id-361'/>
+    <pointer-type-def type-id='type-id-377' size-in-bits='64' id='type-id-356'/>
     <!-- hashnode* -->
-    <pointer-type-def type-id='type-id-378' size-in-bits='64' id='type-id-358'/>
+    <pointer-type-def type-id='type-id-378' size-in-bits='64' id='type-id-353'/>
     <!-- if_stack* -->
-    <pointer-type-def type-id='type-id-379' size-in-bits='64' id='type-id-357'/>
-    <!-- struct directive -->
-    <class-decl name='directive' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-352'/>
+    <pointer-type-def type-id='type-id-379' size-in-bits='64' id='type-id-352'/>
     <!-- typedef cpp_hashnode cpp_hashnode -->
-    <typedef-decl name='cpp_hashnode' type-id='type-id-78' filepath='../.././libcpp/include/cpplib.h' line='36' column='1' id='type-id-351'/>
+    <typedef-decl name='cpp_hashnode' type-id='type-id-78' filepath='../.././libcpp/include/cpplib.h' line='36' column='1' id='type-id-357'/>
     <!-- typedef cpp_num cpp_num -->
-    <typedef-decl name='cpp_num' type-id='type-id-380' filepath='../.././libcpp/include/cpplib.h' line='800' column='1' id='type-id-360'/>
+    <typedef-decl name='cpp_num' type-id='type-id-380' filepath='../.././libcpp/include/cpplib.h' line='800' column='1' id='type-id-355'/>
     <!-- typedef hashnode (hash_table*)* -->
-    <pointer-type-def type-id='type-id-381' size-in-bits='64' id='type-id-359'/>
+    <pointer-type-def type-id='type-id-381' size-in-bits='64' id='type-id-354'/>
     <!-- typedef __anonymous_struct__ macro_context -->
-    <typedef-decl name='macro_context' type-id='type-id-382' filepath='../.././libcpp/internal.h' line='158' column='1' id='type-id-355'/>
+    <typedef-decl name='macro_context' type-id='type-id-382' filepath='../.././libcpp/internal.h' line='158' column='1' id='type-id-361'/>
     <!-- struct cpp_num -->
     <class-decl name='cpp_num' size-in-bits='192' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='801' column='1' id='type-id-380'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -6699,7 +6699,7 @@
     <!-- struct if_stack -->
     <class-decl name='if_stack' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-379'/>
     <!-- struct {cpp_hashnode* macro_node; source_location* virt_locs; source_location* cur_virt_loc;} -->
-    <class-decl name='__anonymous_struct__' size-in-bits='192' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-355' visibility='default' filepath='../.././libcpp/internal.h' line='146' column='1' id='type-id-382'>
+    <class-decl name='__anonymous_struct__' size-in-bits='192' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-361' visibility='default' filepath='../.././libcpp/internal.h' line='146' column='1' id='type-id-382'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- cpp_hashnode* macro_node -->
         <var-decl name='macro_node' type-id='type-id-116' visibility='default' filepath='../.././libcpp/internal.h' line='148' column='1'/>
@@ -6719,8 +6719,6 @@
     <typedef-decl name='cpp_comment' type-id='type-id-385' filepath='../.././libcpp/include/cpplib.h' line='967' column='1' id='type-id-377'/>
     <!-- typedef ht_identifier* hashnode -->
     <typedef-decl name='hashnode' type-id='type-id-386' filepath='../.././libcpp/include/symtab.h' line='42' column='1' id='type-id-378'/>
-    <!-- ht_identifier* -->
-    <pointer-type-def type-id='type-id-79' size-in-bits='64' id='type-id-386'/>
     <!-- struct _cpp_line_note -->
     <class-decl name='_cpp_line_note' size-in-bits='128' is-struct='yes' visibility='default' filepath='../.././libcpp/internal.h' line='284' column='1' id='type-id-384'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -6743,12 +6741,14 @@
         <var-decl name='sloc' type-id='type-id-103' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='966' column='1'/>
       </data-member>
     </class-decl>
+    <!-- ht_identifier* -->
+    <pointer-type-def type-id='type-id-79' size-in-bits='64' id='type-id-386'/>
     <!-- typedef unsigned long int cpp_num_part -->
     <typedef-decl name='cpp_num_part' type-id='type-id-28' filepath='../.././libcpp/include/cpplib.h' line='799' column='1' id='type-id-383'/>
   </abi-instr>
   <abi-instr address-size='64' path='../.././libcpp/directives.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
     <!-- typedef void (cpp_reader*)* pragma_cb -->
-    <typedef-decl name='pragma_cb' type-id='type-id-329' filepath='../.././libcpp/directives.c' line='43' column='1' id='type-id-387'/>
+    <typedef-decl name='pragma_cb' type-id='type-id-319' filepath='../.././libcpp/directives.c' line='43' column='1' id='type-id-387'/>
     <!-- typedef cpp_options cpp_options -->
     <typedef-decl name='cpp_options' type-id='type-id-300' filepath='../.././libcpp/include/cpplib.h' line='33' column='1' id='type-id-388'/>
     <!-- typedef cpp_callbacks cpp_callbacks -->
@@ -7212,7 +7212,7 @@
   </abi-instr>
   <abi-instr address-size='64' path='../.././libcpp/expr.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
     <!-- typedef cpp_num cpp_num -->
-    <typedef-decl name='cpp_num' type-id='type-id-380' filepath='../.././libcpp/include/cpplib.h' line='800' column='1' id='type-id-360'/>
+    <typedef-decl name='cpp_num' type-id='type-id-380' filepath='../.././libcpp/include/cpplib.h' line='800' column='1' id='type-id-355'/>
     <!-- struct cpp_num -->
     <class-decl name='cpp_num' size-in-bits='192' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='801' column='1' id='type-id-380'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -7257,42 +7257,42 @@
     <!-- cpp_ttype cpp_userdef_string_remove_type(cpp_ttype) -->
     <function-decl name='cpp_userdef_string_remove_type' mangled-name='_Z30cpp_userdef_string_remove_type9cpp_ttype' filepath='../.././libcpp/expr.c' line='240' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z30cpp_userdef_string_remove_type9cpp_ttype'>
       <!-- parameter of type 'enum cpp_ttype' -->
-      <parameter type-id='type-id-181' name='type' filepath='../.././libcpp/expr.c' line='240' column='1'/>
+      <parameter type-id='type-id-178' name='type' filepath='../.././libcpp/expr.c' line='240' column='1'/>
       <!-- enum cpp_ttype -->
-      <return type-id='type-id-181'/>
+      <return type-id='type-id-178'/>
     </function-decl>
     <!-- cpp_ttype cpp_userdef_string_add_type(cpp_ttype) -->
     <function-decl name='cpp_userdef_string_add_type' mangled-name='_Z27cpp_userdef_string_add_type9cpp_ttype' filepath='../.././libcpp/expr.c' line='260' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z27cpp_userdef_string_add_type9cpp_ttype'>
       <!-- parameter of type 'enum cpp_ttype' -->
-      <parameter type-id='type-id-181' name='type' filepath='../.././libcpp/expr.c' line='240' column='1'/>
+      <parameter type-id='type-id-178' name='type' filepath='../.././libcpp/expr.c' line='240' column='1'/>
       <!-- enum cpp_ttype -->
-      <return type-id='type-id-181'/>
+      <return type-id='type-id-178'/>
     </function-decl>
     <!-- cpp_ttype cpp_userdef_char_remove_type(cpp_ttype) -->
     <function-decl name='cpp_userdef_char_remove_type' mangled-name='_Z28cpp_userdef_char_remove_type9cpp_ttype' filepath='../.././libcpp/expr.c' line='280' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z28cpp_userdef_char_remove_type9cpp_ttype'>
       <!-- parameter of type 'enum cpp_ttype' -->
-      <parameter type-id='type-id-181' name='type' filepath='../.././libcpp/expr.c' line='240' column='1'/>
+      <parameter type-id='type-id-178' name='type' filepath='../.././libcpp/expr.c' line='240' column='1'/>
       <!-- enum cpp_ttype -->
-      <return type-id='type-id-181'/>
+      <return type-id='type-id-178'/>
     </function-decl>
     <!-- cpp_ttype cpp_userdef_char_add_type(cpp_ttype) -->
     <function-decl name='cpp_userdef_char_add_type' mangled-name='_Z25cpp_userdef_char_add_type9cpp_ttype' filepath='../.././libcpp/expr.c' line='298' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z25cpp_userdef_char_add_type9cpp_ttype'>
       <!-- parameter of type 'enum cpp_ttype' -->
-      <parameter type-id='type-id-181' name='type' filepath='../.././libcpp/expr.c' line='240' column='1'/>
+      <parameter type-id='type-id-178' name='type' filepath='../.././libcpp/expr.c' line='240' column='1'/>
       <!-- enum cpp_ttype -->
-      <return type-id='type-id-181'/>
+      <return type-id='type-id-178'/>
     </function-decl>
     <!-- bool cpp_userdef_string_p(cpp_ttype) -->
     <function-decl name='cpp_userdef_string_p' mangled-name='_Z20cpp_userdef_string_p9cpp_ttype' filepath='../.././libcpp/expr.c' line='314' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z20cpp_userdef_string_p9cpp_ttype'>
       <!-- parameter of type 'enum cpp_ttype' -->
-      <parameter type-id='type-id-181' name='type' filepath='../.././libcpp/expr.c' line='314' column='1'/>
+      <parameter type-id='type-id-178' name='type' filepath='../.././libcpp/expr.c' line='314' column='1'/>
       <!-- bool -->
       <return type-id='type-id-1'/>
     </function-decl>
     <!-- bool cpp_userdef_char_p(cpp_ttype) -->
     <function-decl name='cpp_userdef_char_p' mangled-name='_Z18cpp_userdef_char_p9cpp_ttype' filepath='../.././libcpp/expr.c' line='328' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z18cpp_userdef_char_p9cpp_ttype'>
       <!-- parameter of type 'enum cpp_ttype' -->
-      <parameter type-id='type-id-181' name='type' filepath='../.././libcpp/expr.c' line='314' column='1'/>
+      <parameter type-id='type-id-178' name='type' filepath='../.././libcpp/expr.c' line='314' column='1'/>
       <!-- bool -->
       <return type-id='type-id-1'/>
     </function-decl>
@@ -7310,7 +7310,7 @@
       <!-- parameter of type 'const cpp_token*' -->
       <parameter type-id='type-id-263' name='token' filepath='../.././libcpp/expr.c' line='364' column='1'/>
       <!-- parameter of type 'const char**' -->
-      <parameter type-id='type-id-338' name='ud_suffix' filepath='../.././libcpp/expr.c' line='365' column='1'/>
+      <parameter type-id='type-id-328' name='ud_suffix' filepath='../.././libcpp/expr.c' line='365' column='1'/>
       <!-- unsigned int -->
       <return type-id='type-id-13'/>
     </function-decl>
@@ -7323,7 +7323,7 @@
       <!-- parameter of type 'unsigned int' -->
       <parameter type-id='type-id-13' name='type' filepath='../.././libcpp/expr.c' line='636' column='1'/>
       <!-- typedef cpp_num -->
-      <return type-id='type-id-360'/>
+      <return type-id='type-id-355'/>
     </function-decl>
     <!-- op* _cpp_expand_op_stack(cpp_reader*) -->
     <function-decl name='_cpp_expand_op_stack' mangled-name='_cpp_expand_op_stack' filepath='../.././libcpp/expr.c' line='1396' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_cpp_expand_op_stack'>
@@ -7335,11 +7335,11 @@
     <!-- cpp_num cpp_num_sign_extend(cpp_num, size_t) -->
     <function-decl name='cpp_num_sign_extend' mangled-name='_Z19cpp_num_sign_extend7cpp_numm' filepath='../.././libcpp/expr.c' line='1464' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z19cpp_num_sign_extend7cpp_numm'>
       <!-- parameter of type 'typedef cpp_num' -->
-      <parameter type-id='type-id-360' name='num' filepath='../.././libcpp/expr.c' line='1464' column='1'/>
+      <parameter type-id='type-id-355' name='num' filepath='../.././libcpp/expr.c' line='1464' column='1'/>
       <!-- parameter of type 'typedef size_t' -->
       <parameter type-id='type-id-32' name='precision' filepath='../.././libcpp/expr.c' line='1464' column='1'/>
       <!-- typedef cpp_num -->
-      <return type-id='type-id-360'/>
+      <return type-id='type-id-355'/>
     </function-decl>
   </abi-instr>
   <abi-instr address-size='64' path='../.././libcpp/files.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
@@ -7782,6 +7782,8 @@
       <!-- typedef size_t -->
       <return type-id='type-id-32'/>
     </function-decl>
+    <!-- struct __dirstream -->
+    <class-decl name='__dirstream' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-400'/>
     <!-- int (void**, void*) -->
     <function-type size-in-bits='64' id='type-id-408'>
       <!-- parameter of type 'void**' -->
@@ -7791,8 +7793,6 @@
       <!-- int -->
       <return type-id='type-id-18'/>
     </function-type>
-    <!-- struct __dirstream -->
-    <class-decl name='__dirstream' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-400'/>
   </abi-instr>
   <abi-instr address-size='64' path='../.././libcpp/identifiers.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
     <!-- typedef int (cpp_reader*, typedef hashnode, void*)* ht_cb -->
@@ -7862,7 +7862,7 @@
     <!-- hash_table* -->
     <pointer-type-def type-id='type-id-413' size-in-bits='64' id='type-id-412'/>
     <!-- typedef ht hash_table -->
-    <typedef-decl name='hash_table' type-id='type-id-314' filepath='../.././libcpp/include/symtab.h' line='41' column='1' id='type-id-413'/>
+    <typedef-decl name='hash_table' type-id='type-id-343' filepath='../.././libcpp/include/symtab.h' line='41' column='1' id='type-id-413'/>
   </abi-instr>
   <abi-instr address-size='64' path='../.././libcpp/init.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
     <!-- const unsigned char[256] -->
@@ -7880,14 +7880,14 @@
       <!-- parameter of type 'cpp_reader*' -->
       <parameter type-id='type-id-258' name='pfile' filepath='../.././libcpp/init.c' line='108' column='1'/>
       <!-- parameter of type 'enum c_lang' -->
-      <parameter type-id='type-id-344' name='lang' filepath='../.././libcpp/init.c' line='108' column='1'/>
+      <parameter type-id='type-id-334' name='lang' filepath='../.././libcpp/init.c' line='108' column='1'/>
       <!-- void -->
       <return type-id='type-id-31'/>
     </function-decl>
     <!-- cpp_reader* cpp_create_reader(c_lang, hash_table*, line_maps*) -->
     <function-decl name='cpp_create_reader' mangled-name='_Z17cpp_create_reader6c_langP2htP9line_maps' filepath='../.././libcpp/init.c' line='152' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z17cpp_create_reader6c_langP2htP9line_maps'>
       <!-- parameter of type 'enum c_lang' -->
-      <parameter type-id='type-id-344' name='lang' filepath='../.././libcpp/init.c' line='152' column='1'/>
+      <parameter type-id='type-id-334' name='lang' filepath='../.././libcpp/init.c' line='152' column='1'/>
       <!-- parameter of type 'hash_table*' -->
       <parameter type-id='type-id-412' name='table' filepath='../.././libcpp/init.c' line='152' column='1'/>
       <!-- parameter of type 'line_maps*' -->
@@ -7968,7 +7968,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- cpp_normalize_level normalize_state::level -->
-        <var-decl name='level' type-id='type-id-277' visibility='default' filepath='../.././libcpp/internal.h' line='713' column='1'/>
+        <var-decl name='level' type-id='type-id-276' visibility='default' filepath='../.././libcpp/internal.h' line='713' column='1'/>
       </data-member>
     </class-decl>
     <!-- typedef cpp_context cpp_context -->
@@ -8048,7 +8048,7 @@
     <!-- const char* cpp_type2name(cpp_ttype, unsigned char) -->
     <function-decl name='cpp_type2name' mangled-name='_Z13cpp_type2name9cpp_ttypeh' filepath='../.././libcpp/lex.c' line='2496' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z13cpp_type2name9cpp_ttypeh'>
       <!-- parameter of type 'enum cpp_ttype' -->
-      <parameter type-id='type-id-181' name='type' filepath='../.././libcpp/lex.c' line='2496' column='1'/>
+      <parameter type-id='type-id-178' name='type' filepath='../.././libcpp/lex.c' line='2496' column='1'/>
       <!-- parameter of type 'unsigned char' -->
       <parameter type-id='type-id-27' name='flags' filepath='../.././libcpp/lex.c' line='2496' column='1'/>
       <!-- const char* -->
@@ -8113,7 +8113,7 @@
     <!-- cpp_token_fld_kind cpp_token_val_index(cpp_token*) -->
     <function-decl name='cpp_token_val_index' mangled-name='_Z19cpp_token_val_indexP9cpp_token' filepath='../.././libcpp/lex.c' line='2879' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z19cpp_token_val_indexP9cpp_token'>
       <!-- parameter of type 'cpp_token*' -->
-      <parameter type-id='type-id-164' name='tok' filepath='../.././libcpp/lex.c' line='2879' column='1'/>
+      <parameter type-id='type-id-163' name='tok' filepath='../.././libcpp/lex.c' line='2879' column='1'/>
       <!-- enum cpp_token_fld_kind -->
       <return type-id='type-id-417'/>
     </function-decl>
@@ -8173,37 +8173,37 @@
     <!-- const char* cpp_named_operator2name(cpp_ttype) -->
     <function-decl name='cpp_named_operator2name' mangled-name='cpp_named_operator2name' filepath='../.././libcpp/internal.h' line='661' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='cpp_named_operator2name'>
       <!-- parameter of type 'enum cpp_ttype' -->
-      <parameter type-id='type-id-181'/>
+      <parameter type-id='type-id-178'/>
       <!-- const char* -->
       <return type-id='type-id-15'/>
     </function-decl>
   </abi-instr>
   <abi-instr address-size='64' path='../.././libcpp/line-map.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
     <!-- cpp_token[1] -->
-    <array-type-def dimensions='1' type-id='type-id-162' size-in-bits='192' id='type-id-159'>
+    <array-type-def dimensions='1' type-id='type-id-172' size-in-bits='192' id='type-id-158'>
       <!-- <anonymous range>[1] -->
       <subrange length='1' type-id='type-id-4' id='type-id-7'/>
     </array-type-def>
     <!-- struct cpp_token -->
-    <class-decl name='cpp_token' size-in-bits='192' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='223' column='1' id='type-id-162'>
+    <class-decl name='cpp_token' size-in-bits='192' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='223' column='1' id='type-id-172'>
       <member-type access='public'>
         <!-- union cpp_token::cpp_token_u -->
-        <union-decl name='cpp_token_u' size-in-bits='128' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='228' column='1' id='type-id-177'>
+        <union-decl name='cpp_token_u' size-in-bits='128' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='228' column='1' id='type-id-174'>
           <data-member access='private'>
             <!-- cpp_identifier cpp_token::cpp_token_u::node -->
-            <var-decl name='node' type-id='type-id-178' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='231' column='1'/>
+            <var-decl name='node' type-id='type-id-175' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='231' column='1'/>
           </data-member>
           <data-member access='private'>
             <!-- cpp_token* cpp_token::cpp_token_u::source -->
-            <var-decl name='source' type-id='type-id-164' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='234' column='1'/>
+            <var-decl name='source' type-id='type-id-163' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='234' column='1'/>
           </data-member>
           <data-member access='private'>
             <!-- cpp_string cpp_token::cpp_token_u::str -->
-            <var-decl name='str' type-id='type-id-179' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='237' column='1'/>
+            <var-decl name='str' type-id='type-id-176' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='237' column='1'/>
           </data-member>
           <data-member access='private'>
             <!-- cpp_macro_arg cpp_token::cpp_token_u::macro_arg -->
-            <var-decl name='macro_arg' type-id='type-id-180' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='240' column='1'/>
+            <var-decl name='macro_arg' type-id='type-id-177' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='240' column='1'/>
           </data-member>
           <data-member access='private'>
             <!-- unsigned int cpp_token::cpp_token_u::token_no -->
@@ -8221,7 +8221,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- cpp_ttype cpp_token::type -->
-        <var-decl name='type' type-id='type-id-181' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='225' column='1'/>
+        <var-decl name='type' type-id='type-id-178' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='225' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='48'>
         <!-- unsigned short int cpp_token::flags -->
@@ -8229,7 +8229,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- cpp_token::cpp_token_u cpp_token::val -->
-        <var-decl name='val' type-id='type-id-177' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='248' column='1'/>
+        <var-decl name='val' type-id='type-id-174' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='248' column='1'/>
       </data-member>
     </class-decl>
     <!-- struct ht_identifier -->
@@ -8276,18 +8276,18 @@
     <!-- typedef cpp_macro cpp_macro -->
     <typedef-decl name='cpp_macro' type-id='type-id-160' filepath='../.././libcpp/include/cpplib.h' line='37' column='1' id='type-id-155'/>
     <!-- typedef cpp_token cpp_token -->
-    <typedef-decl name='cpp_token' type-id='type-id-162' filepath='../.././libcpp/include/cpplib.h' line='34' column='1' id='type-id-276'/>
+    <typedef-decl name='cpp_token' type-id='type-id-172' filepath='../.././libcpp/include/cpplib.h' line='34' column='1' id='type-id-277'/>
     <!-- struct cpp_identifier -->
-    <class-decl name='cpp_identifier' size-in-bits='64' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='212' column='1' id='type-id-178'>
+    <class-decl name='cpp_identifier' size-in-bits='64' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='212' column='1' id='type-id-175'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- cpp_hashnode* cpp_identifier::node -->
         <var-decl name='node' type-id='type-id-116' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='218' column='1'/>
       </data-member>
     </class-decl>
     <!-- typedef cpp_hashnode cpp_hashnode -->
-    <typedef-decl name='cpp_hashnode' type-id='type-id-78' filepath='../.././libcpp/include/cpplib.h' line='36' column='1' id='type-id-351'/>
+    <typedef-decl name='cpp_hashnode' type-id='type-id-78' filepath='../.././libcpp/include/cpplib.h' line='36' column='1' id='type-id-357'/>
     <!-- struct cpp_macro_arg -->
-    <class-decl name='cpp_macro_arg' size-in-bits='32' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='206' column='1' id='type-id-180'>
+    <class-decl name='cpp_macro_arg' size-in-bits='32' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='206' column='1' id='type-id-177'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- unsigned int cpp_macro_arg::arg_no -->
         <var-decl name='arg_no' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='208' column='1'/>
@@ -8297,10 +8297,10 @@
     <class-decl name='cpp_macro' size-in-bits='256' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='36' column='1' id='type-id-160'>
       <member-type access='public'>
         <!-- union cpp_macro::cpp_macro_u -->
-        <union-decl name='cpp_macro_u' size-in-bits='64' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='47' column='1' id='type-id-163'>
+        <union-decl name='cpp_macro_u' size-in-bits='64' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='47' column='1' id='type-id-162'>
           <data-member access='private'>
             <!-- cpp_token* cpp_macro::cpp_macro_u::tokens -->
-            <var-decl name='tokens' type-id='type-id-164' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='49' column='1'/>
+            <var-decl name='tokens' type-id='type-id-163' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='49' column='1'/>
           </data-member>
           <data-member access='private'>
             <!-- const unsigned char* cpp_macro::cpp_macro_u::text -->
@@ -8310,11 +8310,11 @@
       </member-type>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- cpp_hashnode** cpp_macro::params -->
-        <var-decl name='params' type-id='type-id-165' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='42' column='1'/>
+        <var-decl name='params' type-id='type-id-164' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='42' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- cpp_macro::cpp_macro_u cpp_macro::exp -->
-        <var-decl name='exp' type-id='type-id-163' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='51' column='1'/>
+        <var-decl name='exp' type-id='type-id-162' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='51' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
         <!-- source_location cpp_macro::line -->
@@ -8354,7 +8354,7 @@
       </data-member>
     </class-decl>
     <!-- enum cpp_ttype -->
-    <enum-decl name='cpp_ttype' filepath='../.././libcpp/include/cpplib.h' line='153' column='1' id='type-id-181'>
+    <enum-decl name='cpp_ttype' filepath='../.././libcpp/include/cpplib.h' line='153' column='1' id='type-id-178'>
       <underlying-type type-id='type-id-26'/>
       <enumerator name='CPP_EQ' value='0'/>
       <enumerator name='CPP_NOT' value='1'/>
@@ -8456,7 +8456,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
         <!-- cpp_token answer::first[1] -->
-        <var-decl name='first' type-id='type-id-159' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='31' column='1'/>
+        <var-decl name='first' type-id='type-id-158' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='31' column='1'/>
       </data-member>
     </class-decl>
     <!-- enum cpp_builtin_type -->
@@ -8476,7 +8476,7 @@
       <enumerator name='BT_LAST_USER' value='41'/>
     </enum-decl>
     <!-- struct cpp_string -->
-    <class-decl name='cpp_string' size-in-bits='128' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='173' column='1' id='type-id-179'>
+    <class-decl name='cpp_string' size-in-bits='128' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='173' column='1' id='type-id-176'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- unsigned int cpp_string::len -->
         <var-decl name='len' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='174' column='1'/>
@@ -8493,11 +8493,11 @@
     <!-- const unsigned char* -->
     <pointer-type-def type-id='type-id-154' size-in-bits='64' id='type-id-145'/>
     <!-- cpp_hashnode** -->
-    <pointer-type-def type-id='type-id-116' size-in-bits='64' id='type-id-165'/>
+    <pointer-type-def type-id='type-id-116' size-in-bits='64' id='type-id-164'/>
     <!-- cpp_macro* -->
     <pointer-type-def type-id='type-id-155' size-in-bits='64' id='type-id-149'/>
     <!-- cpp_token* -->
-    <pointer-type-def type-id='type-id-162' size-in-bits='64' id='type-id-164'/>
+    <pointer-type-def type-id='type-id-172' size-in-bits='64' id='type-id-163'/>
     <!-- void linemap_init(line_maps*) -->
     <function-decl name='linemap_init' mangled-name='_Z12linemap_initP9line_maps' filepath='../.././libcpp/line-map.c' line='56' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z12linemap_initP9line_maps'>
       <!-- parameter of type 'line_maps*' -->
@@ -8893,7 +8893,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='1216'>
         <!-- cpp_token cpp_reader::directive_result -->
-        <var-decl name='directive_result' type-id='type-id-276' visibility='default' filepath='../.././libcpp/internal.h' line='410' column='1'/>
+        <var-decl name='directive_result' type-id='type-id-277' visibility='default' filepath='../.././libcpp/internal.h' line='410' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1408'>
         <!-- source_location cpp_reader::invocation_location -->
@@ -8965,7 +8965,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='3456'>
         <!-- cpp_token* cpp_reader::cur_token -->
-        <var-decl name='cur_token' type-id='type-id-164' visibility='default' filepath='../.././libcpp/internal.h' line='453' column='1'/>
+        <var-decl name='cur_token' type-id='type-id-163' visibility='default' filepath='../.././libcpp/internal.h' line='453' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3520'>
         <!-- tokenrun cpp_reader::base_run -->
@@ -9021,11 +9021,11 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='5120'>
         <!-- cpp_token cpp_reader::avoid_paste -->
-        <var-decl name='avoid_paste' type-id='type-id-276' visibility='default' filepath='../.././libcpp/internal.h' line='489' column='1'/>
+        <var-decl name='avoid_paste' type-id='type-id-277' visibility='default' filepath='../.././libcpp/internal.h' line='489' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5312'>
         <!-- cpp_token cpp_reader::eof -->
-        <var-decl name='eof' type-id='type-id-276' visibility='default' filepath='../.././libcpp/internal.h' line='490' column='1'/>
+        <var-decl name='eof' type-id='type-id-277' visibility='default' filepath='../.././libcpp/internal.h' line='490' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5504'>
         <!-- deps* cpp_reader::deps -->
@@ -9109,10 +9109,10 @@
       </data-member>
     </class-decl>
     <!-- struct deps -->
-    <class-decl name='deps' size-in-bits='448' is-struct='yes' visibility='default' filepath='../.././libcpp/mkdeps.c' line='30' column='1' id='type-id-312'>
+    <class-decl name='deps' size-in-bits='448' is-struct='yes' visibility='default' filepath='../.././libcpp/mkdeps.c' line='30' column='1' id='type-id-341'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- const char** deps::targetv -->
-        <var-decl name='targetv' type-id='type-id-338' visibility='default' filepath='../.././libcpp/mkdeps.c' line='32' column='1'/>
+        <var-decl name='targetv' type-id='type-id-328' visibility='default' filepath='../.././libcpp/mkdeps.c' line='32' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- unsigned int deps::ntargets -->
@@ -9124,7 +9124,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
         <!-- const char** deps::depv -->
-        <var-decl name='depv' type-id='type-id-338' visibility='default' filepath='../.././libcpp/mkdeps.c' line='36' column='1'/>
+        <var-decl name='depv' type-id='type-id-328' visibility='default' filepath='../.././libcpp/mkdeps.c' line='36' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
         <!-- unsigned int deps::ndeps -->
@@ -9136,7 +9136,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
         <!-- const char** deps::vpathv -->
-        <var-decl name='vpathv' type-id='type-id-338' visibility='default' filepath='../.././libcpp/mkdeps.c' line='40' column='1'/>
+        <var-decl name='vpathv' type-id='type-id-328' visibility='default' filepath='../.././libcpp/mkdeps.c' line='40' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
         <!-- size_t* deps::vpathlv -->
@@ -9152,7 +9152,7 @@
       </data-member>
     </class-decl>
     <!-- typedef cpp_buffer cpp_buffer -->
-    <typedef-decl name='cpp_buffer' type-id='type-id-309' filepath='../.././libcpp/include/cpplib.h' line='32' column='1' id='type-id-419'/>
+    <typedef-decl name='cpp_buffer' type-id='type-id-338' filepath='../.././libcpp/include/cpplib.h' line='32' column='1' id='type-id-419'/>
     <!-- typedef _cpp_line_note _cpp_line_note -->
     <typedef-decl name='_cpp_line_note' type-id='type-id-384' filepath='../.././libcpp/internal.h' line='283' column='1' id='type-id-374'/>
     <!-- struct _cpp_line_note -->
@@ -9194,30 +9194,30 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
         <!-- const char** cpp_dir::name_map -->
-        <var-decl name='name_map' type-id='type-id-338' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='575' column='1'/>
+        <var-decl name='name_map' type-id='type-id-328' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='575' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
         <!-- char* (const char*, cpp_dir*)* cpp_dir::construct -->
-        <var-decl name='construct' type-id='type-id-339' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='581' column='1'/>
+        <var-decl name='construct' type-id='type-id-329' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='581' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
         <!-- ino_t cpp_dir::ino -->
-        <var-decl name='ino' type-id='type-id-340' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='585' column='1'/>
+        <var-decl name='ino' type-id='type-id-330' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='585' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='448'>
         <!-- dev_t cpp_dir::dev -->
-        <var-decl name='dev' type-id='type-id-341' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='586' column='1'/>
+        <var-decl name='dev' type-id='type-id-331' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='586' column='1'/>
       </data-member>
     </class-decl>
     <!-- typedef __ino_t ino_t -->
-    <typedef-decl name='ino_t' type-id='type-id-64' filepath='/usr/include/sys/types.h' line='49' column='1' id='type-id-340'/>
+    <typedef-decl name='ino_t' type-id='type-id-64' filepath='/usr/include/sys/types.h' line='49' column='1' id='type-id-330'/>
     <!-- typedef __dev_t dev_t -->
-    <typedef-decl name='dev_t' type-id='type-id-63' filepath='/usr/include/sys/types.h' line='61' column='1' id='type-id-341'/>
+    <typedef-decl name='dev_t' type-id='type-id-63' filepath='/usr/include/sys/types.h' line='61' column='1' id='type-id-331'/>
     <!-- struct cset_converter -->
     <class-decl name='cset_converter' size-in-bits='192' is-struct='yes' visibility='default' filepath='../.././libcpp/internal.h' line='47' column='1' id='type-id-294'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- convert_f cset_converter::func -->
-        <var-decl name='func' type-id='type-id-345' visibility='default' filepath='../.././libcpp/internal.h' line='49' column='1'/>
+        <var-decl name='func' type-id='type-id-335' visibility='default' filepath='../.././libcpp/internal.h' line='49' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- iconv_t cset_converter::cd -->
@@ -9229,7 +9229,7 @@
       </data-member>
     </class-decl>
     <!-- typedef bool (typedef iconv_t, const unsigned char*, typedef size_t, _cpp_strbuf*)* convert_f -->
-    <typedef-decl name='convert_f' type-id='type-id-362' filepath='../.././libcpp/internal.h' line='45' column='1' id='type-id-345'/>
+    <typedef-decl name='convert_f' type-id='type-id-362' filepath='../.././libcpp/internal.h' line='45' column='1' id='type-id-335'/>
     <!-- struct lexer_state -->
     <class-decl name='lexer_state' size-in-bits='160' is-struct='yes' visibility='default' filepath='../.././libcpp/internal.h' line='225' column='1' id='type-id-282'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -9290,18 +9290,18 @@
       </data-member>
     </class-decl>
     <!-- struct ht -->
-    <class-decl name='ht' size-in-bits='1152' is-struct='yes' visibility='default' filepath='../.././libcpp/include/symtab.h' line='47' column='1' id='type-id-314'>
+    <class-decl name='ht' size-in-bits='1152' is-struct='yes' visibility='default' filepath='../.././libcpp/include/symtab.h' line='47' column='1' id='type-id-343'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- obstack ht::stack -->
         <var-decl name='stack' type-id='type-id-58' visibility='default' filepath='../.././libcpp/include/symtab.h' line='50' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='704'>
         <!-- hashnode* ht::entries -->
-        <var-decl name='entries' type-id='type-id-358' visibility='default' filepath='../.././libcpp/include/symtab.h' line='52' column='1'/>
+        <var-decl name='entries' type-id='type-id-353' visibility='default' filepath='../.././libcpp/include/symtab.h' line='52' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='768'>
         <!-- typedef hashnode (hash_table*)* ht::alloc_node -->
-        <var-decl name='alloc_node' type-id='type-id-359' visibility='default' filepath='../.././libcpp/include/symtab.h' line='54' column='1'/>
+        <var-decl name='alloc_node' type-id='type-id-354' visibility='default' filepath='../.././libcpp/include/symtab.h' line='54' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='832'>
         <!-- void* (typedef size_t)* ht::alloc_subobject -->
@@ -9365,21 +9365,21 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
         <!-- cpp_token* tokenrun::base -->
-        <var-decl name='base' type-id='type-id-164' visibility='default' filepath='../.././libcpp/internal.h' line='133' column='1'/>
+        <var-decl name='base' type-id='type-id-163' visibility='default' filepath='../.././libcpp/internal.h' line='133' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
         <!-- cpp_token* tokenrun::limit -->
-        <var-decl name='limit' type-id='type-id-164' visibility='default' filepath='../.././libcpp/internal.h' line='133' column='1'/>
+        <var-decl name='limit' type-id='type-id-163' visibility='default' filepath='../.././libcpp/internal.h' line='133' column='1'/>
       </data-member>
     </class-decl>
     <!-- struct cpp_options -->
     <class-decl name='cpp_options' size-in-bits='1024' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='290' column='1' id='type-id-300'>
       <member-type access='public'>
         <!-- struct {cpp_deps_style style; bool missing_files; bool phony_targets; bool ignore_main_file; bool need_preprocessor_output;} -->
-        <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='451' column='1' id='type-id-342'>
+        <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='451' column='1' id='type-id-332'>
           <data-member access='public' layout-offset-in-bits='0'>
             <!-- cpp_deps_style style -->
-            <var-decl name='style' type-id='type-id-343' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='453' column='1'/>
+            <var-decl name='style' type-id='type-id-333' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='453' column='1'/>
           </data-member>
           <data-member access='public' layout-offset-in-bits='32'>
             <!-- bool missing_files -->
@@ -9405,7 +9405,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='32'>
         <!-- c_lang cpp_options::lang -->
-        <var-decl name='lang' type-id='type-id-344' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='296' column='1'/>
+        <var-decl name='lang' type-id='type-id-334' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='296' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- unsigned char cpp_options::cplusplus -->
@@ -9573,7 +9573,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='576'>
         <!-- cpp_normalize_level cpp_options::warn_normalize -->
-        <var-decl name='warn_normalize' type-id='type-id-277' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='441' column='1'/>
+        <var-decl name='warn_normalize' type-id='type-id-276' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='441' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='608'>
         <!-- bool cpp_options::warn_invalid_pch -->
@@ -9585,7 +9585,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='640'>
         <!-- struct {cpp_deps_style style; bool missing_files; bool phony_targets; bool ignore_main_file; bool need_preprocessor_output;} cpp_options::deps -->
-        <var-decl name='deps' type-id='type-id-342' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='468' column='1'/>
+        <var-decl name='deps' type-id='type-id-332' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='468' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='704'>
         <!-- size_t cpp_options::precision -->
@@ -9625,14 +9625,14 @@
       </data-member>
     </class-decl>
     <!-- struct op -->
-    <class-decl name='op' size-in-bits='320' is-struct='yes' visibility='default' filepath='../.././libcpp/expr.c' line='30' column='1' id='type-id-315'>
+    <class-decl name='op' size-in-bits='320' is-struct='yes' visibility='default' filepath='../.././libcpp/expr.c' line='30' column='1' id='type-id-344'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- const cpp_token* op::token -->
         <var-decl name='token' type-id='type-id-263' visibility='default' filepath='../.././libcpp/expr.c' line='32' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- cpp_num op::value -->
-        <var-decl name='value' type-id='type-id-360' visibility='default' filepath='../.././libcpp/expr.c' line='33' column='1'/>
+        <var-decl name='value' type-id='type-id-355' visibility='default' filepath='../.././libcpp/expr.c' line='33' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
         <!-- source_location op::loc -->
@@ -9640,30 +9640,30 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='288'>
         <!-- cpp_ttype op::op -->
-        <var-decl name='op' type-id='type-id-181' visibility='default' filepath='../.././libcpp/expr.c' line='35' column='1'/>
+        <var-decl name='op' type-id='type-id-178' visibility='default' filepath='../.././libcpp/expr.c' line='35' column='1'/>
       </data-member>
     </class-decl>
     <!-- struct cpp_context -->
     <class-decl name='cpp_context' size-in-bits='448' is-struct='yes' visibility='default' filepath='../.././libcpp/internal.h' line='177' column='1' id='type-id-284'>
       <member-type access='public'>
         <!-- union {struct {utoken first; utoken last;} iso; struct {const unsigned char* cur; const unsigned char* rlimit;} trad;} -->
-        <union-decl name='__anonymous_union__' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='183' column='1' id='type-id-331'>
+        <union-decl name='__anonymous_union__' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='183' column='1' id='type-id-321'>
           <member-type access='private'>
             <!-- struct {utoken first; utoken last;} -->
-            <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='188' column='1' id='type-id-332'>
+            <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='188' column='1' id='type-id-322'>
               <data-member access='public' layout-offset-in-bits='0'>
                 <!-- utoken first -->
-                <var-decl name='first' type-id='type-id-333' visibility='default' filepath='../.././libcpp/internal.h' line='189' column='1'/>
+                <var-decl name='first' type-id='type-id-323' visibility='default' filepath='../.././libcpp/internal.h' line='189' column='1'/>
               </data-member>
               <data-member access='public' layout-offset-in-bits='64'>
                 <!-- utoken last -->
-                <var-decl name='last' type-id='type-id-333' visibility='default' filepath='../.././libcpp/internal.h' line='190' column='1'/>
+                <var-decl name='last' type-id='type-id-323' visibility='default' filepath='../.././libcpp/internal.h' line='190' column='1'/>
               </data-member>
             </class-decl>
           </member-type>
           <member-type access='private'>
             <!-- struct {const unsigned char* cur; const unsigned char* rlimit;} -->
-            <class-decl name='__anonymous_struct__1' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='195' column='1' id='type-id-334'>
+            <class-decl name='__anonymous_struct__1' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='195' column='1' id='type-id-324'>
               <data-member access='public' layout-offset-in-bits='0'>
                 <!-- const unsigned char* cur -->
                 <var-decl name='cur' type-id='type-id-145' visibility='default' filepath='../.././libcpp/internal.h' line='196' column='1'/>
@@ -9676,20 +9676,20 @@
           </member-type>
           <data-member access='private'>
             <!-- struct {utoken first; utoken last;} iso -->
-            <var-decl name='iso' type-id='type-id-332' visibility='default' filepath='../.././libcpp/internal.h' line='191' column='1'/>
+            <var-decl name='iso' type-id='type-id-322' visibility='default' filepath='../.././libcpp/internal.h' line='191' column='1'/>
           </data-member>
           <data-member access='private'>
             <!-- struct {const unsigned char* cur; const unsigned char* rlimit;} trad -->
-            <var-decl name='trad' type-id='type-id-334' visibility='default' filepath='../.././libcpp/internal.h' line='198' column='1'/>
+            <var-decl name='trad' type-id='type-id-324' visibility='default' filepath='../.././libcpp/internal.h' line='198' column='1'/>
           </data-member>
         </union-decl>
       </member-type>
       <member-type access='public'>
         <!-- union {macro_context* mc; cpp_hashnode* macro;} -->
-        <union-decl name='__anonymous_union__1' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='216' column='1' id='type-id-335'>
+        <union-decl name='__anonymous_union__1' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='216' column='1' id='type-id-325'>
           <data-member access='private'>
             <!-- macro_context* mc -->
-            <var-decl name='mc' type-id='type-id-336' visibility='default' filepath='../.././libcpp/internal.h' line='217' column='1'/>
+            <var-decl name='mc' type-id='type-id-326' visibility='default' filepath='../.././libcpp/internal.h' line='217' column='1'/>
           </data-member>
           <data-member access='private'>
             <!-- cpp_hashnode* macro -->
@@ -9707,7 +9707,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
         <!-- union {struct {utoken first; utoken last;} iso; struct {const unsigned char* cur; const unsigned char* rlimit;} trad;} cpp_context::u -->
-        <var-decl name='u' type-id='type-id-331' visibility='default' filepath='../.././libcpp/internal.h' line='199' column='1'/>
+        <var-decl name='u' type-id='type-id-321' visibility='default' filepath='../.././libcpp/internal.h' line='199' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
         <!-- _cpp_buff* cpp_context::buff -->
@@ -9715,15 +9715,15 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
         <!-- union {macro_context* mc; cpp_hashnode* macro;} cpp_context::c -->
-        <var-decl name='c' type-id='type-id-335' visibility='default' filepath='../.././libcpp/internal.h' line='219' column='1'/>
+        <var-decl name='c' type-id='type-id-325' visibility='default' filepath='../.././libcpp/internal.h' line='219' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
         <!-- context_tokens_kind cpp_context::tokens_kind -->
-        <var-decl name='tokens_kind' type-id='type-id-337' visibility='default' filepath='../.././libcpp/internal.h' line='222' column='1'/>
+        <var-decl name='tokens_kind' type-id='type-id-327' visibility='default' filepath='../.././libcpp/internal.h' line='222' column='1'/>
       </data-member>
     </class-decl>
     <!-- union utoken -->
-    <union-decl name='utoken' size-in-bits='64' visibility='default' filepath='../.././libcpp/internal.h' line='122' column='1' id='type-id-333'>
+    <union-decl name='utoken' size-in-bits='64' visibility='default' filepath='../.././libcpp/internal.h' line='122' column='1' id='type-id-323'>
       <data-member access='private'>
         <!-- const cpp_token* utoken::token -->
         <var-decl name='token' type-id='type-id-263' visibility='default' filepath='../.././libcpp/internal.h' line='124' column='1'/>
@@ -9734,9 +9734,9 @@
       </data-member>
     </union-decl>
     <!-- typedef __anonymous_struct__ macro_context -->
-    <typedef-decl name='macro_context' type-id='type-id-382' filepath='../.././libcpp/internal.h' line='158' column='1' id='type-id-355'/>
+    <typedef-decl name='macro_context' type-id='type-id-382' filepath='../.././libcpp/internal.h' line='158' column='1' id='type-id-361'/>
     <!-- struct {cpp_hashnode* macro_node; source_location* virt_locs; source_location* cur_virt_loc;} -->
-    <class-decl name='__anonymous_struct__' size-in-bits='192' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-355' visibility='default' filepath='../.././libcpp/internal.h' line='146' column='1' id='type-id-382'>
+    <class-decl name='__anonymous_struct__' size-in-bits='192' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-361' visibility='default' filepath='../.././libcpp/internal.h' line='146' column='1' id='type-id-382'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- cpp_hashnode* macro_node -->
         <var-decl name='macro_node' type-id='type-id-116' visibility='default' filepath='../.././libcpp/internal.h' line='148' column='1'/>
@@ -9754,86 +9754,86 @@
     <class-decl name='cpp_callbacks' size-in-bits='1152' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='499' column='1' id='type-id-297'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- void (cpp_reader*, const cpp_token*, int)* cpp_callbacks::line_change -->
-        <var-decl name='line_change' type-id='type-id-317' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='502' column='1'/>
+        <var-decl name='line_change' type-id='type-id-307' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='502' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- void (cpp_reader*, const line_map*)* cpp_callbacks::file_change -->
-        <var-decl name='file_change' type-id='type-id-318' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='508' column='1'/>
+        <var-decl name='file_change' type-id='type-id-308' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='508' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
         <!-- void (cpp_reader*, const char*)* cpp_callbacks::dir_change -->
-        <var-decl name='dir_change' type-id='type-id-319' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='510' column='1'/>
+        <var-decl name='dir_change' type-id='type-id-309' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='510' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
         <!-- void (cpp_reader*, typedef source_location, const unsigned char*, const char*, int, const cpp_token**)* cpp_callbacks::include -->
-        <var-decl name='include' type-id='type-id-320' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='512' column='1'/>
+        <var-decl name='include' type-id='type-id-310' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='512' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
         <!-- void (cpp_reader*, typedef source_location, cpp_hashnode*)* cpp_callbacks::define -->
-        <var-decl name='define' type-id='type-id-321' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='513' column='1'/>
+        <var-decl name='define' type-id='type-id-311' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='513' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
         <!-- void (cpp_reader*, typedef source_location, cpp_hashnode*)* cpp_callbacks::undef -->
-        <var-decl name='undef' type-id='type-id-321' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='514' column='1'/>
+        <var-decl name='undef' type-id='type-id-311' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='514' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
         <!-- void (cpp_reader*, typedef source_location, const cpp_string*)* cpp_callbacks::ident -->
-        <var-decl name='ident' type-id='type-id-322' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='515' column='1'/>
+        <var-decl name='ident' type-id='type-id-312' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='515' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='448'>
         <!-- void (cpp_reader*, typedef source_location)* cpp_callbacks::def_pragma -->
-        <var-decl name='def_pragma' type-id='type-id-323' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='516' column='1'/>
+        <var-decl name='def_pragma' type-id='type-id-313' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='516' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='512'>
         <!-- int (cpp_reader*, const char*, int)* cpp_callbacks::valid_pch -->
-        <var-decl name='valid_pch' type-id='type-id-324' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='517' column='1'/>
+        <var-decl name='valid_pch' type-id='type-id-314' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='517' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='576'>
         <!-- void (cpp_reader*, const char*, int, const char*)* cpp_callbacks::read_pch -->
-        <var-decl name='read_pch' type-id='type-id-325' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='518' column='1'/>
+        <var-decl name='read_pch' type-id='type-id-315' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='518' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='640'>
         <!-- missing_header_cb cpp_callbacks::missing_header -->
-        <var-decl name='missing_header' type-id='type-id-326' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='519' column='1'/>
+        <var-decl name='missing_header' type-id='type-id-316' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='519' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='704'>
         <!-- cpp_hashnode* (cpp_reader*, const cpp_token*)* cpp_callbacks::macro_to_expand -->
-        <var-decl name='macro_to_expand' type-id='type-id-327' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='523' column='1'/>
+        <var-decl name='macro_to_expand' type-id='type-id-317' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='523' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='768'>
         <!-- bool (cpp_reader*, int, int, typedef source_location, unsigned int, const char*, va_list*)* cpp_callbacks::error -->
-        <var-decl name='error' type-id='type-id-328' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='529' column='1'/>
+        <var-decl name='error' type-id='type-id-318' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='529' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='832'>
         <!-- void (cpp_reader*, typedef source_location, cpp_hashnode*)* cpp_callbacks::used_define -->
-        <var-decl name='used_define' type-id='type-id-321' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='533' column='1'/>
+        <var-decl name='used_define' type-id='type-id-311' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='533' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='896'>
         <!-- void (cpp_reader*, typedef source_location, cpp_hashnode*)* cpp_callbacks::used_undef -->
-        <var-decl name='used_undef' type-id='type-id-321' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='534' column='1'/>
+        <var-decl name='used_undef' type-id='type-id-311' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='534' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='960'>
         <!-- void (cpp_reader*)* cpp_callbacks::before_define -->
-        <var-decl name='before_define' type-id='type-id-329' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='537' column='1'/>
+        <var-decl name='before_define' type-id='type-id-319' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='537' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1024'>
         <!-- void (cpp_reader*, typedef source_location, cpp_hashnode*)* cpp_callbacks::used -->
-        <var-decl name='used' type-id='type-id-321' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='540' column='1'/>
+        <var-decl name='used' type-id='type-id-311' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='540' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1088'>
         <!-- bool (cpp_reader*, cpp_hashnode*)* cpp_callbacks::user_builtin_macro -->
-        <var-decl name='user_builtin_macro' type-id='type-id-330' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='543' column='1'/>
+        <var-decl name='user_builtin_macro' type-id='type-id-320' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='543' column='1'/>
       </data-member>
     </class-decl>
     <!-- enum context_tokens_kind -->
-    <enum-decl name='context_tokens_kind' filepath='../.././libcpp/internal.h' line='161' column='1' id='type-id-337'>
+    <enum-decl name='context_tokens_kind' filepath='../.././libcpp/internal.h' line='161' column='1' id='type-id-327'>
       <underlying-type type-id='type-id-26'/>
       <enumerator name='TOKENS_KIND_INDIRECT' value='0'/>
       <enumerator name='TOKENS_KIND_DIRECT' value='1'/>
       <enumerator name='TOKENS_KIND_EXTENDED' value='2'/>
     </enum-decl>
     <!-- struct cpp_buffer -->
-    <class-decl name='cpp_buffer' size-in-bits='1536' is-struct='yes' visibility='default' filepath='../.././libcpp/internal.h' line='297' column='1' id='type-id-309'>
+    <class-decl name='cpp_buffer' size-in-bits='1536' is-struct='yes' visibility='default' filepath='../.././libcpp/internal.h' line='297' column='1' id='type-id-338'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- const unsigned char* cpp_buffer::cur -->
         <var-decl name='cur' type-id='type-id-145' visibility='default' filepath='../.././libcpp/internal.h' line='299' column='1'/>
@@ -9856,7 +9856,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
         <!-- _cpp_line_note* cpp_buffer::notes -->
-        <var-decl name='notes' type-id='type-id-356' visibility='default' filepath='../.././libcpp/internal.h' line='306' column='1'/>
+        <var-decl name='notes' type-id='type-id-351' visibility='default' filepath='../.././libcpp/internal.h' line='306' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
         <!-- unsigned int cpp_buffer::cur_note -->
@@ -9884,7 +9884,7 @@
       </data-member>
       <data-member access='public' layout-offset-in-bits='704'>
         <!-- if_stack* cpp_buffer::if_stack -->
-        <var-decl name='if_stack' type-id='type-id-357' visibility='default' filepath='../.././libcpp/internal.h' line='323' column='1'/>
+        <var-decl name='if_stack' type-id='type-id-352' visibility='default' filepath='../.././libcpp/internal.h' line='323' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='768'>
         <!-- bool cpp_buffer::need_line -->
@@ -9920,24 +9920,24 @@
     <!-- typedef cpp_reader cpp_reader -->
     <typedef-decl name='cpp_reader' type-id='type-id-278' filepath='../.././libcpp/include/cpplib.h' line='31' column='1' id='type-id-271'/>
     <!-- typedef cpp_string cpp_string -->
-    <typedef-decl name='cpp_string' type-id='type-id-179' filepath='../.././libcpp/include/cpplib.h' line='35' column='1' id='type-id-272'/>
+    <typedef-decl name='cpp_string' type-id='type-id-176' filepath='../.././libcpp/include/cpplib.h' line='35' column='1' id='type-id-272'/>
     <!-- typedef const char* (cpp_reader*, const char*, cpp_dir**)* missing_header_cb -->
-    <typedef-decl name='missing_header_cb' type-id='type-id-363' filepath='../.././libcpp/include/cpplib.h' line='496' column='1' id='type-id-326'/>
+    <typedef-decl name='missing_header_cb' type-id='type-id-363' filepath='../.././libcpp/include/cpplib.h' line='496' column='1' id='type-id-316'/>
     <!-- typedef cpp_dir cpp_dir -->
     <typedef-decl name='cpp_dir' type-id='type-id-288' filepath='../.././libcpp/include/cpplib.h' line='39' column='1' id='type-id-421'/>
     <!-- typedef ht_identifier* hashnode -->
     <typedef-decl name='hashnode' type-id='type-id-386' filepath='../.././libcpp/include/symtab.h' line='42' column='1' id='type-id-378'/>
     <!-- typedef ht hash_table -->
-    <typedef-decl name='hash_table' type-id='type-id-314' filepath='../.././libcpp/include/symtab.h' line='41' column='1' id='type-id-413'/>
+    <typedef-decl name='hash_table' type-id='type-id-343' filepath='../.././libcpp/include/symtab.h' line='41' column='1' id='type-id-413'/>
     <!-- enum cpp_deps_style -->
-    <enum-decl name='cpp_deps_style' filepath='../.././libcpp/include/cpplib.h' line='273' column='1' id='type-id-343'>
+    <enum-decl name='cpp_deps_style' filepath='../.././libcpp/include/cpplib.h' line='273' column='1' id='type-id-333'>
       <underlying-type type-id='type-id-26'/>
       <enumerator name='DEPS_NONE' value='0'/>
       <enumerator name='DEPS_USER' value='1'/>
       <enumerator name='DEPS_SYSTEM' value='2'/>
     </enum-decl>
     <!-- enum c_lang -->
-    <enum-decl name='c_lang' filepath='../.././libcpp/include/cpplib.h' line='168' column='1' id='type-id-344'>
+    <enum-decl name='c_lang' filepath='../.././libcpp/include/cpplib.h' line='168' column='1' id='type-id-334'>
       <underlying-type type-id='type-id-26'/>
       <enumerator name='CLK_GNUC89' value='0'/>
       <enumerator name='CLK_GNUC99' value='1'/>
@@ -9953,7 +9953,7 @@
       <enumerator name='CLK_ASM' value='11'/>
     </enum-decl>
     <!-- enum cpp_normalize_level -->
-    <enum-decl name='cpp_normalize_level' filepath='../.././libcpp/include/cpplib.h' line='276' column='1' id='type-id-277'>
+    <enum-decl name='cpp_normalize_level' filepath='../.././libcpp/include/cpplib.h' line='276' column='1' id='type-id-276'>
       <underlying-type type-id='type-id-26'/>
       <enumerator name='normalized_KC' value='0'/>
       <enumerator name='normalized_C' value='1'/>
@@ -9985,7 +9985,7 @@
     <class-decl name='__anonymous_struct__1' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-303' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='972' column='1' id='type-id-347'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- cpp_comment* entries -->
-        <var-decl name='entries' type-id='type-id-361' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='974' column='1'/>
+        <var-decl name='entries' type-id='type-id-356' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='974' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- int count -->
@@ -10010,7 +10010,7 @@
       </data-member>
     </class-decl>
     <!-- struct def_pragma_macro -->
-    <class-decl name='def_pragma_macro' size-in-bits='256' is-struct='yes' visibility='default' filepath='../.././libcpp/internal.h' line='358' column='1' id='type-id-311'>
+    <class-decl name='def_pragma_macro' size-in-bits='256' is-struct='yes' visibility='default' filepath='../.././libcpp/internal.h' line='358' column='1' id='type-id-340'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- def_pragma_macro* def_pragma_macro::next -->
         <var-decl name='next' type-id='type-id-304' visibility='default' filepath='../.././libcpp/internal.h' line='360' column='1'/>
@@ -10100,25 +10100,25 @@
     <!-- _cpp_file* -->
     <pointer-type-def type-id='type-id-306' size-in-bits='64' id='type-id-289'/>
     <!-- _cpp_line_note* -->
-    <pointer-type-def type-id='type-id-374' size-in-bits='64' id='type-id-356'/>
+    <pointer-type-def type-id='type-id-374' size-in-bits='64' id='type-id-351'/>
     <!-- _cpp_strbuf* -->
     <pointer-type-def type-id='type-id-426' size-in-bits='64' id='type-id-427'/>
     <!-- bool (cpp_reader*, cpp_hashnode*)* -->
-    <pointer-type-def type-id='type-id-348' size-in-bits='64' id='type-id-330'/>
+    <pointer-type-def type-id='type-id-348' size-in-bits='64' id='type-id-320'/>
     <!-- bool (cpp_reader*, int, int, typedef source_location, unsigned int, const char*, va_list*)* -->
-    <pointer-type-def type-id='type-id-349' size-in-bits='64' id='type-id-328'/>
+    <pointer-type-def type-id='type-id-349' size-in-bits='64' id='type-id-318'/>
     <!-- bool (typedef iconv_t, const unsigned char*, typedef size_t, _cpp_strbuf*)* -->
     <pointer-type-def type-id='type-id-375' size-in-bits='64' id='type-id-362'/>
     <!-- char* (const char*, cpp_dir*)* -->
-    <pointer-type-def type-id='type-id-350' size-in-bits='64' id='type-id-339'/>
+    <pointer-type-def type-id='type-id-350' size-in-bits='64' id='type-id-329'/>
     <!-- const char* (cpp_reader*, const char*, cpp_dir**)* -->
     <pointer-type-def type-id='type-id-376' size-in-bits='64' id='type-id-363'/>
     <!-- const char** -->
-    <pointer-type-def type-id='type-id-15' size-in-bits='64' id='type-id-338'/>
+    <pointer-type-def type-id='type-id-15' size-in-bits='64' id='type-id-328'/>
     <!-- const cpp_hashnode -->
-    <qualified-type-def type-id='type-id-351' const='yes' id='type-id-307'/>
+    <qualified-type-def type-id='type-id-357' const='yes' id='type-id-336'/>
     <!-- const cpp_hashnode* -->
-    <pointer-type-def type-id='type-id-307' size-in-bits='64' id='type-id-291'/>
+    <pointer-type-def type-id='type-id-336' size-in-bits='64' id='type-id-291'/>
     <!-- const cpp_macro -->
     <qualified-type-def type-id='type-id-155' const='yes' id='type-id-428'/>
     <!-- const cpp_macro* -->
@@ -10128,15 +10128,15 @@
     <!-- const cpp_string* -->
     <pointer-type-def type-id='type-id-268' size-in-bits='64' id='type-id-261'/>
     <!-- const cpp_token -->
-    <qualified-type-def type-id='type-id-276' const='yes' id='type-id-269'/>
+    <qualified-type-def type-id='type-id-277' const='yes' id='type-id-269'/>
     <!-- const cpp_token* -->
     <pointer-type-def type-id='type-id-269' size-in-bits='64' id='type-id-263'/>
     <!-- const cpp_token** -->
     <pointer-type-def type-id='type-id-263' size-in-bits='64' id='type-id-364'/>
     <!-- const directive -->
-    <qualified-type-def type-id='type-id-352' const='yes' id='type-id-308'/>
+    <qualified-type-def type-id='type-id-358' const='yes' id='type-id-337'/>
     <!-- const directive* -->
-    <pointer-type-def type-id='type-id-308' size-in-bits='64' id='type-id-286'/>
+    <pointer-type-def type-id='type-id-337' size-in-bits='64' id='type-id-286'/>
     <!-- const time_t -->
     <qualified-type-def type-id='type-id-422' const='yes' id='type-id-430'/>
     <!-- const time_t* -->
@@ -10150,9 +10150,9 @@
     <!-- const uchar* -->
     <pointer-type-def type-id='type-id-270' size-in-bits='64' id='type-id-256'/>
     <!-- cpp_buffer* -->
-    <pointer-type-def type-id='type-id-309' size-in-bits='64' id='type-id-281'/>
+    <pointer-type-def type-id='type-id-338' size-in-bits='64' id='type-id-281'/>
     <!-- cpp_comment* -->
-    <pointer-type-def type-id='type-id-377' size-in-bits='64' id='type-id-361'/>
+    <pointer-type-def type-id='type-id-377' size-in-bits='64' id='type-id-356'/>
     <!-- cpp_context* -->
     <pointer-type-def type-id='type-id-284' size-in-bits='64' id='type-id-285'/>
     <!-- cpp_dir* -->
@@ -10160,35 +10160,35 @@
     <!-- cpp_dir** -->
     <pointer-type-def type-id='type-id-287' size-in-bits='64' id='type-id-434'/>
     <!-- cpp_hashnode* (cpp_reader*, const cpp_token*)* -->
-    <pointer-type-def type-id='type-id-353' size-in-bits='64' id='type-id-327'/>
+    <pointer-type-def type-id='type-id-359' size-in-bits='64' id='type-id-317'/>
     <!-- cpp_reader* -->
     <pointer-type-def type-id='type-id-271' size-in-bits='64' id='type-id-258'/>
     <!-- cpp_savedstate* -->
-    <pointer-type-def type-id='type-id-310' size-in-bits='64' id='type-id-302'/>
+    <pointer-type-def type-id='type-id-339' size-in-bits='64' id='type-id-302'/>
     <!-- def_pragma_macro* -->
-    <pointer-type-def type-id='type-id-311' size-in-bits='64' id='type-id-304'/>
+    <pointer-type-def type-id='type-id-340' size-in-bits='64' id='type-id-304'/>
     <!-- deps* -->
-    <pointer-type-def type-id='type-id-312' size-in-bits='64' id='type-id-295'/>
+    <pointer-type-def type-id='type-id-341' size-in-bits='64' id='type-id-295'/>
     <!-- file_hash_entry_pool* -->
-    <pointer-type-def type-id='type-id-313' size-in-bits='64' id='type-id-290'/>
+    <pointer-type-def type-id='type-id-342' size-in-bits='64' id='type-id-290'/>
     <!-- hash_table* -->
     <pointer-type-def type-id='type-id-413' size-in-bits='64' id='type-id-412'/>
     <!-- hashnode* -->
-    <pointer-type-def type-id='type-id-378' size-in-bits='64' id='type-id-358'/>
+    <pointer-type-def type-id='type-id-378' size-in-bits='64' id='type-id-353'/>
     <!-- ht* -->
-    <pointer-type-def type-id='type-id-314' size-in-bits='64' id='type-id-298'/>
+    <pointer-type-def type-id='type-id-343' size-in-bits='64' id='type-id-298'/>
     <!-- ht_identifier* -->
     <pointer-type-def type-id='type-id-79' size-in-bits='64' id='type-id-386'/>
     <!-- if_stack* -->
-    <pointer-type-def type-id='type-id-379' size-in-bits='64' id='type-id-357'/>
+    <pointer-type-def type-id='type-id-379' size-in-bits='64' id='type-id-352'/>
     <!-- int (cpp_reader*, const char*, int)* -->
-    <pointer-type-def type-id='type-id-354' size-in-bits='64' id='type-id-324'/>
+    <pointer-type-def type-id='type-id-360' size-in-bits='64' id='type-id-314'/>
     <!-- macro_context* -->
-    <pointer-type-def type-id='type-id-355' size-in-bits='64' id='type-id-336'/>
+    <pointer-type-def type-id='type-id-361' size-in-bits='64' id='type-id-326'/>
     <!-- op* -->
-    <pointer-type-def type-id='type-id-315' size-in-bits='64' id='type-id-299'/>
+    <pointer-type-def type-id='type-id-344' size-in-bits='64' id='type-id-299'/>
     <!-- pragma_entry* -->
-    <pointer-type-def type-id='type-id-316' size-in-bits='64' id='type-id-296'/>
+    <pointer-type-def type-id='type-id-345' size-in-bits='64' id='type-id-296'/>
     <!-- time_t* -->
     <pointer-type-def type-id='type-id-422' size-in-bits='64' id='type-id-435'/>
     <!-- tm* -->
@@ -10196,29 +10196,29 @@
     <!-- tokenrun* -->
     <pointer-type-def type-id='type-id-346' size-in-bits='64' id='type-id-293'/>
     <!-- typedef hashnode (hash_table*)* -->
-    <pointer-type-def type-id='type-id-381' size-in-bits='64' id='type-id-359'/>
+    <pointer-type-def type-id='type-id-381' size-in-bits='64' id='type-id-354'/>
     <!-- uchar* -->
     <pointer-type-def type-id='type-id-275' size-in-bits='64' id='type-id-265'/>
     <!-- unsigned char* -->
     <pointer-type-def type-id='type-id-27' size-in-bits='64' id='type-id-280'/>
     <!-- void (cpp_reader*)* -->
-    <pointer-type-def type-id='type-id-365' size-in-bits='64' id='type-id-329'/>
+    <pointer-type-def type-id='type-id-365' size-in-bits='64' id='type-id-319'/>
     <!-- void (cpp_reader*, const char*)* -->
-    <pointer-type-def type-id='type-id-366' size-in-bits='64' id='type-id-319'/>
+    <pointer-type-def type-id='type-id-366' size-in-bits='64' id='type-id-309'/>
     <!-- void (cpp_reader*, const char*, int, const char*)* -->
-    <pointer-type-def type-id='type-id-367' size-in-bits='64' id='type-id-325'/>
+    <pointer-type-def type-id='type-id-367' size-in-bits='64' id='type-id-315'/>
     <!-- void (cpp_reader*, const cpp_token*, int)* -->
-    <pointer-type-def type-id='type-id-368' size-in-bits='64' id='type-id-317'/>
+    <pointer-type-def type-id='type-id-368' size-in-bits='64' id='type-id-307'/>
     <!-- void (cpp_reader*, const line_map*)* -->
-    <pointer-type-def type-id='type-id-369' size-in-bits='64' id='type-id-318'/>
+    <pointer-type-def type-id='type-id-369' size-in-bits='64' id='type-id-308'/>
     <!-- void (cpp_reader*, typedef source_location)* -->
-    <pointer-type-def type-id='type-id-370' size-in-bits='64' id='type-id-323'/>
+    <pointer-type-def type-id='type-id-370' size-in-bits='64' id='type-id-313'/>
     <!-- void (cpp_reader*, typedef source_location, const cpp_string*)* -->
-    <pointer-type-def type-id='type-id-371' size-in-bits='64' id='type-id-322'/>
+    <pointer-type-def type-id='type-id-371' size-in-bits='64' id='type-id-312'/>
     <!-- void (cpp_reader*, typedef source_location, const unsigned char*, const char*, int, const cpp_token**)* -->
-    <pointer-type-def type-id='type-id-372' size-in-bits='64' id='type-id-320'/>
+    <pointer-type-def type-id='type-id-372' size-in-bits='64' id='type-id-310'/>
     <!-- void (cpp_reader*, typedef source_location, cpp_hashnode*)* -->
-    <pointer-type-def type-id='type-id-373' size-in-bits='64' id='type-id-321'/>
+    <pointer-type-def type-id='type-id-373' size-in-bits='64' id='type-id-311'/>
     <!-- int _cpp_warn_if_unused_macro(cpp_reader*, cpp_hashnode*, void*) -->
     <function-decl name='_cpp_warn_if_unused_macro' mangled-name='_cpp_warn_if_unused_macro' filepath='../.././libcpp/macro.c' line='178' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_cpp_warn_if_unused_macro'>
       <!-- parameter of type 'cpp_reader*' -->
@@ -10389,7 +10389,7 @@
       <!-- parameter of type 'cpp_reader*' -->
       <parameter type-id='type-id-258'/>
       <!-- cpp_token* -->
-      <return type-id='type-id-164'/>
+      <return type-id='type-id-163'/>
     </function-decl>
     <!-- void _cpp_extend_buff(cpp_reader*, _cpp_buff**, size_t) -->
     <function-decl name='_cpp_extend_buff' mangled-name='_cpp_extend_buff' filepath='../.././libcpp/internal.h' line='109' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_cpp_extend_buff'>
@@ -10407,7 +10407,7 @@
       <!-- parameter of type 'cpp_reader*' -->
       <parameter type-id='type-id-258'/>
       <!-- cpp_token* -->
-      <return type-id='type-id-164'/>
+      <return type-id='type-id-163'/>
     </function-decl>
     <!-- time_t time(time_t*) -->
     <function-decl name='time' filepath='/usr/include/time.h' line='186' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -10576,6 +10576,8 @@
       <!-- unsigned char* -->
       <return type-id='type-id-280'/>
     </function-decl>
+    <!-- struct _cpp_strbuf -->
+    <class-decl name='_cpp_strbuf' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-426'/>
     <!-- bool (cpp_reader*, cpp_hashnode*) -->
     <function-type size-in-bits='64' id='type-id-348'>
       <!-- parameter of type 'cpp_reader*' -->
@@ -10638,7 +10640,7 @@
       <return type-id='type-id-15'/>
     </function-type>
     <!-- cpp_hashnode* (cpp_reader*, const cpp_token*) -->
-    <function-type size-in-bits='64' id='type-id-353'>
+    <function-type size-in-bits='64' id='type-id-359'>
       <!-- parameter of type 'cpp_reader*' -->
       <parameter type-id='type-id-258'/>
       <!-- parameter of type 'const cpp_token*' -->
@@ -10647,7 +10649,7 @@
       <return type-id='type-id-116'/>
     </function-type>
     <!-- int (cpp_reader*, const char*, int) -->
-    <function-type size-in-bits='64' id='type-id-354'>
+    <function-type size-in-bits='64' id='type-id-360'>
       <!-- parameter of type 'cpp_reader*' -->
       <parameter type-id='type-id-258'/>
       <!-- parameter of type 'const char*' -->
@@ -10761,12 +10763,10 @@
       <!-- void -->
       <return type-id='type-id-31'/>
     </function-type>
-    <!-- struct _cpp_strbuf -->
-    <class-decl name='_cpp_strbuf' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-426'/>
   </abi-instr>
   <abi-instr address-size='64' path='../.././libcpp/mkdeps.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/libcpp' language='LANG_C_plus_plus'>
     <!-- const deps -->
-    <qualified-type-def type-id='type-id-312' const='yes' id='type-id-437'/>
+    <qualified-type-def type-id='type-id-341' const='yes' id='type-id-437'/>
     <!-- const deps* -->
     <pointer-type-def type-id='type-id-437' size-in-bits='64' id='type-id-438'/>
     <!-- deps* deps_init() -->
@@ -10930,7 +10930,7 @@
       <!-- parameter of type 'hash_table*' -->
       <parameter type-id='type-id-412' name='ht' filepath='../.././libcpp/symtab.c' line='262' column='1'/>
       <!-- parameter of type 'hashnode*' -->
-      <parameter type-id='type-id-358' name='entries' filepath='../.././libcpp/symtab.c' line='262' column='1'/>
+      <parameter type-id='type-id-353' name='entries' filepath='../.././libcpp/symtab.c' line='262' column='1'/>
       <!-- parameter of type 'unsigned int' -->
       <parameter type-id='type-id-13' name='nslots' filepath='../.././libcpp/symtab.c' line='263' column='1'/>
       <!-- parameter of type 'unsigned int' -->
@@ -12380,66 +12380,66 @@
       </data-member>
     </class-decl>
     <!-- struct pex_funcs -->
-    <class-decl name='pex_funcs' size-in-bits='576' is-struct='yes' visibility='default' filepath='../.././libiberty/pex-common.h' line='99' column='1' id='type-id-158'>
+    <class-decl name='pex_funcs' size-in-bits='576' is-struct='yes' visibility='default' filepath='../.././libiberty/pex-common.h' line='99' column='1' id='type-id-159'>
       <data-member access='public' layout-offset-in-bits='0'>
         <!-- int (pex_obj*, const char*, int)* pex_funcs::open_read -->
-        <var-decl name='open_read' type-id='type-id-166' visibility='default' filepath='../.././libiberty/pex-common.h' line='103' column='1'/>
+        <var-decl name='open_read' type-id='type-id-165' visibility='default' filepath='../.././libiberty/pex-common.h' line='103' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <!-- int (pex_obj*, const char*, int)* pex_funcs::open_write -->
-        <var-decl name='open_write' type-id='type-id-166' visibility='default' filepath='../.././libiberty/pex-common.h' line='106' column='1'/>
+        <var-decl name='open_write' type-id='type-id-165' visibility='default' filepath='../.././libiberty/pex-common.h' line='106' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
         <!-- typedef pid_t (pex_obj*, int, const char*, char* const*, char* const*, int, int, int, int, const char**, int*)* pex_funcs::exec_child -->
-        <var-decl name='exec_child' type-id='type-id-167' visibility='default' filepath='../.././libiberty/pex-common.h' line='117' column='1'/>
+        <var-decl name='exec_child' type-id='type-id-166' visibility='default' filepath='../.././libiberty/pex-common.h' line='117' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
         <!-- int (pex_obj*, int)* pex_funcs::close -->
-        <var-decl name='close' type-id='type-id-168' visibility='default' filepath='../.././libiberty/pex-common.h' line='124' column='1'/>
+        <var-decl name='close' type-id='type-id-167' visibility='default' filepath='../.././libiberty/pex-common.h' line='124' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
         <!-- typedef pid_t (pex_obj*, typedef pid_t, int*, pex_time*, int, const char**, int*)* pex_funcs::wait -->
-        <var-decl name='wait' type-id='type-id-169' visibility='default' filepath='../.././libiberty/pex-common.h' line='129' column='1'/>
+        <var-decl name='wait' type-id='type-id-168' visibility='default' filepath='../.././libiberty/pex-common.h' line='129' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
         <!-- int (pex_obj*, int*, int)* pex_funcs::pipe -->
-        <var-decl name='pipe' type-id='type-id-170' visibility='default' filepath='../.././libiberty/pex-common.h' line='135' column='1'/>
+        <var-decl name='pipe' type-id='type-id-169' visibility='default' filepath='../.././libiberty/pex-common.h' line='135' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
         <!-- FILE* (pex_obj*, int, int)* pex_funcs::fdopenr -->
-        <var-decl name='fdopenr' type-id='type-id-171' visibility='default' filepath='../.././libiberty/pex-common.h' line='139' column='1'/>
+        <var-decl name='fdopenr' type-id='type-id-170' visibility='default' filepath='../.././libiberty/pex-common.h' line='139' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='448'>
         <!-- FILE* (pex_obj*, int, int)* pex_funcs::fdopenw -->
-        <var-decl name='fdopenw' type-id='type-id-171' visibility='default' filepath='../.././libiberty/pex-common.h' line='144' column='1'/>
+        <var-decl name='fdopenw' type-id='type-id-170' visibility='default' filepath='../.././libiberty/pex-common.h' line='144' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='512'>
         <!-- void (pex_obj*)* pex_funcs::cleanup -->
-        <var-decl name='cleanup' type-id='type-id-172' visibility='default' filepath='../.././libiberty/pex-common.h' line='147' column='1'/>
+        <var-decl name='cleanup' type-id='type-id-171' visibility='default' filepath='../.././libiberty/pex-common.h' line='147' column='1'/>
       </data-member>
     </class-decl>
     <!-- FILE* (pex_obj*, int, int)* -->
-    <pointer-type-def type-id='type-id-173' size-in-bits='64' id='type-id-171'/>
+    <pointer-type-def type-id='type-id-173' size-in-bits='64' id='type-id-170'/>
     <!-- const pex_funcs -->
-    <qualified-type-def type-id='type-id-158' const='yes' id='type-id-153'/>
+    <qualified-type-def type-id='type-id-159' const='yes' id='type-id-153'/>
     <!-- const pex_funcs* -->
     <pointer-type-def type-id='type-id-153' size-in-bits='64' id='type-id-148'/>
     <!-- int (pex_obj*, const char*, int)* -->
-    <pointer-type-def type-id='type-id-174' size-in-bits='64' id='type-id-166'/>
+    <pointer-type-def type-id='type-id-179' size-in-bits='64' id='type-id-165'/>
     <!-- int (pex_obj*, int)* -->
-    <pointer-type-def type-id='type-id-175' size-in-bits='64' id='type-id-168'/>
+    <pointer-type-def type-id='type-id-180' size-in-bits='64' id='type-id-167'/>
     <!-- int (pex_obj*, int*, int)* -->
-    <pointer-type-def type-id='type-id-176' size-in-bits='64' id='type-id-170'/>
+    <pointer-type-def type-id='type-id-181' size-in-bits='64' id='type-id-169'/>
     <!-- pex_time* -->
     <pointer-type-def type-id='type-id-156' size-in-bits='64' id='type-id-147'/>
     <!-- pid_t* -->
     <pointer-type-def type-id='type-id-157' size-in-bits='64' id='type-id-146'/>
     <!-- typedef pid_t (pex_obj*, int, const char*, char* const*, char* const*, int, int, int, int, const char**, int*)* -->
-    <pointer-type-def type-id='type-id-182' size-in-bits='64' id='type-id-167'/>
+    <pointer-type-def type-id='type-id-182' size-in-bits='64' id='type-id-166'/>
     <!-- typedef pid_t (pex_obj*, typedef pid_t, int*, pex_time*, int, const char**, int*)* -->
-    <pointer-type-def type-id='type-id-183' size-in-bits='64' id='type-id-169'/>
+    <pointer-type-def type-id='type-id-183' size-in-bits='64' id='type-id-168'/>
     <!-- void (pex_obj*)* -->
-    <pointer-type-def type-id='type-id-184' size-in-bits='64' id='type-id-172'/>
+    <pointer-type-def type-id='type-id-184' size-in-bits='64' id='type-id-171'/>
     <!-- pex_obj* pex_init_common(int, const char*, const char*, const pex_funcs*) -->
     <function-decl name='pex_init_common' mangled-name='pex_init_common' filepath='../.././libiberty/pex-common.c' line='53' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='pex_init_common'>
       <!-- parameter of type 'int' -->
@@ -12526,7 +12526,7 @@
       <return type-id='type-id-89'/>
     </function-type>
     <!-- int (pex_obj*, const char*, int) -->
-    <function-type size-in-bits='64' id='type-id-174'>
+    <function-type size-in-bits='64' id='type-id-179'>
       <!-- parameter of type 'pex_obj*' -->
       <parameter type-id='type-id-131'/>
       <!-- parameter of type 'const char*' -->
@@ -12537,7 +12537,7 @@
       <return type-id='type-id-18'/>
     </function-type>
     <!-- int (pex_obj*, int) -->
-    <function-type size-in-bits='64' id='type-id-175'>
+    <function-type size-in-bits='64' id='type-id-180'>
       <!-- parameter of type 'pex_obj*' -->
       <parameter type-id='type-id-131'/>
       <!-- parameter of type 'int' -->
@@ -12546,7 +12546,7 @@
       <return type-id='type-id-18'/>
     </function-type>
     <!-- int (pex_obj*, int*, int) -->
-    <function-type size-in-bits='64' id='type-id-176'>
+    <function-type size-in-bits='64' id='type-id-181'>
       <!-- parameter of type 'pex_obj*' -->
       <parameter type-id='type-id-131'/>
       <!-- parameter of type 'int*' -->
@@ -12577,7 +12577,7 @@
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-18'/>
       <!-- parameter of type 'const char**' -->
-      <parameter type-id='type-id-338'/>
+      <parameter type-id='type-id-328'/>
       <!-- parameter of type 'int*' -->
       <parameter type-id='type-id-42'/>
       <!-- typedef pid_t -->
@@ -12596,7 +12596,7 @@
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-18'/>
       <!-- parameter of type 'const char**' -->
-      <parameter type-id='type-id-338'/>
+      <parameter type-id='type-id-328'/>
       <!-- parameter of type 'int*' -->
       <parameter type-id='type-id-42'/>
       <!-- typedef pid_t -->

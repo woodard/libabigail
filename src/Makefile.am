@@ -38,6 +38,8 @@ abg-tools-utils.cc			\
 abg-elf-helpers.h			\
 abg-elf-helpers.cc			\
 abg-regex.cc				\
+abg-symtab-reader.h			\
+abg-symtab-reader.cc			\
 $(VIZ_SOURCES)
 
 libabigail_la_LIBADD = $(DEPS_LIBS)

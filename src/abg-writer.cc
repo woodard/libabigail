@@ -591,8 +591,8 @@ public:
       if (!l && !r)
 	return false;
 
-      string r1 = ir::get_pretty_representation(l),
-	r2 = ir::get_pretty_representation(r);
+      string r1 = ir::get_pretty_representation(l, true),
+	r2 = ir::get_pretty_representation(r, true);
 
       if (r1 == r2)
 	{

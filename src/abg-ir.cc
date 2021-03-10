@@ -1316,6 +1316,8 @@ struct elf_symbol::priv
   //     STT_COMMON definition of that name that has the largest size.
   bool			is_common_;
   bool			is_linux_string_cst_;
+  bool			is_in_ksymtab_;
+  bool			is_suppressed_;
   elf_symbol_wptr	main_symbol_;
   elf_symbol_wptr	next_alias_;
   elf_symbol_wptr	next_common_instance_;
@@ -1330,20 +1332,24 @@ struct elf_symbol::priv
       visibility_(elf_symbol::DEFAULT_VISIBILITY),
       is_defined_(false),
       is_common_(false),
-      is_linux_string_cst_(false)
+      is_linux_string_cst_(false),
+      is_in_ksymtab_(false),
+      is_suppressed_(false)
   {}
 
-  priv(const environment*		e,
-       size_t				i,
-       size_t				s,
-       const string&			n,
-       elf_symbol::type		t,
-       elf_symbol::binding		b,
-       bool				d,
-       bool				c,
-       const elf_symbol::version&	ve,
-       elf_symbol::visibility		vi,
-       bool				is_linux_string_cst)
+  priv(const environment*	  e,
+       size_t			  i,
+       size_t			  s,
+       const string&		  n,
+       elf_symbol::type		  t,
+       elf_symbol::binding	  b,
+       bool			  d,
+       bool			  c,
+       const elf_symbol::version& ve,
+       elf_symbol::visibility	  vi,
+       bool			  is_linux_string_cst,
+       bool			  is_in_ksymtab,
+       bool			  is_suppressed)
     : env_(e),
       index_(i),
       size_(s),
@@ -1354,7 +1360,9 @@ struct elf_symbol::priv
       visibility_(vi),
       is_defined_(d),
       is_common_(c),
-      is_linux_string_cst_(is_linux_string_cst)
+      is_linux_string_cst_(is_linux_string_cst),
+      is_in_ksymtab_(is_in_ksymtab),
+      is_suppressed_(is_suppressed)
   {
     if (!is_common_)
       is_common_ = type_ == COMMON_TYPE;
@@ -1400,19 +1408,32 @@ elf_symbol::elf_symbol()
 ///
 /// @param is_linux_string_cst true if the symbol is a Linux Kernel
 /// string constant defined in the __ksymtab_strings section.
-elf_symbol::elf_symbol(const environment*	e,
-		       size_t			i,
-		       size_t			s,
-		       const string&		n,
-		       type			t,
-		       binding			b,
-		       bool			d,
-		       bool			c,
-		       const version&		ve,
-		       visibility		vi,
-		       bool			is_linux_string_cst)
-  : priv_(new priv(e, i, s, n, t, b, d,
-		   c, ve, vi, is_linux_string_cst))
+elf_symbol::elf_symbol(const environment* e,
+		       size_t		  i,
+		       size_t		  s,
+		       const string&	  n,
+		       type		  t,
+		       binding		  b,
+		       bool		  d,
+		       bool		  c,
+		       const version&	  ve,
+		       visibility	  vi,
+		       bool		  is_linux_string_cst,
+		       bool		  is_in_ksymtab,
+		       bool		  is_suppressed)
+  : priv_(new priv(e,
+		   i,
+		   s,
+		   n,
+		   t,
+		   b,
+		   d,
+		   c,
+		   ve,
+		   vi,
+		   is_linux_string_cst,
+		   is_in_ksymtab,
+		   is_suppressed))
 {}
 
 /// Factory of instances of @ref elf_symbol.
@@ -1459,20 +1480,23 @@ elf_symbol::create()
 /// @return a (smart) pointer to a newly created instance of @ref
 /// elf_symbol.
 elf_symbol_sptr
-elf_symbol::create(const environment*	e,
-		   size_t		i,
-		   size_t		s,
-		   const string&	n,
-		   type		t,
-		   binding		b,
-		   bool		d,
-		   bool		c,
-		   const version&	ve,
-		   visibility		vi,
-		   bool		is_linux_string_cst)
+elf_symbol::create(const environment* e,
+		   size_t	      i,
+		   size_t	      s,
+		   const string&      n,
+		   type		      t,
+		   binding	      b,
+		   bool		      d,
+		   bool		      c,
+		   const version&     ve,
+		   visibility	      vi,
+		   bool		      is_linux_string_cst,
+		   bool		      is_in_ksymtab,
+		   bool		      is_suppressed)
 {
-  elf_symbol_sptr sym(new elf_symbol(e, i, s, n, t, b, d, c, ve,
-				     vi, is_linux_string_cst));
+  elf_symbol_sptr sym(new elf_symbol(e, i, s, n, t, b, d, c, ve, vi,
+				     is_linux_string_cst,
+				     is_in_ksymtab, is_suppressed));
   sym->priv_->main_symbol_ = sym;
   return sym;
 }
@@ -1691,6 +1715,40 @@ elf_symbol::is_function() const
 bool
 elf_symbol::is_variable() const
 {return get_type() == OBJECT_TYPE || get_type() == TLS_TYPE;}
+
+/// Getter of the 'is-in-ksymtab' property.
+///
+/// @return true iff the current symbol is in the Linux Kernel
+/// specific 'ksymtab' symbol table.
+bool
+elf_symbol::is_in_ksymtab() const
+{return priv_->is_in_ksymtab_;}
+
+/// Setter of the 'is-in-ksymtab' property.
+///
+/// @param is_in_ksymtab this is true iff the current symbol is in the
+/// Linux Kernel specific 'ksymtab' symbol table.
+void
+elf_symbol::set_is_in_ksymtab(bool is_in_ksymtab)
+{priv_->is_in_ksymtab_ = is_in_ksymtab;}
+
+/// Getter for the 'is-suppressed' property.
+///
+/// @return true iff the current symbol has been suppressed by a
+/// suppression specification that was provided in the context that
+/// led to the creation of the corpus this ELF symbol belongs to.
+bool
+elf_symbol::is_suppressed() const
+{return priv_->is_suppressed_;}
+
+/// Setter for the 'is-suppressed' property.
+///
+/// @param true iff the current symbol has been suppressed by a
+/// suppression specification that was provided in the context that
+/// led to the creation of the corpus this ELF symbol belongs to.
+void
+elf_symbol::set_is_suppressed(bool is_suppressed)
+{priv_->is_suppressed_ = is_suppressed;}
 
 /// @name Elf symbol aliases
 ///

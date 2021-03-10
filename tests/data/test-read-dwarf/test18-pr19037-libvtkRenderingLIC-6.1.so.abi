@@ -3302,40 +3302,52 @@
       <return type-id='type-id-38'/>
     </function-decl>
     <pointer-type-def type-id='type-id-319' size-in-bits='64' id='type-id-57'/>
+    <namespace-decl name='std'>
+      <class-decl name='__false_type' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/cpp_type_traits.h' line='79' column='1' id='type-id-307'/>
+    </namespace-decl>
+    <namespace-decl name='std'>
+      <class-decl name='forward_iterator_tag' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='83' column='1' id='type-id-308'>
+        <base-class access='public' layout-offset-in-bits='0' type-id='type-id-320'/>
+      </class-decl>
+    </namespace-decl>
+    <class-decl name='vtkAbstractArray' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-242'/>
     <class-decl name='vtkDataArray' visibility='default' is-declaration-only='yes' id='type-id-247'/>
     <class-decl name='vtkDataSet' visibility='default' is-declaration-only='yes' id='type-id-255'/>
     <class-decl name='vtkImageAlgorithm' visibility='default' is-declaration-only='yes' id='type-id-100'/>
     <class-decl name='vtkImageData' visibility='default' is-declaration-only='yes' id='type-id-258'/>
     <class-decl name='vtkImageNoiseSource' visibility='default' is-declaration-only='yes' id='type-id-260'/>
+    <class-decl name='vtkInformation' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-261'/>
     <class-decl name='vtkInformationVector' visibility='default' is-declaration-only='yes' id='type-id-262'/>
     <class-decl name='vtkOpenGLRenderWindow' visibility='default' is-declaration-only='yes' id='type-id-264'/>
     <class-decl name='vtkPointData' visibility='default' is-declaration-only='yes' id='type-id-275'/>
+    <class-decl name='vtkProgressObserver' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-277'/>
+    <class-decl name='vtkRenderWindow' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-279'/>
     <class-decl name='vtkShaderProgram2' visibility='default' is-declaration-only='yes' id='type-id-281'/>
     <class-decl name='vtkWeakPointer&lt;vtkImageDataLIC2D&gt;' size-in-bits='64' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkWeakPointer.h' line='47' column='1' id='type-id-62'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-74'/>
       <member-function access='private'>
         <function-decl name='vtkWeakPointer' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkWeakPointer.h' line='51' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-320' is-artificial='yes'/>
+          <parameter type-id='type-id-321' is-artificial='yes'/>
           <return type-id='type-id-27'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
         <function-decl name='vtkWeakPointer' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkWeakPointer.h' line='55' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-320' is-artificial='yes'/>
+          <parameter type-id='type-id-321' is-artificial='yes'/>
           <parameter type-id='type-id-66'/>
           <return type-id='type-id-27'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
         <function-decl name='vtkWeakPointer' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkWeakPointer.h' line='59' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-320' is-artificial='yes'/>
+          <parameter type-id='type-id-321' is-artificial='yes'/>
           <parameter type-id='type-id-77'/>
           <return type-id='type-id-27'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
         <function-decl name='vtkWeakPointer' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkWeakPointer.h' line='133' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-320' is-artificial='yes'/>
+          <parameter type-id='type-id-321' is-artificial='yes'/>
           <parameter type-id='type-id-66'/>
           <parameter type-id='type-id-78'/>
           <return type-id='type-id-27'/>
@@ -3344,8 +3356,8 @@
     </class-decl>
     <qualified-type-def type-id='type-id-150' const='yes' id='type-id-305'/>
     <qualified-type-def type-id='type-id-182' id='type-id-309'/>
-    <reference-type-def kind='lvalue' type-id='type-id-321' size-in-bits='64' id='type-id-64'/>
-    <pointer-type-def type-id='type-id-321' size-in-bits='64' id='type-id-67'/>
+    <reference-type-def kind='lvalue' type-id='type-id-322' size-in-bits='64' id='type-id-64'/>
+    <pointer-type-def type-id='type-id-322' size-in-bits='64' id='type-id-67'/>
     <function-type size-in-bits='64' id='type-id-205'>
       <parameter type-id='type-id-14'/>
       <parameter type-id='type-id-14'/>
@@ -3355,61 +3367,49 @@
       <return type-id='type-id-27'/>
     </function-type>
     <array-type-def dimensions='1' type-id='type-id-17' size-in-bits='192' id='type-id-60'>
-      <subrange length='6' type-id='type-id-4' id='type-id-322'/>
+      <subrange length='6' type-id='type-id-4' id='type-id-323'/>
     </array-type-def>
     <pointer-type-def type-id='type-id-306' size-in-bits='64' id='type-id-311'/>
-    <namespace-decl name='std'>
-      <class-decl name='__false_type' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/cpp_type_traits.h' line='79' column='1' id='type-id-307'/>
-    </namespace-decl>
-    <namespace-decl name='std'>
-      <class-decl name='forward_iterator_tag' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='83' column='1' id='type-id-308'>
-        <base-class access='public' layout-offset-in-bits='0' type-id='type-id-323'/>
-      </class-decl>
-    </namespace-decl>
-    <class-decl name='vtkAbstractArray' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-242'/>
-    <class-decl name='vtkInformation' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-261'/>
-    <class-decl name='vtkProgressObserver' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-277'/>
-    <class-decl name='vtkRenderWindow' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-279'/>
     <pointer-type-def type-id='type-id-14' size-in-bits='64' id='type-id-316'/>
     <qualified-type-def type-id='type-id-63' const='yes' id='type-id-65'/>
     <pointer-type-def type-id='type-id-267' size-in-bits='64' id='type-id-313'/>
     <pointer-type-def type-id='type-id-110' size-in-bits='64' id='type-id-112'/>
-    <qualified-type-def type-id='type-id-58' const='yes' id='type-id-321'/>
     <namespace-decl name='std'>
-      <class-decl name='input_iterator_tag' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='79' column='1' id='type-id-323'/>
+      <class-decl name='input_iterator_tag' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='79' column='1' id='type-id-320'/>
     </namespace-decl>
+    <qualified-type-def type-id='type-id-58' const='yes' id='type-id-322'/>
     <typedef-decl name='GLfloat' type-id='type-id-16' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/mesa@8.0.5-22dd4c4b/include/GL/gl.h' line='160' column='1' id='type-id-319'/>
-    <pointer-type-def type-id='type-id-62' size-in-bits='64' id='type-id-320'/>
+    <pointer-type-def type-id='type-id-62' size-in-bits='64' id='type-id-321'/>
   </abi-instr>
   <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2DExtentTranslator.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-17' size-in-bits='192' id='type-id-60'>
-      <subrange length='6' type-id='type-id-4' id='type-id-322'/>
+      <subrange length='6' type-id='type-id-4' id='type-id-323'/>
     </array-type-def>
     <class-decl name='vtkWeakPointer&lt;vtkImageDataLIC2D&gt;' size-in-bits='64' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkWeakPointer.h' line='47' column='1' id='type-id-62'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-74'/>
       <member-function access='private'>
         <function-decl name='vtkWeakPointer' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkWeakPointer.h' line='51' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-320' is-artificial='yes'/>
+          <parameter type-id='type-id-321' is-artificial='yes'/>
           <return type-id='type-id-27'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
         <function-decl name='vtkWeakPointer' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkWeakPointer.h' line='55' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-320' is-artificial='yes'/>
+          <parameter type-id='type-id-321' is-artificial='yes'/>
           <parameter type-id='type-id-66'/>
           <return type-id='type-id-27'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
         <function-decl name='vtkWeakPointer' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkWeakPointer.h' line='59' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-320' is-artificial='yes'/>
+          <parameter type-id='type-id-321' is-artificial='yes'/>
           <parameter type-id='type-id-77'/>
           <return type-id='type-id-27'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
         <function-decl name='vtkWeakPointer' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkWeakPointer.h' line='133' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-320' is-artificial='yes'/>
+          <parameter type-id='type-id-321' is-artificial='yes'/>
           <parameter type-id='type-id-66'/>
           <parameter type-id='type-id-78'/>
           <return type-id='type-id-27'/>
@@ -3420,9 +3420,9 @@
     <reference-type-def kind='lvalue' type-id='type-id-325' size-in-bits='64' id='type-id-326'/>
     <pointer-type-def type-id='type-id-325' size-in-bits='64' id='type-id-327'/>
     <qualified-type-def type-id='type-id-327' const='yes' id='type-id-328'/>
-    <qualified-type-def type-id='type-id-58' const='yes' id='type-id-321'/>
-    <reference-type-def kind='lvalue' type-id='type-id-321' size-in-bits='64' id='type-id-64'/>
-    <pointer-type-def type-id='type-id-321' size-in-bits='64' id='type-id-67'/>
+    <qualified-type-def type-id='type-id-58' const='yes' id='type-id-322'/>
+    <reference-type-def kind='lvalue' type-id='type-id-322' size-in-bits='64' id='type-id-64'/>
+    <pointer-type-def type-id='type-id-322' size-in-bits='64' id='type-id-67'/>
     <qualified-type-def type-id='type-id-62' const='yes' id='type-id-329'/>
     <pointer-type-def type-id='type-id-329' size-in-bits='64' id='type-id-330'/>
     <qualified-type-def type-id='type-id-330' const='yes' id='type-id-331'/>
@@ -3430,8 +3430,8 @@
     <reference-type-def kind='lvalue' type-id='type-id-99' size-in-bits='64' id='type-id-334'/>
     <qualified-type-def type-id='type-id-63' const='yes' id='type-id-65'/>
     <reference-type-def kind='lvalue' type-id='type-id-62' size-in-bits='64' id='type-id-335'/>
-    <pointer-type-def type-id='type-id-62' size-in-bits='64' id='type-id-320'/>
-    <qualified-type-def type-id='type-id-320' const='yes' id='type-id-336'/>
+    <pointer-type-def type-id='type-id-62' size-in-bits='64' id='type-id-321'/>
+    <qualified-type-def type-id='type-id-321' const='yes' id='type-id-336'/>
     <namespace-decl name='std'>
       <class-decl name='ctype&lt;char&gt;' visibility='default' is-declaration-only='yes' id='type-id-324'>
         <member-type access='private'>
@@ -4346,7 +4346,7 @@
       <class-decl name='bidirectional_iterator_tag' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='86' column='1' id='type-id-473'>
         <base-class access='public' layout-offset-in-bits='0' type-id='type-id-308'/>
       </class-decl>
-      <class-decl name='input_iterator_tag' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='79' column='1' id='type-id-323'/>
+      <class-decl name='input_iterator_tag' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='79' column='1' id='type-id-320'/>
       <class-decl name='basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stringfwd.h' line='52' column='1' id='type-id-410'>
         <member-type access='private'>
           <class-decl name='_Rep_base' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='141' column='1' id='type-id-474'>
@@ -4738,7 +4738,7 @@
         </member-function>
       </class-decl>
       <class-decl name='forward_iterator_tag' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='83' column='1' id='type-id-308'>
-        <base-class access='public' layout-offset-in-bits='0' type-id='type-id-323'/>
+        <base-class access='public' layout-offset-in-bits='0' type-id='type-id-320'/>
       </class-decl>
       <class-decl name='__false_type' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/cpp_type_traits.h' line='79' column='1' id='type-id-307'/>
       <class-decl name='vector&lt;vtkPixelBufferObject*, std::allocator&lt;vtkPixelBufferObject*&gt; &gt;' size-in-bits='192' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='171' column='1' id='type-id-426'>
@@ -7346,9 +7346,16 @@
         </function-decl>
       </member-function>
     </class-decl>
+    <class-decl name='vtkActor' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-601'/>
     <class-decl name='vtkClipPlanesPainter' visibility='default' is-declaration-only='yes' id='type-id-602'/>
     <class-decl name='vtkCoincidentTopologyResolutionPainter' visibility='default' is-declaration-only='yes' id='type-id-604'/>
+    <class-decl name='vtkCompositePainter' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-606'/>
+    <class-decl name='vtkDisplayListPainter' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-609'/>
     <class-decl name='vtkGarbageCollector' visibility='default' is-declaration-only='yes' id='type-id-611'/>
+    <class-decl name='vtkLightingPainter' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-612'/>
+    <class-decl name='vtkRenderer' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-615'/>
+    <class-decl name='vtkRepresentationPainter' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-616'/>
+    <class-decl name='vtkScalarsToColorsPainter' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-618'/>
     <class-decl name='vtkSmartPointer&lt;vtkBackgroundColorMonitor&gt;' size-in-bits='64' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkSmartPointer.h' line='27' column='1' id='type-id-579'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-624'/>
       <member-function access='private'>
@@ -7626,13 +7633,6 @@
     <array-type-def dimensions='1' type-id='type-id-15' size-in-bits='192' id='type-id-590'>
       <subrange length='3' type-id='type-id-4' id='type-id-642'/>
     </array-type-def>
-    <class-decl name='vtkActor' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-601'/>
-    <class-decl name='vtkCompositePainter' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-606'/>
-    <class-decl name='vtkDisplayListPainter' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-609'/>
-    <class-decl name='vtkLightingPainter' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-612'/>
-    <class-decl name='vtkRenderer' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-615'/>
-    <class-decl name='vtkRepresentationPainter' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-616'/>
-    <class-decl name='vtkScalarsToColorsPainter' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-618'/>
     <array-type-def dimensions='1' type-id='type-id-643' size-in-bits='512' id='type-id-577'>
       <subrange length='8' type-id='type-id-4' id='type-id-644'/>
     </array-type-def>
@@ -7706,9 +7706,9 @@
         </function-decl>
       </member-function>
     </class-decl>
+    <class-decl name='vtkWindow' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-645'/>
     <reference-type-def kind='lvalue' type-id='type-id-651' size-in-bits='64' id='type-id-627'/>
     <qualified-type-def type-id='type-id-572' const='yes' id='type-id-641'/>
-    <class-decl name='vtkWindow' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-645'/>
     <pointer-type-def type-id='type-id-652' size-in-bits='64' id='type-id-626'/>
     <pointer-type-def type-id='type-id-653' size-in-bits='64' id='type-id-629'/>
     <pointer-type-def type-id='type-id-654' size-in-bits='64' id='type-id-633'/>

@@ -161,7 +161,6 @@
     <typedef-decl name='__off_t' type-id='type-id-20' filepath='/usr/include/bits/types.h' line='152' column='1' id='type-id-18'/>
     <typedef-decl name='cache_elem' type-id='type-id-21' filepath='./gdbmdefs.h' line='166' column='1' id='type-id-15'/>
     <typedef-decl name='hash_bucket' type-id='type-id-22' filepath='./gdbmdefs.h' line='137' column='1' id='type-id-16'/>
-    <type-decl name='long int' size-in-bits='64' id='type-id-20'/>
     <class-decl name='gdbm_file_info' size-in-bits='1344' is-struct='yes' visibility='default' filepath='./gdbmdefs.h' line='172' column='1' id='type-id-19'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='name' type-id='type-id-23' visibility='default' filepath='./gdbmdefs.h' line='177' column='1'/>
@@ -291,6 +290,7 @@
         <var-decl name='h_table' type-id='type-id-34' visibility='default' filepath='./gdbmdefs.h' line='136' column='1'/>
       </data-member>
     </class-decl>
+    <type-decl name='long int' size-in-bits='64' id='type-id-20'/>
     <array-type-def dimensions='1' type-id='type-id-35' size-in-bits='768' id='type-id-33'>
       <subrange length='6' type-id='type-id-36' id='type-id-37'/>
     </array-type-def>

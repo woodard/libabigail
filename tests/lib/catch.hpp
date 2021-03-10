@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: BSL-1.0
 /*
  *  Catch v2.13.4
  *  Generated: 2020-12-29 14:48:00.116107

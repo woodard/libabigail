@@ -3495,6 +3495,10 @@
     <pointer-type-def type-id='type-id-298' size-in-bits='64' id='type-id-299'/>
     <pointer-type-def type-id='type-id-282' size-in-bits='64' id='type-id-289'/>
     <pointer-type-def type-id='type-id-291' size-in-bits='64' id='type-id-292'/>
+    <class-decl name='_IO_FILE' size-in-bits='1728' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-28'/>
+    <class-decl name='lconv' size-in-bits='768' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-233'/>
+    <class-decl name='__anonymous_struct__2' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-30' visibility='default' is-declaration-only='yes' id='type-id-32'/>
+    <class-decl name='__anonymous_struct__3' size-in-bits='64' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-37' visibility='default' is-declaration-only='yes' id='type-id-36'/>
     <reference-type-def kind='lvalue' type-id='type-id-311' size-in-bits='64' id='type-id-300'/>
     <reference-type-def kind='lvalue' type-id='type-id-312' size-in-bits='64' id='type-id-290'/>
     <qualified-type-def type-id='type-id-284' const='yes' id='type-id-288'/>
@@ -3507,10 +3511,6 @@
     <function-type size-in-bits='64' id='type-id-243'>
       <return type-id='type-id-19'/>
     </function-type>
-    <class-decl name='_IO_FILE' size-in-bits='1728' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-28'/>
-    <class-decl name='lconv' size-in-bits='768' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-233'/>
-    <class-decl name='__anonymous_struct__2' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-30' visibility='default' is-declaration-only='yes' id='type-id-32'/>
-    <class-decl name='__anonymous_struct__3' size-in-bits='64' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-37' visibility='default' is-declaration-only='yes' id='type-id-36'/>
     <qualified-type-def type-id='type-id-298' const='yes' id='type-id-311'/>
     <qualified-type-def type-id='type-id-282' const='yes' id='type-id-312'/>
     <qualified-type-def type-id='type-id-291' const='yes' id='type-id-313'/>
