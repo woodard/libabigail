@@ -78,13 +78,6 @@ AC_ARG_ENABLE(tar,
 	      ENABLE_TAR=$enableval,
 	      ENABLE_TAR=auto)
 
-AC_ARG_ENABLE(zip-archive,
-	      AS_HELP_STRING([--enable-zip-archive=yes|no|auto],
-			     [enable bundling of TUs in zip archives (default is no)]),
-	      ENABLE_ZIP_ARCHIVE=$enableval,
-	      ENABLE_ZIP_ARCHIVE=no)
-
-
 AC_ARG_ENABLE(apidoc,
 	      AS_HELP_STRING([--enable-apidoc=yes|no|auto],
 			     [enable generation of the apidoc in html]),
@@ -542,49 +535,7 @@ AM_CONDITIONAL(ENABLE_RUNNING_TESTS_WITH_PY3, test x$RUN_TESTS_WITH_PY3 = xyes)
 AM_CONDITIONAL(ENABLE_PYTHON3_INTERPRETER, test x$PYTHON3_INTERPRETER != xno)
 AC_SUBST(PYTHON)
 
-dnl Check for dependency: libzip
-LIBZIP_VERSION=0.10.1
-
-HAS_LIBZIP=no
-# The below doesn't seem to work on my box for a reason.  Let's write
-# the damn thing by hand:
-# PKG_CHECK_EXISTS([libzip >= $LIBZIP_VERSION], [HAS_LIBZIP=yes], [HAS_LIBZIP=no])
-
-if $PKG_CONFIG --exists --print-errors "libzip >= $LIBZIP_VERSION"; then
-   AC_MSG_NOTICE(found libzip version $LIBZIP_VERSION)
-   HAS_LIBZIP=yes
-else
-   AC_MSG_NOTICE(no libzip >= $LIBZIP_VERSION has been found)
-   HAS_LIBZIP=no
-fi
-
-if test x$ENABLE_ZIP_ARCHIVE = xauto; then
-   if test x$HAS_LIBZIP = xyes; then
-      ENABLE_ZIP_ARCHIVE=yes;
-   else
-      ENABLE_ZIP_ARCHIVE=no
-   fi
-fi
-
-if test x$ENABLE_ZIP_ARCHIVE = xyes; then
-   AC_MSG_NOTICE(the zip-archive feature is enabled)
-else
-   AC_MSG_NOTICE(the zip-archive feature is disabled)
-fi
-
-FOUND_LIBZIP=no
-if test x$ENABLE_ZIP_ARCHIVE = xyes; then
-   PKG_CHECK_MODULES(LIBZIP, libzip >= $LIBZIP_VERSION)
-   FOUND_LIBZIP=yes
-   AC_SUBST(LIBZIP_VERSION)
-   AC_SUBST(LIBZIP_LIBS)
-   AC_SUBST(LIBZIP_CFLAGS)
-   AC_DEFINE([WITH_ZIP_ARCHIVE], 1, [compile the zip archive support])
-   AC_DEFINE([HAVE_LIBZIP], 1, [Defined to 1 if the libzip library is available])
-fi
-
-AM_CONDITIONAL(ENABLE_ZIP_ARCHIVE, test x$ENABLE_ZIP_ARCHIVE = xyes)
-DEPS_CPPFLAGS="$XML_CFLAGS $LIBZIP_CFLAGS"
+DEPS_CPPFLAGS="$XML_CFLAGS"
 AC_SUBST(DEPS_CPPFLAGS)
 
 dnl Check for the presence of doxygen program
@@ -626,7 +577,7 @@ AX_VALGRIND_CHECK
 
 dnl Set the list of libraries libabigail depends on
 
-DEPS_LIBS="$XML_LIBS $LIBZIP_LIBS $ELF_LIBS $DW_LIBS"
+DEPS_LIBS="$XML_LIBS $ELF_LIBS $DW_LIBS"
 AC_SUBST(DEPS_LIBS)
 
 if test x$ABIGAIL_DEVEL != x; then
@@ -959,7 +910,6 @@ AC_MSG_NOTICE([
     Python					   : ${PYTHON}
 
  OPTIONAL FEATURES:
-    Enable zip archives                            : ${ENABLE_ZIP_ARCHIVE}
     C++ standard level                             : ${CXX_STANDARD}
     libdw has the dwarf_getalt function            : ${FOUND_DWARF_GETALT_IN_LIBDW}
     Enable rpm support in abipkgdiff               : ${ENABLE_RPM}

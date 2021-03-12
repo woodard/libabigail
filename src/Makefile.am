@@ -28,7 +28,6 @@ abg-comp-filter.cc			\
 abg-reader.cc				\
 abg-dwarf-reader.cc			\
 abg-libxml-utils.cc			\
-abg-libzip-utils.cc			\
 abg-hash.cc				\
 abg-writer.cc				\
 abg-config.cc				\

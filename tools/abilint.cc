@@ -57,9 +57,6 @@ using abigail::xml_writer::write_context_sptr;
 using abigail::xml_writer::create_write_context;
 using abigail::xml_writer::write_corpus;
 using abigail::xml_writer::write_corpus_to_archive;
-#ifdef WITH_ZIP_ARCHIVE
-using abigail::xml_reader::read_corpus_from_file;
-#endif
 
 struct options
 {
@@ -370,11 +367,6 @@ main(int argc, char* argv[])
 	    group = read_corpus_group_from_input(*ctxt);
 	  }
 	  break;
-	case abigail::tools_utils::FILE_TYPE_ZIP_CORPUS:
-#if WITH_ZIP_ARCHIVE
-	  corp = read_corpus_from_file(opts.file_path);
-#endif
-	  break;
 	case abigail::tools_utils::FILE_TYPE_RPM:
 	  break;
 	case abigail::tools_utils::FILE_TYPE_SRPM:
@@ -454,13 +446,6 @@ main(int argc, char* argv[])
 	      if (!opts.noout)
 		is_ok = write_corpus(*ctxt, corp, 0);
 	    }
-	  else if (type == abigail::tools_utils::FILE_TYPE_ZIP_CORPUS)
-	    {
-#ifdef WITH_ZIP_ARCHIVE
-	      if (!opts.noout)
-		is_ok = write_corpus_to_archive(*corp, tmp_file->get_path());
-#endif //WITH_ZIP_ARCHIVE
-	    }
 	}
 
       if (!is_ok)
@@ -478,8 +463,7 @@ main(int argc, char* argv[])
 	  && opts.diff
 	  && ((type == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
 	      ||type == abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP
-	      || type == abigail::tools_utils::FILE_TYPE_NATIVE_BI
-	      || type == abigail::tools_utils::FILE_TYPE_ZIP_CORPUS))
+	      || type == abigail::tools_utils::FILE_TYPE_NATIVE_BI))
 	{
 	  string cmd = "diff -u " + opts.file_path + " " + tmp_file->get_path();
 	  if (system(cmd.c_str()))
