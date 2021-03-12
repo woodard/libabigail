@@ -26,7 +26,6 @@
 ./include/abg-interned-str.h:1:// SPDX-License-Identifier: LGPL-3.0-or-later
 ./include/abg-ir.h:1:// SPDX-License-Identifier: LGPL-3.0-or-later
 ./include/abg-libxml-utils.h:1:// SPDX-License-Identifier: LGPL-3.0-or-later
-./include/abg-libzip-utils.h:1:// SPDX-License-Identifier: LGPL-3.0-or-later
 ./include/abg-regex.h:1:// SPDX-License-Identifier: LGPL-3.0-or-later
 ./include/abg-reporter.h:1:// SPDX-License-Identifier: LGPL-3.0-or-later
 ./include/abg-sptr-utils.h:1:// SPDX-License-Identifier: LGPL-3.0-or-later
@@ -57,7 +56,6 @@
 ./src/abg-internal.h:1:// SPDX-License-Identifier: LGPL-3.0-or-later
 ./src/abg-ir-priv.h:1:// SPDX-License-Identifier: LGPL-3.0-or-later
 ./src/abg-leaf-reporter.cc:1:// SPDX-License-Identifier: LGPL-3.0-or-later
-./src/abg-libzip-utils.cc:1:// SPDX-License-Identifier: LGPL-3.0-or-later
 ./src/abg-reporter-priv.cc:1:// SPDX-License-Identifier: LGPL-3.0-or-later
 ./src/abg-suppression-priv.h:1:// SPDX-License-Identifier: LGPL-3.0-or-later
 ./src/abg-viz-svg.cc:1:// SPDX-License-Identifier: LGPL-3.0-or-later

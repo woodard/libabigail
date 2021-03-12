@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- mode: C++ -*-
 //
-// Copyright (C) 2013-2020 Red Hat, Inc.
+// Copyright (C) 2013-2021 Red Hat, Inc.
 
 /// @file
 ///
@@ -34,10 +34,6 @@ ABG_BEGIN_EXPORT_DECLARATIONS
 #include "abg-reader.h"
 #include "abg-corpus.h"
 
-#ifdef WITH_ZIP_ARCHIVE
-#include "abg-libzip-utils.h"
-#endif
-
 ABG_END_EXPORT_DECLARATIONS
 // </headers defining libabigail's API>
 
@@ -56,12 +52,6 @@ using std::unordered_map;
 using std::dynamic_pointer_cast;
 using std::vector;
 using std::istream;
-#ifdef WITH_ZIP_ARCHIVE
-using zip_utils::zip_sptr;
-using zip_utils::zip_file_sptr;
-using zip_utils::open_archive;
-using zip_utils::open_file_in_archive;
-#endif //WITH_ZIP_ARCHIVE
 
 static bool	read_is_declaration_only(xmlNodePtr, bool&);
 static bool	read_is_artificial(xmlNodePtr, bool&);
@@ -5832,150 +5822,6 @@ struct array_deleter
   }
 };//end array_deleter
 
-#ifdef WITH_ZIP_ARCHIVE
-/// Deserialize an ABI Instrumentation XML file at a given index in a
-/// zip archive, and populate a given @ref translation_unit object
-/// with the result of that de-serialization.
-///
-/// @param the @ref translation_unit to populate with the result of
-/// the de-serialization.
-///
-/// @param ar the zip archive to read from.
-///
-/// @param file_index the index of the ABI Instrumentation XML file to
-/// read from the zip archive.
-///
-/// @return true upon successful completion, false otherwise.
-static translation_unit_sptr
-read_to_translation_unit(zip_sptr ar,
-			 int file_index)
-{
-  translation_unit_sptr nil;
-  if (!ar)
-    return nil;
-
-  zip_file_sptr f = open_file_in_archive(ar, file_index);
-  if (!f)
-    return nil;
-
-  string input;
-  {
-    // Allocate a 64K byte buffer to read the archive.
-    int buf_size = 64 * 1024;
-    shared_ptr<char> buf(new char[buf_size + 1], array_deleter<char>());
-    memset(buf.get(), 0, buf_size + 1);
-    input.reserve(buf_size);
-
-    while (zip_fread(f.get(), buf.get(), buf_size))
-      {
-	input.append(buf.get());
-	memset(buf.get(), 0, buf_size + 1);
-      }
-  }
-
-  return read_translation_unit_from_buffer(input);
-}
-
-/// Read an ABI corpus from an archive file which is a ZIP archive of
-/// several ABI Instrumentation XML files.
-///
-/// @param ar an object representing the archive file.
-///
-/// @param corp the ABI Corpus object to populate with the content of
-/// the archive @ref ar.
-///
-/// @return the number of ABI Instrumentation file read from the
-/// archive.
-static int
-read_corpus_from_archive(zip_sptr ar,
-			 corpus_sptr& corp)
-{
-  if (!ar)
-    return -1;
-
-  int nb_of_tu_read = 0;
-  int nb_entries = zip_get_num_entries(ar.get(), 0);
-  if (nb_entries < 0)
-    return -1;
-
-  // TODO: ensure abi-info descriptor is present in the archive.  Read
-  // it and ensure that version numbers match.
-  for (int i = 0; i < nb_entries; ++i)
-    {
-      shared_ptr<translation_unit>
-	tu(new translation_unit(zip_get_name(ar.get(), i, 0)));
-      if (read_to_translation_unit(*tu, ar, i))
-	{
-	  if (!corp)
-	    corp.reset(new corpus(""));
-	  corp->add(tu);
-	  ++nb_of_tu_read;
-	}
-    }
-  if (nb_of_tu_read)
-    corp->set_origin(corpus::NATIVE_XML_ORIGIN);
-  return nb_of_tu_read;
-}
-
-/// Read an ABI corpus from an archive file which is a ZIP archive of
-/// several ABI Instrumentation XML files.
-///
-/// @param corp the corpus to populate with the result of reading the
-/// archive.
-///
-/// @param path the path to the archive file.
-///
-/// @return the number of ABI Instrument XML file read from the
-/// archive, or -1 if the file could not read.
-int
-read_corpus_from_file(corpus_sptr& corp,
-		      const string& path)
-{
-  if (path.empty())
-    return -1;
-
-  int error_code = 0;
-  zip_sptr archive = open_archive(path, ZIP_CREATE|ZIP_CHECKCONS, &error_code);
-  if (error_code)
-    return -1;
-
-  ABG_ASSERT(archive);
-  return read_corpus_from_archive(archive, corp);
-}
-
-/// Read an ABI corpus from an archive file which is a ZIP archive of
-/// several ABI Instrumentation XML files.
-///
-/// @param corp the corpus to populate with the result of reading the
-/// archive.  The archive file to consider is corp.get_path().
-///
-/// @return the number of ABI Instrument XML file read from the
-/// archive.
-int
-read_corpus_from_file(corpus_sptr& corp)
-{return read_corpus_from_file(corp, corp->get_path());}
-
-/// Read an ABI corpus from an archive file which is a ZIP archive of
-/// several ABI Instrumentation XML files.
-///
-/// @param path the path to the archive file.
-///
-/// @return the resulting corpus object, or NULL if the file could not
-/// be read.
-corpus_sptr
-read_corpus_from_file(const string& path)
-{
-  if (path.empty())
-    return corpus_sptr();
-
-  corpus_sptr corp(new corpus(path));
-  if (read_corpus_from_file(corp, path) < 0)
-    return corpus_sptr();
-
-  return corp;
-}
-
-#endif //WITH_ZIP_ARCHIVE
 
 /// Create an xml_reader::read_context to read a native XML ABI file.
 ///

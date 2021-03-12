@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2020 Red Hat, Inc.
+// Copyright (C) 2013-2021 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -51,18 +51,6 @@ create_native_xml_read_context(std::istream* in, environment* env);
 
 const string&
 read_context_get_path(const read_context&);
-
-#ifdef WITH_ZIP_ARCHIVE
-corpus_sptr
-read_corpus_from_file(const string& path);
-
-int
-read_corpus_from_file(corpus_sptr& corp,
-		      const string& path);
-
-int
-read_corpus_from_file(corpus_sptr& corp);
-#endif //WITH_ZIP_ARCHIVE
 
 corpus_sptr
 read_corpus_from_native_xml(std::istream* in,

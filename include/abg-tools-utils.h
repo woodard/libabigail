@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2020 Red Hat, Inc.
+// Copyright (C) 2013-2021 Red Hat, Inc.
 
 ///@file
 
@@ -180,9 +180,6 @@ enum file_type
   // A native abixml file format representing a corpus group of one or
   // several corpora.
   FILE_TYPE_XML_CORPUS_GROUP,
-  // A zip file, possibly containing a corpus of one of several
-  // translation units.
-  FILE_TYPE_ZIP_CORPUS,
   /// An RPM (.rpm) binary file
   FILE_TYPE_RPM,
   /// An SRPM (.src.rpm) file

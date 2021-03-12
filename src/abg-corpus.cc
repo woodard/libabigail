@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- mode: C++ -*-
 //
-// Copyright (C) 2013-2020 Red Hat, Inc.
+// Copyright (C) 2013-2021 Red Hat, Inc.
 
 /// @file
 
@@ -26,10 +26,6 @@ ABG_BEGIN_EXPORT_DECLARATIONS
 #include "abg-tools-utils.h"
 #include "abg-writer.h"
 
-#if WITH_ZIP_ARCHIVE
-#include "abg-libzip-utils.h"
-#endif
-
 ABG_END_EXPORT_DECLARATIONS
 // </headers defining libabigail's API>
 
@@ -46,13 +42,6 @@ using std::ostringstream;
 using std::unordered_map;
 using std::list;
 using std::vector;
-
-#if WITH_ZIP_ARCHIVE
-using zip_utils::zip_sptr;
-using zip_utils::zip_file_sptr;
-using zip_utils::open_archive;
-using zip_utils::open_file_in_archive;
-#endif // WITH_ZIP_ARCHIVE
 
 using regex::regex_t_sptr;
 

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- mode: C++ -*-
 //
-// Copyright (C) 2013-2020 Red Hat, Inc.
+// Copyright (C) 2013-2021 Red Hat, Inc.
 
 /// @file
 ///
@@ -34,10 +34,6 @@ ABG_BEGIN_EXPORT_DECLARATIONS
 #include "abg-hash.h"
 #include "abg-sptr-utils.h"
 
-#if WITH_ZIP_ARCHIVE
-#include "abg-libzip-utils.h"
-#endif
-
 #include "abg-writer.h"
 #include "abg-libxml-utils.h"
 
@@ -58,13 +54,6 @@ using std::vector;
 using std::stack;
 using std::unordered_map;
 using abigail::sptr_utils::noop_deleter;
-
-#if WITH_ZIP_ARCHIVE
-using zip_utils::zip_sptr;
-using zip_utils::zip_file_sptr;
-using zip_utils::open_archive;
-using zip_utils::open_file_in_archive;
-#endif // WITH_ZIP_ARCHIVE
 
 /// The namespace for the native XML file format writer.
 ///
@@ -4283,197 +4272,6 @@ write_class_tdecl(const shared_ptr<class_tdecl> decl,
 
   return true;
 }
-
-#ifdef WITH_ZIP_ARCHIVE
-
-/// A context used by functions that write a corpus out to disk in a
-/// ZIP archive of ABI Instrumentation XML files.
-///
-/// The aim of this context file is to hold the buffers of data that
-/// are to be written into a given zip object, until the zip object is
-/// closed.  It's at that point that the buffers data is really
-/// flushed into the zip archive.
-///
-/// When an instance of this context type is created for a given zip
-/// object, is created, its life time should be longer than the @ref
-/// zip_sptr object it holds.
-///
-/// The definition of this type is private and should remain hidden
-/// from client code.
-struct archive_write_ctxt
-{
-  list<string> serialized_tus;
-  zip_sptr archive;
-
-  archive_write_ctxt(zip_sptr ar)
-    : archive(ar)
-  {}
-};
-typedef shared_ptr<archive_write_ctxt> archive_write_ctxt_sptr;
-
-/// Create a write context to a given archive.  The result of this
-/// function is to be passed to the functions that are to write a
-/// corpus to an archive, e.g, write_corpus_to_archive().
-///
-/// @param archive_path the path to the archive to create this write
-/// context for.
-///
-/// @return the resulting write context to pass to the functions that
-/// are to write a corpus to @ref archive_path.
-static archive_write_ctxt_sptr
-create_archive_write_context(const string& archive_path)
-{
-  if (archive_path.empty())
-    return archive_write_ctxt_sptr();
-
-  int error_code = 0;
-  zip_sptr archive = open_archive(archive_path,
-				  ZIP_CREATE|ZIP_TRUNCATE|ZIP_CHECKCONS,
-				  &error_code);
-  if (error_code)
-    return archive_write_ctxt_sptr();
-
-  archive_write_ctxt_sptr r(new archive_write_ctxt(archive));
-  return r;
-}
-
-/// Write a translation unit to an on-disk archive.  The archive is a
-/// zip archive of ABI Instrumentation files in XML format.
-///
-/// @param tu the translation unit to serialize.
-///
-/// @param ctxt the context of the serialization.  Contains
-/// information about where the archive is on disk, the zip archive,
-/// and the buffers holding the temporary data to be flushed into the archive.
-///
-/// @param annotate whether ABIXML output should be annotated.
-///
-/// @return true upon succesful serialization occured, false
-/// otherwise.
-static bool
-write_translation_unit_to_archive(const translation_unit& tu,
-				  archive_write_ctxt& ctxt,
-                                  const bool annotate)
-{
-  if (!ctxt.archive)
-    return false;
-
-  ostringstream os;
-  if (!write_translation_unit(tu, /*indent=*/0, os, annotate))
-    return false;
-  ctxt.serialized_tus.push_back(os.str());
-
-  zip_source *source;
-  if ((source = zip_source_buffer(ctxt.archive.get(),
-				  ctxt.serialized_tus.back().c_str(),
-				  ctxt.serialized_tus.back().size(),
-				  false)) == 0)
-    return false;
-
-  if (zip_file_add(ctxt.archive.get(), tu.get_path().c_str(), source,
-		   ZIP_FL_OVERWRITE|ZIP_FL_ENC_GUESS) < 0)
-    {
-      zip_source_free(source);
-      return false;
-    }
-
-  return true;
-}
-
- /// Serialize a given corpus to disk in a file at a given path.
- ///
- /// @param tu the translation unit to serialize.
- ///
- /// @param ctxt the context of the serialization.  Contains
- /// information about where the archive is on disk, the zip archive
- /// object, and the buffers holding the temporary data to be flushed
- /// into the archive.
- ///
- /// @param annotate whether ABIXML output should be annotated.
- ///
- /// @return true upon successful completion, false otherwise.
-static bool
-write_corpus_to_archive(const corpus& corp,
-			archive_write_ctxt& ctxt,
-                        const bool annotate)
-{
-  for (translation_units::const_iterator i =
-	 corp.get_translation_units().begin();
-       i != corp.get_translation_units().end();
-       ++i)
-    {
-      if (! write_translation_unit_to_archive(**i, ctxt, annotate))
-	return false;
-    }
-
-  // TODO: ensure abi-info descriptor is added to the archive.
-  return true;
-}
-
-/// Serialize a given corpus to disk in an archive file at a given
-/// path.
-///
-/// @param corp the ABI corpus to serialize.
-///
- /// @param ctxt the context of the serialization.  Contains
- /// information about where the archive is on disk, the zip archive
- /// object, and the buffers holding the temporary data to be flushed
- /// into the archive.
- ///
- /// @param annotate whether ABIXML output should be annotated.
- ///
- /// @return upon successful completion, false otherwise.
-static bool
-write_corpus_to_archive(const corpus& corp,
-			archive_write_ctxt_sptr ctxt,
-                        const bool annotate)
-{return write_corpus_to_archive(corp, *ctxt, annotate);}
-
- /// Serialize the current corpus to disk in a file at a given path.
- ///
- /// @param tu the translation unit to serialize.
- ///
- /// @param path the path of the file to serialize the
- /// translation_unit to.
- ///
- /// @param annotate whether ABIXML output should be annotated.
- ///
- /// @return true upon successful completion, false otherwise.
-bool
-write_corpus_to_archive(const corpus& corp,
-			const string& path,
-                        const bool annotate)
-{
-  archive_write_ctxt_sptr ctxt = create_archive_write_context(path);
-  ABG_ASSERT(ctxt);
-  return write_corpus_to_archive(corp, ctxt, annotate);
-}
-
- /// Serialize the current corpus to disk in a file.  The file path is
- /// given by translation_unit::get_path().
- ///
- /// @param tu the translation unit to serialize.
- ///
- /// @param annotate whether ABIXML output should be annotated.
- ///
- /// @return true upon successful completion, false otherwise.
-bool
-write_corpus_to_archive(const corpus& corp, const bool annotate)
-{return write_corpus_to_archive(corp, corp.get_path(), annotate);}
-
- /// Serialize the current corpus to disk in a file.  The file path is
- /// given by translation_unit::get_path().
- ///
- /// @param tu the translation unit to serialize.
- ///
- /// @param annotate whether ABIXML output should be annotated.
- ///
- /// @return true upon successful completion, false otherwise.
-bool
-write_corpus_to_archive(const corpus_sptr corp, const bool annotate)
-{return write_corpus_to_archive(*corp, annotate);}
-
-#endif //WITH_ZIP_ARCHIVE
 
 /// Serialize the current version number of the ABIXML format.
 ///

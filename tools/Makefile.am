@@ -1,11 +1,7 @@
 ## SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 h=$(abs_srcdir)
 
-if ENABLE_ZIP_ARCHIVE
-  bin_PROGRAMS = abiar abidiff abilint abidw abicompat abipkgdiff kmidiff
-else
-  bin_PROGRAMS = abidiff abilint abidw abicompat abipkgdiff kmidiff
-endif
+bin_PROGRAMS = abidiff abilint abidw abicompat abipkgdiff kmidiff
 
 if ENABLE_FEDABIPKGDIFF
   dist_bin_SCRIPTS = fedabipkgdiff
@@ -14,12 +10,6 @@ else
 endif
 
 noinst_PROGRAMS = abisym abinilint
-
-if ENABLE_ZIP_ARCHIVE
-abiar_SOURCES = abiar.cc
-abiardir = $(bindir)
-abiar_LDADD = ../src/libabigail.la
-endif
 
 abidiff_SOURCES = abidiff.cc
 abidiffdir = $(bindir)
