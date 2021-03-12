@@ -13,7 +13,6 @@ abg-suppression.h	\
 abg-comp-filter.h	\
 abg-diff-utils.h	\
 abg-libxml-utils.h	\
-abg-libzip-utils.h	\
 abg-fwd.h		\
 abg-hash.h		\
 abg-tools-utils.h	\

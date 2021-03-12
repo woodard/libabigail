@@ -1178,13 +1178,6 @@ main(int argc, char* argv[])
 				  argv[0], opts);
 	  }
 	  break;
-	case abigail::tools_utils::FILE_TYPE_ZIP_CORPUS:
-#ifdef WITH_ZIP_ARCHIVE
-	  c1 = abigail::xml_reader::read_corpus_from_file(opts.file1);
-	  if (!c1)
-	    return handle_error(c1_status, /*ctxt=*/0, argv[0], opts);
-#endif //WITH_ZIP_ARCHIVE
-	  break;
 	case abigail::tools_utils::FILE_TYPE_RPM:
 	case abigail::tools_utils::FILE_TYPE_SRPM:
 	case abigail::tools_utils::FILE_TYPE_DEB:
@@ -1252,13 +1245,6 @@ main(int argc, char* argv[])
 	    if (!g2)
 	      return handle_error(c2_status, /*ctxt=*/0, argv[0], opts);
 	  }
-	  break;
-	case abigail::tools_utils::FILE_TYPE_ZIP_CORPUS:
-#ifdef WITH_ZIP_ARCHIVE
-	  c2 = abigail::xml_reader::read_corpus_from_file(opts.file2);
-	  if (!c2)
-	    return handle_error(c2_status, /*ctxt=*/0, argv[0], opts);
-#endif //WITH_ZIP_ARCHIVE
 	  break;
 	case abigail::tools_utils::FILE_TYPE_RPM:
 	case abigail::tools_utils::FILE_TYPE_SRPM:

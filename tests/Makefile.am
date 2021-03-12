@@ -1,11 +1,6 @@
 ## SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 SUBDIRS = data
 
-ZIP_ARCHIVE_TESTS =
-if ENABLE_ZIP_ARCHIVE
-ZIP_ARCHIVE_TESTS += runtestwritereadarchive runtestdot
-endif
-
 AM_CXXFLAGS = $(VISIBILITY_FLAGS)
 
 FEDABIPKGDIFF_TEST =
@@ -49,8 +44,7 @@ runtestsymtab			\
 runtestsymtabreader		\
 runtesttoolsutils		\
 runtestsvg			\
-$(FEDABIPKGDIFF_TEST) 		\
-$(ZIP_ARCHIVE_TESTS)
+$(FEDABIPKGDIFF_TEST)
 
 
 if ENABLE_RUNNING_TESTS_WITH_PY3
@@ -96,9 +90,6 @@ libswaplibs_la_SOURCES= swap-libs-audit.cc
 
 runtestreadwrite_SOURCES=test-read-write.cc
 runtestreadwrite_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
-
-runtestwritereadarchive_SOURCES=test-write-read-archive.cc
-runtestwritereadarchive_LDADD= libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestreaddwarf_SOURCES=test-read-dwarf.cc
 runtestreaddwarf_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
@@ -166,9 +157,6 @@ runtestsymtabreader_LDADD = libcatch.la $(top_builddir)/src/libabigail.la
 
 runtestsvg_SOURCES=test-svg.cc
 runtestsvg_LDADD=$(top_builddir)/src/libabigail.la
-
-runtestdot_SOURCES = test-dot.cc
-runtestdot_LDADD = $(top_builddir)/src/libabigail.la
 
 testirwalker_SOURCES=test-ir-walker.cc
 testirwalker_LDADD=$(top_builddir)/src/libabigail.la

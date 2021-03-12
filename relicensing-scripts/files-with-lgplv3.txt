@@ -25,7 +25,6 @@
 ./include/abg-interned-str.h
 ./include/abg-ir.h
 ./include/abg-libxml-utils.h
-./include/abg-libzip-utils.h
 ./include/abg-regex.h
 ./include/abg-reporter.h
 ./include/abg-sptr-utils.h
@@ -56,7 +55,6 @@
 ./src/abg-internal.h
 ./src/abg-ir-priv.h
 ./src/abg-leaf-reporter.cc
-./src/abg-libzip-utils.cc
 ./src/abg-reporter-priv.cc
 ./src/abg-suppression-priv.h
 ./src/abg-viz-svg.cc
