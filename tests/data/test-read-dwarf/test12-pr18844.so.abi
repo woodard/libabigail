@@ -1844,7 +1844,7 @@
     <typedef-decl name='__gthread_mutex_t' type-id='type-id-74' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/x86_64-linux-gnu/c++/4.9/bits/gthr-default.h' line='50' column='1' id='type-id-75'/>
     <typedef-decl name='pthread_mutex_t' type-id='type-id-76' filepath='/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h' line='128' column='1' id='type-id-74'/>
     <union-decl name='__anonymous_union__' size-in-bits='320' is-anonymous='yes' visibility='default' filepath='/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h' line='90' column='1' id='type-id-76'>
-      <member-type access='private'>
+      <member-type access='public'>
         <class-decl name='__pthread_mutex_s' size-in-bits='320' is-struct='yes' visibility='default' filepath='/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h' line='92' column='1' id='type-id-77'>
           <data-member access='public' layout-offset-in-bits='0'>
             <var-decl name='__lock' type-id='type-id-43' visibility='default' filepath='/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h' line='94' column='1'/>
@@ -1872,13 +1872,13 @@
           </data-member>
         </class-decl>
       </member-type>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='__data' type-id='type-id-77' visibility='default' filepath='/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h' line='125' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='__size' type-id='type-id-19' visibility='default' filepath='/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h' line='126' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='__align' type-id='type-id-45' visibility='default' filepath='/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h' line='127' column='1'/>
       </data-member>
     </union-decl>
@@ -1894,7 +1894,7 @@
     <typedef-decl name='__gthread_cond_t' type-id='type-id-81' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/x86_64-linux-gnu/c++/4.9/bits/gthr-default.h' line='52' column='1' id='type-id-82'/>
     <typedef-decl name='pthread_cond_t' type-id='type-id-83' filepath='/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h' line='154' column='1' id='type-id-81'/>
     <union-decl name='__anonymous_union__1' size-in-bits='384' is-anonymous='yes' visibility='default' filepath='/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h' line='139' column='1' id='type-id-83'>
-      <member-type access='private'>
+      <member-type access='public'>
         <class-decl name='__anonymous_struct__' size-in-bits='384' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h' line='141' column='1' id='type-id-84'>
           <data-member access='public' layout-offset-in-bits='0'>
             <var-decl name='__lock' type-id='type-id-43' visibility='default' filepath='/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h' line='143' column='1'/>
@@ -1922,13 +1922,13 @@
           </data-member>
         </class-decl>
       </member-type>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='__data' type-id='type-id-84' visibility='default' filepath='/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h' line='151' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='__size' type-id='type-id-21' visibility='default' filepath='/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h' line='152' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='__align' type-id='type-id-46' visibility='default' filepath='/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h' line='153' column='1'/>
       </data-member>
     </union-decl>
@@ -1944,10 +1944,10 @@
     <class-decl name='__anonymous_struct__1' size-in-bits='64' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-95' visibility='default' filepath='/usr/include/wchar.h' line='82' column='1' id='type-id-97'>
       <member-type access='public'>
         <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='85' column='1' id='type-id-98'>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='__wch' type-id='type-id-30' visibility='default' filepath='/usr/include/wchar.h' line='88' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='__wchb' type-id='type-id-23' visibility='default' filepath='/usr/include/wchar.h' line='92' column='1'/>
           </data-member>
         </union-decl>
@@ -8063,145 +8063,145 @@
         </member-function>
       </class-decl>
       <union-decl name='_Any_data' size-in-bits='128' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1764' column='1' id='type-id-486'>
-        <data-member access='private'>
+        <data-member access='public'>
           <var-decl name='_M_unused' type-id='type-id-2992' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1779' column='1'/>
         </data-member>
-        <data-member access='private'>
+        <data-member access='public'>
           <var-decl name='_M_pod_data' type-id='type-id-11' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1780' column='1'/>
         </data-member>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;const std::type_info *&gt;' mangled-name='_ZNSt9_Any_data9_M_accessIPKSt9type_infoEERT_v' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1771' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt9_Any_data9_M_accessIPKSt9type_infoEERT_v'>
             <parameter type-id='type-id-1703' is-artificial='yes'/>
             <return type-id='type-id-1386'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access' mangled-name='_ZNKSt9_Any_data9_M_accessEv' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1767' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNKSt9_Any_data9_M_accessEv'>
             <parameter type-id='type-id-489' is-artificial='yes'/>
             <return type-id='type-id-31'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access' mangled-name='_ZNSt9_Any_data9_M_accessEv' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1766' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt9_Any_data9_M_accessEv'>
             <parameter type-id='type-id-1703' is-artificial='yes'/>
             <return type-id='type-id-31'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;std::_Bind&lt;std::_Bind&lt;std::_Mem_fn&lt;void (mongo::repl::ReplicationExecutor::*)(mongo::OperationContext *, const mongo::Status &amp;, const mongo::executor::TaskExecutor::CallbackHandle &amp;, std::list&lt;mongo::repl::ReplicationExecutor::WorkItem, std::allocator&lt;mongo::repl::ReplicationExecutor::WorkItem&gt; &gt; *, std::mutex *)&gt; (mongo::repl::ReplicationExecutor *, std::_Placeholder&lt;1&gt;, std::_Placeholder&lt;2&gt;, mongo::executor::TaskExecutor::CallbackHandle, std::list&lt;mongo::repl::ReplicationExecutor::WorkItem, std::allocator&lt;mongo::repl::ReplicationExecutor::WorkItem&gt; &gt; *, std::mutex *)&gt; (mongo::OperationContext *, mongo::Status)&gt; *&gt;' mangled-name='_ZNSt9_Any_data9_M_accessIPSt5_BindIFS1_IFSt7_Mem_fnIMN5mongo4repl19ReplicationExecutorEFvPNS3_16OperationContextERKNS3_6StatusERKNS3_8executor12TaskExecutor14CallbackHandleEPSt4listINS5_8WorkItemESaISH_EEPSt5mutexEEPS5_St12_PlaceholderILi1EESR_ILi2EESD_SK_SM_EES7_S8_EEEERT_v' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1771' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt9_Any_data9_M_accessIPSt5_BindIFS1_IFSt7_Mem_fnIMN5mongo4repl19ReplicationExecutorEFvPNS3_16OperationContextERKNS3_6StatusERKNS3_8executor12TaskExecutor14CallbackHandleEPSt4listINS5_8WorkItemESaISH_EEPSt5mutexEEPS5_St12_PlaceholderILi1EESR_ILi2EESD_SK_SM_EES7_S8_EEEERT_v'>
             <parameter type-id='type-id-1703' is-artificial='yes'/>
             <return type-id='type-id-1715'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;std::_Bind&lt;std::_Bind&lt;std::_Mem_fn&lt;void (mongo::repl::ReplicationExecutor::*)(mongo::OperationContext *, const mongo::Status &amp;, const mongo::executor::TaskExecutor::CallbackHandle &amp;, std::list&lt;mongo::repl::ReplicationExecutor::WorkItem, std::allocator&lt;mongo::repl::ReplicationExecutor::WorkItem&gt; &gt; *, std::mutex *)&gt; (mongo::repl::ReplicationExecutor *, std::_Placeholder&lt;1&gt;, std::_Placeholder&lt;2&gt;, mongo::executor::TaskExecutor::CallbackHandle, std::list&lt;mongo::repl::ReplicationExecutor::WorkItem, std::allocator&lt;mongo::repl::ReplicationExecutor::WorkItem&gt; &gt; *, std::mutex *)&gt; (mongo::OperationContext *, mongo::Status)&gt; *&gt;' mangled-name='_ZNKSt9_Any_data9_M_accessIPSt5_BindIFS1_IFSt7_Mem_fnIMN5mongo4repl19ReplicationExecutorEFvPNS3_16OperationContextERKNS3_6StatusERKNS3_8executor12TaskExecutor14CallbackHandleEPSt4listINS5_8WorkItemESaISH_EEPSt5mutexEEPS5_St12_PlaceholderILi1EESR_ILi2EESD_SK_SM_EES7_S8_EEEERKT_v' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1776' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNKSt9_Any_data9_M_accessIPSt5_BindIFS1_IFSt7_Mem_fnIMN5mongo4repl19ReplicationExecutorEFvPNS3_16OperationContextERKNS3_6StatusERKNS3_8executor12TaskExecutor14CallbackHandleEPSt4listINS5_8WorkItemESaISH_EEPSt5mutexEEPS5_St12_PlaceholderILi1EESR_ILi2EESD_SK_SM_EES7_S8_EEEERKT_v'>
             <parameter type-id='type-id-489' is-artificial='yes'/>
             <return type-id='type-id-1714'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;std::_Bind&lt;std::_Bind&lt;std::_Mem_fn&lt;void (mongo::repl::ReplicationExecutor::*)(mongo::OperationContext *, const mongo::Status &amp;, const mongo::executor::TaskExecutor::CallbackHandle &amp;, std::list&lt;mongo::repl::ReplicationExecutor::WorkItem, std::allocator&lt;mongo::repl::ReplicationExecutor::WorkItem&gt; &gt; *, std::mutex *)&gt; (mongo::repl::ReplicationExecutor *, std::_Placeholder&lt;1&gt;, std::_Placeholder&lt;2&gt;, mongo::executor::TaskExecutor::CallbackHandle, std::list&lt;mongo::repl::ReplicationExecutor::WorkItem, std::allocator&lt;mongo::repl::ReplicationExecutor::WorkItem&gt; &gt; *, nullptr_t)&gt; (mongo::OperationContext *, mongo::Status)&gt; *&gt;' mangled-name='_ZNSt9_Any_data9_M_accessIPSt5_BindIFS1_IFSt7_Mem_fnIMN5mongo4repl19ReplicationExecutorEFvPNS3_16OperationContextERKNS3_6StatusERKNS3_8executor12TaskExecutor14CallbackHandleEPSt4listINS5_8WorkItemESaISH_EEPSt5mutexEEPS5_St12_PlaceholderILi1EESR_ILi2EESD_SK_DnEES7_S8_EEEERT_v' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1771' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt9_Any_data9_M_accessIPSt5_BindIFS1_IFSt7_Mem_fnIMN5mongo4repl19ReplicationExecutorEFvPNS3_16OperationContextERKNS3_6StatusERKNS3_8executor12TaskExecutor14CallbackHandleEPSt4listINS5_8WorkItemESaISH_EEPSt5mutexEEPS5_St12_PlaceholderILi1EESR_ILi2EESD_SK_DnEES7_S8_EEEERT_v'>
             <parameter type-id='type-id-1703' is-artificial='yes'/>
             <return type-id='type-id-1709'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;std::_Bind&lt;std::_Bind&lt;std::_Mem_fn&lt;void (mongo::repl::ReplicationExecutor::*)(mongo::OperationContext *, const mongo::Status &amp;, const mongo::executor::TaskExecutor::CallbackHandle &amp;, std::list&lt;mongo::repl::ReplicationExecutor::WorkItem, std::allocator&lt;mongo::repl::ReplicationExecutor::WorkItem&gt; &gt; *, std::mutex *)&gt; (mongo::repl::ReplicationExecutor *, std::_Placeholder&lt;1&gt;, std::_Placeholder&lt;2&gt;, mongo::executor::TaskExecutor::CallbackHandle, std::list&lt;mongo::repl::ReplicationExecutor::WorkItem, std::allocator&lt;mongo::repl::ReplicationExecutor::WorkItem&gt; &gt; *, nullptr_t)&gt; (mongo::OperationContext *, mongo::Status)&gt; *&gt;' mangled-name='_ZNKSt9_Any_data9_M_accessIPSt5_BindIFS1_IFSt7_Mem_fnIMN5mongo4repl19ReplicationExecutorEFvPNS3_16OperationContextERKNS3_6StatusERKNS3_8executor12TaskExecutor14CallbackHandleEPSt4listINS5_8WorkItemESaISH_EEPSt5mutexEEPS5_St12_PlaceholderILi1EESR_ILi2EESD_SK_DnEES7_S8_EEEERKT_v' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1776' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNKSt9_Any_data9_M_accessIPSt5_BindIFS1_IFSt7_Mem_fnIMN5mongo4repl19ReplicationExecutorEFvPNS3_16OperationContextERKNS3_6StatusERKNS3_8executor12TaskExecutor14CallbackHandleEPSt4listINS5_8WorkItemESaISH_EEPSt5mutexEEPS5_St12_PlaceholderILi1EESR_ILi2EESD_SK_DnEES7_S8_EEEERKT_v'>
             <parameter type-id='type-id-489' is-artificial='yes'/>
             <return type-id='type-id-1708'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;std::_Bind&lt;std::_Mem_fn&lt;void (mongo::repl::ReplicationExecutor::*)(const mongo::executor::RemoteCommandRequest &amp;, const mongo::StatusWith&lt;mongo::executor::RemoteCommandResponse&gt; &amp;, const mongo::executor::TaskExecutor::CallbackHandle &amp;, unsigned long, const std::function&lt;void (const mongo::executor::TaskExecutor::RemoteCommandCallbackArgs &amp;)&gt; &amp;)&gt; (mongo::repl::ReplicationExecutor *, mongo::executor::RemoteCommandRequest, std::_Placeholder&lt;1&gt;, mongo::executor::TaskExecutor::CallbackHandle, unsigned long, std::function&lt;void (const mongo::executor::TaskExecutor::RemoteCommandCallbackArgs &amp;)&gt;)&gt; *&gt;' mangled-name='_ZNSt9_Any_data9_M_accessIPSt5_BindIFSt7_Mem_fnIMN5mongo4repl19ReplicationExecutorEFvRKNS3_8executor20RemoteCommandRequestERKNS3_10StatusWithINS6_21RemoteCommandResponseEEERKNS6_12TaskExecutor14CallbackHandleEmRKSt8functionIFvRKNSF_25RemoteCommandCallbackArgsEEEEEPS5_S7_St12_PlaceholderILi1EESG_mSO_EEEERT_v' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1771' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt9_Any_data9_M_accessIPSt5_BindIFSt7_Mem_fnIMN5mongo4repl19ReplicationExecutorEFvRKNS3_8executor20RemoteCommandRequestERKNS3_10StatusWithINS6_21RemoteCommandResponseEEERKNS6_12TaskExecutor14CallbackHandleEmRKSt8functionIFvRKNSF_25RemoteCommandCallbackArgsEEEEEPS5_S7_St12_PlaceholderILi1EESG_mSO_EEEERT_v'>
             <parameter type-id='type-id-1703' is-artificial='yes'/>
             <return type-id='type-id-1727'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;std::_Bind&lt;std::_Mem_fn&lt;void (mongo::repl::ReplicationExecutor::*)(const mongo::executor::RemoteCommandRequest &amp;, const mongo::StatusWith&lt;mongo::executor::RemoteCommandResponse&gt; &amp;, const mongo::executor::TaskExecutor::CallbackHandle &amp;, unsigned long, const std::function&lt;void (const mongo::executor::TaskExecutor::RemoteCommandCallbackArgs &amp;)&gt; &amp;)&gt; (mongo::repl::ReplicationExecutor *, mongo::executor::RemoteCommandRequest, std::_Placeholder&lt;1&gt;, mongo::executor::TaskExecutor::CallbackHandle, unsigned long, std::function&lt;void (const mongo::executor::TaskExecutor::RemoteCommandCallbackArgs &amp;)&gt;)&gt; *&gt;' mangled-name='_ZNKSt9_Any_data9_M_accessIPSt5_BindIFSt7_Mem_fnIMN5mongo4repl19ReplicationExecutorEFvRKNS3_8executor20RemoteCommandRequestERKNS3_10StatusWithINS6_21RemoteCommandResponseEEERKNS6_12TaskExecutor14CallbackHandleEmRKSt8functionIFvRKNSF_25RemoteCommandCallbackArgsEEEEEPS5_S7_St12_PlaceholderILi1EESG_mSO_EEEERKT_v' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1776' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNKSt9_Any_data9_M_accessIPSt5_BindIFSt7_Mem_fnIMN5mongo4repl19ReplicationExecutorEFvRKNS3_8executor20RemoteCommandRequestERKNS3_10StatusWithINS6_21RemoteCommandResponseEEERKNS6_12TaskExecutor14CallbackHandleEmRKSt8functionIFvRKNSF_25RemoteCommandCallbackArgsEEEEEPS5_S7_St12_PlaceholderILi1EESG_mSO_EEEERKT_v'>
             <parameter type-id='type-id-489' is-artificial='yes'/>
             <return type-id='type-id-1726'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;std::_Bind&lt;void (*(std::_Placeholder&lt;1&gt;, std::function&lt;void (const mongo::executor::TaskExecutor::RemoteCommandCallbackArgs &amp;)&gt;, mongo::executor::RemoteCommandRequest))(const mongo::executor::TaskExecutor::CallbackArgs &amp;, const std::function&lt;void (const mongo::executor::TaskExecutor::RemoteCommandCallbackArgs &amp;)&gt; &amp;, const mongo::executor::RemoteCommandRequest &amp;)&gt; *&gt;' mangled-name='_ZNSt9_Any_data9_M_accessIPSt5_BindIFPFvRKN5mongo8executor12TaskExecutor12CallbackArgsERKSt8functionIFvRKNS4_25RemoteCommandCallbackArgsEEERKNS3_20RemoteCommandRequestEESt12_PlaceholderILi1EESD_SG_EEEERT_v' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1771' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt9_Any_data9_M_accessIPSt5_BindIFPFvRKN5mongo8executor12TaskExecutor12CallbackArgsERKSt8functionIFvRKNS4_25RemoteCommandCallbackArgsEEERKNS3_20RemoteCommandRequestEESt12_PlaceholderILi1EESD_SG_EEEERT_v'>
             <parameter type-id='type-id-1703' is-artificial='yes'/>
             <return type-id='type-id-1745'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;std::_Bind&lt;void (*(std::_Placeholder&lt;1&gt;, std::function&lt;void (const mongo::executor::TaskExecutor::RemoteCommandCallbackArgs &amp;)&gt;, mongo::executor::RemoteCommandRequest))(const mongo::executor::TaskExecutor::CallbackArgs &amp;, const std::function&lt;void (const mongo::executor::TaskExecutor::RemoteCommandCallbackArgs &amp;)&gt; &amp;, const mongo::executor::RemoteCommandRequest &amp;)&gt; *&gt;' mangled-name='_ZNKSt9_Any_data9_M_accessIPSt5_BindIFPFvRKN5mongo8executor12TaskExecutor12CallbackArgsERKSt8functionIFvRKNS4_25RemoteCommandCallbackArgsEEERKNS3_20RemoteCommandRequestEESt12_PlaceholderILi1EESD_SG_EEEERKT_v' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1776' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNKSt9_Any_data9_M_accessIPSt5_BindIFPFvRKN5mongo8executor12TaskExecutor12CallbackArgsERKSt8functionIFvRKNS4_25RemoteCommandCallbackArgsEEERKNS3_20RemoteCommandRequestEESt12_PlaceholderILi1EESD_SG_EEEERKT_v'>
             <parameter type-id='type-id-489' is-artificial='yes'/>
             <return type-id='type-id-1744'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;std::_Bind&lt;void (*(std::_Placeholder&lt;1&gt;, std::function&lt;void (const mongo::executor::TaskExecutor::RemoteCommandCallbackArgs &amp;)&gt;, mongo::executor::RemoteCommandRequest, mongo::StatusWith&lt;mongo::executor::RemoteCommandResponse&gt;))(const mongo::executor::TaskExecutor::CallbackArgs &amp;, const std::function&lt;void (const mongo::executor::TaskExecutor::RemoteCommandCallbackArgs &amp;)&gt; &amp;, const mongo::executor::RemoteCommandRequest &amp;, const mongo::StatusWith&lt;mongo::executor::RemoteCommandResponse&gt; &amp;)&gt; *&gt;' mangled-name='_ZNSt9_Any_data9_M_accessIPSt5_BindIFPFvRKN5mongo8executor12TaskExecutor12CallbackArgsERKSt8functionIFvRKNS4_25RemoteCommandCallbackArgsEEERKNS3_20RemoteCommandRequestERKNS2_10StatusWithINS3_21RemoteCommandResponseEEEESt12_PlaceholderILi1EESD_SG_SL_EEEERT_v' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1771' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt9_Any_data9_M_accessIPSt5_BindIFPFvRKN5mongo8executor12TaskExecutor12CallbackArgsERKSt8functionIFvRKNS4_25RemoteCommandCallbackArgsEEERKNS3_20RemoteCommandRequestERKNS2_10StatusWithINS3_21RemoteCommandResponseEEEESt12_PlaceholderILi1EESD_SG_SL_EEEERT_v'>
             <parameter type-id='type-id-1703' is-artificial='yes'/>
             <return type-id='type-id-1751'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;std::_Bind&lt;void (*(std::_Placeholder&lt;1&gt;, std::function&lt;void (const mongo::executor::TaskExecutor::RemoteCommandCallbackArgs &amp;)&gt;, mongo::executor::RemoteCommandRequest, mongo::StatusWith&lt;mongo::executor::RemoteCommandResponse&gt;))(const mongo::executor::TaskExecutor::CallbackArgs &amp;, const std::function&lt;void (const mongo::executor::TaskExecutor::RemoteCommandCallbackArgs &amp;)&gt; &amp;, const mongo::executor::RemoteCommandRequest &amp;, const mongo::StatusWith&lt;mongo::executor::RemoteCommandResponse&gt; &amp;)&gt; *&gt;' mangled-name='_ZNKSt9_Any_data9_M_accessIPSt5_BindIFPFvRKN5mongo8executor12TaskExecutor12CallbackArgsERKSt8functionIFvRKNS4_25RemoteCommandCallbackArgsEEERKNS3_20RemoteCommandRequestERKNS2_10StatusWithINS3_21RemoteCommandResponseEEEESt12_PlaceholderILi1EESD_SG_SL_EEEERKT_v' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1776' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNKSt9_Any_data9_M_accessIPSt5_BindIFPFvRKN5mongo8executor12TaskExecutor12CallbackArgsERKSt8functionIFvRKNS4_25RemoteCommandCallbackArgsEEERKNS3_20RemoteCommandRequestERKNS2_10StatusWithINS3_21RemoteCommandResponseEEEESt12_PlaceholderILi1EESD_SG_SL_EEEERKT_v'>
             <parameter type-id='type-id-489' is-artificial='yes'/>
             <return type-id='type-id-1750'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;std::_Bind&lt;std::function&lt;void (const mongo::executor::TaskExecutor::CallbackArgs &amp;)&gt; (mongo::executor::TaskExecutor::CallbackArgs)&gt; *&gt;' mangled-name='_ZNSt9_Any_data9_M_accessIPSt5_BindIFSt8functionIFvRKN5mongo8executor12TaskExecutor12CallbackArgsEEES6_EEEERT_v' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1771' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt9_Any_data9_M_accessIPSt5_BindIFSt8functionIFvRKN5mongo8executor12TaskExecutor12CallbackArgsEEES6_EEEERT_v'>
             <parameter type-id='type-id-1703' is-artificial='yes'/>
             <return type-id='type-id-1739'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;std::_Bind&lt;std::function&lt;void (const mongo::executor::TaskExecutor::CallbackArgs &amp;)&gt; (mongo::executor::TaskExecutor::CallbackArgs)&gt; *&gt;' mangled-name='_ZNKSt9_Any_data9_M_accessIPSt5_BindIFSt8functionIFvRKN5mongo8executor12TaskExecutor12CallbackArgsEEES6_EEEERKT_v' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1776' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNKSt9_Any_data9_M_accessIPSt5_BindIFSt8functionIFvRKN5mongo8executor12TaskExecutor12CallbackArgsEEES6_EEEERKT_v'>
             <parameter type-id='type-id-489' is-artificial='yes'/>
             <return type-id='type-id-1738'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;std::_Bind&lt;std::_Mem_fn&lt;mongo::OperationContext *(mongo::repl::StorageInterface::*)()&gt; (mongo::repl::StorageInterface *)&gt; *&gt;' mangled-name='_ZNSt9_Any_data9_M_accessIPSt5_BindIFSt7_Mem_fnIMN5mongo4repl16StorageInterfaceEFPNS3_16OperationContextEvEEPS5_EEEERT_v' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1771' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt9_Any_data9_M_accessIPSt5_BindIFSt7_Mem_fnIMN5mongo4repl16StorageInterfaceEFPNS3_16OperationContextEvEEPS5_EEEERT_v'>
             <parameter type-id='type-id-1703' is-artificial='yes'/>
             <return type-id='type-id-1721'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;std::_Bind&lt;std::_Mem_fn&lt;mongo::OperationContext *(mongo::repl::StorageInterface::*)()&gt; (mongo::repl::StorageInterface *)&gt; *&gt;' mangled-name='_ZNKSt9_Any_data9_M_accessIPSt5_BindIFSt7_Mem_fnIMN5mongo4repl16StorageInterfaceEFPNS3_16OperationContextEvEEPS5_EEEERKT_v' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1776' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNKSt9_Any_data9_M_accessIPSt5_BindIFSt7_Mem_fnIMN5mongo4repl16StorageInterfaceEFPNS3_16OperationContextEvEEPS5_EEEERKT_v'>
             <parameter type-id='type-id-489' is-artificial='yes'/>
             <return type-id='type-id-1720'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;std::_Bind&lt;void (*(std::function&lt;void ()&gt;))(const std::function&lt;void ()&gt; &amp;)&gt; *&gt;' mangled-name='_ZNSt9_Any_data9_M_accessIPSt5_BindIFPFvRKSt8functionIFvvEEES4_EEEERT_v' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1771' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt9_Any_data9_M_accessIPSt5_BindIFPFvRKSt8functionIFvvEEES4_EEEERT_v'>
             <parameter type-id='type-id-1703' is-artificial='yes'/>
             <return type-id='type-id-1757'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;std::_Bind&lt;void (*(std::function&lt;void ()&gt;))(const std::function&lt;void ()&gt; &amp;)&gt; *&gt;' mangled-name='_ZNKSt9_Any_data9_M_accessIPSt5_BindIFPFvRKSt8functionIFvvEEES4_EEEERKT_v' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1776' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNKSt9_Any_data9_M_accessIPSt5_BindIFPFvRKSt8functionIFvvEEES4_EEEERKT_v'>
             <parameter type-id='type-id-489' is-artificial='yes'/>
             <return type-id='type-id-1756'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;std::_Bind&lt;void (*(std::_Placeholder&lt;1&gt;, mongo::repl::ScatterGatherRunner *))(const mongo::executor::TaskExecutor::RemoteCommandCallbackArgs &amp;, mongo::repl::ScatterGatherRunner *)&gt; *&gt;' mangled-name='_ZNSt9_Any_data9_M_accessIPSt5_BindIFPFvRKN5mongo8executor12TaskExecutor25RemoteCommandCallbackArgsEPNS2_4repl19ScatterGatherRunnerEESt12_PlaceholderILi1EESA_EEEERT_v' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1771' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt9_Any_data9_M_accessIPSt5_BindIFPFvRKN5mongo8executor12TaskExecutor25RemoteCommandCallbackArgsEPNS2_4repl19ScatterGatherRunnerEESt12_PlaceholderILi1EESA_EEEERT_v'>
             <parameter type-id='type-id-1703' is-artificial='yes'/>
             <return type-id='type-id-2993'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;std::_Bind&lt;void (*(std::_Placeholder&lt;1&gt;, mongo::repl::ScatterGatherRunner *))(const mongo::executor::TaskExecutor::RemoteCommandCallbackArgs &amp;, mongo::repl::ScatterGatherRunner *)&gt; *&gt;' mangled-name='_ZNKSt9_Any_data9_M_accessIPSt5_BindIFPFvRKN5mongo8executor12TaskExecutor25RemoteCommandCallbackArgsEPNS2_4repl19ScatterGatherRunnerEESt12_PlaceholderILi1EESA_EEEERKT_v' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1776' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNKSt9_Any_data9_M_accessIPSt5_BindIFPFvRKN5mongo8executor12TaskExecutor25RemoteCommandCallbackArgsEPNS2_4repl19ScatterGatherRunnerEESt12_PlaceholderILi1EESA_EEEERKT_v'>
             <parameter type-id='type-id-489' is-artificial='yes'/>
             <return type-id='type-id-2994'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;std::_Bind&lt;void (*(std::_Placeholder&lt;1&gt;, mongo::repl::ScatterGatherRunner *, mongo::StatusWith&lt;mongo::executor::TaskExecutor::EventHandle&gt; *))(const mongo::executor::TaskExecutor::CallbackArgs &amp;, mongo::repl::ScatterGatherRunner *, mongo::StatusWith&lt;mongo::executor::TaskExecutor::EventHandle&gt; *)&gt; *&gt;' mangled-name='_ZNSt9_Any_data9_M_accessIPSt5_BindIFPFvRKN5mongo8executor12TaskExecutor12CallbackArgsEPNS2_4repl19ScatterGatherRunnerEPNS2_10StatusWithINS4_11EventHandleEEEESt12_PlaceholderILi1EESA_SE_EEEERT_v' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1771' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt9_Any_data9_M_accessIPSt5_BindIFPFvRKN5mongo8executor12TaskExecutor12CallbackArgsEPNS2_4repl19ScatterGatherRunnerEPNS2_10StatusWithINS4_11EventHandleEEEESt12_PlaceholderILi1EESA_SE_EEEERT_v'>
             <parameter type-id='type-id-1703' is-artificial='yes'/>
             <return type-id='type-id-2995'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;std::_Bind&lt;void (*(std::_Placeholder&lt;1&gt;, mongo::repl::ScatterGatherRunner *, mongo::StatusWith&lt;mongo::executor::TaskExecutor::EventHandle&gt; *))(const mongo::executor::TaskExecutor::CallbackArgs &amp;, mongo::repl::ScatterGatherRunner *, mongo::StatusWith&lt;mongo::executor::TaskExecutor::EventHandle&gt; *)&gt; *&gt;' mangled-name='_ZNKSt9_Any_data9_M_accessIPSt5_BindIFPFvRKN5mongo8executor12TaskExecutor12CallbackArgsEPNS2_4repl19ScatterGatherRunnerEPNS2_10StatusWithINS4_11EventHandleEEEESt12_PlaceholderILi1EESA_SE_EEEERKT_v' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1776' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNKSt9_Any_data9_M_accessIPSt5_BindIFPFvRKN5mongo8executor12TaskExecutor12CallbackArgsEPNS2_4repl19ScatterGatherRunnerEPNS2_10StatusWithINS4_11EventHandleEEEESt12_PlaceholderILi1EESA_SE_EEEERKT_v'>
             <parameter type-id='type-id-489' is-artificial='yes'/>
             <return type-id='type-id-2996'/>
@@ -8321,13 +8321,13 @@
       </class-decl>
       <class-decl name='_Maybe_unary_or_binary_function&lt;void&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='495' column='1' id='type-id-2785'/>
       <union-decl name='_Nocopy_types' size-in-bits='128' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1756' column='1' id='type-id-2992'>
-        <data-member access='private'>
+        <data-member access='public'>
           <var-decl name='_M_object' type-id='type-id-31' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1758' column='1'/>
         </data-member>
-        <data-member access='private'>
+        <data-member access='public'>
           <var-decl name='_M_const_object' type-id='type-id-31' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1759' column='1'/>
         </data-member>
-        <data-member access='private'>
+        <data-member access='public'>
           <var-decl name='_M_function_pointer' type-id='type-id-2726' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/functional' line='1760' column='1'/>
         </data-member>
       </union-decl>
@@ -14972,13 +14972,13 @@
       <class-decl name='aligned_storage&lt;96, 8&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/type_traits' line='1881' column='1' id='type-id-3295'>
         <member-type access='public'>
           <union-decl name='type' size-in-bits='768' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/type_traits' line='1883' column='1' id='type-id-3296'>
-            <member-type access='private'>
+            <member-type access='public'>
               <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/type_traits' line='1886' column='1' id='type-id-3297'/>
             </member-type>
-            <data-member access='private'>
+            <data-member access='public'>
               <var-decl name='__data' type-id='type-id-55' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/type_traits' line='1885' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <var-decl name='__align' type-id='type-id-3297' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/type_traits' line='1886' column='1'/>
             </data-member>
           </union-decl>
@@ -15269,13 +15269,13 @@
       <class-decl name='aligned_storage&lt;32, 8&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/type_traits' line='1881' column='1' id='type-id-3336'>
         <member-type access='public'>
           <union-decl name='type' size-in-bits='256' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/type_traits' line='1883' column='1' id='type-id-3337'>
-            <member-type access='private'>
+            <member-type access='public'>
               <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/type_traits' line='1886' column='1' id='type-id-3338'/>
             </member-type>
-            <data-member access='private'>
+            <data-member access='public'>
               <var-decl name='__data' type-id='type-id-53' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/type_traits' line='1885' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <var-decl name='__align' type-id='type-id-3338' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/type_traits' line='1886' column='1'/>
             </data-member>
           </union-decl>
@@ -15716,13 +15716,13 @@
       <class-decl name='aligned_storage&lt;16, 8&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/type_traits' line='1881' column='1' id='type-id-3406'>
         <member-type access='public'>
           <union-decl name='type' size-in-bits='128' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/type_traits' line='1883' column='1' id='type-id-3407'>
-            <member-type access='private'>
+            <member-type access='public'>
               <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/type_traits' line='1886' column='1' id='type-id-3408'/>
             </member-type>
-            <data-member access='private'>
+            <data-member access='public'>
               <var-decl name='__data' type-id='type-id-52' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/type_traits' line='1885' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <var-decl name='__align' type-id='type-id-3408' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/type_traits' line='1886' column='1'/>
             </data-member>
           </union-decl>
@@ -21073,10 +21073,10 @@
         <class-decl name='aligned_storage&lt;mongo::executor::TaskExecutor::CallbackHandle&gt;' size-in-bits='128' visibility='default' filepath='src/third_party/boost-1.56.0/boost/optional/optional.hpp' line='120' column='1' id='type-id-181'>
           <member-type access='private'>
             <union-decl name='dummy_u' size-in-bits='128' visibility='default' filepath='src/third_party/boost-1.56.0/boost/optional/optional.hpp' line='128' column='1' id='type-id-3589'>
-              <data-member access='private'>
+              <data-member access='public'>
                 <var-decl name='data' type-id='type-id-11' visibility='default' filepath='src/third_party/boost-1.56.0/boost/optional/optional.hpp' line='130' column='1'/>
               </data-member>
-              <data-member access='private'>
+              <data-member access='public'>
                 <var-decl name='aligner_' type-id='type-id-3564' visibility='default' filepath='src/third_party/boost-1.56.0/boost/optional/optional.hpp' line='132' column='1'/>
               </data-member>
             </union-decl>
@@ -21100,10 +21100,10 @@
         <class-decl name='aligned_storage&lt;mongo::executor::TaskExecutor::EventHandle&gt;' size-in-bits='128' visibility='default' filepath='src/third_party/boost-1.56.0/boost/optional/optional.hpp' line='120' column='1' id='type-id-183'>
           <member-type access='private'>
             <union-decl name='dummy_u' size-in-bits='128' visibility='default' filepath='src/third_party/boost-1.56.0/boost/optional/optional.hpp' line='128' column='1' id='type-id-3590'>
-              <data-member access='private'>
+              <data-member access='public'>
                 <var-decl name='data' type-id='type-id-11' visibility='default' filepath='src/third_party/boost-1.56.0/boost/optional/optional.hpp' line='130' column='1'/>
               </data-member>
-              <data-member access='private'>
+              <data-member access='public'>
                 <var-decl name='aligner_' type-id='type-id-3564' visibility='default' filepath='src/third_party/boost-1.56.0/boost/optional/optional.hpp' line='132' column='1'/>
               </data-member>
             </union-decl>
@@ -21322,10 +21322,10 @@
         <class-decl name='aligned_storage&lt;mongo::executor::RemoteCommandResponse&gt;' size-in-bits='320' visibility='default' filepath='src/third_party/boost-1.56.0/boost/optional/optional.hpp' line='120' column='1' id='type-id-179'>
           <member-type access='private'>
             <union-decl name='dummy_u' size-in-bits='320' visibility='default' filepath='src/third_party/boost-1.56.0/boost/optional/optional.hpp' line='128' column='1' id='type-id-3601'>
-              <data-member access='private'>
+              <data-member access='public'>
                 <var-decl name='data' type-id='type-id-19' visibility='default' filepath='src/third_party/boost-1.56.0/boost/optional/optional.hpp' line='130' column='1'/>
               </data-member>
-              <data-member access='private'>
+              <data-member access='public'>
                 <var-decl name='aligner_' type-id='type-id-3564' visibility='default' filepath='src/third_party/boost-1.56.0/boost/optional/optional.hpp' line='132' column='1'/>
               </data-member>
             </union-decl>

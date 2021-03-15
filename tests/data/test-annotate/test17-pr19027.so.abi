@@ -566,7 +566,7 @@
     <typedef-decl name='hb_mutex_impl_t' type-id='type-id-22' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-mutex-private.hh' line='59' column='1' id='type-id-23'/>
     <!-- union pthread_mutex_t -->
     <union-decl name='pthread_mutex_t' size-in-bits='320' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='77' column='1' id='type-id-22'>
-      <member-type access='private'>
+      <member-type access='public'>
         <!-- struct pthread_mutex_t::__pthread_mutex_s -->
         <class-decl name='__pthread_mutex_s' size-in-bits='320' is-struct='yes' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='79' column='1' id='type-id-24'>
           <data-member access='public' layout-offset-in-bits='0'>
@@ -599,15 +599,15 @@
           </data-member>
         </class-decl>
       </member-type>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- pthread_mutex_t::__pthread_mutex_s pthread_mutex_t::__data -->
         <var-decl name='__data' type-id='type-id-24' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='101' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- char pthread_mutex_t::__size[40] -->
         <var-decl name='__size' type-id='type-id-3' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='102' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- long int pthread_mutex_t::__align -->
         <var-decl name='__align' type-id='type-id-10' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='103' column='1'/>
       </data-member>
@@ -1605,27 +1605,27 @@
     <typedef-decl name='hb_var_int_t' type-id='type-id-136' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-common.h' line='86' column='1' id='type-id-134'/>
     <!-- union _hb_var_int_t -->
     <union-decl name='_hb_var_int_t' size-in-bits='32' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-common.h' line='79' column='1' id='type-id-136'>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- uint32_t _hb_var_int_t::u32 -->
         <var-decl name='u32' type-id='type-id-106' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-common.h' line='80' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- int32_t _hb_var_int_t::i32 -->
         <var-decl name='i32' type-id='type-id-137' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-common.h' line='81' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- uint16_t _hb_var_int_t::u16[2] -->
         <var-decl name='u16' type-id='type-id-83' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-common.h' line='82' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- int16_t _hb_var_int_t::i16[2] -->
         <var-decl name='i16' type-id='type-id-76' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-common.h' line='83' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- uint8_t _hb_var_int_t::u8[4] -->
         <var-decl name='u8' type-id='type-id-85' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-common.h' line='84' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- int8_t _hb_var_int_t::i8[4] -->
         <var-decl name='i8' type-id='type-id-78' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-common.h' line='85' column='1'/>
       </data-member>
@@ -6429,7 +6429,7 @@
         <member-type access='protected'>
           <!-- union {struct {OT::Tag ttcTag; OT::FixedVersion version;} header; OT::TTCHeaderVersion1 version1;} -->
           <union-decl name='__anonymous_union__' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-file-private.hh' line='183' column='1' id='type-id-612'>
-            <member-type access='private'>
+            <member-type access='public'>
               <!-- struct {OT::Tag ttcTag; OT::FixedVersion version;} -->
               <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-file-private.hh' line='184' column='1' id='type-id-613'>
                 <data-member access='public' layout-offset-in-bits='0'>
@@ -6442,11 +6442,11 @@
                 </data-member>
               </class-decl>
             </member-type>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- struct {OT::Tag ttcTag; OT::FixedVersion version;} header -->
               <var-decl name='header' type-id='type-id-613' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-file-private.hh' line='188' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::TTCHeaderVersion1 version1 -->
               <var-decl name='version1' type-id='type-id-302' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-file-private.hh' line='189' column='1'/>
             </data-member>
@@ -6475,15 +6475,15 @@
         <member-type access='protected'>
           <!-- union {OT::Tag tag; OT::OpenTypeFontFace fontFace; OT::TTCHeader ttcHeader;} -->
           <union-decl name='__anonymous_union__' size-in-bits='224' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-file-private.hh' line='250' column='1' id='type-id-617'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::Tag tag -->
               <var-decl name='tag' type-id='type-id-306' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-file-private.hh' line='251' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::OpenTypeFontFace fontFace -->
               <var-decl name='fontFace' type-id='type-id-369' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-file-private.hh' line='252' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::TTCHeader ttcHeader -->
               <var-decl name='ttcHeader' type-id='type-id-299' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-file-private.hh' line='253' column='1'/>
             </data-member>
@@ -7300,11 +7300,11 @@
             <member-type access='private'>
               <!-- union {OT::CoverageFormat1::Iter format1; OT::CoverageFormat2::Iter format2;} -->
               <union-decl name='__anonymous_union__' size-in-bits='192' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-common-private.hh' line='913' column='1' id='type-id-796'>
-                <data-member access='private'>
+                <data-member access='public'>
                   <!-- OT::CoverageFormat1::Iter format1 -->
                   <var-decl name='format1' type-id='type-id-797' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-common-private.hh' line='914' column='1'/>
                 </data-member>
-                <data-member access='private'>
+                <data-member access='public'>
                   <!-- OT::CoverageFormat2::Iter format2 -->
                   <var-decl name='format2' type-id='type-id-798' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-common-private.hh' line='915' column='1'/>
                 </data-member>
@@ -7332,15 +7332,15 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::CoverageFormat1 format1; OT::CoverageFormat2 format2;} -->
           <union-decl name='__anonymous_union__' size-in-bits='80' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-common-private.hh' line='920' column='1' id='type-id-800'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-common-private.hh' line='921' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::CoverageFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-623' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-common-private.hh' line='922' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::CoverageFormat2 format2 -->
               <var-decl name='format2' type-id='type-id-624' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-common-private.hh' line='923' column='1'/>
             </data-member>
@@ -8441,7 +8441,7 @@
         <member-type access='protected'>
           <!-- union {struct {OT::USHORT sub_format;} header; OT::SingleSubst single; OT::MultipleSubst multiple; OT::AlternateSubst alternate; OT::LigatureSubst ligature; OT::ContextSubst context; OT::ChainContextSubst chainContext; OT::ExtensionSubst extension; OT::ReverseChainSingleSubst reverseChainContextSingle;} -->
           <union-decl name='__anonymous_union__' size-in-bits='160' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1135' column='1' id='type-id-829'>
-            <member-type access='private'>
+            <member-type access='public'>
               <!-- struct {OT::USHORT sub_format;} -->
               <class-decl name='__anonymous_struct__' size-in-bits='16' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1136' column='1' id='type-id-830'>
                 <data-member access='public' layout-offset-in-bits='0'>
@@ -8450,39 +8450,39 @@
                 </data-member>
               </class-decl>
             </member-type>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- struct {OT::USHORT sub_format;} header -->
               <var-decl name='header' type-id='type-id-830' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1138' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::SingleSubst single -->
               <var-decl name='single' type-id='type-id-831' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1139' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::MultipleSubst multiple -->
               <var-decl name='multiple' type-id='type-id-832' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1140' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::AlternateSubst alternate -->
               <var-decl name='alternate' type-id='type-id-833' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1141' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::LigatureSubst ligature -->
               <var-decl name='ligature' type-id='type-id-834' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1142' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ContextSubst context -->
               <var-decl name='context' type-id='type-id-835' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1143' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ChainContextSubst chainContext -->
               <var-decl name='chainContext' type-id='type-id-836' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1144' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ExtensionSubst extension -->
               <var-decl name='extension' type-id='type-id-837' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1145' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ReverseChainSingleSubst reverseChainContextSingle -->
               <var-decl name='reverseChainContextSingle' type-id='type-id-838' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1146' column='1'/>
             </data-member>
@@ -8788,11 +8788,11 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::AlternateSubstFormat1 format1;} -->
           <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='593' column='1' id='type-id-918'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='594' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::AlternateSubstFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-919' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='595' column='1'/>
             </data-member>
@@ -10146,11 +10146,11 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::LigatureSubstFormat1 format1;} -->
           <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='909' column='1' id='type-id-965'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='910' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::LigatureSubstFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-628' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='911' column='1'/>
             </data-member>
@@ -10355,11 +10355,11 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::MultipleSubstFormat1 format1;} -->
           <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='442' column='1' id='type-id-967'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='443' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::MultipleSubstFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-968' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='444' column='1'/>
             </data-member>
@@ -10648,11 +10648,11 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::ReverseChainSingleSubstFormat1 format1;} -->
           <union-decl name='__anonymous_union__' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1073' column='1' id='type-id-977'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1074' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ReverseChainSingleSubstFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-978' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1075' column='1'/>
             </data-member>
@@ -10779,15 +10779,15 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::SingleSubstFormat1 format1; OT::SingleSubstFormat2 format2;} -->
           <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='244' column='1' id='type-id-980'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='245' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::SingleSubstFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-669' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='246' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::SingleSubstFormat2 format2 -->
               <var-decl name='format2' type-id='type-id-670' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='247' column='1'/>
             </data-member>
@@ -11265,19 +11265,19 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::ChainContextFormat1 format1; OT::ChainContextFormat2 format2; OT::ChainContextFormat3 format3;} -->
           <union-decl name='__anonymous_union__' size-in-bits='160' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='2167' column='1' id='type-id-1011'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='2168' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ChainContextFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-1012' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='2169' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ChainContextFormat2 format2 -->
               <var-decl name='format2' type-id='type-id-1013' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='2170' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ChainContextFormat3 format3 -->
               <var-decl name='format3' type-id='type-id-1014' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='2171' column='1'/>
             </data-member>
@@ -11328,19 +11328,19 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::ContextFormat1 format1; OT::ContextFormat2 format2; OT::ContextFormat3 format3;} -->
           <union-decl name='__anonymous_union__' size-in-bits='96' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='1549' column='1' id='type-id-1016'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='1550' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ContextFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-1017' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='1551' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ContextFormat2 format2 -->
               <var-decl name='format2' type-id='type-id-1018' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='1552' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ContextFormat3 format3 -->
               <var-decl name='format3' type-id='type-id-888' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='1553' column='1'/>
             </data-member>
@@ -11391,11 +11391,11 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::ExtensionFormat1 format1;} -->
           <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='2247' column='1' id='type-id-1020'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='2248' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ExtensionFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-891' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='2249' column='1'/>
             </data-member>
@@ -14981,11 +14981,11 @@
     <typedef-decl name='FT_StreamDesc' type-id='type-id-1195' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='214' column='1' id='type-id-1192'/>
     <!-- union FT_StreamDesc_ -->
     <union-decl name='FT_StreamDesc_' size-in-bits='64' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='210' column='1' id='type-id-1195'>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- long int FT_StreamDesc_::value -->
         <var-decl name='value' type-id='type-id-10' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='211' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- void* FT_StreamDesc_::pointer -->
         <var-decl name='pointer' type-id='type-id-33' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='212' column='1'/>
       </data-member>
@@ -16210,35 +16210,35 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::CmapSubtableFormat0 format0; OT::CmapSubtableFormat4 format4; OT::CmapSubtableFormat6 format6; OT::CmapSubtableFormat10 format10; OT::CmapSubtableFormat12 format12; OT::CmapSubtableFormat13 format13; OT::CmapSubtableFormat14 format14;} -->
           <union-decl name='__anonymous_union__' size-in-bits='2096' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-cmap-table.hh' line='437' column='1' id='type-id-1367'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-cmap-table.hh' line='438' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::CmapSubtableFormat0 format0 -->
               <var-decl name='format0' type-id='type-id-881' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-cmap-table.hh' line='439' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::CmapSubtableFormat4 format4 -->
               <var-decl name='format4' type-id='type-id-883' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-cmap-table.hh' line='440' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::CmapSubtableFormat6 format6 -->
               <var-decl name='format6' type-id='type-id-1362' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-cmap-table.hh' line='441' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::CmapSubtableFormat10 format10 -->
               <var-decl name='format10' type-id='type-id-1363' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-cmap-table.hh' line='442' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::CmapSubtableFormat12 format12 -->
               <var-decl name='format12' type-id='type-id-1364' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-cmap-table.hh' line='443' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::CmapSubtableFormat13 format13 -->
               <var-decl name='format13' type-id='type-id-1365' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-cmap-table.hh' line='444' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::CmapSubtableFormat14 format14 -->
               <var-decl name='format14' type-id='type-id-882' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-cmap-table.hh' line='445' column='1'/>
             </data-member>
@@ -19924,7 +19924,7 @@
         <member-type access='protected'>
           <!-- union {struct {OT::USHORT sub_format;} header; OT::SingleSubst single; OT::MultipleSubst multiple; OT::AlternateSubst alternate; OT::LigatureSubst ligature; OT::ContextSubst context; OT::ChainContextSubst chainContext; OT::ExtensionSubst extension; OT::ReverseChainSingleSubst reverseChainContextSingle;} -->
           <union-decl name='__anonymous_union__' size-in-bits='160' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1135' column='1' id='type-id-829'>
-            <member-type access='private'>
+            <member-type access='public'>
               <!-- struct {OT::USHORT sub_format;} -->
               <class-decl name='__anonymous_struct__' size-in-bits='16' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1136' column='1' id='type-id-830'>
                 <data-member access='public' layout-offset-in-bits='0'>
@@ -19933,39 +19933,39 @@
                 </data-member>
               </class-decl>
             </member-type>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- struct {OT::USHORT sub_format;} header -->
               <var-decl name='header' type-id='type-id-830' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1138' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::SingleSubst single -->
               <var-decl name='single' type-id='type-id-831' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1139' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::MultipleSubst multiple -->
               <var-decl name='multiple' type-id='type-id-832' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1140' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::AlternateSubst alternate -->
               <var-decl name='alternate' type-id='type-id-833' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1141' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::LigatureSubst ligature -->
               <var-decl name='ligature' type-id='type-id-834' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1142' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ContextSubst context -->
               <var-decl name='context' type-id='type-id-835' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1143' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ChainContextSubst chainContext -->
               <var-decl name='chainContext' type-id='type-id-836' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1144' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ExtensionSubst extension -->
               <var-decl name='extension' type-id='type-id-837' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1145' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ReverseChainSingleSubst reverseChainContextSingle -->
               <var-decl name='reverseChainContextSingle' type-id='type-id-838' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1146' column='1'/>
             </data-member>
@@ -20358,11 +20358,11 @@
             <member-type access='private'>
               <!-- union {OT::CoverageFormat1::Iter format1; OT::CoverageFormat2::Iter format2;} -->
               <union-decl name='__anonymous_union__' size-in-bits='192' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-common-private.hh' line='913' column='1' id='type-id-796'>
-                <data-member access='private'>
+                <data-member access='public'>
                   <!-- OT::CoverageFormat1::Iter format1 -->
                   <var-decl name='format1' type-id='type-id-797' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-common-private.hh' line='914' column='1'/>
                 </data-member>
-                <data-member access='private'>
+                <data-member access='public'>
                   <!-- OT::CoverageFormat2::Iter format2 -->
                   <var-decl name='format2' type-id='type-id-798' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-common-private.hh' line='915' column='1'/>
                 </data-member>
@@ -20390,15 +20390,15 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::CoverageFormat1 format1; OT::CoverageFormat2 format2;} -->
           <union-decl name='__anonymous_union__' size-in-bits='80' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-common-private.hh' line='920' column='1' id='type-id-800'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-common-private.hh' line='921' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::CoverageFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-623' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-common-private.hh' line='922' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::CoverageFormat2 format2 -->
               <var-decl name='format2' type-id='type-id-624' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-common-private.hh' line='923' column='1'/>
             </data-member>
@@ -20489,11 +20489,11 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::MarkGlyphSetsFormat1 format1;} -->
           <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gdef-table.hh' line='312' column='1' id='type-id-2304'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gdef-table.hh' line='313' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::MarkGlyphSetsFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-1645' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gdef-table.hh' line='314' column='1'/>
             </data-member>
@@ -21249,15 +21249,15 @@
         <member-type access='private'>
           <!-- union {OT::FeatureParamsSize size; OT::FeatureParamsStylisticSet stylisticSet; OT::FeatureParamsCharacterVariants characterVariants;} -->
           <union-decl name='__anonymous_union__' size-in-bits='136' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-common-private.hh' line='466' column='1' id='type-id-2305'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::FeatureParamsSize size -->
               <var-decl name='size' type-id='type-id-894' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-common-private.hh' line='467' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::FeatureParamsStylisticSet stylisticSet -->
               <var-decl name='stylisticSet' type-id='type-id-895' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-common-private.hh' line='468' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::FeatureParamsCharacterVariants characterVariants -->
               <var-decl name='characterVariants' type-id='type-id-893' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-common-private.hh' line='469' column='1'/>
             </data-member>
@@ -21773,15 +21773,15 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::ClassDefFormat1 format1; OT::ClassDefFormat2 format2;} -->
           <union-decl name='__anonymous_union__' size-in-bits='80' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-common-private.hh' line='1086' column='1' id='type-id-2306'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-common-private.hh' line='1087' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ClassDefFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-880' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-common-private.hh' line='1088' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ClassDefFormat2 format2 -->
               <var-decl name='format2' type-id='type-id-1539' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-common-private.hh' line='1089' column='1'/>
             </data-member>
@@ -21960,11 +21960,11 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::ExtensionFormat1 format1;} -->
           <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='2247' column='1' id='type-id-1020'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='2248' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ExtensionFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-891' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='2249' column='1'/>
             </data-member>
@@ -22092,15 +22092,15 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::SingleSubstFormat1 format1; OT::SingleSubstFormat2 format2;} -->
           <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='244' column='1' id='type-id-980'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='245' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::SingleSubstFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-669' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='246' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::SingleSubstFormat2 format2 -->
               <var-decl name='format2' type-id='type-id-670' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='247' column='1'/>
             </data-member>
@@ -22202,11 +22202,11 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::MultipleSubstFormat1 format1;} -->
           <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='442' column='1' id='type-id-967'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='443' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::MultipleSubstFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-968' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='444' column='1'/>
             </data-member>
@@ -22290,11 +22290,11 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::AlternateSubstFormat1 format1;} -->
           <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='593' column='1' id='type-id-918'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='594' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::AlternateSubstFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-919' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='595' column='1'/>
             </data-member>
@@ -22384,11 +22384,11 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::LigatureSubstFormat1 format1;} -->
           <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='909' column='1' id='type-id-965'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='910' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::LigatureSubstFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-628' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='911' column='1'/>
             </data-member>
@@ -22459,19 +22459,19 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::ContextFormat1 format1; OT::ContextFormat2 format2; OT::ContextFormat3 format3;} -->
           <union-decl name='__anonymous_union__' size-in-bits='96' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='1549' column='1' id='type-id-1016'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='1550' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ContextFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-1017' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='1551' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ContextFormat2 format2 -->
               <var-decl name='format2' type-id='type-id-1018' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='1552' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ContextFormat3 format3 -->
               <var-decl name='format3' type-id='type-id-888' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='1553' column='1'/>
             </data-member>
@@ -22520,19 +22520,19 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::ChainContextFormat1 format1; OT::ChainContextFormat2 format2; OT::ChainContextFormat3 format3;} -->
           <union-decl name='__anonymous_union__' size-in-bits='160' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='2167' column='1' id='type-id-1011'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='2168' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ChainContextFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-1012' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='2169' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ChainContextFormat2 format2 -->
               <var-decl name='format2' type-id='type-id-1013' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='2170' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ChainContextFormat3 format3 -->
               <var-decl name='format3' type-id='type-id-1014' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='2171' column='1'/>
             </data-member>
@@ -22581,11 +22581,11 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::ReverseChainSingleSubstFormat1 format1;} -->
           <union-decl name='__anonymous_union__' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1073' column='1' id='type-id-977'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1074' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ReverseChainSingleSubstFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-978' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsub-table.hh' line='1075' column='1'/>
             </data-member>
@@ -22698,19 +22698,19 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::CaretValueFormat1 format1; OT::CaretValueFormat2 format2; OT::CaretValueFormat3 format3;} -->
           <union-decl name='__anonymous_union__' size-in-bits='48' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gdef-table.hh' line='193' column='1' id='type-id-2309'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gdef-table.hh' line='194' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::CaretValueFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-877' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gdef-table.hh' line='195' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::CaretValueFormat2 format2 -->
               <var-decl name='format2' type-id='type-id-878' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gdef-table.hh' line='196' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::CaretValueFormat3 format3 -->
               <var-decl name='format3' type-id='type-id-879' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gdef-table.hh' line='197' column='1'/>
             </data-member>
@@ -22863,19 +22863,19 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::AnchorFormat1 format1; OT::AnchorFormat2 format2; OT::AnchorFormat3 format3;} -->
           <union-decl name='__anonymous_union__' size-in-bits='80' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='332' column='1' id='type-id-2310'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='333' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::AnchorFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-842' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='334' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::AnchorFormat2 format2 -->
               <var-decl name='format2' type-id='type-id-843' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='335' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::AnchorFormat3 format3 -->
               <var-decl name='format3' type-id='type-id-844' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='336' column='1'/>
             </data-member>
@@ -24574,15 +24574,15 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::SinglePosFormat1 format1; OT::SinglePosFormat2 format2;} -->
           <union-decl name='__anonymous_union__' size-in-bits='80' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='552' column='1' id='type-id-2322'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='553' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::SinglePosFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-907' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='554' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::SinglePosFormat2 format2 -->
               <var-decl name='format2' type-id='type-id-908' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='555' column='1'/>
             </data-member>
@@ -24631,15 +24631,15 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::PairPosFormat1 format1; OT::PairPosFormat2 format2;} -->
           <union-decl name='__anonymous_union__' size-in-bits='144' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='844' column='1' id='type-id-2323'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='845' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::PairPosFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-901' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='846' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::PairPosFormat2 format2 -->
               <var-decl name='format2' type-id='type-id-902' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='847' column='1'/>
             </data-member>
@@ -24688,11 +24688,11 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::CursivePosFormat1 format1;} -->
           <union-decl name='__anonymous_union__' size-in-bits='80' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1009' column='1' id='type-id-2324'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1010' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::CursivePosFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-1112' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1011' column='1'/>
             </data-member>
@@ -24741,11 +24741,11 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::MarkBasePosFormat1 format1;} -->
           <union-decl name='__anonymous_union__' size-in-bits='96' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1108' column='1' id='type-id-2325'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1109' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::MarkBasePosFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-897' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1110' column='1'/>
             </data-member>
@@ -24794,11 +24794,11 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::MarkLigPosFormat1 format1;} -->
           <union-decl name='__anonymous_union__' size-in-bits='96' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1229' column='1' id='type-id-2326'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1230' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::MarkLigPosFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-898' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1231' column='1'/>
             </data-member>
@@ -24847,11 +24847,11 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::MarkMarkPosFormat1 format1;} -->
           <union-decl name='__anonymous_union__' size-in-bits='96' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1348' column='1' id='type-id-2327'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1349' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::MarkMarkPosFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-899' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1350' column='1'/>
             </data-member>
@@ -24915,11 +24915,11 @@
         <member-type access='protected'>
           <!-- union {OT::USHORT format; OT::ExtensionFormat1 format1;} -->
           <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='2247' column='1' id='type-id-2331'>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::USHORT format -->
               <var-decl name='format' type-id='type-id-415' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='2248' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ExtensionFormat1 format1 -->
               <var-decl name='format1' type-id='type-id-891' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='2249' column='1'/>
             </data-member>
@@ -24970,7 +24970,7 @@
         <member-type access='protected'>
           <!-- union {struct {OT::USHORT sub_format;} header; OT::SinglePos single; OT::PairPos pair; OT::CursivePos cursive; OT::MarkBasePos markBase; OT::MarkLigPos markLig; OT::MarkMarkPos markMark; OT::ContextPos context; OT::ChainContextPos chainContext; OT::ExtensionPos extension;} -->
           <union-decl name='__anonymous_union__' size-in-bits='160' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1424' column='1' id='type-id-2333'>
-            <member-type access='private'>
+            <member-type access='public'>
               <!-- struct {OT::USHORT sub_format;} -->
               <class-decl name='__anonymous_struct__' size-in-bits='16' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1425' column='1' id='type-id-2334'>
                 <data-member access='public' layout-offset-in-bits='0'>
@@ -24979,43 +24979,43 @@
                 </data-member>
               </class-decl>
             </member-type>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- struct {OT::USHORT sub_format;} header -->
               <var-decl name='header' type-id='type-id-2334' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1427' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::SinglePos single -->
               <var-decl name='single' type-id='type-id-1793' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1428' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::PairPos pair -->
               <var-decl name='pair' type-id='type-id-1737' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1429' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::CursivePos cursive -->
               <var-decl name='cursive' type-id='type-id-1567' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1430' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::MarkBasePos markBase -->
               <var-decl name='markBase' type-id='type-id-1636' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1431' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::MarkLigPos markLig -->
               <var-decl name='markLig' type-id='type-id-1648' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1432' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::MarkMarkPos markMark -->
               <var-decl name='markMark' type-id='type-id-1653' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1433' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ContextPos context -->
               <var-decl name='context' type-id='type-id-2328' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1434' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ChainContextPos chainContext -->
               <var-decl name='chainContext' type-id='type-id-2329' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1435' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <!-- OT::ExtensionPos extension -->
               <var-decl name='extension' type-id='type-id-2330' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gpos-table.hh' line='1436' column='1'/>
             </data-member>

@@ -12,10 +12,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/home/dodji/git/libabigail/fixes/tests/data/test-read-dwarf/test-PR26568-1.c' line='2' column='1' id='type-id-5'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-6' visibility='default'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-7' visibility='default'/>
       </data-member>
     </union-decl>

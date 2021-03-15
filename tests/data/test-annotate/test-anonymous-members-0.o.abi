@@ -72,11 +72,11 @@
       <member-type access='public'>
         <!-- union {int a; char b;} -->
         <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/home/dodji/git/libabigail/fixes/tests/data/test-annotate/test-anonymous-members-0.cc' line='24' column='1' id='type-id-14'>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- int a -->
             <var-decl name='a' type-id='type-id-3' visibility='default' filepath='/home/dodji/git/libabigail/fixes/tests/data/test-annotate/test-anonymous-members-0.cc' line='24' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- char b -->
             <var-decl name='b' type-id='type-id-1' visibility='default' filepath='/home/dodji/git/libabigail/fixes/tests/data/test-annotate/test-anonymous-members-0.cc' line='24' column='1'/>
           </data-member>
@@ -85,11 +85,11 @@
       <member-type access='public'>
         <!-- union {unsigned int c; double d;} -->
         <union-decl name='__anonymous_union__1' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/home/dodji/git/libabigail/fixes/tests/data/test-annotate/test-anonymous-members-0.cc' line='26' column='1' id='type-id-15'>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- unsigned int c -->
             <var-decl name='c' type-id='type-id-5' visibility='default' filepath='/home/dodji/git/libabigail/fixes/tests/data/test-annotate/test-anonymous-members-0.cc' line='26' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- double d -->
             <var-decl name='d' type-id='type-id-2' visibility='default' filepath='/home/dodji/git/libabigail/fixes/tests/data/test-annotate/test-anonymous-members-0.cc' line='26' column='1'/>
           </data-member>

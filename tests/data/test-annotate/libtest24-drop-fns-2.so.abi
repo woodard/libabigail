@@ -96,11 +96,11 @@
       <member-type access='public'>
         <!-- union {unsigned int __wch; char __wchb[4];} -->
         <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='86' column='1' id='type-id-31'>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- unsigned int __wch -->
             <var-decl name='__wch' type-id='type-id-7' visibility='default' filepath='/usr/include/wchar.h' line='88' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- char __wchb[4] -->
             <var-decl name='__wchb' type-id='type-id-3' visibility='default' filepath='/usr/include/wchar.h' line='92' column='1'/>
           </data-member>

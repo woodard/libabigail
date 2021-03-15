@@ -1980,40 +1980,40 @@
       <enumerator name='DEMANGLE_COMPONENT_CLONE' value='75'/>
     </enum-decl>
     <union-decl name='__anonymous_union__' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='458' column='1' id='type-id-61'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='s_name' type-id='type-id-63' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='467' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='s_operator' type-id='type-id-64' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='474' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='s_extended_operator' type-id='type-id-65' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='483' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='s_fixed' type-id='type-id-66' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='494' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='s_ctor' type-id='type-id-67' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='503' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='s_dtor' type-id='type-id-68' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='512' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='s_builtin' type-id='type-id-69' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='519' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='s_string' type-id='type-id-70' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='528' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='s_number' type-id='type-id-71' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='535' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='s_character' type-id='type-id-72' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='541' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='s_binary' type-id='type-id-73' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='550' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='s_unary_num' type-id='type-id-74' visibility='default' filepath='../../.././libsanitizer/../include/demangle.h' line='558' column='1'/>
       </data-member>
     </union-decl>
@@ -3291,10 +3291,10 @@
     <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-253' visibility='default' filepath='/usr/include/elf.h' line='643' column='1' id='type-id-252'>
       <member-type access='public'>
         <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/usr/include/elf.h' line='646' column='1' id='type-id-254'>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='d_val' type-id='type-id-255' visibility='default' filepath='/usr/include/elf.h' line='647' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='d_ptr' type-id='type-id-249' visibility='default' filepath='/usr/include/elf.h' line='648' column='1'/>
           </data-member>
         </union-decl>
@@ -3343,10 +3343,10 @@
       <class-decl name='__sanitizer_kernel_sigaction_t' size-in-bits='256' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.h' line='423' column='1' id='type-id-264'>
         <member-type access='public'>
           <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.h' line='424' column='1' id='type-id-280'>
-            <data-member access='private'>
+            <data-member access='public'>
               <var-decl name='sigaction' type-id='type-id-276' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.h' line='425' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <var-decl name='handler' type-id='type-id-281' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.h' line='426' column='1'/>
             </data-member>
           </union-decl>
@@ -3625,10 +3625,10 @@
     <typedef-decl name='_Unwind_Ptr' type-id='type-id-33' filepath='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/host-x86_64-unknown-linux-gnu/gcc/include/unwind.h' line='53' column='1' id='type-id-300'/>
     <typedef-decl name='pthread_attr_t' type-id='type-id-301' filepath='/usr/include/bits/pthreadtypes.h' line='57' column='1' id='type-id-302'/>
     <union-decl name='__anonymous_union__' size-in-bits='448' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='54' column='1' id='type-id-301'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='__size' type-id='type-id-296' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='55' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='__align' type-id='type-id-45' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='56' column='1'/>
       </data-member>
     </union-decl>
@@ -7301,10 +7301,10 @@
     <class-decl name='sigaction_t' size-in-bits='1216' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='91' column='1' id='type-id-633'>
       <member-type access='public'>
         <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='92' column='1' id='type-id-634'>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='sa_handler' type-id='type-id-635' visibility='default' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='93' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='sa_sigaction' type-id='type-id-636' visibility='default' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='94' column='1'/>
           </data-member>
         </union-decl>

@@ -1624,11 +1624,11 @@
       <member-type access='public'>
         <!-- union line_map::map_u -->
         <union-decl name='map_u' size-in-bits='256' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='210' column='1' id='type-id-105'>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- line_map_ordinary line_map::map_u::ordinary -->
             <var-decl name='ordinary' type-id='type-id-106' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='211' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- line_map_macro line_map::map_u::macro -->
             <var-decl name='macro' type-id='type-id-107' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='212' column='1'/>
           </data-member>
@@ -2618,19 +2618,19 @@
     </function-type>
     <!-- union _cpp_hashnode_value -->
     <union-decl name='_cpp_hashnode_value' size-in-bits='64' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='665' column='1' id='type-id-81'>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- cpp_macro* _cpp_hashnode_value::macro -->
         <var-decl name='macro' type-id='type-id-149' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='667' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- answer* _cpp_hashnode_value::answers -->
         <var-decl name='answers' type-id='type-id-150' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='669' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- cpp_builtin_type _cpp_hashnode_value::builtin -->
         <var-decl name='builtin' type-id='type-id-151' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='671' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- unsigned short int _cpp_hashnode_value::arg_index -->
         <var-decl name='arg_index' type-id='type-id-29' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='673' column='1'/>
       </data-member>
@@ -2710,11 +2710,11 @@
       <member-type access='public'>
         <!-- union cpp_macro::cpp_macro_u -->
         <union-decl name='cpp_macro_u' size-in-bits='64' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='47' column='1' id='type-id-162'>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- cpp_token* cpp_macro::cpp_macro_u::tokens -->
             <var-decl name='tokens' type-id='type-id-163' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='49' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- const unsigned char* cpp_macro::cpp_macro_u::text -->
             <var-decl name='text' type-id='type-id-145' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='50' column='1'/>
           </data-member>
@@ -2818,27 +2818,27 @@
       <member-type access='public'>
         <!-- union cpp_token::cpp_token_u -->
         <union-decl name='cpp_token_u' size-in-bits='128' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='228' column='1' id='type-id-174'>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- cpp_identifier cpp_token::cpp_token_u::node -->
             <var-decl name='node' type-id='type-id-175' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='231' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- cpp_token* cpp_token::cpp_token_u::source -->
             <var-decl name='source' type-id='type-id-163' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='234' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- cpp_string cpp_token::cpp_token_u::str -->
             <var-decl name='str' type-id='type-id-176' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='237' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- cpp_macro_arg cpp_token::cpp_token_u::macro_arg -->
             <var-decl name='macro_arg' type-id='type-id-177' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='240' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- unsigned int cpp_token::cpp_token_u::token_no -->
             <var-decl name='token_no' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='244' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- unsigned int cpp_token::cpp_token_u::pragma -->
             <var-decl name='pragma' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='247' column='1'/>
           </data-member>
@@ -5725,7 +5725,7 @@
       <member-type access='public'>
         <!-- union {struct {utoken first; utoken last;} iso; struct {const unsigned char* cur; const unsigned char* rlimit;} trad;} -->
         <union-decl name='__anonymous_union__' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='183' column='1' id='type-id-321'>
-          <member-type access='private'>
+          <member-type access='public'>
             <!-- struct {utoken first; utoken last;} -->
             <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='188' column='1' id='type-id-322'>
               <data-member access='public' layout-offset-in-bits='0'>
@@ -5738,7 +5738,7 @@
               </data-member>
             </class-decl>
           </member-type>
-          <member-type access='private'>
+          <member-type access='public'>
             <!-- struct {const unsigned char* cur; const unsigned char* rlimit;} -->
             <class-decl name='__anonymous_struct__1' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='195' column='1' id='type-id-324'>
               <data-member access='public' layout-offset-in-bits='0'>
@@ -5751,11 +5751,11 @@
               </data-member>
             </class-decl>
           </member-type>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- struct {utoken first; utoken last;} iso -->
             <var-decl name='iso' type-id='type-id-322' visibility='default' filepath='../.././libcpp/internal.h' line='191' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- struct {const unsigned char* cur; const unsigned char* rlimit;} trad -->
             <var-decl name='trad' type-id='type-id-324' visibility='default' filepath='../.././libcpp/internal.h' line='198' column='1'/>
           </data-member>
@@ -5764,11 +5764,11 @@
       <member-type access='public'>
         <!-- union {macro_context* mc; cpp_hashnode* macro;} -->
         <union-decl name='__anonymous_union__1' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='216' column='1' id='type-id-325'>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- macro_context* mc -->
             <var-decl name='mc' type-id='type-id-326' visibility='default' filepath='../.././libcpp/internal.h' line='217' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- cpp_hashnode* macro -->
             <var-decl name='macro' type-id='type-id-116' visibility='default' filepath='../.././libcpp/internal.h' line='218' column='1'/>
           </data-member>
@@ -6626,11 +6626,11 @@
     <typedef-decl name='missing_header_cb' type-id='type-id-363' filepath='../.././libcpp/include/cpplib.h' line='496' column='1' id='type-id-316'/>
     <!-- union utoken -->
     <union-decl name='utoken' size-in-bits='64' visibility='default' filepath='../.././libcpp/internal.h' line='122' column='1' id='type-id-323'>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- const cpp_token* utoken::token -->
         <var-decl name='token' type-id='type-id-263' visibility='default' filepath='../.././libcpp/internal.h' line='124' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- const cpp_token** utoken::ptoken -->
         <var-decl name='ptoken' type-id='type-id-364' visibility='default' filepath='../.././libcpp/internal.h' line='125' column='1'/>
       </data-member>
@@ -8189,27 +8189,27 @@
       <member-type access='public'>
         <!-- union cpp_token::cpp_token_u -->
         <union-decl name='cpp_token_u' size-in-bits='128' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='228' column='1' id='type-id-174'>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- cpp_identifier cpp_token::cpp_token_u::node -->
             <var-decl name='node' type-id='type-id-175' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='231' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- cpp_token* cpp_token::cpp_token_u::source -->
             <var-decl name='source' type-id='type-id-163' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='234' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- cpp_string cpp_token::cpp_token_u::str -->
             <var-decl name='str' type-id='type-id-176' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='237' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- cpp_macro_arg cpp_token::cpp_token_u::macro_arg -->
             <var-decl name='macro_arg' type-id='type-id-177' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='240' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- unsigned int cpp_token::cpp_token_u::token_no -->
             <var-decl name='token_no' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='244' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- unsigned int cpp_token::cpp_token_u::pragma -->
             <var-decl name='pragma' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='247' column='1'/>
           </data-member>
@@ -8256,19 +8256,19 @@
     </enum-decl>
     <!-- union _cpp_hashnode_value -->
     <union-decl name='_cpp_hashnode_value' size-in-bits='64' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='665' column='1' id='type-id-81'>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- cpp_macro* _cpp_hashnode_value::macro -->
         <var-decl name='macro' type-id='type-id-149' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='667' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- answer* _cpp_hashnode_value::answers -->
         <var-decl name='answers' type-id='type-id-150' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='669' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- cpp_builtin_type _cpp_hashnode_value::builtin -->
         <var-decl name='builtin' type-id='type-id-151' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='671' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- unsigned short int _cpp_hashnode_value::arg_index -->
         <var-decl name='arg_index' type-id='type-id-29' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='673' column='1'/>
       </data-member>
@@ -8298,11 +8298,11 @@
       <member-type access='public'>
         <!-- union cpp_macro::cpp_macro_u -->
         <union-decl name='cpp_macro_u' size-in-bits='64' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='47' column='1' id='type-id-162'>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- cpp_token* cpp_macro::cpp_macro_u::tokens -->
             <var-decl name='tokens' type-id='type-id-163' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='49' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- const unsigned char* cpp_macro::cpp_macro_u::text -->
             <var-decl name='text' type-id='type-id-145' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='50' column='1'/>
           </data-member>
@@ -9648,7 +9648,7 @@
       <member-type access='public'>
         <!-- union {struct {utoken first; utoken last;} iso; struct {const unsigned char* cur; const unsigned char* rlimit;} trad;} -->
         <union-decl name='__anonymous_union__' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='183' column='1' id='type-id-321'>
-          <member-type access='private'>
+          <member-type access='public'>
             <!-- struct {utoken first; utoken last;} -->
             <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='188' column='1' id='type-id-322'>
               <data-member access='public' layout-offset-in-bits='0'>
@@ -9661,7 +9661,7 @@
               </data-member>
             </class-decl>
           </member-type>
-          <member-type access='private'>
+          <member-type access='public'>
             <!-- struct {const unsigned char* cur; const unsigned char* rlimit;} -->
             <class-decl name='__anonymous_struct__1' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='195' column='1' id='type-id-324'>
               <data-member access='public' layout-offset-in-bits='0'>
@@ -9674,11 +9674,11 @@
               </data-member>
             </class-decl>
           </member-type>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- struct {utoken first; utoken last;} iso -->
             <var-decl name='iso' type-id='type-id-322' visibility='default' filepath='../.././libcpp/internal.h' line='191' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- struct {const unsigned char* cur; const unsigned char* rlimit;} trad -->
             <var-decl name='trad' type-id='type-id-324' visibility='default' filepath='../.././libcpp/internal.h' line='198' column='1'/>
           </data-member>
@@ -9687,11 +9687,11 @@
       <member-type access='public'>
         <!-- union {macro_context* mc; cpp_hashnode* macro;} -->
         <union-decl name='__anonymous_union__1' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='216' column='1' id='type-id-325'>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- macro_context* mc -->
             <var-decl name='mc' type-id='type-id-326' visibility='default' filepath='../.././libcpp/internal.h' line='217' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- cpp_hashnode* macro -->
             <var-decl name='macro' type-id='type-id-116' visibility='default' filepath='../.././libcpp/internal.h' line='218' column='1'/>
           </data-member>
@@ -9724,11 +9724,11 @@
     </class-decl>
     <!-- union utoken -->
     <union-decl name='utoken' size-in-bits='64' visibility='default' filepath='../.././libcpp/internal.h' line='122' column='1' id='type-id-323'>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- const cpp_token* utoken::token -->
         <var-decl name='token' type-id='type-id-263' visibility='default' filepath='../.././libcpp/internal.h' line='124' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- const cpp_token** utoken::ptoken -->
         <var-decl name='ptoken' type-id='type-id-364' visibility='default' filepath='../.././libcpp/internal.h' line='125' column='1'/>
       </data-member>
@@ -11281,51 +11281,51 @@
     </enum-decl>
     <!-- union {struct {const char* s; int len;} s_name; struct {const demangle_operator_info* op;} s_operator; struct {int args; demangle_component* name;} s_extended_operator; struct {demangle_component* length; short int accum; short int sat;} s_fixed; struct {gnu_v3_ctor_kinds kind; demangle_component* name;} s_ctor; struct {gnu_v3_dtor_kinds kind; demangle_component* name;} s_dtor; struct {const demangle_builtin_type_info* type;} s_builtin; struct {const char* string; int len;} s_string; struct {long int number;} s_number; struct {int character;} s_character; struct {demangle_component* left; demangle_component* right;} s_binary; struct {demangle_component* sub; int num;} s_unary_num;} -->
     <union-decl name='__anonymous_union__' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='../.././libiberty/../include/demangle.h' line='439' column='1' id='type-id-453'>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- struct {const char* s; int len;} s_name -->
         <var-decl name='s_name' type-id='type-id-454' visibility='default' filepath='../.././libiberty/../include/demangle.h' line='448' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- struct {const demangle_operator_info* op;} s_operator -->
         <var-decl name='s_operator' type-id='type-id-455' visibility='default' filepath='../.././libiberty/../include/demangle.h' line='455' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- struct {int args; demangle_component* name;} s_extended_operator -->
         <var-decl name='s_extended_operator' type-id='type-id-456' visibility='default' filepath='../.././libiberty/../include/demangle.h' line='464' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- struct {demangle_component* length; short int accum; short int sat;} s_fixed -->
         <var-decl name='s_fixed' type-id='type-id-457' visibility='default' filepath='../.././libiberty/../include/demangle.h' line='475' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- struct {gnu_v3_ctor_kinds kind; demangle_component* name;} s_ctor -->
         <var-decl name='s_ctor' type-id='type-id-458' visibility='default' filepath='../.././libiberty/../include/demangle.h' line='484' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- struct {gnu_v3_dtor_kinds kind; demangle_component* name;} s_dtor -->
         <var-decl name='s_dtor' type-id='type-id-459' visibility='default' filepath='../.././libiberty/../include/demangle.h' line='493' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- struct {const demangle_builtin_type_info* type;} s_builtin -->
         <var-decl name='s_builtin' type-id='type-id-460' visibility='default' filepath='../.././libiberty/../include/demangle.h' line='500' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- struct {const char* string; int len;} s_string -->
         <var-decl name='s_string' type-id='type-id-461' visibility='default' filepath='../.././libiberty/../include/demangle.h' line='509' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- struct {long int number;} s_number -->
         <var-decl name='s_number' type-id='type-id-462' visibility='default' filepath='../.././libiberty/../include/demangle.h' line='516' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- struct {int character;} s_character -->
         <var-decl name='s_character' type-id='type-id-463' visibility='default' filepath='../.././libiberty/../include/demangle.h' line='522' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- struct {demangle_component* left; demangle_component* right;} s_binary -->
         <var-decl name='s_binary' type-id='type-id-464' visibility='default' filepath='../.././libiberty/../include/demangle.h' line='531' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- struct {demangle_component* sub; int num;} s_unary_num -->
         <var-decl name='s_unary_num' type-id='type-id-465' visibility='default' filepath='../.././libiberty/../include/demangle.h' line='539' column='1'/>
       </data-member>
@@ -12615,26 +12615,26 @@
     <typedef-decl name='__WAIT_STATUS' type-id='type-id-497' filepath='/usr/include/stdlib.h' line='72' column='1' id='type-id-498'/>
     <!-- union {wait* __uptr; int* __iptr;} -->
     <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/usr/include/stdlib.h' line='68' column='1' id='type-id-497'>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- wait* __uptr -->
         <var-decl name='__uptr' type-id='type-id-499' visibility='default' filepath='/usr/include/stdlib.h' line='70' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- int* __iptr -->
         <var-decl name='__iptr' type-id='type-id-42' visibility='default' filepath='/usr/include/stdlib.h' line='71' column='1'/>
       </data-member>
     </union-decl>
     <!-- union wait -->
     <union-decl name='wait' size-in-bits='32' visibility='default' filepath='/usr/include/bits/waitstatus.h' line='67' column='1' id='type-id-500'>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- int wait::w_status -->
         <var-decl name='w_status' type-id='type-id-18' visibility='default' filepath='/usr/include/bits/waitstatus.h' line='69' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- struct {unsigned int __w_termsig; unsigned int __w_coredump; unsigned int __w_retcode;} wait::__wait_terminated -->
         <var-decl name='__wait_terminated' type-id='type-id-501' visibility='default' filepath='/usr/include/bits/waitstatus.h' line='84' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- struct {unsigned int __w_stopval; unsigned int __w_stopsig;} wait::__wait_stopped -->
         <var-decl name='__wait_stopped' type-id='type-id-502' visibility='default' filepath='/usr/include/bits/waitstatus.h' line='97' column='1'/>
       </data-member>

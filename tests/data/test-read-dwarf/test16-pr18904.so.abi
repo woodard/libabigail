@@ -2798,7 +2798,7 @@
     <typedef-decl name='__pid_t' type-id='type-id-25' filepath='/usr/include/bits/types.h' line='133' column='1' id='type-id-236'/>
     <typedef-decl name='AutoSet' type-id='type-id-237' filepath='../../../gcc/liboffloadmic/runtime/offload_engine.h' line='259' column='1' id='type-id-238'/>
     <union-decl name='varDescFlags' size-in-bits='32' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='217' column='1' id='type-id-239'>
-      <member-type access='private'>
+      <member-type access='public'>
         <class-decl name='__anonymous_struct__' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='218' column='1' id='type-id-240'>
           <data-member access='public' layout-offset-in-bits='0'>
             <var-decl name='is_static' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='220' column='1'/>
@@ -2844,10 +2844,10 @@
           </data-member>
         </class-decl>
       </member-type>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-240' visibility='default'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='bits' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='250' column='1'/>
       </data-member>
     </union-decl>
@@ -3734,7 +3734,7 @@
     <class-decl name='VarDesc' size-in-bits='512' is-struct='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='254' column='1' id='type-id-286'>
       <member-type access='public'>
         <union-decl name='__anonymous_union__' size-in-bits='8' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='256' column='1' id='type-id-287'>
-          <member-type access='private'>
+          <member-type access='public'>
             <class-decl name='__anonymous_struct__' size-in-bits='8' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='257' column='1' id='type-id-288'>
               <data-member access='public' layout-offset-in-bits='0'>
                 <var-decl name='dst' type-id='type-id-20' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='258' column='1'/>
@@ -3744,17 +3744,17 @@
               </data-member>
             </class-decl>
           </member-type>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='' type-id='type-id-288' visibility='default'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='bits' type-id='type-id-20' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='261' column='1'/>
           </data-member>
         </union-decl>
       </member-type>
       <member-type access='public'>
         <union-decl name='__anonymous_union__1' size-in-bits='8' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='265' column='1' id='type-id-289'>
-          <member-type access='private'>
+          <member-type access='public'>
             <class-decl name='__anonymous_struct__' size-in-bits='8' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='266' column='1' id='type-id-290'>
               <data-member access='public' layout-offset-in-bits='0'>
                 <var-decl name='in' type-id='type-id-20' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='267' column='1'/>
@@ -3764,30 +3764,30 @@
               </data-member>
             </class-decl>
           </member-type>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='' type-id='type-id-290' visibility='default'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='bits' type-id='type-id-20' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='270' column='1'/>
           </data-member>
         </union-decl>
       </member-type>
       <member-type access='public'>
         <union-decl name='__anonymous_union__2' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='287' column='1' id='type-id-291'>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='count' type-id='type-id-227' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='291' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='disp' type-id='type-id-227' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='293' column='1'/>
           </data-member>
         </union-decl>
       </member-type>
       <member-type access='public'>
         <union-decl name='__anonymous_union__3' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='298' column='1' id='type-id-292'>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='alloc' type-id='type-id-150' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='299' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='ptr_arr_offset' type-id='type-id-227' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='300' column='1'/>
           </data-member>
         </union-decl>
@@ -3841,7 +3841,7 @@
       </data-member>
     </class-decl>
     <union-decl name='OffloadFlags' size-in-bits='32' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='160' column='1' id='type-id-276'>
-      <member-type access='private'>
+      <member-type access='public'>
         <class-decl name='__anonymous_struct__' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='162' column='1' id='type-id-294'>
           <data-member access='public' layout-offset-in-bits='0'>
             <var-decl name='fortran_traceback' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='163' column='1'/>
@@ -3851,7 +3851,7 @@
           </data-member>
         </class-decl>
       </member-type>
-      <member-type access='private'>
+      <member-type access='public'>
         <class-decl name='__anonymous_struct__1' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='162' column='1' id='type-id-294'>
           <data-member access='public' layout-offset-in-bits='0'>
             <var-decl name='fortran_traceback' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='163' column='1'/>
@@ -3861,10 +3861,10 @@
           </data-member>
         </class-decl>
       </member-type>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='flags' type-id='type-id-17' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='161' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='bits' type-id='type-id-294' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='165' column='1'/>
       </data-member>
     </union-decl>
@@ -12011,7 +12011,7 @@
     <pointer-type-def type-id='type-id-1133' size-in-bits='64' id='type-id-2059'/>
     <pointer-type-def type-id='type-id-1195' size-in-bits='64' id='type-id-2060'/>
     <union-decl name='__anonymous_union__' size-in-bits='320' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='91' column='1' id='type-id-2061'>
-      <member-type access='private'>
+      <member-type access='public'>
         <class-decl name='__pthread_mutex_s' size-in-bits='320' is-struct='yes' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='92' column='1' id='type-id-2076'>
           <data-member access='public' layout-offset-in-bits='0'>
             <var-decl name='__lock' type-id='type-id-25' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='94' column='1'/>
@@ -12039,13 +12039,13 @@
           </data-member>
         </class-decl>
       </member-type>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='__data' type-id='type-id-2076' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='124' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='__size' type-id='type-id-2079' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='125' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='__align' type-id='type-id-191' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='126' column='1'/>
       </data-member>
     </union-decl>
@@ -18497,7 +18497,7 @@
     </class-decl>
     <typedef-decl name='pthread_mutex_t' type-id='type-id-2061' filepath='/usr/include/bits/pthreadtypes.h' line='127' column='1' id='type-id-1967'/>
     <union-decl name='__anonymous_union__' size-in-bits='320' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='91' column='1' id='type-id-2061'>
-      <member-type access='private'>
+      <member-type access='public'>
         <class-decl name='__pthread_mutex_s' size-in-bits='320' is-struct='yes' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='92' column='1' id='type-id-2076'>
           <data-member access='public' layout-offset-in-bits='0'>
             <var-decl name='__lock' type-id='type-id-25' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='94' column='1'/>
@@ -18525,13 +18525,13 @@
           </data-member>
         </class-decl>
       </member-type>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='__data' type-id='type-id-2076' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='124' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='__size' type-id='type-id-2079' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='125' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='__align' type-id='type-id-191' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='126' column='1'/>
       </data-member>
     </union-decl>
@@ -19525,10 +19525,10 @@
     <class-decl name='__anonymous_struct__1' size-in-bits='64' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-3552' visibility='default' filepath='/usr/include/wchar.h' line='83' column='1' id='type-id-3554'>
       <member-type access='public'>
         <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='86' column='1' id='type-id-3555'>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='__wch' type-id='type-id-2' visibility='default' filepath='/usr/include/wchar.h' line='88' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='__wchb' type-id='type-id-3534' visibility='default' filepath='/usr/include/wchar.h' line='92' column='1'/>
           </data-member>
         </union-decl>
@@ -19969,10 +19969,10 @@
           </member-type>
           <member-type access='private'>
             <union-decl name='__anonymous_union__' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/basic_string.h' line='121' column='1' id='type-id-3674'>
-              <data-member access='private'>
+              <data-member access='public'>
                 <var-decl name='_M_local_buf' type-id='type-id-3531' visibility='default' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/basic_string.h' line='122' column='1'/>
               </data-member>
-              <data-member access='private'>
+              <data-member access='public'>
                 <var-decl name='_M_allocated_capacity' type-id='type-id-3610' visibility='default' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/basic_string.h' line='123' column='1'/>
               </data-member>
             </union-decl>

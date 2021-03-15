@@ -2018,10 +2018,10 @@
       </member-type>
       <member-type access='private'>
         <union-decl name='RegionSetRep' size-in-bits='384' visibility='default' filepath='src/memory_region_map.cc' line='177' column='1' id='type-id-187'>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='rep' type-id='type-id-188' visibility='default' filepath='src/memory_region_map.cc' line='178' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='align_it' type-id='type-id-58' visibility='default' filepath='src/memory_region_map.cc' line='179' column='1'/>
           </data-member>
         </union-decl>
@@ -8375,16 +8375,16 @@
         </member-type>
         <member-type access='private'>
           <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='src/internal_logging.h' line='91' column='1' id='type-id-1157'>
-            <data-member access='private'>
+            <data-member access='public'>
               <var-decl name='str' type-id='type-id-57' visibility='default' filepath='src/internal_logging.h' line='92' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <var-decl name='ptr' type-id='type-id-58' visibility='default' filepath='src/internal_logging.h' line='93' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <var-decl name='snum' type-id='type-id-103' visibility='default' filepath='src/internal_logging.h' line='94' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <var-decl name='unum' type-id='type-id-15' visibility='default' filepath='src/internal_logging.h' line='95' column='1'/>
             </data-member>
           </union-decl>
@@ -9978,7 +9978,7 @@
     <class-decl name='siginfo' size-in-bits='1024' is-struct='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='52' column='1' id='type-id-1372'>
       <member-type access='public'>
         <union-decl name='__anonymous_union__' size-in-bits='896' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='59' column='1' id='type-id-1373'>
-          <member-type access='private'>
+          <member-type access='public'>
             <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='64' column='1' id='type-id-1374'>
               <data-member access='public' layout-offset-in-bits='0'>
                 <var-decl name='si_pid' type-id='type-id-68' visibility='default' filepath='/usr/include/bits/siginfo.h' line='65' column='1'/>
@@ -9988,7 +9988,7 @@
               </data-member>
             </class-decl>
           </member-type>
-          <member-type access='private'>
+          <member-type access='public'>
             <class-decl name='__anonymous_struct__1' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='71' column='1' id='type-id-1376'>
               <data-member access='public' layout-offset-in-bits='0'>
                 <var-decl name='si_tid' type-id='type-id-1' visibility='default' filepath='/usr/include/bits/siginfo.h' line='72' column='1'/>
@@ -10001,7 +10001,7 @@
               </data-member>
             </class-decl>
           </member-type>
-          <member-type access='private'>
+          <member-type access='public'>
             <class-decl name='__anonymous_struct__2' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='79' column='1' id='type-id-1378'>
               <data-member access='public' layout-offset-in-bits='0'>
                 <var-decl name='si_pid' type-id='type-id-68' visibility='default' filepath='/usr/include/bits/siginfo.h' line='80' column='1'/>
@@ -10014,7 +10014,7 @@
               </data-member>
             </class-decl>
           </member-type>
-          <member-type access='private'>
+          <member-type access='public'>
             <class-decl name='__anonymous_struct__3' size-in-bits='256' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='87' column='1' id='type-id-1379'>
               <data-member access='public' layout-offset-in-bits='0'>
                 <var-decl name='si_pid' type-id='type-id-68' visibility='default' filepath='/usr/include/bits/siginfo.h' line='88' column='1'/>
@@ -10033,14 +10033,14 @@
               </data-member>
             </class-decl>
           </member-type>
-          <member-type access='private'>
+          <member-type access='public'>
             <class-decl name='__anonymous_struct__4' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='97' column='1' id='type-id-1381'>
               <data-member access='public' layout-offset-in-bits='0'>
                 <var-decl name='si_addr' type-id='type-id-58' visibility='default' filepath='/usr/include/bits/siginfo.h' line='98' column='1'/>
               </data-member>
             </class-decl>
           </member-type>
-          <member-type access='private'>
+          <member-type access='public'>
             <class-decl name='__anonymous_struct__5' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='103' column='1' id='type-id-1382'>
               <data-member access='public' layout-offset-in-bits='0'>
                 <var-decl name='si_band' type-id='type-id-85' visibility='default' filepath='/usr/include/bits/siginfo.h' line='104' column='1'/>
@@ -10050,25 +10050,25 @@
               </data-member>
             </class-decl>
           </member-type>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='_pad' type-id='type-id-1383' visibility='default' filepath='/usr/include/bits/siginfo.h' line='60' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='_kill' type-id='type-id-1374' visibility='default' filepath='/usr/include/bits/siginfo.h' line='67' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='_timer' type-id='type-id-1376' visibility='default' filepath='/usr/include/bits/siginfo.h' line='75' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='_rt' type-id='type-id-1378' visibility='default' filepath='/usr/include/bits/siginfo.h' line='83' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='_sigchld' type-id='type-id-1379' visibility='default' filepath='/usr/include/bits/siginfo.h' line='93' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='_sigfault' type-id='type-id-1381' visibility='default' filepath='/usr/include/bits/siginfo.h' line='99' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='_sigpoll' type-id='type-id-1382' visibility='default' filepath='/usr/include/bits/siginfo.h' line='106' column='1'/>
           </data-member>
         </union-decl>
@@ -10093,10 +10093,10 @@
     <typedef-decl name='__uid_t' type-id='type-id-64' filepath='/usr/include/bits/types.h' line='135' column='1' id='type-id-1375'/>
     <typedef-decl name='sigval_t' type-id='type-id-1385' filepath='/usr/include/bits/siginfo.h' line='37' column='1' id='type-id-1377'/>
     <union-decl name='sigval' size-in-bits='64' visibility='default' filepath='/usr/include/bits/siginfo.h' line='34' column='1' id='type-id-1385'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='sival_int' type-id='type-id-1' visibility='default' filepath='/usr/include/bits/siginfo.h' line='35' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='sival_ptr' type-id='type-id-58' visibility='default' filepath='/usr/include/bits/siginfo.h' line='36' column='1'/>
       </data-member>
     </union-decl>
@@ -10498,7 +10498,7 @@
     <class-decl name='siginfo' size-in-bits='1024' is-struct='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='52' column='1' id='type-id-1372'>
       <member-type access='public'>
         <union-decl name='__anonymous_union__' size-in-bits='896' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='59' column='1' id='type-id-1373'>
-          <member-type access='private'>
+          <member-type access='public'>
             <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='64' column='1' id='type-id-1374'>
               <data-member access='public' layout-offset-in-bits='0'>
                 <var-decl name='si_pid' type-id='type-id-68' visibility='default' filepath='/usr/include/bits/siginfo.h' line='65' column='1'/>
@@ -10508,7 +10508,7 @@
               </data-member>
             </class-decl>
           </member-type>
-          <member-type access='private'>
+          <member-type access='public'>
             <class-decl name='__anonymous_struct__1' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='71' column='1' id='type-id-1376'>
               <data-member access='public' layout-offset-in-bits='0'>
                 <var-decl name='si_tid' type-id='type-id-1' visibility='default' filepath='/usr/include/bits/siginfo.h' line='72' column='1'/>
@@ -10521,7 +10521,7 @@
               </data-member>
             </class-decl>
           </member-type>
-          <member-type access='private'>
+          <member-type access='public'>
             <class-decl name='__anonymous_struct__2' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='79' column='1' id='type-id-1378'>
               <data-member access='public' layout-offset-in-bits='0'>
                 <var-decl name='si_pid' type-id='type-id-68' visibility='default' filepath='/usr/include/bits/siginfo.h' line='80' column='1'/>
@@ -10534,7 +10534,7 @@
               </data-member>
             </class-decl>
           </member-type>
-          <member-type access='private'>
+          <member-type access='public'>
             <class-decl name='__anonymous_struct__3' size-in-bits='256' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='87' column='1' id='type-id-1379'>
               <data-member access='public' layout-offset-in-bits='0'>
                 <var-decl name='si_pid' type-id='type-id-68' visibility='default' filepath='/usr/include/bits/siginfo.h' line='88' column='1'/>
@@ -10553,14 +10553,14 @@
               </data-member>
             </class-decl>
           </member-type>
-          <member-type access='private'>
+          <member-type access='public'>
             <class-decl name='__anonymous_struct__4' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='97' column='1' id='type-id-1381'>
               <data-member access='public' layout-offset-in-bits='0'>
                 <var-decl name='si_addr' type-id='type-id-58' visibility='default' filepath='/usr/include/bits/siginfo.h' line='98' column='1'/>
               </data-member>
             </class-decl>
           </member-type>
-          <member-type access='private'>
+          <member-type access='public'>
             <class-decl name='__anonymous_struct__5' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/siginfo.h' line='103' column='1' id='type-id-1382'>
               <data-member access='public' layout-offset-in-bits='0'>
                 <var-decl name='si_band' type-id='type-id-85' visibility='default' filepath='/usr/include/bits/siginfo.h' line='104' column='1'/>
@@ -10570,25 +10570,25 @@
               </data-member>
             </class-decl>
           </member-type>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='_pad' type-id='type-id-1383' visibility='default' filepath='/usr/include/bits/siginfo.h' line='60' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='_kill' type-id='type-id-1374' visibility='default' filepath='/usr/include/bits/siginfo.h' line='67' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='_timer' type-id='type-id-1376' visibility='default' filepath='/usr/include/bits/siginfo.h' line='75' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='_rt' type-id='type-id-1378' visibility='default' filepath='/usr/include/bits/siginfo.h' line='83' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='_sigchld' type-id='type-id-1379' visibility='default' filepath='/usr/include/bits/siginfo.h' line='93' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='_sigfault' type-id='type-id-1381' visibility='default' filepath='/usr/include/bits/siginfo.h' line='99' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='_sigpoll' type-id='type-id-1382' visibility='default' filepath='/usr/include/bits/siginfo.h' line='106' column='1'/>
           </data-member>
         </union-decl>
@@ -10722,10 +10722,10 @@
     <typedef-decl name='__uid_t' type-id='type-id-64' filepath='/usr/include/bits/types.h' line='135' column='1' id='type-id-1375'/>
     <typedef-decl name='sigval_t' type-id='type-id-1385' filepath='/usr/include/bits/siginfo.h' line='37' column='1' id='type-id-1377'/>
     <union-decl name='sigval' size-in-bits='64' visibility='default' filepath='/usr/include/bits/siginfo.h' line='34' column='1' id='type-id-1385'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='sival_int' type-id='type-id-1' visibility='default' filepath='/usr/include/bits/siginfo.h' line='35' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='sival_ptr' type-id='type-id-58' visibility='default' filepath='/usr/include/bits/siginfo.h' line='36' column='1'/>
       </data-member>
     </union-decl>
@@ -12058,10 +12058,10 @@
     <class-decl name='__mbstate_t' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/include/wchar.h' line='84' column='1' id='type-id-1598'>
       <member-type access='public'>
         <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='87' column='1' id='type-id-1600'>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='__wch' type-id='type-id-64' visibility='default' filepath='/usr/include/wchar.h' line='89' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='__wchb' type-id='type-id-1557' visibility='default' filepath='/usr/include/wchar.h' line='93' column='1'/>
           </data-member>
         </union-decl>
@@ -14719,16 +14719,16 @@
         </member-type>
         <member-type access='private'>
           <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='src/internal_logging.h' line='91' column='1' id='type-id-1157'>
-            <data-member access='private'>
+            <data-member access='public'>
               <var-decl name='str' type-id='type-id-57' visibility='default' filepath='src/internal_logging.h' line='92' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <var-decl name='ptr' type-id='type-id-58' visibility='default' filepath='src/internal_logging.h' line='93' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <var-decl name='snum' type-id='type-id-103' visibility='default' filepath='src/internal_logging.h' line='94' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <var-decl name='unum' type-id='type-id-15' visibility='default' filepath='src/internal_logging.h' line='95' column='1'/>
             </data-member>
           </union-decl>

@@ -752,7 +752,7 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/spinlock_types.h' line='62' column='1' id='type-id-266'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='rlock' type-id='type-id-267' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/spinlock_types.h' line='63' column='1'/>
       </data-member>
     </union-decl>
@@ -768,13 +768,13 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__1' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/asm-generic/qspinlock_types.h' line='23' column='1' id='type-id-270'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='val' type-id='type-id-271' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/asm-generic/qspinlock_types.h' line='24' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-272' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/asm-generic/qspinlock_types.h' line='32' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-273' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/asm-generic/qspinlock_types.h' line='36' column='1'/>
       </data-member>
     </union-decl>
@@ -1399,10 +1399,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__2' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/fs.h' line='923' column='1' id='type-id-360'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='fu_llist' type-id='type-id-371' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/fs.h' line='924' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='fu_rcuhead' type-id='type-id-372' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/fs.h' line='925' column='1'/>
       </data-member>
     </union-decl>
@@ -1500,10 +1500,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__3' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/dcache.h' line='48' column='1' id='type-id-389'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-391' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/dcache.h' line='49' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='hash_len' type-id='type-id-201' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/dcache.h' line='52' column='1'/>
       </data-member>
     </union-decl>
@@ -2419,13 +2419,13 @@
     <typedef-decl name='s8' type-id='type-id-520' filepath='/ws/android/kernel/aosp/common-mainline/common/include/asm-generic/int-ll64.h' line='16' column='1' id='type-id-515'/>
     <typedef-decl name='__s8' type-id='type-id-191' filepath='/ws/android/kernel/aosp/common-mainline/common/include/uapi/asm-generic/int-ll64.h' line='20' column='1' id='type-id-520'/>
     <union-decl name='__anonymous_union__4' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/moduleparam.h' line='76' column='1' id='type-id-516'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='arg' type-id='type-id-225' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/moduleparam.h' line='77' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='str' type-id='type-id-521' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/moduleparam.h' line='78' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='arr' type-id='type-id-522' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/moduleparam.h' line='79' column='1'/>
       </data-member>
     </union-decl>
@@ -2968,13 +2968,13 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__5' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/quota.h' line='69' column='1' id='type-id-583'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='uid' type-id='type-id-393' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/quota.h' line='70' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='gid' type-id='type-id-155' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/quota.h' line='71' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='projid' type-id='type-id-585' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/quota.h' line='72' column='1'/>
       </data-member>
     </union-decl>
@@ -3039,28 +3039,28 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__6' size-in-bits='320' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='78' column='1' id='type-id-590'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-593' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='79' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-594' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='97' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-595' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='104' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-596' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='131' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-597' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='139' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-598' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='144' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-599' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='158' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='callback_head' type-id='type-id-372' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='175' column='1'/>
       </data-member>
     </union-decl>
@@ -3289,10 +3289,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__7' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='105' column='1' id='type-id-631'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='slab_list' type-id='type-id-158' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='106' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-634' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='107' column='1'/>
       </data-member>
     </union-decl>
@@ -3308,13 +3308,13 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__8' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='121' column='1' id='type-id-633'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='s_mem' type-id='type-id-225' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='122' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='counters' type-id='type-id-211' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='123' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-636' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='124' column='1'/>
       </data-member>
     </union-decl>
@@ -3373,10 +3373,10 @@
     </class-decl>
     <typedef-decl name='pgtable_t' type-id='type-id-635' filepath='/ws/android/kernel/aosp/common-mainline/common/arch/arm64/include/asm/page.h' line='27' column='1' id='type-id-637'/>
     <union-decl name='__anonymous_union__9' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='148' column='1' id='type-id-638'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='pt_mm' type-id='type-id-639' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='149' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='pt_frag_refcount' type-id='type-id-271' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='150' column='1'/>
       </data-member>
     </union-decl>
@@ -3610,10 +3610,10 @@
     </class-decl>
     <typedef-decl name='pteval_t' type-id='type-id-201' filepath='/ws/android/kernel/aosp/common-mainline/common/arch/arm64/include/asm/pgtable-types.h' line='14' column='1' id='type-id-657'/>
     <union-decl name='__anonymous_union__10' size-in-bits='256' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='321' column='1' id='type-id-652'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='shared' type-id='type-id-658' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='325' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='anon_name' type-id='type-id-228' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='326' column='1'/>
       </data-member>
     </union-decl>
@@ -4347,10 +4347,10 @@
     </class-decl>
     <typedef-decl name='mm_segment_t' type-id='type-id-211' filepath='/ws/android/kernel/aosp/common-mainline/common/arch/arm64/include/asm/thread_info.h' line='23' column='1' id='type-id-746'/>
     <union-decl name='__anonymous_union__11' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/arch/arm64/include/asm/thread_info.h' line='34' column='1' id='type-id-747'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='preempt_count' type-id='type-id-201' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/arch/arm64/include/asm/thread_info.h' line='35' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='preempt' type-id='type-id-748' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/arch/arm64/include/asm/thread_info.h' line='44' column='1'/>
       </data-member>
     </union-decl>
@@ -4761,10 +4761,10 @@
       </data-member>
     </class-decl>
     <union-decl name='rcu_special' size-in-bits='32' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched.h' line='616' column='1' id='type-id-702'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='b' type-id='type-id-773' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched.h' line='622' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='s' type-id='type-id-197' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched.h' line='623' column='1'/>
       </data-member>
     </union-decl>
@@ -4832,13 +4832,13 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__12' size-in-bits='320' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/restart_block.h' line='27' column='1' id='type-id-775'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='futex' type-id='type-id-776' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/restart_block.h' line='36' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='nanosleep' type-id='type-id-777' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/restart_block.h' line='46' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='poll' type-id='type-id-778' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/restart_block.h' line='54' column='1'/>
       </data-member>
     </union-decl>
@@ -4883,10 +4883,10 @@
       <enumerator name='TT_COMPAT' value='2'/>
     </enum-decl>
     <union-decl name='__anonymous_union__13' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/restart_block.h' line='41' column='1' id='type-id-781'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='rmtp' type-id='type-id-782' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/restart_block.h' line='42' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='compat_rmtp' type-id='type-id-783' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/restart_block.h' line='43' column='1'/>
       </data-member>
     </union-decl>
@@ -5202,27 +5202,27 @@
     <typedef-decl name='key_serial_t' type-id='type-id-812' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/key.h' line='28' column='1' id='type-id-804'/>
     <typedef-decl name='int32_t' type-id='type-id-260' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/types.h' line='103' column='1' id='type-id-812'/>
     <union-decl name='__anonymous_union__14' size-in-bits='192' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/key.h' line='175' column='1' id='type-id-805'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='graveyard_link' type-id='type-id-158' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/key.h' line='176' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='serial_node' type-id='type-id-184' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/key.h' line='177' column='1'/>
       </data-member>
     </union-decl>
     <union-decl name='__anonymous_union__15' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/key.h' line='182' column='1' id='type-id-807'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='expiry' type-id='type-id-443' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/key.h' line='183' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='revoked_at' type-id='type-id-443' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/key.h' line='184' column='1'/>
       </data-member>
     </union-decl>
     <typedef-decl name='key_perm_t' type-id='type-id-446' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/key.h' line='31' column='1' id='type-id-808'/>
     <union-decl name='__anonymous_union__16' size-in-bits='320' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/key.h' line='219' column='1' id='type-id-809'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='index_key' type-id='type-id-813' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/key.h' line='220' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-814' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/key.h' line='221' column='1'/>
       </data-member>
     </union-decl>
@@ -5244,10 +5244,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__17' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/key.h' line='94' column='1' id='type-id-815'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-818' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/key.h' line='95' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='x' type-id='type-id-211' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/key.h' line='104' column='1'/>
       </data-member>
     </union-decl>
@@ -5288,18 +5288,18 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__18' size-in-bits='256' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/key.h' line='234' column='1' id='type-id-810'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='payload' type-id='type-id-820' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/key.h' line='235' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-821' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/key.h' line='236' column='1'/>
       </data-member>
     </union-decl>
     <union-decl name='key_payload' size-in-bits='256' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/key.h' line='111' column='1' id='type-id-820'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='rcu_data0' type-id='type-id-225' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/key.h' line='112' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='data' type-id='type-id-226' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/key.h' line='113' column='1'/>
       </data-member>
     </union-decl>
@@ -5401,10 +5401,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__19' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/cred.h' line='149' column='1' id='type-id-801'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='non_rcu' type-id='type-id-150' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/cred.h' line='150' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='rcu' type-id='type-id-372' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/cred.h' line='151' column='1'/>
       </data-member>
     </union-decl>
@@ -5806,18 +5806,18 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__20' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/iocontext.h' line='82' column='1' id='type-id-861'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='q_node' type-id='type-id-158' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/iocontext.h' line='83' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='__rcu_icq_cache' type-id='type-id-632' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/iocontext.h' line='84' column='1'/>
       </data-member>
     </union-decl>
     <union-decl name='__anonymous_union__21' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/iocontext.h' line='86' column='1' id='type-id-862'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='ioc_node' type-id='type-id-144' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/iocontext.h' line='87' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='__rcu_head' type-id='type-id-372' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/iocontext.h' line='88' column='1'/>
       </data-member>
     </union-decl>
@@ -5842,25 +5842,25 @@
       </data-member>
     </class-decl>
     <union-decl name='__sifields' size-in-bits='256' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/uapi/asm-generic/siginfo.h' line='32' column='1' id='type-id-866'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='_kill' type-id='type-id-867' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/uapi/asm-generic/siginfo.h' line='37' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='_timer' type-id='type-id-868' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/uapi/asm-generic/siginfo.h' line='45' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='_rt' type-id='type-id-869' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/uapi/asm-generic/siginfo.h' line='52' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='_sigchld' type-id='type-id-870' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/uapi/asm-generic/siginfo.h' line='61' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='_sigfault' type-id='type-id-871' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/uapi/asm-generic/siginfo.h' line='95' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='_sigpoll' type-id='type-id-872' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/uapi/asm-generic/siginfo.h' line='101' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='_sigsys' type-id='type-id-873' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/uapi/asm-generic/siginfo.h' line='108' column='1'/>
       </data-member>
     </union-decl>
@@ -5889,10 +5889,10 @@
     <typedef-decl name='__kernel_timer_t' type-id='type-id-150' filepath='/ws/android/kernel/aosp/common-mainline/common/include/uapi/asm-generic/posix_types.h' line='92' column='1' id='type-id-874'/>
     <typedef-decl name='sigval_t' type-id='type-id-876' filepath='/ws/android/kernel/aosp/common-mainline/common/include/uapi/asm-generic/siginfo.h' line='11' column='1' id='type-id-875'/>
     <union-decl name='sigval' size-in-bits='64' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/uapi/asm-generic/siginfo.h' line='8' column='1' id='type-id-876'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='sival_int' type-id='type-id-150' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/uapi/asm-generic/siginfo.h' line='9' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='sival_ptr' type-id='type-id-225' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/uapi/asm-generic/siginfo.h' line='10' column='1'/>
       </data-member>
     </union-decl>
@@ -5934,13 +5934,13 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__22' size-in-bits='192' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/uapi/asm-generic/siginfo.h' line='77' column='1' id='type-id-878'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='_addr_lsb' type-id='type-id-190' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/uapi/asm-generic/siginfo.h' line='82' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='_addr_bnd' type-id='type-id-879' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/uapi/asm-generic/siginfo.h' line='88' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='_addr_pkey' type-id='type-id-880' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/uapi/asm-generic/siginfo.h' line='93' column='1'/>
       </data-member>
     </union-decl>
@@ -6028,10 +6028,10 @@
       <enumerator name='UTASK_SSTEP_TRAPPED' value='3'/>
     </enum-decl>
     <union-decl name='__anonymous_union__23' size-in-bits='192' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/uprobes.h' line='64' column='1' id='type-id-884'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-887' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/uprobes.h' line='65' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-888' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/uprobes.h' line='70' column='1'/>
       </data-member>
     </union-decl>
@@ -6374,16 +6374,16 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__24' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='178' column='1' id='type-id-591'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='_mapcount' type-id='type-id-271' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='183' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='page_type' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='191' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='active' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='193' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='units' type-id='type-id-150' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mm_types.h' line='194' column='1'/>
       </data-member>
     </union-decl>
@@ -6922,26 +6922,26 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__25' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/fs.h' line='650' column='1' id='type-id-396'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='i_nlink' type-id='type-id-965' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/fs.h' line='651' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='__i_nlink' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/fs.h' line='652' column='1'/>
       </data-member>
     </union-decl>
     <union-decl name='__anonymous_union__26' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/fs.h' line='689' column='1' id='type-id-401'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='i_dentry' type-id='type-id-142' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/fs.h' line='690' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='i_rcu' type-id='type-id-372' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/fs.h' line='691' column='1'/>
       </data-member>
     </union-decl>
     <union-decl name='__anonymous_union__27' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/fs.h' line='700' column='1' id='type-id-403'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='i_fop' type-id='type-id-362' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/fs.h' line='701' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='free_inode' type-id='type-id-562' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/fs.h' line='702' column='1'/>
       </data-member>
     </union-decl>
@@ -7152,10 +7152,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__28' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/asm-generic/qrwlock_types.h' line='14' column='1' id='type-id-1005'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='cnts' type-id='type-id-271' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/asm-generic/qrwlock_types.h' line='15' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-1006' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/asm-generic/qrwlock_types.h' line='16' column='1'/>
       </data-member>
     </union-decl>
@@ -7199,13 +7199,13 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__29' size-in-bits='256' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/fs.h' line='1093' column='1' id='type-id-999'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='nfs_fl' type-id='type-id-1017' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/fs.h' line='1094' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='nfs4_fl' type-id='type-id-1018' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/fs.h' line='1095' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='afs' type-id='type-id-1019' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/fs.h' line='1100' column='1'/>
       </data-member>
     </union-decl>
@@ -7251,19 +7251,19 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__30' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/fs.h' line='707' column='1' id='type-id-406'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='i_pipe' type-id='type-id-739' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/fs.h' line='708' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='i_bdev' type-id='type-id-459' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/fs.h' line='709' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='i_cdev' type-id='type-id-1023' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/fs.h' line='710' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='i_link' type-id='type-id-24' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/fs.h' line='711' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='i_dir_seq' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/fs.h' line='712' column='1'/>
       </data-member>
     </union-decl>
@@ -7273,10 +7273,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__31' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/lockref.h' line='26' column='1' id='type-id-1024'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='lock_count' type-id='type-id-7' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/lockref.h' line='28' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-1025' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/lockref.h' line='30' column='1'/>
       </data-member>
     </union-decl>
@@ -7289,21 +7289,21 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__32' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/dcache.h' line='107' column='1' id='type-id-384'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='d_lru' type-id='type-id-158' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/dcache.h' line='108' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='d_wait' type-id='type-id-1026' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/dcache.h' line='109' column='1'/>
       </data-member>
     </union-decl>
     <union-decl name='__anonymous_union__33' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/dcache.h' line='116' column='1' id='type-id-385'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='d_alias' type-id='type-id-144' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/dcache.h' line='117' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='d_in_lookup_hash' type-id='type-id-379' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/dcache.h' line='118' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='d_rcu' type-id='type-id-372' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/dcache.h' line='119' column='1'/>
       </data-member>
     </union-decl>
@@ -7432,13 +7432,13 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__34' size-in-bits='256' is-anonymous='yes' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/kernfs.h' line='150' column='1' id='type-id-1033'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='dir' type-id='type-id-1036' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/kernfs.h' line='151' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='symlink' type-id='type-id-1037' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/kernfs.h' line='152' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='attr' type-id='type-id-1038' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/kernfs.h' line='153' column='1'/>
       </data-member>
     </union-decl>
@@ -7592,10 +7592,10 @@
       </data-member>
     </class-decl>
     <union-decl name='kernfs_node_id' size-in-bits='64' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/kernfs.h' line='108' column='1' id='type-id-1034'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-1062' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/kernfs.h' line='109' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='id' type-id='type-id-201' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/kernfs.h' line='119' column='1'/>
       </data-member>
     </union-decl>

@@ -537,10 +537,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__' size-in-bits='512' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_bman.h' line='88' column='1' id='type-id-75'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-76' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_bman.h' line='89' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='bufs' type-id='type-id-43' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_bman.h' line='94' column='1'/>
       </data-member>
     </union-decl>
@@ -562,13 +562,13 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__1' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_bman.h' line='43' column='1' id='type-id-77'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-78' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_bman.h' line='44' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-79' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_bman.h' line='57' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='opaque' type-id='type-id-80' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_bman.h' line='66' column='1'/>
       </data-member>
     </union-decl>
@@ -618,10 +618,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__2' size-in-bits='504' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_bman.h' line='114' column='1' id='type-id-84'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='acquire' type-id='type-id-85' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_bman.h' line='115' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='query' type-id='type-id-86' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_bman.h' line='116' column='1'/>
       </data-member>
     </union-decl>
@@ -644,13 +644,13 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__3' size-in-bits='512' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_bman.h' line='138' column='1' id='type-id-88'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-89' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_bman.h' line='139' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='acquire' type-id='type-id-90' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_bman.h' line='150' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='query' type-id='type-id-91' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_bman.h' line='151' column='1'/>
       </data-member>
     </union-decl>
@@ -663,10 +663,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__4' size-in-bits='512' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_bman.h' line='143' column='1' id='type-id-90'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-92' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_bman.h' line='144' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='bufs' type-id='type-id-43' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_bman.h' line='149' column='1'/>
       </data-member>
     </union-decl>
@@ -1010,13 +1010,13 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='121' column='1' id='type-id-159'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-162' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='122' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-163' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='141' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='opaque_addr' type-id='type-id-80' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='146' column='1'/>
       </data-member>
     </union-decl>
@@ -1052,16 +1052,16 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__1' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='154' column='1' id='type-id-160'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='opaque' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='158' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-164' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='160' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-165' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='172' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-166' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='182' column='1'/>
       </data-member>
     </union-decl>
@@ -1101,10 +1101,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__2' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='192' column='1' id='type-id-161'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='cmd' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='193' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='status' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='194' column='1'/>
       </data-member>
     </union-decl>
@@ -1192,13 +1192,13 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__3' size-in-bits='256' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='327' column='1' id='type-id-171'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='ern' type-id='type-id-172' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='337' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='dcern' type-id='type-id-173' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='355' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='fq' type-id='type-id-174' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='363' column='1'/>
       </data-member>
     </union-decl>
@@ -1310,31 +1310,31 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__4' size-in-bits='504' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='800' column='1' id='type-id-179'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='initfq' type-id='type-id-180' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='801' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='queryfq' type-id='type-id-181' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='802' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='queryfq_np' type-id='type-id-182' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='803' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='alterfq' type-id='type-id-183' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='804' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='initcgr' type-id='type-id-184' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='805' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='cgrtestwrite' type-id='type-id-185' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='806' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='querycgr' type-id='type-id-186' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='807' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='querycongestion' type-id='type-id-187' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='808' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='querywq' type-id='type-id-188' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='809' column='1'/>
       </data-member>
     </union-decl>
@@ -1391,10 +1391,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__5' size-in-bits='8' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='442' column='1' id='type-id-190'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='orpc' type-id='type-id-51' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='443' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-195' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='444' column='1'/>
       </data-member>
     </union-decl>
@@ -1413,10 +1413,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__6' size-in-bits='16' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='460' column='1' id='type-id-191'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='dest_wq' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='461' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='dest' type-id='type-id-196' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='470' column='1'/>
       </data-member>
     </union-decl>
@@ -1429,13 +1429,13 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__7' size-in-bits='16' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='485' column='1' id='type-id-192'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='opaque_td' type-id='type-id-4' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='486' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='td' type-id='type-id-197' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='487' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='oac_init' type-id='type-id-194' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='488' column='1'/>
       </data-member>
     </union-decl>
@@ -1462,13 +1462,13 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__8' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='491' column='1' id='type-id-193'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='opaque' type-id='type-id-80' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='493' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-198' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='494' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-199' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='505' column='1'/>
       </data-member>
     </union-decl>
@@ -1617,10 +1617,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__9' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='615' column='1' id='type-id-205'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='word' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='616' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-206' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='617' column='1'/>
       </data-member>
     </union-decl>
@@ -1642,10 +1642,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__10' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='670' column='1' id='type-id-203'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-207' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='671' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='cscn_targ' type-id='type-id-8' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='680' column='1'/>
       </data-member>
     </union-decl>
@@ -1658,10 +1658,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__11' size-in-bits='16' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='684' column='1' id='type-id-204'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='cs_thres' type-id='type-id-208' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='685' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='__cs_thres' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='687' column='1'/>
       </data-member>
     </union-decl>
@@ -1671,10 +1671,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__12' size-in-bits='16' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='642' column='1' id='type-id-209'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='hword' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='643' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-210' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='644' column='1'/>
       </data-member>
     </union-decl>
@@ -1737,10 +1737,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__13' size-in-bits='16' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='783' column='1' id='type-id-211'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='channel_wq' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='784' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='channel' type-id='type-id-212' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='793' column='1'/>
       </data-member>
     </union-decl>
@@ -1764,31 +1764,31 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__14' size-in-bits='496' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='1017' column='1' id='type-id-214'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='initfq' type-id='type-id-215' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='1018' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='queryfq' type-id='type-id-216' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='1019' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='queryfq_np' type-id='type-id-217' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='1020' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='alterfq' type-id='type-id-218' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='1021' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='initcgr' type-id='type-id-219' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='1022' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='cgrtestwrite' type-id='type-id-220' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='1023' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='querycgr' type-id='type-id-221' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='1024' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='querycongestion' type-id='type-id-222' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='1025' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='querywq' type-id='type-id-223' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='1026' column='1'/>
       </data-member>
     </union-decl>
@@ -1990,10 +1990,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__15' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='954' column='1' id='type-id-224'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-227' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='955' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='i_bcnt' type-id='type-id-80' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='966' column='1'/>
       </data-member>
     </union-decl>
@@ -2009,10 +2009,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__16' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='968' column='1' id='type-id-225'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-228' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='969' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='a_bcnt' type-id='type-id-80' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='980' column='1'/>
       </data-member>
     </union-decl>
@@ -2028,10 +2028,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__17' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='982' column='1' id='type-id-226'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='cscn_targ_swp' type-id='type-id-49' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='983' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='__reserved5' type-id='type-id-117' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='984' column='1'/>
       </data-member>
     </union-decl>
@@ -2060,10 +2060,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__18' size-in-bits='16' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='998' column='1' id='type-id-230'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='channel_wq' type-id='type-id-5' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='999' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='channel' type-id='type-id-231' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='1008' column='1'/>
       </data-member>
     </union-decl>
@@ -2146,13 +2146,13 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__19' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='1203' column='1' id='type-id-241'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='dqrr_dpdk_cb' type-id='type-id-244' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='1204' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='dqrr_dpdk_pull_cb' type-id='type-id-245' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='1205' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='dqrr' type-id='type-id-246' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/include/fsl_qman.h' line='1206' column='1'/>
       </data-member>
     </union-decl>
@@ -2178,10 +2178,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__20' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_eventdev/rte_eventdev.h' line='1008' column='1' id='type-id-253'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='event' type-id='type-id-11' visibility='default' filepath='../../dpdk/lib/librte_eventdev/rte_eventdev.h' line='1009' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-255' visibility='default' filepath='../../dpdk/lib/librte_eventdev/rte_eventdev.h' line='1011' column='1'/>
       </data-member>
     </union-decl>
@@ -2215,13 +2215,13 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__21' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_eventdev/rte_eventdev.h' line='1067' column='1' id='type-id-254'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='u64' type-id='type-id-11' visibility='default' filepath='../../dpdk/lib/librte_eventdev/rte_eventdev.h' line='1068' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='event_ptr' type-id='type-id-59' visibility='default' filepath='../../dpdk/lib/librte_eventdev/rte_eventdev.h' line='1070' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='mbuf' type-id='type-id-256' visibility='default' filepath='../../dpdk/lib/librte_eventdev/rte_eventdev.h' line='1072' column='1'/>
       </data-member>
     </union-decl>
@@ -2313,20 +2313,20 @@
     </class-decl>
     <typedef-decl name='MARKER' type-id='type-id-142' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='414' column='1' id='type-id-258'/>
     <union-decl name='__anonymous_union__22' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='491' column='1' id='type-id-259'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='buf_iova' type-id='type-id-268' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='492' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='buf_physaddr' type-id='type-id-268' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='493' column='1'/>
       </data-member>
     </union-decl>
     <typedef-decl name='rte_iova_t' type-id='type-id-11' filepath='../../dpdk/lib/librte_eal/common/include/rte_common.h' line='335' column='1' id='type-id-268'/>
     <typedef-decl name='MARKER64' type-id='type-id-139' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='420' column='1' id='type-id-260'/>
     <union-decl name='__anonymous_union__23' size-in-bits='16' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='510' column='1' id='type-id-261'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='refcnt_atomic' type-id='type-id-269' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='511' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='refcnt' type-id='type-id-4' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='513' column='1'/>
       </data-member>
     </union-decl>
@@ -2339,10 +2339,10 @@
     <typedef-decl name='int16_t' type-id='type-id-272' filepath='/usr/include/bits/stdint-intn.h' line='25' column='1' id='type-id-273'/>
     <typedef-decl name='__int16_t' type-id='type-id-112' filepath='/usr/include/bits/types.h' line='39' column='1' id='type-id-272'/>
     <union-decl name='__anonymous_union__24' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='535' column='1' id='type-id-262'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='packet_type' type-id='type-id-7' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='536' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-274' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='537' column='1'/>
       </data-member>
     </union-decl>
@@ -2367,10 +2367,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__25' size-in-bits='8' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='543' column='1' id='type-id-275'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='inner_esp_next_proto' type-id='type-id-14' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='544' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-276' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='550' column='1'/>
       </data-member>
     </union-decl>
@@ -2383,24 +2383,24 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__26' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='567' column='1' id='type-id-263'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='hash' type-id='type-id-277' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='597' column='1'/>
       </data-member>
     </union-decl>
     <union-decl name='__anonymous_union__27' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='568' column='1' id='type-id-277'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='rss' type-id='type-id-7' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='569' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='fdir' type-id='type-id-278' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='583' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='sched' type-id='type-id-279' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='584' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='txadapter' type-id='type-id-280' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='594' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='usr' type-id='type-id-7' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='596' column='1'/>
       </data-member>
     </union-decl>
@@ -2413,10 +2413,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__28' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='571' column='1' id='type-id-281'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-282' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='572' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='lo' type-id='type-id-7' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='576' column='1'/>
       </data-member>
     </union-decl>
@@ -2454,10 +2454,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__29' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='616' column='1' id='type-id-264'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='userdata' type-id='type-id-59' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='617' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='udata64' type-id='type-id-11' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='618' column='1'/>
       </data-member>
     </union-decl>
@@ -2518,10 +2518,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__30' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_mempool/rte_mempool.h' line='224' column='1' id='type-id-284'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='pool_data' type-id='type-id-59' visibility='default' filepath='../../dpdk/lib/librte_mempool/rte_mempool.h' line='225' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='pool_id' type-id='type-id-11' visibility='default' filepath='../../dpdk/lib/librte_mempool/rte_mempool.h' line='226' column='1'/>
       </data-member>
     </union-decl>
@@ -2549,19 +2549,19 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__31' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_eal/common/include/rte_memzone.h' line='55' column='1' id='type-id-291'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='phys_addr' type-id='type-id-293' visibility='default' filepath='../../dpdk/lib/librte_eal/common/include/rte_memzone.h' line='56' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='iova' type-id='type-id-268' visibility='default' filepath='../../dpdk/lib/librte_eal/common/include/rte_memzone.h' line='57' column='1'/>
       </data-member>
     </union-decl>
     <typedef-decl name='phys_addr_t' type-id='type-id-11' filepath='../../dpdk/lib/librte_eal/common/include/rte_common.h' line='325' column='1' id='type-id-293'/>
     <union-decl name='__anonymous_union__32' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_eal/common/include/rte_memzone.h' line='60' column='1' id='type-id-292'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='addr' type-id='type-id-59' visibility='default' filepath='../../dpdk/lib/librte_eal/common/include/rte_memzone.h' line='61' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='addr_64' type-id='type-id-11' visibility='default' filepath='../../dpdk/lib/librte_eal/common/include/rte_memzone.h' line='62' column='1'/>
       </data-member>
     </union-decl>
@@ -2606,10 +2606,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__33' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_mempool/rte_mempool.h' line='140' column='1' id='type-id-300'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='iova' type-id='type-id-268' visibility='default' filepath='../../dpdk/lib/librte_mempool/rte_mempool.h' line='141' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='physaddr' type-id='type-id-293' visibility='default' filepath='../../dpdk/lib/librte_mempool/rte_mempool.h' line='142' column='1'/>
       </data-member>
     </union-decl>
@@ -2650,19 +2650,19 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__34' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_mempool/rte_mempool.h' line='190' column='1' id='type-id-305'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='iova' type-id='type-id-268' visibility='default' filepath='../../dpdk/lib/librte_mempool/rte_mempool.h' line='191' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='phys_addr' type-id='type-id-293' visibility='default' filepath='../../dpdk/lib/librte_mempool/rte_mempool.h' line='192' column='1'/>
       </data-member>
     </union-decl>
     <typedef-decl name='rte_mempool_memchunk_free_cb_t' type-id='type-id-307' filepath='../../dpdk/lib/librte_mempool/rte_mempool.h' line='176' column='1' id='type-id-308'/>
     <union-decl name='__anonymous_union__35' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='626' column='1' id='type-id-266'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='tx_offload' type-id='type-id-11' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='627' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='' type-id='type-id-309' visibility='default' filepath='../../dpdk/lib/librte_mbuf/rte_mbuf_core.h' line='629' column='1'/>
       </data-member>
     </union-decl>
@@ -3339,10 +3339,10 @@
       <enumerator name='RTE_DEV_BLACKLISTED' value='1'/>
     </enum-decl>
     <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_eal/common/include/rte_devargs.h' line='57' column='1' id='type-id-433'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='args' type-id='type-id-436' visibility='default' filepath='../../dpdk/lib/librte_eal/common/include/rte_devargs.h' line='59' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='drv_str' type-id='type-id-397' visibility='default' filepath='../../dpdk/lib/librte_eal/common/include/rte_devargs.h' line='60' column='1'/>
       </data-member>
     </union-decl>
@@ -3439,10 +3439,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__1' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/rte_dpaa_bus.h' line='72' column='1' id='type-id-452'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='eth_dev' type-id='type-id-455' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/rte_dpaa_bus.h' line='73' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='crypto_dev' type-id='type-id-456' visibility='default' filepath='../../dpdk/drivers/bus/dpaa/rte_dpaa_bus.h' line='74' column='1'/>
       </data-member>
     </union-decl>
@@ -3812,13 +3812,13 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__2' size-in-bits='96' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev.h' line='1069' column='1' id='type-id-478'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='vmdq_dcb_tx_conf' type-id='type-id-489' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev.h' line='1070' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='dcb_tx_conf' type-id='type-id-490' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev.h' line='1072' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='vmdq_tx_conf' type-id='type-id-491' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev.h' line='1074' column='1'/>
       </data-member>
     </union-decl>
@@ -4925,10 +4925,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__3' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_eal/common/include/rte_eal_interrupts.h' line='71' column='1' id='type-id-683'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='vfio_dev_fd' type-id='type-id-1' visibility='default' filepath='../../dpdk/lib/librte_eal/common/include/rte_eal_interrupts.h' line='72' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='uio_cfg_fd' type-id='type-id-1' visibility='default' filepath='../../dpdk/lib/librte_eal/common/include/rte_eal_interrupts.h' line='73' column='1'/>
       </data-member>
     </union-decl>
@@ -4996,10 +4996,10 @@
       </data-member>
     </class-decl>
     <union-decl name='__anonymous_union__4' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev_core.h' line='760' column='1' id='type-id-692'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='rx' type-id='type-id-693' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev_core.h' line='761' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='tx' type-id='type-id-694' visibility='default' filepath='../../dpdk/lib/librte_ethdev/rte_ethdev_core.h' line='762' column='1'/>
       </data-member>
     </union-decl>

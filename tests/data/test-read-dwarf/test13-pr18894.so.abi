@@ -2049,10 +2049,10 @@
     <typedef-decl name='DBusServer' type-id='type-id-163' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-server.h' line='42' column='1' id='type-id-170'/>
     <typedef-decl name='DBusGUID' type-id='type-id-171' filepath='../dbus/dbus-sysdeps.h' line='507' column='1' id='type-id-165'/>
     <union-decl name='DBusGUID' size-in-bits='128' visibility='default' filepath='../dbus/dbus-internals.h' line='351' column='1' id='type-id-171'>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='as_uint32s' type-id='type-id-161' visibility='default' filepath='../dbus/dbus-internals.h' line='352' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='as_bytes' type-id='type-id-159' visibility='default' filepath='../dbus/dbus-internals.h' line='353' column='1'/>
       </data-member>
     </union-decl>

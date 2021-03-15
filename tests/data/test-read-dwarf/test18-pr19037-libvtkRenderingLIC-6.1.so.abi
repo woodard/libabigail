@@ -605,7 +605,7 @@
     <typedef-decl name='size_t' type-id='type-id-4' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/include/stddef.h' line='211' column='1' id='type-id-38'/>
     <typedef-decl name='__gthread_mutex_t' type-id='type-id-41' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/x86_64-redhat-linux/bits/gthr-default.h' line='47' column='1' id='type-id-42'/>
     <union-decl name='pthread_mutex_t' size-in-bits='320' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='77' column='1' id='type-id-41'>
-      <member-type access='private'>
+      <member-type access='public'>
         <class-decl name='__pthread_mutex_s' size-in-bits='320' is-struct='yes' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='79' column='1' id='type-id-43'>
           <data-member access='public' layout-offset-in-bits='0'>
             <var-decl name='__lock' type-id='type-id-17' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='80' column='1'/>
@@ -630,13 +630,13 @@
           </data-member>
         </class-decl>
       </member-type>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='__data' type-id='type-id-43' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='101' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='__size' type-id='type-id-8' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='102' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <var-decl name='__align' type-id='type-id-20' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='103' column='1'/>
       </data-member>
     </union-decl>
@@ -1000,10 +1000,10 @@
     <class-decl name='__mbstate_t' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/include/wchar.h' line='84' column='1' id='type-id-82'>
       <member-type access='public'>
         <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='87' column='1' id='type-id-84'>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='__wch' type-id='type-id-13' visibility='default' filepath='/usr/include/wchar.h' line='89' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='__wchb' type-id='type-id-10' visibility='default' filepath='/usr/include/wchar.h' line='93' column='1'/>
           </data-member>
         </union-decl>

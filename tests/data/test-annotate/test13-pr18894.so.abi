@@ -3461,11 +3461,11 @@
     <typedef-decl name='DBusGUID' type-id='type-id-171' filepath='../dbus/dbus-sysdeps.h' line='507' column='1' id='type-id-165'/>
     <!-- union DBusGUID -->
     <union-decl name='DBusGUID' size-in-bits='128' visibility='default' filepath='../dbus/dbus-internals.h' line='351' column='1' id='type-id-171'>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- dbus_uint32_t DBusGUID::as_uint32s[4] -->
         <var-decl name='as_uint32s' type-id='type-id-161' visibility='default' filepath='../dbus/dbus-internals.h' line='352' column='1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public'>
         <!-- char DBusGUID::as_bytes[16] -->
         <var-decl name='as_bytes' type-id='type-id-159' visibility='default' filepath='../dbus/dbus-internals.h' line='353' column='1'/>
       </data-member>

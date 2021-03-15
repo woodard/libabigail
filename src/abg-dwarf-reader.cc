@@ -13578,10 +13578,10 @@ finish_member_function_reading(Dwarf_Die*		  die,
   int64_t vindex = -1;
   if (is_virtual)
     die_virtual_function_index(die, vindex);
-  access_specifier access = private_access;
+  access_specifier access = public_access;
   if (class_decl_sptr c = is_class_type(klass))
-    if (c->is_struct())
-      access = public_access;
+    if (!c->is_struct())
+      access = private_access;
   die_access_specifier(die, access);
 
   bool is_static = false;
@@ -14401,7 +14401,7 @@ add_or_update_union_type(read_context&	 ctxt,
 
   // if we've already seen a union with the same union as 'die' then
   // let's re-use that one. We can't really safely re-use anonymous
-  // classes as they have no name, by construction.  What we can do,
+  // unions as they have no name, by construction.  What we can do,
   // rather, is to reuse the typedef that name them, when they do have
   // a naming typedef.
   if (!is_anonymous)
@@ -14487,11 +14487,11 @@ add_or_update_union_type(read_context&	 ctxt,
 	      if (!t)
 		continue;
 
-	      // We have a non-static data member.  So this class
-	      // cannot be a declaration-only class anymore, even if
+	      // We have a non-static data member.  So this union
+	      // cannot be a declaration-only union anymore, even if
 	      // some DWARF emitters might consider it otherwise.
 	      result->set_is_declaration_only(false);
-	      access_specifier access = private_access;
+	      access_specifier access = public_access;
 
 	      die_access_specifier(&child, access);
 
@@ -16650,10 +16650,10 @@ maybe_set_member_type_access_specifier(decl_base_sptr member_type_declaration,
 	is_class_or_union_type(member_type_declaration->get_scope());
       ABG_ASSERT(scope);
 
-      access_specifier access = private_access;
+      access_specifier access = public_access;
       if (class_decl* cl = is_class_type(scope))
-	if (cl->is_struct())
-	  access = public_access;
+	if (!cl->is_struct())
+	  access = private_access;
 
       die_access_specifier(die, access);
       set_member_access_specifier(member_type_declaration, access);

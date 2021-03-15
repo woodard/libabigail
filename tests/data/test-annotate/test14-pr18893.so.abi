@@ -3150,11 +3150,11 @@
       <member-type access='public'>
         <!-- union {O_nurbscurve* o_nurbscurve; O_pwlcurve* o_pwlcurve;} -->
         <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='libnurbs/internals/reader.h' line='56' column='1' id='type-id-158'>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- O_nurbscurve* o_nurbscurve -->
             <var-decl name='o_nurbscurve' type-id='type-id-97' visibility='default' filepath='libnurbs/internals/reader.h' line='57' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- O_pwlcurve* o_pwlcurve -->
             <var-decl name='o_pwlcurve' type-id='type-id-99' visibility='default' filepath='libnurbs/internals/reader.h' line='58' column='1'/>
           </data-member>
@@ -8303,11 +8303,11 @@
       <member-type access='public'>
         <!-- union {O_nurbscurve* o_nurbscurve; O_pwlcurve* o_pwlcurve;} -->
         <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='libnurbs/internals/reader.h' line='56' column='1' id='type-id-158'>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- O_nurbscurve* o_nurbscurve -->
             <var-decl name='o_nurbscurve' type-id='type-id-97' visibility='default' filepath='libnurbs/internals/reader.h' line='57' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <!-- O_pwlcurve* o_pwlcurve -->
             <var-decl name='o_pwlcurve' type-id='type-id-99' visibility='default' filepath='libnurbs/internals/reader.h' line='58' column='1'/>
           </data-member>

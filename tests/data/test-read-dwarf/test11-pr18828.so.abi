@@ -857,10 +857,10 @@
     <class-decl name='__anonymous_struct__1' size-in-bits='64' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-80' visibility='default' filepath='/usr/include/wchar.h' line='83' column='1' id='type-id-82'>
       <member-type access='public'>
         <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='86' column='1' id='type-id-83'>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='__wch' type-id='type-id-22' visibility='default' filepath='/usr/include/wchar.h' line='88' column='1'/>
           </data-member>
-          <data-member access='private'>
+          <data-member access='public'>
             <var-decl name='__wchb' type-id='type-id-17' visibility='default' filepath='/usr/include/wchar.h' line='92' column='1'/>
           </data-member>
         </union-decl>
@@ -5056,13 +5056,13 @@
       <class-decl name='aligned_storage&lt;16ul, 8ul&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/type_traits' line='1881' column='1' id='type-id-2482'>
         <member-type access='public'>
           <union-decl name='type' size-in-bits='128' visibility='default' filepath='/usr/include/c++/4.9/type_traits' line='1883' column='1' id='type-id-2483'>
-            <member-type access='private'>
+            <member-type access='public'>
               <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/c++/4.9/type_traits' line='1886' column='1' id='type-id-2484'/>
             </member-type>
-            <data-member access='private'>
+            <data-member access='public'>
               <var-decl name='__data' type-id='type-id-45' visibility='default' filepath='/usr/include/c++/4.9/type_traits' line='1885' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <var-decl name='__align' type-id='type-id-2484' visibility='default' filepath='/usr/include/c++/4.9/type_traits' line='1886' column='1'/>
             </data-member>
           </union-decl>
@@ -6623,13 +6623,13 @@
       <class-decl name='aligned_storage&lt;104ul, 8ul&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/type_traits' line='1881' column='1' id='type-id-2641'>
         <member-type access='public'>
           <union-decl name='type' size-in-bits='832' visibility='default' filepath='/usr/include/c++/4.9/type_traits' line='1883' column='1' id='type-id-2642'>
-            <member-type access='private'>
+            <member-type access='public'>
               <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/c++/4.9/type_traits' line='1886' column='1' id='type-id-2643'/>
             </member-type>
-            <data-member access='private'>
+            <data-member access='public'>
               <var-decl name='__data' type-id='type-id-42' visibility='default' filepath='/usr/include/c++/4.9/type_traits' line='1885' column='1'/>
             </data-member>
-            <data-member access='private'>
+            <data-member access='public'>
               <var-decl name='__align' type-id='type-id-2643' visibility='default' filepath='/usr/include/c++/4.9/type_traits' line='1886' column='1'/>
             </data-member>
           </union-decl>
@@ -9134,43 +9134,43 @@
         </member-function>
       </class-decl>
       <union-decl name='_Any_data' size-in-bits='128' visibility='default' filepath='/usr/include/c++/4.9/functional' line='1764' column='1' id='type-id-691'>
-        <data-member access='private'>
+        <data-member access='public'>
           <var-decl name='_M_unused' type-id='type-id-2856' visibility='default' filepath='/usr/include/c++/4.9/functional' line='1779' column='1'/>
         </data-member>
-        <data-member access='private'>
+        <data-member access='public'>
           <var-decl name='_M_pod_data' type-id='type-id-9' visibility='default' filepath='/usr/include/c++/4.9/functional' line='1780' column='1'/>
         </data-member>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access' mangled-name='_ZNSt9_Any_data9_M_accessEv' filepath='/usr/include/c++/4.9/functional' line='1766' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt9_Any_data9_M_accessEv'>
             <parameter type-id='type-id-1712' name='this' is-artificial='yes'/>
             <return type-id='type-id-23'/>
           </function-decl>
         </member-function>
-        <member-function access='private' const='yes'>
+        <member-function access='public' const='yes'>
           <function-decl name='_M_access' mangled-name='_ZNKSt9_Any_data9_M_accessEv' filepath='/usr/include/c++/4.9/functional' line='1767' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNKSt9_Any_data9_M_accessEv'>
             <parameter type-id='type-id-696' name='this' is-artificial='yes'/>
             <return type-id='type-id-23'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;const std::type_info*&gt;' mangled-name='_ZNSt9_Any_data9_M_accessIPKSt9type_infoEERT_v' filepath='/usr/include/c++/4.9/functional' line='1771' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt9_Any_data9_M_accessIPKSt9type_infoEERT_v'>
             <parameter type-id='type-id-1712' name='this' is-artificial='yes'/>
             <return type-id='type-id-1401'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;mongo::Status (**)(mongo::InitializerContext*)&gt;' mangled-name='_ZNSt9_Any_data9_M_accessIPPFN5mongo6StatusEPNS1_18InitializerContextEEEERT_v' filepath='/usr/include/c++/4.9/functional' line='1771' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt9_Any_data9_M_accessIPPFN5mongo6StatusEPNS1_18InitializerContextEEEERT_v'>
             <parameter type-id='type-id-1712' name='this' is-artificial='yes'/>
             <return type-id='type-id-245'/>
           </function-decl>
         </member-function>
-        <member-function access='private' const='yes'>
+        <member-function access='public' const='yes'>
           <function-decl name='_M_access&lt;mongo::Status (*)(mongo::InitializerContext*)&gt;' mangled-name='_ZNKSt9_Any_data9_M_accessIPFN5mongo6StatusEPNS1_18InitializerContextEEEERKT_v' filepath='/usr/include/c++/4.9/functional' line='1776' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNKSt9_Any_data9_M_accessIPFN5mongo6StatusEPNS1_18InitializerContextEEEERKT_v'>
             <parameter type-id='type-id-696' name='this' is-artificial='yes'/>
             <return type-id='type-id-237'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='public'>
           <function-decl name='_M_access&lt;mongo::Status (*)(mongo::InitializerContext*)&gt;' mangled-name='_ZNSt9_Any_data9_M_accessIPFN5mongo6StatusEPNS1_18InitializerContextEEEERT_v' filepath='/usr/include/c++/4.9/functional' line='1771' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt9_Any_data9_M_accessIPFN5mongo6StatusEPNS1_18InitializerContextEEEERT_v'>
             <parameter type-id='type-id-1712' name='this' is-artificial='yes'/>
             <return type-id='type-id-240'/>
@@ -9178,16 +9178,16 @@
         </member-function>
       </union-decl>
       <union-decl name='_Nocopy_types' size-in-bits='128' visibility='default' filepath='/usr/include/c++/4.9/functional' line='1756' column='1' id='type-id-2856'>
-        <data-member access='private'>
+        <data-member access='public'>
           <var-decl name='_M_object' type-id='type-id-23' visibility='default' filepath='/usr/include/c++/4.9/functional' line='1758' column='1'/>
         </data-member>
-        <data-member access='private'>
+        <data-member access='public'>
           <var-decl name='_M_const_object' type-id='type-id-23' visibility='default' filepath='/usr/include/c++/4.9/functional' line='1759' column='1'/>
         </data-member>
-        <data-member access='private'>
+        <data-member access='public'>
           <var-decl name='_M_function_pointer' type-id='type-id-2278' visibility='default' filepath='/usr/include/c++/4.9/functional' line='1760' column='1'/>
         </data-member>
-        <data-member access='private'>
+        <data-member access='public'>
           <var-decl name='_M_member_pointer' type-id='type-id-24' visibility='default' filepath='/usr/include/c++/4.9/functional' line='1761' column='1'/>
         </data-member>
       </union-decl>
@@ -15356,22 +15356,22 @@
         <class-decl name='Value' size-in-bits='768' visibility='default' filepath='src/mongo/util/options_parser/value.h' line='66' column='1' id='type-id-619'>
           <member-type access='private'>
             <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='src/mongo/util/options_parser/value.h' line='140' column='1' id='type-id-3197'>
-              <data-member access='private'>
+              <data-member access='public'>
                 <var-decl name='_boolVal' type-id='type-id-1' visibility='default' filepath='src/mongo/util/options_parser/value.h' line='141' column='1'/>
               </data-member>
-              <data-member access='private'>
+              <data-member access='public'>
                 <var-decl name='_doubleVal' type-id='type-id-27' visibility='default' filepath='src/mongo/util/options_parser/value.h' line='142' column='1'/>
               </data-member>
-              <data-member access='private'>
+              <data-member access='public'>
                 <var-decl name='_intVal' type-id='type-id-29' visibility='default' filepath='src/mongo/util/options_parser/value.h' line='143' column='1'/>
               </data-member>
-              <data-member access='private'>
+              <data-member access='public'>
                 <var-decl name='_longVal' type-id='type-id-26' visibility='default' filepath='src/mongo/util/options_parser/value.h' line='144' column='1'/>
               </data-member>
-              <data-member access='private'>
+              <data-member access='public'>
                 <var-decl name='_unsignedLongLongVal' type-id='type-id-34' visibility='default' filepath='src/mongo/util/options_parser/value.h' line='145' column='1'/>
               </data-member>
-              <data-member access='private'>
+              <data-member access='public'>
                 <var-decl name='_unsignedVal' type-id='type-id-22' visibility='default' filepath='src/mongo/util/options_parser/value.h' line='146' column='1'/>
               </data-member>
             </union-decl>
