@@ -6238,7 +6238,10 @@ public:
 							       sym);
 
 		  if (is_arm32)
-		    symbol_value = symbol_value & ~1;
+		    // Clear bit zero of ARM32 addresses as per "ELF for the Arm
+		    // Architecture" section 5.5.3.
+		    // https://static.docs.arm.com/ihi0044/g/aaelf32.pdf
+		    symbol_value &= ~1;
 		  addr_elf_symbol_sptr_map_type::const_iterator it =
 		    fun_addr_sym_map_->find(symbol_value);
 		  if (it == fun_addr_sym_map_->end())
@@ -8686,6 +8689,9 @@ is_type_tag(unsigned tag)
     case DW_TAG_unspecified_type:
     case DW_TAG_shared_type:
     case DW_TAG_rvalue_reference_type:
+    case DW_TAG_coarray_type:
+    case DW_TAG_atomic_type:
+    case DW_TAG_immutable_type:
       result = true;
       break;
 
