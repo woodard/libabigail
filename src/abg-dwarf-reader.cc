@@ -8689,6 +8689,9 @@ is_type_tag(unsigned tag)
     case DW_TAG_unspecified_type:
     case DW_TAG_shared_type:
     case DW_TAG_rvalue_reference_type:
+    case DW_TAG_coarray_type:
+    case DW_TAG_atomic_type:
+    case DW_TAG_immutable_type:
       result = true;
       break;
 
