@@ -82,6 +82,7 @@ public:
      display_help(),
      display_version(),
      weak_mode(),
+     recursive(false),
      list_undefined_symbols_only(),
      show_base_names(),
      show_redundant(true),
@@ -400,7 +401,7 @@ perform_compat_check_in_normal_mode(options& opts,
 
   abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
 
-  // compare lib1 and lib2 only by looking at the functions and
+  // compare lib1 and lib2 by looking at the functions and
   // variables which symbols are those undefined in the app.
 
   for (elf_symbols::const_iterator i =
@@ -421,6 +422,37 @@ perform_compat_check_in_normal_mode(options& opts,
       lib1_corpus->get_sym_ids_of_vars_to_keep().push_back(id);
       lib2_corpus->get_sym_ids_of_vars_to_keep().push_back(id);
     }
+
+  // symbols undefined in the lib1 may be satisfied by the app
+  for (elf_symbols::const_iterator i =
+           lib1_corpus->get_sorted_undefined_fun_symbols().begin();
+         i != lib1_corpus->get_sorted_undefined_fun_symbols().end();
+         ++i)
+      {
+        string id = (*i)->get_id_string();
+	string name = (*i)->get_name();
+	bool found=app_corpus->lookup_function_symbol(name)==NULL;
+	std::cerr << name << '\t'  << (found?"found":"not found") << std::endl;
+
+	if (app_corpus->lookup_function_symbol(name))
+	  {
+	    lib1_corpus->get_sym_ids_of_fns_to_keep().push_back(id);
+	    lib2_corpus->get_sym_ids_of_fns_to_keep().push_back(id);
+	  }
+      }
+    for (elf_symbols::const_iterator i =
+           lib1_corpus->get_sorted_undefined_var_symbols().begin();
+         i != lib1_corpus->get_sorted_undefined_var_symbols().end();
+         ++i)
+      {
+        string id = (*i)->get_id_string();
+	string name = (*i)->get_name();
+	if (app_corpus->lookup_variable_symbol(name))
+	  {
+	    lib1_corpus->get_sym_ids_of_vars_to_keep().push_back(id);
+	    lib2_corpus->get_sym_ids_of_vars_to_keep().push_back(id);
+	  }
+      }
 
   if (!app_corpus->get_sorted_undefined_var_symbols().empty()
       || !app_corpus->get_sorted_undefined_fun_symbols().empty())
@@ -764,7 +796,7 @@ main(int argc, char* argv[])
   suppressions_type& supprs = ctxt->suppressions();
   bool files_suppressed = (file_is_suppressed(opts.app_path, supprs)
 			   || file_is_suppressed(opts.lib1_path, supprs)
-			   ||file_is_suppressed(opts.lib2_path, supprs));
+			   || file_is_suppressed(opts.lib2_path, supprs));
 
   if (files_suppressed)
     // We don't have to compare anything because a user
@@ -923,7 +955,7 @@ main(int argc, char* argv[])
       lib1_di_roots.push_back(&lib1_di_root);
       corpus_sptr lib1_corpus =
 	read_corpus_from_elf(opts.lib1_path, lib1_di_roots, env.get(),
-			     /*load_all_types=*/false, status);
+			     /*load_all_types=*/true, status);
       if (status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
 	emit_prefix(argv[0], cerr)
 	  << "could not read debug info for " << opts.lib1_path << "\n";
@@ -950,7 +982,7 @@ main(int argc, char* argv[])
 	  lib2_di_roots.push_back(&lib2_di_root);
 	  lib2_corpus =
 	    read_corpus_from_elf(opts.lib2_path, lib2_di_roots, env.get(),
-				 /*load_all_types=*/false, status);
+				 /*load_all_types=*/true, status);
 	  if (status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
 	    emit_prefix(argv[0], cerr)
 	      << "could not read debug info for " << opts.lib2_path << "\n";
