@@ -1,5 +1,5 @@
 ================ changes of 'libtbb.so.2'===============
-  Functions changes summary: 0 Removed, 11 Changed (99 filtered out), 17 Added functions
+  Functions changes summary: 0 Removed, 18 Changed (92 filtered out), 17 Added functions
   Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
   Function symbols changes summary: 0 Removed, 0 Added function symbol not referenced by debug info
   Variable symbols changes summary: 3 Removed, 0 Added variable symbols not referenced by debug info
@@ -24,7 +24,7 @@
     [A] 'method void tbb::internal::concurrent_queue_base_v8::move_content(tbb::internal::concurrent_queue_base_v8&)'    {_ZN3tbb8internal24concurrent_queue_base_v812move_contentERS1_}
     [A] 'method void tbb::task_group_context::capture_fp_settings()'    {_ZN3tbb18task_group_context19capture_fp_settingsEv}
 
-  11 functions with some indirect sub-type change:
+  18 functions with some indirect sub-type change:
 
     [C] 'method void tbb::filter::set_end_of_input(int)' at pipeline.cpp:700:1 has some indirect sub-type changes:
       implicit parameter 0 of type 'tbb::filter*' has sub-type changes:
@@ -189,10 +189,19 @@
                       1 data member change:
                         'tbb::spin_mutex mutex_ec' offset changed from 0 to 8 (in bits) (by +8 bits)
 
+    [C] 'method tbb::internal::concurrent_queue_iterator_base::~concurrent_queue_iterator_base(int)' at concurrent_queue_v2.cpp:360:1 has some indirect sub-type changes:
+      parameter 1 of type 'int' was removed
+
     [C] 'method tbb::internal::concurrent_queue_iterator_base_v3::concurrent_queue_iterator_base_v3(const tbb::internal::concurrent_queue_base_v3&)' at concurrent_queue.cpp:622:1 has some indirect sub-type changes:
       parameter 1 of type 'const tbb::internal::concurrent_queue_base_v3&' has sub-type changes:
         in referenced type 'const tbb::internal::concurrent_queue_base_v3':
           'const tbb::internal::concurrent_queue_base_v3' changed to 'const tbb::internal::concurrent_queue_base'
+
+    [C] 'method tbb::internal::concurrent_queue_iterator_base_v3::~concurrent_queue_iterator_base_v3(int)' at concurrent_queue.cpp:663:1 has some indirect sub-type changes:
+      parameter 1 of type 'int' was removed
+
+    [C] 'method tbb::internal::concurrent_vector_base_v3::~concurrent_vector_base_v3(int)' at concurrent_vector.cpp:330:1 has some indirect sub-type changes:
+      parameter 1 of type 'int' was removed
 
     [C] 'method bool tbb::internal::hash_map_segment_base::internal_grow_predicate() const' at concurrent_hash_map.cpp:47:1 has some indirect sub-type changes:
       implicit parameter 0 of type 'const tbb::internal::hash_map_segment_base* const' has sub-type changes:
@@ -248,6 +257,18 @@
             type size hasn't changed
             1 base class insertion:
               class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
+
+    [C] 'method void tbb::task_group_context::init(int)' at task_group_context.cpp:202:1 has some indirect sub-type changes:
+      parameter 1 of type 'int' was removed
+
+    [C] 'method void tbb::task_group_context::register_pending_exception(int)' at task_group_context.cpp:465:1 has some indirect sub-type changes:
+      parameter 1 of type 'int' was removed
+
+    [C] 'method void tbb::task_group_context::reset(int)' at task_group_context.cpp:429:1 has some indirect sub-type changes:
+      parameter 1 of type 'int' was removed
+
+    [C] 'method tbb::task_group_context::~task_group_context(int)' at task_group_context.cpp:140:1 has some indirect sub-type changes:
+      parameter 1 of type 'int' was removed
 
     [C] 'method tbb::thread_bound_filter::result_type tbb::thread_bound_filter::process_item()' at pipeline.cpp:712:1 has some indirect sub-type changes:
       implicit parameter 0 of type 'tbb::thread_bound_filter* const' has sub-type changes:

@@ -420,18 +420,22 @@ enum diff_category
   /// cv-qualifier change.
   FN_RETURN_TYPE_CV_CHANGE_CATEGORY = 1 << 17,
 
+  /// A diff node in this category is a function (or function type)
+  /// with at least one parameter added or removed.
+  FN_PARM_ADD_REMOVE_CHANGE_CATEGORY = 1 << 18,
+
   /// A diff node in this category is for a variable which type holds
   /// a cv-qualifier change.
-  VAR_TYPE_CV_CHANGE_CATEGORY = 1 << 18,
+  VAR_TYPE_CV_CHANGE_CATEGORY = 1 << 19,
 
   /// A diff node in this category carries a change from void pointer
   /// to non-void pointer.
-  VOID_PTR_TO_PTR_CHANGE_CATEGORY = 1 << 19,
+  VOID_PTR_TO_PTR_CHANGE_CATEGORY = 1 << 20,
 
   /// A diff node in this category carries a change in the size of the
   /// array type of a global variable, but the ELF size of the
   /// variable didn't change.
-  BENIGN_INFINITE_ARRAY_CHANGE_CATEGORY = 1 << 20,
+  BENIGN_INFINITE_ARRAY_CHANGE_CATEGORY = 1 << 21,
 
   /// A special enumerator that is the logical 'or' all the
   /// enumerators above.
@@ -457,6 +461,7 @@ enum diff_category
   | FN_PARM_TYPE_TOP_CV_CHANGE_CATEGORY
   | FN_PARM_TYPE_CV_CHANGE_CATEGORY
   | FN_RETURN_TYPE_CV_CHANGE_CATEGORY
+  | FN_PARM_ADD_REMOVE_CHANGE_CATEGORY
   | VAR_TYPE_CV_CHANGE_CATEGORY
   | VOID_PTR_TO_PTR_CHANGE_CATEGORY
   | BENIGN_INFINITE_ARRAY_CHANGE_CATEGORY
@@ -2053,6 +2058,12 @@ public:
 
   const string_parm_map&
   added_parms() const;
+
+  const vector<function_decl::parameter_sptr>&
+  sorted_deleted_parms() const;
+
+  const vector<function_decl::parameter_sptr>&
+  sorted_added_parms() const;
 
   virtual const string&
   get_pretty_representation() const;

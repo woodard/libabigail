@@ -2880,7 +2880,8 @@ diff_category
 get_default_harmful_categories_bitmap()
 {
   return (abigail::comparison::SIZE_OR_OFFSET_CHANGE_CATEGORY
-	  | abigail::comparison::VIRTUAL_MEMBER_CHANGE_CATEGORY);
+	  | abigail::comparison::VIRTUAL_MEMBER_CHANGE_CATEGORY
+	  | abigail::comparison::FN_PARM_ADD_REMOVE_CHANGE_CATEGORY);
 }
 
 /// Serialize an instance of @ref diff_category to an output stream.
@@ -3042,6 +3043,14 @@ operator<<(ostream& o, diff_category c)
       if (emitted_a_category)
 	o << "|";
       o << "FN_RETURN_TYPE_CV_CHANGE_CATEGORY";
+      emitted_a_category |= true;
+    }
+
+    if (c & FN_PARM_ADD_REMOVE_CHANGE_CATEGORY)
+    {
+      if (emitted_a_category)
+	o << "|";
+      o << "FN_PARM_ADD_REMOVE_CHANGE_CATEGORY";
       emitted_a_category |= true;
     }
 
@@ -6830,6 +6839,20 @@ function_type_diff::ensure_lookup_tables_populated()
 const function_decl::parameter_sptr
 function_type_diff::deleted_parameter_at(int i) const
 {return first_function_type()->get_parameters()[i];}
+
+/// Getter for the sorted vector of deleted parameters.
+///
+/// @return the sorted vector of deleted parameters.
+const vector<function_decl::parameter_sptr>&
+function_type_diff::sorted_deleted_parms() const
+{return priv_->sorted_deleted_parms_;}
+
+/// Getter for the sorted vector of added parameters .
+///
+/// @return the sorted vector of added parameters.
+const vector<function_decl::parameter_sptr>&
+function_type_diff::sorted_added_parms() const
+{return priv_->sorted_added_parms_;}
 
 /// In the vector of inserted parameters, get the one that is at a
 /// given index.

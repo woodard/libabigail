@@ -1450,6 +1450,33 @@ has_fn_return_type_cv_qual_change(const diff* dif)
   return type_diff_has_cv_qual_change_only(return_type_diff);
 }
 
+/// Test if a function type or decl diff node carries a function
+/// parameter addition or removal.
+///
+/// @param dif the diff node to consider.  Note that if this is
+/// neither a function type nor decl diff node, the function returns
+/// false.
+///
+/// @return true iff @p dif is a function decl or type diff node which
+/// carries a function parameter addition or removal.
+static bool
+has_added_or_removed_function_parameters(const diff *dif)
+{
+  const function_type_diff *fn_type_diff = is_function_type_diff(dif);
+    if (!fn_type_diff)
+    if (const function_decl_diff* fn_decl_diff = is_function_decl_diff(dif))
+      fn_type_diff = fn_decl_diff->type_diff().get();
+
+  if (!fn_type_diff)
+    return false;
+
+  if (!(fn_type_diff->sorted_deleted_parms().empty()
+	&& fn_type_diff->sorted_added_parms().empty()))
+    return true;
+
+  return false;
+}
+
 /// Test if a variable diff node carries a CV qualifier change on its type.
 ///
 /// @param dif the diff node to consider.  Note that if it's not of
@@ -1722,6 +1749,9 @@ categorize_harmful_diff_node(diff *d, bool pre)
 
       if (has_virtual_mem_fn_change(d))
 	category |= VIRTUAL_MEMBER_CHANGE_CATEGORY;
+
+      if (has_added_or_removed_function_parameters(d))
+	category |= FN_PARM_ADD_REMOVE_CHANGE_CATEGORY;
 
       if (category)
 	{
