@@ -1575,19 +1575,26 @@ default_reporter::report(const function_decl_diff& d, ostream& out,
 	      << " to " << sf_vtable_offset << "\n";
 	}
 
-      // the classes of the two member functions.
-      class_decl_sptr fc =
-	is_class_type(is_method_type(ff->get_type())->get_class_type());
-      class_decl_sptr sc =
-	is_class_type(is_method_type(sf->get_type())->get_class_type());
+      // the parent types (classe or union) of the two member
+      // functions.
+      class_or_union_sptr f =
+	is_class_or_union_type(is_method_type(ff->get_type())->get_class_type());
+      class_or_union_sptr s =
+	is_class_or_union_type(is_method_type(sf->get_type())->get_class_type());
+
+      class_decl_sptr fc = is_class_type(f);
+      class_decl_sptr sc = is_class_type(s);
 
       // Detect if the virtual member function changes above
       // introduced a vtable change or not.
       bool vtable_added = false, vtable_removed = false;
-      if (!fc->get_is_declaration_only() && !sc->get_is_declaration_only())
+      if (!f->get_is_declaration_only() && !s->get_is_declaration_only())
 	{
-	  vtable_added = !fc->has_vtable() && sc->has_vtable();
-	  vtable_removed = fc->has_vtable() && !sc->has_vtable();
+	  if (fc && sc)
+	    {
+	      vtable_added = !fc->has_vtable() && sc->has_vtable();
+	      vtable_removed = fc->has_vtable() && !sc->has_vtable();
+	    }
 	}
       bool vtable_changed = ((ff_is_virtual != sf_is_virtual)
 			     || (ff_vtable_offset != sf_vtable_offset));
