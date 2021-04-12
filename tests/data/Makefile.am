@@ -556,6 +556,12 @@ test-read-dwarf/test-suppressed-alias.c \
 test-read-dwarf/test-suppressed-alias.o \
 test-read-dwarf/test-suppressed-alias.o.abi \
 test-read-dwarf/test-suppressed-alias.suppr \
+test-read-dwarf/PR27700/include-dir/priv.h  \
+test-read-dwarf/PR27700/include-dir/pub.h  \
+test-read-dwarf/PR27700/pub-incdir/inc.h  \
+test-read-dwarf/PR27700/test-PR27700.abi  \
+test-read-dwarf/PR27700/test-PR27700.c  \
+test-read-dwarf/PR27700/test-PR27700.o  \
 \
 test-annotate/test0.abi			\
 test-annotate/test1.abi			\

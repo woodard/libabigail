@@ -46,6 +46,7 @@ struct InOutSpec
 {
   const char* in_elf_path;
   const char* in_suppr_spec_path;
+  const char* in_public_headers_path;
   type_id_style_kind type_id_style;
   const char* in_abi_path;
   const char* out_abi_path;
@@ -57,12 +58,14 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test0",
     "",
+    "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test0.abi",
     "output/test-read-dwarf/test0.abi"
   },
   {
     "data/test-read-dwarf/test0",
+    "",
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test0.hash.abi",
@@ -71,12 +74,14 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test1",
     "",
+    "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test1.abi",
     "output/test-read-dwarf/test1.abi"
   },
   {
     "data/test-read-dwarf/test1",
+    "",
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test1.hash.abi",
@@ -85,12 +90,14 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test2.so",
     "",
+    "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test2.so.abi",
     "output/test-read-dwarf/test2.so.abi"
   },
   {
     "data/test-read-dwarf/test2.so",
+    "",
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test2.so.hash.abi",
@@ -99,12 +106,14 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test3.so",
     "",
+    "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test3.so.abi",
     "output/test-read-dwarf/test3.so.abi"
   },
   {
     "data/test-read-dwarf/test3.so",
+    "",
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test3.so.hash.abi",
@@ -114,6 +123,7 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test3.so",
     "data/test-read-dwarf/test3-alias-1.suppr",
+    "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test3-alias-1.so.hash.abi",
     "output/test-read-dwarf/test3-alias-1.so.hash.abi"
@@ -122,6 +132,7 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test3.so",
     "data/test-read-dwarf/test3-alias-2.suppr",
+    "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test3-alias-2.so.hash.abi",
     "output/test-read-dwarf/test3-alias-2.so.hash.abi"
@@ -130,6 +141,7 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test3.so",
     "data/test-read-dwarf/test3-alias-3.suppr",
+    "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test3-alias-3.so.hash.abi",
     "output/test-read-dwarf/test3-alias-3.so.hash.abi"
@@ -138,6 +150,7 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test3.so",
     "data/test-read-dwarf/test3-alias-4.suppr",
+    "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test3-alias-4.so.hash.abi",
     "output/test-read-dwarf/test3-alias-4.so.hash.abi"
@@ -146,12 +159,14 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test-suppressed-alias.o",
     "data/test-read-dwarf/test-suppressed-alias.suppr",
+    "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test-suppressed-alias.o.abi",
     "output/test-read-dwarf/test-suppressed-alias.o.abi",
   },
   {
     "data/test-read-dwarf/test4.so",
+    "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test4.so.abi",
@@ -160,12 +175,14 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test4.so",
     "",
+    "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test4.so.hash.abi",
     "output/test-read-dwarf/test4.so.hash.abi"
   },
   {
     "data/test-read-dwarf/test5.o",
+    "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test5.o.abi",
@@ -174,12 +191,14 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test5.o",
     "",
+    "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test5.o.hash.abi",
     "output/test-read-dwarf/test5.o.hash.abi"
   },
   {
     "data/test-read-dwarf/test6.so",
+    "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test6.so.abi",
@@ -188,12 +207,14 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test6.so",
     "",
+    "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test6.so.hash.abi",
     "output/test-read-dwarf/test6.so.hash.abi"
   },
   {
     "data/test-read-dwarf/test7.so",
+    "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test7.so.abi",
@@ -202,12 +223,14 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test7.so",
     "",
+    "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test7.so.hash.abi",
     "output/test-read-dwarf/test7.so.hash.abi"
   },
   {
     "data/test-read-dwarf/test8-qualified-this-pointer.so",
+    "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test8-qualified-this-pointer.so.abi",
@@ -216,12 +239,14 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test8-qualified-this-pointer.so",
     "",
+    "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test8-qualified-this-pointer.so.hash.abi",
     "output/test-read-dwarf/test8-qualified-this-pointer.so.hash.abi"
   },
   {
     "data/test-read-dwarf/test9-pr18818-clang.so",
+    "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test9-pr18818-clang.so.abi",
@@ -230,12 +255,14 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test10-pr18818-gcc.so",
     "",
+    "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test10-pr18818-gcc.so.abi",
     "output/test-read-dwarf/test10-pr18818-gcc.so.abi"
   },
   {
     "data/test-read-dwarf/test11-pr18828.so",
+    "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test11-pr18828.so.abi",
@@ -244,12 +271,14 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test12-pr18844.so",
     "",
+    "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test12-pr18844.so.abi",
     "output/test-read-dwarf/test12-pr18844.so.abi",
   },
   {
     "data/test-read-dwarf/test13-pr18894.so",
+    "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test13-pr18894.so.abi",
@@ -258,12 +287,14 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test14-pr18893.so",
     "",
+    "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test14-pr18893.so.abi",
     "output/test-read-dwarf/test14-pr18893.so.abi",
   },
   {
     "data/test-read-dwarf/test15-pr18892.so",
+    "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test15-pr18892.so.abi",
@@ -272,12 +303,14 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test16-pr18904.so",
     "",
+    "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test16-pr18904.so.abi",
     "output/test-read-dwarf/test16-pr18904.so.abi",
   },
   {
     "data/test-read-dwarf/test17-pr19027.so",
+    "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test17-pr19027.so.abi",
@@ -286,12 +319,14 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test18-pr19037-libvtkRenderingLIC-6.1.so",
     "",
+    "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test18-pr19037-libvtkRenderingLIC-6.1.so.abi",
     "output/test-read-dwarf/test18-pr19037-libvtkRenderingLIC-6.1.so.abi",
   },
   {
     "data/test-read-dwarf/test19-pr19023-libtcmalloc_and_profiler.so",
+    "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test19-pr19023-libtcmalloc_and_profiler.so.abi",
@@ -300,12 +335,14 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so",
     "",
+    "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so.abi",
     "output/test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so.abi",
   },
   {
     "data/test-read-dwarf/test21-pr19092.so",
+    "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test21-pr19092.so.abi",
@@ -314,12 +351,14 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so",
     "",
+    "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so.abi",
     "output/test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so.abi",
   },
   {
     "data/test-read-dwarf/libtest23.so",
+    "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/libtest23.so.abi",
@@ -328,12 +367,14 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/libtest24-drop-fns.so",
     "data/test-read-dwarf/test24-drop-fns-0.suppr",
+    "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/libtest24-drop-fns.so.abi",
     "output/test-read-dwarf/libtest24-drop-fns.so.abi",
   },
   {
     "data/test-read-dwarf/libtest24-drop-fns.so",
+    "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/libtest24-drop-fns-2.so.abi",
@@ -342,12 +383,14 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/PR22015-libboost_iostreams.so",
     "",
+    "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/PR22015-libboost_iostreams.so.abi",
     "output/test-read-dwarf/PR22015-libboost_iostreams.so.abi",
   },
   {
     "data/test-read-dwarf/PR22122-libftdc.so",
+    "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/PR22122-libftdc.so.abi",
@@ -356,6 +399,7 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/PR24378-fn-is-not-scope.o",
     "",
+    "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/PR24378-fn-is-not-scope.abi",
     "output/test-read-dwarf/PR24378-fn-is-not-scope.abi",
@@ -363,6 +407,7 @@ InOutSpec in_out_specs[] =
 #if defined(HAVE_R_AARCH64_ABS64_MACRO) && defined(HAVE_R_AARCH64_PREL32_MACRO)
   {
     "data/test-read-dwarf/PR25007-sdhci.ko",
+    "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/PR25007-sdhci.ko.abi",
@@ -373,6 +418,7 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/PR25042-libgdbm-clang-dwarf5.so.6.0.0",
     "",
+    "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/PR25042-libgdbm-clang-dwarf5.so.6.0.0.abi",
     "output/test-read-dwarf/PR25042-libgdbm-clang-dwarf5.so.6.0.0.abi",
@@ -381,12 +427,14 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test25-bogus-binary.elf",
     "",
+    "",
     SEQUENCE_TYPE_ID_STYLE,
     NULL,
     NULL,
   },
   {
     "data/test-read-dwarf/test26-bogus-binary.elf",
+    "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
     NULL,
@@ -395,12 +443,14 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test27-bogus-binary.elf",
     "",
+    "",
     SEQUENCE_TYPE_ID_STYLE,
     NULL,
     NULL,
   },
   {
     "data/test-read-dwarf/PR26261/PR26261-exe",
+    "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/PR26261/PR26261-exe.abi",
@@ -409,12 +459,14 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test-PR26568-1.o",
     "",
+    "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test-PR26568-1.o.abi",
     "output/test-read-dwarf/test-PR26568-1.o.abi",
   },
   {
     "data/test-read-dwarf/test-PR26568-2.o",
+    "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test-PR26568-2.o.abi",
@@ -423,12 +475,21 @@ InOutSpec in_out_specs[] =
   {
     "data/test-read-dwarf/test-libandroid.so",
     "",
+    "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test-libandroid.so.abi",
     "output/test-read-dwarf/test-libandroid.so.abi",
   },
+  {
+    "data/test-read-dwarf/PR27700/test-PR27700.o",
+    "",
+    "data/test-read-dwarf/PR27700/pub-incdir",
+    HASH_TYPE_ID_STYLE,
+    "data/test-read-dwarf/PR27700/test-PR27700.abi",
+    "output/test-read-dwarf/PR27700/test-PR27700.abi",
+  },
   // This should be the last entry.
-  {NULL, NULL, SEQUENCE_TYPE_ID_STYLE, NULL, NULL}
+  {NULL, NULL, NULL, SEQUENCE_TYPE_ID_STYLE, NULL, NULL}
 };
 
 using abigail::suppr::suppression_sptr;
@@ -446,6 +507,33 @@ set_suppressions(read_context& read_ctxt, const string& path)
   suppressions_type supprs;
   read_suppressions(path, supprs);
   add_read_context_suppressions(read_ctxt, supprs);
+}
+
+/// Define what headers contain public types definitions.
+///
+/// This automatically generates suppression specifications from the
+/// set of header files present under a given directory.  Those
+/// specifications actually suppress types that are *not* defined in
+/// the headers found at a given directory.
+///
+/// @param read_ctxt the context used to read the ELF binary.
+///
+/// @param path the path to a directory where header files are to be
+/// found.
+static void
+set_suppressions_from_headers(read_context& read_ctxt, const string& path)
+{
+  vector<string> files;
+  suppression_sptr suppr =
+    abigail::tools_utils::gen_suppr_spec_from_headers(path, files);
+
+  if (suppr)
+    {
+      suppr->set_drops_artifact_from_ir(true);
+      suppressions_type supprs;
+      supprs.push_back(suppr);
+      add_read_context_suppressions(read_ctxt, supprs);
+    }
 }
 
 /// The task that peforms the tests.
@@ -477,7 +565,8 @@ struct test_task : public abigail::workers::task
   virtual void
   perform()
   {
-    string in_elf_path, in_abi_path, in_suppr_spec_path, out_abi_path;
+    string in_elf_path, in_abi_path, in_suppr_spec_path, in_public_headers_path,
+      out_abi_path;
     abigail::ir::environment_sptr env;
 
     in_elf_path = in_elf_base + spec.in_elf_path;
@@ -485,6 +574,11 @@ struct test_task : public abigail::workers::task
       in_suppr_spec_path = in_elf_base + spec.in_suppr_spec_path;
     else
       in_suppr_spec_path.clear();
+
+    if (spec.in_public_headers_path)
+      in_public_headers_path = spec.in_public_headers_path;
+    if (!in_public_headers_path.empty())
+      in_public_headers_path = in_elf_base + spec.in_public_headers_path;
 
     env.reset(new abigail::ir::environment);
     abigail::dwarf_reader::status status =
@@ -497,6 +591,9 @@ struct test_task : public abigail::workers::task
     ABG_ASSERT(ctxt);
     if (!in_suppr_spec_path.empty())
       set_suppressions(*ctxt, in_suppr_spec_path);
+
+    if (!in_public_headers_path.empty())
+      set_suppressions_from_headers(*ctxt, in_public_headers_path);
 
     abigail::corpus_sptr corp = read_corpus_from_elf(*ctxt, status);
     // if there is no output and no input, assume that we do not care about the
@@ -541,7 +638,11 @@ struct test_task : public abigail::workers::task
     of.close();
 
     string abidw = string(get_build_dir()) + "/tools/abidw";
-    string cmd = abidw + " --abidiff " + in_elf_path;
+    string drop_private_types;
+    if (!in_public_headers_path.empty())
+      drop_private_types += "--headers-dir " + in_public_headers_path +
+	" --drop-private-types";
+    string cmd = abidw + " " + drop_private_types + " --abidiff " + in_elf_path;
     if (system(cmd.c_str()))
       {
 	error_message = string("ABIs differ:\n")

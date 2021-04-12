@@ -14807,13 +14807,16 @@ build_ir_node_from_die(read_context&	ctxt,
 	bool type_suppressed =
 	  type_is_suppressed(ctxt, scope, die, type_is_private);
 	if (type_suppressed && type_is_private)
-	  // The type is suppressed because it's private.  If other
-	  // non-suppressed and declaration-only instances of this
-	  // type exist in the current corpus, then it means those
-	  // non-suppressed instances are opaque versions of the
-	  // suppressed private type.  Lets return one of these opaque
-	  // types then.
-	  result = get_opaque_version_of_type(ctxt, scope, die, where_offset);
+	  {
+	    // The type is suppressed because it's private.  If other
+	    // non-suppressed and declaration-only instances of this
+	    // type exist in the current corpus, then it means those
+	    // non-suppressed instances are opaque versions of the
+	    // suppressed private type.  Lets return one of these opaque
+	    // types then.
+	    result = get_opaque_version_of_type(ctxt, scope, die, where_offset);
+	    maybe_canonicalize_type(is_type(result), ctxt);
+	  }
 	else if (!type_suppressed)
 	  {
 	    enum_type_decl_sptr e = build_enum_type(ctxt, die, scope,
@@ -14837,13 +14840,16 @@ build_ir_node_from_die(read_context&	ctxt,
 	  type_is_suppressed(ctxt, scope, die, type_is_private);
 
 	if (type_suppressed && type_is_private)
-	  // The type is suppressed because it's private.  If other
-	  // non-suppressed and declaration-only instances of this
-	  // type exist in the current corpus, then it means those
-	  // non-suppressed instances are opaque versions of the
-	  // suppressed private type.  Lets return one of these opaque
-	  // types then.
-	  result = get_opaque_version_of_type(ctxt, scope, die, where_offset);
+	  {
+	    // The type is suppressed because it's private.  If other
+	    // non-suppressed and declaration-only instances of this
+	    // type exist in the current corpus, then it means those
+	    // non-suppressed instances are opaque versions of the
+	    // suppressed private type.  Lets return one of these opaque
+	    // types then.
+	    result = get_opaque_version_of_type(ctxt, scope, die, where_offset);
+	    maybe_canonicalize_type(is_type(result), ctxt);
+	  }
 	else if (!type_suppressed)
 	  {
 	    Dwarf_Die spec_die;
