@@ -14041,6 +14041,7 @@ get_opaque_version_of_type(read_context	&ctxt,
 					       type_location,
 					       decl_base::VISIBILITY_DEFAULT));
 	  klass->set_is_declaration_only(true);
+	  klass->set_is_artificial(die_is_artificial(type_die));
 	  add_decl_to_scope(klass, scope);
 	  ctxt.associate_die_to_type(type_die, klass, where_offset);
 	  ctxt.maybe_schedule_declaration_only_class_for_resolution(klass);
@@ -14069,6 +14070,7 @@ get_opaque_version_of_type(read_context	&ctxt,
 							    underlying_type,
 							    enumeratorz,
 							    linkage_name));
+	  enum_type->set_is_artificial(die_is_artificial(type_die));
 	  add_decl_to_scope(enum_type, scope);
 	  result = enum_type;
 	}

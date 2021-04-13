@@ -5,7 +5,7 @@
   <abi-instr address-size='64' path='test-PR27700.c' comp-dir-path='/home/dodji/git/libabigail/PR27700/tests/data/test-read-dwarf/PR27700' language='LANG_C11'>
     <type-decl name='unnamed-enum-underlying-type-32' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='9cac1fee'/>
     <type-decl name='void' id='48b5725f'/>
-    <enum-decl name='foo' is-artificial='yes' filepath='include-dir/priv.h' line='1' column='1' id='022218d8'>
+    <enum-decl name='foo' filepath='include-dir/priv.h' line='1' column='1' id='022218d8'>
       <underlying-type type-id='9cac1fee'/>
     </enum-decl>
     <pointer-type-def type-id='022218d8' size-in-bits='64' id='8750e847'/>
