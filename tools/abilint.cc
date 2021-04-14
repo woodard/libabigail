@@ -440,11 +440,16 @@ main(int argc, char* argv[])
       else
 	{
 	  if (type == abigail::tools_utils::FILE_TYPE_XML_CORPUS
-	      ||type == abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP
+	      || type == abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP
 	      || type == abigail::tools_utils::FILE_TYPE_ELF)
 	    {
 	      if (!opts.noout)
-		is_ok = write_corpus(*ctxt, corp, 0);
+		{
+		  if (corp)
+		    is_ok = write_corpus(*ctxt, corp, 0);
+		  else if (group)
+		    is_ok = write_corpus_group(*ctxt, group, 0);
+		}
 	    }
 	}
 

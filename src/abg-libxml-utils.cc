@@ -413,7 +413,8 @@ unescape_xml_comment(const std::string& str)
   return result;
 }
 
-/// Maybe get the next sibling element node of an XML node, or stay to the sam
+/// Maybe get the next sibling element node of an XML node, or stay to
+/// the same.
 ///
 /// If there is no next sibling xml element node, the function returns
 /// the initial node.
@@ -443,6 +444,9 @@ go_to_next_sibling_element_or_stay(xmlNodePtr node)
 xmlNodePtr
 advance_to_next_sibling_element(xmlNodePtr node)
 {
+  if (!node)
+    return 0;
+
   xmlNodePtr n = go_to_next_sibling_element_or_stay(node->next);
   if (n == 0 || n->type != XML_ELEMENT_NODE)
     return 0;

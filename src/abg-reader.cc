@@ -196,10 +196,20 @@ public:
   get_reader() const
   {return m_reader;}
 
+  /// Getter of the current XML node in the corpus element sub-tree
+  /// that needs to be processed.
+  ///
+  /// @return the current XML node in the corpus element sub-tree that
+  /// needs to be processed.
   xmlNodePtr
   get_corpus_node() const
   {return m_corp_node;}
 
+  /// Setter of the current XML node in the corpus element sub-tree
+  /// that needs to be processed.
+  ///
+  /// @param node set the current XML node in the corpus element
+  /// sub-tree that needs to be processed.
   void
   set_corpus_node(xmlNodePtr node)
   {m_corp_node = node;}
@@ -1485,7 +1495,7 @@ read_translation_unit_from_input(read_context&	ctxt)
   else
     {
       node = 0;
-      for (xmlNodePtr n = ctxt.get_corpus_node()->next; n; n = n->next)
+      for (xmlNodePtr n = ctxt.get_corpus_node(); n; n = n->next)
 	{
 	  if (!n
 	      || n->type != XML_ELEMENT_NODE)
@@ -1501,15 +1511,17 @@ read_translation_unit_from_input(read_context&	ctxt)
     return nil;
 
   tu = get_or_read_and_add_translation_unit(ctxt, node);
-  // So read_translation_unit() can trigger (under the hood) reading
-  // from several translation units just because
-  // read_context::get_scope_for_node() has been called.  In that
-  // case, after that unexpected call to read_translation_unit(), the
-  // current corpus node of the context is going to point to that
-  // translation unit that has been read under the hood.  Let's set
-  // the corpus node to the one we initially called
-  // read_translation_unit() on here.
-  ctxt.set_corpus_node(node);
+
+  if (ctxt.get_corpus_node())
+    {
+      // We are not in the mode where the current corpus node came
+      // from a local invocation of xmlTextReaderExpand.  So let's set
+      // ctxt.get_corpus_node to the next child element node of the
+      // corpus that needs to be processed.
+      node = xml::advance_to_next_sibling_element(node);
+      ctxt.set_corpus_node(node);
+    }
+
   return tu;
 }
 
@@ -1583,7 +1595,7 @@ read_symbol_db_from_input(read_context&		 ctxt,
 	xmlTextReaderNext(reader.get());
       }
   else
-    for (xmlNodePtr n = ctxt.get_corpus_node()->next; n; n = n->next)
+    for (xmlNodePtr n = ctxt.get_corpus_node(); n; n = n->next)
       {
 	if (!n || n->type != XML_ELEMENT_NODE)
 	  continue;
@@ -1594,8 +1606,11 @@ read_symbol_db_from_input(read_context&		 ctxt,
 	else if (xmlStrEqual(n->name, BAD_CAST("elf-variable-symbols")))
 	  has_var_syms = true;
 	else
-	  break;
-	ctxt.set_corpus_node(n);
+	  {
+	    ctxt.set_corpus_node(n);
+	    break;
+	  }
+
 	if (has_fn_syms)
 	  {
 	    fn_symdb = build_elf_symbol_db(ctxt, n, true);
@@ -1688,7 +1703,7 @@ read_elf_needed_from_input(read_context&	ctxt,
     }
   else
     {
-      for (xmlNodePtr n = ctxt.get_corpus_node()->next; n; n = n->next)
+      for (xmlNodePtr n = ctxt.get_corpus_node(); n; n = n->next)
 	{
 	  if (!n || n->type != XML_ELEMENT_NODE)
 	    continue;
@@ -1703,6 +1718,7 @@ read_elf_needed_from_input(read_context&	ctxt,
   if (node)
     {
       result = build_needed(node, needed);
+      node = xml::advance_to_next_sibling_element(node);
       ctxt.set_corpus_node(node);
     }
 
@@ -1806,6 +1822,8 @@ read_corpus_from_input(read_context& ctxt)
   if (!reader)
     return nil;
 
+  // This is to remember to call xmlTextReaderNext if we ever call
+  // xmlTextReaderExpand.
   bool call_reader_next = false;
 
   xmlNodePtr node = ctxt.get_corpus_node();
@@ -1907,10 +1925,14 @@ read_corpus_from_input(read_context& ctxt)
 	corp.set_soname(reinterpret_cast<char*>(soname_str.get()));
     }
 
-  if (!node->children)
-    return nil;
-
-  ctxt.set_corpus_node(node->children);
+  // If the corpus element node has children nodes, make
+  // ctxt.get_corpus_node() returns the first child element node of
+  // the corpus element that *needs* to be processed.
+  if (node->children)
+    {
+      xmlNodePtr n = xml::advance_to_next_sibling_element(node->children);
+      ctxt.set_corpus_node(n);
+    }
 
   corpus& corp = *ctxt.get_corpus();
 
@@ -1966,6 +1988,10 @@ read_corpus_from_input(read_context& ctxt)
       // This is the necessary counter-part of the xmlTextReaderExpand()
       // call at the beginning of the function.
       xmlTextReaderNext(reader.get());
+      // The call above invalidates the xml node returned by
+      // xmlTextReaderExpand, which is can still be accessed via
+      // ctxt.set_corpus_node.
+      ctxt.set_corpus_node(0);
     }
   else
     {
@@ -1974,7 +2000,8 @@ read_corpus_from_input(read_context& ctxt)
       if (!node)
 	{
 	  node = ctxt.get_corpus_node();
-	  node = xml::advance_to_next_sibling_element(node->parent);
+	  if (node)
+	    node = xml::advance_to_next_sibling_element(node->parent);
 	}
       ctxt.set_corpus_node(node);
     }

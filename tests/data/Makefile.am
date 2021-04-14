@@ -206,6 +206,10 @@ test-abidiff-exit/test-crc-v1.abi \
 test-abidiff-exit/test-missing-alias-report.txt \
 test-abidiff-exit/test-missing-alias.abi \
 test-abidiff-exit/test-missing-alias.suppr \
+test-abidiff/test-PR27616-squished-v0.abi \
+test-abidiff/test-PR27616-squished-v1.abi \
+test-abidiff/test-PR27616-v0.xml \
+test-abidiff/test-PR27616-v1.xml \
 \
 test-diff-dwarf/test0-v0.cc		\
 test-diff-dwarf/test0-v0.o			\
