@@ -1518,7 +1518,7 @@ read_translation_unit_from_input(read_context&	ctxt)
       // from a local invocation of xmlTextReaderExpand.  So let's set
       // ctxt.get_corpus_node to the next child element node of the
       // corpus that needs to be processed.
-      node = xml::advance_to_next_sibling_element(node);
+      node = xmlNextElementSibling(node);
       ctxt.set_corpus_node(node);
     }
 
@@ -1718,7 +1718,7 @@ read_elf_needed_from_input(read_context&	ctxt,
   if (node)
     {
       result = build_needed(node, needed);
-      node = xml::advance_to_next_sibling_element(node);
+      node = xmlNextElementSibling(node);
       ctxt.set_corpus_node(node);
     }
 
@@ -1930,7 +1930,7 @@ read_corpus_from_input(read_context& ctxt)
   // the corpus element that *needs* to be processed.
   if (node->children)
     {
-      xmlNodePtr n = xml::advance_to_next_sibling_element(node->children);
+      xmlNodePtr n = xmlFirstElementChild(node);
       ctxt.set_corpus_node(n);
     }
 
@@ -1996,12 +1996,12 @@ read_corpus_from_input(read_context& ctxt)
   else
     {
       node = ctxt.get_corpus_node();
-      node = xml::advance_to_next_sibling_element(node);
+      node = xmlNextElementSibling(node);
       if (!node)
 	{
 	  node = ctxt.get_corpus_node();
 	  if (node)
-	    node = xml::advance_to_next_sibling_element(node->parent);
+	    node = xmlNextElementSibling(node->parent);
 	}
       ctxt.set_corpus_node(node);
     }
@@ -2055,7 +2055,7 @@ read_corpus_group_from_input(read_context& ctxt)
     return nil;
 
   //node = xml::get_first_element_sibling_if_text(node->children);
-  node = xml::advance_to_next_sibling_element(node->children);
+  node = xmlFirstElementChild(node);
   ctxt.set_corpus_node(node);
 
   corpus_sptr corp;
