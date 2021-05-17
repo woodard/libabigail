@@ -3186,6 +3186,52 @@ const config&
 environment::get_config() const
 {return priv_->config_;}
 
+
+/// Get the vector of canonical types which have a given "string
+/// representation".
+///
+/// @param 'name', the textual representation of the type as returned
+/// by type_or_decl_base::get_pretty_representation(/*internal=*/true,
+///                                                 /*qualified=*/true)
+///
+/// This is useful to for debugging purposes as it's handy to use from
+/// inside a debugger like GDB.
+///
+/// @return a pointer to the vector of canonical types having the
+/// representation @p name, or nullptr if no type with that
+/// representation exists.
+vector<type_base_sptr>*
+environment::get_canonical_types(const char* name)
+{
+  auto ti = get_canonical_types_map().find(name);
+  if (ti == get_canonical_types_map().end())
+    return nullptr;
+  return &ti->second;
+}
+
+/// Get a given canonical type which has a given "string
+/// representation".
+///
+/// @param 'name', the textual representation of the type as returned
+/// by type_or_decl_base::get_pretty_representation(/*internal=*/true,
+///                                                 /*qualified=*/true).
+///
+/// @param index, the index of the type in the vector of types that
+/// all have the same textual representation @p 'name'.  That vector
+/// is returned by the function environment::get_canonical_types().
+///
+/// @return the canonical type which has the representation @p name,
+/// and which is at index @p index in the vector of canonical types
+/// having that same textual representation.
+type_base*
+environment::get_canonical_type(const char* name, unsigned index)
+{
+  vector<type_base_sptr> *types = get_canonical_types(name);
+  if (!types ||index >= types->size())
+    return nullptr;
+  return (*types)[index].get();
+}
+
 // </environment stuff>
 
 // <type_or_decl_base stuff>
@@ -8067,6 +8113,184 @@ get_class_or_union_flat_representation(const class_or_union_sptr& cou,
 					       one_line,
 					       internal,
 					       qualified_names);}
+
+/// Get the textual representation of a type for debugging purposes.
+///
+/// If the type is a class/union, this shows the data members, virtual
+/// member functions, size, pointer value of its canonical type, etc.
+/// Otherwise, this just shows the name of the artifact as returned by
+/// type_or_decl_base:get_pretty_representation().
+///
+/// @param artifact the artifact to show a debugging representation of.
+///
+/// @return a debugging string representation of @p artifact.
+string
+get_debug_representation(const type_or_decl_base* artifact)
+{
+  if (!artifact)
+    return string("");
+
+  class_or_union * c = is_class_or_union_type(artifact);
+  if (c)
+    {
+      class_decl *clazz = is_class_type(c);
+      string name = c->get_pretty_representation(/*internal=*/false, true);
+      std::ostringstream o;
+      o << name;
+
+      if (clazz)
+	{
+	  if (!clazz->get_base_specifiers().empty())
+	    o << " :" << std::endl;
+	  for (auto &b : clazz->get_base_specifiers())
+	    {
+	      o << "  ";
+	      if (b->get_is_virtual())
+		o << "virtual ";
+	      o << b->get_base_class()->get_pretty_representation(/*internal=*/false,
+								  /*qualified=*/true)
+		<< std::endl;
+	    }
+	}
+      o << std::endl
+	<< "{"
+	<< "  // size in bits: " << c->get_size_in_bits() << "\n"
+	<< "   // translation unit: " << c->get_translation_unit()->get_absolute_path() << std::endl
+	<< "   // @: " << std::hex << is_type(c)
+	<< ", @canonical: " << c->get_canonical_type().get() << std::dec
+	<< "\n\n";
+
+      for (auto m : c->get_data_members())
+	{
+	  type_base_sptr t = m->get_type();
+	  t = peel_typedef_pointer_or_reference_type(t);
+
+	  o << "  "
+	    << m->get_pretty_representation(/*internal=*/false,
+					    /*qualified=*/false)
+	    << ";";
+
+	  if (t && t->get_canonical_type())
+	    o << " // uses canonical type '@"
+	      << std::hex << t->get_canonical_type().get() << std::dec;
+
+	  o << "'" << std::endl;
+	}
+
+      if (clazz && clazz->has_vtable())
+	{
+	  o << "  // virtual member functions\n\n";
+	  for (auto f : clazz->get_virtual_mem_fns())
+	    o << "  " << f->get_pretty_representation(/*internal=*/false,
+						      /*qualified=*/false)
+	      << ";" << std::endl;
+	}
+
+      o << "};" << std::endl;
+
+      return o.str();
+    }
+  return artifact->get_pretty_representation(/*internal=*/true,
+					     /*qualified=*/true);
+}
+
+/// Get a given data member, referred to by its name, of a class type.
+///
+/// @param clazz the class to consider.
+///
+/// @param member_name name of the data member to get.
+///
+/// @return the resulting data member or nullptr if none was found.
+var_decl_sptr
+get_data_member(class_or_union *clazz, const char* member_name)
+{
+  if (!clazz)
+    return var_decl_sptr();
+  return clazz->find_data_member(member_name);
+}
+
+/// Get a given data member, referred to by its name, of a class type.
+///
+/// @param clazz the class to consider.
+///
+/// @param member_name name of the data member to get.
+///
+/// @return the resulting data member or nullptr if none was found.
+var_decl_sptr
+get_data_member(type_base *clazz, const char* member_name)
+{return get_data_member(is_class_or_union_type(clazz), member_name);}
+
+/// Emit a textual representation of an artifact to std error stream
+/// for debugging purposes.
+///
+/// This is useful to invoke from within a command line debugger like
+/// GDB to help make sense of a given ABI artifact.
+///
+/// @param artifact the ABI artifact to emit the debugging
+/// representation for.
+///
+/// @return the artifact @p artifact.
+type_or_decl_base*
+debug(const type_or_decl_base* artifact)
+{
+  std::cerr << get_debug_representation(artifact) << std::endl;
+  return const_cast<type_or_decl_base*>(artifact);
+}
+
+/// Emit a textual representation of an artifact to std error stream
+/// for debugging purposes.
+///
+/// This is useful to invoke from within a command line debugger like
+/// GDB to help make sense of a given ABI artifact.
+///
+/// @param artifact the ABI artifact to emit the debugging
+/// representation for.
+///
+/// @return the artifact @p artifact.
+type_base*
+debug(const type_base* artifact)
+{
+  debug(static_cast<const type_or_decl_base*>(artifact));
+  return const_cast<type_base*>(artifact);
+}
+
+/// Emit a textual representation of an artifact to std error stream
+/// for debugging purposes.
+///
+/// This is useful to invoke from within a command line debugger like
+/// GDB to help make sense of a given ABI artifact.
+///
+/// @param artifact the ABI artifact to emit the debugging
+/// representation for.
+///
+/// @return the artifact @p artifact.
+decl_base*
+debug(const decl_base* artifact)
+{
+  debug(static_cast<const type_or_decl_base*>(artifact));
+  return const_cast<decl_base*>(artifact);
+}
+
+/// Test if two ABI artifacts are equal.
+///
+/// This can be useful when used from the command line of a debugger
+/// like GDB.
+///
+/// @param l the first ABI artifact to consider in the comparison.
+///
+/// @param r the second ABI artifact to consider in the comparison.
+///
+/// @return true iff @p l equals @p r.
+bool
+debug_equals(const type_or_decl_base *l, const type_or_decl_base *r)
+{
+  if (!!l != !!r)
+    return false;
+  if (!l && !r)
+    return true;
+
+  return (*l == *r);
+}
 
 /// By looking at the language of the TU a given ABI artifact belongs
 /// to, test if the ONE Definition Rule should apply.

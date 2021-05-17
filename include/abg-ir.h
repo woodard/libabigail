@@ -200,6 +200,10 @@ public:
   const config&
   get_config() const;
 
+  vector<type_base_sptr>* get_canonical_types(const char* name);
+
+  type_base* get_canonical_type(const char* name, unsigned index);
+
   friend class class_or_union;
   friend class class_decl;
   friend class function_type;

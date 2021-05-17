@@ -999,6 +999,27 @@ get_class_or_union_flat_representation(const class_or_union_sptr& cou,
 				       bool internal,
 				       bool qualified_name = true);
 
+string
+get_debug_representation(const type_or_decl_base*);
+
+var_decl_sptr
+get_data_member(class_or_union *, const char*);
+
+var_decl_sptr
+get_data_member(type_base *clazz, const char* member_name);
+
+type_or_decl_base*
+debug(const type_or_decl_base* artifact);
+
+type_base*
+debug(const type_base* artifact);
+
+decl_base*
+debug(const decl_base* artifact);
+
+bool
+debug_equals(const type_or_decl_base *l, const type_or_decl_base *r);
+
 bool
 odr_is_relevant(const type_or_decl_base&);
 
