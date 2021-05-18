@@ -241,6 +241,16 @@ Options
 
     This is a debugging and sanity check option.
 
+    *  ``--debug-abidiff``
+
+    Same as ``--abidiff`` but in debug mode.  In this mode, error
+    messages are emitted for types which fail type canonicalization.
+
+    This is an optional debugging and sanity check option.  To enable
+    it the libabigail package needs to be configured with
+    the --enable-debug-self-comparison option.
+
+
   *  ``--annotate``
 
     Annotate the ABIXML output with comments above most elements.  The

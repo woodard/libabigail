@@ -200,6 +200,21 @@ public:
   const config&
   get_config() const;
 
+#ifdef WITH_DEBUG_SELF_COMPARISON
+  void
+  set_self_comparison_debug_input(const corpus_sptr& corpus);
+
+  void
+  get_self_comparison_debug_inputs(corpus_sptr& first_corpus,
+				   corpus_sptr& second_corpus);
+
+  void
+  self_comparison_debug_is_on(bool);
+
+  bool
+  self_comparison_debug_is_on() const;
+#endif
+
   vector<type_base_sptr>* get_canonical_types(const char* name);
 
   type_base* get_canonical_type(const char* name, unsigned index);

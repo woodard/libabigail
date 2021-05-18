@@ -2783,16 +2783,36 @@ struct environment::priv
   type_base_sptr			variadic_marker_type_;
   unordered_set<const class_or_union*>	classes_being_compared_;
   unordered_set<const function_type*>	fn_types_being_compared_;
-  vector<type_base_sptr>	 extra_live_types_;
-  interned_string_pool		 string_pool_;
-  bool				 canonicalization_is_done_;
-  bool				 do_on_the_fly_canonicalization_;
-  bool				 decl_only_class_equals_definition_;
+  vector<type_base_sptr>		extra_live_types_;
+  interned_string_pool			string_pool_;
+#ifdef WITH_DEBUG_SELF_COMPARISON
+  // This is used for debugging purposes.
+  // When abidw is used with the option --debug-abidiff, some
+  // libabigail internals need to get a hold on the initial binary
+  // input of abidw, as well as as the abixml file that represents the
+  // ABI of that binary.
+  //
+  // So this one is the corpus for the input binary.
+  corpus_wptr				first_self_comparison_corpus_;
+  // This one is the corpus for the ABIXML file representing the
+  // serialization of the input binary.
+  corpus_wptr				second_self_comparison_corpus_;
+#endif
+  bool					canonicalization_is_done_;
+  bool					do_on_the_fly_canonicalization_;
+  bool					decl_only_class_equals_definition_;
+#ifdef WITH_DEBUG_SELF_COMPARISON
+  bool					self_comparison_debug_on_;
+#endif
 
   priv()
     : canonicalization_is_done_(),
       do_on_the_fly_canonicalization_(true),
       decl_only_class_equals_definition_(false)
+#ifdef WITH_DEBUG_SELF_COMPARISON
+    ,
+      self_comparison_debug_on_(false)
+#endif
   {}
 };// end struct environment::priv
 
@@ -3186,6 +3206,61 @@ const config&
 environment::get_config() const
 {return priv_->config_;}
 
+#ifdef WITH_DEBUG_SELF_COMPARISON
+/// Setter of the corpus of the input corpus of the self comparison
+/// that takes place when doing "abidw --debug-abidiff <binary>".
+///
+/// The first invocation of this function sets the first corpus of the
+/// self comparison.  The second invocation of this very same function
+/// sets the second corpus of the self comparison.  That second corpus
+/// is supposed to come from the abixml serialization of the first
+/// corpus.
+///
+/// @param c the corpus of the input binary or the corpus of the
+/// abixml serialization of the initial binary input.
+void
+environment::set_self_comparison_debug_input(const corpus_sptr& c)
+{
+  self_comparison_debug_is_on(true);
+  if (priv_->first_self_comparison_corpus_.expired())
+    priv_->first_self_comparison_corpus_ = c;
+  else if (priv_->second_self_comparison_corpus_.expired()
+	   && c.get() != corpus_sptr(priv_->first_self_comparison_corpus_).get())
+    priv_->second_self_comparison_corpus_ = c;
+}
+
+/// Getter for the corpora of the input binary and the intermediate
+/// abixml of the self comparison that takes place when doing
+///   'abidw --debug-abidiff <binary>'.
+///
+/// @param first_corpus output parameter that is set to the corpus of
+/// the input corpus.
+///
+/// @param second_corpus output parameter that is set to the corpus of
+/// the second corpus.
+void
+environment::get_self_comparison_debug_inputs(corpus_sptr& first_corpus,
+					      corpus_sptr& second_corpus)
+{
+    first_corpus = priv_->first_self_comparison_corpus_.lock();
+    second_corpus = priv_->second_self_comparison_corpus_.lock();
+}
+
+/// Turn on/off the self comparison debug mode.
+///
+/// @param f true iff the self comparison debug mode is turned on.
+void
+environment::self_comparison_debug_is_on(bool f)
+{priv_->self_comparison_debug_on_ = f;}
+
+/// Test if the we are in the process of the 'self-comparison
+/// debugging' as triggered by 'abidw --debug-abidiff' command.
+///
+/// @return true if self comparison debug is on.
+bool
+environment::self_comparison_debug_is_on() const
+{return priv_->self_comparison_debug_on_;}
+#endif
 
 /// Get the vector of canonical types which have a given "string
 /// representation".
@@ -12911,6 +12986,43 @@ type_base::get_canonical_type_for(type_base_sptr t)
 	}
       if (!result)
 	{
+#ifdef WITH_DEBUG_SELF_COMPARISON
+	  if (env->self_comparison_debug_is_on())
+	    {
+	      // So we are debugging the canonicalization process,
+	      // possibly via the use of 'abidw --debug-abidiff <binary>'.
+	      //
+	      // If 't' comes from the second corpus, then it *must*
+	      // be equal to its matching canonical type coming from
+	      // the first corpus because the second corpus is the
+	      // abixml representation of the first corpus.  In other
+	      // words, all types coming from the second corpus must
+	      // have canonical types coming from the first corpus.
+	      //
+	      // We are in the case where 't' is different from all
+	      // the canonical types of the same name that come from
+	      // the first corpus.
+	      //
+	      // If 't' indeed comes from the second corpus then this
+	      // clearly is a canonicalization failure.
+	      //
+	      // There was a problem either during the serialization
+	      // of 't' into abixml, or during the de-serialization
+	      // from abixml into abigail::ir.  Further debugging is
+	      // needed to determine what that root cause problem is.
+	      //
+	      // Note that the first canonicalization problem of this
+	      // kind must be fixed before looking at the subsequent
+	      // ones, because the later might well just be
+	      // consequences of the former.
+	      corpus_sptr corp1, corp2;
+	      env->get_self_comparison_debug_inputs(corp1, corp2);
+	      if (corp1 && corp2 && (t->get_corpus() == corp2.get()))
+		std::cerr << "error: problem detected with type '"
+			  << repr
+			  << "' from second corpus\n" << std::flush;
+	    }
+#endif
 	  v.push_back(t);
 	  result = t;
 	}

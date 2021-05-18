@@ -11,6 +11,7 @@
 /// DWARF format) and emit it back in a set of "text sections" in native
 /// libabigail XML format.
 
+#include "config.h"
 #include <unistd.h>
 #include <cassert>
 #include <cstdio>
@@ -62,6 +63,7 @@ using abigail::xml_writer::type_id_style_kind;
 using abigail::xml_writer::write_context_sptr;
 using abigail::xml_writer::write_corpus;
 using abigail::xml_reader::read_corpus_from_native_xml_file;
+using abigail::xml_reader::create_native_xml_read_context;
 using abigail::dwarf_reader::read_context;
 using abigail::dwarf_reader::read_context_sptr;
 using abigail::dwarf_reader::read_corpus_from_elf;
@@ -98,6 +100,9 @@ struct options
   bool			noout;
   bool			show_locs;
   bool			abidiff;
+#ifdef WITH_DEBUG_SELF_COMPARISON
+  bool			debug_abidiff;
+#endif
   bool			annotate;
   bool			do_log;
   bool			drop_private_types;
@@ -122,6 +127,9 @@ struct options
       noout(),
       show_locs(true),
       abidiff(),
+#ifdef WITH_DEBUG_SELF_COMPARISON
+      debug_abidiff(),
+#endif
       annotate(),
       do_log(),
       drop_private_types(false),
@@ -182,6 +190,9 @@ display_usage(const string& prog_name, ostream& out)
     << "  --vmlinux <path>  the path to the vmlinux binary to consider to emit "
        "the ABI of the union of vmlinux and its modules\n"
     << "  --abidiff  compare the loaded ABI against itself\n"
+#ifdef WITH_DEBUG_SELF_COMPARISON
+    << "  --debug-abidiff  debug the process of comparing the loaded ABI against itself\n"
+#endif
     << "  --annotate  annotate the ABI artifacts emitted in the output\n"
     << "  --stats  show statistics about various internal stuff\n"
     << "  --verbose show verbose messages about internal stuff\n";
@@ -328,6 +339,13 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.linux_kernel_mode = false;
       else if (!strcmp(argv[i], "--abidiff"))
 	opts.abidiff = true;
+#ifdef WITH_DEBUG_SELF_COMPARISON
+      else if (!strcmp(argv[i], "--debug-abidiff"))
+	{
+	  opts.abidiff = true;
+	  opts.debug_abidiff = true;
+	}
+#endif
       else if (!strcmp(argv[i], "--annotate"))
 	opts.annotate = true;
       else if (!strcmp(argv[i], "--stats"))
@@ -467,10 +485,15 @@ static int
 load_corpus_and_write_abixml(char* argv[],
 			     environment_sptr& env,
 			     read_context_sptr& context,
-			     const options& opts)
+			     options& opts)
 {
   int exit_code = 0;
   timer t;
+
+#ifdef WITH_DEBUG_SELF_COMPARISON
+  if (opts.debug_abidiff)
+    env->self_comparison_debug_is_on(true);
+#endif
 
   read_context& ctxt = *context;
   corpus_sptr corp;
@@ -551,10 +574,13 @@ load_corpus_and_write_abixml(char* argv[],
 	  set_ostream(*write_ctxt, tmp_file->get_stream());
 	  write_corpus(*write_ctxt, corp, 0);
 	  tmp_file->get_stream().flush();
+
+	  xml_reader::read_context_sptr read_ctxt =
+	    create_native_xml_read_context(tmp_file->get_path(), env.get());
+
 	  t.start();
 	  corpus_sptr corp2 =
-	    read_corpus_from_native_xml_file(tmp_file->get_path(),
-					     env.get());
+	    read_corpus_from_input(*read_ctxt);
 	  t.stop();
 	  if (opts.do_log)
 	    emit_prefix(argv[0], cerr)

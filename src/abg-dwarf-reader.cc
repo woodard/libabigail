@@ -14279,6 +14279,11 @@ read_debug_info_into_corpus(read_context& ctxt)
   ctxt.exported_decls_builder
     (ctxt.current_corpus()->get_exported_decls_builder().get());
 
+#ifdef WITH_DEBUG_SELF_COMPARISON
+  if (ctxt.env()->self_comparison_debug_is_on())
+    ctxt.env()->set_self_comparison_debug_input(ctxt.current_corpus());
+#endif
+
   // Walk all the DIEs of the debug info to build a DIE -> parent map
   // useful for get_die_parent() to work.
   {
@@ -14450,6 +14455,11 @@ read_debug_info_into_corpus(read_context& ctxt)
 	     <<" \n";
       }
   }
+
+#ifdef WITH_DEBUG_SELF_COMPARISON
+  if (ctxt.env()->self_comparison_debug_is_on())
+    ctxt.env()->set_self_comparison_debug_input(ctxt.current_corpus());
+#endif
 
   return ctxt.current_corpus();
 }

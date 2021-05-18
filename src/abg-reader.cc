@@ -1835,6 +1835,11 @@ read_corpus_from_input(read_context& ctxt)
 	{
 	  corpus_sptr c(new corpus(ctxt.get_environment(), ""));
 	  ctxt.set_corpus(c);
+#ifdef WITH_DEBUG_SELF_COMPARISON
+	  if (ctxt.get_environment()->self_comparison_debug_is_on())
+	    ctxt.get_environment()->
+	      set_self_comparison_debug_input(ctxt.get_corpus());
+#endif
 	}
 
       if (!ctxt.get_corpus_group())
@@ -1893,6 +1898,11 @@ read_corpus_from_input(read_context& ctxt)
 	{
 	  corpus_sptr c(new corpus(ctxt.get_environment(), ""));
 	  ctxt.set_corpus(c);
+#ifdef WITH_DEBUG_SELF_COMPARISON
+	  if (ctxt.get_environment()->self_comparison_debug_is_on())
+	    ctxt.get_environment()->
+	      set_self_comparison_debug_input(ctxt.get_corpus());
+#endif
 	}
 
       if (!ctxt.get_corpus_group())
@@ -5822,6 +5832,10 @@ create_native_xml_read_context(const string& path, environment *env)
 					    env));
   corpus_sptr corp(new corpus(env));
   result->set_corpus(corp);
+#ifdef WITH_DEBUG_SELF_COMPARISON
+  if (env->self_comparison_debug_is_on())
+    env->set_self_comparison_debug_input(result->get_corpus());
+#endif
   result->set_path(path);
   return result;
 }
@@ -5841,6 +5855,10 @@ create_native_xml_read_context(std::istream* in, environment* env)
 					    env));
   corpus_sptr corp(new corpus(env, ""));
   result->set_corpus(corp);
+#ifdef WITH_DEBUG_SELF_COMPARISON
+  if (env->self_comparison_debug_is_on())
+    env->set_self_comparison_debug_input(result->get_corpus());
+#endif
   return result;
 }
 
