@@ -2797,6 +2797,10 @@ struct environment::priv
   // This one is the corpus for the ABIXML file representing the
   // serialization of the input binary.
   corpus_wptr				second_self_comparison_corpus_;
+  // This is also used for debugging purposes, when using
+  //   'abidw --debug-abidiff <binary>'.  It holds the set of mapping of
+  // an abixml (canonical) type and its type-id.
+  unordered_map<string, uintptr_t>	type_id_canonical_type_map_;
 #endif
   bool					canonicalization_is_done_;
   bool					do_on_the_fly_canonicalization_;
@@ -3306,6 +3310,21 @@ environment::get_canonical_type(const char* name, unsigned index)
     return nullptr;
   return (*types)[index].get();
 }
+
+#ifdef WITH_DEBUG_SELF_COMPARISON
+/// Get the set of abixml type-id and the pointer value of the
+/// (canonical) type it's associated to.
+///
+/// This is useful for debugging purposes, especially in the context
+/// of the use of the command:
+///   'abidw --debug-abidiff <binary>'.
+///
+/// @return the set of abixml type-id and the pointer value of the
+/// (canonical) type it's associated to.
+unordered_map<string, uintptr_t>&
+environment::get_type_id_canonical_type_map() const
+{return priv_->type_id_canonical_type_map_;}
+#endif
 
 // </environment stuff>
 

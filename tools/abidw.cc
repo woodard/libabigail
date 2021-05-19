@@ -108,6 +108,9 @@ struct options
   bool			drop_private_types;
   bool			drop_undefined_syms;
   type_id_style_kind	type_id_style;
+#ifdef WITH_DEBUG_SELF_COMPARISON
+  string		type_id_file_path;
+#endif
 
   options()
     : display_version(),
@@ -575,9 +578,21 @@ load_corpus_and_write_abixml(char* argv[],
 	  write_corpus(*write_ctxt, corp, 0);
 	  tmp_file->get_stream().flush();
 
+#ifdef WITH_DEBUG_SELF_COMPARISON
+	  if (opts.debug_abidiff)
+	    {
+	      opts.type_id_file_path = tmp_file->get_path() + string(".typeid");
+	      write_canonical_type_ids(*write_ctxt, opts.type_id_file_path);
+	    }
+#endif
 	  xml_reader::read_context_sptr read_ctxt =
 	    create_native_xml_read_context(tmp_file->get_path(), env.get());
 
+#ifdef WITH_DEBUG_SELF_COMPARISON
+	  if (opts.debug_abidiff
+	      && !opts.type_id_file_path.empty())
+	    load_canonical_type_ids(*read_ctxt, opts.type_id_file_path);
+#endif
 	  t.start();
 	  corpus_sptr corp2 =
 	    read_corpus_from_input(*read_ctxt);

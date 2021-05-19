@@ -4689,5 +4689,72 @@ void
 dump_decl_location(const decl_base_sptr d)
 {dump_decl_location(d.get());}
 
+#ifdef WITH_DEBUG_SELF_COMPARISON
+/// Serialize the map that is stored at
+/// environment::get_type_id_canonical_type_map() to an output stream.
+///
+/// This is for debugging purposes and is triggered ultimately by
+/// invoking the command 'abidw --debug-abidiff <binary>'.
+///
+/// @param ctxt the write context.
+///
+/// @param o the output stream to serialize the map to.
+void
+write_canonical_type_ids(xml_writer::write_context& ctxt, ostream& o)
+{
+  // We want to serialize a file which content looks like:
+  //
+  // <abixml-types-check>
+  //     <type>
+  //       <id>type-id-573</id>
+  //       <c>0x262ee28</c>
+  //     </type>
+  //     <type>
+  //       <id>type-id-569</id>
+  //       <c>0x2628298</c>
+  //     </type>
+  //     <type>
+  //       <id>type-id-575</id>
+  //       <c>0x25f9ba8</c>
+  //     </type>
+  // <abixml-types-check>
+
+  o << "<abixml-types-check>\n";
+  for (const auto &p : ctxt.get_environment()->get_canonical_types_map())
+    for (const auto& type_sptr : p.second)
+      {
+	string id = ctxt.get_id_for_type (type_sptr);
+	o << "  <type>\n"
+	  << "    <id>" << id << "</id>\n"
+	  << "    <c>"
+	  << std::hex << type_sptr->get_canonical_type().get()
+	  << "</c>\n"
+	  << "  </type>\n";
+      }
+  o << "</abixml-types-check>\n";
+}
+
+/// Serialize the map that is stored at
+/// environment::get_type_id_canonical_type_map() to a file.
+///
+/// This is for debugging purposes and is triggered ultimately by
+/// invoking the command 'abidw --debug-abidiff <binary>'.
+///
+/// @param ctxt the write context.
+///
+/// @param file_path the file to serialize the map to.
+bool
+write_canonical_type_ids(xml_writer::write_context& ctxt,
+			const string &file_path)
+{
+  std:: ofstream o (file_path);
+
+  if (!o.is_open())
+    return true;
+  write_canonical_type_ids(ctxt, o);
+  o.close();
+  return true;
+}
+#endif
 // </Debugging routines>
 } //end namespace abigail

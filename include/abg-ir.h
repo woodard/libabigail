@@ -219,6 +219,11 @@ public:
 
   type_base* get_canonical_type(const char* name, unsigned index);
 
+#ifdef WITH_DEBUG_SELF_COMPARISON
+  unordered_map<string, uintptr_t>&
+  get_type_id_canonical_type_map() const;
+#endif
+
   friend class class_or_union;
   friend class class_decl;
   friend class function_type;

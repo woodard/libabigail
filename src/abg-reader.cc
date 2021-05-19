@@ -58,6 +58,9 @@ static bool	read_is_declaration_only(xmlNodePtr, bool&);
 static bool	read_is_artificial(xmlNodePtr, bool&);
 static bool	read_tracking_non_reachable_types(xmlNodePtr, bool&);
 static bool	read_is_non_reachable_type(xmlNodePtr, bool&);
+#ifdef WITH_DEBUG_SELF_COMPARISON
+static bool	read_type_id_string(xmlNodePtr, string&);
+#endif
 
 class read_context;
 
@@ -96,6 +99,9 @@ private:
   unordered_map<string, vector<type_base_sptr> >	m_types_map;
   unordered_map<string, shared_ptr<function_tdecl> >	m_fn_tmpl_map;
   unordered_map<string, shared_ptr<class_tdecl> >	m_class_tmpl_map;
+#ifdef WITH_DEBUG_SELF_COMPARISON
+  unordered_map<uintptr_t, string>			m_pointer_type_id_map;
+#endif
   vector<type_base_sptr>				m_types_to_canonicalize;
   string_xml_node_map					m_id_xml_node_map;
   xml_node_decl_base_sptr_map				m_xml_node_decl_map;
@@ -377,6 +383,25 @@ public:
       return shared_ptr<class_tdecl>();
     return i->second;
   }
+
+#ifdef WITH_DEBUG_SELF_COMPARISON
+  /// Getter of the map that associates the values of type pointers to
+  /// their type-id strings.
+  ///
+  /// Note that this map is populated at abixml reading time, (by
+  /// build_type()) when a given XML element representing a type is
+  /// read into a corresponding abigail::ir::type_base.
+  ///
+  /// This is used only for the purpose of debugging the
+  /// self-comparison process.  That is, when invoking "abidw
+  /// --debug-abidiff".
+  ///
+  /// @return the map that associates the values of type pointers to
+  /// their type-id strings.
+  unordered_map<uintptr_t, string>&
+  get_pointer_type_id_map()
+  {return m_pointer_type_id_map;}
+#endif
 
   /// Return the current lexical scope.
   scope_decl*
@@ -791,6 +816,67 @@ public:
     clear_decls_stack();
   }
 
+#ifdef WITH_DEBUG_SELF_COMPARISON
+  /// Perform a debugging routine for the "self-comparison" mode.
+  ///
+  /// This is done when this command is on:
+  ///
+  ///   "abidw --debug-abidiff".
+  ///
+  /// Consider a type 't' built from an XML element from the abixml
+  /// reader and that has just been canonicalized.
+  ///
+  /// This function checks if the canonical type of 't' is the same as
+  /// the canonical type of the type which was saved into the abixml
+  /// with the same "type-id" as the one of 't'.
+  ///
+  /// Note that at abixml saving time, a debugging file was saved on
+  /// disk to record the mapping of canonical type pointers and their
+  /// type-ids.  Right before reading the abixml again, that file was
+  /// read again and the mapping was loaded in the map returned by
+  /// environment::get_type_id_canonical_type_map().
+  void
+  maybe_check_abixml_canonical_type_stability(type_base_sptr& t)
+  {
+    if (!m_env->self_comparison_debug_is_on()
+	|| m_env->get_type_id_canonical_type_map().empty())
+      return ;
+
+    // Let's get the type-id of this type as recorded in the
+    // originating abixml file.
+    string type_id;
+    const auto i =
+      get_pointer_type_id_map().find(reinterpret_cast<uintptr_t>(t.get()));
+    if (i != get_pointer_type_id_map().end())
+      {
+	type_id = i->second;
+	// Now let's get the canonical type that initially led to the
+	// serialization of a type with this type-id, when the abixml
+	// was being serialized.
+	auto j = m_env->get_type_id_canonical_type_map().find(type_id);
+	if (j == m_env->get_type_id_canonical_type_map().end())
+	  std::cerr << "error: no type with type-id: '"
+		    << type_id
+		    << "' could be read back from the abixml file\n";
+	else if (j->second
+		 != reinterpret_cast<uintptr_t>(t->get_canonical_type().get()))
+	  // So thecanonical type of 't' (at abixml de-serialization
+	  // time) is different from the canonical type that led to
+	  // the serialization of 't' at abixml serialization time.
+	  // Report this because it needs further debugging.
+	  std::cerr << "error: canonical type for type '"
+		    << t->get_pretty_representation(/*internal=*/false,
+						    /*qualified=*/false)
+		    << "' of type-id '" << type_id
+		    << "' changed from '" << std::hex
+		    << j->second << "' to '" << std::hex
+		    << reinterpret_cast<uintptr_t>(t->get_canonical_type().get())
+		    << std::dec
+		    << "'\n";
+	    }
+  }
+#endif
+
   /// Test if a type should be canonicalized early.  If so,
   /// canonicalize it right away.  Otherwise, schedule it for late
   /// canonicalizing; that is, schedule it so that it's going to be
@@ -836,7 +922,12 @@ public:
 	&& !is_typedef(t)
 	&& !is_enum_type(t)
 	&& !is_function_type(t))
-      canonicalize(t);
+      {
+	canonicalize(t);
+#ifdef WITH_DEBUG_SELF_COMPARISON
+	maybe_check_abixml_canonical_type_stability(t);
+#endif
+      }
     else
       {
 	// We do not want to try to canonicalize a class type that
@@ -865,7 +956,12 @@ public:
     for (vector<type_base_sptr>::iterator i = m_types_to_canonicalize.begin();
 	 i != m_types_to_canonicalize.end();
 	 ++i)
-      canonicalize(*i);
+      {
+	canonicalize(*i);
+#ifdef WITH_DEBUG_SELF_COMPARISON
+	maybe_check_abixml_canonical_type_stability(*i);
+#endif
+      }
   }
 
   /// Test whether if a given function suppression matches a function
@@ -2703,6 +2799,26 @@ read_elf_symbol_visibility(xmlNodePtr node, elf_symbol::visibility& v)
     }
   return false;
 }
+
+#ifdef WITH_DEBUG_SELF_COMPARISON
+/// Read the value of the 'id' attribute from a given XML node.
+///
+/// @param node the XML node to consider.
+///
+/// @param type_id the string to set the 'id' to.
+///
+/// @return true iff @p type_id was successfully set.
+static bool
+read_type_id_string(xmlNodePtr node, string& type_id)
+{
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
+    {
+      type_id = CHAR_STR(s);
+      return true;
+    }
+  return false;
+}
+#endif
 
 /// Build a @ref namespace_decl from an XML element node which name is
 /// "namespace-decl".  Note that this function recursively reads the
@@ -5541,6 +5657,16 @@ build_type(read_context&	ctxt,
 	abi->record_type_as_reachable_from_public_interfaces(*t);
     }
 
+#ifdef WITH_DEBUG_SELF_COMPARISON
+  if (t && ctxt.get_environment()->self_comparison_debug_is_on())
+    {
+      string type_id;
+      if (read_type_id_string(node, type_id))
+	// Let's store the type-id of this type pointer.
+	ctxt.get_pointer_type_id_map()[reinterpret_cast<uintptr_t>(t.get())] = type_id;
+    }
+#endif
+
   ctxt.maybe_canonicalize_type(t);
   return t;
 }
@@ -5912,5 +6038,86 @@ read_corpus_from_native_xml_file(const string& path,
 }
 
 }//end namespace xml_reader
+
+#ifdef WITH_DEBUG_SELF_COMPARISON
+/// Load the map that is stored at
+/// environment::get_type_id_canonical_type_map().
+///
+/// That map associates type-ids to the pointer value of the canonical
+/// types they correspond to.  The map is loaded from a file that was
+/// stored on disk by some debugging primitive that is activated when
+/// the command "abidw --debug-abidiff <binary>' is used."
+///
+/// The function that stored the map in that file is
+/// write_canonical_type_ids.
+///
+/// @param ctxt the read context to use.
+///
+/// @param file_path the path to the file containing the type-ids <->
+/// canonical type mapping.
+///
+/// @return true iff the loading was successful.
+bool
+load_canonical_type_ids(xml_reader::read_context& ctxt, const string &file_path)
+{
+  xmlDocPtr doc = xmlReadFile(file_path.c_str(), NULL, XML_PARSE_NOERROR);
+  if (!doc)
+    return false;
+
+  xmlNodePtr node = xmlDocGetRootElement(doc);
+  if (!node)
+    return false;
+
+  // We expect a file which content looks like:
+  //
+  // <abixml-types-check>
+  //     <type>
+  //       <id>type-id-573</id>
+  //       <c>0x262ee28</c>
+  //     </type>
+  //     <type>
+  //       <id>type-id-569</id>
+  //       <c>0x2628298</c>
+  //     </type>
+  //     <type>
+  //       <id>type-id-575</id>
+  //       <c>0x25f9ba8</c>
+  //     </type>
+  // <abixml-types-check>
+  //
+  // So let's parse it!
+
+  if (xmlStrcmp(node->name, (xmlChar*) "abixml-types-check"))
+    return false;
+
+  for (node = xmlFirstElementChild(node);
+       node;
+       node = xmlNextElementSibling(node))
+    {
+      if (xmlStrcmp(node->name, (xmlChar*) "type"))
+	continue;
+
+      string id, canonical_address;
+      xmlNodePtr data = xmlFirstElementChild(node);
+      if (data && !xmlStrcmp(data->name, (xmlChar*) "id")
+	  && data->children && xmlNodeIsText(data->children))
+	id = (char*) XML_GET_CONTENT(data->children);
+
+      data = xmlNextElementSibling(data);
+      if (data && !xmlStrcmp(data->name, (xmlChar*) "c")
+	  && data->children && xmlNodeIsText(data->children))
+	{
+	  canonical_address = (char*) XML_GET_CONTENT(data->children);
+	  std::stringstream s;
+	  s << canonical_address;
+	  uintptr_t v = 0;
+	  s >>  std::hex >> v;
+	  if (!id.empty())
+	    ctxt.get_environment()->get_type_id_canonical_type_map()[id] = v;
+	}
+    }
+  return true;
+}
+#endif
 
 }//end namespace abigail
