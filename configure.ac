@@ -273,7 +273,7 @@ if test x$ENABLE_RPM = xyes -o x$ENABLE_RPM = xauto; then
   fi
 fi
 
-if test x$ENABLE_RPM = xyes -a x$ENABLE_RPM415 = xauto; then
+if test x$ENABLE_RPM = xyes -o x$ENABLE_RPM415 = xauto; then
    rpmversion=$(rpm --version | sed "s/RPM version //")
    AC_MSG_NOTICE([detected rpm version: $rpmversion])
    if [[[ "$rpmversion" > "4.14.0" ]]]; then
