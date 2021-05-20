@@ -38,6 +38,7 @@
     <qualified-type-def type-id='type-id-13' id='type-id-14'/>
     <reference-type-def kind='lvalue' type-id='type-id-15' size-in-bits='64' id='type-id-13'/>
     <qualified-type-def type-id='type-id-10' volatile='yes' id='type-id-16'/>
+    <var-decl name='global' type-id='type-id-2' mangled-name='global' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='3' column='1' elf-symbol-id='global'/>
     <namespace-decl name='ns0'>
       <enum-decl name='E' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='19' column='1' id='type-id-15'>
         <underlying-type type-id='type-id-5'/>
@@ -71,6 +72,5 @@
     <function-decl name='main' mangled-name='main' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='49' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='main'>
       <return type-id='type-id-2'/>
     </function-decl>
-    <var-decl name='global' type-id='type-id-2' mangled-name='global' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='3' column='1' elf-symbol-id='global'/>
   </abi-instr>
 </abi-corpus>

@@ -1008,6 +1008,12 @@ get_data_member(class_or_union *, const char*);
 var_decl_sptr
 get_data_member(type_base *clazz, const char* member_name);
 
+const location&
+get_natural_or_artificial_location(const decl_base*);
+
+const location&
+get_artificial_or_natural_location(const decl_base*);
+
 type_or_decl_base*
 debug(const type_or_decl_base* artifact);
 

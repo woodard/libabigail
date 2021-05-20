@@ -1223,7 +1223,7 @@ annotate(const function_decl::parameter_sptr&	parm,
 static void
 write_location(const location& loc, write_context& ctxt)
 {
-  if (!loc)
+  if (!loc || loc.get_is_artificial())
     return;
 
   if (!ctxt.get_show_locs())
@@ -2505,7 +2505,7 @@ write_namespace_decl(const namespace_decl_sptr& decl,
 
   typedef scope_decl::declarations		declarations;
   typedef declarations::const_iterator const_iterator;
-  const declarations& d = decl->get_member_decls();
+  const declarations& d = decl->get_sorted_member_decls();
 
   write_canonical_types_of_scope(*decl, ctxt,
 				 indent + c.get_xml_element_indent());

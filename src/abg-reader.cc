@@ -1151,6 +1151,11 @@ static bool	read_symbol_db_from_input(read_context&,
 					  string_elf_symbols_map_sptr&,
 					  string_elf_symbols_map_sptr&);
 static bool	read_location(const read_context&, xmlNodePtr, location&);
+static bool	read_artificial_location(const read_context&,
+					 xmlNodePtr, location&);
+static bool     maybe_set_artificial_location(const read_context&,
+					      xmlNodePtr,
+					      type_or_decl_base_sptr);
 static bool	read_visibility(xmlNodePtr, decl_base::visibility&);
 static bool	read_binding(xmlNodePtr, decl_base::binding&);
 static bool	read_access(xmlNodePtr, access_specifier&);
@@ -2330,10 +2335,12 @@ read_location(const read_context&	ctxt,
     file_path = CHAR_STR(f);
 
   if (file_path.empty())
-    return false;
+    return read_artificial_location(ctxt, node, loc);
 
   if (xml_char_sptr l = xml::build_sptr(xmlGetProp(node, BAD_CAST("line"))))
     line = atoi(CHAR_STR(l));
+  else
+    return read_artificial_location(ctxt, node, loc);
 
   if (xml_char_sptr c = xml::build_sptr(xmlGetProp(node, BAD_CAST("column"))))
     column = atoi(CHAR_STR(c));
@@ -2343,6 +2350,72 @@ read_location(const read_context&	ctxt,
 								    line,
 								    column);
   return true;
+}
+
+/// Parses the artificial location attributes on an xmlNodePtr.
+///
+/// The artificial location is the line number of the xmlNode as well
+/// as the URI of the node.
+///
+///@param ctxt the current parsing context
+///
+///@param loc the resulting location.
+///
+/// @return true upon sucessful parsing, false otherwise.
+static bool
+read_artificial_location(const read_context& ctxt,
+			 xmlNodePtr node,
+			 location& loc)
+{
+  if (!node)
+    return false;
+
+   string file_path;
+   size_t line = 0, column = 0;
+
+   line = node->line;
+
+   if (node->doc)
+       file_path = reinterpret_cast<const char*>(node->doc->URL);
+
+   read_context& c = const_cast<read_context&>(ctxt);
+   loc =
+     c.get_translation_unit()->get_loc_mgr().create_new_location(file_path,
+								 line, column);
+   loc.set_is_artificial(true);
+   return true;
+}
+
+/// Set the artificial location of a xmlNode to an artifact.
+///
+/// The artificial location is the line number of the xmlNode as well
+/// as the URI of the node.
+///
+/// The function sets the artificial location only if the artifact
+/// doesn"t already have one.
+///
+///@param ctxt the current parsing context
+///
+///@param node the XML node to consider.
+///
+///@param artifact the ABI artifact.
+///
+/// @return true iff the location was set on the artifact.
+static bool
+maybe_set_artificial_location(const read_context& ctxt,
+			      xmlNodePtr node,
+			      type_or_decl_base_sptr artefact)
+{
+  if (artefact && !artefact->has_artificial_location())
+    {
+      location l;
+      if (read_artificial_location(ctxt, node, l))
+	{
+	  artefact->set_artificial_location(l);
+	  return true;
+	}
+    }
+  return false;
 }
 
 /// Parse the visibility attribute.
@@ -2860,6 +2933,7 @@ build_namespace_decl(read_context&	ctxt,
 
   const environment* env = ctxt.get_environment();
   namespace_decl_sptr decl(new namespace_decl(env, name, loc));
+  maybe_set_artificial_location(ctxt, node, decl);
   ctxt.push_decl_to_current_scope(decl, add_to_current_scope);
   ctxt.map_xml_node_to_decl(node, decl);
 
@@ -3258,6 +3332,7 @@ build_function_decl(read_context&	ctxt,
 						 mangled_name, vis,
 						 bind));
 
+  maybe_set_artificial_location(ctxt, node, fn_decl);
   ctxt.push_decl_to_current_scope(fn_decl, add_to_current_scope);
 
   elf_symbol_sptr sym = build_elf_symbol_from_reference(ctxt, node);
@@ -3490,6 +3565,7 @@ build_var_decl(read_context&	ctxt,
   var_decl_sptr decl(new var_decl(name, underlying_type,
 				  locus, mangled_name,
 				  vis, bind));
+  maybe_set_artificial_location(ctxt, node, decl);
 
   elf_symbol_sptr sym = build_elf_symbol_from_reference(ctxt, node);
   if (sym)
@@ -3572,6 +3648,7 @@ build_type_decl(read_context&		ctxt,
   const environment* env = ctxt.get_environment();
   type_decl_sptr decl(new type_decl(env, name, size_in_bits,
 				    alignment_in_bits, loc));
+  maybe_set_artificial_location(ctxt, node, decl);
   decl->set_is_anonymous(is_anonymous);
   decl->set_is_declaration_only(is_decl_only);
   if (ctxt.push_and_key_type_decl(decl, id, add_to_current_scope))
@@ -3673,6 +3750,7 @@ build_qualified_type_decl(read_context&	ctxt,
     }
 
   decl.reset(new qualified_type_def(underlying_type, cv, loc));
+   maybe_set_artificial_location(ctxt, node, decl);
   if (ctxt.push_and_key_type_decl(decl, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, decl);
@@ -3754,6 +3832,7 @@ build_pointer_type_def(read_context&	ctxt,
 						      size_in_bits,
 						      alignment_in_bits,
 						      loc));
+  maybe_set_artificial_location(ctxt, node, t);
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, t);
@@ -3841,6 +3920,7 @@ build_reference_type_def(read_context&		ctxt,
 							  size_in_bits,
 							  alignment_in_bits,
 							  loc));
+  maybe_set_artificial_location(ctxt, node, t);
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, t);
@@ -4046,6 +4126,7 @@ build_subrange_type(read_context&	ctxt,
     (new array_type_def::subrange_type(ctxt.get_environment(),
 				       name, min_bound, max_bound,
 				       underlying_type, loc));
+  maybe_set_artificial_location(ctxt, node, p);
   p->is_infinite(is_infinite);
 
   return p;
@@ -4166,6 +4247,7 @@ build_array_type_def(read_context&	ctxt,
   array_type_def_sptr ar_type(new array_type_def(type,
 						 subranges,
 						 loc));
+  maybe_set_artificial_location(ctxt, node, ar_type);
 
   if (dimensions != ar_type->get_dimension_count()
       || (alignment_in_bits
@@ -4341,6 +4423,7 @@ build_enum_type_decl(read_context&	ctxt,
   enum_type_decl_sptr t(new enum_type_decl(name, loc,
 					   underlying_type,
 					   enums, linkage_name));
+  maybe_set_artificial_location(ctxt, node, t);
   t->set_is_anonymous(is_anonymous);
   t->set_is_artificial(is_artificial);
   t->set_is_declaration_only(is_decl_only);
@@ -4416,7 +4499,7 @@ build_typedef_decl(read_context&	ctxt,
       // it's possible to have the same typedef several times.
     }
   typedef_decl_sptr t(new typedef_decl(name, underlying_type, loc));
-
+  maybe_set_artificial_location(ctxt, node, t);
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, t);
@@ -4596,6 +4679,7 @@ build_class_decl(read_context&		ctxt,
 	    decl->set_size_in_bits(size_in_bits);
 	  if (is_anonymous)
 	    decl->set_is_anonymous(is_anonymous);
+	  decl->set_location(loc);
 	}
       else
 	decl.reset(new class_decl(env, name, size_in_bits, alignment_in_bits,
@@ -4603,6 +4687,7 @@ build_class_decl(read_context&		ctxt,
 				  data_mbrs, mbr_functions, is_anonymous));
     }
 
+  maybe_set_artificial_location(ctxt, node, decl);
   decl->set_is_artificial(is_artificial);
 
   string def_id;
@@ -5006,6 +5091,7 @@ build_union_decl(read_context& ctxt,
 				  is_anonymous));
     }
 
+  maybe_set_artificial_location(ctxt, node, decl);
   decl->set_is_artificial(is_artificial);
 
   string def_id;
@@ -5255,6 +5341,7 @@ build_function_tdecl(read_context& ctxt,
   ABG_ASSERT(env);
 
   function_tdecl_sptr fn_tmpl_decl(new function_tdecl(env, loc, vis, bind));
+  maybe_set_artificial_location(ctxt, node, fn_tmpl_decl);
 
   ctxt.push_decl_to_current_scope(fn_tmpl_decl, add_to_current_scope);
 
@@ -5318,6 +5405,7 @@ build_class_tdecl(read_context&	ctxt,
   ABG_ASSERT(env);
 
   class_tdecl_sptr class_tmpl (new class_tdecl(env, loc, vis));
+  maybe_set_artificial_location(ctxt, node, class_tmpl);
 
   ctxt.push_decl_to_current_scope(class_tmpl, add_to_current_scope);
 
@@ -5395,6 +5483,7 @@ build_type_tparameter(read_context&		ctxt,
   read_location(ctxt, node,loc);
 
   result.reset(new type_tparameter(index, tdecl, name, loc));
+  maybe_set_artificial_location(ctxt, node, result);
 
   if (id.empty())
     ctxt.push_decl_to_current_scope(dynamic_pointer_cast<decl_base>(result),
@@ -5509,6 +5598,7 @@ build_non_type_tparameter(read_context&	ctxt,
   read_location(ctxt, node,loc);
 
   r.reset(new non_type_tparameter(index, tdecl, name, type, loc));
+  maybe_set_artificial_location(ctxt, node, r);
   ctxt.push_decl_to_current_scope(dynamic_pointer_cast<decl_base>(r),
 				  /*add_to_current_scope=*/true);
 
@@ -5564,7 +5654,7 @@ build_template_tparameter(read_context&	ctxt,
 
   template_tparameter_sptr result(new template_tparameter(index, tdecl,
 							  name, loc));
-
+  maybe_set_artificial_location(ctxt, node, result);
   ctxt.push_decl_to_current_scope(result, /*add_to_current_scope=*/true);
 
   // Go parse template parameters that are children nodes
