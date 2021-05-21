@@ -2165,6 +2165,8 @@ public:
 
   qualified_type_def(type_base_sptr type, CV quals, const location& locus);
 
+  qualified_type_def(environment* env, CV quals, const location& locus);
+
   virtual size_t
   get_size_in_bits() const;
 
@@ -2327,6 +2329,12 @@ public:
   reference_type_def(const type_base_sptr pointed_to_type,
 		     bool lvalue, size_t size_in_bits,
 		     size_t alignment_in_bits, const location& locus);
+
+  reference_type_def(const environment* env, bool lvalue, size_t size_in_bits,
+		     size_t alignment_in_bits, const location& locus);
+
+  void
+  set_pointed_to_type(type_base_sptr& pointed_to_type);
 
   virtual bool
   operator==(const decl_base&) const;

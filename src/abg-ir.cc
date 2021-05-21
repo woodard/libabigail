@@ -14313,6 +14313,10 @@ class qualified_type_def::priv
     : cv_quals_(quals),
       underlying_type_(t)
   {}
+
+    priv(qualified_type_def::CV quals)
+    : cv_quals_(quals)
+  {}
 };// end class qualified_type_def::priv
 
 /// Build the name of the current instance of qualified type.
@@ -14328,11 +14332,17 @@ class qualified_type_def::priv
 string
 qualified_type_def::build_name(bool fully_qualified, bool internal) const
 {
-  ABG_ASSERT(get_underlying_type());
+  type_base_sptr t = get_underlying_type();
+  if (!t)
+    // The qualified type might temporarily have no underlying type,
+    // especially during the construction of the type, while the
+    // underlying type is not yet constructed.  In that case, let's do
+    // like if the underlying type is the 'void' type.
+    t = get_environment()->get_void_type();
 
-  return get_name_of_qualified_type(get_underlying_type(),
-				    get_cv_quals(),
-				    fully_qualified, internal);
+  return get_name_of_qualified_type(t, get_cv_quals(),
+				    fully_qualified,
+				    internal);
 }
 
 /// This function is automatically invoked whenever an instance of
@@ -14371,6 +14381,32 @@ qualified_type_def::qualified_type_def(type_base_sptr		type,
   set_name(name);
 }
 
+/// Constructor of the qualified_type_def
+///
+/// @param env the environment of the type.
+///
+/// @param quals a bitfield representing the const/volatile qualifiers
+///
+/// @param locus the location of the qualified type definition
+qualified_type_def::qualified_type_def(environment* env,
+				       CV quals,
+				       const location& locus)
+  : type_or_decl_base(env,
+		      QUALIFIED_TYPE
+		      | ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE),
+    type_base(env, /*size_in_bits=*/0,
+	      /*alignment_in_bits=*/0),
+    decl_base(env, "", locus, ""),
+    priv_(new priv(quals))
+{
+  runtime_type_instance(this);
+  // We don't yet have an underlying type.  So for naming purpose,
+  // let's temporarily pretend the underlying type is 'void'.
+  interned_string name = env->intern("void");
+  set_name(name);
+}
+
 /// Get the size of the qualified type def.
 ///
 /// This is an overload for type_base::get_size_in_bits().
@@ -14379,9 +14415,16 @@ qualified_type_def::qualified_type_def(type_base_sptr		type,
 size_t
 qualified_type_def::get_size_in_bits() const
 {
-  size_t s = get_underlying_type()->get_size_in_bits();
-  if (s != type_base::get_size_in_bits())
-    const_cast<qualified_type_def*>(this)->set_size_in_bits(s);
+  size_t s = 0;
+  if (type_base_sptr ut = get_underlying_type())
+    {
+      // We do have the underlying type properly set, so let's make
+      // the size of the qualified type match the size of its
+      // underlying type.
+      s = ut->get_size_in_bits();
+      if (s != type_base::get_size_in_bits())
+	const_cast<qualified_type_def*>(this)->set_size_in_bits(s);
+    }
   return type_base::get_size_in_bits();
 }
 
@@ -14631,7 +14674,25 @@ qualified_type_def::get_underlying_type() const
 /// @param t the new underlying type.
 void
 qualified_type_def::set_underlying_type(const type_base_sptr& t)
-{priv_->underlying_type_ = t;}
+{
+  ABG_ASSERT(t);
+  priv_->underlying_type_ = t;
+  // Now we need to update other properties that depend on the new underlying type.
+  set_size_in_bits(t->get_size_in_bits());
+  set_alignment_in_bits(t->get_alignment_in_bits());
+  interned_string name = get_environment()->intern(build_name(false));
+  set_name(name);
+  if (scope_decl* s = get_scope())
+      {
+	// Now that the name has been updated, we need to update the
+	// lookup maps accordingly.
+	scope_decl::declarations::iterator i;
+	if (s->find_iterator_for_member(this, i))
+	  maybe_update_types_lookup_map(*i);
+	else
+	  ABG_ASSERT_NOT_REACHED;
+      }
+}
 
 /// Non-member equality operator for @ref qualified_type_def
 ///
@@ -15108,6 +15169,18 @@ void
 reference_type_def::on_canonical_type_set()
 {clear_qualified_name();}
 
+/// Constructor of the reference_type_def type.
+///
+/// @param pointed_to the pointed to type.
+///
+/// @param lvalue wether the reference is an lvalue reference.  If
+/// false, the reference is an rvalue one.
+///
+/// @param size_in_bits the size of the type, in bits.
+///
+/// @param align_in_bits the alignment of the type, in bits.
+///
+/// @param locus the source location of the type.
 reference_type_def::reference_type_def(const type_base_sptr	pointed_to,
 				       bool			lvalue,
 				       size_t			size_in_bits,
@@ -15146,6 +15219,71 @@ reference_type_def::reference_type_def(const type_base_sptr	pointed_to,
     }
   catch (...)
     {}
+}
+
+/// Constructor of the reference_type_def type.
+///
+/// This one creates a type that has no pointed-to type, temporarily.
+/// This is useful for cases where the underlying type is not yet
+/// available.  It can be set later using
+/// reference_type_def::set_pointed_to_type().
+///
+/// @param env the environment of the type.
+///
+/// @param lvalue wether the reference is an lvalue reference.  If
+/// false, the reference is an rvalue one.
+///
+/// @param size_in_bits the size of the type, in bits.
+///
+/// @param align_in_bits the alignment of the type, in bits.
+///
+/// @param locus the source location of the type.
+reference_type_def::reference_type_def(const environment* env, bool lvalue,
+				       size_t size_in_bits,
+				       size_t alignment_in_bits,
+				       const location& locus)
+  : type_or_decl_base(env,
+		      REFERENCE_TYPE
+		      | ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE),
+    type_base(env, size_in_bits, alignment_in_bits),
+    decl_base(env, "", locus, ""),
+    is_lvalue_(lvalue)
+{
+  runtime_type_instance(this);
+  string name = "void&";
+  if (!is_lvalue())
+    name += "&";
+  ABG_ASSERT(env);
+  set_name(env->intern(name));
+  pointed_to_type_ = type_base_wptr(env->get_void_type());
+}
+
+/// Setter of the pointed_to type of the current reference type.
+///
+/// @param pointed_to the new pointed to type.
+void
+reference_type_def::set_pointed_to_type(type_base_sptr& pointed_to_type)
+{
+  ABG_ASSERT(pointed_to_type);
+  pointed_to_type_ = pointed_to_type;
+
+  decl_base_sptr pto;
+  try
+    {pto = dynamic_pointer_cast<decl_base>(pointed_to_type);}
+  catch (...)
+    {}
+
+  if (pto)
+    {
+      set_visibility(pto->get_visibility());
+      string name = string(pto->get_name()) + "&";
+      if (!is_lvalue())
+	name += "&";
+      environment* env = pto->get_environment();
+      ABG_ASSERT(env && env == get_environment());
+      set_name(env->intern(name));
+    }
 }
 
 /// Compares two instances of @ref reference_type_def.

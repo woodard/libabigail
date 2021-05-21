@@ -3688,29 +3688,17 @@ build_qualified_type_decl(read_context&	ctxt,
       return result;
     }
 
-  string type_id;
-  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
-    type_id = CHAR_STR(s);
-
-  shared_ptr<type_base> underlying_type =
-    ctxt.build_or_get_type_decl(type_id, true);
-  ABG_ASSERT(underlying_type);
-
-  // maybe building the underlying type triggered building this one in
-  // the mean time ...
-  if (decl_base_sptr d = ctxt.get_decl_for_xml_node(node))
-    {
-      qualified_type_def_sptr result =
-	dynamic_pointer_cast<qualified_type_def>(d);
-      ABG_ASSERT(result);
-      return result;
-    }
-
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE (node, "id"))
     id = CHAR_STR(s);
 
-  string const_str;
+  ABG_ASSERT(!id.empty());
+
+  location loc;
+  read_location(ctxt, node, loc);
+
+  qualified_type_def::CV cv = qualified_type_def::CV_NONE;
+    string const_str;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "const"))
     const_str = CHAR_STR(s);
   bool const_cv = const_str == "yes";
@@ -3725,7 +3713,6 @@ build_qualified_type_decl(read_context&	ctxt,
     restrict_str = CHAR_STR(s);
   bool restrict_cv = restrict_str == "yes";
 
-  qualified_type_def::CV cv = qualified_type_def::CV_NONE;
   if (const_cv)
     cv = cv | qualified_type_def::CV_CONST;
   if (volatile_cv)
@@ -3733,31 +3720,31 @@ build_qualified_type_decl(read_context&	ctxt,
   if (restrict_cv)
     cv = cv | qualified_type_def::CV_RESTRICT;
 
-  location loc;
-  read_location(ctxt, node, loc);
-
-  ABG_ASSERT(!id.empty());
-
+  // Create the qualified type /before/ the underlying type.  After
+  // the creation, the type is 'keyed' using
+  // ctxt.push_and_key_type_decl.  This means that the type can be
+  // retrieved from its type ID.  This is so that if the underlying
+  // type indirectly uses this qualified type (via recursion) then
+  // that is made possible.
+  //
+  // The underlying type will later be set after it's created.
   qualified_type_def_sptr decl;
+  decl.reset(new qualified_type_def(ctxt.get_environment(), cv, loc));
+  maybe_set_artificial_location(ctxt, node, decl);
+  ctxt.push_and_key_type_decl(decl, id, add_to_current_scope);
+  ctxt.map_xml_node_to_decl(node, decl);
 
-  if (type_base_sptr d = ctxt.get_type_decl(id))
-    {
-      qualified_type_def_sptr ty = is_qualified_type(d);
-      ABG_ASSERT(ty);
-      string pr1 = get_pretty_representation(ty->get_underlying_type()),
-	pr2 = get_pretty_representation(underlying_type);
-      return ty;
-    }
+  string type_id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
+    type_id = CHAR_STR(s);
+  ABG_ASSERT(!type_id.empty());
 
-  decl.reset(new qualified_type_def(underlying_type, cv, loc));
-   maybe_set_artificial_location(ctxt, node, decl);
-  if (ctxt.push_and_key_type_decl(decl, id, add_to_current_scope))
-    {
-      ctxt.map_xml_node_to_decl(node, decl);
-      return decl;
-    }
+  shared_ptr<type_base> underlying_type =
+    ctxt.build_or_get_type_decl(type_id, true);
+  ABG_ASSERT(underlying_type);
+  decl->set_underlying_type(underlying_type);
 
-  return shared_ptr<qualified_type_def>((qualified_type_def*)0);
+  return decl;
 }
 
 /// Build a pointer_type_def from a 'pointer-type-def' xml node.
@@ -3865,33 +3852,6 @@ build_reference_type_def(read_context&		ctxt,
       return result;
     }
 
-  string kind;
-  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "kind"))
-    kind = CHAR_STR(s); // this should be either "lvalue" or "rvalue".
-  bool is_lvalue = kind == "lvalue";
-
-  string type_id;
-  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
-    type_id = CHAR_STR(s);
-
-  shared_ptr<type_base> pointed_to_type = ctxt.build_or_get_type_decl(type_id,
-								      true);
-  ABG_ASSERT(pointed_to_type);
-
-  // maybe building the underlying type triggered building this one in
-  // the mean time ...
-  if (decl_base_sptr d = ctxt.get_decl_for_xml_node(node))
-    {
-      reference_type_def_sptr result =
-	dynamic_pointer_cast<reference_type_def>(d);
-      ABG_ASSERT(result);
-      return result;
-    }
-
-  size_t size_in_bits = ctxt.get_translation_unit()->get_address_size();
-  size_t alignment_in_bits = 0;
-  read_size_and_alignment(node, size_in_bits, alignment_in_bits);
-
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
@@ -3901,26 +3861,44 @@ build_reference_type_def(read_context&		ctxt,
     {
       reference_type_def_sptr ty = is_reference_type(d);
       ABG_ASSERT(ty);
-      ABG_ASSERT(ctxt.types_equal(pointed_to_type, ty->get_pointed_to_type()));
       return ty;
     }
 
   location loc;
   read_location(ctxt, node, loc);
+  string kind;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "kind"))
+    kind = CHAR_STR(s); // this should be either "lvalue" or "rvalue".
+  bool is_lvalue = kind == "lvalue";
 
-  shared_ptr<reference_type_def> t(new reference_type_def(pointed_to_type,
-							  is_lvalue,
-							  size_in_bits,
-							  alignment_in_bits,
-							  loc));
+  size_t size_in_bits = ctxt.get_translation_unit()->get_address_size();
+  size_t alignment_in_bits = 0;
+  read_size_and_alignment(node, size_in_bits, alignment_in_bits);
+
+  string type_id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
+    type_id = CHAR_STR(s);
+  ABG_ASSERT(!type_id.empty());
+
+  // Create the reference type /before/ the pointed-to type.  After
+  // the creation, the type is 'keyed' using
+  // ctxt.push_and_key_type_decl.  This means that the type can be
+  // retrieved from its type ID.  This is so that if the pointed-to
+  // type indirectly uses this reference type (via recursion) then
+  // that is made possible.
+  reference_type_def_sptr t(new reference_type_def(ctxt.get_environment(),
+						   is_lvalue, size_in_bits,
+						   alignment_in_bits, loc));
   maybe_set_artificial_location(ctxt, node, t);
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
-    {
-      ctxt.map_xml_node_to_decl(node, t);
-      return t;
-    }
+    ctxt.map_xml_node_to_decl(node, t);
 
-  return nil;
+  type_base_sptr pointed_to_type =
+    ctxt.build_or_get_type_decl(type_id,/*add_to_current_scope=*/ true);
+  ABG_ASSERT(pointed_to_type);
+  t->set_pointed_to_type(pointed_to_type);
+
+  return t;
 }
 
 /// Build a function_type from a pointer to 'function-type'
