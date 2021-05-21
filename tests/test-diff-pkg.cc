@@ -696,6 +696,18 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/elfutils-libs-debuginfo-0.183-1.el9.x86_64-self-check-report-0.txt",
     "output/test-diff-pkg/elfutils-libs-debuginfo-0.183-1.el9.x86_64-self-check-report-0.txt"
   } ,
+  {
+    "data/test-diff-pkg/graphviz-2.44.0-18.el9.aarch64.rpm",
+    "data/test-diff-pkg/graphviz-2.44.0-18.el9.aarch64.rpm",
+    "--self-check",
+    "",
+    "data/test-diff-pkg/graphviz-debuginfo-2.44.0-18.el9.aarch64.rpm",
+    "data/test-diff-pkg/graphviz-debuginfo-2.44.0-18.el9.aarch64.rpm",
+    "",
+    "",
+    "data/test-diff-pkg/graphviz-2.44.0-18.el9.aarch64-self-check-report-0.txt",
+    "output/test-diff-pkg/graphviz-2.44.0-18.el9.aarch64-self-check-report-0.txt"
+  } ,
 #endif // WITH_RPM_4_15
 #endif //WITH_RPM
 

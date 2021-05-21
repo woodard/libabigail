@@ -3790,56 +3790,49 @@ build_pointer_type_def(read_context&	ctxt,
       return result;
     }
 
-  string type_id;
-  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
-    type_id = CHAR_STR(s);
-
-  shared_ptr<type_base> pointed_to_type =
-    ctxt.build_or_get_type_decl(type_id, true);
-  ABG_ASSERT(pointed_to_type);
-
-  // maybe building the underlying type triggered building this one in
-  // the mean time ...
-  if (decl_base_sptr d = ctxt.get_decl_for_xml_node(node))
-    {
-      pointer_type_def_sptr result =
-	dynamic_pointer_cast<pointer_type_def>(d);
-      ABG_ASSERT(result);
-      return result;
-    }
-
-  size_t size_in_bits = ctxt.get_translation_unit()->get_address_size();
-  size_t alignment_in_bits = 0;
-  read_size_and_alignment(node, size_in_bits, alignment_in_bits);
-
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
   ABG_ASSERT(!id.empty());
-  if (type_base_sptr d = ctxt.get_type_decl(id))
+
+  if (type_base_sptr t = ctxt.get_type_decl(id))
     {
-      pointer_type_def_sptr ty = is_pointer_type(d);
-      ABG_ASSERT(ty);
-      ABG_ASSERT(ctxt.types_equal(pointed_to_type,
-			      ty->get_pointed_to_type()));
-      return ty;
+      pointer_type_def_sptr result = is_pointer_type(t);
+      ABG_ASSERT(result);
+      return result;
     }
 
+  string type_id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
+    type_id = CHAR_STR(s);
+
+  size_t size_in_bits = ctxt.get_translation_unit()->get_address_size();
+  size_t alignment_in_bits = 0;
+  read_size_and_alignment(node, size_in_bits, alignment_in_bits);
   location loc;
   read_location(ctxt, node, loc);
 
-  shared_ptr<pointer_type_def> t(new pointer_type_def(pointed_to_type,
-						      size_in_bits,
-						      alignment_in_bits,
-						      loc));
+  // Create the pointer type /before/ the pointed-to type.  After the
+  // creation, the type is 'keyed' using ctxt.push_and_key_type_decl.
+  // This means that the type can be retrieved from its type ID.  This
+  // is so that if the pointed-to type indirectly uses this pointer
+  // type (via recursion) then that is made possible.
+  pointer_type_def_sptr t(new pointer_type_def(ctxt.get_environment(),
+					       size_in_bits,
+					       alignment_in_bits,
+					       loc));
   maybe_set_artificial_location(ctxt, node, t);
-  if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
-    {
-      ctxt.map_xml_node_to_decl(node, t);
-      return t;
-    }
 
-  return nil;
+  if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
+    ctxt.map_xml_node_to_decl(node, t);
+
+  type_base_sptr pointed_to_type =
+    ctxt.build_or_get_type_decl(type_id, true);
+  ABG_ASSERT(pointed_to_type);
+
+  t->set_pointed_to_type(pointed_to_type);
+
+  return t;
 }
 
 /// Build a reference_type_def from a pointer to 'reference-type-def'
@@ -4466,47 +4459,39 @@ build_typedef_decl(read_context&	ctxt,
     id = CHAR_STR(s);
   ABG_ASSERT(!id.empty());
 
-  string name;
-  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
-    name = xml::unescape_xml_string(CHAR_STR(s));
-
-  string type_id;
-  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
-    type_id = CHAR_STR(s);
-  shared_ptr<type_base> underlying_type(ctxt.build_or_get_type_decl(type_id,
-								    true));
-  ABG_ASSERT(underlying_type);
-
-  // maybe building the underlying type triggered building this one in
-  // the mean time ...
-  if (decl_base_sptr d = ctxt.get_decl_for_xml_node(node))
+  if (type_base_sptr t = ctxt.get_type_decl(id))
     {
-      typedef_decl_sptr result = dynamic_pointer_cast<typedef_decl>(d);
+      typedef_decl_sptr result = is_typedef(t);
       ABG_ASSERT(result);
       return result;
     }
 
+  string name;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
+    name = xml::unescape_xml_string(CHAR_STR(s));
+
   location loc;
   read_location(ctxt, node, loc);
 
-  if (type_base_sptr d = ctxt.get_type_decl(id))
-    {
-      typedef_decl_sptr ty = dynamic_pointer_cast<typedef_decl>(d);
-      ABG_ASSERT(ty);
-      ABG_ASSERT(name == ty->get_name());
-      ABG_ASSERT(get_type_name(underlying_type)
-	     == get_type_name(ty->get_underlying_type()));
-      // it's possible to have the same typedef several times.
-    }
-  typedef_decl_sptr t(new typedef_decl(name, underlying_type, loc));
-  maybe_set_artificial_location(ctxt, node, t);
-  if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
-    {
-      ctxt.map_xml_node_to_decl(node, t);
-      return t;
-    }
+  string type_id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
+    type_id = CHAR_STR(s);
+  ABG_ASSERT(!type_id.empty());
 
-  return nil;
+  // Create the typedef type /before/ the underlying type.  After the
+  // creation, the type is 'keyed' using ctxt.push_and_key_type_decl.
+  // This means that the type can be retrieved from its type ID.  This
+  // is so that if the underlying type indirectly (needs to) use(s)
+  // this very same typedef type (via recursion) then that is made
+  // possible.
+  typedef_decl_sptr t(new typedef_decl(name, ctxt.get_environment(), loc));
+  maybe_set_artificial_location(ctxt, node, t);
+  ctxt.push_and_key_type_decl(t, id, add_to_current_scope);
+  ctxt.map_xml_node_to_decl(node, t);
+  type_base_sptr underlying_type(ctxt.build_or_get_type_decl(type_id, true));
+  ABG_ASSERT(underlying_type);
+  t->set_underlying_type(underlying_type);
+  return t;
 }
 
 /// Build a class from its XML node if it is not suppressed by a

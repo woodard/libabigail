@@ -2263,6 +2263,13 @@ public:
   pointer_type_def(const type_base_sptr& pointed_to_type, size_t size_in_bits,
 		   size_t alignment_in_bits, const location& locus);
 
+  pointer_type_def(environment* env, size_t size_in_bits,
+		   size_t alignment_in_bits, const location& locus);
+
+
+  void
+  set_pointed_to_type(const type_base_sptr&);
+
   virtual bool
   operator==(const decl_base&) const;
 
@@ -2733,6 +2740,12 @@ public:
 
   typedef_decl(const string& name,
 	       const type_base_sptr underlying_type,
+	       const location& locus,
+	       const string& mangled_name = "",
+	       visibility vis = VISIBILITY_DEFAULT);
+
+  typedef_decl(const string& name,
+	       environment* env,
 	       const location& locus,
 	       const string& mangled_name = "",
 	       visibility vis = VISIBILITY_DEFAULT);

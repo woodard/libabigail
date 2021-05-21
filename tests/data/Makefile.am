@@ -1852,6 +1852,9 @@ test-diff-pkg/elfutils-libs-debuginfo-0.183-1.el9.x86_64-self-check-report-0.txt
 test-diff-pkg/elfutils-libs-0.183-1.el9.x86_64.rpm \
 test-diff-pkg/elfutils-libs-debuginfo-0.183-1.el9.x86_64.rpm \
 test-diff-pkg/elfutils-debuginfo-0.183-1.el9.x86_64.rpm \
+test-diff-pkg/graphviz-2.44.0-18.el9.aarch64-self-check-report-0.txt \
+test-diff-pkg/graphviz-2.44.0-18.el9.aarch64.rpm \
+test-diff-pkg/graphviz-debuginfo-2.44.0-18.el9.aarch64.rpm \
 \
 test-fedabipkgdiff/dbus-glib-0.104-3.fc23.x86_64.rpm \
 test-fedabipkgdiff/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm \

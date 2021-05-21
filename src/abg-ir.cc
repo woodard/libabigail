@@ -14756,6 +14756,16 @@ void
 pointer_type_def::on_canonical_type_set()
 {clear_qualified_name();}
 
+
+///Constructor of @ref pointer_type_def.
+///
+/// @param pointed_to the pointed-to type.
+///
+/// @param size_in_bits the size of the type, in bits.
+///
+/// @param align_in_bits the alignment of the type, in bits.
+///
+/// @param locus the source location where the type was defined.
 pointer_type_def::pointer_type_def(const type_base_sptr&	pointed_to,
 				   size_t			size_in_bits,
 				   size_t			align_in_bits,
@@ -14774,6 +14784,55 @@ pointer_type_def::pointer_type_def(const type_base_sptr&	pointed_to,
       ABG_ASSERT(pointed_to);
       const environment* env = pointed_to->get_environment();
       decl_base_sptr pto = dynamic_pointer_cast<decl_base>(pointed_to);
+      string name = (pto ? pto->get_name() : string("void")) + "*";
+      set_name(env->intern(name));
+      if (pto)
+	set_visibility(pto->get_visibility());
+    }
+  catch (...)
+    {}
+}
+
+///Constructor of @ref pointer_type_def.
+///
+/// @param env the environment of the type.
+///
+/// @param size_in_bits the size of the type, in bits.
+///
+/// @param align_in_bits the alignment of the type, in bits.
+///
+/// @param locus the source location where the type was defined.
+pointer_type_def::pointer_type_def(environment* env, size_t size_in_bits,
+				   size_t alignment_in_bits,
+				   const location& locus)
+  : type_or_decl_base(env,
+		      POINTER_TYPE
+		      | ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE),
+    type_base(env, size_in_bits, alignment_in_bits),
+    decl_base(env, "", locus, ""),
+    priv_(new priv())
+{
+  runtime_type_instance(this);
+  string name = string("void") + "*";
+  set_name(env->intern(name));
+}
+
+/// Set the pointed-to type of the pointer.
+///
+/// @param t the new pointed-to type.
+void
+pointer_type_def::set_pointed_to_type(const type_base_sptr& t)
+{
+  ABG_ASSERT(t);
+  priv_->pointed_to_type_ = t;
+  priv_->naked_pointed_to_type_ = t.get();
+
+  try
+    {
+      const environment* env = t->get_environment();
+      ABG_ASSERT(get_environment() == env);
+      decl_base_sptr pto = dynamic_pointer_cast<decl_base>(t);
       string name = (pto ? pto->get_name() : string("void")) + "*";
       set_name(env->intern(name));
       if (pto)
@@ -14898,6 +14957,9 @@ pointer_type_def::get_qualified_name(interned_string& qn, bool internal) const
 /// of @ref pointer_type_def.  Subsequent invocations of this function
 /// return the cached value.
 ///
+/// Note that this function should work even if the underlying type is
+/// momentarily empty.
+///
 /// @param internal set to true if the call is intended for an
 /// internal use (for technical use inside the library itself), false
 /// otherwise.  If you don't know what this is for, then set it to
@@ -14914,10 +14976,11 @@ pointer_type_def::get_qualified_name(bool internal) const
       if (get_canonical_type())
 	{
 	  if (priv_->internal_qualified_name_.empty())
-	    priv_->internal_qualified_name_ =
-	      get_name_of_pointer_to_type(*pointed_to_type,
-					  /*qualified_name=*/true,
-					  /*internal=*/true);
+	    if (pointed_to_type)
+	      priv_->internal_qualified_name_ =
+		get_name_of_pointer_to_type(*pointed_to_type,
+					    /*qualified_name=*/true,
+					    /*internal=*/true);
 	  return priv_->internal_qualified_name_;
 	}
       else
@@ -14926,10 +14989,11 @@ pointer_type_def::get_qualified_name(bool internal) const
 	  // (and so its name) can change.  So let's invalidate the
 	  // cache where we store its name at each invocation of this
 	  // function.
-	  priv_->temp_internal_qualified_name_ =
-	    get_name_of_pointer_to_type(*pointed_to_type,
-					/*qualified_name=*/true,
-					/*internal=*/true);
+	  if (pointed_to_type)
+	    priv_->temp_internal_qualified_name_ =
+	      get_name_of_pointer_to_type(*pointed_to_type,
+					  /*qualified_name=*/true,
+					  /*internal=*/true);
 	  return priv_->temp_internal_qualified_name_;
 	}
     }
@@ -14950,10 +15014,11 @@ pointer_type_def::get_qualified_name(bool internal) const
 	  // (and so its name) can change.  So let's invalidate the
 	  // cache where we store its name at each invocation of this
 	  // function.
-	  set_qualified_name
-	    (get_name_of_pointer_to_type(*pointed_to_type,
-					 /*qualified_name=*/true,
-					 /*internal=*/false));
+	  if (pointed_to_type)
+	    set_qualified_name
+	      (get_name_of_pointer_to_type(*pointed_to_type,
+					   /*qualified_name=*/true,
+					   /*internal=*/false));
 	  return decl_base::peek_qualified_name();
 	}
     }
@@ -16755,6 +16820,34 @@ typedef_decl::typedef_decl(const string&		name,
   runtime_type_instance(this);
 }
 
+/// Constructor of the typedef_decl type.
+///
+/// @param name the name of the typedef.
+///
+/// @param env the environment of the current typedef.
+///
+/// @param locus the source location of the typedef declaration.
+///
+/// @param mangled_name the mangled name of the typedef.
+///
+/// @param vis the visibility of the typedef type.
+typedef_decl::typedef_decl(const string& name,
+			   environment* env,
+			   const location& locus,
+			   const string& mangled_name,
+			   visibility vis)
+  : type_or_decl_base(env,
+		      TYPEDEF_TYPE
+		      | ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE),
+    type_base(env, /*size_in_bits=*/0,
+	      /*alignment_in_bits=*/0),
+    decl_base(env, name, locus, mangled_name, vis),
+    priv_(new priv(nullptr))
+{
+  runtime_type_instance(this);
+}
+
 /// Return the size of the typedef.
 ///
 /// This function looks at the size of the underlying type and ensures
@@ -16764,6 +16857,8 @@ typedef_decl::typedef_decl(const string&		name,
 size_t
 typedef_decl::get_size_in_bits() const
 {
+  if (!get_underlying_type())
+    return 0;
   size_t s = get_underlying_type()->get_size_in_bits();
   if (s != type_base::get_size_in_bits())
     const_cast<typedef_decl*>(this)->set_size_in_bits(s);
@@ -16779,7 +16874,9 @@ typedef_decl::get_size_in_bits() const
 size_t
 typedef_decl::get_alignment_in_bits() const
 {
-    size_t s = get_underlying_type()->get_alignment_in_bits();
+  if (!get_underlying_type())
+    return 0;
+  size_t s = get_underlying_type()->get_alignment_in_bits();
   if (s != type_base::get_alignment_in_bits())
     const_cast<typedef_decl*>(this)->set_alignment_in_bits(s);
   return type_base::get_alignment_in_bits();
@@ -16903,7 +17000,11 @@ typedef_decl::get_underlying_type() const
 /// @param t the new underlying type of the typedef.
 void
 typedef_decl::set_underlying_type(const type_base_sptr& t)
-{priv_->underlying_type_ = t;}
+{
+  priv_->underlying_type_ = t;
+  set_size_in_bits(t->get_size_in_bits());
+  set_alignment_in_bits(t->get_alignment_in_bits());
+}
 
 /// This implements the ir_traversable_base::traverse pure virtual
 /// function.
