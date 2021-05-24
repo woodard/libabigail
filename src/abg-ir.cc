@@ -2776,11 +2776,11 @@ typedef unordered_map<interned_string,
 /// The private data of the @ref environment type.
 struct environment::priv
 {
-  config			 config_;
-  canonical_types_map_type	 canonical_types_;
-  mutable vector<type_base_sptr> sorted_canonical_types_;
-  type_base_sptr		 void_type_;
-  type_base_sptr		 variadic_marker_type_;
+  config				config_;
+  canonical_types_map_type		canonical_types_;
+  mutable vector<type_base_sptr>	sorted_canonical_types_;
+  type_base_sptr			void_type_;
+  type_base_sptr			variadic_marker_type_;
   unordered_set<const class_or_union*>	classes_being_compared_;
   unordered_set<const function_type*>	fn_types_being_compared_;
   vector<type_base_sptr>	 extra_live_types_;
@@ -6061,8 +6061,8 @@ peel_qualified_or_typedef_type(const type_base_sptr &t)
 }
 
 /// Return the leaf underlying or pointed-to type node of a @ref
-/// typedef_decl, @ref pointer_type_def or @ref reference_type_def
-/// node.
+/// typedef_decl, @ref pointer_type_def, @ref reference_type_def,
+/// or @ref array_type_def node.
 ///
 /// @param type the type to peel.
 ///
@@ -16465,11 +16465,11 @@ struct var_decl::priv
   {}
 }; // end struct var_decl::priv
 
-/// Constructor
+/// Constructor of the @ref var_decl type.
 ///
 /// @param name the name of the variable declaration
 ///
-/// @param name the type of the variable declaration
+/// @param type the type of the variable declaration
 ///
 /// @param locus the source location where the variable was defined.
 ///
@@ -17745,6 +17745,21 @@ struct function_decl::priv
   {}
 }; // end sruct function_decl::priv
 
+/// Constructor of the @ref function_decl.
+///
+/// @param name the name of the function.
+///
+/// @param function_type the type of the function.
+///
+/// @param declared_inline wether the function is declared inline.
+///
+/// @param locus the source location of the function.
+///
+/// @param mangled_name the linkage name of the function.
+///
+/// @param vis the visibility of the function.
+///
+/// @param bind the binding of the function.
 function_decl::function_decl(const string& name,
 			     function_type_sptr function_type,
 			     bool declared_inline,

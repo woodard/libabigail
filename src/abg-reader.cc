@@ -5625,11 +5625,11 @@ handle_reference_type_def(read_context& ctxt,
 /// function_type is added to.
 static type_base_sptr
 handle_function_type(read_context&	ctxt,
-		     xmlNodePtr		node,
+		     xmlNodePtr	node,
 		     bool		add_to_current_scope)
 {
   function_type_sptr type = build_function_type(ctxt, node,
-						add_to_current_scope);
+						  add_to_current_scope);
   ctxt.maybe_canonicalize_type(type, /*force_delay=*/true);
   return type;
 }
