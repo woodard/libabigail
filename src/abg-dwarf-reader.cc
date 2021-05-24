@@ -10247,6 +10247,16 @@ compare_dies(const read_context& ctxt,
 	  }
 	if (found_l_child != found_r_child)
 	  result = false;
+	// Compare the types of the elements of the array.
+	Dwarf_Die ltype_die, rtype_die;
+	bool found_ltype = die_die_attribute(l, DW_AT_type, ltype_die);
+	bool found_rtype = die_die_attribute(r, DW_AT_type, rtype_die);
+	ABG_ASSERT(found_ltype && found_rtype);
+
+	if (!compare_dies(ctxt, &ltype_die, &rtype_die,
+			  aggregates_being_compared,
+			  update_canonical_dies_on_the_fly))
+	  return false;
       }
       break;
 
