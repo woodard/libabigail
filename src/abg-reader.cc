@@ -1898,16 +1898,12 @@ read_corpus_from_input(read_context& ctxt)
 				       BAD_CAST("abi-corpus")))
 	return nil;
 
-      if (!ctxt.get_corpus())
-	{
-	  corpus_sptr c(new corpus(ctxt.get_environment(), ""));
-	  ctxt.set_corpus(c);
+      ctxt.set_corpus(std::make_shared<corpus>(ctxt.get_environment(), ""));
 #ifdef WITH_DEBUG_SELF_COMPARISON
-	  if (ctxt.get_environment()->self_comparison_debug_is_on())
-	    ctxt.get_environment()->
-	      set_self_comparison_debug_input(ctxt.get_corpus());
+      if (ctxt.get_environment()->self_comparison_debug_is_on())
+	ctxt.get_environment()->
+	  set_self_comparison_debug_input(ctxt.get_corpus());
 #endif
-	}
 
       if (!ctxt.get_corpus_group())
 	ctxt.clear_per_corpus_data();
@@ -1961,16 +1957,12 @@ read_corpus_from_input(read_context& ctxt)
     }
   else
     {
-      if (!ctxt.get_corpus())
-	{
-	  corpus_sptr c(new corpus(ctxt.get_environment(), ""));
-	  ctxt.set_corpus(c);
+      ctxt.set_corpus(std::make_shared<corpus>(ctxt.get_environment(), ""));
 #ifdef WITH_DEBUG_SELF_COMPARISON
-	  if (ctxt.get_environment()->self_comparison_debug_is_on())
-	    ctxt.get_environment()->
-	      set_self_comparison_debug_input(ctxt.get_corpus());
+      if (ctxt.get_environment()->self_comparison_debug_is_on())
+	ctxt.get_environment()->
+	  set_self_comparison_debug_input(ctxt.get_corpus());
 #endif
-	}
 
       if (!ctxt.get_corpus_group())
 	ctxt.clear_per_corpus_data();
