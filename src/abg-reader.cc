@@ -99,9 +99,6 @@ private:
   unordered_map<string, vector<type_base_sptr> >	m_types_map;
   unordered_map<string, shared_ptr<function_tdecl> >	m_fn_tmpl_map;
   unordered_map<string, shared_ptr<class_tdecl> >	m_class_tmpl_map;
-#ifdef WITH_DEBUG_SELF_COMPARISON
-  unordered_map<uintptr_t, string>			m_pointer_type_id_map;
-#endif
   vector<type_base_sptr>				m_types_to_canonicalize;
   string_xml_node_map					m_id_xml_node_map;
   xml_node_decl_base_sptr_map				m_xml_node_decl_map;
@@ -383,25 +380,6 @@ public:
       return shared_ptr<class_tdecl>();
     return i->second;
   }
-
-#ifdef WITH_DEBUG_SELF_COMPARISON
-  /// Getter of the map that associates the values of type pointers to
-  /// their type-id strings.
-  ///
-  /// Note that this map is populated at abixml reading time, (by
-  /// build_type()) when a given XML element representing a type is
-  /// read into a corresponding abigail::ir::type_base.
-  ///
-  /// This is used only for the purpose of debugging the
-  /// self-comparison process.  That is, when invoking "abidw
-  /// --debug-abidiff".
-  ///
-  /// @return the map that associates the values of type pointers to
-  /// their type-id strings.
-  unordered_map<uintptr_t, string>&
-  get_pointer_type_id_map()
-  {return m_pointer_type_id_map;}
-#endif
 
   /// Return the current lexical scope.
   scope_decl*
@@ -844,12 +822,11 @@ public:
 
     // Let's get the type-id of this type as recorded in the
     // originating abixml file.
-    string type_id;
-    const auto i =
-      get_pointer_type_id_map().find(reinterpret_cast<uintptr_t>(t.get()));
-    if (i != get_pointer_type_id_map().end())
+    string type_id =
+      m_env->get_type_id_from_pointer(reinterpret_cast<uintptr_t>(t.get()));
+
+    if (!type_id.empty())
       {
-	type_id = i->second;
 	// Now let's get the canonical type that initially led to the
 	// serialization of a type with this type-id, when the abixml
 	// was being serialized.
@@ -5711,12 +5688,13 @@ build_type(read_context&	ctxt,
     }
 
 #ifdef WITH_DEBUG_SELF_COMPARISON
-  if (t && ctxt.get_environment()->self_comparison_debug_is_on())
+  environment *env = ctxt.get_environment();
+  if (t && env->self_comparison_debug_is_on())
     {
       string type_id;
       if (read_type_id_string(node, type_id))
 	// Let's store the type-id of this type pointer.
-	ctxt.get_pointer_type_id_map()[reinterpret_cast<uintptr_t>(t.get())] = type_id;
+	env->get_pointer_type_id_map()[reinterpret_cast<uintptr_t>(t.get())] = type_id;
     }
 #endif
 

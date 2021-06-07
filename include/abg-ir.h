@@ -222,6 +222,15 @@ public:
 #ifdef WITH_DEBUG_SELF_COMPARISON
   unordered_map<string, uintptr_t>&
   get_type_id_canonical_type_map() const;
+
+  unordered_map<uintptr_t, string>&
+  get_pointer_type_id_map();
+
+  string
+  get_type_id_from_pointer(uintptr_t ptr);
+
+  uintptr_t
+  get_canonical_type_from_type_id(const char*);
 #endif
 
   friend class class_or_union;
