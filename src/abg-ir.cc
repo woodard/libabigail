@@ -8488,7 +8488,8 @@ get_debug_representation(const type_or_decl_base* artifact)
 	}
       o << std::endl
 	<< "{"
-	<< "  // size in bits: " << c->get_size_in_bits() << "\n"
+	<< "   // size in bits: " << c->get_size_in_bits() << "\n"
+	<< "   // is-declaration-only: " << c->get_is_declaration_only() << "\n"
 	<< "   // definition point: " << get_natural_or_artificial_location(c).expand() << "\n"
 	<< "   // translation unit: " << c->get_translation_unit()->get_absolute_path() << std::endl
 	<< "   // @: " << std::hex << is_type(c)
@@ -8522,6 +8523,32 @@ get_debug_representation(const type_or_decl_base* artifact)
 	}
 
       o << "};" << std::endl;
+
+      return o.str();
+    }
+  else if (const enum_type_decl* e = is_enum_type(artifact))
+    {
+      string name = e->get_pretty_representation(/*internal=*/true, true);
+      std::ostringstream o;
+      o << name
+	<< " : "
+	<< e->get_underlying_type()->get_pretty_representation(/*internal=*/false,
+							       true)
+	<< "\n"
+	<< "{\n"
+	<< "  // size in bits: " << e->get_size_in_bits() << "\n"
+	<< "  // is-declaration-only: " << e->get_is_declaration_only() << "\n"
+	<< " // definition point: " << get_natural_or_artificial_location(c).expand() << "\n"
+	<< "  // translation unit: "
+	<< e->get_translation_unit()->get_absolute_path() << "\n"
+	<< "  // @: " << std::hex << is_type(e)
+	<< ", @canonical: " << e->get_canonical_type().get() << std::dec
+	<< "\n\n";
+
+      for (const auto &enom : e->get_enumerators())
+	o << "  " << enom.get_name() << " = " << enom.get_value() << ",\n";
+
+      o << "};\n";
 
       return o.str();
     }
