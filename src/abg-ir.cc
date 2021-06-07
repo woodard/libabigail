@@ -649,6 +649,76 @@ struct type_name_comp
   {return operator()(type_base_sptr(l), type_base_sptr(r));}
 }; // end struct type_name_comp
 
+#ifdef WITH_DEBUG_SELF_COMPARISON
+
+/// This is a function called when the ABG_RETURN* macros defined
+/// below return false.
+///
+/// The purpose of this function is to ease debugging.  To know where
+/// the equality functions first compare non-equal, we can just set a
+/// breakpoint on this notify_equality_failed function and run the
+/// equality functions.  Because all the equality functions use the
+/// ABG_RETURN* macros to return their values, this function is always
+/// called when any of those equality function return false.
+///
+/// @param l the first operand of the equality.
+///
+/// @param r the second operand of the equality.
+static void
+notify_equality_failed(const type_or_decl_base &l __attribute__((unused)),
+		       const type_or_decl_base &r __attribute__((unused)))
+{}
+
+/// This is a function called when the ABG_RETURN* macros defined
+/// below return false.
+///
+/// The purpose of this function is to ease debugging.  To know where
+/// the equality functions first compare non-equal, we can just set a
+/// breakpoint on this notify_equality_failed function and run the
+/// equality functions.  Because all the equality functions use the
+/// ABG_RETURN* macros to return their values, this function is always
+/// called when any of those equality function return false.
+///
+/// @param l the first operand of the equality.
+///
+/// @param r the second operand of the equality.
+static void
+notify_equality_failed(const type_or_decl_base *l __attribute__((unused)),
+		       const type_or_decl_base *r __attribute__((unused)))
+{}
+
+#define ABG_RETURN_EQUAL(l, r)			\
+  do						\
+    {						\
+      if (l != r)				\
+        notify_equality_failed(l, r);		\
+      return (l == r);				\
+    }						\
+  while(false)
+
+
+#define ABG_RETURN_FALSE	    \
+  do				    \
+    {				    \
+      notify_equality_failed(l, r); \
+      return false;		    \
+    } while(false)
+
+#define ABG_RETURN(value)			\
+  do						\
+    {						\
+      if (value == false)			\
+	notify_equality_failed(l, r);		\
+      return value;			\
+    } while (false)
+
+#else // WITH_DEBUG_SELF_COMPARISON
+
+#define ABG_RETURN_FALSE return false
+#define ABG_RETURN(value) return (value)
+#define ABG_RETURN_EQUAL(l, r) return ((l) == (r));
+#endif
+
 /// Compare two types by comparing their canonical types if present.
 ///
 /// If the canonical types are not present (because the types have not
@@ -664,7 +734,7 @@ try_canonical_compare(const T *l, const T *r)
 {
   if (const type_base *lc = l->get_naked_canonical_type())
     if (const type_base *rc = r->get_naked_canonical_type())
-      return lc == rc;
+      ABG_RETURN_EQUAL(lc, rc);
   return equals(*l, *r, 0);
 }
 
@@ -4551,7 +4621,7 @@ equals(const decl_base& l, const decl_base& r, change_kind* k)
 	      if (k)
 		*k |= LOCAL_NON_TYPE_CHANGE_KIND;
 	      else
-		return false;
+		ABG_RETURN_FALSE;
 	    }
 	}
     }
@@ -4592,12 +4662,12 @@ equals(const decl_base& l, const decl_base& r, change_kind* k)
       if (k)
 	*k |= LOCAL_NON_TYPE_CHANGE_KIND;
       else
-	return false;
+	ABG_RETURN_FALSE;
     }
 
   result &= maybe_compare_as_member_decls(l, r, k);
 
-  return result;
+  ABG_RETURN(result);
 }
 
 /// Return true iff the two decls have the same name.
@@ -7007,7 +7077,7 @@ equals(const scope_decl& l, const scope_decl& r, change_kind* k)
       if (k)
 	*k |= LOCAL_NON_TYPE_CHANGE_KIND;
       else
-	return false;
+	ABG_RETURN_FALSE;
     }
 
   scope_decl::declarations::const_iterator i, j;
@@ -7024,7 +7094,7 @@ equals(const scope_decl& l, const scope_decl& r, change_kind* k)
 	      break;
 	    }
 	  else
-	    return false;
+	    ABG_RETURN_FALSE;
 	}
     }
 
@@ -7034,10 +7104,10 @@ equals(const scope_decl& l, const scope_decl& r, change_kind* k)
       if (k)
 	*k |= LOCAL_NON_TYPE_CHANGE_KIND;
       else
-	return false;
+	ABG_RETURN_FALSE;
     }
 
-  return result;
+  ABG_RETURN(result);
 }
 
 /// Return true iff both scopes have the same names and have the same
@@ -13419,7 +13489,7 @@ equals(const type_base& l, const type_base& r, change_kind* k)
   if (!result)
     if (k)
       *k |= LOCAL_TYPE_CHANGE_KIND;
-  return result;
+  ABG_RETURN(result);
 }
 
 /// Return true iff both type declarations are equal.
@@ -13880,12 +13950,12 @@ equals(const type_decl& l, const type_decl& r, change_kind* k)
 		       static_cast<const decl_base&>(r),
 		       k);
   if (!k && !result)
-    return false;
+    ABG_RETURN_FALSE;
 
   result &= equals(static_cast<const type_base&>(l),
 		   static_cast<const type_base&>(r),
 		   k);
-  return result;
+  ABG_RETURN(result);
 }
 
 /// Return true if both types equals.
@@ -14071,13 +14141,13 @@ equals(const scope_type_decl& l, const scope_type_decl& r, change_kind* k)
 		  k);
 
   if (!k && !result)
-    return false;
+    ABG_RETURN_FALSE;
 
   result &= equals(static_cast<const type_base&>(l),
 		   static_cast<const type_base&>(r),
 		   k);
 
-  return result;
+  ABG_RETURN(result);
 }
 
 /// Equality operator between two scope_type_decl.
@@ -14457,7 +14527,7 @@ equals(const qualified_type_def& l, const qualified_type_def& r, change_kind* k)
       if (k)
 	*k |= LOCAL_NON_TYPE_CHANGE_KIND;
       else
-	return false;
+	ABG_RETURN_FALSE;
     }
 
   if (l.get_underlying_type() != r.get_underlying_type())
@@ -14479,10 +14549,10 @@ equals(const qualified_type_def& l, const qualified_type_def& r, change_kind* k)
 	// putting it here to maintenance; that is, so that adding
 	// subsequent clauses needed to compare two qualified types
 	// later still works.
-	return false;
+	ABG_RETURN_FALSE;
     }
 
-  return result;
+  ABG_RETURN(result);
 }
 
 /// Equality operator for qualified types.
@@ -14939,7 +15009,7 @@ equals(const pointer_type_def& l, const pointer_type_def& r, change_kind* k)
 	*k |= SUBTYPE_CHANGE_KIND;
       }
 
-  return result;
+  ABG_RETURN(result);
 }
 
 /// Return true iff both instances of pointer_type_def are equal.
@@ -15312,7 +15382,7 @@ equals(const reference_type_def& l, const reference_type_def& r, change_kind* k)
     {
       if (k)
 	*k |= LOCAL_TYPE_CHANGE_KIND;
-      return false;
+      ABG_RETURN_FALSE;
     }
 
   // Compare the pointed-to-types modulo the typedefs they might have
@@ -15325,7 +15395,7 @@ equals(const reference_type_def& l, const reference_type_def& r, change_kind* k)
 	  *k |= LOCAL_TYPE_CHANGE_KIND;
 	*k |= SUBTYPE_CHANGE_KIND;
       }
-  return result;
+  ABG_RETURN(result);
 }
 
 /// Equality operator of the @ref reference_type_def type.
@@ -15859,7 +15929,7 @@ equals(const array_type_def::subrange_type& l,
       if (k)
 	*k |= LOCAL_TYPE_CHANGE_KIND;
       else
-	return result;
+	ABG_RETURN(result);
     }
 
 #if 0
@@ -15877,10 +15947,10 @@ equals(const array_type_def::subrange_type& l,
 	    *k |= SUBTYPE_CHANGE_KIND;
 	}
       else
-	return result;
+	ABG_RETURN(result);
     }
 #endif
-  return result;
+  ABG_RETURN(result);
 }
 
 /// Equality operator.
@@ -16118,7 +16188,7 @@ equals(const array_type_def& l, const array_type_def& r, change_kind* k)
       if (k)
 	*k |= LOCAL_TYPE_CHANGE_KIND;
       else
-	return false;
+	ABG_RETURN_FALSE;
     }
 
   std::vector<array_type_def::subrange_sptr >::const_iterator i,j;
@@ -16134,7 +16204,7 @@ equals(const array_type_def& l, const array_type_def& r, change_kind* k)
 	    break;
 	  }
 	else
-	  return false;
+	  ABG_RETURN_FALSE;
       }
 
   // Compare the element types modulo the typedefs they might have
@@ -16145,10 +16215,10 @@ equals(const array_type_def& l, const array_type_def& r, change_kind* k)
       if (k)
 	*k |= SUBTYPE_CHANGE_KIND;
       else
-	return false;
+	ABG_RETURN_FALSE;
     }
 
-  return result;
+  ABG_RETURN(result);
 }
 
 /// Test if two variables are equals modulo CV qualifiers.
@@ -16166,7 +16236,7 @@ equals_modulo_cv_qualifier(const array_type_def* l, const array_type_def* r)
     return true;
 
   if (!l || !r)
-    return false;
+    ABG_RETURN_FALSE;
 
   l = is_array_type(peel_qualified_or_typedef_type(l));
   r = is_array_type(peel_qualified_or_typedef_type(r));
@@ -16175,14 +16245,14 @@ equals_modulo_cv_qualifier(const array_type_def* l, const array_type_def* r)
   std::vector<array_type_def::subrange_sptr > other_subs = r->get_subranges();
 
   if (this_subs.size() != other_subs.size())
-    return false;
+    ABG_RETURN_FALSE;
 
   std::vector<array_type_def::subrange_sptr >::const_iterator i,j;
   for (i = this_subs.begin(), j = other_subs.begin();
        i != this_subs.end() && j != other_subs.end();
        ++i, ++j)
     if (**i != **j)
-      return false;
+      ABG_RETURN_FALSE;
 
   type_base *first_element_type =
     peel_qualified_or_typedef_type(l->get_element_type().get());
@@ -16190,7 +16260,7 @@ equals_modulo_cv_qualifier(const array_type_def* l, const array_type_def* r)
     peel_qualified_or_typedef_type(r->get_element_type().get());
 
   if (*first_element_type != *second_element_type)
-    return false;
+    ABG_RETURN_FALSE;
 
   return true;
 }
@@ -16634,7 +16704,7 @@ equals(const enum_type_decl& l, const enum_type_decl& r, change_kind* k)
       if (k)
 	*k |= SUBTYPE_CHANGE_KIND;
       else
-	return false;
+	ABG_RETURN_FALSE;
     }
 
   enum_type_decl::enumerators::const_iterator i, j;
@@ -16650,7 +16720,7 @@ equals(const enum_type_decl& l, const enum_type_decl& r, change_kind* k)
 	    break;
 	  }
 	else
-	  return false;
+	  ABG_RETURN_FALSE;
       }
 
   if (i != l.get_enumerators().end() || j != r.get_enumerators().end())
@@ -16659,7 +16729,7 @@ equals(const enum_type_decl& l, const enum_type_decl& r, change_kind* k)
       if (k)
 	*k |= LOCAL_TYPE_CHANGE_KIND;
       else
-	return false;
+	ABG_RETURN_FALSE;
     }
 
   if (!(l.decl_base::operator==(r) && l.type_base::operator==(r)))
@@ -16673,7 +16743,7 @@ equals(const enum_type_decl& l, const enum_type_decl& r, change_kind* k)
 	    *k |= LOCAL_TYPE_CHANGE_KIND;
 	}
       else
-	return false;
+	ABG_RETURN_FALSE;
     }
 
   return result;
@@ -17056,7 +17126,7 @@ equals(const typedef_decl& l, const typedef_decl& r, change_kind* k)
       if (k)
 	*k |= LOCAL_NON_TYPE_CHANGE_KIND;
       else
-	return false;
+	ABG_RETURN_FALSE;
     }
 
   if (*l.get_underlying_type() != *r.get_underlying_type())
@@ -17067,10 +17137,10 @@ equals(const typedef_decl& l, const typedef_decl& r, change_kind* k)
       if (k)
 	*k |= LOCAL_TYPE_CHANGE_KIND;
       else
-	return false;
+	ABG_RETURN_FALSE;
     }
 
-  return result;
+  ABG_RETURN(result);
 }
 
 /// Equality operator
@@ -17371,7 +17441,7 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
 	    *k |= SUBTYPE_CHANGE_KIND;
 	}
       else
-	return false;
+	ABG_RETURN_FALSE;
     }
 
   // If there are underlying elf symbols for these variables,
@@ -17383,7 +17453,7 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
       if (k)
 	*k |= LOCAL_NON_TYPE_CHANGE_KIND;
       else
-	return false;
+	ABG_RETURN_FALSE;
     }
   else if (s0 && s0 != s1)
     {
@@ -17391,7 +17461,7 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
       if (k)
 	*k |= LOCAL_NON_TYPE_CHANGE_KIND;
       else
-	return false;
+	ABG_RETURN_FALSE;
     }
   bool symbols_are_equal = (s0 && s1 && result);
 
@@ -17413,7 +17483,7 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
 	  if (k)
 	    *k |= LOCAL_NON_TYPE_CHANGE_KIND;
 	  else
-	    return false;
+	    ABG_RETURN_FALSE;
 	}
     }
   else
@@ -17423,7 +17493,7 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
 	if (k)
 	  *k |= LOCAL_NON_TYPE_CHANGE_KIND;
 	else
-	  return false;
+	  ABG_RETURN_FALSE;
       }
 
   const dm_context_rel* c0 =
@@ -17438,10 +17508,10 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
       if (k)
 	*k |= LOCAL_NON_TYPE_CHANGE_KIND;
       else
-	return false;
+	ABG_RETURN_FALSE;
     }
 
-  return result;
+  ABG_RETURN(result);
 }
 
 /// Comparison operator of @ref var_decl.
@@ -17963,29 +18033,29 @@ function_type::is_variadic() const
 ///
 ///@return true if lhs == rhs, false otherwise.
 bool
-equals(const function_type& lhs,
-       const function_type& rhs,
+equals(const function_type& l,
+       const function_type& r,
        change_kind* k)
 {
 #define RETURN(value)				\
   do {						\
-    lhs.priv_->unmark_as_being_compared(lhs);	\
-    lhs.priv_->unmark_as_being_compared(rhs);	\
+    l.priv_->unmark_as_being_compared(l);	\
+    l.priv_->unmark_as_being_compared(r);	\
     if (value == true)				\
-      maybe_propagate_canonical_type(lhs, rhs); \
-    return value;				\
+      maybe_propagate_canonical_type(l, r); \
+    ABG_RETURN(value);				\
   } while(0)
 
-  if (lhs.priv_->comparison_started(lhs)
-      || lhs.priv_->comparison_started(rhs))
+  if (l.priv_->comparison_started(l)
+      || l.priv_->comparison_started(r))
     return true;
 
-  lhs.priv_->mark_as_being_compared(lhs);
-  lhs.priv_->mark_as_being_compared(rhs);
+  l.priv_->mark_as_being_compared(l);
+  l.priv_->mark_as_being_compared(r);
 
   bool result = true;
 
-  if (!lhs.type_base::operator==(rhs))
+  if (!l.type_base::operator==(r))
     {
       result = false;
       if (k)
@@ -17994,16 +18064,16 @@ equals(const function_type& lhs,
 	RETURN(result);
     }
 
-  class_or_union* lhs_class = 0, *rhs_class = 0;
-  if (const method_type* m = dynamic_cast<const method_type*>(&lhs))
-    lhs_class = m->get_class_type().get();
+  class_or_union* l_class = 0, *r_class = 0;
+  if (const method_type* m = dynamic_cast<const method_type*>(&l))
+    l_class = m->get_class_type().get();
 
-  if (const method_type* m = dynamic_cast<const method_type*>(&rhs))
-    rhs_class = m->get_class_type().get();
+  if (const method_type* m = dynamic_cast<const method_type*>(&r))
+    r_class = m->get_class_type().get();
 
   // Compare the names of the class of the method
 
-  if (!!lhs_class != !!rhs_class)
+  if (!!l_class != !!r_class)
     {
       result = false;
       if (k)
@@ -18011,9 +18081,9 @@ equals(const function_type& lhs,
       else
 	RETURN(result);
     }
-  else if (lhs_class
-	   && (lhs_class->get_qualified_name()
-	       != rhs_class->get_qualified_name()))
+  else if (l_class
+	   && (l_class->get_qualified_name()
+	       != r_class->get_qualified_name()))
     {
       result = false;
       if (k)
@@ -18026,32 +18096,32 @@ equals(const function_type& lhs,
   // that is the same as the method class name; we can recurse for
   // ever in that case.
 
-  decl_base* lhs_return_type_decl =
-    get_type_declaration(lhs.get_return_type()).get();
-  decl_base* rhs_return_type_decl =
-    get_type_declaration(rhs.get_return_type()).get();
+  decl_base* l_return_type_decl =
+    get_type_declaration(l.get_return_type()).get();
+  decl_base* r_return_type_decl =
+    get_type_declaration(r.get_return_type()).get();
   bool compare_result_types = true;
-  string lhs_rt_name = lhs_return_type_decl
-    ? lhs_return_type_decl->get_qualified_name()
+  string l_rt_name = l_return_type_decl
+    ? l_return_type_decl->get_qualified_name()
     : string();
-  string rhs_rt_name = rhs_return_type_decl
-    ? rhs_return_type_decl->get_qualified_name()
+  string r_rt_name = r_return_type_decl
+    ? r_return_type_decl->get_qualified_name()
     : string();
 
-  if ((lhs_class && (lhs_class->get_qualified_name() == lhs_rt_name))
+  if ((l_class && (l_class->get_qualified_name() == l_rt_name))
       ||
-      (rhs_class && (rhs_class->get_qualified_name() == rhs_rt_name)))
+      (r_class && (r_class->get_qualified_name() == r_rt_name)))
     compare_result_types = false;
 
   if (compare_result_types)
     {
-      if (lhs.get_return_type() != rhs.get_return_type())
+      if (l.get_return_type() != r.get_return_type())
 	{
 	  result = false;
 	  if (k)
 	    {
-	      if (!types_have_similar_structure(lhs.get_return_type(),
-						rhs.get_return_type()))
+	      if (!types_have_similar_structure(l.get_return_type(),
+						r.get_return_type()))
 		*k |= LOCAL_TYPE_CHANGE_KIND;
 	      else
 		*k |= SUBTYPE_CHANGE_KIND;
@@ -18061,7 +18131,7 @@ equals(const function_type& lhs,
 	}
     }
   else
-    if (lhs_rt_name != rhs_rt_name)
+    if (l_rt_name != r_rt_name)
       {
 	result = false;
 	if (k)
@@ -18071,8 +18141,8 @@ equals(const function_type& lhs,
       }
 
   vector<shared_ptr<function_decl::parameter> >::const_iterator i,j;
-  for (i = lhs.get_first_parm(), j = rhs.get_first_parm();
-       i != lhs.get_parameters().end() && j != rhs.get_parameters().end();
+  for (i = l.get_first_parm(), j = r.get_first_parm();
+       i != l.get_parameters().end() && j != r.get_parameters().end();
        ++i, ++j)
     {
       if (**i != **j)
@@ -18091,8 +18161,8 @@ equals(const function_type& lhs,
 	}
     }
 
-  if ((i != lhs.get_parameters().end()
-       || j != rhs.get_parameters().end()))
+  if ((i != l.get_parameters().end()
+       || j != r.get_parameters().end()))
     {
       result = false;
       if (k)
@@ -18859,7 +18929,7 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
 	    *k |= SUBTYPE_CHANGE_KIND;
 	}
       else
-	return false;
+	ABG_RETURN_FALSE;
     }
 
   const elf_symbol_sptr &s0 = l.get_symbol(), &s1 = r.get_symbol();
@@ -18869,7 +18939,7 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
       if (k)
 	*k |= LOCAL_NON_TYPE_CHANGE_KIND;
       else
-	return false;
+	ABG_RETURN_FALSE;
     }
   else if (s0 && s0 != s1)
     {
@@ -18879,7 +18949,7 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
 	  if (k)
 	    *k |= LOCAL_NON_TYPE_CHANGE_KIND;
 	  else
-	    return false;
+	    ABG_RETURN_FALSE;
 	}
     }
   bool symbols_are_equal = (s0 && s1 && result);
@@ -18909,7 +18979,7 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
 	  if (k)
 	    *k |= LOCAL_NON_TYPE_CHANGE_KIND;
 	  else
-	    return false;
+	    ABG_RETURN_FALSE;
 	}
     }
   else
@@ -18919,7 +18989,7 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
 	if (k)
 	  *k |= LOCAL_NON_TYPE_CHANGE_KIND;
 	else
-	  return false;
+	  ABG_RETURN_FALSE;
       }
 
   // Compare the remaining properties
@@ -18930,7 +19000,7 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
       if (k)
 	*k |= LOCAL_NON_TYPE_CHANGE_KIND;
       else
-	return false;
+	ABG_RETURN_FALSE;
     }
 
   if (is_member_function(l) != is_member_function(r))
@@ -18939,7 +19009,7 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
       if (k)
 	  *k |= LOCAL_NON_TYPE_CHANGE_KIND;
       else
-	return false;
+	ABG_RETURN_FALSE;
     }
 
   if (is_member_function(l) && is_member_function(r))
@@ -18961,11 +19031,11 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
 	  if (k)
 	    *k |= LOCAL_NON_TYPE_CHANGE_KIND;
 	  else
-	    return false;
+	    ABG_RETURN_FALSE;
 	}
     }
 
-  return result;
+  ABG_RETURN(result);
 }
 
 /// Comparison operator for @ref function_decl.
@@ -19310,7 +19380,7 @@ equals(const function_decl::parameter& l,
 	    *k |= LOCAL_TYPE_CHANGE_KIND;
 	}
       else
-	return false;
+	ABG_RETURN_FALSE;
     }
 
 
@@ -19329,10 +19399,10 @@ equals(const function_decl::parameter& l,
 	    *k |= SUBTYPE_CHANGE_KIND;
 	}
       else
-	return false;
+	ABG_RETURN_FALSE;
     }
 
-  return result;
+  ABG_RETURN(result);
 }
 
 bool
@@ -20542,7 +20612,7 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
   do {						\
     l.priv_->unmark_as_being_compared(l);	\
     l.priv_->unmark_as_being_compared(r);	\
-    return value;				\
+    ABG_RETURN(value);				\
   } while(0)
 
   // if one of the classes is declaration-only, look through it to
@@ -20596,7 +20666,7 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 		  // we haven't marked l or r as being compared yet, and
 		  // doing so has a peformance cost that shows up on
 		  // performance profiles for *big* libraries.
-		  return false;
+		  ABG_RETURN_FALSE;
 		}
 	    }
 	  else // A decl-only class is considered different from a
@@ -20606,7 +20676,7 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 		{
 		  if (k)
 		    *k |= LOCAL_TYPE_CHANGE_KIND;
-		  return false;
+		  ABG_RETURN_FALSE;
 		}
 
 	      // both definitions are empty
@@ -20615,7 +20685,7 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 		{
 		  if (k)
 		    *k |= LOCAL_TYPE_CHANGE_KIND;
-		  return false;
+		  ABG_RETURN_FALSE;
 		}
 
 	      return true;
@@ -20642,7 +20712,7 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
     {
       if (k)
 	*k |= LOCAL_TYPE_CHANGE_KIND;
-      return false;
+      ABG_RETURN_FALSE;
     }
 
   if (types_defined_same_linux_kernel_corpus_public(l, r))
@@ -21481,7 +21551,7 @@ equals(const class_decl::base_spec& l,
     {
       if (k)
 	*k |= LOCAL_TYPE_CHANGE_KIND;
-      return false;
+      ABG_RETURN_FALSE;
     }
 
   return (*l.get_base_class() == *r.get_base_class());
@@ -22125,7 +22195,7 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
     l.class_or_union::priv_->unmark_as_being_compared(r);	\
     if (value == true)						\
       maybe_propagate_canonical_type(l, r);			\
-    return value;						\
+    ABG_RETURN(value);						\
   } while(0)
 
   // Compare bases.
@@ -23224,7 +23294,7 @@ equals(const union_decl& l, const union_decl& r, change_kind* k)
 		       k);
   if (result == true)
     maybe_propagate_canonical_type(l, r);
-  return result;
+  ABG_RETURN(result);
 }
 
 /// Copy a method of a @ref union_decl into a new @ref
