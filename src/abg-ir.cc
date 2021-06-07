@@ -321,7 +321,16 @@ public:
 void
 location::expand(std::string& path, unsigned& line, unsigned& column) const
 {
-  ABG_ASSERT(get_location_manager());
+  if (!get_location_manager())
+    {
+      // We don't have a location manager maybe because this location
+      // was just freshly instanciated.  We still want to be able to
+      // expand to default values.
+      path = "";
+      line = 0;
+      column = 0;
+      return;
+    }
   get_location_manager()->expand_location(*this, path, line, column);
 }
 
