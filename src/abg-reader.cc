@@ -5698,7 +5698,6 @@ build_type(read_context&	ctxt,
     }
 #endif
 
-  ctxt.maybe_canonicalize_type(t);
   return t;
 }
 
