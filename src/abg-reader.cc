@@ -820,6 +820,12 @@ public:
 	|| m_env->get_type_id_canonical_type_map().empty())
       return ;
 
+    if (class_decl_sptr c = is_class_type(t))
+      if (odr_is_relevant(*c) && c->get_is_declaration_only())
+	// Declaration-only classes don't have canonical types in
+	// environments where ODR is relevant (like in C++).
+	return;
+
     // Let's get the type-id of this type as recorded in the
     // originating abixml file.
     string type_id =
@@ -3300,6 +3306,8 @@ build_function_decl(read_context&	ctxt,
 
   ABG_ASSERT(fn_type);
 
+  fn_type->set_is_artificial(true);
+
   function_decl_sptr fn_decl(as_method_decl
 			     ? new method_decl (name, fn_type,
 						declared_inline, loc,
@@ -4565,9 +4573,17 @@ build_class_decl(read_context&		ctxt,
     naming_typedef_id = xml::unescape_xml_string(CHAR_STR(s));
 
   ABG_ASSERT(!id.empty());
+
+  if (type_base_sptr t = ctxt.get_type_decl(id))
+    {
+      class_decl_sptr result = is_class_type(t);
+      ABG_ASSERT(result);
+      return result;
+    }
+
   class_decl_sptr previous_definition, previous_declaration;
   const vector<type_base_sptr> *types_ptr = 0;
-  if (!is_anonymous)
+  if (!is_anonymous && !previous_definition)
     types_ptr = ctxt.get_all_type_decls(id);
   if (types_ptr)
     {

@@ -381,6 +381,8 @@
     <pointer-type-def type-id='type-id-22' size-in-bits='64' id='type-id-101'/>
     <!-- wchar_t** -->
     <pointer-type-def type-id='type-id-101' size-in-bits='64' id='type-id-102'/>
+    <!-- struct _IO_FILE -->
+    <class-decl name='_IO_FILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-27'/>
     <!-- namespace std -->
     <namespace-decl name='std'>
       <!-- class std::allocator<char> -->
@@ -1247,7 +1249,5 @@
       <!-- typedef wint_t -->
       <return type-id='type-id-39'/>
     </function-decl>
-    <!-- struct _IO_FILE -->
-    <class-decl name='_IO_FILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-27'/>
   </abi-instr>
 </abi-corpus>

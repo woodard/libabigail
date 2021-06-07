@@ -51,6 +51,13 @@ InOutSpec in_out_specs[] =
     "data/test-alt-dwarf-file/test1-report-0.txt",
     "output/test-alt-dwarf-file/test1-report-0.txt"
   },
+  {
+    "data/test-alt-dwarf-file/rhbz1951526/usr/bin/gimp-2.10",
+    "data/test-alt-dwarf-file/rhbz1951526/usr/lib/debug",
+    "--abidiff",
+    "data/test-alt-dwarf-file/rhbz1951526/rhbz1951526-report-0.txt",
+    "output/test-alt-dwarf-file/rhbz1951526/rhbz1951526-report-0.txt"
+  },
 
   // This should always be the last entry
   {NULL, NULL, NULL, NULL, NULL}

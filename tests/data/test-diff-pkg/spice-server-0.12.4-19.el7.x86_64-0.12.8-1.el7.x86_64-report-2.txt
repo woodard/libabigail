@@ -621,7 +621,7 @@
         in pointed to type 'typedef SpiceServer' at spice-server.h:38:1:
           underlying type 'struct RedsState' at reds-private.h:127:1 changed:
             type size hasn't changed
-            5 data member changes (1 filtered):
+            6 data member changes:
               type of 'SpiceWatch* listen_watch' changed:
                 pointed to type 'typedef SpiceWatch' changed at spice.h:61:1, as reported earlier
               type of 'SpiceWatch* secure_listen_watch' changed:
@@ -629,7 +629,7 @@
               type of 'VDIPortState agent_state' changed:
                 underlying type 'struct VDIPortState' at reds-private.h:46:1 changed:
                   type size hasn't changed
-                  2 data member changes (3 filtered):
+                  5 data member changes:
                     type of 'SpiceCharDeviceState* base' changed:
                       in pointed to type 'typedef SpiceCharDeviceState' at spice-char.h:34:1:
                         underlying type 'struct SpiceCharDeviceState' at char_device.c:47:1 changed:
@@ -794,7 +794,7 @@
                             in pointed to type 'typedef SndChannel' at snd_worker.c:74:1:
                               underlying type 'struct SndChannel' at snd_worker.c:89:1 changed:
                                 type size hasn't changed
-                                6 data member changes (1 filtered):
+                                7 data member changes:
                                   type of 'RedsStream* stream' changed:
                                     pointed to type 'typedef RedsStream' changed at red_channel.h:134:1, as reported earlier
                                   type of 'SndWorker* worker' changed:

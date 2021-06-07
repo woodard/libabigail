@@ -2278,11 +2278,12 @@ write_translation_unit(write_context&	       ctxt,
     {
       if (type_base_sptr t = is_type(*i))
 	{
-	  // Emit non-empty classes that are declaration-only. Those
-	  // beasts are class that only contain member types.
+	  // Emit declaration-only classes that are needed. Some of
+	  // these classes can be empty.  Those beasts can be classes
+	  // that only contain member types.  They can also be classes
+	  // considered "opaque".
 	  if (class_decl_sptr class_type = is_class_type(t))
 	    if (class_type->get_is_declaration_only()
-		&& !class_type->is_empty()
 		&& !ctxt.type_is_emitted(class_type))
 	      write_type(class_type, ctxt,
 			 indent + c.get_xml_element_indent());
@@ -2309,7 +2310,11 @@ write_translation_unit(write_context&	       ctxt,
        i != ctxt.get_referenced_types().end();
        ++i)
     if (!ctxt.type_is_emitted(*i)
-	&& !ctxt.decl_only_type_is_emitted(*i))
+	&& !ctxt.decl_only_type_is_emitted(*i)
+	// Ensure that the referenced type is emitted in the
+	// translation that it belongs to.
+	&& ((*i)->get_translation_unit()->get_absolute_path()
+	  == tu.get_absolute_path()))
 	referenced_types_to_emit.insert(*i);
 
   for (fn_type_ptr_set_type::const_iterator i =
@@ -2317,7 +2322,11 @@ write_translation_unit(write_context&	       ctxt,
        i != ctxt.get_referenced_function_types().end();
        ++i)
     if (!ctxt.type_is_emitted(*i)
-	&& !ctxt.decl_only_type_is_emitted(*i))
+	&& !ctxt.decl_only_type_is_emitted(*i)
+	// Ensure that the referenced type is emitted in the
+	// translation that it belongs to.
+	&& ((*i)->get_translation_unit()->get_absolute_path()
+	  == tu.get_absolute_path()))
       // A referenced type that was not emitted at all must be
       // emitted now.
       referenced_types_to_emit.insert(*i);
@@ -2327,7 +2336,11 @@ write_translation_unit(write_context&	       ctxt,
        i != ctxt.get_referenced_non_canonical_types().end();
        ++i)
     if (!ctxt.type_is_emitted(*i)
-	&& !ctxt.decl_only_type_is_emitted(*i))
+	&& !ctxt.decl_only_type_is_emitted(*i)
+	// Ensure that the referenced type is emitted in the
+	// translation that it belongs to.
+	&& ((*i)->get_translation_unit()->get_absolute_path()
+	  == tu.get_absolute_path()))
       // A referenced type that was not emitted at all must be
       // emitted now.
       referenced_types_to_emit.insert(*i);
@@ -2341,11 +2354,6 @@ write_translation_unit(write_context&	       ctxt,
       vector<type_base*> sorted_referenced_types;
       ctxt.sort_types(referenced_types_to_emit,
 		      sorted_referenced_types);
-
-      // Clear the types recorded as referenced by the process of
-      // emitting the types out.  New types are going to be referenced
-      // the process of emitting the types below.
-      ctxt.clear_referenced_types();
 
       // Now, emit the referenced decls in a sorted order.
       for (vector<type_base*>::const_iterator i =
@@ -2388,7 +2396,11 @@ write_translation_unit(write_context&	       ctxt,
 	   i != ctxt.get_referenced_types().end();
 	   ++i)
 	if (!ctxt.type_is_emitted(*i)
-	    && !ctxt.decl_only_type_is_emitted(*i))
+	    && !ctxt.decl_only_type_is_emitted(*i)
+	    // Ensure that the referenced type is emitted in the
+	    // translation that it belongs to.
+	    && ((*i)->get_translation_unit()->get_absolute_path()
+	      == tu.get_absolute_path()))
 	  // A referenced type that was not emitted at all must be
 	  // emitted now.
 	  referenced_types_to_emit.insert(*i);
@@ -2398,7 +2410,11 @@ write_translation_unit(write_context&	       ctxt,
 	   i != ctxt.get_referenced_non_canonical_types().end();
 	   ++i)
 	if (!ctxt.type_is_emitted(*i)
-	    && !ctxt.decl_only_type_is_emitted(*i))
+	    && !ctxt.decl_only_type_is_emitted(*i)
+	    // Ensure that the referenced type is emitted in the
+	    // translation that it belongs to.
+	    && ((*i)->get_translation_unit()->get_absolute_path()
+	      == tu.get_absolute_path()))
 	  // A referenced type that was not emitted at all must be
 	  // emitted now.
 	  referenced_types_to_emit.insert(*i);
@@ -2416,16 +2432,15 @@ write_translation_unit(write_context&	       ctxt,
     {
       function_type_sptr fn_type = is_function_type(*i);
 
-      if (!ctxt.type_is_referenced(fn_type) || ctxt.type_is_emitted(fn_type))
-	// This function type is either not referenced by any emitted
-	// pointer or reference type, or has already been emitted, so skip it.
+      if (fn_type->get_is_artificial() || ctxt.type_is_emitted(fn_type))
+	// This function type is either already emitted or it's
+	// artificial (i.e, artificially created just to represent the
+	// conceptual type of a function), so skip it.
 	continue;
 
       ABG_ASSERT(fn_type);
       write_function_type(fn_type, ctxt, indent + c.get_xml_element_indent());
     }
-
-  ctxt.clear_referenced_types();
 
   do_indent(o, indent);
   o << "</abi-instr>\n";
@@ -4446,6 +4461,8 @@ write_corpus(write_context&	ctxt,
 
   do_indent_to_level(ctxt, indent, 0);
   out << "</abi-corpus>\n";
+
+  ctxt.clear_referenced_types();
 
   return true;
 }

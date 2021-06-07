@@ -4162,10 +4162,13 @@ public:
     const environment* e = l->get_environment();
     ABG_ASSERT(!e->canonicalization_is_done());
 
-    bool s = e->decl_only_class_equals_definition();
+    bool s0 = e->decl_only_class_equals_definition();
+    bool s1 = e->use_enum_binary_only_equality();
     e->decl_only_class_equals_definition(true);
+    e->use_enum_binary_only_equality(true);
     bool equal = l == r;
-    e->decl_only_class_equals_definition(s);
+    e->decl_only_class_equals_definition(s0);
+    e->use_enum_binary_only_equality(s1);
     return equal;
   }
 
@@ -12143,6 +12146,9 @@ add_or_update_class_type(read_context&	 ctxt,
   if (klass)
     {
       res = result = klass;
+      if (has_child && klass->get_is_declaration_only()
+	  && klass->get_definition_of_declaration())
+	res = result = is_class_type(klass->get_definition_of_declaration());
       if (loc)
 	result->set_location(loc);
     }
@@ -12160,7 +12166,7 @@ add_or_update_class_type(read_context&	 ctxt,
       ABG_ASSERT(result);
     }
 
-  if (size)
+  if (size != result->get_size_in_bits())
     result->set_size_in_bits(size);
 
   if (klass)
@@ -13222,6 +13228,8 @@ build_function_type(read_context&	ctxt,
   result->set_parameters(function_parms);
 
   tu->bind_function_type_life_time(result);
+
+  result->set_is_artificial(true);
 
   {
     die_function_type_map_type::const_iterator i =
@@ -14948,6 +14956,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	if (f)
 	  {
 	    result = f;
+	    result->set_is_artificial(false);
 	    maybe_canonicalize_type(die, ctxt);
 	  }
       }

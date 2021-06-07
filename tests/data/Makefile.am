@@ -1563,6 +1563,10 @@ test-alt-dwarf-file/test1-libgromacs-debug-dir/.build-id/45/0c27b7c158eecb67822a
 test-alt-dwarf-file/test1-libgromacs-debug-dir/.build-id/7c/85cee9a5a59e7d0a866386b47c1674da5d201f.debug \
 test-alt-dwarf-file/test1-libgromacs-debug-dir/.dwz/gromacs-5.0.6-4.fc22.x86_64 \
 test-alt-dwarf-file/test1-libgromacs-debug-dir/usr/lib64/libgromacs_d.so.0.0.0.debug \
+test-alt-dwarf-file/rhbz1951526/rhbz1951526-report-0.txt \
+test-alt-dwarf-file/rhbz1951526/usr/bin/gimp-2.10 \
+test-alt-dwarf-file/rhbz1951526/usr/lib/debug/.dwz/gimp-2.10.22-2.el9.1.aarch64 \
+test-alt-dwarf-file/rhbz1951526/usr/lib/debug/usr/bin/gimp-2.10-2.10.22-2.el9.1.aarch64.debug \
 \
 test-abicompat/libtest0-fn-changed-libapp-v0.so \
 test-abicompat/libtest0-fn-changed-libapp-v1.so \

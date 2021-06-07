@@ -230,6 +230,8 @@
     <pointer-type-def type-id='type-id-20' size-in-bits='64' id='type-id-75'/>
     <!-- wchar_t** -->
     <pointer-type-def type-id='type-id-75' size-in-bits='64' id='type-id-76'/>
+    <!-- struct _IO_FILE -->
+    <class-decl name='_IO_FILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-22'/>
     <!-- class allocator<char> -->
     <class-decl name='allocator&lt;char&gt;' visibility='default' is-declaration-only='yes' id='type-id-40'>
       <member-type access='public'>
@@ -1195,8 +1197,6 @@
       <!-- typedef wint_t -->
       <return type-id='type-id-34'/>
     </function-decl>
-    <!-- struct _IO_FILE -->
-    <class-decl name='_IO_FILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-22'/>
   </abi-instr>
   <abi-instr address-size='64' path='test23-second-tu.cc' comp-dir-path='/home/dodji/git/libabigail/PR20369/tests/data/test-read-dwarf' language='LANG_C_plus_plus'>
     <!-- void emit(std::string&, std::string&) -->

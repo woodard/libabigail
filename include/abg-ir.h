@@ -183,6 +183,12 @@ public:
   decl_only_class_equals_definition(bool f) const;
 
   bool
+  use_enum_binary_only_equality() const;
+
+  void
+  use_enum_binary_only_equality(bool f) const;
+
+  bool
   is_void_type(const type_base_sptr&) const;
 
   bool
@@ -1378,6 +1384,12 @@ public:
 
   virtual ~type_or_decl_base();
 
+  bool
+  get_is_artificial() const;
+
+  void
+  set_is_artificial(bool);
+
   const environment*
   get_environment() const;
 
@@ -1627,12 +1639,6 @@ public:
 
   void
   set_is_anonymous(bool);
-
-  bool
-  get_is_artificial() const;
-
-  void
-  set_is_artificial(bool);
 
   bool
   get_has_anonymous_parent() const;

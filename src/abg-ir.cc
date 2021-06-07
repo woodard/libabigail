@@ -2887,6 +2887,7 @@ struct environment::priv
   bool					canonicalization_is_done_;
   bool					do_on_the_fly_canonicalization_;
   bool					decl_only_class_equals_definition_;
+  bool					use_enum_binary_only_equality_;
 #ifdef WITH_DEBUG_SELF_COMPARISON
   bool					self_comparison_debug_on_;
 #endif
@@ -2894,7 +2895,8 @@ struct environment::priv
   priv()
     : canonicalization_is_done_(),
       do_on_the_fly_canonicalization_(true),
-      decl_only_class_equals_definition_(false)
+      decl_only_class_equals_definition_(false),
+      use_enum_binary_only_equality_(true)
 #ifdef WITH_DEBUG_SELF_COMPARISON
     ,
       self_comparison_debug_on_(false)
@@ -3238,6 +3240,70 @@ void
 environment::decl_only_class_equals_definition(bool f) const
 {priv_->decl_only_class_equals_definition_ = f;}
 
+/// Test if comparing enums is done by looking only at enumerators
+/// values.
+///
+/// For enums, using 'binary-only' equality means looking only at
+/// values of enumerators (not names of enumerators) when comparing
+/// enums.  This means we are only considering the binary equality of
+/// enums, not source equality.
+///
+/// The two enums below are "binary equal", but not "source-level
+/// equal":
+///
+///     enum foo
+///     {
+///       e0 = 0;
+///       e1 = 1;
+///       e2 = 2;
+///     };
+///
+///     enum foo
+///     {
+///       e0 = 0;
+///       e1 = 1;
+///       e2 = 2;
+///       e_added = 1;
+///     };
+///
+/// @return true iff using 'binary-only' equality for enums
+/// comparison.
+bool
+environment::use_enum_binary_only_equality() const
+{return priv_->use_enum_binary_only_equality_;}
+
+/// Setter for the property that determines that comparing enums is
+/// done by looking only at enumerators values.
+///
+/// For enums, using 'binary-only' equality means looking only at
+/// values of enumerators (not names of enumerators) when comparing
+/// enums.  This means we are only considering the binary equality of
+/// enums, not source equality.
+///
+/// The two enums below are "binary equal", but not "source-level
+/// equal":
+///
+///     enum foo
+///     {
+///       e0 = 0;
+///       e1 = 1;
+///       e2 = 2;
+///     };
+///
+///     enum foo
+///     {
+///       e0 = 0;
+///       e1 = 1;
+///       e2 = 2;
+///       e_added = 1;
+///     };
+///
+/// @param f true iff using 'binary-only' equality for enums
+/// comparison.
+void
+environment::use_enum_binary_only_equality(bool f) const
+{priv_->use_enum_binary_only_equality_ = f;}
+
 /// Test if a given type is a void type as defined in the current
 /// environment.
 ///
@@ -3530,6 +3596,10 @@ struct type_or_decl_base::priv
   // location advertised by the original emitter of the artifact
   // emitter.
   location			artificial_location_;
+  // Flags if the current ABI artifact is artificial (i.e, *NOT*
+  // generated from the initial source code, but rather either
+  // artificially by the compiler or by libabigail itself).
+  bool				is_artificial_;
 
   /// Constructor of the type_or_decl_base::priv private type.
   ///
@@ -3544,7 +3614,8 @@ struct type_or_decl_base::priv
       type_or_decl_ptr_(),
       hashing_started_(),
       env_(e),
-      translation_unit_()
+      translation_unit_(),
+      is_artificial_()
   {}
 
   enum type_or_decl_kind
@@ -3619,6 +3690,29 @@ type_or_decl_base::type_or_decl_base(const type_or_decl_base& o)
 /// The destructor of the @ref type_or_decl_base type.
 type_or_decl_base::~type_or_decl_base()
 {}
+
+/// Getter of the flag that says if the artefact is artificial.
+///
+/// Being artificial means it was not explicitely mentionned in the
+/// source code, but was rather artificially created by the compiler
+/// or libabigail.
+///
+/// @return true iff the declaration is artificial.
+bool
+type_or_decl_base::get_is_artificial() const
+{return priv_->is_artificial_;}
+
+/// Setter of the flag that says if the artefact is artificial.
+///
+/// Being artificial means the artefact was not explicitely
+/// mentionned in the source code, but was rather artificially created
+/// by the compiler or by libabigail.
+///
+/// @param f the new value of the flag that says if the artefact is
+/// artificial.
+void
+type_or_decl_base::set_is_artificial(bool f)
+{priv_->is_artificial_ = f;}
 
 /// Getter for the "kind" property of @ref type_or_decl_base type.
 ///
@@ -3950,7 +4044,6 @@ struct decl_base::priv
 {
   bool			in_pub_sym_tab_;
   bool			is_anonymous_;
-  bool			is_artificial_;
   bool			has_anonymous_parent_;
   location		location_;
   context_rel		*context_;
@@ -3982,7 +4075,6 @@ struct decl_base::priv
   priv()
     : in_pub_sym_tab_(false),
       is_anonymous_(true),
-      is_artificial_(false),
       has_anonymous_parent_(false),
       context_(),
       visibility_(VISIBILITY_DEFAULT),
@@ -4288,28 +4380,6 @@ void
 decl_base::set_is_anonymous(bool f)
 {priv_->is_anonymous_ = f;}
 
-/// Getter of the flag that says if the declaration is artificial.
-///
-/// Being artificial means the parameter was not explicitely
-/// mentionned in the source code, but was rather artificially created
-/// by the compiler.
-///
-/// @return true iff the declaration is artificial.
-bool
-decl_base::get_is_artificial() const
-{return priv_->is_artificial_;}
-
-/// Setter of the flag that says if the declaration is artificial.
-///
-/// Being artificial means the parameter was not explicitely
-/// mentionned in the source code, but was rather artificially created
-/// by the compiler.
-///
-/// @param f the new value of the flag that says if the declaration is
-/// artificial.
-void
-decl_base::set_is_artificial(bool f)
-{priv_->is_artificial_ = f;}
 
 /// Get the "has_anonymous_parent" flag of the current declaration.
 ///
@@ -13421,6 +13491,15 @@ maybe_adjust_canonical_type(const type_base_sptr& canonical,
 	      }
 	}
     }
+
+  // If an artificial function type equals a non-artfificial one in
+  // the system, then the canonical type of both should be deemed
+  // non-artificial.  This is important because only non-artificial
+  // canonical function types are emitted out into abixml, so if don't
+  // do this we risk missing to emit some function types.
+  if (is_function_type(type))
+    if (type->get_is_artificial() != canonical->get_is_artificial())
+      canonical->set_is_artificial(false);
 }
 
 /// Compute the canonical type of a given type.
@@ -16172,9 +16251,15 @@ struct array_type_def::priv
   interned_string	internal_qualified_name_;
 
   priv(type_base_sptr t)
-    : element_type_(t) {}
+    : element_type_(t)
+  {}
+
   priv(type_base_sptr t, subranges_type subs)
-    : element_type_(t), subranges_(subs) {}
+    : element_type_(t), subranges_(subs)
+  {}
+
+  priv()
+  {}
 };
 
 /// Constructor for the type array_type_def
@@ -16779,6 +16864,26 @@ enum_has_non_name_change(const enum_type_decl& l,
   return result;
 }
 
+/// Test if a given enumerator is found present in an enum.
+///
+/// This is a subroutine of the equals function for enums.
+///
+/// @param enr the enumerator to consider.
+///
+/// @param enom the enum to consider.
+///
+/// @return true iff the enumerator @p enr is present in the enum @p
+/// enom.
+static bool
+is_enumerator_present_in_enum(const enum_type_decl::enumerator &enr,
+			      const enum_type_decl &enom)
+{
+  for (const auto &e : enom.get_enumerators())
+    if (e == enr)
+      return true;
+  return false;
+}
+
 /// Compares two instances of @ref enum_type_decl.
 ///
 /// If the two intances are different, set a bitfield to give some
@@ -16811,31 +16916,6 @@ equals(const enum_type_decl& l, const enum_type_decl& r, change_kind* k)
 	ABG_RETURN_FALSE;
     }
 
-  enum_type_decl::enumerators::const_iterator i, j;
-  for (i = l.get_enumerators().begin(), j = r.get_enumerators().begin();
-       i != l.get_enumerators().end() && j != r.get_enumerators().end();
-       ++i, ++j)
-    if (*i != *j)
-      {
-	result = false;
-	if (k)
-	  {
-	    *k |= LOCAL_TYPE_CHANGE_KIND;
-	    break;
-	  }
-	else
-	  ABG_RETURN_FALSE;
-      }
-
-  if (i != l.get_enumerators().end() || j != r.get_enumerators().end())
-    {
-      result = false;
-      if (k)
-	*k |= LOCAL_TYPE_CHANGE_KIND;
-      else
-	ABG_RETURN_FALSE;
-    }
-
   if (!(l.decl_base::operator==(r) && l.type_base::operator==(r)))
     {
       result = false;
@@ -16850,7 +16930,63 @@ equals(const enum_type_decl& l, const enum_type_decl& r, change_kind* k)
 	ABG_RETURN_FALSE;
     }
 
-  return result;
+  // Now compare the enumerators.  Note that the order of declaration
+  // of enumerators should not matter in the comparison.
+  //
+  // Also if the value of
+  // abigail::ir::environment::use_enum_binary_only_equality() is
+  // true, then enumerators are compared by considering their value
+  // only.  Their name is not taken into account.
+  //
+  // In that case, note that the two enums below are considered equal:
+  //
+  // enum foo
+  //     {
+  //       e0 = 0;
+  //       e1 = 1;
+  //       e2 = 2;
+  //     };
+  //
+  //     enum foo
+  //     {
+  //       e0 = 0;
+  //       e1 = 1;
+  //       e2 = 2;
+  //       e_added = 1;
+  //     };
+  //
+  // These two enums are considered different if
+  // environment::use_enum_binary_only_equality() return false.
+  //
+  // So enumerators comparison should accomodate these conditions.
+
+  for(const auto &e : l.get_enumerators())
+    if (!is_enumerator_present_in_enum(e, r))
+      {
+	result = false;
+	if (k)
+	  {
+	    *k |= LOCAL_TYPE_CHANGE_KIND;
+	    break;
+	  }
+	else
+	  ABG_RETURN_FALSE;
+      }
+
+  for(const auto &e : r.get_enumerators())
+    if (!is_enumerator_present_in_enum(e, l))
+      {
+	result = false;
+	if (k)
+	  {
+	    *k |= LOCAL_TYPE_CHANGE_KIND;
+	    break;
+	  }
+	else
+	  ABG_RETURN_FALSE;
+      }
+
+  ABG_RETURN(result);
 }
 
 /// Equality operator.
@@ -16984,15 +17120,28 @@ enum_type_decl::enumerator::operator=(const enumerator& o)
 }
 /// Equality operator
 ///
-/// @param other the enumerator to compare to the current instance of
-/// enum_type_decl::enumerator.
+/// When environment::use_enum_binary_only_equality() is true, this
+/// equality operator only cares about the value of the enumerator.
+/// It doesn't take the name of the enumerator into account.  This is
+/// the ABI-oriented default equality operator.
+///
+/// When the environment::use_enum_binary_only_equality() is false
+/// however, then this equality operator also takes the name of the
+/// enumerator into account as well as the value.
+///
+/// @param other the enumerator to compare to the current
+/// instance of enum_type_decl::enumerator.
 ///
 /// @return true if @p other equals the current instance of
 /// enum_type_decl::enumerator.
 bool
 enum_type_decl::enumerator::operator==(const enumerator& other) const
-{return (get_name() == other.get_name()
-	 && get_value() == other.get_value());}
+{
+  bool names_equal = true;
+  if (!get_environment()->use_enum_binary_only_equality())
+    names_equal = (get_name() == other.get_name());
+  return names_equal && (get_value() == other.get_value());
+}
 
 /// Inequality operator.
 ///
@@ -17569,12 +17718,12 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
     }
   bool symbols_are_equal = (s0 && s1 && result);
 
-  if (symbols_are_equal)
+  if (symbols_are_equal || (is_data_member(l) && is_data_member(r)))
     {
       // The variables have underlying elf symbols that are equal, so
       // now, let's compare the decl_base part of the variables w/o
       // considering their decl names.
-      const interned_string &n1 = l.get_name(), &n2 = r.get_name();
+      const interned_string n1 = l.get_name(), n2 = r.get_name();
       const_cast<var_decl&>(l).set_name("");
       const_cast<var_decl&>(r).set_name("");
       bool decl_bases_different = !l.decl_base::operator==(r);

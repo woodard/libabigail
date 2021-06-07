@@ -226,6 +226,7 @@
     <pointer-type-def type-id='type-id-21' size-in-bits='64' id='type-id-8'/>
     <pointer-type-def type-id='type-id-22' size-in-bits='64' id='type-id-84'/>
     <pointer-type-def type-id='type-id-84' size-in-bits='64' id='type-id-85'/>
+    <class-decl name='_IO_FILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-27'/>
     <namespace-decl name='std'>
       <class-decl name='allocator&lt;char&gt;' size-in-bits='8' visibility='default' filepath='/usr/include/c++/5.3.1/bits/allocator.h' line='92' column='1' id='type-id-86'>
         <base-class access='public' layout-offset-in-bits='0' type-id='type-id-41'/>
@@ -746,6 +747,5 @@
       <parameter type-id='type-id-37'/>
       <return type-id='type-id-39'/>
     </function-decl>
-    <class-decl name='_IO_FILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-27'/>
   </abi-instr>
 </abi-corpus>

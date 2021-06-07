@@ -421,6 +421,10 @@
     <qualified-type-def type-id='type-id-246' restrict='yes' id='type-id-247'/>
     <pointer-type-def type-id='type-id-246' size-in-bits='64' id='type-id-248'/>
     <qualified-type-def type-id='type-id-248' restrict='yes' id='type-id-249'/>
+    <class-decl name='_IO_FILE' size-in-bits='1728' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-25'/>
+    <class-decl name='lconv' size-in-bits='768' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-233'/>
+    <class-decl name='__anonymous_struct__2' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-22' visibility='default' is-declaration-only='yes' id='type-id-21'/>
+    <class-decl name='__anonymous_struct__3' size-in-bits='64' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-30' visibility='default' is-declaration-only='yes' id='type-id-29'/>
     <namespace-decl name='std'>
       <enum-decl name='_Ios_Openmode' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/ios_base.h' line='111' column='1' id='type-id-250'>
         <underlying-type type-id='type-id-16'/>
@@ -3492,17 +3496,6 @@
         </namespace-decl>
       </namespace-decl>
     </namespace-decl>
-    <pointer-type-def type-id='type-id-285' size-in-bits='64' id='type-id-286'/>
-    <pointer-type-def type-id='type-id-299' size-in-bits='64' id='type-id-305'/>
-    <pointer-type-def type-id='type-id-307' size-in-bits='64' id='type-id-308'/>
-    <class-decl name='_IO_FILE' size-in-bits='1728' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-25'/>
-    <class-decl name='lconv' size-in-bits='768' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-233'/>
-    <class-decl name='__anonymous_struct__2' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-22' visibility='default' is-declaration-only='yes' id='type-id-21'/>
-    <class-decl name='__anonymous_struct__3' size-in-bits='64' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-30' visibility='default' is-declaration-only='yes' id='type-id-29'/>
-    <reference-type-def kind='lvalue' type-id='type-id-311' size-in-bits='64' id='type-id-287'/>
-    <reference-type-def kind='lvalue' type-id='type-id-312' size-in-bits='64' id='type-id-306'/>
-    <qualified-type-def type-id='type-id-301' const='yes' id='type-id-304'/>
-    <reference-type-def kind='lvalue' type-id='type-id-313' size-in-bits='64' id='type-id-309'/>
     <function-type size-in-bits='64' id='type-id-231'>
       <parameter type-id='type-id-8'/>
       <parameter type-id='type-id-8'/>
@@ -3511,23 +3504,20 @@
     <function-type size-in-bits='64' id='type-id-243'>
       <return type-id='type-id-19'/>
     </function-type>
-    <qualified-type-def type-id='type-id-285' const='yes' id='type-id-311'/>
-    <qualified-type-def type-id='type-id-299' const='yes' id='type-id-312'/>
-    <qualified-type-def type-id='type-id-307' const='yes' id='type-id-313'/>
   </abi-instr>
   <abi-instr address-size='64' path='src/third_party/boost-1.60.0/libs/iostreams/src/mapped_file.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
-    <reference-type-def kind='lvalue' type-id='type-id-285' size-in-bits='64' id='type-id-314'/>
+    <reference-type-def kind='lvalue' type-id='type-id-285' size-in-bits='64' id='type-id-311'/>
     <pointer-type-def type-id='type-id-285' size-in-bits='64' id='type-id-286'/>
     <pointer-type-def type-id='type-id-299' size-in-bits='64' id='type-id-305'/>
     <pointer-type-def type-id='type-id-307' size-in-bits='64' id='type-id-308'/>
-    <reference-type-def kind='lvalue' type-id='type-id-108' size-in-bits='64' id='type-id-315'/>
-    <qualified-type-def type-id='type-id-285' const='yes' id='type-id-311'/>
-    <reference-type-def kind='lvalue' type-id='type-id-311' size-in-bits='64' id='type-id-287'/>
-    <qualified-type-def type-id='type-id-299' const='yes' id='type-id-312'/>
-    <reference-type-def kind='lvalue' type-id='type-id-312' size-in-bits='64' id='type-id-306'/>
-    <pointer-type-def type-id='type-id-312' size-in-bits='64' id='type-id-316'/>
+    <reference-type-def kind='lvalue' type-id='type-id-108' size-in-bits='64' id='type-id-312'/>
+    <qualified-type-def type-id='type-id-285' const='yes' id='type-id-313'/>
+    <reference-type-def kind='lvalue' type-id='type-id-313' size-in-bits='64' id='type-id-287'/>
+    <qualified-type-def type-id='type-id-299' const='yes' id='type-id-314'/>
+    <reference-type-def kind='lvalue' type-id='type-id-314' size-in-bits='64' id='type-id-306'/>
+    <pointer-type-def type-id='type-id-314' size-in-bits='64' id='type-id-315'/>
     <qualified-type-def type-id='type-id-301' const='yes' id='type-id-304'/>
-    <qualified-type-def type-id='type-id-307' const='yes' id='type-id-313'/>
-    <reference-type-def kind='lvalue' type-id='type-id-313' size-in-bits='64' id='type-id-309'/>
+    <qualified-type-def type-id='type-id-307' const='yes' id='type-id-316'/>
+    <reference-type-def kind='lvalue' type-id='type-id-316' size-in-bits='64' id='type-id-309'/>
   </abi-instr>
 </abi-corpus>
