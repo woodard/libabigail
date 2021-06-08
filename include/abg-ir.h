@@ -2399,6 +2399,8 @@ private:
   // Forbidden.
   array_type_def();
 
+  void update_size();
+
 public:
 
   /// Hasher for intances of array_type_def.
@@ -2541,6 +2543,10 @@ public:
   }; // end class subrange_type
 
   array_type_def(const type_base_sptr type,
+		 const std::vector<subrange_sptr>& subs,
+		 const location& locus);
+
+  array_type_def(environment* env,
 		 const std::vector<subrange_sptr>& subs,
 		 const location& locus);
 

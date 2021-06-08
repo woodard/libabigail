@@ -16290,6 +16290,62 @@ array_type_def::array_type_def(const type_base_sptr			e_type,
   append_subranges(subs);
 }
 
+/// Constructor for the type array_type_def
+///
+/// This constructor builds a temporary array that has no element type
+/// associated.  Later when the element type is available, it be set
+/// with the array_type_def::set_element_type() member function.
+///
+/// Note how the constructor expects a vector of subrange
+/// objects. Parsing of the array information always entails
+/// parsing the subrange info as well, thus the class subrange_type
+/// is defined inside class array_type_def and also parsed
+/// simultaneously.
+///
+/// @param env the environment of the array type.
+///
+/// @param subs a vector of the array's subranges(dimensions)
+///
+/// @param locus the source location of the array type definition.
+array_type_def::array_type_def(environment*				env,
+			       const std::vector<subrange_sptr>&	subs,
+			       const location&				locus)
+  : type_or_decl_base(env,
+		      ARRAY_TYPE
+		      | ABSTRACT_TYPE_BASE
+		      | ABSTRACT_DECL_BASE),
+    type_base(env, 0, 0),
+    decl_base(env, locus),
+    priv_(new priv)
+{
+  runtime_type_instance(this);
+  append_subranges(subs);
+}
+
+/// Update the size of the array.
+///
+/// This function computes the size of the array and sets it using
+/// type_base::set_size_in_bits().
+void
+array_type_def::update_size()
+{
+  type_base_sptr e = priv_->element_type_.lock();
+  if (e)
+    {
+      size_t s = e->get_size_in_bits();
+      if (s)
+	{
+	  for (const auto &sub : get_subranges())
+	    s *= sub->get_length();
+
+	  const environment* env = e->get_environment();
+	  ABG_ASSERT(env);
+	  set_size_in_bits(s);
+	}
+      set_alignment_in_bits(e->get_alignment_in_bits());
+    }
+}
+
 string
 array_type_def::get_subrange_representation() const
 {
@@ -16318,15 +16374,21 @@ get_type_representation(const array_type_def& a, bool internal)
       o << "array ("
 	<< a.get_subrange_representation()
 	<< ") of "
-	<<  e_type->get_pretty_representation(internal);
+	<<  e_type ? e_type->get_pretty_representation(internal):string("void");
     }
   else
     {
       if (internal)
-	r = get_type_name(e_type, /*qualified=*/true, /*internal=*/true)
+	r = (e_type
+	     ? get_type_name(e_type,
+			     /*qualified=*/true,
+			     /*internal=*/true)
+	     : string("void"))
 	  + a.get_subrange_representation();
       else
-	r = get_type_name(e_type, /*qualified=*/false, /*internal=*/false)
+	r = (e_type
+	     ? get_type_name(e_type, /*qualified=*/false, /*internal=*/false)
+	     : string("void"))
 	  + a.get_subrange_representation();
     }
 
@@ -16509,6 +16571,8 @@ void
 array_type_def::set_element_type(const type_base_sptr& element_type)
 {
   priv_->element_type_ = element_type;
+  update_size();
+  set_name(get_environment()->intern(get_pretty_representation()));
 }
 
 /// Append subranges from the vector @param subs to the current
@@ -16516,20 +16580,12 @@ array_type_def::set_element_type(const type_base_sptr& element_type)
 void
 array_type_def::append_subranges(const std::vector<subrange_sptr>& subs)
 {
-  size_t s = get_element_type()->get_size_in_bits();
 
-  for (std::vector<shared_ptr<subrange_type> >::const_iterator i = subs.begin();
-       i != subs.end();
-       ++i)
-    {
-      priv_->subranges_.push_back(*i);
-      s *= (*i)->get_length();
-    }
+  for (const auto &sub : subs)
+    priv_->subranges_.push_back(sub);
 
-  const environment* env = get_environment();
-  ABG_ASSERT(env);
-  set_name(env->intern(get_pretty_representation()));
-  set_size_in_bits(s);
+  update_size();
+  set_name(get_environment()->intern(get_pretty_representation()));
 }
 
 /// @return true if one of the sub-ranges of the array is infinite, or

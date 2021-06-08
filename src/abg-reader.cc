@@ -4118,6 +4118,18 @@ build_array_type_def(read_context&	ctxt,
       return result;
     }
 
+  string id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
+    id = CHAR_STR(s);
+  ABG_ASSERT(!id.empty());
+
+  if (type_base_sptr d = ctxt.get_type_decl(id))
+    {
+      array_type_def_sptr ty = is_array_type(d);
+      ABG_ASSERT(ty);
+      return ty;
+    }
+
   int dimensions = 0;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "dimensions"))
     dimensions = atoi(CHAR_STR(s));
@@ -4125,11 +4137,6 @@ build_array_type_def(read_context&	ctxt,
   string type_id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
     type_id = CHAR_STR(s);
-
-  // The type of array elements.
-  type_base_sptr type =
-    ctxt.build_or_get_type_decl(type_id, true);
-  ABG_ASSERT(type);
 
   // maybe building the type of array elements triggered building this
   // one in the mean time ...
@@ -4165,20 +4172,6 @@ build_array_type_def(read_context&	ctxt,
 	return nil;
     }
 
-  string id;
-  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
-    id = CHAR_STR(s);
-  ABG_ASSERT(!id.empty());
-
-  if (type_base_sptr d = ctxt.get_type_decl(id))
-    {
-      array_type_def_sptr ty = is_array_type(d);
-      ABG_ASSERT(ty);
-      ABG_ASSERT(*type == *ty->get_element_type());
-      ABG_ASSERT(type->get_alignment_in_bits() == alignment_in_bits);
-      return ty;
-    }
-
   location loc;
   read_location(ctxt, node, loc);
   array_type_def::subranges_type subranges;
@@ -4200,10 +4193,17 @@ build_array_type_def(read_context&	ctxt,
 	  }
       }
 
-  array_type_def_sptr ar_type(new array_type_def(type,
-						 subranges,
-						 loc));
+  array_type_def_sptr ar_type(new array_type_def(ctxt.get_environment(),
+						 subranges, loc));
   maybe_set_artificial_location(ctxt, node, ar_type);
+  if (ctxt.push_and_key_type_decl(ar_type, id, add_to_current_scope))
+    ctxt.map_xml_node_to_decl(node, ar_type);
+
+  // The type of array elements.
+  type_base_sptr type =
+    ctxt.build_or_get_type_decl(type_id, true);
+  ABG_ASSERT(type);
+  ar_type->set_element_type(type);
 
   if (dimensions != ar_type->get_dimension_count()
       || (alignment_in_bits
@@ -4245,13 +4245,7 @@ build_array_type_def(read_context&	ctxt,
 	}
     }
 
-  if (ctxt.push_and_key_type_decl(ar_type, id, add_to_current_scope))
-    {
-      ctxt.map_xml_node_to_decl(node, ar_type);
-      return ar_type;
-    }
-
-  return nil;
+  return ar_type;
 }
 
 /// Build an @ref enum_type_decl from the XML node that represents it,
