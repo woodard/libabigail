@@ -591,7 +591,10 @@ load_corpus_and_write_abixml(char* argv[],
 #ifdef WITH_DEBUG_SELF_COMPARISON
 	  if (opts.debug_abidiff
 	      && !opts.type_id_file_path.empty())
-	    load_canonical_type_ids(*read_ctxt, opts.type_id_file_path);
+	    {
+	      load_canonical_type_ids(*read_ctxt, opts.type_id_file_path);
+	      remove(opts.type_id_file_path.c_str());
+	    }
 #endif
 	  t.start();
 	  corpus_sptr corp2 =
