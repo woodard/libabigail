@@ -840,7 +840,7 @@ public:
 	if (j == m_env->get_type_id_canonical_type_map().end())
 	  std::cerr << "error: no type with type-id: '"
 		    << type_id
-		    << "' could be read back from the abixml file\n";
+		    << "' could be read back from the typeid file\n";
 	else if (j->second
 		 != reinterpret_cast<uintptr_t>(t->get_canonical_type().get()))
 	  // So thecanonical type of 't' (at abixml de-serialization
