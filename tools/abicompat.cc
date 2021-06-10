@@ -633,8 +633,7 @@ main(int argc, char* argv[])
   if (opts.display_version)
     {
       emit_prefix(argv[0], cout)
-	<< abigail::tools_utils::get_library_version_string()
-	<< "\n";
+	<< abigail::tools_utils::get_library_version_string();
       return 0;
     }
 
