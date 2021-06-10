@@ -470,8 +470,8 @@ The potential properties of this sections are listed below:
  Suppresses change reports involving a type which has at least one
  data mber inserted at an offset that is comprised in the range
  between range-begin`` and ``range-end``.  Please note that each of
- the lues ``range-begin`` and ``range-end`` can be of the same form as
- the :ref:`has_data_member_inserted_at
+ the values ``range-begin`` and ``range-end`` can be of the same form
+ as the :ref:`has_data_member_inserted_at
  <suppr_has_data_member_inserted_at_label>` property above.
 
  Usage examples of this properties are: ::
