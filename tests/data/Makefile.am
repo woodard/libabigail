@@ -566,6 +566,8 @@ test-read-dwarf/PR27700/pub-incdir/inc.h  \
 test-read-dwarf/PR27700/test-PR27700.abi  \
 test-read-dwarf/PR27700/test-PR27700.c  \
 test-read-dwarf/PR27700/test-PR27700.o  \
+test-read-dwarf/test-libaaudio.so       \
+test-read-dwarf/test-libaaudio.so.abi   \
 \
 test-annotate/test0.abi			\
 test-annotate/test1.abi			\
