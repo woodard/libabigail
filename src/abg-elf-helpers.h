@@ -50,6 +50,15 @@ find_section(Elf*		elf_handle,
 	     Elf64_Word		section_type);
 
 Elf_Scn*
+find_section(Elf* elf_handle, Elf64_Word section_type);
+
+Elf_Scn*
+find_symtab_section(Elf* elf_handle);
+
+Elf_Scn*
+find_dynsym_section(Elf* elf_handle);
+
+Elf_Scn*
 find_symbol_table_section(Elf* elf_handle);
 
 bool
