@@ -3843,7 +3843,11 @@ write_union_decl(const union_decl_sptr& d,
 	     decl->get_member_types().begin();
 	   ti != decl->get_member_types().end();
 	   ++ti)
-	write_member_type(*ti, ctxt, nb_ws);
+	if (!(*ti)->get_naked_canonical_type())
+	  write_member_type(*ti, ctxt, nb_ws);
+
+      write_canonical_types_of_scope(*decl, ctxt, nb_ws,
+				     /*is_member_type=*/true);
 
       for (union_decl::data_members::const_iterator data =
 	     decl->get_data_members().begin();

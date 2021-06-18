@@ -602,6 +602,7 @@ test-types-stability/pr19142-topo.o \
 test-types-stability/pr19204-libtcmalloc.so.4.2.6-xlc \
 test-types-stability/PR27165-libzmq.so.5.2.3 \
 test-types-stability/PR27165-libzmq.so.5.2.3.debug \
+test-types-stability/pr27980-libc.so \
 \
 test-diff-filter/test0-v0.cc		\
 test-diff-filter/test0-v1.cc		\

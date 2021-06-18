@@ -13547,9 +13547,23 @@ canonicalize(type_base_sptr t)
 	// Add the canonical type to the set of canonical types
 	// belonging to its scope.
 	if (scope)
-	  scope->get_canonical_types().insert(canonical);
-	//else, if the type doesn't have a scope, it's doesn't meant
-	// to be emitted.  This can be the case for the result of the
+	  {
+	    if (is_type(scope))
+	      // The scope in question is itself a type (e.g, a class
+	      // or union).  Let's call that type ST.  We want to add
+	      // 'canonical' to the set of canonical types belonging
+	      // to ST.
+	      if (type_base_sptr c = is_type(scope)->get_canonical_type())
+		// We want to add 'canonical' to set of canonical
+		// types belonging to the canonical type of ST.  That
+		// way, just looking at the canonical type of ST is
+		// enough to get the types that belong to the scope of
+		// the class of equivalence of ST.
+		scope = is_scope_decl(is_decl(c)).get();
+	    scope->get_canonical_types().insert(canonical);
+	  }
+	// else, if the type doesn't have a scope, it's not meant to be
+	// emitted.  This can be the case for the result of the
 	// function strip_typedef, for instance.
       }
 
