@@ -4706,7 +4706,7 @@ maybe_compare_as_member_decls(const decl_base& l,
 	    *k |= LOCAL_NON_TYPE_CHANGE_KIND;
 	}
     }
-  return result;
+  ABG_RETURN(result);
 }
 
 /// Compares two instances of @ref decl_base.
@@ -8522,7 +8522,7 @@ get_debug_representation(const type_or_decl_base* artifact)
   if (c)
     {
       class_decl *clazz = is_class_type(c);
-      string name = c->get_pretty_representation(/*internal=*/false, true);
+      string name = c->get_qualified_name();
       std::ostringstream o;
       o << name;
 
@@ -8535,8 +8535,7 @@ get_debug_representation(const type_or_decl_base* artifact)
 	      o << "  ";
 	      if (b->get_is_virtual())
 		o << "virtual ";
-	      o << b->get_base_class()->get_pretty_representation(/*internal=*/false,
-								  /*qualified=*/true)
+	      o << b->get_base_class()->get_qualified_name()
 		<< std::endl;
 	    }
 	}
@@ -8582,7 +8581,7 @@ get_debug_representation(const type_or_decl_base* artifact)
     }
   else if (const enum_type_decl* e = is_enum_type(artifact))
     {
-      string name = e->get_pretty_representation(/*internal=*/true, true);
+      string name = e->get_qualified_name();
       std::ostringstream o;
       o << name
 	<< " : "
