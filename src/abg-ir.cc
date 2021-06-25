@@ -5474,6 +5474,7 @@ bool
 is_anonymous_data_member(const var_decl& d)
 {
   return (is_data_member(d)
+	  && d.get_is_anonymous()
 	  && d.get_name().empty()
 	  && is_class_or_union_type(d.get_type()));
 }
