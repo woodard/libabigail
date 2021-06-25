@@ -13161,6 +13161,16 @@ types_defined_same_linux_kernel_corpus_public(const type_base& t1,
       || (c2 && c2->get_is_anonymous() && !c2->get_naming_typedef()))
     return false;
 
+  // Two anonymous classes with naming typedefs should have the same
+  // typedef name.
+  if (c1
+      && c2
+      && c1->get_is_anonymous() && c1->get_naming_typedef()
+      && c2->get_is_anonymous() && c2->get_naming_typedef())
+    if (c1->get_naming_typedef()->get_name()
+	!= c2->get_naming_typedef()->get_name())
+      return false;
+
   // Two anonymous enum types cannot be eligible to this optimization.
   if (const enum_type_decl *e1 = is_enum_type(&t1))
     if (const enum_type_decl *e2 = is_enum_type(&t2))
