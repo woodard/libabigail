@@ -7,6 +7,7 @@
 
 /// @file
 
+#include "config.h"
 #include <cstring>
 #include <iostream>
 #include <memory>
@@ -100,6 +101,9 @@ struct options
   bool			dump_diff_tree;
   bool			show_stats;
   bool			do_log;
+#ifdef WITH_DEBUG_SELF_COMPARISON
+  bool			do_debug;
+#endif
   vector<char*> di_root_paths1;
   vector<char*> di_root_paths2;
   vector<char**> prepared_di_root_paths1;
@@ -141,6 +145,10 @@ struct options
       dump_diff_tree(),
       show_stats(),
       do_log()
+#ifdef WITH_DEBUG_SELF_COMPARISON
+    ,
+    do_debug()
+#endif
   {}
 
   ~options()
@@ -225,6 +233,9 @@ display_usage(const string& prog_name, ostream& out)
     << " --dump-diff-tree  emit a debug dump of the internal diff tree to "
     "the error output stream\n"
     <<  " --stats  show statistics about various internal stuff\n"
+#ifdef WITH_DEBUG_SELF_COMPARISON
+    << " --debug debug the process of comparing an ABI corpus against itself"
+#endif
     << " --verbose show verbose messages about internal stuff\n";
 }
 
@@ -568,6 +579,10 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.show_stats = true;
       else if (!strcmp(argv[i], "--verbose"))
 	opts.do_log = true;
+#ifdef WITH_DEBUG_SELF_COMPARISON
+      else if (!strcmp(argv[i], "--debug"))
+	opts.do_debug = true;
+#endif
       else
 	{
 	  if (strlen(argv[i]) >= 2 && argv[i][0] == '-' && argv[i][1] == '-')
@@ -1097,6 +1112,10 @@ main(int argc, char* argv[])
 	}
 
       environment_sptr env(new environment);
+#ifdef WITH_DEBUG_SELF_COMPARISON
+	    if (opts.do_debug)
+	      env->self_comparison_debug_is_on(true);
+#endif
       translation_unit_sptr t1, t2;
       abigail::dwarf_reader::status c1_status =
 	abigail::dwarf_reader::STATUS_OK,

@@ -4069,9 +4069,9 @@
     <pointer-type-def type-id='type-id-2779' size-in-bits='64' id='type-id-2781'/>
     <qualified-type-def type-id='type-id-2781' restrict='yes' id='type-id-2782'/>
     <class-decl name='_IO_FILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-83'/>
-    <class-decl name='lconv' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1548'/>
     <class-decl name='__anonymous_struct__2' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-87' visibility='default' is-declaration-only='yes' id='type-id-76'/>
     <class-decl name='__anonymous_struct__4' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-77' visibility='default' is-declaration-only='yes' id='type-id-76'/>
+    <class-decl name='lconv' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1548'/>
     <namespace-decl name='__gnu_cxx'>
       <class-decl name='__aligned_buffer&lt;mongo::repl::ReplicationExecutor::Event&gt;' size-in-bits='768' is-struct='yes' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/ext/aligned_buffer.h' line='43' column='1' id='type-id-126'>
         <base-class access='public' layout-offset-in-bits='0' type-id='type-id-2783'/>

@@ -4467,10 +4467,15 @@ decl_base::get_qualified_name(interned_string& qn, bool internal) const
 /// Get the pretty representatin of the current declaration.
 ///
 ///
-/// @param internal set to true if the call is intended for an
-/// internal use (for technical use inside the library itself), false
-/// otherwise.  If you don't know what this is for, then set it to
-/// false.
+/// @param internal set to true if the call is intended to get a
+/// representation of the decl (or type) for the purpose of canonical
+/// type comparison.  This is mainly used in the function
+/// type_base::get_canonical_type_for().
+///
+/// In other words if the argument for this parameter is true then the
+/// call is meant for internal use (for technical use inside the
+/// library itself), false otherwise.  If you don't know what this is
+/// for, then set it to false.
 ///
 /// @param qualified_name if true, names emitted in the pretty
 /// representation are fully qualified.
@@ -4757,8 +4762,11 @@ equals(const decl_base& l, const decl_base& r, change_kind* k)
 	}
     }
 
-  // This is the name of the decls that we want to compare.
-  interned_string ln = l.get_qualified_name(), rn = r.get_qualified_name();
+  // This is the qualified name of the decls that we want to compare.
+  // We want to use the "internal" version of the qualified name as
+  // that one is stable even for anonymous decls.
+  interned_string ln = l.get_qualified_name(/*internal=*/true),
+    rn = r.get_qualified_name(/*internal=*/true);
 
   /// If both of the current decls have an anonymous scope then let's
   /// compare their name component by component by properly handling
@@ -14233,10 +14241,15 @@ operator!=(const type_decl_sptr& l, const type_decl_sptr& r)
 /// Get the pretty representation of the current instance of @ref
 /// type_decl.
 ///
-/// @param internal set to true if the call is intended for an
-/// internal use (for technical use inside the library itself), false
-/// otherwise.  If you don't know what this is for, then set it to
-/// false.
+/// @param internal set to true if the call is intended to get a
+/// representation of the decl (or type) for the purpose of canonical
+/// type comparison.  This is mainly used in the function
+/// type_base::get_canonical_type_for().
+///
+/// In other words if the argument for this parameter is true then the
+/// call is meant for internal use (for technical use inside the
+/// library itself), false otherwise.  If you don't know what this is
+/// for, then set it to false.
 ///
 /// @param qualified_name if true, names emitted in the pretty
 /// representation are fully qualified.
@@ -14450,10 +14463,15 @@ namespace_decl::namespace_decl(const environment*	env,
 /// Build and return a copy of the pretty representation of the
 /// namespace.
 ///
-/// @param internal set to true if the call is intended for an
-/// internal use (for technical use inside the library itself), false
-/// otherwise.  If you don't know what this is for, then set it to
-/// false.
+/// @param internal set to true if the call is intended to get a
+/// representation of the decl (or type) for the purpose of canonical
+/// type comparison.  This is mainly used in the function
+/// type_base::get_canonical_type_for().
+///
+/// In other words if the argument for this parameter is true then the
+/// call is meant for internal use (for technical use inside the
+/// library itself), false otherwise.  If you don't know what this is
+/// for, then set it to false.
 ///
 /// @param qualified_name if true, names emitted in the pretty
 /// representation are fully qualified.
@@ -15186,9 +15204,7 @@ pointer_type_def::set_pointed_to_type(const type_base_sptr& t)
 bool
 equals(const pointer_type_def& l, const pointer_type_def& r, change_kind* k)
 {
-  // Compare the pointed-to-types modulo the typedefs they might have
-  bool result = (peel_typedef_type(l.get_pointed_to_type())
-		 == peel_typedef_type(r.get_pointed_to_type()));
+  bool result = l.get_pointed_to_type() == r.get_pointed_to_type();
   if (!result)
     if (k)
       {
@@ -16202,10 +16218,15 @@ array_type_def::subrange_type::operator!=(const subrange_type& o) const
 /// Build a pretty representation for an
 /// array_type_def::subrange_type.
 ///
-/// @param internal set to true if the call is intended for an
-/// internal use (for technical use inside the library itself), false
-/// otherwise.  If you don't know what this is for, then set it to
-/// false.
+/// @param internal set to true if the call is intended to get a
+/// representation of the decl (or type) for the purpose of canonical
+/// type comparison.  This is mainly used in the function
+/// type_base::get_canonical_type_for().
+///
+/// In other words if the argument for this parameter is true then the
+/// call is meant for internal use (for technical use inside the
+/// library itself), false otherwise.  If you don't know what this is
+/// for, then set it to false.
 ///
 /// @return a copy of the pretty representation of the current
 /// instance of typedef_decl.
@@ -16407,10 +16428,21 @@ get_type_representation(const array_type_def& a, bool internal)
 /// Get the pretty representation of the current instance of @ref
 /// array_type_def.
 ///
+/// @param internal set to true if the call is intended to get a
+/// representation of the decl (or type) for the purpose of canonical
+/// type comparison.  This is mainly used in the function
+/// type_base::get_canonical_type_for().
+///
+/// In other words if the argument for this parameter is true then the
+/// call is meant for internal use (for technical use inside the
+/// library itself), false otherwise.  If you don't know what this is
+/// for, then set it to false.
 /// @param internal set to true if the call is intended for an
 /// internal use (for technical use inside the library itself), false
 /// otherwise.  If you don't know what this is for, then set it to
 /// false.
+///
+/// @return the pretty representation of the ABI artifact.
 string
 array_type_def::get_pretty_representation(bool internal,
 					  bool /*qualified_name*/) const
@@ -16799,10 +16831,15 @@ enum_type_decl::get_enumerators()
 /// Get the pretty representation of the current instance of @ref
 /// enum_type_decl.
 ///
-/// @param internal set to true if the call is intended for an
-/// internal use (for technical use inside the library itself), false
-/// otherwise.  If you don't know what this is for, then set it to
-/// false.
+/// @param internal set to true if the call is intended to get a
+/// representation of the decl (or type) for the purpose of canonical
+/// type comparison.  This is mainly used in the function
+/// type_base::get_canonical_type_for().
+///
+/// In other words if the argument for this parameter is true then the
+/// call is meant for internal use (for technical use inside the
+/// library itself), false otherwise.  If you don't know what this is
+/// for, then set it to false.
 ///
 /// @param qualified_name if true, names emitted in the pretty
 /// representation are fully qualified.
@@ -16812,8 +16849,13 @@ string
 enum_type_decl::get_pretty_representation(bool internal,
 					  bool qualified_name) const
 {
-  string r = "enum " + decl_base::get_pretty_representation(internal,
-							    qualified_name);
+  string r = "enum ";
+
+  if (internal && get_is_anonymous())
+    r += get_type_name(this, qualified_name, /*internal=*/true);
+  else
+    r += decl_base::get_pretty_representation(internal,
+					      qualified_name);
   return r;
 }
 
@@ -17434,14 +17476,9 @@ bool
 equals(const typedef_decl& l, const typedef_decl& r, change_kind* k)
 {
   bool result = true;
-  // Compare the properties of the 'is-a-member-decl" relation of this
-  // decl.  For typedefs of a C program, this always return true as
-  // there is no "member typedef type" in C.
-  //
-  // In other words, in C, Only the underlying types of typedefs are
-  // compared.  In C++ however, the properties of the
-  // 'is-a-member-decl' relation of the typedef are compared.
-  if (!maybe_compare_as_member_decls(l, r, k))
+  if (!equals(static_cast<const decl_base&>(l),
+	      static_cast<const decl_base&>(r),
+	      k))
     {
       result = false;
       if (k)
@@ -17493,11 +17530,16 @@ typedef_decl::operator==(const type_base& o) const
 
 /// Build a pretty representation for a typedef_decl.
 ///
-/// @param internal set to true if the call is intended for an
-/// internal use (for technical use inside the library itself), false
-/// otherwise.  If you don't know what this is for, then set it to
-/// false.
+/// @param internal set to true if the call is intended to get a
+/// representation of the decl (or type) for the purpose of canonical
+/// type comparison.  This is mainly used in the function
+/// type_base::get_canonical_type_for().
 ///
+/// In other words if the argument for this parameter is true then the
+/// call is meant for internal use (for technical use inside the
+/// library itself), false otherwise.  If you don't know what this is
+/// for, then set it to false.
+
 /// @param qualified_name if true, names emitted in the pretty
 /// representation are fully qualified.
 ///
@@ -17756,7 +17798,7 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
       if (k)
 	{
 	  if (!types_have_similar_structure(l.get_naked_type(),
-					   r.get_naked_type()))
+					    r.get_naked_type()))
 	    *k |= (LOCAL_TYPE_CHANGE_KIND);
 	  else
 	    *k |= SUBTYPE_CHANGE_KIND;
@@ -17786,17 +17828,18 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
     }
   bool symbols_are_equal = (s0 && s1 && result);
 
-  if (symbols_are_equal || (is_data_member(l) && is_data_member(r)))
+  if (symbols_are_equal)
     {
       // The variables have underlying elf symbols that are equal, so
       // now, let's compare the decl_base part of the variables w/o
       // considering their decl names.
-      const interned_string n1 = l.get_name(), n2 = r.get_name();
-      const_cast<var_decl&>(l).set_name("");
-      const_cast<var_decl&>(r).set_name("");
+      const environment* env = l.get_environment();
+      const interned_string n1 = l.get_qualified_name(), n2 = r.get_qualified_name();
+      const_cast<var_decl&>(l).set_qualified_name(env->intern(""));
+      const_cast<var_decl&>(r).set_qualified_name(env->intern(""));
       bool decl_bases_different = !l.decl_base::operator==(r);
-      const_cast<var_decl&>(l).set_name(n1);
-      const_cast<var_decl&>(r).set_name(n2);
+      const_cast<var_decl&>(l).set_qualified_name(n1);
+      const_cast<var_decl&>(r).set_qualified_name(n2);
 
       if (decl_bases_different)
 	{
@@ -17926,15 +17969,20 @@ var_decl::get_qualified_name(bool internal) const
       set_qualified_name(get_environment()->intern(r));
     }
 
-    return decl_base::get_qualified_name(internal);
+  return decl_base::get_qualified_name(internal);
 }
 
 /// Build and return the pretty representation of this variable.
 ///
-/// @param internal set to true if the call is intended for an
-/// internal use (for technical use inside the library itself), false
-/// otherwise.  If you don't know what this is for, then set it to
-/// false.
+/// @param internal set to true if the call is intended to get a
+/// representation of the decl (or type) for the purpose of canonical
+/// type comparison.  This is mainly used in the function
+/// type_base::get_canonical_type_for().
+///
+/// In other words if the argument for this parameter is true then the
+/// call is meant for internal use (for technical use inside the
+/// library itself), false otherwise.  If you don't know what this is
+/// for, then set it to false.
 ///
 /// @param qualified_name if true, names emitted in the pretty
 /// representation are fully qualified.
@@ -18031,7 +18079,11 @@ var_decl::get_anon_dm_reliable_name(bool qualified) const
 {
   string name;
   if (is_anonymous_data_member(this))
-    name = get_pretty_representation(true, qualified);
+    // This function is used in the comparison engine to determine
+    // which anonymous data member was deleted.  So it's not involved
+    // in type comparison or canonicalization.  We don't want to use
+    // the 'internal' version of the pretty presentation.
+    name = get_pretty_representation(/*internal=*/false, qualified);
   else
     name = get_name();
 
@@ -18075,6 +18127,7 @@ struct function_type::priv
   type_base_wptr return_type_;
   interned_string cached_name_;
   interned_string internal_cached_name_;
+  interned_string temp_internal_cached_name_;
 
   priv()
   {}
@@ -18549,16 +18602,37 @@ function_type::get_cached_name(bool internal) const
 {
   if (internal)
     {
-      if (!get_naked_canonical_type() || priv_->internal_cached_name_.empty())
-	priv_->internal_cached_name_ = get_function_type_name(this, internal);
-
-      return priv_->internal_cached_name_;
+      if (get_naked_canonical_type())
+	{
+	  if (priv_->internal_cached_name_.empty())
+	    priv_->internal_cached_name_ =
+	      get_function_type_name(this, /*internal=*/true);
+	  return priv_->internal_cached_name_;
+	}
+      else
+	{
+	  priv_->temp_internal_cached_name_ =
+	    get_function_type_name(this,
+				   /*internal=*/true);
+	  return priv_->temp_internal_cached_name_;
+	}
     }
-
-  if (!get_naked_canonical_type() || priv_->cached_name_.empty())
-    priv_->cached_name_ = get_function_type_name(this, internal);
-
-  return priv_->cached_name_;
+  else
+    {
+      if (get_naked_canonical_type())
+	{
+	  if (priv_->cached_name_.empty())
+	    priv_->cached_name_ =
+	      get_function_type_name(this, /*internal=*/false);
+	  return priv_->cached_name_;
+	}
+      else
+	{
+	  priv_->cached_name_ =
+	    get_function_type_name(this, /*internal=*/false);
+	  return priv_->cached_name_;
+	}
+    }
 }
 
 /// Equality operator for function_type.
@@ -18578,10 +18652,15 @@ function_type::operator==(const type_base& other) const
 /// Return a copy of the pretty representation of the current @ref
 /// function_type.
 ///
-/// @param internal set to true if the call is intended for an
-/// internal use (for technical use inside the library itself), false
-/// otherwise.  If you don't know what this is for, then set it to
-/// false.
+/// @param internal set to true if the call is intended to get a
+/// representation of the decl (or type) for the purpose of canonical
+/// type comparison.  This is mainly used in the function
+/// type_base::get_canonical_type_for().
+///
+/// In other words if the argument for this parameter is true then the
+/// call is meant for internal use (for technical use inside the
+/// library itself), false otherwise.  If you don't know what this is
+/// for, then set it to false.
 ///
 /// @return a copy of the pretty representation of the current @ref
 /// function_type.
@@ -18801,10 +18880,15 @@ method_type::set_class_type(const class_or_union_sptr& t)
 /// Return a copy of the pretty representation of the current @ref
 /// method_type.
 ///
-/// @param internal set to true if the call is intended for an
-/// internal use (for technical use inside the library itself), false
-/// otherwise.  If you don't know what this is for, then set it to
-/// false.
+/// @param internal set to true if the call is intended to get a
+/// representation of the decl (or type) for the purpose of canonical
+/// type comparison.  This is mainly used in the function
+/// type_base::get_canonical_type_for().
+///
+/// In other words if the argument for this parameter is true then the
+/// call is meant for internal use (for technical use inside the
+/// library itself), false otherwise.  If you don't know what this is
+/// for, then set it to false.
 ///
 /// @return a copy of the pretty representation of the current @ref
 /// method_type.
@@ -18943,10 +19027,15 @@ function_decl::function_decl(const string&	name,
 
 /// Get the pretty representation of the current instance of @ref function_decl.
 ///
-/// @param internal set to true if the call is intended for an
-/// internal use (for technical use inside the library itself), false
-/// otherwise.  If you don't know what this is for, then set it to
-/// false.
+/// @param internal set to true if the call is intended to get a
+/// representation of the decl (or type) for the purpose of canonical
+/// type comparison.  This is mainly used in the function
+/// type_base::get_canonical_type_for().
+///
+/// In other words if the argument for this parameter is true then the
+/// call is meant for internal use (for technical use inside the
+/// library itself), false otherwise.  If you don't know what this is
+/// for, then set it to false.
 ///
 /// @return the pretty representation for a function.
 string
@@ -18987,10 +19076,15 @@ function_decl::get_pretty_representation(bool internal,
 /// return type and the other specifiers of the beginning of the
 /// function's declaration ar omitted.
 ///
-/// @param internal set to true if the call is intended for an
-/// internal use (for technical use inside the library itself), false
-/// otherwise.  If you don't know what this is for, then set it to
-/// false.
+/// @param internal set to true if the call is intended to get a
+/// representation of the decl (or type) for the purpose of canonical
+/// type comparison.  This is mainly used in the function
+/// type_base::get_canonical_type_for().
+///
+/// In other words if the argument for this parameter is true then the
+/// call is meant for internal use (for technical use inside the
+/// library itself), false otherwise.  If you don't know what this is
+/// for, then set it to false.
 ///
 /// @return the pretty representation for the part of the function
 /// declaration that starts at the declarator.
@@ -19822,10 +19916,15 @@ function_decl::parameter::get_qualified_name(interned_string& qualified_name,
 /// Compute and return a copy of the pretty representation of the
 /// current function parameter.
 ///
-/// @param internal set to true if the call is intended for an
-/// internal use (for technical use inside the library itself), false
-/// otherwise.  If you don't know what this is for, then set it to
-/// false.
+/// @param internal set to true if the call is intended to get a
+/// representation of the decl (or type) for the purpose of canonical
+/// type comparison.  This is mainly used in the function
+/// type_base::get_canonical_type_for().
+///
+/// In other words if the argument for this parameter is true then the
+/// call is meant for internal use (for technical use inside the
+/// library itself), false otherwise.  If you don't know what this is
+/// for, then set it to false.
 ///
 /// @return a copy of the textual representation of the current
 /// function parameter.
@@ -20603,8 +20702,8 @@ class_or_union::find_anonymous_data_member(const var_decl_sptr& v) const
        ++it)
     {
       if (is_anonymous_data_member(*it))
-	if ((*it)->get_pretty_representation(true, true)
-	    == v->get_pretty_representation(true, true))
+	if ((*it)->get_pretty_representation(/*internal=*/false, true)
+	    == v->get_pretty_representation(/*internal=*/false, true))
 	  return *it;
     }
 
@@ -20965,7 +21064,9 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 	    // change.
 	    return true;
 
-	  if (l.get_environment()->decl_only_class_equals_definition()
+	  if ((l.get_environment()->decl_only_class_equals_definition()
+	       || ((odr_is_relevant(l) && !def1)
+		   || (odr_is_relevant(r) && !def2)))
 	      && !l.get_is_anonymous()
 	      && !r.get_is_anonymous())
 	    {
@@ -21657,10 +21758,15 @@ class_decl::sort_virtual_mem_fns()
 /// Getter of the pretty representation of the current instance of
 /// @ref class_decl.
 ///
-/// @param internal set to true if the call is intended for an
-/// internal use (for technical use inside the library itself), false
-/// otherwise.  If you don't know what this is for, then set it to
-/// false.
+/// @param internal set to true if the call is intended to get a
+/// representation of the decl (or type) for the purpose of canonical
+/// type comparison.  This is mainly used in the function
+/// type_base::get_canonical_type_for().
+///
+/// In other words if the argument for this parameter is true then the
+/// call is meant for internal use (for technical use inside the
+/// library itself), false otherwise.  If you don't know what this is
+/// for, then set it to false.
 ///
 /// @param qualified_name if true, names emitted in the pretty
 /// representation are fully qualified.
@@ -21678,9 +21784,14 @@ class_decl::get_pretty_representation(bool internal,
   // if an anonymous class is named by a typedef, then consider that
   // it has a name, which is the typedef name.
   if (get_is_anonymous())
-    return get_class_or_union_flat_representation(this, "",
-						  /*one_line=*/true,
-						  internal);
+    {
+      if (internal)
+	return cl + get_type_name(this, qualified_name, /*internal=*/true);
+      return get_class_or_union_flat_representation(this, "",
+						    /*one_line=*/true,
+						    internal);
+
+    }
 
   string result = cl;
   if (qualified_name)
@@ -23433,10 +23544,15 @@ union_decl::union_decl(const environment* env,
 /// Getter of the pretty representation of the current instance of
 /// @ref union_decl.
 ///
-/// @param internal set to true if the call is intended for an
-/// internal use (for technical use inside the library itself), false
-/// otherwise.  If you don't know what this is for, then set it to
-/// false.
+/// @param internal set to true if the call is intended to get a
+/// representation of the decl (or type) for the purpose of canonical
+/// type comparison.  This is mainly used in the function
+/// type_base::get_canonical_type_for().
+///
+/// In other words if the argument for this parameter is true then the
+/// call is meant for internal use (for technical use inside the
+/// library itself), false otherwise.  If you don't know what this is
+/// for, then set it to false.
 ///
 /// @param qualified_name if true, names emitted in the pretty
 /// representation are fully qualified.
@@ -23448,9 +23564,15 @@ union_decl::get_pretty_representation(bool internal,
 {
   string repr;
   if (get_is_anonymous())
-    repr = get_class_or_union_flat_representation(this, "",
-						  /*one_line=*/true,
-						  internal);
+    {
+      if (internal)
+	repr = string("union ") +
+	  get_type_name(this, qualified_name, /*internal=*/true);
+      else
+	repr = get_class_or_union_flat_representation(this, "",
+						      /*one_line=*/true,
+						      internal);
+    }
   else
     {
       repr = "union ";
@@ -24611,8 +24733,8 @@ type_has_sub_type_changes(const type_base_sptr t_v1,
   type_base_sptr t1 = strip_typedef(t_v1);
   type_base_sptr t2 = strip_typedef(t_v2);
 
-  string repr1 = get_pretty_representation(t1),
-    repr2 = get_pretty_representation(t2);
+  string repr1 = get_pretty_representation(t1, /*internal=*/false),
+    repr2 = get_pretty_representation(t2, /*internal=*/false);
   return (t1 != t2 && repr1 == repr2);
 }
 
@@ -24661,7 +24783,7 @@ hash_type_or_decl(const type_or_decl_base *tod)
 	{
 	  ABG_ASSERT(v->get_type());
 	  size_t h = hash_type_or_decl(v->get_type());
-	  string repr = v->get_pretty_representation();
+	  string repr = v->get_pretty_representation(/*internal=*/true);
 	  std::hash<string> hash_string;
 	  h = hashing::combine_hashes(h, hash_string(repr));
 	  result = h;
@@ -24670,7 +24792,7 @@ hash_type_or_decl(const type_or_decl_base *tod)
 	{
 	  ABG_ASSERT(f->get_type());
 	  size_t h = hash_type_or_decl(f->get_type());
-	  string repr = f->get_pretty_representation();
+	  string repr = f->get_pretty_representation(/*internal=*/true);
 	  std::hash<string> hash_string;
 	  h = hashing::combine_hashes(h, hash_string(repr));
 	  result = h;
@@ -24778,7 +24900,7 @@ hash_as_canonical_type_or_constant(const type_base *t)
 
   // If we reached this point, it means we are seeing a
   // non-canonicalized type.  It must be a decl-only class or a
-  // function type, otherwise it means that for some weird reason, the
+  // typedef type, otherwise it means that for some weird reason, the
   // type hasn't been canonicalized.  It should be!
   ABG_ASSERT(is_declaration_only_class_or_union_type(t));
 
@@ -24804,8 +24926,8 @@ function_decl_is_less_than(const function_decl &f, const function_decl &s)
   if (fr != sr)
     return fr < sr;
 
-  fr = f.get_pretty_representation(),
-    sr = s.get_pretty_representation();
+  fr = f.get_pretty_representation(/*internal=*/true),
+    sr = s.get_pretty_representation(/*internal=*/true);
 
   if (fr != sr)
     return fr < sr;

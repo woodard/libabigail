@@ -995,7 +995,7 @@ annotate(const T&	decl,
   do_indent(o, indent);
 
   o << "<!-- "
-    << xml::escape_xml_comment(decl->get_pretty_representation())
+    << xml::escape_xml_comment(decl->get_pretty_representation(/*internal=*/false))
     << " -->\n";
 
   return true;

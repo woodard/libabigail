@@ -1,4 +1,4 @@
-Functions changes summary: 8 Removed, 3 Changed (7 filtered out), 16 Added functions
+Functions changes summary: 8 Removed, 3 Changed (6 filtered out), 16 Added functions
 Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 Function symbols changes summary: 1 Removed, 0 Added function symbol not referenced by debug info
 Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referenced by debug info

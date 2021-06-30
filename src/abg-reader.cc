@@ -901,6 +901,7 @@ public:
 	&& !is_method_type(t)
 	&& !is_reference_type(t)
 	&& !is_pointer_type(t)
+	&& !is_array_type(t)
 	&& !is_qualified_type(t)
 	&& !is_typedef(t)
 	&& !is_enum_type(t)

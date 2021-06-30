@@ -422,9 +422,9 @@
     <pointer-type-def type-id='type-id-246' size-in-bits='64' id='type-id-248'/>
     <qualified-type-def type-id='type-id-248' restrict='yes' id='type-id-249'/>
     <class-decl name='_IO_FILE' size-in-bits='1728' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-25'/>
-    <class-decl name='lconv' size-in-bits='768' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-233'/>
     <class-decl name='__anonymous_struct__2' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-22' visibility='default' is-declaration-only='yes' id='type-id-21'/>
     <class-decl name='__anonymous_struct__3' size-in-bits='64' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-30' visibility='default' is-declaration-only='yes' id='type-id-29'/>
+    <class-decl name='lconv' size-in-bits='768' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-233'/>
     <namespace-decl name='std'>
       <enum-decl name='_Ios_Openmode' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/bits/ios_base.h' line='111' column='1' id='type-id-250'>
         <underlying-type type-id='type-id-16'/>

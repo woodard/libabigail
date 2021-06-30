@@ -15,7 +15,7 @@
         underlying type '_IceConn*' changed:
           in pointed to type 'struct _IceConn' at ICEconn.h:131:1:
             type size hasn't changed
-            2 data member changes (2 filtered):
+            2 data member changes (3 filtered):
               type of 'IceListenObj listen_obj' changed:
                 underlying type '_IceListenObj*' changed:
                   in pointed to type 'struct _IceListenObj' at ICElibint.h:120:1:

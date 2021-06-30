@@ -966,6 +966,8 @@ test-diff-filter/test-PR27598-v0.o           \
 test-diff-filter/test-PR27598-v1.cc          \
 test-diff-filter/test-PR27598-v1.o           \
 test-diff-filter/test-PR27598-report-0.txt   \
+test-diff-filter/test-PR27995-report-0.txt   \
+test-diff-filter/test-PR27995.abi	     \
 \
 test-diff-suppr/test0-type-suppr-v0.cc	\
 test-diff-suppr/test0-type-suppr-v1.cc	\

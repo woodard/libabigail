@@ -1,6 +1,6 @@
 ================ changes of 'libspice-server.so.1.8.0'===============
-Leaf changes summary: 10 artifacts changed (10 filtered out)
-  Changed leaf types summary: 1 (10 filtered out) leaf types changed
+Leaf changes summary: 10 artifacts changed (13 filtered out)
+  Changed leaf types summary: 1 (13 filtered out) leaf types changed
   Removed/Changed/Added functions summary: 1 Removed, 0 Changed, 8 Added functions
   Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
 

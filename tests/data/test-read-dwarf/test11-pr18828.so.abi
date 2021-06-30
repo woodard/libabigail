@@ -663,26 +663,26 @@
     <array-type-def dimensions='1' type-id='type-id-5' size-in-bits='400' id='type-id-19'>
       <subrange length='50' type-id='type-id-3' id='type-id-20'/>
     </array-type-def>
-    <class-decl name='typedef __va_list_tag __va_list_tag' size-in-bits='192' is-struct='yes' visibility='default' id='type-id-21'>
+    <class-decl name='__anonymous_struct__5' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' id='type-id-21'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='gp_offset' type-id='type-id-22' visibility='default'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='32'>
-        <var-decl name='fp_offset' type-id='type-id-22' visibility='default'/>
+        <var-decl name='__pfn' type-id='type-id-22' visibility='default' filepath='/usr/include/c++/4.9/functional' line='1761' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='overflow_arg_area' type-id='type-id-23' visibility='default'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='reg_save_area' type-id='type-id-23' visibility='default'/>
+        <var-decl name='__delta' type-id='type-id-23' visibility='default' filepath='/usr/include/c++/4.9/functional' line='1761' column='1'/>
       </data-member>
     </class-decl>
-    <class-decl name='__anonymous_struct__5' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' id='type-id-24'>
+    <class-decl name='typedef __va_list_tag __va_list_tag' size-in-bits='192' is-struct='yes' visibility='default' id='type-id-24'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='__pfn' type-id='type-id-25' visibility='default' filepath='/usr/include/c++/4.9/functional' line='1761' column='1'/>
+        <var-decl name='gp_offset' type-id='type-id-25' visibility='default'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='32'>
+        <var-decl name='fp_offset' type-id='type-id-25' visibility='default'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='__delta' type-id='type-id-26' visibility='default' filepath='/usr/include/c++/4.9/functional' line='1761' column='1'/>
+        <var-decl name='overflow_arg_area' type-id='type-id-26' visibility='default'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='128'>
+        <var-decl name='reg_save_area' type-id='type-id-26' visibility='default'/>
       </data-member>
     </class-decl>
     <type-decl name='double' size-in-bits='64' id='type-id-27'/>
@@ -692,7 +692,7 @@
       <subrange length='10' type-id='type-id-3' id='type-id-31'/>
     </array-type-def>
     <type-decl name='long double' size-in-bits='128' id='type-id-32'/>
-    <type-decl name='long int' size-in-bits='64' id='type-id-26'/>
+    <type-decl name='long int' size-in-bits='64' id='type-id-23'/>
     <type-decl name='long long int' size-in-bits='64' id='type-id-33'/>
     <type-decl name='long long unsigned int' size-in-bits='64' id='type-id-34'/>
     <type-decl name='short int' size-in-bits='16' id='type-id-35'/>
@@ -718,7 +718,7 @@
     <array-type-def dimensions='1' type-id='type-id-41' size-in-bits='40' id='type-id-48'>
       <subrange length='5' type-id='type-id-3' id='type-id-49'/>
     </array-type-def>
-    <type-decl name='unsigned int' size-in-bits='32' id='type-id-22'/>
+    <type-decl name='unsigned int' size-in-bits='32' id='type-id-25'/>
     <type-decl name='unsigned long int' size-in-bits='64' id='type-id-50'/>
     <array-type-def dimensions='1' type-id='type-id-50' size-in-bits='39936' id='type-id-51'>
       <subrange length='624' type-id='type-id-3' id='type-id-52'/>
@@ -819,16 +819,16 @@
         <var-decl name='_offset' type-id='type-id-70' visibility='default' filepath='/usr/include/libio.h' line='293' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1216'>
-        <var-decl name='__pad1' type-id='type-id-23' visibility='default' filepath='/usr/include/libio.h' line='302' column='1'/>
+        <var-decl name='__pad1' type-id='type-id-26' visibility='default' filepath='/usr/include/libio.h' line='302' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1280'>
-        <var-decl name='__pad2' type-id='type-id-23' visibility='default' filepath='/usr/include/libio.h' line='303' column='1'/>
+        <var-decl name='__pad2' type-id='type-id-26' visibility='default' filepath='/usr/include/libio.h' line='303' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1344'>
-        <var-decl name='__pad3' type-id='type-id-23' visibility='default' filepath='/usr/include/libio.h' line='304' column='1'/>
+        <var-decl name='__pad3' type-id='type-id-26' visibility='default' filepath='/usr/include/libio.h' line='304' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1408'>
-        <var-decl name='__pad4' type-id='type-id-23' visibility='default' filepath='/usr/include/libio.h' line='305' column='1'/>
+        <var-decl name='__pad4' type-id='type-id-26' visibility='default' filepath='/usr/include/libio.h' line='305' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1472'>
         <var-decl name='__pad5' type-id='type-id-71' visibility='default' filepath='/usr/include/libio.h' line='306' column='1'/>
@@ -916,10 +916,10 @@
     </class-decl>
     <typedef-decl name='int8_t' type-id='type-id-36' filepath='/usr/include/stdint.h' line='36' column='1' id='type-id-73'/>
     <typedef-decl name='int32_t' type-id='type-id-29' filepath='/usr/include/stdint.h' line='38' column='1' id='type-id-74'/>
-    <typedef-decl name='int64_t' type-id='type-id-26' filepath='/usr/include/stdint.h' line='40' column='1' id='type-id-75'/>
-    <typedef-decl name='uint32_t' type-id='type-id-22' filepath='/usr/include/stdint.h' line='51' column='1' id='type-id-76'/>
+    <typedef-decl name='int64_t' type-id='type-id-23' filepath='/usr/include/stdint.h' line='40' column='1' id='type-id-75'/>
+    <typedef-decl name='uint32_t' type-id='type-id-25' filepath='/usr/include/stdint.h' line='51' column='1' id='type-id-76'/>
     <typedef-decl name='uint64_t' type-id='type-id-50' filepath='/usr/include/stdint.h' line='55' column='1' id='type-id-77'/>
-    <typedef-decl name='intmax_t' type-id='type-id-26' filepath='/usr/include/stdint.h' line='134' column='1' id='type-id-78'/>
+    <typedef-decl name='intmax_t' type-id='type-id-23' filepath='/usr/include/stdint.h' line='134' column='1' id='type-id-78'/>
     <typedef-decl name='FILE' type-id='type-id-67' filepath='/usr/include/stdio.h' line='48' column='1' id='type-id-79'/>
     <typedef-decl name='__FILE' type-id='type-id-67' filepath='/usr/include/stdio.h' line='64' column='1' id='type-id-80'/>
     <typedef-decl name='fpos_t' type-id='type-id-59' filepath='/usr/include/stdio.h' line='110' column='1' id='type-id-81'/>
@@ -934,10 +934,10 @@
     <typedef-decl name='div_t' type-id='type-id-83' filepath='/usr/include/stdlib.h' line='101' column='1' id='type-id-82'/>
     <class-decl name='__anonymous_struct__3' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-84' visibility='default' filepath='/usr/include/stdlib.h' line='106' column='1' id='type-id-85'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='quot' type-id='type-id-26' visibility='default' filepath='/usr/include/stdlib.h' line='107' column='1'/>
+        <var-decl name='quot' type-id='type-id-23' visibility='default' filepath='/usr/include/stdlib.h' line='107' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='rem' type-id='type-id-26' visibility='default' filepath='/usr/include/stdlib.h' line='108' column='1'/>
+        <var-decl name='rem' type-id='type-id-23' visibility='default' filepath='/usr/include/stdlib.h' line='108' column='1'/>
       </data-member>
     </class-decl>
     <typedef-decl name='ldiv_t' type-id='type-id-85' filepath='/usr/include/stdlib.h' line='109' column='1' id='type-id-84'/>
@@ -982,7 +982,7 @@
         <var-decl name='tm_isdst' type-id='type-id-29' visibility='default' filepath='/usr/include/time.h' line='143' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
-        <var-decl name='tm_gmtoff' type-id='type-id-26' visibility='default' filepath='/usr/include/time.h' line='146' column='1'/>
+        <var-decl name='tm_gmtoff' type-id='type-id-23' visibility='default' filepath='/usr/include/time.h' line='146' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
         <var-decl name='tm_zone' type-id='type-id-95' visibility='default' filepath='/usr/include/time.h' line='147' column='1'/>
@@ -992,7 +992,7 @@
       <member-type access='public'>
         <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='86' column='1' id='type-id-97'>
           <data-member access='public'>
-            <var-decl name='__wch' type-id='type-id-22' visibility='default' filepath='/usr/include/wchar.h' line='88' column='1'/>
+            <var-decl name='__wch' type-id='type-id-25' visibility='default' filepath='/usr/include/wchar.h' line='88' column='1'/>
           </data-member>
           <data-member access='public'>
             <var-decl name='__wchb' type-id='type-id-17' visibility='default' filepath='/usr/include/wchar.h' line='92' column='1'/>
@@ -1011,13 +1011,13 @@
     <typedef-decl name='wctype_t' type-id='type-id-50' filepath='/usr/include/wctype.h' line='52' column='1' id='type-id-99'/>
     <typedef-decl name='wctrans_t' type-id='type-id-100' filepath='/usr/include/wctype.h' line='186' column='1' id='type-id-101'/>
     <typedef-decl name='__int32_t' type-id='type-id-29' filepath='/usr/include/x86_64-linux-gnu/bits/types.h' line='40' column='1' id='type-id-102'/>
-    <typedef-decl name='__off_t' type-id='type-id-26' filepath='/usr/include/x86_64-linux-gnu/bits/types.h' line='131' column='1' id='type-id-61'/>
-    <typedef-decl name='__off64_t' type-id='type-id-26' filepath='/usr/include/x86_64-linux-gnu/bits/types.h' line='132' column='1' id='type-id-70'/>
-    <typedef-decl name='__clock_t' type-id='type-id-26' filepath='/usr/include/x86_64-linux-gnu/bits/types.h' line='135' column='1' id='type-id-90'/>
-    <typedef-decl name='__time_t' type-id='type-id-26' filepath='/usr/include/x86_64-linux-gnu/bits/types.h' line='139' column='1' id='type-id-92'/>
+    <typedef-decl name='__off_t' type-id='type-id-23' filepath='/usr/include/x86_64-linux-gnu/bits/types.h' line='131' column='1' id='type-id-61'/>
+    <typedef-decl name='__off64_t' type-id='type-id-23' filepath='/usr/include/x86_64-linux-gnu/bits/types.h' line='132' column='1' id='type-id-70'/>
+    <typedef-decl name='__clock_t' type-id='type-id-23' filepath='/usr/include/x86_64-linux-gnu/bits/types.h' line='135' column='1' id='type-id-90'/>
+    <typedef-decl name='__time_t' type-id='type-id-23' filepath='/usr/include/x86_64-linux-gnu/bits/types.h' line='139' column='1' id='type-id-92'/>
     <typedef-decl name='_Atomic_word' type-id='type-id-29' filepath='/usr/include/x86_64-linux-gnu/c++/4.9/bits/atomic_word.h' line='32' column='1' id='type-id-103'/>
     <typedef-decl name='size_t' type-id='type-id-50' filepath='/usr/lib/gcc/x86_64-linux-gnu/4.9/include/stddef.h' line='212' column='1' id='type-id-71'/>
-    <typedef-decl name='wint_t' type-id='type-id-22' filepath='/usr/lib/gcc/x86_64-linux-gnu/4.9/include/stddef.h' line='353' column='1' id='type-id-104'/>
+    <typedef-decl name='wint_t' type-id='type-id-25' filepath='/usr/lib/gcc/x86_64-linux-gnu/4.9/include/stddef.h' line='353' column='1' id='type-id-104'/>
     <pointer-type-def type-id='type-id-79' size-in-bits='64' id='type-id-105'/>
     <pointer-type-def type-id='type-id-67' size-in-bits='64' id='type-id-66'/>
     <pointer-type-def type-id='type-id-63' size-in-bits='64' id='type-id-69'/>
@@ -1261,7 +1261,7 @@
     <qualified-type-def type-id='type-id-389' id='type-id-390'/>
     <reference-type-def kind='lvalue' type-id='type-id-388' size-in-bits='64' id='type-id-389'/>
     <qualified-type-def type-id='type-id-78' const='yes' id='type-id-391'/>
-    <qualified-type-def type-id='type-id-26' const='yes' id='type-id-392'/>
+    <qualified-type-def type-id='type-id-23' const='yes' id='type-id-392'/>
     <qualified-type-def type-id='type-id-33' const='yes' id='type-id-393'/>
     <qualified-type-def type-id='type-id-34' const='yes' id='type-id-394'/>
     <qualified-type-def type-id='type-id-98' const='yes' id='type-id-395'/>
@@ -2061,7 +2061,7 @@
     <qualified-type-def type-id='type-id-94' const='yes' id='type-id-1525'/>
     <pointer-type-def type-id='type-id-1525' size-in-bits='64' id='type-id-1526'/>
     <qualified-type-def type-id='type-id-41' const='yes' id='type-id-1527'/>
-    <qualified-type-def type-id='type-id-22' const='yes' id='type-id-1528'/>
+    <qualified-type-def type-id='type-id-25' const='yes' id='type-id-1528'/>
     <reference-type-def kind='lvalue' type-id='type-id-1528' size-in-bits='64' id='type-id-1529'/>
     <qualified-type-def type-id='type-id-50' const='yes' id='type-id-1530'/>
     <qualified-type-def type-id='type-id-1531' id='type-id-1532'/>
@@ -2080,7 +2080,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-29' size-in-bits='64' id='type-id-1545'/>
     <pointer-type-def type-id='type-id-29' size-in-bits='64' id='type-id-1546'/>
     <pointer-type-def type-id='type-id-72' size-in-bits='64' id='type-id-1547'/>
-    <pointer-type-def type-id='type-id-26' size-in-bits='64' id='type-id-1548'/>
+    <pointer-type-def type-id='type-id-23' size-in-bits='64' id='type-id-1548'/>
     <reference-type-def kind='lvalue' type-id='type-id-33' size-in-bits='64' id='type-id-1549'/>
     <pointer-type-def type-id='type-id-34' size-in-bits='64' id='type-id-1550'/>
     <pointer-type-def type-id='type-id-98' size-in-bits='64' id='type-id-1551'/>
@@ -2697,16 +2697,16 @@
     <reference-type-def kind='rvalue' type-id='type-id-1517' size-in-bits='64' id='type-id-2267'/>
     <pointer-type-def type-id='type-id-93' size-in-bits='64' id='type-id-2268'/>
     <pointer-type-def type-id='type-id-94' size-in-bits='64' id='type-id-2269'/>
-    <pointer-type-def type-id='type-id-21' size-in-bits='64' id='type-id-2270'/>
+    <pointer-type-def type-id='type-id-24' size-in-bits='64' id='type-id-2270'/>
     <pointer-type-def type-id='type-id-76' size-in-bits='64' id='type-id-2271'/>
     <reference-type-def kind='lvalue' type-id='type-id-44' size-in-bits='64' id='type-id-2272'/>
-    <reference-type-def kind='lvalue' type-id='type-id-22' size-in-bits='64' id='type-id-2273'/>
-    <pointer-type-def type-id='type-id-22' size-in-bits='64' id='type-id-2274'/>
+    <reference-type-def kind='lvalue' type-id='type-id-25' size-in-bits='64' id='type-id-2273'/>
+    <pointer-type-def type-id='type-id-25' size-in-bits='64' id='type-id-2274'/>
     <reference-type-def kind='lvalue' type-id='type-id-50' size-in-bits='64' id='type-id-2275'/>
     <pointer-type-def type-id='type-id-50' size-in-bits='64' id='type-id-2276'/>
     <pointer-type-def type-id='type-id-2277' size-in-bits='64' id='type-id-2278'/>
-    <pointer-type-def type-id='type-id-2279' size-in-bits='64' id='type-id-25'/>
-    <pointer-type-def type-id='type-id-57' size-in-bits='64' id='type-id-23'/>
+    <pointer-type-def type-id='type-id-2279' size-in-bits='64' id='type-id-22'/>
+    <pointer-type-def type-id='type-id-57' size-in-bits='64' id='type-id-26'/>
     <qualified-type-def type-id='type-id-984' volatile='yes' id='type-id-1535'/>
     <pointer-type-def type-id='type-id-1535' size-in-bits='64' id='type-id-2280'/>
     <qualified-type-def type-id='type-id-1145' volatile='yes' id='type-id-2281'/>
@@ -2717,7 +2717,7 @@
       <class-decl name='atomic&lt;unsigned int&gt;' size-in-bits='32' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/atomic' line='617' column='1' id='type-id-1145'>
         <base-class access='public' layout-offset-in-bits='0' type-id='type-id-984'/>
         <member-type access='public'>
-          <typedef-decl name='__integral_type' type-id='type-id-22' filepath='/usr/include/c++/4.9/atomic' line='619' column='1' id='type-id-2285'/>
+          <typedef-decl name='__integral_type' type-id='type-id-25' filepath='/usr/include/c++/4.9/atomic' line='619' column='1' id='type-id-2285'/>
         </member-type>
         <member-function access='public'>
           <function-decl name='atomic' filepath='/usr/include/c++/4.9/atomic' line='622' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -4013,7 +4013,7 @@
       <typedef-decl name='memory_order' type-id='type-id-2479' filepath='/usr/include/c++/4.9/bits/atomic_base.h' line='64' column='1' id='type-id-2480'/>
       <class-decl name='__atomic_base&lt;unsigned int&gt;' size-in-bits='32' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/bits/atomic_base.h' line='353' column='1' id='type-id-984'>
         <member-type access='private'>
-          <typedef-decl name='__int_type' type-id='type-id-22' filepath='/usr/include/c++/4.9/bits/atomic_base.h' line='356' column='1' id='type-id-1924'/>
+          <typedef-decl name='__int_type' type-id='type-id-25' filepath='/usr/include/c++/4.9/bits/atomic_base.h' line='356' column='1' id='type-id-1924'/>
         </member-type>
         <data-member access='private' layout-offset-in-bits='0'>
           <var-decl name='_M_i' type-id='type-id-1924' visibility='default' filepath='/usr/include/c++/4.9/bits/atomic_base.h' line='358' column='1'/>
@@ -4471,7 +4471,7 @@
           <typedef-decl name='difference_type' type-id='type-id-2526' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='157' column='1' id='type-id-2525'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='rebind' type-id='type-id-23' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='160' column='1' id='type-id-2325'/>
+          <typedef-decl name='rebind' type-id='type-id-26' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='160' column='1' id='type-id-2325'/>
         </member-type>
       </class-decl>
       <class-decl name='pointer_traits&lt;boost::shared_ptr&lt;boost::program_options::options_description&gt;*&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='150' column='1' id='type-id-2527'>
@@ -4482,7 +4482,7 @@
           <typedef-decl name='difference_type' type-id='type-id-2526' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='157' column='1' id='type-id-2529'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='rebind' type-id='type-id-23' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='160' column='1' id='type-id-2337'/>
+          <typedef-decl name='rebind' type-id='type-id-26' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='160' column='1' id='type-id-2337'/>
         </member-type>
       </class-decl>
       <class-decl name='pointer_traits&lt;mongo::logger::Appender&lt;mongo::logger::MessageEventEphemeral&gt;**&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='150' column='1' id='type-id-2530'>
@@ -4493,7 +4493,7 @@
           <typedef-decl name='difference_type' type-id='type-id-2526' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='157' column='1' id='type-id-2532'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='rebind' type-id='type-id-23' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='160' column='1' id='type-id-2349'/>
+          <typedef-decl name='rebind' type-id='type-id-26' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='160' column='1' id='type-id-2349'/>
         </member-type>
       </class-decl>
       <class-decl name='pointer_traits&lt;mongo::optionenvironment::Constraint**&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='150' column='1' id='type-id-2533'>
@@ -4504,7 +4504,7 @@
           <typedef-decl name='difference_type' type-id='type-id-2526' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='157' column='1' id='type-id-2535'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='rebind' type-id='type-id-23' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='160' column='1' id='type-id-2361'/>
+          <typedef-decl name='rebind' type-id='type-id-26' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='160' column='1' id='type-id-2361'/>
         </member-type>
       </class-decl>
       <class-decl name='pointer_traits&lt;mongo::optionenvironment::KeyConstraint**&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='150' column='1' id='type-id-2536'>
@@ -4515,7 +4515,7 @@
           <typedef-decl name='difference_type' type-id='type-id-2526' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='157' column='1' id='type-id-2538'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='rebind' type-id='type-id-23' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='160' column='1' id='type-id-2373'/>
+          <typedef-decl name='rebind' type-id='type-id-26' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='160' column='1' id='type-id-2373'/>
         </member-type>
       </class-decl>
       <class-decl name='pointer_traits&lt;std::_Rb_tree_node&lt;std::pair&lt;const std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;*&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='150' column='1' id='type-id-2539'>
@@ -4526,7 +4526,7 @@
           <typedef-decl name='difference_type' type-id='type-id-2526' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='157' column='1' id='type-id-2541'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='rebind' type-id='type-id-23' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='160' column='1' id='type-id-2385'/>
+          <typedef-decl name='rebind' type-id='type-id-26' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='160' column='1' id='type-id-2385'/>
         </member-type>
       </class-decl>
       <class-decl name='pointer_traits&lt;std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;*&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='150' column='1' id='type-id-2542'>
@@ -4537,7 +4537,7 @@
           <typedef-decl name='difference_type' type-id='type-id-2526' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='157' column='1' id='type-id-2544'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='rebind' type-id='type-id-23' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='160' column='1' id='type-id-2396'/>
+          <typedef-decl name='rebind' type-id='type-id-26' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='160' column='1' id='type-id-2396'/>
         </member-type>
       </class-decl>
       <class-decl name='pointer_traits&lt;std::pair&lt;const std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, mongo::ServerParameter*&gt;*&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='150' column='1' id='type-id-2545'>
@@ -4548,7 +4548,7 @@
           <typedef-decl name='difference_type' type-id='type-id-2526' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='157' column='1' id='type-id-2547'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='rebind' type-id='type-id-23' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='160' column='1' id='type-id-2408'/>
+          <typedef-decl name='rebind' type-id='type-id-26' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='160' column='1' id='type-id-2408'/>
         </member-type>
       </class-decl>
       <class-decl name='pointer_traits&lt;std::pair&lt;const std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, mongo::optionenvironment::Value&gt;*&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='150' column='1' id='type-id-2548'>
@@ -4559,7 +4559,7 @@
           <typedef-decl name='difference_type' type-id='type-id-2526' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='157' column='1' id='type-id-2550'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='rebind' type-id='type-id-23' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='160' column='1' id='type-id-2420'/>
+          <typedef-decl name='rebind' type-id='type-id-26' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='160' column='1' id='type-id-2420'/>
         </member-type>
       </class-decl>
       <class-decl name='pointer_traits&lt;std::pair&lt;const std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;*&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='150' column='1' id='type-id-2551'>
@@ -4570,7 +4570,7 @@
           <typedef-decl name='difference_type' type-id='type-id-2526' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='157' column='1' id='type-id-2553'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='rebind' type-id='type-id-23' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='160' column='1' id='type-id-2432'/>
+          <typedef-decl name='rebind' type-id='type-id-26' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='160' column='1' id='type-id-2432'/>
         </member-type>
       </class-decl>
       <class-decl name='pointer_traits&lt;std::shared_ptr&lt;mongo::optionenvironment::Constraint&gt;*&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='150' column='1' id='type-id-2554'>
@@ -4581,7 +4581,7 @@
           <typedef-decl name='difference_type' type-id='type-id-2526' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='157' column='1' id='type-id-2556'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='rebind' type-id='type-id-23' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='160' column='1' id='type-id-2444'/>
+          <typedef-decl name='rebind' type-id='type-id-26' filepath='/usr/include/c++/4.9/bits/ptr_traits.h' line='160' column='1' id='type-id-2444'/>
         </member-type>
       </class-decl>
       <class-decl name='mersenne_twister_engine&lt;long unsigned int, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul&gt;' size-in-bits='40000' visibility='default' filepath='/usr/include/c++/4.9/bits/random.h' line='451' column='1' id='type-id-2136'>
@@ -4733,7 +4733,7 @@
           <function-decl name='_M_get_deleter' mangled-name='_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info' filepath='/usr/include/c++/4.9/bits/shared_ptr_base.h' line='129' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1835' is-artificial='yes'/>
             <parameter type-id='type-id-1399'/>
-            <return type-id='type-id-23'/>
+            <return type-id='type-id-26'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -4881,13 +4881,13 @@
           <var-decl name='_M_p' type-id='type-id-1723' visibility='default' filepath='/usr/include/c++/4.9/bits/stl_bvector.h' line='139' column='1'/>
         </data-member>
         <data-member access='public' layout-offset-in-bits='64'>
-          <var-decl name='_M_offset' type-id='type-id-22' visibility='default' filepath='/usr/include/c++/4.9/bits/stl_bvector.h' line='140' column='1'/>
+          <var-decl name='_M_offset' type-id='type-id-25' visibility='default' filepath='/usr/include/c++/4.9/bits/stl_bvector.h' line='140' column='1'/>
         </data-member>
         <member-function access='public' constructor='yes'>
           <function-decl name='_Bit_iterator_base' filepath='/usr/include/c++/4.9/bits/stl_bvector.h' line='142' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1719' is-artificial='yes'/>
             <parameter type-id='type-id-1723'/>
-            <parameter type-id='type-id-22'/>
+            <parameter type-id='type-id-25'/>
             <return type-id='type-id-57'/>
           </function-decl>
         </member-function>
@@ -4913,7 +4913,7 @@
           <function-decl name='_Bit_iterator' filepath='/usr/include/c++/4.9/bits/stl_bvector.h' line='222' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1716' is-artificial='yes'/>
             <parameter type-id='type-id-1723'/>
-            <parameter type-id='type-id-22'/>
+            <parameter type-id='type-id-25'/>
             <return type-id='type-id-57'/>
           </function-decl>
         </member-function>
@@ -4942,7 +4942,7 @@
           <function-decl name='_Bit_const_iterator' filepath='/usr/include/c++/4.9/bits/stl_bvector.h' line='309' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1713' is-artificial='yes'/>
             <parameter type-id='type-id-1723'/>
-            <parameter type-id='type-id-22'/>
+            <parameter type-id='type-id-25'/>
             <return type-id='type-id-57'/>
           </function-decl>
         </member-function>
@@ -5280,7 +5280,7 @@
       <class-decl name='iterator&lt;std::random_access_iterator_tag, bool, long int, bool const*, bool&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/bits/stl_iterator_base_types.h' line='118' column='1' id='type-id-2577'/>
       <class-decl name='iterator&lt;std::random_access_iterator_tag, bool, long int, bool*, bool&amp;&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/bits/stl_iterator_base_types.h' line='118' column='1' id='type-id-2561'>
         <member-type access='public'>
-          <typedef-decl name='difference_type' type-id='type-id-26' filepath='/usr/include/c++/4.9/bits/stl_iterator_base_types.h' line='125' column='1' id='type-id-2599'/>
+          <typedef-decl name='difference_type' type-id='type-id-23' filepath='/usr/include/c++/4.9/bits/stl_iterator_base_types.h' line='125' column='1' id='type-id-2599'/>
         </member-type>
       </class-decl>
       <class-decl name='iterator&lt;std::random_access_iterator_tag, bool, long int, std::_Bit_reference*, std::_Bit_reference&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/bits/stl_iterator_base_types.h' line='118' column='1' id='type-id-2585'/>
@@ -9346,16 +9346,16 @@
       </class-decl>
       <union-decl name='_Nocopy_types' size-in-bits='128' visibility='default' filepath='/usr/include/c++/4.9/functional' line='1756' column='1' id='type-id-2901'>
         <data-member access='public'>
-          <var-decl name='_M_object' type-id='type-id-23' visibility='default' filepath='/usr/include/c++/4.9/functional' line='1758' column='1'/>
+          <var-decl name='_M_object' type-id='type-id-26' visibility='default' filepath='/usr/include/c++/4.9/functional' line='1758' column='1'/>
         </data-member>
         <data-member access='public'>
-          <var-decl name='_M_const_object' type-id='type-id-23' visibility='default' filepath='/usr/include/c++/4.9/functional' line='1759' column='1'/>
+          <var-decl name='_M_const_object' type-id='type-id-26' visibility='default' filepath='/usr/include/c++/4.9/functional' line='1759' column='1'/>
         </data-member>
         <data-member access='public'>
           <var-decl name='_M_function_pointer' type-id='type-id-2278' visibility='default' filepath='/usr/include/c++/4.9/functional' line='1760' column='1'/>
         </data-member>
         <data-member access='public'>
-          <var-decl name='_M_member_pointer' type-id='type-id-24' visibility='default' filepath='/usr/include/c++/4.9/functional' line='1761' column='1'/>
+          <var-decl name='_M_member_pointer' type-id='type-id-21' visibility='default' filepath='/usr/include/c++/4.9/functional' line='1761' column='1'/>
         </data-member>
       </union-decl>
       <union-decl name='_Any_data' size-in-bits='128' visibility='default' filepath='/usr/include/c++/4.9/functional' line='1764' column='1' id='type-id-691'>
@@ -9368,13 +9368,13 @@
         <member-function access='public'>
           <function-decl name='_M_access' mangled-name='_ZNSt9_Any_data9_M_accessEv' filepath='/usr/include/c++/4.9/functional' line='1766' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt9_Any_data9_M_accessEv'>
             <parameter type-id='type-id-1712' name='this' is-artificial='yes'/>
-            <return type-id='type-id-23'/>
+            <return type-id='type-id-26'/>
           </function-decl>
         </member-function>
         <member-function access='public' const='yes'>
           <function-decl name='_M_access' mangled-name='_ZNKSt9_Any_data9_M_accessEv' filepath='/usr/include/c++/4.9/functional' line='1767' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNKSt9_Any_data9_M_accessEv'>
             <parameter type-id='type-id-696' name='this' is-artificial='yes'/>
-            <return type-id='type-id-23'/>
+            <return type-id='type-id-26'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
@@ -9929,7 +9929,7 @@
       </class-decl>
       <class-decl name='_Head_base&lt;0ul, unsigned int, false&gt;' size-in-bits='32' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/tuple' line='129' column='1' id='type-id-747'>
         <data-member access='public' layout-offset-in-bits='0'>
-          <var-decl name='_M_head_impl' type-id='type-id-22' visibility='default' filepath='/usr/include/c++/4.9/tuple' line='174' column='1'/>
+          <var-decl name='_M_head_impl' type-id='type-id-25' visibility='default' filepath='/usr/include/c++/4.9/tuple' line='174' column='1'/>
         </data-member>
         <member-function access='public'>
           <function-decl name='_Head_base' filepath='/usr/include/c++/4.9/tuple' line='131' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -9969,7 +9969,7 @@
       </class-decl>
       <class-decl name='_Head_base&lt;1ul, unsigned int, false&gt;' size-in-bits='32' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/tuple' line='129' column='1' id='type-id-756'>
         <data-member access='public' layout-offset-in-bits='0'>
-          <var-decl name='_M_head_impl' type-id='type-id-22' visibility='default' filepath='/usr/include/c++/4.9/tuple' line='174' column='1'/>
+          <var-decl name='_M_head_impl' type-id='type-id-25' visibility='default' filepath='/usr/include/c++/4.9/tuple' line='174' column='1'/>
         </data-member>
         <member-function access='public'>
           <function-decl name='_Head_base' filepath='/usr/include/c++/4.9/tuple' line='131' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -10351,7 +10351,7 @@
       </class-decl>
       <class-decl name='integral_constant&lt;long int, 1000000000l&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/type_traits' line='69' column='1' id='type-id-1228'>
         <member-type access='public'>
-          <typedef-decl name='value_type' type-id='type-id-26' filepath='/usr/include/c++/4.9/type_traits' line='72' column='1' id='type-id-2935'/>
+          <typedef-decl name='value_type' type-id='type-id-23' filepath='/usr/include/c++/4.9/type_traits' line='72' column='1' id='type-id-2935'/>
         </member-type>
         <data-member access='public' static='yes'>
           <var-decl name='value' type-id='type-id-392' mangled-name='_ZNSt17integral_constantIlLl1000000000EE5valueE' visibility='default' filepath='/usr/include/c++/4.9/type_traits' line='71' column='1'/>
@@ -10359,7 +10359,7 @@
       </class-decl>
       <class-decl name='integral_constant&lt;long int, 1000000l&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/type_traits' line='69' column='1' id='type-id-1231'>
         <member-type access='public'>
-          <typedef-decl name='value_type' type-id='type-id-26' filepath='/usr/include/c++/4.9/type_traits' line='72' column='1' id='type-id-2936'/>
+          <typedef-decl name='value_type' type-id='type-id-23' filepath='/usr/include/c++/4.9/type_traits' line='72' column='1' id='type-id-2936'/>
         </member-type>
         <data-member access='public' static='yes'>
           <var-decl name='value' type-id='type-id-392' mangled-name='_ZNSt17integral_constantIlLl1000000EE5valueE' visibility='default' filepath='/usr/include/c++/4.9/type_traits' line='71' column='1'/>
@@ -10367,7 +10367,7 @@
       </class-decl>
       <class-decl name='integral_constant&lt;long int, 1000l&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/type_traits' line='69' column='1' id='type-id-1234'>
         <member-type access='public'>
-          <typedef-decl name='value_type' type-id='type-id-26' filepath='/usr/include/c++/4.9/type_traits' line='72' column='1' id='type-id-2937'/>
+          <typedef-decl name='value_type' type-id='type-id-23' filepath='/usr/include/c++/4.9/type_traits' line='72' column='1' id='type-id-2937'/>
         </member-type>
         <data-member access='public' static='yes'>
           <var-decl name='value' type-id='type-id-392' mangled-name='_ZNSt17integral_constantIlLl1000EE5valueE' visibility='default' filepath='/usr/include/c++/4.9/type_traits' line='71' column='1'/>
@@ -10375,7 +10375,7 @@
       </class-decl>
       <class-decl name='integral_constant&lt;long int, 1l&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/type_traits' line='69' column='1' id='type-id-1237'>
         <member-type access='public'>
-          <typedef-decl name='value_type' type-id='type-id-26' filepath='/usr/include/c++/4.9/type_traits' line='72' column='1' id='type-id-2938'/>
+          <typedef-decl name='value_type' type-id='type-id-23' filepath='/usr/include/c++/4.9/type_traits' line='72' column='1' id='type-id-2938'/>
         </member-type>
         <data-member access='public' static='yes'>
           <var-decl name='value' type-id='type-id-392' mangled-name='_ZNSt17integral_constantIlLl1EE5valueE' visibility='default' filepath='/usr/include/c++/4.9/type_traits' line='71' column='1'/>
@@ -10535,7 +10535,7 @@
         </member-type>
       </class-decl>
       <typedef-decl name='size_t' type-id='type-id-50' filepath='/usr/include/x86_64-linux-gnu/c++/4.9/bits/c++config.h' line='188' column='1' id='type-id-1381'/>
-      <typedef-decl name='ptrdiff_t' type-id='type-id-26' filepath='/usr/include/x86_64-linux-gnu/c++/4.9/bits/c++config.h' line='189' column='1' id='type-id-2526'/>
+      <typedef-decl name='ptrdiff_t' type-id='type-id-23' filepath='/usr/include/x86_64-linux-gnu/c++/4.9/bits/c++config.h' line='189' column='1' id='type-id-2526'/>
       <class-decl name='_List_const_iterator&lt;mongo::optionenvironment::OptionDescription&gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-2636'/>
       <class-decl name='_List_const_iterator&lt;mongo::optionenvironment::OptionSection&gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-2648'/>
       <class-decl name='_List_iterator&lt;mongo::optionenvironment::OptionDescription&gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-2634'/>
@@ -11288,7 +11288,7 @@
       <namespace-decl name='chrono'>
         <class-decl name='duration&lt;long int, std::ratio&lt;1l, 1000000000l&gt; &gt;' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/chrono' line='241' column='1' id='type-id-1162'>
           <member-type access='public'>
-            <typedef-decl name='rep' type-id='type-id-26' filepath='/usr/include/c++/4.9/chrono' line='243' column='1' id='type-id-1166'/>
+            <typedef-decl name='rep' type-id='type-id-23' filepath='/usr/include/c++/4.9/chrono' line='243' column='1' id='type-id-1166'/>
           </member-type>
           <data-member access='private' layout-offset-in-bits='0'>
             <var-decl name='__r' type-id='type-id-1166' visibility='default' filepath='/usr/include/c++/4.9/chrono' line='373' column='1'/>
@@ -11316,7 +11316,7 @@
         </class-decl>
         <class-decl name='duration&lt;long int, std::ratio&lt;1l, 1000l&gt; &gt;' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/chrono' line='241' column='1' id='type-id-1169'>
           <member-type access='public'>
-            <typedef-decl name='rep' type-id='type-id-26' filepath='/usr/include/c++/4.9/chrono' line='243' column='1' id='type-id-1173'/>
+            <typedef-decl name='rep' type-id='type-id-23' filepath='/usr/include/c++/4.9/chrono' line='243' column='1' id='type-id-1173'/>
           </member-type>
           <data-member access='private' layout-offset-in-bits='0'>
             <var-decl name='__r' type-id='type-id-1173' visibility='default' filepath='/usr/include/c++/4.9/chrono' line='373' column='1'/>
@@ -11344,7 +11344,7 @@
         </class-decl>
         <class-decl name='duration&lt;long int, std::ratio&lt;1l, 1l&gt; &gt;' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/chrono' line='241' column='1' id='type-id-1176'>
           <member-type access='public'>
-            <typedef-decl name='rep' type-id='type-id-26' filepath='/usr/include/c++/4.9/chrono' line='243' column='1' id='type-id-1180'/>
+            <typedef-decl name='rep' type-id='type-id-23' filepath='/usr/include/c++/4.9/chrono' line='243' column='1' id='type-id-1180'/>
           </member-type>
           <data-member access='private' layout-offset-in-bits='0'>
             <var-decl name='__r' type-id='type-id-1180' visibility='default' filepath='/usr/include/c++/4.9/chrono' line='373' column='1'/>
@@ -11620,7 +11620,7 @@
         <member-function access='public'>
           <function-decl name='_M_addr' mangled-name='_ZN9__gnu_cxx16__aligned_bufferISt4pairIKSsSsEE7_M_addrEv' filepath='/usr/include/c++/4.9/ext/aligned_buffer.h' line='51' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx16__aligned_bufferISt4pairIKSsSsEE7_M_addrEv'>
             <parameter type-id='type-id-113' name='this' is-artificial='yes'/>
-            <return type-id='type-id-23'/>
+            <return type-id='type-id-26'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -12613,7 +12613,7 @@
           <function-decl name='allocate' mangled-name='_ZN9__gnu_cxx13new_allocatorISsE8allocateEmPKv' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='99' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx13new_allocatorISsE8allocateEmPKv'>
             <parameter type-id='type-id-181' name='this' is-artificial='yes'/>
             <parameter type-id='type-id-3130' name='__n' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='99' column='1'/>
-            <parameter type-id='type-id-23'/>
+            <parameter type-id='type-id-26'/>
             <return type-id='type-id-3131'/>
           </function-decl>
         </member-function>
@@ -12968,12 +12968,12 @@
     </namespace-decl>
     <function-decl name='operator new' mangled-name='_ZnwmPv' filepath='/usr/include/c++/4.9/new' line='146' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZnwmPv'>
       <parameter type-id='type-id-1381'/>
-      <parameter type-id='type-id-23' name='__p' filepath='/usr/include/c++/4.9/new' line='146' column='1'/>
-      <return type-id='type-id-23'/>
+      <parameter type-id='type-id-26' name='__p' filepath='/usr/include/c++/4.9/new' line='146' column='1'/>
+      <return type-id='type-id-26'/>
     </function-decl>
     <function-decl name='operator delete' mangled-name='_ZdlPvS_' filepath='/usr/include/c++/4.9/new' line='152' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZdlPvS_'>
-      <parameter type-id='type-id-23'/>
-      <parameter type-id='type-id-23'/>
+      <parameter type-id='type-id-26'/>
+      <parameter type-id='type-id-26'/>
       <return type-id='type-id-57'/>
     </function-decl>
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='124' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -13058,7 +13058,7 @@
       <return type-id='type-id-29'/>
     </function-decl>
     <function-decl name='fread' filepath='/usr/include/stdio.h' line='709' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-23'/>
+      <parameter type-id='type-id-26'/>
       <parameter type-id='type-id-71'/>
       <parameter type-id='type-id-71'/>
       <parameter type-id='type-id-105'/>
@@ -13066,13 +13066,13 @@
     </function-decl>
     <function-decl name='fseek' filepath='/usr/include/stdio.h' line='749' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-105'/>
-      <parameter type-id='type-id-26'/>
+      <parameter type-id='type-id-23'/>
       <parameter type-id='type-id-29'/>
       <return type-id='type-id-29'/>
     </function-decl>
     <function-decl name='ftell' filepath='/usr/include/stdio.h' line='754' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-105'/>
-      <return type-id='type-id-26'/>
+      <return type-id='type-id-23'/>
     </function-decl>
     <function-decl name='rewind' filepath='/usr/include/stdio.h' line='759' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-105'/>
@@ -13114,7 +13114,7 @@
     </function-decl>
     <function-decl name='atol' filepath='/usr/include/stdlib.h' line='150' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-95'/>
-      <return type-id='type-id-26'/>
+      <return type-id='type-id-23'/>
     </function-decl>
     <function-decl name='atoll' filepath='/usr/include/stdlib.h' line='157' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-95'/>
@@ -13139,7 +13139,7 @@
       <parameter type-id='type-id-95'/>
       <parameter type-id='type-id-227'/>
       <parameter type-id='type-id-29'/>
-      <return type-id='type-id-26'/>
+      <return type-id='type-id-23'/>
     </function-decl>
     <function-decl name='strtoul' filepath='/usr/include/stdlib.h' line='187' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-95'/>
@@ -13163,7 +13163,7 @@
       <return type-id='type-id-29'/>
     </function-decl>
     <function-decl name='srand' filepath='/usr/include/stdlib.h' line='376' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-22'/>
+      <parameter type-id='type-id-25'/>
       <return type-id='type-id-57'/>
     </function-decl>
     <function-decl name='atexit' filepath='/usr/include/stdlib.h' line='519' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -13183,15 +13183,15 @@
       <return type-id='type-id-29'/>
     </function-decl>
     <function-decl name='bsearch' filepath='/usr/include/stdlib.h' line='754' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-23'/>
-      <parameter type-id='type-id-23'/>
+      <parameter type-id='type-id-26'/>
+      <parameter type-id='type-id-26'/>
       <parameter type-id='type-id-71'/>
       <parameter type-id='type-id-71'/>
       <parameter type-id='type-id-89'/>
-      <return type-id='type-id-23'/>
+      <return type-id='type-id-26'/>
     </function-decl>
     <function-decl name='qsort' filepath='/usr/include/stdlib.h' line='764' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-23'/>
+      <parameter type-id='type-id-26'/>
       <parameter type-id='type-id-71'/>
       <parameter type-id='type-id-71'/>
       <parameter type-id='type-id-89'/>
@@ -13203,8 +13203,8 @@
       <return type-id='type-id-82'/>
     </function-decl>
     <function-decl name='ldiv' filepath='/usr/include/stdlib.h' line='790' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-26'/>
-      <parameter type-id='type-id-26'/>
+      <parameter type-id='type-id-23'/>
+      <parameter type-id='type-id-23'/>
       <return type-id='type-id-84'/>
     </function-decl>
     <function-decl name='lldiv' filepath='/usr/include/stdlib.h' line='796' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -13241,8 +13241,8 @@
       <return type-id='type-id-71'/>
     </function-decl>
     <function-decl name='memcmp' filepath='/usr/include/string.h' line='69' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-23'/>
-      <parameter type-id='type-id-23'/>
+      <parameter type-id='type-id-26'/>
+      <parameter type-id='type-id-26'/>
       <parameter type-id='type-id-71'/>
       <return type-id='type-id-29'/>
     </function-decl>
@@ -13457,7 +13457,7 @@
       <parameter type-id='type-id-1539'/>
       <parameter type-id='type-id-2284'/>
       <parameter type-id='type-id-29'/>
-      <return type-id='type-id-26'/>
+      <return type-id='type-id-23'/>
     </function-decl>
     <function-decl name='wcstoul' filepath='/usr/include/wchar.h' line='473' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-1539'/>
@@ -14411,7 +14411,7 @@
       </class-decl>
       <class-decl name='BSONBinData' size-in-bits='128' is-struct='yes' visibility='default' filepath='src/mongo/bson/bsonmisc.h' line='179' column='1' id='type-id-403'>
         <data-member access='public' layout-offset-in-bits='0'>
-          <var-decl name='data' type-id='type-id-23' visibility='default' filepath='src/mongo/bson/bsonmisc.h' line='181' column='1'/>
+          <var-decl name='data' type-id='type-id-26' visibility='default' filepath='src/mongo/bson/bsonmisc.h' line='181' column='1'/>
         </data-member>
         <data-member access='public' layout-offset-in-bits='64'>
           <var-decl name='length' type-id='type-id-29' visibility='default' filepath='src/mongo/bson/bsonmisc.h' line='182' column='1'/>
@@ -14422,7 +14422,7 @@
         <member-function access='public' constructor='yes'>
           <function-decl name='BSONBinData' filepath='src/mongo/bson/bsonmisc.h' line='180' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1557' is-artificial='yes'/>
-            <parameter type-id='type-id-23'/>
+            <parameter type-id='type-id-26'/>
             <parameter type-id='type-id-29'/>
             <parameter type-id='type-id-3180'/>
             <return type-id='type-id-57'/>
@@ -14862,12 +14862,12 @@
       </enum-decl>
       <class-decl name='Ordering' size-in-bits='32' visibility='default' filepath='src/mongo/bson/ordering.h' line='43' column='1' id='type-id-528'>
         <data-member access='private' layout-offset-in-bits='0'>
-          <var-decl name='bits' type-id='type-id-22' visibility='default' filepath='src/mongo/bson/ordering.h' line='44' column='1'/>
+          <var-decl name='bits' type-id='type-id-25' visibility='default' filepath='src/mongo/bson/ordering.h' line='44' column='1'/>
         </data-member>
         <member-function access='private' constructor='yes'>
           <function-decl name='Ordering' filepath='src/mongo/bson/ordering.h' line='45' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1617' is-artificial='yes'/>
-            <parameter type-id='type-id-22'/>
+            <parameter type-id='type-id-25'/>
             <return type-id='type-id-57'/>
           </function-decl>
         </member-function>
@@ -14881,10 +14881,10 @@
       </class-decl>
       <class-decl name='Timestamp' size-in-bits='64' visibility='default' filepath='src/mongo/bson/timestamp.h' line='40' column='1' id='type-id-560'>
         <data-member access='private' layout-offset-in-bits='0'>
-          <var-decl name='i' type-id='type-id-22' visibility='default' filepath='src/mongo/bson/timestamp.h' line='123' column='1'/>
+          <var-decl name='i' type-id='type-id-25' visibility='default' filepath='src/mongo/bson/timestamp.h' line='123' column='1'/>
         </data-member>
         <data-member access='private' layout-offset-in-bits='32'>
-          <var-decl name='secs' type-id='type-id-22' visibility='default' filepath='src/mongo/bson/timestamp.h' line='124' column='1'/>
+          <var-decl name='secs' type-id='type-id-25' visibility='default' filepath='src/mongo/bson/timestamp.h' line='124' column='1'/>
         </data-member>
         <member-function access='public' constructor='yes'>
           <function-decl name='Timestamp' filepath='src/mongo/bson/timestamp.h' line='50' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -14904,15 +14904,15 @@
           <function-decl name='Timestamp' filepath='src/mongo/bson/timestamp.h' line='59' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1641' is-artificial='yes'/>
             <parameter type-id='type-id-3188'/>
-            <parameter type-id='type-id-22'/>
+            <parameter type-id='type-id-25'/>
             <return type-id='type-id-57'/>
           </function-decl>
         </member-function>
         <member-function access='public' constructor='yes'>
           <function-decl name='Timestamp' filepath='src/mongo/bson/timestamp.h' line='61' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1641' is-artificial='yes'/>
-            <parameter type-id='type-id-22'/>
-            <parameter type-id='type-id-22'/>
+            <parameter type-id='type-id-25'/>
+            <parameter type-id='type-id-25'/>
             <return type-id='type-id-57'/>
           </function-decl>
         </member-function>
@@ -14928,21 +14928,21 @@
           <function-decl name='Malloc' mangled-name='_ZN5mongo16TrivialAllocator6MallocEm' filepath='src/mongo/bson/util/builder.h' line='79' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo16TrivialAllocator6MallocEm'>
             <parameter type-id='type-id-1644' name='this' is-artificial='yes'/>
             <parameter type-id='type-id-71' name='sz' filepath='src/mongo/bson/util/builder.h' line='79' column='1'/>
-            <return type-id='type-id-23'/>
+            <return type-id='type-id-26'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='Realloc' mangled-name='_ZN5mongo16TrivialAllocator7ReallocEPvm' filepath='src/mongo/bson/util/builder.h' line='82' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo16TrivialAllocator7ReallocEPvm'>
             <parameter type-id='type-id-1644' name='this' is-artificial='yes'/>
-            <parameter type-id='type-id-23' name='p' filepath='src/mongo/bson/util/builder.h' line='82' column='1'/>
+            <parameter type-id='type-id-26' name='p' filepath='src/mongo/bson/util/builder.h' line='82' column='1'/>
             <parameter type-id='type-id-71' name='sz' filepath='src/mongo/bson/util/builder.h' line='82' column='1'/>
-            <return type-id='type-id-23'/>
+            <return type-id='type-id-26'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='Free' mangled-name='_ZN5mongo16TrivialAllocator4FreeEPv' filepath='src/mongo/bson/util/builder.h' line='85' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo16TrivialAllocator4FreeEPv'>
             <parameter type-id='type-id-1644' name='this' is-artificial='yes'/>
-            <parameter type-id='type-id-23' name='p' filepath='src/mongo/bson/util/builder.h' line='85' column='1'/>
+            <parameter type-id='type-id-26' name='p' filepath='src/mongo/bson/util/builder.h' line='85' column='1'/>
             <return type-id='type-id-57'/>
           </function-decl>
         </member-function>
@@ -14994,7 +14994,7 @@
         <member-function access='public'>
           <function-decl name='appendBuf' mangled-name='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEE9appendBufEPKvm' filepath='src/mongo/bson/util/builder.h' line='227' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEE9appendBufEPKvm'>
             <parameter type-id='type-id-1647' name='this' is-artificial='yes'/>
-            <parameter type-id='type-id-23' name='src' filepath='src/mongo/bson/util/builder.h' line='227' column='1'/>
+            <parameter type-id='type-id-26' name='src' filepath='src/mongo/bson/util/builder.h' line='227' column='1'/>
             <parameter type-id='type-id-71' name='len' filepath='src/mongo/bson/util/builder.h' line='227' column='1'/>
             <return type-id='type-id-57'/>
           </function-decl>
@@ -15530,7 +15530,7 @@
       </class-decl>
       <class-decl name='AtomicWord&lt;unsigned int&gt;' size-in-bits='32' visibility='default' filepath='src/mongo/platform/atomic_word.h' line='40' column='1' id='type-id-400'>
         <member-type access='public'>
-          <typedef-decl name='WordType' type-id='type-id-22' filepath='src/mongo/platform/atomic_word.h' line='45' column='1' id='type-id-3189'/>
+          <typedef-decl name='WordType' type-id='type-id-25' filepath='src/mongo/platform/atomic_word.h' line='45' column='1' id='type-id-3189'/>
         </member-type>
         <data-member access='private' layout-offset-in-bits='0'>
           <var-decl name='_value' type-id='type-id-1145' visibility='default' filepath='src/mongo/platform/atomic_word.h' line='149' column='1'/>
@@ -15774,13 +15774,13 @@
       </class-decl>
       <class-decl name='BufReader' size-in-bits='192' visibility='default' filepath='src/mongo/util/bufreader.h' line='42' column='1' id='type-id-449'>
         <data-member access='private' layout-offset-in-bits='0'>
-          <var-decl name='_start' type-id='type-id-23' visibility='default' filepath='src/mongo/util/bufreader.h' line='145' column='1'/>
+          <var-decl name='_start' type-id='type-id-26' visibility='default' filepath='src/mongo/util/bufreader.h' line='145' column='1'/>
         </data-member>
         <data-member access='private' layout-offset-in-bits='64'>
-          <var-decl name='_pos' type-id='type-id-23' visibility='default' filepath='src/mongo/util/bufreader.h' line='146' column='1'/>
+          <var-decl name='_pos' type-id='type-id-26' visibility='default' filepath='src/mongo/util/bufreader.h' line='146' column='1'/>
         </data-member>
         <data-member access='private' layout-offset-in-bits='128'>
-          <var-decl name='_end' type-id='type-id-23' visibility='default' filepath='src/mongo/util/bufreader.h' line='147' column='1'/>
+          <var-decl name='_end' type-id='type-id-26' visibility='default' filepath='src/mongo/util/bufreader.h' line='147' column='1'/>
         </data-member>
         <member-function access='private' constructor='yes'>
           <function-decl name='BufReader' filepath='src/mongo/util/bufreader.h' line='43' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -15792,8 +15792,8 @@
         <member-function access='public' constructor='yes'>
           <function-decl name='BufReader' filepath='src/mongo/util/bufreader.h' line='54' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1587' is-artificial='yes'/>
-            <parameter type-id='type-id-23'/>
-            <parameter type-id='type-id-22'/>
+            <parameter type-id='type-id-26'/>
+            <parameter type-id='type-id-25'/>
             <return type-id='type-id-57'/>
           </function-decl>
         </member-function>
@@ -16212,13 +16212,13 @@
                 <var-decl name='_intVal' type-id='type-id-29' visibility='default' filepath='src/mongo/util/options_parser/value.h' line='143' column='1'/>
               </data-member>
               <data-member access='public'>
-                <var-decl name='_longVal' type-id='type-id-26' visibility='default' filepath='src/mongo/util/options_parser/value.h' line='144' column='1'/>
+                <var-decl name='_longVal' type-id='type-id-23' visibility='default' filepath='src/mongo/util/options_parser/value.h' line='144' column='1'/>
               </data-member>
               <data-member access='public'>
                 <var-decl name='_unsignedLongLongVal' type-id='type-id-34' visibility='default' filepath='src/mongo/util/options_parser/value.h' line='145' column='1'/>
               </data-member>
               <data-member access='public'>
-                <var-decl name='_unsignedVal' type-id='type-id-22' visibility='default' filepath='src/mongo/util/options_parser/value.h' line='146' column='1'/>
+                <var-decl name='_unsignedVal' type-id='type-id-25' visibility='default' filepath='src/mongo/util/options_parser/value.h' line='146' column='1'/>
               </data-member>
             </union-decl>
           </member-type>
@@ -16296,7 +16296,7 @@
           <member-function access='public' constructor='yes'>
             <function-decl name='Value' filepath='src/mongo/util/options_parser/value.h' line='76' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-1703' is-artificial='yes'/>
-              <parameter type-id='type-id-26'/>
+              <parameter type-id='type-id-23'/>
               <return type-id='type-id-57'/>
             </function-decl>
           </member-function>
@@ -16324,7 +16324,7 @@
           <member-function access='public' constructor='yes'>
             <function-decl name='Value' filepath='src/mongo/util/options_parser/value.h' line='80' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-1703' is-artificial='yes'/>
-              <parameter type-id='type-id-22'/>
+              <parameter type-id='type-id-25'/>
               <return type-id='type-id-57'/>
             </function-decl>
           </member-function>
@@ -17069,8 +17069,8 @@
           <member-function access='public' constructor='yes'>
             <function-decl name='options_description' filepath='src/third_party/boost-1.56.0/boost/program_options/options_description.hpp' line='178' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-209' is-artificial='yes'/>
-              <parameter type-id='type-id-22'/>
-              <parameter type-id='type-id-22'/>
+              <parameter type-id='type-id-25'/>
+              <parameter type-id='type-id-25'/>
               <return type-id='type-id-57'/>
             </function-decl>
           </member-function>
@@ -17078,8 +17078,8 @@
             <function-decl name='options_description' filepath='src/third_party/boost-1.56.0/boost/program_options/options_description.hpp' line='187' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-209' is-artificial='yes'/>
               <parameter type-id='type-id-1385'/>
-              <parameter type-id='type-id-22'/>
-              <parameter type-id='type-id-22'/>
+              <parameter type-id='type-id-25'/>
+              <parameter type-id='type-id-25'/>
               <return type-id='type-id-57'/>
             </function-decl>
           </member-function>
@@ -17115,13 +17115,13 @@
           <member-function access='public' const='yes' vtable-offset='1'>
             <function-decl name='min_tokens' mangled-name='_ZNK5boost15program_options14value_semantic10min_tokensEv' filepath='src/third_party/boost-1.56.0/boost/program_options/value_semantic.hpp' line='35' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-372' is-artificial='yes'/>
-              <return type-id='type-id-22'/>
+              <return type-id='type-id-25'/>
             </function-decl>
           </member-function>
           <member-function access='public' const='yes' vtable-offset='2'>
             <function-decl name='max_tokens' mangled-name='_ZNK5boost15program_options14value_semantic10max_tokensEv' filepath='src/third_party/boost-1.56.0/boost/program_options/value_semantic.hpp' line='39' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-372' is-artificial='yes'/>
-              <return type-id='type-id-22'/>
+              <return type-id='type-id-25'/>
             </function-decl>
           </member-function>
           <member-function access='public' const='yes' vtable-offset='3'>
@@ -17288,8 +17288,8 @@
       <return type-id='type-id-545'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-1544'>
-      <parameter type-id='type-id-23'/>
-      <parameter type-id='type-id-23'/>
+      <parameter type-id='type-id-26'/>
+      <parameter type-id='type-id-26'/>
       <return type-id='type-id-29'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-2106'>

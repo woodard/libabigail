@@ -14,21 +14,21 @@
   <abi-instr address-size='64' path='test23-first-tu.cc' comp-dir-path='/home/dodji/git/libabigail/PR20369/tests/data/test-read-dwarf' language='LANG_C_plus_plus'>
     <type-decl name='bool' size-in-bits='8' id='type-id-1'/>
     <type-decl name='char' size-in-bits='8' id='type-id-2'/>
-    <class-decl name='typedef __va_list_tag __va_list_tag' size-in-bits='192' is-struct='yes' visibility='default' id='type-id-3'>
+    <class-decl name='__anonymous_struct__1' is-struct='yes' is-anonymous='yes' visibility='default' id='type-id-3'/>
+    <class-decl name='typedef __va_list_tag __va_list_tag' size-in-bits='192' is-struct='yes' visibility='default' id='type-id-4'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='gp_offset' type-id='type-id-4' visibility='default'/>
+        <var-decl name='gp_offset' type-id='type-id-5' visibility='default'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='32'>
-        <var-decl name='fp_offset' type-id='type-id-4' visibility='default'/>
+        <var-decl name='fp_offset' type-id='type-id-5' visibility='default'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='overflow_arg_area' type-id='type-id-5' visibility='default'/>
+        <var-decl name='overflow_arg_area' type-id='type-id-6' visibility='default'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='reg_save_area' type-id='type-id-5' visibility='default'/>
+        <var-decl name='reg_save_area' type-id='type-id-6' visibility='default'/>
       </data-member>
     </class-decl>
-    <class-decl name='__anonymous_struct__1' is-struct='yes' is-anonymous='yes' visibility='default' id='type-id-6'/>
     <type-decl name='double' size-in-bits='64' id='type-id-7'/>
     <type-decl name='float' size-in-bits='32' id='type-id-8'/>
     <type-decl name='int' size-in-bits='32' id='type-id-9'/>
@@ -37,7 +37,7 @@
     <type-decl name='long long int' size-in-bits='64' id='type-id-12'/>
     <type-decl name='long long unsigned int' size-in-bits='64' id='type-id-13'/>
     <type-decl name='short int' size-in-bits='16' id='type-id-14'/>
-    <type-decl name='unsigned int' size-in-bits='32' id='type-id-4'/>
+    <type-decl name='unsigned int' size-in-bits='32' id='type-id-5'/>
     <type-decl name='unsigned long int' size-in-bits='64' id='type-id-15'/>
     <array-type-def dimensions='1' type-id='type-id-15' size-in-bits='infinite' id='type-id-16'>
       <subrange length='infinite' id='type-id-17'/>
@@ -98,9 +98,9 @@
     <typedef-decl name='wctype_t' type-id='type-id-15' filepath='/usr/include/wctype.h' line='52' column='1' id='type-id-30'/>
     <typedef-decl name='wctrans_t' type-id='type-id-31' filepath='/usr/include/wctype.h' line='186' column='1' id='type-id-32'/>
     <typedef-decl name='size_t' type-id='type-id-15' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.8.5/include/stddef.h' line='212' column='1' id='type-id-33'/>
-    <typedef-decl name='wint_t' type-id='type-id-4' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.8.5/include/stddef.h' line='353' column='1' id='type-id-34'/>
+    <typedef-decl name='wint_t' type-id='type-id-5' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.8.5/include/stddef.h' line='353' column='1' id='type-id-34'/>
     <pointer-type-def type-id='type-id-23' size-in-bits='64' id='type-id-35'/>
-    <pointer-type-def type-id='type-id-6' size-in-bits='64' id='type-id-36'/>
+    <pointer-type-def type-id='type-id-3' size-in-bits='64' id='type-id-36'/>
     <reference-type-def kind='lvalue' type-id='type-id-2' size-in-bits='64' id='type-id-37'/>
     <pointer-type-def type-id='type-id-2' size-in-bits='64' id='type-id-38'/>
     <qualified-type-def type-id='type-id-21' const='yes' id='type-id-39'/>
@@ -135,8 +135,8 @@
     <pointer-type-def type-id='type-id-56' size-in-bits='64' id='type-id-70'/>
     <qualified-type-def type-id='type-id-71' id='type-id-72'/>
     <reference-type-def kind='lvalue' type-id='type-id-73' size-in-bits='64' id='type-id-71'/>
-    <pointer-type-def type-id='type-id-3' size-in-bits='64' id='type-id-74'/>
-    <pointer-type-def type-id='type-id-19' size-in-bits='64' id='type-id-5'/>
+    <pointer-type-def type-id='type-id-4' size-in-bits='64' id='type-id-74'/>
+    <pointer-type-def type-id='type-id-19' size-in-bits='64' id='type-id-6'/>
     <pointer-type-def type-id='type-id-20' size-in-bits='64' id='type-id-75'/>
     <pointer-type-def type-id='type-id-75' size-in-bits='64' id='type-id-76'/>
     <class-decl name='_IO_FILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-22'/>
