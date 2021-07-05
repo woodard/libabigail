@@ -360,7 +360,10 @@ struct location_manager::priv
 };
 
 location_manager::location_manager()
-{priv_ = shared_ptr<location_manager::priv>(new location_manager::priv);}
+  : priv_(new location_manager::priv)
+{}
+
+location_manager::~location_manager() = default;
 
 /// Insert the triplet representing a source locus into our internal
 /// vector of location triplet.  Return an instance of location type,
@@ -433,6 +436,8 @@ struct type_maps::priv
 type_maps::type_maps()
   : priv_(new priv)
 {}
+
+type_maps::~type_maps() = default;
 
 /// Test if the type_maps is empty.
 ///
@@ -2679,6 +2684,8 @@ elf_symbol::version::version(const elf_symbol::version& v)
   : priv_(new priv(v.str(), v.is_default()))
 {
 }
+
+elf_symbol::version::~version() = default;
 
 /// Cast the version_type into a string that is its name.
 ///
@@ -15760,6 +15767,7 @@ operator!=(const reference_type_def_sptr& l, const reference_type_def_sptr& r)
 // <array_type_def definitions>
 
 // <array_type_def::subrange_type>
+array_type_def::subrange_type::~subrange_type() = default;
 
 // <array_type_def::subrante_type::bound_value>
 
@@ -17152,6 +17160,9 @@ public:
 enum_type_decl::enumerator::enumerator()
   : priv_(new priv)
 {}
+
+enum_type_decl::enumerator::~enumerator() = default;
+
 
 /// Constructor of the @ref enum_type_decl::enumerator type.
 ///
@@ -19594,6 +19605,8 @@ function_decl::parameter::parameter(const type_base_sptr	type,
   runtime_type_instance(this);
 }
 
+function_decl::parameter::~parameter() = default;
+
 const type_base_sptr
 function_decl::parameter::get_type()const
 {return priv_->type_.lock();}
@@ -21845,6 +21858,8 @@ class_decl::base_spec::base_spec(const type_base_sptr& base,
 {
   runtime_type_instance(this);
 }
+
+class_decl::base_spec::~base_spec() = default;
 
 /// Compares two instances of @ref class_decl::base_spec.
 ///
@@ -25112,6 +25127,8 @@ struct ir_node_visitor::priv
 ir_node_visitor::ir_node_visitor()
   : priv_(new priv)
 {}
+
+ir_node_visitor::~ir_node_visitor() = default;
 
 /// Set if the walker using this visitor is allowed to re-visit a type
 /// node that was previously visited or not.

@@ -914,6 +914,8 @@ diff_context::diff_context()
   // add_diff_filter(f);
 }
 
+diff_context::~diff_context() = default;
+
 /// Set the corpus diff relevant to this context.
 ///
 /// @param d the corpus_diff we are interested in.
@@ -4954,7 +4956,7 @@ class_or_union_diff::finish_diff_type()
 ///
 /// @return the (possibly) shared private data of the current instance
 /// of @ref class_or_union_diff.
-const class_or_union_diff::priv_sptr&
+const class_or_union_diff::priv_ptr&
 class_or_union_diff::get_priv() const
 {
   if (priv_)
@@ -5310,7 +5312,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 				 get_priv()->sorted_changed_bases_);
 
   {
-    const class_or_union_diff::priv_sptr &p = class_or_union_diff::get_priv();
+    const class_or_union_diff::priv_ptr &p = class_or_union_diff::get_priv();
 
     edit_script& e = p->member_fns_changes_;
 
@@ -5531,7 +5533,7 @@ class_diff::~class_diff()
 ///
 /// @return the (possibly) shared private data of the current instance
 /// of class_diff.
-const class_diff::priv_sptr&
+const class_diff::priv_ptr&
 class_diff::get_priv() const
 {
   if (priv_)
@@ -7663,6 +7665,8 @@ struct diff_maps::priv
 diff_maps::diff_maps()
   : priv_(new diff_maps::priv())
 {}
+
+diff_maps::~diff_maps() = default;
 
 /// Getter of the map that contains basic type diffs.
 ///
@@ -10402,6 +10406,8 @@ corpus_diff::corpus_diff(corpus_sptr first,
   : priv_(new priv(first, second, ctxt))
 {}
 
+corpus_diff::~corpus_diff() = default;
+
 /// Finish building the current instance of @ref corpus_diff.
 void
 corpus_diff::finish_diff_type()
@@ -11182,6 +11188,8 @@ struct diff_node_visitor::priv
 diff_node_visitor::diff_node_visitor()
   : priv_(new priv)
 {}
+
+diff_node_visitor::~diff_node_visitor() = default;
 
 /// Constructor of the @ref diff_node_visitor type.
 ///

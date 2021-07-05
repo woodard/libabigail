@@ -602,6 +602,8 @@ corpus::corpus(ir::environment* env, const string& path)
   init_format_version();
 }
 
+corpus::~corpus() = default;
+
 /// Getter of the enviroment of the corpus.
 ///
 /// @return the environment of this corpus.

@@ -135,9 +135,7 @@ typedef shared_ptr<temp_file> temp_file_sptr;
 class temp_file
 {
   struct priv;
-  typedef shared_ptr<priv> priv_sptr;
-
-  priv_sptr priv_;
+  std::unique_ptr<priv> priv_;
 
   temp_file();
 
@@ -249,9 +247,7 @@ abidiff_status_has_incompatible_abi_change(abidiff_status s);
 class timer
 {
   struct priv;
-  typedef shared_ptr<priv> priv_sptr;
-
-  priv_sptr priv_;
+  std::unique_ptr<priv> priv_;
 
 public:
   enum kind
