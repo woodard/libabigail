@@ -1400,7 +1400,6 @@ struct elf_symbol::priv
   //     STT_COMMON. If no such symbol is found, it looks for the
   //     STT_COMMON definition of that name that has the largest size.
   bool			is_common_;
-  bool			is_linux_string_cst_;
   bool			is_in_ksymtab_;
   uint64_t		crc_;
   bool			is_suppressed_;
@@ -1418,7 +1417,6 @@ struct elf_symbol::priv
       visibility_(elf_symbol::DEFAULT_VISIBILITY),
       is_defined_(false),
       is_common_(false),
-      is_linux_string_cst_(false),
       is_in_ksymtab_(false),
       crc_(0),
       is_suppressed_(false)
@@ -1434,7 +1432,6 @@ struct elf_symbol::priv
        bool			  c,
        const elf_symbol::version& ve,
        elf_symbol::visibility	  vi,
-       bool			  is_linux_string_cst,
        bool			  is_in_ksymtab,
        uint64_t			  crc,
        bool			  is_suppressed)
@@ -1448,7 +1445,6 @@ struct elf_symbol::priv
       visibility_(vi),
       is_defined_(d),
       is_common_(c),
-      is_linux_string_cst_(is_linux_string_cst),
       is_in_ksymtab_(is_in_ksymtab),
       crc_(crc),
       is_suppressed_(is_suppressed)
@@ -1495,9 +1491,6 @@ elf_symbol::elf_symbol()
 ///
 /// @param vi the visibility of the symbol.
 ///
-/// @param is_linux_string_cst true if the symbol is a Linux Kernel
-/// string constant defined in the __ksymtab_strings section.
-///
 /// @param crc the CRC (modversions) value of Linux Kernel symbols
 elf_symbol::elf_symbol(const environment* e,
 		       size_t		  i,
@@ -1509,7 +1502,6 @@ elf_symbol::elf_symbol(const environment* e,
 		       bool		  c,
 		       const version&	  ve,
 		       visibility	  vi,
-		       bool		  is_linux_string_cst,
 		       bool		  is_in_ksymtab,
 		       uint64_t		  crc,
 		       bool		  is_suppressed)
@@ -1523,7 +1515,6 @@ elf_symbol::elf_symbol(const environment* e,
 		   c,
 		   ve,
 		   vi,
-		   is_linux_string_cst,
 		   is_in_ksymtab,
 		   crc,
 		   is_suppressed))
@@ -1567,9 +1558,6 @@ elf_symbol::create()
 ///
 /// @param vi the visibility of the symbol.
 ///
-/// @param is_linux_string_cst if true, it means the symbol represents
-/// a string constant from a linux kernel binary.
-///
 /// @param crc the CRC (modversions) value of Linux Kernel symbols
 ///
 /// @return a (smart) pointer to a newly created instance of @ref
@@ -1585,13 +1573,11 @@ elf_symbol::create(const environment* e,
 		   bool		      c,
 		   const version&     ve,
 		   visibility	      vi,
-		   bool		      is_linux_string_cst,
 		   bool		      is_in_ksymtab,
 		   uint64_t	      crc,
 		   bool		      is_suppressed)
 {
   elf_symbol_sptr sym(new elf_symbol(e, i, s, n, t, b, d, c, ve, vi,
-				     is_linux_string_cst,
 				     is_in_ksymtab, crc, is_suppressed));
   sym->priv_->main_symbol_ = sym;
   return sym;
@@ -1657,15 +1643,6 @@ elf_symbol::get_index() const
 void
 elf_symbol::set_index(size_t s)
 {priv_->index_ = s;}
-
-/// Test if the ELF symbol is for a string constant of a Linux binary
-/// defined in the __ksymtab_strings symbol table.
-///
-/// @return true iff ELF symbol is for a string constant of a Linux
-/// binary defined in the __ksymtab_strings symbol table.
-bool
-elf_symbol::get_is_linux_string_cst() const
-{return priv_->is_linux_string_cst_;}
 
 /// Getter for the name of the @ref elf_symbol.
 ///

@@ -824,10 +824,6 @@ lookup_symbol_from_sysv_hash_tab(const environment*		env,
   elf_symbol::binding sym_binding;
   elf_symbol::visibility sym_visibility;
   bool found = false;
-  Elf_Scn *strings_section = find_ksymtab_strings_section(elf_handle);
-  size_t strings_ndx = strings_section
-    ? elf_ndxscn(strings_section)
-    : 0;
 
   do
     {
@@ -856,8 +852,7 @@ lookup_symbol_from_sysv_hash_tab(const environment*		env,
 			       sym_binding,
 			       symbol.st_shndx != SHN_UNDEF,
 			       symbol.st_shndx == SHN_COMMON,
-			       ver, sym_visibility,
-			       symbol.st_shndx == strings_ndx);
+			       ver, sym_visibility);
 	  syms_found.push_back(symbol_found);
 	  found = true;
 	}
@@ -1103,10 +1098,6 @@ lookup_symbol_from_gnu_hash_tab(const environment*		env,
   elf_symbol::type sym_type;
   elf_symbol::binding sym_binding;
   elf_symbol::visibility sym_visibility;
-  Elf_Scn *strings_section = find_ksymtab_strings_section(elf_handle);
-    size_t strings_ndx = strings_section
-    ? elf_ndxscn(strings_section)
-    : 0;
 
   // Let's walk the hash table and record the versions of all the
   // symbols which name equal sym_name.
@@ -1151,8 +1142,7 @@ lookup_symbol_from_gnu_hash_tab(const environment*		env,
 			       sym_type, sym_binding,
 			       symbol.st_shndx != SHN_UNDEF,
 			       symbol.st_shndx == SHN_COMMON,
-			       ver, sym_visibility,
-			       symbol.st_shndx == strings_ndx);
+			       ver, sym_visibility);
 	  syms_found.push_back(symbol_found);
 	  found = true;
 	}
@@ -1275,10 +1265,6 @@ lookup_symbol_from_symtab(const environment*		env,
   char* name_str = 0;
   elf_symbol::version ver;
   bool found = false;
-  Elf_Scn *strings_section = find_ksymtab_strings_section(elf_handle);
-  size_t strings_ndx = strings_section
-    ? elf_ndxscn(strings_section)
-    : 0;
 
   for (size_t i = 0; i < symcount; ++i)
     {
@@ -1307,8 +1293,7 @@ lookup_symbol_from_symtab(const environment*		env,
 	    elf_symbol::create(env, i, sym->st_size,
 			       name_str, sym_type,
 			       sym_binding, sym_is_defined,
-			       sym_is_common, ver, sym_visibility,
-			       sym->st_shndx == strings_ndx);
+			       sym_is_common, ver, sym_visibility);
 	  syms_found.push_back(symbol_found);
 	  found = true;
 	}
@@ -14118,8 +14103,7 @@ create_default_fn_sym(const string& sym_name, const environment *env)
 		       /*symbol is defined=*/ true,
 		       /*symbol is common=*/ false,
 		       /*symbol version=*/ ver,
-		       /*symbol visibility=*/elf_symbol::DEFAULT_VISIBILITY,
-		       /*symbol is linux string cst=*/false);
+		       /*symbol visibility=*/elf_symbol::DEFAULT_VISIBILITY);
   return result;
 }
 

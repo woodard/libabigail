@@ -2985,8 +2985,7 @@ build_elf_symbol(read_context& ctxt, const xmlNodePtr node,
   elf_symbol_sptr e = elf_symbol::create(env, /*index=*/0,
 					 size, name, type, binding,
 					 is_defined, is_common,
-					 version, visibility,
-					 /*is_linux_string_cst=*/false);
+					 version, visibility);
 
   e->set_is_suppressed(is_suppressed);
 

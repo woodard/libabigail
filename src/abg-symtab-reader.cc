@@ -315,10 +315,7 @@ symtab::load_(Elf*	       elf_handle,
 	 elf_helpers::stb_to_elf_symbol_binding(GELF_ST_BIND(sym->st_info)),
 	 sym_is_defined, sym_is_common, ver,
 	 elf_helpers::stv_to_elf_symbol_visibility
-	 (GELF_ST_VISIBILITY(sym->st_other)),
-	 /*is_linux_strings_cstr=*/false); // TODO: remove
-					   // is_linux_strings_cstr
-					   // as it is obsolete
+	 (GELF_ST_VISIBILITY(sym->st_other)));
 
       // We do not take suppressed symbols into our symbol vector to avoid
       // accidental leakage. But we ensure supressed symbols are otherwise set
