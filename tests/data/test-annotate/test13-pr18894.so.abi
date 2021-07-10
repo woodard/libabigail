@@ -497,23 +497,23 @@
         <!-- const char* DBusError::message -->
         <var-decl name='message' type-id='type-id-8' visibility='default' filepath='../dbus/dbus-errors.h' line='51' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='128'>
         <!-- unsigned int DBusError::dummy1 -->
         <var-decl name='dummy1' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-errors.h' line='53' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='129'>
         <!-- unsigned int DBusError::dummy2 -->
         <var-decl name='dummy2' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-errors.h' line='54' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='130'>
         <!-- unsigned int DBusError::dummy3 -->
         <var-decl name='dummy3' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-errors.h' line='55' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='3'>
+      <data-member access='public' layout-offset-in-bits='131'>
         <!-- unsigned int DBusError::dummy4 -->
         <var-decl name='dummy4' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-errors.h' line='56' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='4'>
+      <data-member access='public' layout-offset-in-bits='132'>
         <!-- unsigned int DBusError::dummy5 -->
         <var-decl name='dummy5' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-errors.h' line='57' column='1'/>
       </data-member>
@@ -538,19 +538,19 @@
         <!-- int DBusString::dummy3 -->
         <var-decl name='dummy3' type-id='type-id-2' visibility='default' filepath='../dbus/dbus-string.h' line='50' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='128'>
         <!-- unsigned int DBusString::dummy_bit1 -->
         <var-decl name='dummy_bit1' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-string.h' line='51' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='129'>
         <!-- unsigned int DBusString::dummy_bit2 -->
         <var-decl name='dummy_bit2' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-string.h' line='52' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='130'>
         <!-- unsigned int DBusString::dummy_bit3 -->
         <var-decl name='dummy_bit3' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-string.h' line='53' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='3'>
+      <data-member access='public' layout-offset-in-bits='131'>
         <!-- unsigned int DBusString::dummy_bits -->
         <var-decl name='dummy_bits' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-string.h' line='54' column='1'/>
       </data-member>
@@ -799,27 +799,27 @@
         <!-- dbus_bool_t DBusConnection::io_path_acquired -->
         <var-decl name='io_path_acquired' type-id='type-id-14' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='313' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='2048'>
         <!-- unsigned int DBusConnection::shareable -->
         <var-decl name='shareable' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='315' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='2049'>
         <!-- unsigned int DBusConnection::exit_on_disconnect -->
         <var-decl name='exit_on_disconnect' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='317' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='2050'>
         <!-- unsigned int DBusConnection::route_peer_messages -->
         <var-decl name='route_peer_messages' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='319' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='3'>
+      <data-member access='public' layout-offset-in-bits='2051'>
         <!-- unsigned int DBusConnection::disconnected_message_arrived -->
         <var-decl name='disconnected_message_arrived' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='321' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='4'>
+      <data-member access='public' layout-offset-in-bits='2052'>
         <!-- unsigned int DBusConnection::disconnected_message_processed -->
         <var-decl name='disconnected_message_processed' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='325' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='5'>
+      <data-member access='public' layout-offset-in-bits='2053'>
         <!-- unsigned int DBusConnection::have_connection_lock -->
         <var-decl name='have_connection_lock' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.c' line='330' column='1'/>
       </data-member>
@@ -1033,11 +1033,11 @@
         <!-- dbus_uint32_t DBusPendingCall::reply_serial -->
         <var-decl name='reply_serial' type-id='type-id-5' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-pending-call.c' line='76' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='544'>
         <!-- unsigned int DBusPendingCall::completed -->
         <var-decl name='completed' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-pending-call.c' line='78' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='545'>
         <!-- unsigned int DBusPendingCall::timeout_added -->
         <var-decl name='timeout_added' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-pending-call.c' line='79' column='1'/>
       </data-member>
@@ -1074,7 +1074,7 @@
         <!-- DBusFreeFunction DBusTimeout::free_data_function -->
         <var-decl name='free_data_function' type-id='type-id-38' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-timeout.c' line='50' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='384'>
         <!-- unsigned int DBusTimeout::enabled -->
         <var-decl name='enabled' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-timeout.c' line='51' column='1'/>
       </data-member>
@@ -1117,11 +1117,11 @@
         <!-- DBusFreeFunction DBusWatch::free_data_function -->
         <var-decl name='free_data_function' type-id='type-id-38' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-watch.c' line='51' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='448'>
         <!-- unsigned int DBusWatch::enabled -->
         <var-decl name='enabled' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-watch.c' line='52' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='449'>
         <!-- unsigned int DBusWatch::oom_last_time -->
         <var-decl name='oom_last_time' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-watch.c' line='53' column='1'/>
       </data-member>
@@ -1179,11 +1179,11 @@
         <!-- DBusHeaderField DBusHeader::fields[10] -->
         <var-decl name='fields' type-id='type-id-50' visibility='default' filepath='../dbus/dbus-marshal-header.h' line='54' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='512'>
         <!-- dbus_uint32_t DBusHeader::padding -->
         <var-decl name='padding' type-id='type-id-5' visibility='default' filepath='../dbus/dbus-marshal-header.h' line='58' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='3'>
+      <data-member access='public' layout-offset-in-bits='515'>
         <!-- dbus_uint32_t DBusHeader::byte_order -->
         <var-decl name='byte_order' type-id='type-id-5' visibility='default' filepath='../dbus/dbus-marshal-header.h' line='59' column='1'/>
       </data-member>
@@ -1305,11 +1305,11 @@
         <!-- DBusString DBusMessage::body -->
         <var-decl name='body' type-id='type-id-11' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='105' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='832'>
         <!-- unsigned int DBusMessage::locked -->
         <var-decl name='locked' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='107' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='833'>
         <!-- unsigned int DBusMessage::in_cache -->
         <var-decl name='in_cache' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='110' column='1'/>
       </data-member>
@@ -1321,7 +1321,7 @@
         <!-- long int DBusMessage::size_counter_delta -->
         <var-decl name='size_counter_delta' type-id='type-id-68' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='114' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='1024'>
         <!-- dbus_uint32_t DBusMessage::changed_stamp -->
         <var-decl name='changed_stamp' type-id='type-id-5' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-message-private.h' line='116' column='1'/>
       </data-member>
@@ -3235,11 +3235,11 @@
         <!-- char** DBusServer::auth_mechanisms -->
         <var-decl name='auth_mechanisms' type-id='type-id-123' visibility='default' filepath='../dbus/dbus-server-protected.h' line='85' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='1152'>
         <!-- unsigned int DBusServer::disconnected -->
         <var-decl name='disconnected' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-server-protected.h' line='87' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='1153'>
         <!-- unsigned int DBusServer::have_server_lock -->
         <var-decl name='have_server_lock' type-id='type-id-3' visibility='default' filepath='../dbus/dbus-server-protected.h' line='90' column='1'/>
       </data-member>

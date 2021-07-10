@@ -537,7 +537,7 @@
       <data-member access='public' layout-offset-in-bits='128'>
         <var-decl name='sysp' type-id='type-id-27' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='84' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='8'>
+      <data-member access='public' layout-offset-in-bits='136'>
         <var-decl name='column_bits' type-id='type-id-13' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='87' column='1'/>
       </data-member>
     </class-decl>
@@ -840,13 +840,13 @@
       <data-member access='public' layout-offset-in-bits='576'>
         <var-decl name='extra_arg' type-id='type-id-14' visibility='default' filepath='../.././gcc/../include/obstack.h' line='178' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='640'>
         <var-decl name='use_extra_arg' type-id='type-id-13' visibility='default' filepath='../.././gcc/../include/obstack.h' line='179' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='641'>
         <var-decl name='maybe_empty_object' type-id='type-id-13' visibility='default' filepath='../.././gcc/../include/obstack.h' line='180' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='642'>
         <var-decl name='alloc_failed' type-id='type-id-13' visibility='default' filepath='../.././gcc/../include/obstack.h' line='184' column='1'/>
       </data-member>
     </class-decl>
@@ -854,19 +854,19 @@
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='ident' type-id='type-id-88' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='677' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='128'>
         <var-decl name='is_directive' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='678' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='129'>
         <var-decl name='directive_index' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='679' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='136'>
         <var-decl name='rid_code' type-id='type-id-27' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='682' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='16'>
+      <data-member access='public' layout-offset-in-bits='144'>
         <var-decl name='type' type-id='type-id-89' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='683' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='22'>
+      <data-member access='public' layout-offset-in-bits='150'>
         <var-decl name='flags' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='684' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
@@ -887,7 +887,7 @@
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='start_location' type-id='type-id-37' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='205' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='32'>
         <var-decl name='reason' type-id='type-id-35' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='208' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
@@ -4042,22 +4042,22 @@
       <data-member access='public' layout-offset-in-bits='192'>
         <var-decl name='paramc' type-id='type-id-29' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='60' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='16'>
+      <data-member access='public' layout-offset-in-bits='208'>
         <var-decl name='fun_like' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='63' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='17'>
+      <data-member access='public' layout-offset-in-bits='209'>
         <var-decl name='variadic' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='66' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='18'>
+      <data-member access='public' layout-offset-in-bits='210'>
         <var-decl name='syshdr' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='69' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='19'>
+      <data-member access='public' layout-offset-in-bits='211'>
         <var-decl name='used' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='72' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='20'>
+      <data-member access='public' layout-offset-in-bits='212'>
         <var-decl name='traditional' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='75' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='21'>
+      <data-member access='public' layout-offset-in-bits='213'>
         <var-decl name='extra_tokens' type-id='type-id-13' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='80' column='1'/>
       </data-member>
     </class-decl>
@@ -4198,7 +4198,7 @@
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='src_loc' type-id='type-id-37' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='224' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='32'>
         <var-decl name='type' type-id='type-id-226' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='225' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='48'>
@@ -5072,13 +5072,13 @@
       <data-member access='public' layout-offset-in-bits='768'>
         <var-decl name='need_line' type-id='type-id-1' visibility='default' filepath='../.././libcpp/internal.h' line='326' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='8'>
+      <data-member access='public' layout-offset-in-bits='776'>
         <var-decl name='warned_cplusplus_comments' type-id='type-id-13' visibility='default' filepath='../.././libcpp/internal.h' line='332' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='9'>
+      <data-member access='public' layout-offset-in-bits='777'>
         <var-decl name='from_stage3' type-id='type-id-13' visibility='default' filepath='../.././libcpp/internal.h' line='337' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='10'>
+      <data-member access='public' layout-offset-in-bits='778'>
         <var-decl name='return_at_eof' type-id='type-id-13' visibility='default' filepath='../.././libcpp/internal.h' line='342' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='784'>
@@ -5104,13 +5104,13 @@
       <data-member access='public' layout-offset-in-bits='192'>
         <var-decl name='line' type-id='type-id-37' visibility='default' filepath='../.././libcpp/internal.h' line='367' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='224'>
         <var-decl name='syshdr' type-id='type-id-13' visibility='default' filepath='../.././libcpp/internal.h' line='369' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='225'>
         <var-decl name='used' type-id='type-id-13' visibility='default' filepath='../.././libcpp/internal.h' line='371' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='226'>
         <var-decl name='is_undef' type-id='type-id-13' visibility='default' filepath='../.././libcpp/internal.h' line='374' column='1'/>
       </data-member>
     </class-decl>

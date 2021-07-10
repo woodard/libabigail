@@ -20701,19 +20701,19 @@
           <!-- void* tcmalloc::Span::objects -->
           <var-decl name='objects' type-id='type-id-58' visibility='default' filepath='src/span.h' line='50' column='1'/>
         </data-member>
-        <data-member access='public' layout-offset-in-bits='0'>
+        <data-member access='public' layout-offset-in-bits='320'>
           <!-- unsigned int tcmalloc::Span::refcount -->
           <var-decl name='refcount' type-id='type-id-1310' visibility='default' filepath='src/span.h' line='51' column='1'/>
         </data-member>
-        <data-member access='public' layout-offset-in-bits='16'>
+        <data-member access='public' layout-offset-in-bits='336'>
           <!-- unsigned int tcmalloc::Span::sizeclass -->
           <var-decl name='sizeclass' type-id='type-id-1310' visibility='default' filepath='src/span.h' line='52' column='1'/>
         </data-member>
-        <data-member access='public' layout-offset-in-bits='24'>
+        <data-member access='public' layout-offset-in-bits='344'>
           <!-- unsigned int tcmalloc::Span::location -->
           <var-decl name='location' type-id='type-id-1310' visibility='default' filepath='src/span.h' line='53' column='1'/>
         </data-member>
-        <data-member access='public' layout-offset-in-bits='26'>
+        <data-member access='public' layout-offset-in-bits='346'>
           <!-- unsigned int tcmalloc::Span::sample -->
           <var-decl name='sample' type-id='type-id-1310' visibility='default' filepath='src/span.h' line='54' column='1'/>
         </data-member>

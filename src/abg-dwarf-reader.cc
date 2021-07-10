@@ -8418,37 +8418,44 @@ eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
 // </location expression evaluation>
 // -----------------------------------
 
-/// Convert the value of the DW_AT_bit_offset attribute into the value
-/// of the DW_AT_data_bit_offset attribute.
+/// Convert a DW_AT_bit_offset attribute value into the same value as
+/// DW_AT_data_bit_offset - 8 * DW_AT_data_member_location.
 ///
 /// On big endian machines, the value of the DW_AT_bit_offset
+/// attribute + 8 * the value of the DW_AT_data_member_location
 /// attribute is the same as the value of the DW_AT_data_bit_offset
 /// attribute.
 ///
 /// On little endian machines however, the situation is different.
 /// The DW_AT_bit_offset value for a bit field is the number of bits
-/// to the left of the most significant bit of the bit field.
+/// to the left of the most significant bit of the bit field, within
+/// the integer value at DW_AT_data_member_location.
 ///
 /// The DW_AT_data_bit_offset offset value is the number of bits to
-/// the right of the least significant bit of the bit field.
+/// the right of the least significant bit of the bit field, again
+/// relative to the containing integer value.
 ///
 /// In other words, DW_AT_data_bit_offset is what everybody would
-/// instinctively think of as being the "offset of the bit
-/// field". DW_AT_bit_offset however is very counter-intuitive on
-/// little endian machines.
+/// instinctively think of as being the "offset of the bit field". 8 *
+/// DW_AT_data_member_location + DW_AT_bit_offset however is very
+/// counter-intuitive on little endian machines.
 ///
 /// This function thus reads the value of a DW_AT_bit_offset property
 /// of a DIE and converts it into what the DW_AT_data_bit_offset would
-/// have been if it was present.
+/// have been if it was present, ignoring the contribution of
+/// DW_AT_data_member_location.
 ///
 /// Note that DW_AT_bit_offset has been made obsolete starting from
-/// DWARF5.
+/// DWARF5 (for GCC; Clang still emits it).
 ///
 /// If you like coffee and it's not too late, now might be a good time
 /// to have a coffee break.  Otherwise if it's late at night, you
 /// might want to consider an herbal tea break.  Then come back to
 /// read this.
 ///
+///
+/// In what follows, the bit fields are all contained within the first
+/// whole int of the struct, so DW_AT_data_member_location is 0.
 ///
 /// Okay, to have a better idea of what DW_AT_bit_offset and
 /// DW_AT_data_bit_offset represent, let's consider a struct 'S' which
@@ -8590,8 +8597,9 @@ eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
 ///
 /// @param offset this is the output parameter into which the value of
 /// the DW_AT_bit_offset is put, converted as if it was the value of
-/// the DW_AT_data_bit_offset parameter.  This parameter is set iff
-/// the function returns true.
+/// the DW_AT_data_bit_offset parameter, less the contribution of
+/// DW_AT_data_member_location.  This parameter is set iff the
+/// function returns true.
 ///
 /// @return true if DW_AT_bit_offset was found on @p die.
 static bool
@@ -8642,12 +8650,13 @@ read_and_convert_DW_at_bit_offset(const Dwarf_Die* die,
 /// DW_AT_data_member_location is not necessarily a constant that one
 /// would just read and be done with it.  Rather, it can be a DWARF
 /// expression that one has to interpret.  In general, the offset can
-/// be given by the DW_AT_bit_offset or DW_AT_data_bit_offset
-/// attribute.  In that case the offset is a constant.  But it can
-/// also be given by the DW_AT_data_member_location attribute.  In
-/// that case it's a DWARF location expression.
+/// be given by the DW_AT_data_bit_offset or by the
+/// DW_AT_data_member_location attribute and optionally the
+/// DW_AT_bit_offset attribute.  The bit offset attributes are
+/// always simple constants, but the DW_AT_data_member_location
+/// attribute is a DWARF location expression.
 ///
-/// When the it's the DW_AT_data_member_location that is present,
+/// When it's the DW_AT_data_member_location that is present,
 /// there are three cases to possibly take into account:
 ///
 ///     1/ The offset in the vtable where the offset of a virtual base
@@ -8676,12 +8685,12 @@ read_and_convert_DW_at_bit_offset(const Dwarf_Die* die,
 ///     the offset of the function in the vtable.  In this case this
 ///     function returns that constant.
 ///
-///@param ctxt the read context to consider.
+/// @param ctxt the read context to consider.
 ///
-///@param die the DIE to read the information from.
+/// @param die the DIE to read the information from.
 ///
-///@param offset the resulting constant offset, in bits.  This
-///argument is set iff the function returns true.
+/// @param offset the resulting constant offset, in bits.  This
+/// argument is set iff the function returns true.
 static bool
 die_member_offset(const read_context& ctxt,
 		  const Dwarf_Die* die,
@@ -8689,39 +8698,24 @@ die_member_offset(const read_context& ctxt,
 {
   Dwarf_Op* expr = NULL;
   uint64_t expr_len = 0;
-  uint64_t off = 0;
+  uint64_t bit_offset = 0;
 
   // First let's see if the DW_AT_data_bit_offset attribute is
   // present.
-  if (die_unsigned_constant_attribute(die, DW_AT_data_bit_offset, off))
+  if (die_unsigned_constant_attribute(die, DW_AT_data_bit_offset, bit_offset))
     {
-      offset = off;
+      offset = bit_offset;
       return true;
     }
 
-  // Otherwise, let's see if the DW_AT_bit_offset attribute is
-  // present.  On little endian machines, we need to convert this
-  // attribute into what it would have been if the
-  // DW_AT_data_bit_offset was used instead.  In other words,
-  // DW_AT_bit_offset needs to be converted into a
-  // human-understandable form that represents the offset of the
-  // bitfield data member it describes.  For details about the
-  // conversion, please read the extensive comments of
-  // read_and_convert_DW_at_bit_offset.
-  bool is_big_endian = architecture_is_big_endian(ctxt.elf_handle());
-  if (read_and_convert_DW_at_bit_offset(die, is_big_endian, off))
-    {
-      offset = off;
-      return true;
-    }
-
+  // Otherwise, let's see if the DW_AT_data_member_location attribute and,
+  // optionally, the DW_AT_bit_offset attributes are present.
   if (!die_location_expr(die, DW_AT_data_member_location, &expr, &expr_len))
     return false;
 
-  // Otherwise, the DW_AT_data_member_location attribute is present.
-  // In that case, let's evaluate it and get its constant
+  // The DW_AT_data_member_location attribute is present.
+  // Let's evaluate it and get its constant
   // sub-expression and return that one.
-
   if (!eval_quickly(expr, expr_len, offset))
     {
       bool is_tls_address = false;
@@ -8730,8 +8724,23 @@ die_member_offset(const read_context& ctxt,
 					     ctxt.dwarf_expr_eval_ctxt()))
 	return false;
     }
-
   offset *= 8;
+
+  // On little endian machines, we need to convert the
+  // DW_AT_bit_offset attribute into a relative offset to 8 *
+  // DW_AT_data_member_location equal to what DW_AT_data_bit_offset
+  // would be if it were used instead.
+  //
+  // In other words, before adding it to 8 *
+  // DW_AT_data_member_location, DW_AT_bit_offset needs to be
+  // converted into a human-understandable form that represents the
+  // offset of the bitfield data member it describes.  For details
+  // about the conversion, please read the extensive comments of
+  // read_and_convert_DW_at_bit_offset.
+  bool is_big_endian = architecture_is_big_endian(ctxt.elf_handle());
+  if (read_and_convert_DW_at_bit_offset(die, is_big_endian, bit_offset))
+    offset += bit_offset;
+
   return true;
 }
 

@@ -681,7 +681,7 @@
       <data-member access='public' layout-offset-in-bits='5568'>
         <var-decl name='data' type-id='type-id-272' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/drivers/mmc/host/sdhci.h' line='540' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='5632'>
         <var-decl name='data_early' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/drivers/mmc/host/sdhci.h' line='541' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5696'>
@@ -1551,16 +1551,16 @@
       <data-member access='public' layout-offset-in-bits='5760'>
         <var-decl name='iommu_param' type-id='type-id-409' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/device.h' line='1067' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='5824'>
         <var-decl name='offline_disabled' type-id='type-id-270' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/device.h' line='1069' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='5825'>
         <var-decl name='offline' type-id='type-id-270' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/device.h' line='1070' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='5826'>
         <var-decl name='of_node_reused' type-id='type-id-270' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/device.h' line='1071' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='3'>
+      <data-member access='public' layout-offset-in-bits='5827'>
         <var-decl name='dma_coherent' type-id='type-id-270' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/device.h' line='1075' column='1'/>
       </data-member>
     </class-decl>
@@ -3013,16 +3013,16 @@
       <data-member access='public' layout-offset-in-bits='96'>
         <var-decl name='clock_was_set_seq' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/hrtimer.h' line='202' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='128'>
         <var-decl name='hres_active' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/hrtimer.h' line='203' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='129'>
         <var-decl name='in_hrtirq' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/hrtimer.h' line='204' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='130'>
         <var-decl name='hang_detected' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/hrtimer.h' line='205' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='3'>
+      <data-member access='public' layout-offset-in-bits='131'>
         <var-decl name='softirq_activated' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/hrtimer.h' line='206' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='160'>
@@ -3332,10 +3332,10 @@
       <data-member access='public' layout-offset-in-bits='1024'>
         <var-decl name='atomic_write_len' type-id='type-id-274' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/kernfs.h' line='213' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='1088'>
         <var-decl name='mmapped' type-id='type-id-270' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/kernfs.h' line='214' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='1089'>
         <var-decl name='released' type-id='type-id-270' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/kernfs.h' line='215' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1152'>
@@ -3581,19 +3581,19 @@
       <data-member access='public' layout-offset-in-bits='448'>
         <var-decl name='kref' type-id='type-id-714' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/kobject.h' line='72' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='480'>
         <var-decl name='state_initialized' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/kobject.h' line='76' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='481'>
         <var-decl name='state_in_sysfs' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/kobject.h' line='77' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='482'>
         <var-decl name='state_add_uevent_sent' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/kobject.h' line='78' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='3'>
+      <data-member access='public' layout-offset-in-bits='483'>
         <var-decl name='state_remove_uevent_sent' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/kobject.h' line='79' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='4'>
+      <data-member access='public' layout-offset-in-bits='484'>
         <var-decl name='uevent_suppress' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/kobject.h' line='80' column='1'/>
       </data-member>
     </class-decl>
@@ -4620,19 +4620,19 @@
       <data-member access='public' layout-offset-in-bits='288'>
         <var-decl name='capacity' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mmc/card.h' line='37' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='320'>
         <var-decl name='read_partial' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mmc/card.h' line='38' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='321'>
         <var-decl name='read_misalign' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mmc/card.h' line='39' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='322'>
         <var-decl name='write_partial' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mmc/card.h' line='40' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='3'>
+      <data-member access='public' layout-offset-in-bits='323'>
         <var-decl name='write_misalign' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mmc/card.h' line='41' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='4'>
+      <data-member access='public' layout-offset-in-bits='324'>
         <var-decl name='dsr_imp' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mmc/card.h' line='42' column='1'/>
       </data-member>
     </class-decl>
@@ -4918,22 +4918,22 @@
       <data-member access='public' layout-offset-in-bits='32'>
         <var-decl name='sd_vsn' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mmc/card.h' line='193' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='64'>
         <var-decl name='multi_block' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mmc/card.h' line='194' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='65'>
         <var-decl name='low_speed' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mmc/card.h' line='195' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='66'>
         <var-decl name='wide_bus' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mmc/card.h' line='196' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='3'>
+      <data-member access='public' layout-offset-in-bits='67'>
         <var-decl name='high_power' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mmc/card.h' line='197' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='4'>
+      <data-member access='public' layout-offset-in-bits='68'>
         <var-decl name='high_speed' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mmc/card.h' line='198' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='5'>
+      <data-member access='public' layout-offset-in-bits='69'>
         <var-decl name='disable_cd' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mmc/card.h' line='199' column='1'/>
       </data-member>
     </class-decl>
@@ -5445,31 +5445,31 @@
       <data-member access='public' layout-offset-in-bits='7040'>
         <var-decl name='ios' type-id='type-id-837' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mmc/host.h' line='387' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='7200'>
         <var-decl name='use_spi_crc' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mmc/host.h' line='390' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='7201'>
         <var-decl name='claimed' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mmc/host.h' line='391' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='7202'>
         <var-decl name='bus_dead' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mmc/host.h' line='392' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='3'>
+      <data-member access='public' layout-offset-in-bits='7203'>
         <var-decl name='can_retune' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mmc/host.h' line='393' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='4'>
+      <data-member access='public' layout-offset-in-bits='7204'>
         <var-decl name='doing_retune' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mmc/host.h' line='394' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='5'>
+      <data-member access='public' layout-offset-in-bits='7205'>
         <var-decl name='retune_now' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mmc/host.h' line='395' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='6'>
+      <data-member access='public' layout-offset-in-bits='7206'>
         <var-decl name='retune_paused' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mmc/host.h' line='396' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='7'>
+      <data-member access='public' layout-offset-in-bits='7207'>
         <var-decl name='use_blk_mq' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mmc/host.h' line='397' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='8'>
+      <data-member access='public' layout-offset-in-bits='7208'>
         <var-decl name='retune_crc_disable' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/mmc/host.h' line='398' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='7232'>
@@ -6112,10 +6112,10 @@
       <data-member access='public' layout-offset-in-bits='192'>
         <var-decl name='confirm_switch' type-id='type-id-942' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/percpu-refcount.h' line='103' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='256'>
         <var-decl name='force_atomic' type-id='type-id-270' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/percpu-refcount.h' line='104' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='257'>
         <var-decl name='allow_reinit' type-id='type-id-270' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/percpu-refcount.h' line='105' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
@@ -6349,34 +6349,34 @@
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='power_state' type-id='type-id-950' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='574' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='32'>
         <var-decl name='can_wakeup' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='575' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='33'>
         <var-decl name='async_suspend' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='576' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='34'>
         <var-decl name='in_dpm_list' type-id='type-id-270' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='577' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='3'>
+      <data-member access='public' layout-offset-in-bits='35'>
         <var-decl name='is_prepared' type-id='type-id-270' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='578' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='4'>
+      <data-member access='public' layout-offset-in-bits='36'>
         <var-decl name='is_suspended' type-id='type-id-270' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='579' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='5'>
+      <data-member access='public' layout-offset-in-bits='37'>
         <var-decl name='is_noirq_suspended' type-id='type-id-270' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='580' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='6'>
+      <data-member access='public' layout-offset-in-bits='38'>
         <var-decl name='is_late_suspended' type-id='type-id-270' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='581' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='7'>
+      <data-member access='public' layout-offset-in-bits='39'>
         <var-decl name='no_pm' type-id='type-id-270' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='582' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='40'>
         <var-decl name='early_init' type-id='type-id-270' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='583' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='41'>
         <var-decl name='direct_complete' type-id='type-id-270' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='584' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
@@ -6394,19 +6394,19 @@
       <data-member access='public' layout-offset-in-bits='512'>
         <var-decl name='wakeup' type-id='type-id-955' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='590' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='576'>
         <var-decl name='wakeup_path' type-id='type-id-270' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='591' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='577'>
         <var-decl name='syscore' type-id='type-id-270' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='592' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='578'>
         <var-decl name='no_pm_callbacks' type-id='type-id-270' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='593' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='3'>
+      <data-member access='public' layout-offset-in-bits='579'>
         <var-decl name='must_resume' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='594' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='4'>
+      <data-member access='public' layout-offset-in-bits='580'>
         <var-decl name='may_skip_resume' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='595' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='640'>
@@ -6430,37 +6430,37 @@
       <data-member access='public' layout-offset-in-bits='1760'>
         <var-decl name='child_count' type-id='type-id-306' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='606' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='1792'>
         <var-decl name='disable_depth' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='607' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='3'>
+      <data-member access='public' layout-offset-in-bits='1795'>
         <var-decl name='idle_notification' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='608' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='4'>
+      <data-member access='public' layout-offset-in-bits='1796'>
         <var-decl name='request_pending' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='609' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='5'>
+      <data-member access='public' layout-offset-in-bits='1797'>
         <var-decl name='deferred_resume' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='610' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='6'>
+      <data-member access='public' layout-offset-in-bits='1798'>
         <var-decl name='runtime_auto' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='611' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='7'>
+      <data-member access='public' layout-offset-in-bits='1799'>
         <var-decl name='ignore_children' type-id='type-id-270' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='612' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='8'>
+      <data-member access='public' layout-offset-in-bits='1800'>
         <var-decl name='no_callbacks' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='613' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='9'>
+      <data-member access='public' layout-offset-in-bits='1801'>
         <var-decl name='irq_safe' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='614' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='10'>
+      <data-member access='public' layout-offset-in-bits='1802'>
         <var-decl name='use_autosuspend' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='615' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='11'>
+      <data-member access='public' layout-offset-in-bits='1803'>
         <var-decl name='timer_autosuspends' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='616' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='12'>
+      <data-member access='public' layout-offset-in-bits='1804'>
         <var-decl name='memalloc_noio' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm.h' line='617' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1824'>
@@ -6566,10 +6566,10 @@
       <data-member access='public' layout-offset-in-bits='1280'>
         <var-decl name='wakeup_count' type-id='type-id-211' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm_wakeup.h' line='57' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='1344'>
         <var-decl name='active' type-id='type-id-270' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm_wakeup.h' line='58' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='1345'>
         <var-decl name='autosleep_enabled' type-id='type-id-270' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/pm_wakeup.h' line='59' column='1'/>
       </data-member>
     </class-decl>
@@ -7488,19 +7488,19 @@
       <data-member access='public' layout-offset-in-bits='640'>
         <var-decl name='flags' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched.h' line='533' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='672'>
         <var-decl name='dl_throttled' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched.h' line='559' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='673'>
         <var-decl name='dl_boosted' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched.h' line='560' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='674'>
         <var-decl name='dl_yielded' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched.h' line='561' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='3'>
+      <data-member access='public' layout-offset-in-bits='675'>
         <var-decl name='dl_non_contending' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched.h' line='562' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='4'>
+      <data-member access='public' layout-offset-in-bits='676'>
         <var-decl name='dl_overrun' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched.h' line='563' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='704'>
@@ -7691,37 +7691,37 @@
       <data-member access='public' layout-offset-in-bits='9920'>
         <var-decl name='personality' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched.h' line='758' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='9952'>
         <var-decl name='sched_reset_on_fork' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched.h' line='761' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='9953'>
         <var-decl name='sched_contributes_to_load' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched.h' line='762' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='9954'>
         <var-decl name='sched_migrated' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched.h' line='763' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='3'>
+      <data-member access='public' layout-offset-in-bits='9955'>
         <var-decl name='sched_remote_wakeup' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched.h' line='764' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='4'>
+      <data-member access='public' layout-offset-in-bits='9956'>
         <var-decl name='sched_psi_wake_requeue' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched.h' line='766' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='9984'>
         <var-decl name='in_execve' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched.h' line='775' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='9985'>
         <var-decl name='in_iowait' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched.h' line='776' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='9986'>
         <var-decl name='in_user_fault' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched.h' line='781' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='3'>
+      <data-member access='public' layout-offset-in-bits='9987'>
         <var-decl name='no_cgroup_migration' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched.h' line='788' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='4'>
+      <data-member access='public' layout-offset-in-bits='9988'>
         <var-decl name='frozen' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched.h' line='790' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='5'>
+      <data-member access='public' layout-offset-in-bits='9989'>
         <var-decl name='use_memdelay' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched.h' line='794' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='10048'>
@@ -8175,10 +8175,10 @@
       <data-member access='public' layout-offset-in-bits='928'>
         <var-decl name='flags' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched/signal.h' line='114' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='960'>
         <var-decl name='is_child_subreaper' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched/signal.h' line='125' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='1'>
+      <data-member access='public' layout-offset-in-bits='961'>
         <var-decl name='has_child_subreaper' type-id='type-id-210' visibility='default' filepath='/ws/android/kernel/aosp/common-mainline/common/include/linux/sched/signal.h' line='126' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='992'>

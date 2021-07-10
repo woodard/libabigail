@@ -8191,11 +8191,11 @@
         <!-- unsigned int ioctl_desc::req -->
         <var-decl name='req' type-id='type-id-147' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors_ioctl.inc' line='14' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='0'>
+      <data-member access='public' layout-offset-in-bits='32'>
         <!-- ioctl_desc::__anonymous_enum__ ioctl_desc::type -->
         <var-decl name='type' type-id='type-id-719' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors_ioctl.inc' line='21' column='1'/>
       </data-member>
-      <data-member access='public' layout-offset-in-bits='2'>
+      <data-member access='public' layout-offset-in-bits='34'>
         <!-- unsigned int ioctl_desc::size -->
         <var-decl name='size' type-id='type-id-147' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors_ioctl.inc' line='22' column='1'/>
       </data-member>
