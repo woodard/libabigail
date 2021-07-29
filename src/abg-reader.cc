@@ -4535,14 +4535,13 @@ build_class_decl(read_context&		ctxt,
 
   ABG_ASSERT(!id.empty());
 
+  class_decl_sptr previous_definition, previous_declaration;
   if (type_base_sptr t = ctxt.get_type_decl(id))
     {
-      class_decl_sptr result = is_class_type(t);
-      ABG_ASSERT(result);
-      return result;
+      previous_definition  = is_class_type(t);
+      ABG_ASSERT(previous_definition);
     }
 
-  class_decl_sptr previous_definition, previous_declaration;
   const vector<type_base_sptr> *types_ptr = 0;
   if (!is_anonymous && !previous_definition)
     types_ptr = ctxt.get_all_type_decls(id);
