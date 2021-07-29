@@ -68,7 +68,7 @@
 ================ end of changes of 'libssl3.so'===============
 
 ================ changes of 'libsmime3.so'===============
-  Functions changes summary: 0 Removed, 1 Changed (127 filtered out), 0 Added functions
+  Functions changes summary: 0 Removed, 1 Changed (146 filtered out), 0 Added functions
   Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
   1 function with some indirect sub-type change:
@@ -82,12 +82,12 @@
               type of 'NSSCMSContent content' changed:
                 underlying type 'union NSSCMSContentUnion' at cmst.h:118:1 changed:
                   type size hasn't changed
-                  1 data member changes (3 filtered):
+                  1 data member changes (4 filtered):
                     type of 'NSSCMSEncryptedData* encryptedData' changed:
                       in pointed to type 'typedef NSSCMSEncryptedData' at cmst.h:65:1:
                         underlying type 'struct NSSCMSEncryptedDataStr' at cmst.h:468:1 changed:
                           type size hasn't changed
-                          1 data member changes (1 filtered):
+                          1 data member changes (2 filtered):
                             type of 'NSSCMSAttribute** unprotectedAttr' changed:
                               in pointed to type 'NSSCMSAttribute*':
                                 in pointed to type 'typedef NSSCMSAttribute' at cmst.h:69:1:

@@ -95,8 +95,8 @@ namespace ir
 // Inject some std types in here.
 using std::unordered_map;
 
-/// A convenience typedef fo r an ordered set of size_t.
-typedef unordered_set<size_t> pointer_set;
+/// A convenience typedef for an unordered set of pointer values
+typedef unordered_set<uintptr_t> pointer_set;
 
 /// Functor to hash a canonical type by using its pointer value.
 struct canonical_type_hash
@@ -133,10 +133,9 @@ typedef vector<type_base_sptr> type_base_sptrs_type;
 /// that you can de-allocate the environment instance.
 class environment
 {
+public:
   struct priv;
   std::unique_ptr<priv> priv_;
-
-public:
 
   /// A convenience typedef for a map of canonical types.  The key is
   /// the pretty representation string of a particular type and the
@@ -144,6 +143,7 @@ public:
   /// representation string.
   typedef std::unordered_map<string, std::vector<type_base_sptr> >
       canonical_types_map_type;
+
   environment();
 
   virtual ~environment();

@@ -29,7 +29,87 @@
                 in pointed to type 'typedef QXLState' at spice-qxl.h:35:1:
                   underlying type 'struct QXLState' at reds.h:93:1 changed:
                     type size hasn't changed
-                    1 data member change:
+                    2 data member changes:
+                      type of 'QXLInterface* qif' changed:
+                        in pointed to type 'typedef QXLInterface' at spice-qxl.h:33:1:
+                          underlying type 'struct QXLInterface' at spice.h:230:1 changed:
+                            type size hasn't changed
+                            15 data member changes:
+                              type of 'void (QXLInstance*, QXLWorker*)* attache_worker' changed:
+                                in pointed to type 'function type void (QXLInstance*, QXLWorker*)':
+                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
+                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
+                                      underlying type 'struct QXLInstance' changed, as being reported
+                              type of 'void (QXLInstance*, int)* set_compression_level' changed:
+                                in pointed to type 'function type void (QXLInstance*, int)':
+                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
+                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
+                                      underlying type 'struct QXLInstance' changed, as being reported
+                              type of 'void (QXLInstance*, typedef uint32_t)* set_mm_time' changed:
+                                in pointed to type 'function type void (QXLInstance*, typedef uint32_t)':
+                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
+                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
+                                      underlying type 'struct QXLInstance' changed, as being reported
+                              type of 'void (QXLInstance*, QXLDevInitInfo*)* get_init_info' changed:
+                                in pointed to type 'function type void (QXLInstance*, QXLDevInitInfo*)':
+                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
+                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
+                                      underlying type 'struct QXLInstance' changed, as being reported
+                              type of 'int (QXLInstance*, QXLCommandExt*)* get_command' changed:
+                                in pointed to type 'function type int (QXLInstance*, QXLCommandExt*)':
+                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
+                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
+                                      underlying type 'struct QXLInstance' changed, as being reported
+                              type of 'int (QXLInstance*)* req_cmd_notification' changed:
+                                in pointed to type 'function type int (QXLInstance*)':
+                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
+                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
+                                      underlying type 'struct QXLInstance' changed, as being reported
+                              type of 'void (QXLInstance*, struct QXLReleaseInfoExt)* release_resource' changed:
+                                in pointed to type 'function type void (QXLInstance*, struct QXLReleaseInfoExt)':
+                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
+                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
+                                      underlying type 'struct QXLInstance' changed, as being reported
+                              type of 'int (QXLInstance*, QXLCommandExt*)* get_cursor_command' changed:
+                                in pointed to type 'function type int (QXLInstance*, QXLCommandExt*)':
+                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
+                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
+                                      underlying type 'struct QXLInstance' changed, as being reported
+                              type of 'int (QXLInstance*)* req_cursor_notification' changed:
+                                in pointed to type 'function type int (QXLInstance*)':
+                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
+                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
+                                      underlying type 'struct QXLInstance' changed, as being reported
+                              type of 'void (QXLInstance*, typedef uint32_t)* notify_update' changed:
+                                in pointed to type 'function type void (QXLInstance*, typedef uint32_t)':
+                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
+                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
+                                      underlying type 'struct QXLInstance' changed, as being reported
+                              type of 'int (QXLInstance*)* flush_resources' changed:
+                                in pointed to type 'function type int (QXLInstance*)':
+                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
+                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
+                                      underlying type 'struct QXLInstance' changed, as being reported
+                              type of 'void (QXLInstance*, typedef uint64_t)* async_complete' changed:
+                                in pointed to type 'function type void (QXLInstance*, typedef uint64_t)':
+                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
+                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
+                                      underlying type 'struct QXLInstance' changed, as being reported
+                              type of 'void (QXLInstance*, typedef uint32_t, QXLRect*, typedef uint32_t)* update_area_complete' changed:
+                                in pointed to type 'function type void (QXLInstance*, typedef uint32_t, QXLRect*, typedef uint32_t)':
+                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
+                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
+                                      underlying type 'struct QXLInstance' changed, as being reported
+                              type of 'void (QXLInstance*, typedef uint8_t, uint8_t*)* set_client_capabilities' changed:
+                                in pointed to type 'function type void (QXLInstance*, typedef uint8_t, uint8_t*)':
+                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
+                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
+                                      underlying type 'struct QXLInstance' changed, as being reported
+                              type of 'int (QXLInstance*, VDAgentMonitorsConfig*)* client_monitors_config' changed:
+                                in pointed to type 'function type int (QXLInstance*, VDAgentMonitorsConfig*)':
+                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
+                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
+                                      underlying type 'struct QXLInstance' changed, as being reported
                       type of 'RedDispatcher* dispatcher' changed:
                         in pointed to type 'typedef RedDispatcher' at red_worker.h:87:1:
                           underlying type 'struct RedDispatcher' at red_dispatcher.c:53:1 changed:
@@ -310,7 +390,9 @@
                                                                         in pointed to type 'typedef QXLState' at spice-qxl.h:35:1:
                                                                           underlying type 'struct QXLState' at reds.h:93:1 changed:
                                                                             type size hasn't changed
-                                                                            1 data member change:
+                                                                            2 data member changes:
+                                                                              type of 'QXLInterface* qif' changed:
+                                                                                pointed to type 'typedef QXLInterface' changed at spice.h:102:1, as reported earlier
                                                                               type of 'RedDispatcher* dispatcher' changed:
                                                                                 pointed to type 'struct RedDispatcher' changed, as being reported
                                                               type of 'RedDispatcher* red_dispatcher' changed:

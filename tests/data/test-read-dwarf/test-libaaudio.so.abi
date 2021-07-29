@@ -99,7 +99,7 @@
     <type-decl name='variadic parameter type' id='2c1145c5'/>
     <type-decl name='void' id='48b5725f'/>
     <type-decl name='wchar_t' size-in-bits='32' id='c523b9f1'/>
-    <class-decl name='__anonymous_struct__2' size-in-bits='64' is-struct='yes' is-anonymous='yes' naming-typedef-id='3d7d8cbf' visibility='default' filepath='bionic/libc/include/bits/mbstate_t.h' line='42' column='1' id='588d60e0'>
+    <class-decl name='__anonymous_struct__2' size-in-bits='64' is-struct='yes' is-anonymous='yes' naming-typedef-id='3d7d8cbf' visibility='default' filepath='bionic/libc/include/bits/mbstate_t.h' line='42' column='1' id='e7f43f72'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='__seq' type-id='09001d3c' visibility='default' filepath='bionic/libc/include/bits/mbstate_t.h' line='43' column='1'/>
       </data-member>
@@ -107,7 +107,7 @@
         <var-decl name='__reserved' type-id='09001d3c' visibility='default' filepath='bionic/libc/include/bits/mbstate_t.h' line='45' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='mbstate_t' type-id='588d60e0' filepath='bionic/libc/include/bits/mbstate_t.h' line='47' column='1' id='3d7d8cbf'/>
+    <typedef-decl name='mbstate_t' type-id='e7f43f72' filepath='bionic/libc/include/bits/mbstate_t.h' line='47' column='1' id='3d7d8cbf'/>
     <typedef-decl name='wint_t' type-id='f0981eeb' filepath='bionic/libc/include/bits/wctype.h' line='36' column='1' id='6dd37369'/>
     <typedef-decl name='wctype_t' type-id='bd54fe1a' filepath='bionic/libc/include/bits/wctype.h' line='56' column='1' id='ba50424d'/>
     <typedef-decl name='wctrans_t' type-id='eaa32e2f' filepath='bionic/libc/include/bits/wctype.h' line='60' column='1' id='183c72c3'/>
@@ -119,7 +119,7 @@
     <typedef-decl name='int64_t' type-id='0c9942d2' filepath='bionic/libc/include/stdint.h' line='67' column='1' id='9da381c4'/>
     <typedef-decl name='fpos_t' type-id='ad707ada' filepath='bionic/libc/include/stdio.h' line='55' column='1' id='e322b6ef'/>
     <typedef-decl name='FILE' type-id='8d7b2c1e' filepath='bionic/libc/include/stdio.h' line='59' column='1' id='aa12d1ba'/>
-    <class-decl name='__anonymous_struct__1' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='30397bf8' visibility='default' filepath='bionic/libc/include/stdlib.h' line='136' column='1' id='33a9d652'>
+    <class-decl name='__anonymous_struct__1' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='30397bf8' visibility='default' filepath='bionic/libc/include/stdlib.h' line='136' column='1' id='e7f43f73'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='quot' type-id='bd54fe1a' visibility='default' filepath='bionic/libc/include/stdlib.h' line='137' column='1'/>
       </data-member>
@@ -127,8 +127,8 @@
         <var-decl name='rem' type-id='bd54fe1a' visibility='default' filepath='bionic/libc/include/stdlib.h' line='138' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='ldiv_t' type-id='33a9d652' filepath='bionic/libc/include/stdlib.h' line='139' column='1' id='30397bf8'/>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='f5fa3b34' visibility='default' filepath='bionic/libc/include/stdlib.h' line='143' column='1' id='8aac8194'>
+    <typedef-decl name='ldiv_t' type-id='e7f43f73' filepath='bionic/libc/include/stdlib.h' line='139' column='1' id='30397bf8'/>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='f5fa3b34' visibility='default' filepath='bionic/libc/include/stdlib.h' line='143' column='1' id='e7f43f74'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='quot' type-id='1eb56b1e' visibility='default' filepath='bionic/libc/include/stdlib.h' line='144' column='1'/>
       </data-member>
@@ -136,7 +136,7 @@
         <var-decl name='rem' type-id='1eb56b1e' visibility='default' filepath='bionic/libc/include/stdlib.h' line='145' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='lldiv_t' type-id='8aac8194' filepath='bionic/libc/include/stdlib.h' line='146' column='1' id='f5fa3b34'/>
+    <typedef-decl name='lldiv_t' type-id='e7f43f74' filepath='bionic/libc/include/stdlib.h' line='146' column='1' id='f5fa3b34'/>
     <typedef-decl name='clock_t' type-id='880ebc01' filepath='bionic/libc/include/sys/types.h' line='54' column='1' id='4c3a2c61'/>
     <typedef-decl name='__clockid_t' type-id='7eb128d4' filepath='bionic/libc/include/sys/types.h' line='56' column='1' id='08f9a87a'/>
     <typedef-decl name='clockid_t' type-id='08f9a87a' filepath='bionic/libc/include/sys/types.h' line='57' column='1' id='a1c3b834'/>

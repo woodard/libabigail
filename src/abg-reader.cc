@@ -5675,6 +5675,8 @@ build_type(read_context&	ctxt,
     }
 #endif
 
+  if (t)
+    ctxt.maybe_canonicalize_type(t,/*force_delay=*/false );
   return t;
 }
 

@@ -264,6 +264,118 @@ has_generic_anonymous_internal_type_name(const decl_base *d);
 static interned_string
 get_generic_anonymous_internal_type_name(const decl_base *d);
 
+void
+push_composite_type_comparison_operands(const type_base& left,
+					const type_base& right);
+
+void
+pop_composite_type_comparison_operands(const type_base& left,
+				       const type_base& right);
+
+bool
+mark_dependant_types_compared_until(const type_base &r);
+
+/// Push a pair of operands on the stack of operands of the current
+/// type comparison, during type canonicalization.
+///
+/// For more information on this, please look at the description of
+/// the environment::priv::right_type_comp_operands_ data member.
+///
+/// @param left the left-hand-side comparison operand to push.
+///
+/// @param right the right-hand-side comparison operand to push.
+void
+push_composite_type_comparison_operands(const type_base& left,
+					const type_base& right)
+{
+  const environment * env = left.get_environment();
+  env->priv_->push_composite_type_comparison_operands(&left, &right);
+}
+
+/// Pop a pair of operands from the stack of operands to the current
+/// type comparison.
+///
+/// For more information on this, please look at the description of
+/// the environment::privright_type_comp_operands_ data member.
+///
+/// @param left the left-hand-side comparison operand we expect to
+/// pop from the top of the stack.  If this doesn't match the
+/// operand found on the top of the stack, the function aborts.
+///
+/// @param right the right-hand-side comparison operand we expect to
+/// pop from the bottom of the stack. If this doesn't match the
+/// operand found on the top of the stack, the function aborts.
+void
+pop_composite_type_comparison_operands(const type_base& left,
+				       const type_base& right)
+{
+  const environment * env = left.get_environment();
+  env->priv_->pop_composite_type_comparison_operands(&left, &right);
+}
+
+/// In the stack of the current types being compared (as part of type
+/// canonicalization), mark all the types that comes after a certain
+/// one as NOT being eligible to the canonical type propagation
+/// optimization.
+///
+/// For a starter, please read about the @ref
+/// OnTheFlyCanonicalization, aka, "canonical type propagation
+/// optimization".
+///
+/// To implement that optimization, we need, among other things to
+/// maintain stack of the types (and their sub-types) being
+/// currently compared as part of type canonicalization.
+///
+/// Note that we only consider the type that is the right-hand-side
+/// operand of the comparison because it's that one that is being
+/// canonicalized and thus, that is not yet canonicalized.
+///
+/// The reason why a type is deemed NON-eligible to the canonical
+/// type propagation optimization is that it "depends" on
+/// recursively present type.  Let me explain.
+///
+/// Suppose we have a type T that has sub-types named ST0 and ST1.
+/// Suppose ST1 itself has a sub-type that is T itself.  In this
+/// case, we say that T is a recursive type, because it has T
+/// (itself) as one of its sub-types:
+///
+///   T
+///   +-- ST0
+///   |
+///   +-- ST1
+///        +
+///        |
+///        +-- T
+///
+/// ST1 is said to "depend" on T because it has T as a sub-type.
+/// But because T is recursive, then ST1 is said to depend on a
+/// recursive type.  Notice however that ST0 does not depend on any
+/// recursive type.
+///
+/// When we are at the point of comparing the sub-type T of ST1
+/// against its counterpart, the stack of the right-hand-side
+/// operands of the type canonicalization is going to look like
+/// this:
+///
+///    | T | ST1 |
+///
+/// We don't add the type T to the stack as we detect that T was
+/// already in there (recursive cycle).
+///
+/// So, this function will basically mark ST1 as being NON-eligible
+/// to being the target of canonical type propagation, by marking ST1
+/// as being dependant on T.
+///
+/// @param right the right-hand-side operand of the type comparison.
+///
+/// @return true iff the operation was successful.
+bool
+mark_dependant_types_compared_until(const type_base &r)
+{
+  const environment * env = r.get_environment();
+  return env->priv_->mark_dependant_types_compared_until(&r);
+}
+
 /// @brief the location of a token represented in its simplest form.
 /// Instances of this type are to be stored in a sorted vector, so the
 /// type must have proper relational operators.
@@ -723,7 +835,7 @@ notify_equality_failed(const type_or_decl_base *l __attribute__((unused)),
     {						\
       if (value == false)			\
 	notify_equality_failed(l, r);		\
-      return value;			\
+      return value;				\
     } while (false)
 
 #else // WITH_DEBUG_SELF_COMPARISON
@@ -750,6 +862,159 @@ try_canonical_compare(const T *l, const T *r)
     if (const type_base *rc = r->get_naked_canonical_type())
       ABG_RETURN_EQUAL(lc, rc);
   return equals(*l, *r, 0);
+}
+
+/// Detect if a recursive comparison cycle is detected while
+/// structurally comparing two types (a.k.a member-wise comparison).
+///
+/// @param l the left-hand-side operand of the current comparison.
+///
+/// @param r the right-hand-side operand of the current comparison.
+///
+/// @return true iff a comparison cycle is detected.
+template<typename T>
+bool
+is_comparison_cycle_detected(T& l, T& r)
+{
+  bool result = (l.priv_->comparison_started(l)
+		 || l.priv_->comparison_started(r));
+  return result ;
+}
+
+/// This macro is to be used while comparing composite types that
+/// might recursively refer to themselves.  Comparing two such types
+/// might get us into a cyle.
+///
+/// Practically, if we detect that we are already into comparing 'l'
+/// and 'r'; then, this is a cycle.
+//
+/// To break the cycle, we assume the result of the comparison is true
+/// for now.  Comparing the other sub-types of l & r will tell us later
+/// if l & r are actually different or not.
+///
+/// In the mean time, returning true from this macro should not be
+/// used to propagate the canonical type of 'l' onto 'r' as we don't
+/// know yet if l equals r.  All the types that depend on l and r
+/// can't (and that are in the comparison stack currently) can't have
+/// their canonical type propagated either.  So this macro disallows
+/// canonical type propagation for those types that depend on a
+/// recursively defined sub-type for now.
+///
+/// @param l the left-hand-side operand of the comparison.
+#define RETURN_TRUE_IF_COMPARISON_CYCLE_DETECTED(l, r)			\
+  do									\
+    {									\
+      if (is_comparison_cycle_detected(l, r))				\
+	{								\
+	  mark_dependant_types_compared_until(r);			\
+	  return true;							\
+	}								\
+    }									\
+  while(false)
+
+
+/// Mark a pair of types as being compared.
+///
+/// This is helpful to later detect recursive cycles in the comparison
+/// stack.
+///
+/// @param l the left-hand-side operand of the comparison.
+///
+/// @parm r the right-hand-side operand of the comparison.
+template<typename T>
+void
+mark_types_as_being_compared(T& l, T&r)
+{
+  l.priv_->mark_as_being_compared(l);
+  l.priv_->mark_as_being_compared(r);
+  push_composite_type_comparison_operands(l, r);
+}
+
+/// Return the result of the comparison of two (sub) types.
+///
+/// The function does the necessary book keeping before returning the
+/// result of the comparison of two (sub) types.
+///
+/// The book-keeping done is in the following
+/// areas:
+///
+///   * Management of the Canonical Type Propagation optimization
+///   * type comparison cycle detection
+///
+///   @param l the left-hand-side operand of the type comparison
+///
+///   @param r the right-hand-side operand of the type comparison
+///
+///   @param value the result of the comparison of @p l and @p r.
+///
+///   @return the value @p value.
+template<typename T>
+bool
+return_comparison_result(T& l, T& r, bool value)
+{
+  if (value == true)
+    maybe_propagate_canonical_type(l, r);
+  l.priv_->unmark_as_being_compared(l);
+  l.priv_->unmark_as_being_compared(r);
+
+  pop_composite_type_comparison_operands(l, r);
+  const environment* env = l.get_environment();
+  if (env->do_on_the_fly_canonicalization())
+    // We are instructed to perform the "canonical type propagation"
+    // optimization, making 'r' to possibly get the canonical type of
+    // 'l' if it has one.  This mostly means that we are currently
+    // canonicalizing the type that contain the subtype provided in
+    // the 'r' argument.
+    {
+      if (value == true
+	  && is_type(&r)->priv_->depends_on_recursive_type()
+	  && !env->priv_->right_type_comp_operands_.empty()
+	  && is_type(&r)->priv_->canonical_type_propagated())
+	{
+	  // Track the object 'r' for which the propagated canonical
+	  // type might be re-initialized if the current comparison
+	  // eventually fails.
+	  env->priv_->types_with_non_confirmed_propagated_ct_.insert
+	    (reinterpret_cast<uintptr_t>(is_type(&r)));
+	}
+      else if (value == true && env->priv_->right_type_comp_operands_.empty())
+	{
+	  // The type provided in the 'r' argument is the type that is
+	  // being canonicalized; 'r' is not a mere subtype being
+	  // compared, it's the whole type being canonicalized.  And
+	  // its canonicalization has just succeeded.  So let's
+	  // confirm the "canonical type propagation" of all the
+	  // sub-types that were compared during the comparison of
+	  // 'r'.
+	  env->priv_->confirm_ct_propagation(&r);
+	  if (is_type(&r)->priv_->depends_on_recursive_type())
+	    {
+	      is_type(&r)->priv_->set_does_not_depend_on_recursive_type();
+	      env->priv_->remove_from_types_with_non_confirmed_propagated_ct(&r);
+	    }
+	}
+      else if (value == false)
+	{
+	  // The comparison of the current sub-type failed.  So all
+	  // the types in
+	  // env->prix_->types_with_non_confirmed_propagated_ct_
+	  // should see their tentatively propagated canonical type
+	  // cancelled.
+	  env->priv_->cancel_ct_propagation(&r);
+	  if (is_type(&r)->priv_->depends_on_recursive_type())
+	    {
+	      // The right-hand-side operand cannot carry any tentative
+	      // canonical type at this point.
+	      type_base* canonical_type = r.get_naked_canonical_type();
+	      ABG_ASSERT(canonical_type == nullptr);
+	      // Reset the marking of the right-hand-side operand as it no
+	      // longer carries a tentative canonical type that might be
+	      // later cancelled.
+	      is_type(&r)->priv_->set_does_not_depend_on_recursive_type();
+	    }
+	}
+    }
+  ABG_RETURN(value);
 }
 
 /// Getter of all types types sorted by their pretty representation.
@@ -2836,57 +3101,6 @@ dm_context_rel::~dm_context_rel()
 typedef unordered_map<interned_string,
 		      bool, hash_interned_string> interned_string_bool_map_type;
 
-/// The private data of the @ref environment type.
-struct environment::priv
-{
-  config				config_;
-  canonical_types_map_type		canonical_types_;
-  mutable vector<type_base_sptr>	sorted_canonical_types_;
-  type_base_sptr			void_type_;
-  type_base_sptr			variadic_marker_type_;
-  unordered_set<const class_or_union*>	classes_being_compared_;
-  unordered_set<const function_type*>	fn_types_being_compared_;
-  vector<type_base_sptr>		extra_live_types_;
-  interned_string_pool			string_pool_;
-#ifdef WITH_DEBUG_SELF_COMPARISON
-  // This is used for debugging purposes.
-  // When abidw is used with the option --debug-abidiff, some
-  // libabigail internals need to get a hold on the initial binary
-  // input of abidw, as well as as the abixml file that represents the
-  // ABI of that binary.
-  //
-  // So this one is the corpus for the input binary.
-  corpus_wptr				first_self_comparison_corpus_;
-  // This one is the corpus for the ABIXML file representing the
-  // serialization of the input binary.
-  corpus_wptr				second_self_comparison_corpus_;
-  // This is also used for debugging purposes, when using
-  //   'abidw --debug-abidiff <binary>'.  It holds the set of mapping of
-  // an abixml (canonical) type and its type-id.
-  unordered_map<string, uintptr_t>	type_id_canonical_type_map_;
-  // Likewise.  It holds a map that associates the pointer to a type read from
-  // abixml and the type-id string it corresponds to.
-  unordered_map<uintptr_t, string>	pointer_type_id_map_;
-#endif
-  bool					canonicalization_is_done_;
-  bool					do_on_the_fly_canonicalization_;
-  bool					decl_only_class_equals_definition_;
-  bool					use_enum_binary_only_equality_;
-#ifdef WITH_DEBUG_SELF_COMPARISON
-  bool					self_comparison_debug_on_;
-#endif
-
-  priv()
-    : canonicalization_is_done_(),
-      do_on_the_fly_canonicalization_(true),
-      decl_only_class_equals_definition_(false),
-      use_enum_binary_only_equality_(true)
-#ifdef WITH_DEBUG_SELF_COMPARISON
-    ,
-      self_comparison_debug_on_(false)
-#endif
-  {}
-};// end struct environment::priv
 
 /// Default constructor of the @ref environment type.
 environment::environment()
@@ -13086,44 +13300,7 @@ global_scope::~global_scope()
 {
 }
 
-// <type_base definitions>
-
-/// Definition of the private data of @ref type_base.
-struct type_base::priv
-{
-  size_t		size_in_bits;
-  size_t		alignment_in_bits;
-  type_base_wptr	canonical_type;
-  // The data member below holds the canonical type that is managed by
-  // the smart pointer referenced by the canonical_type data member
-  // above.  We are storing this underlying (naked) pointer here, so
-  // that users can access it *fast*.  Otherwise, accessing
-  // canonical_type above implies creating a shared_ptr, and that has
-  // been measured to be slow for some performance hot spots.
-  type_base*		naked_canonical_type;
-  // Computing the representation of a type again and again can be
-  // costly.  So we cache the internal and non-internal type
-  // representation strings here.
-  interned_string	internal_cached_repr_;
-  interned_string	cached_repr_;
-
-  priv()
-    : size_in_bits(),
-      alignment_in_bits(),
-      naked_canonical_type()
-  {}
-
-  priv(size_t s,
-       size_t a,
-       type_base_sptr c = type_base_sptr())
-    : size_in_bits(s),
-      alignment_in_bits(a),
-      canonical_type(c),
-      naked_canonical_type(c.get())
-  {}
-}; // end struct type_base::priv
-
-static void
+static bool
 maybe_propagate_canonical_type(const type_base& lhs_type,
 			       const type_base& rhs_type);
 
@@ -18411,21 +18588,10 @@ equals(const function_type& l,
        const function_type& r,
        change_kind* k)
 {
-#define RETURN(value)				\
-  do {						\
-    l.priv_->unmark_as_being_compared(l);	\
-    l.priv_->unmark_as_being_compared(r);	\
-    if (value == true)				\
-      maybe_propagate_canonical_type(l, r); \
-    ABG_RETURN(value);				\
-  } while(0)
+#define RETURN(value) return return_comparison_result(l, r, value)
 
-  if (l.priv_->comparison_started(l)
-      || l.priv_->comparison_started(r))
-    return true;
-
-  l.priv_->mark_as_being_compared(l);
-  l.priv_->mark_as_being_compared(r);
+  RETURN_TRUE_IF_COMPARISON_CYCLE_DETECTED(l, r);
+  mark_types_as_being_compared(l, r);
 
   bool result = true;
 
@@ -19956,145 +20122,6 @@ function_decl::parameter::get_pretty_representation(bool internal,
 // </function_decl::parameter definitions>
 
 // <class_or_union definitions>
-struct class_or_union::priv
-{
-  typedef_decl_wptr		naming_typedef_;
-  member_types			member_types_;
-  data_members			data_members_;
-  data_members			non_static_data_members_;
-  member_functions		member_functions_;
-  // A map that associates a linkage name to a member function.
-  string_mem_fn_sptr_map_type	mem_fns_map_;
-  // A map that associates function signature strings to member
-  // function.
-  string_mem_fn_ptr_map_type	signature_2_mem_fn_map_;
-  member_function_templates	member_function_templates_;
-  member_class_templates	member_class_templates_;
-
-  priv()
-  {}
-
-  priv(class_or_union::member_types& mbr_types,
-       class_or_union::data_members& data_mbrs,
-       class_or_union::member_functions& mbr_fns)
-    : member_types_(mbr_types),
-      data_members_(data_mbrs),
-      member_functions_(mbr_fns)
-  {
-    for (data_members::const_iterator i = data_members_.begin();
-	 i != data_members_.end();
-	 ++i)
-      if (!get_member_is_static(*i))
-	non_static_data_members_.push_back(*i);
-  }
-
-  /// Mark a class or union or union as being currently compared using
-  /// the class_or_union== operator.
-  ///
-  /// Note that is marking business is to avoid infinite loop when
-  /// comparing a class or union or union. If via the comparison of a
-  /// data member or a member function a recursive re-comparison of
-  /// the class or union is attempted, the marking business help to
-  /// detect that infinite loop possibility and avoid it.
-  ///
-  /// @param klass the class or union or union to mark as being
-  /// currently compared.
-  void
-  mark_as_being_compared(const class_or_union& klass) const
-  {
-    const environment* env = klass.get_environment();
-    ABG_ASSERT(env);
-    env->priv_->classes_being_compared_.insert(&klass);
-  }
-
-  /// Mark a class or union as being currently compared using the
-  /// class_or_union== operator.
-  ///
-  /// Note that is marking business is to avoid infinite loop when
-  /// comparing a class or union. If via the comparison of a data
-  /// member or a member function a recursive re-comparison of the
-  /// class or union is attempted, the marking business help to detect
-  /// that infinite loop possibility and avoid it.
-  ///
-  /// @param klass the class or union to mark as being currently
-  /// compared.
-  void
-  mark_as_being_compared(const class_or_union* klass) const
-  {mark_as_being_compared(*klass);}
-
-  /// Mark a class or union as being currently compared using the
-  /// class_or_union== operator.
-  ///
-  /// Note that is marking business is to avoid infinite loop when
-  /// comparing a class or union. If via the comparison of a data
-  /// member or a member function a recursive re-comparison of the
-  /// class or union is attempted, the marking business help to detect
-  /// that infinite loop possibility and avoid it.
-  ///
-  /// @param klass the class or union to mark as being currently
-  /// compared.
-  void
-  mark_as_being_compared(const class_or_union_sptr& klass) const
-  {mark_as_being_compared(*klass);}
-
-  /// If the instance of class_or_union has been previously marked as
-  /// being compared -- via an invocation of mark_as_being_compared()
-  /// this method unmarks it.  Otherwise is has no effect.
-  ///
-  /// This method is not thread safe because it uses the static data
-  /// member classes_being_compared_.  If you wish to use it in a
-  /// multi-threaded environment you should probably protect the
-  /// access to that static data member with a mutex or somesuch.
-  ///
-  /// @param klass the instance of class_or_union to unmark.
-  void
-  unmark_as_being_compared(const class_or_union& klass) const
-  {
-    const environment* env = klass.get_environment();
-    ABG_ASSERT(env);
-    env->priv_->classes_being_compared_.erase(&klass);
-  }
-
-  /// If the instance of class_or_union has been previously marked as
-  /// being compared -- via an invocation of mark_as_being_compared()
-  /// this method unmarks it.  Otherwise is has no effect.
-  ///
-  /// @param klass the instance of class_or_union to unmark.
-  void
-  unmark_as_being_compared(const class_or_union* klass) const
-  {
-    if (klass)
-      return unmark_as_being_compared(*klass);
-  }
-
-  /// Test if a given instance of class_or_union is being currently
-  /// compared.
-  ///
-  ///@param klass the class or union to test.
-  ///
-  /// @return true if @p klass is being compared, false otherwise.
-  bool
-  comparison_started(const class_or_union& klass) const
-  {
-    const environment* env = klass.get_environment();
-    ABG_ASSERT(env);
-    return env->priv_->classes_being_compared_.count(&klass);
-  }
-
-  /// Test if a given instance of class_or_union is being currently
-  /// compared.
-  ///
-  ///@param klass the class or union to test.
-  ///
-  /// @return true if @p klass is being compared, false otherwise.
-  bool
-  comparison_started(const class_or_union* klass) const
-  {
-    if (klass)
-      return comparison_started(*klass);
-    return false;
-  }
-}; // end struct class_or_union::priv
 
 /// A Constructor for instances of @ref class_or_union
 ///
@@ -21030,12 +21057,7 @@ class_or_union::operator==(const class_or_union& other) const
 bool
 equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 {
-#define RETURN(value)				\
-  do {						\
-    l.priv_->unmark_as_being_compared(l);	\
-    l.priv_->unmark_as_being_compared(r);	\
-    ABG_RETURN(value);				\
-  } while(0)
+#define RETURN(value) return return_comparison_result(l, r, value);
 
   // if one of the classes is declaration-only, look through it to
   // get its definition.
@@ -21116,12 +21138,9 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 	    }
 	}
 
-      if (l.priv_->comparison_started(l)
-	  || l.priv_->comparison_started(r))
-	return true;
+      RETURN_TRUE_IF_COMPARISON_CYCLE_DETECTED(l, r);
 
-      l.priv_->mark_as_being_compared(l);
-      l.priv_->mark_as_being_compared(r);
+      mark_types_as_being_compared(l, r);
 
       bool val = *def1 == *def2;
       if (!val)
@@ -21142,12 +21161,9 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
   if (types_defined_same_linux_kernel_corpus_public(l, r))
     return true;
 
-  if (l.priv_->comparison_started(l)
-      || l.priv_->comparison_started(r))
-    return true;
+  RETURN_TRUE_IF_COMPARISON_CYCLE_DETECTED(l, r);
 
-  l.priv_->mark_as_being_compared(l);
-  l.priv_->mark_as_being_compared(r);
+  mark_types_as_being_compared(l, r);
 
   bool result = true;
 
@@ -21329,39 +21345,11 @@ copy_member_function(const class_or_union_sptr& t, const method_decl* method)
 
 // </class_or_union definitions>
 
-/// Test if two @ref class_decl or @ref function_type are already
-/// being compared.
-///
-/// @param lhs_type the first type that would be involved in a
-/// potential comparison.
-///
-/// @param rhs_type the second type that would involved in a potential
-/// comparison.
-///
-/// @return true iff @p lhs_type and @p rhs_type are being compared.
-static bool
-types_are_being_compared(const type_base& lhs_type,
-			 const type_base& rhs_type)
-{
-  type_base *l = &const_cast<type_base&>(lhs_type);
-  type_base *r = &const_cast<type_base&>(rhs_type);
-
-  if (class_or_union *l_cou = is_class_or_union_type(l))
-    if (class_or_union *r_cou = is_class_or_union_type(r))
-      return (l_cou->priv_->comparison_started(*l_cou)
-	      || l_cou->priv_->comparison_started(*r_cou));
-
-  if (function_type *l_fn_type = is_function_type(l))
-    if (function_type *r_fn_type = is_function_type(r))
-      return (l_fn_type->priv_->comparison_started(*l_fn_type)
-	      || l_fn_type->priv_->comparison_started(*r_fn_type));
-
-  return false;
-}
-
 /// @defgroup OnTheFlyCanonicalization On-the-fly Canonicalization
 /// @{
 ///
+/// This optimization is also known as "canonical type propagation".
+/// 
 /// During the canonicalization of a type T (which doesn't yet have a
 /// canonical type), T is compared structurally (member-wise) against
 /// a type C which already has a canonical type.  The comparison
@@ -21382,6 +21370,70 @@ types_are_being_compared(const type_base& lhs_type,
 /// For now this on-the-fly canonicalization only happens when
 /// comparing @ref class_decl and @ref function_type.
 ///
+/// Note however that there is a case when a type is *NOT* eligible to
+/// this canonical type propagation optimization.
+///
+/// The reason why a type is deemed NON-eligible to the canonical type
+/// propagation optimization is that it "depends" on recursively
+/// present type.  Let me explain.
+///
+/// Suppose we have a type T that has sub-types named ST0 and ST1.
+/// Suppose ST1 itself has a sub-type that is T itself.  In this case,
+/// we say that T is a recursive type, because it has T (itself) as
+/// one of its sub-types:
+///
+///   T
+///   +-- ST0
+///   |
+///   +-- ST1
+///   |    +
+///   |    |
+///   |    +-- T
+///   |
+///   +-- ST2
+///
+/// ST1 is said to "depend" on T because it has T as a sub-type.  But
+/// because T is recursive, then ST1 is said to depend on a recursive
+/// type.  Notice however that ST0 does not depend on any recursive
+/// type.
+///
+/// Now suppose we are comparing T to a type T' that has the same
+/// structure with sub-types ST0', ST1' and ST2'.  During the
+/// comparison of ST1 against ST1', their sub-type T is compared
+/// against T'.  Because T (resp. T') is a recursive type that is
+/// already being compared, the comparison of T against T' (as a
+/// subtypes of ST1 and ST1') returns true, meaning they are
+/// considered equal.  This is done so that we don't enter an infinite
+/// recursion.
+///
+/// That means ST1 is also deemed equal to ST1'.  If we are in the
+/// course of the canonicalization of T' and thus if T (as well as as
+/// all of its sub-types) is already canonicalized, then the canonical
+/// type propagation optimization will make us propagate the canonical
+/// type of ST1 onto ST1'.  So the canonical type of ST1' will be
+/// equal to the canonical type of ST1 as a result of that
+/// optmization.
+///
+/// But then, later down the road, when ST2 is compared against ST2',
+/// let's suppose that we find out that they are different. Meaning
+/// that ST2 != ST2'.  This means that T != T', i.e, the
+/// canonicalization of T' failed for now.  But most importantly, it
+/// means that the propagation of the canonical type of ST1 to ST1'
+/// must now be invalidated.  Meaning, ST1' must now be considered as
+/// not having any canonical type.
+///
+/// In other words, during type canonicalization, if ST1' depends on a
+/// recursive type T', its propagated canonical type must be
+/// invalidated (set to nullptr) if T' appears to be different from T,
+/// a.k.a, the canonicalization of T' temporarily failed.
+///
+/// This means that any sub-type that depends on recursive types and
+/// that has been the target of the canonical type propagation
+/// optimization must be tracked.  If the dependant recursive type
+/// fails its canonicalization, then the sub-type being compared must
+/// have its propagated canonical type cleared.  In other words, its
+/// propagated canonical type must be cancelled.
+///
 /// @}
 
 
@@ -21392,22 +21444,17 @@ types_are_being_compared(const type_base& lhs_type,
 /// @param lhs_type the type which canonical type to propagate.
 ///
 /// @param rhs_type the type which canonical type to set.
-static void
+static bool
 maybe_propagate_canonical_type(const type_base& lhs_type,
 			       const type_base& rhs_type)
 {
-
   if (const environment *env = lhs_type.get_environment())
     if (env->do_on_the_fly_canonicalization())
       if (type_base_sptr canonical_type = lhs_type.get_canonical_type())
-	if (!rhs_type.get_canonical_type()
-	    && !types_are_being_compared(lhs_type, rhs_type))
-	  {
-	    const_cast<type_base&>(rhs_type).priv_->canonical_type =
-	      canonical_type;
-	    const_cast<type_base&>(rhs_type).priv_->naked_canonical_type =
-	      canonical_type.get();
-	  }
+	if (!rhs_type.get_canonical_type())
+	  if (env->priv_->propagate_ct(lhs_type, rhs_type))
+	    return true;
+  return false;
 }
 
 // <class_decl definitions>
@@ -22573,9 +22620,38 @@ method_matches_at_least_one_in_vector(const method_decl_sptr& method,
   for (class_decl::member_functions::const_iterator i = fns.begin();
        i != fns.end();
        ++i)
-    if (methods_equal_modulo_elf_symbol(*i, method))
+    // Note that the comparison must be done in this order: method ==
+    //  *i This is to keep the consistency of the comparison.  It's
+    //  important especially when doing type canonicalization.  The
+    //  already canonicalize type is the left operand, and the type
+    //  being canonicalized is the right operand.  This comes from the
+    // code in type_base::get_canonical_type_for().
+    if (methods_equal_modulo_elf_symbol(method, *i))
       return true;
 
+  return false;
+}
+
+/// Cancel the canonical type that was propagated.
+///
+/// If we are in the process of comparing a type for the purpose of
+/// canonicalization, and if that type has been the target of the
+/// canonical type propagation optimization, then clear the propagated
+/// canonical type.  See @ref OnTheFlyCanonicalization for more about
+/// the canonical type  optimization
+///
+/// @param t the type to consider.
+static bool
+maybe_cancel_propagated_canonical_type(const class_or_union& t)
+{
+  const environment* env = t.get_environment();
+  if (env && env->do_on_the_fly_canonicalization())
+    if (is_type(&t)->priv_->canonical_type_propagated())
+      {
+	is_type(&t)->priv_->clear_propagated_canonical_type();
+	env->priv_->remove_from_types_with_non_confirmed_propagated_ct(&t);
+	return true;
+      }
   return false;
 }
 
@@ -22608,9 +22684,8 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 		  static_cast<const class_or_union&>(r),
 		  k);
 
-  if (l.class_or_union::priv_->comparison_started(l)
-      || l.class_or_union::priv_->comparison_started(r))
-    return true;
+  RETURN_TRUE_IF_COMPARISON_CYCLE_DETECTED(static_cast<const class_or_union&>(l),
+					   static_cast<const class_or_union&>(r));
 
   bool result = true;
   if (!equals(static_cast<const class_or_union&>(l),
@@ -22622,17 +22697,19 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	return result;
     }
 
-  l.class_or_union::priv_->mark_as_being_compared(l);
-  l.class_or_union::priv_->mark_as_being_compared(r);
+  mark_types_as_being_compared(static_cast<const class_or_union&>(l),
+			       static_cast<const class_or_union&>(r));
 
-#define RETURN(value)						\
-  do {								\
-    l.class_or_union::priv_->unmark_as_being_compared(l);	\
-    l.class_or_union::priv_->unmark_as_being_compared(r);	\
-    if (value == true)						\
-      maybe_propagate_canonical_type(l, r);			\
-    ABG_RETURN(value);						\
-  } while(0)
+#define RETURN(value)							 \
+  return return_comparison_result(static_cast<const class_or_union&>(l), \
+				  static_cast<const class_or_union&>(r), \
+				  value);
+
+  // If comparing the class_or_union 'part' of the type led to
+  // canonical type propagation, then cancel that because it's too
+  // early to do that at this point.  We still need to compare bases
+  // virtual members.
+  maybe_cancel_propagated_canonical_type(r);
 
   // Compare bases.
     if (l.get_base_specifiers().size() != r.get_base_specifiers().size())
@@ -23739,8 +23816,6 @@ equals(const union_decl& l, const union_decl& r, change_kind* k)
   bool result = equals(static_cast<const class_or_union&>(l),
 		       static_cast<const class_or_union&>(r),
 		       k);
-  if (result == true)
-    maybe_propagate_canonical_type(l, r);
   ABG_RETURN(result);
 }
 
