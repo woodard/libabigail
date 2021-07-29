@@ -505,6 +505,30 @@ public:
   get_referenced_non_canonical_types() const
   {return m_referenced_non_canonical_types_set;}
 
+  /// Test if there are non emitted referenced types.
+  ///
+  /// @return true iff there are non emitted referenced types.
+  bool
+  has_non_emitted_referenced_types() const
+  {
+    for (const auto t : get_referenced_types())
+      if (!type_is_emitted(t)
+	  && !decl_only_type_is_emitted(t))
+	  return false;
+
+    for (const auto t : get_referenced_non_canonical_types())
+      if (!type_is_emitted(t)
+	  && !decl_only_type_is_emitted(t))
+	  return false;
+
+    for (const auto t : get_referenced_non_canonical_types())
+      if (!type_is_emitted(t)
+	  && !decl_only_type_is_emitted(t))
+	return false;
+
+    return true;
+  }
+
   /// Record a given type as being referenced by a pointer, a
   /// reference or a typedef type that is being emitted to the XML
   /// output.
@@ -708,7 +732,7 @@ public:
   /// @return true if the type has already been emitted, false
   /// otherwise.
   bool
-  type_is_emitted(const type_base *t)
+  type_is_emitted(const type_base *t) const
   {
     return m_emitted_type_set.find(t) != m_emitted_type_set.end();
   }
@@ -720,7 +744,7 @@ public:
   /// @return true if the type has already been emitted, false
   /// otherwise.
   bool
-  type_is_emitted(const type_base_sptr& t)
+  type_is_emitted(const type_base_sptr& t) const
   {return type_is_emitted(t.get());}
 
   /// Test if the name of a given decl has been written out to the XML
@@ -783,7 +807,7 @@ public:
   /// @return true iff the declaration-only class @p t has been
   /// emitted.
   bool
-  decl_only_type_is_emitted(const type_base* t)
+  decl_only_type_is_emitted(const type_base* t) const
   {
     type_ptr_set_type::const_iterator i = m_emitted_decl_only_set.find(t);
     if (i == m_emitted_decl_only_set.end())
@@ -798,7 +822,7 @@ public:
   /// @return true iff the declaration-only class @p t has been
   /// emitted.
   bool
-  decl_only_type_is_emitted(const type_base_sptr& t)
+  decl_only_type_is_emitted(const type_base_sptr& t) const
   {return decl_only_type_is_emitted(t.get());}
 
   /// Record a declaration as emitted in the abixml output.
@@ -2228,12 +2252,31 @@ write_canonical_types_of_scope(const scope_decl	&scope,
 /// @param indent how many indentation spaces to use during the
 /// serialization.
 ///
+/// @param is_last If true, it means the TU to emit is the last one of
+/// the corpus.  If this is the case, all the remaining referenced
+/// types that were not emitted are going to be emitted here,
+/// irrespective of if they belong to this TU or not.  This is quite a
+/// hack.  Ideally, we should have a pass that walks all the TUs,
+/// detect their non-emitted referenced types, before hand.  Then,
+/// when we start emitting the TUs, we know for each TU which
+/// non-emitted referenced type should be emitted.  As we don't yet
+/// have such a pass, we do our best for now.
+///
 /// @return true upon successful completion, false otherwise.
 bool
-write_translation_unit(write_context&	       ctxt,
-		       const translation_unit& tu,
-		       const unsigned	       indent)
+write_translation_unit(write_context&		ctxt,
+		       const translation_unit&	tu,
+		       const unsigned		indent,
+		       bool			is_last)
 {
+  if (tu.is_empty() && !is_last)
+    return false;
+
+  if (is_last
+      && tu.is_empty()
+      && ctxt.has_non_emitted_referenced_types())
+    return false;
+
   ostream& o = ctxt.get_ostream();
   const config& c = ctxt.get_config();
 
@@ -2259,7 +2302,7 @@ write_translation_unit(write_context&	       ctxt,
       << translation_unit_language_to_string(tu.get_language())
       <<"'";
 
-  if (tu.is_empty())
+  if (tu.is_empty() && !is_last)
     {
       o << "/>\n";
       return true;
@@ -2304,18 +2347,20 @@ write_translation_unit(write_context&	       ctxt,
   // So this map of type -> string is to contain the referenced types
   // we need to emit.
   type_ptr_set_type referenced_types_to_emit;
-
   for (type_ptr_set_type::const_iterator i =
 	 ctxt.get_referenced_types().begin();
        i != ctxt.get_referenced_types().end();
        ++i)
-    if (!ctxt.type_is_emitted(*i)
-	&& !ctxt.decl_only_type_is_emitted(*i)
-	// Ensure that the referenced type is emitted in the
-	// translation that it belongs to.
-	&& ((*i)->get_translation_unit()->get_absolute_path()
-	  == tu.get_absolute_path()))
+    {
+      if (!ctxt.type_is_emitted(*i)
+	  && !ctxt.decl_only_type_is_emitted(*i)
+	  // Ensure that the referenced type is emitted in the
+	  // translation that it belongs to.
+	  && (is_last
+	      || ((*i)->get_translation_unit()->get_absolute_path()
+		  == tu.get_absolute_path())))
 	referenced_types_to_emit.insert(*i);
+    }
 
   for (fn_type_ptr_set_type::const_iterator i =
 	 ctxt.get_referenced_function_types().begin();
@@ -2325,8 +2370,9 @@ write_translation_unit(write_context&	       ctxt,
 	&& !ctxt.decl_only_type_is_emitted(*i)
 	// Ensure that the referenced type is emitted in the
 	// translation that it belongs to.
-	&& ((*i)->get_translation_unit()->get_absolute_path()
-	  == tu.get_absolute_path()))
+	&& (is_last
+	    || ((*i)->get_translation_unit()->get_absolute_path()
+		== tu.get_absolute_path())))
       // A referenced type that was not emitted at all must be
       // emitted now.
       referenced_types_to_emit.insert(*i);
@@ -2339,8 +2385,9 @@ write_translation_unit(write_context&	       ctxt,
 	&& !ctxt.decl_only_type_is_emitted(*i)
 	// Ensure that the referenced type is emitted in the
 	// translation that it belongs to.
-	&& ((*i)->get_translation_unit()->get_absolute_path()
-	  == tu.get_absolute_path()))
+	&& (is_last
+	    || ((*i)->get_translation_unit()->get_absolute_path()
+		== tu.get_absolute_path())))
       // A referenced type that was not emitted at all must be
       // emitted now.
       referenced_types_to_emit.insert(*i);
@@ -2399,8 +2446,9 @@ write_translation_unit(write_context&	       ctxt,
 	    && !ctxt.decl_only_type_is_emitted(*i)
 	    // Ensure that the referenced type is emitted in the
 	    // translation that it belongs to.
-	    && ((*i)->get_translation_unit()->get_absolute_path()
-	      == tu.get_absolute_path()))
+	    && (is_last
+		|| ((*i)->get_translation_unit()->get_absolute_path()
+		    == tu.get_absolute_path())))
 	  // A referenced type that was not emitted at all must be
 	  // emitted now.
 	  referenced_types_to_emit.insert(*i);
@@ -2413,8 +2461,9 @@ write_translation_unit(write_context&	       ctxt,
 	    && !ctxt.decl_only_type_is_emitted(*i)
 	    // Ensure that the referenced type is emitted in the
 	    // translation that it belongs to.
-	    && ((*i)->get_translation_unit()->get_absolute_path()
-	      == tu.get_absolute_path()))
+	    && (is_last
+		|| ((*i)->get_translation_unit()->get_absolute_path()
+		    == tu.get_absolute_path())))
 	  // A referenced type that was not emitted at all must be
 	  // emitted now.
 	  referenced_types_to_emit.insert(*i);
@@ -4453,14 +4502,16 @@ write_corpus(write_context&	ctxt,
     }
 
   // Now write the translation units.
+  unsigned nb_tus = corpus->get_translation_units().size(), n = 0;
   for (translation_units::const_iterator i =
 	 corpus->get_translation_units().begin();
        i != corpus->get_translation_units().end();
-       ++i)
+       ++i, ++n)
     {
       translation_unit& tu = **i;
-      if (!tu.is_empty())
-	write_translation_unit(ctxt, tu, get_indent_to_level(ctxt, indent, 1));
+      write_translation_unit(ctxt, tu,
+			     get_indent_to_level(ctxt, indent, 1),
+			     n == nb_tus - 1);
     }
 
   do_indent_to_level(ctxt, indent, 0);

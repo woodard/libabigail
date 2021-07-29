@@ -100,7 +100,8 @@ set_ostream(write_context& ctxt, ostream& os);
 bool
 write_translation_unit(write_context&	       ctxt,
 		       const translation_unit& tu,
-		       const unsigned	       indent);
+		       const unsigned	       indent,
+		       bool		       last = true);
 
 bool
 write_corpus_to_archive(const corpus& corp,
