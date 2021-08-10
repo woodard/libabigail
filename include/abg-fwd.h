@@ -395,7 +395,7 @@ type_base_sptr
 is_type(const type_or_decl_base_sptr& tod);
 
 bool
-is_anonymous_type(type_base*);
+is_anonymous_type(const type_base*);
 
 bool
 is_anonymous_type(const type_base_sptr&);

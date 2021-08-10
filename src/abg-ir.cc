@@ -4979,10 +4979,14 @@ equals(const decl_base& l, const decl_base& r, change_kind* k)
   // This is the qualified name of the decls that we want to compare.
   // We want to use the "internal" version of the qualified name as
   // that one is stable even for anonymous decls.
-  interned_string ln = l.get_qualified_name(/*internal=*/true),
-    rn = r.get_qualified_name(/*internal=*/true);
+  interned_string ln = l.get_has_anonymous_parent()
+    ? l.get_name()
+    : l.get_qualified_name(/*internal=*/true);
+  interned_string rn = r.get_has_anonymous_parent()
+    ? r.get_name()
+    : r.get_qualified_name(/*internal=*/true);
 
-  /// If both of the current decls have an anonymous scope then let's
+  ;  /// If both of the current decls have an anonymous scope then let's
   /// compare their name component by component by properly handling
   /// anonymous scopes. That's the slow path.
   ///
@@ -4994,8 +4998,7 @@ equals(const decl_base& l, const decl_base& r, change_kind* k)
       && l.get_is_anonymous()
       && !l.get_has_anonymous_parent()
       && r.get_is_anonymous()
-      && !r.get_has_anonymous_parent()
-      && (l.get_qualified_parent_name() == r.get_qualified_parent_name()))
+      && !r.get_has_anonymous_parent())
     // Both decls are anonymous and their scope are *NOT* anonymous.
     // So we consider the decls to have equivalent names (both
     // anonymous, remember).  We are still in the fast path here.
@@ -8058,12 +8061,6 @@ get_type_name(const type_base* t, bool qualified, bool internal)
   if (internal && d->get_is_anonymous())
     {
       string r;
-      if (qualified)
-	{
-	  r = d->get_qualified_parent_name();
-	  if (!r.empty())
-	    r += "::";
-	}
       r += get_generic_anonymous_internal_type_name(d);
       return t->get_environment()->intern(r);
     }
@@ -9405,9 +9402,9 @@ is_type(const type_or_decl_base_sptr& tod)
 ///
 /// @return true iff @p t is anonymous.
 bool
-is_anonymous_type(type_base* t)
+is_anonymous_type(const type_base* t)
 {
-  decl_base* d = get_type_declaration(t);
+  const decl_base* d = get_type_declaration(t);
   if (d)
     if (d->get_is_anonymous())
       {
@@ -16677,8 +16674,7 @@ equals(const array_type_def& l, const array_type_def& r, change_kind* k)
       }
 
   // Compare the element types modulo the typedefs they might have
-  if (peel_typedef_type(l.get_element_type())
-      != peel_typedef_type(r.get_element_type()))
+  if (l.get_element_type() != r.get_element_type())
     {
       result = false;
       if (k)

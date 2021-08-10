@@ -363,7 +363,7 @@
       </class-decl>
       <class-decl name='AudioStreamBuilder' visibility='default' is-declaration-only='yes' id='c1fdb0b3'>
         <member-type access='private'>
-          <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='frameworks/av/media/libaaudio/src/core/AudioStreamBuilder.h' line='131' column='1' id='7b8bc699'>
+          <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='frameworks/av/media/libaaudio/src/core/AudioStreamBuilder.h' line='131' column='1' id='08f5ca18'>
             <underlying-type type-id='9cac1fee'/>
             <enumerator name='PRIVACY_SENSITIVE_DEFAULT' value='-1'/>
             <enumerator name='PRIVACY_SENSITIVE_DISABLED' value='0'/>

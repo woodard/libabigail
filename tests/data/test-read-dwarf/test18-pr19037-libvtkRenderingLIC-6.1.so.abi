@@ -7862,14 +7862,8 @@
     <class-decl name='vtkCompositeDataSet' visibility='default' is-declaration-only='yes' id='type-id-739'/>
     <class-decl name='vtkFieldData' visibility='default' is-declaration-only='yes' id='type-id-741'/>
     <class-decl name='vtkLightingHelper' visibility='default' is-declaration-only='yes' id='type-id-746'>
-      <member-type access='private'>
-        <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/OpenGL/vtkLightingHelper.h' line='42' column='1' id='type-id-802'>
-          <underlying-type type-id='type-id-24'/>
-          <enumerator name='VTK_MAX_LIGHTS' value='8'/>
-        </enum-decl>
-      </member-type>
     </class-decl>
-    <class-decl name='vtkMath' visibility='default' is-declaration-only='yes' id='type-id-803'/>
+    <class-decl name='vtkMath' visibility='default' is-declaration-only='yes' id='type-id-802'/>
     <class-decl name='vtkMinimalStandardRandomSequence' visibility='default' is-declaration-only='yes' id='type-id-750'/>
     <class-decl name='vtkOpenGLLightMonitor' visibility='default' is-declaration-only='yes' id='type-id-752'/>
     <class-decl name='vtkOpenGLModelViewProjectionMonitor' visibility='default' is-declaration-only='yes' id='type-id-754'/>
@@ -8008,8 +8002,8 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;const vtkPixelExtent*, std::vector&lt;vtkPixelExtent, std::allocator&lt;vtkPixelExtent&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-804'/>
-      <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;vtkPixelExtent*, std::vector&lt;vtkPixelExtent, std::allocator&lt;vtkPixelExtent&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-805'/>
+      <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;const vtkPixelExtent*, std::vector&lt;vtkPixelExtent, std::allocator&lt;vtkPixelExtent&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-803'/>
+      <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;vtkPixelExtent*, std::vector&lt;vtkPixelExtent, std::allocator&lt;vtkPixelExtent&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-804'/>
       <function-decl name='operator==&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.h' line='2265' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-402'/>
         <parameter type-id='type-id-61'/>
@@ -8068,7 +8062,7 @@
       </class-decl>
       <class-decl name='RandomNoise2D' size-in-bits='128' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='299' column='1' id='type-id-788'>
         <member-type access='private'>
-          <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='319' column='1' id='type-id-806'>
+          <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='319' column='1' id='type-id-805'>
             <underlying-type type-id='type-id-24'/>
             <enumerator name='UNIFORM' value='0'/>
             <enumerator name='GAUSSIAN' value='1'/>
@@ -8100,12 +8094,12 @@
       </function-decl>
     </namespace-decl>
     <namespace-decl name='__gnu_cxx'>
-      <class-decl name='__normal_iterator&lt;const vtkPixelExtent*, std::vector&lt;vtkPixelExtent, std::allocator&lt;vtkPixelExtent&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-807'/>
-      <class-decl name='__normal_iterator&lt;vtkPixelExtent*, std::vector&lt;vtkPixelExtent, std::allocator&lt;vtkPixelExtent&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-808'/>
+      <class-decl name='__normal_iterator&lt;const vtkPixelExtent*, std::vector&lt;vtkPixelExtent, std::allocator&lt;vtkPixelExtent&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-806'/>
+      <class-decl name='__normal_iterator&lt;vtkPixelExtent*, std::vector&lt;vtkPixelExtent, std::allocator&lt;vtkPixelExtent&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-807'/>
     </namespace-decl>
   </abi-instr>
   <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkTextureIO.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
-    <class-decl name='vtkTextureIO' size-in-bits='8' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkTextureIO.h' line='33' column='1' id='type-id-809'>
+    <class-decl name='vtkTextureIO' size-in-bits='8' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkTextureIO.h' line='33' column='1' id='type-id-808'>
       <member-function access='private' static='yes'>
         <function-decl name='Write' mangled-name='_ZN12vtkTextureIO5WriteEPKcP16vtkTextureObjectRKSt5dequeI14vtkPixelExtentSaIS5_EEPKd' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkTextureIO.cxx' line='125' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN12vtkTextureIO5WriteEPKcP16vtkTextureObjectRKSt5dequeI14vtkPixelExtentSaIS5_EEPKd'>
           <parameter type-id='type-id-61' name='filename' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkTextureIO.cxx' line='126' column='1'/>

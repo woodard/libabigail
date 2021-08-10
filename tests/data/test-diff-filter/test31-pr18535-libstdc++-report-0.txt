@@ -1,4 +1,4 @@
-Functions changes summary: 0 Removed, 9 Changed (37 filtered out), 13 Added functions
+Functions changes summary: 0 Removed, 9 Changed (30 filtered out), 13 Added functions
 Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 Function symbols changes summary: 0 Removed, 0 Added function symbol not referenced by debug info
 Variable symbols changes summary: 0 Removed, 6 Added variable symbols not referenced by debug info
@@ -52,7 +52,7 @@ Variable symbols changes summary: 0 Removed, 6 Added variable symbols not refere
               type size changed from 32 to 0 (in bits)
             implicit parameter 0 of type 'std::__future_base::_State_base*' has sub-type changes:
               pointed to type 'class std::__future_base::_State_base' changed, as being reported
-        1 data member changes (1 filtered):
+        1 data member change:
           type of 'std::__future_base::_State_base::_Ptr_type _M_result' changed:
             underlying type 'typedef std::__future_base::_Ptr' changed:
               underlying type 'class std::unique_ptr<std::__future_base::_Result<void>, std::__future_base::_Result_base::_Deleter>' changed:
