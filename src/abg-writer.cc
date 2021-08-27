@@ -2242,6 +2242,35 @@ write_canonical_types_of_scope(const scope_decl	&scope,
   return true;
 }
 
+/// Test if a type referenced in a given translation unit should be
+/// emitted or not.
+///
+/// This is a subroutine of @ref write_translation_unit.
+///
+/// @param t the type to consider.
+///
+/// @param ctxt the write context to consider.
+///
+/// @param tu the translation unit to consider.
+///
+/// @param tu_is_last true if @p tu is the last translation unit being
+/// emitted.
+///
+/// @return true iff @p t is to be emitted.
+static bool
+referenced_type_should_be_emitted(const type_base *t,
+				  const write_context& ctxt,
+				  const translation_unit& tu,
+				  bool tu_is_last)
+{
+  if ((tu_is_last || t->get_translation_unit()->get_absolute_path()
+       == tu.get_absolute_path())
+      && !ctxt.type_is_emitted(t)
+      && !ctxt.decl_only_type_is_emitted(t))
+    return true;
+  return false;
+}
+
 /// Serialize a translation unit to an output stream.
 ///
 /// @param ctxt the context of the serialization.  It contains e.g,
@@ -2347,49 +2376,29 @@ write_translation_unit(write_context&		ctxt,
   // So this map of type -> string is to contain the referenced types
   // we need to emit.
   type_ptr_set_type referenced_types_to_emit;
+
+  // For each referenced type, ensure that it is either emitted in the
+  // translation unit to which it belongs or in the last translation
+  // unit as a last resort.
   for (type_ptr_set_type::const_iterator i =
 	 ctxt.get_referenced_types().begin();
        i != ctxt.get_referenced_types().end();
        ++i)
-    {
-      if (!ctxt.type_is_emitted(*i)
-	  && !ctxt.decl_only_type_is_emitted(*i)
-	  // Ensure that the referenced type is emitted in the
-	  // translation that it belongs to.
-	  && (is_last
-	      || ((*i)->get_translation_unit()->get_absolute_path()
-		  == tu.get_absolute_path())))
-	referenced_types_to_emit.insert(*i);
-    }
+    if (referenced_type_should_be_emitted(*i, ctxt, tu, is_last))
+      referenced_types_to_emit.insert(*i);
 
   for (fn_type_ptr_set_type::const_iterator i =
 	 ctxt.get_referenced_function_types().begin();
        i != ctxt.get_referenced_function_types().end();
        ++i)
-    if (!ctxt.type_is_emitted(*i)
-	&& !ctxt.decl_only_type_is_emitted(*i)
-	// Ensure that the referenced type is emitted in the
-	// translation that it belongs to.
-	&& (is_last
-	    || ((*i)->get_translation_unit()->get_absolute_path()
-		== tu.get_absolute_path())))
-      // A referenced type that was not emitted at all must be
-      // emitted now.
+    if (referenced_type_should_be_emitted(*i, ctxt, tu, is_last))
       referenced_types_to_emit.insert(*i);
 
   for (type_ptr_set_type::const_iterator i =
 	 ctxt.get_referenced_non_canonical_types().begin();
        i != ctxt.get_referenced_non_canonical_types().end();
        ++i)
-    if (!ctxt.type_is_emitted(*i)
-	&& !ctxt.decl_only_type_is_emitted(*i)
-	// Ensure that the referenced type is emitted in the
-	// translation that it belongs to.
-	&& (is_last
-	    || ((*i)->get_translation_unit()->get_absolute_path()
-		== tu.get_absolute_path())))
-      // A referenced type that was not emitted at all must be
-      // emitted now.
+    if (referenced_type_should_be_emitted(*i, ctxt, tu, is_last))
       referenced_types_to_emit.insert(*i);
 
   // Ok, now let's emit the referenced type for good.
@@ -2438,34 +2447,21 @@ write_translation_unit(write_context&		ctxt,
       // there are still some referenced types in there that are not
       // emitted yet.  If yes, then we'll emit those again.
 
+      // For each referenced type, ensure that it is either emitted in
+      // the translation unit to which it belongs or in the last
+      // translation unit as a last resort.
       for (type_ptr_set_type::const_iterator i =
 	     ctxt.get_referenced_types().begin();
 	   i != ctxt.get_referenced_types().end();
 	   ++i)
-	if (!ctxt.type_is_emitted(*i)
-	    && !ctxt.decl_only_type_is_emitted(*i)
-	    // Ensure that the referenced type is emitted in the
-	    // translation that it belongs to.
-	    && (is_last
-		|| ((*i)->get_translation_unit()->get_absolute_path()
-		    == tu.get_absolute_path())))
-	  // A referenced type that was not emitted at all must be
-	  // emitted now.
+	if (referenced_type_should_be_emitted(*i, ctxt, tu, is_last))
 	  referenced_types_to_emit.insert(*i);
 
       for (type_ptr_set_type::const_iterator i =
 	     ctxt.get_referenced_non_canonical_types().begin();
 	   i != ctxt.get_referenced_non_canonical_types().end();
 	   ++i)
-	if (!ctxt.type_is_emitted(*i)
-	    && !ctxt.decl_only_type_is_emitted(*i)
-	    // Ensure that the referenced type is emitted in the
-	    // translation that it belongs to.
-	    && (is_last
-		|| ((*i)->get_translation_unit()->get_absolute_path()
-		    == tu.get_absolute_path())))
-	  // A referenced type that was not emitted at all must be
-	  // emitted now.
+	if (referenced_type_should_be_emitted(*i, ctxt, tu, is_last))
 	  referenced_types_to_emit.insert(*i);
     }
 
