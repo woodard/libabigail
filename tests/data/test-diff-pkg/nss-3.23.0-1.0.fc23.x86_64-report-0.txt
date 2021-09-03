@@ -61,7 +61,7 @@
     [C] 'const PRUint16 SSL_ImplementedCiphers[74]' was changed to 'const PRUint16 SSL_ImplementedCiphers[69]' at sslenum.c:51:1:
       size of symbol changed from 148 to 138
       type of variable changed:
-        type name changed from 'PRUint16[74]' to 'const PRUint16[69]'
+        type name changed from 'const PRUint16[74]' to 'const PRUint16[69]'
         array type size changed from 1184 to 1104
         array type subrange 1 changed length from 74 to 69
 

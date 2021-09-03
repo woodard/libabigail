@@ -16880,9 +16880,10 @@ array_type_def::get_qualified_name(bool internal) const
 	}
       else
 	{
-	  set_qualified_name(env->intern(get_type_representation
-					 (*this, /*internal=*/false)));
-	  return decl_base::peek_qualified_name();
+	  set_temporary_qualified_name(env->intern(get_type_representation
+						   (*this,
+						    /*internal=*/false)));
+	  return decl_base::peek_temporary_qualified_name();
 	}
     }
 }
