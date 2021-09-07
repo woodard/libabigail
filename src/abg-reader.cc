@@ -4325,7 +4325,11 @@ build_enum_type_decl(read_context&	ctxt,
 	  if (a)
 	    {
 	      value = strtoll(CHAR_STR(a), NULL, 0);
-	      if (value == LLONG_MIN || value == LLONG_MAX)
+	      // when strtoll encounters overflow or underflow, errno
+	      // is set to ERANGE and the returned value is either
+	      // LLONG_MIN or LLONG_MAX.
+	      if ((errno == ERANGE)
+		  && (value == LLONG_MIN || value == LLONG_MAX))
 		return nil;
 	    }
 
