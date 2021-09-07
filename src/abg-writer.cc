@@ -3011,7 +3011,9 @@ write_enum_type_decl(const enum_type_decl_sptr& decl,
   write_is_non_reachable(is_type(decl), o);
 
   if (!decl->get_linkage_name().empty())
-    o << " linkage-name='" << decl->get_linkage_name() << "'";
+    o << " linkage-name='"
+      << xml::escape_xml_string(decl->get_linkage_name())
+      << "'";
 
   write_location(decl, ctxt);
   write_is_declaration_only(decl, o);
