@@ -607,6 +607,11 @@ struct environment::priv
     bool result = false;
     for (const auto i : types)
       {
+	// First avoid infinite loop if we've already collected the
+	// current type.
+	if (collected.find(i) != collected.end())
+	  continue;
+
 	type_base *t = reinterpret_cast<type_base*>(i);
 	if (t->priv_->depends_on_recursive_type(target))
 	  {
