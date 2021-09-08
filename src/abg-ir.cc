@@ -1005,12 +1005,12 @@ return_comparison_result(T& l, T& r, bool value)
 	    {
 	      // The right-hand-side operand cannot carry any tentative
 	      // canonical type at this point.
-	      type_base* canonical_type = r.get_naked_canonical_type();
-	      ABG_ASSERT(canonical_type == nullptr);
+	      is_type(&r)->priv_->clear_propagated_canonical_type();
 	      // Reset the marking of the right-hand-side operand as it no
 	      // longer carries a tentative canonical type that might be
 	      // later cancelled.
 	      is_type(&r)->priv_->set_does_not_depend_on_recursive_type();
+	      env->priv_->remove_from_types_with_non_confirmed_propagated_ct(&r);
 	    }
 	}
     }
