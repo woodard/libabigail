@@ -2263,8 +2263,9 @@ referenced_type_should_be_emitted(const type_base *t,
 				  const translation_unit& tu,
 				  bool tu_is_last)
 {
-  if ((tu_is_last || t->get_translation_unit()->get_absolute_path()
-       == tu.get_absolute_path())
+  if ((tu_is_last || (t->get_translation_unit()
+		      && (t->get_translation_unit()->get_absolute_path()
+			  == tu.get_absolute_path())))
       && !ctxt.type_is_emitted(t)
       && !ctxt.decl_only_type_is_emitted(t))
     return true;
