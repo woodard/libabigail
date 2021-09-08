@@ -3672,20 +3672,6 @@ build_qualified_type_decl(read_context&	ctxt,
   if (restrict_cv)
     cv = cv | qualified_type_def::CV_RESTRICT;
 
-  // Create the qualified type /before/ the underlying type.  After
-  // the creation, the type is 'keyed' using
-  // ctxt.push_and_key_type_decl.  This means that the type can be
-  // retrieved from its type ID.  This is so that if the underlying
-  // type indirectly uses this qualified type (via recursion) then
-  // that is made possible.
-  //
-  // The underlying type will later be set after it's created.
-  qualified_type_def_sptr decl;
-  decl.reset(new qualified_type_def(ctxt.get_environment(), cv, loc));
-  maybe_set_artificial_location(ctxt, node, decl);
-  ctxt.push_and_key_type_decl(decl, id, add_to_current_scope);
-  ctxt.map_xml_node_to_decl(node, decl);
-
   string type_id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
     type_id = CHAR_STR(s);
@@ -3694,7 +3680,21 @@ build_qualified_type_decl(read_context&	ctxt,
   shared_ptr<type_base> underlying_type =
     ctxt.build_or_get_type_decl(type_id, true);
   ABG_ASSERT(underlying_type);
-  decl->set_underlying_type(underlying_type);
+
+  qualified_type_def_sptr decl;
+  if (type_base_sptr t = ctxt.get_type_decl(id))
+    {
+      decl = is_qualified_type(t);
+      ABG_ASSERT(decl);
+    }
+  else
+    {
+      decl.reset(new qualified_type_def(underlying_type, cv, loc));
+      maybe_set_artificial_location(ctxt, node, decl);
+      ctxt.push_and_key_type_decl(decl, id, add_to_current_scope);
+    }
+
+  ctxt.map_xml_node_to_decl(node, decl);
 
   return decl;
 }
