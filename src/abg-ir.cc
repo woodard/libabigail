@@ -24932,6 +24932,25 @@ size_t
 hash_type_or_decl(const type_or_decl_base_sptr& tod)
 {return hash_type_or_decl(tod.get());}
 
+/// Test if a given type is allowed to be non canonicalized
+///
+/// This is a subroutine of hash_as_canonical_type_or_constant.
+///
+/// For now, the only types allowed to be non canonicalized in the
+/// system are decl-only class/union and the void type.
+///
+/// @return true iff @p t is a one of the only types allowed to be
+/// non-canonicalized in the system.
+static bool
+is_allowed_non_canonicalized_type(const type_base *t)
+{
+  if (!t)
+    return true;
+
+  const environment* env = t->get_environment();
+  return is_declaration_only_class_or_union_type(t) || env->is_void_type(t);
+}
+
 /// Hash a type by either returning the pointer value of its canonical
 /// type or by returning a constant if the type doesn't have a
 /// canonical type.
@@ -24971,10 +24990,10 @@ hash_as_canonical_type_or_constant(const type_base *t)
     return reinterpret_cast<size_t>(canonical_type);
 
   // If we reached this point, it means we are seeing a
-  // non-canonicalized type.  It must be a decl-only class or a
-  // typedef type, otherwise it means that for some weird reason, the
-  // type hasn't been canonicalized.  It should be!
-  ABG_ASSERT(is_declaration_only_class_or_union_type(t));
+  // non-canonicalized type.  It must be a decl-only class or a void
+  // type, otherwise it means that for some weird reason, the type
+  // hasn't been canonicalized.  It should be!
+  ABG_ASSERT(is_allowed_non_canonicalized_type(t));
 
   return 0xDEADBABE;
 }
