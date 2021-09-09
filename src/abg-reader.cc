@@ -2481,13 +2481,13 @@ read_size_and_alignment(xmlNodePtr node,
   bool got_something = false;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "size-in-bits"))
     {
-      size_in_bits = atoi(CHAR_STR(s));
+      size_in_bits = atoll(CHAR_STR(s));
       got_something = true;
     }
 
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "alignment-in-bits"))
     {
-      align_in_bits = atoi(CHAR_STR(s));
+      align_in_bits = atoll(CHAR_STR(s));
       got_something = true;
     }
   return got_something;
