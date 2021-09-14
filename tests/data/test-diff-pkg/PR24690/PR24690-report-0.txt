@@ -1,7 +1,7 @@
 ================ changes of 'libflatpak.so.0.10204.0'===============
   Functions changes summary: 0 Removed, 0 Changed (10 filtered out), 16 Added functions
   Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
-  Unreachable types summary: 3 removed (1 filtered out), 1 changed (14 filtered out), 3 added (1 filtered out) types
+  Unreachable types summary: 3 removed (1 filtered out), 1 changed (15 filtered out), 5 added (1 filtered out) types
 
   16 Added functions:
 
@@ -40,8 +40,10 @@
         'typedef gboolean (FlatpakTransaction*, GCancellable*, GError**)* run' offset changed from 1536 to 1600 (in bits) (by +64 bits)
         'gpointer padding[9]' offset changed from 1600 to 1664 (in bits) (by +64 bits)
 
-  3 added types unreachable from any public interface:
+  5 added types unreachable from any public interface:
 
+    [A] 'enum FlatpakQueryFlags' at flatpak-installation.h:135:1
+    [A] 'enum OstreeRepoResolveRevExtFlags' at ostree-repo.h:470:1
     [A] 'struct gpgme_data_cbs' at gpgme-64.h:1139:1
     [A] 'typedef GSubprocess' at giotypes.h:642:1
     [A] 'typedef OstreeRepoResolveRevExtFlags' at ostree-repo.h:473:1

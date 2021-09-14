@@ -98,6 +98,11 @@ test-abidiff/test-PR27985-v0.o.abi	 \
 test-abidiff/test-PR27985-v1.c		 \
 test-abidiff/test-PR27985-v1.o		 \
 test-abidiff/test-PR27985-v1.o.abi	 \
+test-abidiff-exit/test-PR28316-v0.cc     \
+test-abidiff-exit/test-PR28316-v1.cc     \
+test-abidiff-exit/test-PR28316-v0.o      \
+test-abidiff-exit/test-PR28316-v1.o      \
+test-abidiff-exit/test-PR28316-report.txt \
 \
 test-abidiff-exit/test1-voffset-change-report0.txt \
 test-abidiff-exit/test1-voffset-change-report1.txt \

@@ -1637,11 +1637,14 @@ public:
   bool
   get_has_anonymous_parent() const;
 
-  void
-  set_has_anonymous_parent(bool f) const;
-
   bool
   get_is_anonymous_or_has_anonymous_parent() const;
+
+  typedef_decl_sptr
+  get_naming_typedef() const;
+
+  void
+  set_naming_typedef(const typedef_decl_sptr&);
 
   const interned_string&
   get_linkage_name() const;
@@ -3905,12 +3908,6 @@ public:
 
   virtual void
   set_alignment_in_bits(size_t);
-
-  typedef_decl_sptr
-  get_naming_typedef() const;
-
-  void
-  set_naming_typedef(const typedef_decl_sptr&);
 
  void
   insert_member_type(type_base_sptr t,

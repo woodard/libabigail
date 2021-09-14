@@ -14,7 +14,7 @@
   <abi-instr address-size='64' path='test23-first-tu.cc' comp-dir-path='/home/dodji/git/libabigail/PR20369/tests/data/test-read-dwarf' language='LANG_C_plus_plus'>
     <type-decl name='bool' size-in-bits='8' id='type-id-1'/>
     <type-decl name='char' size-in-bits='8' id='type-id-2'/>
-    <class-decl name='__anonymous_struct__1' is-struct='yes' is-anonymous='yes' visibility='default' id='type-id-3'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' id='type-id-3'/>
     <class-decl name='typedef __va_list_tag __va_list_tag' size-in-bits='192' is-struct='yes' visibility='default' id='type-id-4'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='gp_offset' type-id='type-id-5' visibility='default'/>
@@ -82,7 +82,7 @@
         <var-decl name='tm_zone' type-id='type-id-25' visibility='default' filepath='/usr/include/time.h' line='147' column='1'/>
       </data-member>
     </class-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-26' visibility='default' filepath='/usr/include/wchar.h' line='83' column='1' id='type-id-27'>
+    <class-decl name='__mbstate_t' size-in-bits='64' is-struct='yes' naming-typedef-id='type-id-26' visibility='default' filepath='/usr/include/wchar.h' line='83' column='1' id='type-id-27'>
       <member-type access='public'>
         <union-decl name='__anonymous_union__' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-28'/>
       </member-type>

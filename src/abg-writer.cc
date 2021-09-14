@@ -881,7 +881,7 @@ static bool write_elf_symbol_reference(const elf_symbol_sptr, ostream&);
 static void write_is_declaration_only(const decl_base_sptr&, ostream&);
 static void write_is_struct(const class_decl_sptr&, ostream&);
 static void write_is_anonymous(const decl_base_sptr&, ostream&);
-static void write_naming_typedef(const class_decl_sptr&, write_context&);
+static void write_naming_typedef(const decl_base_sptr&, write_context&);
 static bool write_decl(const decl_base_sptr&, write_context&, unsigned);
 static void write_decl_in_scope(const decl_base_sptr&,
 				write_context&, unsigned);
@@ -1862,14 +1862,14 @@ write_is_anonymous(const decl_base_sptr& decl, ostream& o)
 ///
 /// @param ctxt the write context to use.
 static void
-write_naming_typedef(const class_decl_sptr& klass, write_context& ctxt)
+write_naming_typedef(const decl_base_sptr& decl, write_context& ctxt)
 {
-  if (!klass)
+  if (!decl)
     return;
 
   ostream &o = ctxt.get_ostream();
 
-  if (typedef_decl_sptr typedef_type = klass->get_naming_typedef())
+  if (typedef_decl_sptr typedef_type = decl->get_naming_typedef())
     {
       string id = ctxt.get_id_for_type(typedef_type);
       o << " naming-typedef-id='" << id << "'";
@@ -3008,6 +3008,7 @@ write_enum_type_decl(const enum_type_decl_sptr& decl,
   o << "<enum-decl name='" << xml::escape_xml_string(decl->get_name()) << "'";
 
   write_is_anonymous(decl, o);
+  write_naming_typedef(decl, ctxt);
   write_is_artificial(decl, o);
   write_is_non_reachable(is_type(decl), o);
 
@@ -3613,6 +3614,8 @@ write_union_decl_opening_tag(const union_decl_sptr&	decl,
     write_size_and_alignment(decl, o);
 
   write_is_anonymous(decl, o);
+
+  write_naming_typedef(decl, ctxt);
 
   write_visibility(decl, o);
 

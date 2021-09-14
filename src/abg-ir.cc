@@ -264,6 +264,12 @@ has_generic_anonymous_internal_type_name(const decl_base *d);
 static interned_string
 get_generic_anonymous_internal_type_name(const decl_base *d);
 
+static void
+update_qualified_name(decl_base * d);
+
+static void
+update_qualified_name(decl_base_sptr d);
+
 void
 push_composite_type_comparison_operands(const type_base& left,
 					const type_base& right);
@@ -4242,7 +4248,6 @@ struct decl_base::priv
 {
   bool			in_pub_sym_tab_;
   bool			is_anonymous_;
-  bool			has_anonymous_parent_;
   location		location_;
   context_rel		*context_;
   interned_string	name_;
@@ -4262,18 +4267,18 @@ struct decl_base::priv
   // Unline qualified_name_, scoped_name_ contains the name of the
   // decl and the name of its scope; not the qualified name of the
   // scope.
-    interned_string	scoped_name_;
+  interned_string	scoped_name_;
   interned_string	linkage_name_;
   visibility		visibility_;
   decl_base_sptr	declaration_;
   decl_base_wptr	definition_of_declaration_;
   decl_base*		naked_definition_of_declaration_;
   bool			is_declaration_only_;
+  typedef_decl_sptr	naming_typedef_;
 
   priv()
     : in_pub_sym_tab_(false),
       is_anonymous_(true),
-      has_anonymous_parent_(false),
       context_(),
       visibility_(VISIBILITY_DEFAULT),
       naked_definition_of_declaration_(),
@@ -4291,7 +4296,6 @@ struct decl_base::priv
       is_declaration_only_(false)
   {
     is_anonymous_ = name_.empty();
-    has_anonymous_parent_ = false;
   }
 
   ~priv()
@@ -4588,24 +4592,69 @@ decl_base::set_is_anonymous(bool f)
 /// which is anonymous.
 bool
 decl_base::get_has_anonymous_parent() const
-{return priv_->has_anonymous_parent_;}
-
-/// Set the "has_anonymous_parent" flag of the current declaration.
-///
-/// Having an anonymous parent means having a anonymous parent scope
-/// (containing type or namespace) which is either direct or indirect.
-///
-/// @param f set the flag which says if the current decl has a direct
-/// or indirect scope which is anonymous.
-void
-decl_base::set_has_anonymous_parent(bool f) const
-{priv_->has_anonymous_parent_ = f;}
+{
+  scope_decl *scope = get_scope();
+  if (!scope)
+    return false;
+  return scope->get_is_anonymous();
+}
 
 /// @return the logical "OR" of decl_base::get_is_anonymous() and
 /// decl_base::get_has_anonymous_parent().
 bool
 decl_base::get_is_anonymous_or_has_anonymous_parent() const
 {return get_is_anonymous() || get_has_anonymous_parent();}
+
+/// Getter for the naming typedef of the current decl.
+///
+/// Consider the C idiom:
+///
+///    typedef struct {int member;} foo_type;
+///
+/// In that idiom, foo_type is the naming typedef of the anonymous
+/// struct that is declared.
+///
+/// @return the naming typedef, if any.  Otherwise, returns nil.
+typedef_decl_sptr
+decl_base::get_naming_typedef() const
+{return priv_->naming_typedef_;}
+
+/// Set the naming typedef of the current instance of @ref decl_base.
+///
+/// Consider the C idiom:
+///
+///    typedef struct {int member;} foo_type;
+///
+/// In that idiom, foo_type is the naming typedef of the anonymous
+/// struct that is declared.
+///
+/// After completion of this function, the decl will not be considered
+/// anonymous anymore.  It's name is going to be the name of the
+/// naming typedef.
+///
+/// @param typedef_type the new naming typedef.
+void
+decl_base::set_naming_typedef(const typedef_decl_sptr& t)
+{
+  // A naming typedef is usually for an anonymous type.
+  ABG_ASSERT(get_is_anonymous()
+	     // Whe the typedef-named decl is saved into abixml, it's
+	     // not anonymous anymore.  Its name is the typedef name.
+	     // So when we read it back, we must still be able to
+	     // apply the naming typedef to the decl.
+	     || t->get_name() == get_name());
+  // Only non canonicalized types can be edited this way.
+  ABG_ASSERT(is_type(this)
+	     && is_type(this)->get_naked_canonical_type() == nullptr);
+
+  priv_->naming_typedef_ = t;
+  set_name(t->get_name());
+  set_qualified_name(t->get_qualified_name());
+  set_is_anonymous(false);
+  // Now that the qualified type of the decl has changed, let's update
+  // the qualified names of the member types of this decls.
+  update_qualified_name(this);
+}
 
 /// Getter for the mangled name.
 ///
@@ -4928,6 +4977,36 @@ maybe_compare_as_member_decls(const decl_base& l,
   ABG_RETURN(result);
 }
 
+/// Get the name of a decl for the purpose of comparing two decl
+/// names.
+///
+/// This is a sub-routine of the 'equal' overload for decl_base.
+///
+/// This function takes into account the fact that all anonymous names
+/// shall have the same name for the purpose of comparison.
+///
+/// For decls that are part of an anonymous scope, only the
+/// non-qualified name should be taken into account.
+static interned_string
+get_decl_name_for_comparison(const decl_base &d)
+{
+  if (has_generic_anonymous_internal_type_name(&d)
+      && d.get_is_anonymous())
+    {
+      // The decl is anonymous.   It should have the same name ass the
+      // other anymous types of the same kind.
+      string r;
+      r += get_generic_anonymous_internal_type_name(&d);
+      return d.get_environment()->intern(r);
+    }
+
+  interned_string n = (is_anonymous_or_typedef_named(d)
+		       || scope_anonymous_or_typedef_named(d))
+    ? d.get_name()
+    : d.get_qualified_name(/*internal=*/true);
+  return n;
+}
+
 /// Compares two instances of @ref decl_base.
 ///
 /// If the two intances are different, set a bitfield to give some
@@ -4964,7 +5043,8 @@ equals(const decl_base& l, const decl_base& r, change_kind* k)
 	  const function_decl *f1 = is_function_decl(&l),
 	    *f2 = is_function_decl(&r);
 	  if (f1 && f2 && function_decls_alias(*f1, *f2))
-	    ;// The two functions are aliases, so they are not different.
+	    ;// The two functions are aliases, so they are not
+	     // different.
 	  else
 	    {
 	      result = false;
@@ -4979,12 +5059,8 @@ equals(const decl_base& l, const decl_base& r, change_kind* k)
   // This is the qualified name of the decls that we want to compare.
   // We want to use the "internal" version of the qualified name as
   // that one is stable even for anonymous decls.
-  interned_string ln = l.get_has_anonymous_parent()
-    ? l.get_name()
-    : l.get_qualified_name(/*internal=*/true);
-  interned_string rn = r.get_has_anonymous_parent()
-    ? r.get_name()
-    : r.get_qualified_name(/*internal=*/true);
+  interned_string ln = get_decl_name_for_comparison(l);
+  interned_string rn = get_decl_name_for_comparison(r);
 
   ;  /// If both of the current decls have an anonymous scope then let's
   /// compare their name component by component by properly handling
@@ -5771,6 +5847,35 @@ anonymous_data_member_to_class_or_union(const var_decl_sptr &d)
   if (var_decl_sptr v = is_anonymous_data_member(d))
     return is_class_or_union_type(v->get_type());
   return class_or_union_sptr();
+}
+
+/// Test if the scope of a given decl is anonymous or anonymous with a
+/// naming typedef.
+///
+/// @param d the decl consider.
+///
+/// @return true iff the scope of @p d is anonymous or anonymous with
+/// a naming typedef.
+bool
+scope_anonymous_or_typedef_named(const decl_base& d)
+{
+  if (d.get_has_anonymous_parent()
+      || (d.get_scope() && d.get_scope()->get_naming_typedef()))
+    return true;
+  return false;
+}
+
+/// Test if a given decl is anonymous or has a naming typedef.
+///
+/// @param d the decl to consider.
+///
+/// @return true iff @p d is anonymous or has a naming typedef.
+bool
+is_anonymous_or_typedef_named(const decl_base& d)
+{
+  if (d.get_is_anonymous() || d.get_naming_typedef())
+    return true;
+  return false;
 }
 
 /// Set the offset of a data member into its containing class.
@@ -7295,11 +7400,6 @@ scope_decl::add_member_decl(const decl_base_sptr& member)
 
   update_qualified_name(member);
 
-  // Propagate scope anonymity
-  if (get_has_anonymous_parent()
-      || (!is_global_scope(this) && get_is_anonymous()))
-    member->set_has_anonymous_parent(true);
-
   if (const environment* env = get_environment())
     set_environment_for_artifact(member, env);
 
@@ -8811,7 +8911,7 @@ get_debug_representation(const type_or_decl_base* artifact)
 	<< "{\n"
 	<< "  // size in bits: " << e->get_size_in_bits() << "\n"
 	<< "  // is-declaration-only: " << e->get_is_declaration_only() << "\n"
-	<< " // definition point: " << get_natural_or_artificial_location(c).expand() << "\n"
+	<< " // definition point: " << get_natural_or_artificial_location(e).expand() << "\n"
 	<< "  // translation unit: "
 	<< e->get_translation_unit()->get_absolute_path() << "\n"
 	<< "  // @: " << std::hex << is_type(e)
@@ -20503,37 +20603,6 @@ class_or_union::get_size_in_bits() const
   return type_base::get_size_in_bits();
 }
 
-
-/// Getter for the naming typedef of the current class.
-///
-/// Consider the C idiom:
-///
-///    typedef struct {int member;} foo_type;
-///
-/// In that idiom, foo_type is the naming typedef of the anonymous
-/// struct that is declared.
-///
-/// @return the naming typedef, if any.  Otherwise, returns nil.
-typedef_decl_sptr
-class_or_union::get_naming_typedef() const
-{return priv_->naming_typedef_.lock();}
-
-/// Set the naming typedef of the current instance of @ref class_decl.
-///
-/// Consider the C idiom:
-///
-///    typedef struct {int member;} foo_type;
-///
-/// In that idiom, foo_type is the naming typedef of the anonymous
-/// struct that is declared.
-///
-/// @param typedef_type the new naming typedef.
-void
-class_or_union::set_naming_typedef(const typedef_decl_sptr& typedef_type)
-{
-  priv_->naming_typedef_ = typedef_type;
-}
-
 /// Get the member types of this @ref class_or_union.
 ///
 /// @return a vector of the member types of this ref class_or_union.
@@ -21086,8 +21155,8 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 	  if ((l.get_environment()->decl_only_class_equals_definition()
 	       || ((odr_is_relevant(l) && !def1)
 		   || (odr_is_relevant(r) && !def2)))
-	      && !l.get_is_anonymous()
-	      && !r.get_is_anonymous())
+	      && !is_anonymous_or_typedef_named(l)
+	      && !is_anonymous_or_typedef_named(r))
 	    {
 	      const interned_string& q1 = l.get_scoped_name();
 	      const interned_string& q2 = r.get_scoped_name();

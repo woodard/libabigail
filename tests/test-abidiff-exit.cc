@@ -414,6 +414,17 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-missing-alias-report.txt",
     "output/test-abidiff-exit/test-missing-alias-report.txt"
   },
+  {
+    "data/test-abidiff-exit/test-PR28316-v0.o",
+    "data/test-abidiff-exit/test-PR28316-v1.o",
+    "",
+    "",
+    "",
+    "--no-default-suppression --harmless",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    "data/test-abidiff-exit/test-PR28316-report.txt",
+    "output/test-abidiff-exit/test-PR28316-report.txt"
+  },
   {0, 0, 0 ,0, 0, 0, abigail::tools_utils::ABIDIFF_OK, 0, 0}
 };
 

@@ -4860,8 +4860,8 @@
     </class-decl>
     <!-- typedef int64_t Elf64_Sxword -->
     <typedef-decl name='Elf64_Sxword' type-id='type-id-164' filepath='/usr/include/elf.h' line='46' column='1' id='type-id-165'/>
-    <!-- struct {Elf64_Sxword d_tag; union {Elf64_Xword d_val; Elf64_Addr d_ptr;} d_un;} -->
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-166' visibility='default' filepath='/usr/include/elf.h' line='643' column='1' id='type-id-167'>
+    <!-- struct Elf64_Dyn -->
+    <class-decl name='Elf64_Dyn' size-in-bits='128' is-struct='yes' naming-typedef-id='type-id-166' visibility='default' filepath='/usr/include/elf.h' line='643' column='1' id='type-id-167'>
       <member-type access='public'>
         <!-- union {Elf64_Xword d_val; Elf64_Addr d_ptr;} -->
         <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/usr/include/elf.h' line='646' column='1' id='type-id-168'>
@@ -4876,15 +4876,15 @@
         </union-decl>
       </member-type>
       <data-member access='public' layout-offset-in-bits='0'>
-        <!-- Elf64_Sxword d_tag -->
+        <!-- Elf64_Sxword Elf64_Dyn::d_tag -->
         <var-decl name='d_tag' type-id='type-id-165' visibility='default' filepath='/usr/include/elf.h' line='644' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <!-- union {Elf64_Xword d_val; Elf64_Addr d_ptr;} d_un -->
+        <!-- union {Elf64_Xword d_val; Elf64_Addr d_ptr;} Elf64_Dyn::d_un -->
         <var-decl name='d_un' type-id='type-id-168' visibility='default' filepath='/usr/include/elf.h' line='649' column='1'/>
       </data-member>
     </class-decl>
-    <!-- typedef __anonymous_struct__ Elf64_Dyn -->
+    <!-- typedef Elf64_Dyn Elf64_Dyn -->
     <typedef-decl name='Elf64_Dyn' type-id='type-id-167' filepath='/usr/include/elf.h' line='650' column='1' id='type-id-166'/>
     <!-- struct link_map -->
     <class-decl name='link_map' size-in-bits='320' is-struct='yes' visibility='default' filepath='/usr/include/link.h' line='85' column='1' id='type-id-171'>
@@ -5307,8 +5307,8 @@
     </array-type-def>
     <!-- typedef unsigned long int _Unwind_Ptr -->
     <typedef-decl name='_Unwind_Ptr' type-id='type-id-117' filepath='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/host-x86_64-unknown-linux-gnu/gcc/include/unwind.h' line='53' column='1' id='type-id-209'/>
-    <!-- enum __anonymous_enum__ -->
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='19_Unwind_Reason_Code' filepath='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/host-x86_64-unknown-linux-gnu/gcc/include/unwind.h' line='66' column='1' id='type-id-210'>
+    <!-- enum _Unwind_Reason_Code -->
+    <enum-decl name='_Unwind_Reason_Code' naming-typedef-id='type-id-210' linkage-name='19_Unwind_Reason_Code' filepath='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/host-x86_64-unknown-linux-gnu/gcc/include/unwind.h' line='66' column='1' id='type-id-211'>
       <underlying-type type-id='type-id-54'/>
       <enumerator name='_URC_NO_REASON' value='0'/>
       <enumerator name='_URC_FOREIGN_EXCEPTION_CAUGHT' value='1'/>
@@ -5320,21 +5320,21 @@
       <enumerator name='_URC_INSTALL_CONTEXT' value='7'/>
       <enumerator name='_URC_CONTINUE_UNWIND' value='8'/>
     </enum-decl>
-    <!-- typedef __anonymous_enum__ _Unwind_Reason_Code -->
-    <typedef-decl name='_Unwind_Reason_Code' type-id='type-id-210' filepath='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/host-x86_64-unknown-linux-gnu/gcc/include/unwind.h' line='76' column='1' id='type-id-211'/>
-    <!-- union {char __size[56]; long int __align;} -->
-    <union-decl name='__anonymous_union__' size-in-bits='448' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='54' column='1' id='type-id-212'>
+    <!-- typedef _Unwind_Reason_Code _Unwind_Reason_Code -->
+    <typedef-decl name='_Unwind_Reason_Code' type-id='type-id-211' filepath='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/host-x86_64-unknown-linux-gnu/gcc/include/unwind.h' line='76' column='1' id='type-id-210'/>
+    <!-- union pthread_attr_t -->
+    <union-decl name='pthread_attr_t' size-in-bits='448' naming-typedef-id='type-id-212' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='54' column='1' id='type-id-213'>
       <data-member access='public'>
-        <!-- char __size[56] -->
+        <!-- char pthread_attr_t::__size[56] -->
         <var-decl name='__size' type-id='type-id-207' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='55' column='1'/>
       </data-member>
       <data-member access='public'>
-        <!-- long int __align -->
+        <!-- long int pthread_attr_t::__align -->
         <var-decl name='__align' type-id='type-id-38' visibility='default' filepath='/usr/include/bits/pthreadtypes.h' line='56' column='1'/>
       </data-member>
     </union-decl>
-    <!-- typedef __anonymous_union__ pthread_attr_t -->
-    <typedef-decl name='pthread_attr_t' type-id='type-id-212' filepath='/usr/include/bits/pthreadtypes.h' line='57' column='1' id='type-id-213'/>
+    <!-- typedef pthread_attr_t pthread_attr_t -->
+    <typedef-decl name='pthread_attr_t' type-id='type-id-213' filepath='/usr/include/bits/pthreadtypes.h' line='57' column='1' id='type-id-212'/>
     <!-- _Unwind_Context* -->
     <pointer-type-def type-id='type-id-214' size-in-bits='64' id='type-id-215'/>
     <!-- __sanitizer::StackTrace* const -->
@@ -5342,11 +5342,11 @@
     <!-- bool (const char*)* -->
     <pointer-type-def type-id='type-id-206' size-in-bits='64' id='type-id-217'/>
     <!-- const pthread_attr_t -->
-    <qualified-type-def type-id='type-id-213' const='yes' id='type-id-218'/>
+    <qualified-type-def type-id='type-id-212' const='yes' id='type-id-218'/>
     <!-- const pthread_attr_t* -->
     <pointer-type-def type-id='type-id-218' size-in-bits='64' id='type-id-219'/>
     <!-- pthread_attr_t* -->
-    <pointer-type-def type-id='type-id-213' size-in-bits='64' id='type-id-220'/>
+    <pointer-type-def type-id='type-id-212' size-in-bits='64' id='type-id-220'/>
     <!-- size_t* -->
     <pointer-type-def type-id='type-id-5' size-in-bits='64' id='type-id-82'/>
     <!-- struct _Unwind_Context -->
@@ -19776,14 +19776,14 @@
       <typedef-decl name='__sanitizer___kernel_old_gid_t' type-id='type-id-195' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.h' line='375' column='1' id='type-id-971'/>
       <!-- typedef long long int __sanitizer::__sanitizer___kernel_loff_t -->
       <typedef-decl name='__sanitizer___kernel_loff_t' type-id='type-id-395' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.h' line='378' column='1' id='type-id-967'/>
-      <!-- struct {unsigned long int fds_bits[16];} -->
-      <class-decl name='__anonymous_struct__' size-in-bits='1024' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-963' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.h' line='379' column='1' id='type-id-1273'>
+      <!-- struct __sanitizer::__sanitizer___kernel_fd_set -->
+      <class-decl name='__sanitizer___kernel_fd_set' size-in-bits='1024' is-struct='yes' naming-typedef-id='type-id-963' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.h' line='379' column='1' id='type-id-1273'>
         <data-member access='public' layout-offset-in-bits='0'>
-          <!-- unsigned long int fds_bits[16] -->
+          <!-- unsigned long int __sanitizer::__sanitizer___kernel_fd_set::fds_bits[16] -->
           <var-decl name='fds_bits' type-id='type-id-403' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.h' line='380' column='1'/>
         </data-member>
       </class-decl>
-      <!-- typedef __sanitizer::__anonymous_struct__ __sanitizer::__sanitizer___kernel_fd_set -->
+      <!-- typedef __sanitizer::__sanitizer___kernel_fd_set __sanitizer::__sanitizer___kernel_fd_set -->
       <typedef-decl name='__sanitizer___kernel_fd_set' type-id='type-id-1273' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.h' line='381' column='1' id='type-id-963'/>
       <!-- struct __sanitizer::__sanitizer_sigset_t -->
       <class-decl name='__sanitizer_sigset_t' size-in-bits='1024' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.h' line='397' column='1' id='type-id-736'>
@@ -24249,8 +24249,8 @@
     <typedef-decl name='__tsan_atomic64' type-id='type-id-38' filepath='../../.././libsanitizer/tsan/tsan_interface_atomic.h' line='25' column='1' id='type-id-1346'/>
     <!-- typedef __int128 __tsan_atomic128 -->
     <typedef-decl name='__tsan_atomic128' type-id='type-id-1303' filepath='../../.././libsanitizer/tsan/tsan_interface_atomic.h' line='29' column='1' id='type-id-1348'/>
-    <!-- enum __anonymous_enum__ -->
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='19__tsan_memory_order' filepath='../../.././libsanitizer/tsan/tsan_interface_atomic.h' line='38' column='1' id='type-id-1353'>
+    <!-- enum __tsan_memory_order -->
+    <enum-decl name='__tsan_memory_order' naming-typedef-id='type-id-1338' linkage-name='19__tsan_memory_order' filepath='../../.././libsanitizer/tsan/tsan_interface_atomic.h' line='38' column='1' id='type-id-1353'>
       <underlying-type type-id='type-id-54'/>
       <enumerator name='__tsan_memory_order_relaxed' value='0'/>
       <enumerator name='__tsan_memory_order_consume' value='1'/>
@@ -24259,7 +24259,7 @@
       <enumerator name='__tsan_memory_order_acq_rel' value='4'/>
       <enumerator name='__tsan_memory_order_seq_cst' value='5'/>
     </enum-decl>
-    <!-- typedef __anonymous_enum__ __tsan_memory_order -->
+    <!-- typedef __tsan_memory_order __tsan_memory_order -->
     <typedef-decl name='__tsan_memory_order' type-id='type-id-1353' filepath='../../.././libsanitizer/tsan/tsan_interface_atomic.h' line='45' column='1' id='type-id-1338'/>
     <!-- ScopedAtomic* -->
     <pointer-type-def type-id='type-id-1350' size-in-bits='64' id='type-id-1351'/>
@@ -31630,42 +31630,42 @@
     <typedef-decl name='Elf64_Addr' type-id='type-id-1869' filepath='/usr/include/elf.h' line='50' column='1' id='type-id-170'/>
     <!-- typedef uint64_t Elf64_Off -->
     <typedef-decl name='Elf64_Off' type-id='type-id-1869' filepath='/usr/include/elf.h' line='54' column='1' id='type-id-1870'/>
-    <!-- struct {Elf64_Word p_type; Elf64_Word p_flags; Elf64_Off p_offset; Elf64_Addr p_vaddr; Elf64_Addr p_paddr; Elf64_Xword p_filesz; Elf64_Xword p_memsz; Elf64_Xword p_align;} -->
-    <class-decl name='__anonymous_struct__' size-in-bits='448' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-1871' visibility='default' filepath='/usr/include/elf.h' line='551' column='1' id='type-id-1872'>
+    <!-- struct Elf64_Phdr -->
+    <class-decl name='Elf64_Phdr' size-in-bits='448' is-struct='yes' naming-typedef-id='type-id-1871' visibility='default' filepath='/usr/include/elf.h' line='551' column='1' id='type-id-1872'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <!-- Elf64_Word p_type -->
+        <!-- Elf64_Word Elf64_Phdr::p_type -->
         <var-decl name='p_type' type-id='type-id-1868' visibility='default' filepath='/usr/include/elf.h' line='552' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='32'>
-        <!-- Elf64_Word p_flags -->
+        <!-- Elf64_Word Elf64_Phdr::p_flags -->
         <var-decl name='p_flags' type-id='type-id-1868' visibility='default' filepath='/usr/include/elf.h' line='553' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <!-- Elf64_Off p_offset -->
+        <!-- Elf64_Off Elf64_Phdr::p_offset -->
         <var-decl name='p_offset' type-id='type-id-1870' visibility='default' filepath='/usr/include/elf.h' line='554' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <!-- Elf64_Addr p_vaddr -->
+        <!-- Elf64_Addr Elf64_Phdr::p_vaddr -->
         <var-decl name='p_vaddr' type-id='type-id-170' visibility='default' filepath='/usr/include/elf.h' line='555' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
-        <!-- Elf64_Addr p_paddr -->
+        <!-- Elf64_Addr Elf64_Phdr::p_paddr -->
         <var-decl name='p_paddr' type-id='type-id-170' visibility='default' filepath='/usr/include/elf.h' line='556' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
-        <!-- Elf64_Xword p_filesz -->
+        <!-- Elf64_Xword Elf64_Phdr::p_filesz -->
         <var-decl name='p_filesz' type-id='type-id-169' visibility='default' filepath='/usr/include/elf.h' line='557' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
-        <!-- Elf64_Xword p_memsz -->
+        <!-- Elf64_Xword Elf64_Phdr::p_memsz -->
         <var-decl name='p_memsz' type-id='type-id-169' visibility='default' filepath='/usr/include/elf.h' line='558' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
-        <!-- Elf64_Xword p_align -->
+        <!-- Elf64_Xword Elf64_Phdr::p_align -->
         <var-decl name='p_align' type-id='type-id-169' visibility='default' filepath='/usr/include/elf.h' line='559' column='1'/>
       </data-member>
     </class-decl>
-    <!-- typedef __anonymous_struct__ Elf64_Phdr -->
+    <!-- typedef Elf64_Phdr Elf64_Phdr -->
     <typedef-decl name='Elf64_Phdr' type-id='type-id-1872' filepath='/usr/include/elf.h' line='560' column='1' id='type-id-1871'/>
     <!-- struct dl_phdr_info -->
     <class-decl name='dl_phdr_info' size-in-bits='512' is-struct='yes' visibility='default' filepath='/usr/include/link.h' line='138' column='1' id='type-id-1873'>

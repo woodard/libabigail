@@ -13569,9 +13569,15 @@ build_typedef_type(read_context&	ctxt,
       ABG_ASSERT(utype);
       result.reset(new typedef_decl(name, utype, loc, linkage_name));
 
-      if (class_decl_sptr klass = is_class_type(utype))
-	if (is_anonymous_type(klass))
-	  klass->set_naming_typedef(result);
+      if ((is_class_or_union_type(utype) || is_enum_type(utype))
+	  && is_anonymous_type(utype))
+	{
+	  // This is a naming typedef for an enum or a class.  Let's
+	  // mark the underlying decl as such.
+	  decl_base_sptr decl = is_decl(utype);
+	  ABG_ASSERT(decl);
+	  decl->set_naming_typedef(result);
+	}
     }
 
   ctxt.associate_die_to_type(die, result, where_offset);
@@ -14524,6 +14530,8 @@ maybe_canonicalize_type(const Dwarf_Die *die, read_context& ctxt)
     // types because they can be edited (in particular by
     // maybe_strip_qualification) after they are initially built.
     ctxt.schedule_type_for_late_canonicalization(die);
+  else if (is_decl(t) && is_decl(t)->get_is_anonymous())
+    ctxt.schedule_type_for_late_canonicalization(t);
   else if ((is_function_type(t)
 	    && ctxt.is_wip_function_type_die_offset(die_offset, source))
 	   || type_has_non_canonicalized_subtype(t))
@@ -14566,7 +14574,8 @@ maybe_canonicalize_type(const type_base_sptr& t,
       || is_union_type(peeled_type)
       || is_function_type(peeled_type)
       || is_array_type(peeled_type)
-      || is_qualified_type(peeled_type))
+      || is_qualified_type(peeled_type)
+      ||(is_decl(peeled_type) && is_decl(peeled_type)->get_is_anonymous()))
     // We delay canonicalization of classes/unions or typedef,
     // pointers, references and array to classes/unions.  This is
     // because the (underlying) class might not be finished yet and we

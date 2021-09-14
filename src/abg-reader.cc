@@ -58,10 +58,11 @@ static bool	read_is_declaration_only(xmlNodePtr, bool&);
 static bool	read_is_artificial(xmlNodePtr, bool&);
 static bool	read_tracking_non_reachable_types(xmlNodePtr, bool&);
 static bool	read_is_non_reachable_type(xmlNodePtr, bool&);
+static bool	read_naming_typedef_id_string(xmlNodePtr, string&);
 #ifdef WITH_DEBUG_SELF_COMPARISON
 static bool	read_type_id_string(xmlNodePtr, string&);
 #endif
-
+static void	maybe_set_naming_typedef(read_context&	ctxt, xmlNodePtr, const decl_base_sptr &);
 class read_context;
 
 /// This abstracts the context in which the current ABI
@@ -2694,6 +2695,26 @@ read_is_non_reachable_type(xmlNodePtr node, bool& is_non_reachable_type)
   return false;
 }
 
+/// Read the "naming-typedef-id" property from an XML node.
+///
+/// @param node the XML node to consider.
+///
+/// @param naming_typedef_id output parameter.  It's set to the
+/// content of the "naming-typedef-id" property, if it's present.
+///
+/// @return true iff the "naming-typedef-id" property exists and was
+/// read from @p node.
+static bool
+read_naming_typedef_id_string(xmlNodePtr node, string& naming_typedef_id)
+{
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "naming-typedef-id"))
+    {
+      naming_typedef_id = xml::unescape_xml_string(CHAR_STR(s));
+      return true;
+    }
+  return false;
+}
+
 /// Read the "is-virtual" attribute of the current xml node.
 ///
 /// @param node the xml node to read the attribute from
@@ -2843,6 +2864,30 @@ read_type_id_string(xmlNodePtr node, string& type_id)
   return false;
 }
 #endif
+
+/// Set the naming typedef to a given decl depending on the content of
+/// the "naming-typedef-id" property of its descriptive XML element.
+///
+/// @param ctxt the current read context.
+///
+/// @param node the XML node to read from.
+///
+/// @param decl the decl to set the naming typedef to.
+static void
+maybe_set_naming_typedef(read_context&		ctxt,
+			 xmlNodePtr		node,
+			 const decl_base_sptr&	decl)
+{
+  string naming_typedef_id;
+  read_naming_typedef_id_string(node, naming_typedef_id);
+  if (!naming_typedef_id.empty())
+    {
+      typedef_decl_sptr naming_typedef =
+	is_typedef(ctxt.build_or_get_type_decl(naming_typedef_id, true));
+      ABG_ASSERT(naming_typedef);
+      decl->set_naming_typedef(naming_typedef);
+    }
+}
 
 /// Build a @ref namespace_decl from an XML element node which name is
 /// "namespace-decl".  Note that this function recursively reads the
@@ -4348,6 +4393,7 @@ build_enum_type_decl(read_context&	ctxt,
   t->set_is_anonymous(is_anonymous);
   t->set_is_artificial(is_artificial);
   t->set_is_declaration_only(is_decl_only);
+  maybe_set_naming_typedef(ctxt, node, t);
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, t);
@@ -4532,11 +4578,6 @@ build_class_decl(read_context&		ctxt,
   bool is_anonymous = false;
   read_is_anonymous(node, is_anonymous);
 
-  string naming_typedef_id;
-
-  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "naming-typedef-id"))
-    naming_typedef_id = xml::unescape_xml_string(CHAR_STR(s));
-
   ABG_ASSERT(!id.empty());
 
   class_decl_sptr previous_definition, previous_declaration;
@@ -4669,13 +4710,7 @@ build_class_decl(read_context&		ctxt,
   ctxt.key_type_decl(decl, id);
 
   // If this class has a naming typedef, get it and refer to it.
-  if (!naming_typedef_id.empty())
-    {
-      typedef_decl_sptr naming_typedef =
-	is_typedef(ctxt.build_or_get_type_decl(naming_typedef_id, true));
-      ABG_ASSERT(naming_typedef);
-      decl->set_naming_typedef(naming_typedef);
-    }
+  maybe_set_naming_typedef(ctxt, node, decl);
 
   for (xmlNodePtr n = xmlFirstElementChild(node);
        !is_decl_only && n;
@@ -5072,6 +5107,8 @@ build_union_decl(read_context& ctxt,
 
   ctxt.map_xml_node_to_decl(node, decl);
   ctxt.key_type_decl(decl, id);
+
+  maybe_set_naming_typedef(ctxt, node, decl);
 
   for (xmlNodePtr n = xmlFirstElementChild(node);
        !is_decl_only && n;
