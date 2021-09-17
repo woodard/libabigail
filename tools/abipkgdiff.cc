@@ -2672,6 +2672,10 @@ compare_prepared_userspace_packages(package& first_package,
 	{
 	  if (iter->second->type != abigail::dwarf_reader::ELF_TYPE_RELOCATABLE)
 	    {
+	      if (opts.verbose)
+		emit_prefix("abipkgdiff", cerr)
+		  << "Going to compare files '"
+		  << it->first << "' and '" << iter->first << "'\n";
 	      compare_args_sptr args
 		(new compare_args(*it->second,
 				  debug_dir1,
@@ -2688,6 +2692,10 @@ compare_prepared_userspace_packages(package& first_package,
 	}
       else if (iter == second_package.path_elf_file_sptr_map().end())
 	{
+	  if (opts.verbose)
+	    emit_prefix("abipkgdiff", cerr)
+	      << "Detected removed file:  '"
+	      << it->first << "'\n";
 	  diff.removed_binaries.push_back(it->second);
 	  status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
 	  status |= abigail::tools_utils::ABIDIFF_ABI_CHANGE;
@@ -2695,42 +2703,42 @@ compare_prepared_userspace_packages(package& first_package,
     }
 
   if (compare_tasks.empty())
-    {
-      maybe_erase_temp_dirs(first_package, second_package, opts);
-      return abigail::tools_utils::ABIDIFF_OK;
-    }
-
-  // Larger elfs are processed first, since it's usually safe to assume
-  // their debug-info is larger as well, but the results are still
-  // in a map ordered by looked up in elf.name order.
-  std::sort(compare_tasks.begin(), compare_tasks.end(), elf_size_is_greater);
-
-  // There's no reason to spawn more workers than there are ELF pairs
-  // to be compared.
-  size_t num_workers = (opts.parallel
-			? std::min(opts.num_workers, compare_tasks.size())
-			: 1);
-  assert(num_workers >= 1);
+    maybe_erase_temp_dirs(first_package, second_package, opts);
 
   comparison_done_notify notifier(diff);
-  abigail::workers::queue comparison_queue(num_workers, notifier);
-
-  // Compare all the binaries, in parallel and then wait for the
-  // comparisons to complete.
-  comparison_queue.schedule_tasks(compare_tasks);
-  comparison_queue.wait_for_workers_to_complete();
-
-  // Get the set of comparison tasks that were perform and sort them.
-  queue::tasks_type& done_tasks = comparison_queue.get_completed_tasks();
-  std::sort(done_tasks.begin(), done_tasks.end(), elf_size_is_greater);
-
-  // Print the reports of the comparison to standard output.
-  for (queue::tasks_type::const_iterator i = done_tasks.begin();
-       i != done_tasks.end();
-       ++i)
+  if (!compare_tasks.empty())
     {
-      compare_task_sptr t = dynamic_pointer_cast<compare_task>(*i);
-      cout << t->pretty_output;
+      // Larger elfs are processed first, since it's usually safe to assume
+      // their debug-info is larger as well, but the results are still
+      // in a map ordered by looked up in elf.name order.
+      std::sort(compare_tasks.begin(), compare_tasks.end(), elf_size_is_greater);
+
+      // There's no reason to spawn more workers than there are ELF pairs
+      // to be compared.
+      size_t num_workers = (opts.parallel
+			    ? std::min(opts.num_workers, compare_tasks.size())
+			    : 1);
+      assert(num_workers >= 1);
+
+      abigail::workers::queue comparison_queue(num_workers, notifier);
+
+      // Compare all the binaries, in parallel and then wait for the
+      // comparisons to complete.
+      comparison_queue.schedule_tasks(compare_tasks);
+      comparison_queue.wait_for_workers_to_complete();
+
+      // Get the set of comparison tasks that were perform and sort them.
+      queue::tasks_type& done_tasks = comparison_queue.get_completed_tasks();
+      std::sort(done_tasks.begin(), done_tasks.end(), elf_size_is_greater);
+
+      // Print the reports of the comparison to standard output.
+      for (queue::tasks_type::const_iterator i = done_tasks.begin();
+	   i != done_tasks.end();
+	   ++i)
+	{
+	  compare_task_sptr t = dynamic_pointer_cast<compare_task>(*i);
+	  cout << t->pretty_output;
+	}
     }
 
   // Update the count of added binaries.

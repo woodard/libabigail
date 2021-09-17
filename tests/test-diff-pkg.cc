@@ -708,6 +708,31 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/graphviz-2.44.0-18.el9.aarch64-self-check-report-0.txt",
     "output/test-diff-pkg/graphviz-2.44.0-18.el9.aarch64-self-check-report-0.txt"
   } ,
+  {
+    "data/test-diff-pkg/libxcrypt-4.1.1-6.el8.x86_64.rpm",
+    "data/test-diff-pkg/libxcrypt-4.4.18-3.el9.x86_64.rpm",
+    "",
+    "",
+    "data/test-diff-pkg/libxcrypt-debuginfo-4.1.1-6.el8.x86_64.rpm",
+    "data/test-diff-pkg/libxcrypt-debuginfo-4.4.18-3.el9.x86_64.rpm",
+    "",
+    "",
+    "data/test-diff-pkg/libxcrypt-4.1.1-6.el8.x86_64--libxcrypt-4.1.1-6.el8.x86_64-output-1.txt",
+    "output/test-diff-pkg/libxcrypt-4.1.1-6.el8.x86_64--libxcrypt-4.1.1-6.el8.x86_64-output-1.txt"
+  } ,
+  {
+    "data/test-diff-pkg/libxcrypt-4.1.1-6.el8.x86_64.rpm",
+    "data/test-diff-pkg/libxcrypt-compat-4.4.18-3.el9.x86_64.rpm",
+    "",
+    "",
+    "data/test-diff-pkg/libxcrypt-debuginfo-4.1.1-6.el8.x86_64.rpm",
+    "data/test-diff-pkg/libxcrypt-debuginfo-4.4.18-3.el9.x86_64.rpm,"
+    "data/test-diff-pkg/libxcrypt-compat-debuginfo-4.4.18-3.el9.x86_64.rpm",
+    "",
+    "",
+    "data/test-diff-pkg/libxcrypt-4.1.1-6.el8.x86_64--libxcrypt-compat-4.4.18-3.el9.x86_64-report-1.txt",
+    "output/test-diff-pkg/libxcrypt-4.1.1-6.el8.x86_64--libxcrypt-compat-4.4.18-3.el9.x86_64-report-1.txt"
+  } ,
 #endif // WITH_RPM_4_15
 #endif //WITH_RPM
 
