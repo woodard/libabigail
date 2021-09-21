@@ -2702,9 +2702,6 @@ compare_prepared_userspace_packages(package& first_package,
 	}
     }
 
-  if (compare_tasks.empty())
-    maybe_erase_temp_dirs(first_package, second_package, opts);
-
   comparison_done_notify notifier(diff);
   if (!compare_tasks.empty())
     {
