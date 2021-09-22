@@ -4621,6 +4621,12 @@ public:
 	  ABG_ASSERT(is_member_function(i->second));
 	  ABG_ASSERT(get_member_function_is_virtual(i->second));
 	  i->second->set_symbol(sym);
+	  // The function_decl now has an associated (public) ELF symbol so
+	  // it ought to be advertised as being public.
+	  i->second->set_is_in_public_symbol_table(true);
+	  // Add the function to the set of exported decls of the
+	  // current corpus.
+	  maybe_add_fn_to_exported_decls(i->second.get());
 	  if (do_log())
 	    cerr << "fixed up '"
 		 << i->second->get_pretty_representation()
@@ -11725,7 +11731,8 @@ finish_member_function_reading(Dwarf_Die*		  die,
   set_member_access_specifier(m, access);
   if (vindex != -1)
     set_member_function_vtable_offset(m, vindex);
-  set_member_function_is_virtual(m, is_virtual);
+  if (is_virtual)
+    set_member_function_is_virtual(m, is_virtual);
   set_member_is_static(m, is_static);
   set_member_function_is_ctor(m, is_ctor);
   set_member_function_is_dtor(m, is_dtor);
@@ -13809,6 +13816,16 @@ function_is_suppressed(const read_context& ctxt,
 /// Note that if a member function declaration with the same signature
 /// (pretty representation) as one of the DIE we are looking at
 /// exists, this function returns that existing function declaration.
+/// Similarly, if there is already a constructed member function with
+/// the same linkage name as the one on the DIE, this function returns
+/// that member function.
+///
+/// Also note that the function_decl IR returned by this function must
+/// be passed to finish_member_function_reading because several
+/// properties from the DIE are actually read by that function, and
+/// the corresponding properties on the function_decl IR are updated
+/// accordingly.  This is done to support "updating" a function_decl
+/// IR with properties scathered across several DIEs.
 ///
 /// @param ctxt the read context to use.
 ///
@@ -13853,7 +13870,16 @@ build_or_get_fn_decl_if_not_suppressed(read_context&	  ctxt,
 	return fn;
       }
 
-  fn = build_function_decl(ctxt, fn_die, where_offset, result);
+  // If a member function with the same linkage name as the one
+  // carried by the DIE already exists, then return it.
+  if (class_decl* klass = is_class_type(scope))
+    {
+      string linkage_name = die_linkage_name(fn_die);
+      fn = klass->find_member_function_sptr(linkage_name);
+    }
+
+  if (!fn)
+    fn = build_function_decl(ctxt, fn_die, where_offset, result);
 
   return fn;
 }

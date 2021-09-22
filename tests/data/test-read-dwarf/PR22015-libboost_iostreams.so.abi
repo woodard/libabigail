@@ -100,8 +100,8 @@
     <elf-symbol name='_ZN5boost9iostreams6detail20file_descriptor_impl4seekElSt12_Ios_Seekdir' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams6detail20file_descriptor_impl5closeEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams6detail20file_descriptor_impl5writeEPKcl' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost9iostreams6detail20file_descriptor_implC1Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='_ZN5boost9iostreams6detail20file_descriptor_implC2Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams6detail20file_descriptor_implC1Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost9iostreams6detail20file_descriptor_implC1Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams6detail20file_descriptor_implC2Ev' is-defined='yes'/>
+    <elf-symbol name='_ZN5boost9iostreams6detail20file_descriptor_implC2Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams6detail20file_descriptor_implD1Ev' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams6detail20file_descriptor_implD2Ev' type='func-type' binding='global-binding' visibility='default-visibility' alias='_ZN5boost9iostreams6detail20file_descriptor_implD1Ev' is-defined='yes'/>
     <elf-symbol name='_ZN5boost9iostreams6detail23mapped_file_params_base9normalizeEv' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
@@ -2494,7 +2494,7 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='file_descriptor' mangled-name='_ZN5boost9iostreams15file_descriptorC2ERKS1_' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/file_descriptor.hpp' line='95' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost9iostreams15file_descriptorC2ERKS1_'>
+            <function-decl name='file_descriptor' mangled-name='_ZN5boost9iostreams15file_descriptorC2ERKS1_' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/file_descriptor.hpp' line='95' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-99' is-artificial='yes'/>
               <parameter type-id='type-id-163'/>
               <return type-id='type-id-19'/>
@@ -2776,7 +2776,7 @@
               </function-decl>
             </member-function>
             <member-function access='public' constructor='yes'>
-              <function-decl name='file_descriptor_impl' mangled-name='_ZN5boost9iostreams6detail20file_descriptor_implC2Ev' filepath='src/third_party/boost-1.60.0/libs/iostreams/src/file_descriptor.cpp' line='59' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost9iostreams6detail20file_descriptor_implC2Ev'>
+              <function-decl name='file_descriptor_impl' mangled-name='_ZN5boost9iostreams6detail20file_descriptor_implC2Ev' filepath='src/third_party/boost-1.60.0/libs/iostreams/src/file_descriptor.cpp' line='59' column='1' visibility='default' binding='global' size-in-bits='64'>
                 <parameter type-id='type-id-87' is-artificial='yes'/>
                 <return type-id='type-id-19'/>
               </function-decl>
@@ -2787,7 +2787,7 @@
               </function-decl>
             </member-function>
             <member-function access='public' destructor='yes'>
-              <function-decl name='~file_descriptor_impl' mangled-name='_ZN5boost9iostreams6detail20file_descriptor_implD2Ev' filepath='src/third_party/boost-1.60.0/libs/iostreams/src/file_descriptor.cpp' line='60' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost9iostreams6detail20file_descriptor_implD2Ev'>
+              <function-decl name='~file_descriptor_impl' mangled-name='_ZN5boost9iostreams6detail20file_descriptor_implD2Ev' filepath='src/third_party/boost-1.60.0/libs/iostreams/src/file_descriptor.cpp' line='60' column='1' visibility='default' binding='global' size-in-bits='64'>
                 <parameter type-id='type-id-87' is-artificial='yes'/>
                 <return type-id='type-id-19'/>
               </function-decl>
@@ -3208,7 +3208,7 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='mapped_file_source' mangled-name='_ZN5boost9iostreams18mapped_file_sourceC2ERKS1_' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/mapped_file.hpp' line='183' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost9iostreams18mapped_file_sourceC2ERKS1_'>
+            <function-decl name='mapped_file_source' mangled-name='_ZN5boost9iostreams18mapped_file_sourceC2ERKS1_' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/mapped_file.hpp' line='183' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-107' is-artificial='yes'/>
               <parameter type-id='type-id-172'/>
               <return type-id='type-id-19'/>
@@ -3321,7 +3321,7 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='mapped_file' mangled-name='_ZN5boost9iostreams11mapped_fileC2ERKS1_' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/mapped_file.hpp' line='266' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost9iostreams11mapped_fileC2ERKS1_'>
+            <function-decl name='mapped_file' mangled-name='_ZN5boost9iostreams11mapped_fileC2ERKS1_' filepath='src/third_party/boost-1.60.0/boost/iostreams/device/mapped_file.hpp' line='266' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-303' is-artificial='yes'/>
               <parameter type-id='type-id-304'/>
               <return type-id='type-id-19'/>

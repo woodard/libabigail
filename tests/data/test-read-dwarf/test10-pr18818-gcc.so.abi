@@ -5259,12 +5259,14 @@
           <member-function access='public'>
             <function-decl name='release' mangled-name='_ZN5boost6detail15sp_counted_base7releaseEv' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/detail/sp_counted_base_gcc_x86.hpp' line='142' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6detail15sp_counted_base7releaseEv'>
               <parameter type-id='type-id-276' is-artificial='yes'/>
+              <parameter type-id='type-id-15' is-artificial='yes'/>
               <return type-id='type-id-27'/>
             </function-decl>
           </member-function>
           <member-function access='public'>
             <function-decl name='weak_release' mangled-name='_ZN5boost6detail15sp_counted_base12weak_releaseEv' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/detail/sp_counted_base_gcc_x86.hpp' line='156' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6detail15sp_counted_base12weak_releaseEv'>
               <parameter type-id='type-id-276' is-artificial='yes'/>
+              <parameter type-id='type-id-15' is-artificial='yes'/>
               <return type-id='type-id-27'/>
             </function-decl>
           </member-function>

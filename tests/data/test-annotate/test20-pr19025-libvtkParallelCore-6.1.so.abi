@@ -7632,8 +7632,8 @@
       <member-function access='public'>
         <!-- int vtkMultiProcessController::GetLocalProcessId() -->
         <function-decl name='GetLocalProcessId' mangled-name='_ZN25vtkMultiProcessController17GetLocalProcessIdEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessController.cxx' line='199' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN25vtkMultiProcessController17GetLocalProcessIdEv'>
-          <!-- implicit parameter of type 'vtkMultiProcessController*' -->
-          <parameter type-id='type-id-519' is-artificial='yes'/>
+          <!-- implicit parameter of type 'vtkMultiProcessController* const' -->
+          <parameter type-id='type-id-533' name='this' is-artificial='yes'/>
           <!-- int -->
           <return type-id='type-id-19'/>
         </function-decl>
@@ -7641,8 +7641,8 @@
       <member-function access='public'>
         <!-- int vtkMultiProcessController::GetNumberOfProcesses() -->
         <function-decl name='GetNumberOfProcesses' mangled-name='_ZN25vtkMultiProcessController20GetNumberOfProcessesEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessController.cxx' line='185' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN25vtkMultiProcessController20GetNumberOfProcessesEv'>
-          <!-- implicit parameter of type 'vtkMultiProcessController*' -->
-          <parameter type-id='type-id-519' is-artificial='yes'/>
+          <!-- implicit parameter of type 'vtkMultiProcessController* const' -->
+          <parameter type-id='type-id-533' name='this' is-artificial='yes'/>
           <!-- int -->
           <return type-id='type-id-19'/>
         </function-decl>
@@ -7665,10 +7665,10 @@
       <member-function access='public'>
         <!-- void vtkMultiProcessController::SetNumberOfProcesses(int) -->
         <function-decl name='SetNumberOfProcesses' mangled-name='_ZN25vtkMultiProcessController20SetNumberOfProcessesEi' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessController.cxx' line='172' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN25vtkMultiProcessController20SetNumberOfProcessesEi'>
-          <!-- implicit parameter of type 'vtkMultiProcessController*' -->
-          <parameter type-id='type-id-519' is-artificial='yes'/>
+          <!-- implicit parameter of type 'vtkMultiProcessController* const' -->
+          <parameter type-id='type-id-533' name='this' is-artificial='yes'/>
           <!-- parameter of type 'int' -->
-          <parameter type-id='type-id-19'/>
+          <parameter type-id='type-id-19' name='num' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessController.cxx' line='172' column='1'/>
           <!-- void -->
           <return type-id='type-id-29'/>
         </function-decl>
@@ -7771,8 +7771,8 @@
       <member-function access='public'>
         <!-- int vtkMultiProcessController::ProcessRMIs() -->
         <function-decl name='ProcessRMIs' mangled-name='_ZN25vtkMultiProcessController11ProcessRMIsEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessController.cxx' line='524' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN25vtkMultiProcessController11ProcessRMIsEv'>
-          <!-- implicit parameter of type 'vtkMultiProcessController*' -->
-          <parameter type-id='type-id-519' is-artificial='yes'/>
+          <!-- implicit parameter of type 'vtkMultiProcessController* const' -->
+          <parameter type-id='type-id-533' name='this' is-artificial='yes'/>
           <!-- int -->
           <return type-id='type-id-19'/>
         </function-decl>
@@ -13200,8 +13200,8 @@
       <member-function access='private'>
         <!-- int vtkProcessGroup::GetLocalProcessId() -->
         <function-decl name='GetLocalProcessId' mangled-name='_ZN15vtkProcessGroup17GetLocalProcessIdEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkProcessGroup.cxx' line='105' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN15vtkProcessGroup17GetLocalProcessIdEv'>
-          <!-- implicit parameter of type 'vtkProcessGroup*' -->
-          <parameter type-id='type-id-538' is-artificial='yes'/>
+          <!-- implicit parameter of type 'vtkProcessGroup* const' -->
+          <parameter type-id='type-id-1200' name='this' is-artificial='yes'/>
           <!-- int -->
           <return type-id='type-id-19'/>
         </function-decl>
@@ -18114,8 +18114,8 @@
       <member-function access='private'>
         <!-- int vtkSocketCommunicator::GetIsConnected() -->
         <function-decl name='GetIsConnected' mangled-name='_ZN21vtkSocketCommunicator14GetIsConnectedEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketCommunicator.cxx' line='184' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN21vtkSocketCommunicator14GetIsConnectedEv'>
-          <!-- implicit parameter of type 'vtkSocketCommunicator*' -->
-          <parameter type-id='type-id-1517' is-artificial='yes'/>
+          <!-- implicit parameter of type 'vtkSocketCommunicator* const' -->
+          <parameter type-id='type-id-1518' name='this' is-artificial='yes'/>
           <!-- int -->
           <return type-id='type-id-19'/>
         </function-decl>
@@ -18269,8 +18269,8 @@
       <member-function access='private'>
         <!-- int vtkSocketCommunicator::ClientSideHandshake() -->
         <function-decl name='ClientSideHandshake' mangled-name='_ZN21vtkSocketCommunicator19ClientSideHandshakeEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketCommunicator.cxx' line='535' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN21vtkSocketCommunicator19ClientSideHandshakeEv'>
-          <!-- implicit parameter of type 'vtkSocketCommunicator*' -->
-          <parameter type-id='type-id-1517' is-artificial='yes'/>
+          <!-- implicit parameter of type 'vtkSocketCommunicator* const' -->
+          <parameter type-id='type-id-1518' name='this' is-artificial='yes'/>
           <!-- int -->
           <return type-id='type-id-19'/>
         </function-decl>
@@ -18278,8 +18278,8 @@
       <member-function access='private'>
         <!-- int vtkSocketCommunicator::ServerSideHandshake() -->
         <function-decl name='ServerSideHandshake' mangled-name='_ZN21vtkSocketCommunicator19ServerSideHandshakeEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketCommunicator.cxx' line='428' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN21vtkSocketCommunicator19ServerSideHandshakeEv'>
-          <!-- implicit parameter of type 'vtkSocketCommunicator*' -->
-          <parameter type-id='type-id-1517' is-artificial='yes'/>
+          <!-- implicit parameter of type 'vtkSocketCommunicator* const' -->
+          <parameter type-id='type-id-1518' name='this' is-artificial='yes'/>
           <!-- int -->
           <return type-id='type-id-19'/>
         </function-decl>
@@ -18287,8 +18287,8 @@
       <member-function access='private'>
         <!-- int vtkSocketCommunicator::Handshake() -->
         <function-decl name='Handshake' mangled-name='_ZN21vtkSocketCommunicator9HandshakeEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketCommunicator.cxx' line='409' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN21vtkSocketCommunicator9HandshakeEv'>
-          <!-- implicit parameter of type 'vtkSocketCommunicator*' -->
-          <parameter type-id='type-id-1517' is-artificial='yes'/>
+          <!-- implicit parameter of type 'vtkSocketCommunicator* const' -->
+          <parameter type-id='type-id-1518' name='this' is-artificial='yes'/>
           <!-- int -->
           <return type-id='type-id-19'/>
         </function-decl>

@@ -1574,7 +1574,7 @@
       </member-type>
       <member-function access='private' static='yes'>
         <!-- int vtkPixelTransfer::Blit<float, float>(const vtkPixelExtent&, const vtkPixelExtent&, const vtkPixelExtent&, int, float*, int, float*) -->
-        <function-decl name='Blit&lt;float, float&gt;' mangled-name='_ZN16vtkPixelTransfer4BlitIffEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='154' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN16vtkPixelTransfer4BlitIffEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_'>
+        <function-decl name='Blit&lt;float, float&gt;' mangled-name='_ZN16vtkPixelTransfer4BlitIhhEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='154' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN16vtkPixelTransfer4BlitIffEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_'>
           <!-- parameter of type 'const vtkPixelExtent&' -->
           <parameter type-id='type-id-66' name='srcWholeExt' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='155' column='1'/>
           <!-- parameter of type 'const vtkPixelExtent&' -->
@@ -1591,29 +1591,6 @@
           <parameter type-id='type-id-17' name='nDestComps' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='161' column='1'/>
           <!-- parameter of type 'float*' -->
           <parameter type-id='type-id-49' name='destData' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='162' column='1'/>
-          <!-- int -->
-          <return type-id='type-id-17'/>
-        </function-decl>
-      </member-function>
-      <member-function access='private' static='yes'>
-        <!-- int vtkPixelTransfer::Blit<vtkPixelTransfer::Blit::VTK_TT, vtkPixelTransfer::Blit::VTK_TT>(const vtkPixelExtent&, const vtkPixelExtent&, const vtkPixelExtent&, int, vtkPixelTransfer::VTK_TT*, int, vtkPixelTransfer::VTK_TT*) -->
-        <function-decl name='Blit&lt;vtkPixelTransfer::Blit::VTK_TT, vtkPixelTransfer::Blit::VTK_TT&gt;' mangled-name='_ZN16vtkPixelTransfer4BlitIhhEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='154' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN16vtkPixelTransfer4BlitIddEEiRK14vtkPixelExtentS3_S3_S3_iPT_iPT0_'>
-          <!-- parameter of type 'const vtkPixelExtent&' -->
-          <parameter type-id='type-id-66' name='srcWholeExt' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='155' column='1'/>
-          <!-- parameter of type 'const vtkPixelExtent&' -->
-          <parameter type-id='type-id-66' name='srcSubset' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='156' column='1'/>
-          <!-- parameter of type 'const vtkPixelExtent&' -->
-          <parameter type-id='type-id-66' name='destWholeExt' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='157' column='1'/>
-          <!-- parameter of type 'const vtkPixelExtent&' -->
-          <parameter type-id='type-id-66' name='destSubset' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='158' column='1'/>
-          <!-- parameter of type 'int' -->
-          <parameter type-id='type-id-17' name='nSrcComps' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='159' column='1'/>
-          <!-- parameter of type 'vtkPixelTransfer::VTK_TT*' -->
-          <parameter type-id='type-id-67' name='srcData' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='160' column='1'/>
-          <!-- parameter of type 'int' -->
-          <parameter type-id='type-id-17' name='nDestComps' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='161' column='1'/>
-          <!-- parameter of type 'vtkPixelTransfer::VTK_TT*' -->
-          <parameter type-id='type-id-67' name='destData' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='162' column='1'/>
           <!-- int -->
           <return type-id='type-id-17'/>
         </function-decl>
@@ -7288,10 +7265,10 @@
       <member-function access='private'>
         <!-- void vtkLineIntegralConvolution2D::SetTransformVectors(int) -->
         <function-decl name='SetTransformVectors' mangled-name='_ZN28vtkLineIntegralConvolution2D19SetTransformVectorsEi' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.cxx' line='1128' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN28vtkLineIntegralConvolution2D19SetTransformVectorsEi'>
-          <!-- implicit parameter of type 'vtkLineIntegralConvolution2D*' -->
-          <parameter type-id='type-id-461' is-artificial='yes'/>
+          <!-- implicit parameter of type 'vtkLineIntegralConvolution2D* const' -->
+          <parameter type-id='type-id-462' name='this' is-artificial='yes'/>
           <!-- parameter of type 'int' -->
-          <parameter type-id='type-id-17'/>
+          <parameter type-id='type-id-17' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.cxx' line='1128' column='1'/>
           <!-- void -->
           <return type-id='type-id-27'/>
         </function-decl>
@@ -7299,10 +7276,10 @@
       <member-function access='private'>
         <!-- void vtkLineIntegralConvolution2D::SetNormalizeVectors(int) -->
         <function-decl name='SetNormalizeVectors' mangled-name='_ZN28vtkLineIntegralConvolution2D19SetNormalizeVectorsEi' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.cxx' line='1142' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN28vtkLineIntegralConvolution2D19SetNormalizeVectorsEi'>
-          <!-- implicit parameter of type 'vtkLineIntegralConvolution2D*' -->
-          <parameter type-id='type-id-461' is-artificial='yes'/>
+          <!-- implicit parameter of type 'vtkLineIntegralConvolution2D* const' -->
+          <parameter type-id='type-id-462' name='this' is-artificial='yes'/>
           <!-- parameter of type 'int' -->
-          <parameter type-id='type-id-17'/>
+          <parameter type-id='type-id-17' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.cxx' line='1128' column='1'/>
           <!-- void -->
           <return type-id='type-id-27'/>
         </function-decl>
@@ -9743,10 +9720,10 @@
       <member-function access='private'>
         <!-- int vtkSurfaceLICComposite::InitializeCompositeExtents(float*) -->
         <function-decl name='InitializeCompositeExtents' mangled-name='_ZN22vtkSurfaceLICComposite26InitializeCompositeExtentsEPf' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICComposite.cxx' line='360' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN22vtkSurfaceLICComposite26InitializeCompositeExtentsEPf'>
-          <!-- implicit parameter of type 'vtkSurfaceLICComposite*' -->
-          <parameter type-id='type-id-548' is-artificial='yes'/>
+          <!-- implicit parameter of type 'vtkSurfaceLICComposite* const' -->
+          <parameter type-id='type-id-549' name='this' is-artificial='yes'/>
           <!-- parameter of type 'float*' -->
-          <parameter type-id='type-id-49'/>
+          <parameter type-id='type-id-49' name='vectors' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICComposite.cxx' line='360' column='1'/>
           <!-- int -->
           <return type-id='type-id-17'/>
         </function-decl>
@@ -10636,10 +10613,10 @@
       <member-function access='private'>
         <!-- void vtkSurfaceLICPainter::SetMaskColor(double*) -->
         <function-decl name='SetMaskColor' mangled-name='_ZN20vtkSurfaceLICPainter12SetMaskColorEPd' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1838' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN20vtkSurfaceLICPainter12SetMaskColorEPd'>
-          <!-- implicit parameter of type 'vtkSurfaceLICPainter*' -->
-          <parameter type-id='type-id-565' is-artificial='yes'/>
+          <!-- implicit parameter of type 'vtkSurfaceLICPainter* const' -->
+          <parameter type-id='type-id-591' name='this' is-artificial='yes'/>
           <!-- parameter of type 'double*' -->
-          <parameter type-id='type-id-196'/>
+          <parameter type-id='type-id-196' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1838' column='1'/>
           <!-- void -->
           <return type-id='type-id-27'/>
         </function-decl>
@@ -10685,8 +10662,8 @@
       <member-function access='protected'>
         <!-- bool vtkSurfaceLICPainter::NeedToUpdateOutputData() -->
         <function-decl name='NeedToUpdateOutputData' mangled-name='_ZN20vtkSurfaceLICPainter22NeedToUpdateOutputDataEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='2404' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN20vtkSurfaceLICPainter22NeedToUpdateOutputDataEv'>
-          <!-- implicit parameter of type 'vtkSurfaceLICPainter*' -->
-          <parameter type-id='type-id-565' is-artificial='yes'/>
+          <!-- implicit parameter of type 'vtkSurfaceLICPainter* const' -->
+          <parameter type-id='type-id-591' name='this' is-artificial='yes'/>
           <!-- bool -->
           <return type-id='type-id-1'/>
         </function-decl>
@@ -10694,8 +10671,8 @@
       <member-function access='protected'>
         <!-- void vtkSurfaceLICPainter::SetUpdateAll() -->
         <function-decl name='SetUpdateAll' mangled-name='_ZN20vtkSurfaceLICPainter12SetUpdateAllEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='2550' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN20vtkSurfaceLICPainter12SetUpdateAllEv'>
-          <!-- implicit parameter of type 'vtkSurfaceLICPainter*' -->
-          <parameter type-id='type-id-565' is-artificial='yes'/>
+          <!-- implicit parameter of type 'vtkSurfaceLICPainter* const' -->
+          <parameter type-id='type-id-591' name='this' is-artificial='yes'/>
           <!-- void -->
           <return type-id='type-id-27'/>
         </function-decl>
@@ -10905,8 +10882,8 @@
       <member-function access='protected'>
         <!-- bool vtkSurfaceLICPainter::PrepareOutput() -->
         <function-decl name='PrepareOutput' mangled-name='_ZN20vtkSurfaceLICPainter13PrepareOutputEv' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='3232' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN20vtkSurfaceLICPainter13PrepareOutputEv'>
-          <!-- implicit parameter of type 'vtkSurfaceLICPainter*' -->
-          <parameter type-id='type-id-565' is-artificial='yes'/>
+          <!-- implicit parameter of type 'vtkSurfaceLICPainter* const' -->
+          <parameter type-id='type-id-591' name='this' is-artificial='yes'/>
           <!-- bool -->
           <return type-id='type-id-1'/>
         </function-decl>
