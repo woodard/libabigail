@@ -13861,7 +13861,27 @@ build_or_get_fn_decl_if_not_suppressed(read_context&	  ctxt,
   if (function_is_suppressed(ctxt, scope, fn_die, is_declaration_only))
     return fn;
 
-  if (!result)
+  string name = die_name(fn_die);
+  string linkage_name = die_linkage_name(fn_die);
+  bool is_dtor = !name.empty() && name[0]== '~';
+  bool is_virtual = false;
+  if (is_dtor)
+    {
+      Dwarf_Attribute attr;
+      if (dwarf_attr_integrate(const_cast<Dwarf_Die*>(fn_die),
+			       DW_AT_vtable_elem_location,
+			       &attr))
+	is_virtual = true;
+    }
+
+
+  // If we've already built an IR for a function with the same
+  // signature (from another DIE), reuse it, unless that function is a
+  // virtual C++ destructor.  Several virtual C++ destructors with the
+  // same signature can be implemented by several different ELF
+  // symbols.  So re-using C++ destructors like that can lead to us
+  // missing some destructors.
+  if (!result && (!(is_dtor && is_virtual)))
     if ((fn = is_function_decl(ctxt.lookup_artifact_from_die(fn_die))))
       {
 	fn = maybe_finish_function_decl_reading(ctxt, fn_die, where_offset, fn);
