@@ -6157,10 +6157,10 @@ variable_is_suppressed(const read_context& ctxt,
 		       bool is_required_decl_spec = false);
 
 static void
-finish_member_function_reading(Dwarf_Die*		 die,
-			       const function_decl_sptr& f,
-			       const class_or_union_sptr& klass,
-			       read_context&		 ctxt);
+finish_member_function_reading(Dwarf_Die*			die,
+			       const function_decl_sptr&	f,
+			       const class_or_union_sptr	klass,
+			       read_context&			ctxt);
 
 /// Setter of the debug info root path for a dwarf reader context.
 ///
@@ -11652,10 +11652,10 @@ build_enum_type(read_context&	ctxt,
 ///
 /// @param ctxt the context used to read the ELF/DWARF information.
 static void
-finish_member_function_reading(Dwarf_Die*		  die,
-			       const function_decl_sptr&  f,
-			       const class_or_union_sptr& klass,
-			       read_context&		  ctxt)
+finish_member_function_reading(Dwarf_Die*			die,
+			       const function_decl_sptr&	f,
+			       const class_or_union_sptr	klass,
+			       read_context&			ctxt)
 {
   ABG_ASSERT(klass);
 
