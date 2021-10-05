@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 m4_define([version_major],   [2])
-m4_define([version_minor],   [0])
+m4_define([version_minor],   [1])
 
 AC_INIT([libabigail],
 	[version_major.version_minor],
