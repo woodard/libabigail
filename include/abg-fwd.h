@@ -1380,6 +1380,12 @@ size_t
 hash_type_or_decl(const type_or_decl_base_sptr &);
 
 bool
+is_non_canonicalized_type(const type_base *);
+
+bool
+is_non_canonicalized_type(const type_base_sptr&);
+
+bool
 function_decl_is_less_than(const function_decl&f, const function_decl &s);
 
 bool

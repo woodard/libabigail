@@ -836,6 +836,20 @@ public:
     m_emitted_decls_map[irepr] = true;
   }
 
+  /// Get the set of types that have been emitted.
+  ///
+  /// @return the set of types that have been emitted.
+  const type_ptr_set_type&
+  get_emitted_types_set() const
+  {return m_emitted_type_set;}
+
+  /// Get the set of types that have been emitted.
+  ///
+  /// @return the set of types that have been emitted.
+  const type_ptr_set_type&
+  get_emitted_decl_only_types_set() const
+  {return m_emitted_decl_only_set;}
+
   /// Clear the map that contains the IDs of the types that has been
   /// recorded as having been written out to the XML output.
   void
@@ -4764,6 +4778,47 @@ dump_decl_location(const decl_base_sptr d)
 {dump_decl_location(d.get());}
 
 #ifdef WITH_DEBUG_SELF_COMPARISON
+/// Write one of the records of the "type-ids" debugging file.
+///
+/// This is a sub-routine of write_canonical_type_ids.
+///
+/// @param ctxt the context to use.
+///
+/// @param type the type which canonical type pointer value to emit.
+///
+/// @param o the output stream to write to.
+static void
+write_type_record(xml_writer::write_context&	ctxt,
+		  const type_base*		type,
+		  ostream&			o)
+{
+  // We want to serialize a type record which content looks like:
+  //
+  //     <type>
+  //       <id>type-id-573</id>
+  //       <c>0x262ee28</c>
+  //     </type>
+  //     <type>
+  //       <id>type-id-569</id>
+  //       <c>0x2628298</c>
+  //     </type>
+  //     <type>
+  //       <id>type-id-575</id>
+  //       <c>0x25f9ba8</c>
+  //     </type>
+
+  string id = ctxt.get_id_for_type (type);
+  o << "  <type>\n"
+    << "    <id>" << id << "</id>\n"
+    << "    <c>"
+    << std::hex
+    << (type->get_canonical_type()
+	? reinterpret_cast<uintptr_t>(type->get_canonical_type().get())
+	: 0xdeadbabe)
+    << "</c>\n"
+    << "  </type>\n";
+}
+
 /// Serialize the map that is stored at
 /// environment::get_type_id_canonical_type_map() to an output stream.
 ///
@@ -4794,17 +4849,13 @@ write_canonical_type_ids(xml_writer::write_context& ctxt, ostream& o)
   // <abixml-types-check>
 
   o << "<abixml-types-check>\n";
-  for (const auto &p : ctxt.get_environment()->get_canonical_types_map())
-    for (const auto& type_sptr : p.second)
-      {
-	string id = ctxt.get_id_for_type (type_sptr);
-	o << "  <type>\n"
-	  << "    <id>" << id << "</id>\n"
-	  << "    <c>"
-	  << std::hex << type_sptr->get_canonical_type().get()
-	  << "</c>\n"
-	  << "  </type>\n";
-      }
+
+  for (const auto &type : ctxt.get_emitted_types_set())
+    write_type_record(ctxt, type, o);
+
+  for (const auto &type : ctxt.get_emitted_decl_only_types_set())
+    write_type_record(ctxt, type, o);
+
   o << "</abixml-types-check>\n";
 }
 

@@ -61,6 +61,14 @@ static bool	read_is_non_reachable_type(xmlNodePtr, bool&);
 static bool	read_naming_typedef_id_string(xmlNodePtr, string&);
 #ifdef WITH_DEBUG_SELF_COMPARISON
 static bool	read_type_id_string(xmlNodePtr, string&);
+static bool	maybe_map_type_with_type_id(const type_base_sptr&,
+					    xmlNodePtr);
+static bool	maybe_map_type_with_type_id(const type_base_sptr&,
+					    const string&);
+#define MAYBE_MAP_TYPE_WITH_TYPE_ID(type, xml_node) \
+  maybe_map_type_with_type_id(type, xml_node)
+#else
+#define MAYBE_MAP_TYPE_WITH_TYPE_ID(type, xml_node)
 #endif
 static void	maybe_set_naming_typedef(read_context&	ctxt, xmlNodePtr, const decl_base_sptr &);
 class read_context;
@@ -839,9 +847,12 @@ public:
 	// was being serialized.
 	auto j = m_env->get_type_id_canonical_type_map().find(type_id);
 	if (j == m_env->get_type_id_canonical_type_map().end())
-	  std::cerr << "error: no type with type-id: '"
-		    << type_id
-		    << "' could be read back from the typeid file\n";
+	  {
+	    if (t->get_naked_canonical_type())
+	      std::cerr << "error: no type with type-id: '"
+			<< type_id
+			<< "' could be read back from the typeid file\n";
+	  }
 	else if (j->second
 		 != reinterpret_cast<uintptr_t>(t->get_canonical_type().get()))
 	  // So thecanonical type of 't' (at abixml de-serialization
@@ -1911,6 +1922,7 @@ read_corpus_from_input(read_context& ctxt)
 	ctxt.clear_per_corpus_data();
 
       corpus& corp = *ctxt.get_corpus();
+      corp.set_origin(corpus::NATIVE_XML_ORIGIN);
       ctxt.set_exported_decls_builder(corp.get_exported_decls_builder().get());
 
       handle_version_attribute(reader, corp);
@@ -1970,6 +1982,8 @@ read_corpus_from_input(read_context& ctxt)
 	ctxt.clear_per_corpus_data();
 
       corpus& corp = *ctxt.get_corpus();
+      corp.set_origin(corpus::NATIVE_XML_ORIGIN);
+
       ctxt.set_exported_decls_builder(corp.get_exported_decls_builder().get());
 
       xml::xml_char_sptr path_str = XML_NODE_GET_ATTRIBUTE(node, "path");
@@ -2035,8 +2049,6 @@ read_corpus_from_input(read_context& ctxt)
   ctxt.perform_late_type_canonicalizing();
 
   ctxt.get_environment()->canonicalization_is_done(true);
-
-  corp.set_origin(corpus::NATIVE_XML_ORIGIN);
 
   if (call_reader_next)
     {
@@ -2863,6 +2875,70 @@ read_type_id_string(xmlNodePtr node, string& type_id)
     }
   return false;
 }
+
+/// Associate a type-id string with the type that was constructed from
+/// it.
+///
+/// Note that if we are not in "self comparison debugging" mode or if
+/// the type we are looking at is not canonicalized, then this
+/// function does nothing.
+///
+/// @param t the type built from the a type XML node that has a
+/// particular type-id.
+///
+/// @param type_id the type-id of type @p t.
+///
+/// @return true if the association was performed.
+static bool
+maybe_map_type_with_type_id(const type_base_sptr& t,
+			    const string& type_id)
+{
+  if (!t)
+    return false;
+
+  environment *env = t->get_environment();
+  if (!env->self_comparison_debug_is_on()
+      || is_non_canonicalized_type(t.get()))
+    return false;
+
+  env->get_pointer_type_id_map()[reinterpret_cast<uintptr_t>(t.get())] =
+    type_id;
+
+  return true;
+}
+
+/// Associate a type-id string with the type that was constructed from
+/// it.
+///
+/// Note that if we are not in "self comparison debugging" mode or if
+/// the type we are looking at is not canonicalized, then this
+/// function does nothing.
+///
+/// @param t the type built from the a type XML node that has a
+/// particular type-id.
+///
+/// @param type_id the type-id of type @p t.
+///
+/// @return true if the association was performed.
+static bool
+maybe_map_type_with_type_id(const type_base_sptr& t,
+			    xmlNodePtr node)
+{
+  if (!t)
+    return false;
+
+  environment *env = t->get_environment();
+  if (!env->self_comparison_debug_is_on()
+      || is_non_canonicalized_type(t.get()))
+    return false;
+
+  string type_id;
+  if (!read_type_id_string(node, type_id) || type_id.empty())
+    return false;
+
+  return maybe_map_type_with_type_id(t, type_id);
+}
+
 #endif
 
 /// Set the naming typedef to a given decl depending on the content of
@@ -4196,6 +4272,7 @@ build_array_type_def(read_context&	ctxt,
 	if (array_type_def::subrange_sptr s =
 	    build_subrange_type(ctxt, n))
 	  {
+	    MAYBE_MAP_TYPE_WITH_TYPE_ID(s, n);
 	    if (add_to_current_scope)
 	      {
 		add_decl_to_scope(s, ctxt.get_cur_scope());
@@ -5705,16 +5782,7 @@ build_type(read_context&	ctxt,
 	abi->record_type_as_reachable_from_public_interfaces(*t);
     }
 
-#ifdef WITH_DEBUG_SELF_COMPARISON
-  environment *env = ctxt.get_environment();
-  if (t && env->self_comparison_debug_is_on())
-    {
-      string type_id;
-      if (read_type_id_string(node, type_id))
-	// Let's store the type-id of this type pointer.
-	env->get_pointer_type_id_map()[reinterpret_cast<uintptr_t>(t.get())] = type_id;
-    }
-#endif
+  MAYBE_MAP_TYPE_WITH_TYPE_ID(t, node);
 
   if (t)
     ctxt.maybe_canonicalize_type(t,/*force_delay=*/false );
@@ -5732,6 +5800,7 @@ handle_type_decl(read_context&	ctxt,
 		 bool		add_to_current_scope)
 {
   type_decl_sptr decl = build_type_decl(ctxt, node, add_to_current_scope);
+  MAYBE_MAP_TYPE_WITH_TYPE_ID(decl, node);
   if (decl && decl->get_scope())
     ctxt.maybe_canonicalize_type(decl, /*force_delay=*/false);
   return decl;
@@ -5765,6 +5834,7 @@ handle_qualified_type_decl(read_context&	ctxt,
   qualified_type_def_sptr decl =
     build_qualified_type_decl(ctxt, node,
 			      add_to_current_scope);
+  MAYBE_MAP_TYPE_WITH_TYPE_ID(decl, node);
   if (decl && decl->get_scope())
     ctxt.maybe_canonicalize_type(decl, /*force_delay=*/false);
   return decl;
@@ -5782,6 +5852,7 @@ handle_pointer_type_def(read_context&	ctxt,
 {
   pointer_type_def_sptr decl = build_pointer_type_def(ctxt, node,
 						      add_to_current_scope);
+  MAYBE_MAP_TYPE_WITH_TYPE_ID(decl, node);
   if (decl && decl->get_scope())
     ctxt.maybe_canonicalize_type(decl, /*force_delay=*/false);
   return decl;
@@ -5799,6 +5870,7 @@ handle_reference_type_def(read_context& ctxt,
 {
   reference_type_def_sptr decl = build_reference_type_def(ctxt, node,
 							  add_to_current_scope);
+  MAYBE_MAP_TYPE_WITH_TYPE_ID(decl, node);
   if (decl && decl->get_scope())
     ctxt.maybe_canonicalize_type(decl, /*force_delay=*/false);
   return decl;
@@ -5816,6 +5888,7 @@ handle_function_type(read_context&	ctxt,
 {
   function_type_sptr type = build_function_type(ctxt, node,
 						  add_to_current_scope);
+  MAYBE_MAP_TYPE_WITH_TYPE_ID(type, node);
   ctxt.maybe_canonicalize_type(type, /*force_delay=*/true);
   return type;
 }
@@ -5832,6 +5905,7 @@ handle_array_type_def(read_context&	ctxt,
 {
   array_type_def_sptr decl = build_array_type_def(ctxt, node,
 						  add_to_current_scope);
+  MAYBE_MAP_TYPE_WITH_TYPE_ID(decl, node);
   ctxt.maybe_canonicalize_type(decl, /*force_delay=*/false);
   return decl;
 }
@@ -5847,6 +5921,7 @@ handle_enum_type_decl(read_context&	ctxt,
   enum_type_decl_sptr decl =
     build_enum_type_decl_if_not_suppressed(ctxt, node,
 					   add_to_current_scope);
+  MAYBE_MAP_TYPE_WITH_TYPE_ID(decl, node);
   if (decl && decl->get_scope())
     ctxt.maybe_canonicalize_type(decl, /*force_delay=*/false);
   return decl;
@@ -5862,6 +5937,7 @@ handle_typedef_decl(read_context&	ctxt,
 {
   typedef_decl_sptr decl = build_typedef_decl(ctxt, node,
 					      add_to_current_scope);
+  MAYBE_MAP_TYPE_WITH_TYPE_ID(decl, node);
   if (decl && decl->get_scope())
     ctxt.maybe_canonicalize_type(decl, /*force_delay=*/false);
   return decl;
@@ -5914,6 +5990,7 @@ handle_class_decl(read_context& ctxt,
 {
   class_decl_sptr decl =
     build_class_decl_if_not_suppressed(ctxt, node, add_to_current_scope);
+  MAYBE_MAP_TYPE_WITH_TYPE_ID(is_type(decl), node);
   if (decl && decl->get_scope())
     ctxt.maybe_canonicalize_type(decl, /*force_delay=*/false);
   return decl;
@@ -5932,6 +6009,7 @@ handle_union_decl(read_context& ctxt,
 {
   union_decl_sptr decl =
     build_union_decl_if_not_suppressed(ctxt, node, add_to_current_scope);
+  MAYBE_MAP_TYPE_WITH_TYPE_ID(is_type(decl), node);
   if (decl && decl->get_scope())
     ctxt.maybe_canonicalize_type(decl, /*force_delay=*/false);
   return decl;
@@ -6162,7 +6240,11 @@ load_canonical_type_ids(xml_reader::read_context& ctxt, const string &file_path)
 	  s << canonical_address;
 	  uintptr_t v = 0;
 	  s >>  std::hex >> v;
-	  if (!id.empty())
+	  if (!id.empty()
+	      // 0xdeadbabe is the special value the hash of types
+	      // that are not canonicalized.  Look into function
+	      // hash_as_canonical_type_or_constant for the details.
+	      && v != 0xdeadbabe)
 	    ctxt.get_environment()->get_type_id_canonical_type_map()[id] = v;
 	}
     }

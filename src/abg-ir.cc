@@ -936,6 +936,26 @@ mark_types_as_being_compared(T& l, T&r)
   push_composite_type_comparison_operands(l, r);
 }
 
+/// Mark a pair of types as being not compared anymore.
+///
+/// This is helpful to later detect recursive cycles in the comparison
+/// stack.
+///
+/// Note that the types must have been passed to
+/// mark_types_as_being_compared prior to calling this function.
+///
+/// @param l the left-hand-side operand of the comparison.
+///
+/// @parm r the right-hand-side operand of the comparison.
+template<typename T>
+void
+unmark_types_as_being_compared(T& l, T&r)
+{
+  l.priv_->unmark_as_being_compared(l);
+  l.priv_->unmark_as_being_compared(r);
+  pop_composite_type_comparison_operands(l, r);
+}
+
 /// Return the result of the comparison of two (sub) types.
 ///
 /// The function does the necessary book keeping before returning the
@@ -951,21 +971,25 @@ mark_types_as_being_compared(T& l, T&r)
 ///
 ///   @param r the right-hand-side operand of the type comparison
 ///
+///   @param propagate_canonical_type if true, it means the function
+///   performs the @ref OnTheFlyCanonicalization, aka, "canonical type
+///   propagation optimization".
+///
 ///   @param value the result of the comparison of @p l and @p r.
 ///
 ///   @return the value @p value.
 template<typename T>
 bool
-return_comparison_result(T& l, T& r, bool value)
+return_comparison_result(T& l, T& r, bool value,
+			 bool propagate_canonical_type = true)
 {
-  if (value == true)
+  if (propagate_canonical_type && (value == true))
     maybe_propagate_canonical_type(l, r);
-  l.priv_->unmark_as_being_compared(l);
-  l.priv_->unmark_as_being_compared(r);
 
-  pop_composite_type_comparison_operands(l, r);
+  unmark_types_as_being_compared(l, r);
+
   const environment* env = l.get_environment();
-  if (env->do_on_the_fly_canonicalization())
+  if (propagate_canonical_type && env->do_on_the_fly_canonicalization())
     // We are instructed to perform the "canonical type propagation"
     // optimization, making 'r' to possibly get the canonical type of
     // 'l' if it has one.  This mostly means that we are currently
@@ -3634,7 +3658,7 @@ void
 environment::self_comparison_debug_is_on(bool f)
 {priv_->self_comparison_debug_on_ = f;}
 
-/// Test if the we are in the process of the 'self-comparison
+/// Test if we are in the process of the 'self-comparison
 /// debugging' as triggered by 'abidw --debug-abidiff' command.
 ///
 /// @return true if self comparison debug is on.
@@ -13655,45 +13679,73 @@ type_base::get_canonical_type_for(type_base_sptr t)
 	      break;
 	    }
 	}
-      if (!result)
-	{
 #ifdef WITH_DEBUG_SELF_COMPARISON
-	  if (env->self_comparison_debug_is_on())
+      if (env->self_comparison_debug_is_on())
+	{
+	  // So we are debugging the canonicalization process,
+	  // possibly via the use of 'abidw --debug-abidiff <binary>'.
+	  corpus_sptr corp1, corp2;
+	  env->get_self_comparison_debug_inputs(corp1, corp2);
+	  if (corp1 && corp2 && t->get_corpus() == corp2.get())
 	    {
-	      // So we are debugging the canonicalization process,
-	      // possibly via the use of 'abidw --debug-abidiff <binary>'.
-	      //
 	      // If 't' comes from the second corpus, then it *must*
 	      // be equal to its matching canonical type coming from
 	      // the first corpus because the second corpus is the
 	      // abixml representation of the first corpus.  In other
 	      // words, all types coming from the second corpus must
 	      // have canonical types coming from the first corpus.
-	      //
-	      // We are in the case where 't' is different from all
-	      // the canonical types of the same name that come from
-	      // the first corpus.
-	      //
-	      // If 't' indeed comes from the second corpus then this
-	      // clearly is a canonicalization failure.
-	      //
-	      // There was a problem either during the serialization
-	      // of 't' into abixml, or during the de-serialization
-	      // from abixml into abigail::ir.  Further debugging is
-	      // needed to determine what that root cause problem is.
-	      //
-	      // Note that the first canonicalization problem of this
-	      // kind must be fixed before looking at the subsequent
-	      // ones, because the later might well just be
-	      // consequences of the former.
-	      corpus_sptr corp1, corp2;
-	      env->get_self_comparison_debug_inputs(corp1, corp2);
-	      if (corp1 && corp2 && (t->get_corpus() == corp2.get()))
-		std::cerr << "error: problem detected with type '"
-			  << repr
-			  << "' from second corpus\n" << std::flush;
+	      if (result)
+		{
+		  if (!env->priv_->
+		      check_canonical_type_from_abixml_during_self_comp(t,
+									result))
+		    // The canonical type of the type re-read from abixml
+		    // type doesn't match the canonical type that was
+		    // initially serialized down.
+		    std::cerr << "error: wrong canonical type for '"
+			      << repr
+			      << "' / type: @"
+			      << std::hex
+			      << t.get()
+			      << "/ canon: @"
+			      << result.get()
+			      << std::endl;
+		}
+	      else //!result
+		{
+		  uintptr_t ptr_val = reinterpret_cast<uintptr_t>(t.get());
+		  string type_id = env->get_type_id_from_pointer(ptr_val);
+		  if (type_id.empty())
+		    type_id = "type-id-<not-found>";
+		  // We are in the case where 't' is different from all
+		  // the canonical types of the same name that come from
+		  // the first corpus.
+		  //
+		  // If 't' indeed comes from the second corpus then this
+		  // clearly is a canonicalization failure.
+		  //
+		  // There was a problem either during the serialization
+		  // of 't' into abixml, or during the de-serialization
+		  // from abixml into abigail::ir.  Further debugging is
+		  // needed to determine what that root cause problem is.
+		  //
+		  // Note that the first canonicalization problem of this
+		  // kind must be fixed before looking at the subsequent
+		  // ones, because the later might well just be
+		  // consequences of the former.
+		  std::cerr << "error: wrong induced canonical type for '"
+			    << repr
+			    << "' from second corpus"
+			    << ", ptr: " << std::hex << t.get()
+			    << "type-id: " << type_id
+			    << std::endl;
+		}
 	    }
+	}
 #endif
+
+      if (!result)
+	{
 	  v.push_back(t);
 	  result = t;
 	}
@@ -25010,8 +25062,8 @@ hash_type_or_decl(const type_or_decl_base_sptr& tod)
 ///
 /// @return true iff @p t is a one of the only types allowed to be
 /// non-canonicalized in the system.
-static bool
-is_allowed_non_canonicalized_type(const type_base *t)
+bool
+is_non_canonicalized_type(const type_base *t)
 {
   if (!t)
     return true;
@@ -25019,6 +25071,19 @@ is_allowed_non_canonicalized_type(const type_base *t)
   const environment* env = t->get_environment();
   return is_declaration_only_class_or_union_type(t) || env->is_void_type(t);
 }
+
+/// Test if a given type is allowed to be non canonicalized
+///
+/// This is a subroutine of hash_as_canonical_type_or_constant.
+///
+/// For now, the only types allowed to be non canonicalized in the
+/// system are decl-only class/union and the void type.
+///
+/// @return true iff @p t is a one of the only types allowed to be
+/// non-canonicalized in the system.
+bool
+is_non_canonicalized_type(const type_base_sptr& t)
+{return is_non_canonicalized_type(t.get());}
 
 /// Hash a type by either returning the pointer value of its canonical
 /// type or by returning a constant if the type doesn't have a
@@ -25062,7 +25127,7 @@ hash_as_canonical_type_or_constant(const type_base *t)
   // non-canonicalized type.  It must be a decl-only class or a void
   // type, otherwise it means that for some weird reason, the type
   // hasn't been canonicalized.  It should be!
-  ABG_ASSERT(is_allowed_non_canonicalized_type(t));
+  ABG_ASSERT(is_non_canonicalized_type(t));
 
   return 0xDEADBABE;
 }
