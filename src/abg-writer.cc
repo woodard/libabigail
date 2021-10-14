@@ -2286,6 +2286,122 @@ referenced_type_should_be_emitted(const type_base *t,
   return false;
 }
 
+/// Emit the types that were referenced by other emitted types.
+///
+/// This is a sub-routine of write_translation_unit.
+///
+/// @param ctxt the write context to use.
+///
+/// @param tu the current translation unit that is being emitted.
+///
+/// @param indent the indentation string.
+///
+/// @param is_last whether @p tu is the last translation unit or not.
+static void
+write_referenced_types(write_context &		ctxt,
+		       const translation_unit&	tu,
+		       const unsigned		indent,
+		       bool			is_last)
+{
+  const config& c = ctxt.get_config();
+  // Now let's handle types that were referenced, but not yet
+  // emitted because they are either:
+  //   1/ Types without canonical type
+  //   2/ or function types (these might have no scope).
+
+  // So this map of type -> string is to contain the referenced types
+  // we need to emit.
+  type_ptr_set_type referenced_types_to_emit;
+
+  // For each referenced type, ensure that it is either emitted in the
+  // translation unit to which it belongs or in the last translation
+  // unit as a last resort.
+  for (type_ptr_set_type::const_iterator i =
+	 ctxt.get_referenced_types().begin();
+       i != ctxt.get_referenced_types().end();
+       ++i)
+    if (referenced_type_should_be_emitted(*i, ctxt, tu, is_last))
+      referenced_types_to_emit.insert(*i);
+
+  for (fn_type_ptr_set_type::const_iterator i =
+	 ctxt.get_referenced_function_types().begin();
+       i != ctxt.get_referenced_function_types().end();
+       ++i)
+    if (referenced_type_should_be_emitted(*i, ctxt, tu, is_last))
+      referenced_types_to_emit.insert(*i);
+
+  for (type_ptr_set_type::const_iterator i =
+	 ctxt.get_referenced_non_canonical_types().begin();
+       i != ctxt.get_referenced_non_canonical_types().end();
+       ++i)
+    if (referenced_type_should_be_emitted(*i, ctxt, tu, is_last))
+      referenced_types_to_emit.insert(*i);
+
+  // Ok, now let's emit the referenced type for good.
+  while (!referenced_types_to_emit.empty())
+    {
+      // But first, we need to sort them, otherwise, emitting the ABI
+      // (in xml) of the same binary twice will yield different
+      // results, because we'd be walking an *unordered* hash table.
+      vector<type_base*> sorted_referenced_types;
+      ctxt.sort_types(referenced_types_to_emit,
+		      sorted_referenced_types);
+
+      // Now, emit the referenced decls in a sorted order.
+      for (vector<type_base*>::const_iterator i =
+	     sorted_referenced_types.begin();
+	   i != sorted_referenced_types.end();
+	   ++i)
+	{
+	  // We handle types which have declarations *and* function
+	  // types here.
+	  type_base_sptr t(*i, noop_deleter());
+	  if (!ctxt.type_is_emitted(t))
+	    {
+	      if (decl_base* d = get_type_declaration(*i))
+		{
+		  decl_base_sptr decl(d, noop_deleter());
+		  write_decl_in_scope(decl, ctxt,
+				      indent + c.get_xml_element_indent());
+		}
+	      else if (function_type_sptr fn_type = is_function_type(t))
+		write_function_type(fn_type, ctxt,
+				    indent + c.get_xml_element_indent());
+	      else
+		ABG_ASSERT_NOT_REACHED;
+	    }
+	}
+
+      // So all the (referenced) types that we wanted to emit were
+      // emitted.
+      referenced_types_to_emit.clear();
+
+      // But then, while emitting those referenced type, other types
+      // might have been referenced by those referenced types
+      // themselves!  So let's look at the sets of referenced type
+      // that are maintained for the entire ABI corpus and see if
+      // there are still some referenced types in there that are not
+      // emitted yet.  If yes, then we'll emit those again.
+
+      // For each referenced type, ensure that it is either emitted in
+      // the translation unit to which it belongs or in the last
+      // translation unit as a last resort.
+      for (type_ptr_set_type::const_iterator i =
+	     ctxt.get_referenced_types().begin();
+	   i != ctxt.get_referenced_types().end();
+	   ++i)
+	if (referenced_type_should_be_emitted(*i, ctxt, tu, is_last))
+	  referenced_types_to_emit.insert(*i);
+
+      for (type_ptr_set_type::const_iterator i =
+	     ctxt.get_referenced_non_canonical_types().begin();
+	   i != ctxt.get_referenced_non_canonical_types().end();
+	   ++i)
+	if (referenced_type_should_be_emitted(*i, ctxt, tu, is_last))
+	  referenced_types_to_emit.insert(*i);
+    }
+}
+
 /// Serialize a translation unit to an output stream.
 ///
 /// @param ctxt the context of the serialization.  It contains e.g,
@@ -2383,102 +2499,7 @@ write_translation_unit(write_context&		ctxt,
       write_decl(*i, ctxt, indent + c.get_xml_element_indent());
     }
 
-  // Now let's handle types that were referenced, but not yet
-  // emitted because they are either:
-  //   1/ Types without canonical type
-  //   2/ or function types (these might have no scope).
-
-  // So this map of type -> string is to contain the referenced types
-  // we need to emit.
-  type_ptr_set_type referenced_types_to_emit;
-
-  // For each referenced type, ensure that it is either emitted in the
-  // translation unit to which it belongs or in the last translation
-  // unit as a last resort.
-  for (type_ptr_set_type::const_iterator i =
-	 ctxt.get_referenced_types().begin();
-       i != ctxt.get_referenced_types().end();
-       ++i)
-    if (referenced_type_should_be_emitted(*i, ctxt, tu, is_last))
-      referenced_types_to_emit.insert(*i);
-
-  for (fn_type_ptr_set_type::const_iterator i =
-	 ctxt.get_referenced_function_types().begin();
-       i != ctxt.get_referenced_function_types().end();
-       ++i)
-    if (referenced_type_should_be_emitted(*i, ctxt, tu, is_last))
-      referenced_types_to_emit.insert(*i);
-
-  for (type_ptr_set_type::const_iterator i =
-	 ctxt.get_referenced_non_canonical_types().begin();
-       i != ctxt.get_referenced_non_canonical_types().end();
-       ++i)
-    if (referenced_type_should_be_emitted(*i, ctxt, tu, is_last))
-      referenced_types_to_emit.insert(*i);
-
-  // Ok, now let's emit the referenced type for good.
-  while (!referenced_types_to_emit.empty())
-    {
-      // But first, we need to sort them, otherwise, emitting the ABI
-      // (in xml) of the same binary twice will yield different
-      // results, because we'd be walking an *unordered* hash table.
-      vector<type_base*> sorted_referenced_types;
-      ctxt.sort_types(referenced_types_to_emit,
-		      sorted_referenced_types);
-
-      // Now, emit the referenced decls in a sorted order.
-      for (vector<type_base*>::const_iterator i =
-	     sorted_referenced_types.begin();
-	   i != sorted_referenced_types.end();
-	   ++i)
-	{
-	  // We handle types which have declarations *and* function
-	  // types here.
-	  type_base_sptr t(*i, noop_deleter());
-	  if (!ctxt.type_is_emitted(t))
-	    {
-	      if (decl_base* d = get_type_declaration(*i))
-		{
-		  decl_base_sptr decl(d, noop_deleter());
-		  write_decl_in_scope(decl, ctxt,
-				      indent + c.get_xml_element_indent());
-		}
-	      else if (function_type_sptr fn_type = is_function_type(t))
-		write_function_type(fn_type, ctxt,
-				    indent + c.get_xml_element_indent());
-	      else
-		ABG_ASSERT_NOT_REACHED;
-	    }
-	}
-
-      // So all the (referenced) types that we wanted to emit were
-      // emitted.
-      referenced_types_to_emit.clear();
-
-      // But then, while emitting those referenced type, other types
-      // might have been referenced by those referenced types
-      // themselves!  So let's look at the sets of referenced type
-      // that are maintained for the entire ABI corpus and see if
-      // there are still some referenced types in there that are not
-      // emitted yet.  If yes, then we'll emit those again.
-
-      // For each referenced type, ensure that it is either emitted in
-      // the translation unit to which it belongs or in the last
-      // translation unit as a last resort.
-      for (type_ptr_set_type::const_iterator i =
-	     ctxt.get_referenced_types().begin();
-	   i != ctxt.get_referenced_types().end();
-	   ++i)
-	if (referenced_type_should_be_emitted(*i, ctxt, tu, is_last))
-	  referenced_types_to_emit.insert(*i);
-
-      for (type_ptr_set_type::const_iterator i =
-	     ctxt.get_referenced_non_canonical_types().begin();
-	   i != ctxt.get_referenced_non_canonical_types().end();
-	   ++i)
-	if (referenced_type_should_be_emitted(*i, ctxt, tu, is_last))
-	  referenced_types_to_emit.insert(*i);
-    }
+  write_referenced_types(ctxt, tu, indent, is_last);
 
   // Now handle all function types that were not only referenced by
   // emitted types.
@@ -2501,6 +2522,10 @@ write_translation_unit(write_context&		ctxt,
       ABG_ASSERT(fn_type);
       write_function_type(fn_type, ctxt, indent + c.get_xml_element_indent());
     }
+
+  // After we've written out the live function types, we need to write
+  // the types they referenced.
+  write_referenced_types(ctxt, tu, indent, is_last);
 
   do_indent(o, indent);
   o << "</abi-instr>\n";
