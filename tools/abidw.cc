@@ -103,6 +103,9 @@ struct options
 #ifdef WITH_DEBUG_SELF_COMPARISON
   bool			debug_abidiff;
 #endif
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+  bool			debug_type_canonicalization;
+#endif
   bool			annotate;
   bool			do_log;
   bool			drop_private_types;
@@ -132,6 +135,9 @@ struct options
       abidiff(),
 #ifdef WITH_DEBUG_SELF_COMPARISON
       debug_abidiff(),
+#endif
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+      debug_type_canonicalization(),
 #endif
       annotate(),
       do_log(),
@@ -195,6 +201,9 @@ display_usage(const string& prog_name, ostream& out)
     << "  --abidiff  compare the loaded ABI against itself\n"
 #ifdef WITH_DEBUG_SELF_COMPARISON
     << "  --debug-abidiff  debug the process of comparing the loaded ABI against itself\n"
+#endif
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+    << "  --debug-tc  debug the type canonicalization process\n"
 #endif
     << "  --annotate  annotate the ABI artifacts emitted in the output\n"
     << "  --stats  show statistics about various internal stuff\n"
@@ -349,6 +358,11 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.debug_abidiff = true;
 	}
 #endif
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+      else if (!strcmp(argv[i], "--debug-tc")
+	       || !strcmp(argv[i], "debug-type-canonicalization"))
+	opts.debug_type_canonicalization = true;
+#endif
       else if (!strcmp(argv[i], "--annotate"))
 	opts.annotate = true;
       else if (!strcmp(argv[i], "--stats"))
@@ -496,6 +510,11 @@ load_corpus_and_write_abixml(char* argv[],
 #ifdef WITH_DEBUG_SELF_COMPARISON
   if (opts.debug_abidiff)
     env->self_comparison_debug_is_on(true);
+#endif
+
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+  if (opts.debug_type_canonicalization)
+    env->debug_type_canonicalization_is_on(true);
 #endif
 
   read_context& ctxt = *context;

@@ -250,6 +250,19 @@ Options
     it the libabigail package needs to be configured with
     the --enable-debug-self-comparison option.
 
+    *  ``--debug-type-canonicalization | --debug-tc``
+
+    Debug the type canonicalization process.  This is done by using
+    structural and canonical equality when canonicalizing every single
+    type.  Structural and canonical equality should yield the same
+    result.  If they don't yield the same result for a given type,
+    then it means that the canonicalization of that type went wrong.
+    In that case, an error message is emitted and the execution of the
+    program is aborted.
+
+    This option is available only if the package was configured with
+    the --enable-debug-type-canonicalization option.
+
 
   *  ``--annotate``
 

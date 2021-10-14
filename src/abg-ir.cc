@@ -864,10 +864,41 @@ template<typename T>
 bool
 try_canonical_compare(const T *l, const T *r)
 {
+#if WITH_DEBUG_TYPE_CANONICALIZATION
+  // We are debugging the canonicalization of a type down the stack.
+  // 'l' is a subtype of a canonical type and 'r' is a subtype of the
+  // type being canonicalized.  We are at a point where we can compare
+  // 'l' and 'r' either using canonical comparison (if 'l' and 'r'
+  // have canonical types) or structural comparison.
+  //
+  // Because we are debugging the process of type canonicalization, we
+  // want to compare 'l' and 'r' canonically *AND* structurally.  Both
+  // kinds of comparison should yield the same result, otherwise type
+  // canonicalization just failed for the subtype 'r' of the type
+  // being canonicalized.
+  //
+  // In concrete terms, this function is going to be called twice with
+  // the same pair {'l', 'r'} to compare: The first time with
+  // environment::priv_->use_canonical_type_comparison_ set to true,
+  // instructing us to compare them canonically, and the second time
+  // with that boolean set to false, instructing us to compare them
+  // structurally.
+  const environment *env = l->get_environment();
+  if (env->priv_->use_canonical_type_comparison_)
+    {
+      if (const type_base *lc = l->get_naked_canonical_type())
+	if (const type_base *rc = r->get_naked_canonical_type())
+	  ABG_RETURN_EQUAL(lc, rc);
+    }
+  return equals(*l, *r, 0);
+#else
   if (const type_base *lc = l->get_naked_canonical_type())
     if (const type_base *rc = r->get_naked_canonical_type())
       ABG_RETURN_EQUAL(lc, rc);
   return equals(*l, *r, 0);
+#endif
+
+
 }
 
 /// Detect if a recursive comparison cycle is detected while
@@ -3666,6 +3697,26 @@ bool
 environment::self_comparison_debug_is_on() const
 {return priv_->self_comparison_debug_on_;}
 #endif
+
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+/// Set the "type canonicalization debugging" mode, triggered by using
+/// the command: "abidw --debug-tc".
+///
+/// @param flag if true then the type canonicalization debugging mode
+/// is enabled.
+void
+environment::debug_type_canonicalization_is_on(bool flag)
+{priv_->debug_type_canonicalization_ = flag;}
+
+/// Getter of the "type canonicalization debugging" mode, triggered by
+/// using the command: "abidw --debug-tc".
+///
+/// @return true iff the type canonicalization debugging mode is
+/// enabled.
+bool
+environment::debug_type_canonicalization_is_on() const
+{return priv_->debug_type_canonicalization_;}
+#endif // WITH_DEBUG_TYPE_CANONICALIZATION
 
 /// Get the vector of canonical types which have a given "string
 /// representation".
@@ -13535,6 +13586,61 @@ types_defined_same_linux_kernel_corpus_public(const type_base& t1,
   return false;
 }
 
+
+/// Compare a type T against a canonical type.
+///
+/// This function is called during the canonicalization process of the
+/// type T.  T is called the "candidate type" because it's in the
+/// process of being canonicalized.  Meaning, it's going to be
+/// compared to a canonical type C.  If T equals C, then the canonical
+/// type of T is C.
+///
+/// The purpose of this function is to allow the debugging of the
+/// canonicalization of T, if that debugging is activated by
+/// configuring the libabigail package with
+/// --enable-debug-type-canonicalization and by running "abidw
+/// --debug-tc".  In that case, T is going to be compared to C twice:
+/// once with canonical equality and once with structural equality.
+/// The two comparisons must be equal.  Otherwise, the
+/// canonicalization process is said to be faulty and this function
+/// aborts.
+///
+/// This is a sub-routine of type_base::get_canonical_type_for.
+///
+/// @param canonical_type the canonical type to compare the candidate
+/// type against.
+///
+/// @param candidate_type the candidate type to compare against the
+/// canonical type.
+///
+/// @return true iff @p canonical_type equals @p candidate_type.
+///
+static bool
+compare_types_during_canonicalization(const type_base_sptr& canonical_type,
+				      const type_base_sptr& candidate_type)
+{
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+  environment *env = canonical_type->get_environment();
+  if (env->debug_type_canonicalization_is_on())
+    {
+      bool canonical_equality = false, structural_equality = false;
+      env->priv_->use_canonical_type_comparison_ = true;
+      canonical_equality = canonical_type == candidate_type;
+      env->priv_->use_canonical_type_comparison_ = false;
+      structural_equality = canonical_type == candidate_type;
+      if (canonical_equality != structural_equality)
+	{
+	  std::cerr << "structural & canonical equality different for type: "
+		    << canonical_type->get_pretty_representation(true, true)
+		    << std::endl;
+	  ABG_ASSERT_NOT_REACHED;
+	}
+      return structural_equality;
+    }
+#endif //end WITH_DEBUG_TYPE_CANONICALIZATION
+  return canonical_type == candidate_type;
+}
+
 /// Compute the canonical type for a given instance of @ref type_base.
 ///
 /// Consider two types T and T'.  The canonical type of T, denoted
@@ -13665,8 +13771,8 @@ type_base::get_canonical_type_for(type_base_sptr t)
 	  // Compare types by considering that decl-only classes don't
 	  // equal their definition.
 	  env->decl_only_class_equals_definition(false);
-	  bool equal = types_defined_same_linux_kernel_corpus_public(**it, *t)
-		       || *it == t;
+	  bool equal = (types_defined_same_linux_kernel_corpus_public(**it, *t)
+			|| compare_types_during_canonicalization(*it, t));
 	  // Restore the state of the on-the-fly-canonicalization and
 	  // the decl-only-class-being-equal-to-a-matching-definition
 	  // flags.

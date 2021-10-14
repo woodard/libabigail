@@ -217,6 +217,14 @@ public:
   self_comparison_debug_is_on() const;
 #endif
 
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+  void
+  debug_type_canonicalization_is_on(bool flag);
+
+  bool
+  debug_type_canonicalization_is_on() const;
+#endif
+
   vector<type_base_sptr>* get_canonical_types(const char* name);
 
   type_base* get_canonical_type(const char* name, unsigned index);

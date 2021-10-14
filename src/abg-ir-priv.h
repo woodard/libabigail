@@ -389,6 +389,21 @@ struct environment::priv
 #ifdef WITH_DEBUG_SELF_COMPARISON
   bool					self_comparison_debug_on_;
 #endif
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+  // This controls whether to use canonical type comparison during
+  // type comparison or not.  This is only used for debugging, when we
+  // want to ensure that comparing types using canonical or structural
+  // comparison yields the same result.
+  bool					use_canonical_type_comparison_;
+  // Whether we are debugging type canonicalization or not.  When
+  // debugging type canonicalization, a type is compared to its
+  // potential canonical type twice: The first time with canonical
+  // comparison activated, and the second time with structural
+  // comparison activated.  The two comparison should yield the same
+  // result, otherwise, canonicalization is "broken" for that
+  // particular type.
+  bool					debug_type_canonicalization_;
+#endif
 
   priv()
     : canonicalization_is_done_(),
@@ -398,6 +413,11 @@ struct environment::priv
 #ifdef WITH_DEBUG_SELF_COMPARISON
     ,
       self_comparison_debug_on_(false)
+#endif
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+    ,
+      use_canonical_type_comparison_(true),
+      debug_type_canonicalization_(false)
 #endif
   {}
 

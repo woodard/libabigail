@@ -72,6 +72,12 @@ AC_ARG_ENABLE(debug-self-comparison,
 	      ENABLE_DEBUG_SELF_COMPARISON=$enableval,
 	      ENABLE_DEBUG_SELF_COMPARISON=no)
 
+AC_ARG_ENABLE(debug-type-canonicalization,
+	      AS_HELP_STRING([--enable-debug-type-canonicalization=yes|no],
+			     [enable debugging of type canonicalization 'abidw --debug-tc'(default is no)]),
+	      ENABLE_DEBUG_TYPE_CANONICALIZATION=$enableval,
+	      ENABLE_DEBUG_TYPE_CANONICALIZATION=no)
+
 AC_ARG_ENABLE(deb,
 	      AS_HELP_STRING([--enable-deb=yes|no|auto],
 			     [enable the support of deb in abipkgdiff (default is auto)]),
@@ -312,6 +318,18 @@ else
 fi
 
 AM_CONDITIONAL(ENABLE_DEBUG_SELF_COMPARISON, test x$ENABLE_DEBUG_SELF_COMPARISON = xyes)
+
+dnl enable the debugging of type canonicalization when doing abidw --debug-tc <binary>
+if test x$ENABLE_DEBUG_TYPE_CANONICALIZATION = xyes; then
+   AC_DEFINE([WITH_DEBUG_TYPE_CANONICALIZATION],
+	     1,
+	     [compile support of debugging type canonicalization while using abidw --debug-tc])
+   AC_MSG_NOTICE([support of debugging type canonicalization is enabled])
+else
+   AC_MSG_NOTICE([support of debugging type canonicalization is disabled])
+fi
+
+AM_CONDITIONAL(ENABLE_DEBUG_TYPE_CANONICALIZATION, test x$ENABLE_DEBUG_TYPE_CANONICALIZATION = xyes)
 
 dnl Check for the dpkg program
 if test x$ENABLE_DEB = xauto -o x$ENABLE_DEB = xyes; then
@@ -931,6 +949,7 @@ AC_MSG_NOTICE([
     Enable rpm support in abipkgdiff               : ${ENABLE_RPM}
     Enable rpm 4.15 support in abipkgdiff tests    : ${ENABLE_RPM415}
     Enable self comparison debugging               : ${ENABLE_DEBUG_SELF_COMPARISON}
+    Enable type canonicalization debugging         : ${ENABLE_DEBUG_TYPE_CANONICALIZATION}
     Enable deb support in abipkgdiff               : ${ENABLE_DEB}
     Enable GNU tar archive support in abipkgdiff   : ${ENABLE_TAR}
     Enable bash completion	                   : ${ENABLE_BASH_COMPLETION}
