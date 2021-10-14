@@ -154,9 +154,6 @@ runtestsymtabreader_LDADD = libcatch.la $(top_builddir)/src/libabigail.la
 runtestsvg_SOURCES=test-svg.cc
 runtestsvg_LDADD=$(top_builddir)/src/libabigail.la
 
-runtestdot_SOURCES = test-dot.cc
-runtestdot_LDADD = $(top_builddir)/src/libabigail.la
-
 testirwalker_SOURCES=test-ir-walker.cc
 testirwalker_LDADD=$(top_builddir)/src/libabigail.la
 
