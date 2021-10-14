@@ -1887,6 +1887,7 @@ write_naming_typedef(const decl_base_sptr& decl, write_context& ctxt)
     {
       string id = ctxt.get_id_for_type(typedef_type);
       o << " naming-typedef-id='" << id << "'";
+      ctxt.record_type_as_referenced(typedef_type);
     }
 }
 
