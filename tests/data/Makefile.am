@@ -1885,6 +1885,9 @@ test-diff-pkg/libxcrypt-compat-4.4.18-3.el9.x86_64.rpm \
 test-diff-pkg/libxcrypt-compat-debuginfo-4.4.18-3.el9.x86_64.rpm \
 test-diff-pkg/libxcrypt-debuginfo-4.1.1-6.el8.x86_64.rpm \
 test-diff-pkg/libxcrypt-debuginfo-4.4.18-3.el9.x86_64.rpm \
+test-diff-pkg/wireshark/wireshark-cli-3.4.9-1.fc36.x86_64-self-check-report.txt \
+test-diff-pkg/wireshark/wireshark-cli-3.4.9-1.fc36.x86_64.rpm \
+test-diff-pkg/wireshark/wireshark-cli-debuginfo-3.4.9-1.fc36.x86_64.rpm \
 \
 test-fedabipkgdiff/dbus-glib-0.104-3.fc23.x86_64.rpm \
 test-fedabipkgdiff/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm \

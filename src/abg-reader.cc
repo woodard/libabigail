@@ -4015,12 +4015,12 @@ build_function_type(read_context&	ctxt,
   std::vector<shared_ptr<function_decl::parameter> > parms;
   type_base_sptr return_type = env->get_void_type();
 
-  class_decl_sptr method_class_type;
+  class_or_union_sptr method_class_type;
   if (is_method_t)
     {
       method_class_type =
-	is_class_type(ctxt.build_or_get_type_decl(method_class_id,
-						  /*add_decl_to_scope=*/true));
+	is_class_or_union_type(ctxt.build_or_get_type_decl(method_class_id,
+							   /*add_decl_to_scope=*/true));
       ABG_ASSERT(method_class_type);
     }
 

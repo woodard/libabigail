@@ -13154,7 +13154,6 @@ build_function_type(read_context&	ctxt,
 				   /*alignment=*/0));
   ctxt.associate_die_to_type(die, result, where_offset);
   ctxt.die_wip_function_types_map(source)[dwarf_dieoffset(die)] = result;
-  ctxt.associate_die_repr_to_fn_type_per_tu(die, result);
 
   type_base_sptr return_type;
   Dwarf_Die ret_type_die;
@@ -13231,6 +13230,8 @@ build_function_type(read_context&	ctxt,
   tu->bind_function_type_life_time(result);
 
   result->set_is_artificial(true);
+
+  ctxt.associate_die_repr_to_fn_type_per_tu(die, result);
 
   {
     die_function_type_map_type::const_iterator i =

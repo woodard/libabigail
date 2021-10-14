@@ -10691,7 +10691,7 @@
       <return type-id='type-id-53'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-1311'>
-      <parameter type-id='type-id-1402' name='host'/>
+      <parameter type-id='type-id-1402'/>
       <return type-id='type-id-53'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-1312'>
