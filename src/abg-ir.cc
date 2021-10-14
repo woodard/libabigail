@@ -13672,6 +13672,10 @@ type_base::get_canonical_type_for(type_base_sptr t)
   environment* env = t->get_environment();
   ABG_ASSERT(env);
 
+  if (is_non_canonicalized_type(t))
+    // This type should not be canonicalized!
+    return type_base_sptr();
+
   bool decl_only_class_equals_definition =
     (odr_is_relevant(*t) || env->decl_only_class_equals_definition());
 
@@ -13885,8 +13889,9 @@ static void
 maybe_adjust_canonical_type(const type_base_sptr& canonical,
 			    const type_base_sptr& type)
 {
-  if (// If 'type' is *NOT* a newly canonicalized type ...
-      type->get_naked_canonical_type()
+  if (!canonical
+      // If 'type' is *NOT* a newly canonicalized type ...
+      || type->get_naked_canonical_type()
       // ... or if 'type' is it's own canonical type, then get out.
       || type.get() == canonical.get())
     return;

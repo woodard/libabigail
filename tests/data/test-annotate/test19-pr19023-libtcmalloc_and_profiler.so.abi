@@ -15702,8 +15702,6 @@
     <type-decl name='unsigned short int' size-in-bits='16' id='type-id-22'/>
     <!-- variadic parameter type -->
     <type-decl name='variadic parameter type' id='type-id-1504'/>
-    <!-- void -->
-    <type-decl name='void' id='type-id-60'/>
     <!-- void*[31] -->
     <array-type-def dimensions='1' type-id='type-id-58' size-in-bits='1984' id='type-id-1505'>
       <!-- <anonymous range>[31] -->
@@ -21407,6 +21405,8 @@
       <!-- void* -->
       <return type-id='type-id-58'/>
     </function-type>
+    <!-- void -->
+    <type-decl name='void' id='type-id-60'/>
   </abi-instr>
   <abi-instr address-size='64' path='src/thread_cache.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- const tcmalloc::ThreadCache* const -->

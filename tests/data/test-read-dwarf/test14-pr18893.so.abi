@@ -4708,7 +4708,6 @@
   </abi-instr>
   <abi-instr address-size='64' path='libutil/mipmap.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C99'>
     <type-decl name='int' size-in-bits='32' id='type-id-8'/>
-    <type-decl name='void' id='type-id-14'/>
     <typedef-decl name='GLint' type-id='type-id-8' filepath='../../../include/GL/gl.h' line='155' column='1' id='type-id-48'/>
     <typedef-decl name='GLsizei' type-id='type-id-8' filepath='../../../include/GL/gl.h' line='159' column='1' id='type-id-465'/>
     <pointer-type-def type-id='type-id-14' size-in-bits='64' id='type-id-36'/>
@@ -4793,6 +4792,7 @@
       <parameter type-id='type-id-36' name='data' filepath='libutil/mipmap.c' line='8484' column='1'/>
       <return type-id='type-id-48'/>
     </function-decl>
+    <type-decl name='void' id='type-id-14'/>
   </abi-instr>
   <abi-instr address-size='64' path='libutil/project.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C99'>
     <type-decl name='double' size-in-bits='64' id='type-id-466'/>

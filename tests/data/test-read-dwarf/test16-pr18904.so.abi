@@ -11215,7 +11215,6 @@
     <type-decl name='long int' size-in-bits='64' id='type-id-221'/>
     <type-decl name='long long int' size-in-bits='64' id='type-id-211'/>
     <type-decl name='unsigned long int' size-in-bits='64' id='type-id-6'/>
-    <type-decl name='void' id='type-id-154'/>
     <class-decl name='Marshaller' size-in-bits='256' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='388' column='1' id='type-id-284'>
       <data-member access='private' layout-offset-in-bits='0'>
         <var-decl name='buffer_start' type-id='type-id-248' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='392' column='1'/>
@@ -11294,6 +11293,7 @@
       <parameter type-id='type-id-196' name='align' filepath='../../../gcc/liboffloadmic/runtime/offload_common.cpp' line='169' column='1'/>
       <return type-id='type-id-150'/>
     </function-decl>
+    <type-decl name='void' id='type-id-154'/>
     <function-type size-in-bits='64' id='type-id-1966'>
       <parameter type-id='type-id-196' name='size'/>
       <parameter type-id='type-id-196' name='align'/>

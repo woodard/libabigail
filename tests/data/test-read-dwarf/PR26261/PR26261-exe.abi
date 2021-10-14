@@ -38,7 +38,6 @@
   </abi-instr>
   <abi-instr address-size='64' path='PR26261-obja.c' comp-dir-path='/home/dodji/git/libabigail/patches/tests/data/test-read-dwarf/PR26261' language='LANG_C89'>
     <type-decl name='int' size-in-bits='32' id='type-id-5'/>
-    <type-decl name='void' id='type-id-6'/>
     <typedef-decl name='fn_ptr_type_a_t' type-id='type-id-4' filepath='/home/dodji/git/libabigail/patches/tests/data/test-read-dwarf/PR26261/PR26261-obja.h' line='1' column='1' id='type-id-8'/>
     <typedef-decl name='fn_ptr_type_a2_t' type-id='type-id-4' filepath='/home/dodji/git/libabigail/patches/tests/data/test-read-dwarf/PR26261/PR26261-obja.h' line='3' column='1' id='type-id-9'/>
     <class-decl name='SA' size-in-bits='192' is-struct='yes' visibility='default' filepath='/home/dodji/git/libabigail/patches/tests/data/test-read-dwarf/PR26261/PR26261-obja.h' line='5' column='1' id='type-id-10'>
@@ -58,6 +57,7 @@
       <parameter type-id='type-id-11' name='s' filepath='/home/dodji/git/libabigail/patches/tests/data/test-read-dwarf/PR26261/PR26261-obja.c' line='4' column='1'/>
       <return type-id='type-id-6'/>
     </function-decl>
+    <type-decl name='void' id='type-id-6'/>
   </abi-instr>
   <abi-instr address-size='64' path='PR26261-objb.c' comp-dir-path='/home/dodji/git/libabigail/patches/tests/data/test-read-dwarf/PR26261' language='LANG_C89'>
     <type-decl name='char' size-in-bits='8' id='type-id-1'/>

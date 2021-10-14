@@ -226,7 +226,6 @@
     <type-decl name='unnamed-enum-underlying-type-32' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-32'/>
     <type-decl name='unsigned int' size-in-bits='32' id='type-id-33'/>
     <type-decl name='unsigned long int' size-in-bits='64' id='type-id-34'/>
-    <type-decl name='void' id='type-id-11'/>
     <typedef-decl name='GDBM_FILE' type-id='type-id-35' filepath='./gdbm.h' line='99' column='1' id='type-id-9'/>
     <typedef-decl name='gdbm_error' type-id='type-id-8' filepath='./gdbm.h' line='238' column='1' id='type-id-36'/>
     <class-decl name='avail_elem' size-in-bits='128' is-struct='yes' naming-typedef-id='type-id-14' visibility='default' filepath='./gdbmdefs.h' line='54' column='1' id='type-id-37'>
@@ -481,6 +480,7 @@
       <parameter type-id='type-id-56'/>
       <return type-id='type-id-11'/>
     </function-type>
+    <type-decl name='void' id='type-id-11'/>
   </abi-instr>
   <abi-instr address-size='64' path='gdbmcount.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <type-decl name='long long unsigned int' size-in-bits='64' id='type-id-58'/>
@@ -515,15 +515,12 @@
     <array-type-def dimensions='1' type-id='type-id-28' size-in-bits='160' id='type-id-63'>
       <subrange length='20' type-id='type-id-21' id='type-id-64'/>
     </array-type-def>
-    <class-decl name='_IO_codecvt' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-65'/>
-    <class-decl name='_IO_marker' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-66'/>
-    <class-decl name='_IO_wide_data' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-67'/>
-    <type-decl name='signed char' size-in-bits='8' id='type-id-68'/>
-    <type-decl name='unsigned short int' size-in-bits='16' id='type-id-69'/>
-    <typedef-decl name='__off64_t' type-id='type-id-31' filepath='/usr/include/bits/types.h' line='153' column='1' id='type-id-70'/>
-    <typedef-decl name='FILE' type-id='type-id-71' filepath='/usr/include/bits/types/FILE.h' line='7' column='1' id='type-id-72'/>
-    <typedef-decl name='_IO_lock_t' type-id='type-id-11' filepath='/usr/include/bits/types/struct_FILE.h' line='43' column='1' id='type-id-73'/>
-    <class-decl name='_IO_FILE' size-in-bits='1728' is-struct='yes' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='49' column='1' id='type-id-71'>
+    <type-decl name='signed char' size-in-bits='8' id='type-id-65'/>
+    <type-decl name='unsigned short int' size-in-bits='16' id='type-id-66'/>
+    <typedef-decl name='__off64_t' type-id='type-id-31' filepath='/usr/include/bits/types.h' line='153' column='1' id='type-id-67'/>
+    <typedef-decl name='FILE' type-id='type-id-68' filepath='/usr/include/bits/types/FILE.h' line='7' column='1' id='type-id-69'/>
+    <typedef-decl name='_IO_lock_t' type-id='type-id-11' filepath='/usr/include/bits/types/struct_FILE.h' line='43' column='1' id='type-id-70'/>
+    <class-decl name='_IO_FILE' size-in-bits='1728' is-struct='yes' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='49' column='1' id='type-id-68'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='_flags' type-id='type-id-8' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='51' column='1'/>
       </data-member>
@@ -561,10 +558,10 @@
         <var-decl name='_IO_save_end' type-id='type-id-17' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='66' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='768'>
-        <var-decl name='_markers' type-id='type-id-74' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='68' column='1'/>
+        <var-decl name='_markers' type-id='type-id-71' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='68' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='832'>
-        <var-decl name='_chain' type-id='type-id-75' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='70' column='1'/>
+        <var-decl name='_chain' type-id='type-id-72' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='70' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='896'>
         <var-decl name='_fileno' type-id='type-id-8' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='72' column='1'/>
@@ -576,28 +573,28 @@
         <var-decl name='_old_offset' type-id='type-id-54' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='74' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1024'>
-        <var-decl name='_cur_column' type-id='type-id-69' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='77' column='1'/>
+        <var-decl name='_cur_column' type-id='type-id-66' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='77' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1040'>
-        <var-decl name='_vtable_offset' type-id='type-id-68' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='78' column='1'/>
+        <var-decl name='_vtable_offset' type-id='type-id-65' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='78' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1048'>
         <var-decl name='_shortbuf' type-id='type-id-62' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='79' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1088'>
-        <var-decl name='_lock' type-id='type-id-76' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='81' column='1'/>
+        <var-decl name='_lock' type-id='type-id-73' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='81' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1152'>
-        <var-decl name='_offset' type-id='type-id-70' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='89' column='1'/>
+        <var-decl name='_offset' type-id='type-id-67' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='89' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1216'>
-        <var-decl name='_codecvt' type-id='type-id-77' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='91' column='1'/>
+        <var-decl name='_codecvt' type-id='type-id-74' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='91' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1280'>
-        <var-decl name='_wide_data' type-id='type-id-78' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='92' column='1'/>
+        <var-decl name='_wide_data' type-id='type-id-75' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='92' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1344'>
-        <var-decl name='_freeres_list' type-id='type-id-75' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='93' column='1'/>
+        <var-decl name='_freeres_list' type-id='type-id-72' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='93' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1408'>
         <var-decl name='_freeres_buf' type-id='type-id-20' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='94' column='1'/>
@@ -612,23 +609,23 @@
         <var-decl name='_unused2' type-id='type-id-63' visibility='default' filepath='/usr/include/bits/types/struct_FILE.h' line='98' column='1'/>
       </data-member>
     </class-decl>
-    <pointer-type-def type-id='type-id-72' size-in-bits='64' id='type-id-79'/>
-    <pointer-type-def type-id='type-id-71' size-in-bits='64' id='type-id-75'/>
-    <pointer-type-def type-id='type-id-65' size-in-bits='64' id='type-id-77'/>
-    <pointer-type-def type-id='type-id-73' size-in-bits='64' id='type-id-76'/>
-    <pointer-type-def type-id='type-id-66' size-in-bits='64' id='type-id-74'/>
-    <pointer-type-def type-id='type-id-67' size-in-bits='64' id='type-id-78'/>
-    <class-decl name='_IO_codecvt' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-65'/>
-    <class-decl name='_IO_marker' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-66'/>
-    <class-decl name='_IO_wide_data' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-67'/>
+    <pointer-type-def type-id='type-id-69' size-in-bits='64' id='type-id-76'/>
+    <pointer-type-def type-id='type-id-68' size-in-bits='64' id='type-id-72'/>
+    <pointer-type-def type-id='type-id-77' size-in-bits='64' id='type-id-74'/>
+    <pointer-type-def type-id='type-id-70' size-in-bits='64' id='type-id-73'/>
+    <pointer-type-def type-id='type-id-78' size-in-bits='64' id='type-id-71'/>
+    <pointer-type-def type-id='type-id-79' size-in-bits='64' id='type-id-75'/>
+    <class-decl name='_IO_codecvt' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-77'/>
+    <class-decl name='_IO_marker' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-78'/>
+    <class-decl name='_IO_wide_data' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-79'/>
     <function-decl name='_gdbm_dump_ascii' mangled-name='_gdbm_dump_ascii' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmdump.c' line='54' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_gdbm_dump_ascii'>
       <parameter type-id='type-id-9' name='dbf' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmdump.c' line='54' column='1'/>
-      <parameter type-id='type-id-79' name='fp' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmdump.c' line='54' column='1'/>
+      <parameter type-id='type-id-76' name='fp' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmdump.c' line='54' column='1'/>
       <return type-id='type-id-8'/>
     </function-decl>
     <function-decl name='gdbm_dump_to_file' mangled-name='gdbm_dump_to_file' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmdump.c' line='136' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gdbm_dump_to_file'>
       <parameter type-id='type-id-9' name='dbf' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmdump.c' line='136' column='1'/>
-      <parameter type-id='type-id-79' name='fp' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmdump.c' line='136' column='1'/>
+      <parameter type-id='type-id-76' name='fp' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmdump.c' line='136' column='1'/>
       <parameter type-id='type-id-8' name='format' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmdump.c' line='136' column='1'/>
       <return type-id='type-id-8'/>
     </function-decl>
@@ -691,7 +688,7 @@
   <abi-instr address-size='64' path='gdbmexp.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <function-decl name='gdbm_export_to_file' mangled-name='gdbm_export_to_file' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmexp.c' line='33' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gdbm_export_to_file'>
       <parameter type-id='type-id-9' name='dbf' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmexp.c' line='33' column='1'/>
-      <parameter type-id='type-id-79' name='fp' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmexp.c' line='33' column='1'/>
+      <parameter type-id='type-id-76' name='fp' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmexp.c' line='33' column='1'/>
       <return type-id='type-id-8'/>
     </function-decl>
     <function-decl name='gdbm_export' mangled-name='gdbm_export' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmexp.c' line='103' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gdbm_export'>
@@ -718,7 +715,7 @@
   <abi-instr address-size='64' path='gdbmimp.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <function-decl name='gdbm_import_from_file' mangled-name='gdbm_import_from_file' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmimp.c' line='28' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gdbm_import_from_file'>
       <parameter type-id='type-id-9' name='dbf' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmimp.c' line='28' column='1'/>
-      <parameter type-id='type-id-79' name='fp' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmimp.c' line='28' column='1'/>
+      <parameter type-id='type-id-76' name='fp' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmimp.c' line='28' column='1'/>
       <parameter type-id='type-id-8' name='flag' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmimp.c' line='28' column='1'/>
       <return type-id='type-id-8'/>
     </function-decl>
@@ -744,7 +741,7 @@
     </class-decl>
     <class-decl name='dump_file' size-in-bits='896' is-struct='yes' visibility='default' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmload.c' line='30' column='1' id='type-id-83'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='fp' type-id='type-id-79' visibility='default' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmload.c' line='32' column='1'/>
+        <var-decl name='fp' type-id='type-id-76' visibility='default' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmload.c' line='32' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <var-decl name='line' type-id='type-id-6' visibility='default' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmload.c' line='33' column='1'/>
@@ -811,7 +808,7 @@
     </function-decl>
     <function-decl name='gdbm_load_from_file' mangled-name='gdbm_load_from_file' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmload.c' line='570' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gdbm_load_from_file'>
       <parameter type-id='type-id-84' name='pdbf' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmload.c' line='570' column='1'/>
-      <parameter type-id='type-id-79' name='fp' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmload.c' line='570' column='1'/>
+      <parameter type-id='type-id-76' name='fp' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmload.c' line='570' column='1'/>
       <parameter type-id='type-id-8' name='replace' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmload.c' line='570' column='1'/>
       <parameter type-id='type-id-8' name='meta_mask' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmload.c' line='571' column='1'/>
       <parameter type-id='type-id-87' name='line' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmload.c' line='572' column='1'/>

@@ -12,7 +12,6 @@
   </elf-function-symbols>
   <abi-instr address-size='64' path='test8-qualified-this-pointer.cc' comp-dir-path='/home/dodji/git/libabigail/master/tests/data/test-read-dwarf' language='LANG_C_plus_plus'>
     <type-decl name='int' size-in-bits='32' id='95e97e5e'/>
-    <type-decl name='void' id='48b5725f'/>
     <class-decl name='S' size-in-bits='32' is-struct='yes' visibility='default' filepath='/home/dodji/git/libabigail/master/tests/data/test-read-dwarf/test8-qualified-this-pointer.cc' line='1' column='1' id='50d9a3fa'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='i' type-id='95e97e5e' visibility='default' filepath='/home/dodji/git/libabigail/master/tests/data/test-read-dwarf/test8-qualified-this-pointer.cc' line='3' column='1'/>
@@ -34,5 +33,6 @@
     <qualified-type-def type-id='50d9a3fa' const='yes' id='0fb3b55d'/>
     <pointer-type-def type-id='0fb3b55d' size-in-bits='64' id='2ee6aa55'/>
     <qualified-type-def type-id='2ee6aa55' const='yes' id='89b9ceca'/>
+    <type-decl name='void' id='48b5725f'/>
   </abi-instr>
 </abi-corpus>

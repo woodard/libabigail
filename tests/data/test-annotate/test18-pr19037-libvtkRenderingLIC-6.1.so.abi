@@ -941,12 +941,10 @@
     <type-decl name='unsigned short int' size-in-bits='16' id='type-id-25'/>
     <!-- variadic parameter type -->
     <type-decl name='variadic parameter type' id='type-id-26'/>
-    <!-- void -->
-    <type-decl name='void' id='type-id-27'/>
     <!-- wchar_t -->
-    <type-decl name='wchar_t' size-in-bits='32' id='type-id-28'/>
+    <type-decl name='wchar_t' size-in-bits='32' id='type-id-27'/>
     <!-- class vtkIndent -->
-    <class-decl name='vtkIndent' size-in-bits='32' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkIndent.h' line='31' column='1' id='type-id-29'>
+    <class-decl name='vtkIndent' size-in-bits='32' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkIndent.h' line='31' column='1' id='type-id-28'>
       <data-member access='protected' layout-offset-in-bits='0'>
         <!-- int vtkIndent::Indent -->
         <var-decl name='Indent' type-id='type-id-17' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkIndent.h' line='49' column='1'/>
@@ -955,11 +953,11 @@
         <!-- vtkIndent::vtkIndent(int) -->
         <function-decl name='vtkIndent' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkIndent.h' line='34' column='1' visibility='default' binding='global' size-in-bits='64'>
           <!-- implicit parameter of type 'vtkIndent*' -->
-          <parameter type-id='type-id-30' is-artificial='yes'/>
+          <parameter type-id='type-id-29' is-artificial='yes'/>
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -975,7 +973,7 @@
           <!-- implicit parameter of type 'vtkWeakPointer<vtkRenderWindow>*' -->
           <parameter type-id='type-id-34' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -986,7 +984,7 @@
           <!-- parameter of type 'vtkRenderWindow*' -->
           <parameter type-id='type-id-35'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -997,7 +995,7 @@
           <!-- parameter of type 'const vtkWeakPointerBase&' -->
           <parameter type-id='type-id-36'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -1010,7 +1008,7 @@
           <!-- parameter of type 'const vtkWeakPointerBase::NoReference&' -->
           <parameter type-id='type-id-37'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -1030,7 +1028,7 @@
           <!-- implicit parameter of type 'vtkWeakPointerBase*' -->
           <parameter type-id='type-id-40' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' constructor='yes'>
@@ -1041,7 +1039,7 @@
           <!-- parameter of type 'vtkObjectBase*' -->
           <parameter type-id='type-id-39'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' constructor='yes'>
@@ -1052,7 +1050,7 @@
           <!-- parameter of type 'const vtkWeakPointerBase&' -->
           <parameter type-id='type-id-36'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' destructor='yes'>
@@ -1063,7 +1061,7 @@
           <!-- artificial parameter of type 'int' -->
           <parameter type-id='type-id-17' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected' constructor='yes'>
@@ -1076,7 +1074,7 @@
           <!-- parameter of type 'const vtkWeakPointerBase::NoReference&' -->
           <parameter type-id='type-id-37'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -1092,7 +1090,7 @@
           <!-- implicit parameter of type 'vtkPixelExtent*' -->
           <parameter type-id='type-id-42' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' constructor='yes'>
@@ -1103,7 +1101,7 @@
           <!-- parameter of type 'const vtkPixelExtent&' -->
           <parameter type-id='type-id-43'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -1114,7 +1112,7 @@
           <!-- parameter of type 'const int*' -->
           <parameter type-id='type-id-44'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -1131,7 +1129,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' static='yes'>
@@ -1142,7 +1140,7 @@
           <!-- parameter of type 'int*' -->
           <parameter type-id='type-id-45'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -1153,7 +1151,7 @@
           <!-- parameter of type 'int*' -->
           <parameter type-id='type-id-45'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -1166,7 +1164,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -1177,7 +1175,7 @@
           <!-- parameter of type 'const int*' -->
           <parameter type-id='type-id-44'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -1194,7 +1192,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' static='yes'>
@@ -1205,7 +1203,7 @@
           <!-- parameter of type 'unsigned int*' -->
           <parameter type-id='type-id-47'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -1216,7 +1214,7 @@
           <!-- parameter of type 'const unsigned int*' -->
           <parameter type-id='type-id-48'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -1233,7 +1231,7 @@
           <!-- parameter of type 'unsigned int' -->
           <parameter type-id='type-id-13'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -1244,7 +1242,7 @@
           <!-- parameter of type 'unsigned int*' -->
           <parameter type-id='type-id-47'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -1255,7 +1253,7 @@
           <!-- parameter of type 'float*' -->
           <parameter type-id='type-id-49'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -1268,7 +1266,7 @@
           <!-- parameter of type 'unsigned int' -->
           <parameter type-id='type-id-13'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' static='yes'>
@@ -1279,7 +1277,7 @@
           <!-- parameter of type 'GLfloat*' -->
           <parameter type-id='type-id-50'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -1290,7 +1288,7 @@
           <!-- parameter of type 'GLfloat*' -->
           <parameter type-id='type-id-50'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -1301,7 +1299,7 @@
           <!-- parameter of type 'GLfloat*' -->
           <parameter type-id='type-id-50'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -1318,7 +1316,7 @@
           <!-- parameter of type 'unsigned int' -->
           <parameter type-id='type-id-13'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -1329,7 +1327,7 @@
           <!-- parameter of type 'int*' -->
           <parameter type-id='type-id-45'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -1355,7 +1353,7 @@
           <!-- implicit parameter of type 'vtkImageDataLIC2DExtentTranslator*' -->
           <parameter type-id='type-id-56' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' constructor='yes'>
@@ -1366,7 +1364,7 @@
           <!-- parameter of type 'const vtkImageDataLIC2DExtentTranslator&' -->
           <parameter type-id='type-id-57'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -1377,7 +1375,7 @@
           <!-- parameter of type 'vtkExtentTranslator*' -->
           <parameter type-id='type-id-54' name='_arg' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2DExtentTranslator.cxx' line='24' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -1397,7 +1395,7 @@
           <!-- parameter of type 'vtkImageDataLIC2D*' -->
           <parameter type-id='type-id-59' name='alg' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2DExtentTranslator.cxx' line='50' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' static='yes'>
@@ -1415,7 +1413,7 @@
           <!-- artificial parameter of type 'int' -->
           <parameter type-id='type-id-17' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='0'>
@@ -1446,9 +1444,9 @@
           <!-- parameter of type 'std::ostream&' -->
           <parameter type-id='type-id-62'/>
           <!-- parameter of type 'class vtkIndent' -->
-          <parameter type-id='type-id-29'/>
+          <parameter type-id='type-id-28'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected' vtable-offset='15'>
@@ -1510,7 +1508,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='42'>
@@ -1521,7 +1519,7 @@
           <!-- parameter of type 'int*' -->
           <parameter type-id='type-id-45'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='43'>
@@ -1551,7 +1549,7 @@
           <!-- parameter of type 'int&' -->
           <parameter type-id='type-id-63'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='45'>
@@ -1562,7 +1560,7 @@
           <!-- parameter of type 'int*' -->
           <parameter type-id='type-id-45'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -1727,7 +1725,7 @@
     <!-- typedef long int __off64_t -->
     <typedef-decl name='__off64_t' type-id='type-id-20' filepath='/usr/include/bits/types.h' line='142' column='1' id='type-id-69'/>
     <!-- typedef void _IO_lock_t -->
-    <typedef-decl name='_IO_lock_t' type-id='type-id-27' filepath='/usr/include/libio.h' line='180' column='1' id='type-id-78'/>
+    <typedef-decl name='_IO_lock_t' type-id='type-id-30' filepath='/usr/include/libio.h' line='180' column='1' id='type-id-78'/>
     <!-- struct _IO_marker -->
     <class-decl name='_IO_marker' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/include/libio.h' line='186' column='1' id='type-id-79'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -2260,7 +2258,7 @@
     <!-- const vtkWeakPointerBase::NoReference& -->
     <reference-type-def kind='lvalue' type-id='type-id-192' size-in-bits='64' id='type-id-37'/>
     <!-- const wchar_t -->
-    <qualified-type-def type-id='type-id-28' const='yes' id='type-id-193'/>
+    <qualified-type-def type-id='type-id-27' const='yes' id='type-id-193'/>
     <!-- const wchar_t* -->
     <pointer-type-def type-id='type-id-193' size-in-bits='64' id='type-id-194'/>
     <!-- const wchar_t** -->
@@ -2338,7 +2336,7 @@
     <!-- void ()* -->
     <pointer-type-def type-id='type-id-233' size-in-bits='64' id='type-id-234'/>
     <!-- void* -->
-    <pointer-type-def type-id='type-id-27' size-in-bits='64' id='type-id-14'/>
+    <pointer-type-def type-id='type-id-30' size-in-bits='64' id='type-id-14'/>
     <!-- vtkAbstractArray* -->
     <pointer-type-def type-id='type-id-235' size-in-bits='64' id='type-id-236'/>
     <!-- vtkAbstractArray* const -->
@@ -2372,7 +2370,7 @@
     <!-- vtkImageNoiseSource* -->
     <pointer-type-def type-id='type-id-254' size-in-bits='64' id='type-id-255'/>
     <!-- vtkIndent* -->
-    <pointer-type-def type-id='type-id-29' size-in-bits='64' id='type-id-30'/>
+    <pointer-type-def type-id='type-id-28' size-in-bits='64' id='type-id-29'/>
     <!-- vtkInformation* -->
     <pointer-type-def type-id='type-id-256' size-in-bits='64' id='type-id-257'/>
     <!-- vtkInformationVector* -->
@@ -2424,7 +2422,7 @@
     <!-- vtkWeakPointerBase* -->
     <pointer-type-def type-id='type-id-33' size-in-bits='64' id='type-id-40'/>
     <!-- wchar_t* -->
-    <pointer-type-def type-id='type-id-28' size-in-bits='64' id='type-id-285'/>
+    <pointer-type-def type-id='type-id-27' size-in-bits='64' id='type-id-285'/>
     <!-- wchar_t** -->
     <pointer-type-def type-id='type-id-285' size-in-bits='64' id='type-id-286'/>
     <!-- struct vtkAbstractArray -->
@@ -2448,7 +2446,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='27'>
@@ -2466,7 +2464,7 @@
           <!-- implicit parameter of type 'vtkAlgorithm*' -->
           <parameter type-id='type-id-239' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='29'>
@@ -2475,7 +2473,7 @@
           <!-- implicit parameter of type 'vtkAlgorithm*' -->
           <parameter type-id='type-id-239' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='30'>
@@ -2486,7 +2484,7 @@
           <!-- parameter of type 'double' -->
           <parameter type-id='type-id-15'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='31'>
@@ -2542,7 +2540,7 @@
           <!-- parameter of type 'vtkDataObject*' -->
           <parameter type-id='type-id-247'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='50'>
@@ -2553,7 +2551,7 @@
           <!-- parameter of type 'vtkDataObject*' -->
           <parameter type-id='type-id-247'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='59'>
@@ -2573,7 +2571,7 @@
           <!-- parameter of type 'unsigned long int' -->
           <parameter type-id='type-id-4'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -2629,7 +2627,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='21'>
@@ -2640,7 +2638,7 @@
           <!-- parameter of type 'int*' -->
           <parameter type-id='type-id-45'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='22'>
@@ -2670,7 +2668,7 @@
           <!-- parameter of type 'int&' -->
           <parameter type-id='type-id-63'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='24'>
@@ -2681,7 +2679,7 @@
           <!-- parameter of type 'int*' -->
           <parameter type-id='type-id-45'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='25'>
@@ -2702,7 +2700,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='26'>
@@ -2713,7 +2711,7 @@
           <!-- parameter of type 'int*' -->
           <parameter type-id='type-id-45'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='27'>
@@ -2743,7 +2741,7 @@
           <!-- parameter of type 'int&' -->
           <parameter type-id='type-id-63'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='29'>
@@ -2754,7 +2752,7 @@
           <!-- parameter of type 'int*' -->
           <parameter type-id='type-id-45'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='30'>
@@ -2765,7 +2763,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='31'>
@@ -2785,7 +2783,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='33'>
@@ -2805,7 +2803,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='35'>
@@ -2856,7 +2854,7 @@
           <!-- parameter of type 'std::ostream&' -->
           <parameter type-id='type-id-62'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -2921,7 +2919,7 @@
             <!-- implicit parameter of type 'std::allocator<vtkPixelExtent*>*' -->
             <parameter type-id='type-id-213' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -2932,7 +2930,7 @@
             <!-- parameter of type 'const std::allocator<vtkPixelExtent*>&' -->
             <parameter type-id='type-id-152'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private' destructor='yes'>
@@ -2943,7 +2941,7 @@
             <!-- artificial parameter of type 'int' -->
             <parameter type-id='type-id-17' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -2954,7 +2952,7 @@
             <!-- parameter of type 'const std::allocator<vtkPixelExtent>&' -->
             <parameter type-id='type-id-155'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -2968,7 +2966,7 @@
             <!-- implicit parameter of type 'std::allocator<vtkPixelExtent>*' -->
             <parameter type-id='type-id-215' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -2979,7 +2977,7 @@
             <!-- parameter of type 'const std::allocator<vtkPixelExtent>&' -->
             <parameter type-id='type-id-155'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private' destructor='yes'>
@@ -2990,7 +2988,7 @@
             <!-- artificial parameter of type 'int' -->
             <parameter type-id='type-id-17' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -3070,7 +3068,7 @@
             <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
             <parameter type-id='type-id-137'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public' static='yes'>
@@ -3081,7 +3079,7 @@
             <!-- parameter of type 'vtkPixelExtent*' -->
             <parameter type-id='type-id-42'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public' static='yes'>
@@ -3092,7 +3090,7 @@
             <!-- parameter of type 'vtkPixelBufferObject**' -->
             <parameter type-id='type-id-304'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public' static='yes'>
@@ -3103,7 +3101,7 @@
             <!-- parameter of type 'float*' -->
             <parameter type-id='type-id-49'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -3135,7 +3133,7 @@
             <!-- parameter of type 'vtkPixelExtent**' -->
             <parameter type-id='type-id-272'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
@@ -3144,7 +3142,7 @@
             <!-- implicit parameter of type 'std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>*' -->
             <parameter type-id='type-id-306' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
@@ -3155,7 +3153,7 @@
             <!-- parameter of type 'const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&' -->
             <parameter type-id='type-id-139'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -3187,7 +3185,7 @@
             <!-- parameter of type 'vtkPixelExtent**' -->
             <parameter type-id='type-id-272'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
@@ -3196,7 +3194,7 @@
             <!-- implicit parameter of type 'std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>*' -->
             <parameter type-id='type-id-206' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
@@ -3207,7 +3205,7 @@
             <!-- parameter of type 'const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&' -->
             <parameter type-id='type-id-139'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
@@ -3262,7 +3260,7 @@
                 <!-- implicit parameter of type 'std::_Deque_base<vtkPixelExtent, std::allocator<vtkPixelExtent> >::_Deque_impl*' -->
                 <parameter type-id='type-id-204' is-artificial='yes'/>
                 <!-- void -->
-                <return type-id='type-id-27'/>
+                <return type-id='type-id-30'/>
               </function-decl>
             </member-function>
             <member-function access='public' constructor='yes'>
@@ -3273,7 +3271,7 @@
                 <!-- parameter of type 'const std::allocator<vtkPixelExtent>&' -->
                 <parameter type-id='type-id-155'/>
                 <!-- void -->
-                <return type-id='type-id-27'/>
+                <return type-id='type-id-30'/>
               </function-decl>
             </member-function>
           </class-decl>
@@ -3295,7 +3293,7 @@
             <!-- implicit parameter of type 'std::_Deque_base<vtkPixelExtent, std::allocator<vtkPixelExtent> >*' -->
             <parameter type-id='type-id-201' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -3308,7 +3306,7 @@
             <!-- parameter of type 'unsigned long int' -->
             <parameter type-id='type-id-4'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -3319,7 +3317,7 @@
             <!-- parameter of type 'const std::allocator<vtkPixelExtent>&' -->
             <parameter type-id='type-id-155'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private' destructor='yes'>
@@ -3330,7 +3328,7 @@
             <!-- artificial parameter of type 'int' -->
             <parameter type-id='type-id-17' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='protected'>
@@ -3341,7 +3339,7 @@
             <!-- parameter of type 'typedef size_t' -->
             <parameter type-id='type-id-85' name='__num_elements' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='493' column='1'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -3355,7 +3353,7 @@
             <!-- implicit parameter of type 'std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> >*' -->
             <parameter type-id='type-id-225' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -3366,7 +3364,7 @@
             <!-- parameter of type 'const std::allocator<vtkPixelExtent>&' -->
             <parameter type-id='type-id-155'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -3381,7 +3379,7 @@
             <!-- parameter of type 'const std::allocator<vtkPixelExtent>&' -->
             <parameter type-id='type-id-155'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -3392,7 +3390,7 @@
             <!-- parameter of type 'const std::deque<vtkPixelExtent, std::allocator<vtkPixelExtent> >&' -->
             <parameter type-id='type-id-172'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private' destructor='yes'>
@@ -3403,7 +3401,7 @@
             <!-- artificial parameter of type 'int' -->
             <parameter type-id='type-id-17' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='protected'>
@@ -3416,7 +3414,7 @@
             <!-- parameter of type 'bool' -->
             <parameter type-id='type-id-1' name='__add_at_front' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/deque.tcc' line='796' column='1'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='protected'>
@@ -3433,7 +3431,7 @@
             <!-- parameter of type 'struct std::__false_type' -->
             <parameter type-id='type-id-309'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -3448,7 +3446,7 @@
             <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>' -->
             <parameter type-id='type-id-305'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='protected'>
@@ -3465,7 +3463,7 @@
             <!-- parameter of type 'struct std::__false_type' -->
             <parameter type-id='type-id-309'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -3480,7 +3478,7 @@
             <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
             <parameter type-id='type-id-137'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='protected'>
@@ -3491,7 +3489,7 @@
             <!-- parameter of type 'typedef size_t' -->
             <parameter type-id='type-id-85' name='__nodes_to_add' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='1715' column='1'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='protected'>
@@ -3513,7 +3511,7 @@
             <!-- parameter of type 'typedef size_t' -->
             <parameter type-id='type-id-85' name='__nodes_to_add' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='1715' column='1'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='protected'>
@@ -3541,7 +3539,7 @@
             <!-- parameter of type 'typedef size_t' -->
             <parameter type-id='type-id-85' name='__n' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/deque.tcc' line='638' column='1'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='protected'>
@@ -3558,7 +3556,7 @@
             <!-- parameter of type 'struct std::forward_iterator_tag' -->
             <parameter type-id='type-id-310'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -3586,7 +3584,7 @@
             <!-- parameter of type 'typedef size_t' -->
             <parameter type-id='type-id-85' name='__n' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/deque.tcc' line='638' column='1'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='protected'>
@@ -3603,7 +3601,7 @@
             <!-- parameter of type 'struct std::forward_iterator_tag' -->
             <parameter type-id='type-id-310'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='protected'>
@@ -3614,7 +3612,7 @@
             <!-- parameter of type 'typedef size_t' -->
             <parameter type-id='type-id-85' name='__nodes_to_add' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='1715' column='1'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -3630,7 +3628,7 @@
             <!-- parameter of type 'const vtkPixelExtent&' -->
             <parameter type-id='type-id-43'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -3687,7 +3685,7 @@
             <!-- parameter of type 'std::__c_lock*' -->
             <parameter type-id='type-id-212'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private' destructor='yes'>
@@ -3698,7 +3696,7 @@
             <!-- artificial parameter of type 'int' -->
             <parameter type-id='type-id-17' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -3718,7 +3716,7 @@
             <!-- implicit parameter of type 'std::basic_ios<char, std::char_traits<char> >*' -->
             <parameter type-id='type-id-216' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes' vtable-offset='-1'>
@@ -3729,7 +3727,7 @@
             <!-- artificial parameter of type 'int' -->
             <parameter type-id='type-id-17' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -3745,7 +3743,7 @@
             <!-- artificial parameter of type 'void**' -->
             <parameter type-id='type-id-316' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes' vtable-offset='-1'>
@@ -3758,7 +3756,7 @@
             <!-- artificial parameter of type 'void**' -->
             <parameter type-id='type-id-316' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -3781,7 +3779,7 @@
                 <!-- implicit parameter of type 'std::ios_base::Init*' -->
                 <parameter type-id='type-id-230' is-artificial='yes'/>
                 <!-- void -->
-                <return type-id='type-id-27'/>
+                <return type-id='type-id-30'/>
               </function-decl>
             </member-function>
             <member-function access='private' destructor='yes'>
@@ -3792,7 +3790,7 @@
                 <!-- artificial parameter of type 'int' -->
                 <parameter type-id='type-id-17' is-artificial='yes'/>
                 <!-- void -->
-                <return type-id='type-id-27'/>
+                <return type-id='type-id-30'/>
               </function-decl>
             </member-function>
           </class-decl>
@@ -3965,7 +3963,7 @@
         <!-- parameter of type 'const vtkPixelExtent&' -->
         <parameter type-id='type-id-43'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::_Destroy<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
       <function-decl name='_Destroy&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='119' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -3974,7 +3972,7 @@
         <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
         <parameter type-id='type-id-137'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::_Destroy<vtkPixelExtent*>(vtkPixelExtent*, vtkPixelExtent*) -->
       <function-decl name='_Destroy&lt;vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='119' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -3983,7 +3981,7 @@
         <!-- parameter of type 'vtkPixelExtent*' -->
         <parameter type-id='type-id-42'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::_Destroy<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, vtkPixelExtent>(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::allocator<vtkPixelExtent>&) -->
       <function-decl name='_Destroy&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, vtkPixelExtent&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='146' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -3994,7 +3992,7 @@
         <!-- parameter of type 'std::allocator<vtkPixelExtent>&' -->
         <parameter type-id='type-id-214'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- size_t std::__deque_buf_size(size_t) -->
       <function-decl name='__deque_buf_size' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -4012,7 +4010,7 @@
         <!-- parameter of type 'const vtkPixelExtent&' -->
         <parameter type-id='type-id-43'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::__uninitialized_fill_a<vtkPixelExtent*, vtkPixelExtent, vtkPixelExtent>(vtkPixelExtent*, vtkPixelExtent*, const vtkPixelExtent&, std::allocator<vtkPixelExtent>&) -->
       <function-decl name='__uninitialized_fill_a&lt;vtkPixelExtent*, vtkPixelExtent, vtkPixelExtent&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='289' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -4025,7 +4023,7 @@
         <!-- parameter of type 'std::allocator<vtkPixelExtent>&' -->
         <parameter type-id='type-id-214'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, const char*) -->
       <function-decl name='operator&lt;&lt; &lt;std::char_traits&lt;char&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ostream' line='505' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -4079,7 +4077,7 @@
           <!-- implicit parameter of type 'vtkImageDataLIC2D*' -->
           <parameter type-id='type-id-59' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' constructor='yes'>
@@ -4090,7 +4088,7 @@
           <!-- parameter of type 'const vtkImageDataLIC2D&' -->
           <parameter type-id='type-id-179'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -4114,7 +4112,7 @@
           <!-- parameter of type 'int*' -->
           <parameter type-id='type-id-45' name='resultExt' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2D.cxx' line='201' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -4143,7 +4141,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='0'>
@@ -4174,9 +4172,9 @@
           <!-- parameter of type 'std::ostream&' -->
           <parameter type-id='type-id-62'/>
           <!-- parameter of type 'class vtkIndent' -->
-          <parameter type-id='type-id-29'/>
+          <parameter type-id='type-id-28'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected' vtable-offset='15'>
@@ -4254,7 +4252,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='82'>
@@ -4274,7 +4272,7 @@
           <!-- parameter of type 'double' -->
           <parameter type-id='type-id-15'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='84'>
@@ -4294,7 +4292,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='86'>
@@ -4379,7 +4377,7 @@
       <!-- parameter of type 'char*' -->
       <parameter type-id='type-id-83'/>
       <!-- void -->
-      <return type-id='type-id-27'/>
+      <return type-id='type-id-30'/>
     </function-decl>
     <!-- int setvbuf(FILE*, char*, int, size_t) -->
     <function-decl name='setvbuf' filepath='/usr/include/stdio.h' line='335' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -4471,14 +4469,14 @@
       <!-- parameter of type 'FILE*' -->
       <parameter type-id='type-id-105'/>
       <!-- void -->
-      <return type-id='type-id-27'/>
+      <return type-id='type-id-30'/>
     </function-decl>
     <!-- void clearerr(FILE*) -->
     <function-decl name='clearerr' filepath='/usr/include/stdio.h' line='821' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'FILE*' -->
       <parameter type-id='type-id-105'/>
       <!-- void -->
-      <return type-id='type-id-27'/>
+      <return type-id='type-id-30'/>
     </function-decl>
     <!-- int feof(FILE*) -->
     <function-decl name='feof' filepath='/usr/include/stdio.h' line='823' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -4499,7 +4497,7 @@
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-61'/>
       <!-- void -->
-      <return type-id='type-id-27'/>
+      <return type-id='type-id-30'/>
     </function-decl>
     <!-- double strtod(const char*, char**) -->
     <function-decl name='strtod' filepath='/usr/include/stdlib.h' line='165' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -4610,7 +4608,7 @@
       <!-- parameter of type 'unsigned int' -->
       <parameter type-id='type-id-13'/>
       <!-- void -->
-      <return type-id='type-id-27'/>
+      <return type-id='type-id-30'/>
     </function-decl>
     <!-- int atexit(void ()*) -->
     <function-decl name='atexit' filepath='/usr/include/stdlib.h' line='518' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -4659,7 +4657,7 @@
       <!-- parameter of type 'typedef __compar_fn_t' -->
       <parameter type-id='type-id-94'/>
       <!-- void -->
-      <return type-id='type-id-27'/>
+      <return type-id='type-id-30'/>
     </function-decl>
     <!-- div_t div(int, int) -->
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='785' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -4713,7 +4711,7 @@
       <!-- parameter of type 'char*' -->
       <parameter type-id='type-id-83'/>
       <!-- parameter of type 'wchar_t' -->
-      <parameter type-id='type-id-28'/>
+      <parameter type-id='type-id-27'/>
       <!-- int -->
       <return type-id='type-id-17'/>
     </function-decl>
@@ -4929,7 +4927,7 @@
       <!-- parameter of type 'wchar_t*' -->
       <parameter type-id='type-id-285'/>
       <!-- parameter of type 'wchar_t' -->
-      <parameter type-id='type-id-28'/>
+      <parameter type-id='type-id-27'/>
       <!-- parameter of type 'typedef size_t' -->
       <parameter type-id='type-id-85'/>
       <!-- wchar_t* -->
@@ -4960,7 +4958,7 @@
       <!-- parameter of type 'char*' -->
       <parameter type-id='type-id-83'/>
       <!-- parameter of type 'wchar_t' -->
-      <parameter type-id='type-id-28'/>
+      <parameter type-id='type-id-27'/>
       <!-- parameter of type 'mbstate_t*' -->
       <parameter type-id='type-id-200'/>
       <!-- typedef size_t -->
@@ -5241,7 +5239,7 @@
     <!-- wint_t fputwc(wchar_t, __FILE*) -->
     <function-decl name='fputwc' filepath='/usr/include/wchar.h' line='757' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'wchar_t' -->
-      <parameter type-id='type-id-28'/>
+      <parameter type-id='type-id-27'/>
       <!-- parameter of type '__FILE*' -->
       <parameter type-id='type-id-106'/>
       <!-- typedef wint_t -->
@@ -5250,7 +5248,7 @@
     <!-- wint_t putwc(wchar_t, __FILE*) -->
     <function-decl name='putwc' filepath='/usr/include/wchar.h' line='758' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'wchar_t' -->
-      <parameter type-id='type-id-28'/>
+      <parameter type-id='type-id-27'/>
       <!-- parameter of type '__FILE*' -->
       <parameter type-id='type-id-106'/>
       <!-- typedef wint_t -->
@@ -5259,7 +5257,7 @@
     <!-- wint_t putwchar(wchar_t) -->
     <function-decl name='putwchar' filepath='/usr/include/wchar.h' line='764' column='1' visibility='default' binding='global' size-in-bits='64'>
       <!-- parameter of type 'wchar_t' -->
-      <parameter type-id='type-id-28'/>
+      <parameter type-id='type-id-27'/>
       <!-- typedef wint_t -->
       <return type-id='type-id-104'/>
     </function-decl>
@@ -5347,7 +5345,7 @@
             <!-- implicit parameter of type '__gnu_cxx::new_allocator<vtkPixelExtent*>*' -->
             <parameter type-id='type-id-108' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -5358,7 +5356,7 @@
             <!-- parameter of type 'const __gnu_cxx::new_allocator<vtkPixelExtent*>&' -->
             <parameter type-id='type-id-115'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private' destructor='yes'>
@@ -5369,7 +5367,7 @@
             <!-- artificial parameter of type 'int' -->
             <parameter type-id='type-id-17' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -5381,7 +5379,7 @@
             <!-- implicit parameter of type '__gnu_cxx::new_allocator<vtkPixelExtent>*' -->
             <parameter type-id='type-id-111' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -5392,7 +5390,7 @@
             <!-- parameter of type 'const __gnu_cxx::new_allocator<vtkPixelExtent>&' -->
             <parameter type-id='type-id-119'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private' destructor='yes'>
@@ -5403,7 +5401,7 @@
             <!-- artificial parameter of type 'int' -->
             <parameter type-id='type-id-17' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -5433,8 +5431,10 @@
     <!-- void () -->
     <function-type size-in-bits='64' id='type-id-233'>
       <!-- void -->
-      <return type-id='type-id-27'/>
+      <return type-id='type-id-30'/>
     </function-type>
+    <!-- void -->
+    <type-decl name='void' id='type-id-30'/>
   </abi-instr>
   <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2DExtentTranslator.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
     <!-- int[6] -->
@@ -5452,7 +5452,7 @@
           <!-- implicit parameter of type 'vtkWeakPointer<vtkImageDataLIC2D>*' -->
           <parameter type-id='type-id-320' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -5463,7 +5463,7 @@
           <!-- parameter of type 'vtkImageDataLIC2D*' -->
           <parameter type-id='type-id-59'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -5474,7 +5474,7 @@
           <!-- parameter of type 'const vtkWeakPointerBase&' -->
           <parameter type-id='type-id-36'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -5487,7 +5487,7 @@
           <!-- parameter of type 'const vtkWeakPointerBase::NoReference&' -->
           <parameter type-id='type-id-37'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -5661,7 +5661,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' destructor='yes'>
@@ -5672,7 +5672,7 @@
           <!-- artificial parameter of type 'int' -->
           <parameter type-id='type-id-17' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -5684,7 +5684,7 @@
           <!-- implicit parameter of type 'vtkPainterCommunicator*' -->
           <parameter type-id='type-id-346' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' constructor='yes'>
@@ -5695,7 +5695,7 @@
           <!-- parameter of type 'const vtkPainterCommunicator&' -->
           <parameter type-id='type-id-347'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' destructor='yes' vtable-offset='-1'>
@@ -5706,7 +5706,7 @@
           <!-- artificial parameter of type 'int' -->
           <parameter type-id='type-id-17' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='2'>
@@ -5719,7 +5719,7 @@
           <!-- parameter of type 'bool' -->
           <parameter type-id='type-id-1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='3'>
@@ -5730,7 +5730,7 @@
           <!-- parameter of type 'const vtkPainterCommunicator*' -->
           <parameter type-id='type-id-348'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='4'>
@@ -6029,7 +6029,7 @@
             <!-- implicit parameter of type 'std::allocator<float>*' -->
             <parameter type-id='type-id-436' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -6040,7 +6040,7 @@
             <!-- parameter of type 'const std::allocator<float>&' -->
             <parameter type-id='type-id-388'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private' destructor='yes'>
@@ -6051,7 +6051,7 @@
             <!-- artificial parameter of type 'int' -->
             <parameter type-id='type-id-17' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -6065,7 +6065,7 @@
             <!-- implicit parameter of type 'std::allocator<vtkPixelBufferObject*>*' -->
             <parameter type-id='type-id-438' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -6076,7 +6076,7 @@
             <!-- parameter of type 'const std::allocator<vtkPixelBufferObject*>&' -->
             <parameter type-id='type-id-391'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private' destructor='yes'>
@@ -6087,7 +6087,7 @@
             <!-- artificial parameter of type 'int' -->
             <parameter type-id='type-id-17' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -6188,7 +6188,7 @@
             <!-- parameter of type 'vtkPixelBufferObject* const&' -->
             <parameter type-id='type-id-464'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public' static='yes'>
@@ -6201,7 +6201,7 @@
             <!-- parameter of type 'const float&' -->
             <parameter type-id='type-id-373'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -6230,7 +6230,7 @@
                 <!-- implicit parameter of type 'std::_Vector_base<float, std::allocator<float> >::_Vector_impl*' -->
                 <parameter type-id='type-id-429' is-artificial='yes'/>
                 <!-- void -->
-                <return type-id='type-id-27'/>
+                <return type-id='type-id-30'/>
               </function-decl>
             </member-function>
             <member-function access='public' constructor='yes'>
@@ -6241,7 +6241,7 @@
                 <!-- parameter of type 'const std::allocator<float>&' -->
                 <parameter type-id='type-id-388'/>
                 <!-- void -->
-                <return type-id='type-id-27'/>
+                <return type-id='type-id-30'/>
               </function-decl>
             </member-function>
           </class-decl>
@@ -6256,7 +6256,7 @@
             <!-- implicit parameter of type 'std::_Vector_base<float, std::allocator<float> >*' -->
             <parameter type-id='type-id-426' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
@@ -6267,7 +6267,7 @@
             <!-- parameter of type 'const std::allocator<float>&' -->
             <parameter type-id='type-id-388'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
@@ -6280,7 +6280,7 @@
             <!-- parameter of type 'const std::allocator<float>&' -->
             <parameter type-id='type-id-388'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
@@ -6291,7 +6291,7 @@
             <!-- artificial parameter of type 'int' -->
             <parameter type-id='type-id-17' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -6320,7 +6320,7 @@
                 <!-- implicit parameter of type 'std::_Vector_base<vtkPixelBufferObject*, std::allocator<vtkPixelBufferObject*> >::_Vector_impl*' -->
                 <parameter type-id='type-id-433' is-artificial='yes'/>
                 <!-- void -->
-                <return type-id='type-id-27'/>
+                <return type-id='type-id-30'/>
               </function-decl>
             </member-function>
             <member-function access='public' constructor='yes'>
@@ -6331,7 +6331,7 @@
                 <!-- parameter of type 'const std::allocator<vtkPixelBufferObject*>&' -->
                 <parameter type-id='type-id-391'/>
                 <!-- void -->
-                <return type-id='type-id-27'/>
+                <return type-id='type-id-30'/>
               </function-decl>
             </member-function>
           </class-decl>
@@ -6346,7 +6346,7 @@
             <!-- implicit parameter of type 'std::_Vector_base<vtkPixelBufferObject*, std::allocator<vtkPixelBufferObject*> >*' -->
             <parameter type-id='type-id-430' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
@@ -6357,7 +6357,7 @@
             <!-- parameter of type 'const std::allocator<vtkPixelBufferObject*>&' -->
             <parameter type-id='type-id-391'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
@@ -6370,7 +6370,7 @@
             <!-- parameter of type 'const std::allocator<vtkPixelBufferObject*>&' -->
             <parameter type-id='type-id-391'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
@@ -6381,7 +6381,7 @@
             <!-- artificial parameter of type 'int' -->
             <parameter type-id='type-id-17' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -6395,7 +6395,7 @@
             <!-- implicit parameter of type 'std::vector<float, std::allocator<float> >*' -->
             <parameter type-id='type-id-453' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -6406,7 +6406,7 @@
             <!-- parameter of type 'const std::allocator<float>&' -->
             <parameter type-id='type-id-388'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -6421,7 +6421,7 @@
             <!-- parameter of type 'const std::allocator<float>&' -->
             <parameter type-id='type-id-388'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -6432,7 +6432,7 @@
             <!-- parameter of type 'const std::vector<float, std::allocator<float> >&' -->
             <parameter type-id='type-id-414'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private' destructor='yes'>
@@ -6443,7 +6443,7 @@
             <!-- artificial parameter of type 'int' -->
             <parameter type-id='type-id-17' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='protected'>
@@ -6458,7 +6458,7 @@
             <!-- parameter of type 'const float&' -->
             <parameter type-id='type-id-374' name='__x' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_vector.h' line='850' column='1'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -6472,7 +6472,7 @@
             <!-- implicit parameter of type 'std::vector<vtkPixelBufferObject*, std::allocator<vtkPixelBufferObject*> >*' -->
             <parameter type-id='type-id-456' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -6483,7 +6483,7 @@
             <!-- parameter of type 'const std::allocator<vtkPixelBufferObject*>&' -->
             <parameter type-id='type-id-391'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -6498,7 +6498,7 @@
             <!-- parameter of type 'const std::allocator<vtkPixelBufferObject*>&' -->
             <parameter type-id='type-id-391'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -6509,7 +6509,7 @@
             <!-- parameter of type 'const std::vector<vtkPixelBufferObject*, std::allocator<vtkPixelBufferObject*> >&' -->
             <parameter type-id='type-id-418'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private' destructor='yes'>
@@ -6520,7 +6520,7 @@
             <!-- artificial parameter of type 'int' -->
             <parameter type-id='type-id-17' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -6534,7 +6534,7 @@
             <!-- implicit parameter of type 'std::allocator<char>*' -->
             <parameter type-id='type-id-434' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
@@ -6545,7 +6545,7 @@
             <!-- parameter of type 'const std::allocator<char>&' -->
             <parameter type-id='type-id-384'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
@@ -6556,7 +6556,7 @@
             <!-- artificial parameter of type 'int' -->
             <parameter type-id='type-id-17' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -6617,7 +6617,7 @@
                 <!-- parameter of type 'const std::allocator<char>&' -->
                 <parameter type-id='type-id-384'/>
                 <!-- void -->
-                <return type-id='type-id-27'/>
+                <return type-id='type-id-30'/>
               </function-decl>
             </member-function>
           </class-decl>
@@ -6636,7 +6636,7 @@
             <!-- implicit parameter of type 'std::basic_string<char, std::char_traits<char>, std::allocator<char> >*' -->
             <parameter type-id='type-id-442' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
@@ -6647,7 +6647,7 @@
             <!-- parameter of type 'const std::allocator<char>&' -->
             <parameter type-id='type-id-384'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
@@ -6658,7 +6658,7 @@
             <!-- parameter of type 'const std::basic_string<char, std::char_traits<char>, std::allocator<char> >&' -->
             <parameter type-id='type-id-402'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
@@ -6673,7 +6673,7 @@
             <!-- parameter of type 'unsigned long int' -->
             <parameter type-id='type-id-4'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
@@ -6690,7 +6690,7 @@
             <!-- parameter of type 'const std::allocator<char>&' -->
             <parameter type-id='type-id-384'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
@@ -6705,7 +6705,7 @@
             <!-- parameter of type 'const std::allocator<char>&' -->
             <parameter type-id='type-id-384'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
@@ -6718,7 +6718,7 @@
             <!-- parameter of type 'const std::allocator<char>&' -->
             <parameter type-id='type-id-384'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
@@ -6733,7 +6733,7 @@
             <!-- parameter of type 'const std::allocator<char>&' -->
             <parameter type-id='type-id-384'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
@@ -6744,7 +6744,7 @@
             <!-- artificial parameter of type 'int' -->
             <parameter type-id='type-id-17' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
@@ -6759,7 +6759,7 @@
             <!-- parameter of type 'const std::allocator<char>&' -->
             <parameter type-id='type-id-384'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -6779,7 +6779,7 @@
             <!-- parameter of type 'enum std::_Ios_Openmode' -->
             <parameter type-id='type-id-298'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes' vtable-offset='-1'>
@@ -6792,7 +6792,7 @@
             <!-- artificial parameter of type 'void**' -->
             <parameter type-id='type-id-316' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -6804,7 +6804,7 @@
             <!-- implicit parameter of type 'std::basic_streambuf<char, std::char_traits<char> >*' -->
             <parameter type-id='type-id-440' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes' vtable-offset='-1'>
@@ -6815,7 +6815,7 @@
             <!-- artificial parameter of type 'int' -->
             <parameter type-id='type-id-17' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -6829,7 +6829,7 @@
             <!-- parameter of type 'enum std::_Ios_Openmode' -->
             <parameter type-id='type-id-298'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -6980,7 +6980,7 @@
         <!-- parameter of type 'float*' -->
         <parameter type-id='type-id-49'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::_Destroy<vtkPixelBufferObject**>(vtkPixelBufferObject**, vtkPixelBufferObject**) -->
       <function-decl name='_Destroy&lt;vtkPixelBufferObject**&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='119' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -6989,7 +6989,7 @@
         <!-- parameter of type 'vtkPixelBufferObject**' -->
         <parameter type-id='type-id-304'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::_Destroy<float*, float>(float*, float*, std::allocator<float>&) -->
       <function-decl name='_Destroy&lt;float*, float&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='146' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -7000,7 +7000,7 @@
         <!-- parameter of type 'std::allocator<float>&' -->
         <parameter type-id='type-id-435'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::_Destroy<vtkPixelBufferObject**, vtkPixelBufferObject*>(vtkPixelBufferObject**, vtkPixelBufferObject**, std::allocator<vtkPixelBufferObject*>&) -->
       <function-decl name='_Destroy&lt;vtkPixelBufferObject**, vtkPixelBufferObject*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='146' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -7011,7 +7011,7 @@
         <!-- parameter of type 'std::allocator<vtkPixelBufferObject*>&' -->
         <parameter type-id='type-id-437'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- ptrdiff_t std::operator&#45;<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>(const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&, const std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&) -->
       <function-decl name='operator-&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='319' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -7058,7 +7058,7 @@
         <!-- parameter of type 'const float&' -->
         <parameter type-id='type-id-373'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::uninitialized_fill_n<vtkPixelBufferObject**, long unsigned int, vtkPixelBufferObject*>(vtkPixelBufferObject**, unsigned long int, vtkPixelBufferObject* const&) -->
       <function-decl name='uninitialized_fill_n&lt;vtkPixelBufferObject**, long unsigned int, vtkPixelBufferObject*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='217' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -7069,7 +7069,7 @@
         <!-- parameter of type 'vtkPixelBufferObject* const&' -->
         <parameter type-id='type-id-464'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::__uninitialized_fill_n_a<float*, long unsigned int, float, float>(float*, unsigned long int, const float&, std::allocator<float>&) -->
       <function-decl name='__uninitialized_fill_n_a&lt;float*, long unsigned int, float, float&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='315' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -7082,7 +7082,7 @@
         <!-- parameter of type 'std::allocator<float>&' -->
         <parameter type-id='type-id-435'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::__uninitialized_fill_n_a<vtkPixelBufferObject**, long unsigned int, vtkPixelBufferObject*, vtkPixelBufferObject*>(vtkPixelBufferObject**, unsigned long int, vtkPixelBufferObject* const&, std::allocator<vtkPixelBufferObject*>&) -->
       <function-decl name='__uninitialized_fill_n_a&lt;vtkPixelBufferObject**, long unsigned int, vtkPixelBufferObject*, vtkPixelBufferObject*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='315' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -7095,7 +7095,7 @@
         <!-- parameter of type 'std::allocator<vtkPixelBufferObject*>&' -->
         <parameter type-id='type-id-437'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
     </namespace-decl>
     <!-- namespace vtkLineIntegralConvolution2DUtil -->
@@ -7226,7 +7226,7 @@
           <!-- implicit parameter of type 'vtkLineIntegralConvolution2D*' -->
           <parameter type-id='type-id-461' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' constructor='yes'>
@@ -7237,7 +7237,7 @@
           <!-- parameter of type 'const vtkLineIntegralConvolution2D&' -->
           <parameter type-id='type-id-422'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -7259,7 +7259,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17' name='c1' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.cxx' line='1115' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -7270,7 +7270,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.cxx' line='1128' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -7281,7 +7281,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.cxx' line='1128' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -7292,7 +7292,7 @@
           <!-- parameter of type 'vtkShaderProgram2*' -->
           <parameter type-id='type-id-280' name='prog' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.cxx' line='1156' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -7303,7 +7303,7 @@
           <!-- parameter of type 'vtkShaderProgram2*' -->
           <parameter type-id='type-id-280' name='prog' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.cxx' line='1156' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -7314,7 +7314,7 @@
           <!-- parameter of type 'vtkShaderProgram2*' -->
           <parameter type-id='type-id-280' name='prog' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.cxx' line='1156' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -7325,7 +7325,7 @@
           <!-- parameter of type 'vtkShaderProgram2*' -->
           <parameter type-id='type-id-280' name='prog' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.cxx' line='1156' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -7336,7 +7336,7 @@
           <!-- parameter of type 'vtkShaderProgram2*' -->
           <parameter type-id='type-id-280' name='prog' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.cxx' line='1156' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -7347,7 +7347,7 @@
           <!-- parameter of type 'vtkShaderProgram2*' -->
           <parameter type-id='type-id-280' name='prog' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.cxx' line='1156' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -7358,7 +7358,7 @@
           <!-- parameter of type 'vtkShaderProgram2*' -->
           <parameter type-id='type-id-280' name='prog' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.cxx' line='1156' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -7369,7 +7369,7 @@
           <!-- parameter of type 'vtkShaderProgram2*' -->
           <parameter type-id='type-id-280' name='prog' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.cxx' line='1156' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' static='yes'>
@@ -7378,7 +7378,7 @@
           <!-- parameter of type 'vtkTextureObject*' -->
           <parameter type-id='type-id-342'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' static='yes'>
@@ -7387,7 +7387,7 @@
           <!-- parameter of type 'vtkTextureObject*' -->
           <parameter type-id='type-id-342'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' static='yes'>
@@ -7407,7 +7407,7 @@
           <!-- parameter of type 'vtkRenderWindow*' -->
           <parameter type-id='type-id-35' name='renWin' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkLineIntegralConvolution2D.cxx' line='1030' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' static='yes'>
@@ -7423,7 +7423,7 @@
           <!-- implicit parameter of type 'vtkLineIntegralConvolution2D*' -->
           <parameter type-id='type-id-461' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -7483,7 +7483,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='0'>
@@ -7514,9 +7514,9 @@
           <!-- parameter of type 'std::ostream&' -->
           <parameter type-id='type-id-62'/>
           <!-- parameter of type 'class vtkIndent' -->
-          <parameter type-id='type-id-29'/>
+          <parameter type-id='type-id-28'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected' vtable-offset='15'>
@@ -7536,7 +7536,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='21'>
@@ -7572,7 +7572,7 @@
           <!-- implicit parameter of type 'vtkLineIntegralConvolution2D*' -->
           <parameter type-id='type-id-461' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='25'>
@@ -7581,7 +7581,7 @@
           <!-- implicit parameter of type 'vtkLineIntegralConvolution2D*' -->
           <parameter type-id='type-id-461' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='26'>
@@ -7592,7 +7592,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='27'>
@@ -7628,7 +7628,7 @@
           <!-- implicit parameter of type 'vtkLineIntegralConvolution2D*' -->
           <parameter type-id='type-id-461' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='31'>
@@ -7637,7 +7637,7 @@
           <!-- implicit parameter of type 'vtkLineIntegralConvolution2D*' -->
           <parameter type-id='type-id-461' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='32'>
@@ -7648,7 +7648,7 @@
           <!-- parameter of type 'double' -->
           <parameter type-id='type-id-15'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='33'>
@@ -7686,7 +7686,7 @@
           <!-- parameter of type 'double' -->
           <parameter type-id='type-id-15'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='37'>
@@ -7724,7 +7724,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='41'>
@@ -7760,7 +7760,7 @@
           <!-- implicit parameter of type 'vtkLineIntegralConvolution2D*' -->
           <parameter type-id='type-id-461' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='45'>
@@ -7769,7 +7769,7 @@
           <!-- implicit parameter of type 'vtkLineIntegralConvolution2D*' -->
           <parameter type-id='type-id-461' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='46'>
@@ -7780,7 +7780,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='47'>
@@ -7818,7 +7818,7 @@
           <!-- parameter of type 'double' -->
           <parameter type-id='type-id-15'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='51'>
@@ -7867,7 +7867,7 @@
           <!-- parameter of type 'int&' -->
           <parameter type-id='type-id-63'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='56'>
@@ -7878,7 +7878,7 @@
           <!-- parameter of type 'int*' -->
           <parameter type-id='type-id-45'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='57'>
@@ -7889,7 +7889,7 @@
           <!-- parameter of type 'double' -->
           <parameter type-id='type-id-15'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='58'>
@@ -7945,7 +7945,7 @@
           <!-- parameter of type 'double' -->
           <parameter type-id='type-id-15'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='64'>
@@ -7983,7 +7983,7 @@
           <!-- parameter of type 'vtkPainterCommunicator*' -->
           <parameter type-id='type-id-346'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='68'>
@@ -8007,7 +8007,7 @@
           <!-- parameter of type 'float&' -->
           <parameter type-id='type-id-425'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='70'>
@@ -8018,7 +8018,7 @@
           <!-- parameter of type 'const char*' -->
           <parameter type-id='type-id-61'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected' vtable-offset='71'>
@@ -8029,7 +8029,7 @@
           <!-- parameter of type 'const char*' -->
           <parameter type-id='type-id-61'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected' vtable-offset='72'>
@@ -8040,7 +8040,7 @@
           <!-- parameter of type 'const char*' -->
           <parameter type-id='type-id-61'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -8058,7 +8058,7 @@
             <!-- implicit parameter of type '__gnu_cxx::__normal_iterator<float*, std::vector<float, std::allocator<float> > >*' -->
             <parameter type-id='type-id-488' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -8069,7 +8069,7 @@
             <!-- parameter of type 'float* const&' -->
             <parameter type-id='type-id-489'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -8081,7 +8081,7 @@
             <!-- implicit parameter of type '__gnu_cxx::new_allocator<char>*' -->
             <parameter type-id='type-id-350' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -8092,7 +8092,7 @@
             <!-- parameter of type 'const __gnu_cxx::new_allocator<char>&' -->
             <parameter type-id='type-id-361'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private' destructor='yes'>
@@ -8103,7 +8103,7 @@
             <!-- artificial parameter of type 'int' -->
             <parameter type-id='type-id-17' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -8115,7 +8115,7 @@
             <!-- implicit parameter of type '__gnu_cxx::new_allocator<float>*' -->
             <parameter type-id='type-id-352' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -8126,7 +8126,7 @@
             <!-- parameter of type 'const __gnu_cxx::new_allocator<float>&' -->
             <parameter type-id='type-id-364'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private' destructor='yes'>
@@ -8137,7 +8137,7 @@
             <!-- artificial parameter of type 'int' -->
             <parameter type-id='type-id-17' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -8149,7 +8149,7 @@
             <!-- implicit parameter of type '__gnu_cxx::new_allocator<vtkPixelBufferObject*>*' -->
             <parameter type-id='type-id-355' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -8160,7 +8160,7 @@
             <!-- parameter of type 'const __gnu_cxx::new_allocator<vtkPixelBufferObject*>&' -->
             <parameter type-id='type-id-368'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private' destructor='yes'>
@@ -8171,7 +8171,7 @@
             <!-- artificial parameter of type 'int' -->
             <parameter type-id='type-id-17' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -8247,7 +8247,7 @@
           <!-- implicit parameter of type 'vtkStructuredGridLIC2D*' -->
           <parameter type-id='type-id-498' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' constructor='yes'>
@@ -8258,7 +8258,7 @@
           <!-- parameter of type 'const vtkStructuredGridLIC2D&' -->
           <parameter type-id='type-id-499'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -8280,7 +8280,7 @@
           <!-- parameter of type 'vtkInformation*' -->
           <parameter type-id='type-id-257' name='outInfo' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkStructuredGridLIC2D.cxx' line='310' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -8311,7 +8311,7 @@
           <!-- parameter of type 'vtkInformation*' -->
           <parameter type-id='type-id-257' name='outInfo' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkStructuredGridLIC2D.cxx' line='289' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected' destructor='yes' vtable-offset='-1'>
@@ -8322,7 +8322,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='0'>
@@ -8353,9 +8353,9 @@
           <!-- parameter of type 'std::ostream&' -->
           <parameter type-id='type-id-62'/>
           <!-- parameter of type 'class vtkIndent' -->
-          <parameter type-id='type-id-29'/>
+          <parameter type-id='type-id-28'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected' vtable-offset='15'>
@@ -8446,7 +8446,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='73'>
@@ -8466,7 +8466,7 @@
           <!-- parameter of type 'double' -->
           <parameter type-id='type-id-15'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='75'>
@@ -8486,7 +8486,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='77'>
@@ -8536,7 +8536,7 @@
           <!-- implicit parameter of type 'vtkAtomicInt<int>*' -->
           <parameter type-id='type-id-505' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -8547,7 +8547,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -8683,7 +8683,7 @@
             <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
             <parameter type-id='type-id-137'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -8807,7 +8807,7 @@
         <!-- parameter of type 'vtkPixelExtent&' -->
         <parameter type-id='type-id-267'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- const vtkPixelExtent& std::__median<vtkPixelExtent>(const vtkPixelExtent&, const vtkPixelExtent&, const vtkPixelExtent&) -->
       <function-decl name='__median&lt;vtkPixelExtent&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algo.h' line='85' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -8829,7 +8829,7 @@
         <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
         <parameter type-id='type-id-137'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::__unguarded_linear_insert<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, vtkPixelExtent>(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, vtkPixelExtent) -->
       <function-decl name='__unguarded_linear_insert&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, vtkPixelExtent&gt;' mangled-name='_ZSt25__unguarded_linear_insertISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ES1_EvT_T0_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algo.h' line='2063' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt25__unguarded_linear_insertISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ES1_EvT_T0_'>
@@ -8838,7 +8838,7 @@
         <!-- parameter of type 'class vtkPixelExtent' -->
         <parameter type-id='type-id-41'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::__insertion_sort<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
       <function-decl name='__insertion_sort&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' mangled-name='_ZSt16__insertion_sortISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_EEvT_S5_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algo.h' line='2096' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt16__insertion_sortISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_EEvT_S5_'>
@@ -8847,7 +8847,7 @@
         <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
         <parameter type-id='type-id-137'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::__unguarded_insertion_sort<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
       <function-decl name='__unguarded_insertion_sort&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algo.h' line='2141' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -8856,7 +8856,7 @@
         <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
         <parameter type-id='type-id-137'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::__final_insertion_sort<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
       <function-decl name='__final_insertion_sort&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' mangled-name='_ZSt22__final_insertion_sortISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_EEvT_S5_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algo.h' line='2173' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt22__final_insertion_sortISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_EEvT_S5_'>
@@ -8865,7 +8865,7 @@
         <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
         <parameter type-id='type-id-137'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> std::__unguarded_partition<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, vtkPixelExtent>(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, vtkPixelExtent) -->
       <function-decl name='__unguarded_partition&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, vtkPixelExtent&gt;' mangled-name='_ZSt21__unguarded_partitionISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ES1_ET_S5_S5_T0_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algo.h' line='2204' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt21__unguarded_partitionISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ES1_ET_S5_S5_T0_'>
@@ -8887,7 +8887,7 @@
         <!-- parameter of type 'long int' -->
         <parameter type-id='type-id-20'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- long int std::__lg(long int) -->
       <function-decl name='__lg' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algo.h' line='2323' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -8905,7 +8905,7 @@
         <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
         <parameter type-id='type-id-137'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::sort<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
       <function-decl name='sort&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algo.h' line='5207' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -8914,7 +8914,7 @@
         <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
         <parameter type-id='type-id-137'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::iter_swap<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
       <function-decl name='iter_swap&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='117' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -8923,7 +8923,7 @@
         <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
         <parameter type-id='type-id-137'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- float* std::__copy_move_a<false, float*, float*>(float*, float*, float*) -->
       <function-decl name='__copy_move_a&lt;false, float*, float*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -9099,7 +9099,7 @@
         <!-- parameter of type 'const float&' -->
         <parameter type-id='type-id-373'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::fill<float*, float>(float*, float*, const float&) -->
       <function-decl name='fill&lt;float*, float&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='730' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -9110,7 +9110,7 @@
         <!-- parameter of type 'const float&' -->
         <parameter type-id='type-id-373'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- bool std::operator==<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>(const std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&, const std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&) -->
       <function-decl name='operator==&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_deque.h' line='235' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -9177,7 +9177,7 @@
         <!-- parameter of type 'class vtkPixelExtent' -->
         <parameter type-id='type-id-41'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::__adjust_heap<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, long int, vtkPixelExtent>(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, long int, long int, vtkPixelExtent) -->
       <function-decl name='__adjust_heap&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, long int, vtkPixelExtent&gt;' mangled-name='_ZSt13__adjust_heapISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ElS1_EvT_T0_S6_T1_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_heap.h' line='224' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt13__adjust_heapISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_ElS1_EvT_T0_S6_T1_'>
@@ -9190,7 +9190,7 @@
         <!-- parameter of type 'class vtkPixelExtent' -->
         <parameter type-id='type-id-41'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::__pop_heap<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
       <function-decl name='__pop_heap&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_heap.h' line='250' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -9201,7 +9201,7 @@
         <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
         <parameter type-id='type-id-137'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::make_heap<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
       <function-decl name='make_heap&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' mangled-name='_ZSt9make_heapISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_EEvT_S5_' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_heap.h' line='373' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt9make_heapISt15_Deque_iteratorI14vtkPixelExtentRS1_PS1_EEvT_S5_'>
@@ -9210,7 +9210,7 @@
         <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
         <parameter type-id='type-id-137'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::sort_heap<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>) -->
       <function-decl name='sort_heap&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_heap.h' line='452' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -9219,7 +9219,7 @@
         <!-- parameter of type 'struct std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>' -->
         <parameter type-id='type-id-137'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- ptrdiff_t std::__distance<std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*> >(std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, std::random_access_iterator_tag) -->
       <function-decl name='__distance&lt;std::_Deque_iterator&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_funcs.h' line='87' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -9270,7 +9270,7 @@
         <!-- parameter of type 'struct std::random_access_iterator_tag' -->
         <parameter type-id='type-id-476'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::__advance<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, long int>(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&, long int, std::random_access_iterator_tag) -->
       <function-decl name='__advance&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, long int&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_funcs.h' line='145' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -9281,7 +9281,7 @@
         <!-- parameter of type 'struct std::random_access_iterator_tag' -->
         <parameter type-id='type-id-476'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::advance<std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>, long int>(std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&, long int) -->
       <function-decl name='advance&lt;std::_Deque_iterator&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt;, long int&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_funcs.h' line='168' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -9290,7 +9290,7 @@
         <!-- parameter of type 'long int' -->
         <parameter type-id='type-id-20'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- void std::advance<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, long int>(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>&, long int) -->
       <function-decl name='advance&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, long int&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_funcs.h' line='168' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -9299,7 +9299,7 @@
         <!-- parameter of type 'long int' -->
         <parameter type-id='type-id-20'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- std::random_access_iterator_tag std::__iterator_category<std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*> >(const std::_Deque_iterator<vtkPixelExtent, const vtkPixelExtent&, const vtkPixelExtent*>&) -->
       <function-decl name='__iterator_category&lt;std::_Deque_iterator&lt;vtkPixelExtent, const vtkPixelExtent&amp;, const vtkPixelExtent*&gt; &gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_iterator_base_types.h' line='160' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -9574,7 +9574,7 @@
           <!-- implicit parameter of type 'vtkSurfaceLICComposite*' -->
           <parameter type-id='type-id-548' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' constructor='yes'>
@@ -9585,7 +9585,7 @@
           <!-- parameter of type 'const vtkSurfaceLICComposite&' -->
           <parameter type-id='type-id-538'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -9611,7 +9611,7 @@
           <!-- parameter of type 'vtkPixelExtent&' -->
           <parameter type-id='type-id-547' name='ext' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICComposite.cxx' line='340' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -9671,7 +9671,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17' name='antialias' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICComposite.cxx' line='64' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' static='yes'>
@@ -9736,7 +9736,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='0'>
@@ -9767,9 +9767,9 @@
           <!-- parameter of type 'std::ostream&' -->
           <parameter type-id='type-id-62'/>
           <!-- parameter of type 'class vtkIndent' -->
-          <parameter type-id='type-id-29'/>
+          <parameter type-id='type-id-28'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected' vtable-offset='15'>
@@ -9789,7 +9789,7 @@
           <!-- parameter of type 'vtkOpenGLRenderWindow*' -->
           <parameter type-id='type-id-263'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='21'>
@@ -9809,7 +9809,7 @@
           <!-- parameter of type 'vtkPainterCommunicator*' -->
           <parameter type-id='type-id-346'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='23'>
@@ -9818,7 +9818,7 @@
           <!-- implicit parameter of type 'vtkSurfaceLICComposite*' -->
           <parameter type-id='type-id-548' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='24'>
@@ -9893,7 +9893,7 @@
           <!-- implicit parameter of type 'vtkTimeStamp*' -->
           <parameter type-id='type-id-562' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -9911,7 +9911,7 @@
           <!-- implicit parameter of type 'vtkSurfaceLICDefaultPainter*' -->
           <parameter type-id='type-id-566' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' constructor='yes'>
@@ -9922,7 +9922,7 @@
           <!-- parameter of type 'const vtkSurfaceLICDefaultPainter&' -->
           <parameter type-id='type-id-567'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -9933,7 +9933,7 @@
           <!-- parameter of type 'vtkSurfaceLICPainter*' -->
           <parameter type-id='type-id-565' name='_arg' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICDefaultPainter.cxx' line='29' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' static='yes'>
@@ -9951,7 +9951,7 @@
           <!-- artificial parameter of type 'int' -->
           <parameter type-id='type-id-17' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='0'>
@@ -9982,9 +9982,9 @@
           <!-- parameter of type 'std::ostream&' -->
           <parameter type-id='type-id-62'/>
           <!-- parameter of type 'class vtkIndent' -->
-          <parameter type-id='type-id-29'/>
+          <parameter type-id='type-id-28'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected' vtable-offset='14'>
@@ -9995,7 +9995,7 @@
           <!-- parameter of type 'vtkGarbageCollector*' -->
           <parameter type-id='type-id-570'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected' vtable-offset='15'>
@@ -10015,7 +10015,7 @@
           <!-- parameter of type 'double*' -->
           <parameter type-id='type-id-196'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected' vtable-offset='47'>
@@ -10024,7 +10024,7 @@
           <!-- implicit parameter of type 'vtkSurfaceLICDefaultPainter*' -->
           <parameter type-id='type-id-566' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='48'>
@@ -10226,7 +10226,7 @@
               <!-- implicit parameter of type 'vtkSurfaceLICPainter::vtkInternals*' -->
               <parameter type-id='type-id-586' is-artificial='yes'/>
               <!-- void -->
-              <return type-id='type-id-27'/>
+              <return type-id='type-id-30'/>
             </function-decl>
           </member-function>
           <member-function access='private' destructor='yes'>
@@ -10237,7 +10237,7 @@
               <!-- artificial parameter of type 'int' -->
               <parameter type-id='type-id-17' is-artificial='yes'/>
               <!-- void -->
-              <return type-id='type-id-27'/>
+              <return type-id='type-id-30'/>
             </function-decl>
           </member-function>
         </class-decl>
@@ -10396,7 +10396,7 @@
           <!-- implicit parameter of type 'vtkSurfaceLICPainter*' -->
           <parameter type-id='type-id-565' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' constructor='yes'>
@@ -10407,7 +10407,7 @@
           <!-- parameter of type 'const vtkSurfaceLICPainter&' -->
           <parameter type-id='type-id-590'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10420,7 +10420,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17' name='fieldAttributeType' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1604' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10431,7 +10431,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1645' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10442,7 +10442,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1645' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10453,7 +10453,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1645' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10464,7 +10464,7 @@
           <!-- parameter of type 'double' -->
           <parameter type-id='type-id-15' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1741' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10475,7 +10475,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1645' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10486,7 +10486,7 @@
           <!-- parameter of type 'double' -->
           <parameter type-id='type-id-15' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1741' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10497,7 +10497,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1645' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10508,7 +10508,7 @@
           <!-- parameter of type 'double' -->
           <parameter type-id='type-id-15' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1741' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10519,7 +10519,7 @@
           <!-- parameter of type 'double' -->
           <parameter type-id='type-id-15' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1741' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10530,7 +10530,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1645' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10541,7 +10541,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1645' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10552,7 +10552,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1645' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10563,7 +10563,7 @@
           <!-- parameter of type 'double' -->
           <parameter type-id='type-id-15' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1741' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10574,7 +10574,7 @@
           <!-- parameter of type 'double' -->
           <parameter type-id='type-id-15' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1741' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10585,7 +10585,7 @@
           <!-- parameter of type 'double' -->
           <parameter type-id='type-id-15' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1741' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10596,7 +10596,7 @@
           <!-- parameter of type 'double' -->
           <parameter type-id='type-id-15' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1741' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10607,7 +10607,7 @@
           <!-- parameter of type 'double' -->
           <parameter type-id='type-id-15' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1741' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10618,7 +10618,7 @@
           <!-- parameter of type 'double*' -->
           <parameter type-id='type-id-196' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1838' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10629,7 +10629,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1645' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -10674,7 +10674,7 @@
           <!-- implicit parameter of type 'vtkSurfaceLICPainter* const' -->
           <parameter type-id='type-id-591' name='this' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -10685,7 +10685,7 @@
           <!-- parameter of type 'vtkDataSet*' -->
           <parameter type-id='type-id-249' name='data' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='3363' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -10707,7 +10707,7 @@
           <!-- parameter of type 'vtkImageData*' -->
           <parameter type-id='type-id-252' name='data' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1932' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10718,7 +10718,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1645' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10729,7 +10729,7 @@
           <!-- parameter of type 'double' -->
           <parameter type-id='type-id-15' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1741' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10740,7 +10740,7 @@
           <!-- parameter of type 'double' -->
           <parameter type-id='type-id-15' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1741' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10751,7 +10751,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1645' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10762,7 +10762,7 @@
           <!-- parameter of type 'double' -->
           <parameter type-id='type-id-15' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1741' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10773,7 +10773,7 @@
           <!-- parameter of type 'double' -->
           <parameter type-id='type-id-15' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1741' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10784,7 +10784,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1645' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10795,7 +10795,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1645' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10806,7 +10806,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1645' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -10817,7 +10817,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17' name='val' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1645' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -10865,7 +10865,7 @@
           <!-- parameter of type 'const char*' -->
           <parameter type-id='type-id-61' name='name' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='1586' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -10898,7 +10898,7 @@
           <!-- parameter of type 'double*' -->
           <parameter type-id='type-id-196' name='bounds' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='3370' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' static='yes'>
@@ -10925,7 +10925,7 @@
           <!-- parameter of type 'vtkRenderWindow*' -->
           <parameter type-id='type-id-35' name='renWin' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='2020' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -10936,7 +10936,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -10947,7 +10947,7 @@
           <!-- parameter of type 'vtkRenderer*' -->
           <parameter type-id='type-id-592' name='renderer' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' line='2426' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -10958,7 +10958,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected' destructor='yes' vtable-offset='-1'>
@@ -10969,7 +10969,7 @@
           <!-- parameter of type 'int' -->
           <parameter type-id='type-id-17'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='0'>
@@ -11000,9 +11000,9 @@
           <!-- parameter of type 'std::ostream&' -->
           <parameter type-id='type-id-62'/>
           <!-- parameter of type 'class vtkIndent' -->
-          <parameter type-id='type-id-29'/>
+          <parameter type-id='type-id-28'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected' vtable-offset='14'>
@@ -11013,7 +11013,7 @@
           <!-- parameter of type 'vtkGarbageCollector*' -->
           <parameter type-id='type-id-570'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected' vtable-offset='15'>
@@ -11033,7 +11033,7 @@
           <!-- parameter of type 'vtkWindow*' -->
           <parameter type-id='type-id-595'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='33'>
@@ -11059,7 +11059,7 @@
           <!-- parameter of type 'bool' -->
           <parameter type-id='type-id-1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected' vtable-offset='38'>
@@ -11070,7 +11070,7 @@
           <!-- parameter of type 'vtkInformation*' -->
           <parameter type-id='type-id-257'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='40'>
@@ -11106,7 +11106,7 @@
           <!-- implicit parameter of type 'vtkSurfaceLICPainter*' -->
           <parameter type-id='type-id-565' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='44'>
@@ -11115,7 +11115,7 @@
           <!-- implicit parameter of type 'vtkSurfaceLICPainter*' -->
           <parameter type-id='type-id-565' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='45'>
@@ -11133,7 +11133,7 @@
           <!-- implicit parameter of type 'vtkSurfaceLICPainter*' -->
           <parameter type-id='type-id-565' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='47'>
@@ -11142,7 +11142,7 @@
           <!-- implicit parameter of type 'vtkSurfaceLICPainter*' -->
           <parameter type-id='type-id-565' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='48'>
@@ -11184,7 +11184,7 @@
           <!-- parameter of type 'double&' -->
           <parameter type-id='type-id-596'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='52'>
@@ -11195,7 +11195,7 @@
           <!-- parameter of type 'double*' -->
           <parameter type-id='type-id-196'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='53'>
@@ -11222,7 +11222,7 @@
           <!-- implicit parameter of type 'vtkSurfaceLICPainter*' -->
           <parameter type-id='type-id-565' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='56'>
@@ -11231,7 +11231,7 @@
           <!-- implicit parameter of type 'vtkSurfaceLICPainter*' -->
           <parameter type-id='type-id-565' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='57'>
@@ -11285,7 +11285,7 @@
           <!-- implicit parameter of type 'vtkSurfaceLICPainter*' -->
           <parameter type-id='type-id-565' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='63'>
@@ -11294,7 +11294,7 @@
           <!-- implicit parameter of type 'vtkSurfaceLICPainter*' -->
           <parameter type-id='type-id-565' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='64'>
@@ -11440,7 +11440,7 @@
           <!-- parameter of type 'const char*' -->
           <parameter type-id='type-id-61'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected' vtable-offset='80'>
@@ -11455,7 +11455,7 @@
           <!-- parameter of type 'float&' -->
           <parameter type-id='type-id-425'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected' vtable-offset='81'>
@@ -11466,7 +11466,7 @@
           <!-- parameter of type 'const char*' -->
           <parameter type-id='type-id-61'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected' vtable-offset='82'>
@@ -11477,7 +11477,7 @@
           <!-- parameter of type 'const char*' -->
           <parameter type-id='type-id-61'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected' vtable-offset='83'>
@@ -11676,7 +11676,7 @@
           <!-- parameter of type 'double' -->
           <parameter type-id='type-id-15'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' vtable-offset='27'>
@@ -11734,7 +11734,7 @@
           <!-- parameter of type 'vtkActor*' -->
           <parameter type-id='type-id-593'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected' vtable-offset='38'>
@@ -11745,7 +11745,7 @@
           <!-- parameter of type 'vtkInformation*' -->
           <parameter type-id='type-id-257'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -11781,7 +11781,7 @@
           <!-- implicit parameter of type 'vtkSmartPointer<vtkBackgroundColorMonitor>*' -->
           <parameter type-id='type-id-629' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -11792,7 +11792,7 @@
           <!-- parameter of type 'vtkBackgroundColorMonitor*' -->
           <parameter type-id='type-id-630'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -11805,7 +11805,7 @@
           <!-- parameter of type 'const vtkSmartPointerBase::NoReference&' -->
           <parameter type-id='type-id-631'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -11819,7 +11819,7 @@
           <!-- implicit parameter of type 'vtkSmartPointer<vtkColorMaterialHelper>*' -->
           <parameter type-id='type-id-632' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -11830,7 +11830,7 @@
           <!-- parameter of type 'vtkColorMaterialHelper*' -->
           <parameter type-id='type-id-633'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -11843,7 +11843,7 @@
           <!-- parameter of type 'const vtkSmartPointerBase::NoReference&' -->
           <parameter type-id='type-id-631'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -11857,7 +11857,7 @@
           <!-- implicit parameter of type 'vtkSmartPointer<vtkFrameBufferObject2>*' -->
           <parameter type-id='type-id-634' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -11868,7 +11868,7 @@
           <!-- parameter of type 'vtkFrameBufferObject2*' -->
           <parameter type-id='type-id-344'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -11881,7 +11881,7 @@
           <!-- parameter of type 'const vtkSmartPointerBase::NoReference&' -->
           <parameter type-id='type-id-631'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -11895,7 +11895,7 @@
           <!-- implicit parameter of type 'vtkSmartPointer<vtkImageData>*' -->
           <parameter type-id='type-id-635' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -11906,7 +11906,7 @@
           <!-- parameter of type 'vtkImageData*' -->
           <parameter type-id='type-id-252'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -11919,7 +11919,7 @@
           <!-- parameter of type 'const vtkSmartPointerBase::NoReference&' -->
           <parameter type-id='type-id-631'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -11933,7 +11933,7 @@
           <!-- implicit parameter of type 'vtkSmartPointer<vtkLightingHelper>*' -->
           <parameter type-id='type-id-636' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -11944,7 +11944,7 @@
           <!-- parameter of type 'vtkLightingHelper*' -->
           <parameter type-id='type-id-637'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -11957,7 +11957,7 @@
           <!-- parameter of type 'const vtkSmartPointerBase::NoReference&' -->
           <parameter type-id='type-id-631'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -11971,7 +11971,7 @@
           <!-- implicit parameter of type 'vtkSmartPointer<vtkLineIntegralConvolution2D>*' -->
           <parameter type-id='type-id-638' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -11982,7 +11982,7 @@
           <!-- parameter of type 'vtkLineIntegralConvolution2D*' -->
           <parameter type-id='type-id-461'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -11995,7 +11995,7 @@
           <!-- parameter of type 'const vtkSmartPointerBase::NoReference&' -->
           <parameter type-id='type-id-631'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -12009,7 +12009,7 @@
           <!-- implicit parameter of type 'vtkSmartPointer<vtkOpenGLLightMonitor>*' -->
           <parameter type-id='type-id-639' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -12020,7 +12020,7 @@
           <!-- parameter of type 'vtkOpenGLLightMonitor*' -->
           <parameter type-id='type-id-640'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -12033,7 +12033,7 @@
           <!-- parameter of type 'const vtkSmartPointerBase::NoReference&' -->
           <parameter type-id='type-id-631'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -12047,7 +12047,7 @@
           <!-- implicit parameter of type 'vtkSmartPointer<vtkOpenGLModelViewProjectionMonitor>*' -->
           <parameter type-id='type-id-641' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -12058,7 +12058,7 @@
           <!-- parameter of type 'vtkOpenGLModelViewProjectionMonitor*' -->
           <parameter type-id='type-id-642'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -12071,7 +12071,7 @@
           <!-- parameter of type 'const vtkSmartPointerBase::NoReference&' -->
           <parameter type-id='type-id-631'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -12085,7 +12085,7 @@
           <!-- implicit parameter of type 'vtkSmartPointer<vtkShaderProgram2>*' -->
           <parameter type-id='type-id-643' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -12096,7 +12096,7 @@
           <!-- parameter of type 'vtkShaderProgram2*' -->
           <parameter type-id='type-id-280'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -12109,7 +12109,7 @@
           <!-- parameter of type 'const vtkSmartPointerBase::NoReference&' -->
           <parameter type-id='type-id-631'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -12123,7 +12123,7 @@
           <!-- implicit parameter of type 'vtkSmartPointer<vtkSurfaceLICComposite>*' -->
           <parameter type-id='type-id-644' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -12134,7 +12134,7 @@
           <!-- parameter of type 'vtkSurfaceLICComposite*' -->
           <parameter type-id='type-id-548'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -12147,7 +12147,7 @@
           <!-- parameter of type 'const vtkSmartPointerBase::NoReference&' -->
           <parameter type-id='type-id-631'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -12161,7 +12161,7 @@
           <!-- implicit parameter of type 'vtkSmartPointer<vtkTextureObject>*' -->
           <parameter type-id='type-id-645' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -12172,7 +12172,7 @@
           <!-- parameter of type 'vtkTextureObject*' -->
           <parameter type-id='type-id-342'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -12185,7 +12185,7 @@
           <!-- parameter of type 'const vtkSmartPointerBase::NoReference&' -->
           <parameter type-id='type-id-631'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -12199,7 +12199,7 @@
           <!-- implicit parameter of type 'vtkSmartPointer<vtkTimerLog>*' -->
           <parameter type-id='type-id-647' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -12210,7 +12210,7 @@
           <!-- parameter of type 'vtkTimerLog*' -->
           <parameter type-id='type-id-648'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -12223,7 +12223,7 @@
           <!-- parameter of type 'const vtkSmartPointerBase::NoReference&' -->
           <parameter type-id='type-id-631'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -12243,7 +12243,7 @@
           <!-- implicit parameter of type 'vtkSmartPointerBase*' -->
           <parameter type-id='type-id-650' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' constructor='yes'>
@@ -12254,7 +12254,7 @@
           <!-- parameter of type 'vtkObjectBase*' -->
           <parameter type-id='type-id-39'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' constructor='yes'>
@@ -12265,7 +12265,7 @@
           <!-- parameter of type 'const vtkSmartPointerBase&' -->
           <parameter type-id='type-id-651'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' destructor='yes'>
@@ -12276,7 +12276,7 @@
           <!-- artificial parameter of type 'int' -->
           <parameter type-id='type-id-17' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected' constructor='yes'>
@@ -12289,7 +12289,7 @@
           <!-- parameter of type 'const vtkSmartPointerBase::NoReference&' -->
           <parameter type-id='type-id-631'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -12303,7 +12303,7 @@
           <!-- implicit parameter of type 'vtkWeakPointer<vtkOpenGLRenderWindow>*' -->
           <parameter type-id='type-id-652' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -12314,7 +12314,7 @@
           <!-- parameter of type 'vtkOpenGLRenderWindow*' -->
           <parameter type-id='type-id-263'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private'>
@@ -12325,7 +12325,7 @@
           <!-- parameter of type 'const vtkWeakPointerBase&' -->
           <parameter type-id='type-id-36'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
@@ -12338,7 +12338,7 @@
           <!-- parameter of type 'const vtkWeakPointerBase::NoReference&' -->
           <parameter type-id='type-id-37'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -12358,7 +12358,7 @@
           <!-- implicit parameter of type 'vtkBoundingBox*' -->
           <parameter type-id='type-id-654' is-artificial='yes'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' constructor='yes'>
@@ -12369,7 +12369,7 @@
           <!-- parameter of type 'const double*' -->
           <parameter type-id='type-id-655'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' constructor='yes'>
@@ -12390,7 +12390,7 @@
           <!-- parameter of type 'double' -->
           <parameter type-id='type-id-15'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' constructor='yes'>
@@ -12401,7 +12401,7 @@
           <!-- parameter of type 'const vtkBoundingBox&' -->
           <parameter type-id='type-id-656'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
@@ -12784,7 +12784,7 @@
                 <!-- implicit parameter of type 'std::_Vector_base<vtkPixelExtent, std::allocator<vtkPixelExtent> >::_Vector_impl*' -->
                 <parameter type-id='type-id-726' is-artificial='yes'/>
                 <!-- void -->
-                <return type-id='type-id-27'/>
+                <return type-id='type-id-30'/>
               </function-decl>
             </member-function>
             <member-function access='public' constructor='yes'>
@@ -12795,7 +12795,7 @@
                 <!-- parameter of type 'const std::allocator<vtkPixelExtent>&' -->
                 <parameter type-id='type-id-155'/>
                 <!-- void -->
-                <return type-id='type-id-27'/>
+                <return type-id='type-id-30'/>
               </function-decl>
             </member-function>
           </class-decl>
@@ -12810,7 +12810,7 @@
             <!-- implicit parameter of type 'std::_Vector_base<vtkPixelExtent, std::allocator<vtkPixelExtent> >*' -->
             <parameter type-id='type-id-723' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
@@ -12821,7 +12821,7 @@
             <!-- parameter of type 'const std::allocator<vtkPixelExtent>&' -->
             <parameter type-id='type-id-155'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
@@ -12834,7 +12834,7 @@
             <!-- parameter of type 'const std::allocator<vtkPixelExtent>&' -->
             <parameter type-id='type-id-155'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
@@ -12845,7 +12845,7 @@
             <!-- artificial parameter of type 'int' -->
             <parameter type-id='type-id-17' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -12859,7 +12859,7 @@
             <!-- implicit parameter of type 'std::vector<vtkPixelExtent, std::allocator<vtkPixelExtent> >*' -->
             <parameter type-id='type-id-728' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -12870,7 +12870,7 @@
             <!-- parameter of type 'const std::allocator<vtkPixelExtent>&' -->
             <parameter type-id='type-id-155'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -12885,7 +12885,7 @@
             <!-- parameter of type 'const std::allocator<vtkPixelExtent>&' -->
             <parameter type-id='type-id-155'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -12896,7 +12896,7 @@
             <!-- parameter of type 'const std::vector<vtkPixelExtent, std::allocator<vtkPixelExtent> >&' -->
             <parameter type-id='type-id-664'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private' destructor='yes'>
@@ -12907,7 +12907,7 @@
             <!-- artificial parameter of type 'int' -->
             <parameter type-id='type-id-17' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='protected'>
@@ -12922,7 +12922,7 @@
             <!-- parameter of type 'struct std::forward_iterator_tag' -->
             <parameter type-id='type-id-310'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='protected'>
@@ -12937,7 +12937,7 @@
             <!-- parameter of type 'struct std::__false_type' -->
             <parameter type-id='type-id-309'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
@@ -12952,7 +12952,7 @@
             <!-- parameter of type 'const std::allocator<vtkPixelExtent>&' -->
             <parameter type-id='type-id-155'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -12987,7 +12987,7 @@
         <!-- parameter of type 'std::allocator<vtkPixelExtent>&' -->
         <parameter type-id='type-id-214'/>
         <!-- void -->
-        <return type-id='type-id-27'/>
+        <return type-id='type-id-30'/>
       </function-decl>
       <!-- vtkPixelExtent* std::uninitialized_copy<std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, vtkPixelExtent*>(std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, std::_Deque_iterator<vtkPixelExtent, vtkPixelExtent&, vtkPixelExtent*>, vtkPixelExtent*) -->
       <function-decl name='uninitialized_copy&lt;std::_Deque_iterator&lt;vtkPixelExtent, vtkPixelExtent&amp;, vtkPixelExtent*&gt;, vtkPixelExtent*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_uninitialized.h' line='106' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -13028,7 +13028,7 @@
             <!-- implicit parameter of type 'vtkSurfaceLICPainterUtil::RandomNumberGeneratorInterface*' -->
             <parameter type-id='type-id-791' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private' destructor='yes'>
@@ -13039,7 +13039,7 @@
             <!-- artificial parameter of type 'int' -->
             <parameter type-id='type-id-17' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
         <member-function access='private' constructor='yes'>
@@ -13050,7 +13050,7 @@
             <!-- parameter of type 'const vtkSurfaceLICPainterUtil::RandomNumberGeneratorInterface&' -->
             <parameter type-id='type-id-717'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -13079,7 +13079,7 @@
             <!-- implicit parameter of type 'vtkSurfaceLICPainterUtil::RandomNoise2D*' -->
             <parameter type-id='type-id-789' is-artificial='yes'/>
             <!-- void -->
-            <return type-id='type-id-27'/>
+            <return type-id='type-id-30'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -13125,7 +13125,7 @@
           <!-- parameter of type 'const double*' -->
           <parameter type-id='type-id-655' name='origin' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkTextureIO.cxx' line='129' column='1'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
       <member-function access='private' static='yes'>
@@ -13140,7 +13140,7 @@
           <!-- parameter of type 'const double*' -->
           <parameter type-id='type-id-655'/>
           <!-- void -->
-          <return type-id='type-id-27'/>
+          <return type-id='type-id-30'/>
         </function-decl>
       </member-function>
     </class-decl>
