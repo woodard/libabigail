@@ -2921,6 +2921,8 @@ write_array_subrange_type(const array_type_def::subrange_sptr&	decl,
 
   o << "/>\n";
 
+  ctxt.record_type_as_emitted(decl);
+
   return true;
 }
 
