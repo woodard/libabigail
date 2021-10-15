@@ -11053,8 +11053,8 @@ dwarf_language_to_tu_language(size_t l)
       return translation_unit::LANG_Ada95;
     case DW_LANG_Fortran95:
       return translation_unit::LANG_Fortran95;
-    case DW_LANG_PL1:
-      return translation_unit::LANG_PL1;
+    case DW_LANG_PLI:
+      return translation_unit::LANG_PLI;
     case DW_LANG_ObjC:
       return translation_unit::LANG_ObjC;
     case DW_LANG_ObjC_plus_plus:
@@ -11160,7 +11160,7 @@ get_default_array_lower_bound(translation_unit::language l)
     case translation_unit::LANG_Java:
       value = 0;
       break;
-    case translation_unit::LANG_PL1:
+    case translation_unit::LANG_PLI:
       value = 1;
       break;
     case translation_unit::LANG_UPC:

@@ -665,7 +665,7 @@ public:
     LANG_Pascal83,
     LANG_Modula2,
     LANG_Java,
-    LANG_PL1,
+    LANG_PLI,
     LANG_UPC,
     LANG_D,
     LANG_Python,

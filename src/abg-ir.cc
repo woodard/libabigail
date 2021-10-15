@@ -1522,8 +1522,8 @@ translation_unit_language_to_string(translation_unit::language l)
       return "LANG_Modula2";
     case translation_unit::LANG_Java:
       return "LANG_Java";
-    case translation_unit::LANG_PL1:
-      return "LANG_PL1";
+    case translation_unit::LANG_PLI:
+      return "LANG_PLI";
     case translation_unit::LANG_UPC:
       return "LANG_UPC";
     case translation_unit::LANG_D:
@@ -1588,8 +1588,8 @@ string_to_translation_unit_language(const string& l)
     return translation_unit::LANG_Modula2;
   else if (l == "LANG_Java")
     return translation_unit::LANG_Java;
-  else if (l == "LANG_PL1")
-    return translation_unit::LANG_PL1;
+  else if (l == "LANG_PLI")
+    return translation_unit::LANG_PLI;
   else if (l == "LANG_UPC")
     return translation_unit::LANG_UPC;
   else if (l == "LANG_D")
