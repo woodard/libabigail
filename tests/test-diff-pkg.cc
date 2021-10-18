@@ -738,8 +738,10 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/wireshark/wireshark-cli-3.4.9-1.fc36.x86_64.rpm",
     "--self-check",
     "",
-    "data/test-diff-pkg/wireshark/wireshark-cli-debuginfo-3.4.9-1.fc36.x86_64.rpm",
-    "data/test-diff-pkg/wireshark/wireshark-cli-debuginfo-3.4.9-1.fc36.x86_64.rpm",
+    "data/test-diff-pkg/wireshark/wireshark-cli-debuginfo-3.4.9-1.fc36.x86_64.rpm,"
+    "data/test-diff-pkg/wireshark/wireshark-debuginfo-3.4.9-1.fc36.x86_64.rpm",
+    "data/test-diff-pkg/wireshark/wireshark-cli-debuginfo-3.4.9-1.fc36.x86_64.rpm,"
+    "data/test-diff-pkg/wireshark/wireshark-debuginfo-3.4.9-1.fc36.x86_64.rpm",
     "",
     "",
     "data/test-diff-pkg/wireshark/wireshark-cli-3.4.9-1.fc36.x86_64-self-check-report.txt",
