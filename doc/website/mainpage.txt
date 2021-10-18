@@ -48,7 +48,7 @@ database</a>.
 
 \section license License
 
-The source code of the library is under <a href="http://www.gnu.org/licenses/lgpl.html"> LGPL version 3</a> or later.
+The source code of the library is under the <a href="https://spdx.org/licenses/Apache-2.0.html">Apache version 2 license</a> with the <a href="https://spdx.org/licenses/LLVM-exception.html">LLVM exception</a>.
 
 \section source Getting the source code
 
