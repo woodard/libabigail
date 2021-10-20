@@ -4470,9 +4470,9 @@ build_enum_type_decl(read_context&	ctxt,
   t->set_is_anonymous(is_anonymous);
   t->set_is_artificial(is_artificial);
   t->set_is_declaration_only(is_decl_only);
-  maybe_set_naming_typedef(ctxt, node, t);
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     {
+      maybe_set_naming_typedef(ctxt, node, t);
       ctxt.map_xml_node_to_decl(node, t);
       return t;
     }
@@ -4529,19 +4529,14 @@ build_typedef_decl(read_context&	ctxt,
     type_id = CHAR_STR(s);
   ABG_ASSERT(!type_id.empty());
 
-  // Create the typedef type /before/ the underlying type.  After the
-  // creation, the type is 'keyed' using ctxt.push_and_key_type_decl.
-  // This means that the type can be retrieved from its type ID.  This
-  // is so that if the underlying type indirectly (needs to) use(s)
-  // this very same typedef type (via recursion) then that is made
-  // possible.
-  typedef_decl_sptr t(new typedef_decl(name, ctxt.get_environment(), loc));
+  type_base_sptr underlying_type(ctxt.build_or_get_type_decl(type_id, true));
+  ABG_ASSERT(underlying_type);
+
+  typedef_decl_sptr t(new typedef_decl(name, underlying_type, loc));
   maybe_set_artificial_location(ctxt, node, t);
   ctxt.push_and_key_type_decl(t, id, add_to_current_scope);
   ctxt.map_xml_node_to_decl(node, t);
-  type_base_sptr underlying_type(ctxt.build_or_get_type_decl(type_id, true));
-  ABG_ASSERT(underlying_type);
-  t->set_underlying_type(underlying_type);
+
   return t;
 }
 
