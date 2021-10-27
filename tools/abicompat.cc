@@ -105,12 +105,12 @@ display_usage(const string& prog_name, ostream& out)
     "to the debug information directory for the first library\n"
     << "  --lib-debug-info-dir2|--libd2 <path-to-lib-debug-info2>  set the path "
     "to the debug information directory for the second library\n"
-    <<  "--suppressions|--suppr <path> specify a suppression file\n"
-    << "--no-redundant  do not display redundant changes\n"
-    << "--no-show-locs  do now show location information\n"
-    << "--redundant  display redundant changes (this is the default)\n"
-    << "--weak-mode  check compatibility between the application and "
-    "just one version of the library."
+    << "  --suppressions|--suppr <path> specify a suppression file\n"
+    << "  --no-redundant  do not display redundant changes\n"
+    << "  --no-show-locs  do now show location information\n"
+    << "  --redundant  display redundant changes (this is the default)\n"
+    << "  --weak-mode  check compatibility between the application and "
+    "just one version of the library.\n"
     ;
 }
 
