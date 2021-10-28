@@ -500,6 +500,11 @@ Options
     changes.  Added or removed functions and variables do not have any
     diff nodes tree associated to them.
 
+  * ``--ctf``
+
+    When comparing binaries, extract ABI information from CTF debug
+    information, if present.
+
   * ``--stats``
 
     Emit statistics about various internal things.

@@ -144,6 +144,13 @@ AC_ARG_ENABLE(ubsan,
 	      ENABLE_UBSAN=$enableval,
 	      ENABLE_UBSAN=no)
 
+dnl check if user has enabled CTF code
+AC_ARG_ENABLE(ctf,
+	      AS_HELP_STRING([--enable-ctf=yes|no],
+			     [disable support of ctf files)]),
+	      ENABLE_CTF=$enableval,
+	      ENABLE_CTF=no)
+
 dnl *************************************************
 dnl check for dependencies
 dnl *************************************************
@@ -249,6 +256,24 @@ fi
 
 AC_SUBST(DW_LIBS)
 AC_SUBST([ELF_LIBS])
+
+dnl check for libctf presence if CTF code has been enabled by command line
+dnl argument, and then define CTF flag (to build CTF file code) if libctf is
+dnl found on the system
+CTF_LIBS=
+if test x$ENABLE_CTF = xyes; then
+  LIBCTF=
+  AC_CHECK_LIB(ctf, ctf_open, [LIBCTF=yes], [LIBCTF=no])
+  if test x$LIBCTF = xyes; then
+    AC_MSG_NOTICE([activating CTF code])
+    AC_DEFINE([WITH_CTF], 1,
+	     [Defined if user enables and system has the libctf library])
+    CTF_LIBS=-lctf
+  else
+    AC_MSG_NOTICE([CTF enabled but no libctf found])
+    ENABLE_CTF=no
+  fi
+fi
 
 dnl Check for dependency: libxml
 LIBXML2_VERSION=2.6.22
@@ -611,7 +636,7 @@ AX_VALGRIND_CHECK
 
 dnl Set the list of libraries libabigail depends on
 
-DEPS_LIBS="$XML_LIBS $ELF_LIBS $DW_LIBS"
+DEPS_LIBS="$XML_LIBS $ELF_LIBS $DW_LIBS $CTF_LIBS"
 AC_SUBST(DEPS_LIBS)
 
 if test x$ABIGAIL_DEVEL != x; then
@@ -648,6 +673,10 @@ if test x$ENABLE_UBSAN = xyes; then
     CFLAGS="$CFLAGS -fsanitize=undefined"
     CXXFLAGS="$CXXFLAGS -fsanitize=undefined"
 fi
+
+dnl Set a few Automake conditionals
+
+AM_CONDITIONAL([CTF_READER],[test "x$ENABLE_CTF" = "xyes"])
 
 dnl Set the level of C++ standard we use.
 CXXFLAGS="$CXXFLAGS -std=$CXX_STANDARD"
@@ -955,6 +984,7 @@ AC_MSG_NOTICE([
     Enable bash completion	                   : ${ENABLE_BASH_COMPLETION}
     Enable fedabipkgdiff                           : ${ENABLE_FEDABIPKGDIFF}
     Enable python 3				   : ${ENABLE_PYTHON3}
+    Enable CTF front-end                           : ${ENABLE_CTF}
     Enable running tests under Valgrind            : ${enable_valgrind}
     Enable build with -fsanitize=address    	   : ${ENABLE_ASAN}
     Enable build with -fsanitize=memory    	   : ${ENABLE_MSAN}

@@ -41,6 +41,10 @@ abg-symtab-reader.h			\
 abg-symtab-reader.cc			\
 $(VIZ_SOURCES)
 
+if CTF_READER
+libabigail_la_SOURCES += abg-ctf-reader.cc
+endif
+
 libabigail_la_LIBADD = $(DEPS_LIBS)
 libabigail_la_LDFLAGS = -lpthread -Wl,--as-needed -no-undefined
 

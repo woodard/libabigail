@@ -27,4 +27,8 @@ abg-viz-dot.h		\
 abg-viz-svg.h		\
 abg-regex.h
 
+if CTF_READER
+pkginclude_HEADERS += abg-ctf-reader.h
+endif
+
 EXTRA_DIST = abg-version.h.in
