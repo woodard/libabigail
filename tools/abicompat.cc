@@ -390,7 +390,7 @@ perform_compat_check_in_normal_mode(options& opts,
   return status;
 }
 
-/// An description of a change of the type of a function.  It contains
+/// A description of a change of the type of a function.  It contains
 /// the declaration of the function we are interested in, as well as
 /// the differences found in the type of that function.
 struct fn_change
@@ -636,6 +636,13 @@ main(int argc, char* argv[])
 	<< abigail::tools_utils::get_library_version_string()
 	<< "\n";
       return 0;
+    }
+
+  if (opts.weak_mode && !opts.lib2_path.empty())
+    {
+      emit_prefix(argv[0], cout)
+        << "WARNING: The \'--weak-mode\' option is used. The "
+	<< opts.lib2_path << " will be ignored automatically\n";
     }
 
   ABG_ASSERT(!opts.app_path.empty());
