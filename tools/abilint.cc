@@ -90,15 +90,14 @@ display_usage(const string& prog_name, ostream& out)
     << "  --help  display this message\n"
     << "  --version|-v  display program version information and exit\n"
     << "  --debug-info-dir <path> the path under which to look for "
-    << "  --headers-dir|--hd <patch> the path to headers of the elf file\n"
     "debug info for the elf <abi-file>\n"
+    << "  --headers-dir|--hd <path> the path to headers of the elf file\n"
     << "  --header-file|--hf <path> the path to one header of the elf file\n"
-    "debug info for the elf <abi-file>\n"
     << "  --suppressions|--suppr <path> specify a suppression file\n"
     << "  --diff  for xml inputs, perform a text diff between "
     "the input and the memory model saved back to disk\n"
     << "  --noout  do not display anything on stdout\n"
-    << "  --stdin|--  read abi-file content from stdin\n"
+    << "  --stdin  read abi-file content from stdin\n"
     << "  --tu  expect a single translation unit file\n";
 }
 
@@ -262,7 +261,8 @@ main(int argc, char* argv[])
   if (opts.display_version)
     {
       emit_prefix(argv[0], cout)
-	<< abigail::tools_utils::get_library_version_string();
+	<< abigail::tools_utils::get_library_version_string()
+	<< "\n";
       return 0;
     }
 
