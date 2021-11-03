@@ -58,8 +58,19 @@ public:
   /// is used to reuse already generated types.
   unordered_map<ctf_id_t,type_base_sptr> types_map;
 
+  /// libelf handler for the ELF file from which we read the CTF data,
+  /// and the corresponding file descriptor.
+  Elf *elf_handler;
+  int elf_fd;
+
   /// The symtab read from the ELF file.
   symtab_reader::symtab_sptr symtab;
+
+  /// Raw contents of several sections from the ELF file.  These are
+  /// used by libctf.
+  ctf_sect_t ctf_sect;
+  ctf_sect_t symtab_sect;
+  ctf_sect_t strtab_sect;
 
   /// Associate a given CTF type ID with a given libabigail IR type.
   void add_type(ctf_id_t ctf_type, type_base_sptr type)
@@ -93,15 +104,12 @@ public:
   /// @param elf_path the path to the ELF file.
   read_context(string elf_path, ir::environment *env)
   {
-    int err;
-
     types_map.clear();
     filename = elf_path;
     ir_env = env;
-    ctfa = ctf_open(filename.c_str(), NULL /* BFD target */, &err);
-
-    if (ctfa == NULL)
-      fprintf(stderr, "cannot open %s: %s\n", filename.c_str(), ctf_errmsg(err));
+    elf_handler = NULL;
+    elf_fd = -1;
+    ctfa = NULL;
   }
 
   /// Destructor of the @ref read_context type.
@@ -939,6 +947,73 @@ process_ctf_archive(read_context *ctxt, corpus_sptr corp)
 
 }
 
+/// Open the ELF file described by the given read context.
+///
+/// @param ctxt the read context.
+/// @return 0 if the ELF file can't be opened.
+/// @return 1 otherwise.
+
+static int
+open_elf_handler(read_context *ctxt)
+{
+  /* libelf requires to negotiate/set the version of ELF.  */
+  if (elf_version(EV_CURRENT) == EV_NONE)
+    return 0;
+
+  /* Open an ELF handler.  */
+  ctxt->elf_fd = open(ctxt->filename.c_str(), O_RDONLY);
+  if (ctxt->elf_fd == -1)
+    return 0;
+
+  ctxt->elf_handler = elf_begin(ctxt->elf_fd, ELF_C_READ, NULL);
+  if (ctxt->elf_handler == NULL)
+    {
+      fprintf(stderr, "cannot open %s: %s\n",
+               ctxt->filename.c_str(), elf_errmsg(elf_errno()));
+      close(ctxt->elf_fd);
+      return 0;
+    }
+
+  return 1;
+}
+
+/// Close the ELF file described by the given read context.
+///
+/// @param ctxt the read context.
+
+static void
+close_elf_handler (read_context *ctxt)
+{
+  /* Finish the ELF handler and close the associated file.  */
+  elf_end(ctxt->elf_handler);
+  close(ctxt->elf_fd);
+}
+
+/// Fill a CTF section description with the information in a given ELF
+/// section.
+///
+/// @param ctxt the read context.
+/// @param elf_section the ELF section from which to get.
+/// @param ctf_section the CTF section to fill with the raw data.
+
+static void
+fill_ctf_section(read_context *ctxt, Elf_Scn *elf_section, ctf_sect_t *ctf_section)
+{
+  GElf_Shdr section_header_mem, *section_header;
+  Elf_Data *section_data;
+
+  section_header = gelf_getshdr(elf_section, &section_header_mem);
+  section_data = elf_getdata(elf_section, 0);
+
+  ABG_ASSERT (section_header != NULL);
+  ABG_ASSERT (section_data != NULL);
+
+  ctf_section->cts_name = ""; /* This is not actually used by libctf.  */
+  ctf_section->cts_data = (char *) section_data->d_buf;
+  ctf_section->cts_size = section_data->d_size;
+  ctf_section->cts_entsize = section_header->sh_entsize;
+}
+
 /// Slurp certain information from the ELF file described by a given
 /// read context and install it in a libabigail corpus.
 ///
@@ -951,38 +1026,28 @@ process_ctf_archive(read_context *ctxt, corpus_sptr corp)
 static int
 slurp_elf_info(read_context *ctxt, corpus_sptr corp)
 {
-  /* libelf requires to negotiate/set the version of ELF.  */
-  if (elf_version(EV_CURRENT) == EV_NONE)
-    return 0;
-
-  /* Open an ELF handler.  */
-  int elf_fd = open(ctxt->filename.c_str(), O_RDONLY);
-  if (elf_fd == -1)
-    return 0;
-
-  Elf *elf_handler = elf_begin(elf_fd, ELF_C_READ, NULL);
-  if (elf_handler == NULL)
-    {
-      fprintf(stderr, "cannot open %s: %s\n",
-               ctxt->filename.c_str(), elf_errmsg(elf_errno()));
-      close(elf_fd);
-      return 0;
-    }
-
   /* Set the ELF architecture.  */
   GElf_Ehdr eh_mem;
-  GElf_Ehdr *ehdr = gelf_getehdr(elf_handler, &eh_mem);
+  GElf_Ehdr *ehdr = gelf_getehdr(ctxt->elf_handler, &eh_mem);
   corp->set_architecture_name(elf_helpers::e_machine_to_string(ehdr->e_machine));
 
   /* Read the symtab from the ELF file and set it in the corpus.  */
   ctxt->symtab =
-    symtab_reader::symtab::load(elf_handler, ctxt->ir_env,
+    symtab_reader::symtab::load(ctxt->elf_handler, ctxt->ir_env,
                                 0 /* No suppressions.  */);
   corp->set_symtab(ctxt->symtab);
 
-  /* Finish the ELF handler and close the associated file.  */
-  elf_end(elf_handler);
-  close(elf_fd);
+  /* Get the raw ELF section contents for libctf.  */
+  Elf_Scn *ctf_scn = elf_helpers::find_section(ctxt->elf_handler, ".ctf", SHT_PROGBITS);
+  Elf_Scn *symtab_scn = elf_helpers::find_symbol_table_section(ctxt->elf_handler);
+  Elf_Scn *strtab_scn = elf_helpers::find_section(ctxt->elf_handler, SHT_STRTAB);
+
+  if (ctf_scn == NULL || symtab_scn == NULL || strtab_scn == NULL)
+    return 0;
+
+  fill_ctf_section(ctxt, ctf_scn, &ctxt->ctf_sect);
+  fill_ctf_section(ctxt, symtab_scn, &ctxt->symtab_sect);
+  fill_ctf_section(ctxt, strtab_scn, &ctxt->strtab_sect);
 
   return 1;
 }
@@ -1012,19 +1077,27 @@ read_corpus(read_context *ctxt)
   corpus_sptr corp
     = std::make_shared<corpus>(ctxt->ir_env, ctxt->filename);
 
+  /* Open the ELF file.  */
+  if (!open_elf_handler(ctxt))
+    return corp;
+
   /* Set some properties of the corpus first.  */
   corp->set_origin(corpus::CTF_ORIGIN);
   if (!slurp_elf_info(ctxt, corp))
     return corp;
 
-  /* Get out now if no CTF debug info is found.  */
-  if (ctxt->ctfa == NULL)
-    return corp;
+  /* Build the ctfa from the contents of the relevant ELF sections,
+     and process the CTF archive in the read context, if any.
+     Information about the types, variables, functions, etc contained
+     in the archive are added to the given corpus.  */
+  int errp;
+  ctxt->ctfa = ctf_arc_bufopen(&ctxt->ctf_sect, &ctxt->symtab_sect,
+                               &ctxt->strtab_sect, &errp);
+  if (ctxt->ctfa != NULL)
+    process_ctf_archive(ctxt, corp);
 
-  /* Process the CTF archive in the read context, if any.  Information
-     about the types, variables, functions, etc contained in the
-     archive are added to the given corpus.  */
-  process_ctf_archive(ctxt, corp);
+  /* Cleanup and return.  */
+  close_elf_handler(ctxt);
   return corp;
 }
 
