@@ -346,7 +346,8 @@ main(int argc, char* argv[])
 	{
 	case abigail::tools_utils::FILE_TYPE_UNKNOWN:
 	  emit_prefix(argv[0], cerr)
-	    << "Unknown file type given in input: " << opts.file_path;
+	    << "Unknown file type given in input: " << opts.file_path
+	    << "\n";
 	  return 1;
 	case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
 	  tu = read_translation_unit_from_file(opts.file_path, env.get());
