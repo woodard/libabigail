@@ -1,4 +1,4 @@
-<abi-corpus version='2.0' path='data/test-read-dwarf/test9-pr18818-clang.so'>
+<abi-corpus version='2.1' path='data/test-read-dwarf/test9-pr18818-clang.so'>
   <elf-needed>
     <dependency name='build/debug/third_party/boost-1.56.0/libboost_system.so'/>
     <dependency name='libm.so.6'/>
@@ -4354,8 +4354,22 @@
               <return type-id='type-id-111'/>
             </function-decl>
           </member-function>
+          <member-function access='public'>
+            <function-decl name='operator boost::filesystem::directory_entry &amp;' mangled-name='_ZNK5boost6detail13addr_impl_refINS_10filesystem15directory_entryEEcvRS3_Ev' filepath='src/third_party/boost-1.56.0/boost/core/addressof.hpp' line='30' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-221' is-artificial='yes'/>
+              <return type-id='type-id-170'/>
+            </function-decl>
+          </member-function>
         </class-decl>
-        <class-decl name='addressof_impl&lt;boost::filesystem::directory_entry&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.56.0/boost/core/addressof.hpp' line='36' column='1' id='type-id-386'/>
+        <class-decl name='addressof_impl&lt;boost::filesystem::directory_entry&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.56.0/boost/core/addressof.hpp' line='36' column='1' id='type-id-386'>
+          <member-function access='public' static='yes'>
+            <function-decl name='f' mangled-name='_ZN5boost6detail14addressof_implINS_10filesystem15directory_entryEE1fERS3_l' filepath='src/third_party/boost-1.56.0/boost/core/addressof.hpp' line='38' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-170'/>
+              <parameter type-id='type-id-13'/>
+              <return type-id='type-id-171'/>
+            </function-decl>
+          </member-function>
+        </class-decl>
         <typedef-decl name='sp_typeinfo' type-id='type-id-367' filepath='src/third_party/boost-1.56.0/boost/detail/sp_typeinfo.hpp' line='28' column='1' id='type-id-232'/>
         <class-decl name='operator_arrow_dispatch&lt;boost::filesystem::directory_entry &amp;, boost::filesystem::directory_entry *&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.56.0/boost/iterator/iterator_facade.hpp' line='319' column='1' id='type-id-387'>
           <member-type access='public'>
@@ -4924,8 +4938,22 @@
               <return type-id='type-id-111'/>
             </function-decl>
           </member-function>
+          <member-function access='public'>
+            <function-decl name='operator const boost::filesystem::path &amp;' mangled-name='_ZNK5boost6detail13addr_impl_refIKNS_10filesystem4pathEEcvRS4_Ev' filepath='src/third_party/boost-1.56.0/boost/core/addressof.hpp' line='30' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-421' is-artificial='yes'/>
+              <return type-id='type-id-250'/>
+            </function-decl>
+          </member-function>
         </class-decl>
-        <class-decl name='addressof_impl&lt;const boost::filesystem::path&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.56.0/boost/core/addressof.hpp' line='36' column='1' id='type-id-447'/>
+        <class-decl name='addressof_impl&lt;const boost::filesystem::path&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.56.0/boost/core/addressof.hpp' line='36' column='1' id='type-id-447'>
+          <member-function access='public' static='yes'>
+            <function-decl name='f' mangled-name='_ZN5boost6detail14addressof_implIKNS_10filesystem4pathEE1fERS4_l' filepath='src/third_party/boost-1.56.0/boost/core/addressof.hpp' line='38' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-250'/>
+              <parameter type-id='type-id-13'/>
+              <return type-id='type-id-251'/>
+            </function-decl>
+          </member-function>
+        </class-decl>
       </namespace-decl>
     </namespace-decl>
   </abi-instr>

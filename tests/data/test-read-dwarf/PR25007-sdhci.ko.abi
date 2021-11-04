@@ -1,4 +1,4 @@
-<abi-corpus version='2.0' path='data/test-read-dwarf/PR25007-sdhci.ko'>
+<abi-corpus version='2.1' path='data/test-read-dwarf/PR25007-sdhci.ko'>
   <elf-function-symbols>
     <elf-symbol name='__sdhci_add_host' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x74ae518'/>
     <elf-symbol name='__sdhci_read_caps' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x711f65c'/>

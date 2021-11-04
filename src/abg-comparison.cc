@@ -2790,10 +2790,6 @@ compute_diff_for_types(const type_or_decl_base_sptr& first,
   type_or_decl_base_sptr f = first;
   type_or_decl_base_sptr s = second;
 
-  // Look through no-op qualified types.
-  f = look_through_no_op_qualified_type(is_type(f));
-  s = look_through_no_op_qualified_type(is_type(s));
-
   diff_sptr d;
 
   ((d = try_to_diff<type_decl>(f, s, ctxt))
@@ -12202,9 +12198,25 @@ struct redundancy_marking_visitor : public diff_node_visitor
 		// LOCAL_NON_TYPE_CHANGE_KIND kind.
 		|| is_pointer_diff(d)
 		|| is_qualified_type_diff(d)
+		// A typedef with local non-type changes should not
+		// see redundancy propagation from its underlying
+		// type, otherwise, the non-type change might be
+		// "suppressed" away.
 		|| (is_typedef_diff(d)
 		    && (!(d->has_local_changes()
-			  & LOCAL_NON_TYPE_CHANGE_KIND)))))
+			  & LOCAL_NON_TYPE_CHANGE_KIND)))
+		// A (member) variable with non-type local changes
+		// should not see redundacy propagation from its type.
+		// If redundant local-type changes are carried by its
+		// type however, then that redundancy is propagated to
+		// the variable.  This is key to keep the redundancy
+		// consistency in the system; otherwise, a type change
+		// would be rightfully considered redundant at some
+		// places but not at others.
+		|| (is_var_diff(d)
+		    && (!(d->has_local_changes()
+			  & LOCAL_NON_TYPE_CHANGE_KIND)))
+		))
 	  {
 	    bool has_non_redundant_child = false;
 	    bool has_non_empty_child = false;

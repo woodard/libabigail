@@ -12801,28 +12801,12 @@ maybe_strip_qualification(const qualified_type_def_sptr t,
 
   decl_base_sptr result = t;
   type_base_sptr u = t->get_underlying_type();
-  environment* env = t->get_environment();
 
-  if (t->get_cv_quals() & qualified_type_def::CV_CONST
-      && (is_reference_type(u)))
-    {
-      // Let's strip only the const qualifier.  To do that, the "const"
-      // qualified is turned into a no-op "none" qualified.
-      result.reset(new qualified_type_def
-		   (u, t->get_cv_quals() & ~qualified_type_def::CV_CONST,
-		    t->get_location()));
-      ctxt.schedule_type_for_late_canonicalization(is_type(result));
-    }
-  else if (t->get_cv_quals() & qualified_type_def::CV_CONST
-	   && env->is_void_type(u))
-    {
-      // So this type is a "const void".  Let's strip the "const"
-      // qualifier out and make this just be "void", so that a "const
-      // void" type and a "void" type compare equal after going through
-      // this function.
-      result = is_decl(u);
-    }
-  else if (is_array_type(u) || is_typedef_of_array(u))
+  result = strip_useless_const_qualification(t);
+  if (result.get() != t.get())
+    return result;
+
+  if (is_array_type(u) || is_typedef_of_array(u))
     {
       array_type_def_sptr array;
       scope_decl * scope = 0;
@@ -13899,7 +13883,13 @@ build_or_get_fn_decl_if_not_suppressed(read_context&	  ctxt,
       fn = klass->find_member_function_sptr(linkage_name);
     }
 
-  if (!fn)
+  if (!fn || !fn->get_symbol())
+    // We haven't yet been able to construct a function IR, or, we
+    // have one 'partial' function IR that doesn't have any associated
+    // symbol yet.  Note that in the later case, a function IR without
+    // any associated symbol will be dropped on the floor by
+    // potential_member_fn_should_be_dropped.  So let's build or a new
+    // function IR or complete the existing partial IR.
     fn = build_function_decl(ctxt, fn_die, where_offset, result);
 
   return fn;
@@ -15173,7 +15163,7 @@ build_ir_node_from_die(read_context&	ctxt,
 						     called_from_public_decl,
 						     where_offset,
 						     is_declaration_only,
-						     /*is_required_decl_spec=*/false));
+						     /*is_required_decl_spec=*/true));
 		if (d)
 		  {
 		    fn = dynamic_pointer_cast<function_decl>(d);
@@ -15203,7 +15193,8 @@ build_ir_node_from_die(read_context&	ctxt,
 	if (result && !fn)
 	  {
 	    if (potential_member_fn_should_be_dropped(is_function_decl(result),
-						      die))
+						      die)
+		&& !is_required_decl_spec)
 	      {
 		result.reset();
 		break;

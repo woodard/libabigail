@@ -1,4 +1,4 @@
-<abi-corpus version='2.0' path='data/test-read-dwarf/test-libaaudio.so' soname='libaaudio.so'>
+<abi-corpus version='2.1' path='data/test-read-dwarf/test-libaaudio.so' soname='libaaudio.so'>
   <elf-needed>
     <dependency name='libaaudio_internal.so'/>
     <dependency name='libaudioclient.so'/>
@@ -354,11 +354,210 @@
     <class-decl name='__sFILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='8d7b2c1e'/>
     <namespace-decl name='aaudio'>
       <typedef-decl name='aaudio_stream_id_t' type-id='8f92235e' filepath='frameworks/av/media/libaaudio/src/core/AudioStream.h' line='41' column='1' id='a5eeae98'/>
-      <class-decl name='AAudioStreamParameters' visibility='default' is-declaration-only='yes' id='84aa4341'/>
+      <class-decl name='AAudioStreamParameters' visibility='default' is-declaration-only='yes' id='84aa4341'>
+        <member-function access='public'>
+          <function-decl name='setDeviceId' mangled-name='_ZN6aaudio22AAudioStreamParameters11setDeviceIdEi' filepath='frameworks/av/media/libaaudio/src/core/AAudioStreamParameters.h' line='36' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='3e1b4f89' is-artificial='yes'/>
+            <parameter type-id='3ff5601b'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='setSampleRate' mangled-name='_ZN6aaudio22AAudioStreamParameters13setSampleRateEi' filepath='frameworks/av/media/libaaudio/src/core/AAudioStreamParameters.h' line='44' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='3e1b4f89' is-artificial='yes'/>
+            <parameter type-id='3ff5601b'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='setSamplesPerFrame' mangled-name='_ZN6aaudio22AAudioStreamParameters18setSamplesPerFrameEi' filepath='frameworks/av/media/libaaudio/src/core/AAudioStreamParameters.h' line='55' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='3e1b4f89' is-artificial='yes'/>
+            <parameter type-id='3ff5601b'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='setDirection' mangled-name='_ZN6aaudio22AAudioStreamParameters12setDirectionEi' filepath='frameworks/av/media/libaaudio/src/core/AAudioStreamParameters.h' line='87' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='3e1b4f89' is-artificial='yes'/>
+            <parameter type-id='a5156fbe'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='setFormat' mangled-name='_ZN6aaudio22AAudioStreamParameters9setFormatE14audio_format_t' filepath='frameworks/av/media/libaaudio/src/core/AAudioStreamParameters.h' line='63' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='3e1b4f89' is-artificial='yes'/>
+            <parameter type-id='aff86d3f'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='setSharingMode' mangled-name='_ZN6aaudio22AAudioStreamParameters14setSharingModeEi' filepath='frameworks/av/media/libaaudio/src/core/AAudioStreamParameters.h' line='71' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='3e1b4f89' is-artificial='yes'/>
+            <parameter type-id='da67c8b9'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='setUsage' mangled-name='_ZN6aaudio22AAudioStreamParameters8setUsageEi' filepath='frameworks/av/media/libaaudio/src/core/AAudioStreamParameters.h' line='95' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='3e1b4f89' is-artificial='yes'/>
+            <parameter type-id='8ee4dca8'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='setContentType' mangled-name='_ZN6aaudio22AAudioStreamParameters14setContentTypeEi' filepath='frameworks/av/media/libaaudio/src/core/AAudioStreamParameters.h' line='103' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='3e1b4f89' is-artificial='yes'/>
+            <parameter type-id='2df7abd1'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='setInputPreset' mangled-name='_ZN6aaudio22AAudioStreamParameters14setInputPresetEi' filepath='frameworks/av/media/libaaudio/src/core/AAudioStreamParameters.h' line='111' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='3e1b4f89' is-artificial='yes'/>
+            <parameter type-id='a4168325'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='setBufferCapacity' mangled-name='_ZN6aaudio22AAudioStreamParameters17setBufferCapacityEi' filepath='frameworks/av/media/libaaudio/src/core/AAudioStreamParameters.h' line='79' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='3e1b4f89' is-artificial='yes'/>
+            <parameter type-id='3ff5601b'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='setAllowedCapturePolicy' mangled-name='_ZN6aaudio22AAudioStreamParameters23setAllowedCapturePolicyEi' filepath='frameworks/av/media/libaaudio/src/core/AAudioStreamParameters.h' line='119' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='3e1b4f89' is-artificial='yes'/>
+            <parameter type-id='abe3e34b'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='setSessionId' mangled-name='_ZN6aaudio22AAudioStreamParameters12setSessionIdEi' filepath='frameworks/av/media/libaaudio/src/core/AAudioStreamParameters.h' line='127' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='3e1b4f89' is-artificial='yes'/>
+            <parameter type-id='4d6761d3'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+      </class-decl>
       <class-decl name='AudioStream' visibility='default' is-declaration-only='yes' id='e5af4ed4'>
         <member-type access='private'>
           <class-decl name='MyPlayerBase' visibility='default' is-declaration-only='yes' id='5f3aabfe'/>
         </member-type>
+        <member-function access='public'>
+          <function-decl name='getId' mangled-name='_ZN6aaudio11AudioStream5getIdEv' filepath='frameworks/av/media/libaaudio/src/core/AudioStream.h' line='168' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='b4bea132' is-artificial='yes'/>
+            <return type-id='a5eeae98'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='registerPlayerBase' mangled-name='_ZN6aaudio11AudioStream18registerPlayerBaseEv' filepath='frameworks/av/media/libaaudio/src/core/AudioStream.h' line='390' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='b4bea132' is-artificial='yes'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='unregisterPlayerBase' mangled-name='_ZN6aaudio11AudioStream20unregisterPlayerBaseEv' filepath='frameworks/av/media/libaaudio/src/core/AudioStream.h' line='400' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='b4bea132' is-artificial='yes'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='isDataCallbackActive' mangled-name='_ZNK6aaudio11AudioStream20isDataCallbackActiveEv' filepath='frameworks/av/media/libaaudio/src/core/AudioStream.h' line='341' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='0d0144bf' is-artificial='yes'/>
+            <return type-id='c894953d'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='isDataCallbackSet' mangled-name='_ZNK6aaudio11AudioStream17isDataCallbackSetEv' filepath='frameworks/av/media/libaaudio/src/core/AudioStream.h' line='334' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='0d0144bf' is-artificial='yes'/>
+            <return type-id='c894953d'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='isActive' mangled-name='_ZNK6aaudio11AudioStream8isActiveEv' filepath='frameworks/av/media/libaaudio/src/core/AudioStream.h' line='216' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='0d0144bf' is-artificial='yes'/>
+            <return type-id='c894953d'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='getSampleRate' mangled-name='_ZNK6aaudio11AudioStream13getSampleRateEv' filepath='frameworks/av/media/libaaudio/src/core/AudioStream.h' line='224' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='0d0144bf' is-artificial='yes'/>
+            <return type-id='da775bc6'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='getSamplesPerFrame' mangled-name='_ZNK6aaudio11AudioStream18getSamplesPerFrameEv' filepath='frameworks/av/media/libaaudio/src/core/AudioStream.h' line='232' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='0d0144bf' is-artificial='yes'/>
+            <return type-id='da775bc6'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='getState' mangled-name='_ZNK6aaudio11AudioStream8getStateEv' filepath='frameworks/av/media/libaaudio/src/core/AudioStream.h' line='196' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='0d0144bf' is-artificial='yes'/>
+            <return type-id='2e552d01'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='getFormat' mangled-name='_ZNK6aaudio11AudioStream9getFormatEv' filepath='frameworks/av/media/libaaudio/src/core/AudioStream.h' line='228' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='0d0144bf' is-artificial='yes'/>
+            <return type-id='aff86d3f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='getFramesPerDataCallback' mangled-name='_ZNK6aaudio11AudioStream24getFramesPerDataCallbackEv' filepath='frameworks/av/media/libaaudio/src/core/AudioStream.h' line='327' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='0d0144bf' is-artificial='yes'/>
+            <return type-id='3ff5601b'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='getDeviceId' mangled-name='_ZNK6aaudio11AudioStream11getDeviceIdEv' filepath='frameworks/av/media/libaaudio/src/core/AudioStream.h' line='244' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='0d0144bf' is-artificial='yes'/>
+            <return type-id='3ff5601b'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='getSharingMode' mangled-name='_ZNK6aaudio11AudioStream14getSharingModeEv' filepath='frameworks/av/media/libaaudio/src/core/AudioStream.h' line='248' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='0d0144bf' is-artificial='yes'/>
+            <return type-id='da67c8b9'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='getUsage' mangled-name='_ZNK6aaudio11AudioStream8getUsageEv' filepath='frameworks/av/media/libaaudio/src/core/AudioStream.h' line='258' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='0d0144bf' is-artificial='yes'/>
+            <return type-id='8ee4dca8'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='getContentType' mangled-name='_ZNK6aaudio11AudioStream14getContentTypeEv' filepath='frameworks/av/media/libaaudio/src/core/AudioStream.h' line='262' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='0d0144bf' is-artificial='yes'/>
+            <return type-id='2df7abd1'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='getInputPreset' mangled-name='_ZNK6aaudio11AudioStream14getInputPresetEv' filepath='frameworks/av/media/libaaudio/src/core/AudioStream.h' line='266' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='0d0144bf' is-artificial='yes'/>
+            <return type-id='a4168325'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='getAllowedCapturePolicy' mangled-name='_ZNK6aaudio11AudioStream23getAllowedCapturePolicyEv' filepath='frameworks/av/media/libaaudio/src/core/AudioStream.h' line='270' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='0d0144bf' is-artificial='yes'/>
+            <return type-id='abe3e34b'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='getSessionId' mangled-name='_ZNK6aaudio11AudioStream12getSessionIdEv' filepath='frameworks/av/media/libaaudio/src/core/AudioStream.h' line='274' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='0d0144bf' is-artificial='yes'/>
+            <return type-id='3ff5601b'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='isPrivacySensitive' mangled-name='_ZNK6aaudio11AudioStream18isPrivacySensitiveEv' filepath='frameworks/av/media/libaaudio/src/core/AudioStream.h' line='278' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='0d0144bf' is-artificial='yes'/>
+            <return type-id='c894953d'/>
+          </function-decl>
+        </member-function>
       </class-decl>
       <class-decl name='AudioStreamBuilder' visibility='default' is-declaration-only='yes' id='c1fdb0b3'>
         <member-type access='private'>
@@ -369,6 +568,55 @@
             <enumerator name='PRIVACY_SENSITIVE_ENABLED' value='1'/>
           </enum-decl>
         </member-type>
+        <member-function access='public'>
+          <function-decl name='setPerformanceMode' mangled-name='_ZN6aaudio18AudioStreamBuilder18setPerformanceModeEi' filepath='frameworks/av/media/libaaudio/src/core/AudioStreamBuilder.h' line='51' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='b01a1663' is-artificial='yes'/>
+            <parameter type-id='6757629b'/>
+            <return type-id='b01a1663'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='setPrivacySensitiveRequest' mangled-name='_ZN6aaudio18AudioStreamBuilder26setPrivacySensitiveRequestEb' filepath='frameworks/av/media/libaaudio/src/core/AudioStreamBuilder.h' line='101' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='b01a1663' is-artificial='yes'/>
+            <parameter type-id='c894953d'/>
+            <return type-id='b01a1663'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='setDataCallbackProc' mangled-name='_ZN6aaudio18AudioStreamBuilder19setDataCallbackProcEPFiP18AAudioStreamStructPvS3_iE' filepath='frameworks/av/media/libaaudio/src/core/AudioStreamBuilder.h' line='60' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='b01a1663' is-artificial='yes'/>
+            <parameter type-id='edb6186f'/>
+            <return type-id='b01a1663'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='setDataCallbackUserData' mangled-name='_ZN6aaudio18AudioStreamBuilder23setDataCallbackUserDataEPv' filepath='frameworks/av/media/libaaudio/src/core/AudioStreamBuilder.h' line='69' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='b01a1663' is-artificial='yes'/>
+            <parameter type-id='eaa32e2f'/>
+            <return type-id='b01a1663'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='setErrorCallbackProc' mangled-name='_ZN6aaudio18AudioStreamBuilder20setErrorCallbackProcEPFvP18AAudioStreamStructPviE' filepath='frameworks/av/media/libaaudio/src/core/AudioStreamBuilder.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='b01a1663' is-artificial='yes'/>
+            <parameter type-id='2e91990d'/>
+            <return type-id='b01a1663'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='setErrorCallbackUserData' mangled-name='_ZN6aaudio18AudioStreamBuilder24setErrorCallbackUserDataEPv' filepath='frameworks/av/media/libaaudio/src/core/AudioStreamBuilder.h' line='83' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='b01a1663' is-artificial='yes'/>
+            <parameter type-id='eaa32e2f'/>
+            <return type-id='b01a1663'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='setFramesPerDataCallback' mangled-name='_ZN6aaudio18AudioStreamBuilder24setFramesPerDataCallbackEi' filepath='frameworks/av/media/libaaudio/src/core/AudioStreamBuilder.h' line='96' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='b01a1663' is-artificial='yes'/>
+            <parameter type-id='3ff5601b'/>
+            <return type-id='b01a1663'/>
+          </function-decl>
+        </member-function>
       </class-decl>
     </namespace-decl>
     <namespace-decl name='android'>
@@ -409,6 +657,12 @@
             <return type-id='48b5725f'/>
           </function-decl>
         </member-function>
+        <member-function access='public'>
+          <function-decl name='operator-&gt;' mangled-name='_ZNK7android2spIN6aaudio11AudioStream12MyPlayerBaseEEptEv' filepath='system/core/libutils/include/utils/StrongPointer.h' line='104' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='c0092a89' is-artificial='yes'/>
+            <return type-id='8b0056d4'/>
+          </function-decl>
+        </member-function>
       </class-decl>
       <class-decl name='sp&lt;aaudio::AudioStream&gt;' size-in-bits='64' visibility='default' filepath='system/core/libutils/include/utils/StrongPointer.h' line='31' column='1' id='862099c6'>
         <data-member access='private' layout-offset-in-bits='0'>
@@ -444,6 +698,12 @@
         <member-function access='public' destructor='yes'>
           <function-decl name='~sp' mangled-name='_ZN7android2spIN6aaudio11AudioStreamEED2Ev' filepath='system/core/libutils/include/utils/StrongPointer.h' line='84' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='fa310c7c' is-artificial='yes'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='private' static='yes'>
+          <function-decl name='check_not_on_stack' mangled-name='_ZN7android2spIN6aaudio11AudioStreamEE18check_not_on_stackEPKv' filepath='system/core/libutils/include/utils/StrongPointer.h' line='123' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='eaa32e2f'/>
             <return type-id='48b5725f'/>
           </function-decl>
         </member-function>

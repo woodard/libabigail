@@ -137,7 +137,7 @@ operator|=(abidiff_status&l, abidiff_status r)
 /// @return true iff @p s has its ABIDIFF_ERROR bit set.
 bool
 abidiff_status_has_error(abidiff_status s)
-{return s & ABIDIFF_ERROR;}
+{return s & (ABIDIFF_ERROR | ABIDIFF_USAGE_ERROR);}
 
 /// Test if an instance of @param abidiff_status bits mask represents
 /// an abi change.

@@ -1,4 +1,4 @@
-<abi-corpus version='2.0' path='data/test-read-dwarf/PR25042-libgdbm-clang-dwarf5.so.6.0.0' soname='libgdbm.so.6'>
+<abi-corpus version='2.1' path='data/test-read-dwarf/PR25042-libgdbm-clang-dwarf5.so.6.0.0' soname='libgdbm.so.6'>
   <elf-needed>
     <dependency name='libc.so.6'/>
     <dependency name='ld-linux-x86-64.so.2'/>

@@ -1,4 +1,4 @@
-<abi-corpus version='2.0' architecture='elf-amd-x86_64'>
+<abi-corpus version='2.1' architecture='elf-amd-x86_64'>
   <elf-function-symbols>
     <!-- foo(S&) -->
     <elf-symbol name='_Z3fooR1S' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
@@ -111,17 +111,15 @@
       </data-member>
     </class-decl>
     <!-- S& -->
-    <qualified-type-def type-id='type-id-13' id='type-id-14'/>
-    <!-- S& -->
     <reference-type-def kind='lvalue' type-id='type-id-6' size-in-bits='64' id='type-id-13'/>
     <!-- void foo(S&) -->
     <function-decl name='foo' mangled-name='_Z3fooR1S' filepath='/home/dodji/git/libabigail/fixes/tests/data/test-annotate/test-anonymous-members-0.cc' line='30' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z3fooR1S'>
       <!-- parameter of type 'S&' -->
-      <parameter type-id='type-id-14'/>
+      <parameter type-id='type-id-13'/>
       <!-- void -->
-      <return type-id='type-id-15'/>
+      <return type-id='type-id-14'/>
     </function-decl>
     <!-- void -->
-    <type-decl name='void' id='type-id-15'/>
+    <type-decl name='void' id='type-id-14'/>
   </abi-instr>
 </abi-corpus>

@@ -6595,6 +6595,46 @@ strip_typedef(const type_base_sptr type)
   return t->get_canonical_type() ? t->get_canonical_type() : t;
 }
 
+/// Strip qualification from a qualified type, when it makes sense.
+///
+/// DWARF constructs "const reference".  This is redundant because a
+/// reference is always const.  It also constructs the useless "const
+/// void" type.  The issue is these redundant types then leak into the
+/// IR and make for bad diagnostics.
+///
+/// This function thus strips the const qualifier from the type in
+/// that case.  It might contain code to strip other cases like this
+/// in the future.
+///
+/// @param t the type to strip const qualification from.
+///
+/// @return the stripped type or just return @p t.
+decl_base_sptr
+strip_useless_const_qualification(const qualified_type_def_sptr t)
+{
+  if (!t)
+    return t;
+
+  decl_base_sptr result = t;
+  type_base_sptr u = t->get_underlying_type();
+  environment* env = t->get_environment();
+
+  if ((t->get_cv_quals() & qualified_type_def::CV_CONST
+       && (is_reference_type(u)))
+      || (t->get_cv_quals() & qualified_type_def::CV_CONST
+	  && env->is_void_type(u))
+      || t->get_cv_quals() == qualified_type_def::CV_NONE)
+    // Let's strip the const qualifier because a reference is always
+    // 'const' and a const void doesn't make sense.  They will just
+    // lead to spurious changes later down the pipeline, that we'll
+    // have to deal with by doing painful and error-prone editing of
+    // the diff IR.  Dropping that useless and inconsistent artefact
+    // right here seems to be a good way to go.
+    result = is_decl(u);
+
+  return result;
+}
+
 /// Return the leaf underlying type node of a @ref typedef_decl node.
 ///
 /// If the underlying type of a @ref typedef_decl node is itself a
@@ -9960,32 +10000,6 @@ is_qualified_type(const type_or_decl_base* t)
 qualified_type_def_sptr
 is_qualified_type(const type_or_decl_base_sptr& t)
 {return dynamic_pointer_cast<qualified_type_def>(t);}
-
-/// Strip a type from its top level no-op qualifier.
-///
-/// Note that a no-op qualifier is how we represents, for instance, a
-/// "const reference".  As a reference is always const, that const
-/// qualifier just adds noise in terms of change analysis.  Se we
-/// represent it as a no-op qualifier so that we can strip it.
-///
-/// @param t to type to strip from its potential top-level no-op
-/// qualifier.
-///
-/// @return If @t is a no-op qualified type, then return the first
-/// underlying type that is not a no-op qualified type.
-type_base_sptr
-look_through_no_op_qualified_type(const type_base_sptr& t)
-{
-  type_base_sptr ty;
-  if (qualified_type_def_sptr qt = is_qualified_type(t))
-    if (qt->get_cv_quals() == qualified_type_def::CV_NONE)
-      ty = qt->get_underlying_type();
-
-  if (is_qualified_type(ty))
-    return look_through_no_op_qualified_type(ty);
-
-  return ty ? ty : t;
-}
 
 /// Test whether a type is a function_type.
 ///
@@ -16030,8 +16044,7 @@ equals(const reference_type_def& l, const reference_type_def& r, change_kind* k)
     }
 
   // Compare the pointed-to-types modulo the typedefs they might have
-  bool result = (peel_typedef_type(l.get_pointed_to_type())
-		 == (peel_typedef_type(r.get_pointed_to_type())));
+  bool result = (l.get_pointed_to_type() == r.get_pointed_to_type());
   if (!result)
     if (k)
       {
@@ -20226,11 +20239,8 @@ equals(const function_decl::parameter& l,
 	ABG_RETURN_FALSE;
     }
 
-
-  // Sometimes, function parameters can be wrapped into a no-op
-  // qualifier.  Let's strip that qualifier out.
-  type_base_sptr l_type = look_through_no_op_qualified_type(l.get_type());
-  type_base_sptr r_type = look_through_no_op_qualified_type(r.get_type());
+  type_base_sptr l_type = l.get_type();
+  type_base_sptr r_type = r.get_type();
   if (l_type != r_type)
     {
       result = false;

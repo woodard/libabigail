@@ -1,4 +1,4 @@
-<abi-corpus version='2.0' path='data/test-read-dwarf/test1'>
+<abi-corpus version='2.1' path='data/test-read-dwarf/test1'>
   <elf-needed>
     <dependency name='libstdc++.so.6'/>
     <dependency name='libm.so.6'/>
@@ -105,19 +105,17 @@
       </member-function>
       <member-function access='public'>
         <function-decl name='mem_fun' mangled-name='_ZN2s07mem_funEv' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='36' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN2s07mem_funEv'>
-          <parameter type-id='type-id-14' name='this' is-artificial='yes'/>
+          <parameter type-id='type-id-11' is-artificial='yes'/>
           <return type-id='type-id-9'/>
         </function-decl>
       </member-function>
     </class-decl>
-    <qualified-type-def type-id='type-id-15' id='type-id-16'/>
-    <reference-type-def kind='lvalue' type-id='type-id-8' size-in-bits='64' id='type-id-15'/>
+    <reference-type-def kind='lvalue' type-id='type-id-8' size-in-bits='64' id='type-id-14'/>
     <pointer-type-def type-id='type-id-8' size-in-bits='64' id='type-id-11'/>
-    <qualified-type-def type-id='type-id-11' const='yes' id='type-id-14'/>
-    <pointer-type-def type-id='type-id-13' size-in-bits='64' id='type-id-17'/>
-    <pointer-type-def type-id='type-id-17' size-in-bits='64' id='type-id-12'/>
+    <pointer-type-def type-id='type-id-13' size-in-bits='64' id='type-id-15'/>
+    <pointer-type-def type-id='type-id-15' size-in-bits='64' id='type-id-12'/>
     <function-decl name='foo' mangled-name='_Z3fooR2s0' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='42' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z3fooR2s0'>
-      <parameter type-id='type-id-16' name='s' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='42' column='1'/>
+      <parameter type-id='type-id-14' name='s' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='42' column='1'/>
       <return type-id='type-id-13'/>
     </function-decl>
     <function-decl name='main' mangled-name='main' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='48' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='main'>

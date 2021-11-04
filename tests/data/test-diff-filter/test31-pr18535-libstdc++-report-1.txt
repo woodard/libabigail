@@ -1,4 +1,4 @@
-Functions changes summary: 0 Removed, 9 Changed (10 filtered out), 13 Added functions
+Functions changes summary: 0 Removed, 3 Changed (10 filtered out), 13 Added functions
 Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 Function symbols changes summary: 0 Removed, 0 Added function symbol not referenced by debug info
 Variable symbols changes summary: 0 Removed, 6 Added variable symbols not referenced by debug info
@@ -25,7 +25,7 @@ Variable symbols changes summary: 0 Removed, 6 Added variable symbols not refere
   [A] 'function std::unexpected_handler std::get_unexpected()'
   [A] 'method std::regex_error::regex_error(std::regex_constants::error_type)'
 
-9 functions with some indirect sub-type change:
+3 functions with some indirect sub-type change:
 
   [C] 'function __cxxabiv1::__cxa_dependent_exception* __cxxabiv1::__cxa_allocate_dependent_exception()' at eh_alloc.cc:158:1 has some indirect sub-type changes:
     return type changed:
@@ -75,48 +75,6 @@ Variable symbols changes summary: 0 Removed, 6 Added variable symbols not refere
       type size hasn't changed
       1 enumerator deletion:
         'std::regex_constants::error_type::_S_error_last' value '13'
-
-  [C] 'method void* std::basic_fstream<char, std::char_traits<char> >::close(int, void**)' at fstream:929:1 has some indirect sub-type changes:
-    return type changed:
-      entity changed from 'void*' to 'void'
-      type size changed from 32 to 0 (in bits)
-    parameter 1 of type 'int' was removed
-    parameter 2 of type 'void**' was removed
-
-  [C] 'method void* std::basic_fstream<wchar_t, std::char_traits<wchar_t> >::close(int, void**)' at fstream:929:1 has some indirect sub-type changes:
-    return type changed:
-      entity changed from 'void*' to 'void'
-      type size changed from 32 to 0 (in bits)
-    parameter 1 of type 'int' was removed
-    parameter 2 of type 'void**' was removed
-
-  [C] 'method void* std::basic_ifstream<char, std::char_traits<char> >::close(int, void**)' at fstream:579:1 has some indirect sub-type changes:
-    return type changed:
-      entity changed from 'void*' to 'void'
-      type size changed from 32 to 0 (in bits)
-    parameter 1 of type 'int' was removed
-    parameter 2 of type 'void**' was removed
-
-  [C] 'method void* std::basic_ifstream<wchar_t, std::char_traits<wchar_t> >::close(int, void**)' at fstream:579:1 has some indirect sub-type changes:
-    return type changed:
-      entity changed from 'void*' to 'void'
-      type size changed from 32 to 0 (in bits)
-    parameter 1 of type 'int' was removed
-    parameter 2 of type 'void**' was removed
-
-  [C] 'method void* std::basic_ofstream<char, std::char_traits<char> >::close(int, void**)' at fstream:756:1 has some indirect sub-type changes:
-    return type changed:
-      entity changed from 'void*' to 'void'
-      type size changed from 32 to 0 (in bits)
-    parameter 1 of type 'int' was removed
-    parameter 2 of type 'void**' was removed
-
-  [C] 'method void* std::basic_ofstream<wchar_t, std::char_traits<wchar_t> >::close(int, void**)' at fstream:756:1 has some indirect sub-type changes:
-    return type changed:
-      entity changed from 'void*' to 'void'
-      type size changed from 32 to 0 (in bits)
-    parameter 1 of type 'int' was removed
-    parameter 2 of type 'void**' was removed
 
 6 Added variable symbols not referenced by debug info:
 

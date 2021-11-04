@@ -86,13 +86,19 @@ main()
       bool abidiff_ok = true;
       int code = system(cmd.c_str());
       if (!WIFEXITED(code))
-	abidiff_ok = false;
+	{
+	  cerr << "test failed: '" << cmd << "'\n";
+	  abidiff_ok = false;
+	}
       else
 	{
 	  abidiff_status status =
 	    static_cast<abidiff_status>(WEXITSTATUS(code));
 	  if (abigail::tools_utils::abidiff_status_has_error(status))
-	    abidiff_ok = false;
+	    {
+	      cerr << "test failed: '" << cmd << "'\n";
+	      abidiff_ok = false;
+	    }
 	}
       if (abidiff_ok)
 	{

@@ -1,4 +1,4 @@
-<abi-corpus version='2.0' path='data/test-read-dwarf/test-PR26568-1.o'>
+<abi-corpus version='2.1' path='data/test-read-dwarf/test-PR26568-1.o'>
   <elf-function-symbols>
     <elf-symbol name='fun' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>

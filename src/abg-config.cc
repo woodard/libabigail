@@ -18,7 +18,7 @@ ABG_END_EXPORT_DECLARATIONS
 namespace abigail
 {
 config::config()
-  : m_format_minor("0"),
+  : m_format_minor("1"),
     m_format_major("2"),
     m_xml_element_indent(2),
     m_tu_instr_suffix(".bi"),

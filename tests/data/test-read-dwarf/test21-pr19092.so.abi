@@ -1,4 +1,4 @@
-<abi-corpus version='2.0' path='data/test-read-dwarf/test21-pr19092.so'>
+<abi-corpus version='2.1' path='data/test-read-dwarf/test21-pr19092.so'>
   <elf-needed>
     <dependency name='libstdc++.so.6'/>
     <dependency name='libm.so.6'/>

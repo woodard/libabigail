@@ -1,4 +1,4 @@
-<abi-corpus version='2.0' path='data/test-read-dwarf/test-suppressed-alias.o'>
+<abi-corpus version='2.1' path='data/test-read-dwarf/test-suppressed-alias.o'>
   <elf-function-symbols>
     <elf-symbol name='alias_func' type='func-type' binding='weak-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
