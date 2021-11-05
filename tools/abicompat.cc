@@ -71,6 +71,8 @@ public:
   bool			list_undefined_symbols_only;
   bool			show_base_names;
   bool			show_redundant;
+  bool			redundant_opt_set;
+  bool			no_redundant_opt_set;
   bool			show_locs;
 
   options(const char* program_name)
@@ -81,6 +83,8 @@ public:
      list_undefined_symbols_only(),
      show_base_names(),
      show_redundant(true),
+     redundant_opt_set(),
+     no_redundant_opt_set(),
      show_locs(true)
   {}
 }; // end struct options
@@ -191,9 +195,15 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--redundant"))
-	opts.show_redundant = true;
+        {
+	  opts.show_redundant = true;
+	  opts.redundant_opt_set = true;
+	}
       else if (!strcmp(argv[i], "--no-redundant"))
-	opts.show_redundant = false;
+        {
+  	  opts.show_redundant = false;
+	  opts.no_redundant_opt_set = true;
+	}
       else if (!strcmp(argv[i], "--no-show-locs"))
 	opts.show_locs = false;
       else if (!strcmp(argv[i], "--help")
@@ -643,6 +653,14 @@ main(int argc, char* argv[])
       emit_prefix(argv[0], cout)
         << "WARNING: The \'--weak-mode\' option is used. The "
 	<< opts.lib2_path << " will be ignored automatically\n";
+    }
+
+  if (opts.redundant_opt_set && opts.no_redundant_opt_set)
+    {
+      emit_prefix(argv[0], cerr)
+        << "ERROR: The \'--redundant\' and '--no-redundant' option are in conflict. "
+	<< "Please select only one option to use.\n";
+      return 1;
     }
 
   ABG_ASSERT(!opts.app_path.empty());
