@@ -205,6 +205,14 @@ parse_command_line(int argc, char* argv[], options& opts)
 
     if (opts.file_path.empty())
       opts.read_from_stdin = true;
+
+    if (opts.read_from_stdin && !opts.file_path.empty())
+    {
+      emit_prefix(argv[0], cout)
+        << "WARNING: The \'--stdin\' option is used. The "
+        << opts.file_path << " will be ignored automatically\n";
+    }
+
     return true;
 }
 
