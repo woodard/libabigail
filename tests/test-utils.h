@@ -9,6 +9,10 @@
 #include "config.h"
 #include <string>
 
+#define BRIGHT_YELLOW_COLOR "\e[1;33m"
+#define BRIGHT_RED_COLOR "\e[1;31m"
+#define DEFAULT_TERMINAL_COLOR "\033[0m"
+
 namespace abigail
 {
 namespace tests
