@@ -649,6 +649,29 @@ find_relocation_section(Elf* elf_handle, Elf_Scn* target_section)
   return NULL;
 }
 
+/// Return the string table used by the given symbol table.
+///
+/// @param elf_handle the elf handle to use.
+///
+/// @param symtab_section section containing a symbol table.
+///
+/// @return the string table linked by the symtab, if it is not NULL.
+Elf_Scn*
+find_strtab_for_symtab_section(Elf* elf_handle, Elf_Scn* symtab_section)
+{
+  Elf_Scn *strtab_section = NULL;
+
+  if (symtab_section)
+    {
+      GElf_Shdr symtab_shdr_mem, *symtab_shdr;
+
+      symtab_shdr = gelf_getshdr(symtab_section, &symtab_shdr_mem);
+      strtab_section = elf_getscn(elf_handle, symtab_shdr->sh_link);
+    }
+
+  return strtab_section;
+}
+
 /// Get the version definition (from the SHT_GNU_verdef section) of a
 /// given symbol represented by a pointer to GElf_Versym.
 ///

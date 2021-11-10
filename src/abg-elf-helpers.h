@@ -112,6 +112,10 @@ find_ksymtab_strings_section(Elf *elf_handle);
 Elf_Scn*
 find_relocation_section(Elf* elf_handle, Elf_Scn* target_section);
 
+Elf_Scn*
+find_strtab_for_symtab_section(Elf*	elf_handle,
+                               Elf_Scn*	symtab_section);
+
 //
 // Helpers for symbol versioning
 //
