@@ -1040,7 +1040,8 @@ slurp_elf_info(read_context *ctxt, corpus_sptr corp)
   /* Get the raw ELF section contents for libctf.  */
   Elf_Scn *ctf_scn = elf_helpers::find_section(ctxt->elf_handler, ".ctf", SHT_PROGBITS);
   Elf_Scn *symtab_scn = elf_helpers::find_symbol_table_section(ctxt->elf_handler);
-  Elf_Scn *strtab_scn = elf_helpers::find_section(ctxt->elf_handler, SHT_STRTAB);
+  Elf_Scn *strtab_scn = elf_helpers::find_strtab_for_symtab_section(ctxt->elf_handler,
+                                                                    symtab_scn);
 
   if (ctf_scn == NULL || symtab_scn == NULL || strtab_scn == NULL)
     return 0;
