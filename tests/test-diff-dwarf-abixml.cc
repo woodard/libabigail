@@ -20,6 +20,8 @@ using std::string;
 using std::ofstream;
 using std::cerr;
 using abigail::tests::get_build_dir;
+using abigail::tests::emit_test_status_and_update_counters;
+using abigail::tests::emit_test_summary;
 
 /// Specifies where a test should get its inputs from, and where it
 /// should write its output to.
@@ -57,12 +59,14 @@ main()
   using abigail::tools_utils::ensure_parent_dir_created;
   using abigail::tools_utils::abidiff_status;
 
-  bool is_ok = true;
+  unsigned int total_count = 0, passed_count = 0, failed_count = 0;
+
   string in_elf_path, in_abi_path,
-    abidiff, cmd, ref_diff_report_path, out_diff_report_path;
+    abidiff, cmd, diff_cmd, ref_diff_report_path, out_diff_report_path;
 
   for (InOutSpec* s = in_out_specs; s->in_elf_path; ++s)
     {
+      bool is_ok = true;
       in_elf_path = string(get_src_dir()) + "/tests/" + s->in_elf_path;
       in_abi_path = string(get_src_dir()) + "/tests/"+ s->in_abi_path;
       ref_diff_report_path =
@@ -102,14 +106,19 @@ main()
 	}
       if (abidiff_ok)
 	{
-	  cmd = "diff -u " + ref_diff_report_path
+	  diff_cmd = "diff -u " + ref_diff_report_path
 	    + " " + out_diff_report_path;
-	  if (system(cmd.c_str()))
+	  if (system(diff_cmd.c_str()))
 	    is_ok = false;
 	}
       else
 	is_ok = false;
+
+      emit_test_status_and_update_counters(is_ok, cmd, passed_count,
+					   failed_count, total_count);
     }
 
-  return !is_ok;
+  emit_test_summary(total_count, passed_count, failed_count);
+
+  return failed_count;
 }
