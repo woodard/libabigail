@@ -5,6 +5,7 @@ abg-interned-str.h	\
 abg-ir.h		\
 abg-corpus.h		\
 abg-reader.h		\
+abg-elf-reader-common.h \
 abg-dwarf-reader.h	\
 abg-writer.h		\
 abg-comparison.h	\

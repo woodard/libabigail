@@ -26,6 +26,7 @@ abg-suppression-priv.h			\
 abg-suppression.cc			\
 abg-comp-filter.cc			\
 abg-reader.cc				\
+abg-elf-reader-common.cc		\
 abg-dwarf-reader.cc			\
 abg-libxml-utils.cc			\
 abg-hash.cc				\

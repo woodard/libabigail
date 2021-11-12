@@ -525,7 +525,7 @@ load_corpus_and_write_abixml(char* argv[],
 
   read_context& ctxt = *context;
   corpus_sptr corp;
-  dwarf_reader::status s = dwarf_reader::STATUS_UNKNOWN;
+  elf_reader::status s = elf_reader::STATUS_UNKNOWN;
   t.start();
   corp = read_corpus_from_elf(ctxt, s);
   t.stop();
@@ -543,7 +543,7 @@ load_corpus_and_write_abixml(char* argv[],
 
   if (!corp)
     {
-      if (s == dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
+      if (s == elf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
 	{
 	  if (opts.di_root_paths.empty())
 	    {
@@ -573,7 +573,7 @@ load_corpus_and_write_abixml(char* argv[],
 		}
 	    }
 	}
-      else if (s == dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
+      else if (s == elf_reader::STATUS_NO_SYMBOLS_FOUND)
 	emit_prefix(argv[0], cerr)
 	  << "Could not read ELF symbol information from "
 	  << opts.in_file_path << "\n";
@@ -900,11 +900,11 @@ main(int argc, char* argv[])
 	{
 	  bool has_alt_di = false;
 	  string alt_di_path;
-	  abigail::dwarf_reader::status status =
+	  abigail::elf_reader::status status =
 	    abigail::dwarf_reader::has_alt_debug_info(ctxt,
 						      has_alt_di,
 						      alt_di_path);
-	  if (status & abigail::dwarf_reader::STATUS_OK)
+	  if (status & abigail::elf_reader::STATUS_OK)
 	    {
 	      if (alt_di_path.empty())
 		;

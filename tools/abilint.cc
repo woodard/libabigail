@@ -346,7 +346,7 @@ main(int argc, char* argv[])
       abigail::translation_unit_sptr tu;
       abigail::corpus_sptr corp;
       abigail::corpus_group_sptr group;
-      abigail::dwarf_reader::status s = abigail::dwarf_reader::STATUS_OK;
+      abigail::elf_reader::status s = abigail::elf_reader::STATUS_OK;
       char* di_root_path = 0;
       file_type type = guess_file_type(opts.file_path);
 
@@ -426,9 +426,9 @@ main(int argc, char* argv[])
 	{
 	  emit_prefix(argv[0], cerr)
 	    << "failed to read " << opts.file_path << "\n";
-	  if (!(s & abigail::dwarf_reader::STATUS_OK))
+	  if (!(s & abigail::elf_reader::STATUS_OK))
 	    {
-	      if (s & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
+	      if (s & abigail::elf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
 		{
 		  cerr << "could not find the debug info";
 		  if(di_root_path == 0)
@@ -442,7 +442,7 @@ main(int argc, char* argv[])
 		      << "Maybe the root path to the debug "
 		      "information is wrong?\n";
 		}
-	      if (s & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
+	      if (s & abigail::elf_reader::STATUS_NO_SYMBOLS_FOUND)
 		emit_prefix(argv[0], cerr)
 		  << "could not find the ELF symbols in the file "
 		  << opts.file_path

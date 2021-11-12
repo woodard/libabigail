@@ -246,7 +246,7 @@ using abigail::ir::type_base_sptr;
 using abigail::ir::function_type_sptr;
 using abigail::ir::function_decl;
 using abigail::ir::var_decl;
-using abigail::dwarf_reader::status;
+using abigail::elf_reader::status;
 using abigail::dwarf_reader::read_corpus_from_elf;
 using abigail::comparison::diff_context_sptr;
 using abigail::comparison::diff_context;
@@ -696,7 +696,7 @@ main(int argc, char* argv[])
   char * app_di_root = opts.app_di_root_path.get();
   vector<char**> app_di_roots;
   app_di_roots.push_back(&app_di_root);
-  status status = abigail::dwarf_reader::STATUS_UNKNOWN;
+  status status = abigail::elf_reader::STATUS_UNKNOWN;
   environment_sptr env(new environment);
   corpus_sptr app_corpus=
     read_corpus_from_elf(opts.app_path,
@@ -704,13 +704,13 @@ main(int argc, char* argv[])
 			 /*load_all_types=*/opts.weak_mode,
 			 status);
 
-  if (status & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
+  if (status & abigail::elf_reader::STATUS_NO_SYMBOLS_FOUND)
     {
       emit_prefix(argv[0], cerr)
 	<< "could not read symbols from " << opts.app_path << "\n";
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
-  if (!(status & abigail::dwarf_reader::STATUS_OK))
+  if (!(status & abigail::elf_reader::STATUS_OK))
     {
       emit_prefix(argv[0], cerr)
 	<< "could not read file " << opts.app_path << "\n";
@@ -753,15 +753,15 @@ main(int argc, char* argv[])
 						 lib1_di_roots, env.get(),
 						 /*load_all_types=*/false,
 						 status);
-  if (status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
+  if (status & abigail::elf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
     emit_prefix(argv[0], cerr)
       << "could not read debug info for " << opts.lib1_path << "\n";
-  if (status & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
+  if (status & abigail::elf_reader::STATUS_NO_SYMBOLS_FOUND)
     {
       cerr << "could not read symbols from " << opts.lib1_path << "\n";
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
-  if (!(status & abigail::dwarf_reader::STATUS_OK))
+  if (!(status & abigail::elf_reader::STATUS_OK))
     {
       emit_prefix(argv[0], cerr)
 	<< "could not read file " << opts.lib1_path << "\n";
@@ -780,16 +780,16 @@ main(int argc, char* argv[])
 					 lib2_di_roots, env.get(),
 					 /*load_all_types=*/false,
 					 status);
-      if (status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
+      if (status & abigail::elf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
 	emit_prefix(argv[0], cerr)
 	  << "could not read debug info for " << opts.lib2_path << "\n";
-      if (status & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
+      if (status & abigail::elf_reader::STATUS_NO_SYMBOLS_FOUND)
 	{
 	  emit_prefix(argv[0], cerr)
 	    << "could not read symbols from " << opts.lib2_path << "\n";
 	  return abigail::tools_utils::ABIDIFF_ERROR;
 	}
-      if (!(status & abigail::dwarf_reader::STATUS_OK))
+      if (!(status & abigail::elf_reader::STATUS_OK))
 	{
 	  emit_prefix(argv[0], cerr)
 	    << "could not read file " << opts.lib2_path << "\n";

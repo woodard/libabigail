@@ -2556,7 +2556,7 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
       char *di_root_ptr = di_root.get();
       vector<char**> di_roots;
       di_roots.push_back(&di_root_ptr);
-      abigail::dwarf_reader::status status = abigail::dwarf_reader::STATUS_OK;
+      abigail::elf_reader::status status = abigail::elf_reader::STATUS_OK;
       corpus_group_sptr group;
       if (!vmlinux.empty())
 	{

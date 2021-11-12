@@ -45,6 +45,7 @@ using abigail::suppr::suppression_sptr;
 using abigail::suppr::suppressions_type;
 using abigail::suppr::read_suppressions;
 using namespace abigail::dwarf_reader;
+using namespace abigail::elf_reader;
 using abigail::tools_utils::emit_prefix;
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::guess_file_type;
@@ -945,17 +946,17 @@ prepare_di_root_paths(options& o)
 /// @return abigail::tools_utils::ABIDIFF_ERROR if an error was
 /// detected, abigail::tools_utils::ABIDIFF_OK otherwise.
 static abigail::tools_utils::abidiff_status
-handle_error(abigail::dwarf_reader::status status_code,
+handle_error(abigail::elf_reader::status status_code,
 	     const abigail::dwarf_reader::read_context* ctxt,
 	     const string& prog_name,
 	     const options& opts)
 {
-  if (!(status_code & abigail::dwarf_reader::STATUS_OK))
+  if (!(status_code & abigail::elf_reader::STATUS_OK))
     {
       emit_prefix(prog_name, cerr)
 	<< "failed to read input file " << opts.file1 << "\n";
 
-      if (status_code & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
+      if (status_code & abigail::elf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
 	{
 	  emit_prefix(prog_name, cerr) <<
 	    "could not find the debug info\n";
@@ -1008,7 +1009,7 @@ handle_error(abigail::dwarf_reader::status status_code,
 	  }
 	}
 
-      if (status_code & abigail::dwarf_reader::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+      if (status_code & abigail::elf_reader::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
 	{
 	  emit_prefix(prog_name, cerr)
 	    << "could not find the alternate debug info file";
@@ -1023,7 +1024,7 @@ handle_error(abigail::dwarf_reader::status status_code,
 	  cerr << "\n";
 	}
 
-      if (status_code & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
+      if (status_code & abigail::elf_reader::STATUS_NO_SYMBOLS_FOUND)
 	emit_prefix(prog_name, cerr)
 	  << "could not find the ELF symbols in the file '"
 	  << opts.file1
@@ -1132,9 +1133,9 @@ main(int argc, char* argv[])
 	      env->self_comparison_debug_is_on(true);
 #endif
       translation_unit_sptr t1, t2;
-      abigail::dwarf_reader::status c1_status =
-	abigail::dwarf_reader::STATUS_OK,
-	c2_status = abigail::dwarf_reader::STATUS_OK;
+      abigail::elf_reader::status c1_status =
+	abigail::elf_reader::STATUS_OK,
+	c2_status = abigail::elf_reader::STATUS_OK;
       corpus_sptr c1, c2;
       corpus_group_sptr g1, g2;
       bool files_suppressed = false;

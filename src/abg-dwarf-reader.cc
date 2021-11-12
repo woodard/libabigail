@@ -56,6 +56,7 @@ ABG_END_EXPORT_DECLARATIONS
 #endif
 
 using std::string;
+using namespace abigail::elf_reader;
 
 namespace abigail
 {
@@ -15383,60 +15384,6 @@ build_ir_node_from_die(read_context&	ctxt,
 				called_from_public_decl,
 				where_offset,
                                 true);
-}
-
-status
-operator|(status l, status r)
-{
-  return static_cast<status>(static_cast<unsigned>(l)
-			     | static_cast<unsigned>(r));
-}
-
-status
-operator&(status l, status r)
-{
-  return static_cast<status>(static_cast<unsigned>(l)
-			     & static_cast<unsigned>(r));
-}
-
-status&
-operator|=(status& l, status r)
-{
-  l = l | r;
-  return l;
-}
-
-status&
-operator&=(status& l, status r)
-{
-  l = l & r;
-  return l;
-}
-
-/// Emit a diagnostic status with english sentences to describe the
-/// problems encoded in a given abigail::dwarf_reader::status, if
-/// there is an error.
-///
-/// @param status the status to diagnose
-///
-/// @return a string containing sentences that describe the possible
-/// errors encoded in @p s.  If there is no error to encode, then the
-/// empty string is returned.
-string
-status_to_diagnostic_string(status s)
-{
-  string str;
-
-  if (s & STATUS_DEBUG_INFO_NOT_FOUND)
-    str += "could not find debug info\n";
-
-  if (s & STATUS_ALT_DEBUG_INFO_NOT_FOUND)
-    str += "could not find alternate debug info\n";
-
-  if (s & STATUS_NO_SYMBOLS_FOUND)
-    str += "could not load ELF symbols\n";
-
-  return str;
 }
 
 /// Create a dwarf_reader::read_context.

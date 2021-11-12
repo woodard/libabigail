@@ -1231,7 +1231,7 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
 ///
 /// @param detailed_error_status is this pointer is non-null and if
 /// the function returns ABIDIFF_ERROR, then the function sets the
-/// pointed-to parameter to the abigail::dwarf_reader::status value
+/// pointed-to parameter to the abigail::elf_reader::status value
 /// that gives details about the rror.
 ///
 /// @return the status of the comparison.
@@ -1246,7 +1246,7 @@ compare(const elf_file& elf1,
 	abigail::ir::environment_sptr	&env,
 	corpus_diff_sptr	&diff,
 	diff_context_sptr	&ctxt,
-	abigail::dwarf_reader::status *detailed_error_status = 0)
+	abigail::elf_reader::status *detailed_error_status = 0)
 {
   char *di_dir1 = (char*) debug_dir1.c_str(),
 	*di_dir2 = (char*) debug_dir2.c_str();
@@ -1263,8 +1263,8 @@ compare(const elf_file& elf1,
       << elf2.path
       << "...\n";
 
-  abigail::dwarf_reader::status c1_status = abigail::dwarf_reader::STATUS_OK,
-    c2_status = abigail::dwarf_reader::STATUS_OK;
+  abigail::elf_reader::status c1_status = abigail::elf_reader::STATUS_OK,
+    c2_status = abigail::elf_reader::STATUS_OK;
 
   ctxt.reset(new diff_context);
   set_diff_context_from_opts(ctxt, opts);
@@ -1315,7 +1315,7 @@ compare(const elf_file& elf1,
     corpus1 = read_corpus_from_elf(*c, c1_status);
 
     bool bail_out = false;
-    if (!(c1_status & abigail::dwarf_reader::STATUS_OK))
+    if (!(c1_status & abigail::elf_reader::STATUS_OK))
       {
 	if (opts.verbose)
 	  emit_prefix("abipkgdiff", cerr)
@@ -1332,7 +1332,7 @@ compare(const elf_file& elf1,
     if (opts.fail_if_no_debug_info)
       {
 	bool debug_info_error = false;
-	if (c1_status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
+	if (c1_status & abigail::elf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
 	  {
 	    if (opts.verbose)
 	      emit_prefix("abipkgdiff", cerr)
@@ -1349,7 +1349,7 @@ compare(const elf_file& elf1,
 	    debug_info_error = true;
 	  }
 
-	if (c1_status & abigail::dwarf_reader::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+	if (c1_status & abigail::elf_reader::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
 	  {
 	    if (opts.verbose)
 	      emit_prefix("abipkgdiff", cerr)
@@ -1402,7 +1402,7 @@ compare(const elf_file& elf1,
     corpus2 = read_corpus_from_elf(*c, c2_status);
 
     bool bail_out = false;
-    if (!(c2_status & abigail::dwarf_reader::STATUS_OK))
+    if (!(c2_status & abigail::elf_reader::STATUS_OK))
       {
 	if (opts.verbose)
 	  emit_prefix("abipkgdiff", cerr)
@@ -1419,7 +1419,7 @@ compare(const elf_file& elf1,
     if (opts.fail_if_no_debug_info)
       {
 	bool debug_info_error = false;
-	if (c2_status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
+	if (c2_status & abigail::elf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
 	  {
 	    if (opts.verbose)
 	      emit_prefix("abipkgdiff", cerr)
@@ -1436,7 +1436,7 @@ compare(const elf_file& elf1,
 	    debug_info_error = true;
 	  }
 
-	if (c2_status & abigail::dwarf_reader::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+	if (c2_status & abigail::elf_reader::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
 	  {
 	    if (opts.verbose)
 	      emit_prefix("abipkgdiff", cerr)
@@ -1520,14 +1520,14 @@ compare_to_self(const elf_file& elf,
 		abigail::ir::environment_sptr	&env,
 		corpus_diff_sptr	&diff,
 		diff_context_sptr	&ctxt,
-		abigail::dwarf_reader::status *detailed_error_status = 0)
+		abigail::elf_reader::status *detailed_error_status = 0)
 {
   char *di_dir = (char*) debug_dir.c_str();
 
   vector<char**> di_dirs;
   di_dirs.push_back(&di_dir);
 
-  abigail::dwarf_reader::status c_status = abigail::dwarf_reader::STATUS_OK;
+  abigail::elf_reader::status c_status = abigail::elf_reader::STATUS_OK;
 
   if (opts.verbose)
     emit_prefix("abipkgdiff", cerr)
@@ -1549,7 +1549,7 @@ compare_to_self(const elf_file& elf,
 
     corp = read_corpus_from_elf(*c, c_status);
 
-    if (!(c_status & abigail::dwarf_reader::STATUS_OK))
+    if (!(c_status & abigail::elf_reader::STATUS_OK))
       {
 	if (opts.verbose)
 	  emit_prefix("abipkgdiff", cerr)
@@ -2000,8 +2000,8 @@ public:
     diff_context_sptr ctxt;
     corpus_diff_sptr diff;
 
-    abigail::dwarf_reader::status detailed_status =
-      abigail::dwarf_reader::STATUS_UNKNOWN;
+    abigail::elf_reader::status detailed_status =
+      abigail::elf_reader::STATUS_UNKNOWN;
 
     status |= compare(args->elf1, args->debug_dir1, args->private_types_suppr1,
 		      args->elf2, args->debug_dir2, args->private_types_suppr2,
@@ -2031,7 +2031,7 @@ public:
     if (status & abigail::tools_utils::ABIDIFF_ERROR)
       {
 	string diagnostic =
-	  abigail::dwarf_reader::status_to_diagnostic_string(detailed_status);
+	  abigail::elf_reader::status_to_diagnostic_string(detailed_status);
 	if (diagnostic.empty())
 	  diagnostic =
 	    "Unknown error.  Please run the tool again with --verbose\n";
@@ -2069,8 +2069,8 @@ public:
     diff_context_sptr ctxt;
     corpus_diff_sptr diff;
 
-    abigail::dwarf_reader::status detailed_status =
-      abigail::dwarf_reader::STATUS_UNKNOWN;
+    abigail::elf_reader::status detailed_status =
+      abigail::elf_reader::STATUS_UNKNOWN;
 
     status |= compare_to_self(args->elf1, args->debug_dir1,
 			      args->opts, env, diff, ctxt,
@@ -2097,7 +2097,7 @@ public:
     if (status & abigail::tools_utils::ABIDIFF_ERROR)
       {
 	string diagnostic =
-	  abigail::dwarf_reader::status_to_diagnostic_string(detailed_status);
+	  abigail::elf_reader::status_to_diagnostic_string(detailed_status);
 
 	if (diagnostic.empty())
 	  diagnostic =
