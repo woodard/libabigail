@@ -68,6 +68,15 @@ config::set_tu_instr_archive_suffix(const std::string& s)
 
 extern "C"
 {
+/// Return the relevant version numbers of the library.
+///
+/// @param maj the major version number of the library.
+///
+/// @param min the minor version number of the library.
+///
+/// @param rev the revision version number of the library.
+///
+/// @param suf the version suffix of the library.
 void
 abigail_get_library_version(std::string& major,
 			    std::string& minor,
