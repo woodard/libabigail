@@ -18,8 +18,8 @@ ABG_END_EXPORT_DECLARATIONS
 namespace abigail
 {
 config::config()
-  : m_format_minor("1"),
-    m_format_major("2"),
+  : m_format_minor(ABIGAIL_ABIXML_VERSION_MINOR),
+    m_format_major(ABIGAIL_ABIXML_VERSION_MAJOR),
     m_xml_element_indent(2),
     m_tu_instr_suffix(".bi"),
     m_tu_instr_archive_suffix(".abi")
@@ -78,6 +78,19 @@ abigail_get_library_version(std::string& major,
   minor = ABIGAIL_VERSION_MINOR;
   revision = ABIGAIL_VERSION_REVISION;
   suffix = ABIGAIL_VERSION_SUFFIX;
+}
+
+/// Return the version numbers for the ABIXML format.
+///
+/// @param maj the major version number of the ABIXML format.
+///
+/// @param min the minor version number of the ABIXML format.
+void
+abigail_get_abixml_version(std::string& major,
+			   std::string& minor)
+{
+  major = ABIGAIL_ABIXML_VERSION_MAJOR;
+  minor = ABIGAIL_ABIXML_VERSION_MINOR;
 }
 
 }

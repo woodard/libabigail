@@ -84,6 +84,7 @@ struct options
   vector<string>	kabi_whitelist_paths;
   suppressions_type	kabi_whitelist_supprs;
   bool			display_version;
+  bool			display_abixml_version;
   bool			check_alt_debug_info_path;
   bool			show_base_name_alt_debug_info_path;
   bool			write_architecture;
@@ -117,6 +118,7 @@ struct options
 
   options()
     : display_version(),
+      display_abixml_version(),
       check_alt_debug_info_path(),
       show_base_name_alt_debug_info_path(),
       write_architecture(true),
@@ -165,6 +167,7 @@ display_usage(const string& prog_name, ostream& out)
     << " where options can be: \n"
     << "  --help|-h  display this message\n"
     << "  --version|-v  display program version information and exit\n"
+    << "  --abixml-version  display the version of the ABIXML ABI format\n"
     << "  --debug-info-dir|-d <dir-path>  look for debug info under 'dir-path'\n"
     << "  --headers-dir|--hd <path> the path to headers of the elf file\n"
     << "  --header-file|--hf <path> the path one header of the elf file\n"
@@ -229,6 +232,9 @@ parse_command_line(int argc, char* argv[], options& opts)
       else if (!strcmp(argv[i], "--version")
 	       || !strcmp(argv[i], "-v"))
 	opts.display_version = true;
+      else if (!strcmp(argv[i], "--abixml-version")
+	       || !strcmp(argv[i], "-v"))
+	opts.display_abixml_version = true;
       else if (!strcmp(argv[i], "--debug-info-dir")
 	       || !strcmp(argv[i], "-d"))
 	{
@@ -817,7 +823,8 @@ main(int argc, char* argv[])
 
   if (!parse_command_line(argc, argv, opts)
       || (opts.in_file_path.empty()
-	  && !opts.display_version))
+	  && !opts.display_version
+	  && !opts.display_abixml_version))
     {
       if (!opts.wrong_option.empty())
 	emit_prefix(argv[0], cerr)
@@ -833,6 +840,14 @@ main(int argc, char* argv[])
 	<< "\n";
       return 0;
     }
+
+    if (opts.display_abixml_version)
+      {
+	emit_prefix(argv[0], cout)
+	  << abigail::tools_utils::get_abixml_version_string()
+	  << "\n";
+	return 0;
+      }
 
   ABG_ASSERT(!opts.in_file_path.empty());
   if (opts.corpus_group_for_linux)

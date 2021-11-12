@@ -72,6 +72,9 @@ extern "C"
 			      std::string& min,
 			      std::string& rev,
 			      std::string& suf);
+
+  void
+  abigail_get_abixml_version(std::string& maj, std::string& min);
 }
 
 }//end namespace abigail

@@ -61,6 +61,7 @@ bool split_string(const string&, const string&, vector<string>&);
 bool string_suffix(const string&, const string&, string&);
 bool sorted_strings_common_prefix(vector<string>&, string&);
 string get_library_version_string();
+string get_abixml_version_string();
 bool execute_command_and_get_output(const string&, vector<string>&);
 bool get_dsos_provided_by_rpm(const string& rpm_path,
 			      set<string>& provided_dsos);

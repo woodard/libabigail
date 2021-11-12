@@ -5,11 +5,11 @@ abidw
 
 abidw reads a shared library in `ELF`_ format and emits an XML
 representation of its ABI to standard output.  The emitted
-representation includes all the globally defined functions and
-variables, along with a complete representation of their types.  It
-also includes a representation of the globally defined ELF symbols of
-the file.  The input shared library must contain associated debug
-information in `DWARF`_ format.
+representation format, named ``ABIXML``, includes all the globally
+defined functions and variables, along with a complete representation
+of their types.  It also includes a representation of the globally
+defined ELF symbols of the file.  The input shared library must
+contain associated debug information in `DWARF`_ format.
 
 When given the ``--linux-tree`` option, this program can also handle a
 Linux kernel tree.  That is, a directory tree that contains both the
@@ -38,6 +38,10 @@ Options
   * `--version | -v`
 
     Display the version of the program and exit.
+
+  * `--abixml-version`
+
+    Display the version of the ABIXML format emitted by this program and exit.
 
   * ``--debug-info-dir | -d`` <*dir-path*>
 

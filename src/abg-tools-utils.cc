@@ -1037,6 +1037,18 @@ get_library_version_string()
   return version_string;
 }
 
+/// Return the version string for the ABIXML format.
+///
+/// @return the version string of the ABIXML format.
+string
+get_abixml_version_string()
+{
+  string major, minor, version_string;
+  abigail::abigail_get_abixml_version(major, minor);
+  version_string = major + "." + minor;
+  return version_string;
+}
+
 /// Execute a shell command and returns its output.
 ///
 /// @param cmd the shell command to execute.

@@ -38,10 +38,14 @@ AM_SILENT_RULES([yes])
 VERSION_MAJOR=version_major
 VERSION_MINOR=version_minor
 VERSION_REVISION=0
+ABIXML_VERSION_MAJOR=2
+ABIXML_VERSION_MINOR=1
 
 AC_SUBST(VERSION_MAJOR)
 AC_SUBST(VERSION_MINOR)
 AC_SUBST(VERSION_REVISION)
+AC_SUBST(ABIXML_VERSION_MAJOR)
+AC_SUBST(ABIXML_VERSION_MINOR)
 
 dnl This VERSION_SUFFIX environment variable is to allow appending
 dnl arbitrary text to the libabigail version string representation.
