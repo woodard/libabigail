@@ -19478,10 +19478,10 @@
       <class-decl name='IMountService' size-in-bits='96' visibility='default' filepath='frameworks/base/libs/storage/include/storage/IMountService.h' line='32' column='1' id='bf075117'>
         <base-class access='public' layout-offset-in-bits='0' type-id='40b6343a'/>
         <data-member access='public' static='yes'>
-          <var-decl name='descriptor' type-id='a3cec311' visibility='default' filepath='frameworks/base/libs/storage/include/storage/IMountService.h' line='34' column='1'/>
+          <var-decl name='descriptor' type-id='a3cec311' mangled-name='_ZN7android13IMountService10descriptorE' visibility='default' filepath='frameworks/base/libs/storage/include/storage/IMountService.h' line='34' column='1'/>
         </data-member>
         <data-member access='private' static='yes'>
-          <var-decl name='default_impl' type-id='34e3553c' visibility='default' filepath='frameworks/base/libs/storage/include/storage/IMountService.h' line='34' column='1'/>
+          <var-decl name='default_impl' type-id='34e3553c' mangled-name='_ZN7android13IMountService12default_implE' visibility='default' filepath='frameworks/base/libs/storage/include/storage/IMountService.h' line='34' column='1'/>
         </data-member>
         <member-function access='public' constructor='yes'>
           <function-decl name='IMountService' mangled-name='_ZN7android13IMountServiceC2Ev' filepath='frameworks/base/libs/storage/include/storage/IMountService.h' line='34' column='1' visibility='default' binding='global' size-in-bits='32'>
@@ -19754,10 +19754,10 @@
       <class-decl name='IObbActionListener' size-in-bits='96' visibility='default' filepath='frameworks/base/libs/storage/include/storage/IObbActionListener.h' line='27' column='1' id='f7c5ae1e'>
         <base-class access='public' layout-offset-in-bits='0' type-id='40b6343a'/>
         <data-member access='public' static='yes'>
-          <var-decl name='descriptor' type-id='a3cec311' visibility='default' filepath='frameworks/base/libs/storage/include/storage/IObbActionListener.h' line='30' column='1'/>
+          <var-decl name='descriptor' type-id='a3cec311' mangled-name='_ZN7android18IObbActionListener10descriptorE' visibility='default' filepath='frameworks/base/libs/storage/include/storage/IObbActionListener.h' line='30' column='1'/>
         </data-member>
         <data-member access='private' static='yes'>
-          <var-decl name='default_impl' type-id='c722890a' visibility='default' filepath='frameworks/base/libs/storage/include/storage/IObbActionListener.h' line='30' column='1'/>
+          <var-decl name='default_impl' type-id='c722890a' mangled-name='_ZN7android18IObbActionListener12default_implE' visibility='default' filepath='frameworks/base/libs/storage/include/storage/IObbActionListener.h' line='30' column='1'/>
         </data-member>
         <member-function access='public' constructor='yes'>
           <function-decl name='IObbActionListener' mangled-name='_ZN7android18IObbActionListenerC2Ev' filepath='frameworks/base/libs/storage/include/storage/IObbActionListener.h' line='30' column='1' visibility='default' binding='global' size-in-bits='32'>

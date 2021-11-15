@@ -580,6 +580,9 @@ test-read-dwarf/PR27700/test-PR27700.c  \
 test-read-dwarf/PR27700/test-PR27700.o  \
 test-read-dwarf/test-libaaudio.so       \
 test-read-dwarf/test-libaaudio.so.abi   \
+test-read-dwarf/PR28584/PR28584-smv.cc  \
+test-read-dwarf/PR28584/PR28584-smv.clang.o \
+test-read-dwarf/PR28584/PR28584-smv.clang.o.abi \
 \
 test-annotate/test0.abi			\
 test-annotate/test1.abi			\

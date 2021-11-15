@@ -6445,15 +6445,15 @@ form_is_DW_FORM_line_strp(unsigned form)
 /// @return true if the DIE has a flag attribute named @p attr_name,
 /// false otherwise.
 static bool
-die_flag_attribute(Dwarf_Die* die,
+die_flag_attribute(const Dwarf_Die* die,
 		   unsigned attr_name,
 		   bool& flag,
 		   bool recursively = true)
 {
   Dwarf_Attribute attr;
   if (recursively
-      ? !dwarf_attr_integrate(die, attr_name, &attr)
-      : !dwarf_attr(die, attr_name, &attr))
+      ? !dwarf_attr_integrate(const_cast<Dwarf_Die*>(die), attr_name, &attr)
+      : !dwarf_attr(const_cast<Dwarf_Die*>(die), attr_name, &attr))
     return false;
 
   bool f = false;
@@ -6697,11 +6697,54 @@ die_access_specifier(Dwarf_Die * die, access_specifier& access)
 /// @return true if a DW_AT_external attribute is present and its
 /// value is set to the true; return false otherwise.
 static bool
-die_is_public_decl(Dwarf_Die* die)
+die_is_public_decl(const Dwarf_Die* die)
 {
   bool is_public = false;
   die_flag_attribute(die, DW_AT_external, is_public);
   return is_public;
+}
+
+/// Test if a DIE is effectively public.
+///
+/// This is meant to return true when either the DIE is public or when
+/// it's a variable DIE that is at (global) namespace level.
+///
+/// @return true iff either the DIE is public or is a variable DIE
+/// that is at (global) namespace level.
+static bool
+die_is_effectively_public_decl(const read_context& ctxt,
+			       const Dwarf_Die* die)
+{
+  if (die_is_public_decl(die))
+    return true;
+
+  unsigned tag = dwarf_tag(const_cast<Dwarf_Die*>(die));
+  if (tag == DW_TAG_variable || tag == DW_TAG_member)
+    {
+      // The DIE is a variable.
+      Dwarf_Die parent_die;
+      size_t where_offset = 0;
+      if (!get_parent_die(ctxt, die, parent_die, where_offset))
+	return false;
+
+      tag = dwarf_tag(&parent_die);
+      if (tag == DW_TAG_compile_unit
+	  || tag == DW_TAG_partial_unit
+	  || tag == DW_TAG_type_unit)
+	// The DIE is at global scope.
+	return true;
+
+      if (tag == DW_TAG_namespace)
+	{
+	  string name = die_name(&parent_die);
+	  if (name.empty())
+	    // The DIE at unnamed namespace scope, so it's not public.
+	    return false;
+	  // The DIE is at namespace scope.
+	  return true;
+	}
+    }
+  return false;
 }
 
 /// Test whether a given DIE represents a declaration-only DIE.
@@ -15065,9 +15108,11 @@ build_ir_node_from_die(read_context&	ctxt,
 	    || (var_is_cloned = die_die_attribute(die, DW_AT_abstract_origin,
 						  spec_die, false)))
 	  {
-	    scope_decl_sptr spec_scope = get_scope_for_die(ctxt, &spec_die,
-							   called_from_public_decl,
-							   where_offset);
+	    scope_decl_sptr spec_scope =
+	      get_scope_for_die(ctxt, &spec_die,
+				/*called_from_public_decl=*/
+				die_is_effectively_public_decl(ctxt, die),
+				where_offset);
 	    if (spec_scope)
 	      {
 		decl_base_sptr d =
@@ -15377,8 +15422,18 @@ build_ir_node_from_die(read_context&	ctxt,
                                     true);
     }
 
+  // Normaly, a decl that is meant to be external has a DW_AT_external
+  // set.  But then some compilers fail to always emit that flag.  For
+  // instance, for static data members, some compilers won't emit the
+  // DW_AT_external.  In that case, we assume that if the variable is
+  // at global or named namespace scope, then we can assume it's
+  // external.  If the variable doesn't have any ELF symbol associated
+  // to it, it'll be dropped on the floor anyway.  Those variable
+  // decls are considered as being "effectively public".
+  bool consider_as_called_from_public_decl =
+    called_from_public_decl || die_is_effectively_public_decl(ctxt, die);
   scope_decl_sptr scope = get_scope_for_die(ctxt, die,
-					    called_from_public_decl,
+					    consider_as_called_from_public_decl,
 					    where_offset);
   return build_ir_node_from_die(ctxt, die, scope.get(),
 				called_from_public_decl,

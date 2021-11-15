@@ -496,6 +496,14 @@ InOutSpec in_out_specs[] =
     "data/test-read-dwarf/test-libaaudio.so.abi",
     "output/test-read-dwarf/test-libaaudio.so.abi",
   },
+  {
+    "data/test-read-dwarf/PR28584/PR28584-smv.clang.o",
+    "",
+    "",
+    SEQUENCE_TYPE_ID_STYLE,
+    "data/test-read-dwarf/PR28584/PR28584-smv.clang.o.abi",
+    "output/test-read-dwarf/PR28584/PR28584-smv.clang.o.abi",
+  },
   // This should be the last entry.
   {NULL, NULL, NULL, SEQUENCE_TYPE_ID_STYLE, NULL, NULL}
 };
