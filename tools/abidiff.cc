@@ -1174,7 +1174,7 @@ main(int argc, char* argv[])
                                                               env.get());
 
                 assert (ctxt);
-                c1 = abigail::ctf_reader::read_corpus (ctxt);
+                c1 = abigail::ctf_reader::read_corpus (ctxt, c1_status);
               }
             else
 #endif
@@ -1257,7 +1257,7 @@ main(int argc, char* argv[])
                                                               env.get());
 
                 assert (ctxt);
-                c2 = abigail::ctf_reader::read_corpus (ctxt);
+                c2 = abigail::ctf_reader::read_corpus (ctxt, c2_status);
               }
             else
 #endif

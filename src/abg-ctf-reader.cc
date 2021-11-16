@@ -1070,22 +1070,34 @@ create_read_context(std::string elf_path, ir::environment *env)
 /// Store the corpus in the same read context.
 ///
 /// @param ctxt the read context to use.
+///
+/// @param status the resulting status of the corpus read.
+///
 /// @return a shared pointer to the read corpus.
 
 corpus_sptr
-read_corpus(read_context *ctxt)
+read_corpus(read_context *ctxt, elf_reader::status &status)
 {
   corpus_sptr corp
     = std::make_shared<corpus>(ctxt->ir_env, ctxt->filename);
 
+  /* Be optimist.  */
+  status = elf_reader::STATUS_OK;
+
   /* Open the ELF file.  */
   if (!open_elf_handler(ctxt))
-    return corp;
+    {
+      status = elf_reader::STATUS_DEBUG_INFO_NOT_FOUND;
+      return corp;
+    }
 
   /* Set some properties of the corpus first.  */
   corp->set_origin(corpus::CTF_ORIGIN);
   if (!slurp_elf_info(ctxt, corp))
-    return corp;
+    {
+      status = elf_reader::STATUS_NO_SYMBOLS_FOUND;
+      return corp;
+    }
 
   /* Build the ctfa from the contents of the relevant ELF sections,
      and process the CTF archive in the read context, if any.
@@ -1094,7 +1106,9 @@ read_corpus(read_context *ctxt)
   int errp;
   ctxt->ctfa = ctf_arc_bufopen(&ctxt->ctf_sect, &ctxt->symtab_sect,
                                &ctxt->strtab_sect, &errp);
-  if (ctxt->ctfa != NULL)
+  if (ctxt->ctfa == NULL)
+    status = elf_reader::STATUS_DEBUG_INFO_NOT_FOUND;
+  else
     process_ctf_archive(ctxt, corp);
 
   /* Cleanup and return.  */

@@ -17,6 +17,7 @@
 #include <ostream>
 #include "abg-corpus.h"
 #include "abg-suppression.h"
+#include "abg-elf-reader-common.h"
 
 namespace abigail
 {
@@ -26,7 +27,8 @@ namespace ctf_reader
 class read_context;
 read_context *create_read_context (std::string elf_path,
                                    ir::environment *env);
-corpus_sptr read_corpus (read_context *ctxt);
+corpus_sptr read_corpus (read_context *ctxt,
+                         elf_reader::status& status);
 
 } // end namespace ctf_reader
 } // end namespace abigail

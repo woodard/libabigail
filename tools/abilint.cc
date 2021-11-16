@@ -375,7 +375,7 @@ main(int argc, char* argv[])
                                                               env.get());
 
                 assert (ctxt);
-                corp = abigail::ctf_reader::read_corpus (ctxt);
+                corp = abigail::ctf_reader::read_corpus (ctxt, s);
               }
             else
 #endif
