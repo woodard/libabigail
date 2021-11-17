@@ -13,6 +13,9 @@
 #define BRIGHT_RED_COLOR "\e[1;31m"
 #define DEFAULT_TERMINAL_COLOR "\033[0m"
 
+#define TEST_FAILURE_COLOR BRIGHT_RED_COLOR
+#define TEST_SUCCESS_COLOR BRIGHT_YELLOW_COLOR
+
 namespace abigail
 {
 namespace tests
