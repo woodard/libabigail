@@ -268,6 +268,11 @@ Options
     the --enable-debug-type-canonicalization option.
 
 
+  * ``--ctf``
+
+    Extract ABI information from CTF debug information, if present in
+    the given object.
+
   *  ``--annotate``
 
     Annotate the ABIXML output with comments above most elements.  The
