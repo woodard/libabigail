@@ -23,7 +23,16 @@ namespace tests
 
 const char* get_src_dir();
 const char* get_build_dir();
-
+void
+emit_test_status_and_update_counters(bool test_passed,
+				     const std::string& test_cmd,
+				     unsigned& passed_count,
+				     unsigned& failed_count,
+				     unsigned& total_count);
+void
+emit_test_summary(unsigned total_count,
+		  unsigned passed_count,
+		  unsigned failed_count);
 }//end namespace tests
 }//end namespace abigail
 #endif //__TEST_UTILS_H__
