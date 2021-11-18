@@ -1169,12 +1169,13 @@ main(int argc, char* argv[])
 #ifdef WITH_CTF
             if (opts.use_ctf)
               {
-                abigail::ctf_reader::read_context *ctxt
-                  = abigail::ctf_reader::create_read_context (opts.file1,
-                                                              env.get());
+                abigail::ctf_reader::read_context_sptr ctxt
+                  = abigail::ctf_reader::create_read_context(opts.file1,
+                                                             env.get());
 
                 assert (ctxt);
-                c1 = abigail::ctf_reader::read_corpus (ctxt, c1_status);
+                c1 = abigail::ctf_reader::read_corpus(ctxt.get(),
+                                                      c1_status);
               }
             else
 #endif
@@ -1252,12 +1253,13 @@ main(int argc, char* argv[])
 #ifdef WITH_CTF
             if (opts.use_ctf)
               {
-                abigail::ctf_reader::read_context *ctxt
-                  = abigail::ctf_reader::create_read_context (opts.file2,
-                                                              env.get());
+                abigail::ctf_reader::read_context_sptr ctxt
+                  = abigail::ctf_reader::create_read_context(opts.file2,
+                                                             env.get());
 
                 assert (ctxt);
-                c2 = abigail::ctf_reader::read_corpus (ctxt, c2_status);
+                c2 = abigail::ctf_reader::read_corpus (ctxt.get(),
+                                                       c2_status);
               }
             else
 #endif

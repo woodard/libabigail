@@ -1058,11 +1058,12 @@ slurp_elf_info(read_context *ctxt, corpus_sptr corp)
 /// @param elf_path the patch of some ELF file.
 /// @param env a libabigail IR environment.
 
-read_context *
+read_context_sptr
 create_read_context(const std::string& elf_path,
                     ir::environment *env)
 {
-  return new read_context(elf_path, env);
+  read_context_sptr result(new read_context(elf_path, env));
+  return result;
 }
 
 /// Read the CTF information from some source described by a given
@@ -1115,6 +1116,20 @@ read_corpus(read_context *ctxt, elf_reader::status &status)
   close_elf_handler(ctxt);
   return corp;
 }
+
+/// Read the CTF information from some source described by a given
+/// read context and process it to create a libabigail IR corpus.
+/// Store the corpus in the same read context.
+///
+/// @param ctxt the read context to use.
+///
+/// @param status the resulting status of the corpus read.
+///
+/// @return a shared pointer to the read corpus.
+
+corpus_sptr
+read_corpus(const read_context_sptr &ctxt, elf_reader::status &status)
+{return read_corpus(ctxt.get(), status);}
 
 } // End of namespace ctf_reader
 } // End of namespace abigail

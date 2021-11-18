@@ -539,7 +539,7 @@ load_corpus_and_write_abixml(char* argv[],
 #ifdef WITH_CTF
   if (opts.use_ctf)
     {
-      abigail::ctf_reader::read_context *ctxt
+      abigail::ctf_reader::read_context_sptr ctxt
         = abigail::ctf_reader::create_read_context (opts.in_file_path,
                                                     env.get());
 
