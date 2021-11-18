@@ -25,10 +25,10 @@ namespace ctf_reader
 {
 
 class read_context;
-read_context *create_read_context (std::string elf_path,
-                                   ir::environment *env);
-corpus_sptr read_corpus (read_context *ctxt,
-                         elf_reader::status& status);
+read_context *create_read_context(const std::string& elf_path,
+                                  ir::environment *env);
+corpus_sptr read_corpus(read_context *ctxt,
+                        elf_reader::status& status);
 
 } // end namespace ctf_reader
 } // end namespace abigail

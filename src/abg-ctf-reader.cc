@@ -102,7 +102,7 @@ public:
   /// Constructor.
   ///
   /// @param elf_path the path to the ELF file.
-  read_context(string elf_path, ir::environment *env)
+  read_context(const string& elf_path, ir::environment *env)
   {
     types_map.clear();
     filename = elf_path;
@@ -1060,7 +1060,8 @@ slurp_elf_info(read_context *ctxt, corpus_sptr corp)
 /// @param env a libabigail IR environment.
 
 read_context *
-create_read_context(std::string elf_path, ir::environment *env)
+create_read_context(const std::string& elf_path,
+                    ir::environment *env)
 {
   return new read_context(elf_path, env);
 }
