@@ -373,9 +373,8 @@ main(int argc, char* argv[])
                 abigail::ctf_reader::read_context_sptr ctxt
                   = abigail::ctf_reader::create_read_context(opts.file_path,
                                                              env.get());
-
-                assert (ctxt);
-                corp = abigail::ctf_reader::read_corpus (ctxt.get(), s);
+                ABG_ASSERT(ctxt);
+                corp = abigail::ctf_reader::read_corpus(ctxt.get(), s);
               }
             else
 #endif

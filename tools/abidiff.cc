@@ -1172,8 +1172,7 @@ main(int argc, char* argv[])
                 abigail::ctf_reader::read_context_sptr ctxt
                   = abigail::ctf_reader::create_read_context(opts.file1,
                                                              env.get());
-
-                assert (ctxt);
+                ABG_ASSERT(ctxt);
                 c1 = abigail::ctf_reader::read_corpus(ctxt.get(),
                                                       c1_status);
               }
@@ -1256,10 +1255,9 @@ main(int argc, char* argv[])
                 abigail::ctf_reader::read_context_sptr ctxt
                   = abigail::ctf_reader::create_read_context(opts.file2,
                                                              env.get());
-
-                assert (ctxt);
-                c2 = abigail::ctf_reader::read_corpus (ctxt.get(),
-                                                       c2_status);
+                ABG_ASSERT(ctxt);
+                c2 = abigail::ctf_reader::read_corpus(ctxt.get(),
+                                                      c2_status);
               }
             else
 #endif
