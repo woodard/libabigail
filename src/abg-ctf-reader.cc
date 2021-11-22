@@ -992,12 +992,11 @@ close_elf_handler (read_context *ctxt)
 /// Fill a CTF section description with the information in a given ELF
 /// section.
 ///
-/// @param ctxt the read context.
 /// @param elf_section the ELF section from which to get.
 /// @param ctf_section the CTF section to fill with the raw data.
 
 static void
-fill_ctf_section(read_context *ctxt, Elf_Scn *elf_section, ctf_sect_t *ctf_section)
+fill_ctf_section(Elf_Scn *elf_section, ctf_sect_t *ctf_section)
 {
   GElf_Shdr section_header_mem, *section_header;
   Elf_Data *section_data;
@@ -1046,9 +1045,9 @@ slurp_elf_info(read_context *ctxt, corpus_sptr corp)
   if (ctf_scn == NULL || symtab_scn == NULL || strtab_scn == NULL)
     return 0;
 
-  fill_ctf_section(ctxt, ctf_scn, &ctxt->ctf_sect);
-  fill_ctf_section(ctxt, symtab_scn, &ctxt->symtab_sect);
-  fill_ctf_section(ctxt, strtab_scn, &ctxt->strtab_sect);
+  fill_ctf_section(ctf_scn, &ctxt->ctf_sect);
+  fill_ctf_section(symtab_scn, &ctxt->symtab_sect);
+  fill_ctf_section(strtab_scn, &ctxt->strtab_sect);
 
   return 1;
 }
