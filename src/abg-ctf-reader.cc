@@ -941,6 +941,8 @@ process_ctf_archive(read_context *ctxt, corpus_sptr corp)
       }
       if (ctf_errno(ctf_dict) != ECTF_NEXT_END)
         fprintf(stderr, "ERROR from ctf_symbol_next\n");
+
+      ctf_dict_close(ctf_dict);
     }
   if (ctf_err != ECTF_NEXT_END)
     fprintf(stderr, "ERROR from ctf_archive_next\n");
