@@ -168,9 +168,7 @@ class write_context
   class_tmpl_shared_ptr_map		m_class_tmpl_id_map;
   string_elf_symbol_sptr_map_type	m_fun_symbol_map;
   string_elf_symbol_sptr_map_type	m_var_symbol_map;
-  mutable unordered_map<interned_string,
-			bool,
-			hash_interned_string> m_emitted_decls_map;
+  unordered_set<interned_string, hash_interned_string> m_emitted_decls_set;
 
   write_context();
 
@@ -747,17 +745,6 @@ public:
   type_is_emitted(const type_base_sptr& t) const
   {return type_is_emitted(t.get());}
 
-  /// Test if the name of a given decl has been written out to the XML
-  /// output.
-  ///
-  /// @param the decl to consider.
-  ///
-  /// @return true if the decl has already been emitted, false
-  /// otherwise.
-  bool
-  decl_name_is_emitted(const interned_string& name) const
-  {return m_emitted_decls_map.find(name) != m_emitted_decls_map.end();}
-
   /// Test if a given decl has been written out to the XML output.
   ///
   /// @param the decl to consider.
@@ -767,13 +754,10 @@ public:
   bool
   decl_is_emitted(decl_base_sptr& decl) const
   {
-    if (is_type(decl))
-      return false;
-
+    ABG_ASSERT(!is_type(decl));
     string repr = get_pretty_representation(decl, true);
     interned_string irepr = decl->get_environment()->intern(repr);
-    bool is_emitted = decl_name_is_emitted(irepr);
-    return is_emitted;
+    return m_emitted_decls_set.find(irepr) != m_emitted_decls_set.end();
   }
 
   /// Record a declaration-only class as being emitted.
@@ -829,11 +813,11 @@ public:
   ///
   /// @param decl the decl to consider.
   void
-  record_decl_as_emitted(const decl_base_sptr &decl)const
+  record_decl_as_emitted(const decl_base_sptr& decl)
   {
     string repr = get_pretty_representation(decl, true);
     interned_string irepr = decl->get_environment()->intern(repr);
-    m_emitted_decls_map[irepr] = true;
+    m_emitted_decls_set.insert(irepr);
   }
 
   /// Get the set of types that have been emitted.
