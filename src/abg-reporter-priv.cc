@@ -1081,20 +1081,15 @@ maybe_report_diff_for_member(const decl_base_sptr&	decl1,
 /// @param the output stream to emit the report to.
 ///
 /// @param indent the indentation string to use.
-///
-/// @return true if a report was emitted to the output stream @p out,
-/// false otherwise.
-bool
+void
 maybe_report_diff_for_symbol(const elf_symbol_sptr&	symbol1,
 			     const elf_symbol_sptr&	symbol2,
 			     const diff_context_sptr&	ctxt,
 			     ostream&			out,
 			     const string&		indent)
 {
-  bool reported = false;
-
   if (!symbol1 || !symbol2 || symbol1 == symbol2)
-    return reported;
+    return;
 
   if (symbol1->get_size() != symbol2->get_size())
     {
@@ -1104,108 +1099,65 @@ maybe_report_diff_for_symbol(const elf_symbol_sptr&	symbol1,
 			    symbol2->get_size(),
 			    *ctxt, out,
 			    /*show_bits_or_bytes=*/false);
-      reported = true;
+      out << "\n";
     }
 
   if (symbol1->get_name() != symbol2->get_name())
     {
-      if (reported)
-	out << ",\n" << indent
-	    << "its name ";
-      else
-	out << "\n" << indent << "name of symbol ";
-
-      out << "changed from "
+      out << indent << "symbol name changed from "
 	  << symbol1->get_name()
 	  << " to "
-	  << symbol2->get_name();
-
-      reported = true;
+	  << symbol2->get_name()
+	  << "\n";
     }
 
   if (symbol1->get_type() != symbol2->get_type())
     {
-      if (reported)
-	out << ",\n" << indent
-	    << "its type ";
-      else
-	out << "\n" << indent << "type of symbol ";
-
-      out << "changed from '"
+      out << indent << "symbol type changed from '"
 	  << symbol1->get_type()
 	  << "' to '"
 	  << symbol2->get_type()
-	  << "'";
-
-      reported = true;
+	  << "'\n";
     }
 
   if (symbol1->is_public() != symbol2->is_public())
     {
-      if (reported)
-	out << ",\n" << indent
-	    << "it became ";
-	else
-	  out << "\n" << indent << "symbol became ";
-
+      out << indent << "symbol became ";
       if (symbol2->is_public())
 	out << "exported";
       else
 	out << "non-exported";
-
-      reported = true;
+      out << "\n";
     }
 
   if (symbol1->is_defined() != symbol2->is_defined())
     {
-      if (reported)
-	out << ",\n" << indent
-	    << "it became ";
-      else
-	out << "\n" << indent << "symbol became ";
-
+      out << indent << "symbol became ";
       if (symbol2->is_defined())
 	out << "defined";
       else
 	out << "undefined";
-
-      reported = true;
+      out << "\n";
     }
 
   if (symbol1->get_version() != symbol2->get_version())
     {
-      if (reported)
-	out << ",\n" << indent
-	    << "its version changed from ";
-      else
-	out << "\n" << indent << "symbol version changed from ";
-
-      out << symbol1->get_version().str()
+      out << indent << "symbol version changed from "
+	  << symbol1->get_version().str()
 	  << " to "
-	  << symbol2->get_version().str();
-
-      reported = true;
+	  << symbol2->get_version().str()
+	  << "\n";
     }
 
   if (symbol1->get_crc() != 0 && symbol2->get_crc() != 0
       && symbol1->get_crc() != symbol2->get_crc())
     {
-      if (reported)
-	out << ",\n" << indent << "its CRC (modversions) changed from ";
-      else
-	out << "\n" << indent << "CRC value (modversions) changed from ";
-
-      out << std::showbase << std::hex
+      out << indent << "CRC (modversions) changed from "
+	  << std::showbase << std::hex
 	  << symbol1->get_crc() << " to " << symbol2->get_crc()
-	  << std::noshowbase << std::dec;
-
-      reported = true;
+	  << std::noshowbase << std::dec
+	  << "\n";
     }
-
-  if (reported)
-    out << "\n";
-
-  return reported;
 }
 
 /// For a given symbol, emit a string made of its name and version.

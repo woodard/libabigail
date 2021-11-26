@@ -4,12 +4,10 @@ Variables changes summary: 0 Removed, 1 Changed, 0 Added variable
 1 function with some indirect sub-type change:
 
   [C] 'function void func1(E)' has some indirect sub-type changes:
-
-    CRC value (modversions) changed from 0x10000001 to 0x10000002
+    CRC (modversions) changed from 0x10000001 to 0x10000002
 
 1 Changed variable:
 
   [C] 'int var1' was changed:
-
-    CRC value (modversions) changed from 0x30000001 to 0x30000002
+    CRC (modversions) changed from 0x30000001 to 0x30000002
 

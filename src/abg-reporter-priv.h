@@ -206,7 +206,7 @@ maybe_report_diff_for_member(const decl_base_sptr&	decl1,
 			     ostream&			out,
 			     const string&		indent);
 
-bool
+void
 maybe_report_diff_for_symbol(const elf_symbol_sptr&	symbol1,
 			     const elf_symbol_sptr&	symbol2,
 			     const diff_context_sptr&	ctxt,
