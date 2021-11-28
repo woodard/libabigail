@@ -472,6 +472,7 @@ process_ctf_array_type(read_context *ctxt,
 {
   array_type_def_sptr result;
   ctf_arinfo_t ctf_ainfo;
+  bool is_infinite = false;
 
   /* First, get the information about the CTF array.  */
   if (static_cast<ctf_id_t>(ctf_array_info(ctf_dictionary,
@@ -507,6 +508,10 @@ process_ctf_array_type(read_context *ctxt,
   lower_bound.set_unsigned(0); /* CTF supports C only.  */
   upper_bound.set_unsigned(nelems > 0 ? nelems - 1 : 0U);
 
+  /* for VLAs number of array elements is 0 */
+  if (upper_bound.get_unsigned_value() == 0)
+    is_infinite = true;
+
   subrange.reset(new array_type_def::subrange_type(ctxt->ir_env,
                                                    "",
                                                    lower_bound,
@@ -517,6 +522,7 @@ process_ctf_array_type(read_context *ctxt,
   if (!subrange)
     return result;
 
+  subrange->is_infinite(is_infinite);
   add_decl_to_scope(subrange, tunit->get_global_scope());
   canonicalize(subrange);
   subranges.push_back(subrange);
