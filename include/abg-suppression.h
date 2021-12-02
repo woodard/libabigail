@@ -328,7 +328,10 @@ public:
   static bool
   eval_boundary(boundary_sptr	boundary,
 		class_decl_sptr context,
-		ssize_t&	value);
+		uint64_t&	value);
+
+  static bool
+  boundary_value_is_end(uint64_t value);
 }; // end class insertion_range
 
 type_suppression::insertion_range::integer_boundary_sptr
@@ -360,9 +363,9 @@ class type_suppression::insertion_range::integer_boundary
   integer_boundary();
 
 public:
-  integer_boundary(int value);
-  int as_integer() const;
-  operator int() const;
+  integer_boundary(uint64_t value);
+  uint64_t as_integer() const;
+  operator uint64_t () const;
   ~integer_boundary();
 }; //end class type_suppression::insertion_range::integer_boundary
 

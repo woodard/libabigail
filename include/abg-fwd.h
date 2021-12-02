@@ -639,6 +639,9 @@ is_data_member(const decl_base *);
 const var_decl_sptr
 get_next_data_member(const class_or_union_sptr&, const var_decl_sptr&);
 
+var_decl_sptr
+get_last_data_member(const class_or_union_sptr&);
+
 bool
 is_anonymous_data_member(const decl_base&);
 
@@ -720,6 +723,11 @@ get_data_member_offset(const decl_base_sptr);
 
 uint64_t
 get_absolute_data_member_offset(const var_decl&);
+
+bool
+get_next_data_member_offset(const class_or_union_sptr&,
+			    const var_decl_sptr&,
+			    uint64_t&);
 
 uint64_t
 get_var_size_in_bits(const var_decl_sptr&);

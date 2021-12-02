@@ -1550,6 +1550,17 @@ test-diff-suppr/PR27267/v1.c \
 test-diff-suppr/PR27267/libtestpr27267-v0.so \
 test-diff-suppr/PR27267/libtestpr27267-v1.so \
 test-diff-suppr/PR27267/report-1.txt \
+test-diff-suppr/PR28073/PR28073-bitfield-removed.c \
+test-diff-suppr/PR28073/PR28073-bitfield-removed.o \
+test-diff-suppr/PR28073/PR28073-bitfield-removed.o.abi \
+test-diff-suppr/PR28073/PR28073-output-1.txt \
+test-diff-suppr/PR28073/PR28073-output-2.txt \
+test-diff-suppr/PR28073/PR28073.after.o \
+test-diff-suppr/PR28073/PR28073.after.o.abi \
+test-diff-suppr/PR28073/PR28073.before.o \
+test-diff-suppr/PR28073/PR28073.before.o.abi \
+test-diff-suppr/PR28073/PR28073.c \
+test-diff-suppr/PR28073/bitfield.suppr \
 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1.abi \
