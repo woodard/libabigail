@@ -3008,13 +3008,15 @@ write_array_type_def(const array_type_def_sptr& decl,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_enum_type_decl(const enum_type_decl_sptr& decl,
-		     const string&		id,
-		     write_context&		ctxt,
-		     unsigned			indent)
+write_enum_type_decl(const enum_type_decl_sptr& d,
+		     const string& id,
+		     write_context& ctxt,
+		     unsigned indent)
 {
-  if (!decl)
+  if (!d)
     return false;
+
+  enum_type_decl_sptr decl = is_enum_type(look_through_decl_only_enum(d));
 
   annotate(decl->get_canonical_type(), ctxt, indent);
 
