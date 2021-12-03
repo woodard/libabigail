@@ -25232,6 +25232,38 @@ is_non_canonicalized_type(const type_base *t)
   return is_declaration_only_class_or_union_type(t) || env->is_void_type(t);
 }
 
+/// For a given type, return its exemplar type.
+///
+/// For a given type, its exemplar type is either its canonical type
+/// or the canonical type of the definition type of a given
+/// declaration-only type.  If the neither of those two types exist,
+/// then the exemplar type is the given type itself.
+///
+/// @param type the input to consider.
+///
+/// @return the exemplar type.
+type_base*
+get_exemplar_type(const type_base* type)
+{
+  if (decl_base * decl = is_decl(type))
+    {
+      // Make sure we get the real definition of a decl-only type.
+      decl = look_through_decl_only(decl);
+      type = is_type(decl);
+      ABG_ASSERT(type);
+    }
+  type_base *exemplar = type->get_naked_canonical_type();
+  if (!exemplar)
+    {
+      // The type has no canonical type.  Let's be sure that it's one
+      // of those rare types that are allowed to be non canonicalized
+      // in the system.
+      exemplar = const_cast<type_base*>(type);
+      ABG_ASSERT(is_non_canonicalized_type(exemplar));
+    }
+  return exemplar;
+}
+
 /// Test if a given type is allowed to be non canonicalized
 ///
 /// This is a subroutine of hash_as_canonical_type_or_constant.

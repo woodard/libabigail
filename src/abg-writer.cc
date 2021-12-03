@@ -37,6 +37,7 @@ ABG_BEGIN_EXPORT_DECLARATIONS
 
 #include "abg-writer.h"
 #include "abg-libxml-utils.h"
+#include "abg-fwd.h"
 
 ABG_END_EXPORT_DECLARATIONS
 // </headers defining libabigail's API>
@@ -394,10 +395,8 @@ public:
   bool
   type_has_existing_id(type_base* type) const
   {
-    type_base *c = type->get_naked_canonical_type();
-    if (c == 0)
-      c = const_cast<type_base*>(type);
-    return (m_type_id_map.find(c) != m_type_id_map.end());
+    type = get_exemplar_type(type);
+    return m_type_id_map.find(type) != m_type_id_map.end();
   }
 
   /// Associate a unique id to a given type.  For that, put the type
@@ -413,11 +412,9 @@ public:
   /// associated to it, create a new one and return it.  Otherwise,
   /// return the existing id for that type.
   interned_string
-  get_id_for_type(const type_base* t) const
+  get_id_for_type(type_base* type) const
   {
-    type_base *c = t->get_naked_canonical_type();
-    if (c == 0)
-      c = const_cast<type_base*>(t);
+    type_base* c = get_exemplar_type(type);
 
     type_ptr_map::const_iterator it = m_type_id_map.find(c);
     if (it != m_type_id_map.end())
@@ -715,11 +712,9 @@ public:
   ///
   /// @param t the type to flag.
   void
-  record_type_as_emitted(const type_base *t)
+  record_type_as_emitted(const type_base* t)
   {
-    type_base *c = t->get_naked_canonical_type();
-    if (c == 0)
-      c = const_cast<type_base*>(t);
+    type_base* c = get_exemplar_type(t);
     m_emitted_type_set.insert(c);
   }
 
@@ -730,9 +725,10 @@ public:
   /// @return true if the type has already been emitted, false
   /// otherwise.
   bool
-  type_is_emitted(const type_base *t) const
+  type_is_emitted(const type_base* t) const
   {
-    return m_emitted_type_set.find(t) != m_emitted_type_set.end();
+    type_base* c = get_exemplar_type(t);
+    return m_emitted_type_set.find(c) != m_emitted_type_set.end();
   }
 
   /// Test if a given type has been written out to the XML output.

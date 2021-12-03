@@ -1393,6 +1393,19 @@ is_non_canonicalized_type(const type_base *);
 bool
 is_non_canonicalized_type(const type_base_sptr&);
 
+/// For a given type, return its exemplar type.
+///
+/// For a given type, its exemplar type is either its canonical type
+/// or the canonical type of the definition type of a given
+/// declaration-only type.  If the neither of those two types exist,
+/// then the exemplar type is the given type itself.
+///
+/// @param type the input to consider.
+///
+/// @return the exemplar type.
+type_base*
+get_exemplar_type(const type_base* type);
+
 bool
 function_decl_is_less_than(const function_decl&f, const function_decl &s);
 
