@@ -1516,9 +1516,6 @@
       <parameter type-id='type-id-14'/>
       <return type-id='type-id-18'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-135'>
-      <return type-id='type-id-108'/>
-    </function-type>
     <function-type size-in-bits='64' id='type-id-137'>
       <parameter type-id='type-id-127'/>
       <parameter type-id='type-id-15'/>
@@ -1534,10 +1531,6 @@
       <parameter type-id='type-id-18'/>
       <return type-id='type-id-108'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-140'>
-      <parameter type-id='type-id-14'/>
-      <return type-id='type-id-108'/>
-    </function-type>
     <function-type size-in-bits='64' id='type-id-142'>
       <parameter type-id='type-id-14'/>
       <parameter type-id='type-id-33'/>
@@ -1548,6 +1541,13 @@
       <return type-id='type-id-14'/>
     </function-type>
     <type-decl name='void' id='type-id-108'/>
+    <function-type size-in-bits='64' id='type-id-135'>
+      <return type-id='type-id-108'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-140'>
+      <parameter type-id='type-id-14'/>
+      <return type-id='type-id-108'/>
+    </function-type>
     <function-type size-in-bits='64' id='type-id-148'>
       <parameter type-id='type-id-94'/>
       <return type-id='type-id-14'/>
@@ -7000,7 +7000,7 @@
       <return type-id='type-id-493'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-501'>
-      <parameter type-id='type-id-131'/>
+      <parameter type-id='type-id-131' name='obj'/>
       <return type-id='type-id-108'/>
     </function-type>
   </abi-instr>

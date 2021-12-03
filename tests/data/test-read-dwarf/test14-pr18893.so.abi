@@ -604,7 +604,6 @@
       <parameter type-id='type-id-35'/>
       <return type-id='type-id-14'/>
     </function-type>
-    <type-decl name='unsigned long int' size-in-bits='64' id='type-id-3'/>
   </abi-instr>
   <abi-instr address-size='64' path='libnurbs/interface/glinterface.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-T0fsxk/Mesa-8.0.5/src/glu/sgi' language='LANG_C_plus_plus'>
     <class-decl name='GLUnurbs' size-in-bits='1149440' is-struct='yes' visibility='default' filepath='libnurbs/interface/glrenderer.h' line='49' column='1' id='type-id-39'>

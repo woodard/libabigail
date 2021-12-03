@@ -2537,11 +2537,6 @@
       <!-- int -->
       <return type-id='type-id-18'/>
     </function-type>
-    <!-- void () -->
-    <function-type size-in-bits='64' id='type-id-135'>
-      <!-- void -->
-      <return type-id='type-id-108'/>
-    </function-type>
     <!-- void (diagnostic_context*, const char*, va_list*) -->
     <function-type size-in-bits='64' id='type-id-137'>
       <!-- parameter of type 'diagnostic_context*' -->
@@ -2569,13 +2564,6 @@
       <!-- void -->
       <return type-id='type-id-108'/>
     </function-type>
-    <!-- void (void*) -->
-    <function-type size-in-bits='64' id='type-id-140'>
-      <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-14'/>
-      <!-- void -->
-      <return type-id='type-id-108'/>
-    </function-type>
     <!-- void (void*, _obstack_chunk*) -->
     <function-type size-in-bits='64' id='type-id-142'>
       <!-- parameter of type 'void*' -->
@@ -2594,6 +2582,18 @@
     </function-type>
     <!-- void -->
     <type-decl name='void' id='type-id-108'/>
+    <!-- void () -->
+    <function-type size-in-bits='64' id='type-id-135'>
+      <!-- void -->
+      <return type-id='type-id-108'/>
+    </function-type>
+    <!-- void (void*) -->
+    <function-type size-in-bits='64' id='type-id-140'>
+      <!-- parameter of type 'void*' -->
+      <parameter type-id='type-id-14'/>
+      <!-- void -->
+      <return type-id='type-id-108'/>
+    </function-type>
     <!-- void* (size_t) -->
     <function-type size-in-bits='64' id='type-id-148'>
       <!-- parameter of type 'typedef size_t' -->
@@ -10843,7 +10843,7 @@
     <!-- void (pex_obj*) -->
     <function-type size-in-bits='64' id='type-id-501'>
       <!-- parameter of type 'pex_obj*' -->
-      <parameter type-id='type-id-131'/>
+      <parameter type-id='type-id-131' name='obj'/>
       <!-- void -->
       <return type-id='type-id-108'/>
     </function-type>

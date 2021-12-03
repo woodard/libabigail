@@ -2160,8 +2160,6 @@
       <parameter type-id='type-id-150'/>
       <return type-id='type-id-154'/>
     </function-type>
-    <type-decl name='unsigned long int' size-in-bits='64' id='type-id-6'/>
-    <type-decl name='unsigned short int' size-in-bits='16' id='type-id-57'/>
   </abi-instr>
   <abi-instr address-size='64' path='../../../gcc/liboffloadmic/runtime/compiler_if_host.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-155' size-in-bits='128' id='type-id-156'>

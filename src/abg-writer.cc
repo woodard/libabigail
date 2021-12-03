@@ -530,18 +530,19 @@ public:
   ///
   /// @param t a shared pointer to a type
   void
-  record_type_as_referenced(const type_base_sptr& t)
+  record_type_as_referenced(const type_base_sptr& type)
   {
+    type_base* t = get_exemplar_type(type.get());
     // If the type is a function type, record it in a dedicated data
     // structure.
-    if (function_type* f = is_function_type(t.get()))
+    if (function_type* f = is_function_type(t))
       m_referenced_fn_types_set.insert(f);
     else if (!t->get_naked_canonical_type())
       // If the type doesn't have a canonical type, record it in a
       // dedicated data structure.
-      m_referenced_non_canonical_types_set.insert(t.get());
+      m_referenced_non_canonical_types_set.insert(t);
     else
-      m_referenced_types_set.insert(t.get());
+      m_referenced_types_set.insert(t);
   }
 
   /// Test if a given type has been referenced by a pointer, a
@@ -552,17 +553,17 @@ public:
   /// @return true if the type has been referenced, false
   /// otherwise.
   bool
-  type_is_referenced(const type_base_sptr& t)
+  type_is_referenced(const type_base_sptr& type)
   {
-    if (function_type *f = is_function_type(t.get()))
+    type_base* t = get_exemplar_type(type.get());
+    if (function_type* f = is_function_type(t))
       return (m_referenced_fn_types_set.find(f)
 	      != m_referenced_fn_types_set.end());
     else if (!t->get_naked_canonical_type())
-      return (m_referenced_non_canonical_types_set.find(t.get())
+      return (m_referenced_non_canonical_types_set.find(t)
 	      != m_referenced_non_canonical_types_set.end());
     else
-      return m_referenced_types_set.find
-	(t.get()) != m_referenced_types_set.end();
+      return m_referenced_types_set.find(t) != m_referenced_types_set.end();
   }
 
   /// A comparison functor to compare pointers to @ref type_base.

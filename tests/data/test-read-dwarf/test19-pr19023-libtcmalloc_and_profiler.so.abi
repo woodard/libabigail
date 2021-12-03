@@ -1185,8 +1185,6 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-    <type-decl name='unsigned long int' size-in-bits='64' id='type-id-5'/>
-    <type-decl name='unsigned short int' size-in-bits='16' id='type-id-22'/>
   </abi-instr>
   <abi-instr address-size='64' path='src/base/linuxthreads.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <typedef-decl name='ListAllProcessThreadsCallBack' type-id='type-id-58' filepath='./src/base/thread_lister.h' line='48' column='1' id='type-id-59'/>

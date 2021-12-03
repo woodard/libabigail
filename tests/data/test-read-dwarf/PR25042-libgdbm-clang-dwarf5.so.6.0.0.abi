@@ -476,11 +476,11 @@
       <parameter type-id='type-id-9' name='dbf' filepath='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src/gdbmclose.c' line='30' column='1'/>
       <return type-id='type-id-8'/>
     </function-decl>
+    <type-decl name='void' id='type-id-11'/>
     <function-type size-in-bits='64' id='type-id-57'>
       <parameter type-id='type-id-56'/>
       <return type-id='type-id-11'/>
     </function-type>
-    <type-decl name='void' id='type-id-11'/>
   </abi-instr>
   <abi-instr address-size='64' path='gdbmcount.c' comp-dir-path='/tmp/ben/spack-stage/spack-stage-dQKT1q/spack-src/src' language='LANG_C99'>
     <type-decl name='long long unsigned int' size-in-bits='64' id='type-id-58'/>

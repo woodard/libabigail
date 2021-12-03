@@ -2160,10 +2160,6 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-    <!-- unsigned long int -->
-    <type-decl name='unsigned long int' size-in-bits='64' id='type-id-5'/>
-    <!-- unsigned short int -->
-    <type-decl name='unsigned short int' size-in-bits='16' id='type-id-22'/>
   </abi-instr>
   <abi-instr address-size='64' path='src/base/linuxthreads.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
     <!-- typedef int (void*, int, pid_t*, typedef __va_list_tag __va_list_tag*)* ListAllProcessThreadsCallBack -->
