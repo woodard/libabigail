@@ -31,7 +31,6 @@ ABG_BEGIN_EXPORT_DECLARATIONS
 
 #include "abg-config.h"
 #include "abg-corpus.h"
-#include "abg-diff-utils.h"
 #include "abg-hash.h"
 #include "abg-sptr-utils.h"
 
@@ -119,9 +118,7 @@ struct type_hasher
 /// A convenience typedef for a map that associates a pointer to type
 /// to a string.  The pointer to type is hashed as fast as possible.
 typedef unordered_map<type_base*,
-		      interned_string,
-		      type_hasher,
-		      abigail::diff_utils::deep_ptr_eq_functor> type_ptr_map;
+		      interned_string> type_ptr_map;
 
 // A convenience typedef for a set of type_base*.
 typedef std::unordered_set<const type_base*> type_ptr_set_type;
