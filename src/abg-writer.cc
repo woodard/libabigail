@@ -124,14 +124,10 @@ typedef unordered_map<type_base*,
 		      abigail::diff_utils::deep_ptr_eq_functor> type_ptr_map;
 
 // A convenience typedef for a set of type_base*.
-typedef unordered_set<const type_base*, type_hasher,
-		      abigail::diff_utils::deep_ptr_eq_functor>
-type_ptr_set_type;
+typedef std::unordered_set<const type_base*> type_ptr_set_type;
 
 /// A convenience typedef for a set of function type*.
-typedef unordered_set<function_type*, type_hasher,
-		      abigail::diff_utils::deep_ptr_eq_functor>
-fn_type_ptr_set_type;
+typedef std::unordered_set<function_type*> fn_type_ptr_set_type;
 
 typedef unordered_map<shared_ptr<function_tdecl>,
 		      string,
