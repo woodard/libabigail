@@ -4282,17 +4282,15 @@ build_array_type_def(read_context&	ctxt,
 	  }
       }
 
-  array_type_def_sptr ar_type(new array_type_def(ctxt.get_environment(),
-						 subranges, loc));
-  maybe_set_artificial_location(ctxt, node, ar_type);
-  if (ctxt.push_and_key_type_decl(ar_type, id, add_to_current_scope))
-    ctxt.map_xml_node_to_decl(node, ar_type);
-
   // The type of array elements.
   type_base_sptr type =
     ctxt.build_or_get_type_decl(type_id, true);
   ABG_ASSERT(type);
-  ar_type->set_element_type(type);
+
+  array_type_def_sptr ar_type(new array_type_def(type, subranges, loc));
+  maybe_set_artificial_location(ctxt, node, ar_type);
+  if (ctxt.push_and_key_type_decl(ar_type, id, add_to_current_scope))
+    ctxt.map_xml_node_to_decl(node, ar_type);
 
   if (dimensions != ar_type->get_dimension_count()
       || (alignment_in_bits

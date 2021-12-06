@@ -18497,8 +18497,11 @@ var_decl::get_pretty_representation(bool internal, bool qualified_name) const
       else
 	name = get_qualified_name(internal);
 
-      result +=
-	get_type_declaration(t->get_element_type())->get_qualified_name(internal)
+      type_base_sptr et = t->get_element_type();
+      ABG_ASSERT(et);
+      decl_base_sptr decl = get_type_declaration(et);
+      ABG_ASSERT(decl);
+      result += decl->get_qualified_name(internal)
 	+ " " + name + t->get_subrange_representation();
     }
   else
