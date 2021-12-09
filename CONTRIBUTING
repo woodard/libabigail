@@ -63,24 +63,26 @@ is important, because that is how we do to actually release the
 tarball of the project that you can download from the internet) then
 you can do:
 
-  make distcheck
+  make distcheck-fast
 
 This actually builds the tarball, then untars it, configure/compile
 the untarred source code and launches the regression checks from
 there.
 
+Here, "make distcheck-fast" is a variant of the standard "make distcheck".
+It compresses with "--fast" instead of default "--best", and is
+significantly faster, given the size of the distribution.  You very likely
+want to use that one for local regression testing.
+
 You can also launch this in parallel by doing:
 
-  make -jN -lN distcheck
+  make -jN -lN distcheck-fast
 
 with N being the number of processor core you have on your system.
 
-Please make sure you always launch "make distcheck" before sending a
+Please make sure you always launch "make distcheck-fast" before sending a
 patch, so that you are sure that we can always build a tarball after
 your patch is applied to the source tree.
-
-A variant of distcheck is "make distcheck-fast".  It's like "make
-distcheck" but it's faster.  You can just use that one.
 
 A complementary regression checking target is "check-self-compare".
 You invoke it by doing "make check-self-compare".  That target
@@ -89,11 +91,11 @@ into the ABIXML format and then compares the ABI internal
 representation gathered from the libabigail.so binary against the one
 gathered from the ABIXML format.  The two should be equal if
 everything goes right.  This is an important regression test.  The
-problem is that it can takes twice as much time as make distcheck.  So
-we've put it into its own separate target.
+problem is that it can takes twice as much time as "make distcheck-fast".
+So we've put it into its own separate target.
 
 So, to be complete the regression checking command to run against your
-patch should be: "make check-self-compare distcheck -j16", if you have
+patch should be: "make check-self-compare distcheck-fast -j16", if you have
 a machine with a 16 threads processors, for instance.
 
 Coding language and style
