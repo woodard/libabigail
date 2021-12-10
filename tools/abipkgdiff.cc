@@ -1583,6 +1583,8 @@ compare_to_self(const elf_file& elf,
 	    << "Could not create the directory tree to store the abi for '"
 	    << elf.path
 	    << "'\n";
+
+	return abigail::tools_utils::ABIDIFF_ERROR;
       }
     ofstream of(abi_file_path.c_str(), std::ios_base::trunc);
 
