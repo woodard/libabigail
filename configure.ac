@@ -64,11 +64,12 @@ AC_ARG_ENABLE(rpm,
 	      ENABLE_RPM=$enableval,
 	      ENABLE_RPM=auto)
 
+# '--enable-rpm415' option name preserved for backwards compatibility.
 AC_ARG_ENABLE(rpm415,
 	      AS_HELP_STRING([--enable-rpm415=yes|no|auto],
-			     [enable the support of rpm 4.15 or higher in abipkgdiff (default is auto)]),
-	      ENABLE_RPM415=$enableval,
-	      ENABLE_RPM415=auto)
+			     [enable rpm/zstd in abipkgdiff testing (default is auto)]),
+	      ENABLE_RPM_ZSTD=$enableval,
+	      ENABLE_RPM_ZSTD=auto)
 
 AC_ARG_ENABLE(debug-self-comparison,
 	      AS_HELP_STRING([--enable-debug-self-comparison=yes|no],
@@ -314,23 +315,40 @@ if test x$ENABLE_RPM = xyes -o x$ENABLE_RPM = xauto; then
   fi
 fi
 
-if test x$ENABLE_RPM = xyes -o x$ENABLE_RPM415 = xauto; then
-   rpmversion=$(rpm --version | sed "s/RPM version //")
-   AC_MSG_NOTICE([detected rpm version: $rpmversion])
-   if [[[ "$rpmversion" > "4.14.0" ]]]; then
-      ENABLE_RPM415=yes
-   else
-      ENABLE_RPM415=no
-   fi
+dnl Point to a rpm/zstd file, that is:
+dnl     $ rpm -qp --qf '%{PAYLOADCOMPRESSOR}\n' [rpm_zstd_file]
+dnl     zstd
+m4_define([rpm_zstd_file], [tests/data/test-diff-pkg/mesa-libGLU-9.0.1-3.fc33.x86_64.rpm])
+AC_CONFIG_SRCDIR([rpm_zstd_file])
+if test x$ENABLE_RPM_ZSTD = xyes -o x$ENABLE_RPM_ZSTD = xauto; then
+  if test x$ENABLE_RPM = xno; then
+    if test x$ENABLE_RPM_ZSTD = xyes; then
+      AC_MSG_ERROR([rpm/zstd support needs rpm support])
+    fi
+    ENABLE_RPM_ZSTD=n/a
+  else
+    AC_MSG_CHECKING([for rpm/zstd support])
+    rpm2cpio > /dev/null 2>&AS_MESSAGE_LOG_FD "$srcdir"/rpm_zstd_file
+    if test $? -eq 0; then
+      enable_rpm_zstd=yes
+    else
+      enable_rpm_zstd=no
+    fi
+    AC_MSG_RESULT([$enable_rpm_zstd])
+    if test x$ENABLE_RPM_ZSTD:$enable_rpm_zstd = xyes:no; then
+      AC_MSG_ERROR([rpm/zstd support not available])
+    fi
+    ENABLE_RPM_ZSTD=$enable_rpm_zstd
+  fi
 fi
 
 if test x$ENABLE_RPM = xyes; then
    AC_DEFINE([WITH_RPM], 1, [compile the rpm package support in abipkgdiff])
    AC_MSG_NOTICE([rpm support in abipkgdiff is enabled]);
 
-   if test x$ENABLE_RPM415 = xyes; then
-      AC_DEFINE([WITH_RPM_4_15], 1, [has RPM 4.15 at least])
-      AC_MSG_NOTICE([rpm 4.15 support in abipkgdiff tests is enabled])
+   if test x$ENABLE_RPM_ZSTD = xyes; then
+      AC_DEFINE([WITH_RPM_ZSTD], 1, [has rpm/zstd support])
+      AC_MSG_NOTICE([rpm/zstd in abipkgdiff testing is enabled])
    fi
 else
    AC_MSG_NOTICE([rpm support in abipkgdiff is disabled]);
@@ -981,7 +999,7 @@ AC_MSG_NOTICE([
     C++ standard level                             : ${CXX_STANDARD}
     libdw has the dwarf_getalt function            : ${FOUND_DWARF_GETALT_IN_LIBDW}
     Enable rpm support in abipkgdiff               : ${ENABLE_RPM}
-    Enable rpm 4.15 support in abipkgdiff tests    : ${ENABLE_RPM415}
+    Enable rpm/zstd in abipkgdiff testing          : ${ENABLE_RPM_ZSTD}
     Enable self comparison debugging               : ${ENABLE_DEBUG_SELF_COMPARISON}
     Enable type canonicalization debugging         : ${ENABLE_DEBUG_TYPE_CANONICALIZATION}
     Enable deb support in abipkgdiff               : ${ENABLE_DEB}

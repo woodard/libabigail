@@ -605,8 +605,7 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/PR24690/PR24690-report-0.txt",
     "output/test-diff-pkg/PR24690/PR24690-report-0.txt"
   },
-#if WITH_RPM_4_15
-  // This RPM version supports packages compressed with zstd.
+#if WITH_RPM_ZSTD
   // RPMs from Fedora 31 onwards are compressed with zstd.
   {
     "data/test-diff-pkg/mesa-libGLU-9.0.1-3.fc33.x86_64.rpm",
@@ -747,7 +746,7 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/wireshark/wireshark-cli-3.4.9-1.fc36.x86_64-self-check-report.txt",
     "output/test-diff-pkg/wireshark/wireshark-cli-3.4.9-1.fc36.x86_64-self-check-report.txt"
   } ,
-#endif // WITH_RPM_4_15
+#endif // WITH_RPM_ZSTD
 #endif //WITH_RPM
 
 #ifdef WITH_DEB
