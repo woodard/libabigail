@@ -667,9 +667,7 @@ public:
 		       string &abi_file_path) const
   {
     string abi_path, dir, parent;
-    if (!abigail::tools_utils::string_suffix(elf_file_path,
-					     extracted_dir_path(),
-					     abi_path))
+    if (!convert_path_to_relative(elf_file_path, abi_path))
       return false;
     abi_path = extracted_dir_path() + "/abixml" + abi_path + ".abi";
     if (!abigail::tools_utils::ensure_parent_dir_created(abi_path))
