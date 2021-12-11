@@ -515,11 +515,10 @@ if test x$CHECK_DEPS_FOR_FEDABIPKGDIFF = xyes; then
   AC_PATH_PROG(WGET, wget, no)
 
   if test x$WGET = xno; then
-    ENABLE_FEDABIPKGDIFF=no
+    MISSING_FEDABIPKGDIFF_DEP=yes
     if test x$MISSING_FEDABIPKGDIFF_DEP_FATAL = xyes; then
       AC_MSG_ERROR(could not find the wget program)
     else
-      MISSING_FEDABIPKGDIFF_DEP=yes
       AC_MSG_NOTICE([could not find the wget program])
       AC_MSG_NOTICE([disabling fedabipkgdiff as a result])
     fi
@@ -549,47 +548,49 @@ if test x$CHECK_DEPS_FOR_FEDABIPKGDIFF = xyes; then
    argparse logging os re subprocess sys $URLPARSE_MODULE \
    xdg koji mock rpm imp tempfile mimetypes shutil six"
 
-  if test x$ENABLE_FEDABIPKGDIFF != xno; then
-    AX_CHECK_PYTHON_MODULES([$REQUIRED_PYTHON_MODULES_FOR_FEDABIPKGDIFF],
-			    [$PYTHON],
-			    [FOUND_ALL_PYTHON_MODULES=yes],
-			    [FOUND_ALL_PYTHON_MODULES=no])
+  AX_CHECK_PYTHON_MODULES([$REQUIRED_PYTHON_MODULES_FOR_FEDABIPKGDIFF],
+			  [$PYTHON],
+			  [FOUND_ALL_PYTHON_MODULES=yes],
+			  [FOUND_ALL_PYTHON_MODULES=no])
 
-    if test x$FOUND_ALL_PYTHON_MODULES = xno; then
-       MISSING_FEDABIPKGDIFF_DEP=yes
-       if test x$MISSING_FEDABIPKGDIFF_DEP_FATAL = xyes; then
-         AC_MSG_ERROR([missing python modules: $MISSING_PYTHON_MODULES]);
-       else
-         AC_MSG_NOTICE([missing python modules: $MISSING_PYTHON_MODULES])
-         AC_MSG_NOTICE([disabling fedabipkgdiff as a result])
-       fi
-       ENABLE_FEDABIPKGDIFF=no
+  if test x$FOUND_ALL_PYTHON_MODULES = xno; then
+    MISSING_FEDABIPKGDIFF_DEP=yes
+    if test x$MISSING_FEDABIPKGDIFF_DEP_FATAL = xyes; then
+      AC_MSG_ERROR([missing python modules: $MISSING_PYTHON_MODULES]);
     else
-	# On some old platforms, the koji client object doesn't have
-	# the required .read_config method.  Alas, that module doesn't
-	# have any __version__ string either.  So we do as well as we
-	# can to try and detect that case and disable fedabipkgdiff if
-	# necessary.
-        AC_MSG_CHECKING([checking if koji client is recent enough ...])
-	$PYTHON -c "
+      AC_MSG_NOTICE([missing python modules: $MISSING_PYTHON_MODULES])
+      AC_MSG_NOTICE([disabling fedabipkgdiff as a result])
+    fi
+  else
+    # On some old platforms, the koji client object doesn't have
+    # the required .read_config method.  Alas, that module doesn't
+    # have any __version__ string either.  So we do as well as we
+    # can to try and detect that case and disable fedabipkgdiff if
+    # necessary.
+    AC_MSG_CHECKING([if koji client is recent enough])
+    $PYTHON 2>&AS_MESSAGE_LOG_FD -c "
 import koji
 koji.read_config('koji')"
-	if test $? -eq 0; then
-	   koji_version_check_ok=yes
-	else
-	   koji_version_check_ok=no
-	fi
-
-	if test x$koji_version_check_ok = xno; then
-	  AC_MSG_RESULT([no, disabling fedpkgdiff])
-	  MISSING_FEDABIPKGDIFF_DEP=yes
-	else
-          AC_MSG_RESULT(yes)
-       fi
-       if test x$MISSING_FEDABIPKGDIFF_DEP = xno; then
-         ENABLE_FEDABIPKGDIFF=yes
-       fi
+    if test $? -eq 0; then
+      koji_version_check_ok=yes
+    else
+      koji_version_check_ok=no
     fi
+    AC_MSG_RESULT([$koji_version_check_ok])
+    if test x$koji_version_check_ok = xno; then
+      MISSING_FEDABIPKGDIFF_DEP=yes
+      if test x$MISSING_FEDABIPKGDIFF_DEP_FATAL = xyes; then
+        AC_MSG_ERROR([unsuitable koji client])
+      else
+	AC_MSG_WARN([disabling fedabipkgdiff])
+      fi
+    fi
+  fi
+
+  if test x$MISSING_FEDABIPKGDIFF_DEP = xno; then
+    ENABLE_FEDABIPKGDIFF=yes
+  else
+    ENABLE_FEDABIPKGDIFF=no
   fi
 fi
 
