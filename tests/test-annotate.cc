@@ -42,12 +42,12 @@ InOutSpec in_out_specs[] =
     "output/test-annotate/test2.so.abi"
   },
   {
-    "data/test-read-dwarf/test3.so",
+    "data/test-read-common/test3.so",
     "data/test-annotate/test3.so.abi",
     "output/test-annotate/test3.so.abi"
   },
   {
-    "data/test-read-dwarf/test4.so",
+    "data/test-read-common/test4.so",
     "data/test-annotate/test4.so.abi",
     "output/test-annotate/test4.so.abi"
   },

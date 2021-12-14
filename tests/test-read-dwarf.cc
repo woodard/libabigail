@@ -15,45 +15,27 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include "abg-ir.h"
+#include "test-read-common.h"
 #include "abg-dwarf-reader.h"
-#include "abg-workers.h"
-#include "abg-writer.h"
-#include "abg-tools-utils.h"
-#include "test-utils.h"
 
 using std::vector;
 using std::string;
-using std::ofstream;
 using std::cerr;
-using std::dynamic_pointer_cast;
-using abigail::tests::get_build_dir;
+
+using abigail::tests::read_common::InOutSpec;
+using abigail::tests::read_common::test_task;
+using abigail::tests::read_common::display_usage;
+using abigail::tests::read_common::options;
+
 using abigail::dwarf_reader::read_corpus_from_elf;
 using abigail::dwarf_reader::read_context;
 using abigail::dwarf_reader::read_context_sptr;
 using abigail::dwarf_reader::create_read_context;
 using abigail::xml_writer::SEQUENCE_TYPE_ID_STYLE;
 using abigail::xml_writer::HASH_TYPE_ID_STYLE;
-using abigail::xml_writer::create_write_context;
-using abigail::xml_writer::set_type_id_style;
-using abigail::xml_writer::type_id_style_kind;
-using abigail::xml_writer::write_context_sptr;
-using abigail::xml_writer::write_corpus;
+using abigail::tools_utils::emit_prefix;
 
-/// This is an aggregate that specifies where a test shall get its
-/// input from, and where it shall write its ouput to.
-struct InOutSpec
-{
-  const char* in_elf_path;
-  const char* in_suppr_spec_path;
-  const char* in_public_headers_path;
-  type_id_style_kind type_id_style;
-  const char* in_abi_path;
-  const char* out_abi_path;
-};// end struct InOutSpec
-
-
-InOutSpec in_out_specs[] =
+static InOutSpec in_out_specs[] =
 {
   {
     "data/test-read-dwarf/test0",
@@ -104,7 +86,7 @@ InOutSpec in_out_specs[] =
     "output/test-read-dwarf/test2.so.hash.abi"
   },
   {
-    "data/test-read-dwarf/test3.so",
+    "data/test-read-common/test3.so",
     "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
@@ -112,7 +94,7 @@ InOutSpec in_out_specs[] =
     "output/test-read-dwarf/test3.so.abi"
   },
   {
-    "data/test-read-dwarf/test3.so",
+    "data/test-read-common/test3.so",
     "",
     "",
     HASH_TYPE_ID_STYLE,
@@ -121,8 +103,8 @@ InOutSpec in_out_specs[] =
   },
   // suppress all except the main symbol of a group of aliases
   {
-    "data/test-read-dwarf/test3.so",
-    "data/test-read-dwarf/test3-alias-1.suppr",
+    "data/test-read-common/test3.so",
+    "data/test-read-common/test3-alias-1.suppr",
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test3-alias-1.so.hash.abi",
@@ -130,8 +112,8 @@ InOutSpec in_out_specs[] =
   },
   // suppress the main symbol of a group of aliases
   {
-    "data/test-read-dwarf/test3.so",
-    "data/test-read-dwarf/test3-alias-2.suppr",
+    "data/test-read-common/test3.so",
+    "data/test-read-common/test3-alias-2.suppr",
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test3-alias-2.so.hash.abi",
@@ -139,8 +121,8 @@ InOutSpec in_out_specs[] =
   },
   // suppress all except one non main symbol of a group of aliases
   {
-    "data/test-read-dwarf/test3.so",
-    "data/test-read-dwarf/test3-alias-3.suppr",
+    "data/test-read-common/test3.so",
+    "data/test-read-common/test3-alias-3.suppr",
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test3-alias-3.so.hash.abi",
@@ -148,8 +130,8 @@ InOutSpec in_out_specs[] =
   },
   // suppress all symbols of a group of aliases
   {
-    "data/test-read-dwarf/test3.so",
-    "data/test-read-dwarf/test3-alias-4.suppr",
+    "data/test-read-common/test3.so",
+    "data/test-read-common/test3-alias-4.suppr",
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test3-alias-4.so.hash.abi",
@@ -165,7 +147,7 @@ InOutSpec in_out_specs[] =
     "output/test-read-dwarf/test-suppressed-alias.o.abi",
   },
   {
-    "data/test-read-dwarf/test4.so",
+    "data/test-read-common/test4.so",
     "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
@@ -173,7 +155,7 @@ InOutSpec in_out_specs[] =
     "output/test-read-dwarf/test4.so.abi"
   },
   {
-    "data/test-read-dwarf/test4.so",
+    "data/test-read-common/test4.so",
     "",
     "",
     HASH_TYPE_ID_STYLE,
@@ -449,7 +431,7 @@ InOutSpec in_out_specs[] =
     NULL,
   },
   {
-    "data/test-read-dwarf/PR26261/PR26261-exe",
+    "data/test-read-common/PR26261/PR26261-exe",
     "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
@@ -457,7 +439,7 @@ InOutSpec in_out_specs[] =
     "output/test-read-dwarf/PR26261/PR26261-exe.abi",
   },
   {
-    "data/test-read-dwarf/test-PR26568-1.o",
+    "data/test-read-common/test-PR26568-1.o",
     "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
@@ -465,7 +447,7 @@ InOutSpec in_out_specs[] =
     "output/test-read-dwarf/test-PR26568-1.o.abi",
   },
   {
-    "data/test-read-dwarf/test-PR26568-2.o",
+    "data/test-read-common/test-PR26568-2.o",
     "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
@@ -481,9 +463,9 @@ InOutSpec in_out_specs[] =
     "output/test-read-dwarf/test-libandroid.so.abi",
   },
   {
-    "data/test-read-dwarf/PR27700/test-PR27700.o",
+    "data/test-read-common/PR27700/test-PR27700.o",
     "",
-    "data/test-read-dwarf/PR27700/pub-incdir",
+    "data/test-read-common/PR27700/pub-incdir",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/PR27700/test-PR27700.abi",
     "output/test-read-dwarf/PR27700/test-PR27700.abi",
@@ -552,198 +534,138 @@ set_suppressions_from_headers(read_context& read_ctxt, const string& path)
     }
 }
 
-/// The task that peforms the tests.
-struct test_task : public abigail::workers::task
+/// Task specialization to perform DWARF tests.
+struct test_task_dwarf : public test_task
 {
-  bool is_ok;
-  InOutSpec spec;
-  string error_message;
-  string out_abi_base;
-  string in_elf_base;
-  string in_abi_base;
+  test_task_dwarf(const InOutSpec &s,
+                string& a_out_abi_base,
+                string& a_in_elf_base,
+                string& a_in_abi_base);
+  virtual void
+  perform();
 
-  test_task(const InOutSpec &s,
-	    string& a_out_abi_base,
-	    string& a_in_elf_base,
-	    string& a_in_abi_base)
-    : is_ok(true),
-      spec(s),
-      out_abi_base(a_out_abi_base),
-      in_elf_base(a_in_elf_base),
-      in_abi_base(a_in_abi_base)
+  virtual
+  ~test_task_dwarf()
+  {}
+}; // end struct test_task_dwarf
+
+/// Constructor.
+///
+/// Task to be executed for each DWARF test entry in @ref
+/// abigail::tests::read_common::InOutSpec.
+///
+/// @param InOutSpec the array containing set of tests.
+///
+/// @param a_out_abi_base the output base directory for abixml files.
+///
+/// @param a_in_elf_base the input base directory for object files.
+///
+/// @param a_in_elf_base the input base directory for expected
+/// abixml files.
+test_task_dwarf::test_task_dwarf(const InOutSpec &s,
+                             string& a_out_abi_base,
+                             string& a_in_elf_base,
+                             string& a_in_abi_base)
+        : test_task(s, a_out_abi_base, a_in_elf_base, a_in_abi_base)
   {}
 
-  /// The actual test.
-  ///
-  /// This reads the corpus into memory, saves it to disk, loads it
-  /// again and compares the new in-memory representation against the
-  /// saved one.
-  virtual void
-  perform()
-  {
-    string in_elf_path, in_abi_path, in_suppr_spec_path, in_public_headers_path,
-      out_abi_path;
-    abigail::ir::environment_sptr env;
+/// The thread function to execute each DWARF test entry in @ref
+/// abigail::tests::read_common::InOutSpec.
+///
+/// This reads the corpus into memory, saves it to disk, loads it
+/// again and compares the new in-memory representation against the
+void
+test_task_dwarf::perform()
+{
+  abigail::ir::environment_sptr env;
 
-    in_elf_path = in_elf_base + spec.in_elf_path;
-    if (spec.in_suppr_spec_path)
-      in_suppr_spec_path = in_elf_base + spec.in_suppr_spec_path;
-    else
-      in_suppr_spec_path.clear();
+  set_in_elf_path();
+  set_in_suppr_spec_path();
+  set_in_public_headers_path();
 
-    if (spec.in_public_headers_path)
-      in_public_headers_path = spec.in_public_headers_path;
-    if (!in_public_headers_path.empty())
-      in_public_headers_path = in_elf_base + spec.in_public_headers_path;
-
-    env.reset(new abigail::ir::environment);
-    abigail::elf_reader::status status =
+  env.reset(new abigail::ir::environment);
+  abigail::elf_reader::status status =
     abigail::elf_reader::STATUS_UNKNOWN;
-    vector<char**> di_roots;
-    ABG_ASSERT(abigail::tools_utils::file_exists(in_elf_path));
-    read_context_sptr ctxt = create_read_context(in_elf_path,
-						 di_roots,
-						 env.get());
-    ABG_ASSERT(ctxt);
-    if (!in_suppr_spec_path.empty())
-      set_suppressions(*ctxt, in_suppr_spec_path);
+  vector<char**> di_roots;
+  ABG_ASSERT(abigail::tools_utils::file_exists(in_elf_path));
+  read_context_sptr ctxt = create_read_context(in_elf_path,
+                                               di_roots,
+                                               env.get());
+  ABG_ASSERT(ctxt);
+  if (!in_suppr_spec_path.empty())
+    set_suppressions(*ctxt, in_suppr_spec_path);
 
-    if (!in_public_headers_path.empty())
-      set_suppressions_from_headers(*ctxt, in_public_headers_path);
+  if (!in_public_headers_path.empty())
+    set_suppressions_from_headers(*ctxt, in_public_headers_path);
 
-    abigail::corpus_sptr corp = read_corpus_from_elf(*ctxt, status);
-    // if there is no output and no input, assume that we do not care about the
-    // actual read result, just that it succeeded.
-    if (!spec.in_abi_path && !spec.out_abi_path)
-      {
-	// Phew! we made it here and we did not crash! yay!
-	return;
-      }
-    if (!corp)
-      {
-	error_message = string("failed to read ") + in_elf_path  + "\n";
-	is_ok = false;
-	return;
-      }
-    corp->set_path(spec.in_elf_path);
-    // Do not take architecture names in comparison so that these
-    // test input binaries can come from whatever arch the
-    // programmer likes.
-    corp->set_architecture_name("");
-
-    out_abi_path = out_abi_base + spec.out_abi_path;
-    if (!abigail::tools_utils::ensure_parent_dir_created(out_abi_path))
-      {
-	error_message =
-	  string("Could not create parent directory for ") + out_abi_path;
-	is_ok = false;
-	return;
-      }
-
-    ofstream of(out_abi_path.c_str(), std::ios_base::trunc);
-    if (!of.is_open())
-      {
-	error_message = string("failed to read ") + out_abi_path + "\n";
-	is_ok = false;
-	return;
-      }
-    write_context_sptr write_ctxt
-	= create_write_context(corp->get_environment(), of);
-    set_type_id_style(*write_ctxt, spec.type_id_style);
-    is_ok = write_corpus(*write_ctxt, corp, /*indent=*/0);
-    of.close();
-
-    string abidw = string(get_build_dir()) + "/tools/abidw";
-    string drop_private_types;
-    if (!in_public_headers_path.empty())
-      drop_private_types += "--headers-dir " + in_public_headers_path +
-	" --drop-private-types";
-    string cmd = abidw + " " + drop_private_types + " --abidiff " + in_elf_path;
-    if (system(cmd.c_str()))
-      {
-	error_message = string("ABIs differ:\n")
-	  + in_elf_path
-	  + "\nand:\n"
-	  + out_abi_path
-	  + "\n";
-	is_ok = false;
-      }
-
-    in_abi_path = in_abi_base + spec.in_abi_path;
-    cmd = "diff -u " + in_abi_path + " " + out_abi_path;
-    if (system(cmd.c_str()))
+  abigail::corpus_sptr corp = read_corpus_from_elf(*ctxt, status);
+  // if there is no output and no input, assume that we do not care about the
+  // actual read result, just that it succeeded.
+  if (!spec.in_abi_path && !spec.out_abi_path)
+    {
+      // Phew! we made it here and we did not crash! yay!
+      return;
+    }
+  if (!corp)
+    {
+      error_message = string("failed to read ") + in_elf_path  + "\n";
       is_ok = false;
-  }
-}; // end struct test_task
+      return;
+    }
+  corp->set_path(spec.in_elf_path);
+  // Do not take architecture names in comparison so that these
+  // test input binaries can come from whatever arch the
+  // programmer likes.
+  corp->set_architecture_name("");
 
-typedef shared_ptr<test_task> test_task_sptr;
+  if (!(is_ok = set_out_abi_path()))
+      return;
+
+  if (!(is_ok = serialize_corpus(out_abi_path, corp)))
+       return;
+
+  if (!(is_ok = run_abidw()))
+    return;
+
+  if (!(is_ok = run_diff()))
+      return;
+}
+
+/// Create a new DWARF instance for task to be execute by the testsuite.
+///
+/// @param s the @ref abigail::tests::read_common::InOutSpec
+/// tests container.
+///
+/// @param a_out_abi_base the output base directory for abixml files.
+///
+/// @param a_in_elf_base the input base directory for object files.
+///
+/// @param a_in_abi_base the input base directory for abixml files.
+///
+/// @return abigail::tests::read_common::test_task instance.
+static test_task*
+new_task(const InOutSpec* s, string& a_out_abi_base,
+         string& a_in_elf_base, string& a_in_abi_base)
+{
+  return new test_task_dwarf(*s, a_out_abi_base,
+                             a_in_elf_base, a_in_abi_base);
+}
 
 int
 main(int argc, char *argv[])
 {
-  bool no_parallel = false;
-
-  if (argc == 2)
+  options opts;
+  if (!parse_command_line(argc, argv, opts))
     {
-      if (argv[1] == string("--no-parallel"))
-	no_parallel = true;
-      else
-	{
-	  cerr << "unrecognized option\n";
-	  cerr << "usage: " << argv[0] << " [--no-parallel]\n" ;
-	  return 1;
-	}
+      if (!opts.wrong_option.empty())
+        emit_prefix(argv[0], cerr)
+          << "unrecognized option: " << opts.wrong_option << "\n";
+      display_usage(argv[0], cerr);
+      return 1;
     }
 
-  /// Create a task queue.  The max number of worker threads of the
-  /// queue is the number of the concurrent threads supported by the
-  /// processor of the machine this code runs on.  But if
-  /// --no-parallel was provided then the number of worker threads
-  /// equals 1.
-  const size_t num_tests = sizeof(in_out_specs) / sizeof (InOutSpec) - 1;
-  size_t num_workers = (no_parallel
-			? 1
-			: std::min(abigail::workers::get_number_of_threads(),
-				   num_tests));
-  abigail::workers::queue task_queue(num_workers);
-  bool is_ok = true;
+  // compute number of tests to be executed.
+  const size_t num_tests = sizeof(in_out_specs) / sizeof(InOutSpec) - 1;
 
-  string out_abi_base = string(get_build_dir()) + "/tests/";
-  string in_elf_base  = string(abigail::tests::get_src_dir()) + "/tests/";
-  string in_abi_base = in_elf_base;
-
-  for (InOutSpec *s = in_out_specs; s->in_elf_path; ++s)
-    {
-      test_task_sptr t(new test_task(*s, out_abi_base,
-				     in_elf_base,
-				     in_abi_base));
-      ABG_ASSERT(task_queue.schedule_task(t));
-    }
-
-  /// Wait for all worker threads to finish their job, and wind down.
-  task_queue.wait_for_workers_to_complete();
-
-  // Now walk the results and print whatever error messages need to be
-  // printed.
-
-  const vector<abigail::workers::task_sptr>& completed_tasks =
-    task_queue.get_completed_tasks();
-
-  ABG_ASSERT(completed_tasks.size() == num_tests);
-
-  for (vector<abigail::workers::task_sptr>::const_iterator ti =
-	 completed_tasks.begin();
-       ti != completed_tasks.end();
-       ++ti)
-    {
-      test_task_sptr t = dynamic_pointer_cast<test_task>(*ti);
-      if (!t->is_ok)
-	{
-	  is_ok = false;
-	  if (!t->error_message.empty())
-	    cerr << t->error_message << '\n';
-	}
-    }
-
-  return !is_ok;
+  return run_tests(num_tests, in_out_specs, opts, new_task);
 }
