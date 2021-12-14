@@ -72,7 +72,8 @@ there.
 Here, "make distcheck-fast" is a variant of the standard "make distcheck".
 It compresses with "--fast" instead of default "--best", and is
 significantly faster, given the size of the distribution.  You very likely
-want to use that one for local regression testing.
+want to use that one for local regression testing.  (However, don't use
+"make distcheck-fast" to create artifacts for distribution.)
 
 You can also launch this in parallel by doing:
 
@@ -91,7 +92,7 @@ into the ABIXML format and then compares the ABI internal
 representation gathered from the libabigail.so binary against the one
 gathered from the ABIXML format.  The two should be equal if
 everything goes right.  This is an important regression test.  The
-problem is that it can takes twice as much time as "make distcheck-fast".
+problem is that it can take a considerable amount of time.
 So we've put it into its own separate target.
 
 So, to be complete the regression checking command to run against your
