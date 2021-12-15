@@ -8693,6 +8693,37 @@ read_and_convert_DW_at_bit_offset(const Dwarf_Die* die,
   return true;
 }
 
+/// Get the value of the DW_AT_data_member_location of the given DIE
+/// attribute as an constant.
+///
+/// @param die the DIE to read the attribute from.
+///
+/// @param offset the attribute as a constant value.  This is set iff
+/// the function returns true.
+///
+/// @return true if the attribute exists and has a constant value.  In
+/// that case the offset is set to the value.
+static bool
+die_constant_data_member_location(const Dwarf_Die *die,
+				  int64_t& offset)
+{
+  if (!die)
+    return false;
+
+  Dwarf_Attribute attr;
+  if (!dwarf_attr(const_cast<Dwarf_Die*>(die),
+		  DW_AT_data_member_location,
+		  &attr))
+    return false;
+
+  Dwarf_Word val;
+  if (dwarf_formudata(&attr, &val) != 0)
+    return false;
+
+  offset = val;
+  return true;
+}
+
 /// Get the offset of a struct/class member as represented by the
 /// value of the DW_AT_data_member_location attribute.
 ///
@@ -8758,21 +8789,34 @@ die_member_offset(const read_context& ctxt,
       return true;
     }
 
-  // Otherwise, let's see if the DW_AT_data_member_location attribute and,
-  // optionally, the DW_AT_bit_offset attributes are present.
-  if (!die_location_expr(die, DW_AT_data_member_location, &expr, &expr_len))
-    return false;
-
-  // The DW_AT_data_member_location attribute is present.
-  // Let's evaluate it and get its constant
-  // sub-expression and return that one.
-  if (!eval_quickly(expr, expr_len, offset))
+  // First try to read DW_AT_data_member_location as a plain constant.
+  // We do this because the generic method using die_location_expr
+  // might hit a bug in elfutils libdw dwarf_location_expression only
+  // fixed in elfutils 0.184+. The bug only triggers if the attribute
+  // is expressed as a (DWARF 5) DW_FORM_implicit_constant. But we
+  // handle all constants here because that is more consistent (and
+  // slightly faster in the general case where the attribute isn't a
+  // full DWARF expression).
+  if (!die_constant_data_member_location(die, offset))
     {
-      bool is_tls_address = false;
-      if (!eval_last_constant_dwarf_sub_expr(expr, expr_len,
-					     offset, is_tls_address,
-					     ctxt.dwarf_expr_eval_ctxt()))
+      // Otherwise, let's see if the DW_AT_data_member_location
+      // attribute and, optionally, the DW_AT_bit_offset attributes
+      // are present.
+      if (!die_location_expr(die, DW_AT_data_member_location,
+			     &expr, &expr_len))
 	return false;
+
+      // The DW_AT_data_member_location attribute is present.  Let's
+      // evaluate it and get its constant sub-expression and return
+      // that one.
+      if (!eval_quickly(expr, expr_len, offset))
+	{
+	  bool is_tls_address = false;
+	  if (!eval_last_constant_dwarf_sub_expr(expr, expr_len,
+						 offset, is_tls_address,
+						 ctxt.dwarf_expr_eval_ctxt()))
+	    return false;
+	}
     }
   offset *= 8;
 
