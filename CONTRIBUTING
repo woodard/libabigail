@@ -174,6 +174,26 @@ make sure to add your new test input files to the
 tests/data/Makefile.am file, in the EXTRA_DIST variable.  Look at how
 things are organized in that file, and please do things similarly.
 
+fedabipkgdiff testing
+---------------------
+
+This depends on the Python koji and a few support modules.  If these are
+not available, 'configure' disables fedabipkgdiff and its 'make check'
+testing.
+
+Debian and Ubuntu, for example, don't provide packages for the Python
+koji module.  If you'd like to run fedabipkgdiff testing without manually
+doing a proper Koji installation, you may simply download Koji sources
+(<https://pagure.io/koji>, releases, or Git clone) and point to these via
+the Python search path.  For example, tested 2021-12-11:
+
+  wget https://pagure.io/koji/archive/koji-1.27.0/koji-koji-1.27.0.tar.gz
+  tar -xzf koji-koji-1.27.0.tar.gz
+  export PYTHONPATH="$PWD"/koji-koji-1.27.0
+
+A libabigail 'configure' run then enables fedabipkgdiff and its
+'make check' testing.
+
 Coding language and style
 ==========================
 

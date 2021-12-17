@@ -588,7 +588,11 @@ if test x$CHECK_DEPS_FOR_FEDABIPKGDIFF = xyes; then
     AC_MSG_CHECKING([if koji client is recent enough])
     $PYTHON 2>&AS_MESSAGE_LOG_FD -c "
 import koji
-koji.read_config('koji')"
+try:
+    koji.read_config('koji')
+except koji.ConfigurationError:
+    # See 'tools/fedabipkgdiff'.
+    pass"
     if test $? -eq 0; then
       koji_version_check_ok=yes
     else

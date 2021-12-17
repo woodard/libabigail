@@ -46,9 +46,20 @@ import koji
 # something wrong.
 
 
-koji_config = koji.read_config('koji')
-DEFAULT_KOJI_SERVER = koji_config['server']
-DEFAULT_KOJI_TOPURL = koji_config['topurl']
+# First, try proper Koji initialization.
+try:
+    koji_config = koji.read_config('koji')
+    DEFAULT_KOJI_SERVER = koji_config['server']
+    DEFAULT_KOJI_TOPURL = koji_config['topurl']
+except koji.ConfigurationError:
+    # ..., but if that fails because of a rather strict interpretation where
+    # 'read_config' looks for configuration files, just use dummy values.
+    # These fail upon use unless overridden, which for libabigail test suite
+    # usage they always are (all relevant artifacts are shipped in the
+    # libabigail distribution).
+    DEFAULT_KOJI_SERVER = 'dummy_DEFAULT_KOJI_SERVER'
+    DEFAULT_KOJI_TOPURL = 'dummy_DEFAULT_KOJI_TOPURL'
+
 
 # The working directory where to hold all data including downloaded RPM
 # packages Currently, it's not configurable and hardcode here. In the future
