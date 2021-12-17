@@ -39,7 +39,7 @@ variables.
 
 import os
 import tempfile
-import imp
+import importlib
 import six
 
 try:
@@ -70,7 +70,7 @@ def get_download_dir():
 
 
 # Import the fedabipkgdiff program file from the source directory.
-fedabipkgdiff_mod = imp.load_source('fedabipkgdiff', FEDABIPKGDIFF)
+fedabipkgdiff_mod = importlib.machinery.SourceFileLoader('fedabipkgdiff', FEDABIPKGDIFF).load_module()
 
 
 # -----------------  Koji resource storage begins ------------------
