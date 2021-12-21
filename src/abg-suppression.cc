@@ -794,8 +794,6 @@ type_suppression::suppresses_diff(const diff* diff) const
 
 	      const class_decl_sptr& first_type_decl =
 		klass_diff->first_class_decl();
-	      const class_decl_sptr& second_type_decl =
-		klass_diff->second_class_decl();
 
 	      for (string_decl_base_sptr_map::const_iterator m =
 		     klass_diff->inserted_data_members().begin();
