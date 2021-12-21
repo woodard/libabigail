@@ -15,6 +15,7 @@
 
 #include <fcntl.h> /* For open(3) */
 #include <iostream>
+#include <memory>
 
 #include "ctf-api.h"
 
@@ -39,6 +40,7 @@ namespace abigail
 {
 namespace ctf_reader
 {
+using std::dynamic_pointer_cast;
 
 class read_context
 {
@@ -157,6 +159,10 @@ process_ctf_typedef(read_context *ctxt,
   if (!utype)
     return result;
 
+  result = dynamic_pointer_cast<typedef_decl>(ctxt->lookup_type(ctf_type));
+  if (result)
+    return result;
+
   result.reset(new typedef_decl(typedef_name, utype, location(),
                                 typedef_name /* mangled_name */));
 
@@ -169,6 +175,12 @@ process_ctf_typedef(read_context *ctxt,
       decl_base_sptr decl = is_decl(utype);
       ABG_ASSERT(decl);
       decl->set_naming_typedef(result);
+    }
+
+  if (result)
+    {
+      add_decl_to_scope(result, tunit->get_global_scope());
+      ctxt->add_type(ctf_type, result);
     }
 
   return result;
@@ -187,6 +199,7 @@ process_ctf_typedef(read_context *ctxt,
 static type_decl_sptr
 process_ctf_base_type(read_context *ctxt,
                       corpus_sptr corp,
+                      translation_unit_sptr tunit,
                       ctf_dict_t *ctf_dictionary,
                       ctf_id_t ctf_type)
 {
@@ -224,6 +237,12 @@ process_ctf_base_type(read_context *ctxt,
                                    location(),
                                    type_name /* mangled_name */));
 
+    }
+
+  if (result)
+    {
+      add_decl_to_scope(result, tunit->get_global_scope());
+      ctxt->add_type(ctf_type, result);
     }
 
   return result;
@@ -284,6 +303,9 @@ process_ctf_function_type(read_context *ctxt,
       function_parms.push_back(parm);
     }
 
+  result = dynamic_pointer_cast<function_type>(ctxt->lookup_type(ctf_type));
+  if (result)
+    return result;
 
   /* Ok now the function type itself.  */
   result.reset(new function_type(ret_type,
@@ -291,8 +313,15 @@ process_ctf_function_type(read_context *ctxt,
                                  tunit->get_address_size(),
                                  ctf_type_align(ctf_dictionary, ctf_type)));
 
-  tunit->bind_function_type_life_time(result);
-  result->set_is_artificial(true);
+  if (result)
+    {
+      tunit->bind_function_type_life_time(result);
+      result->set_is_artificial(true);
+      decl_base_sptr function_type_decl = get_type_declaration(result);
+      add_decl_to_scope(function_type_decl, tunit->get_global_scope());
+      ctxt->add_type(ctf_type, result);
+    }
+
   return result;
 }
 
@@ -394,6 +423,7 @@ process_ctf_struct_type(read_context *ctxt,
      refer to this struct, we have to make it available in the cache
      at this point even if the members haven't been added to the IR
      node yet.  */
+  add_decl_to_scope(result, tunit->get_global_scope());
   ctxt->add_type(ctf_type, result);
 
   /* Now add the struct members as specified in the CTF type description.
@@ -442,6 +472,7 @@ process_ctf_union_type(read_context *ctxt,
      refer to this union, we have to make it available in the cache
      at this point even if the members haven't been added to the IR
      node yet.  */
+  add_decl_to_scope(result, tunit->get_global_scope());
   ctxt->add_type(ctf_type, result);
 
   /* Now add the union members as specified in the CTF type description.
@@ -498,6 +529,10 @@ process_ctf_array_type(read_context *ctxt,
   if (!index_type)
     return result;
 
+  result = dynamic_pointer_cast<array_type_def>(ctxt->lookup_type(ctf_type));
+  if (result)
+    return result;
+
   /* The number of elements of the array determines the IR subranges
      type to build.  */
   array_type_def::subranges_type subranges;
@@ -529,6 +564,13 @@ process_ctf_array_type(read_context *ctxt,
 
   /* Finally build the IR for the array type and return it.  */
   result.reset(new array_type_def(element_type, subranges, location()));
+  if (result)
+    {
+      decl_base_sptr array_type_decl = get_type_declaration(result);
+      add_decl_to_scope(array_type_decl, tunit->get_global_scope());
+      ctxt->add_type(ctf_type, result);
+    }
+
   return result;
 }
 
@@ -566,6 +608,14 @@ process_ctf_qualified_type(read_context *ctxt,
     ABG_ASSERT_NOT_REACHED;
 
   result.reset(new qualified_type_def(utype, qualifiers, location()));
+
+  if (result)
+    {
+      decl_base_sptr qualified_type_decl = get_type_declaration(result);
+      add_decl_to_scope(qualified_type_decl, tunit->get_global_scope());
+      ctxt->add_type(ctf_type, result);
+    }
+
   return result;
 }
 
@@ -597,10 +647,20 @@ process_ctf_pointer_type(read_context *ctxt,
   if (!target_type)
     return result;
 
+  result = dynamic_pointer_cast<pointer_type_def>(ctxt->lookup_type(ctf_type));
+  if (result)
+    return result;
+
   result.reset(new pointer_type_def(target_type,
                                       ctf_type_size(ctf_dictionary, ctf_type) * 8,
                                       ctf_type_align(ctf_dictionary, ctf_type) * 8,
                                       location()));
+  if (result)
+    {
+      add_decl_to_scope(result, tunit->get_global_scope());
+      ctxt->add_type(ctf_type, result);
+    }
+
   return result;
 }
 
@@ -657,6 +717,12 @@ process_ctf_enum_type(read_context *ctxt,
   const char *enum_name = ctf_type_name_raw(ctf_dictionary, ctf_type);
   result.reset(new enum_type_decl(enum_name, location(),
                                   utype, enms, enum_name));
+  if (result)
+    {
+      add_decl_to_scope(result, tunit->get_global_scope());
+      ctxt->add_type(ctf_type, result);
+    }
+
   return result;
 }
 
@@ -683,43 +749,31 @@ process_ctf_type(read_context *ctxt,
   int type_kind = ctf_type_kind(ctf_dictionary, ctf_type);
   type_base_sptr result;
 
+  if ((result = ctxt->lookup_type(ctf_type)))
+    return result;
+
   switch (type_kind)
     {
     case CTF_K_INTEGER:
     case CTF_K_FLOAT:
       {
         type_decl_sptr type_decl
-          = process_ctf_base_type(ctxt, corp, ctf_dictionary, ctf_type);
-
-        if (type_decl)
-          {
-            add_decl_to_scope(type_decl, tunit->get_global_scope());
-            result = is_type(type_decl);
-          }
+          = process_ctf_base_type(ctxt, corp, tunit, ctf_dictionary, ctf_type);
+        result = is_type(type_decl);
         break;
       }
     case CTF_K_TYPEDEF:
       {
         typedef_decl_sptr typedef_decl
           = process_ctf_typedef(ctxt, corp, tunit, ctf_dictionary, ctf_type);
-
-        if (typedef_decl)
-          {
-            add_decl_to_scope(typedef_decl, tunit->get_global_scope());
-            result = is_type(typedef_decl);
-          }
+        result = is_type(typedef_decl);
         break;
       }
     case CTF_K_POINTER:
       {
         pointer_type_def_sptr pointer_type
           = process_ctf_pointer_type(ctxt, corp, tunit, ctf_dictionary, ctf_type);
-
-        if (pointer_type)
-          {
-            add_decl_to_scope(pointer_type, tunit->get_global_scope());
-            result = pointer_type;
-          }
+        result = pointer_type;
         break;
       }
     case CTF_K_CONST:
@@ -728,79 +782,42 @@ process_ctf_type(read_context *ctxt,
       {
         type_base_sptr qualified_type
           = process_ctf_qualified_type(ctxt, corp, tunit, ctf_dictionary, ctf_type);
-
-        if (qualified_type)
-          {
-            decl_base_sptr qualified_type_decl = get_type_declaration(qualified_type);
-
-            add_decl_to_scope(qualified_type_decl, tunit->get_global_scope());
-            result = qualified_type;
-          }
+        result = qualified_type;
         break;
       }
     case CTF_K_ARRAY:
       {
         array_type_def_sptr array_type
           = process_ctf_array_type(ctxt, corp, tunit, ctf_dictionary, ctf_type);
-
-        if (array_type)
-          {
-            decl_base_sptr array_type_decl = get_type_declaration(array_type);
-
-            add_decl_to_scope(array_type_decl, tunit->get_global_scope());
-            result = array_type;
-          }
+        result = array_type;
         break;
       }
     case CTF_K_ENUM:
       {
         enum_type_decl_sptr enum_type
           = process_ctf_enum_type(ctxt, tunit, ctf_dictionary, ctf_type);
-
-        if (enum_type)
-          {
-            add_decl_to_scope(enum_type, tunit->get_global_scope());
-            result = enum_type;
-          }
-
+        result = enum_type;
         break;
       }
     case CTF_K_FUNCTION:
       {
         function_type_sptr function_type
           = process_ctf_function_type(ctxt, corp, tunit, ctf_dictionary, ctf_type);
-
-        if (function_type)
-          {
-            decl_base_sptr function_type_decl = get_type_declaration(function_type);
-
-            add_decl_to_scope(function_type_decl, tunit->get_global_scope());
-            result = function_type;
-          }
+        result = function_type;
         break;
       }
     case CTF_K_STRUCT:
       {
         class_decl_sptr struct_decl
           = process_ctf_struct_type(ctxt, corp, tunit, ctf_dictionary, ctf_type);
-
-        if (struct_decl)
-          {
-            add_decl_to_scope(struct_decl, tunit->get_global_scope());
-            result = is_type(struct_decl);
-          }
+        result = is_type(struct_decl);
         break;
       }
     case CTF_K_UNION:
       {
         union_decl_sptr union_decl
           = process_ctf_union_type(ctxt, corp, tunit, ctf_dictionary, ctf_type);
-
-        if (union_decl)
-          {
-            add_decl_to_scope(union_decl, tunit->get_global_scope());
-            result = is_type(union_decl);
-          }
+        result = is_type(union_decl);
         break;
       }
     case CTF_K_UNKNOWN:
@@ -809,9 +826,7 @@ process_ctf_type(read_context *ctxt,
       break;
     }
 
-  if (result)
-    ctxt->add_type(ctf_type, result);
-  else
+  if (!result)
     fprintf(stderr, "NOT PROCESSED TYPE %lu\n", ctf_type);
 
   return result;

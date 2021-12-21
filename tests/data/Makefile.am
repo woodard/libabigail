@@ -648,6 +648,24 @@ test-read-ctf/test-struct-iteration.c		\
 test-read-ctf/test-struct-iteration.o.abi	\
 test-read-ctf/PR27700/test-PR27700.abi	\
 test-read-ctf/PR26261/PR26261-exe.abi	\
+test-read-ctf/test-callback.c		\
+test-read-ctf/test-callback.abi		\
+test-read-ctf/test-callback.o		\
+test-read-ctf/test-array-of-pointers.c	\
+test-read-ctf/test-array-of-pointers.o	\
+test-read-ctf/test-array-of-pointers.abi	\
+test-read-ctf/test-functions-declaration.abi	\
+test-read-ctf/test-functions-declaration.c	\
+test-read-ctf/test-functions-declaration.o	\
+test-read-ctf/test-forward-type-decl.abi	\
+test-read-ctf/test-forward-type-decl.o	\
+test-read-ctf/test-forward-type-decl.c	\
+test-read-ctf/test-list-struct.c	\
+test-read-ctf/test-list-struct.o	\
+test-read-ctf/test-list-struct.abi	\
+test-read-ctf/test-callback2.c		\
+test-read-ctf/test-callback2.o		\
+test-read-ctf/test-callback2.abi	\
 \
 test-annotate/test0.abi			\
 test-annotate/test1.abi			\
