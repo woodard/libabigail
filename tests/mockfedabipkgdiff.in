@@ -39,7 +39,7 @@ variables.
 
 import os
 import tempfile
-import importlib
+import importlib.machinery
 import six
 
 try:
