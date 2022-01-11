@@ -351,6 +351,7 @@ symtab::load_(Elf*	       elf_handle,
 	      elf_helpers::maybe_adjust_et_rel_sym_addr_to_abs_addr(elf_handle,
 								    sym);
 
+	  // See also symtab::add_alternative_address_lookups.
 	  if (symbol_sptr->is_function())
 	    {
 	      if (is_arm32)
@@ -581,6 +582,9 @@ symtab::update_function_entry_address_symbol_map(
 void
 symtab::add_alternative_address_lookups(Elf* elf_handle)
 {
+  const bool is_arm32 = elf_helpers::architecture_is_arm32(elf_handle);
+  const bool is_ppc64 = elf_helpers::architecture_is_ppc64(elf_handle);
+
   Elf_Scn* symtab_section = elf_helpers::find_symtab_section(elf_handle);
   if (!symtab_section)
     return;
@@ -633,6 +637,19 @@ symtab::add_alternative_address_lookups(Elf* elf_handle)
 	      GElf_Addr	  symbol_value =
 		  elf_helpers::maybe_adjust_et_rel_sym_addr_to_abs_addr(
 		      elf_handle, sym);
+
+	      // See also symtab::load_.
+	      if (symbol_sptr->is_function())
+		{
+		  if (is_arm32)
+		    // Clear bit zero of ARM32 addresses as per "ELF for the Arm
+		    // Architecture" section 5.5.3.
+		    // https://static.docs.arm.com/ihi0044/g/aaelf32.pdf
+		    symbol_value &= ~1;
+		  else if (is_ppc64)
+		    update_function_entry_address_symbol_map(elf_handle, sym,
+							     symbol_sptr);
+		}
 
 	      const auto result =
 		  addr_symbol_map_.emplace(symbol_value, symbol_sptr);
