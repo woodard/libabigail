@@ -8855,17 +8855,30 @@ die_location_address(Dwarf_Die*	die,
   uint64_t expr_len = 0;
 
   is_tls_address = false;
-  if (!die_location_expr(die, DW_AT_location, &expr, &expr_len))
+
+  if (!die)
     return false;
 
-  int64_t addr = 0;
-  if (!eval_last_constant_dwarf_sub_expr(expr, expr_len, addr, is_tls_address))
+  Dwarf_Attribute attr;
+  if (!dwarf_attr_integrate(const_cast<Dwarf_Die*>(die), DW_AT_location, &attr))
     return false;
 
-  address = addr;
+  if (dwarf_getlocation(&attr, &expr, &expr_len))
+    return false;
+  // Ignore location expressions where reading them succeeded but
+  // their length is 0.
+  if (expr_len == 0)
+    return false;
+
+  Dwarf_Attribute result;
+  if (!dwarf_getlocation_attr(&attr, expr, &result))
+    // A location that has been interpreted as an address.
+    return !dwarf_formaddr(&result, &address);
+
+  // Just get the address out of the number field.
+  address = expr->number;
   return true;
 }
-
 
 /// Return the index of a function in its virtual table.  That is,
 /// return the value of the DW_AT_vtable_elem_location attribute.
