@@ -4178,11 +4178,8 @@ compute_diff(const enum_type_decl_sptr first,
 					second->get_underlying_type(),
 					ctxt);
   enum_diff_sptr d(new enum_diff(first, second, ud, ctxt));
-  bool s = first->get_environment()->use_enum_binary_only_equality();
-  first->get_environment()->use_enum_binary_only_equality(true);
   if (first != second)
     {
-      first->get_environment()->use_enum_binary_only_equality(false);
       compute_diff(first->get_enumerators().begin(),
 		   first->get_enumerators().end(),
 		   second->get_enumerators().begin(),
@@ -4190,7 +4187,6 @@ compute_diff(const enum_type_decl_sptr first,
 		   d->priv_->enumerators_changes_);
       d->ensure_lookup_tables_populated();
     }
-  first->get_environment()->use_enum_binary_only_equality(s);
   ctxt->initialize_canonical_diff(d);
 
   return d;

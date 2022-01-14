@@ -26819,6 +26819,13 @@
       <!-- class tcmalloc::ThreadCache -->
       <class-decl name='ThreadCache' size-in-bits='17408' visibility='default' filepath='src/thread_cache.h' line='66' column='1' id='type-id-1417'>
         <member-type access='private'>
+          <!-- enum tcmalloc::ThreadCache::__anonymous_enum__ -->
+          <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='src/thread_cache.h' line='69' column='1' id='type-id-1510'>
+            <underlying-type type-id='type-id-240'/>
+            <enumerator name='have_tls' value='1'/>
+          </enum-decl>
+        </member-type>
+        <member-type access='private'>
           <!-- class tcmalloc::ThreadCache::FreeList -->
           <class-decl name='FreeList' size-in-bits='192' visibility='default' filepath='src/thread_cache.h' line='132' column='1' id='type-id-1260'>
             <data-member access='private' layout-offset-in-bits='0'>
@@ -26980,7 +26987,7 @@
         </member-type>
         <member-type access='private'>
           <!-- struct tcmalloc::ThreadCache::ThreadLocalData -->
-          <class-decl name='ThreadLocalData' size-in-bits='128' is-struct='yes' visibility='default' filepath='src/thread_cache.h' line='262' column='1' id='type-id-1510'>
+          <class-decl name='ThreadLocalData' size-in-bits='128' is-struct='yes' visibility='default' filepath='src/thread_cache.h' line='262' column='1' id='type-id-1511'>
             <data-member access='public' layout-offset-in-bits='0'>
               <!-- tcmalloc::ThreadCache* tcmalloc::ThreadCache::ThreadLocalData::heap -->
               <var-decl name='heap' type-id='type-id-1468' visibility='default' filepath='src/thread_cache.h' line='263' column='1'/>
@@ -27001,7 +27008,7 @@
         </data-member>
         <data-member access='private' static='yes'>
           <!-- static tcmalloc::ThreadCache::ThreadLocalData tcmalloc::ThreadCache::threadlocal_data_ -->
-          <var-decl name='threadlocal_data_' type-id='type-id-1510' mangled-name='_ZN8tcmalloc11ThreadCache17threadlocal_data_E' visibility='default' filepath='src/thread_cache.h' line='272' column='1' elf-symbol-id='_ZN8tcmalloc11ThreadCache17threadlocal_data_E'/>
+          <var-decl name='threadlocal_data_' type-id='type-id-1511' mangled-name='_ZN8tcmalloc11ThreadCache17threadlocal_data_E' visibility='default' filepath='src/thread_cache.h' line='272' column='1' elf-symbol-id='_ZN8tcmalloc11ThreadCache17threadlocal_data_E'/>
         </data-member>
         <data-member access='private' static='yes'>
           <!-- static bool tcmalloc::ThreadCache::tsd_inited_ -->

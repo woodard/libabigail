@@ -179,12 +179,6 @@ public:
   decl_only_class_equals_definition(bool f) const;
 
   bool
-  use_enum_binary_only_equality() const;
-
-  void
-  use_enum_binary_only_equality(bool f) const;
-
-  bool
   is_void_type(const type_base_sptr&) const;
 
   bool

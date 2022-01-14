@@ -479,7 +479,21 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
                               pointed to type 'struct filter_node' changed, as being reported
                         type of 'struct {op_type type; filter_node* lchild; filter_node* rchild;} op' changed:
                           type size hasn't changed
-                          2 data member changes:
+                          3 data member changes:
+                            type of 'op_type type' changed:
+                              type size hasn't changed
+                              5 enumerator deletions:
+                                'op_type::AST_OP_RSHIFT' value '6'
+                                'op_type::AST_OP_LSHIFT' value '7'
+                                'op_type::AST_OP_BIN_AND' value '10'
+                                'op_type::AST_OP_BIN_OR' value '11'
+                                'op_type::AST_OP_BIN_XOR' value '12'
+                              5 enumerator insertions:
+                                'op_type::AST_OP_BIT_RSHIFT' value '6'
+                                'op_type::AST_OP_BIT_LSHIFT' value '7'
+                                'op_type::AST_OP_BIT_AND' value '10'
+                                'op_type::AST_OP_BIT_OR' value '11'
+                                'op_type::AST_OP_BIT_XOR' value '12'
                             type of 'filter_node* lchild' changed:
                               pointed to type 'struct filter_node' changed, as being reported
                             type of 'filter_node* rchild' changed:
@@ -491,7 +505,13 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
                               pointed to type 'struct filter_node' changed, as being reported
                         type of 'struct {unary_op_type type; filter_node* child;} unary_op' changed:
                           type size hasn't changed
-                          1 data member change:
+                          2 data member changes:
+                            type of 'unary_op_type type' changed:
+                              type size hasn't changed
+                              1 enumerator deletion:
+                                'unary_op_type::AST_UNARY_BIN_NOT' value '4'
+                              1 enumerator insertion:
+                                'unary_op_type::AST_UNARY_BIT_NOT' value '4'
                             type of 'filter_node* child' changed:
                               pointed to type 'struct filter_node' changed, as being reported
                 'cds_list_head allocated_nodes' offset changed from 576 to 640 (in bits) (by +64 bits)

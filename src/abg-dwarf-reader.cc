@@ -4149,12 +4149,9 @@ public:
     ABG_ASSERT(!e->canonicalization_is_done());
 
     bool s0 = e->decl_only_class_equals_definition();
-    bool s1 = e->use_enum_binary_only_equality();
     e->decl_only_class_equals_definition(true);
-    e->use_enum_binary_only_equality(true);
     bool equal = l == r;
     e->decl_only_class_equals_definition(s0);
-    e->use_enum_binary_only_equality(s1);
     return equal;
   }
 

@@ -3499,70 +3499,6 @@ void
 environment::decl_only_class_equals_definition(bool f) const
 {priv_->decl_only_class_equals_definition_ = f;}
 
-/// Test if comparing enums is done by looking only at enumerators
-/// values.
-///
-/// For enums, using 'binary-only' equality means looking only at
-/// values of enumerators (not names of enumerators) when comparing
-/// enums.  This means we are only considering the binary equality of
-/// enums, not source equality.
-///
-/// The two enums below are "binary equal", but not "source-level
-/// equal":
-///
-///     enum foo
-///     {
-///       e0 = 0;
-///       e1 = 1;
-///       e2 = 2;
-///     };
-///
-///     enum foo
-///     {
-///       e0 = 0;
-///       e1 = 1;
-///       e2 = 2;
-///       e_added = 1;
-///     };
-///
-/// @return true iff using 'binary-only' equality for enums
-/// comparison.
-bool
-environment::use_enum_binary_only_equality() const
-{return priv_->use_enum_binary_only_equality_;}
-
-/// Setter for the property that determines that comparing enums is
-/// done by looking only at enumerators values.
-///
-/// For enums, using 'binary-only' equality means looking only at
-/// values of enumerators (not names of enumerators) when comparing
-/// enums.  This means we are only considering the binary equality of
-/// enums, not source equality.
-///
-/// The two enums below are "binary equal", but not "source-level
-/// equal":
-///
-///     enum foo
-///     {
-///       e0 = 0;
-///       e1 = 1;
-///       e2 = 2;
-///     };
-///
-///     enum foo
-///     {
-///       e0 = 0;
-///       e1 = 1;
-///       e2 = 2;
-///       e_added = 1;
-///     };
-///
-/// @param f true iff using 'binary-only' equality for enums
-/// comparison.
-void
-environment::use_enum_binary_only_equality(bool f) const
-{priv_->use_enum_binary_only_equality_ = f;}
-
 /// Test if a given type is a void type as defined in the current
 /// environment.
 ///
@@ -5137,7 +5073,7 @@ equals(const decl_base& l, const decl_base& r, change_kind* k)
   interned_string ln = get_decl_name_for_comparison(l);
   interned_string rn = get_decl_name_for_comparison(r);
 
-  ;  /// If both of the current decls have an anonymous scope then let's
+  /// If both of the current decls have an anonymous scope then let's
   /// compare their name component by component by properly handling
   /// anonymous scopes. That's the slow path.
   ///
@@ -17477,6 +17413,82 @@ is_enumerator_present_in_enum(const enum_type_decl::enumerator &enr,
   return false;
 }
 
+/// Check if two enumerators values are equal.
+///
+/// This function doesn't check if the names of the enumerators are
+/// equal or not.
+///
+/// @param enr the first enumerator to consider.
+///
+/// @param enl the second enumerator to consider.
+///
+/// @return true iff @p enr has the same value as @p enl.
+static bool
+enumerators_values_are_equal(const enum_type_decl::enumerator &enr,
+			     const enum_type_decl::enumerator &enl)
+{return enr.get_value() == enl.get_value();}
+
+/// Detect if a given enumerator value is present in an enum.
+///
+/// This function looks inside the enumerators of a given enum and
+/// detect if the enum contains at least one enumerator or a given
+/// value.  The function also detects if the enumerator value we are
+/// looking at is present in the enum with a different name.  An
+/// enumerator with the same value but with a different name is named
+/// a "redundant enumerator".  The function returns the set of
+/// enumerators that are redundant with the value we are looking at.
+///
+/// @param enr the enumerator to consider.
+///
+/// @param enom the enum to consider.
+///
+/// @param redundant_enrs if the function returns true, then this
+/// vector is filled with enumerators that are redundant with the
+/// value of @p enr.
+///
+/// @return true iff the function detects that @p enom contains
+/// enumerators with the same value as @p enr.
+static bool
+is_enumerator_value_present_in_enum(const enum_type_decl::enumerator &enr,
+				    const enum_type_decl &enom,
+				    vector<enum_type_decl::enumerator>& redundant_enrs)
+{
+  bool found = false;
+  for (const auto &e : enom.get_enumerators())
+    if (enumerators_values_are_equal(e, enr))
+      {
+	found = true;
+	if (e != enr)
+	  redundant_enrs.push_back(e);
+      }
+
+  return found;
+}
+
+/// Check if an enumerator value is redundant in a given enum.
+///
+/// Given an enumerator value, this function detects if an enum
+/// contains at least one enumerator with the the same value but with
+/// a different name.
+///
+/// @param enr the enumerator to consider.
+///
+/// @param enom the enum to consider.
+///
+/// @return true iff @p enr is a redundant enumerator in enom.
+static bool
+is_enumerator_value_redundant(const enum_type_decl::enumerator &enr,
+			      const enum_type_decl &enom)
+{
+  vector<enum_type_decl::enumerator> redundant_enrs;
+  if (is_enumerator_value_present_in_enum(enr, enom, redundant_enrs))
+    {
+      if (!redundant_enrs.empty())
+	return true;
+    }
+    return false;
+}
+
 /// Compares two instances of @ref enum_type_decl.
 ///
 /// If the two intances are different, set a bitfield to give some
@@ -17526,10 +17538,8 @@ equals(const enum_type_decl& l, const enum_type_decl& r, change_kind* k)
   // Now compare the enumerators.  Note that the order of declaration
   // of enumerators should not matter in the comparison.
   //
-  // Also if the value of
-  // abigail::ir::environment::use_enum_binary_only_equality() is
-  // true, then enumerators are compared by considering their value
-  // only.  Their name is not taken into account.
+  // Also if an enumerator value is redundant, that shouldn't impact
+  // the comparison.
   //
   // In that case, note that the two enums below are considered equal:
   //
@@ -17545,16 +17555,15 @@ equals(const enum_type_decl& l, const enum_type_decl& r, change_kind* k)
   //       e0 = 0;
   //       e1 = 1;
   //       e2 = 2;
-  //       e_added = 1;
+  //       e_added = 1; // <-- this value is redundant with the value
+  //                    //     of the enumerator e1.
   //     };
   //
-  // These two enums are considered different if
-  // environment::use_enum_binary_only_equality() return false.
-  //
-  // So enumerators comparison should accomodate these conditions.
+  // These two enums are considered equal.
 
   for(const auto &e : l.get_enumerators())
-    if (!is_enumerator_present_in_enum(e, r))
+    if (!is_enumerator_present_in_enum(e, r)
+	&& !is_enumerator_value_redundant(e, r))
       {
 	result = false;
 	if (k)
@@ -17567,7 +17576,8 @@ equals(const enum_type_decl& l, const enum_type_decl& r, change_kind* k)
       }
 
   for(const auto &e : r.get_enumerators())
-    if (!is_enumerator_present_in_enum(e, l))
+    if (!is_enumerator_present_in_enum(e, l)
+	&& !is_enumerator_value_redundant(e, r))
       {
 	result = false;
 	if (k)
@@ -17734,8 +17744,7 @@ bool
 enum_type_decl::enumerator::operator==(const enumerator& other) const
 {
   bool names_equal = true;
-  if (!get_environment()->use_enum_binary_only_equality())
-    names_equal = (get_name() == other.get_name());
+  names_equal = (get_name() == other.get_name());
   return names_equal && (get_value() == other.get_value());
 }
 
