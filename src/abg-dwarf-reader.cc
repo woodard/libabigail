@@ -7686,7 +7686,7 @@ static bool
 die_location_expr(const Dwarf_Die* die,
 		  unsigned attr_name,
 		  Dwarf_Op** expr,
-		  uint64_t* expr_len)
+		  size_t* expr_len)
 {
   if (!die)
     return false;
@@ -8022,9 +8022,9 @@ op_pushes_non_constant_value(Dwarf_Op* ops,
 /// DEVM stack, false otherwise.
 static bool
 op_manipulates_stack(Dwarf_Op* expr,
-		     uint64_t expr_len,
-		     uint64_t index,
-		     uint64_t& next_index,
+		     size_t expr_len,
+		     size_t index,
+		     size_t& next_index,
 		     dwarf_expr_eval_context& ctxt)
 {
   Dwarf_Op& op = expr[index];
@@ -8398,7 +8398,7 @@ eval_quickly(Dwarf_Op*	expr,
 /// to evaluate, false otherwise.
 static bool
 eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
-				  uint64_t	expr_len,
+				  size_t	expr_len,
 				  int64_t&	value,
 				  bool&	is_tls_address,
 				  dwarf_expr_eval_context &eval_ctxt)
@@ -8407,7 +8407,7 @@ eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
   // expression contained in the DWARF expression 'expr'.
   eval_ctxt.reset();
 
-  uint64_t index = 0, next_index = 0;
+  size_t index = 0, next_index = 0;
   do
     {
       if (op_is_arith_logic(expr, expr_len, index,
@@ -8452,7 +8452,7 @@ eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
 /// to evaluate, false otherwise.
 static bool
 eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
-				  uint64_t	expr_len,
+				  size_t	expr_len,
 				  int64_t&	value,
 				  bool&	is_tls_address)
 {
@@ -8775,7 +8775,7 @@ die_member_offset(const read_context& ctxt,
 		  int64_t& offset)
 {
   Dwarf_Op* expr = NULL;
-  uint64_t expr_len = 0;
+  size_t expr_len = 0;
   uint64_t bit_offset = 0;
 
   // First let's see if the DW_AT_data_bit_offset attribute is
@@ -8852,7 +8852,7 @@ die_location_address(Dwarf_Die*	die,
 		     bool&		is_tls_address)
 {
   Dwarf_Op* expr = NULL;
-  uint64_t expr_len = 0;
+  size_t expr_len = 0;
 
   is_tls_address = false;
 
@@ -8898,7 +8898,7 @@ die_virtual_function_index(Dwarf_Die* die,
     return false;
 
   Dwarf_Op* expr = NULL;
-  uint64_t expr_len = 0;
+  size_t expr_len = 0;
   if (!die_location_expr(die, DW_AT_vtable_elem_location,
 			 &expr, &expr_len))
     return false;
