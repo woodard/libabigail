@@ -1041,19 +1041,25 @@ handle_error(abigail::elf_reader::status status_code,
 ///
 /// @param file_path1 the first file path to consider.
 ///
-/// @param file_path2 the second file path to consider.
+/// @param version1 the second version to consider.
+///
+/// @param file_path1 the first file path to consider.
+///
+/// @param version2 the second version to consider.
 ///
 /// @param prog_name the name of the current program.
 static void
 emit_incompatible_format_version_error_message(const string& file_path1,
+					       const string& version1,
 					       const string& file_path2,
+					       const string& version2,
 					       const string& prog_name)
 {
   emit_prefix(prog_name, cerr)
     << "incompatible format version between the two input files:\n"
-    << "'" << file_path1 << "'\n"
+    << "'" << file_path1 << "' (" << version1 << ")\n"
     << "and\n"
-    << "'" << file_path2 << "'\n" ;
+    << "'" << file_path2 << "' (" << version2 << ")\n";
 }
 
 int
@@ -1354,11 +1360,14 @@ main(int argc, char* argv[])
 	      return abigail::tools_utils::ABIDIFF_OK;
 	    }
 
-	  if (c1->get_format_major_version_number()
-	      != c2->get_format_major_version_number())
+	  const auto c1_version = c1->get_format_major_version_number();
+	  const auto c2_version = c2->get_format_major_version_number();
+	  if (c1_version != c2_version)
 	    {
 	      emit_incompatible_format_version_error_message(opts.file1,
+							     c1_version,
 							     opts.file2,
+							     c2_version,
 							     argv[0]);
 	      return abigail::tools_utils::ABIDIFF_ERROR;
 	    }
@@ -1385,11 +1394,14 @@ main(int argc, char* argv[])
 	      return abigail::tools_utils::ABIDIFF_OK;
 	    }
 
-	  if (g1->get_format_major_version_number()
-	      != g2->get_format_major_version_number())
+	  const auto g1_version = g1->get_format_major_version_number();
+	  const auto g2_version = g2->get_format_major_version_number();
+	  if (g1_version != g2_version)
 	    {
 	      emit_incompatible_format_version_error_message(opts.file1,
+							     g1_version,
 							     opts.file2,
+							     g2_version,
 							     argv[0]);
 	      return abigail::tools_utils::ABIDIFF_ERROR;
 	    }
