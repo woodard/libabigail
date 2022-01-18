@@ -1043,7 +1043,7 @@ handle_error(abigail::elf_reader::status status_code,
 ///
 /// @param version1 the second version to consider.
 ///
-/// @param file_path1 the first file path to consider.
+/// @param file_path2 the second file path to consider.
 ///
 /// @param version2 the second version to consider.
 ///
