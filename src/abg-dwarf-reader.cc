@@ -363,7 +363,7 @@ die_is_at_class_scope(const read_context& ctxt,
 		      Dwarf_Die& class_scope_die);
 static bool
 eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
-				  uint64_t	expr_len,
+				  size_t	expr_len,
 				  int64_t&	value,
 				  bool&	is_tls_address);
 
@@ -7732,9 +7732,9 @@ die_location_expr(const Dwarf_Die* die,
 /// value onto the DEVM stack, false otherwise.
 static bool
 op_pushes_constant_value(Dwarf_Op*			ops,
-			 uint64_t			ops_len,
-			 uint64_t			index,
-			 uint64_t&			next_index,
+			 size_t				ops_len,
+			 size_t				index,
+			 size_t&			next_index,
 			 dwarf_expr_eval_context&	ctxt)
 {
   ABG_ASSERT(index < ops_len);
@@ -7896,9 +7896,9 @@ op_pushes_constant_value(Dwarf_Op*			ops,
 /// non-constant value onto the DEVM stack, false otherwise.
 static bool
 op_pushes_non_constant_value(Dwarf_Op* ops,
-			     uint64_t ops_len,
-			     uint64_t index,
-			     uint64_t& next_index,
+			     size_t ops_len,
+			     size_t index,
+			     size_t& next_index,
 			     dwarf_expr_eval_context& ctxt)
 {
   ABG_ASSERT(index < ops_len);
@@ -8146,9 +8146,9 @@ op_manipulates_stack(Dwarf_Op* expr,
 /// arithmetic or logic operation.
 static bool
 op_is_arith_logic(Dwarf_Op* expr,
-		  uint64_t expr_len,
-		  uint64_t index,
-		  uint64_t& next_index,
+		  size_t expr_len,
+		  size_t index,
+		  size_t& next_index,
 		  dwarf_expr_eval_context& ctxt)
 {
   ABG_ASSERT(index < expr_len);
@@ -8279,9 +8279,9 @@ op_is_arith_logic(Dwarf_Op* expr,
 /// control flow operation, false otherwise.
 static bool
 op_is_control_flow(Dwarf_Op* expr,
-		   uint64_t expr_len,
-		   uint64_t index,
-		   uint64_t& next_index,
+		   size_t expr_len,
+		   size_t index,
+		   size_t& next_index,
 		   dwarf_expr_eval_context& ctxt)
 {
   ABG_ASSERT(index < expr_len);
