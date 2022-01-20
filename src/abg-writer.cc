@@ -4811,7 +4811,7 @@ write_type_record(xml_writer::write_context&	ctxt,
   //       <c>0x25f9ba8</c>
   //     </type>
 
-  string id = ctxt.get_id_for_type (type);
+  string id = ctxt.get_id_for_type (const_cast<type_base*>(type));
   o << "  <type>\n"
     << "    <id>" << id << "</id>\n"
     << "    <c>"
