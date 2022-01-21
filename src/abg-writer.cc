@@ -107,18 +107,9 @@ public:
   }
 };
 
-/// A hashing functor that should be as fast as possible.
-struct type_hasher
-{
-  size_t
-  operator()(const type_base* t) const
-  {return hash_type(t);}
-}; // end struct type_hasher
-
 /// A convenience typedef for a map that associates a pointer to type
-/// to a string.  The pointer to type is hashed as fast as possible.
-typedef unordered_map<type_base*,
-		      interned_string> type_ptr_map;
+/// to a string.
+typedef unordered_map<type_base*, interned_string> type_ptr_map;
 
 // A convenience typedef for a set of type_base*.
 typedef std::unordered_set<const type_base*> type_ptr_set_type;
