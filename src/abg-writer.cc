@@ -733,7 +733,7 @@ public:
   /// @return true if the decl has already been emitted, false
   /// otherwise.
   bool
-  decl_is_emitted(decl_base_sptr& decl) const
+  decl_is_emitted(const decl_base_sptr& decl) const
   {
     ABG_ASSERT(!is_type(decl));
     string repr = get_pretty_representation(decl, true);
@@ -2440,12 +2440,11 @@ write_translation_unit(write_context&		ctxt,
 				 ctxt, indent + c.get_xml_element_indent());
 
   typedef scope_decl::declarations declarations;
-  typedef declarations::const_iterator const_iterator;
-  const declarations& d = tu.get_global_scope()->get_sorted_member_decls();
+  const declarations& decls = tu.get_global_scope()->get_sorted_member_decls();
 
-  for (const_iterator i = d.begin(); i != d.end(); ++i)
+  for (const decl_base_sptr& decl : decls)
     {
-      if (type_base_sptr t = is_type(*i))
+      if (type_base_sptr t = is_type(decl))
 	{
 	  // Emit declaration-only classes that are needed. Some of
 	  // these classes can be empty.  Those beasts can be classes
@@ -2456,13 +2455,12 @@ write_translation_unit(write_context&		ctxt,
 		&& !ctxt.type_is_emitted(class_type))
 	      write_type(class_type, ctxt,
 			 indent + c.get_xml_element_indent());
-	  continue;
 	}
-
-      if (decl_base_sptr d = is_decl(*i))
-	if (ctxt.decl_is_emitted(d))
-	  continue;
-      write_decl(*i, ctxt, indent + c.get_xml_element_indent());
+      else
+	{
+	  if (!ctxt.decl_is_emitted(decl))
+	    write_decl(decl, ctxt, indent + c.get_xml_element_indent());
+	}
     }
 
   write_referenced_types(ctxt, tu, indent, is_last);
