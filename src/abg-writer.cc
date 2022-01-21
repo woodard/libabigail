@@ -2321,18 +2321,21 @@ write_referenced_types(write_context &		ctxt,
 	{
 	  // We handle types which have declarations *and* function
 	  // types here.
-	  type_base_sptr t(*i, noop_deleter());
+	  type_base* t = *i;
 	  if (!ctxt.type_is_emitted(t))
 	    {
-	      if (decl_base* d = get_type_declaration(*i))
+	      if (decl_base* d = get_type_declaration(t))
 		{
 		  decl_base_sptr decl(d, noop_deleter());
 		  write_decl_in_scope(decl, ctxt,
 				      indent + c.get_xml_element_indent());
 		}
-	      else if (function_type_sptr fn_type = is_function_type(t))
-		write_function_type(fn_type, ctxt,
-				    indent + c.get_xml_element_indent());
+	      else if (function_type* f = is_function_type(t))
+		{
+		  function_type_sptr fn_type(f, noop_deleter());
+		  write_function_type(fn_type, ctxt,
+				      indent + c.get_xml_element_indent());
+		}
 	      else
 		ABG_ASSERT_NOT_REACHED;
 	    }
