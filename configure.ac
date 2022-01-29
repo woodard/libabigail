@@ -161,6 +161,7 @@ dnl check for dependencies
 dnl *************************************************
 
 AC_PROG_CXX
+AC_CANONICAL_HOST
 AC_USE_SYSTEM_EXTENSIONS
 AC_PROG_INSTALL
 
@@ -218,6 +219,12 @@ AC_CACHE_CHECK([whether including fts.h with _FILE_OFFSET_BITS set breaks], ac_c
 AS_IF([test "x$ac_cv_bad_fts" = "xyes"],
       [CFLAGS="$CFLAGS -DBAD_FTS=1",
        CXXFLAGS="$CXXFLAGS -DBAD_FTS=1"])
+
+dnl On musl, we need to find fts-standalone
+AS_CASE(
+  [${host_os}], [*-musl*], [
+    PKG_CHECK_MODULES([FTS], [fts-standalone])
+])
 
 dnl Check for dependency: libelf, libdw, libebl (elfutils)
 dnl Note that we need to use at least elfutils 0.159 but
