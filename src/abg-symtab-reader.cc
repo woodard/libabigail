@@ -575,7 +575,7 @@ symtab::update_function_entry_address_symbol_map(
 ///
 /// So far, this only implements CFI support, by adding addr->symbol pairs
 /// where
-///    addr   :  symbol value of the <foo>.cfi valyue
+///    addr   :  symbol value of the <foo>.cfi value
 ///    symbol :  symbol_sptr looked up via "<foo>"
 ///
 /// @param elf_handle the ELF handle to operate on
