@@ -12160,19 +12160,6 @@ add_or_update_class_type(read_context&	 ctxt,
       }
   }
 
-  if (!ctxt.die_is_in_cplus_plus(die))
-    // In c++, a given class might be put together "piecewise".  That
-    // is, in a translation unit, some data members of that class
-    // might be defined; then in another later, some member types
-    // might be defined.  So we can't just re-use a class "verbatim"
-    // just because we've seen previously.  So in c++, re-using the
-    // class is a much clever process.  In the other languages however
-    // (like in C) we can re-use a class definition verbatim.
-    if (class_decl_sptr class_type =
-	is_class_type(ctxt.lookup_type_from_die(die)))
-      if (!class_type->get_is_declaration_only())
-	return class_type;
-
   string name, linkage_name;
   location loc;
   die_loc_and_name(ctxt, die, loc, name, linkage_name);

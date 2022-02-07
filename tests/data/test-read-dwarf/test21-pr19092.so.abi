@@ -2915,7 +2915,7 @@
         <var-decl name='next' type-id='type-id-207' visibility='default' filepath='../.././gcc/tlink.c' line='199' column='1'/>
       </data-member>
     </class-decl>
-    <class-decl name='htab' size-in-bits='896' is-struct='yes' visibility='default' filepath='../.././libcpp/../include/hashtab.h' line='100' column='1' id='type-id-208'>
+    <class-decl name='htab' size-in-bits='896' is-struct='yes' visibility='default' filepath='../.././libiberty/../include/hashtab.h' line='100' column='1' id='type-id-208'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='hash_f' type-id='type-id-183' visibility='default' filepath='../.././gcc/../include/hashtab.h' line='102' column='1'/>
       </data-member>
