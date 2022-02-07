@@ -651,9 +651,7 @@ symtab::add_alternative_address_lookups(Elf* elf_handle)
 							     symbol_sptr);
 		}
 
-	      const auto result =
-		  addr_symbol_map_.emplace(symbol_value, symbol_sptr);
-	      ABG_ASSERT(result.second);
+	      addr_symbol_map_.emplace(symbol_value, symbol_sptr);
 	    }
 	}
     }
