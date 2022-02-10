@@ -161,7 +161,18 @@ typedef unordered_map<GElf_Addr, elf_symbol_sptr> addr_elf_symbol_sptr_map_type;
 /// Convenience typedef for a set of ELF addresses.
 typedef unordered_set<GElf_Addr> address_set_type;
 
-typedef unordered_set<interned_string, hash_interned_string> istring_set_type;
+/// A hasher for a pair of Dwarf_Off.  This is used as a hasher for
+/// the type @ref dwarf_offset_pair_set_type.
+struct dwarf_offset_pair_hash
+{
+  size_t
+  operator()(const std::pair<Dwarf_Off, Dwarf_Off>& p) const
+  {return abigail::hashing::combine_hashes(p.first, p.second);}
+};// end struct dwarf_offset_pair_hash
+
+typedef unordered_set<std::pair<Dwarf_Off,
+				Dwarf_Off>,
+		      dwarf_offset_pair_hash> dwarf_offset_pair_set_type;
 
 /// Convenience typedef for a shared pointer to an @ref address_set_type.
 typedef shared_ptr<address_set_type> address_set_sptr;
@@ -296,6 +307,12 @@ get_scope_die(const read_context&	ctxt,
 	      const Dwarf_Die*		die,
 	      size_t			where_offset,
 	      Dwarf_Die&		scope_die);
+
+static Dwarf_Off
+die_offset(Dwarf_Die* die);
+
+static Dwarf_Off
+die_offset(const Dwarf_Die* die);
 
 static bool
 die_is_anonymous(const Dwarf_Die* die);
@@ -6230,6 +6247,24 @@ void
 set_do_log(read_context& ctxt, bool f)
 {ctxt.do_log(f);}
 
+/// Get the offset of a DIE
+///
+/// @param die the DIE to consider.
+///
+/// @return the offset of the DIE.
+static Dwarf_Off
+die_offset(Dwarf_Die* die)
+{return dwarf_dieoffset(die);}
+
+/// Get the offset of a DIE
+///
+/// @param die the DIE to consider.
+///
+/// @return the offset of the DIE.
+static Dwarf_Off
+die_offset(const Dwarf_Die* die)
+{return die_offset(const_cast<Dwarf_Die*>(die));}
+
 /// Test if a given DIE is anonymous
 ///
 /// @param die the DIE to consider.
@@ -10097,6 +10132,50 @@ fn_die_equal_by_linkage_name(const read_context &ctxt,
 	  && llinkage_name == rlinkage_name);
 }
 
+/// Test if the pair of offset {p1,p2} is present in a set.
+///
+/// @param set the set of pairs of DWARF offsets to consider.
+///
+/// @param p1 the first value of the pair.
+///
+/// @param p2 the second value of the pair.
+///
+/// @return if the pair {p1,p2} is present in the set.
+static bool
+has_offset_pair(const dwarf_offset_pair_set_type& set,
+		Dwarf_Off p1, Dwarf_Off p2)
+{
+  if (set.find(std::make_pair(p1, p2)) != set.end())
+    return true;
+  return false;
+}
+
+/// Insert a new pair of offset into the set of pair.
+///
+/// @param set the set of pairs of DWARF offsets to consider.
+///
+/// @param p1 the first value of the pair.
+///
+/// @param p2 the second value of the pair.
+static void
+insert_offset_pair(dwarf_offset_pair_set_type& set, Dwarf_Off p1, Dwarf_Off p2)
+{set.insert(std::make_pair(p1, p2));}
+
+/// Erase a pair of DWARF offset from a set of pairs.
+///
+///
+/// @param set the set of pairs of DWARF offsets to consider.
+///
+/// @param p1 the first value of the pair.
+///
+/// @param p2 the second value of the pair.
+static void
+erase_offset_pair(dwarf_offset_pair_set_type& set, Dwarf_Off p1, Dwarf_Off p2)
+{
+  std::pair<Dwarf_Off, Dwarf_Off> p(p1, p2);
+  set.erase(p);
+}
+
 /// Compare two DIEs emitted by a C compiler.
 ///
 /// @param ctxt the read context used to load the DWARF information.
@@ -10123,7 +10202,7 @@ fn_die_equal_by_linkage_name(const read_context &ctxt,
 static bool
 compare_dies(const read_context& ctxt,
 	     const Dwarf_Die *l, const Dwarf_Die *r,
-	     istring_set_type& aggregates_being_compared,
+	     dwarf_offset_pair_set_type& aggregates_being_compared,
 	     bool update_canonical_dies_on_the_fly)
 {
   ABG_ASSERT(l);
@@ -10268,23 +10347,15 @@ compare_dies(const read_context& ctxt,
     case DW_TAG_structure_type:
     case DW_TAG_union_type:
       {
-	interned_string ln = ctxt.get_die_pretty_type_representation(l, 0);
-	interned_string rn = ctxt.get_die_pretty_type_representation(r, 0);
-
-	if ((aggregates_being_compared.find(ln)
-	     != aggregates_being_compared.end())
-	    || (aggregates_being_compared.find(rn)
-		!= aggregates_being_compared.end()))
+	if (has_offset_pair(aggregates_being_compared,
+			    die_offset(l), die_offset(r)))
 	  result = true;
-	else if (!compare_as_decl_dies(l, r))
-	  result = false;
-	else if (!compare_as_type_dies(l, r))
+	else if (!compare_as_decl_dies(l, r) || !compare_as_type_dies(l, r))
 	  result = false;
 	else
 	  {
-	    aggregates_being_compared.insert(ln);
-	    aggregates_being_compared.insert(rn);
-
+	    insert_offset_pair(aggregates_being_compared,
+			       die_offset(l), die_offset(r));
 	    Dwarf_Die l_member, r_member;
 	    bool found_l_member, found_r_member;
 	    for (found_l_member = dwarf_child(const_cast<Dwarf_Die*>(l),
@@ -10316,8 +10387,8 @@ compare_dies(const read_context& ctxt,
 	    if (found_l_member != found_r_member)
 	      result = false;
 
-	    aggregates_being_compared.erase(ln);
-	    aggregates_being_compared.erase(rn);
+	    erase_offset_pair(aggregates_being_compared,
+			      die_offset(l), die_offset(r));
 	  }
       }
       break;
@@ -10402,10 +10473,8 @@ compare_dies(const read_context& ctxt,
 	interned_string ln = ctxt.get_die_pretty_type_representation(l, 0);
 	interned_string rn = ctxt.get_die_pretty_type_representation(r, 0);
 
-	if ((aggregates_being_compared.find(ln)
-	     != aggregates_being_compared.end())
-	    || (aggregates_being_compared.find(rn)
-		!= aggregates_being_compared.end()))
+	if (has_offset_pair(aggregates_being_compared, die_offset(l),
+			    die_offset(r)))
 	  {
 	    result = true;
 	    break;
@@ -10498,8 +10567,8 @@ compare_dies(const read_context& ctxt,
 	      }
 	  }
 
-	aggregates_being_compared.erase(ln);
-	aggregates_being_compared.erase(rn);
+	erase_offset_pair(aggregates_being_compared,
+			  die_offset(l), die_offset(r));
       }
       break;
 
@@ -10535,19 +10604,10 @@ compare_dies(const read_context& ctxt,
 	      Dwarf_Die l_type, r_type;
 	      ABG_ASSERT(die_die_attribute(l, DW_AT_type, l_type));
 	      ABG_ASSERT(die_die_attribute(r, DW_AT_type, r_type));
-	      if (aggregates_being_compared.size () < 5)
-		{
-		  if (!compare_dies(ctxt, &l_type, &r_type,
-				    aggregates_being_compared,
-				    update_canonical_dies_on_the_fly))
-		    result = false;
-		}
-	      else
-		{
-		  if (!compare_as_type_dies(&l_type, &r_type)
-		      ||!compare_as_decl_dies(&l_type, &r_type))
-		    return false;
-		}
+	      if (!compare_dies(ctxt, &l_type, &r_type,
+				aggregates_being_compared,
+				update_canonical_dies_on_the_fly))
+		result = false;
 	    }
 	}
       else
@@ -10661,7 +10721,7 @@ compare_dies(const read_context& ctxt,
 	     const Dwarf_Die *r,
 	     bool update_canonical_dies_on_the_fly)
 {
-  istring_set_type aggregates_being_compared;
+  dwarf_offset_pair_set_type aggregates_being_compared;
   return compare_dies(ctxt, l, r, aggregates_being_compared,
 		      update_canonical_dies_on_the_fly);
 }
