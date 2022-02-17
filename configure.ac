@@ -83,6 +83,12 @@ AC_ARG_ENABLE(debug-type-canonicalization,
 	      ENABLE_DEBUG_TYPE_CANONICALIZATION=$enableval,
 	      ENABLE_DEBUG_TYPE_CANONICALIZATION=no)
 
+AC_ARG_ENABLE(show-type-use-in-abilint,
+	      AS_HELP_STRING([--enable-show-type-use-in-abilint=yes|no],
+			     ['enable abilint --show-type-use'(default is no)]),
+	      ENABLE_SHOW_TYPE_USE_IN_ABILINT=$enableval,
+	      ENABLE_SHOW_TYPE_USE_IN_ABILINT=no)
+
 AC_ARG_ENABLE(deb,
 	      AS_HELP_STRING([--enable-deb=yes|no|auto],
 			     [enable the support of deb in abipkgdiff (default is auto)]),
@@ -372,6 +378,16 @@ else
 fi
 
 AM_CONDITIONAL(ENABLE_DEBUG_SELF_COMPARISON, test x$ENABLE_DEBUG_SELF_COMPARISON = xyes)
+
+dnl enable support of abilint --show-type-use <type-id>
+if test x$ENABLE_SHOW_TYPE_USE_IN_ABILINT = xyes; then
+  AC_DEFINE([WITH_SHOW_TYPE_USE_IN_ABILINT], 1, [compile support of abilint --show-type-use])
+  AC_MSG_NOTICE([support of abilint --show-type-use <type-id> is enabled])
+else
+  AC_MSG_NOTICE([support of abilint --show-type-use <type-id> is disabled])
+fi
+
+AM_CONDITIONAL(ENABLE_SHOW_TYPE_USE_IN_ABILINT, test x$ENABLE_SHOW_TYPE_USE_IN_ABILINT = xyes)
 
 dnl enable the debugging of type canonicalization when doing abidw --debug-tc <binary>
 if test x$ENABLE_DEBUG_TYPE_CANONICALIZATION = xyes; then
@@ -1011,6 +1027,7 @@ AC_MSG_NOTICE([
     libdw has the dwarf_getalt function            : ${FOUND_DWARF_GETALT_IN_LIBDW}
     Enable rpm support in abipkgdiff               : ${ENABLE_RPM}
     Enable rpm/zstd in abipkgdiff testing          : ${ENABLE_RPM_ZSTD}
+    Enable abilint --show-type-use <type-id>       : ${ENABLE_SHOW_TYPE_USE_IN_ABILINT}
     Enable self comparison debugging               : ${ENABLE_DEBUG_SELF_COMPARISON}
     Enable type canonicalization debugging         : ${ENABLE_DEBUG_TYPE_CANONICALIZATION}
     Enable deb support in abipkgdiff               : ${ENABLE_DEB}
