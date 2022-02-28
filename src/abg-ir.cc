@@ -9332,6 +9332,15 @@ bool
 is_at_global_scope(const decl_base_sptr decl)
 {return (decl && is_global_scope(decl->get_scope()));}
 
+/// Tests whether a given declaration is at global scope.
+///
+/// @param decl the decl to consider.
+///
+/// @return true iff decl is at global scope.
+bool
+is_at_global_scope(const decl_base* decl)
+{return is_at_global_scope(*decl);}
+
 /// Tests whether a given decl is at class scope.
 ///
 /// @param decl the decl to consider.

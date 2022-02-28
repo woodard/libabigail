@@ -398,10 +398,14 @@ emit_artifact_use_trace(const artifact_use_relation_tree& artifact_use_tree,
       if (is_decl(artifact))
 	{
 	  if (abigail::ir::var_decl* v = is_var_decl(artifact))
-	    if (v->get_symbol())
+	    if (v->get_symbol()
+		|| is_at_global_scope(v)
+		|| !v->get_linkage_name().empty())
 	      do_emit_trace = true;
 	  if (abigail::ir::function_decl* f = is_function_decl(artifact))
-	    if (f->get_symbol())
+	    if (f->get_symbol()
+		|| is_at_global_scope(f)
+		|| !f->get_linkage_name().empty())
 	      do_emit_trace = true;
 	}
 
