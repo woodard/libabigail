@@ -17735,15 +17735,6 @@ enum_type_decl::enumerator::operator=(const enumerator& o)
 }
 /// Equality operator
 ///
-/// When environment::use_enum_binary_only_equality() is true, this
-/// equality operator only cares about the value of the enumerator.
-/// It doesn't take the name of the enumerator into account.  This is
-/// the ABI-oriented default equality operator.
-///
-/// When the environment::use_enum_binary_only_equality() is false
-/// however, then this equality operator also takes the name of the
-/// enumerator into account as well as the value.
-///
 /// @param other the enumerator to compare to the current
 /// instance of enum_type_decl::enumerator.
 ///
