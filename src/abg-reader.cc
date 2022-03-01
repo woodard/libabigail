@@ -3802,9 +3802,11 @@ build_var_decl(read_context&	ctxt,
 
   ctxt.push_decl_to_current_scope(decl, add_to_current_scope);
   if (add_to_current_scope)
-    // This variable is really being kept in the IR, so let's record
-    // that it's using its type.
-    RECORD_ARTIFACT_AS_USED_BY(ctxt, underlying_type, decl);
+    {
+      // This variable is really being kept in the IR, so let's record
+      // that it's using its type.
+      RECORD_ARTIFACT_AS_USED_BY(ctxt, underlying_type, decl);
+    }
 
   if (decl->get_symbol() && decl->get_symbol()->is_public())
     decl->set_is_in_public_symbol_table(true);
