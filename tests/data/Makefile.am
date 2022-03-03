@@ -1068,6 +1068,9 @@ test-diff-filter/test-PR27598-v1.o           \
 test-diff-filter/test-PR27598-report-0.txt   \
 test-diff-filter/test-PR27995-report-0.txt   \
 test-diff-filter/test-PR27995.abi	     \
+test-diff-filter/test-PR28013-fn-variadic.c.report.txt	  \
+test-diff-filter/test-PR28013-fn-variadic.c.0.abi	  \
+test-diff-filter/test-PR28013-fn-variadic.c.1.abi	  \
 \
 test-diff-suppr/test0-type-suppr-v0.cc	\
 test-diff-suppr/test0-type-suppr-v1.cc	\

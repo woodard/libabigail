@@ -25227,7 +25227,8 @@ hash_type_or_decl(const type_or_decl_base_sptr& tod)
 /// This is a subroutine of hash_as_canonical_type_or_constant.
 ///
 /// For now, the only types allowed to be non canonicalized in the
-/// system are decl-only class/union and the void type.
+/// system are decl-only class/union, the void type and variadic
+/// parameter types.
 ///
 /// @return true iff @p t is a one of the only types allowed to be
 /// non-canonicalized in the system.
@@ -25238,7 +25239,9 @@ is_non_canonicalized_type(const type_base *t)
     return true;
 
   const environment* env = t->get_environment();
-  return is_declaration_only_class_or_union_type(t) || env->is_void_type(t);
+  return (is_declaration_only_class_or_union_type(t)
+	  || env->is_void_type(t)
+	  || env->is_variadic_parameter_type(t));
 }
 
 /// For a given type, return its exemplar type.

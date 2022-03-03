@@ -1094,7 +1094,6 @@
     </array-type-def>
     <type-decl name='unsigned long int' size-in-bits='32' id='7359adad'/>
     <type-decl name='unsigned short int' size-in-bits='16' id='8efea9e5'/>
-    <type-decl name='variadic parameter type' id='2c1145c5'/>
     <type-decl name='wchar_t' size-in-bits='32' id='c523b9f1'/>
     <class-decl name='mbstate_t' size-in-bits='32' is-struct='yes' naming-typedef-id='3d7d8cbf' visibility='default' filepath='bionic/libc/include/bits/mbstate_t.h' line='42' column='1' id='a76d8e48'>
       <data-member access='public' layout-offset-in-bits='0'>
