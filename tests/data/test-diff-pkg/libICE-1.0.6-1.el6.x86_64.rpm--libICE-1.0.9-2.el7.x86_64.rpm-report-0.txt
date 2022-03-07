@@ -16,18 +16,13 @@
           in pointed to type 'struct _IceConn' at ICEconn.h:131:1:
             type size hasn't changed
             2 data member changes (3 filtered):
-              type of 'IceListenObj listen_obj' changed:
-                underlying type '_IceListenObj*' changed:
-                  in pointed to type 'struct _IceListenObj' at ICElibint.h:120:1:
-                    type size hasn't changed
-                    1 data member change:
-                      type of '_XtransConnInfo* trans_conn' changed:
-                        in pointed to type 'struct _XtransConnInfo' at Xtransint.h:136:1:
-                          type size changed from 640 to 768 (in bits)
-                          2 data member insertions:
-                            '_XtransConnFd* recv_fds', at offset 640 (in bits) at Xtransint.h:148:1
-                            '_XtransConnFd* send_fds', at offset 704 (in bits) at Xtransint.h:149:1
-                          no data member change (1 filtered);
+              type of '_XtransConnInfo* trans_conn' changed:
+                in pointed to type 'struct _XtransConnInfo' at Xtransint.h:136:1:
+                  type size changed from 640 to 768 (in bits)
+                  2 data member insertions:
+                    '_XtransConnFd* recv_fds', at offset 640 (in bits) at Xtransint.h:148:1
+                    '_XtransConnFd* send_fds', at offset 704 (in bits) at Xtransint.h:149:1
+                  no data member change (1 filtered);
               type of '_IcePingWait* ping_waits' changed:
                 in pointed to type 'struct _IcePingWait' at ICEconn.h:48:1:
                   entity changed from 'struct _IcePingWait' to compatible type 'typedef _IcePingWait' at ICEconn.h:48:1

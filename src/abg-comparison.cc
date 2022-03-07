@@ -2005,11 +2005,6 @@ diff::append_child_node(diff_sptr d)
   // above.
   priv_->children_.push_back(d.get());
 
-  diff_less_than_functor comp;
-  std::sort(priv_->children_.begin(),
-	    priv_->children_.end(),
-	    comp);
-
   d->priv_->parent_ = this;
 }
 

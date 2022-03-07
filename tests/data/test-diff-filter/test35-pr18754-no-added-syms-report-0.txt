@@ -186,8 +186,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
                 'void* alloc', at offset 320 (in bits)
                 'OffloadDescriptor::OmpAsyncLastEventType omp_last_event_type', at offset 608 (in bits)
               4 data member changes (3 filtered):
-                'CeanReadRanges* read_rng_src' offset changed from 320 to 384 (in bits) (by +64 bits)
-                type of 'CeanReadRanges* read_rng_dst' changed:
+                type of 'CeanReadRanges* read_rng_src' changed:
                   in pointed to type 'struct CeanReadRanges':
                     type size changed from 512 to 576 (in bits)
                     1 data member insertion:
@@ -200,7 +199,8 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
                       'int last_noncont_ind' offset changed from 256 to 320 (in bits) (by +64 bits)
                       'int64_t init_offset' offset changed from 320 to 384 (in bits) (by +64 bits)
                       'CeanReadDim Dim[1]' offset changed from 384 to 448 (in bits) (by +64 bits)
-                and offset changed from 384 to 448 (in bits) (by +64 bits)
+                and offset changed from 320 to 384 (in bits) (by +64 bits)
+                'CeanReadRanges* read_rng_dst' offset changed from 384 to 448 (in bits) (by +64 bits)
                 'int64_t ptr_arr_offset' offset changed from 448 to 512 (in bits) (by +64 bits)
                 'bool is_arr_ptr_el' offset changed from 512 to 576 (in bits) (by +64 bits)
           'OffloadHostTimerData* m_timer_data' offset changed from 1984 to 2048 (in bits) (by +64 bits)
