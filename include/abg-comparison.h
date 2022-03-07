@@ -1163,9 +1163,6 @@ protected:
 		type_or_decl_base_sptr second,
 		diff_context_sptr ctxt = diff_context_sptr());
 
-  virtual void
-  finish_diff_type();
-
 public:
 
   const type_or_decl_base_sptr
@@ -1219,9 +1216,6 @@ protected:
 	   diff_sptr type_diff,
 	   diff_context_sptr ctxt = diff_context_sptr());
 
-  virtual void
-  finish_diff_type();
-
 public:
   var_decl_sptr
   first_var() const;
@@ -1272,9 +1266,6 @@ protected:
 	       pointer_type_def_sptr	second,
 	       diff_sptr		underlying_type_diff,
 	       diff_context_sptr	ctxt = diff_context_sptr());
-
-  virtual void
-  finish_diff_type();
 
 public:
   const pointer_type_def_sptr
@@ -1333,9 +1324,6 @@ protected:
 		 diff_sptr			underlying,
 		 diff_context_sptr		ctxt = diff_context_sptr());
 
-  virtual void
-  finish_diff_type();
-
 public:
   reference_type_def_sptr
   first_reference() const;
@@ -1393,9 +1381,6 @@ protected:
 	     diff_sptr			element_type_diff,
 	     diff_context_sptr		ctxt = diff_context_sptr());
 
-  virtual void
-  finish_diff_type();
-
 public:
   const array_type_def_sptr
   first_array() const;
@@ -1449,9 +1434,6 @@ protected:
 		      qualified_type_def_sptr	second,
 		      diff_sptr		underling,
 		      diff_context_sptr	ctxt = diff_context_sptr());
-
-  virtual void
-  finish_diff_type();
 
 public:
   const qualified_type_def_sptr
@@ -1518,9 +1500,6 @@ protected:
 	    const enum_type_decl_sptr,
 	    const diff_sptr,
 	    diff_context_sptr ctxt = diff_context_sptr());
-
-  virtual void
-  finish_diff_type();
 
 public:
   const enum_type_decl_sptr
@@ -1591,9 +1570,6 @@ protected:
   class_or_union_diff(class_or_union_sptr first_scope,
 		      class_or_union_sptr second_scope,
 		      diff_context_sptr ctxt = diff_context_sptr());
-
-  virtual void
-  finish_diff_type();
 
 public:
 
@@ -1714,9 +1690,6 @@ protected:
 	     class_decl_sptr second_scope,
 	     diff_context_sptr ctxt = diff_context_sptr());
 
-  virtual void
-  finish_diff_type();
-
 public:
   //TODO: add change of the name of the type.
 
@@ -1793,9 +1766,6 @@ protected:
 	     union_decl_sptr second_union,
 	     diff_context_sptr ctxt = diff_context_sptr());
 
-  virtual void
-  finish_diff_type();
-
 public:
 
   virtual ~union_diff();
@@ -1834,9 +1804,6 @@ protected:
 	    class_decl::base_spec_sptr	second,
 	    class_diff_sptr		underlying,
 	    diff_context_sptr		ctxt = diff_context_sptr());
-
-  virtual void
-  finish_diff_type();
 
 public:
   class_decl::base_spec_sptr
@@ -1901,9 +1868,6 @@ protected:
   scope_diff(scope_decl_sptr first_scope,
 	     scope_decl_sptr second_scope,
 	     diff_context_sptr ctxt = diff_context_sptr());
-
-  virtual void
-  finish_diff_type();
 
 public:
 
@@ -1996,9 +1960,6 @@ class fn_parm_diff : public decl_diff_base
   struct priv;
   std::unique_ptr<priv> priv_;
 
-  virtual void
-  finish_diff_type();
-
   fn_parm_diff(const function_decl::parameter_sptr	first,
 	       const function_decl::parameter_sptr	second,
 	       diff_context_sptr			ctxt);
@@ -2064,9 +2025,6 @@ protected:
   function_type_diff(const function_type_sptr	first,
 		     const function_type_sptr	second,
 		     diff_context_sptr		ctxt);
-
-  virtual void
-  finish_diff_type();
 
 public:
   friend function_type_diff_sptr
@@ -2137,9 +2095,6 @@ protected:
 		     const function_decl_sptr	second,
 		     diff_context_sptr		ctxt);
 
-  virtual void
-  finish_diff_type();
-
 public:
 
 friend function_decl_diff_sptr
@@ -2192,9 +2147,6 @@ protected:
 		 const type_decl_sptr second,
 		 diff_context_sptr ctxt = diff_context_sptr());
 
-  virtual void
-  finish_diff_type();
-
 public:
   friend type_decl_diff_sptr
   compute_diff(const type_decl_sptr	first,
@@ -2243,9 +2195,6 @@ protected:
 	       const typedef_decl_sptr	second,
 	       const diff_sptr		underlying_type_diff,
 	       diff_context_sptr	ctxt = diff_context_sptr());
-
-  virtual void
-  finish_diff_type();
 
 public:
   friend typedef_diff_sptr

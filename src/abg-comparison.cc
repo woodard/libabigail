@@ -1930,6 +1930,10 @@ diff::end_traversing()
 void
 diff::finish_diff_type()
 {
+  if (diff::priv_->finished_)
+    return;
+  chain_into_hierarchy();
+  diff::priv_->finished_ = true;
 }
 
 /// Getter of the first subject of the diff.
@@ -2543,17 +2547,6 @@ distinct_diff::distinct_diff(type_or_decl_base_sptr first,
   : diff(first, second, ctxt),
     priv_(new priv)
 {ABG_ASSERT(entities_are_of_distinct_kinds(first, second));}
-
-/// Finish building the current instance of @ref distinct_diff.
-void
-distinct_diff::finish_diff_type()
-{
-  if (diff::priv_->finished_)
-    return;
-
-  chain_into_hierarchy();
-  diff::priv_->finished_ = true;
-}
 
 /// Getter for the first subject of the diff.
 ///
@@ -3247,16 +3240,6 @@ var_diff::var_diff(var_decl_sptr	first,
     priv_(new priv)
 {priv_->type_diff_ = type_diff;}
 
-/// Finish building the current instance of @ref var_diff.
-void
-var_diff::finish_diff_type()
-{
-  if (diff::priv_->finished_)
-    return;
-  chain_into_hierarchy();
-  diff::priv_->finished_ = true;
-}
-
 /// Getter for the first @ref var_decl of the diff.
 ///
 /// @return the first @ref var_decl of the diff.
@@ -3375,16 +3358,6 @@ pointer_diff::pointer_diff(pointer_type_def_sptr	first,
   : type_diff_base(first, second, ctxt),
     priv_(new priv(underlying))
 {}
-
-/// Finish building the current instance of @ref pointer_diff.
-void
-pointer_diff::finish_diff_type()
-{
-  if (diff::priv_->finished_)
-    return;
-  chain_into_hierarchy();
-  diff::priv_->finished_ = true;
-}
 
 /// Getter for the first subject of a pointer diff
 ///
@@ -3525,16 +3498,6 @@ array_diff::array_diff(const array_type_def_sptr	first,
   : type_diff_base(first, second, ctxt),
     priv_(new priv(element_type_diff))
 {}
-
-/// Finish building the current instance of @ref array_diff.
-void
-array_diff::finish_diff_type()
-{
-  if (diff::priv_->finished_)
-    return;
-  chain_into_hierarchy();
-  diff::priv_->finished_ = true;
-}
 
 /// Getter for the first array of the diff.
 ///
@@ -3687,16 +3650,6 @@ reference_diff::reference_diff(const reference_type_def_sptr	first,
 	priv_(new priv(underlying))
 {}
 
-/// Finish building the current instance of @ref reference_diff.
-void
-reference_diff::finish_diff_type()
-{
-  if (diff::priv_->finished_)
-    return;
-  chain_into_hierarchy();
-  diff::priv_->finished_ = true;
-}
-
 /// Getter for the first reference of the diff.
 ///
 /// @return the first reference of the diff.
@@ -3831,16 +3784,6 @@ qualified_type_diff::qualified_type_diff(qualified_type_def_sptr	first,
   : type_diff_base(first, second, ctxt),
     priv_(new priv(under))
 {}
-
-/// Finish building the current instance of @ref qualified_type_diff.
-void
-qualified_type_diff::finish_diff_type()
-{
-  if (diff::priv_->finished_)
-    return;
-  chain_into_hierarchy();
-  diff::priv_->finished_ = true;
-}
 
 /// Getter for the first qualified type of the diff.
 ///
@@ -4074,16 +4017,6 @@ enum_diff::enum_diff(const enum_type_decl_sptr	first,
   : type_diff_base(first, second, ctxt),
     priv_(new priv(underlying_type_diff))
 {}
-
-/// Finish building the current instance of @ref enum_diff.
-void
-enum_diff::finish_diff_type()
-{
-  if (diff::priv_->finished_)
-    return;
-  chain_into_hierarchy();
-  diff::priv_->finished_ = true;
-}
 
 /// @return the first enum of the diff.
 const enum_type_decl_sptr
@@ -4937,16 +4870,6 @@ class_or_union_diff::class_or_union_diff(class_or_union_sptr first_scope,
     //priv_(new priv)
 {}
 
-/// Finish building the current instance of @ref class_or_union_diff.
-void
-class_or_union_diff::finish_diff_type()
-{
-  if (diff::priv_->finished_)
-    return;
-  chain_into_hierarchy();
-  diff::priv_->finished_ = true;
-}
-
 /// Getter of the private data of the @ref class_or_union_diff type.
 ///
 /// Note that due to an optimization, the private data of @ref
@@ -5552,16 +5475,6 @@ class_diff::get_priv() const
   return canonical->priv_;
 }
 
-/// Finish building the current instance of @ref class_diff.
-void
-class_diff::finish_diff_type()
-{
-  if (diff::priv_->finished_)
-    return;
-  chain_into_hierarchy();
-  diff::priv_->finished_ = true;
-}
-
 /// @return the pretty representation of the current instance of @ref
 /// class_diff.
 const string&
@@ -5800,17 +5713,6 @@ base_diff::base_diff(class_decl::base_spec_sptr first,
     priv_(new priv(underlying))
 {}
 
-/// Finish building the current instance of @ref base_diff.
-void
-base_diff::finish_diff_type()
-{
-  if (diff::priv_->finished_)
-    return;
-
-  chain_into_hierarchy();
-  diff::priv_->finished_ = true;
-}
-
 /// Getter for the first base spec of the diff object.
 ///
 /// @return the first base specifier for the diff object.
@@ -5974,11 +5876,6 @@ union_diff::union_diff(union_decl_sptr first_union,
 		       diff_context_sptr ctxt)
   : class_or_union_diff(first_union, second_union, ctxt)
 {}
-
-/// Finish building the current instance of @ref union_diff.
-void
-union_diff::finish_diff_type()
-{class_or_union_diff::finish_diff_type();}
 
 /// Destructor of the union_diff node.
 union_diff::~union_diff()
@@ -6319,16 +6216,6 @@ scope_diff::scope_diff(scope_decl_sptr first_scope,
     priv_(new priv)
 {}
 
-/// Finish building the current instance of @ref scope_diff.
-void
-scope_diff::finish_diff_type()
-{
-  if (diff::priv_->finished_)
-    return;
-  chain_into_hierarchy();
-  diff::priv_->finished_ = true;
-}
-
 /// Getter for the first scope of the diff.
 ///
 /// @return the first scope of the diff.
@@ -6622,16 +6509,6 @@ fn_parm_diff::fn_parm_diff(const function_decl::parameter_sptr	first,
   ABG_ASSERT(priv_->type_diff);
 }
 
-/// Finish the building of the current instance of @ref fn_parm_diff.
-void
-fn_parm_diff::finish_diff_type()
-{
-  if (diff::priv_->finished_)
-    return;
-  chain_into_hierarchy();
-  diff::priv_->finished_ = true;
-}
-
 /// Getter for the first subject of this diff node.
 ///
 /// @return the first function_decl::parameter_sptr subject of this
@@ -6893,16 +6770,6 @@ function_type_diff::function_type_diff(const function_type_sptr first,
     priv_(new priv)
 {}
 
-/// Finish building the current instance of @ref function_type_diff
-void
-function_type_diff::finish_diff_type()
-{
-  if (diff::priv_->finished_)
-    return;
-  chain_into_hierarchy();
-  diff::priv_->finished_ = true;
-}
-
 /// Getter for the first subject of the diff.
 ///
 /// @return the first function type involved in the diff.
@@ -7109,16 +6976,6 @@ function_decl_diff::function_decl_diff(const function_decl_sptr first,
 {
 }
 
-/// Finish building the current instance of @ref function_decl_diff.
-void
-function_decl_diff::finish_diff_type()
-{
-  if (diff::priv_->finished_)
-    return;
-  chain_into_hierarchy();
-  diff::priv_->finished_ = true;
-}
-
 /// @return the first function considered by the diff.
 const function_decl_sptr
 function_decl_diff::first_function_decl() const
@@ -7241,15 +7098,6 @@ type_decl_diff::type_decl_diff(const type_decl_sptr first,
 			       diff_context_sptr ctxt)
   : type_diff_base(first, second, ctxt)
 {}
-
-/// Finish building the current instance of @ref type_decl_diff.
-void
-type_decl_diff::finish_diff_type()
-{
-  if (diff::priv_->finished_)
-    return;
-  diff::priv_->finished_ = true;
-}
 
 /// Getter for the first subject of the type_decl_diff.
 ///
@@ -7389,16 +7237,6 @@ typedef_diff::typedef_diff(const typedef_decl_sptr	first,
   : type_diff_base(first, second, ctxt),
     priv_(new priv(underlying))
 {}
-
-/// Finish building the current instance of @ref typedef_diff.
-void
-typedef_diff::finish_diff_type()
-{
-  if (diff::priv_->finished_)
-    return;
-  chain_into_hierarchy();
-  diff::priv_->finished_ = true;
-}
 
 /// Getter for the firt typedef_decl involved in the diff.
 ///
