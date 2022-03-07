@@ -1917,7 +1917,10 @@ diff::end_traversing()
   priv_->traversing_ = false;
 }
 
-/// Finish the building of a given kind of a diff tree node.
+/// Finish the insertion of a diff tree node into the diff graph.
+///
+/// This function might be called several times.  It must perform the
+/// insertion only once.
 ///
 /// For instance, certain kinds of diff tree node have specific
 /// children nodes that are populated after the constructor of the
@@ -2065,6 +2068,13 @@ diff::reported_once() const
 /// without traversing it.  But traversing a node without visiting it
 /// is not possible.
 ///
+/// Note that the insertion of the "generic view" of the diff node
+/// into the graph being traversed is done "on the fly".  The
+/// insertion of the "typed view" of the diff node into the graph is
+/// done implicitely.  To learn more about the generic and typed view
+/// of the diff node, please read the introductory comments of the
+/// @ref diff class.
+///
 /// Note that by default this traversing code visits a given class of
 /// equivalence of a diff node only once.  This behaviour can been
 /// changed by calling
@@ -2102,6 +2112,7 @@ diff::reported_once() const
 bool
 diff::traverse(diff_node_visitor& v)
 {
+  // Insert the "generic view" of the diff node into its graph.
   finish_diff_type();
 
   v.visit_begin(this);

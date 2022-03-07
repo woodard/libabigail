@@ -887,7 +887,44 @@ public:
 	       diff_context_sptr	ctxt);
 };//end struct diff_context.
 
-/// The abstraction of a change between two ABI artifacts.
+/// The abstraction of a change between two ABI artifacts, a.k.a an
+/// artifact change.
+///
+/// In the grand scheme of things, a diff is strongly typed; for
+/// instance, a change between two enums is represented by an
+/// enum_diff type.  A change between two function_type is represented
+/// by a function_type_diff type and a change between two class_decl
+/// is represented by a class_diff type.  All of these types derive
+/// from the @ref diff parent class.
+///
+/// An artifact change D can have one (or more) details named D'. A
+/// detail is an artifact change that "belongs" to another one.  Here,
+/// D' belongs to D.  Or said otherwise, D' is a child change of D.
+/// Said otherwise, D and D' are related, and the relation is a
+/// "child relation".
+///
+/// For instance, if we consider a change carried by a class_diff, the
+/// detail change might be a change on one data member of the class.
+/// In other word, the class_diff change might have a child diff node
+/// that would be a var_diff node.
+///
+/// There are two ways to get the child var_diff node (for the data
+/// member change detail) of the class_diff.
+///
+/// The first way is through the typed API, that is, through the
+/// class_diff::sorted_changed_data_members() member function which
+/// returns var_diff nodes.
+///
+/// The second way is through the generic API, that is, through the
+/// diff::children_nodes() member function which returns generic diff
+/// nodes.  This second way enables us to walk the diff nodes graph in
+/// a generic way, regardless of the types of the diff nodes.
+///
+/// Said otherwise, there are two views for a given diff node.  There
+/// is typed view, and there is the generic view.  In the typed view,
+/// the details are accessed through the typed API.  In the generic
+/// view, the details are gathered through the generic view.
+///
 ///
 /// Please read more about the @ref DiffNode "IR" of the comparison
 /// engine to learn more about this.
@@ -1015,6 +1052,11 @@ public:
   virtual const string&
   get_pretty_representation() const;
 
+  /// This constructs the relation between this diff node and its
+  /// detail diff nodes, in the generic view of the diff node.
+  ///
+  /// Each specific typed diff node should implement how the typed
+  /// view "links" itself to its detail nodes in the generic sense.
   virtual void
   chain_into_hierarchy();
 

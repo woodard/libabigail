@@ -240,7 +240,8 @@ public:
   friend class type_diff_base;
 }; // end class type_diff_base
 
-/// Private data for the @ref diff type.
+/// Private data for the @ref diff type.  The details of generic view
+/// of the diff node are expressed here.
 struct diff::priv
 {
   bool				finished_;
