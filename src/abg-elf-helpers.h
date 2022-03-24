@@ -2,7 +2,7 @@
 // -*- Mode: C++ -*-
 //
 // Copyright (C) 2020 Google, Inc.
-// Copyright (C) 2021 Red Hat, Inc.
+// Copyright (C) 2022 Red Hat, Inc.
 
 /// @file
 ///
@@ -13,6 +13,7 @@
 
 #include "config.h"
 
+#include <elfutils/libdwfl.h>
 #include <gelf.h>
 #include <string>
 
@@ -48,6 +49,15 @@ Elf_Scn*
 find_section(Elf*		elf_handle,
 	     const std::string& name,
 	     Elf64_Word		section_type);
+
+Elf_Scn*
+find_section(Elf* elf_handle, Elf64_Word section_type);
+
+Elf_Scn*
+find_symtab_section(Elf* elf_handle);
+
+Elf_Scn*
+find_dynsym_section(Elf* elf_handle);
 
 Elf_Scn*
 find_symbol_table_section(Elf* elf_handle);
@@ -103,6 +113,10 @@ find_ksymtab_strings_section(Elf *elf_handle);
 Elf_Scn*
 find_relocation_section(Elf* elf_handle, Elf_Scn* target_section);
 
+Elf_Scn*
+find_strtab_for_symtab_section(Elf*	elf_handle,
+                               Elf_Scn*	symtab_section);
+
 //
 // Helpers for symbol versioning
 //
@@ -136,6 +150,10 @@ architecture_is_arm32(Elf* elf_handle);
 
 bool
 architecture_is_big_endian(Elf* elf_handle);
+
+GElf_Addr
+lookup_ppc64_elf_fn_entry_point_address(Elf*	  elf_handle,
+					GElf_Addr fn_desc_address);
 
 //
 // Helpers for Linux Kernel Binaries
@@ -171,6 +189,9 @@ is_dso(Elf* elf_handle);
 
 GElf_Addr
 maybe_adjust_et_rel_sym_addr_to_abs_addr(Elf* elf_handle, GElf_Sym* sym);
+
+bool
+address_is_in_opd_section(Elf* elf_handle, Dwarf_Addr addr);
 
 } // end namespace elf_helpers
 } // end namespace abigail

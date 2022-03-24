@@ -63,24 +63,27 @@ is important, because that is how we do to actually release the
 tarball of the project that you can download from the internet) then
 you can do:
 
-  make distcheck
+  make distcheck-fast
 
 This actually builds the tarball, then untars it, configure/compile
 the untarred source code and launches the regression checks from
 there.
 
+Here, "make distcheck-fast" is a variant of the standard "make distcheck".
+It compresses with "--fast" instead of default "--best", and is
+significantly faster, given the size of the distribution.  You very likely
+want to use that one for local regression testing.  (However, don't use
+"make distcheck-fast" to create artifacts for distribution.)
+
 You can also launch this in parallel by doing:
 
-  make -jN -lN distcheck
+  make -jN -lN distcheck-fast
 
 with N being the number of processor core you have on your system.
 
-Please make sure you always launch "make distcheck" before sending a
+Please make sure you always launch "make distcheck-fast" before sending a
 patch, so that you are sure that we can always build a tarball after
 your patch is applied to the source tree.
-
-A variant of distcheck is "make distcheck-fast".  It's like "make
-distcheck" but it's faster.  You can just use that one.
 
 A complementary regression checking target is "check-self-compare".
 You invoke it by doing "make check-self-compare".  That target
@@ -89,12 +92,107 @@ into the ABIXML format and then compares the ABI internal
 representation gathered from the libabigail.so binary against the one
 gathered from the ABIXML format.  The two should be equal if
 everything goes right.  This is an important regression test.  The
-problem is that it can takes twice as much time as make distcheck.  So
-we've put it into its own separate target.
+problem is that it can take a considerable amount of time.
+So we've put it into its own separate target.
 
 So, to be complete the regression checking command to run against your
-patch should be: "make check-self-compare distcheck -j16", if you have
+patch should be: "make check-self-compare distcheck-fast -j16", if you have
 a machine with a 16 threads processors, for instance.
+
+Launching regression tests in Valgrind
+--------------------------------------
+
+To detect memory management errors, the tests of the regression test
+suite can be run using Valgrind tools, essentially memcheck and
+helgrind.
+
+To do so, please do:
+
+  make check-valgrind
+
+This runs the tests under the control of the Valgrind memcheck and
+helgrind tools.
+
+But then, if you want Valgrind to check the libabigail command line
+tools that are *forked* by some of the tests then type:
+
+  make check-valgrind-recursive
+
+This one takes a long time.  On my system for instance, it takes an
+hour.  But then it checks *everything*.  If you don't have that time,
+then "make check-valgrind" is enough, as the regression tests that use
+the libabigail *library* directly (as opposed to forking libabigail
+command line tools) will be verified.
+
+How tests are organized
+-----------------------
+
+There are two kinds of regression tests.  Those that use the
+libabigail *library* directly, and those that spawn one of the
+libabigail command line tools.
+
+Generally, both are usually made of a loop that churns through a set of input
+binaries to compare.  Once the comparison is done, the resulting
+report is compared against a reference report that is provided.
+
+Test executables have names that starts with 'runtest*'.  For instance,
+under <build-directory>/tests/ you can find tests named
+runtestdiffdwarf, runtestabidiff, etc...
+
+If a test executable is named
+<build-directory>/tests/runtestdiffdwarf, then its source code is
+tests/test-diff-dwarf.cc.  Similarly, the source code of the test
+<build-directory>/tests/runtestabidiff is tests/test-abidiff.cc.
+
+The data provided for each test (for instance the input binaries to
+compare and the reference report that should result from the
+comparison) is to be found under tests/data.  So data for the test
+runtestdiffdwarf is to be found under tests/data/test-diff-dwarf.
+Data for the test runtestabidiff is to be found under
+tests/data/test-abidiff.cc.
+
+So adding your own tests usually just amounts to adding the right input 
+into the right sub-directory of tests/data/.  To do so,
+look at several tests/test-*.cc to see which one you'd like to add
+some input binaries to be compared in.
+
+Then once you know which tests/test-*.cc you'd like to extend, and if
+you added your input binaries and reference reports (maybe other
+things too) to the right sub-director of tests/data/, you just need to
+extend the array of input binaries/reference reports that the test
+walks to perform the comparisons.  It's generally a global variable
+before the main() function of the test.  In test-diff-dwarf.cc, for
+instance, the variable name is "in_out_specs".  You just have to add a
+new entry to that array; that new entry contains the paths to your new
+input binaries and reference reports.  Just read the code in there and
+use your brains.  It should be straight forward.
+
+Ah, also, if you added new files for the tests, then the build system
+needs to be told that those files have to be added to the distribution
+tarball when we do "make dist" (or make distcheck).  To do so, please
+make sure to add your new test input files to the
+tests/data/Makefile.am file, in the EXTRA_DIST variable.  Look at how
+things are organized in that file, and please do things similarly.
+
+fedabipkgdiff testing
+---------------------
+
+This depends on the Python koji and a few support modules.  If these are
+not available, 'configure' disables fedabipkgdiff and its 'make check'
+testing.
+
+Debian and Ubuntu, for example, don't provide packages for the Python
+koji module.  If you'd like to run fedabipkgdiff testing without manually
+doing a proper Koji installation, you may simply download Koji sources
+(<https://pagure.io/koji>, releases, or Git clone) and point to these via
+the Python search path.  For example, tested 2021-12-11:
+
+  wget https://pagure.io/koji/archive/koji-1.27.0/koji-koji-1.27.0.tar.gz
+  tar -xzf koji-koji-1.27.0.tar.gz
+  export PYTHONPATH="$PWD"/koji-koji-1.27.0
+
+A libabigail 'configure' run then enables fedabipkgdiff and its
+'make check' testing.
 
 Coding language and style
 ==========================
@@ -150,81 +248,6 @@ re-usable and well documented.  And we also praise abstraction and
 modularisation that we recognize as being the most basic tools of any
 engineer.  So we like to think about ourselves as well rounded people
 who care about maintaining things for a long time to come :-)
-
-Launching regression tests in Valgrind
---------------------------------------
-
-To detect memory management errors, the tests of the regression test
-suite can be run using Valgrind tools, essentially memcheck and
-helgrind.
-
-To do so, please do:
-
-  make check-valgrind
-
-This runs the tests under the control of Valgrind memcheck and
-helgrind tools.
-
-But then, if you want Valgrind to check the libabigail command line
-tools that are *forked* by some of the tests then type:
-
-  make check-valgrind-recursive
-
-This one takes a long time.  On my system for instance, it takes an
-hour.  But then it checks *everything*.  If you don't have that time,
-then "make check-valgrind" is enough, as the regression tests that use
-the libabigail *library* directly (as opposed to forking libabigail
-command line tools) will be verified.
-
-How tests are organized
------------------------
-
-There are two kinds of regression tests.  Those that use the
-libabigail *library* directly, and those that spawn one of the
-libabigail command line tools.
-
-Generally, both are usually made of a loop that churns through a set of input
-binaries to compare.  Once the comparison is done, the resulting
-report is compared against a reference report that is provided.
-
-Test executable have names that starts with 'runtest*'.  For instance,
-under <build-directory>/tests/ you can find tests named
-runtestdiffdwarf, runtestabidiff, etc...
-
-If a test executable is named
-<build-directory>/tests/runtestdiffdwarf, then its source code is
-tests/test-diff-dwarf.cc.  Similarly, the source code of the test
-<build-directory>/tests/runtestabidiff is tests/test-abidiff.cc.
-
-The data provided for each test (for instance the input binaries to
-compare and the reference report that should result from the
-comparison) is to be found under tests/data.  So data for the test
-runtestdiffdwarf is to be found under tests/data/test-diff-dwarf.
-Data for the test runtestabidiff is to be found under
-tests/data/test-abidiff.cc.
-
-So adding your own tests usually just amounts to adding the input
-right input into the right sub-directory of tests/data/.  To do so,
-look at several tests/test-*.cc to see which one you'd like to add
-some input binaries to be compared in.
-
-Then once you know which tests/test-*.cc you'd like to extend, and if
-you added your input binaries and reference reports (maybe other
-things too) to the right sub-director of tests/data/, you just need to
-extend the array of input binaries/reference reports that the test
-walks to perform the comparisons.  It's generally a global variable
-before the main() function of the test.  In test-diff-dwarf.cc, for
-instance, the variable name is "in_out_specs".  You just have to add a
-new entry to that array; that new entry contains the paths to your new
-input binaries and reference reports.  Just read the code in there and
-use your brains.  It should be straight forward.
-
-Ah, also, if you added new files for the tests, then the build system
-needs to be told that those files have to be added to the distribution
-tarball when we do "make dist" (or make distcheck).  To do so, please
-make sure to add your new test input files to the
-tests/data/Makefile.am file, in the EXTRA_DIST variable.  Look at how
-things are organized in that file, and please do things similarly.
 
 Sign your work
 ==============

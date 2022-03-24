@@ -15,8 +15,10 @@
 #define __ABG_CORPUS_PRIV_H__
 
 #include "abg-internal.h"
+#include "abg-ir.h"
 #include "abg-regex.h"
 #include "abg-sptr-utils.h"
+#include "abg-symtab-reader.h"
 
 namespace abigail
 {
@@ -683,16 +685,7 @@ struct corpus::priv
   string_tu_map_type				path_tu_map;
   vector<function_decl*>			fns;
   vector<var_decl*>				vars;
-  string_elf_symbols_map_sptr			var_symbol_map;
-  string_elf_symbols_map_sptr			undefined_var_symbol_map;
-  elf_symbols					sorted_var_symbols;
-  elf_symbols					sorted_undefined_var_symbols;
-  string_elf_symbols_map_sptr			fun_symbol_map;
-  string_elf_symbols_map_sptr			undefined_fun_symbol_map;
-  elf_symbols					sorted_fun_symbols;
-  elf_symbols					sorted_undefined_fun_symbols;
-  elf_symbols					unrefed_fun_symbols;
-  elf_symbols					unrefed_var_symbols;
+  symtab_reader::symtab_sptr			symtab_;
   // The type maps contained in this data member are populated if the
   // corpus follows the One Definition Rule and thus if there is only
   // one copy of a type with a given name, per corpus. Otherwise, if
@@ -712,6 +705,17 @@ struct corpus::priv
 private:
   priv();
 
+  mutable abg_compat::optional<elf_symbols> sorted_var_symbols;
+  mutable abg_compat::optional<string_elf_symbols_map_type> var_symbol_map;
+  mutable abg_compat::optional<elf_symbols> sorted_undefined_var_symbols;
+  mutable abg_compat::optional<string_elf_symbols_map_type> undefined_var_symbol_map;
+  mutable abg_compat::optional<elf_symbols> unrefed_var_symbols;
+  mutable abg_compat::optional<elf_symbols> sorted_fun_symbols;
+  mutable abg_compat::optional<string_elf_symbols_map_type> fun_symbol_map;
+  mutable abg_compat::optional<elf_symbols> sorted_undefined_fun_symbols;
+  mutable abg_compat::optional<string_elf_symbols_map_type> undefined_fun_symbol_map;
+  mutable abg_compat::optional<elf_symbols> unrefed_fun_symbols;
+
 public:
   priv(const string &	p,
        environment*	e)
@@ -722,14 +726,41 @@ public:
       pub_type_pretty_reprs_()
   {}
 
-  void
-  build_unreferenced_symbols_tables();
-
   type_maps&
   get_types();
 
   const type_maps&
   get_types() const;
+
+  const elf_symbols&
+  get_sorted_fun_symbols() const;
+
+  const string_elf_symbols_map_type&
+  get_fun_symbol_map() const;
+
+  const elf_symbols&
+  get_sorted_undefined_fun_symbols() const;
+
+  const string_elf_symbols_map_type&
+  get_undefined_fun_symbol_map() const;
+
+  const elf_symbols&
+  get_unreferenced_function_symbols() const;
+
+  const elf_symbols&
+  get_sorted_var_symbols() const;
+
+  const string_elf_symbols_map_type&
+  get_var_symbol_map() const;
+
+  const elf_symbols&
+  get_sorted_undefined_var_symbols() const;
+
+  const string_elf_symbols_map_type&
+  get_undefined_var_symbol_map() const;
+
+  const elf_symbols&
+  get_unreferenced_variable_symbols() const;
 
   unordered_set<interned_string, hash_interned_string>*
   get_public_types_pretty_representations();

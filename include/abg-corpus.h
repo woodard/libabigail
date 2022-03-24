@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- mode: C++ -*-
 //
-// Copyright (C) 2013-2021 Red Hat, Inc.
+// Copyright (C) 2013-2022 Red Hat, Inc.
 
 /// @file
 
@@ -24,10 +24,6 @@ namespace ir
 class corpus
 {
 public:
-  struct priv;
-  /// Convenience typedef for shared_ptr of corpus::priv
-  typedef shared_ptr<priv> priv_sptr;
-
   /// A convenience typedef for std::vector<string>.
   typedef vector<string> strings_type;
 
@@ -50,6 +46,7 @@ public:
     ARTIFICIAL_ORIGIN = 0,
     NATIVE_XML_ORIGIN,
     DWARF_ORIGIN,
+    CTF_ORIGIN,
     LINUX_KERNEL_BINARY_ORIGIN
   };
 
@@ -60,11 +57,12 @@ private:
   void init_format_version();
 
 public:
-  shared_ptr<priv> priv_;
+  struct priv;
+  std::unique_ptr<priv> priv_;
 
   corpus(ir::environment*, const string& path= "");
 
-  virtual ~corpus() {}
+  virtual ~corpus();
 
   const environment*
   get_environment() const;
@@ -166,25 +164,13 @@ public:
   operator==(const corpus&) const;
 
   void
-  set_fun_symbol_map(string_elf_symbols_map_sptr);
+  set_symtab(symtab_reader::symtab_sptr);
 
-  void
-  set_undefined_fun_symbol_map(string_elf_symbols_map_sptr);
-
-  void
-  set_var_symbol_map(string_elf_symbols_map_sptr);
-
-  void
-  set_undefined_var_symbol_map(string_elf_symbols_map_sptr);
-
-  const string_elf_symbols_map_sptr
-  get_fun_symbol_map_sptr() const;
+  const symtab_reader::symtab_sptr&
+  get_symtab() const;
 
   virtual const string_elf_symbols_map_type&
   get_fun_symbol_map() const;
-
-  const string_elf_symbols_map_sptr
-  get_undefined_fun_symbol_map_sptr() const;
 
   const string_elf_symbols_map_type&
   get_undefined_fun_symbol_map() const;
@@ -195,14 +181,8 @@ public:
   const elf_symbols&
   get_sorted_undefined_fun_symbols() const;
 
-  const string_elf_symbols_map_sptr
-  get_var_symbol_map_sptr() const;
-
   virtual const string_elf_symbols_map_type&
   get_var_symbol_map() const;
-
-  const string_elf_symbols_map_sptr
-  get_undefined_var_symbol_map_sptr() const;
 
   const string_elf_symbols_map_type&
   get_undefined_var_symbol_map() const;
@@ -308,21 +288,14 @@ public:
 /// parameters needed.
 class corpus::exported_decls_builder
 {
-public:
   class priv;
-
-  /// Convenience typedef for shared_ptr<priv>
-  typedef shared_ptr<priv> priv_sptr;
-
-  friend class corpus;
-
-private:
-  priv_sptr priv_;
+  std::unique_ptr<priv> priv_;
 
   // Forbid default construction.
   exported_decls_builder();
 
 public:
+  friend class corpus;
 
   exported_decls_builder(functions& fns,
 			 variables& vars,
@@ -362,9 +335,7 @@ public:
 class corpus_group : public corpus
 {
   struct priv;
-  typedef shared_ptr<priv> priv_sptr;
-
-  priv_sptr priv_;
+  std::unique_ptr<priv> priv_;
 
   // Forbid copy
   corpus_group(const corpus_group&);

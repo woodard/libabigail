@@ -17,6 +17,8 @@
 
 using std::cerr;
 using std::string;
+using abigail::tests::emit_test_status_and_update_counters;
+using abigail::tests::emit_test_summary;
 
 struct InOutSpec
 {
@@ -51,6 +53,13 @@ InOutSpec in_out_specs[] =
     "data/test-alt-dwarf-file/test1-report-0.txt",
     "output/test-alt-dwarf-file/test1-report-0.txt"
   },
+  {
+    "data/test-alt-dwarf-file/rhbz1951526/usr/bin/gimp-2.10",
+    "data/test-alt-dwarf-file/rhbz1951526/usr/lib/debug",
+    "--abidiff",
+    "data/test-alt-dwarf-file/rhbz1951526/rhbz1951526-report-0.txt",
+    "output/test-alt-dwarf-file/rhbz1951526/rhbz1951526-report-0.txt"
+  },
 
   // This should always be the last entry
   {NULL, NULL, NULL, NULL, NULL}
@@ -62,6 +71,8 @@ main()
   using abigail::tests::get_src_dir;
   using abigail::tests::get_build_dir;
   using abigail::tools_utils::ensure_parent_dir_created;
+
+  unsigned int total_count = 0, passed_count = 0, failed_count = 0;
 
   bool is_ok = true;
   string in_elf_path, ref_report_path, out_report_path, debug_info_dir;
@@ -94,16 +105,17 @@ main()
 
       if (abidw_ok)
 	{
-	  cmd = "diff -u " + ref_report_path + " " + out_report_path;
-	  if (system(cmd.c_str()))
+	  string diff_cmd = "diff -u " + ref_report_path + " " + out_report_path;
+	  if (system(diff_cmd.c_str()))
 	    is_ok &=false;
 	}
       else
-	{
-	  cerr << "command failed: " << cmd << "\n";
-	  is_ok &= false;
-	}
+	is_ok &= false;
+
+      emit_test_status_and_update_counters(is_ok, cmd, passed_count,
+					   failed_count, total_count);
     }
 
-  return !is_ok;
+  emit_test_summary(total_count, passed_count, failed_count);
+  return failed_count;
 }

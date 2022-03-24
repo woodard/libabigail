@@ -10,6 +10,7 @@
 /// This program takes parameters to open an elf file, lookup a symbol
 /// in its symbol tables and report what it sees.
 
+#include <libgen.h>
 #include <elf.h>
 #include <cstring>
 #include <iostream>
@@ -121,7 +122,8 @@ main(int argc, char* argv[])
   if (opts.display_version)
     {
       abigail::tools_utils::emit_prefix(argv[0], cout)
-	<< abigail::tools_utils::get_library_version_string();
+	<< abigail::tools_utils::get_library_version_string()
+	<< "\n";
       return 0;
     }
 

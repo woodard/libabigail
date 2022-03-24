@@ -349,6 +349,9 @@ is_at_global_scope(const decl_base&);
 bool
 is_at_global_scope(const decl_base_sptr);
 
+bool
+is_at_global_scope(const decl_base*);
+
 class_or_union*
 is_at_class_scope(const decl_base_sptr);
 
@@ -395,7 +398,7 @@ type_base_sptr
 is_type(const type_or_decl_base_sptr& tod);
 
 bool
-is_anonymous_type(type_base*);
+is_anonymous_type(const type_base*);
 
 bool
 is_anonymous_type(const type_base_sptr&);
@@ -489,9 +492,6 @@ is_qualified_type(const type_or_decl_base*);
 
 qualified_type_def_sptr
 is_qualified_type(const type_or_decl_base_sptr&);
-
-type_base_sptr
-look_through_no_op_qualified_type(const shared_ptr<type_base>& t);
 
 function_type_sptr
 is_function_type(const type_or_decl_base_sptr&);
@@ -642,6 +642,9 @@ is_data_member(const decl_base *);
 const var_decl_sptr
 get_next_data_member(const class_or_union_sptr&, const var_decl_sptr&);
 
+var_decl_sptr
+get_last_data_member(const class_or_union_sptr&);
+
 bool
 is_anonymous_data_member(const decl_base&);
 
@@ -678,6 +681,12 @@ anonymous_data_member_to_class_or_union(const var_decl*);
 
 class_or_union_sptr
 anonymous_data_member_to_class_or_union(const var_decl_sptr&);
+
+bool
+scope_anonymous_or_typedef_named(const decl_base&);
+
+bool
+is_anonymous_or_typedef_named(const decl_base&);
 
 const class_or_union_sptr
 data_member_has_anonymous_type(const var_decl& d);
@@ -717,6 +726,11 @@ get_data_member_offset(const decl_base_sptr);
 
 uint64_t
 get_absolute_data_member_offset(const var_decl&);
+
+bool
+get_next_data_member_offset(const class_or_union_sptr&,
+			    const var_decl_sptr&,
+			    uint64_t&);
 
 uint64_t
 get_var_size_in_bits(const var_decl_sptr&);
@@ -809,6 +823,9 @@ set_member_function_is_virtual(const function_decl_sptr&, bool);
 
 type_base_sptr
 strip_typedef(const type_base_sptr);
+
+decl_base_sptr
+strip_useless_const_qualification(const qualified_type_def_sptr t);
 
 type_base_sptr
 peel_typedef_type(const type_base_sptr&);
@@ -998,6 +1015,33 @@ get_class_or_union_flat_representation(const class_or_union_sptr& cou,
 				       bool one_line,
 				       bool internal,
 				       bool qualified_name = true);
+
+string
+get_debug_representation(const type_or_decl_base*);
+
+var_decl_sptr
+get_data_member(class_or_union *, const char*);
+
+var_decl_sptr
+get_data_member(type_base *clazz, const char* member_name);
+
+const location&
+get_natural_or_artificial_location(const decl_base*);
+
+const location&
+get_artificial_or_natural_location(const decl_base*);
+
+type_or_decl_base*
+debug(const type_or_decl_base* artifact);
+
+type_base*
+debug(const type_base* artifact);
+
+decl_base*
+debug(const decl_base* artifact);
+
+bool
+debug_equals(const type_or_decl_base *l, const type_or_decl_base *r);
 
 bool
 odr_is_relevant(const type_or_decl_base&);
@@ -1347,6 +1391,25 @@ size_t
 hash_type_or_decl(const type_or_decl_base_sptr &);
 
 bool
+is_non_canonicalized_type(const type_base *);
+
+bool
+is_non_canonicalized_type(const type_base_sptr&);
+
+/// For a given type, return its exemplar type.
+///
+/// For a given type, its exemplar type is either its canonical type
+/// or the canonical type of the definition type of a given
+/// declaration-only type.  If the neither of those two types exist,
+/// then the exemplar type is the given type itself.
+///
+/// @param type the input to consider.
+///
+/// @return the exemplar type.
+type_base*
+get_exemplar_type(const type_base* type);
+
+bool
 function_decl_is_less_than(const function_decl&f, const function_decl &s);
 
 bool
@@ -1374,6 +1437,15 @@ typedef shared_ptr<suppression_base> suppression_sptr;
 typedef vector<suppression_sptr> suppressions_type;
 
 } // end namespace suppr
+
+namespace symtab_reader
+{
+
+class symtab;
+/// Convenience typedef for a shared pointer to a @ref symtab
+typedef std::shared_ptr<symtab> symtab_sptr;
+
+} // end namespace symtab_reader
 
 void
 dump(const decl_base_sptr, std::ostream&);

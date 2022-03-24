@@ -10,6 +10,7 @@
 
 /// @file
 
+#include <memory>
 #include <ostream>
 #include <unordered_map>
 #include <unordered_set>
@@ -420,18 +421,22 @@ enum diff_category
   /// cv-qualifier change.
   FN_RETURN_TYPE_CV_CHANGE_CATEGORY = 1 << 17,
 
+  /// A diff node in this category is a function (or function type)
+  /// with at least one parameter added or removed.
+  FN_PARM_ADD_REMOVE_CHANGE_CATEGORY = 1 << 18,
+
   /// A diff node in this category is for a variable which type holds
   /// a cv-qualifier change.
-  VAR_TYPE_CV_CHANGE_CATEGORY = 1 << 18,
+  VAR_TYPE_CV_CHANGE_CATEGORY = 1 << 19,
 
   /// A diff node in this category carries a change from void pointer
   /// to non-void pointer.
-  VOID_PTR_TO_PTR_CHANGE_CATEGORY = 1 << 19,
+  VOID_PTR_TO_PTR_CHANGE_CATEGORY = 1 << 20,
 
   /// A diff node in this category carries a change in the size of the
   /// array type of a global variable, but the ELF size of the
   /// variable didn't change.
-  BENIGN_INFINITE_ARRAY_CHANGE_CATEGORY = 1 << 20,
+  BENIGN_INFINITE_ARRAY_CHANGE_CATEGORY = 1 << 21,
 
   /// A special enumerator that is the logical 'or' all the
   /// enumerators above.
@@ -457,6 +462,7 @@ enum diff_category
   | FN_PARM_TYPE_TOP_CV_CHANGE_CATEGORY
   | FN_PARM_TYPE_CV_CHANGE_CATEGORY
   | FN_RETURN_TYPE_CV_CHANGE_CATEGORY
+  | FN_PARM_ADD_REMOVE_CHANGE_CATEGORY
   | VAR_TYPE_CV_CHANGE_CATEGORY
   | VOID_PTR_TO_PTR_CHANGE_CATEGORY
   | BENIGN_INFINITE_ARRAY_CHANGE_CATEGORY
@@ -497,12 +503,13 @@ class corpus_diff;
 class diff_maps
 {
   struct priv;
-  typedef shared_ptr<priv> priv_sptr;
-  priv_sptr priv_;
+  std::unique_ptr<priv> priv_;
 
 public:
 
   diff_maps();
+
+  ~diff_maps();
 
   const string_diff_ptr_map&
   get_type_decl_diff_map() const;
@@ -593,7 +600,7 @@ typedef shared_ptr<corpus_diff> corpus_diff_sptr;
 class diff_context
 {
   struct priv;
-  shared_ptr<priv> priv_;
+  std::unique_ptr<priv> priv_;
 
   diff_sptr
   has_diff_for(const type_or_decl_base_sptr first,
@@ -632,6 +639,8 @@ class diff_context
 
 public:
   diff_context();
+
+  ~diff_context();
 
   void
   set_corpus_diff(const corpus_diff_sptr&);
@@ -878,7 +887,44 @@ public:
 	       diff_context_sptr	ctxt);
 };//end struct diff_context.
 
-/// The abstraction of a change between two ABI artifacts.
+/// The abstraction of a change between two ABI artifacts, a.k.a an
+/// artifact change.
+///
+/// In the grand scheme of things, a diff is strongly typed; for
+/// instance, a change between two enums is represented by an
+/// enum_diff type.  A change between two function_type is represented
+/// by a function_type_diff type and a change between two class_decl
+/// is represented by a class_diff type.  All of these types derive
+/// from the @ref diff parent class.
+///
+/// An artifact change D can have one (or more) details named D'. A
+/// detail is an artifact change that "belongs" to another one.  Here,
+/// D' belongs to D.  Or said otherwise, D' is a child change of D.
+/// Said otherwise, D and D' are related, and the relation is a
+/// "child relation".
+///
+/// For instance, if we consider a change carried by a class_diff, the
+/// detail change might be a change on one data member of the class.
+/// In other word, the class_diff change might have a child diff node
+/// that would be a var_diff node.
+///
+/// There are two ways to get the child var_diff node (for the data
+/// member change detail) of the class_diff.
+///
+/// The first way is through the typed API, that is, through the
+/// class_diff::sorted_changed_data_members() member function which
+/// returns var_diff nodes.
+///
+/// The second way is through the generic API, that is, through the
+/// diff::children_nodes() member function which returns generic diff
+/// nodes.  This second way enables us to walk the diff nodes graph in
+/// a generic way, regardless of the types of the diff nodes.
+///
+/// Said otherwise, there are two views for a given diff node.  There
+/// is typed view, and there is the generic view.  In the typed view,
+/// the details are accessed through the typed API.  In the generic
+/// view, the details are gathered through the generic view.
+///
 ///
 /// Please read more about the @ref DiffNode "IR" of the comparison
 /// engine to learn more about this.
@@ -890,14 +936,12 @@ class diff : public diff_traversable_base
 {
   friend class diff_context;
 
-  struct priv;
-  typedef shared_ptr<priv> priv_sptr;
-
   // Forbidden
   diff();
 
 protected:
-  priv_sptr priv_;
+  struct priv;
+  std::unique_ptr<priv> priv_;
 
   diff(type_or_decl_base_sptr first_subject,
        type_or_decl_base_sptr second_subject);
@@ -1008,6 +1052,11 @@ public:
   virtual const string&
   get_pretty_representation() const;
 
+  /// This constructs the relation between this diff node and its
+  /// detail diff nodes, in the generic view of the diff node.
+  ///
+  /// Each specific typed diff node should implement how the typed
+  /// view "links" itself to its detail nodes in the generic sense.
   virtual void
   chain_into_hierarchy();
 
@@ -1058,9 +1107,7 @@ compute_diff(const type_base_sptr,
 class type_diff_base : public diff
 {
   struct priv;
-  typedef shared_ptr<priv> priv_sptr;
-
-  priv_sptr priv_;
+  std::unique_ptr<priv> priv_;
 
   type_diff_base();
 
@@ -1081,9 +1128,7 @@ public:
 class decl_diff_base : public diff
 {
   struct priv;
-  typedef shared_ptr<priv> priv_sptr;
-
-  priv_sptr priv_;
+  std::unique_ptr<priv> priv_;
 
 protected:
   decl_diff_base(decl_base_sptr	first_subject,
@@ -1111,16 +1156,12 @@ typedef shared_ptr<distinct_diff> distinct_diff_sptr;
 class distinct_diff : public diff
 {
   struct priv;
-  typedef shared_ptr<priv> priv_sptr;
-  priv_sptr priv_;
+  std::unique_ptr<priv> priv_;
 
 protected:
   distinct_diff(type_or_decl_base_sptr first,
 		type_or_decl_base_sptr second,
 		diff_context_sptr ctxt = diff_context_sptr());
-
-  virtual void
-  finish_diff_type();
 
 public:
 
@@ -1167,17 +1208,13 @@ compute_diff_for_distinct_kinds(const type_or_decl_base_sptr,
 class var_diff : public decl_diff_base
 {
   struct priv;
-  typedef shared_ptr<priv> priv_sptr;
-  priv_sptr priv_;
+  std::unique_ptr<priv> priv_;
 
 protected:
   var_diff(var_decl_sptr first,
 	   var_decl_sptr second,
 	   diff_sptr type_diff,
 	   diff_context_sptr ctxt = diff_context_sptr());
-
-  virtual void
-  finish_diff_type();
 
 public:
   var_decl_sptr
@@ -1222,16 +1259,13 @@ typedef shared_ptr<pointer_diff> pointer_diff_sptr;
 class pointer_diff : public type_diff_base
 {
   struct priv;
-  shared_ptr<priv> priv_;
+  std::unique_ptr<priv> priv_;
 
 protected:
   pointer_diff(pointer_type_def_sptr	first,
 	       pointer_type_def_sptr	second,
 	       diff_sptr		underlying_type_diff,
 	       diff_context_sptr	ctxt = diff_context_sptr());
-
-  virtual void
-  finish_diff_type();
 
 public:
   const pointer_type_def_sptr
@@ -1282,16 +1316,13 @@ typedef shared_ptr<reference_diff> reference_diff_sptr;
 class reference_diff : public type_diff_base
 {
   struct priv;
-  shared_ptr<priv> priv_;
+  std::unique_ptr<priv> priv_;
 
 protected:
   reference_diff(const reference_type_def_sptr	first,
 		 const reference_type_def_sptr	second,
 		 diff_sptr			underlying,
 		 diff_context_sptr		ctxt = diff_context_sptr());
-
-  virtual void
-  finish_diff_type();
 
 public:
   reference_type_def_sptr
@@ -1342,16 +1373,13 @@ typedef shared_ptr<array_diff> array_diff_sptr;
 class array_diff : public type_diff_base
 {
   struct priv;
-  shared_ptr<priv> priv_;
+  std::unique_ptr<priv> priv_;
 
 protected:
   array_diff(const array_type_def_sptr	first,
 	     const array_type_def_sptr	second,
 	     diff_sptr			element_type_diff,
 	     diff_context_sptr		ctxt = diff_context_sptr());
-
-  virtual void
-  finish_diff_type();
 
 public:
   const array_type_def_sptr
@@ -1399,17 +1427,13 @@ typedef class shared_ptr<qualified_type_diff> qualified_type_diff_sptr;
 class qualified_type_diff : public type_diff_base
 {
   struct priv;
-  typedef shared_ptr<priv> priv_sptr;
-  priv_sptr priv_;
+  std::unique_ptr<priv> priv_;
 
 protected:
   qualified_type_diff(qualified_type_def_sptr	first,
 		      qualified_type_def_sptr	second,
 		      diff_sptr		underling,
 		      diff_context_sptr	ctxt = diff_context_sptr());
-
-  virtual void
-  finish_diff_type();
 
 public:
   const qualified_type_def_sptr
@@ -1460,8 +1484,7 @@ typedef shared_ptr<enum_diff> enum_diff_sptr;
 class enum_diff : public type_diff_base
 {
   struct priv;
-  typedef shared_ptr<priv> priv_sptr;
-  priv_sptr priv_;
+  std::unique_ptr<priv> priv_;
 
   void
   clear_lookup_tables();
@@ -1477,9 +1500,6 @@ protected:
 	    const enum_type_decl_sptr,
 	    const diff_sptr,
 	    diff_context_sptr ctxt = diff_context_sptr());
-
-  virtual void
-  finish_diff_type();
 
 public:
   const enum_type_decl_sptr
@@ -1531,8 +1551,8 @@ class class_or_union_diff : public type_diff_base
 {
 protected:
   struct priv;
-  typedef shared_ptr<priv> priv_sptr;
-  priv_sptr priv_;
+  typedef std::unique_ptr<priv> priv_ptr;
+  priv_ptr priv_;
 
   void
   clear_lookup_tables(void);
@@ -1551,12 +1571,9 @@ protected:
 		      class_or_union_sptr second_scope,
 		      diff_context_sptr ctxt = diff_context_sptr());
 
-  virtual void
-  finish_diff_type();
-
 public:
 
-  const class_or_union_diff::priv_sptr&
+  const class_or_union_diff::priv_ptr&
   get_priv() const;
 
   //TODO: add change of the name of the type.
@@ -1651,10 +1668,10 @@ public:
 class class_diff : public class_or_union_diff
 {
   struct priv;
-  typedef shared_ptr<priv> priv_sptr;
-  priv_sptr priv_;
+  typedef std::unique_ptr<priv> priv_ptr;
+  priv_ptr priv_;
 
-  const priv_sptr& get_priv()const;
+  const priv_ptr& get_priv()const;
 
   void
   clear_lookup_tables(void);
@@ -1672,9 +1689,6 @@ protected:
   class_diff(class_decl_sptr first_scope,
 	     class_decl_sptr second_scope,
 	     diff_context_sptr ctxt = diff_context_sptr());
-
-  virtual void
-  finish_diff_type();
 
 public:
   //TODO: add change of the name of the type.
@@ -1752,9 +1766,6 @@ protected:
 	     union_decl_sptr second_union,
 	     diff_context_sptr ctxt = diff_context_sptr());
 
-  virtual void
-  finish_diff_type();
-
 public:
 
   virtual ~union_diff();
@@ -1786,16 +1797,13 @@ compute_diff(const union_decl_sptr	first,
 class base_diff : public diff
 {
   struct priv;
-  shared_ptr<priv> priv_;
+  std::unique_ptr<priv> priv_;
 
 protected:
   base_diff(class_decl::base_spec_sptr	first,
 	    class_decl::base_spec_sptr	second,
 	    class_diff_sptr		underlying,
 	    diff_context_sptr		ctxt = diff_context_sptr());
-
-  virtual void
-  finish_diff_type();
 
 public:
   class_decl::base_spec_sptr
@@ -1845,7 +1853,7 @@ typedef shared_ptr<scope_diff> scope_diff_sptr;
 class scope_diff : public diff
 {
   struct priv;
-  shared_ptr<priv> priv_;
+  std::unique_ptr<priv> priv_;
 
   bool
   lookup_tables_empty() const;
@@ -1860,9 +1868,6 @@ protected:
   scope_diff(scope_decl_sptr first_scope,
 	     scope_decl_sptr second_scope,
 	     diff_context_sptr ctxt = diff_context_sptr());
-
-  virtual void
-  finish_diff_type();
 
 public:
 
@@ -1953,12 +1958,7 @@ compute_diff(const scope_decl_sptr first_scope,
 class fn_parm_diff : public decl_diff_base
 {
   struct priv;
-  typedef shared_ptr<priv> priv_sptr;
-
-  priv_sptr priv_;
-
-  virtual void
-  finish_diff_type();
+  std::unique_ptr<priv> priv_;
 
   fn_parm_diff(const function_decl::parameter_sptr	first,
 	       const function_decl::parameter_sptr	second,
@@ -2010,8 +2010,7 @@ typedef shared_ptr<function_type_diff> function_type_diff_sptr;
 class function_type_diff: public type_diff_base
 {
   struct priv;
-  typedef shared_ptr<priv> priv_sptr;
-  priv_sptr priv_;
+  std::unique_ptr<priv> priv_;
 
   void
   ensure_lookup_tables_populated();
@@ -2026,9 +2025,6 @@ protected:
   function_type_diff(const function_type_sptr	first,
 		     const function_type_sptr	second,
 		     diff_context_sptr		ctxt);
-
-  virtual void
-  finish_diff_type();
 
 public:
   friend function_type_diff_sptr
@@ -2053,6 +2049,12 @@ public:
 
   const string_parm_map&
   added_parms() const;
+
+  const vector<function_decl::parameter_sptr>&
+  sorted_deleted_parms() const;
+
+  const vector<function_decl::parameter_sptr>&
+  sorted_added_parms() const;
 
   virtual const string&
   get_pretty_representation() const;
@@ -2082,7 +2084,7 @@ compute_diff(const function_type_sptr	first,
 class function_decl_diff : public decl_diff_base
 {
   struct priv;
-  shared_ptr<priv> priv_;
+  std::unique_ptr<priv> priv_;
 
   void
   ensure_lookup_tables_populated();
@@ -2092,9 +2094,6 @@ protected:
   function_decl_diff(const function_decl_sptr	first,
 		     const function_decl_sptr	second,
 		     diff_context_sptr		ctxt);
-
-  virtual void
-  finish_diff_type();
 
 public:
 
@@ -2148,9 +2147,6 @@ protected:
 		 const type_decl_sptr second,
 		 diff_context_sptr ctxt = diff_context_sptr());
 
-  virtual void
-  finish_diff_type();
-
 public:
   friend type_decl_diff_sptr
   compute_diff(const type_decl_sptr	first,
@@ -2190,7 +2186,7 @@ typedef shared_ptr<typedef_diff> typedef_diff_sptr;
 class typedef_diff : public type_diff_base
 {
   struct priv;
-  shared_ptr<priv> priv_;
+  std::unique_ptr<priv> priv_;
 
   typedef_diff();
 
@@ -2199,9 +2195,6 @@ protected:
 	       const typedef_decl_sptr	second,
 	       const diff_sptr		underlying_type_diff,
 	       diff_context_sptr	ctxt = diff_context_sptr());
-
-  virtual void
-  finish_diff_type();
 
 public:
   friend typedef_diff_sptr
@@ -2255,8 +2248,7 @@ typedef shared_ptr<translation_unit_diff> translation_unit_diff_sptr;
 class translation_unit_diff : public scope_diff
 {
   struct priv;
-  typedef shared_ptr<priv> priv_sptr;
-  priv_sptr priv_;
+  std::unique_ptr<priv> priv_;
 
 protected:
   translation_unit_diff(translation_unit_sptr	first,
@@ -2295,8 +2287,7 @@ compute_diff(const translation_unit_sptr first,
 class corpus_diff
 {
   struct priv;
-  typedef shared_ptr<priv> priv_sptr;
-  priv_sptr priv_;
+  std::unique_ptr<priv> priv_;
 
 protected:
   corpus_diff(corpus_sptr	first,
@@ -2310,7 +2301,7 @@ public:
 
   class diff_stats;
 
-  virtual ~corpus_diff() {}
+  virtual ~corpus_diff();
 
   /// A convenience typedef for a shared pointer to @ref diff_stats
   typedef shared_ptr<diff_stats> diff_stats_sptr;
@@ -2468,9 +2459,7 @@ compute_diff(const corpus_group_sptr&,
 class corpus_diff::diff_stats
 {
   struct priv;
-  typedef shared_ptr<priv> priv_sptr;
-
-  priv_sptr priv_;
+  std::unique_ptr<priv> priv_;
 
   diff_stats();
 
@@ -2617,14 +2606,13 @@ class diff_node_visitor : public node_visitor_base
 {
 protected:
   struct priv;
-  typedef shared_ptr<priv> priv_sptr;
-  priv_sptr priv_;
+  std::unique_ptr<priv> priv_;
 
 public:
 
   diff_node_visitor();
 
-  virtual ~diff_node_visitor() {}
+  virtual ~diff_node_visitor();
 
   diff_node_visitor(visiting_kind k);
 

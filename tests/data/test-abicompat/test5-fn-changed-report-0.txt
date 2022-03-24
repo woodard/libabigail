@@ -15,7 +15,3 @@ have sub-types that are different from what application 'test5-fn-changed-app' e
         1 data member deletion:
           'unsigned char m1', at offset 32 (in bits)
 
-  method S0::S0():
-    implicit parameter 0 of type 'S0*' has sub-type changes:
-      pointed to type 'struct S0' changed, as reported earlier
-

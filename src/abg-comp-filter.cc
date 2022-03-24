@@ -218,6 +218,42 @@ access_changed(const decl_base_sptr& f, const decl_base_sptr& s)
   return false;
 }
 
+/// Test if there was a function or variable CRC change.
+///
+/// @param f the first function or variable to consider.
+///
+/// @param s the second function or variable to consider.
+///
+/// @return true if the test is positive, false otherwise.
+template <typename function_or_var_decl_sptr>
+static bool
+crc_changed(const function_or_var_decl_sptr& f,
+	    const function_or_var_decl_sptr& s)
+{
+  const auto symbol_f  = f->get_symbol(), symbol_s = s->get_symbol();
+  if (!symbol_f || !symbol_s)
+    return false;
+  const auto crc_f = symbol_f->get_crc(), crc_s = symbol_s->get_crc();
+  return (crc_f != 0 && crc_s != 0 && crc_f != crc_s);
+}
+
+/// Test if the current diff tree node carries a CRC change in either a
+/// function or a variable.
+///
+/// @param diff the diff tree node to consider.
+///
+/// @return true if the test is positive, false otherwise.
+static bool
+crc_changed(const diff* diff)
+{
+  if (const function_decl_diff* d =
+	dynamic_cast<const function_decl_diff*>(diff))
+    return crc_changed(d->first_function_decl(), d->second_function_decl());
+  if (const var_diff* d = dynamic_cast<const var_diff*>(diff))
+    return crc_changed(d->first_var(), d->second_var());
+  return false;
+}
+
 /// Test if there was a function name change, but there there was no
 /// change in name of the underlying symbol.  IOW, if the name of a
 /// function changed, but the symbol of the new function is equal to
@@ -1450,6 +1486,33 @@ has_fn_return_type_cv_qual_change(const diff* dif)
   return type_diff_has_cv_qual_change_only(return_type_diff);
 }
 
+/// Test if a function type or decl diff node carries a function
+/// parameter addition or removal.
+///
+/// @param dif the diff node to consider.  Note that if this is
+/// neither a function type nor decl diff node, the function returns
+/// false.
+///
+/// @return true iff @p dif is a function decl or type diff node which
+/// carries a function parameter addition or removal.
+static bool
+has_added_or_removed_function_parameters(const diff *dif)
+{
+  const function_type_diff *fn_type_diff = is_function_type_diff(dif);
+    if (!fn_type_diff)
+    if (const function_decl_diff* fn_decl_diff = is_function_decl_diff(dif))
+      fn_type_diff = fn_decl_diff->type_diff().get();
+
+  if (!fn_type_diff)
+    return false;
+
+  if (!(fn_type_diff->sorted_deleted_parms().empty()
+	&& fn_type_diff->sorted_added_parms().empty()))
+    return true;
+
+  return false;
+}
+
 /// Test if a variable diff node carries a CV qualifier change on its type.
 ///
 /// @param dif the diff node to consider.  Note that if it's not of
@@ -1717,11 +1780,15 @@ categorize_harmful_diff_node(diff *d, bool pre)
 	      || non_static_data_member_type_size_changed(f, s)
 	      || non_static_data_member_added_or_removed(d)
 	      || base_classes_added_or_removed(d)
-	      || has_harmful_enum_change(d)))
+	      || has_harmful_enum_change(d)
+	      || crc_changed(d)))
 	category |= SIZE_OR_OFFSET_CHANGE_CATEGORY;
 
       if (has_virtual_mem_fn_change(d))
 	category |= VIRTUAL_MEMBER_CHANGE_CATEGORY;
+
+      if (has_added_or_removed_function_parameters(d))
+	category |= FN_PARM_ADD_REMOVE_CHANGE_CATEGORY;
 
       if (category)
 	{

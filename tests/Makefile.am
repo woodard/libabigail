@@ -25,6 +25,10 @@ runtestdifffilter		\
 runtestreaddwarf	        \
 runtestcanonicalizetypes.sh
 
+if CTF_READER
+TESTS += runtestreadctf
+endif
+
 # rather cheap tests
 TESTS+=				\
 runtestabicompat		\
@@ -72,13 +76,21 @@ runtestcanonicalizetypes.output.final.txt
 
 noinst_PROGRAMS= $(TESTS) testirwalker testdiff2 printdifftree
 noinst_SCRIPTS = mockfedabipkgdiff
-noinst_LTLIBRARIES = libtestutils.la libcatch.la
+noinst_LTLIBRARIES = libtestutils.la libtestreadcommon.la libcatch.la
 
 libtestutils_la_SOURCES=	\
 test-utils.h 			\
 test-utils.cc
 
 libtestutils_la_CXXFLAGS=		\
+-DABIGAIL_SRC_DIR=\"${abs_top_srcdir}\"  	\
+-DABIGAIL_BUILD_DIR=\"${abs_top_builddir}\"
+
+libtestreadcommon_la_SOURCES=	\
+test-read-common.h 		\
+test-read-common.cc
+
+libtestreadcommon_la_CXXFLAGS=			\
 -DABIGAIL_SRC_DIR=\"${abs_top_srcdir}\"  	\
 -DABIGAIL_BUILD_DIR=\"${abs_top_builddir}\"
 
@@ -92,8 +104,16 @@ runtestreadwrite_SOURCES=test-read-write.cc
 runtestreadwrite_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestreaddwarf_SOURCES=test-read-dwarf.cc
-runtestreaddwarf_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
+runtestreaddwarf_LDADD=libtestreadcommon.la libtestutils.la	\
+		       $(top_builddir)/src/libabigail.la
 runtestreaddwarf_LDFLAGS=-pthread
+
+if CTF_READER
+runtestreadctf_SOURCES=test-read-ctf.cc
+runtestreadctf_LDADD=libtestreadcommon.la libtestutils.la	\
+		     $(top_builddir)/src/libabigail.la
+runtestreadctf_LDFLAGS=-pthread
+endif
 
 runtestannotate_SOURCES=test-annotate.cc
 runtestannotate_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la

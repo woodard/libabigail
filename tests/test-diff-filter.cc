@@ -787,6 +787,34 @@ InOutSpec in_out_specs[] =
    "data/test-diff-filter/test-PR27331-report-0.txt",
    "output/test-diff-filter/test-PR27331-report-0.txt",
   },
+  {
+   "data/test-diff-filter/test-PR27569-v0.abi",
+   "data/test-diff-filter/test-PR27569-v1.abi",
+   "--no-default-suppression",
+   "data/test-diff-filter/test-PR27569-report-0.txt",
+   "output/test-diff-filter/test-PR27569-report-0.txt",
+  },
+  {
+   "data/test-diff-filter/test-PR27598-v0.o",
+   "data/test-diff-filter/test-PR27598-v0.o",
+   "--no-default-suppression",
+   "data/test-diff-filter/test-PR27598-report-0.txt",
+   "output/test-diff-filter/test-PR27598-report-0.txt",
+  },
+  {
+   "data/test-diff-filter/test-PR27995.abi",
+   "data/test-diff-filter/test-PR27995.abi",
+   "--no-default-suppression",
+   "data/test-diff-filter/test-PR27995-report-0.txt",
+   "output/test-diff-filter/test-PR27995-report-0.txt",
+  },
+  {
+   "data/test-diff-filter/test-PR28013-fn-variadic.c.0.abi",
+   "data/test-diff-filter/test-PR28013-fn-variadic.c.1.abi",
+   "--no-default-suppression",
+   "data/test-diff-filter/test-PR28013-fn-variadic.c.report.txt",
+   "output/test-diff-filter/test-PR28013-fn-variadic.c.report.txt",
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };

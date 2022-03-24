@@ -238,6 +238,12 @@ InOutSpec in_out_specs[] =
     "data/test-read-write/test28-without-std-vars-ref.xml",
     "output/test-read-write/test28-without-std-vars.xml"
   },
+  {
+    "data/test-read-write/test-crc.xml",
+    "",
+    "data/test-read-write/test-crc.xml",
+    "output/test-read-write/test-crc.xml",
+  },
   // This should be the last entry.
   {NULL, NULL, NULL, NULL}
 };

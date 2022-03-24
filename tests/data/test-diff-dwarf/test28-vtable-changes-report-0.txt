@@ -15,9 +15,6 @@ Variable symbols changes summary: 0 Removed, 3 Added variable symbols not refere
   [C] 'method void S::bar()' has some indirect sub-type changes:
     method void S::bar() is now declared virtual
       note that this is an ABI incompatible change to the vtable of struct S
-    implicit parameter 0 of type 'S* const' changed:
-      entity changed from 'S* const' to 'S*'
-      type size hasn't changed
 
 3 Added variable symbols not referenced by debug info:
 

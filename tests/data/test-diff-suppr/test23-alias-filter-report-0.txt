@@ -4,8 +4,8 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 1 function with some indirect sub-type change:
 
   [C] 'function void __private_function(S*)' has some indirect sub-type changes:
-    Please note that the symbol of this function is function1@VERSION_1.0
-     and it aliases symbols: __private_function@PRIVATE_1.0, function2@VERSION_1.0
+    Please note that the symbol of this function is __private_function@PRIVATE_1.0
+     and it aliases symbols: function2@VERSION_1.0, function1@VERSION_1.0
     parameter 1 of type 'S*' has sub-type changes:
       in pointed to type 'typedef S':
         underlying type 'struct S' changed:
