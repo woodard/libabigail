@@ -1,4 +1,4 @@
-<abi-corpus version='2.1' path='data/test-read-dwarf/test17-pr19027.so' soname='libharfbuzz.so.0'>
+<abi-corpus version='2.1' soname='libharfbuzz.so.0'>
   <elf-needed>
     <dependency name='libglib-2.0.so.0'/>
     <dependency name='libfreetype.so.6'/>

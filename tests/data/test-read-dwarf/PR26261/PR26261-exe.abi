@@ -1,4 +1,4 @@
-<abi-corpus version='2.1' path='data/test-read-common/PR26261/PR26261-exe'>
+<abi-corpus version='2.1'>
   <elf-needed>
     <dependency name='libc.so.6'/>
   </elf-needed>

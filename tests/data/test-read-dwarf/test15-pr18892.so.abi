@@ -1,4 +1,4 @@
-<abi-corpus version='2.1' path='data/test-read-dwarf/test15-pr18892.so' soname='libtsan.so.0'>
+<abi-corpus version='2.1' soname='libtsan.so.0'>
   <elf-needed>
     <dependency name='librt.so.1'/>
     <dependency name='libpthread.so.0'/>
