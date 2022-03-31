@@ -403,6 +403,7 @@ struct environment::priv
   // result, otherwise, canonicalization is "broken" for that
   // particular type.
   bool					debug_type_canonicalization_;
+  bool					debug_die_canonicalization_;
 #endif
 
   priv()
@@ -417,7 +418,8 @@ struct environment::priv
 #ifdef WITH_DEBUG_TYPE_CANONICALIZATION
     ,
       use_canonical_type_comparison_(true),
-      debug_type_canonicalization_(false)
+      debug_type_canonicalization_(false),
+      debug_die_canonicalization_(false)
 #endif
   {}
 

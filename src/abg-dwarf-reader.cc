@@ -541,6 +541,10 @@ compare_dies(const read_context& ctxt,
 	     const Dwarf_Die *l, const Dwarf_Die *r,
 	     bool update_canonical_dies_on_the_fly);
 
+static bool
+compare_dies_during_canonicalization(read_context& ctxt,
+				     const Dwarf_Die *l, const Dwarf_Die *r,
+				     bool update_canonical_dies_on_the_fly);
 
 /// Find the file name of the alternate debug info file.
 ///
@@ -2136,6 +2140,10 @@ public:
   corpus::exported_decls_builder* exported_decls_builder_;
   options_type			options_;
   bool				drop_undefined_syms_;
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+  bool				debug_die_canonicalization_is_on_;
+  bool				use_canonical_die_comparison_;
+#endif
   read_context();
 
 private:
@@ -2279,6 +2287,11 @@ public:
     options_.load_in_linux_kernel_mode = linux_kernel_mode;
     options_.load_all_types = load_all_types;
     drop_undefined_syms_ = false;
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+    debug_die_canonicalization_is_on_ =
+      environment->debug_die_canonicalization_is_on();
+    use_canonical_die_comparison_ = true;
+#endif
     load_in_linux_kernel_mode(linux_kernel_mode);
   }
 
@@ -2861,7 +2874,7 @@ public:
   get_canonical_die(const Dwarf_Die *die,
 		    Dwarf_Die &canonical_die,
 		    size_t where,
-		    bool die_as_type) const
+		    bool die_as_type)
   {
     const die_source source = get_die_source(die);
 
@@ -2915,6 +2928,29 @@ public:
 	// ABG_ASSERT(i->second.size() == 1);
 	Dwarf_Off canonical_die_offset = i->second.front();
 	get_die_from_offset(source, canonical_die_offset, &canonical_die);
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+  if (debug_die_canonicalization_is_on_)
+    {
+      use_canonical_die_comparison_ = false;
+      bool structural_equality =
+	compare_dies(*this, &canonical_die, die,
+		     /*update_canonical_dies_on_the_fly=*/false);
+      use_canonical_die_comparison_ = true;
+      if (!structural_equality)
+	{
+	  std::cerr << "structural & canonical equality different for DIEs: "
+		    << std::hex
+		    << "l: " << canonical_die_offset
+		    << ", r: " << die_offset
+		    << std::dec
+		    << ", repr: '"
+		    << get_die_pretty_type_representation(&canonical_die, 0)
+		    << "'"
+		    << std::endl;
+	  ABG_ASSERT_NOT_REACHED;
+	}
+    }
+#endif
 	set_canonical_die_offset(canonical_dies,
 				 die_offset,
 				 canonical_die_offset);
@@ -2929,8 +2965,9 @@ public:
 	cur_die_offset = *o;
 	get_die_from_offset(source, cur_die_offset, &canonical_die);
 	// compare die and canonical_die.
-	if (compare_dies(*this, die, &canonical_die,
-			 /*update_canonical_dies_on_the_fly=*/true))
+	if (compare_dies_during_canonicalization(const_cast<read_context&>(*this),
+						 die, &canonical_die,
+						 /*update_canonical_dies_on_the_fly=*/true))
 	  {
 	    set_canonical_die_offset(canonical_dies,
 				     die_offset,
@@ -3049,8 +3086,9 @@ public:
 	Dwarf_Off die_offset = i->second[n];
 	get_die_from_offset(source, die_offset, &canonical_die);
 	// compare die and canonical_die.
-	if (compare_dies(*this, die, &canonical_die,
-			 /*update_canonical_dies_on_the_fly=*/true))
+	if (compare_dies_during_canonicalization(const_cast<read_context&>(*this),
+						 die, &canonical_die,
+						 /*update_canonical_dies_on_the_fly=*/true))
 	  {
 	    set_canonical_die_offset(canonical_dies,
 				     initial_die_offset,
@@ -10742,6 +10780,60 @@ compare_dies(const read_context& ctxt,
 {
   dwarf_offset_pair_set_type aggregates_being_compared;
   return compare_dies(ctxt, l, r, aggregates_being_compared,
+		      update_canonical_dies_on_the_fly);
+}
+
+/// Compare two DIEs for the purpose of canonicalization.
+///
+/// This is a sub-routine of read_context::get_canonical_die.
+///
+/// When DIE canonicalization debugging is on, this function performs
+/// both structural and canonical comparison.  It expects that both
+/// comparison yield the same result.
+///
+/// @param ctxt the read context.
+///
+/// @param l the left-hand-side comparison operand DIE.
+///
+/// @param r the right-hand-side comparison operand DIE.
+///
+/// @param update_canonical_dies_on_the_fly if true, then some
+/// aggregate DIEs will see their canonical types propagated.
+///
+/// @return true iff @p l equals @p r.
+static bool
+compare_dies_during_canonicalization(read_context& ctxt,
+				     const Dwarf_Die *l,
+				     const Dwarf_Die *r,
+				     bool update_canonical_dies_on_the_fly)
+{
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+  if (ctxt.debug_die_canonicalization_is_on_)
+    {
+      bool canonical_equality = false, structural_equality = false;
+      ctxt.use_canonical_die_comparison_ = false;
+      structural_equality = compare_dies(ctxt, l, r,
+					 /*update_canonical_dies_on_the_fly=*/false);
+      ctxt.use_canonical_die_comparison_ = true;
+      canonical_equality = compare_dies(ctxt, l, r,
+					update_canonical_dies_on_the_fly);
+      if (canonical_equality != structural_equality)
+	{
+	  std::cerr << "structural & canonical equality different for DIEs: "
+		    << std::hex
+		    << "l: " << dwarf_dieoffset(const_cast<Dwarf_Die*>(l))
+		    << ", r: " << dwarf_dieoffset(const_cast<Dwarf_Die*>(r))
+		    << std::dec
+		    << ", repr: '"
+		    << ctxt.get_die_pretty_type_representation(l, 0)
+		    << "'"
+		    << std::endl;
+	  ABG_ASSERT_NOT_REACHED;
+	}
+      return structural_equality;
+    }
+#endif
+  return compare_dies(ctxt, l, r,
 		      update_canonical_dies_on_the_fly);
 }
 
