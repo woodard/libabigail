@@ -1,4 +1,4 @@
-<abi-corpus version='2.1' path='data/test-read-dwarf/libtest24-drop-fns.so'>
+<abi-corpus version='2.1'>
   <elf-needed>
     <dependency name='libgcc_s.so.1'/>
     <dependency name='libc.so.6'/>

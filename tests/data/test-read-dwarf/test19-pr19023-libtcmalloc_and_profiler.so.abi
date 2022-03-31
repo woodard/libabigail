@@ -1,4 +1,4 @@
-<abi-corpus version='2.1' path='data/test-read-dwarf/test19-pr19023-libtcmalloc_and_profiler.so' soname='libtcmalloc_and_profiler.so.4'>
+<abi-corpus version='2.1' soname='libtcmalloc_and_profiler.so.4'>
   <elf-needed>
     <dependency name='libunwind.so.8'/>
     <dependency name='libpthread.so.0'/>

@@ -1,4 +1,4 @@
-<abi-corpus version='2.1' path='data/test-read-dwarf/test12-pr18844.so'>
+<abi-corpus version='2.1'>
   <elf-needed>
     <dependency name='build/debug/mongo/bson/mutable/libmutable_bson.so'/>
     <dependency name='build/debug/mongo/bson/util/libbson_extract.so'/>
