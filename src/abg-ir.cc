@@ -3652,6 +3652,24 @@ environment::debug_type_canonicalization_is_on(bool flag)
 bool
 environment::debug_type_canonicalization_is_on() const
 {return priv_->debug_type_canonicalization_;}
+
+/// Setter of the "DIE canonicalization debugging" mode, triggered by
+/// using the command: "abidw --debug-dc".
+///
+/// @param flag true iff the DIE canonicalization debugging mode is
+/// enabled.
+void
+environment::debug_die_canonicalization_is_on(bool flag)
+{priv_->debug_die_canonicalization_ = flag;}
+
+/// Getter of the "DIE canonicalization debugging" mode, triggered by
+/// using the command: "abidw --debug-dc".
+///
+/// @return true iff the DIE canonicalization debugging mode is
+/// enabled.
+bool
+environment::debug_die_canonicalization_is_on() const
+{return priv_->debug_die_canonicalization_;}
 #endif // WITH_DEBUG_TYPE_CANONICALIZATION
 
 /// Get the vector of canonical types which have a given "string
