@@ -902,6 +902,9 @@ struct test_task : public abigail::workers::task
       }
     else
       is_ok = false;
+
+    if (!abidiff_ok)
+      error_message += "cmd failed: " + cmd;
   }
 }; //end struct test_task.
 
