@@ -1,4 +1,4 @@
-<abi-corpus version='2.1' path='data/test-read-dwarf/PR22122-libftdc.so'>
+<abi-corpus version='2.1'>
   <elf-needed>
     <dependency name='build/cached/third_party/s2/libs2.so'/>
     <dependency name='build/cached/third_party/s2/util/math/libmath.so'/>
