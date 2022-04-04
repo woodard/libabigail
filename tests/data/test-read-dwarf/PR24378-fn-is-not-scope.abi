@@ -4,15 +4,15 @@
   </elf-function-symbols>
   <abi-instr address-size='64' path='dwarf_bug.cpp' comp-dir-path='/remote/users/lstacul' language='LANG_C_plus_plus'>
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-2'/>
+    <type-decl name='void' id='type-id-3'/>
     <namespace-decl name='stac'>
       <function-decl name='buggy_function' mangled-name='_ZN4stac14buggy_functionEPFvPFfiiEE' filepath='/remote/users/lstacul/dwarf_bug.cpp' line='10' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN4stac14buggy_functionEPFvPFfiiEE'>
-        <parameter type-id='type-id-2'/>
+        <parameter type-id='type-id-2' name='iFunc' filepath='/remote/users/lstacul/dwarf_bug.cpp' line='10' column='1'/>
         <return type-id='type-id-3'/>
       </function-decl>
     </namespace-decl>
     <function-type size-in-bits='64' id='type-id-1'>
       <return type-id='type-id-3'/>
     </function-type>
-    <type-decl name='void' id='type-id-3'/>
   </abi-instr>
 </abi-corpus>

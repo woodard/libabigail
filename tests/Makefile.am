@@ -17,6 +17,7 @@ RUN_TEST_SLOW_SELF_COMPARE=runtestslowselfcompare.sh
 # rather expensive tests (keep in this order), > 1s runtime
 TESTS=				\
 $(RUN_TEST_SLOW_SELF_COMPARE)   \
+runtestaltdwarf			\
 runtestdiffsuppr		\
 runtesttypesstability		\
 runtestdiffpkg			\
@@ -34,7 +35,6 @@ TESTS+=				\
 runtestabicompat		\
 runtestabidiff			\
 runtestabidiffexit		\
-runtestaltdwarf			\
 runtestcorediff			\
 runtestcxxcompat		\
 runtestdiffdwarf		\

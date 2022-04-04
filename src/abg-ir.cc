@@ -3258,6 +3258,12 @@ struct decl_topo_comp
       return !fl && sl;
 
     // We reach this point if location data is useless.
+    if (f->get_is_anonymous()
+	&& s->get_is_anonymous()
+	&& (get_pretty_representation(f, true)
+	    == get_pretty_representation(s, true)))
+      return f->get_name() < s->get_name();
+
     return (get_pretty_representation(f, true)
 	    < get_pretty_representation(s, true));
   }
@@ -3285,6 +3291,28 @@ struct decl_topo_comp
 /// qualified name that is used for the lexicographic sort.
 struct type_topo_comp
 {
+  /// Test if a decl has an artificial or natural location.
+  ///
+  /// @param d the decl to consider
+  ///
+  /// @return true iff @p d has a location.
+  bool
+  has_artificial_or_natural_location(const decl_base* d)
+  {return get_artificial_or_natural_location(d);}
+
+  /// Test if a type has an artificial or natural location.
+  ///
+  /// @param t the type to consider
+  ///
+  /// @return true iff @p t has a location.
+  bool
+  has_artificial_or_natural_location(const type_base* t)
+  {
+    if (decl_base *d = is_decl(t))
+      return has_artificial_or_natural_location(d);
+    return false;
+  }
+
   /// The "Less Than" comparison operator of this functor.
   ///
   /// @param f the first type to be considered for the comparison.
@@ -3315,40 +3343,68 @@ struct type_topo_comp
       return !f_is_ptr_ref_or_qual && s_is_ptr_ref_or_qual;
 
     if (f_is_ptr_ref_or_qual && s_is_ptr_ref_or_qual
-	&& !is_decl(f)->get_location() && !is_decl(s)->get_location())
+	&& !has_artificial_or_natural_location(f)
+	&& !has_artificial_or_natural_location(s))
       {
 	string s1 = get_pretty_representation(f, true);
 	string s2 = get_pretty_representation(s, true);
 	if (s1 == s2)
-	  if (qualified_type_def * q = is_qualified_type(f))
-	    if (q->get_cv_quals() == qualified_type_def::CV_NONE)
-	      if (!is_qualified_type(s))
-		// We are looking at two types that are the result of
-		// an optimization that happens during the IR
-		// construction.  Namely, type f is a cv-qualified
-		// type with no qualifier (no const, no volatile, no
-		// nothing, we call it an empty-qualified type).
-		// These are the result of an optimization which
-		// removes "redundant qualifiers" from some types.
-		// For instance, consider a "const reference".  The
-		// const there is redundant because a reference is
-		// always const.  So as a result of the optimizaton
-		// that type is going to be transformed into an
-		// empty-qualified reference. If we don't make that
-		// optimization, then we risk having spurious change
-		// reports down the road.  But then, as a consequence
-		// of that optimization, we need to sort the
-		// empty-qualified type and its non-qualified variant
-		// e.g, to ensure stability in the abixml output; both
-		// types are logically equal, but here, we decide that
-		// the empty-qualified one is topologically "less
-		// than" the non-qualified counterpart.
-		//
-		// So here, type f is an empty-qualified type and type
-		// s is its non-qualified variant.  We decide that f
-		// is topologically less than s.
-		return true;
-	return (s1 < s2);
+	  {
+	    if (qualified_type_def * q = is_qualified_type(f))
+	      {
+		if (q->get_cv_quals() == qualified_type_def::CV_NONE)
+		  if (!is_qualified_type(s))
+		    // We are looking at two types that are the result of
+		    // an optimization that happens during the IR
+		    // construction.  Namely, type f is a cv-qualified
+		    // type with no qualifier (no const, no volatile, no
+		    // nothing, we call it an empty-qualified type).
+		    // These are the result of an optimization which
+		    // removes "redundant qualifiers" from some types.
+		    // For instance, consider a "const reference".  The
+		    // const there is redundant because a reference is
+		    // always const.  So as a result of the optimizaton
+		    // that type is going to be transformed into an
+		    // empty-qualified reference. If we don't make that
+		    // optimization, then we risk having spurious change
+		    // reports down the road.  But then, as a consequence
+		    // of that optimization, we need to sort the
+		    // empty-qualified type and its non-qualified variant
+		    // e.g, to ensure stability in the abixml output; both
+		    // types are logically equal, but here, we decide that
+		    // the empty-qualified one is topologically "less
+		    // than" the non-qualified counterpart.
+		    //
+		    // So here, type f is an empty-qualified type and type
+		    // s is its non-qualified variant.  We decide that f
+		    // is topologically less than s.
+		    return true;
+	      }
+	    // Now let's peel off the pointer (or reference types) and
+	    // see if the ultimate underlying types have the same
+	    // textual representation; if not, use that as sorting
+	    // criterion.
+	    type_base *peeled_f =
+	      peel_pointer_or_reference_type(f, true);
+	    type_base *peeled_s =
+	      peel_pointer_or_reference_type(s, true);
+
+	    s1 = get_pretty_representation(peeled_f, true);
+	    s2 = get_pretty_representation(peeled_s, true);
+	    if (s1 != s2)
+	      return s1 < s2;
+
+	    // The underlying type of pointer/reference have the same
+	    // textual representation; let's try to peel of typedefs
+	    // as well and we'll consider sorting the result as decls.
+	    peeled_f = peel_typedef_pointer_or_reference_type(peeled_f, true);
+	    peeled_s = peel_typedef_pointer_or_reference_type(peeled_s, true);
+
+	    s1 = get_pretty_representation(peeled_f, true);
+	    s2 = get_pretty_representation(peeled_s, true);
+	    if (s1 != s2)
+	      return s1 < s2;
+	  }
       }
 
     decl_base *fd = is_decl(f);
@@ -3359,8 +3415,8 @@ struct type_topo_comp
 
     if (!fd)
       {
-	type_base *peeled_f = peel_pointer_or_reference_type(f);
-	type_base *peeled_s = peel_pointer_or_reference_type(s);
+	type_base *peeled_f = peel_pointer_or_reference_type(f, true);
+	type_base *peeled_s = peel_pointer_or_reference_type(s, true);
 
 	fd = is_decl(peeled_f);
 	sd = is_decl(peeled_s);
@@ -3368,9 +3424,20 @@ struct type_topo_comp
 	if (!!fd != !!sd)
 	  return fd && !sd;
 
-	if (!fd)
-	  return (get_pretty_representation(f, true)
-		  < get_pretty_representation(s, true));
+	string s1 = get_pretty_representation(peeled_f, true);
+	string s2 = get_pretty_representation(peeled_s, true);
+
+	if (!fd || s1 != s2)
+	  return (s1 < s2);
+
+	peeled_f = peel_typedef_pointer_or_reference_type(peeled_f, true);
+	peeled_s = peel_typedef_pointer_or_reference_type(peeled_s, true);
+
+	s1 = get_pretty_representation(peeled_f, true);
+	s2 = get_pretty_representation(peeled_s, true);
+
+	if (s1 != s2)
+	  return s1 < s2;
       }
 
     // From this point, fd and sd should be non-nil
@@ -6988,6 +7055,43 @@ peel_typedef_pointer_or_reference_type(const type_base* type)
 
       if (const array_type_def* t = is_array_type(type))
 	type = peel_array_type(t);
+    }
+
+  return const_cast<type_base*>(type);
+}
+
+/// Return the leaf underlying or pointed-to type node of a @ref
+/// typedef_decl, @ref pointer_type_def or @ref reference_type_def
+/// node.
+///
+/// @param type the type to peel.
+///
+/// @return the leaf underlying or pointed-to type node of @p type.
+type_base*
+peel_typedef_pointer_or_reference_type(const type_base* type,
+				       bool peel_qual_type)
+{
+  while (is_typedef(type)
+	 || is_pointer_type(type)
+	 || is_reference_type(type)
+	 || is_array_type(type)
+	 || (peel_qual_type && is_qualified_type(type)))
+    {
+      if (const typedef_decl* t = is_typedef(type))
+	type = peel_typedef_type(t);
+
+      if (const pointer_type_def* t = is_pointer_type(type))
+	type = peel_pointer_type(t);
+
+      if (const reference_type_def* t = is_reference_type(type))
+	type = peel_reference_type(t);
+
+      if (const array_type_def* t = is_array_type(type))
+	type = peel_array_type(t);
+
+      if (peel_qual_type)
+	if (const qualified_type_def* t = is_qualified_type(type))
+	  type = peel_qualified_type(t);
     }
 
   return const_cast<type_base*>(type);
@@ -16145,6 +16249,35 @@ reference_type_def::get_qualified_name(bool internal) const
   return peek_qualified_name();
 }
 
+/// Get the pretty representation of the current instance of @ref
+/// reference_type_def.
+///
+/// @param internal set to true if the call is intended to get a
+/// representation of the decl (or type) for the purpose of canonical
+/// type comparison.  This is mainly used in the function
+/// type_base::get_canonical_type_for().
+///
+/// In other words if the argument for this parameter is true then the
+/// call is meant for internal use (for technical use inside the
+/// library itself), false otherwise.  If you don't know what this is
+/// for, then set it to false.
+///
+/// @param qualified_name if true, names emitted in the pretty
+/// representation are fully qualified.
+///
+/// @return the pretty representatin of the @ref reference_type_def.
+string
+reference_type_def::get_pretty_representation(bool internal,
+					      bool qualified_name) const
+{
+  string result = get_name_of_reference_to_type(*get_pointed_to_type(),
+						is_lvalue(),
+						qualified_name,
+						internal);
+
+  return result;
+}
+
 /// This implements the ir_traversable_base::traverse pure virtual
 /// function.
 ///
@@ -16589,24 +16722,6 @@ equals(const array_type_def::subrange_type& l,
 	ABG_RETURN(result);
     }
 
-#if 0
-  // If we enable this, we need to update the reporting code too, to
-  // report changes about range underlying types too.
-  if (l.get_underlying_type() != r.get_underlying_type())
-    {
-      result = false;
-      if (k)
-	{
-	  if (!types_have_similar_structure(l.get_underlying_type().get(),
-					    r.get_underlying_type().get()))
-	    *k |= LOCAL_TYPE_CHANGE_KIND;
-	  else
-	    *k |= SUBTYPE_CHANGE_KIND;
-	}
-      else
-	ABG_RETURN(result);
-    }
-#endif
   ABG_RETURN(result);
 }
 
@@ -17989,16 +18104,6 @@ bool
 equals(const typedef_decl& l, const typedef_decl& r, change_kind* k)
 {
   bool result = true;
-  if (!equals(static_cast<const decl_base&>(l),
-	      static_cast<const decl_base&>(r),
-	      k))
-    {
-      result = false;
-      if (k)
-	*k |= LOCAL_NON_TYPE_CHANGE_KIND;
-      else
-	ABG_RETURN_FALSE;
-    }
 
   if (*l.get_underlying_type() != *r.get_underlying_type())
     {
@@ -21362,7 +21467,8 @@ class_or_union::operator==(const class_or_union& other) const
 bool
 equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 {
-#define RETURN(value) return return_comparison_result(l, r, value);
+#define RETURN(value) return return_comparison_result(l, r, value,	\
+						      /*propagate_canonical_type=*/false);
 
   // if one of the classes is declaration-only, look through it to
   // get its definition.
@@ -21753,6 +21859,12 @@ static bool
 maybe_propagate_canonical_type(const type_base& lhs_type,
 			       const type_base& rhs_type)
 {
+#if WITH_DEBUG_TYPE_CANONICALIZATION
+  if (const environment *env = lhs_type.get_environment())
+    if (!env->priv_->use_canonical_type_comparison_)
+      return false;
+#endif
+
   if (const environment *env = lhs_type.get_environment())
     if (env->do_on_the_fly_canonicalization())
       if (type_base_sptr canonical_type = lhs_type.get_canonical_type())
@@ -22342,7 +22454,7 @@ equals(const class_decl::base_spec& l,
       ABG_RETURN_FALSE;
     }
 
-  return (*l.get_base_class() == *r.get_base_class());
+  ABG_RETURN((*l.get_base_class() == *r.get_base_class()));
 }
 
 /// Comparison operator for @ref class_decl::base_spec.
@@ -22985,9 +23097,9 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
   // if one of the classes is declaration-only then we take a fast
   // path here.
   if (l.get_is_declaration_only() || r.get_is_declaration_only())
-    return equals(static_cast<const class_or_union&>(l),
-		  static_cast<const class_or_union&>(r),
-		  k);
+    ABG_RETURN(equals(static_cast<const class_or_union&>(l),
+		      static_cast<const class_or_union&>(r),
+		      k));
 
   RETURN_TRUE_IF_COMPARISON_CYCLE_DETECTED(static_cast<const class_or_union&>(l),
 					   static_cast<const class_or_union&>(r));
@@ -22999,7 +23111,7 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
     {
       result = false;
       if (!k)
-	return result;
+	ABG_RETURN(result);
     }
 
   mark_types_as_being_compared(static_cast<const class_or_union&>(l),
@@ -25258,6 +25370,7 @@ is_non_canonicalized_type(const type_base *t)
 
   const environment* env = t->get_environment();
   return (is_declaration_only_class_or_union_type(t)
+	  || is_typedef(t)
 	  || env->is_void_type(t)
 	  || env->is_variadic_parameter_type(t));
 }
