@@ -2169,6 +2169,12 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
+          <function-decl name='shared_ptr' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='353' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-109' is-artificial='yes'/>
+            <return type-id='type-id-241'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
           <function-decl name='shared_ptr' mangled-name='_ZN5boost10shared_ptrINS_9iostreams6detail20file_descriptor_implEEC2ERKS4_' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='405' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-109' is-artificial='yes'/>
             <parameter type-id='type-id-178'/>
@@ -2933,6 +2939,12 @@
         </data-member>
         <member-function access='public'>
           <function-decl name='shared_ptr' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='347' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-115' is-artificial='yes'/>
+            <return type-id='type-id-241'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='shared_ptr' filepath='src/third_party/boost-1.60.0/boost/smart_ptr/shared_ptr.hpp' line='353' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-115' is-artificial='yes'/>
             <return type-id='type-id-241'/>
           </function-decl>
