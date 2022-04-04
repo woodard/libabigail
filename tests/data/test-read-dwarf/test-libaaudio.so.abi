@@ -2059,18 +2059,18 @@
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='AAudioStreamBuilder_setSampleRate' mangled-name='AAudioStreamBuilder_setSampleRate' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='90' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStreamBuilder_setSampleRate@@LIBAAUDIO'>
-      <parameter type-id='c56f4379' name='builder' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='83' column='1'/>
-      <parameter type-id='3ff5601b' name='deviceId' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='84' column='1'/>
+      <parameter type-id='c56f4379' name='builder' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='90' column='1'/>
+      <parameter type-id='3ff5601b' name='sampleRate' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='91' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='AAudioStreamBuilder_setChannelCount' mangled-name='AAudioStreamBuilder_setChannelCount' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='97' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStreamBuilder_setChannelCount@@LIBAAUDIO'>
-      <parameter type-id='c56f4379' name='builder' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='83' column='1'/>
-      <parameter type-id='3ff5601b' name='deviceId' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='84' column='1'/>
+      <parameter type-id='c56f4379' name='builder' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='97' column='1'/>
+      <parameter type-id='3ff5601b' name='channelCount' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='98' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='AAudioStreamBuilder_setSamplesPerFrame' mangled-name='AAudioStreamBuilder_setSamplesPerFrame' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='103' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStreamBuilder_setSamplesPerFrame@@LIBAAUDIO'>
-      <parameter type-id='c56f4379' name='builder' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='83' column='1'/>
-      <parameter type-id='3ff5601b' name='deviceId' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='84' column='1'/>
+      <parameter type-id='c56f4379' name='builder' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='103' column='1'/>
+      <parameter type-id='3ff5601b' name='samplesPerFrame' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='104' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='AAudioStreamBuilder_setDirection' mangled-name='AAudioStreamBuilder_setDirection' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='110' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStreamBuilder_setDirection@@LIBAAUDIO'>
@@ -2109,8 +2109,8 @@
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='AAudioStreamBuilder_setBufferCapacityInFrames' mangled-name='AAudioStreamBuilder_setBufferCapacityInFrames' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='157' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStreamBuilder_setBufferCapacityInFrames@@LIBAAUDIO'>
-      <parameter type-id='c56f4379' name='builder' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='83' column='1'/>
-      <parameter type-id='3ff5601b' name='deviceId' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='84' column='1'/>
+      <parameter type-id='c56f4379' name='builder' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='157' column='1'/>
+      <parameter type-id='3ff5601b' name='frames' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='158' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='AAudioStreamBuilder_setAllowedCapturePolicy' mangled-name='AAudioStreamBuilder_setAllowedCapturePolicy' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='164' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStreamBuilder_setAllowedCapturePolicy@@LIBAAUDIO'>
@@ -2136,8 +2136,8 @@
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='AAudioStreamBuilder_setFramesPerDataCallback' mangled-name='AAudioStreamBuilder_setFramesPerDataCallback' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='195' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStreamBuilder_setFramesPerDataCallback@@LIBAAUDIO'>
-      <parameter type-id='c56f4379' name='builder' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='83' column='1'/>
-      <parameter type-id='3ff5601b' name='deviceId' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='84' column='1'/>
+      <parameter type-id='c56f4379' name='builder' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='195' column='1'/>
+      <parameter type-id='3ff5601b' name='frames' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='196' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='AAudioStreamBuilder_openStream' mangled-name='AAudioStreamBuilder_openStream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='202' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStreamBuilder_openStream@@LIBAAUDIO'>
@@ -2154,23 +2154,23 @@
       <return type-id='da775bc6'/>
     </function-decl>
     <function-decl name='AAudioStream_close' mangled-name='AAudioStream_close' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='252' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_close@@LIBAAUDIO'>
-      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='233' column='1'/>
+      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='252' column='1'/>
       <return type-id='da775bc6'/>
     </function-decl>
     <function-decl name='AAudioStream_requestStart' mangled-name='AAudioStream_requestStart' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='274' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_requestStart@@LIBAAUDIO'>
-      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='233' column='1'/>
+      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='274' column='1'/>
       <return type-id='da775bc6'/>
     </function-decl>
     <function-decl name='AAudioStream_requestPause' mangled-name='AAudioStream_requestPause' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='284' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_requestPause@@LIBAAUDIO'>
-      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='233' column='1'/>
+      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='284' column='1'/>
       <return type-id='da775bc6'/>
     </function-decl>
     <function-decl name='AAudioStream_requestFlush' mangled-name='AAudioStream_requestFlush' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='291' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_requestFlush@@LIBAAUDIO'>
-      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='233' column='1'/>
+      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='291' column='1'/>
       <return type-id='da775bc6'/>
     </function-decl>
     <function-decl name='AAudioStream_requestStop' mangled-name='AAudioStream_requestStop' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='298' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_requestStop@@LIBAAUDIO'>
-      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='233' column='1'/>
+      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='298' column='1'/>
       <return type-id='da775bc6'/>
     </function-decl>
     <function-decl name='AAudioStream_waitForStateChange' mangled-name='AAudioStream_waitForStateChange' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='305' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_waitForStateChange@@LIBAAUDIO'>
@@ -2188,10 +2188,10 @@
       <return type-id='da775bc6'/>
     </function-decl>
     <function-decl name='AAudioStream_write' mangled-name='AAudioStream_write' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='339' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_write@@LIBAAUDIO'>
-      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='319' column='1'/>
-      <parameter type-id='eaa32e2f' name='buffer' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='320' column='1'/>
-      <parameter type-id='3ff5601b' name='numFrames' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='321' column='1'/>
-      <parameter type-id='9da381c4' name='timeoutNanoseconds' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='322' column='1'/>
+      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='339' column='1'/>
+      <parameter type-id='eaa32e2f' name='buffer' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='340' column='1'/>
+      <parameter type-id='3ff5601b' name='numFrames' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='341' column='1'/>
+      <parameter type-id='9da381c4' name='timeoutNanoseconds' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='342' column='1'/>
       <return type-id='da775bc6'/>
     </function-decl>
     <function-decl name='AAudioStream_getSampleRate' mangled-name='AAudioStream_getSampleRate' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='370' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_getSampleRate@@LIBAAUDIO'>
@@ -2199,11 +2199,11 @@
       <return type-id='3ff5601b'/>
     </function-decl>
     <function-decl name='AAudioStream_getChannelCount' mangled-name='AAudioStream_getChannelCount' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='376' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_getChannelCount@@LIBAAUDIO'>
-      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='370' column='1'/>
+      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='376' column='1'/>
       <return type-id='3ff5601b'/>
     </function-decl>
     <function-decl name='AAudioStream_getSamplesPerFrame' mangled-name='AAudioStream_getSamplesPerFrame' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='382' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_getSamplesPerFrame@@LIBAAUDIO'>
-      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='370' column='1'/>
+      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='382' column='1'/>
       <return type-id='3ff5601b'/>
     </function-decl>
     <function-decl name='AAudioStream_getState' mangled-name='AAudioStream_getState' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='387' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_getState@@LIBAAUDIO'>
@@ -2220,7 +2220,7 @@
       <return type-id='da775bc6'/>
     </function-decl>
     <function-decl name='AAudioStream_getBufferSizeInFrames' mangled-name='AAudioStream_getBufferSizeInFrames' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='408' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_getBufferSizeInFrames@@LIBAAUDIO'>
-      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='370' column='1'/>
+      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='408' column='1'/>
       <return type-id='3ff5601b'/>
     </function-decl>
     <function-decl name='AAudioStream_getDirection' mangled-name='AAudioStream_getDirection' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='414' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_getDirection@@LIBAAUDIO'>
@@ -2228,19 +2228,19 @@
       <return type-id='a5156fbe'/>
     </function-decl>
     <function-decl name='AAudioStream_getFramesPerBurst' mangled-name='AAudioStream_getFramesPerBurst' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='420' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_getFramesPerBurst@@LIBAAUDIO'>
-      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='370' column='1'/>
+      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='420' column='1'/>
       <return type-id='3ff5601b'/>
     </function-decl>
     <function-decl name='AAudioStream_getFramesPerDataCallback' mangled-name='AAudioStream_getFramesPerDataCallback' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='426' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_getFramesPerDataCallback@@LIBAAUDIO'>
-      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='370' column='1'/>
+      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='426' column='1'/>
       <return type-id='3ff5601b'/>
     </function-decl>
     <function-decl name='AAudioStream_getBufferCapacityInFrames' mangled-name='AAudioStream_getBufferCapacityInFrames' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='432' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_getBufferCapacityInFrames@@LIBAAUDIO'>
-      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='370' column='1'/>
+      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='432' column='1'/>
       <return type-id='3ff5601b'/>
     </function-decl>
     <function-decl name='AAudioStream_getXRunCount' mangled-name='AAudioStream_getXRunCount' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='438' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_getXRunCount@@LIBAAUDIO'>
-      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='370' column='1'/>
+      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='438' column='1'/>
       <return type-id='3ff5601b'/>
     </function-decl>
     <function-decl name='AAudioStream_getPerformanceMode' mangled-name='AAudioStream_getPerformanceMode' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='444' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_getPerformanceMode@@LIBAAUDIO'>
@@ -2248,7 +2248,7 @@
       <return type-id='6757629b'/>
     </function-decl>
     <function-decl name='AAudioStream_getDeviceId' mangled-name='AAudioStream_getDeviceId' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='450' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_getDeviceId@@LIBAAUDIO'>
-      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='370' column='1'/>
+      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='450' column='1'/>
       <return type-id='3ff5601b'/>
     </function-decl>
     <function-decl name='AAudioStream_getSharingMode' mangled-name='AAudioStream_getSharingMode' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='456' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_getSharingMode@@LIBAAUDIO'>
@@ -2272,7 +2272,7 @@
       <return type-id='abe3e34b'/>
     </function-decl>
     <function-decl name='AAudioStream_getSessionId' mangled-name='AAudioStream_getSessionId' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='487' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_getSessionId@@LIBAAUDIO'>
-      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='370' column='1'/>
+      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='487' column='1'/>
       <return type-id='3ff5601b'/>
     </function-decl>
     <function-decl name='AAudioStream_getFramesWritten' mangled-name='AAudioStream_getFramesWritten' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='493' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_getFramesWritten@@LIBAAUDIO'>
@@ -2280,7 +2280,7 @@
       <return type-id='9da381c4'/>
     </function-decl>
     <function-decl name='AAudioStream_getFramesRead' mangled-name='AAudioStream_getFramesRead' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='499' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_getFramesRead@@LIBAAUDIO'>
-      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='493' column='1'/>
+      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='499' column='1'/>
       <return type-id='9da381c4'/>
     </function-decl>
     <function-decl name='AAudioStream_getTimestamp' mangled-name='AAudioStream_getTimestamp' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='505' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_getTimestamp@@LIBAAUDIO'>
@@ -2302,7 +2302,7 @@
       <return type-id='c894953d'/>
     </function-decl>
     <function-decl name='AAudioStream_isPrivacySensitive' mangled-name='AAudioStream_isPrivacySensitive' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='536' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_isPrivacySensitive@@LIBAAUDIO'>
-      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='530' column='1'/>
+      <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='536' column='1'/>
       <return type-id='c894953d'/>
     </function-decl>
     <function-type size-in-bits='64' id='96ee24a5'>
