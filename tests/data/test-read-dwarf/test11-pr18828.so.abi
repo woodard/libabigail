@@ -4577,6 +4577,12 @@
             <return type-id='type-id-61'/>
           </function-decl>
         </member-function>
+        <member-function access='public'>
+          <function-decl name='shared_ptr' filepath='/usr/include/c++/4.9/bits/shared_ptr.h' line='265' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-2108' is-artificial='yes'/>
+            <return type-id='type-id-61'/>
+          </function-decl>
+        </member-function>
         <member-function access='private'>
           <function-decl name='shared_ptr' filepath='/usr/include/c++/4.9/bits/shared_ptr.h' line='324' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-2108' is-artificial='yes'/>
@@ -4726,6 +4732,12 @@
           <function-decl name='__shared_ptr' filepath='/usr/include/c++/4.9/bits/shared_ptr_base.h' line='922' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1918' is-artificial='yes'/>
             <parameter type-id='type-id-1917'/>
+            <return type-id='type-id-61'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='__shared_ptr' filepath='/usr/include/c++/4.9/bits/shared_ptr_base.h' line='967' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-1918' is-artificial='yes'/>
             <return type-id='type-id-61'/>
           </function-decl>
         </member-function>
@@ -9009,6 +9021,12 @@
           </function-decl>
         </member-function>
         <member-function access='public'>
+          <function-decl name='unique_ptr' filepath='/usr/include/c++/4.9/bits/unique_ptr.h' line='200' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-2124' is-artificial='yes'/>
+            <return type-id='type-id-61'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
           <function-decl name='unique_ptr' filepath='/usr/include/c++/4.9/bits/unique_ptr.h' line='205' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-2124' is-artificial='yes'/>
             <parameter type-id='type-id-2123'/>
@@ -9089,6 +9107,12 @@
             <parameter type-id='type-id-2128' is-artificial='yes'/>
             <parameter type-id='type-id-2788'/>
             <parameter type-id='type-id-2095'/>
+            <return type-id='type-id-61'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='unique_ptr' filepath='/usr/include/c++/4.9/bits/unique_ptr.h' line='200' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-2128' is-artificial='yes'/>
             <return type-id='type-id-61'/>
           </function-decl>
         </member-function>
@@ -9440,6 +9464,12 @@
         </data-member>
         <member-function access='public'>
           <function-decl name='function' filepath='/usr/include/c++/4.9/functional' line='2174' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <parameter type-id='type-id-2013' is-artificial='yes'/>
+            <return type-id='type-id-61'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public'>
+          <function-decl name='function' filepath='/usr/include/c++/4.9/functional' line='2181' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-2013' is-artificial='yes'/>
             <return type-id='type-id-61'/>
           </function-decl>
@@ -11044,15 +11074,15 @@
         <return type-id='type-id-2522'/>
       </function-decl>
       <function-decl name='__copy_move_a&lt;false, const std::basic_string&lt;char&gt;*, std::basic_string&lt;char&gt;*&gt;' mangled-name='_ZSt13__copy_move_aILb0EPKSsPSsET1_T0_S4_S3_' filepath='/usr/include/c++/4.9/bits/stl_algobase.h' line='385' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt13__copy_move_aILb0EPKSsPSsET1_T0_S4_S3_'>
-        <parameter type-id='type-id-1107'/>
-        <parameter type-id='type-id-1107'/>
-        <parameter type-id='type-id-1988'/>
+        <parameter type-id='type-id-1107' name='__first' filepath='/usr/include/c++/4.9/bits/stl_algobase.h' line='385' column='1'/>
+        <parameter type-id='type-id-1107' name='__last' filepath='/usr/include/c++/4.9/bits/stl_algobase.h' line='385' column='1'/>
+        <parameter type-id='type-id-1988' name='__result' filepath='/usr/include/c++/4.9/bits/stl_algobase.h' line='385' column='1'/>
         <return type-id='type-id-1988'/>
       </function-decl>
       <function-decl name='__copy_move_a&lt;false, std::basic_string&lt;char&gt;*, std::basic_string&lt;char&gt;*&gt;' mangled-name='_ZSt13__copy_move_aILb0EPSsS0_ET1_T0_S2_S1_' filepath='/usr/include/c++/4.9/bits/stl_algobase.h' line='385' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt13__copy_move_aILb0EPSsS0_ET1_T0_S2_S1_'>
-        <parameter type-id='type-id-1988'/>
-        <parameter type-id='type-id-1988'/>
-        <parameter type-id='type-id-1988'/>
+        <parameter type-id='type-id-1988' name='__first' filepath='/usr/include/c++/4.9/bits/stl_algobase.h' line='385' column='1'/>
+        <parameter type-id='type-id-1988' name='__last' filepath='/usr/include/c++/4.9/bits/stl_algobase.h' line='385' column='1'/>
+        <parameter type-id='type-id-1988' name='__result' filepath='/usr/include/c++/4.9/bits/stl_algobase.h' line='385' column='1'/>
         <return type-id='type-id-1988'/>
       </function-decl>
       <function-decl name='__copy_move_a2&lt;false, __gnu_cxx::__normal_iterator&lt;const std::basic_string&lt;char&gt;*, std::vector&lt;std::basic_string&lt;char&gt; &gt; &gt;, __gnu_cxx::__normal_iterator&lt;std::basic_string&lt;char&gt;*, std::vector&lt;std::basic_string&lt;char&gt; &gt; &gt; &gt;' mangled-name='_ZSt14__copy_move_a2ILb0EN9__gnu_cxx17__normal_iteratorIPKSsSt6vectorISsSaISsEEEENS1_IPSsS6_EEET1_T0_SB_SA_' filepath='/usr/include/c++/4.9/bits/stl_algobase.h' line='430' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt14__copy_move_a2ILb0EN9__gnu_cxx17__normal_iteratorIPKSsSt6vectorISsSaISsEEEENS1_IPSsS6_EEET1_T0_SB_SA_'>
@@ -11080,15 +11110,15 @@
         <return type-id='type-id-1988'/>
       </function-decl>
       <function-decl name='_Construct&lt;std::basic_string&lt;char&gt;, const std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;&amp;&gt;' mangled-name='_ZSt10_ConstructISsIRKSsEEvPT_DpOT0_' filepath='/usr/include/c++/4.9/bits/stl_construct.h' line='74' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt10_ConstructISsIRKSsEEvPT_DpOT0_'>
-        <parameter type-id='type-id-1988'/>
+        <parameter type-id='type-id-1988' name='__p' filepath='/usr/include/c++/4.9/bits/stl_construct.h' line='74' column='1'/>
         <return type-id='type-id-61'/>
       </function-decl>
       <function-decl name='_Construct&lt;std::basic_string&lt;char&gt;, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' mangled-name='_ZSt10_ConstructISsISsEEvPT_DpOT0_' filepath='/usr/include/c++/4.9/bits/stl_construct.h' line='74' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt10_ConstructISsISsEEvPT_DpOT0_'>
-        <parameter type-id='type-id-1988'/>
+        <parameter type-id='type-id-1988' name='__p' filepath='/usr/include/c++/4.9/bits/stl_construct.h' line='74' column='1'/>
         <return type-id='type-id-61'/>
       </function-decl>
       <function-decl name='_Construct&lt;std::basic_string&lt;char&gt;, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;&amp;&gt;' mangled-name='_ZSt10_ConstructISsIRSsEEvPT_DpOT0_' filepath='/usr/include/c++/4.9/bits/stl_construct.h' line='74' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt10_ConstructISsIRSsEEvPT_DpOT0_'>
-        <parameter type-id='type-id-1988'/>
+        <parameter type-id='type-id-1988' name='__p' filepath='/usr/include/c++/4.9/bits/stl_construct.h' line='74' column='1'/>
         <return type-id='type-id-61'/>
       </function-decl>
       <function-decl name='_Destroy&lt;std::basic_string&lt;char&gt; &gt;' mangled-name='_ZSt8_DestroyISsEvPT_' filepath='/usr/include/c++/4.9/bits/stl_construct.h' line='92' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt8_DestroyISsEvPT_'>
@@ -11100,18 +11130,18 @@
         <return type-id='type-id-61'/>
       </function-decl>
       <function-decl name='_Destroy&lt;__gnu_cxx::__normal_iterator&lt;std::basic_string&lt;char&gt;*, std::vector&lt;std::basic_string&lt;char&gt; &gt; &gt; &gt;' mangled-name='_ZSt8_DestroyIN9__gnu_cxx17__normal_iteratorIPSsSt6vectorISsSaISsEEEEEvT_S7_' filepath='/usr/include/c++/4.9/bits/stl_construct.h' line='122' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt8_DestroyIN9__gnu_cxx17__normal_iteratorIPSsSt6vectorISsSaISsEEEEEvT_S7_'>
-        <parameter type-id='type-id-135'/>
-        <parameter type-id='type-id-135'/>
+        <parameter type-id='type-id-135' name='__first' filepath='/usr/include/c++/4.9/bits/stl_construct.h' line='122' column='1'/>
+        <parameter type-id='type-id-135' name='__last' filepath='/usr/include/c++/4.9/bits/stl_construct.h' line='122' column='1'/>
         <return type-id='type-id-61'/>
       </function-decl>
       <function-decl name='_Destroy&lt;std::basic_string&lt;char&gt;*&gt;' mangled-name='_ZSt8_DestroyIPSsEvT_S1_' filepath='/usr/include/c++/4.9/bits/stl_construct.h' line='122' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt8_DestroyIPSsEvT_S1_'>
-        <parameter type-id='type-id-1988'/>
-        <parameter type-id='type-id-1988'/>
+        <parameter type-id='type-id-1988' name='__first' filepath='/usr/include/c++/4.9/bits/stl_construct.h' line='122' column='1'/>
+        <parameter type-id='type-id-1988' name='__last' filepath='/usr/include/c++/4.9/bits/stl_construct.h' line='122' column='1'/>
         <return type-id='type-id-61'/>
       </function-decl>
       <function-decl name='_Destroy&lt;std::shared_ptr&lt;mongo::optionenvironment::Constraint&gt;*&gt;' mangled-name='_ZSt8_DestroyIPSt10shared_ptrIN5mongo17optionenvironment10ConstraintEEEvT_S6_' filepath='/usr/include/c++/4.9/bits/stl_construct.h' line='122' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt8_DestroyIPSt10shared_ptrIN5mongo17optionenvironment10ConstraintEEEvT_S6_'>
-        <parameter type-id='type-id-2108'/>
-        <parameter type-id='type-id-2108'/>
+        <parameter type-id='type-id-2108' name='__first' filepath='/usr/include/c++/4.9/bits/stl_construct.h' line='122' column='1'/>
+        <parameter type-id='type-id-2108' name='__last' filepath='/usr/include/c++/4.9/bits/stl_construct.h' line='122' column='1'/>
         <return type-id='type-id-61'/>
       </function-decl>
       <function-decl name='_Destroy&lt;__gnu_cxx::__normal_iterator&lt;std::basic_string&lt;char&gt;*, std::vector&lt;std::basic_string&lt;char&gt; &gt; &gt;, std::basic_string&lt;char&gt; &gt;' mangled-name='_ZSt8_DestroyIN9__gnu_cxx17__normal_iteratorIPSsSt6vectorISsSaISsEEEESsEvT_S7_RSaIT0_E' filepath='/usr/include/c++/4.9/bits/stl_construct.h' line='148' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt8_DestroyIN9__gnu_cxx17__normal_iteratorIPSsSt6vectorISsSaISsEEEESsEvT_S7_RSaIT0_E'>
@@ -11133,8 +11163,8 @@
         <return type-id='type-id-61'/>
       </function-decl>
       <function-decl name='operator==&lt;std::basic_string&lt;char&gt;*&gt;' mangled-name='_ZSteqIPSsEbRKSt13move_iteratorIT_ES5_' filepath='/usr/include/c++/4.9/bits/stl_iterator.h' line='1054' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSteqIPSsEbRKSt13move_iteratorIT_ES5_'>
-        <parameter type-id='type-id-1285' name='__x' filepath='/usr/include/c++/4.9/bits/stl_iterator.h' line='1066' column='1'/>
-        <parameter type-id='type-id-1285' name='__y' filepath='/usr/include/c++/4.9/bits/stl_iterator.h' line='1067' column='1'/>
+        <parameter type-id='type-id-1285' name='__x' filepath='/usr/include/c++/4.9/bits/stl_iterator.h' line='1054' column='1'/>
+        <parameter type-id='type-id-1285' name='__y' filepath='/usr/include/c++/4.9/bits/stl_iterator.h' line='1055' column='1'/>
         <return type-id='type-id-1'/>
       </function-decl>
       <function-decl name='operator!=&lt;std::basic_string&lt;char&gt;*&gt;' mangled-name='_ZStneIPSsEbRKSt13move_iteratorIT_ES5_' filepath='/usr/include/c++/4.9/bits/stl_iterator.h' line='1066' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZStneIPSsEbRKSt13move_iteratorIT_ES5_'>
@@ -11147,21 +11177,21 @@
         <return type-id='type-id-1283'/>
       </function-decl>
       <function-decl name='uninitialized_copy&lt;__gnu_cxx::__normal_iterator&lt;const std::basic_string&lt;char&gt;*, std::vector&lt;std::basic_string&lt;char&gt; &gt; &gt;, std::basic_string&lt;char&gt;*&gt;' mangled-name='_ZSt18uninitialized_copyIN9__gnu_cxx17__normal_iteratorIPKSsSt6vectorISsSaISsEEEEPSsET0_T_SA_S9_' filepath='/usr/include/c++/4.9/bits/stl_uninitialized.h' line='107' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt18uninitialized_copyIN9__gnu_cxx17__normal_iteratorIPKSsSt6vectorISsSaISsEEEEPSsET0_T_SA_S9_'>
-        <parameter type-id='type-id-132'/>
-        <parameter type-id='type-id-132'/>
-        <parameter type-id='type-id-1988'/>
+        <parameter type-id='type-id-132' name='__first' filepath='/usr/include/c++/4.9/bits/stl_uninitialized.h' line='107' column='1'/>
+        <parameter type-id='type-id-132' name='__last' filepath='/usr/include/c++/4.9/bits/stl_uninitialized.h' line='107' column='1'/>
+        <parameter type-id='type-id-1988' name='__result' filepath='/usr/include/c++/4.9/bits/stl_uninitialized.h' line='108' column='1'/>
         <return type-id='type-id-1988'/>
       </function-decl>
       <function-decl name='uninitialized_copy&lt;std::basic_string&lt;char&gt;*, std::basic_string&lt;char&gt;*&gt;' mangled-name='_ZSt18uninitialized_copyIPSsS0_ET0_T_S2_S1_' filepath='/usr/include/c++/4.9/bits/stl_uninitialized.h' line='107' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt18uninitialized_copyIPSsS0_ET0_T_S2_S1_'>
-        <parameter type-id='type-id-1988'/>
-        <parameter type-id='type-id-1988'/>
-        <parameter type-id='type-id-1988'/>
+        <parameter type-id='type-id-1988' name='__first' filepath='/usr/include/c++/4.9/bits/stl_uninitialized.h' line='107' column='1'/>
+        <parameter type-id='type-id-1988' name='__last' filepath='/usr/include/c++/4.9/bits/stl_uninitialized.h' line='107' column='1'/>
+        <parameter type-id='type-id-1988' name='__result' filepath='/usr/include/c++/4.9/bits/stl_uninitialized.h' line='108' column='1'/>
         <return type-id='type-id-1988'/>
       </function-decl>
       <function-decl name='uninitialized_copy&lt;std::move_iterator&lt;std::basic_string&lt;char&gt;*&gt;, std::basic_string&lt;char&gt;*&gt;' mangled-name='_ZSt18uninitialized_copyISt13move_iteratorIPSsES1_ET0_T_S4_S3_' filepath='/usr/include/c++/4.9/bits/stl_uninitialized.h' line='107' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt18uninitialized_copyISt13move_iteratorIPSsES1_ET0_T_S4_S3_'>
-        <parameter type-id='type-id-1283'/>
-        <parameter type-id='type-id-1283'/>
-        <parameter type-id='type-id-1988'/>
+        <parameter type-id='type-id-1283' name='__first' filepath='/usr/include/c++/4.9/bits/stl_uninitialized.h' line='107' column='1'/>
+        <parameter type-id='type-id-1283' name='__last' filepath='/usr/include/c++/4.9/bits/stl_uninitialized.h' line='107' column='1'/>
+        <parameter type-id='type-id-1988' name='__result' filepath='/usr/include/c++/4.9/bits/stl_uninitialized.h' line='108' column='1'/>
         <return type-id='type-id-1988'/>
       </function-decl>
       <function-decl name='__uninitialized_copy_a&lt;__gnu_cxx::__normal_iterator&lt;const std::basic_string&lt;char&gt;*, std::vector&lt;std::basic_string&lt;char&gt; &gt; &gt;, std::basic_string&lt;char&gt;*, std::basic_string&lt;char&gt; &gt;' mangled-name='_ZSt22__uninitialized_copy_aIN9__gnu_cxx17__normal_iteratorIPKSsSt6vectorISsSaISsEEEEPSsSsET0_T_SA_S9_RSaIT1_E' filepath='/usr/include/c++/4.9/bits/stl_uninitialized.h' line='277' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt22__uninitialized_copy_aIN9__gnu_cxx17__normal_iteratorIPKSsSt6vectorISsSaISsEEEEPSsSsET0_T_SA_S9_RSaIT1_E'>
@@ -11172,10 +11202,10 @@
         <return type-id='type-id-1988'/>
       </function-decl>
       <function-decl name='__uninitialized_copy_a&lt;std::basic_string&lt;char&gt;*, std::basic_string&lt;char&gt;*, std::basic_string&lt;char&gt; &gt;' mangled-name='_ZSt22__uninitialized_copy_aIPSsS0_SsET0_T_S2_S1_RSaIT1_E' filepath='/usr/include/c++/4.9/bits/stl_uninitialized.h' line='277' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt22__uninitialized_copy_aIPSsS0_SsET0_T_S2_S1_RSaIT1_E'>
-        <parameter type-id='type-id-1988' name='__first' filepath='/usr/include/c++/4.9/bits/stl_uninitialized.h' line='295' column='1'/>
-        <parameter type-id='type-id-1988' name='__last' filepath='/usr/include/c++/4.9/bits/stl_uninitialized.h' line='296' column='1'/>
-        <parameter type-id='type-id-1988' name='__result' filepath='/usr/include/c++/4.9/bits/stl_uninitialized.h' line='297' column='1'/>
-        <parameter type-id='type-id-1945' name='__alloc' filepath='/usr/include/c++/4.9/bits/stl_uninitialized.h' line='298' column='1'/>
+        <parameter type-id='type-id-1988' name='__first' filepath='/usr/include/c++/4.9/bits/stl_uninitialized.h' line='277' column='1'/>
+        <parameter type-id='type-id-1988' name='__last' filepath='/usr/include/c++/4.9/bits/stl_uninitialized.h' line='277' column='1'/>
+        <parameter type-id='type-id-1988' name='__result' filepath='/usr/include/c++/4.9/bits/stl_uninitialized.h' line='278' column='1'/>
+        <parameter type-id='type-id-1945'/>
         <return type-id='type-id-1988'/>
       </function-decl>
       <function-decl name='__uninitialized_copy_a&lt;std::move_iterator&lt;std::basic_string&lt;char&gt;*&gt;, std::basic_string&lt;char&gt;*, std::basic_string&lt;char&gt; &gt;' mangled-name='_ZSt22__uninitialized_copy_aISt13move_iteratorIPSsES1_SsET0_T_S4_S3_RSaIT1_E' filepath='/usr/include/c++/4.9/bits/stl_uninitialized.h' line='277' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt22__uninitialized_copy_aISt13move_iteratorIPSsES1_SsET0_T_S4_S3_RSaIT1_E'>
@@ -14407,7 +14437,7 @@
         <member-function access='public'>
           <function-decl name='got' mangled-name='_ZN5mongo15BSONSizeTracker3gotEi' filepath='src/mongo/bson/bsonmisc.h' line='281' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo15BSONSizeTracker3gotEi'>
             <parameter type-id='type-id-1526' is-artificial='yes'/>
-            <parameter type-id='type-id-29' is-artificial='yes'/>
+            <parameter type-id='type-id-29'/>
             <return type-id='type-id-61'/>
           </function-decl>
         </member-function>
@@ -14589,7 +14619,7 @@
         <member-function access='public' destructor='yes'>
           <function-decl name='~BSONObjBuilder' filepath='src/mongo/bson/bsonobjbuilder.h' line='115' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1517' is-artificial='yes'/>
-            <parameter type-id='type-id-29'/>
+            <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-61'/>
           </function-decl>
         </member-function>
@@ -14603,7 +14633,7 @@
         <member-function access='public' destructor='yes'>
           <function-decl name='~BSONObjBuilder' mangled-name='_ZN5mongo14BSONObjBuilderD2Ev' filepath='src/mongo/bson/bsonobjbuilder.h' line='115' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo14BSONObjBuilderD2Ev'>
             <parameter type-id='type-id-1517' is-artificial='yes'/>
-            <parameter type-id='type-id-29'/>
+            <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-61'/>
           </function-decl>
         </member-function>
@@ -14888,14 +14918,14 @@
         <member-function access='public' destructor='yes'>
           <function-decl name='~_BufBuilder' filepath='src/mongo/bson/util/builder.h' line='138' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-1587' is-artificial='yes'/>
-            <parameter type-id='type-id-29'/>
+            <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-61'/>
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
           <function-decl name='~_BufBuilder' mangled-name='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEED2Ev' filepath='src/mongo/bson/util/builder.h' line='138' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo11_BufBuilderINS_16TrivialAllocatorEED2Ev'>
             <parameter type-id='type-id-1587' is-artificial='yes'/>
-            <parameter type-id='type-id-29'/>
+            <parameter type-id='type-id-29' is-artificial='yes'/>
             <return type-id='type-id-61'/>
           </function-decl>
         </member-function>
@@ -15901,7 +15931,7 @@
       </function-decl>
       <var-decl name='saslGlobalParams' type-id='type-id-1561' mangled-name='_ZN5mongo16saslGlobalParamsE' visibility='default' filepath='src/mongo/db/auth/sasl_options.cpp' line='42' column='1' elf-symbol-id='_ZN5mongo16saslGlobalParamsE'/>
       <function-decl name='addSASLOptions' mangled-name='_ZN5mongo14addSASLOptionsEPNS_17optionenvironment13OptionSectionE' filepath='src/mongo/db/auth/sasl_options.cpp' line='56' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo14addSASLOptionsEPNS_17optionenvironment13OptionSectionE'>
-        <parameter type-id='type-id-1636'/>
+        <parameter type-id='type-id-1636' name='options' filepath='src/mongo/db/auth/sasl_options.cpp' line='56' column='1'/>
         <return type-id='type-id-516'/>
       </function-decl>
       <function-decl name='storeSASLOptions' mangled-name='_ZN5mongo16storeSASLOptionsERKNS_17optionenvironment11EnvironmentE' filepath='src/mongo/db/auth/sasl_options.cpp' line='91' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo16storeSASLOptionsERKNS_17optionenvironment11EnvironmentE'>
