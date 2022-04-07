@@ -12,8 +12,9 @@ RUN dnf install -y \
 	gcc-c++ \
 	libtool \
 	libxml2-devel \
-	python3-pyxdg \
+	python3-koji \
 	python3-mock \
+	python3-pyxdg \
 	six \
 	wget
 
