@@ -77,6 +77,10 @@ Options
    Do not show information about where in the *second shared library*
    the respective type was changed.
 
+️  * ``--ignore-soname``
+
+    Ignore differences in the SONAME when doing a comparison
+
   * ``--weak-mode``
 
     This triggers the weak mode of ``abicompat``.  In this mode, only
