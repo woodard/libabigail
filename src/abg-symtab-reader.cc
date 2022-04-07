@@ -481,6 +481,7 @@ symtab::get_symbol_value(Elf* elf_handle,
 			 const elf_symbol_sptr& symbol_sptr)
 {
   const bool is_arm32 = elf_helpers::architecture_is_arm32(elf_handle);
+  const bool is_arm64 = elf_helpers::architecture_is_arm64(elf_handle);
   const bool is_ppc64 = elf_helpers::architecture_is_ppc64(elf_handle);
 
   GElf_Addr symbol_value =
@@ -498,6 +499,11 @@ symtab::get_symbol_value(Elf* elf_handle,
 	update_function_entry_address_symbol_map(elf_handle, elf_symbol,
 						 symbol_sptr);
     }
+  if (is_arm64)
+    // Copy bit 55 over bits 56 to 63 which may be tag information.
+    symbol_value = symbol_value & (1ULL<<55)
+		   ? symbol_value | (0xffULL<<56)
+		   : symbol_value &~ (0xffULL<<56);
 
   return symbol_value;
 }
