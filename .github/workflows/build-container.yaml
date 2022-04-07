@@ -43,7 +43,7 @@ jobs:
           sudo rm -rf /opt/ghc
 
       - name: Pull previous layers for cache
-        run: docker pull ghcr.io/woodard/libabigail-${{ matrix.ubuntu }}:latest || echo "No container to pull"
+        run: docker pull ghcr.io/woodard/libabigail:latest || echo "No container to pull"
 
       - name: Build Container
         run: |
