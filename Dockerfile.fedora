@@ -1,0 +1,19 @@
+FROM fedora:latest
+
+RUN dnf install -y git gcc-c++ automake autoconf libtool elfutils-devel libxml2-devel \
+    cpio wget six python3-pyxdg python3-mock
+RUN git clone git://sourceware.org/git/libabigail.git && cd libabigail && mkdir build && \
+    autoreconf -i && cd build && CXXFLAGS="-g3 -fvar-tracking-assignments \
+    -gstatement-frontiers -gvariable-location-views -grecord-gcc-switches -pipe -Wall \
+    -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -Wp,-D_GLIBCXX_ASSERTIONS \
+    -fstack-protector-strong -fstack-clash-protection -fcf-protection \
+    -fasynchronous-unwind-tables -O2" CFLAGS="-g3 -fvar-tracking-assignments \
+    -gstatement-frontiers -gvariable-location-views -grecord-gcc-switches -pipe -Wall \
+    -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -Wp,-D_GLIBCXX_ASSERTIONS \
+    -fstack-protector-strong -fstack-clash-protection -fcf-protection \
+    -fasynchronous-unwind-tables -O2" LDFLAGS="-Wl,--no-undefined" \
+    ../configure --prefix=/opt/libabigail --enable-rpm=yes && make -j4 && make install && \
+    cd ../.. && rm -rf libabigail
+RUN dnf remove -y git gcc-c++ automake autoconf libtool elfutils-devel libxml2-devel \
+    cpio wget six python3-pyxdg python3-mock && dnf clean all
+
