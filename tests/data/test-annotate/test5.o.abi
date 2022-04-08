@@ -6,6 +6,8 @@
   <abi-instr address-size='64' path='test.cc' comp-dir-path='/home/dodji/libabigailtests' language='LANG_C_plus_plus'>
     <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-2'/>
+    <!-- void -->
+    <type-decl name='void' id='type-id-1'/>
     <!-- void bar(void*) -->
     <function-decl name='bar' mangled-name='_Z3barPv' filepath='/home/dodji/libabigailtests/test.cc' line='2' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z3barPv'>
       <!-- parameter of type 'void*' -->
@@ -13,7 +15,5 @@
       <!-- void -->
       <return type-id='type-id-1'/>
     </function-decl>
-    <!-- void -->
-    <type-decl name='void' id='type-id-1'/>
   </abi-instr>
 </abi-corpus>

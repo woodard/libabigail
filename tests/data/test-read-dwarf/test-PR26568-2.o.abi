@@ -24,10 +24,10 @@
       </data-member>
     </class-decl>
     <pointer-type-def type-id='type-id-3' size-in-bits='64' id='type-id-6'/>
+    <type-decl name='void' id='type-id-7'/>
     <function-decl name='fun' mangled-name='fun' filepath='tests/data/test-read-common/test-PR26568-2.c' line='13' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='fun'>
       <parameter type-id='type-id-6' name='a' filepath='tests/data/test-read-common/test-PR26568-2.c' line='13' column='1'/>
       <return type-id='type-id-7'/>
     </function-decl>
-    <type-decl name='void' id='type-id-7'/>
   </abi-instr>
 </abi-corpus>

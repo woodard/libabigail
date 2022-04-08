@@ -4,8 +4,8 @@
 
   1 function with some indirect sub-type change:
 
-    [C] 'function void lua_callk(lua_State*, int, int, lua_KContext, lua_KFunction)' at lapi.c:908:1 has some indirect sub-type changes:
-      parameter 5 of type 'typedef lua_KFunction' has sub-type changes:
+    [C] 'function int lua_yieldk(lua_State*, int, lua_KContext, lua_KFunction)' at ldo.c:690:1 has some indirect sub-type changes:
+      parameter 4 of type 'typedef lua_KFunction' changed:
         underlying type 'int (lua_State*, int, typedef lua_KContext)*' changed:
           in pointed to type 'function type int (lua_State*, int, typedef lua_KContext)':
 

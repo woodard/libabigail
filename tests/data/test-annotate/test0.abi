@@ -58,6 +58,10 @@
     <reference-type-def kind='lvalue' type-id='type-id-10' size-in-bits='64' id='type-id-11'/>
     <!-- volatile const long int -->
     <qualified-type-def type-id='type-id-8' volatile='yes' id='type-id-12'/>
+    <!-- variadic parameter type -->
+    <type-decl name='variadic parameter type' id='type-id-13'/>
+    <!-- void -->
+    <type-decl name='void' id='type-id-14'/>
     <!-- int global -->
     <var-decl name='global' type-id='type-id-2' mangled-name='global' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='3' column='1' elf-symbol-id='global'/>
     <!-- namespace ns0 -->
@@ -68,8 +72,6 @@
         <enumerator name='e0' value='0'/>
         <enumerator name='e1' value='1'/>
       </enum-decl>
-      <!-- typedef long long int ns0::long_long -->
-      <typedef-decl name='long_long' type-id='type-id-4' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='25' column='1' id='type-id-13'/>
       <!-- void ns0::bar(const int, ...) -->
       <function-decl name='bar' mangled-name='_ZN3ns03barEiz' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='12' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN3ns03barEiz'>
         <!-- parameter of type 'const int' -->
@@ -92,12 +94,14 @@
         <!-- void -->
         <return type-id='type-id-14'/>
       </function-decl>
+      <!-- typedef long long int ns0::long_long -->
+      <typedef-decl name='long_long' type-id='type-id-4' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='25' column='1' id='type-id-15'/>
       <!-- ns0::long_long ns0::baz2(int&) -->
       <function-decl name='baz2' mangled-name='_ZN3ns04baz2ERi' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='28' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN3ns04baz2ERi'>
         <!-- parameter of type 'int&' -->
         <parameter type-id='type-id-9' name='c' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='28' column='1'/>
         <!-- typedef ns0::long_long -->
-        <return type-id='type-id-13'/>
+        <return type-id='type-id-15'/>
       </function-decl>
       <!-- long int ns0::foo(char*, volatile const long int) -->
       <function-decl name='foo' mangled-name='_ZN3ns03fooEPcl' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='45' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN3ns03fooEPcl'>
@@ -114,7 +118,5 @@
       <!-- int -->
       <return type-id='type-id-2'/>
     </function-decl>
-    <!-- void -->
-    <type-decl name='void' id='type-id-14'/>
   </abi-instr>
 </abi-corpus>
