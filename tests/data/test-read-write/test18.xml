@@ -19,9 +19,9 @@
       </function-decl>
     </member-function>
   </class-decl>
-  <typedef-decl name='stype' type-id='type-id-3' filepath='../../prtests/test8.cc' line='26' column='11' id='type-id-5'/>
   <pointer-type-def type-id='type-id-3' size-in-bits='64' alignment-in-bits='64' id='type-id-4'/>
   <reference-type-def kind='lvalue' type-id='type-id-5' size-in-bits='64' alignment-in-bits='64' id='type-id-6'/>
+  <typedef-decl name='stype' type-id='type-id-3' filepath='../../prtests/test8.cc' line='26' column='11' id='type-id-5'/>
   <function-decl name='foo' mangled-name='_Z3fooR1S' filepath='../../prtests/test8.cc' line='29' column='1' visibility='default' binding='global' size-in-bits='8' alignment-in-bits='8'>
     <parameter type-id='type-id-6'/>
     <return type-id='type-id-1'/>

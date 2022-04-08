@@ -114,6 +114,7 @@
     <pointer-type-def type-id='type-id-8' size-in-bits='64' id='type-id-11'/>
     <pointer-type-def type-id='type-id-13' size-in-bits='64' id='type-id-15'/>
     <pointer-type-def type-id='type-id-15' size-in-bits='64' id='type-id-12'/>
+    <type-decl name='void' id='type-id-13'/>
     <function-decl name='foo' mangled-name='_Z3fooR2s0' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='42' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z3fooR2s0'>
       <parameter type-id='type-id-14' name='s' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='42' column='1'/>
       <return type-id='type-id-13'/>
@@ -121,6 +122,5 @@
     <function-decl name='main' mangled-name='main' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='48' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='main'>
       <return type-id='type-id-3'/>
     </function-decl>
-    <type-decl name='void' id='type-id-13'/>
   </abi-instr>
 </abi-corpus>

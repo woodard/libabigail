@@ -13857,10 +13857,6 @@ build_typedef_type(read_context&	ctxt,
     if (loc)
       result = lookup_typedef_type_per_location(loc.expand(), *corp);
 
-  if (!ctxt.odr_is_relevant(die))
-    if (typedef_decl_sptr t = is_typedef(ctxt.lookup_artifact_from_die(die)))
-      result = t;
-
   if (!result)
     {
       type_base_sptr utype;
