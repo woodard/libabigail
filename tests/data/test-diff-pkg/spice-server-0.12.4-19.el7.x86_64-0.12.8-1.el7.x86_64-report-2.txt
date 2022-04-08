@@ -29,87 +29,7 @@
                 in pointed to type 'typedef QXLState' at spice-qxl.h:35:1:
                   underlying type 'struct QXLState' at reds.h:93:1 changed:
                     type size hasn't changed
-                    2 data member changes:
-                      type of 'QXLInterface* qif' changed:
-                        in pointed to type 'typedef QXLInterface' at spice-qxl.h:33:1:
-                          underlying type 'struct QXLInterface' at spice.h:230:1 changed:
-                            type size hasn't changed
-                            15 data member changes:
-                              type of 'void (QXLInstance*, QXLWorker*)* attache_worker' changed:
-                                in pointed to type 'function type void (QXLInstance*, QXLWorker*)':
-                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
-                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
-                                      underlying type 'struct QXLInstance' changed, as being reported
-                              type of 'void (QXLInstance*, int)* set_compression_level' changed:
-                                in pointed to type 'function type void (QXLInstance*, int)':
-                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
-                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
-                                      underlying type 'struct QXLInstance' changed, as being reported
-                              type of 'void (QXLInstance*, typedef uint32_t)* set_mm_time' changed:
-                                in pointed to type 'function type void (QXLInstance*, typedef uint32_t)':
-                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
-                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
-                                      underlying type 'struct QXLInstance' changed, as being reported
-                              type of 'void (QXLInstance*, QXLDevInitInfo*)* get_init_info' changed:
-                                in pointed to type 'function type void (QXLInstance*, QXLDevInitInfo*)':
-                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
-                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
-                                      underlying type 'struct QXLInstance' changed, as being reported
-                              type of 'int (QXLInstance*, QXLCommandExt*)* get_command' changed:
-                                in pointed to type 'function type int (QXLInstance*, QXLCommandExt*)':
-                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
-                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
-                                      underlying type 'struct QXLInstance' changed, as being reported
-                              type of 'int (QXLInstance*)* req_cmd_notification' changed:
-                                in pointed to type 'function type int (QXLInstance*)':
-                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
-                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
-                                      underlying type 'struct QXLInstance' changed, as being reported
-                              type of 'void (QXLInstance*, struct QXLReleaseInfoExt)* release_resource' changed:
-                                in pointed to type 'function type void (QXLInstance*, struct QXLReleaseInfoExt)':
-                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
-                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
-                                      underlying type 'struct QXLInstance' changed, as being reported
-                              type of 'int (QXLInstance*, QXLCommandExt*)* get_cursor_command' changed:
-                                in pointed to type 'function type int (QXLInstance*, QXLCommandExt*)':
-                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
-                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
-                                      underlying type 'struct QXLInstance' changed, as being reported
-                              type of 'int (QXLInstance*)* req_cursor_notification' changed:
-                                in pointed to type 'function type int (QXLInstance*)':
-                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
-                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
-                                      underlying type 'struct QXLInstance' changed, as being reported
-                              type of 'void (QXLInstance*, typedef uint32_t)* notify_update' changed:
-                                in pointed to type 'function type void (QXLInstance*, typedef uint32_t)':
-                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
-                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
-                                      underlying type 'struct QXLInstance' changed, as being reported
-                              type of 'int (QXLInstance*)* flush_resources' changed:
-                                in pointed to type 'function type int (QXLInstance*)':
-                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
-                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
-                                      underlying type 'struct QXLInstance' changed, as being reported
-                              type of 'void (QXLInstance*, typedef uint64_t)* async_complete' changed:
-                                in pointed to type 'function type void (QXLInstance*, typedef uint64_t)':
-                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
-                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
-                                      underlying type 'struct QXLInstance' changed, as being reported
-                              type of 'void (QXLInstance*, typedef uint32_t, QXLRect*, typedef uint32_t)* update_area_complete' changed:
-                                in pointed to type 'function type void (QXLInstance*, typedef uint32_t, QXLRect*, typedef uint32_t)':
-                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
-                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
-                                      underlying type 'struct QXLInstance' changed, as being reported
-                              type of 'void (QXLInstance*, typedef uint8_t, uint8_t*)* set_client_capabilities' changed:
-                                in pointed to type 'function type void (QXLInstance*, typedef uint8_t, uint8_t*)':
-                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
-                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
-                                      underlying type 'struct QXLInstance' changed, as being reported
-                              type of 'int (QXLInstance*, VDAgentMonitorsConfig*)* client_monitors_config' changed:
-                                in pointed to type 'function type int (QXLInstance*, VDAgentMonitorsConfig*)':
-                                  parameter 1 of type 'QXLInstance*' has sub-type changes:
-                                    in pointed to type 'typedef QXLInstance' at spice-qxl.h:34:1:
-                                      underlying type 'struct QXLInstance' changed, as being reported
+                    1 data member change:
                       type of 'RedDispatcher* dispatcher' changed:
                         in pointed to type 'typedef RedDispatcher' at red_worker.h:87:1:
                           underlying type 'struct RedDispatcher' at red_dispatcher.c:53:1 changed:
@@ -314,11 +234,7 @@
                                                                                             in pointed to type 'function type void (RedChannelClient*, PipeItem*)':
                                                                                               parameter 1 of type 'RedChannelClient*' has sub-type changes:
                                                                                                 pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
-                                                                                        type of 'channel_hold_pipe_item_proc hold_item' changed:
-                                                                                          underlying type 'void (RedChannelClient*, PipeItem*)*' changed:
-                                                                                            in pointed to type 'function type void (RedChannelClient*, PipeItem*)':
-                                                                                              parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                                                                                pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+                                                                                        type of 'channel_hold_pipe_item_proc hold_item' changed, as reported earlier
                                                                                         type of 'channel_release_pipe_item_proc release_item' changed:
                                                                                           underlying type 'void (RedChannelClient*, PipeItem*, int)*' changed:
                                                                                             in pointed to type 'function type void (RedChannelClient*, PipeItem*, int)':
@@ -334,11 +250,7 @@
                                                                                             in pointed to type 'function type void (RedChannelClient*, typedef uint16_t, typedef uint32_t, uint8_t*)':
                                                                                               parameter 1 of type 'RedChannelClient*' has sub-type changes:
                                                                                                 pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
-                                                                                        type of 'channel_handle_migrate_flush_mark_proc handle_migrate_flush_mark' changed:
-                                                                                          underlying type 'int (RedChannelClient*)*' changed:
-                                                                                            in pointed to type 'function type int (RedChannelClient*)':
-                                                                                              parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                                                                                pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+                                                                                        type of 'channel_handle_migrate_flush_mark_proc handle_migrate_flush_mark' changed, as reported earlier
                                                                                         type of 'channel_handle_migrate_data_proc handle_migrate_data' changed:
                                                                                           underlying type 'int (RedChannelClient*, typedef uint32_t, void*)*' changed:
                                                                                             in pointed to type 'function type int (RedChannelClient*, typedef uint32_t, void*)':
@@ -363,16 +275,8 @@
                                                                                                 pointed to type 'typedef RedClient' changed at red_channel.h:137:1, as reported earlier
                                                                                               parameter 3 of type 'RedsStream*' has sub-type changes:
                                                                                                 pointed to type 'typedef RedsStream' changed at red_channel.h:134:1, as reported earlier
-                                                                                        type of 'channel_client_disconnect_proc disconnect' changed:
-                                                                                          underlying type 'void (RedChannelClient*)*' changed:
-                                                                                            in pointed to type 'function type void (RedChannelClient*)':
-                                                                                              parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                                                                                pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
-                                                                                        type of 'channel_client_migrate_proc migrate' changed:
-                                                                                          underlying type 'void (RedChannelClient*)*' changed:
-                                                                                            in pointed to type 'function type void (RedChannelClient*)':
-                                                                                              parameter 1 of type 'RedChannelClient*' has sub-type changes:
-                                                                                                pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+                                                                                        type of 'channel_client_disconnect_proc disconnect' changed, as reported earlier
+                                                                                        type of 'channel_client_migrate_proc migrate' changed, as reported earlier
                                                                             type of 'RedWorker* worker' changed:
                                                                               pointed to type 'struct RedWorker' changed, as being reported
                                                               type of 'CursorChannel* cursor_channel' changed:
@@ -390,9 +294,7 @@
                                                                         in pointed to type 'typedef QXLState' at spice-qxl.h:35:1:
                                                                           underlying type 'struct QXLState' at reds.h:93:1 changed:
                                                                             type size hasn't changed
-                                                                            2 data member changes:
-                                                                              type of 'QXLInterface* qif' changed:
-                                                                                pointed to type 'typedef QXLInterface' changed at spice.h:102:1, as reported earlier
+                                                                            1 data member change:
                                                                               type of 'RedDispatcher* dispatcher' changed:
                                                                                 pointed to type 'struct RedDispatcher' changed, as being reported
                                                               type of 'RedDispatcher* red_dispatcher' changed:
@@ -905,12 +807,7 @@
                                         parameter 1 of type 'SndChannel*' has sub-type changes:
                                           in pointed to type 'typedef SndChannel' at snd_worker.c:74:1:
                                             underlying type 'struct SndChannel' changed, as being reported
-                                  type of 'snd_channel_cleanup_channel_proc cleanup' changed:
-                                    underlying type 'void (SndChannel*)*' changed:
-                                      in pointed to type 'function type void (SndChannel*)':
-                                        parameter 1 of type 'SndChannel*' has sub-type changes:
-                                          in pointed to type 'typedef SndChannel' at snd_worker.c:74:1:
-                                            underlying type 'struct SndChannel' changed, as being reported
+                                  type of 'snd_channel_cleanup_channel_proc cleanup' changed, as reported earlier
                           type of 'SndWorker* next' changed:
                             in pointed to type 'typedef SndWorker' at snd_worker.c:80:1:
                               underlying type 'struct SndWorker' changed, as being reported

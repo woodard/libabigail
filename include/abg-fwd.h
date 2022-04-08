@@ -870,6 +870,10 @@ type_base*
 peel_typedef_pointer_or_reference_type(const type_base* type);
 
 type_base*
+peel_typedef_pointer_or_reference_type(const type_base* type,
+				       bool peel_qual_type);
+
+type_base*
 peel_pointer_or_reference_type(const type_base *type,
 			       bool peel_qualified_type = true);
 
