@@ -3201,7 +3201,9 @@
       </member-function>
     </class-decl>
     <pointer-type-def type-id='1fc4034c' size-in-bits='32' id='57d98aaa'/>
+    <pointer-type-def type-id='d27ea7e1' size-in-bits='32' id='57d98aab'/>
     <pointer-type-def type-id='ea9788c3' size-in-bits='32' id='1cdc10c3'/>
+    <pointer-type-def type-id='e6c9fab0' size-in-bits='32' id='1cdc10c4'/>
     <pointer-type-def type-id='f41387f0' size-in-bits='32' id='081c2b23'/>
     <pointer-type-def type-id='aa12d1ba' size-in-bits='32' id='822cd80b'/>
     <pointer-type-def type-id='d357872a' size-in-bits='32' id='fae49a1f'/>
@@ -15192,81 +15194,81 @@
       <parameter type-id='081c2b23' name='amgr' filepath='frameworks/base/native/android/asset_manager.cpp' line='66' column='1'/>
       <parameter type-id='80f4b756' name='filename' filepath='frameworks/base/native/android/asset_manager.cpp' line='66' column='1'/>
       <parameter type-id='95e97e5e' name='mode' filepath='frameworks/base/native/android/asset_manager.cpp' line='66' column='1'/>
-      <return type-id='57d98aaa'/>
+      <return type-id='57d98aab'/>
     </function-decl>
     <function-decl name='AAssetManager_openDir' mangled-name='AAssetManager_openDir' filepath='frameworks/base/native/android/asset_manager.cpp' line='94' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='AAssetManager_openDir@@LIBANDROID'>
       <parameter type-id='081c2b23' name='amgr' filepath='frameworks/base/native/android/asset_manager.cpp' line='94' column='1'/>
       <parameter type-id='80f4b756' name='dirName' filepath='frameworks/base/native/android/asset_manager.cpp' line='94' column='1'/>
-      <return type-id='1cdc10c3'/>
+      <return type-id='1cdc10c4'/>
     </function-decl>
     <function-decl name='AAssetDir_getNextFileName' mangled-name='AAssetDir_getNextFileName' filepath='frameworks/base/native/android/asset_manager.cpp' line='104' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='AAssetDir_getNextFileName@@LIBANDROID'>
-      <parameter type-id='1cdc10c3' name='assetDir' filepath='frameworks/base/native/android/asset_manager.cpp' line='104' column='1'/>
+      <parameter type-id='1cdc10c4' name='assetDir' filepath='frameworks/base/native/android/asset_manager.cpp' line='104' column='1'/>
       <return type-id='80f4b756'/>
     </function-decl>
     <function-decl name='AAssetDir_rewind' mangled-name='AAssetDir_rewind' filepath='frameworks/base/native/android/asset_manager.cpp' line='129' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='AAssetDir_rewind@@LIBANDROID'>
-      <parameter type-id='1cdc10c3' name='assetDir' filepath='frameworks/base/native/android/asset_manager.cpp' line='129' column='1'/>
+      <parameter type-id='1cdc10c4' name='assetDir' filepath='frameworks/base/native/android/asset_manager.cpp' line='129' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='AAssetDir_close' mangled-name='AAssetDir_close' filepath='frameworks/base/native/android/asset_manager.cpp' line='140' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='AAssetDir_close@@LIBANDROID'>
-      <parameter type-id='1cdc10c3' name='assetDir' filepath='frameworks/base/native/android/asset_manager.cpp' line='140' column='1'/>
+      <parameter type-id='1cdc10c4' name='assetDir' filepath='frameworks/base/native/android/asset_manager.cpp' line='140' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='AAsset_read' mangled-name='AAsset_read' filepath='frameworks/base/native/android/asset_manager.cpp' line='149' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='AAsset_read@@LIBANDROID'>
-      <parameter type-id='57d98aaa' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='149' column='1'/>
+      <parameter type-id='57d98aab' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='149' column='1'/>
       <parameter type-id='eaa32e2f' name='buf' filepath='frameworks/base/native/android/asset_manager.cpp' line='149' column='1'/>
       <parameter type-id='b59d7dce' name='count' filepath='frameworks/base/native/android/asset_manager.cpp' line='149' column='1'/>
       <return type-id='95e97e5e'/>
     </function-decl>
     <function-decl name='AAsset_seek' mangled-name='AAsset_seek' filepath='frameworks/base/native/android/asset_manager.cpp' line='154' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='AAsset_seek@@LIBANDROID'>
-      <parameter type-id='57d98aaa' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='154' column='1'/>
+      <parameter type-id='57d98aab' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='154' column='1'/>
       <parameter type-id='ad707ada' name='offset' filepath='frameworks/base/native/android/asset_manager.cpp' line='154' column='1'/>
       <parameter type-id='95e97e5e' name='whence' filepath='frameworks/base/native/android/asset_manager.cpp' line='154' column='1'/>
       <return type-id='ad707ada'/>
     </function-decl>
     <function-decl name='AAsset_seek64' mangled-name='AAsset_seek64' filepath='frameworks/base/native/android/asset_manager.cpp' line='159' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='AAsset_seek64@@LIBANDROID'>
-      <parameter type-id='57d98aaa' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='159' column='1'/>
+      <parameter type-id='57d98aab' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='159' column='1'/>
       <parameter type-id='05d4c620' name='offset' filepath='frameworks/base/native/android/asset_manager.cpp' line='159' column='1'/>
       <parameter type-id='95e97e5e' name='whence' filepath='frameworks/base/native/android/asset_manager.cpp' line='159' column='1'/>
       <return type-id='05d4c620'/>
     </function-decl>
     <function-decl name='AAsset_close' mangled-name='AAsset_close' filepath='frameworks/base/native/android/asset_manager.cpp' line='164' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='AAsset_close@@LIBANDROID'>
-      <parameter type-id='57d98aaa' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='164' column='1'/>
+      <parameter type-id='57d98aab' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='164' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='AAsset_getBuffer' mangled-name='AAsset_getBuffer' filepath='frameworks/base/native/android/asset_manager.cpp' line='170' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='AAsset_getBuffer@@LIBANDROID'>
-      <parameter type-id='57d98aaa' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='170' column='1'/>
+      <parameter type-id='57d98aab' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='170' column='1'/>
       <return type-id='eaa32e2f'/>
     </function-decl>
     <function-decl name='AAsset_getLength' mangled-name='AAsset_getLength' filepath='frameworks/base/native/android/asset_manager.cpp' line='175' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='AAsset_getLength@@LIBANDROID'>
-      <parameter type-id='57d98aaa' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='175' column='1'/>
+      <parameter type-id='57d98aab' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='175' column='1'/>
       <return type-id='ad707ada'/>
     </function-decl>
     <function-decl name='AAsset_getLength64' mangled-name='AAsset_getLength64' filepath='frameworks/base/native/android/asset_manager.cpp' line='180' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='AAsset_getLength64@@LIBANDROID'>
-      <parameter type-id='57d98aaa' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='180' column='1'/>
+      <parameter type-id='57d98aab' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='180' column='1'/>
       <return type-id='05d4c620'/>
     </function-decl>
     <function-decl name='AAsset_getRemainingLength' mangled-name='AAsset_getRemainingLength' filepath='frameworks/base/native/android/asset_manager.cpp' line='185' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='AAsset_getRemainingLength@@LIBANDROID'>
-      <parameter type-id='57d98aaa' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='185' column='1'/>
+      <parameter type-id='57d98aab' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='185' column='1'/>
       <return type-id='ad707ada'/>
     </function-decl>
     <function-decl name='AAsset_getRemainingLength64' mangled-name='AAsset_getRemainingLength64' filepath='frameworks/base/native/android/asset_manager.cpp' line='190' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='AAsset_getRemainingLength64@@LIBANDROID'>
-      <parameter type-id='57d98aaa' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='190' column='1'/>
+      <parameter type-id='57d98aab' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='190' column='1'/>
       <return type-id='05d4c620'/>
     </function-decl>
     <function-decl name='AAsset_openFileDescriptor' mangled-name='AAsset_openFileDescriptor' filepath='frameworks/base/native/android/asset_manager.cpp' line='195' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='AAsset_openFileDescriptor@@LIBANDROID'>
-      <parameter type-id='57d98aaa' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='195' column='1'/>
+      <parameter type-id='57d98aab' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='195' column='1'/>
       <parameter type-id='e90c4311' name='outStart' filepath='frameworks/base/native/android/asset_manager.cpp' line='195' column='1'/>
       <parameter type-id='e90c4311' name='outLength' filepath='frameworks/base/native/android/asset_manager.cpp' line='195' column='1'/>
       <return type-id='95e97e5e'/>
     </function-decl>
     <function-decl name='AAsset_openFileDescriptor64' mangled-name='AAsset_openFileDescriptor64' filepath='frameworks/base/native/android/asset_manager.cpp' line='206' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='AAsset_openFileDescriptor64@@LIBANDROID'>
-      <parameter type-id='57d98aaa' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='206' column='1'/>
+      <parameter type-id='57d98aab' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='206' column='1'/>
       <parameter type-id='b8263143' name='outStart' filepath='frameworks/base/native/android/asset_manager.cpp' line='206' column='1'/>
       <parameter type-id='b8263143' name='outLength' filepath='frameworks/base/native/android/asset_manager.cpp' line='206' column='1'/>
       <return type-id='95e97e5e'/>
     </function-decl>
     <function-decl name='AAsset_isAllocated' mangled-name='AAsset_isAllocated' filepath='frameworks/base/native/android/asset_manager.cpp' line='211' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='AAsset_isAllocated@@LIBANDROID'>
-      <parameter type-id='57d98aaa' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='211' column='1'/>
+      <parameter type-id='57d98aab' name='asset' filepath='frameworks/base/native/android/asset_manager.cpp' line='211' column='1'/>
       <return type-id='95e97e5e'/>
     </function-decl>
     <typedef-decl name='AAssetManager' type-id='7907d453' filepath='frameworks/native/include/android/asset_manager.h' line='54' column='1' id='f41387f0'/>
@@ -18388,15 +18390,16 @@
   </abi-instr>
   <abi-instr address-size='32' path='frameworks/base/native/android/hardware_buffer_jni.cpp' language='LANG_C_plus_plus_14'>
     <pointer-type-def type-id='4d45f31e' size-in-bits='32' id='cdc60214'/>
+    <pointer-type-def type-id='7a58eebd' size-in-bits='32' id='cdc60215'/>
     <class-decl name='AHardwareBuffer' is-struct='yes' visibility='default' is-declaration-only='yes' id='4d45f31e'/>
     <function-decl name='AHardwareBuffer_fromHardwareBuffer' mangled-name='AHardwareBuffer_fromHardwareBuffer' filepath='frameworks/base/native/android/hardware_buffer_jni.cpp' line='25' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='AHardwareBuffer_fromHardwareBuffer@@LIBANDROID'>
       <parameter type-id='fae49a1f' name='env' filepath='frameworks/base/native/android/hardware_buffer_jni.cpp' line='25' column='1'/>
       <parameter type-id='96f3d089' name='hardwareBufferObj' filepath='frameworks/base/native/android/hardware_buffer_jni.cpp' line='25' column='1'/>
-      <return type-id='cdc60214'/>
+      <return type-id='cdc60215'/>
     </function-decl>
     <function-decl name='AHardwareBuffer_toHardwareBuffer' mangled-name='AHardwareBuffer_toHardwareBuffer' filepath='frameworks/base/native/android/hardware_buffer_jni.cpp' line='29' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='AHardwareBuffer_toHardwareBuffer@@LIBANDROID'>
       <parameter type-id='fae49a1f' name='env' filepath='frameworks/base/native/android/hardware_buffer_jni.cpp' line='29' column='1'/>
-      <parameter type-id='cdc60214' name='hardwareBuffer' filepath='frameworks/base/native/android/hardware_buffer_jni.cpp' line='29' column='1'/>
+      <parameter type-id='cdc60215' name='hardwareBuffer' filepath='frameworks/base/native/android/hardware_buffer_jni.cpp' line='29' column='1'/>
       <return type-id='96f3d089'/>
     </function-decl>
     <typedef-decl name='AHardwareBuffer' type-id='4d45f31e' filepath='frameworks/native/libs/nativewindow/include/android/hardware_buffer.h' line='333' column='1' id='7a58eebd'/>
@@ -19127,6 +19130,7 @@
   </abi-instr>
   <abi-instr address-size='32' path='frameworks/base/native/android/native_activity.cpp' language='LANG_C_plus_plus_14'>
     <pointer-type-def type-id='67c862fe' size-in-bits='32' id='37fc1694'/>
+    <pointer-type-def type-id='1471d4b9' size-in-bits='32' id='37fc1695'/>
     <qualified-type-def type-id='3d7d8cc0' const='yes' id='7411c990'/>
     <pointer-type-def type-id='7411c990' size-in-bits='32' id='5d006ec0'/>
     <pointer-type-def type-id='3d7d8cc0' size-in-bits='32' id='a68021cf'/>
@@ -19134,27 +19138,27 @@
     <class-decl name='mbstate_t' is-struct='yes' naming-typedef-id='3d7d8cc0' visibility='default' is-declaration-only='yes' id='a76d8e49'/>
     <typedef-decl name='mbstate_t' type-id='a76d8e49' filepath='bionic/libc/include/bits/mbstate_t.h' line='47' column='1' id='3d7d8cc0'/>
     <function-decl name='ANativeActivity_finish' mangled-name='ANativeActivity_finish' filepath='frameworks/base/native/android/native_activity.cpp' line='24' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ANativeActivity_finish@@LIBANDROID'>
-      <parameter type-id='37fc1694' name='activity' filepath='frameworks/base/native/android/native_activity.cpp' line='24' column='1'/>
+      <parameter type-id='37fc1695' name='activity' filepath='frameworks/base/native/android/native_activity.cpp' line='24' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='ANativeActivity_setWindowFormat' mangled-name='ANativeActivity_setWindowFormat' filepath='frameworks/base/native/android/native_activity.cpp' line='28' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ANativeActivity_setWindowFormat@@LIBANDROID'>
-      <parameter type-id='37fc1694' name='activity' filepath='frameworks/base/native/android/native_activity.cpp' line='28' column='1'/>
+      <parameter type-id='37fc1695' name='activity' filepath='frameworks/base/native/android/native_activity.cpp' line='28' column='1'/>
       <parameter type-id='3ff5601b' name='format' filepath='frameworks/base/native/android/native_activity.cpp' line='28' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='ANativeActivity_setWindowFlags' mangled-name='ANativeActivity_setWindowFlags' filepath='frameworks/base/native/android/native_activity.cpp' line='32' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ANativeActivity_setWindowFlags@@LIBANDROID'>
-      <parameter type-id='37fc1694' name='activity' filepath='frameworks/base/native/android/native_activity.cpp' line='32' column='1'/>
+      <parameter type-id='37fc1695' name='activity' filepath='frameworks/base/native/android/native_activity.cpp' line='32' column='1'/>
       <parameter type-id='8f92235e' name='addFlags' filepath='frameworks/base/native/android/native_activity.cpp' line='33' column='1'/>
       <parameter type-id='8f92235e' name='removeFlags' filepath='frameworks/base/native/android/native_activity.cpp' line='33' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='ANativeActivity_showSoftInput' mangled-name='ANativeActivity_showSoftInput' filepath='frameworks/base/native/android/native_activity.cpp' line='37' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ANativeActivity_showSoftInput@@LIBANDROID'>
-      <parameter type-id='37fc1694' name='activity' filepath='frameworks/base/native/android/native_activity.cpp' line='37' column='1'/>
+      <parameter type-id='37fc1695' name='activity' filepath='frameworks/base/native/android/native_activity.cpp' line='37' column='1'/>
       <parameter type-id='8f92235e' name='flags' filepath='frameworks/base/native/android/native_activity.cpp' line='37' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='ANativeActivity_hideSoftInput' mangled-name='ANativeActivity_hideSoftInput' filepath='frameworks/base/native/android/native_activity.cpp' line='41' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ANativeActivity_hideSoftInput@@LIBANDROID'>
-      <parameter type-id='37fc1694' name='activity' filepath='frameworks/base/native/android/native_activity.cpp' line='41' column='1'/>
+      <parameter type-id='37fc1695' name='activity' filepath='frameworks/base/native/android/native_activity.cpp' line='41' column='1'/>
       <parameter type-id='8f92235e' name='flags' filepath='frameworks/base/native/android/native_activity.cpp' line='41' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
@@ -19323,6 +19327,7 @@
     </class-decl>
     <reference-type-def kind='lvalue' type-id='4d637dbf' size-in-bits='32' id='8aae7a63'/>
     <pointer-type-def type-id='4d637dbf' size-in-bits='32' id='96ae8d47'/>
+    <pointer-type-def type-id='739fb858' size-in-bits='32' id='96ae8d48'/>
     <pointer-type-def type-id='d15bbd95' size-in-bits='32' id='2326b805'/>
     <pointer-type-def type-id='2326b805' size-in-bits='32' id='84f3f1fd'/>
     <reference-type-def kind='lvalue' type-id='7dd446db' size-in-bits='32' id='f43d11bf'/>
@@ -19476,11 +19481,11 @@
     <function-decl name='ANativeWindow_fromSurface' mangled-name='ANativeWindow_fromSurface' filepath='frameworks/base/native/android/native_window_jni.cpp' line='30' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ANativeWindow_fromSurface@@LIBANDROID'>
       <parameter type-id='fae49a1f' name='env' filepath='frameworks/base/native/android/native_window_jni.cpp' line='30' column='1'/>
       <parameter type-id='96f3d089' name='surface' filepath='frameworks/base/native/android/native_window_jni.cpp' line='30' column='1'/>
-      <return type-id='96ae8d47'/>
+      <return type-id='96ae8d48'/>
     </function-decl>
     <function-decl name='ANativeWindow_toSurface' mangled-name='ANativeWindow_toSurface' filepath='frameworks/base/native/android/native_window_jni.cpp' line='38' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ANativeWindow_toSurface@@LIBANDROID'>
       <parameter type-id='fae49a1f' name='env' filepath='frameworks/base/native/android/native_window_jni.cpp' line='38' column='1'/>
-      <parameter type-id='96ae8d47' name='window' filepath='frameworks/base/native/android/native_window_jni.cpp' line='38' column='1'/>
+      <parameter type-id='96ae8d48' name='window' filepath='frameworks/base/native/android/native_window_jni.cpp' line='38' column='1'/>
       <return type-id='96f3d089'/>
     </function-decl>
     <typedef-decl name='ANativeWindow' type-id='4d637dbf' filepath='frameworks/native/libs/nativewindow/include/android/native_window.h' line='86' column='1' id='739fb858'/>
@@ -20531,13 +20536,13 @@
       </data-member>
       <member-function access='public' constructor='yes'>
         <function-decl name='AStorageManager' mangled-name='_ZN15AStorageManagerC2Ev' filepath='frameworks/base/native/android/storage_manager.cpp' line='98' column='1' visibility='default' binding='global' size-in-bits='32'>
-          <parameter type-id='df7f8372' is-artificial='yes'/>
+          <parameter type-id='df7f8373' is-artificial='yes'/>
           <return type-id='48b5725f'/>
         </function-decl>
       </member-function>
       <member-function access='public'>
         <function-decl name='fireCallback' mangled-name='_ZN15AStorageManager12fireCallbackEPKcii' filepath='frameworks/base/native/android/storage_manager.cpp' line='120' column='1' visibility='default' binding='global' size-in-bits='32'>
-          <parameter type-id='df7f8372' is-artificial='yes'/>
+          <parameter type-id='df7f8373' is-artificial='yes'/>
           <parameter type-id='80f4b756'/>
           <parameter type-id='922df12b'/>
           <parameter type-id='922df12b'/>
@@ -20546,13 +20551,13 @@
       </member-function>
       <member-function access='public'>
         <function-decl name='initialize' mangled-name='_ZN15AStorageManager10initializeEv' filepath='frameworks/base/native/android/storage_manager.cpp' line='102' column='1' visibility='default' binding='global' size-in-bits='32'>
-          <parameter type-id='df7f8372' is-artificial='yes'/>
+          <parameter type-id='df7f8373' is-artificial='yes'/>
           <return type-id='c894953d'/>
         </function-decl>
       </member-function>
       <member-function access='public'>
         <function-decl name='mountObb' mangled-name='_ZN15AStorageManager8mountObbEPKcS1_PFvS1_iPvES2_' filepath='frameworks/base/native/android/storage_manager.cpp' line='143' column='1' visibility='default' binding='global' size-in-bits='32'>
-          <parameter type-id='df7f8372' is-artificial='yes'/>
+          <parameter type-id='df7f8373' is-artificial='yes'/>
           <parameter type-id='80f4b756'/>
           <parameter type-id='80f4b756'/>
           <parameter type-id='9299e4b4'/>
@@ -20562,7 +20567,7 @@
       </member-function>
       <member-function access='protected'>
         <function-decl name='registerObbCallback' mangled-name='_ZN15AStorageManager19registerObbCallbackEPFvPKciPvES2_' filepath='frameworks/base/native/android/storage_manager.cpp' line='74' column='1' visibility='default' binding='global' size-in-bits='32'>
-          <parameter type-id='df7f8372' is-artificial='yes'/>
+          <parameter type-id='df7f8373' is-artificial='yes'/>
           <parameter type-id='9299e4b4'/>
           <parameter type-id='eaa32e2f'/>
           <return type-id='547a22ad'/>
@@ -20570,13 +20575,13 @@
       </member-function>
       <member-function access='protected'>
         <function-decl name='getNextNonce' mangled-name='_ZN15AStorageManager12getNextNonceEv' filepath='frameworks/base/native/android/storage_manager.cpp' line='70' column='1' visibility='default' binding='global' size-in-bits='32'>
-          <parameter type-id='df7f8372' is-artificial='yes'/>
+          <parameter type-id='df7f8373' is-artificial='yes'/>
           <return type-id='3ff5601b'/>
         </function-decl>
       </member-function>
       <member-function access='public'>
         <function-decl name='unmountObb' mangled-name='_ZN15AStorageManager10unmountObbEPKcbPFvS1_iPvES2_' filepath='frameworks/base/native/android/storage_manager.cpp' line='166' column='1' visibility='default' binding='global' size-in-bits='32'>
-          <parameter type-id='df7f8372' is-artificial='yes'/>
+          <parameter type-id='df7f8373' is-artificial='yes'/>
           <parameter type-id='80f4b756'/>
           <parameter type-id='4ab96a04'/>
           <parameter type-id='9299e4b4'/>
@@ -20586,27 +20591,28 @@
       </member-function>
       <member-function access='public'>
         <function-decl name='isObbMounted' mangled-name='_ZN15AStorageManager12isObbMountedEPKc' filepath='frameworks/base/native/android/storage_manager.cpp' line='172' column='1' visibility='default' binding='global' size-in-bits='32'>
-          <parameter type-id='df7f8372' is-artificial='yes'/>
+          <parameter type-id='df7f8373' is-artificial='yes'/>
           <parameter type-id='80f4b756'/>
           <return type-id='95e97e5e'/>
         </function-decl>
       </member-function>
       <member-function access='public'>
         <function-decl name='getMountedObbPath' mangled-name='_ZN15AStorageManager17getMountedObbPathEPKc' filepath='frameworks/base/native/android/storage_manager.cpp' line='177' column='1' visibility='default' binding='global' size-in-bits='32'>
-          <parameter type-id='df7f8372' is-artificial='yes'/>
+          <parameter type-id='df7f8373' is-artificial='yes'/>
           <parameter type-id='80f4b756'/>
           <return type-id='80f4b756'/>
         </function-decl>
       </member-function>
       <member-function access='protected'>
         <function-decl name='getObbInfo' mangled-name='_ZN15AStorageManager10getObbInfoEPc' filepath='frameworks/base/native/android/storage_manager.cpp' line='83' column='1' visibility='default' binding='global' size-in-bits='32'>
-          <parameter type-id='df7f8372' is-artificial='yes'/>
+          <parameter type-id='df7f8373' is-artificial='yes'/>
           <parameter type-id='26a90f95'/>
           <return type-id='5a61729d'/>
         </function-decl>
       </member-function>
     </class-decl>
     <reference-type-def kind='lvalue' type-id='56516754' size-in-bits='32' id='e37f89be'/>
+    <pointer-type-def type-id='56516754' size-in-bits='32' id='df7f8373'/>
     <pointer-type-def type-id='6fc023b3' size-in-bits='32' id='df7f8372'/>
     <reference-type-def kind='lvalue' type-id='38e516d0' size-in-bits='32' id='7f77068a'/>
     <pointer-type-def type-id='38e516d0' size-in-bits='32' id='7376f3a6'/>
@@ -20737,7 +20743,7 @@
       </class-decl>
       <class-decl name='sp&lt;AStorageManager&gt;' size-in-bits='32' visibility='default' filepath='system/core/libutils/include/utils/StrongPointer.h' line='31' column='1' id='4c8890e6'>
         <data-member access='private' layout-offset-in-bits='0'>
-          <var-decl name='m_ptr' type-id='df7f8372' visibility='default' filepath='system/core/libutils/include/utils/StrongPointer.h' line='90' column='1'/>
+          <var-decl name='m_ptr' type-id='df7f8373' visibility='default' filepath='system/core/libutils/include/utils/StrongPointer.h' line='90' column='1'/>
         </data-member>
         <member-function access='public'>
           <function-decl name='sp' filepath='system/core/libutils/include/utils/StrongPointer.h' line='33' column='1' visibility='default' binding='global' size-in-bits='32'>
@@ -20748,7 +20754,7 @@
         <member-function access='public'>
           <function-decl name='sp' mangled-name='_ZN7android2spI15AStorageManagerEC2EPS1_' filepath='system/core/libutils/include/utils/StrongPointer.h' line='41' column='1' visibility='default' binding='global' size-in-bits='32'>
             <parameter type-id='b795223c' is-artificial='yes'/>
-            <parameter type-id='df7f8372'/>
+            <parameter type-id='df7f8373'/>
             <return type-id='48b5725f'/>
           </function-decl>
         </member-function>
@@ -20775,7 +20781,7 @@
         <member-function access='public'>
           <function-decl name='operator-&gt;' mangled-name='_ZNK7android2spI15AStorageManagerEptEv' filepath='system/core/libutils/include/utils/StrongPointer.h' line='70' column='1' visibility='default' binding='global' size-in-bits='32'>
             <parameter type-id='41bbe847' is-artificial='yes'/>
-            <return type-id='df7f8372'/>
+            <return type-id='df7f8373'/>
           </function-decl>
         </member-function>
         <member-function access='private' static='yes'>
@@ -20787,7 +20793,7 @@
         <member-function access='public'>
           <function-decl name='get' mangled-name='_ZNK7android2spI15AStorageManagerE3getEv' filepath='system/core/libutils/include/utils/StrongPointer.h' line='71' column='1' visibility='default' binding='global' size-in-bits='32'>
             <parameter type-id='41bbe847' is-artificial='yes'/>
-            <return type-id='df7f8372'/>
+            <return type-id='df7f8373'/>
           </function-decl>
         </member-function>
       </class-decl>
@@ -21611,13 +21617,13 @@
         <var-decl name='maxFrameAverageLightLevel' type-id='a6c45d85' visibility='default' filepath='system/core/libsystem/include/system/graphics.h' line='261' column='1'/>
       </data-member>
     </class-decl>
-    <pointer-type-def type-id='7a58eebd' size-in-bits='32' id='cdc60215'/>
     <pointer-type-def type-id='c58985b9' size-in-bits='32' id='9680af21'/>
     <pointer-type-def type-id='1a4a01cf' size-in-bits='32' id='e13b5c87'/>
     <pointer-type-def type-id='7df76490' size-in-bits='32' id='0373e656'/>
+    <pointer-type-def type-id='8f5a19d7' size-in-bits='32' id='0373e657'/>
     <qualified-type-def type-id='0373e656' const='yes' id='f8a9b7c9'/>
     <reference-type-def kind='lvalue' type-id='f8a9b7c9' size-in-bits='32' id='622c8d3d'/>
-    <pointer-type-def type-id='0373e656' size-in-bits='32' id='eb73d534'/>
+    <pointer-type-def type-id='0373e657' size-in-bits='32' id='eb73d534'/>
     <pointer-type-def type-id='eb73d534' size-in-bits='32' id='c5587e3a'/>
     <pointer-type-def type-id='7705ff5e' size-in-bits='32' id='97b42359'/>
     <pointer-type-def type-id='d8cb99c5' size-in-bits='32' id='b98edb26'/>
@@ -35420,15 +35426,15 @@
     <function-decl name='ASurfaceControl_createFromWindow' mangled-name='ASurfaceControl_createFromWindow' filepath='frameworks/base/native/android/surface_control.cpp' line='127' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ASurfaceControl_createFromWindow@@LIBANDROID'>
       <parameter type-id='96ae8d48' name='window' filepath='frameworks/base/native/android/surface_control.cpp' line='127' column='1'/>
       <parameter type-id='80f4b756' name='debug_name' filepath='frameworks/base/native/android/surface_control.cpp' line='127' column='1'/>
-      <return type-id='0373e656'/>
+      <return type-id='0373e657'/>
     </function-decl>
     <function-decl name='ASurfaceControl_create' mangled-name='ASurfaceControl_create' filepath='frameworks/base/native/android/surface_control.cpp' line='150' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ASurfaceControl_create@@LIBANDROID'>
-      <parameter type-id='0373e656' name='parent' filepath='frameworks/base/native/android/surface_control.cpp' line='150' column='1'/>
+      <parameter type-id='0373e657' name='parent' filepath='frameworks/base/native/android/surface_control.cpp' line='150' column='1'/>
       <parameter type-id='80f4b756' name='debug_name' filepath='frameworks/base/native/android/surface_control.cpp' line='150' column='1'/>
-      <return type-id='0373e656'/>
+      <return type-id='0373e657'/>
     </function-decl>
     <function-decl name='ASurfaceControl_release' mangled-name='ASurfaceControl_release' filepath='frameworks/base/native/android/surface_control.cpp' line='172' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ASurfaceControl_release@@LIBANDROID'>
-      <parameter type-id='0373e656' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='172' column='1'/>
+      <parameter type-id='0373e657' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='172' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='ASurfaceTransaction_create' mangled-name='ASurfaceTransaction_create' filepath='frameworks/base/native/android/surface_control.cpp' line='178' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ASurfaceTransaction_create@@LIBANDROID'>
@@ -35458,12 +35464,12 @@
     </function-decl>
     <function-decl name='ASurfaceTransactionStats_getAcquireTime' mangled-name='ASurfaceTransactionStats_getAcquireTime' filepath='frameworks/base/native/android/surface_control.cpp' line='240' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ASurfaceTransactionStats_getAcquireTime@@LIBANDROID'>
       <parameter type-id='b98edb26' name='aSurfaceTransactionStats' filepath='frameworks/base/native/android/surface_control.cpp' line='240' column='1'/>
-      <parameter type-id='0373e656' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='241' column='1'/>
+      <parameter type-id='0373e657' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='241' column='1'/>
       <return type-id='9da381c4'/>
     </function-decl>
     <function-decl name='ASurfaceTransactionStats_getPreviousReleaseFenceFd' mangled-name='ASurfaceTransactionStats_getPreviousReleaseFenceFd' filepath='frameworks/base/native/android/surface_control.cpp' line='254' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ASurfaceTransactionStats_getPreviousReleaseFenceFd@@LIBANDROID'>
       <parameter type-id='b98edb26' name='aSurfaceTransactionStats' filepath='frameworks/base/native/android/surface_control.cpp' line='255' column='1'/>
-      <parameter type-id='0373e656' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='255' column='1'/>
+      <parameter type-id='0373e657' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='255' column='1'/>
       <return type-id='95e97e5e'/>
     </function-decl>
     <function-decl name='ASurfaceTransactionStats_releaseASurfaceControls' mangled-name='ASurfaceTransactionStats_releaseASurfaceControls' filepath='frameworks/base/native/android/surface_control.cpp' line='269' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ASurfaceTransactionStats_releaseASurfaceControls@@LIBANDROID'>
@@ -35478,32 +35484,32 @@
     </function-decl>
     <function-decl name='ASurfaceTransaction_reparent' mangled-name='ASurfaceTransaction_reparent' filepath='frameworks/base/native/android/surface_control.cpp' line='307' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ASurfaceTransaction_reparent@@LIBANDROID'>
       <parameter type-id='97b42359' name='aSurfaceTransaction' filepath='frameworks/base/native/android/surface_control.cpp' line='307' column='1'/>
-      <parameter type-id='0373e656' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='308' column='1'/>
-      <parameter type-id='0373e656' name='newParentASurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='309' column='1'/>
+      <parameter type-id='0373e657' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='308' column='1'/>
+      <parameter type-id='0373e657' name='newParentASurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='309' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='ASurfaceTransaction_setVisibility' mangled-name='ASurfaceTransaction_setVisibility' filepath='frameworks/base/native/android/surface_control.cpp' line='322' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ASurfaceTransaction_setVisibility@@LIBANDROID'>
       <parameter type-id='97b42359' name='aSurfaceTransaction' filepath='frameworks/base/native/android/surface_control.cpp' line='322' column='1'/>
-      <parameter type-id='0373e656' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='323' column='1'/>
+      <parameter type-id='0373e657' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='323' column='1'/>
       <parameter type-id='ee31ee44' name='visibility' filepath='frameworks/base/native/android/surface_control.cpp' line='324' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='ASurfaceTransaction_setZOrder' mangled-name='ASurfaceTransaction_setZOrder' filepath='frameworks/base/native/android/surface_control.cpp' line='343' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ASurfaceTransaction_setZOrder@@LIBANDROID'>
       <parameter type-id='97b42359' name='aSurfaceTransaction' filepath='frameworks/base/native/android/surface_control.cpp' line='343' column='1'/>
-      <parameter type-id='0373e656' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='344' column='1'/>
+      <parameter type-id='0373e657' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='344' column='1'/>
       <parameter type-id='3ff5601b' name='z_order' filepath='frameworks/base/native/android/surface_control.cpp' line='345' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='ASurfaceTransaction_setBuffer' mangled-name='ASurfaceTransaction_setBuffer' filepath='frameworks/base/native/android/surface_control.cpp' line='355' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ASurfaceTransaction_setBuffer@@LIBANDROID'>
       <parameter type-id='97b42359' name='aSurfaceTransaction' filepath='frameworks/base/native/android/surface_control.cpp' line='355' column='1'/>
-      <parameter type-id='0373e656' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='356' column='1'/>
+      <parameter type-id='0373e657' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='356' column='1'/>
       <parameter type-id='cdc60215' name='buffer' filepath='frameworks/base/native/android/surface_control.cpp' line='357' column='1'/>
       <parameter type-id='95e97e5e' name='acquire_fence_fd' filepath='frameworks/base/native/android/surface_control.cpp' line='357' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='ASurfaceTransaction_setGeometry' mangled-name='ASurfaceTransaction_setGeometry' filepath='frameworks/base/native/android/surface_control.cpp' line='373' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ASurfaceTransaction_setGeometry@@LIBANDROID'>
       <parameter type-id='97b42359' name='aSurfaceTransaction' filepath='frameworks/base/native/android/surface_control.cpp' line='373' column='1'/>
-      <parameter type-id='0373e656' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='374' column='1'/>
+      <parameter type-id='0373e657' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='374' column='1'/>
       <parameter type-id='f48cfd5d' name='source' filepath='frameworks/base/native/android/surface_control.cpp' line='374' column='1'/>
       <parameter type-id='f48cfd5d' name='destination' filepath='frameworks/base/native/android/surface_control.cpp' line='375' column='1'/>
       <parameter type-id='3ff5601b' name='transform' filepath='frameworks/base/native/android/surface_control.cpp' line='375' column='1'/>
@@ -35511,13 +35517,13 @@
     </function-decl>
     <function-decl name='ASurfaceTransaction_setBufferTransparency' mangled-name='ASurfaceTransaction_setBufferTransparency' filepath='frameworks/base/native/android/surface_control.cpp' line='392' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ASurfaceTransaction_setBufferTransparency@@LIBANDROID'>
       <parameter type-id='97b42359' name='aSurfaceTransaction' filepath='frameworks/base/native/android/surface_control.cpp' line='392' column='1'/>
-      <parameter type-id='0373e656' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='393' column='1'/>
+      <parameter type-id='0373e657' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='393' column='1'/>
       <parameter type-id='ee31ee44' name='transparency' filepath='frameworks/base/native/android/surface_control.cpp' line='394' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='ASurfaceTransaction_setDamageRegion' mangled-name='ASurfaceTransaction_setDamageRegion' filepath='frameworks/base/native/android/surface_control.cpp' line='406' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ASurfaceTransaction_setDamageRegion@@LIBANDROID'>
       <parameter type-id='97b42359' name='aSurfaceTransaction' filepath='frameworks/base/native/android/surface_control.cpp' line='406' column='1'/>
-      <parameter type-id='0373e656' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='407' column='1'/>
+      <parameter type-id='0373e657' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='407' column='1'/>
       <parameter type-id='e88cea79' name='rects' filepath='frameworks/base/native/android/surface_control.cpp' line='408' column='1'/>
       <parameter type-id='8f92235e' name='count' filepath='frameworks/base/native/android/surface_control.cpp' line='408' column='1'/>
       <return type-id='48b5725f'/>
@@ -35529,31 +35535,31 @@
     </function-decl>
     <function-decl name='ASurfaceTransaction_setBufferAlpha' mangled-name='ASurfaceTransaction_setBufferAlpha' filepath='frameworks/base/native/android/surface_control.cpp' line='440' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ASurfaceTransaction_setBufferAlpha@@LIBANDROID'>
       <parameter type-id='97b42359' name='aSurfaceTransaction' filepath='frameworks/base/native/android/surface_control.cpp' line='440' column='1'/>
-      <parameter type-id='0373e656' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='441' column='1'/>
+      <parameter type-id='0373e657' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='441' column='1'/>
       <parameter type-id='a6c45d85' name='alpha' filepath='frameworks/base/native/android/surface_control.cpp' line='442' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='ASurfaceTransaction_setBufferDataSpace' mangled-name='ASurfaceTransaction_setBufferDataSpace' filepath='frameworks/base/native/android/surface_control.cpp' line='454' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ASurfaceTransaction_setBufferDataSpace@@LIBANDROID'>
       <parameter type-id='97b42359' name='aSurfaceTransaction' filepath='frameworks/base/native/android/surface_control.cpp' line='454' column='1'/>
-      <parameter type-id='0373e656' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='455' column='1'/>
+      <parameter type-id='0373e657' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='455' column='1'/>
       <parameter type-id='baaa46b7' name='aDataSpace' filepath='frameworks/base/native/android/surface_control.cpp' line='456' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='ASurfaceTransaction_setHdrMetadata_smpte2086' mangled-name='ASurfaceTransaction_setHdrMetadata_smpte2086' filepath='frameworks/base/native/android/surface_control.cpp' line='468' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ASurfaceTransaction_setHdrMetadata_smpte2086@@LIBANDROID'>
       <parameter type-id='97b42359' name='aSurfaceTransaction' filepath='frameworks/base/native/android/surface_control.cpp' line='468' column='1'/>
-      <parameter type-id='0373e656' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='469' column='1'/>
+      <parameter type-id='0373e657' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='469' column='1'/>
       <parameter type-id='e13b5c87' name='metadata' filepath='frameworks/base/native/android/surface_control.cpp' line='470' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='ASurfaceTransaction_setHdrMetadata_cta861_3' mangled-name='ASurfaceTransaction_setHdrMetadata_cta861_3' filepath='frameworks/base/native/android/surface_control.cpp' line='499' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ASurfaceTransaction_setHdrMetadata_cta861_3@@LIBANDROID'>
       <parameter type-id='97b42359' name='aSurfaceTransaction' filepath='frameworks/base/native/android/surface_control.cpp' line='499' column='1'/>
-      <parameter type-id='0373e656' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='500' column='1'/>
+      <parameter type-id='0373e657' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='500' column='1'/>
       <parameter type-id='9680af21' name='metadata' filepath='frameworks/base/native/android/surface_control.cpp' line='501' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='ASurfaceTransaction_setColor' mangled-name='ASurfaceTransaction_setColor' filepath='frameworks/base/native/android/surface_control.cpp' line='522' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ASurfaceTransaction_setColor@@LIBANDROID'>
       <parameter type-id='97b42359' name='aSurfaceTransaction' filepath='frameworks/base/native/android/surface_control.cpp' line='522' column='1'/>
-      <parameter type-id='0373e656' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='523' column='1'/>
+      <parameter type-id='0373e657' name='aSurfaceControl' filepath='frameworks/base/native/android/surface_control.cpp' line='523' column='1'/>
       <parameter type-id='a6c45d85' name='r' filepath='frameworks/base/native/android/surface_control.cpp' line='524' column='1'/>
       <parameter type-id='a6c45d85' name='g' filepath='frameworks/base/native/android/surface_control.cpp' line='524' column='1'/>
       <parameter type-id='a6c45d85' name='b' filepath='frameworks/base/native/android/surface_control.cpp' line='524' column='1'/>
@@ -35626,7 +35632,6 @@
         <var-decl name='producer' type-id='9d2f093d' visibility='default' filepath='frameworks/base/native/android/surface_texture.cpp' line='34' column='1'/>
       </data-member>
     </class-decl>
-    <pointer-type-def type-id='739fb858' size-in-bits='32' id='96ae8d48'/>
     <pointer-type-def type-id='3f24f9d5' size-in-bits='32' id='d2546a74'/>
     <reference-type-def kind='lvalue' type-id='b24794a9' size-in-bits='32' id='e5f7fc85'/>
     <pointer-type-def type-id='b24794a9' size-in-bits='32' id='e9f802d1'/>
@@ -36326,6 +36331,7 @@
     <pointer-type-def type-id='9f02ba15' size-in-bits='32' id='904b312d'/>
     <reference-type-def kind='lvalue' type-id='4847a5be' size-in-bits='32' id='f62d6e90'/>
     <pointer-type-def type-id='4847a5be' size-in-bits='32' id='022d8174'/>
+    <pointer-type-def type-id='f5655a8d' size-in-bits='32' id='022d8175'/>
     <qualified-type-def type-id='022d8174' const='yes' id='3467303f'/>
     <reference-type-def kind='lvalue' type-id='3467303f' size-in-bits='32' id='9770b75b'/>
     <reference-type-def kind='lvalue' type-id='022d8174' size-in-bits='32' id='bfa29416'/>
@@ -40709,40 +40715,40 @@
     <pointer-type-def type-id='d6dabff9' size-in-bits='32' id='b5e45470'/>
     <class-decl name='ANativeWindow_Buffer' is-struct='yes' visibility='default' is-declaration-only='yes' id='e90e56ba'/>
     <function-decl name='ANativeWindow_acquire' mangled-name='ANativeWindow_acquire' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='61' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ANativeWindow_acquire@@LIBANDROID'>
-      <parameter type-id='96ae8d47' name='window' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='61' column='1'/>
+      <parameter type-id='96ae8d48' name='window' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='61' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='ANativeWindow_release' mangled-name='ANativeWindow_release' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='66' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ANativeWindow_release@@LIBANDROID'>
-      <parameter type-id='96ae8d47' name='window' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='66' column='1'/>
+      <parameter type-id='96ae8d48' name='window' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='66' column='1'/>
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='ANativeWindow_getWidth' mangled-name='ANativeWindow_getWidth' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='71' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ANativeWindow_getWidth@@LIBANDROID'>
-      <parameter type-id='96ae8d47' name='window' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='71' column='1'/>
+      <parameter type-id='96ae8d48' name='window' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='71' column='1'/>
       <return type-id='3ff5601b'/>
     </function-decl>
     <function-decl name='ANativeWindow_getHeight' mangled-name='ANativeWindow_getHeight' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='75' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ANativeWindow_getHeight@@LIBANDROID'>
-      <parameter type-id='96ae8d47' name='window' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='75' column='1'/>
+      <parameter type-id='96ae8d48' name='window' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='75' column='1'/>
       <return type-id='3ff5601b'/>
     </function-decl>
     <function-decl name='ANativeWindow_getFormat' mangled-name='ANativeWindow_getFormat' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='79' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ANativeWindow_getFormat@@LIBANDROID'>
-      <parameter type-id='96ae8d47' name='window' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='79' column='1'/>
+      <parameter type-id='96ae8d48' name='window' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='79' column='1'/>
       <return type-id='3ff5601b'/>
     </function-decl>
     <function-decl name='ANativeWindow_setBuffersGeometry' mangled-name='ANativeWindow_setBuffersGeometry' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='83' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ANativeWindow_setBuffersGeometry@@LIBANDROID'>
-      <parameter type-id='96ae8d47' name='window' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='83' column='1'/>
+      <parameter type-id='96ae8d48' name='window' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='83' column='1'/>
       <parameter type-id='3ff5601b' name='width' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='84' column='1'/>
       <parameter type-id='3ff5601b' name='height' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='84' column='1'/>
       <parameter type-id='3ff5601b' name='format' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='84' column='1'/>
       <return type-id='3ff5601b'/>
     </function-decl>
     <function-decl name='ANativeWindow_lock' mangled-name='ANativeWindow_lock' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='99' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ANativeWindow_lock@@LIBANDROID'>
-      <parameter type-id='96ae8d47' name='window' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='99' column='1'/>
+      <parameter type-id='96ae8d48' name='window' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='99' column='1'/>
       <parameter type-id='05466fe8' name='outBuffer' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='99' column='1'/>
       <parameter type-id='b5e45470' name='inOutDirtyBounds' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='100' column='1'/>
       <return type-id='3ff5601b'/>
     </function-decl>
     <function-decl name='ANativeWindow_unlockAndPost' mangled-name='ANativeWindow_unlockAndPost' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='104' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ANativeWindow_unlockAndPost@@LIBANDROID'>
-      <parameter type-id='96ae8d47' name='window' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='104' column='1'/>
+      <parameter type-id='96ae8d48' name='window' filepath='frameworks/native/libs/nativewindow/ANativeWindow.cpp' line='104' column='1'/>
       <return type-id='3ff5601b'/>
     </function-decl>
     <typedef-decl name='ANativeWindow_Buffer' type-id='e90e56ba' filepath='frameworks/native/libs/nativewindow/include/android/native_window.h' line='112' column='1' id='1b5f78db'/>
