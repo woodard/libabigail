@@ -1031,170 +1031,8 @@
       <class-decl name='IInterface' visibility='default' is-declaration-only='yes' id='40b6343a'/>
       <class-decl name='IMountServiceListener' visibility='default' is-declaration-only='yes' id='748cb1b7'/>
       <class-decl name='IMountShutdownObserver' visibility='default' is-declaration-only='yes' id='60976dc0'/>
-      <typedef-decl name='status_t' type-id='3ff5601b' filepath='system/core/libutils/include/utils/Errors.h' line='30' column='1' id='6e9756f6'/>
-      <class-decl name='String16' size-in-bits='32' visibility='default' filepath='system/core/libutils/include/utils/String16.h' line='39' column='1' id='c73fabea'>
-        <data-member access='private' static='yes'>
-          <var-decl name='kIsSharedBufferAllocated' type-id='b9930aae' visibility='default' filepath='system/core/libutils/include/utils/String16.h' line='121' column='1'/>
-        </data-member>
-        <data-member access='private' layout-offset-in-bits='0'>
-          <var-decl name='mString' type-id='161c039a' visibility='default' filepath='system/core/libutils/include/utils/String16.h' line='142' column='1'/>
-        </data-member>
-        <member-function access='public' constructor='yes'>
-          <function-decl name='String16' filepath='system/core/libutils/include/utils/String16.h' line='42' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='26924198' is-artificial='yes'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' constructor='yes'>
-          <function-decl name='String16' filepath='system/core/libutils/include/utils/String16.h' line='43' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='26924198' is-artificial='yes'/>
-            <parameter type-id='157d4f95'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' constructor='yes'>
-          <function-decl name='String16' filepath='system/core/libutils/include/utils/String16.h' line='44' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='26924198' is-artificial='yes'/>
-            <parameter type-id='157d4f95'/>
-            <parameter type-id='b59d7dce'/>
-            <parameter type-id='b59d7dce'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' constructor='yes'>
-          <function-decl name='String16' filepath='system/core/libutils/include/utils/String16.h' line='47' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='26924198' is-artificial='yes'/>
-            <parameter type-id='161c039a'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' constructor='yes'>
-          <function-decl name='String16' filepath='system/core/libutils/include/utils/String16.h' line='48' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='26924198' is-artificial='yes'/>
-            <parameter type-id='161c039a'/>
-            <parameter type-id='b59d7dce'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' constructor='yes'>
-          <function-decl name='String16' filepath='system/core/libutils/include/utils/String16.h' line='49' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='26924198' is-artificial='yes'/>
-            <parameter type-id='a1b8f99c'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' constructor='yes'>
-          <function-decl name='String16' filepath='system/core/libutils/include/utils/String16.h' line='50' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='26924198' is-artificial='yes'/>
-            <parameter type-id='80f4b756'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' constructor='yes'>
-          <function-decl name='String16' filepath='system/core/libutils/include/utils/String16.h' line='51' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='26924198' is-artificial='yes'/>
-            <parameter type-id='80f4b756'/>
-            <parameter type-id='b59d7dce'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' destructor='yes'>
-          <function-decl name='~String16' filepath='system/core/libutils/include/utils/String16.h' line='53' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='26924198' is-artificial='yes'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public'>
-          <function-decl name='operator=' mangled-name='_ZN7android8String16aSERKS0_' filepath='system/core/libutils/include/utils/String16.h' line='71' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='26924198' is-artificial='yes'/>
-            <parameter type-id='157d4f95'/>
-            <return type-id='22923b4c'/>
-          </function-decl>
-        </member-function>
-      </class-decl>
-      <class-decl name='String8' size-in-bits='32' visibility='default' filepath='system/core/libutils/include/utils/String8.h' line='40' column='1' id='bacf3393'>
-        <data-member access='private' layout-offset-in-bits='0'>
-          <var-decl name='mString' type-id='80f4b756' visibility='default' filepath='system/core/libutils/include/utils/String8.h' line='229' column='1'/>
-        </data-member>
-        <member-function access='public' constructor='yes'>
-          <function-decl name='String8' filepath='system/core/libutils/include/utils/String8.h' line='43' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='1ab09733' is-artificial='yes'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' constructor='yes'>
-          <function-decl name='String8' filepath='system/core/libutils/include/utils/String8.h' line='44' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='1ab09733' is-artificial='yes'/>
-            <parameter type-id='a1b8f99c'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' constructor='yes'>
-          <function-decl name='String8' filepath='system/core/libutils/include/utils/String8.h' line='45' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='1ab09733' is-artificial='yes'/>
-            <parameter type-id='80f4b756'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' constructor='yes'>
-          <function-decl name='String8' filepath='system/core/libutils/include/utils/String8.h' line='46' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='1ab09733' is-artificial='yes'/>
-            <parameter type-id='80f4b756'/>
-            <parameter type-id='b59d7dce'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' constructor='yes'>
-          <function-decl name='String8' filepath='system/core/libutils/include/utils/String8.h' line='48' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='1ab09733' is-artificial='yes'/>
-            <parameter type-id='157d4f95'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' constructor='yes'>
-          <function-decl name='String8' filepath='system/core/libutils/include/utils/String8.h' line='49' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='1ab09733' is-artificial='yes'/>
-            <parameter type-id='161c039a'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' constructor='yes'>
-          <function-decl name='String8' filepath='system/core/libutils/include/utils/String8.h' line='50' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='1ab09733' is-artificial='yes'/>
-            <parameter type-id='161c039a'/>
-            <parameter type-id='b59d7dce'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' constructor='yes'>
-          <function-decl name='String8' filepath='system/core/libutils/include/utils/String8.h' line='51' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='1ab09733' is-artificial='yes'/>
-            <parameter type-id='58d7e108'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' constructor='yes'>
-          <function-decl name='String8' filepath='system/core/libutils/include/utils/String8.h' line='52' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='1ab09733' is-artificial='yes'/>
-            <parameter type-id='58d7e108'/>
-            <parameter type-id='b59d7dce'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' destructor='yes'>
-          <function-decl name='~String8' filepath='system/core/libutils/include/utils/String8.h' line='53' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='1ab09733' is-artificial='yes'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-      </class-decl>
     </namespace-decl>
     <namespace-decl name='std'>
-      <class-decl name='__va_list' size-in-bits='32' is-struct='yes' visibility='default' id='30357e0a'>
-        <data-member access='public' layout-offset-in-bits='0'>
-          <var-decl name='__ap' type-id='eaa32e2f' visibility='default'/>
-        </data-member>
-      </class-decl>
       <namespace-decl name='__1'>
         <class-decl name='__pointer_type&lt;android::IMountService, std::__1::default_delete&lt;android::IMountService&gt; &gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='external/libcxx/include/memory' line='1029' column='1' id='5c33a3c6'>
           <member-type access='public'>
@@ -1320,12 +1158,8 @@
             </member-type>
           </class-decl>
         </namespace-decl>
-        <typedef-decl name='string' type-id='27619c1c' filepath='external/libcxx/include/iosfwd' line='211' column='1' id='2e84cb7b'/>
       </namespace-decl>
     </namespace-decl>
-    <typedef-decl name='__builtin_va_list' type-id='30357e0a' id='7f896fb4'/>
-    <typedef-decl name='mbstate_t' type-id='a76d8e48' filepath='bionic/libc/include/bits/mbstate_t.h' line='47' column='1' id='3d7d8cbf'/>
-    <typedef-decl name='wint_t' type-id='f0981eeb' filepath='bionic/libc/include/bits/wctype.h' line='36' column='1' id='6dd37369'/>
     <function-decl name='iswalnum' filepath='bionic/libc/include/bits/wctype.h' line='40' column='1' visibility='default' binding='global' size-in-bits='32'>
       <parameter type-id='6dd37369'/>
       <return type-id='95e97e5e'/>
@@ -1382,7 +1216,6 @@
       <parameter type-id='6dd37369'/>
       <return type-id='6dd37369'/>
     </function-decl>
-    <typedef-decl name='wctype_t' type-id='bd54fe1a' filepath='bionic/libc/include/bits/wctype.h' line='56' column='1' id='ba50424d'/>
     <function-decl name='wctype' filepath='bionic/libc/include/bits/wctype.h' line='57' column='1' visibility='default' binding='global' size-in-bits='32'>
       <parameter type-id='80f4b756'/>
       <return type-id='ba50424d'/>
@@ -1392,7 +1225,6 @@
       <parameter type-id='ba50424d'/>
       <return type-id='95e97e5e'/>
     </function-decl>
-    <typedef-decl name='wctrans_t' type-id='eaa32e2f' filepath='bionic/libc/include/bits/wctype.h' line='60' column='1' id='183c72c3'/>
     <function-decl name='towctrans' filepath='bionic/libc/include/bits/wctype.h' line='61' column='1' visibility='default' binding='global' size-in-bits='32'>
       <parameter type-id='6dd37369'/>
       <parameter type-id='183c72c3'/>
@@ -1420,12 +1252,6 @@
       <parameter type-id='eaa32e2f'/>
       <return type-id='48b5725f'/>
     </function-decl>
-    <typedef-decl name='__int32_t' type-id='95e97e5e' filepath='bionic/libc/include/stdint.h' line='40' column='1' id='33f57a65'/>
-    <typedef-decl name='__uint32_t' type-id='f0981eeb' filepath='bionic/libc/include/stdint.h' line='41' column='1' id='62f1140c'/>
-    <typedef-decl name='int32_t' type-id='33f57a65' filepath='bionic/libc/include/stdint.h' line='64' column='1' id='3ff5601b'/>
-    <typedef-decl name='uint32_t' type-id='62f1140c' filepath='bionic/libc/include/stdint.h' line='65' column='1' id='8f92235e'/>
-    <typedef-decl name='fpos_t' type-id='ad707ada' filepath='bionic/libc/include/stdio.h' line='55' column='1' id='e322b6ef'/>
-    <typedef-decl name='FILE' type-id='8d7b2c1e' filepath='bionic/libc/include/stdio.h' line='59' column='1' id='aa12d1ba'/>
     <function-decl name='clearerr' filepath='bionic/libc/include/stdio.h' line='106' column='1' visibility='default' binding='global' size-in-bits='32'>
       <parameter type-id='822cd80b'/>
       <return type-id='48b5725f'/>
@@ -1695,13 +1521,11 @@
       <parameter type-id='585e1de9'/>
       <return type-id='48b5725f'/>
     </function-decl>
-    <typedef-decl name='ldiv_t' type-id='9b5926fd' filepath='bionic/libc/include/stdlib.h' line='139' column='1' id='30397bf8'/>
     <function-decl name='ldiv' filepath='bionic/libc/include/stdlib.h' line='141' column='1' visibility='default' binding='global' size-in-bits='32'>
       <parameter type-id='bd54fe1a'/>
       <parameter type-id='bd54fe1a'/>
       <return type-id='30397bf8'/>
     </function-decl>
-    <typedef-decl name='lldiv_t' type-id='649cba4b' filepath='bionic/libc/include/stdlib.h' line='146' column='1' id='f5fa3b34'/>
     <function-decl name='lldiv' filepath='bionic/libc/include/stdlib.h' line='148' column='1' visibility='default' binding='global' size-in-bits='32'>
       <parameter type-id='1eb56b1e'/>
       <parameter type-id='1eb56b1e'/>
@@ -1806,11 +1630,6 @@
       <parameter type-id='b59d7dce'/>
       <return type-id='b59d7dce'/>
     </function-decl>
-    <typedef-decl name='clock_t' type-id='880ebc01' filepath='bionic/libc/include/sys/types.h' line='54' column='1' id='4c3a2c61'/>
-    <typedef-decl name='__time_t' type-id='f7d92306' filepath='bionic/libc/include/sys/types.h' line='95' column='1' id='65eda9c0'/>
-    <typedef-decl name='time_t' type-id='65eda9c0' filepath='bionic/libc/include/sys/types.h' line='96' column='1' id='c9d12d66'/>
-    <typedef-decl name='off_t' type-id='8dda407a' filepath='bionic/libc/include/sys/types.h' line='105' column='1' id='ad707ada'/>
-    <typedef-decl name='ssize_t' type-id='b6b3ebaf' filepath='bionic/libc/include/sys/types.h' line='128' column='1' id='79a0948f'/>
     <function-decl name='time' filepath='bionic/libc/include/time.h' line='62' column='1' visibility='default' binding='global' size-in-bits='32'>
       <parameter type-id='b2eb2c3f'/>
       <return type-id='c9d12d66'/>
@@ -2140,40 +1959,6 @@
       <parameter is-variadic='yes'/>
       <return type-id='95e97e5e'/>
     </function-decl>
-    <typedef-decl name='__kernel_long_t' type-id='bd54fe1a' filepath='bionic/libc/kernel/uapi/asm-generic/posix_types.h' line='23' column='1' id='6a11bd61'/>
-    <typedef-decl name='__kernel_ssize_t' type-id='95e97e5e' filepath='bionic/libc/kernel/uapi/asm-generic/posix_types.h' line='62' column='1' id='b6b3ebaf'/>
-    <typedef-decl name='__kernel_off_t' type-id='6a11bd61' filepath='bionic/libc/kernel/uapi/asm-generic/posix_types.h' line='75' column='1' id='8dda407a'/>
-    <typedef-decl name='__kernel_time_t' type-id='6a11bd61' filepath='bionic/libc/kernel/uapi/asm-generic/posix_types.h' line='78' column='1' id='f7d92306'/>
-    <typedef-decl name='__kernel_clock_t' type-id='6a11bd61' filepath='bionic/libc/kernel/uapi/asm-generic/posix_types.h' line='80' column='1' id='880ebc01'/>
-    <typedef-decl name='va_list' type-id='7f896fb4' filepath='prebuilts/clang/host/linux-x86/clang-r383902b/lib64/clang/11.0.2/include/stdarg.h' line='14' column='1' id='2aee9912'/>
-    <typedef-decl name='size_t' type-id='f0981eeb' filepath='prebuilts/clang/host/linux-x86/clang-r383902b/lib64/clang/11.0.2/include/stddef.h' line='46' column='1' id='b59d7dce'/>
-    <namespace-decl name='android'>
-      <class-decl name='String16' size-in-bits='32' visibility='default' filepath='system/core/libutils/include/utils/String16.h' line='39' column='1' id='c73fabea'>
-        <member-type access='private'>
-          <class-decl name='StaticData&lt;35&gt;' size-in-bits='608' is-struct='yes' visibility='default' filepath='system/core/libutils/include/utils/String16.h' line='154' column='1' id='6807f016'>
-            <data-member access='public' layout-offset-in-bits='0'>
-              <var-decl name='size' type-id='b9930aae' visibility='default' filepath='system/core/libutils/include/utils/String16.h' line='158' column='1'/>
-            </data-member>
-            <data-member access='public' layout-offset-in-bits='32'>
-              <var-decl name='data' type-id='5da7196d' visibility='default' filepath='system/core/libutils/include/utils/String16.h' line='159' column='1'/>
-            </data-member>
-            <member-function access='public'>
-              <function-decl name='StaticData' filepath='system/core/libutils/include/utils/String16.h' line='157' column='1' visibility='default' binding='global' size-in-bits='32'>
-                <parameter type-id='ba5970bc' is-artificial='yes'/>
-                <return type-id='48b5725f'/>
-              </function-decl>
-            </member-function>
-            <member-function access='public'>
-              <function-decl name='StaticData' filepath='system/core/libutils/include/utils/String16.h' line='161' column='1' visibility='default' binding='global' size-in-bits='32'>
-                <parameter type-id='ba5970bc' is-artificial='yes'/>
-                <parameter type-id='fbc5f4a1'/>
-                <return type-id='48b5725f'/>
-              </function-decl>
-            </member-function>
-          </class-decl>
-        </member-type>
-      </class-decl>
-    </namespace-decl>
     <function-type size-in-bits='32' id='ee076206'>
       <return type-id='48b5725f'/>
     </function-type>
@@ -7804,6 +7589,78 @@
             <return type-id='48b5725f'/>
           </function-decl>
         </member-function>
+        <member-function access='public'>
+          <function-decl name='operator=' mangled-name='_ZN7android8String16aSERKS0_' filepath='system/core/libutils/include/utils/String16.h' line='71' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='26924198' is-artificial='yes'/>
+            <parameter type-id='157d4f95'/>
+            <return type-id='22923b4c'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' constructor='yes'>
+          <function-decl name='String16' filepath='system/core/libutils/include/utils/String16.h' line='42' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='26924198' is-artificial='yes'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' constructor='yes'>
+          <function-decl name='String16' filepath='system/core/libutils/include/utils/String16.h' line='43' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='26924198' is-artificial='yes'/>
+            <parameter type-id='157d4f95'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' constructor='yes'>
+          <function-decl name='String16' filepath='system/core/libutils/include/utils/String16.h' line='44' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='26924198' is-artificial='yes'/>
+            <parameter type-id='157d4f95'/>
+            <parameter type-id='b59d7dce'/>
+            <parameter type-id='b59d7dce'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' constructor='yes'>
+          <function-decl name='String16' filepath='system/core/libutils/include/utils/String16.h' line='47' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='26924198' is-artificial='yes'/>
+            <parameter type-id='161c039a'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' constructor='yes'>
+          <function-decl name='String16' filepath='system/core/libutils/include/utils/String16.h' line='48' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='26924198' is-artificial='yes'/>
+            <parameter type-id='161c039a'/>
+            <parameter type-id='b59d7dce'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' constructor='yes'>
+          <function-decl name='String16' filepath='system/core/libutils/include/utils/String16.h' line='49' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='26924198' is-artificial='yes'/>
+            <parameter type-id='a1b8f99c'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' constructor='yes'>
+          <function-decl name='String16' filepath='system/core/libutils/include/utils/String16.h' line='50' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='26924198' is-artificial='yes'/>
+            <parameter type-id='80f4b756'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' constructor='yes'>
+          <function-decl name='String16' filepath='system/core/libutils/include/utils/String16.h' line='51' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='26924198' is-artificial='yes'/>
+            <parameter type-id='80f4b756'/>
+            <parameter type-id='b59d7dce'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' destructor='yes'>
+          <function-decl name='~String16' filepath='system/core/libutils/include/utils/String16.h' line='53' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='26924198' is-artificial='yes'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
       </class-decl>
       <class-decl name='String8' size-in-bits='32' visibility='default' filepath='system/core/libutils/include/utils/String8.h' line='40' column='1' id='bacf3393'>
         <data-member access='private' layout-offset-in-bits='0'>
@@ -8396,6 +8253,77 @@
             <return type-id='48b5725f'/>
           </function-decl>
         </member-function>
+        <member-function access='public' constructor='yes'>
+          <function-decl name='String8' filepath='system/core/libutils/include/utils/String8.h' line='43' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='1ab09733' is-artificial='yes'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' constructor='yes'>
+          <function-decl name='String8' filepath='system/core/libutils/include/utils/String8.h' line='44' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='1ab09733' is-artificial='yes'/>
+            <parameter type-id='a1b8f99c'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' constructor='yes'>
+          <function-decl name='String8' filepath='system/core/libutils/include/utils/String8.h' line='45' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='1ab09733' is-artificial='yes'/>
+            <parameter type-id='80f4b756'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' constructor='yes'>
+          <function-decl name='String8' filepath='system/core/libutils/include/utils/String8.h' line='46' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='1ab09733' is-artificial='yes'/>
+            <parameter type-id='80f4b756'/>
+            <parameter type-id='b59d7dce'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' constructor='yes'>
+          <function-decl name='String8' filepath='system/core/libutils/include/utils/String8.h' line='48' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='1ab09733' is-artificial='yes'/>
+            <parameter type-id='157d4f95'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' constructor='yes'>
+          <function-decl name='String8' filepath='system/core/libutils/include/utils/String8.h' line='49' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='1ab09733' is-artificial='yes'/>
+            <parameter type-id='161c039a'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' constructor='yes'>
+          <function-decl name='String8' filepath='system/core/libutils/include/utils/String8.h' line='50' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='1ab09733' is-artificial='yes'/>
+            <parameter type-id='161c039a'/>
+            <parameter type-id='b59d7dce'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' constructor='yes'>
+          <function-decl name='String8' filepath='system/core/libutils/include/utils/String8.h' line='51' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='1ab09733' is-artificial='yes'/>
+            <parameter type-id='58d7e108'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' constructor='yes'>
+          <function-decl name='String8' filepath='system/core/libutils/include/utils/String8.h' line='52' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='1ab09733' is-artificial='yes'/>
+            <parameter type-id='58d7e108'/>
+            <parameter type-id='b59d7dce'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' destructor='yes'>
+          <function-decl name='~String8' filepath='system/core/libutils/include/utils/String8.h' line='53' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='1ab09733' is-artificial='yes'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
       </class-decl>
       <class-decl name='ApkAssets' visibility='default' is-declaration-only='yes' id='05502b73'/>
       <class-decl name='Asset' visibility='default' is-declaration-only='yes' id='663ed4a0'>
@@ -8587,6 +8515,7 @@
       </namespace-decl>
       <typedef-decl name='ApkAssetsCookie' type-id='3ff5601b' filepath='frameworks/base/libs/androidfw/include/androidfw/AssetManager2.h' line='37' column='1' id='27450c90'/>
       <typedef-decl name='FileType' type-id='448c3001' filepath='frameworks/base/libs/androidfw/include/androidfw/misc.h' line='41' column='1' id='e247c4ed'/>
+      <typedef-decl name='status_t' type-id='3ff5601b' filepath='system/core/libutils/include/utils/Errors.h' line='30' column='1' id='6e9756f6'/>
     </namespace-decl>
     <namespace-decl name='std'>
       <class-decl name='__va_list' size-in-bits='32' is-struct='yes' visibility='default' id='30357e0a'>
@@ -17015,6 +16944,7 @@
         <typedef-decl name='__map_node_handle&lt;std::__1::unordered_map&lt;unsigned int, android::util::unique_cptr&lt;android::ResolvedBag&gt;, std::__1::hash&lt;unsigned int&gt;, std::__1::equal_to&lt;unsigned int&gt;, std::__1::allocator&lt;std::__1::pair&lt;const unsigned int, android::util::unique_cptr&lt;android::ResolvedBag&gt; &gt; &gt; &gt;::__node, std::__1::unordered_map&lt;unsigned int, android::util::unique_cptr&lt;android::ResolvedBag&gt;, std::__1::hash&lt;unsigned int&gt;, std::__1::equal_to&lt;unsigned int&gt;, std::__1::allocator&lt;std::__1::pair&lt;const unsigned int, android::util::unique_cptr&lt;android::ResolvedBag&gt; &gt; &gt; &gt;::allocator_type&gt;' type-id='7be843c5' filepath='external/libcxx/include/__node_handle' line='193' column='1' id='3be79f9e'/>
         <typedef-decl name='__map_node_handle&lt;std::__1::unordered_map&lt;unsigned int, std::__1::vector&lt;unsigned int, std::__1::allocator&lt;unsigned int&gt; &gt;, std::__1::hash&lt;unsigned int&gt;, std::__1::equal_to&lt;unsigned int&gt;, std::__1::allocator&lt;std::__1::pair&lt;const unsigned int, std::__1::vector&lt;unsigned int, std::__1::allocator&lt;unsigned int&gt; &gt; &gt; &gt; &gt;::__node, std::__1::unordered_map&lt;unsigned int, std::__1::vector&lt;unsigned int, std::__1::allocator&lt;unsigned int&gt; &gt;, std::__1::hash&lt;unsigned int&gt;, std::__1::equal_to&lt;unsigned int&gt;, std::__1::allocator&lt;std::__1::pair&lt;const unsigned int, std::__1::vector&lt;unsigned int, std::__1::allocator&lt;unsigned int&gt; &gt; &gt; &gt; &gt;::allocator_type&gt;' type-id='b565a125' filepath='external/libcxx/include/__node_handle' line='193' column='1' id='50a7f812'/>
         <typedef-decl name='__libcpp_mutex_t' type-id='7a6844eb' filepath='external/libcxx/include/__threading_support' line='52' column='1' id='03f240eb'/>
+        <typedef-decl name='string' type-id='27619c1c' filepath='external/libcxx/include/iosfwd' line='211' column='1' id='2e84cb7b'/>
         <typedef-decl name='u16string' type-id='cea92a70' filepath='external/libcxx/include/string' line='4183' column='1' id='222ea3df'/>
         <typedef-decl name='bool_constant&lt;(false)&gt;' type-id='f4edc297' filepath='external/libcxx/include/type_traits' line='539' column='1' id='f7097f35'/>
         <typedef-decl name='bool_constant&lt;(true)&gt;' type-id='249572b2' filepath='external/libcxx/include/type_traits' line='539' column='1' id='b352692c'/>
@@ -17022,10 +16952,15 @@
         <typedef-decl name='false_type' type-id='f7097f35' filepath='external/libcxx/include/type_traits' line='546' column='1' id='c594c252'/>
       </namespace-decl>
     </namespace-decl>
+    <typedef-decl name='__builtin_va_list' type-id='30357e0a' id='7f896fb4'/>
     <union-decl name='jvalue' visibility='default' is-declaration-only='yes' id='2eab072b'/>
     <type-decl name='variadic parameter type' id='2c1145c5'/>
     <type-decl name='void' id='48b5725f'/>
+    <typedef-decl name='mbstate_t' type-id='a76d8e48' filepath='bionic/libc/include/bits/mbstate_t.h' line='47' column='1' id='3d7d8cbf'/>
     <typedef-decl name='pthread_mutex_t' type-id='92fa54c8' filepath='bionic/libc/include/bits/pthread_types.h' line='78' column='1' id='7a6844eb'/>
+    <typedef-decl name='wint_t' type-id='f0981eeb' filepath='bionic/libc/include/bits/wctype.h' line='36' column='1' id='6dd37369'/>
+    <typedef-decl name='wctype_t' type-id='bd54fe1a' filepath='bionic/libc/include/bits/wctype.h' line='56' column='1' id='ba50424d'/>
+    <typedef-decl name='wctrans_t' type-id='eaa32e2f' filepath='bionic/libc/include/bits/wctype.h' line='60' column='1' id='183c72c3'/>
     <function-decl name='acosf' filepath='bionic/libc/include/math.h' line='79' column='1' visibility='default' binding='global' size-in-bits='32'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
@@ -17291,15 +17226,33 @@
     <typedef-decl name='__uint8_t' type-id='002ac4a6' filepath='bionic/libc/include/stdint.h' line='37' column='1' id='c51d6389'/>
     <typedef-decl name='__int16_t' type-id='a2185560' filepath='bionic/libc/include/stdint.h' line='38' column='1' id='03896e23'/>
     <typedef-decl name='__uint16_t' type-id='8efea9e5' filepath='bionic/libc/include/stdint.h' line='39' column='1' id='253c2d2a'/>
+    <typedef-decl name='__int32_t' type-id='95e97e5e' filepath='bionic/libc/include/stdint.h' line='40' column='1' id='33f57a65'/>
+    <typedef-decl name='__uint32_t' type-id='f0981eeb' filepath='bionic/libc/include/stdint.h' line='41' column='1' id='62f1140c'/>
     <typedef-decl name='__int64_t' type-id='1eb56b1e' filepath='bionic/libc/include/stdint.h' line='46' column='1' id='0c9942d2'/>
     <typedef-decl name='int8_t' type-id='2171a512' filepath='bionic/libc/include/stdint.h' line='58' column='1' id='ee31ee44'/>
     <typedef-decl name='uint8_t' type-id='c51d6389' filepath='bionic/libc/include/stdint.h' line='59' column='1' id='b96825af'/>
     <typedef-decl name='int16_t' type-id='03896e23' filepath='bionic/libc/include/stdint.h' line='61' column='1' id='23bd8cb5'/>
     <typedef-decl name='uint16_t' type-id='253c2d2a' filepath='bionic/libc/include/stdint.h' line='62' column='1' id='149c6638'/>
+    <typedef-decl name='int32_t' type-id='33f57a65' filepath='bionic/libc/include/stdint.h' line='64' column='1' id='3ff5601b'/>
+    <typedef-decl name='uint32_t' type-id='62f1140c' filepath='bionic/libc/include/stdint.h' line='65' column='1' id='8f92235e'/>
     <typedef-decl name='int64_t' type-id='0c9942d2' filepath='bionic/libc/include/stdint.h' line='67' column='1' id='9da381c4'/>
+    <typedef-decl name='fpos_t' type-id='ad707ada' filepath='bionic/libc/include/stdio.h' line='55' column='1' id='e322b6ef'/>
+    <typedef-decl name='FILE' type-id='8d7b2c1e' filepath='bionic/libc/include/stdio.h' line='59' column='1' id='aa12d1ba'/>
+    <typedef-decl name='ldiv_t' type-id='9b5926fd' filepath='bionic/libc/include/stdlib.h' line='139' column='1' id='30397bf8'/>
+    <typedef-decl name='lldiv_t' type-id='649cba4b' filepath='bionic/libc/include/stdlib.h' line='146' column='1' id='f5fa3b34'/>
+    <typedef-decl name='clock_t' type-id='880ebc01' filepath='bionic/libc/include/sys/types.h' line='54' column='1' id='4c3a2c61'/>
+    <typedef-decl name='__time_t' type-id='f7d92306' filepath='bionic/libc/include/sys/types.h' line='95' column='1' id='65eda9c0'/>
+    <typedef-decl name='time_t' type-id='65eda9c0' filepath='bionic/libc/include/sys/types.h' line='96' column='1' id='c9d12d66'/>
+    <typedef-decl name='off_t' type-id='8dda407a' filepath='bionic/libc/include/sys/types.h' line='105' column='1' id='ad707ada'/>
     <typedef-decl name='loff_t' type-id='537a730e' filepath='bionic/libc/include/sys/types.h' line='106' column='1' id='69bf7bee'/>
     <typedef-decl name='off64_t' type-id='69bf7bee' filepath='bionic/libc/include/sys/types.h' line='107' column='1' id='05d4c620'/>
+    <typedef-decl name='ssize_t' type-id='b6b3ebaf' filepath='bionic/libc/include/sys/types.h' line='128' column='1' id='79a0948f'/>
+    <typedef-decl name='__kernel_long_t' type-id='bd54fe1a' filepath='bionic/libc/kernel/uapi/asm-generic/posix_types.h' line='23' column='1' id='6a11bd61'/>
+    <typedef-decl name='__kernel_ssize_t' type-id='95e97e5e' filepath='bionic/libc/kernel/uapi/asm-generic/posix_types.h' line='62' column='1' id='b6b3ebaf'/>
+    <typedef-decl name='__kernel_off_t' type-id='6a11bd61' filepath='bionic/libc/kernel/uapi/asm-generic/posix_types.h' line='75' column='1' id='8dda407a'/>
     <typedef-decl name='__kernel_loff_t' type-id='1eb56b1e' filepath='bionic/libc/kernel/uapi/asm-generic/posix_types.h' line='76' column='1' id='537a730e'/>
+    <typedef-decl name='__kernel_time_t' type-id='6a11bd61' filepath='bionic/libc/kernel/uapi/asm-generic/posix_types.h' line='78' column='1' id='f7d92306'/>
+    <typedef-decl name='__kernel_clock_t' type-id='6a11bd61' filepath='bionic/libc/kernel/uapi/asm-generic/posix_types.h' line='80' column='1' id='880ebc01'/>
     <typedef-decl name='size_type' type-id='b59d7dce' filepath='external/libcxx/include/array' line='139' column='1' id='143a6b6e'/>
     <function-decl name='AAssetManager_fromJava' mangled-name='AAssetManager_fromJava' filepath='frameworks/base/native/android/asset_manager.cpp' line='61' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='AAssetManager_fromJava@@LIBANDROID'>
       <parameter type-id='fae49a1f' name='env' filepath='frameworks/base/native/android/asset_manager.cpp' line='61' column='1'/>
@@ -17421,7 +17374,9 @@
     <typedef-decl name='JNINativeMethod' type-id='92fa54c8' filepath='libnativehelper/include_jni/jni.h' line='132' column='1' id='b7b5d51d'/>
     <typedef-decl name='JNIEnv' type-id='c9459134' filepath='libnativehelper/include_jni/jni.h' line='139' column='1' id='d357872a'/>
     <typedef-decl name='JavaVM' type-id='d607eddf' filepath='libnativehelper/include_jni/jni.h' line='140' column='1' id='ebc81181'/>
+    <typedef-decl name='va_list' type-id='7f896fb4' filepath='prebuilts/clang/host/linux-x86/clang-r383902b/lib64/clang/11.0.2/include/stdarg.h' line='14' column='1' id='2aee9912'/>
     <typedef-decl name='ptrdiff_t' type-id='95e97e5e' filepath='prebuilts/clang/host/linux-x86/clang-r383902b/lib64/clang/11.0.2/include/stddef.h' line='35' column='1' id='fc84bffe'/>
+    <typedef-decl name='size_t' type-id='f0981eeb' filepath='prebuilts/clang/host/linux-x86/clang-r383902b/lib64/clang/11.0.2/include/stddef.h' line='46' column='1' id='b59d7dce'/>
     <typedef-decl name='nsecs_t' type-id='9da381c4' filepath='system/core/libutils/include/utils/Timers.h' line='32' column='1' id='00f5ef57'/>
     <namespace-decl name='std'>
       <namespace-decl name='__1'>

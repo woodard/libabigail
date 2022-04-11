@@ -6294,6 +6294,30 @@ die_string_attribute(const Dwarf_Die* die, unsigned attr_name)
   return str ? str : "";
 }
 
+/// Get the value of an attribute that is supposed to be a string, or
+/// an empty string if the attribute could not be found.
+///
+/// @param die the DIE to get the attribute value from.
+///
+/// @param attr_name the attribute name.  Must come from dwarf.h and
+/// be an enumerator representing an attribute like, e.g, DW_AT_name.
+///
+/// @return the char* representing the value of the attribute, or an
+/// empty string if no string attribute could be found.
+static const char*
+die_char_str_attribute(const Dwarf_Die* die, unsigned attr_name)
+{
+  if (!die)
+    return nullptr;
+
+  Dwarf_Attribute attr;
+  if (!dwarf_attr_integrate(const_cast<Dwarf_Die*>(die), attr_name, &attr))
+    return nullptr;
+
+  const char* str = dwarf_formstring(&attr);
+  return str;
+}
+
 /// Get the value of an attribute that is supposed to be an unsigned
 /// constant.
 ///
@@ -7627,6 +7651,29 @@ die_is_declared_inline(Dwarf_Die* die)
   return inline_value == DW_INL_declared_inlined;
 }
 
+/// Compare two DWARF strings using the most accurate (and slowest)
+/// method possible.
+///
+/// @param l the DIE that carries the first string to consider, as an
+/// attribute value.
+///
+/// @param attr_name the name of the attribute which value is the
+/// string to compare.
+///
+/// @return true iff the string carried by @p l equals the one carried
+/// by @p r.
+static bool
+slowly_compare_strings(const Dwarf_Die *l,
+		       const Dwarf_Die *r,
+		       unsigned attr_name)
+{
+  const char *l_str = die_char_str_attribute(l, attr_name),
+    *r_str = die_char_str_attribute(r, attr_name);
+  if (!l_str && !r_str)
+    return true;
+  return l_str && r_str && !strcmp(l_str, r_str);
+}
+
 /// This function is a fast routine (optimization) to compare the
 /// values of two string attributes of two DIEs.
 ///
@@ -7686,22 +7733,20 @@ compare_dies_string_attribute_value(const Dwarf_Die *l, const Dwarf_Die *r,
       //
       // This is the fast path.
       if (l_attr.valp == r_attr.valp)
+	{
+#if WITH_DEBUG_TYPE_CANONICALIZATION
+	  ABG_ASSERT(slowly_compare_strings(l, r, attr_name));
+#endif
 	  result = true;
-      else if (l_attr.valp && r_attr.valp)
-	result = *l_attr.valp == *r_attr.valp;
-      else
-	result = false;
-      return true;
+	  return true;
+	}
     }
 
   // If we reached this point it means we couldn't use the fast path
   // because the string atttributes are strings that are "inline" in
   // the debug info section.  Let's just compare them the slow and
   // obvious way.
-  string l_str = die_string_attribute(l, attr_name),
-    r_str = die_string_attribute(r, attr_name);
-  result = l_str == r_str;
-
+  result = slowly_compare_strings(l, r, attr_name);
   return true;
 }
 
