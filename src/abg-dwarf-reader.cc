@@ -10622,9 +10622,10 @@ compare_dies(const read_context& ctxt,
 	bool l_type_is_void = !die_die_attribute(l, DW_AT_type, l_type);
 	bool r_type_is_void = !die_die_attribute(r, DW_AT_type, r_type);
 	if ((l_type_is_void != r_type_is_void)
-	    || !compare_dies(ctxt, &l_type, &r_type,
-			     aggregates_being_compared,
-			     update_canonical_dies_on_the_fly))
+	    || (!l_type_is_void
+		&& !compare_dies(ctxt, &l_type, &r_type,
+				 aggregates_being_compared,
+				 update_canonical_dies_on_the_fly)))
 	  result = false;
       }
       break;
