@@ -452,7 +452,7 @@ Options
     Emit verbose progress messages.
 
 
-  * ``self-check``
+  * ``--self-check``
 
     This is used to test the underlying Libabigail library.  When in
     used, the command expects only on input package, along with its
