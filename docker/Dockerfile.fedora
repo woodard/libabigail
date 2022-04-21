@@ -27,9 +27,10 @@ ENV PATH=/opt/libabigail/bin:$PATH
 
 # Runtime dependencies
 RUN dnf install -y \
-    libxml2-devel \
-    libxml2-libs \
     python3-koji \
     python3-mock \
-    python3-pyxdg \
+    python3-pyxdg \    
+    elfutils-libelf \
+    elfutils-libs \
+    libstdc++ \
     six
