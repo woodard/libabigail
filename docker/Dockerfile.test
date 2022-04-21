@@ -5,6 +5,7 @@ FROM ghcr.io/woodard/libabigail-fedora-base
 RUN dnf install -y \
     file \
     diffutils \
+    lbzip2 \
     elfutils-libs
 
 WORKDIR /code

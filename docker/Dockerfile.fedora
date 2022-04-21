@@ -33,4 +33,5 @@ RUN dnf install -y \
     elfutils-libelf \
     elfutils-libs \
     libstdc++ \
+    lbzip2 \
     six
