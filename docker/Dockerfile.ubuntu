@@ -2,7 +2,7 @@ ARG ubuntu_version=22.04
 ARG gcc_version=10.3.0
 FROM ghcr.io/rse-ops/gcc-ubuntu-${ubuntu_version}:gcc-${gcc_version}
 
-# docker build -t ghcr.io/woodard/libabigail .
+# docker build -t ghcr.io/woodard/libabigail-ubuntu-22.04 .
 
 # Install Libabigail to its own view
 WORKDIR /opt/abigail-env
