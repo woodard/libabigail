@@ -16,4 +16,6 @@ RUN dnf install -y \
     python3-mock \
     python3-pyxdg \
     six \
+    file \
+    diffutils \
     wget

@@ -2,6 +2,11 @@ FROM ghcr.io/woodard/libabigail-fedora-base
 
 # docker build -f docker/Dockerfile.test -t test .
 
+RUN dnf install -y \
+    file \
+    diffutils
+
+
 WORKDIR /code
 COPY . /code
 
