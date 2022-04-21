@@ -24,4 +24,4 @@ RUN mkdir -p build && \
     -fasynchronous-unwind-tables -O2" LDFLAGS="-Wl,--no-undefined" \
     ../configure --prefix=/opt/libabigail --enable-rpm=yes && \
     make -j4 && \
-    make check || cat tests/test-suite.log
+    make check || cat tests/test-suite.log && exit 1
