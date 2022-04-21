@@ -34,7 +34,8 @@ jobs:
 
         # Dockerfiles to build, container names to use, and to tag as libabigail:latest?
         container: [["Dockerfile.fedora", "ghcr.io/woodard/libabigail-fedora", true],
-                    ["Dockerfile.ubuntu", "ghcr.io/woodard/libabigail-ubuntu-22.04", false]]
+                    ["Dockerfile.ubuntu", "ghcr.io/woodard/libabigail-ubuntu-22.04", false],
+                    ["Dockerfile.fedora-base", "ghcr.io/woodard/libabigail-fedora-base", false]]
  
     runs-on: ubuntu-latest
     name: Build

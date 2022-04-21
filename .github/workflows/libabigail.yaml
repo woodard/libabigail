@@ -3,8 +3,9 @@ on:
   pull_request: []
 
 jobs:
+
 #  get-release:
-#    container: ghcr.io/woodard/libabigail:2.1
+#    container: ghcr.io/woodard/libabigail-ubuntu-22.04:latest
 #    runs-on: ubuntu-latest
 #    steps:
 #    - name: Organize Files
@@ -27,7 +28,7 @@ jobs:
 
 
   get-latest:
-    container: ghcr.io/woodard/libabigail:latest
+    container: ghcr.io/woodard/libabigail-ubuntu-22.04:latest
     runs-on: ubuntu-latest
     steps:
     - name: Organize Files
@@ -49,7 +50,7 @@ jobs:
           /abi/libsystemd.so.0
 
   get-pr:
-    container: ghcr.io/woodard/libabigail:latest
+    container: ghcr.io/woodard/libabigail-ubuntu-22.04:latest
     runs-on: ubuntu-latest
     steps:
     - name: Build Pull Request
