@@ -12,7 +12,6 @@ RUN dnf install -y \
     elfutils-libs \
     gcc-c++ \
     libtool \
-    libxml2-libs \
     libxml2-devel \
     python3-koji \
     python3-mock \
