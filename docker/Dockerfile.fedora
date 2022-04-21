@@ -34,4 +34,5 @@ RUN dnf install -y \
     elfutils-libs \
     libstdc++ \
     lbzip2 \
+    shared-mime-info \
     six
