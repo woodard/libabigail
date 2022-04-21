@@ -6,6 +6,12 @@ on:
   schedule:
     - cron: 0 3 * * *
 
+  # Allow manual trigger of a build
+  workflow_dispatch:
+    inputs:
+      whatever:
+        description: 'This variable does not matter, its a GHA bug.'     
+        
   # On push to main we build and deploy images
   push: 
     branches:
